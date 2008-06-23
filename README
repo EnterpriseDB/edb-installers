@@ -190,6 +190,10 @@ modules or the overall build system.
 This directory contains installer resources that may be useful to multiple
 modules or the overall build system.
 
+* tarballs/
+
+This directory contains all the tarballs we use for builds
+
 * <everything else>/
 
 Each additional directory contains a single package. These may be internally built
