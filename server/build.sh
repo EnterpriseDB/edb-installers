@@ -37,7 +37,7 @@ _prep_server() {
     fi
 	
     echo "Unpacking PostgreSQL source..."
-    tar -jxvf ../tarballs/postgresql-$PG_TARBALL_POSTGRESQL.tar.bz2
+    tar -jxvf ../../tarballs/postgresql-$PG_TARBALL_POSTGRESQL.tar.bz2
 
     # pgAdmin
     if [ -e pgadmin3-$PG_TARBALL_PGADMIN ];
@@ -47,13 +47,13 @@ _prep_server() {
     fi
 
     echo "Unpacking pgAdmin source..."
-    tar -zxvf ../tarballs/pgadmin3-$PG_TARBALL_PGADMIN.tar.gz
+    tar -zxvf ../../tarballs/pgadmin3-$PG_TARBALL_PGADMIN.tar.gz
 
     # Debugger
     cd $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib
 
     echo "Unpacking debugger source..."
-    tar -zxvf ../../../tarballs/edb-debugger-$PG_TARBALL_DEBUGGER.tgz
+    tar -zxvf ../../../../tarballs/edb-debugger-$PG_TARBALL_DEBUGGER.tgz
     
     # Per-platform prep
     cd $WD
