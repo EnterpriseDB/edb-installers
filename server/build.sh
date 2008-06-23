@@ -26,6 +26,12 @@ fi
 
 _prep_server() {
 
+    # Create the source directory if required
+    if [ ! -e $WD/server/source ];
+    then
+        mkdir $WD/server/source
+    fi
+
     # Enter the source directory and cleanup if required
     cd $WD/server/source
 
