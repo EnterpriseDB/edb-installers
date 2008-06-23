@@ -43,6 +43,18 @@ _check_unix_vm() {
 }
 
 ################################################################################
+# Check a Windows VM is accessible and can reach the buildfarm directory
+################################################################################
+_check_windows_vm() {
+    RETVAL=`ssh $1 ls $2 2>&1`
+        RESULT=`echo "$RETVAL" | grep 'No such file or directory' | wc -l`
+        if [ "$RESULT" -ne "0" ];
+        then
+            _die "The build VM $1 is inaccessible or does not have access to the buildfarm repository at $2"
+        fi
+}
+
+################################################################################
 # Rock 'n' roll
 ################################################################################
 if [ $# -ge 1 ];
@@ -67,6 +79,12 @@ if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
     _check_unix_vm $PG_SSH_LINUX_X64 $PG_PATH_LINUX_X64
 fi
+
+if [ $PG_ARCH_WINDOWS = 1 ];
+then
+    _check_windows_vm $PG_SSH_WINDOWS $PG_PATH_WINDOWS
+fi
+
 
 # Initialise the build system
 _init

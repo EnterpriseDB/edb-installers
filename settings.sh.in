@@ -21,6 +21,7 @@ PG_ARCH_OSX=1
 
 PG_ARCH_LINUX=0
 PG_ARCH_LINUX_X64=0
+PG_ARCH_WINDOWS=0
 
 # VM config. For each VM we need to know the SSH connection details and the path to the
 #            shared firectory on the host machine containing this file.
@@ -31,6 +32,9 @@ PG_PATH_LINUX=/mnt/hgfs/pginstaller-repo
 
 PG_SSH_LINUX_X64=buildfarm@bf-linux-x64.edbuk
 PG_PATH_LINUX_X64=/mnt/hgfs/pginstaller-repo
+
+PG_SSH_WINDOWS=buildfarm@bf-windows.edbuk
+PG_PATH_WINDOWS=C:\\\\buildfarm-repo
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the
