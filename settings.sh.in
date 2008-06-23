@@ -1,0 +1,53 @@
+#!/bin/sh
+
+# PostgreSQL Installer build system configuration. 
+# Copy this file to settings.sh, and edit as required for the build setup
+
+# Source tarball versions
+
+PG_TARBALL_POSTGRESQL=8.3.3
+PG_TARBALL_PGADMIN=1.8.4
+PG_TARBALL_DEBUGGER=0.92
+
+# PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
+#                     Minor version is revision.build. 
+
+PG_MAJOR_VERSION=8.3
+PG_MINOR_VERSION=0.1
+
+# Platforms. Set to 1 to enable a specific platform
+
+PG_ARCH_OSX=1
+
+PG_ARCH_LINUX=0
+PG_ARCH_LINUX_X64=0
+
+# VM config. For each VM we need to know the SSH connection details and the path to the
+#            shared firectory on the host machine containing this file.
+#            On Windows we don't have a shared directory, so specify a build directory
+
+PG_SSH_LINUX=buildfarm@bf-linux.edbuk
+PG_PATH_LINUX=/mnt/hgfs/pginstaller-repo
+
+PG_SSH_LINUX_X64=buildfarm@bf-linux-x64.edbuk
+PG_PATH_LINUX_X64=/mnt/hgfs/pginstaller-repo
+
+# CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
+# where we may need to use non-default SDKs if we're building on a platform newer than the
+# oldest supported
+
+PG_ARCH_OSX_CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -headerpad_max_install_names"
+PG_ARCH_OSX_CPPFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -headerpad_max_install_names"
+PG_ARCH_OSX_CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -headerpad_max_install_names"
+
+# Packages. Set to 1 to enable a specific packages. Note that many packages will be interdependent
+#           so you must ensure that all the required dependencies are enabled.
+
+PG_PACKAGE_SERVER=1
+
+# Miscellaneous options
+
+# The InstallBuilder main binary.
+PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder Enterprise 5.4.7/bin/Builder.app/Contents/MacOS/installbuilder.sh"
+
+

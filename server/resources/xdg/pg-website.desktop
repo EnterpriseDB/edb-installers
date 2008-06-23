@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=PostgreSQL Website
+
+Exec="PG_INSTALLDIR/scripts/launchbrowser.sh" http://www.postgresql.org/
+Terminal=false
+Type=Application
+Icon=pg-website.png
+

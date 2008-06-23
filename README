@@ -1,0 +1,206 @@
+PostgreSQL Installer build system
+=================================
+
+This is the PostgreSQL Installer build system. This document attempts to 
+describe how the system is architected, how to set it up and how to extend 
+it. It is a work in progress and will no doubt require further refinement
+over time. There there is one goal however:
+
+Build all PostgresSQL & add-on package installers for all supported platforms
+with a single command.
+
+Note that this system is not intended to replace the existing installer system 
+used on Windows (pgInstaller) - it is intended to mirror it's basic functionality
+however.
+
+Modular system design
+---------------------
+
+The modular system is designed to be as flexible as possible and allow package
+authors as much freedom as possible in the way they design their installers. 
+There are some basic rules about how we design add-on packages however - it 
+remains up  to the individual author to determine whether or not breaking any 
+rules will break their package. They had better not break the system though!
+
+* Registration:
+
+A central config file is used in which packages should register themselves. This
+data may be used in the future for the auto-update system. On *nix and Mac, this
+file is /etc/postgresql-X.X.ini, where X.X is the release version, e.g. 8.4. 
+The file follows the regular .ini format and contains the following required values:
+
+; The Installation section contains data relevant to the entire system. The 
+; BaseDirectory value is required and should be set by the first package installed
+; to the installation root. Additional packages should also install to this 
+; location.
+[Installation]
+BaseDirectory=/opt/PostgreSQL/8.4
+
+; The Packages section is used to register the installed version of each package:
+[Packages]
+Server=8.4.1
+pgAdmin=1.8.4
+
+; Additional package specific data may be recorded in per-package sections. This is 
+; to allow additional packages to discover details of what s already installed on
+; on the system
+[Server]
+DataDirectory=/opt/PostgreSQL/8.4/data
+Port=5432
+Superuser=postgres
+
+It is up to the uninstaller for each package to leave or clean the data during 
+uninstallation. The version number in the Packages section should *always* be
+cleared, but other data may be retained. For example, the server package will
+not remove the data directory, thus it is appropriate to leave the 
+DataDirectory, Port and Superuser values intact.
+
+* Installers:
+
+Each package installer should be capable of being silently or interactively 
+installing and uninstalling the package. When uninstalling, as much of the package
+as possible should be removed, however it is not always possible (through
+lack of reference counting between packages) or desirable to remove everything.
+
+Build platform
+--------------
+
+The build platform is Mac OS X Tiger. We use OS X because it allows us to run
+all other Intel based OS's on the same machine. All other supported platforms
+are run in VMWare Fusion virtual machines, with the exception of Solaris Sparc
+which obviously must be an external machine.
+
+A number of additional dependencies are required when setting up the system,
+such as libxml2 and libxslt, as well as useful utilties such as wget. Setting
+these up correct is essentially to ensuring future Universal binary builds will
+work as expected on all supported OS X versions (10.4/Tiger and above).
+
+Utilities (bison and automake 1.9/1.10 is required, others such as wget may be
+useful) should be installed using MacPorts:
+
+- Download the installer from http://www.macports.org/ and install the package.
+
+- Add /opt/local/bin:/opt/local/sbin to the *end* of the path. Add the following
+  line to ~/.bash_profile for the buildfarm user:
+
+export PATH=$PATH:/opt/local/bin:/opt/local/sbin
+
+- Edit the MacPorts variants configuration to ensure we always get Universal 
+  builds. Add the following line to /opt/local/etc/macports/variants.conf:
+
++universal
+
+- Install bison and friends:
+
+$ sudo port install bison
+$ sudo port install wget
+
+Dependency libraries must be built with a little more control to ensure they 
+use the correct SDK to allow them to be used on Tiger and above. We manually
+build and install these packages into /usr/local/
+
+- Download the source for each library (eg. libxml2 & libxslt).
+
+- Unpack the source into /usr/local/src
+
+- Configure the source with a command such as:
+
+CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" ./configure --prefix=/usr/local/ --disable-dependency-tracking
+
+- Build and install:
+
+make all
+sudo make install
+
+Note that we must make sure all additional libraries link against these
+libraries, and not the older, system copies. In the case of libxslt, we can
+do this by configuring with --with-libxml-prefix=/usr/local
+
+Build VMs
+---------
+
+All VMs (and in fact, the host machine) are setup to use user accounts called
+'pginstaller'. In order to access each, the VMs must be setup with fixed IP
+addresses which are recorded with an appropriate hostname in /etc/hosts on the
+host machine. Each hostname is specified in settings.sh. It may be necessary to 
+manually configure VMWare Fusion to bridge the network adaptor instead of using
+NAT.
+
+The top level 'pginstaller' directory is shared with all the VMs using the VMware
+shared folders feature. The path to this directory is specified in settings.h
+for each VM. Note that VMware doesn't map UIDs/GIDs between the host and the VMs
+so it may be necessary to mount the shared directory using the UID/GID of the
+user in the VM, eg using the following in /etc/fstab:
+
+.host:/  /mnt/hgfs  vmhgfs  defaults,ttl=5,uid=500,gid=500     0 0
+
+SSH authentication between hosts is achieved using certificates. These can be
+generated on the host machine using:
+
+ssh-keygen -t rsa
+
+Copy the resulting id_rsa.pub file to ~/.ssh/authorized_keys on each VM. 
+
+Build scripts
+-------------
+
+* settings.sh
+
+This script is derived from settings.sh.in which is stored in source control. It
+is configured for the specific build machine, and allows us to specify what
+platforms and modules we're building, and some global configuration options.
+
+This script (_and_ the source version, settings.h.in) must be edited whenever
+new platforms or packages are added.
+
+* common.sh
+
+This script contains common utility functions that may be used throughout the
+build system.
+
+* build.sh
+
+This script is the main build script. To build everything, simply run the 
+following command on the build host:
+
+sh build.sh
+
+For quick rebuilds, an option is provided to rebuild just the installers from 
+the existing code in the staging directories:
+
+sh build.sh -skipbuild
+
+This script must be edited whenever a new module is added to call the appropriate
+functions in the package build script.
+
+Directories
+-----------
+
+* output/
+
+This directory will contain all the completed installers.
+
+* scripts/
+
+This directory contains miscellaneous scripts that may be useful to multiple
+modules or the overall build system.
+
+* resources/
+
+This directory contains installer resources that may be useful to multiple
+modules or the overall build system.
+
+* <everything else>/
+
+Each additional directory contains a single package. These may be internally built
+as required, though the interface should remain consistent - ie. a single build
+script called build.sh, exposing functions called _prep_<packagename>, 
+_build_< packagename > and _postprocess_< packagename >.
+
+For a description fo the build system for a single package, see server/README.
+
+Further info
+------------
+
+Contact dpage@pgadmin.org for further info.
+

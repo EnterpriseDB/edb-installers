@@ -1,0 +1,2 @@
+set retval to do shell script "su - PG_USERNAME -c \"PG_INSTALLDIR/bin/pg_ctl -D PG_DATADIR reload\"" with administrator privileges
+display dialog retval buttons {"OK"} with icon 1 default button 1

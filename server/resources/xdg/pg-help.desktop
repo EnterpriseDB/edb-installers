@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Online Documentation
+
+Exec="PG_INSTALLDIR/scripts/launchbrowser.sh" file://PG_INSTALLDIR/docs/html/index.html
+Terminal=false
+Type=Application
+Icon=pg-help.png
+

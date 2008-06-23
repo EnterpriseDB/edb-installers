@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=SQL Shell (psql)
+
+Exec=PG_INSTALLDIR/scripts/launchpsql.sh
+Icon=pg-psql.png
+Terminal=false
+Type=Application
+

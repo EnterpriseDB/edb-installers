@@ -1,0 +1,55 @@
+upgrade.existing.installation.title=Existing installation
+upgrade.existing.installation.description=An existing PostgreSQL package has been found at ${iBaseDirectory}. This location will be used for this installation.
+
+upgrade.existing.datadir.title=Existing data directory
+upgrade.existing.datadir.description=An existing data directory has been found at ${datadir} set to use port ${serverport}. This directory and it's configuration will be used for this installation.
+
+error.data.directory.registered.broken=A data directory is registered in ${PostgreSqlIni} but is neither empty, or a recognisable data directory.
+error.data.directory.existing.broken=An existing data directory has been selected but is neither empty, or a recognisable data directory.
+error.data.directory.incompatible=The existing data directory (catalog version: ${CurrentCatalogVersion}) is not compatible with this server (catalog version: ${CatalogVersion}).
+
+error.shared.memory.manual=Your system seems to be configured with less than 32MB of shared memory, which is required for this application. Please see the installer README file for more information on how to configure shared memory settings.
+error.shared.memory.updated=Your shared memory configuration has been adjusted with new settings in /etc/sysctl.conf. Please reboot the system to allow the new settings to take effect and re-run the installer.
+error.shared.memory.shmall.manual=Your system seems to be configured with a setting for SHMALL which is less than SHMMAX/4096. Please see the installer README file for more information on how to configure shared memory settings.
+error.shared.memory.shmall.updated=Your shared memory configuration has been adjusted with new settings in /etc/sysctl.conf. Please reboot the system to allow the new settings to take effect and re-run the installer.
+
+warning.could.not.stop.server=The installed server could not be stopped.
+
+script.command.line.error=The script was called with an invalid command line
+
+progress.text.rewriting.library.paths=Rewriting shared library paths...
+error.could.not.rewrite.library.paths=Failed to rewrite shared library paths.
+
+progress.text.creating.user=Creating service user account...
+error.could.not.create.user=The service user account '${supername}' could not be created.
+
+progress.text.initialising.cluster=Initialising the database cluster (this may take a few minutes)...
+error.could.not.initialise.cluster=The database cluster initialisation failed.
+warning.during.cluster.initialisation=A non-fatal error occured during cluster initialisation. Please check the installation log in /tmp for details.
+
+progress.text.configuring.startup=Configuring database server startup...
+error.could.not.configure.startup=Failed to configure the database to auto-start at boot time.
+warning.during.startup.configuration=A non-fatal error occured during startup configuration. Please check the installation log in /tmp for details.
+
+progress.text.creating.shortcuts=Creating menu shortcuts...
+warning.could.not.create.shortcuts=A non-fatal error occur whilst creating menu shortcuts.
+
+progress.text.starting.server=Starting the database server...
+error.could.not.start.server=Failed to start the database server.
+
+progress.text.loading.modules=Loading additional SQL modules...
+error.could.not.load.modules=Failed to load SQL modules into the database cluster.
+
+config.datadir.description=Data Directory
+config.datadir.explanation=Please select a directory under which to store your data
+
+config.superpassword.description=Password
+config.superpassword.explanation=Please provide a password for the database superuser and service account (${supername})
+config.superpassword.confirm=Retype password
+config.superpassword.no.password=You must enter a password to continue
+config.superpassword.incorrect=The password specified is incorrect for the existing ${supername} user account.
+
+config.port.description=Port
+config.port.explanation=Please select the port number the server should listen on
+config.port.not.integer=This port number must be a valid integer
+config.port.in.use=The specified port number is not available. Please enter a different port

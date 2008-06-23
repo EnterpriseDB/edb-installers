@@ -1,0 +1,66 @@
+PostgreSQL Server Package
+=========================
+
+This is the build system for the PostgreSQL Server package. It is not 
+designed to be run standalone, but as part of the PostgreSQL Installer
+ build system. 
+
+Build scripts
+-------------
+
+* build.sh
+
+This is the primary build build script. It is responsible for prepping the clean
+source tree(s) for building (exposed through _prep_server()), building the 
+trees for each enabled platform (_build_server()) and building each installer
+along with any other miscellaneous post-build tasks (_postprocess_server()).
+
+* build-<platform>.sh
+
+A separate build script is provided for each platform. On the host platform 
+(Mac OS X), the commands are run on the local machine. For other platforms they
+are generally run via ssh on virtual machines, or, remote boxes.
+
+Directories
+-----------
+
+* i18n/
+
+This directory contains internationalisation files for the installer. This will
+typically be a message catalog for each language (including English), and in 
+some cases, README & licence files. 
+
+* resources/
+
+This directory contains the graphics used by the installer. 
+
+* scripts/
+
+This directory contains scripts (which may be platform specific) used at runtime
+by the installer. These may be pre-install, pre-upgrade, post-install, 
+post-upgrade or any other script that may be needed. Note that scripts called by
+the installer should return numeric status codes. These may be read by the
+installer which can interpret them and display localised messages as required.
+
+* source/
+
+This directory contains the source code for the build. Typically the clean copy
+will either be a source tarball or untouched CVS checkout. These are un-tarred
+or copied prior to the actual build. This is managed by _prep_server().
+
+* staging/
+
+The staging directory contains the built tree for each architecture. For the 
+host machine this is simply built locally. For other architectures, the build
+output is written here through and NFS mount (for example). A common directory
+may also be included for files common to all builds.
+
+Files
+-----
+
+* installer.xml.in
+
+This is the BitRock InstallBuilder configuration file. The build script will
+pre-process this to insert version numbers etc. and save the resulting file as
+installer.xml which is what will actually be built.
+

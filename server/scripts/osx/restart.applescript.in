@@ -1,0 +1,2 @@
+set retval to do shell script "SystemStarter restart postgresql-PG_MAJOR_VERSION" with administrator privileges
+display dialog retval buttons {"OK"} with icon 1 default button 1
