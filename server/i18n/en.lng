@@ -53,3 +53,14 @@ config.port.description=Port
 config.port.explanation=Please select the port number the server should listen on
 config.port.not.integer=This port number must be a valid integer
 config.port.in.use=The specified port number is not available. Please enter a different port
+
+config.langs.title=Procedural languages
+config.langs.explanation=Select the procedural languages you would like to install into the template1 database.
+config.langs.plpgsql=pl/pgsql
+config.langs.plperl=pl/Perl (trusted)
+config.langs.plperlu=pl/Perl (untrusted)
+config.langs.plpythonu=pl/Python (untrusted)
+config.langs.pltcl=pl/Tcl (trusted)
+config.langs.pltclu=pl/Tcl (untrusted)
+
+
