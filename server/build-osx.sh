@@ -131,6 +131,8 @@ _postprocess_server_osx() {
     mkdir -p staging/osx/installer/server || _die "Failed to create a directory for the install scripts"
     cp scripts/osx/preinstall.sh staging/osx/installer/server/preinstall.sh || _die "Failed to copy the preinstall script (scripts/osx/preinstall.sh)"
     chmod ugo+x staging/osx/installer/server/preinstall.sh
+    cp scripts/osx/getlocales.sh staging/osx/installer/server/getlocales.sh || _die "Failed to copy the getlocales script (scripts/osx/getlocales.sh)"
+    chmod ugo+x staging/osx/installer/server/getlocales.sh
     cp scripts/osx/rewritepaths.sh staging/osx/installer/server/rewritepaths.sh || _die "Failed to copy the rewritepaths script (scripts/osx/rewritepaths.sh)"
     chmod ugo+x staging/osx/installer/server/rewritepaths.sh
     cp scripts/osx/createuser.sh staging/osx/installer/server/createuser.sh || _die "Failed to copy the createuser script (scripts/osx/createuser.sh)"
@@ -176,7 +178,7 @@ _postprocess_server_osx() {
     fi
     mkdir server.img || _die "Failed to create DMG staging directory"
     mv postgresql-$PG_MAJOR_VERSION-osx-installer.app server.img || _die "Failed to copy the installer bundle into the DMG staging directory"
-    hdiutil create -quiet -srcfolder server.img -format UDZO -volname "PostgreSQL $PG_MAJOR_VERSION" -ov "postgresql-$PG_MAJOR_VERSION-osx-installer.dmg" || _die "Failed to create the disk image (output/postgresql-$PG_MAJOR_VERSION-osx-installer.dmg)"
+   hdiutil create -quiet -srcfolder server.img -format UDZO -volname "PostgreSQL $PG_MAJOR_VERSION" -ov "postgresql-$PG_MAJOR_VERSION-osx-installer.dmg" || _die "Failed to create the disk image (output/postgresql-$PG_MAJOR_VERSION-osx-installer.dmg)"
     rm -rf server.img
     
     cd $WD

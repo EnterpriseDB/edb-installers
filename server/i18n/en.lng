@@ -41,18 +41,18 @@ progress.text.loading.modules=Loading additional SQL modules...
 error.could.not.load.modules=Failed to load SQL modules into the database cluster.
 
 config.datadir.description=Data Directory
-config.datadir.explanation=Please select a directory under which to store your data
+config.datadir.explanation=Please select a directory under which to store your data.
 
 config.superpassword.description=Password
-config.superpassword.explanation=Please provide a password for the database superuser and service account (${supername})
+config.superpassword.explanation=Please provide a password for the database superuser and service account (${supername}).
 config.superpassword.confirm=Retype password
-config.superpassword.no.password=You must enter a password to continue
+config.superpassword.no.password=You must enter a password to continue.
 config.superpassword.incorrect=The password specified is incorrect for the existing ${supername} user account.
 
 config.port.description=Port
-config.port.explanation=Please select the port number the server should listen on
-config.port.not.integer=This port number must be a valid integer
-config.port.in.use=The specified port number is not available. Please enter a different port
+config.port.explanation=Please select the port number the server should listen on.
+config.port.not.integer=This port number must be a valid integer.
+config.port.in.use=The specified port number is not available. Please enter a different port.
 
 config.langs.title=Procedural languages
 config.langs.explanation=Select the procedural languages you would like to install into the template1 database.
@@ -63,4 +63,8 @@ config.langs.plpythonu=pl/Python (untrusted)
 config.langs.pltcl=pl/Tcl (trusted)
 config.langs.pltclu=pl/Tcl (untrusted)
 
+config.locale.description=Locale
+config.locale.explanation=Select the locale to be used by the new database cluster.
+config.locale.no.locale=You must select a locale to continue.
 
+info.datadirectory.user.kept=The data directory (${datadir}) and service user account (${supername}) have not been removed.

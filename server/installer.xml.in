@@ -21,7 +21,7 @@
     <splashImage>../resources/pg-splash.png</splashImage>
     
     <!-- Languages allowed? -->
-    <allowLanguageSelection>1</allowLanguageSelection>
+    <!-- <allowLanguageSelection>1</allowLanguageSelection> -->
     <allowedLanguages>en</allowedLanguages>
     
     <!-- i18n files for the UI -->
@@ -41,6 +41,7 @@
         <setInstallerVariable>
             <name>supername</name>
             <value>postgres</value>
+            <persist>1</persist>
         </setInstallerVariable>
         
         <!-- Set the default password, to be used only in unnattended mode -->
@@ -176,7 +177,47 @@
                     <text>${platform_name}</text>
                     <value>osx</value>
                 </compareText>
-                 
+            </ruleList>
+        </unpackFile>
+
+        <!-- Getlocales script -->
+        <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer/getlocales.sh</destination>
+            <folder>programfilesmacosx</folder>
+            <origin>installer/server/getlocales.sh</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </unpackFile>
+       <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer/getlocales.sh</destination>
+            <folder>programfileslinux</folder>
+            <origin>installer/server/getlocales.sh</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </unpackFile>
+       <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer/getlocales.sh</destination>
+            <folder>programfileslinux-x64</folder>
+            <origin>installer/server/getlocales.sh</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
             </ruleList>
         </unpackFile>
         
@@ -372,7 +413,53 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        
+
+        <!-- Get the locales available -->
+        <actionGroup> 
+            <actionList>
+                <runProgram>
+                    <program>${system_temp_directory}/postgresql_installer/getlocales.sh</program>
+                </runProgram>
+                <throwError>
+                    <text>${msg(script.command.line.error)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>127</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <addChoiceOptionsFromText>
+                    <name>locale</name>
+                    <text>${program_stdout}</text>
+                </addChoiceOptionsFromText>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${IsUpgrade}</text>
+                    <value>1</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+        <!-- Set the default locale if needed. -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable>
+                    <name>locale</name>
+                    <value>${env(LANG)}</value>
+                </setInstallerVariable>
+            </actionList>
+            <ruleList>
+                <stringTest>
+                    <text>${locale}</text>
+                    <type>empty</type>
+                </stringTest>
+            </ruleList> 
+        </actionGroup>
+     
         <!-- Attempt to stop any existing server. We *always* do this, just in case  -->
         <!-- the existing installation is broken and it doesn't look like an upgrade -->
         
@@ -557,7 +644,7 @@
                 <!-- Initdb -->
                 <runProgram>
                     <program>${installdir}/installer/server/initcluster.sh</program>
-                    <programArguments>"${supername}" "${superpassword}" "${installdir}" "${datadir}" ${serverport}</programArguments>
+                    <programArguments>"${supername}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} ${locale}</programArguments>
                     <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -945,7 +1032,14 @@
 
     </preUninstallationActionList>
 
-    <!-- Components. Most components will be separate blades, so expect just one entry here most of the time -->
+    <!-- Post-uninstall actions -->
+    <postUninstallationActionList>
+        <showWarning>
+            <text>${msg(info.datadirectory.user.kept)}</text>
+        </showWarning>
+    </postUninstallationActionList>
+
+    <!-- Components. Most components will be separate packages, so expect just one entry here most of the time -->
     <componentList>
         <component>
             <name>default</name>
@@ -1270,11 +1364,12 @@
         <!-- Port number. Only show if there is no data directory -->
         <stringParameter>
             <name>serverport</name>
-            <title>${msg(config.port.title)}</title>
+            <description>${msg(config.port.description)}</description>
             <explanation>${msg(config.port.explanation)}</explanation>
             <value></value>
             <default>5432</default>
             <allowEmptyValue>1</allowEmptyValue>
+            <ask>yes</ask>
             <cliOptionName>serverport</cliOptionName>
             <width>30</width>
             <validationActionList>
@@ -1305,6 +1400,26 @@
                 </compareValues>
             </ruleList>
         </stringParameter>
+
+        <!-- Locale -->
+        <choiceParameter>
+            <name>locale</name>
+            <description>${msg(config.locale.description)}</description>
+            <explanation>${msg(config.locale.explanation)}</explanation>
+            <cliOptionName>locale</cliOptionName>
+            <ask>yes</ask>
+            <validationActionList>
+                <throwError>
+                    <text>${msg(config.locale.no.locale)}</text>
+                    <ruleList>
+                        <stringTest>
+                            <text>${locale}</text>
+                            <type>empty</type>
+                        </stringTest>
+                    </ruleList>
+                </throwError>
+            </validationActionList>
+        </choiceParameter>
 
         <!-- Which PLs should be installed? -->
         <parameterGroup>

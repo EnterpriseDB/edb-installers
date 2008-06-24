@@ -4,9 +4,9 @@
 # Dave Page, EnterpriseDB
 
 #Check the command line
-if [ $# -ne 5 ]; 
+if [ $# -ne 6 ]; 
 then
-    echo "Usage: $0 <Username> <Password> <Install dir> <Data dir> <Port>"
+    echo "Usage: $0 <Username> <Password> <Install dir> <Data dir> <Port> <Locale>"
     exit 127
 fi
 
@@ -15,6 +15,7 @@ SUPERPASSWORD=$2
 INSTALLDIR=$3
 DATADIR=$4
 PORT=$5
+LOCALE=$6
 
 # Exit code
 WARN=0
@@ -48,7 +49,7 @@ fi
 chown $SUPERNAME:daemon "$DATADIR" || _die "Failed to set the ownership of the data directory ($DATADIR)"
 
 # Initialise the database cluster
-su - $SUPERNAME -c "$INSTALLDIR/bin/initdb --pwfile /tmp/initdbpw.$$ -E UTF-8 -A md5 -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
+su - $SUPERNAME -c "$INSTALLDIR/bin/initdb --pwfile /tmp/initdbpw.$$ --locale=$LOCALE -A md5 -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
 if [ ! -d "$INSTALLDIR/logs" ];
 then
     mkdir "$INSTALLDIR/logs" || _die "Failed to create the log directory ($INSTALLDIR/logs)"

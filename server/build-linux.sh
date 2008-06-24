@@ -128,6 +128,8 @@ _postprocess_server_linux() {
 
     # Setup the installer scripts. 
     mkdir -p staging/linux/installer/server || _die "Failed to create a directory for the install scripts"
+    cp scripts/linux/getlocales.sh staging/linux/installer/server/getlocales.sh || _die "Failed to copy the getlocales script (scripts/linux/getlocales.sh)"
+    chmod ugo+x staging/linux/installer/server/getlocales.sh
     cp scripts/linux/createuser.sh staging/linux/installer/server/createuser.sh || _die "Failed to copy the createuser script (scripts/linux/createuser.sh)"
     chmod ugo+x staging/linux/installer/server/createuser.sh
     cp scripts/linux/initcluster.sh staging/linux/installer/server/initcluster.sh || _die "Failed to copy the initcluster script (scripts/linux/initcluster.sh)"
