@@ -27,6 +27,15 @@ _prep_server_osx() {
 
     # Grab a copy of the source tree
     cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.osx || _die "Failed to copy the source code (source/pgadmin3-$PG_TARBALL_PGADMIN)"
+
+    if [ -e pljava.osx ];
+    then
+      echo "Removing existing pljava.osx source directory"
+      rm -rf pljava.osx  || _die "Couldn't remove the existing pljava.osx source directory (source/pljava.osx)"
+    fi
+
+    # Grab a copy of the source tree
+    cp -R pljava-$PG_TARBALL_PLJAVA pljava.osx || _die "Failed to copy the source code (source/pljava-$PG_TARBALL_PLJAVA)"
     
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/osx ];
@@ -114,6 +123,16 @@ _build_server_osx() {
 
     # Copy the app bundle into place
     cp -R pgAdmin3.app $WD/server/staging/osx || _die "Failed to copy pgAdmin into the staging directory"
+
+    # And now, pl/java
+
+    cd $WD/server/source/pljava.osx
+
+    PATH=$PATH:$WD/server/staging/osx/bin make || _die "Failed to build pl/java" 
+    PATH=$PATH:$WD/server/staging/osx/bin make prefix=$STAGING install || _die "Failed to install pl/java"
+
+    cp src/sql/install.sql $WD/server/staging/osx/share/postgresql/pljava.sql || _die "Failed to install the pl/java installation SQL script"
+    cp src/sql/uninstall.sql $WD/server/staging/osx/share/postgresql/uninstall_pljava.sql || _die "Failed to install the pl/java uninstallation SQL script"
 
     cd $WD
 }

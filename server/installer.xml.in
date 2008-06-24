@@ -1419,6 +1419,13 @@
                     </ruleList>
                 </throwError>
             </validationActionList>
+            <ruleList>
+                <compareValues>
+                    <value1>${IsUpgrade}</value1>
+                    <logic>equals</logic>
+                    <value2>0</value2>
+                </compareValues>
+            </ruleList>
         </choiceParameter>
 
         <!-- Which PLs should be installed? -->

@@ -55,12 +55,22 @@ _prep_server() {
     echo "Unpacking pgAdmin source..."
     tar -zxvf ../../tarballs/pgadmin3-$PG_TARBALL_PGADMIN.tar.gz
 
+   # pl/Java
+    if [ -e pljava-$PG_TARBALL_PLJAVA ];
+    then
+      echo "Removing existing pljava-$PG_TARBALL_PLJAVA source directory"
+      rm -rf pljava-$PG_TARBALL_PLJAVA || _die "Couldn't remove the existing pljava-$PG_TARBALL_PLJAVA source directory (source/pljava-$PG_TARBALL_PLJAVA)"
+    fi
+
+    echo "Unpacking pgAdmin source..."
+    tar -zxvf ../../tarballs/pljava-src-$PG_TARBALL_PLJAVA.tar.gz
+
     # Debugger
     cd $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib
 
     echo "Unpacking debugger source..."
     tar -zxvf ../../../../tarballs/edb-debugger-$PG_TARBALL_DEBUGGER.tgz
-    
+
     # Per-platform prep
     cd $WD
     

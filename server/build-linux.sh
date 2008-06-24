@@ -30,6 +30,16 @@ _prep_server_linux() {
     cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.linux || _die "Failed to copy the source code (source/pgadmin-$PG_TARBALL_PGADMIN)"
     chmod -R ugo+w pgadmin.linux || _die "Couldn't set the permissions on the source directory"
 
+    if [ -e pljava.linux ];
+    then
+      echo "Removing existing pljava.linux source directory"
+      rm -rf pljava.linux  || _die "Couldn't remove the existing pljava.linux source directory (source/pljava.linux)"
+    fi
+
+    # Grab a copy of the source tree
+    cp -R pljava-$PG_TARBALL_PLJAVA pljava.linux || _die "Failed to copy the source code (source/pljava-$PG_TARBALL_PLJAVA)"
+    chmod -R ugo+w pljava.linux || _die "Couldn't set the permissions on the source directory"
+
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/linux ];
     then
@@ -113,6 +123,14 @@ _build_server_linux() {
 
     # Move the utilties.ini file out of the way (Uncomment for Postgres Studio or 1.9+)
     # ssh $PG_SSH_LINUX "mv $PG_STAGING/pgAdmin3/share/pgadmin3/plugins/utilities.ini $PG_STAGING/pgAdmin3/share/pgadmin3/plugins/utilities.ini.new" || _die "Failed to move the utilties.ini file"
+
+    # And now, pl/java
+
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pljava.linux/; PATH=$PATH:$PG_PATH_LINUX/server/staging/linux/bin make" || _die "Failed to build pl/java"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pljava.linux/; PATH=$PATH:$PG_PATH_LINUX/server/staging/linux/bin make prefix=$PG_PATH_LINUX/server/staging/linux install" || _die "Failed to install pl/java"
+
+    cp $WD/server/source/pljava.linux/src/sql/install.sql $WD/server/staging/linux/share/postgresql/pljava.sql || _die "Failed to install the pl/java installation SQL script"
+    cp $WD/server/source/pljava.linux/src/sql/uninstall.sql $WD/server/staging/linux/share/postgresql/uninstall_pljava.sql || _die "Failed to install the pl/java uninstallation SQL script"
       
     cd $WD
 }
