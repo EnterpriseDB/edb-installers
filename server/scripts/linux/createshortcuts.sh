@@ -66,7 +66,6 @@ chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-postgresql.directory"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-website.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-help.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-psql.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-reload.desktop"
@@ -78,8 +77,6 @@ _fixup_file "$INSTALLDIR/scripts/xdg/pg-pgadmin.desktop"
 # Create the menu shortcuts - first the top level, then the server menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system \
       "$INSTALLDIR/scripts/xdg/pg-postgresql.directory" \
-	  "$INSTALLDIR/scripts/xdg/pg-website.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-server.directory" \
 	  "$INSTALLDIR/scripts/xdg/pg-help.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-psql.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-reload.desktop" \

@@ -78,7 +78,7 @@
         <!-- Set the uninstaller name -->
         <setInstallerVariable>
             <name>uninstallerName</name>
-            <persist>0</persist>
+            <persist>1</persist>
             <value>uninstall-postgresql</value>
         </setInstallerVariable>
         
@@ -1072,6 +1072,9 @@
                             <origin>staging/linux/lib</origin>
                         </distributionDirectory>
                         <distributionDirectory>
+                            <origin>staging/linux/pgAdmin3</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
                             <origin>staging/linux/scripts</origin>
                         </distributionDirectory>
                         <distributionDirectory>
@@ -1108,6 +1111,9 @@
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/linux-x64/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/pgAdmin3</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/linux-x64/scripts</origin>

@@ -1,1 +1,1 @@
-open location "file://PG_INSTALLDIR/docs/html/index.html"
+open location "file://PG_INSTALLDIR/doc/postgresql/html/index.html"
