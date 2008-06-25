@@ -126,8 +126,8 @@ _build_server_linux_x64() {
      
     # And now, pl/java
 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pljava.linux-x64/; PATH=$PATH:$PG_EXEC_PATH_LINUX_X64:$PG_PATH_LINUX_X64/server/staging/linux-x64/bin make" || _die "Failed to build pl/java"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pljava.linux-x64/; PATH=$PATH:$PG_EXEC_PATH_LINUX_X64:$PG_PATH_LINUX_X64/server/staging/linux-x64/bin make prefix=$PG_PATH_LINUX_X64/server/staging/linux-x64 install" || _die "Failed to install pl/java"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pljava.linux-x64/; JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 PATH=$PATH:$PG_EXEC_PATH_LINUX_X64:$PG_PATH_LINUX_X64/server/staging/linux-x64/bin make" || _die "Failed to build pl/java"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pljava.linux-x64/; JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 PATH=$PATH:$PG_EXEC_PATH_LINUX_X64:$PG_PATH_LINUX_X64/server/staging/linux-x64/bin make prefix=$PG_PATH_LINUX_X64/server/staging/linux-x64 install" || _die "Failed to install pl/java"
 
     cp $WD/server/source/pljava.linux-x64/src/sql/install.sql $WD/server/staging/linux-x64/share/postgresql/pljava.sql || _die "Failed to install the pl/java installation SQL script"
     cp $WD/server/source/pljava.linux-x64/src/sql/uninstall.sql $WD/server/staging/linux-x64/share/postgresql/uninstall_pljava.sql || _die "Failed to install the pl/java uninstallation SQL script"
