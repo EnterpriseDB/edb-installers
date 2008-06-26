@@ -131,10 +131,14 @@ _build_server_osx() {
     PATH=$PATH:$WD/server/staging/osx/bin make || _die "Failed to build pl/java" 
     PATH=$PATH:$WD/server/staging/osx/bin make prefix=$STAGING install || _die "Failed to install pl/java"
 
-    cp src/sql/install.sql $WD/server/staging/osx/share/postgresql/pljava.sql || _die "Failed to install the pl/java installation SQL script"
-    cp src/sql/uninstall.sql $WD/server/staging/osx/share/postgresql/uninstall_pljava.sql || _die "Failed to install the pl/java uninstallation SQL script"
+    mkdir -p "$WD/server/staging/osx/share/pljava" || _die "Failed to create the pl/java share directory"
+    cp src/sql/install.sql "$WD/server/staging/osx/share/pljava/pljava.sql" || _die "Failed to install the pl/java installation SQL script"
+    cp src/sql/uninstall.sql "$WD/server/staging/osx/share/pljava/uninstall_pljava.sql" || _die "Failed to install the pl/java uninstallation SQL script"
 
-    cd $WD
+    mkdir -p "$WD/server/staging/osx/doc/pljava" || _die "Failed to create the pl/java doc directory"
+    cp docs/* "$WD/server/staging/osx/doc/pljava/" || _die "Failed to install the pl/java documentation"
+     
+    cd $WD 
 }
 
 
@@ -176,7 +180,12 @@ _postprocess_server_osx() {
     chmod ugo+x staging/osx/scripts/runpsql.sh
     
     # Hack up the scripts, and compile them into the staging directory
-    cp scripts/osx/help.applescript.in staging/osx/scripts/help.applescript || _die "Failed to to the menu pick script (scripts/osx/help.applescript.in)"
+    cp scripts/osx/doc-postgresql.applescript.in staging/osx/scripts/doc-postgresql.applescript || _die "Failed to to the menu pick script (scripts/osx/doc-postgresql.applescript.in)"
+    cp scripts/osx/doc-postgresql-releasenotes.applescript.in staging/osx/scripts/doc-postgresql-releasenotes.applescript || _die "Failed to to the menu pick script (scripts/osx/doc-postgresql-releasenotes.applescript.in)"
+    cp scripts/osx/doc-pgadmin.applescript.in staging/osx/scripts/doc-pgadmin.applescript || _die "Failed to to the menu pick script (scripts/osx/doc-pgadmin.applescript.in)"
+    cp scripts/osx/doc-pljava.applescript.in staging/osx/scripts/doc-pljava.applescript || _die "Failed to to the menu pick script (scripts/osx/doc-pljava.applescript.in)"
+    cp scripts/osx/doc-pljava-readme.applescript.in staging/osx/scripts/doc-pljava-readme.applescript || _die "Failed to to the menu pick script (scripts/osx/doc-pljava-readme.applescript.in)"
+
     cp scripts/osx/psql.applescript.in staging/osx/scripts/psql.applescript || _die "Failed to to the menu pick script (scripts/osx/psql.applescript.in)"
     cp scripts/osx/reload.applescript.in staging/osx/scripts/reload.applescript || _die "Failed to to the menu pick script (scripts/osx/reload.applescript.in)"
     cp scripts/osx/restart.applescript.in staging/osx/scripts/restart.applescript || _die "Failed to to the menu pick script (scripts/osx/restart.applescript.in)"

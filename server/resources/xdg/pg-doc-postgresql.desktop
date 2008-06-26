@@ -1,6 +1,6 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=Online Documentation
+Name=PostgreSQL Documentation
 
 Exec="PG_INSTALLDIR/scripts/launchbrowser.sh" file://PG_INSTALLDIR/doc/postgresql/html/index.html
 Terminal=false

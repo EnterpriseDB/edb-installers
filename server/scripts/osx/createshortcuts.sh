@@ -63,9 +63,15 @@ chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 # Create the menu 
 FOLDER="/Applications/PostgreSQL $VERSION"
 mkdir -p "$FOLDER" || _die "Failed to create the menu directory ($FOLDER)"
+# mkdir -p "$FOLDER/Configuration files" || _die "Failed to create the menu directory ($FOLDER)"
+mkdir -p "$FOLDER/Documentation" || _die "Failed to create the menu directory ($FOLDER)"
 
 # Create the scripts
-_compile_script "$INSTALLDIR/scripts/help.applescript" "$FOLDER/Online Documentation.app" "$INSTALLDIR/scripts/images/pg-help.icns"
+_compile_script "$INSTALLDIR/scripts/doc-postgresql.applescript" "$FOLDER/Documentation/PostgreSQL documentation.app" "$INSTALLDIR/scripts/images/pg-help.icns"
+_compile_script "$INSTALLDIR/scripts/doc-postgresql-releasenotes.applescript" "$FOLDER/Documentation/PostgreSQL release notes.app" "$INSTALLDIR/scripts/images/pg-help.icns"
+_compile_script "$INSTALLDIR/scripts/doc-pgadmin.applescript" "$FOLDER/Documentation/pgAdmin documentation.app" "$INSTALLDIR/scripts/images/pg-help.icns"
+_compile_script "$INSTALLDIR/scripts/doc-pljava.applescript" "$FOLDER/Documentation/PL Java users guide.app" "$INSTALLDIR/scripts/images/pg-help.icns"
+_compile_script "$INSTALLDIR/scripts/doc-pljava-readme.applescript" "$FOLDER/Documentation/PL Java README.app" "$INSTALLDIR/scripts/images/pg-help.icns"
 _compile_script "$INSTALLDIR/scripts/psql.applescript" "$FOLDER/SQL Shell (psql).app" "$INSTALLDIR/scripts/images/pg-psql.icns"
 _compile_script "$INSTALLDIR/scripts/reload.applescript" "$FOLDER/Reload Configuration.app" "$INSTALLDIR/scripts/images/pg-reload.icns"
 _compile_script "$INSTALLDIR/scripts/restart.applescript" "$FOLDER/Restart Server.app" "$INSTALLDIR/scripts/images/pg-restart.icns"

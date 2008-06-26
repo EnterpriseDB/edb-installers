@@ -66,7 +66,12 @@ chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-postgresql.directory"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-help.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-documentation.directory"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-postgresql.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pljava.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-psql.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-reload.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-restart.desktop"
@@ -74,16 +79,24 @@ _fixup_file "$INSTALLDIR/scripts/xdg/pg-start.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-stop.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-pgadmin.desktop"
 
-# Create the menu shortcuts - first the top level, then the server menu.
-"$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system \
+# Create the menu shortcuts - first the top level, then the documentation menu.
+"$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system --noupdate \
       "$INSTALLDIR/scripts/xdg/pg-postgresql.directory" \
-	  "$INSTALLDIR/scripts/xdg/pg-help.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-psql.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-reload.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-restart.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-start.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-stop.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-pgadmin.desktop" || _warn "Failed to create the server menu"
+	  "$INSTALLDIR/scripts/xdg/pg-pgadmin.desktop" || _warn "Failed to create the top level menu"
+
+"$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system \
+      "$INSTALLDIR/scripts/xdg/pg-postgresql.directory" \
+      "$INSTALLDIR/scripts/xdg/pg-documentation.directory" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pljava.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme.desktop" || _warn "Failed to create the documentation menu"
 
 # Not entirely relevant to this script, but pre-cofigure pgAdmin while we're here
 # Pre-register the server with pgAdmin, if the user doesn't already have a pgAdmin preferences file

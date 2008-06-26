@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=pgAdmin help
+
+Exec="PG_INSTALLDIR/scripts/launchbrowser.sh" file://PG_INSTALLDIR/pgAdmin3/share/pgadmin3/docs/en_US/index.html
+Terminal=false
+Type=Application
+Icon=pg-help.png
+
