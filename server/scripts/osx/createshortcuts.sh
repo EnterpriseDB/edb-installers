@@ -73,5 +73,24 @@ _compile_script "$INSTALLDIR/scripts/start.applescript" "$FOLDER/Start Server.ap
 _compile_script "$INSTALLDIR/scripts/stop.applescript" "$FOLDER/Stop Server.app" "$INSTALLDIR/scripts/images/pg-stop.icns"
 _compile_script "$INSTALLDIR/scripts/pgadmin.applescript" "$FOLDER/pgAdmin III.app" "$INSTALLDIR/pgAdmin3.app/Contents/Resources/pgAdmin3.icns"
 
+# Not entirely relevant to this script, but pre-cofigure pgAdmin while we're here
+# Pre-register the server with pgAdmin, if the user doesn't already have a pgAdmin preferences file
+PGADMIN_CONF="$HOME/Library/Preferences/pgadmin3 Preferences"
+if [ ! -e "$PGADMIN_CONF" ];
+then
+cat <<EOT > "$PGADMIN_CONF"
+PostgreSQLPath=file://$INSTALLDIR/bin
+PostgreSQLHelpPath=file://$INSTALLDIR/doc/postgresql/html
+[Servers]
+Count=1
+[Servers/1]
+Server=localhost
+Description=PostgreSQL $VERSION
+Port=$PORT
+Database=postgres
+Username=postgres
+EOT
+fi
+
 echo "$0 ran to completion"
 exit 0

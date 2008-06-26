@@ -182,7 +182,6 @@ _postprocess_server_osx() {
     cp scripts/osx/restart.applescript.in staging/osx/scripts/restart.applescript || _die "Failed to to the menu pick script (scripts/osx/restart.applescript.in)"
     cp scripts/osx/start.applescript.in staging/osx/scripts/start.applescript || _die "Failed to to the menu pick script (scripts/osx/start.applescript.in)"
     cp scripts/osx/stop.applescript.in staging/osx/scripts/stop.applescript || _die "Failed to to the menu pick script (scripts/osx/stop.applescript.in)"
-    cp scripts/osx/website.applescript.in staging/osx/scripts/website.applescript || _die "Failed to to the menu pick script (scripts/osx/website.applescript.in)"
     cp scripts/osx/pgadmin.applescript.in staging/osx/scripts/pgadmin.applescript || _die "Failed to to the menu pick script (scripts/osx/pgadmin.applescript.in)"
     
     # Build the installer

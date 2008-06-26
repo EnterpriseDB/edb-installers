@@ -85,5 +85,24 @@ _fixup_file "$INSTALLDIR/scripts/xdg/pg-pgadmin.desktop"
 	  "$INSTALLDIR/scripts/xdg/pg-stop.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-pgadmin.desktop" || _warn "Failed to create the server menu"
 
+# Not entirely relevant to this script, but pre-cofigure pgAdmin while we're here
+# Pre-register the server with pgAdmin, if the user doesn't already have a pgAdmin preferences file
+PGADMIN_CONF=$HOME/.pgadmin3
+if [ ! -e "$PGADMIN_CONF" ];
+then
+cat <<EOT > "$PGADMIN_CONF"
+PostgreSQLPath=file://$INSTALLDIR/bin
+PostgreSQLHelpPath=file://$INSTALLDIR/doc/postgresql/html
+[Servers]
+Count=1
+[Servers/1]
+Server=localhost
+Description=PostgreSQL $VERSION
+Port=$PORT
+Database=postgres
+Username=postgres
+EOT
+fi
+
 echo "$0 ran to completion"
 exit 0
