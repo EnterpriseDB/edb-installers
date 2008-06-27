@@ -3,6 +3,9 @@
 # PostgreSQL Installer build system configuration. 
 # Copy this file to settings.sh, and edit as required for the build setup
 
+# Path for the build machine (/opt/... must be at the end!)
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
+
 # Source tarball versions
 
 PG_TARBALL_POSTGRESQL=8.3.3

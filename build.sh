@@ -18,15 +18,6 @@ source ./settings.sh
 ################################################################################
 _init() {
 
-    # Check bison
-    if [ $SKIPBUILD == 0 ];
-    then
-        echo -n "Checking bison: "
-        BISON_VER=`bison -V | head -n 1`
-        echo $BISON_VER
-        echo $BISON_VER | grep " 2.3" 1> /dev/null || _die "Bison 2.3 is required to run this script."
-    fi
-
     # Grab the working directory
     WD=`pwd`
 }
