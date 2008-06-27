@@ -44,14 +44,14 @@ cat <<EOT > "/etc/init.d/postgresql-$VERSION"
 start()
 {
 	echo \$"Starting PostgreSQL $VERSION: "
-	su - $USERNAME -c "$INSTALLDIR/bin/pg_ctl -w start -D \"$DATADIR\" -l \"$INSTALLDIR/logs/startup.log\""
+	su - $USERNAME -c "$INSTALLDIR/bin/pg_ctl -w start -D \"$DATADIR\" -l \"$DATADIR/pg_log/startup.log\""
 	
 	if [ -e "$DATADIR/postmaster.pid" ]
 	then
 		echo "PostgreSQL $VERSION started successfully"
                 exit 0
 	else
-		echo "PostgreSQL $VERSION did not start in a timely fashion, please see $INSTALLDIR/logs/startup.log for details"
+		echo "PostgreSQL $VERSION did not start in a timely fashion, please see $DATADIR/pg_log/startup.log for details"
                 exit 1
 	fi
 }

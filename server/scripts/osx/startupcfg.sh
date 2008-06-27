@@ -58,13 +58,13 @@ cat <<EOT > "/Library/StartupItems/postgresql-$VERSION/postgresql-$VERSION"
 StartService ()
 {
 	ConsoleMessage "Starting PostgreSQL $VERSION"
-	su - $USERNAME -c "$INSTALLDIR/bin/pg_ctl -w start -D \"$DATADIR\" -l \"$INSTALLDIR/logs/startup.log\""
+	su - $USERNAME -c "$INSTALLDIR/bin/pg_ctl -w start -D \"$DATADIR\" -l \"$DATADIR/pg_log/startup.log\""
 	
 	if [ -e "$DATADIR/postmaster.pid" ]
 	then
 		ConsoleMessage "PostgreSQL $VERSION started successfully"
 	else
-		ConsoleMessage "PostgreSQL $VERSION did not start in a timely fashion, please see $INSTALLDIR/logs/startup.log for details"
+		ConsoleMessage "PostgreSQL $VERSION did not start in a timely fashion, please see $DATADIR/pg_log/startup.log for details"
 	fi
 }
 

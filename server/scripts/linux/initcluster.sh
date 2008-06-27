@@ -50,11 +50,11 @@ chown $SUPERNAME:$SUPERNAME "$DATADIR" || _die "Failed to set the ownership of t
 
 # Initialise the database cluster
 su - $SUPERNAME -c "$INSTALLDIR/bin/initdb --pwfile /tmp/initdbpw.$$ --locale=$LOCALE -A md5 -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
-if [ ! -d "$INSTALLDIR/logs" ];
+if [ ! -d "$DATADIR/pg_log" ];
 then
-    mkdir "$INSTALLDIR/logs" || _die "Failed to create the log directory ($INSTALLDIR/logs)"
+    mkdir "$DATADIR/pg_log" || _die "Failed to create the log directory ($DATADIR/pg_log)"
 fi
-chown $SUPERNAME:$SUPERNAME "$INSTALLDIR/logs" || _die "Failed to set the ownership of the log directory ($INSTALLDIR/logs)"
+chown $SUPERNAME:$SUPERNAME "$DATADIR/pg_log" || _die "Failed to set the ownership of the log directory ($DATADIR/pg_log)"
 rm /tmp/initdbpw.$$ || _warn "Failed to remove the initdb password file (/tmp/initdbpw.$$)"
 
 # Edit the config files.
