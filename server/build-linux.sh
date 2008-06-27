@@ -130,11 +130,11 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pljava.linux/; JAVA_HOME=$PG_JAVA_HOME_LINUX PATH=$PATH:$PG_EXEC_PATH_LINUX:$PG_PATH_LINUX/server/staging/linux/bin make prefix=$PG_PATH_LINUX/server/staging/linux install" || _die "Failed to install pl/java"
 
     mkdir -p "$WD/server/staging/linux/share/pljava" || _die "Failed to create the pl/java share directory"
-    cp src/sql/install.sql "$WD/server/staging/linux/share/pljava/pljava.sql" || _die "Failed to install the pl/java installation SQL script"
-    cp src/sql/uninstall.sql "$WD/server/staging/linux/share/pljava/uninstall_pljava.sql" || _die "Failed to install the pl/java uninstallation SQL script"
+    cp server/source/pljava.linux/src/sql/install.sql "$WD/server/staging/linux/share/pljava/pljava.sql" || _die "Failed to install the pl/java installation SQL script"
+    cp server/source/pljava.linux/src/sql/uninstall.sql "$WD/server/staging/linux/share/pljava/uninstall_pljava.sql" || _die "Failed to install the pl/java uninstallation SQL script"
 
     mkdir -p "$WD/server/staging/linux/doc/pljava" || _die "Failed to create the pl/java doc directory"
-    cp docs/* "$WD/server/staging/linux/doc/pljava/" || _die "Failed to install the pl/java documentation"
+    cp server/source/pljava.linux/docs/* "$WD/server/staging/linux/doc/pljava/" || _die "Failed to install the pl/java documentation"
  
     cd $WD
 }
