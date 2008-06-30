@@ -13,7 +13,7 @@
     <outputDirectory>../output</outputDirectory>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <saveRelativePaths>1</saveRelativePaths>
-    <defaultUnixGroup>wheel</defaultUnixGroup>
+    <defaultUnixGroup>daemon</defaultUnixGroup>
     <defaultUnixOwner>root</defaultUnixOwner>
     
     <!-- Images -->

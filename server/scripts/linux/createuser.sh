@@ -29,7 +29,7 @@ then
     echo "User account '$1' already exists"
     exit 0
 else
-	useradd -M -c "PostgreSQL" -d "$2" -g $1 $1 || _die $1
+	useradd -m -c "PostgreSQL" -d "$2" -g $1 $1 || _die $1
 fi
 
 echo "$0 ran to completion"
