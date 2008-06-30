@@ -37,7 +37,10 @@ cat <<EOT > "/etc/init.d/postgresql-$VERSION"
 # description: Starts and stops the PostgreSQL $VERSION database server
 
 # Source function library.
-. /etc/init.d/functions
+if [ -f /etc/rc.d/functions ];
+then
+    . /etc/init.d/functions
+fi
 
 # PostgreSQL Service script for Linux
 
@@ -110,7 +113,7 @@ fi
 RET=`type /usr/sbin/update-rc.d > /dev/null 2>&1 || echo fail`
 if [ ! $RET ];
 then
-    /usr/sbin/update-rc.d --add postgresql-$VERSION defaults
+    /usr/sbin/update-rc.d postgresql-$VERSION defaults
 	if [ $? -ne 0 ]; then
 	    _warn "Failed to configure the service startup with update-rc.d"
 	fi
