@@ -124,11 +124,16 @@ if [ -d /etc/ld.so.conf.d ];
 then
     echo "$INSTALLDIR/lib" > /etc/ld.so.conf.d/postgresql-$VERSION.conf || _warn "Failed to configure the shared library path"
 else
-    RETVAL=`grep $INSTALLDIR/lib /etc/ld.so.conf | wc -l`
-    if [ $RETVAL -ne 0 ];
-    then
-        echo "$INSTALLDIR/lib" > /etc/ld.so.conf || _warn "Failed to configure the shared library path" 
-    fi 
+    if [ -f /etc/ld.so.conf ]; 
+	then
+        RETVAL=`grep $INSTALLDIR/lib /etc/ld.so.conf | wc -l`
+        if [ $RETVAL -ne 0 ];
+        then
+            echo "$INSTALLDIR/lib" >> /etc/ld.so.conf || _warn "Failed to configure the shared library path" 
+        fi
+	else
+	    echo "$INSTALLDIR/lib" > /etc/ld.so.conf || _warn "Failed to configure the shared library path" 
+	fi
 fi
 ldconfig || _warn "Failed to run ldconfig"
 

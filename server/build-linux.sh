@@ -120,7 +120,8 @@ _build_server_linux() {
 
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libxslt.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-
+    ssh $PG_SSH_LINUX "cp -R /usr/lib/libtiff.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+	
     # Copy the Postgres utilities
     ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/server/staging/linux/bin/pg_dump $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
     ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/server/staging/linux/bin/pg_dumpall $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
