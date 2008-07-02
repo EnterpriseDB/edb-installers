@@ -61,6 +61,6 @@ PG_PACKAGE_SERVER=1
 # Miscellaneous options
 
 # The InstallBuilder main binary.
-PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder Enterprise 5.4.7/bin/Builder.app/Contents/MacOS/installbuilder.sh"
+PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder Enterprise 5.4.10/bin/Builder.app/Contents/MacOS/installbuilder.sh"
 
 
