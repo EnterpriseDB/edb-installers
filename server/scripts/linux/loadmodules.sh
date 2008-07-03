@@ -92,12 +92,6 @@ fi
 echo "Installing the adminpack module in the postgres database..."
 su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -p $PORT postgres < $INSTALLDIR/share/postgresql/contrib/adminpack.sql" || _warn "Failed to install the 'adminpack' module in the 'postgres' database"
 
-# Create a template database for pl/Java based apps
-echo "Creating the template_pljava database"
-su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -p $PORT -c 'CREATE DATABASE template_pljava WITH TEMPLATE = template0;' template1" || _warn "Failed to create the template_pljava database"
-su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -p $PORT template_pljava < $INSTALLDIR/share/pljava/pljava.sql" || _warn "Failed to populate the template_pljava database"
-su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -p $PORT -c 'UPDATE pg_database SET datistemplate = true WHERE datname = 'template_pljava';' template1" || _warn "Failed to create the template_pljava database"
-
 # Cleanup
 if [ -f /tmp/pgpass.$$ ];
 then
