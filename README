@@ -24,33 +24,33 @@ rules will break their package. They had better not break the system though!
 
 * Registration:
 
-A central config file is used in which packages should register themselves. This
-data may be used in the future for the auto-update system. On *nix and Mac, this
-file is /etc/postgresql-X.X.ini, where X.X is the release version, e.g. 8.4. 
-The file follows the regular .ini format and contains the following required values:
+A central registry file is used in which packages should register themselves. This
+data will be used by StackBuilder to locate installed packages. The registry 
+file is /etc/postgres-reg.ini, and should be considered analagous in function to
+the sections of the Windows registry used for the same purposes on that platform.
 
-; The Installation section contains data relevant to the entire system. The 
-; BaseDirectory value is required and should be set by the first package installed
-; to the installation root. Additional packages should also install to this 
-; location.
-[Installation]
-BaseDirectory=/opt/PostgreSQL/8.4
+StackBuilder requires specific entries for the PostgreSQL server, as well as an
+entry indicating the installed version of each unique package. An example file
+is show below.
 
-; The Packages section is used to register the installed version of each package:
-[Packages]
-Server=8.4.1
-pgAdmin=1.8.4
-
-; Additional package specific data may be recorded in per-package sections. This is 
-; to allow additional packages to discover details of what s already installed on
-; on the system
-[Server]
-DataDirectory=/opt/PostgreSQL/8.4/data
+; This section is for a server, and is analagous to the PostgreSQL key under
+; HKEY_CURRENT_USER\Software on Windows
+[PostgreSQL\8.3]
+Version=8.3.3
+InstallationDirectory=/opt/PostgreSQL/8.3
+DataDirectory=/opt/PostgreSQL/8.3/data
 Port=5432
 Superuser=postgres
 
+[PostGIS_1_3_PG83]
+Version=1.3.2
+
+[pgAdmin3]
+Version=1.8.4
+InstallationDirectory=/opt/pgAdmin3
+
 It is up to the uninstaller for each package to leave or clean the data during 
-uninstallation. The version number in the Packages section should *always* be
+uninstallation. The version number for a package should *always* be
 cleared, but other data may be retained. For example, the server package will
 not remove the data directory, thus it is appropriate to leave the 
 DataDirectory, Port and Superuser values intact.

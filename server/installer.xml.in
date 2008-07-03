@@ -92,7 +92,7 @@
         <setInstallerVariable>
             <name>PostgreSqlIni</name>
             <persist>1</persist>
-            <value>/etc/postgresql-${product_version}.ini</value>
+            <value>/etc/postgres-reg.ini</value>
         </setInstallerVariable>
         
         <logMessage>
@@ -108,7 +108,7 @@
         <iniFileGet>
             <file>${PostgreSqlIni}</file>
             <key>DataDirectory</key>
-            <section>Server</section>
+            <section>PostgreSQL/${product_version}</section>
             <variable>iDataDirectory</variable>
             <ruleList>
                 <fileTest>
@@ -132,8 +132,8 @@
         <!-- Get the base installation path. Any previous blade could have set this. -->
         <iniFileGet>
             <file>${PostgreSqlIni}</file>
-            <key>BaseDirectory</key>
-            <section>Installation</section>
+            <key>InstallationDirectory</key>
+            <section>PostgreSQL/${product_version}</section>
             <variable>iBaseDirectory</variable>
             <ruleList>
                 <fileTest>
@@ -235,11 +235,28 @@
                 </compareText>
             </ruleList>
         </unpackFile>
-        <unpackFile>
-            <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer/pg_controldata</destination>
-            <folder>programfileslinux</folder>
-            <origin>bin/pg_controldata</origin>
+		
+		<actionGroup>
+		    <actionList>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/pg_controldata</destination>
+                    <folder>programfileslinux</folder>
+					<origin>bin/pg_controldata</origin>
+				</unpackFile>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</destination>
+                    <folder>programfileslinux</folder>
+					<origin>installer/server/runpgcontroldata.sh</origin>
+				</unpackFile>
+                <unpackDirectory>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/</destination>
+                    <folder>programfileslinux</folder>
+					<origin>lib</origin>
+				</unpackDirectory>
+		    </actionList>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -247,12 +264,29 @@
                     <value>linux</value>
                 </compareText>
             </ruleList>
-        </unpackFile>
-        <unpackFile>
-            <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer/pg_controldata</destination>
-            <folder>programfileslinux-x64</folder>
-            <origin>bin/pg_controldata</origin>
+		</actionGroup>
+		
+		<actionGroup>
+		    <actionList>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/pg_controldata</destination>
+                    <folder>programfileslinux-x64</folder>
+					<origin>bin/pg_controldata</origin>
+				</unpackFile>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</destination>
+                    <folder>programfileslinux-x64</folder>
+					<origin>installer/server/runpgcontroldata.sh</origin>
+				</unpackFile>
+                <unpackDirectory>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/</destination>
+                    <folder>programfileslinux-x64</folder>
+					<origin>lib</origin>
+				</unpackDirectory>
+		    </actionList>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -260,7 +294,7 @@
                     <value>linux-x64</value>
                 </compareText>
             </ruleList>
-        </unpackFile>
+		</actionGroup>
                 
         <!-- If we have an existing data directory location and it's not empty, check it looks sane -->
         <actionGroup>
@@ -283,6 +317,27 @@
                     <programArguments>"${iDataDirectory}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
+					<ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+				
+                <runProgram>
+                    <program>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</program>
+                    <programArguments>${system_temp_directory}/postgresql_installer "${iDataDirectory}"</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+					<ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>linux</value>
+                        </compareText>
+                    </ruleList>
                 </runProgram>
                 
                 <setInstallerVariableFromRegEx>
@@ -475,6 +530,9 @@
                     <text>${platform_name}</text>
                     <value>osx</value>
                 </compareText>
+				<fileExists>
+				    <path>/Library/StartupItems/postgresql-${product_version}/postgresql-${product_version}</path>
+				</fileExists>
             </ruleList>
         </runProgram>
         
@@ -490,6 +548,9 @@
                     <text>${platform_name}</text>
                     <value>linux</value>
                 </compareText>
+				<fileExists>
+				    <path>/etc/init.d/postgresql-${product_version}</path>
+				</fileExists>
             </ruleList>
         </runProgram>
         
@@ -585,8 +646,8 @@
         </logMessage>
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
-            <section>Installation</section>
-            <key>BaseDirectory</key>
+            <section>PostgreSQL/${product_version}</section>
+            <key>InstallationDirectory</key>
             <value>${installdir}</value>
             <ruleList>
                 <stringTest>
@@ -602,8 +663,8 @@
         </logMessage>
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
-            <section>Packages</section>
-            <key>Server</key>
+            <section>PostgreSQL/${product_version}</section>
+            <key>Version</key>
             <value>PG_MAJOR_VERSION.PG_MINOR_VERSION</value>
         </iniFileSet>
         
@@ -845,7 +906,7 @@
         </logMessage>
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
-            <section>Server</section>
+            <section>PostgreSQL/${product_version}</section>
             <key>DataDirectory</key>
             <value>${datadir}</value>
             <ruleList>
@@ -862,7 +923,7 @@
         </logMessage>
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
-            <section>Server</section>
+            <section>PostgreSQL/${product_version}</section>
             <key>Port</key>
             <value>${serverport}</value>
             <ruleList>
@@ -874,7 +935,7 @@
         </iniFileSet>
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
-            <section>Server</section>
+            <section>PostgreSQL/${product_version}</section>
             <key>Superuser</key>
             <value>${supername}</value>
             <ruleList>
@@ -891,7 +952,7 @@
         </logMessage>
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
-            <section>Server</section>
+            <section>PostgreSQL/${product_version}</section>
             <key>Description</key>
             <value>PostgreSQL ${product_version}</value>
         </iniFileSet>
@@ -964,8 +1025,8 @@
         <!-- Version -->
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
-            <section>Packages</section>
-            <key>Server</key>
+            <section>PostgreSQL/${product_version}</section>
+            <key>Version</key>
             <value></value>
         </iniFileSet>
         
@@ -1241,7 +1302,28 @@
                             <programArguments>"${datadir}"</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
+							<ruleList>
+								<compareText>
+									<logic>equals</logic>
+									<text>${platform_name}</text>
+									<value>linux</value>
+								</compareText>
+							</ruleList>
                         </runProgram>
+						
+						<runProgram>
+							<program>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</program>
+							<programArguments>${system_temp_directory}/postgresql_installer "${datadir}"</programArguments>
+							<abortOnError>0</abortOnError>
+							<showMessageOnError>0</showMessageOnError>
+							<ruleList>
+								<compareText>
+									<logic>contains</logic>
+									<text>${platform_name}</text>
+									<value>linux</value>
+								</compareText>
+							</ruleList>
+						</runProgram>
                         
                         <setInstallerVariableFromRegEx>
                             <name>CurrentCatalogVersion</name>

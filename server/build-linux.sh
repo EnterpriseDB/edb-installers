@@ -85,6 +85,11 @@ _build_server_linux() {
 	ssh $PG_SSH_LINUX "cp -R /usr/lib/libreadline.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libtermcap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
 	
+	# These libraries are needed by the PLs
+	ssh $PG_SSH_LINUX "cp -R /usr/lib/perl5/5.8.5/i386-linux-thread-multi/CORE/libperl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+	ssh $PG_SSH_LINUX "cp -R /usr/lib/libtcl8.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+	ssh $PG_SSH_LINUX "cp -R /usr/lib/libpython2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+	
     # Now build pgAdmin
 
     # Bootstrap
@@ -137,11 +142,11 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pljava.linux/; JAVA_HOME=$PG_JAVA_HOME_LINUX PATH=$PATH:$PG_EXEC_PATH_LINUX:$PG_PATH_LINUX/server/staging/linux/bin make prefix=$PG_PATH_LINUX/server/staging/linux install" || _die "Failed to install pl/java"
 
     mkdir -p "$WD/server/staging/linux/share/pljava" || _die "Failed to create the pl/java share directory"
-    cp server/source/pljava.linux/src/sql/install.sql "$WD/server/staging/linux/share/pljava/pljava.sql" || _die "Failed to install the pl/java installation SQL script"
-    cp server/source/pljava.linux/src/sql/uninstall.sql "$WD/server/staging/linux/share/pljava/uninstall_pljava.sql" || _die "Failed to install the pl/java uninstallation SQL script"
+    cp "$WD/server/source/pljava.linux/src/sql/install.sql" "$WD/server/staging/linux/share/pljava/pljava.sql" || _die "Failed to install the pl/java installation SQL script"
+    cp "$WD/server/source/pljava.linux/src/sql/uninstall.sql"	 "$WD/server/staging/linux/share/pljava/uninstall_pljava.sql" || _die "Failed to install the pl/java uninstallation SQL script"
 
     mkdir -p "$WD/server/staging/linux/doc/pljava" || _die "Failed to create the pl/java doc directory"
-    cp server/source/pljava.linux/docs/* "$WD/server/staging/linux/doc/pljava/" || _die "Failed to install the pl/java documentation"
+    cp "$WD/server/source/pljava.linux/docs/"* "$WD/server/staging/linux/doc/pljava/" || _die "Failed to install the pl/java documentation"
  
     cd $WD
 }
@@ -159,6 +164,8 @@ _postprocess_server_linux() {
     mkdir -p staging/linux/installer/server || _die "Failed to create a directory for the install scripts"
     cp scripts/linux/getlocales.sh staging/linux/installer/server/getlocales.sh || _die "Failed to copy the getlocales script (scripts/linux/getlocales.sh)"
     chmod ugo+x staging/linux/installer/server/getlocales.sh
+    cp scripts/linux/runpgcontroldata.sh staging/linux/installer/server/runpgcontroldata.sh || _die "Failed to copy the runpgcontroldata script (scripts/linux/runpgcontroldata.sh)"
+    chmod ugo+x staging/linux/installer/server/runpgcontroldata.sh
     cp scripts/linux/createuser.sh staging/linux/installer/server/createuser.sh || _die "Failed to copy the createuser script (scripts/linux/createuser.sh)"
     chmod ugo+x staging/linux/installer/server/createuser.sh
     cp scripts/linux/initcluster.sh staging/linux/installer/server/initcluster.sh || _die "Failed to copy the initcluster script (scripts/linux/initcluster.sh)"
