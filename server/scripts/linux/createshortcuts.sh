@@ -104,7 +104,7 @@ PGADMIN_CONF=$HOME/.pgadmin3
 if [ ! -e "$PGADMIN_CONF" ];
 then
 cat <<EOT > "$PGADMIN_CONF"
-PostgreSQLPath=file://$INSTALLDIR/bin
+PostgreSQLPath=$INSTALLDIR/bin
 PostgreSQLHelpPath=file://$INSTALLDIR/doc/postgresql/html
 [Servers]
 Count=1
