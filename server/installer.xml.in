@@ -235,28 +235,28 @@
                 </compareText>
             </ruleList>
         </unpackFile>
-		
-		<actionGroup>
-		    <actionList>
+        
+        <actionGroup>
+            <actionList>
                 <unpackFile>
                     <component>default</component>
                     <destination>${system_temp_directory}/postgresql_installer/pg_controldata</destination>
                     <folder>programfileslinux</folder>
-					<origin>bin/pg_controldata</origin>
-				</unpackFile>
+                    <origin>bin/pg_controldata</origin>
+                </unpackFile>
                 <unpackFile>
                     <component>default</component>
                     <destination>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</destination>
                     <folder>programfileslinux</folder>
-					<origin>installer/server/runpgcontroldata.sh</origin>
-				</unpackFile>
+                    <origin>installer/server/runpgcontroldata.sh</origin>
+                </unpackFile>
                 <unpackDirectory>
                     <component>default</component>
                     <destination>${system_temp_directory}/postgresql_installer/</destination>
                     <folder>programfileslinux</folder>
-					<origin>lib</origin>
-				</unpackDirectory>
-		    </actionList>
+                    <origin>lib</origin>
+                </unpackDirectory>
+            </actionList>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -264,29 +264,29 @@
                     <value>linux</value>
                 </compareText>
             </ruleList>
-		</actionGroup>
-		
-		<actionGroup>
-		    <actionList>
+        </actionGroup>
+        
+        <actionGroup>
+            <actionList>
                 <unpackFile>
                     <component>default</component>
                     <destination>${system_temp_directory}/postgresql_installer/pg_controldata</destination>
                     <folder>programfileslinux-x64</folder>
-					<origin>bin/pg_controldata</origin>
-				</unpackFile>
+                    <origin>bin/pg_controldata</origin>
+                </unpackFile>
                 <unpackFile>
                     <component>default</component>
                     <destination>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</destination>
                     <folder>programfileslinux-x64</folder>
-					<origin>installer/server/runpgcontroldata.sh</origin>
-				</unpackFile>
+                    <origin>installer/server/runpgcontroldata.sh</origin>
+                </unpackFile>
                 <unpackDirectory>
                     <component>default</component>
                     <destination>${system_temp_directory}/postgresql_installer/</destination>
                     <folder>programfileslinux-x64</folder>
-					<origin>lib</origin>
-				</unpackDirectory>
-		    </actionList>
+                    <origin>lib</origin>
+                </unpackDirectory>
+            </actionList>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -294,7 +294,7 @@
                     <value>linux-x64</value>
                 </compareText>
             </ruleList>
-		</actionGroup>
+        </actionGroup>
                 
         <!-- If we have an existing data directory location and it's not empty, check it looks sane -->
         <actionGroup>
@@ -317,7 +317,7 @@
                     <programArguments>"${iDataDirectory}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
-					<ruleList>
+                    <ruleList>
                         <compareText>
                             <logic>equals</logic>
                             <text>${platform_name}</text>
@@ -325,13 +325,13 @@
                         </compareText>
                     </ruleList>
                 </runProgram>
-				
+                
                 <runProgram>
                     <program>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</program>
                     <programArguments>${system_temp_directory}/postgresql_installer "${iDataDirectory}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
-					<ruleList>
+                    <ruleList>
                         <compareText>
                             <logic>contains</logic>
                             <text>${platform_name}</text>
@@ -514,6 +514,45 @@
                 </stringTest>
             </ruleList> 
         </actionGroup>
+       <actionGroup>
+            <actionList>
+                <setInstallerVariable>
+                    <name>locale</name>
+                    <value>en_US.UTF-8</value>
+                </setInstallerVariable>
+            </actionList>
+            <ruleList>
+                <stringTest>
+                    <text>${locale}</text>
+                    <type>empty</type>
+                </stringTest>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+        <!-- Convert the locale value to something the choiceParameter will like -->
+        <setInstallerVariableFromRegEx>
+            <text>${locale}</text>
+            <substitution>xxUSxx</substitution>
+            <name>locale</name>
+            <pattern>_</pattern>
+        </setInstallerVariableFromRegEx>
+        <setInstallerVariableFromRegEx>
+            <text>${locale}</text>
+            <substitution>xxDOTxx</substitution>
+            <name>locale</name>
+            <pattern>\.</pattern>
+        </setInstallerVariableFromRegEx>
+        <setInstallerVariableFromRegEx>
+            <text>${locale}</text>
+            <substitution>xxDASHxx</substitution>
+            <name>locale</name>
+            <pattern>-</pattern>
+        </setInstallerVariableFromRegEx>
      
         <!-- Attempt to stop any existing server. We *always* do this, just in case  -->
         <!-- the existing installation is broken and it doesn't look like an upgrade -->
@@ -530,9 +569,9 @@
                     <text>${platform_name}</text>
                     <value>osx</value>
                 </compareText>
-				<fileExists>
-				    <path>/Library/StartupItems/postgresql-${product_version}/postgresql-${product_version}</path>
-				</fileExists>
+                <fileExists>
+                    <path>/Library/StartupItems/postgresql-${product_version}/postgresql-${product_version}</path>
+                </fileExists>
             </ruleList>
         </runProgram>
         
@@ -548,9 +587,9 @@
                     <text>${platform_name}</text>
                     <value>linux</value>
                 </compareText>
-				<fileExists>
-				    <path>/etc/init.d/postgresql-${product_version}</path>
-				</fileExists>
+                <fileExists>
+                    <path>/etc/init.d/postgresql-${product_version}</path>
+                </fileExists>
             </ruleList>
         </runProgram>
         
@@ -701,11 +740,30 @@
         <!-- Initialise the cluster if this is an installation -->
         <actionGroup>
             <actionList>
+                <!-- Convert the locale into something understandable -->
+                <setInstallerVariableFromRegEx>
+                    <text>${locale}</text>
+                    <substitution>_</substitution>
+                    <name>reallocale</name>
+                    <pattern>xxUSxx</pattern>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <text>${reallocale}</text>
+                    <substitution>\.</substitution>
+                    <name>reallocale</name>
+                    <pattern>xxDOTxx</pattern>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <text>${reallocale}</text>
+                    <substitution>-</substitution>
+                    <name>reallocale</name>
+                    <pattern>xxDASHxx</pattern>
+                </setInstallerVariableFromRegEx>
                 
                 <!-- Initdb -->
                 <runProgram>
                     <program>${installdir}/installer/server/initcluster.sh</program>
-                    <programArguments>"${supername}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} ${locale}</programArguments>
+                    <programArguments>"${supername}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} ${reallocale}</programArguments>
                     <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -1302,28 +1360,28 @@
                             <programArguments>"${datadir}"</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
-							<ruleList>
-								<compareText>
-									<logic>equals</logic>
-									<text>${platform_name}</text>
-									<value>linux</value>
-								</compareText>
-							</ruleList>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>${platform_name}</text>
+                                    <value>linux</value>
+                                </compareText>
+                            </ruleList>
                         </runProgram>
-						
-						<runProgram>
-							<program>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</program>
-							<programArguments>${system_temp_directory}/postgresql_installer "${datadir}"</programArguments>
-							<abortOnError>0</abortOnError>
-							<showMessageOnError>0</showMessageOnError>
-							<ruleList>
-								<compareText>
-									<logic>contains</logic>
-									<text>${platform_name}</text>
-									<value>linux</value>
-								</compareText>
-							</ruleList>
-						</runProgram>
+                        
+                        <runProgram>
+                            <program>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</program>
+                            <programArguments>${system_temp_directory}/postgresql_installer "${datadir}"</programArguments>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                            <ruleList>
+                                <compareText>
+                                    <logic>contains</logic>
+                                    <text>${platform_name}</text>
+                                    <value>linux</value>
+                                </compareText>
+                            </ruleList>
+                        </runProgram>
                         
                         <setInstallerVariableFromRegEx>
                             <name>CurrentCatalogVersion</name>

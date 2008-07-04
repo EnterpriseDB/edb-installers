@@ -36,17 +36,17 @@ do
     LCNAME=`echo $LOCALE | awk 'BEGIN {FS="."};  {print \$1}'`
     ENCNAME=`echo $LOCALE | awk 'BEGIN {FS="."};  {print \$2}'`
     ENCABBR=`echo $ENCNAME | sed -e 's/-//g' | tr "[A-Z]" "[a-z]"`
+    ENCCLEAN=`echo $ENCNAME | sed -e 's/-/xxDASHxx/g'`
+    LCCLEAN=`echo $LCNAME | sed -e 's/_/xxUSxx/g'`
 
-    if [ "x$ENCABBR" = "x" ];
+    if [ "x$ENCNAME" = "x" ];
     then
-        echo "$LCNAME=$LCNAME"
-#        echo "$LCNAME.description=$LCNAME"
+        echo "$LCCLEAN=$LCNAME"
     else
         _encoding_is_valid $ENCABBR
         if [ $? -eq 1 ];
         then
-            echo "$LCNAME.$ENCNAME=$LCNAME.$ENCNAME"
-#            echo "$LCNAME.$ENCNAME.description=$LCNAME.$ENCNAME"
+            echo "${LCCLEAN}xxDOTxx${ENCCLEAN}=$LCNAME.$ENCNAME"
         fi
     fi
 done
