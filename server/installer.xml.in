@@ -1433,7 +1433,7 @@
                     </ruleList>
                 </throwError>
             </validationActionList>
-            
+           
             <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
                 <compareValues>
@@ -1467,6 +1467,15 @@
                         <stringTest>
                             <text>${serverport}</text>
                             <type>not_digit</type>
+                        </stringTest>
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(config.port.empty)}</text>
+                    <ruleList>
+                        <stringTest>
+                            <text>${serverport}</text>
+                            <type>empty</type>
                         </stringTest>
                     </ruleList>
                 </throwError>
