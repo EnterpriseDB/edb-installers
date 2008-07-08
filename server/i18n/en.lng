@@ -4,6 +4,9 @@ upgrade.existing.installation.description=An existing PostgreSQL package has bee
 upgrade.existing.datadir.title=Existing data directory
 upgrade.existing.datadir.description=An existing data directory has been found at ${datadir} set to use port ${serverport}. This directory and it's configuration will be used for this installation.
 
+error.install.directory.invalid=The installation directory must be an absolute path, containing only letters, numbers and the characters - / . and _
+
+error.data.directory.invalid=The installation directory must be an absolute path, containing only letters, numbers and the characters - / . and _
 error.data.directory.registered.broken=A data directory is registered in ${PostgreSqlIni} but is neither empty, or a recognisable data directory.
 error.data.directory.existing.broken=An existing data directory has been selected but is neither empty, or a recognisable data directory.
 error.data.directory.incompatible=The existing data directory (catalog version: ${CurrentCatalogVersion}) is not compatible with this server (catalog version: ${CatalogVersion}).

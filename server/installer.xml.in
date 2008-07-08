@@ -1302,6 +1302,19 @@
                     <type>empty</type>
                 </stringTest>
             </ruleList>
+
+            <validationActionList>
+                <throwError>
+                    <text>${msg(error.install.directory.invalid)}</text>
+                    <ruleList>
+                        <regExMatch>
+                            <text>${installdir}</text>
+                            <logic>does_not_match</logic>
+                            <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                        </regExMatch>
+                    </ruleList>
+                </throwError>
+            </validationActionList>
         </directoryParameter>
         
         <!-- Explain that we're using an existing installation directory -->
@@ -1426,6 +1439,17 @@
                         </fileTest>
                     </ruleList>
                 </actionGroup>
+
+                <throwError>
+                    <text>${msg(error.data.directory.invalid)}</text>
+                    <ruleList>
+                        <regExMatch>
+                            <text>${datadir}</text>
+                            <logic>does_not_match</logic>
+                            <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                        </regExMatch>
+                    </ruleList>
+                </throwError>
                 
             </validationActionList>
         </directoryParameter>
