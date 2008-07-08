@@ -44,7 +44,7 @@ chown $SUPERNAME:daemon /tmp/initdbpw.$$ || _die "Failed to set the ownership of
 # Create the data directory, and set the appropriate permissions/owership
 if [ ! -d "$DATADIR" ];
 then
-    mkdir "$DATADIR" || _die "Failed to create the data directory ($DATADIR)"
+    mkdir -p "$DATADIR" || _die "Failed to create the data directory ($DATADIR)"
 fi
 chown $SUPERNAME:daemon "$DATADIR" || _die "Failed to set the ownership of the data directory ($DATADIR)"
 
