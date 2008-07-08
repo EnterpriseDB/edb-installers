@@ -1520,7 +1520,7 @@
             <width>30</width>
             <validationActionList>
                 <throwError>
-                    <text>${msg(config.port.not.integer)}</text>
+                    <text>${msg(config.port.invalid)}</text>
                     <ruleList>
                         <stringTest>
                             <text>${serverport}</text>
@@ -1529,12 +1529,28 @@
                     </ruleList>
                 </throwError>
                 <throwError>
-                    <text>${msg(config.port.empty)}</text>
+                    <text>${msg(config.port.invalid)}</text>
                     <ruleList>
                         <stringTest>
                             <text>${serverport}</text>
                             <type>empty</type>
                         </stringTest>
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(config.port.invalid)}</text>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareValues>
+                            <value1>${serverport}</value1>
+                            <logic>less</logic>
+                            <value2>1024</value2>
+                        </compareValues>
+                        <compareValues>
+                            <value1>${serverport}</value1>
+                            <logic>greater</logic>
+                            <value2>65535</value2>
+                        </compareValues>
                     </ruleList>
                 </throwError>
                 <throwError>

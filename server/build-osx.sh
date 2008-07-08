@@ -195,7 +195,7 @@ _postprocess_server_osx() {
     
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
-exit
+
     # Now we need to turn this into a DMG file
     echo "Creating disk image"
     cd $WD/output
