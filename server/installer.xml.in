@@ -101,7 +101,7 @@
         
     </initializationActionList>
     
-    <!-- Preinstallation actions (not used for RPMs) -->
+    <!-- Preinstallation actions -->
     <preInstallationActionList>
         
         <!-- Get the existing data directory. -->
@@ -129,7 +129,7 @@
             </ruleList>
         </setInstallerVariable>
         
-        <!-- Get the base installation path. Any previous blade could have set this. -->
+        <!-- Get the base installation path. Any previous package could have set this. -->
         <iniFileGet>
             <file>${PostgreSqlIni}</file>
             <key>InstallationDirectory</key>
@@ -593,28 +593,37 @@
             </ruleList>
         </runProgram>
         
-        <!-- MAC: Set the default installation directory to /Library -->
-        <setInstallerVariable>
-            <name>installdir</name>
-            <persist>0</persist>
-            <value>/Library/PostgreSQL/${product_version}</value>
+        <!-- Set the default installation directory to /Library -->
+		<setInstallerVariable>
+			<name>default_installdir</name>
+			<persist>1</persist>
+			<value>/Library/PostgreSQL/${product_version}</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
                     <text>${platform_name}</text>
                     <value>osx</value>
                 </compareText>
-                <stringTest>
-                    <text>${iBaseDirectory}</text>
-                    <type>empty</type>
-                </stringTest>
+            </ruleList>
+        </setInstallerVariable>
+		
+		<setInstallerVariable>
+			<name>default_installdir</name>
+			<persist>1</persist>
+			<value>/opt/PostgreSQL/${product_version}</value>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
             </ruleList>
         </setInstallerVariable>
         
         <!-- Set the default installation directory to the existing location-->
         <setInstallerVariable>
             <name>installdir</name>
-            <persist>0</persist>
+            <persist>1</persist>
             <value>${iBaseDirectory}</value>
             <ruleList>
                 <stringTest>
@@ -749,7 +758,7 @@
                 </setInstallerVariableFromRegEx>
                 <setInstallerVariableFromRegEx>
                     <text>${reallocale}</text>
-                    <substitution>\.</substitution>
+                    <substitution>.</substitution>
                     <name>reallocale</name>
                     <pattern>xxDOTxx</pattern>
                 </setInstallerVariableFromRegEx>
@@ -1288,8 +1297,8 @@
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
             <explanation>Installer.Parameter.installdir.explanation</explanation>
-            <value>${platform_install_prefix}/PostgreSQL/${product_version}</value>
-            <default>${platform_install_prefix}/${product_shortname}-${product_version}</default>
+            <value>${default_installdir}</value>
+            <default>${default_installdir}</default>
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>prefix</cliOptionName>
