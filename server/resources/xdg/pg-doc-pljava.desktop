@@ -1,9 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=PL Java users guide
-
 Exec="PG_INSTALLDIR/scripts/launchbrowser.sh" file://PG_INSTALLDIR/doc/pljava/userguide.html
 Terminal=false
 Type=Application
 Icon=pg-help.png
+OnlyShowIn=Old;
 

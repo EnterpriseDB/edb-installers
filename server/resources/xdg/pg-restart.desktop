@@ -1,9 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Restart Server
-
 Exec=PG_INSTALLDIR/scripts/launchsvrctl.sh restart
 Icon=pg-restart.png
 Terminal=false
 Type=Application
+OnlyShowIn=Old;
 

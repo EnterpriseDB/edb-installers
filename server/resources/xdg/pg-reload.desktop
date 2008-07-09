@@ -1,9 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Reload Configuration
-
 Exec=PG_INSTALLDIR/scripts/launchsvrctl.sh reload
 Icon=pg-reload.png
 Terminal=false
 Type=Application
+OnlyShowIn=Old;
 
