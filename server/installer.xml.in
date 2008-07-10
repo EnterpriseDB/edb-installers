@@ -594,10 +594,10 @@
         </runProgram>
         
         <!-- Set the default installation directory -->
-		<setInstallerVariable>
-			<name>default_installdir</name>
-			<persist>1</persist>
-			<value>/Library/PostgreSQL/${product_version}</value>
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/Library/PostgreSQL/${product_version}</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -606,11 +606,11 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
-		
-		<setInstallerVariable>
-			<name>default_installdir</name>
-			<persist>1</persist>
-			<value>/opt/PostgreSQL/${product_version}</value>
+        
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/opt/PostgreSQL/${product_version}</value>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
@@ -1083,16 +1083,16 @@
             <key>Version</key>
             <value></value>
         </iniFileSet>
-		
-		<!-- Installation directory -->
+        
+        <!-- Installation directory -->
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
             <section>PostgreSQL/${product_version}</section>
             <key>InstallationDirectory</key>
             <value></value>
         </iniFileSet>
-		
-		<!-- Description -->
+        
+        <!-- Description -->
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
             <section>PostgreSQL/${product_version}</section>
@@ -1315,9 +1315,17 @@
                 </stringTest>
             </ruleList>
 
-            <validationActionList>
-                <throwError>
-                    <text>${msg(error.install.directory.invalid)}</text>
+            <!-- Note that this validation occurs in a postShowPageActionList due     -->
+            <!-- to some odd behaviour in InstallBuilder in the way <allowEmptyValue> -->
+            <!-- interacts with default values, on the advice of tech support         -->
+            <postShowPageActionList>
+                <actionGroup>
+                    <actionList>
+                        <showWarning>
+                            <text>${msg(error.install.directory.invalid)}</text>
+                        </showWarning>
+                        <setInstallerVariable name="next_page" value="installdir"/>
+                    </actionList>
                     <ruleList>
                         <regExMatch>
                             <text>${installdir}</text>
@@ -1325,8 +1333,8 @@
                             <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
                         </regExMatch>
                     </ruleList>
-                </throwError>
-            </validationActionList>
+                </actionGroup>
+            </postShowPageActionList>
         </directoryParameter>
         
         <!-- Explain that we're using an existing installation directory -->
@@ -1334,15 +1342,15 @@
             <name>upgrade</name>
             <title>${msg(upgrade.existing.installation.title)}</title>
             <description>${msg(upgrade.existing.installation.description)}</description>
-			
-			<preShowPageActionList>
-			    <!-- Set the installation directory to the existing location-->
+            
+            <preShowPageActionList>
+                <!-- Set the installation directory to the existing location-->
                 <setInstallerVariable>
                     <name>installdir</name>
                     <persist>1</persist>
                     <value>${iBaseDirectory}</value>
                 </setInstallerVariable>
-		    </preShowPageActionList>
+            </preShowPageActionList>
             
             <ruleList>
                 <stringTest>
@@ -1374,19 +1382,61 @@
             </ruleList>
             
             <!-- Check the directory selected. If it's a valid data directory, change to upgrade mode -->
-            <validationActionList>
+            
+            <!-- Note that this validation occurs in a postShowPageActionList due     -->
+            <!-- to some odd behaviour in InstallBuilder in the way <allowEmptyValue> -->
+            <!-- interacts with default values, on the advice of tech support         -->
+            <postShowPageActionList>
+            
+                <!-- Flag to indicate we threw an error. Becuase this is not a <validationActionList> -->
+                <!-- we need some way to abort things ourselves. -->
+                <setInstallerVariable>
+                    <name>DidError</name>
+                    <value>0</value>
+                </setInstallerVariable>
+                        
                 <actionGroup>
                     <actionList>
-                        <!-- Do we have a pg_control file? -->
-                        <throwError>
-                            <text>${msg(error.data.directory.existing.broken)}</text>
+                        <showWarning>
+                            <text>${msg(error.data.directory.invalid)}</text>
+                        </showWarning>
+                        <setInstallerVariable>
+                            <name>DidError</name>
+                            <value>1</value>
+                        </setInstallerVariable>
+                        <setInstallerVariable name="next_page" value="datadir"/>
+                    </actionList>
+                    <ruleList>
+                        <regExMatch>
+                            <text>${datadir}</text>
+                            <logic>does_not_match</logic>
+                            <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                        </regExMatch>
+                    </ruleList>
+                </actionGroup>
+
+                <actionGroup>
+                    <actionList>
+                        <actionGroup>
+                            <actionList>
+                                <!-- Do we have a pg_control file? -->
+                                <showWarning>
+                                    <text>${msg(error.data.directory.existing.broken)}</text>
+                                </showWarning>
+                                <setInstallerVariable>
+                                    <name>DidError</name>
+                                    <value>1</value>
+                                </setInstallerVariable>
+                                <setInstallerVariable name="next_page" value="datadir"/>
+                            </actionList>
+                            
                             <ruleList>            
                                 <fileTest>
                                     <path>${datadir}/global/pg_control</path>
                                     <condition>not_exists</condition>
                                 </fileTest>
                             </ruleList>
-                        </throwError>
+                        </actionGroup>
                         
                         <!-- Do we have a valid catalog version? -->
                         <runProgram>
@@ -1398,7 +1448,7 @@
                                 <compareText>
                                     <logic>equals</logic>
                                     <text>${platform_name}</text>
-                                    <value>linux</value>
+                                    <value>osx</value>
                                 </compareText>
                             </ruleList>
                         </runProgram>
@@ -1428,26 +1478,52 @@
                             <text>Existing cluster catalog version: ${CurrentCatalogVersion}, installer catalog version: ${CatalogVersion}</text>
                         </logMessage>
                         
-                        <throwError>
-                            <text>${msg(error.data.directory.incompatible)}</text>
+                        <actionGroup>
+                            <actionList>
+                                <showWarning>
+                                    <text>${msg(error.data.directory.incompatible)}</text>
+                                </showWarning>
+                                <setInstallerVariable>
+                                    <name>DidError</name>
+                                    <value>1</value>
+                                </setInstallerVariable>
+                                <setInstallerVariable name="next_page" value="datadir"/>
+                            </actionList>
                             <ruleList>
                                 <compareText>
                                     <value>${CurrentCatalogVersion}</value>
                                     <logic>does_not_equal</logic>
                                     <text>${CatalogVersion}</text>
                                 </compareText>
+                                <compareValues>
+                                    <value1>${DidError}</value1>
+                                    <logic>equals</logic>
+                                    <value2>0</value2>
+                                </compareValues>
                             </ruleList>
-                        </throwError>
+                        </actionGroup>
                     </actionList>
                     
                     <actionList>
-                        <setInstallerVariable>
-                            <name>IsUpgrade</name>
-                            <value>1</value>
-                        </setInstallerVariable>
-                        <logMessage>
-                            <text>Switching to upgrade mode with cluster: ${datadir}</text>
-                        </logMessage>
+                        <actionGroup>
+                            <actionList>
+                                <setInstallerVariable>
+                                    <name>IsUpgrade</name>
+                                    <value>1</value>
+                                </setInstallerVariable>
+                                <logMessage>
+                                    <text>Switching to upgrade mode with cluster: ${datadir}</text>
+                                </logMessage>
+                            </actionList>
+                        
+                            <ruleList>
+                                <compareValues>
+                                    <value1>${DidError}</value1>
+                                    <logic>equals</logic>
+                                    <value2>0</value2>
+                                </compareValues>
+                            </ruleList>
+                        </actionGroup>
                     </actionList>
                     
                     <ruleList>
@@ -1459,20 +1535,9 @@
                             <condition>is_not_empty</condition>
                         </fileTest>
                     </ruleList>
-                </actionGroup>
-
-                <throwError>
-                    <text>${msg(error.data.directory.invalid)}</text>
-                    <ruleList>
-                        <regExMatch>
-                            <text>${datadir}</text>
-                            <logic>does_not_match</logic>
-                            <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
-                        </regExMatch>
-                    </ruleList>
-                </throwError>
-                
-            </validationActionList>
+                </actionGroup>                
+            </postShowPageActionList>
+            
         </directoryParameter>
         
         <!-- Explain that we're using an existing installation directory -->
