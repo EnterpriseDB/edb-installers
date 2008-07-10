@@ -65,38 +65,38 @@ _fixup_file "$INSTALLDIR/scripts/serverctl.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-postgresql.directory"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-documentation.directory"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-postgresql.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pljava.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-psql.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-reload.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-restart.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-start.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-stop.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-pgadmin.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION.directory"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-start-$VERSION.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION.desktop"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system --noupdate \
-      "$INSTALLDIR/scripts/xdg/pg-postgresql.directory" \
-	  "$INSTALLDIR/scripts/xdg/pg-psql.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-reload.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-restart.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-start.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-stop.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-pgadmin.desktop" || _warn "Failed to create the top level menu"
+      "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
+	  "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-start-$VERSION.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION.desktop" || _warn "Failed to create the top level menu"
 
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system \
-      "$INSTALLDIR/scripts/xdg/pg-postgresql.directory" \
-      "$INSTALLDIR/scripts/xdg/pg-documentation.directory" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pljava.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme.desktop" || _warn "Failed to create the documentation menu"
+      "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
+      "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION.directory" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION.desktop" || _warn "Failed to create the documentation menu"
 
 # Not entirely relevant to this script, but pre-cofigure pgAdmin while we're here
 # Pre-register the server with pgAdmin, if the user doesn't already have a pgAdmin preferences file

@@ -80,15 +80,15 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
 	
 	# Copy in the dependency libraries
-	ssh $PG_SSH_LINUX "cp -R /lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-	ssh $PG_SSH_LINUX "cp -R /usr/lib/libreadline.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/lib/libreadline.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libtermcap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
 	
-	# These libraries are needed by the PLs
-	ssh $PG_SSH_LINUX "cp -R /usr/lib/perl5/5.8.5/i386-linux-thread-multi/CORE/libperl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-	ssh $PG_SSH_LINUX "cp -R /usr/lib/libtcl8.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-	ssh $PG_SSH_LINUX "cp -R /usr/lib/libpython2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    # These libraries are needed by the PLs
+    ssh $PG_SSH_LINUX "cp -R /usr/lib/perl5/5.8.5/i386-linux-thread-multi/CORE/libperl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/lib/libtcl8.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/lib/libpython2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
 	
     # Now build pgAdmin
 
@@ -190,9 +190,22 @@ _postprocess_server_linux() {
     mkdir -p staging/linux/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp resources/xdg/*.directory staging/linux/scripts/xdg || _die "Failed to copy the menu pick directories (resources/xdg/*.directory)"
-    cp resources/xdg/*.desktop staging/linux/scripts/xdg || _die "Failed to copy the menu picks (resources/xdg/*.desktop)"
-    
+
+    cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql-$PG_MAJOR_VERSION.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/pg-documentation.directory staging/linux/scripts/xdg/pg-documentation-$PG_MAJOR_VERSION.directory || _die "Failed to copy a menu pick directory"
+
+    cp resources/xdg/pg-doc-pgadmin.desktop staging/linux/scripts/xdg/pg-doc-pgadmin-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-doc-pljava-readme.desktop staging/linux/scripts/xdg/pg-doc-pljava-readme-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-doc-pljava.desktop staging/linux/scripts/xdg/pg-doc-pljava-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-doc-postgresql-releasenotes.desktop staging/linux/scripts/xdg/pg-doc-postgresql-releasenotes-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-doc-postgresql.desktop staging/linux/scripts/xdg/pg-doc-postgresql-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-pgadmin.desktop staging/linux/scripts/xdg/pg-pgadmin-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-psql.desktop staging/linux/scripts/xdg/pg-psql-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-reload.desktop staging/linux/scripts/xdg/pg-reload-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-restart.desktop staging/linux/scripts/xdg/pg-restart-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-start.desktop staging/linux/scripts/xdg/pg-start-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-stop.desktop staging/linux/scripts/xdg/pg-stop-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
+
     # Copy the launch scripts
     cp scripts/linux/launchpsql.sh staging/linux/scripts/launchpsql.sh || _die "Failed to copy the launchpsql script (scripts/linux/launchpsql.sh)"
     chmod ugo+x staging/linux/scripts/launchpsql.sh

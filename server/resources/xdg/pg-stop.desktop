@@ -5,5 +5,3 @@ Exec=PG_INSTALLDIR/scripts/launchsvrctl.sh stop
 Icon=pg-stop.png
 Terminal=false
 Type=Application
-OnlyShowIn=Old;
-

@@ -5,5 +5,3 @@ Exec=PG_INSTALLDIR/scripts/launchsvrctl.sh restart
 Icon=pg-restart.png
 Terminal=false
 Type=Application
-OnlyShowIn=Old;
-

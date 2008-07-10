@@ -31,22 +31,22 @@ _warn() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system --noupdate \
-	  "$INSTALLDIR/scripts/xdg/pg-postgresql.directory" \
-	  "$INSTALLDIR/scripts/xdg/pg-documentation.directory" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pljava.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme.desktop" || _warn "Failed to remove the documentation menu"
+	  "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
+	  "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION.directory" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION.desktop" || _warn "Failed to remove the documentation menu"
 
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
-	  "$INSTALLDIR/scripts/xdg/pg-postgresql.directory" \
-	  "$INSTALLDIR/scripts/xdg/pg-psql.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-reload.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-restart.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-start.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-stop.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-pgadmin.desktop" || _warn "Failed to remove the top level menu"
+	  "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
+	  "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-start-$VERSION.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION.desktop" || _warn "Failed to remove the top level menu"
 	  
 # Remove the icon resources
 cd "$INSTALLDIR/scripts/images"

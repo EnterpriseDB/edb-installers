@@ -5,5 +5,3 @@ Exec=PG_INSTALLDIR/scripts/launchpgadmin.sh
 Icon=pg-pgadmin.png
 Terminal=false
 Type=Application
-OnlyShowIn=Old;
-
