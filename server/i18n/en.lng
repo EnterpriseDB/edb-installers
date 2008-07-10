@@ -1,5 +1,5 @@
 upgrade.existing.installation.title=Existing installation
-upgrade.existing.installation.description=An existing PostgreSQL package has been found at ${iBaseDirectory}. This location will be used for this installation.
+upgrade.existing.installation.description=An existing PostgreSQL installation has been found at ${iBaseDirectory}. This installation will be upgraded.
 
 upgrade.existing.datadir.title=Existing data directory
 upgrade.existing.datadir.description=An existing data directory has been found at ${datadir} set to use port ${serverport}. This directory and it's configuration will be used for this installation.

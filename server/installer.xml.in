@@ -593,7 +593,7 @@
             </ruleList>
         </runProgram>
         
-        <!-- Set the default installation directory to /Library -->
+        <!-- Set the default installation directory -->
 		<setInstallerVariable>
 			<name>default_installdir</name>
 			<persist>1</persist>
@@ -617,19 +617,6 @@
                     <text>${platform_name}</text>
                     <value>linux</value>
                 </compareText>
-            </ruleList>
-        </setInstallerVariable>
-        
-        <!-- Set the default installation directory to the existing location-->
-        <setInstallerVariable>
-            <name>installdir</name>
-            <persist>1</persist>
-            <value>${iBaseDirectory}</value>
-            <ruleList>
-                <stringTest>
-                    <text>${iBaseDirectory}</text>
-                    <type>not_empty</type>
-                </stringTest>
             </ruleList>
         </setInstallerVariable>
     </preInstallationActionList>
@@ -1096,6 +1083,22 @@
             <key>Version</key>
             <value></value>
         </iniFileSet>
+		
+		<!-- Installation directory -->
+        <iniFileSet>
+            <file>${PostgreSqlIni}</file>
+            <section>PostgreSQL/${product_version}</section>
+            <key>InstallationDirectory</key>
+            <value></value>
+        </iniFileSet>
+		
+		<!-- Description -->
+        <iniFileSet>
+            <file>${PostgreSqlIni}</file>
+            <section>PostgreSQL/${product_version}</section>
+            <key>Description</key>
+            <value></value>
+        </iniFileSet>
         
         <!-- MAC: Remove the startup item -->
         <deleteFile>
@@ -1297,7 +1300,7 @@
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
             <explanation>Installer.Parameter.installdir.explanation</explanation>
-            <value>${default_installdir}</value>
+            <value></value>
             <default>${default_installdir}</default>
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
@@ -1331,6 +1334,15 @@
             <name>upgrade</name>
             <title>${msg(upgrade.existing.installation.title)}</title>
             <description>${msg(upgrade.existing.installation.description)}</description>
+			
+			<preShowPageActionList>
+			    <!-- Set the installation directory to the existing location-->
+                <setInstallerVariable>
+                    <name>installdir</name>
+                    <persist>1</persist>
+                    <value>${iBaseDirectory}</value>
+                </setInstallerVariable>
+		    </preShowPageActionList>
             
             <ruleList>
                 <stringTest>
@@ -1345,7 +1357,7 @@
             <name>datadir</name>
             <description>${msg(config.datadir.description)}</description>
             <explanation>${msg(config.datadir.explanation)}</explanation>
-            <value>${installdir}/data</value>
+            <value></value>
             <default>${installdir}/data</default>
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
