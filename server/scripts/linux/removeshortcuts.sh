@@ -4,13 +4,14 @@
 # Dave Page, EnterpriseDB
 
 # Check the command line
-if [ $# -ne 1 ]; 
+if [ $# -ne 2 ]; 
 then
-    echo "Usage: $0 <Install dir>"
+    echo "Usage: $0 <Install dir> <Version>"
     exit 127
 fi
 
 INSTALLDIR=$1
+VERSION=$2
 
 # Exit code
 WARN=0

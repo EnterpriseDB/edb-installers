@@ -1066,7 +1066,7 @@
         <!-- LINUX: Remove menu shortcuts -->
         <runProgram>
             <program>${installdir}/installer/server/removeshortcuts.sh</program>
-            <programArguments>"${installdir}"</programArguments>
+            <programArguments>"${installdir}" ${product_version}</programArguments>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
