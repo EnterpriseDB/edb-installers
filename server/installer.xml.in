@@ -1302,11 +1302,8 @@
             <explanation>Installer.Parameter.installdir.explanation</explanation>
             <value></value>
             <default>${default_installdir}</default>
-            <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>prefix</cliOptionName>
-            <mustBeWritable>yes</mustBeWritable>
-            <mustExist>0</mustExist>
             <width>30</width>
             <ruleList>
                 <stringTest>
@@ -1326,6 +1323,7 @@
                         </showWarning>
                         <setInstallerVariable name="next_page" value="installdir"/>
                     </actionList>
+					
                     <ruleList>
                         <regExMatch>
                             <text>${installdir}</text>
@@ -1367,11 +1365,8 @@
             <explanation>${msg(config.datadir.explanation)}</explanation>
             <value></value>
             <default>${installdir}/data</default>
-            <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>datadir</cliOptionName>
-            <mustBeWritable>yes</mustBeWritable>
-            <mustExist>0</mustExist>
             <width>30</width>
             <ruleList>
                 <compareValues>
@@ -1387,25 +1382,19 @@
             <!-- to some odd behaviour in InstallBuilder in the way <allowEmptyValue> -->
             <!-- interacts with default values, on the advice of tech support         -->
             <postShowPageActionList>
-            
-                <!-- Flag to indicate we threw an error. Becuase this is not a <validationActionList> -->
-                <!-- we need some way to abort things ourselves. -->
-                <setInstallerVariable>
-                    <name>DidError</name>
-                    <value>0</value>
-                </setInstallerVariable>
-                        
+				
+                <!-- Always check if the data directory path looks valid and is writeable -->        
                 <actionGroup>
+					<!-- We need this because this isn't a validateActionList> -->
+                    <abortOnError>0</abortOnError>
+				
                     <actionList>
-                        <showWarning>
+					    <setInstallerVariable name="next_page" value="datadir"/>
+                        <throwError>
                             <text>${msg(error.data.directory.invalid)}</text>
-                        </showWarning>
-                        <setInstallerVariable>
-                            <name>DidError</name>
-                            <value>1</value>
-                        </setInstallerVariable>
-                        <setInstallerVariable name="next_page" value="datadir"/>
+                        </throwError>
                     </actionList>
+					
                     <ruleList>
                         <regExMatch>
                             <text>${datadir}</text>
@@ -1415,19 +1404,20 @@
                     </ruleList>
                 </actionGroup>
 
+                <!-- Check an existing, non-empty data directory -->
                 <actionGroup>
-                    <actionList>
+				    <!-- We need this because this isn't a validateActionList> -->
+                    <abortOnError>0</abortOnError>
+					
+				    <actionList>
+					
+					    <!-- Do we have a pg_control file? -->
                         <actionGroup>
                             <actionList>
-                                <!-- Do we have a pg_control file? -->
-                                <showWarning>
-                                    <text>${msg(error.data.directory.existing.broken)}</text>
-                                </showWarning>
-                                <setInstallerVariable>
-                                    <name>DidError</name>
-                                    <value>1</value>
-                                </setInstallerVariable>
                                 <setInstallerVariable name="next_page" value="datadir"/>
+                                <throwError>
+                                    <text>${msg(error.data.directory.existing.broken)}</text>
+                                </throwError>
                             </actionList>
                             
                             <ruleList>            
@@ -1480,14 +1470,10 @@
                         
                         <actionGroup>
                             <actionList>
-                                <showWarning>
+							    <setInstallerVariable name="next_page" value="datadir"/>
+                                <throwError>
                                     <text>${msg(error.data.directory.incompatible)}</text>
-                                </showWarning>
-                                <setInstallerVariable>
-                                    <name>DidError</name>
-                                    <value>1</value>
-                                </setInstallerVariable>
-                                <setInstallerVariable name="next_page" value="datadir"/>
+                                </throwError>
                             </actionList>
                             <ruleList>
                                 <compareText>
@@ -1495,37 +1481,22 @@
                                     <logic>does_not_equal</logic>
                                     <text>${CatalogVersion}</text>
                                 </compareText>
-                                <compareValues>
-                                    <value1>${DidError}</value1>
-                                    <logic>equals</logic>
-                                    <value2>0</value2>
-                                </compareValues>
                             </ruleList>
                         </actionGroup>
                     </actionList>
                     
+					<!-- Switch to upgrade mode -->
                     <actionList>
-                        <actionGroup>
-                            <actionList>
-                                <setInstallerVariable>
-                                    <name>IsUpgrade</name>
-                                    <value>1</value>
-                                </setInstallerVariable>
-                                <logMessage>
-                                    <text>Switching to upgrade mode with cluster: ${datadir}</text>
-                                </logMessage>
-                            </actionList>
-                        
-                            <ruleList>
-                                <compareValues>
-                                    <value1>${DidError}</value1>
-                                    <logic>equals</logic>
-                                    <value2>0</value2>
-                                </compareValues>
-                            </ruleList>
-                        </actionGroup>
-                    </actionList>
-                    
+						<setInstallerVariable>
+							<name>IsUpgrade</name>
+							<value>1</value>
+						</setInstallerVariable>
+						<logMessage>
+							<text>Switching to upgrade mode with cluster: ${datadir}</text>
+						</logMessage>
+					</actionList>
+
+					<!-- We only check the data directory if it exists and isn't empty -->
                     <ruleList>
                         <fileExists>
                             <path>${datadir}</path>
@@ -1535,7 +1506,8 @@
                             <condition>is_not_empty</condition>
                         </fileTest>
                     </ruleList>
-                </actionGroup>                
+                </actionGroup> <!-- End of data directory check -->
+	
             </postShowPageActionList>
             
         </directoryParameter>
