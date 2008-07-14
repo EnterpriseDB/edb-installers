@@ -160,6 +160,10 @@ _postprocess_server_linux() {
 
     cd $WD/server
 
+    # Welcome doc
+    cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/linux/doc/" || _die "Failed to install the welcome document"
+    cp "$WD/server/resources/enterprisedb.gif" "$WD/server/staging/linux/doc/" || _die "Failed to install the welcome logo"
+
     # Setup the installer scripts. 
     mkdir -p staging/linux/installer/server || _die "Failed to create a directory for the install scripts"
     cp scripts/linux/getlocales.sh staging/linux/installer/server/getlocales.sh || _die "Failed to copy the getlocales script (scripts/linux/getlocales.sh)"
@@ -194,6 +198,7 @@ _postprocess_server_linux() {
     cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql-$PG_MAJOR_VERSION.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/pg-documentation.directory staging/linux/scripts/xdg/pg-documentation-$PG_MAJOR_VERSION.directory || _die "Failed to copy a menu pick directory"
 
+    cp resources/xdg/pg-doc-installation-notes.desktop staging/linux/scripts/xdg/pg-doc-installation-notes-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-doc-pgadmin.desktop staging/linux/scripts/xdg/pg-doc-pgadmin-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-doc-pljava-readme.desktop staging/linux/scripts/xdg/pg-doc-pljava-readme-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-doc-pljava.desktop staging/linux/scripts/xdg/pg-doc-pljava-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"

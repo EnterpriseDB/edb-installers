@@ -1,7 +1,7 @@
 [Desktop Entry]
 Version=1.0
 Encoding=UTF-8
-Name=Start Server
+Name=Start server
 Exec=PG_INSTALLDIR/scripts/launchsvrctl.sh start
 Icon=pg-start.png
 Terminal=false
