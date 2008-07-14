@@ -1,4 +1,5 @@
 [Desktop Entry]
+Version=1.0
 Encoding=UTF-8
 Name=PL Java users guide
 Exec="PG_INSTALLDIR/scripts/launchbrowser.sh" file://PG_INSTALLDIR/doc/pljava/userguide.html

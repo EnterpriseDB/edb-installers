@@ -1,5 +1,5 @@
 [Desktop Entry]
-Value=1.0
+Version=1.0
 Type=Directory
 Name=PostgreSQL PG_MAJOR_VERSION
 Comment=PostgreSQL PG_MAJOR_VERSION, packaged by EnterpriseDB

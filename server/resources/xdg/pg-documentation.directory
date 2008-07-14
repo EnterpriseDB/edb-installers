@@ -1,5 +1,5 @@
 [Desktop Entry]
-Value=1.0
+Version=1.0
 Type=Directory
 Name=Documentation
 Comment=Documentation for PostgreSQL & bundled applications

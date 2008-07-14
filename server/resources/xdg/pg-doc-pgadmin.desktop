@@ -1,4 +1,5 @@
 [Desktop Entry]
+Version=1.0
 Encoding=UTF-8
 Name=pgAdmin help
 Exec="PG_INSTALLDIR/scripts/launchbrowser.sh" file://PG_INSTALLDIR/pgAdmin3/share/pgadmin3/docs/en_US/index.html
