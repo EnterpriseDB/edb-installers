@@ -1,1 +1,1 @@
-open location "file://PG_INSTALLDIR/doc/welcome.html"
+open location "file://PG_INSTALLDIR/doc/installation-notes.html"
