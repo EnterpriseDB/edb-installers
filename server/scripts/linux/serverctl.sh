@@ -29,16 +29,41 @@ case $1 in
         ;;
 esac
 
-if [ `whoami` != "root" ];
+# Try to figure out if this is a 'sudo' platform such as Ubuntu
+USE_SUDO=0
+if [ -f /etc/lsb-release ];
 then
-    echo "Please enter the root password when requested."
+    if [ `grep -E '^DISTRIB_ID=[a-zA-Z]?buntu$' /etc/lsb-release | wc -l` != "0" ];
+    then
+        USE_SUDO=1
+    fi
+fi
+
+if [ $USE_SUDO != "1" ];
+then
+    if [ `whoami` != "root" ];
+    then
+        echo "Please enter the root password when requested."
+    fi
+else
+    echo "Please enter your password if requested."
 fi
 
 if  [ "$action" = "reload" ];
 then
-    su - -c 'su - postgres -c """PG_INSTALLDIR/bin/pg_ctl"" -D ""PG_DATADIR reload"""'
+    if [ $USE_SUDO != "1" ];
+    then
+        su - -c 'su - postgres -c """PG_INSTALLDIR/bin/pg_ctl"" -D ""PG_DATADIR"" reload"'
+    else
+        sudo su - postgres -c """PG_INSTALLDIR/bin/pg_ctl"" -D ""PG_DATADIR"" reload"
+    fi
 else
-    su - -c "/etc/init.d/postgresql-PG_MAJOR_VERSION $action"
+    if [ $USE_SUDO != "1" ];
+    then
+        su - -c "/etc/init.d/postgresql-PG_MAJOR_VERSION $action"
+    else
+        sudo /etc/init.d/postgresql-PG_MAJOR_VERSION $action
+    fi
 fi
 
 if [ "$2" = "wait" ];
