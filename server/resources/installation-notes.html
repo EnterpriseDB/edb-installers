@@ -36,6 +36,20 @@
 
 <p>For pgAdmin support, please use the <a href="mailto:pgadmin-support@postgresql.org">pgadmin-support@postgresql.org</a> mailing list.</p>
 
+<h3>pl/pgsql Debugger</h3>
+
+<p>The package includes EnterpriseDB's pl/pgsql debugger plugin which may be used by the debugger UI in pgAdmin to help with development of your database functions.
+The debugger plugin is disabled by default for performance reasons. To enable it, follow the following steps:</p>
+
+<ol>
+  <li>Edit the postgresql.conf file in the data directory and modify the shared_preload_libraries config option to look like:<br>&nbsp;<br>
+      <code>shared_preload_libraries = '$libdir/plugins/plugin_debugger.so'</code><br>&nbsp;</li>
+  <li>Restart the PostgreSQL server.<br>&nbsp;</li>
+  <li>Run &lt;Installation directory&gt;/share/postgresql/contrib/pldbgapi.sql in the database you wish to debug using psql or the pgAdmin query tool.
+</ol>
+
+<p>For further information, please see the pgAdmin online help, and the debugger plugin <a href="README.pldebugger">README file</a>. 
+
 <h3>Legal Notes</h3>
 
 <p>This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit. (http://www.openssl.org/)</p>
