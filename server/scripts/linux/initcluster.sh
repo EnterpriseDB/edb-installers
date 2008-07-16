@@ -49,7 +49,13 @@ fi
 chown $SUPERNAME:$SUPERNAME "$DATADIR" || _die "Failed to set the ownership of the data directory ($DATADIR)"
 
 # Initialise the database cluster
-su - $SUPERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib $INSTALLDIR/bin/initdb --pwfile /tmp/initdbpw.$$ --locale=$LOCALE -A md5 -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
+if [ $LOCALE = "DEFAULT" ];
+then
+    su - $SUPERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib $INSTALLDIR/bin/initdb --pwfile /tmp/initdbpw.$$ -A md5 -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
+else
+    su - $SUPERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib $INSTALLDIR/bin/initdb --pwfile /tmp/initdbpw.$$ --locale=$LOCALE -A md5 -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
+fi
+
 if [ ! -d "$DATADIR/pg_log" ];
 then
     mkdir "$DATADIR/pg_log" || _die "Failed to create the log directory ($DATADIR/pg_log)"

@@ -48,8 +48,14 @@ then
 fi
 chown $SUPERNAME:daemon "$DATADIR" || _die "Failed to set the ownership of the data directory ($DATADIR)"
 
-# Initialise the database cluster
-su - $SUPERNAME -c "$INSTALLDIR/bin/initdb --pwfile /tmp/initdbpw.$$ --locale=$LOCALE -A md5 -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
+# Initialise the database cluster. Specify the encoding if we're using the default locale, otherwise we'll probably get ASCII
+if [ $LOCALE = "DEFAULT" ];
+then
+    su - $SUPERNAME -c "$INSTALLDIR/bin/initdb --pwfile /tmp/initdbpw.$$ --encoding=utf8 -A md5 -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
+else
+    su - $SUPERNAME -c "$INSTALLDIR/bin/initdb --pwfile /tmp/initdbpw.$$ --locale=$LOCALE -A md5 -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
+fi	
+	
 if [ ! -d "$DATADIR/pg_log" ];
 then
     mkdir "$DATADIR/pg_log" || _die "Failed to create the log directory ($DATADIR/pg_log)"

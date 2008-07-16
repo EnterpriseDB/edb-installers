@@ -472,6 +472,15 @@
         <!-- Get the locales available -->
         <actionGroup> 
             <actionList>
+			    <addChoiceOptions>
+				    <name>locale</name>
+					<optionList>
+					    <option>
+						    <value>DEFAULT</value>
+							<text>[${msg(default.locale)}]</text>
+						</option>
+					</optionList>
+				</addChoiceOptions>
                 <runProgram>
                     <program>${system_temp_directory}/postgresql_installer/getlocales.sh</program>
                 </runProgram>
@@ -504,7 +513,7 @@
             <actionList>
                 <setInstallerVariable>
                     <name>locale</name>
-                    <value>${env(LANG)}</value>
+                    <value>DEFAULT</value>
                 </setInstallerVariable>
             </actionList>
             <ruleList>
@@ -513,25 +522,6 @@
                     <type>empty</type>
                 </stringTest>
             </ruleList> 
-        </actionGroup>
-       <actionGroup>
-            <actionList>
-                <setInstallerVariable>
-                    <name>locale</name>
-                    <value>C</value>
-                </setInstallerVariable>
-            </actionList>
-            <ruleList>
-                <stringTest>
-                    <text>${locale}</text>
-                    <type>empty</type>
-                </stringTest>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
         </actionGroup>
 
         <!-- Convert the locale value to something the choiceParameter will like -->
@@ -553,7 +543,13 @@
             <name>locale</name>
             <pattern>-</pattern>
         </setInstallerVariableFromRegEx>
-     
+        <setInstallerVariableFromRegEx>
+            <text>${locale}</text>
+            <substitution>xxATxx</substitution>
+            <name>locale</name>
+            <pattern>@</pattern>
+        </setInstallerVariableFromRegEx>
+		     
         <!-- Attempt to stop any existing server. We *always* do this, just in case  -->
         <!-- the existing installation is broken and it doesn't look like an upgrade -->
         
@@ -754,6 +750,12 @@
                     <substitution>-</substitution>
                     <name>reallocale</name>
                     <pattern>xxDASHxx</pattern>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <text>${reallocale}</text>
+                    <substitution>@</substitution>
+                    <name>reallocale</name>
+                    <pattern>xxATxx</pattern>
                 </setInstallerVariableFromRegEx>
                 
                 <!-- Initdb -->

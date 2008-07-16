@@ -1,3 +1,5 @@
+default.locale=Default locale
+
 upgrade.existing.installation.title=Existing installation
 upgrade.existing.installation.description=An existing PostgreSQL installation has been found at ${iBaseDirectory}. This installation will be upgraded.
 

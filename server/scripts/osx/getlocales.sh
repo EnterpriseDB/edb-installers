@@ -29,21 +29,50 @@ _encoding_is_valid()
 # Echo the locales
 for LOCALE in `locale -a`
 do
-    LCNAME=`echo $LOCALE | awk 'BEGIN {FS="."};  {print \$1}'`
-    ENCNAME=`echo $LOCALE | awk 'BEGIN {FS="."};  {print \$2}'`
-    ENCABBR=`echo $ENCNAME | sed -e 's/-//g' | tr "[A-Z]" "[a-z]"`
-    ENCCLEAN=`echo $ENCNAME | sed -e 's/-/xxDASHxx/g'`
-    LCCLEAN=`echo $LCNAME | sed -e 's/_/xxUSxx/g'`
+    if [ x`echo $LOCALE | grep @` = "x$LOCALE" ];
+	then
+        if [ x`echo $LOCALE | grep "\."` = "x$LOCALE" ];
+    	then
+		    # xxx.yyy@zzz locales
+		    LCNAME=`echo $LOCALE | awk 'BEGIN {FS="[.@]"};  {print \$1}'`
+			ENCNAME=`echo $LOCALE | awk 'BEGIN {FS="[.@]"};  {print \$2}'`
+			MODNAME=`echo $LOCALE | awk 'BEGIN {FS="[.@]"};  {print \$3}'`
+		else
+		    # xxx@zzz locales
+		    LCNAME=`echo $LOCALE | awk 'BEGIN {FS="[@]"};  {print \$1}'`
+			ENCNAME=""
+			MODNAME=`echo $LOCALE | awk 'BEGIN {FS="[@]"};  {print \$3}'`
+		fi
+	else
+	    # xxx.yyy locales
+        LCNAME=`echo $LOCALE | awk 'BEGIN {FS="."};  {print \$1}'`
+        ENCNAME=`echo $LOCALE | awk 'BEGIN {FS="."};  {print \$2}'`
+		MODNAME=""
+	fi
+	
+	ENCABBR=`echo $ENCNAME | sed -e 's/-//g' | tr "[A-Z]" "[a-z]"`
+	ENCCLEAN=`echo $ENCNAME | sed -e 's/-/xxDASHxx/g'`
+	LCCLEAN=`echo $LCNAME | sed -e 's/_/xxUSxx/g'`
 
-    if [ "x$ENCNAME" = "x" ];
-    then
-        echo "$LCCLEAN=$LCNAME"
-    else
-        _encoding_is_valid $ENCABBR
-        if [ $? -eq 1 ];
-        then
-            echo "${LCCLEAN}xxDOTxx${ENCCLEAN}=$LCNAME.$ENCNAME"
-        fi
-    fi
+	if [ "x$ENCNAME" = "x" ];
+	then
+	    if [ "x$MODNAME" = "x" ];
+		then
+		    echo "$LCCLEAN=$LCNAME"
+		else
+		    echo "${LCCLEAN}xxATxx${MODNAME}=$LCNAME@$MODNAME"
+		fi
+	else
+		_encoding_is_valid $ENCABBR
+		if [ $? -eq 1 ];
+		then
+			if [ "x$MODNAME" = "x" ];
+		    then
+			    echo "${LCCLEAN}xxDOTxx${ENCCLEAN}=$LCNAME.$ENCNAME"
+			else
+			    echo "${LCCLEAN}xxDOTxx${ENCCLEAN}xxATxx${MODNAME}=$LCNAME.$ENCNAME@$MODNAME"
+			fi
+		fi
+	fi
 done
 
