@@ -199,7 +199,7 @@ _postprocess_server_linux() {
     cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql-$PG_MAJOR_VERSION.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/pg-documentation.directory staging/linux/scripts/xdg/pg-documentation-$PG_MAJOR_VERSION.directory || _die "Failed to copy a menu pick directory"
 
-    cp resources/xdg/pg-doc-installation-notes.desktop staging/linux/scripts/xdg/pg-doc-installation-notes-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-doc-installationnotes.desktop staging/linux/scripts/xdg/pg-doc-installationnotes-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-doc-pgadmin.desktop staging/linux/scripts/xdg/pg-doc-pgadmin-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-doc-pljava-readme.desktop staging/linux/scripts/xdg/pg-doc-pljava-readme-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-doc-pljava.desktop staging/linux/scripts/xdg/pg-doc-pljava-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"

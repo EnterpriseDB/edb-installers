@@ -34,6 +34,7 @@ _warn() {
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system --noupdate \
 	  "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
 	  "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION.directory" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION.desktop" \

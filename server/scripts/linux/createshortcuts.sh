@@ -67,6 +67,7 @@ chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION.directory"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION.desktop"
@@ -92,6 +93,7 @@ _fixup_file "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION.desktop"
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system \
       "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
       "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION.directory" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION.desktop" \
