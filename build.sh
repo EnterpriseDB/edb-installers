@@ -20,6 +20,9 @@ _init() {
 
     # Grab the working directory
     WD=`pwd`
+	
+	# Set the package versions string
+	PG_PACKAGE_VERSION=$PG_MAJOR_VERSION.`echo $PG_MINOR_VERSION | sed -e 's/\./-/'`
 }
 
 ################################################################################

@@ -518,7 +518,7 @@
             <actionList>
                 <setInstallerVariable>
                     <name>locale</name>
-                    <value>en_US.UTF-8</value>
+                    <value>C</value>
                 </setInstallerVariable>
             </actionList>
             <ruleList>

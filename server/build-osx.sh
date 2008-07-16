@@ -202,6 +202,9 @@ _postprocess_server_osx() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
+	# Rename the installer
+	mv $WD/output/postgresql-$PG_MAJOR_VERSION-osx-installer.app $WD/output/postgresql-$PG_PACKAGE_VERSION-osx.app || _die "Failed to rename the installer"
+	
     # Now we need to turn this into a DMG file
     echo "Creating disk image"
     cd $WD/output
@@ -210,8 +213,8 @@ _postprocess_server_osx() {
         rm -rf server.img
     fi
     mkdir server.img || _die "Failed to create DMG staging directory"
-    mv postgresql-$PG_MAJOR_VERSION-osx-installer.app server.img || _die "Failed to copy the installer bundle into the DMG staging directory"
-   hdiutil create -quiet -srcfolder server.img -format UDZO -volname "PostgreSQL $PG_MAJOR_VERSION" -ov "postgresql-$PG_MAJOR_VERSION-osx-installer.dmg" || _die "Failed to create the disk image (output/postgresql-$PG_MAJOR_VERSION-osx-installer.dmg)"
+    mv postgresql-$PG_PACKAGE_VERSION-osx.app server.img || _die "Failed to copy the installer bundle into the DMG staging directory"
+    hdiutil create -quiet -srcfolder server.img -format UDZO -volname "PostgreSQL $PG_PACKAGE_VERSION" -ov "postgresql-$PG_PACKAGE_VERSION-osx.dmg" || _die "Failed to create the disk image (output/postgresql-$PG_PACKAGE_VERSION-osx.dmg)"
     rm -rf server.img
     
     cd $WD

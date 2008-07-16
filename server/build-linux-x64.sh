@@ -229,6 +229,9 @@ _postprocess_server_linux_x64() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 
+	# Rename the installer
+	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-x64-installer.bin $WD/output/postgresql-$PG_PACKAGE_VERSION-linux-x64.bin || _die "Failed to rename the installer"
+
     cd $WD
 }
 

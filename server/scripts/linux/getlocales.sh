@@ -26,11 +26,7 @@ _encoding_is_valid()
     return 0
 }
 
-# Echo the current locale so it's first in the list
-echo "$LANG=$LANG"
-echo "$LANG.description=$LANG"
-
-# Now the rest
+# Echo the locales
 for LOCALE in `locale -a`
 do
     LCNAME=`echo $LOCALE | awk 'BEGIN {FS="."};  {print \$1}'`
