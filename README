@@ -141,6 +141,23 @@ ssh-keygen -t rsa
 
 Copy the resulting id_rsa.pub file to ~/.ssh/authorized_keys on each VM. 
 
+* Windows
+
+The Windows VM is the most tricky to setup:
+
+- Install Windows XP Pro with service pack 2
+- Install an appropriate anti-virus package
+- Install Visual Studio 2005, and update to the latest service pack
+- Create the 'buildfarm' user account, as a limited user.
+- Install the a basic installation of Cygwin from http://www.cygwin.com/. 
+  Include the OpenSSH package.
+- Configure sshd with ssh-host-config, using the buildfarm user account as
+  the service account.
+- Make sure that port 22/TCP is open in the Windows Firewall configuration.
+- Install the public ssh key in C:\Cygwin\home\buildfarm\.ssh
+- Install zip.exe and unzip.exe into the System32 directory. These utilities
+  can be found at ftp://ftp.tex.ac.uk/tex-archive/tools/zip/info-zip/WIN32/
+
 Build scripts
 -------------
 
