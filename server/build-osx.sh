@@ -167,8 +167,6 @@ _postprocess_server_osx() {
     chmod ugo+x staging/osx/installer/server/preinstall.sh
     cp scripts/osx/getlocales.sh staging/osx/installer/server/getlocales.sh || _die "Failed to copy the getlocales script (scripts/osx/getlocales.sh)"
     chmod ugo+x staging/osx/installer/server/getlocales.sh
-    cp scripts/osx/rewritepaths.sh staging/osx/installer/server/rewritepaths.sh || _die "Failed to copy the rewritepaths script (scripts/osx/rewritepaths.sh)"
-    chmod ugo+x staging/osx/installer/server/rewritepaths.sh
     cp scripts/osx/createuser.sh staging/osx/installer/server/createuser.sh || _die "Failed to copy the createuser script (scripts/osx/createuser.sh)"
     chmod ugo+x staging/osx/installer/server/createuser.sh
     cp scripts/osx/initcluster.sh staging/osx/installer/server/initcluster.sh || _die "Failed to copy the initcluster script (scripts/osx/initcluster.sh)"
