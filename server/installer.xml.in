@@ -622,47 +622,7 @@
         <logMessage>
             <text>Running the post-installation/upgrade actions:</text>
         </logMessage>
-        
-        <!-- MAC: Rewrite the absolute shared library paths. -->
-        <actionGroup>
-            <actionList>
-                <runProgram>
-                    <program>${installdir}/installer/server/rewritepaths.sh</program>
-                    <programArguments>"PG_STAGING_DIR/osx" "${installdir}"</programArguments>
-                    <progressText>${msg(progress.text.rewriting.library.paths)}</progressText>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                </runProgram>
-                <throwError>
-                    <text>${msg(script.command.line.error)}</text>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>127</text>
-                            <value>${program_exit_code}</value>
-                        </compareText>
-                    </ruleList>
-                </throwError>
-                <throwError>
-                    <text>${msg(error.could.not.rewrite.library.paths)}</text>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>1</text>
-                            <value>${program_exit_code}</value>
-                        </compareText>
-                    </ruleList>
-                </throwError>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        
+  
         <!-- Delete the temp scripts directory -->
         <logMessage>
             <text>Delete the temporary scripts directory...</text>

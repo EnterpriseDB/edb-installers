@@ -139,6 +139,12 @@ _build_server_osx() {
     mkdir -p "$WD/server/staging/osx/doc/pljava" || _die "Failed to create the pl/java doc directory"
     cp docs/* "$WD/server/staging/osx/doc/pljava/" || _die "Failed to install the pl/java documentation"
      
+    # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
+    _rewrite_so_refs $WD/server/staging/osx bin @loader_path/..
+    _rewrite_so_refs $WD/server/staging/osx lib @loader_path/..
+    _rewrite_so_refs $WD/server/staging/osx lib/postgresql @loader_path/../..
+    _rewrite_so_refs $WD/server/staging/osx lib/postgresql/plugins @loader_path/../../..
+	
     cd $WD 
 }
 
