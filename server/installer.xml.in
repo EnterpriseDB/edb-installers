@@ -935,7 +935,7 @@
         
         <!-- Port -->
         <logMessage>
-            <text>Write the port number, serviceid and superuser to the ini file...</text>
+            <text>Write the port number, service ID, locale and superuser to the ini file...</text>
         </logMessage>
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
@@ -956,7 +956,19 @@
             <value>postgresql-${product_version}</value>
             <ruleList>
                 <stringTest>
-                    <text>${serverport}</text> <!-- This is correct - only set the ServiceID isf we know the port -->
+                    <text>${serverport}</text> <!-- This is correct - only set the ServiceID if we know the port -->
+                    <type>not_empty</type>
+                </stringTest>
+            </ruleList>
+        </iniFileSet>
+        <iniFileSet>
+            <file>${PostgreSqlIni}</file>
+            <section>PostgreSQL/${product_version}</section>
+            <key>Locale</key>
+            <value>${reallocale}</value>
+            <ruleList>
+                <stringTest>
+                    <text>${serverport}</text> <!-- This is correct - only set the locale if we know the port -->
                     <type>not_empty</type>
                 </stringTest>
             </ruleList>
