@@ -1085,7 +1085,15 @@
             <key>Description</key>
             <value></value>
         </iniFileSet>
-        
+       
+        <!-- ServiceID -->
+        <iniFileSet>
+            <file>${PostgreSqlIni}</file>
+            <section>PostgreSQL/${product_version}</section>
+            <key>ServiceID</key>
+            <value></value>
+        </iniFileSet>
+ 
         <!-- MAC: Remove the startup item -->
         <deleteFile>
             <path>/Library/StartupItems/postgresql-${product_version}</path>
