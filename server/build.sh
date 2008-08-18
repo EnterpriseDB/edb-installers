@@ -70,6 +70,11 @@ _prep_server() {
 
     echo "Unpacking debugger source..."
     tar -zxvf ../../../../tarballs/edb-debugger-$PG_TARBALL_DEBUGGER.tgz
+	
+	# StackBuilder (CVS Tree)
+	echo "Updating the StackBuilder source tree..."
+	cd $WD/server/source/stackbuilder
+    cvs -z3 update -dP
 
     # Per-platform prep
     cd $WD

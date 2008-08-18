@@ -16,7 +16,7 @@ _prep_server_osx() {
       rm -rf postgres.osx  || _die "Couldn't remove the existing postgres.osx source directory (source/postgres.osx)"
     fi
     
-    # Grab a copy of the source tree
+    # Grab a copy of the postgres source tree
     cp -R postgresql-$PG_TARBALL_POSTGRESQL postgres.osx || _die "Failed to copy the source code (source/postgresql-$PG_TARBALL_POSTGRESQL)"
 
     if [ -e pgadmin.osx ];
@@ -25,7 +25,7 @@ _prep_server_osx() {
       rm -rf pgadmin.osx  || _die "Couldn't remove the existing pgadmin.osx source directory (source/pgadmin.osx)"
     fi
 
-    # Grab a copy of the source tree
+    # Grab a copy of the pgadmin source tree
     cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.osx || _die "Failed to copy the source code (source/pgadmin3-$PG_TARBALL_PGADMIN)"
 
     if [ -e pljava.osx ];
@@ -34,9 +34,18 @@ _prep_server_osx() {
       rm -rf pljava.osx  || _die "Couldn't remove the existing pljava.osx source directory (source/pljava.osx)"
     fi
 
-    # Grab a copy of the source tree
+    # Grab a copy of the pljava source tree
     cp -R pljava-$PG_TARBALL_PLJAVA pljava.osx || _die "Failed to copy the source code (source/pljava-$PG_TARBALL_PLJAVA)"
     
+    if [ -e stackbuilder.osx ];
+    then
+      echo "Removing existing stackbuilder.osx source directory"
+      rm -rf stackbuilder.osx  || _die "Couldn't remove the existing stackbuilder.osx source directory (source/stackbuilder.osx)"
+    fi
+
+    # Grab a copy of the stackbuilder source tree
+    cp -R stackbuilder stackbuilder.osx || _die "Failed to copy the source code (source/stackbuilder)"	
+	
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/osx ];
     then
@@ -139,6 +148,16 @@ _build_server_osx() {
     mkdir -p "$WD/server/staging/osx/doc/pljava" || _die "Failed to create the pl/java doc directory"
     cp docs/* "$WD/server/staging/osx/doc/pljava/" || _die "Failed to install the pl/java documentation"
      
+	# Stackbuilder
+	
+	cd $WD/server/source/stackbuilder.osx
+	
+	cmake -D CMAKE_BUILD_TYPE:STRING=Release -D wxWidgets_CONFIG_EXECUTABLE:FILEPATH=/usr/local/bin/wx-config -D wxWidgets_USE_DEBUG:BOOL=OFF -D wxWidgets_USE_STATIC:BOOL=ON .  || _die "Failed to configure StackBuilder"
+	make all || _die "Failed to build StackBuilder"
+	
+	# Copy the StackBuilder app bundle into place
+    cp -R stackbuilder.app $WD/server/staging/osx || _die "Failed to copy StackBuilder into the staging directory"	
+	 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     _rewrite_so_refs $WD/server/staging/osx bin @loader_path/..
     _rewrite_so_refs $WD/server/staging/osx lib @loader_path/..
@@ -202,7 +221,8 @@ _postprocess_server_osx() {
     cp scripts/osx/start.applescript.in staging/osx/scripts/start.applescript || _die "Failed to to the menu pick script (scripts/osx/start.applescript.in)"
     cp scripts/osx/stop.applescript.in staging/osx/scripts/stop.applescript || _die "Failed to to the menu pick script (scripts/osx/stop.applescript.in)"
     cp scripts/osx/pgadmin.applescript.in staging/osx/scripts/pgadmin.applescript || _die "Failed to to the menu pick script (scripts/osx/pgadmin.applescript.in)"
-    
+    cp scripts/osx/stackbuilder.applescript.in staging/osx/scripts/stackbuilder.applescript || _die "Failed to to the menu pick script (scripts/osx/stackbuilder.applescript.in)"
+	
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 

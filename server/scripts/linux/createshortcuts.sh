@@ -59,6 +59,7 @@ done
 _fixup_file "$INSTALLDIR/scripts/launchbrowser.sh"
 _fixup_file "$INSTALLDIR/scripts/launchpgadmin.sh"
 _fixup_file "$INSTALLDIR/scripts/launchpsql.sh"
+_fixup_file "$INSTALLDIR/scripts/launchstackbuilder.sh"
 _fixup_file "$INSTALLDIR/scripts/launchsvrctl.sh"
 _fixup_file "$INSTALLDIR/scripts/runpsql.sh"
 _fixup_file "$INSTALLDIR/scripts/serverctl.sh"
@@ -79,6 +80,7 @@ _fixup_file "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-start-$VERSION.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION.desktop"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system --noupdate \
@@ -88,7 +90,8 @@ _fixup_file "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION.desktop"
 	  "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-start-$VERSION.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION.desktop" || _warn "Failed to create the top level menu"
+	  "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION.desktop" || _warn "Failed to create the top level menu"
 
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system \
       "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \

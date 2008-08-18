@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Application Stack Builder
+Exec=PG_INSTALLDIR/scripts/launchstackbuilder.sh
+Icon=pg-stackbuilder.png
+Terminal=false
+Type=Application

@@ -48,7 +48,8 @@ _warn() {
 	  "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-start-$VERSION.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION.desktop" || _warn "Failed to remove the top level menu"
+	  "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION.desktop" || _warn "Failed to remove the top level menu"
 	  
 # Remove the icon resources
 cd "$INSTALLDIR/scripts/images"

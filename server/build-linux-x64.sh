@@ -40,6 +40,16 @@ _prep_server_linux_x64() {
     cp -R pljava-$PG_TARBALL_PLJAVA pljava.linux-x64 || _die "Failed to copy the source code (source/pljava-$PG_TARBALL_PLJAVA)"
     chmod -R ugo+w pljava.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
+    if [ -e stackbuilder.linux-x64 ];
+    then
+      echo "Removing existing stackbuilder.linux-x64 source directory"
+      rm -rf stackbuilder.linux-x64  || _die "Couldn't remove the existing stackbuilder.linux-x64 source directory (source/stackbuilder.linux-x64)"
+    fi
+
+    # Grab a copy of the stackbuilder source tree
+    cp -R stackbuilder stackbuilder.linux-x64 || _die "Failed to copy the source code (source/stackbuilder)"	
+	chmod -R ugo+w stackbuilder.linux-x64 || _die "Couldn't set the permissions on the source directory"
+	
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/linux-x64 ];
     then
@@ -149,6 +159,17 @@ _build_server_linux_x64() {
     mkdir -p "$WD/server/staging/linux-x64/doc/pljava" || _die "Failed to create the pl/java doc directory"
     cp "$WD/server/source/pljava.linux-x64/docs/"* "$WD/server/staging/linux-x64/doc/pljava/" || _die "Failed to install the pl/java documentation"
  
+ 	# Stackbuilder
+	
+    # Configure
+    echo "Configuring the StackBuilder source tree"
+	ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/stackbuilder.linux-x64/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D wxWidgets_CONFIG_EXECUTABLE:FILEPATH=/usr/local/bin/wx-config -D wxWidgets_USE_DEBUG:BOOL=OFF -D wxWidgets_USE_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_STAGING/stackbuilder ."
+
+    # Build the app
+    echo "Building & installing StackBuilder"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/stackbuilder.linux-x64/; make all" || _die "Failed to build StackBuilder"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/stackbuilder.linux-x64/; make install" || _die "Failed to install StackBuilder"
+	
     cd $WD
 }
 
@@ -209,6 +230,7 @@ _postprocess_server_linux_x64() {
     cp resources/xdg/pg-psql.desktop staging/linux-x64/scripts/xdg/pg-psql-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-reload.desktop staging/linux-x64/scripts/xdg/pg-reload-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-restart.desktop staging/linux-x64/scripts/xdg/pg-restart-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
+	cp resources/xdg/pg-stackbuilder.desktop staging/linux-x64/scripts/xdg/pg-stackbuilder-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-start.desktop staging/linux-x64/scripts/xdg/pg-start-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-stop.desktop staging/linux-x64/scripts/xdg/pg-stop-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
     
@@ -225,6 +247,8 @@ _postprocess_server_linux_x64() {
     chmod ugo+x staging/linux-x64/scripts/launchbrowser.sh
     cp scripts/linux/launchpgadmin.sh staging/linux-x64/scripts/launchpgadmin.sh || _die "Failed to copy the launchpgadmin script (scripts/linux/launchpgadmin.sh)"
     chmod ugo+x staging/linux-x64/scripts/launchpgadmin.sh
+    cp scripts/linux/launchstackbuilder.sh staging/linux-x64/scripts/launchstackbuilder.sh || _die "Failed to copy the launchstackbuilder script (scripts/linux/launchstackbuilder.sh)"
+    chmod ugo+x staging/linux-x64/scripts/launchstackbuilder.sh
 	
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"

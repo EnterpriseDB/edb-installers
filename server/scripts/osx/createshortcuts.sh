@@ -79,6 +79,7 @@ _compile_script "$INSTALLDIR/scripts/restart.applescript" "$FOLDER/Restart Serve
 _compile_script "$INSTALLDIR/scripts/start.applescript" "$FOLDER/Start Server.app" "$INSTALLDIR/scripts/images/pg-start.icns"
 _compile_script "$INSTALLDIR/scripts/stop.applescript" "$FOLDER/Stop Server.app" "$INSTALLDIR/scripts/images/pg-stop.icns"
 _compile_script "$INSTALLDIR/scripts/pgadmin.applescript" "$FOLDER/pgAdmin III.app" "$INSTALLDIR/pgAdmin3.app/Contents/Resources/pgAdmin3.icns"
+_compile_script "$INSTALLDIR/scripts/stackbuilder.applescript" "$FOLDER/Application Stack Builder.app" "$INSTALLDIR/scripts/images/pg-stackbuilder.icns"
 
 # Not entirely relevant to this script, but pre-cofigure pgAdmin while we're here
 # Pre-register the server with pgAdmin, if the user doesn't already have a pgAdmin preferences file

@@ -1203,6 +1203,9 @@
                             <origin>staging/linux/scripts</origin>
                         </distributionDirectory>
                         <distributionDirectory>
+                            <origin>staging/linux/stackbuilder</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
                             <origin>staging/linux/share</origin>
                         </distributionDirectory>
                     </distributionFileList>
@@ -1244,6 +1247,9 @@
                             <origin>staging/linux-x64/scripts</origin>
                         </distributionDirectory>
                         <distributionDirectory>
+                            <origin>staging/linux-x64/stackbuilder</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
                             <origin>staging/linux-x64/share</origin>
                         </distributionDirectory>
                     </distributionFileList>
@@ -1276,6 +1282,9 @@
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/osx/scripts</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/osx/stackbuilder.app</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/osx/share</origin>
