@@ -57,6 +57,8 @@ PG_ARCH_OSX_CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version
 #           so you must ensure that all the required dependencies are enabled.
 
 PG_PACKAGE_SERVER=1
+PG_PACKAGE_APACHEPHP=1
+PG_PACKAGE_MEDIAWIKI=1
 
 # Miscellaneous options
 
