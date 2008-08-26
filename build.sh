@@ -101,31 +101,3 @@ then
     _postprocess_server || exit 1
 fi
 
-# Package: ApachePhp
-if [ $PG_PACKAGE_APACHEPHP == 1 ];
-then
-    source ./ApachePhp/build.sh
-
-    if [ $SKIPBUILD == 0 ];
-    then
-        _prep_ApachePhp || exit 1
-        _build_ApachePhp || exit 1
-    fi
-
-    _postprocess_ApachePhp || exit 1
-fi
-
-# Package: mediaWiki
-if [ $PG_PACKAGE_MEDIAWIKI == 1 ];
-then
-    source ./mediaWiki/build.sh
-
-    if [ $SKIPBUILD == 0 ];
-    then
-        _prep_mediaWiki || exit 1
-        _build_mediaWiki || exit 1
-    fi
-
-    _postprocess_mediaWiki || exit 1
-fi
-
