@@ -472,15 +472,15 @@
         <!-- Get the locales available -->
         <actionGroup> 
             <actionList>
-			    <addChoiceOptions>
-				    <name>locale</name>
-					<optionList>
-					    <option>
-						    <value>DEFAULT</value>
-							<text>[${msg(default.locale)}]</text>
-						</option>
-					</optionList>
-				</addChoiceOptions>
+                <addChoiceOptions>
+                    <name>locale</name>
+                    <optionList>
+                        <option>
+                            <value>DEFAULT</value>
+                            <text>[${msg(default.locale)}]</text>
+                        </option>
+                    </optionList>
+                </addChoiceOptions>
                 <runProgram>
                     <program>${system_temp_directory}/postgresql_installer/getlocales.sh</program>
                 </runProgram>
@@ -549,7 +549,7 @@
             <name>locale</name>
             <pattern>@</pattern>
         </setInstallerVariableFromRegEx>
-		     
+             
         <!-- Attempt to stop any existing server. We *always* do this, just in case  -->
         <!-- the existing installation is broken and it doesn't look like an upgrade -->
         
@@ -1326,7 +1326,7 @@
                         </showWarning>
                         <setInstallerVariable name="next_page" value="installdir"/>
                     </actionList>
-					
+                    
                     <ruleList>
                         <regExMatch>
                             <text>${installdir}</text>
@@ -1385,19 +1385,19 @@
             <!-- to some odd behaviour in InstallBuilder in the way <allowEmptyValue> -->
             <!-- interacts with default values, on the advice of tech support         -->
             <postShowPageActionList>
-				
+                
                 <!-- Always check if the data directory path looks valid and is writeable -->        
                 <actionGroup>
-					<!-- We need this because this isn't a validateActionList> -->
+                    <!-- We need this because this isn't a validateActionList> -->
                     <abortOnError>0</abortOnError>
-				
+                
                     <actionList>
-					    <setInstallerVariable name="next_page" value="datadir"/>
+                        <setInstallerVariable name="next_page" value="datadir"/>
                         <throwError>
                             <text>${msg(error.data.directory.invalid)}</text>
                         </throwError>
                     </actionList>
-					
+                    
                     <ruleList>
                         <regExMatch>
                             <text>${datadir}</text>
@@ -1406,15 +1406,47 @@
                         </regExMatch>
                     </ruleList>
                 </actionGroup>
+                
+                <!-- Check the data directory does not match the installation directory -->        
+                <actionGroup>
+                    <!-- We need this because this isn't a validateActionList> -->
+                    <abortOnError>0</abortOnError>
+                
+                    <actionList>
+                        <setInstallerVariable name="next_page" value="datadir"/>
+                        <throwError>
+                            <text>${msg(error.data.directory.matches.install)}</text>
+                        </throwError>
+                    </actionList>
+                    
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText>
+                            <text>${datadir}</text>
+                            <logic>equals</logic>
+                            <value>${installdir}</value>
+                        </compareText>
+                        <compareText>
+                            <text>${datadir}/</text>
+                            <logic>equals</logic>
+                            <value>${installdir}</value>
+                        </compareText>
+                        <compareText>
+                            <text>${datadir}</text>
+                            <logic>equals</logic>
+                            <value>${installdir}/</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>                
 
                 <!-- Check an existing, non-empty data directory -->
                 <actionGroup>
-				    <!-- We need this because this isn't a validateActionList> -->
+                    <!-- We need this because this isn't a validateActionList> -->
                     <abortOnError>0</abortOnError>
-					
-				    <actionList>
-					
-					    <!-- Do we have a pg_control file? -->
+                    
+                    <actionList>
+                    
+                        <!-- Do we have a pg_control file? -->
                         <actionGroup>
                             <actionList>
                                 <setInstallerVariable name="next_page" value="datadir"/>
@@ -1473,7 +1505,7 @@
                         
                         <actionGroup>
                             <actionList>
-							    <setInstallerVariable name="next_page" value="datadir"/>
+                                <setInstallerVariable name="next_page" value="datadir"/>
                                 <throwError>
                                     <text>${msg(error.data.directory.incompatible)}</text>
                                 </throwError>
@@ -1488,18 +1520,18 @@
                         </actionGroup>
                     </actionList>
                     
-					<!-- Switch to upgrade mode -->
+                    <!-- Switch to upgrade mode -->
                     <actionList>
-						<setInstallerVariable>
-							<name>IsUpgrade</name>
-							<value>1</value>
-						</setInstallerVariable>
-						<logMessage>
-							<text>Switching to upgrade mode with cluster: ${datadir}</text>
-						</logMessage>
-					</actionList>
+                        <setInstallerVariable>
+                            <name>IsUpgrade</name>
+                            <value>1</value>
+                        </setInstallerVariable>
+                        <logMessage>
+                            <text>Switching to upgrade mode with cluster: ${datadir}</text>
+                        </logMessage>
+                    </actionList>
 
-					<!-- We only check the data directory if it exists and isn't empty -->
+                    <!-- We only check the data directory if it exists and isn't empty -->
                     <ruleList>
                         <fileExists>
                             <path>${datadir}</path>
@@ -1510,7 +1542,7 @@
                         </fileTest>
                     </ruleList>
                 </actionGroup> <!-- End of data directory check -->
-	
+    
             </postShowPageActionList>
             
         </directoryParameter>

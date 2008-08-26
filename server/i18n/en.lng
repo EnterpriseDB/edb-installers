@@ -9,6 +9,7 @@ upgrade.existing.datadir.description=An existing data directory has been found a
 error.install.directory.invalid=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
 error.data.directory.invalid=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.', and '_', and must be writable.
+error.data.directory.matches.install=The data directory must not be the same as the installation directory.
 error.data.directory.registered.broken=A data directory is registered in ${PostgreSqlIni} but is neither empty, or a recognisable data directory.
 error.data.directory.existing.broken=An existing data directory has been selected but is neither empty, or a recognisable data directory.
 error.data.directory.incompatible=The existing data directory (catalog version: ${CurrentCatalogVersion}) is not compatible with this server (catalog version: ${CatalogVersion}).
