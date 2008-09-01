@@ -47,7 +47,7 @@ fi
 start()
 {
 	echo \$"Starting PostgreSQL $VERSION: "
-	su - $USERNAME -c "$INSTALLDIR/bin/pg_ctl -w start -D \"$DATADIR\" -l \"$DATADIR/pg_log/startup.log\""
+	su - $USERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib $INSTALLDIR/bin/pg_ctl -w start -D \"$DATADIR\" -l \"$DATADIR/pg_log/startup.log\""
 	
 	if [ -e "$DATADIR/postmaster.pid" ]
 	then
@@ -62,7 +62,7 @@ start()
 stop()
 {
 	echo \$"Stopping PostgreSQL $VERSION: "
-	su - $USERNAME -c "$INSTALLDIR/bin/pg_ctl stop -m fast -w -D \"$DATADIR\""
+	su - $USERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib $INSTALLDIR/bin/pg_ctl stop -m fast -w -D \"$DATADIR\""
 }
 
 # See how we were called.
@@ -86,7 +86,7 @@ case "\$1" in
         fi
         ;;
   status)
-        su - $USERNAME -c "$INSTALLDIR/bin/pg_ctl status -D \"$DATADIR\""
+        su - $USERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib $INSTALLDIR/bin/pg_ctl status -D \"$DATADIR\""
         ;;
   *)
         echo \$"Usage: $0 {start|stop|restart|condrestart|status}"
