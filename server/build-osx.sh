@@ -152,7 +152,7 @@ _build_server_osx() {
 	
 	cd $WD/server/source/stackbuilder.osx
 	
-	cmake -D CMAKE_BUILD_TYPE:STRING=Release -D wxWidgets_CONFIG_EXECUTABLE:FILEPATH=/usr/local/bin/wx-config -D wxWidgets_USE_DEBUG:BOOL=OFF -D wxWidgets_USE_STATIC:BOOL=ON .  || _die "Failed to configure StackBuilder"
+	cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON .  || _die "Failed to configure StackBuilder"
 	make all || _die "Failed to build StackBuilder"
 	
 	# Copy the StackBuilder app bundle into place
