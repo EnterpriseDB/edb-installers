@@ -105,7 +105,7 @@ _build_server_linux_x64() {
 
     # Bootstrap
     echo "Bootstrapping the build system"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/server.linux-x64/; sh bootstrap"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; sh bootstrap"
 
     # Configure
     echo "Configuring the pgAdmin source tree"
@@ -249,7 +249,9 @@ _postprocess_server_linux_x64() {
     chmod ugo+x staging/linux-x64/scripts/launchpgadmin.sh
     cp scripts/linux/launchstackbuilder.sh staging/linux-x64/scripts/launchstackbuilder.sh || _die "Failed to copy the launchstackbuilder script (scripts/linux/launchstackbuilder.sh)"
     chmod ugo+x staging/linux-x64/scripts/launchstackbuilder.sh
-	
+    cp scripts/linux/runstackbuilder.sh staging/linux-x64/scripts/runstackbuilder.sh || _die "Failed to copy the runstackbuilder script (scripts/linux/runstackbuilder.sh)"
+    chmod ugo+x staging/linux-x64/scripts/runstackbuilder.sh
+		
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 

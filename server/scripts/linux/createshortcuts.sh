@@ -62,6 +62,7 @@ _fixup_file "$INSTALLDIR/scripts/launchpsql.sh"
 _fixup_file "$INSTALLDIR/scripts/launchstackbuilder.sh"
 _fixup_file "$INSTALLDIR/scripts/launchsvrctl.sh"
 _fixup_file "$INSTALLDIR/scripts/runpsql.sh"
+_fixup_file "$INSTALLDIR/scripts/runstackbuilder.sh"
 _fixup_file "$INSTALLDIR/scripts/serverctl.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 

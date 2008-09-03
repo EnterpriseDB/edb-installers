@@ -90,7 +90,7 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
     cp "$WD/server/source/postgres.linux/contrib/pldebugger/README.pldebugger" $WD/server/staging/linux/doc || _die "Failed to copy the debugger README into the staging directory"
 	
-	# Copy in the dependency libraries
+    # Copy in the dependency libraries
     ssh $PG_SSH_LINUX "cp -R /lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libreadline.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
@@ -105,7 +105,7 @@ _build_server_linux() {
 
     # Bootstrap
     echo "Bootstrapping the build system"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/server.linux/; sh bootstrap"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; sh bootstrap"
 
     # Configure
     echo "Configuring the pgAdmin source tree"
@@ -249,7 +249,9 @@ _postprocess_server_linux() {
     chmod ugo+x staging/linux/scripts/launchpgadmin.sh
     cp scripts/linux/launchstackbuilder.sh staging/linux/scripts/launchstackbuilder.sh || _die "Failed to copy the launchstackbuilder script (scripts/linux/launchstackbuilder.sh)"
     chmod ugo+x staging/linux/scripts/launchstackbuilder.sh
-		
+    cp scripts/linux/runstackbuilder.sh staging/linux/scripts/runstackbuilder.sh || _die "Failed to copy the runstackbuilder script (scripts/linux/runstackbuilder.sh)"
+    chmod ugo+x staging/linux/scripts/runstackbuilder.sh
+			
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
 	
