@@ -3,7 +3,7 @@
 # PostgreSQL stackbuilder launch script for Linux
 # Dave Page, EnterpriseDB
 
-which gksu 1> /dev/null 
+which gksu 1> /dev/null 2> /dev/null
 if [ $? -eq 0 ];
 then
     GKSU=`which gksu`

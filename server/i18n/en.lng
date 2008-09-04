@@ -43,6 +43,8 @@ error.could.not.start.server=Failed to start the database server.
 progress.text.loading.modules=Loading additional SQL modules...
 error.could.not.load.modules=Failed to load SQL modules into the database cluster.
 
+progress.text.run.stackbuilder=Launch Stack Builder at exit?
+
 config.datadir.description=Data Directory
 config.datadir.explanation=Please select a directory under which to store your data.
 

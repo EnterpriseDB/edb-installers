@@ -1003,7 +1003,43 @@
         </logMessage>
         
     </postInstallationActionList>
-    
+   
+    <!-- Final page actions -->
+    <finalPageActionList>
+
+         <runProgram>
+            <!-- MAC: Run stackbuilder -->
+            <program>open</program>
+            <programArguments>"/Applications/PostgreSQL ${product_version}/Application Stack Builder.app"</programArguments>
+            <progressText>${msg(progress.text.run.stackbuilder)}</progressText>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+
+        <runProgram>
+            <!-- Linux: Run stackbuilder -->
+            <program>${installdir}/scripts/launchstackbuilder.sh</program>
+            <progressText>${msg(progress.text.run.stackbuilder)}</progressText>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+
+    </finalPageActionList>
+ 
     <!-- Preuninstallation actions -->
     <preUninstallationActionList>
         
