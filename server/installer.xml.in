@@ -1442,6 +1442,29 @@
                         </regExMatch>
                     </ruleList>
                 </actionGroup>
+ 
+                <!-- Build a regexp to test that the install dir is not a sub dir of the data dir -->
+                <!-- Remove trailing / from path -->
+                <setInstallerVariableFromRegEx>
+                    <text>${datadir}</text>
+                    <substitution></substitution>
+                    <name>_re</name>
+                    <pattern>\/$</pattern>
+                </setInstallerVariableFromRegEx>
+
+                <!-- Replace / with \/ -->
+                <setInstallerVariableFromRegEx>
+                    <text>${_re}</text>
+                    <substitution>\/</substitution>
+                    <name>_re</name>
+                    <pattern>\/</pattern>
+                </setInstallerVariableFromRegEx>
+
+                <!-- build the regexp -->
+                <setInstallerVariable>
+                    <name>_re</name>
+                    <value>^${_re}\/([0-9a-zA-Z_/\.\-]*)</value>
+                </setInstallerVariable>
                 
                 <!-- Check the data directory does not match the installation directory -->        
                 <actionGroup>
@@ -1472,6 +1495,11 @@
                             <logic>equals</logic>
                             <value>${installdir}/</value>
                         </compareText>
+                        <regExMatch>
+                            <text>${installdir}</text>
+                            <logic>matches</logic>
+                            <pattern>${_re}</pattern>
+                        </regExMatch>
                     </ruleList>
                 </actionGroup>                
 
