@@ -964,6 +964,8 @@
                 </stringTest>
             </ruleList>
         </iniFileSet>
+		
+		<!-- ServiceID -->
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
             <section>PostgreSQL/${product_version}</section>
@@ -976,18 +978,28 @@
                 </stringTest>
             </ruleList>
         </iniFileSet>
+		
+		
+		<!-- Read the actual locale from the config file. We don't know what it was yet as the user may have chosen DEFAULT -->
+		<readFile>
+			<path>${datadir}/postgresql.conf</path>
+			<name>serverconfig</name>
+		</readFile>
+		<setInstallerVariableFromRegEx>
+			<name>actuallocale</name>
+			<text>${serverconfig}</text>
+			<pattern>^.*lc_messages\s*=\s*'([\w]+)'\s+.*$</pattern>
+			<substitution>\1</substitution>
+		</setInstallerVariableFromRegEx>
+						
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
             <section>PostgreSQL/${product_version}</section>
             <key>Locale</key>
-            <value>${reallocale}</value>
-            <ruleList>
-                <stringTest>
-                    <text>${serverport}</text> <!-- This is correct - only set the locale if we know the port -->
-                    <type>not_empty</type>
-                </stringTest>
-            </ruleList>
+            <value>${actuallocale}</value>
         </iniFileSet>
+		
+		<!-- Superuser -->
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
             <section>PostgreSQL/${product_version}</section>
