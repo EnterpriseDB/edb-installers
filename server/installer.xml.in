@@ -659,6 +659,12 @@
             <value>PG_MAJOR_VERSION.PG_MINOR_VERSION</value>
         </iniFileSet>
 
+        <!-- Track if any errors occurred so we can hide the Run Stackbuilder option -->
+        <setInstallerVariable>
+            <name>didError</name>
+            <value>0</value>
+        </setInstallerVariable>
+
         <!-- Create a symlink to libpq.5.dylib on OSX. This allows the dynamic linker to find -->
         <!-- libpq, which it otherwise wouldn't because the library ID is just the filename -->
         <!-- (because we don't know the install directory at any time when we have install_name_tool) -->
@@ -682,7 +688,19 @@
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
         </runProgram>
-        
+       
+        <setInstallerVariable>
+            <name>didError</name>
+            <value>1</value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>0</text>
+                    <value>${program_exit_code}</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+ 
         <throwError>
             <text>${msg(script.command.line.error)}</text>
             <ruleList>
@@ -703,7 +721,7 @@
                 </compareText>
             </ruleList>
         </throwError>
-        
+
         <!-- Initialise the cluster if this is an installation -->
         <actionGroup>
             <actionList>
@@ -741,7 +759,19 @@
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
-                
+               
+                <setInstallerVariable>
+                    <name>didError</name>
+                    <value>1</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>0</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+ 
                 <throwError>
                     <text>${msg(script.command.line.error)}</text>
                     <ruleList>
@@ -772,6 +802,7 @@
                         </compareText>
                     </ruleList>
                 </showWarning>
+
             </actionList>
             
             <!-- Only appropriate for installs -->
@@ -793,7 +824,19 @@
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
         </runProgram>
-        
+       
+        <setInstallerVariable>
+            <name>didError</name>
+            <value>1</value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>0</text>
+                    <value>${program_exit_code}</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+ 
         <throwError>
             <text>${msg(script.command.line.error)}</text>
             <ruleList>
@@ -824,7 +867,7 @@
                 </compareText>
             </ruleList>
         </showWarning>
-        
+       
         <!-- Shortcuts -->
         <runProgram>
             <program>${installdir}/installer/server/createshortcuts.sh</program>
@@ -833,7 +876,19 @@
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
         </runProgram>
-        
+       
+        <setInstallerVariable>
+            <name>didError</name>
+            <value>1</value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>0</text>
+                    <value>${program_exit_code}</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+ 
         <throwError>
             <text>${msg(script.command.line.error)}</text>
             <ruleList>
@@ -854,7 +909,7 @@
                 </compareText>
             </ruleList>
         </showWarning>
-        
+
         <!-- Startup -->
         <runProgram>
             <program>${installdir}/installer/server/startserver.sh</program>
@@ -863,7 +918,19 @@
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
         </runProgram>
-        
+       
+        <setInstallerVariable>
+            <name>didError</name>
+            <value>1</value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>0</text>
+                    <value>${program_exit_code}</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+ 
         <throwError>
             <text>${msg(script.command.line.error)}</text>
             <ruleList>
@@ -884,7 +951,7 @@
                 </compareText>
             </ruleList>
         </throwError>
-        
+
         <!-- If this is an installation, load the various database modules -->
         <actionGroup>
             <actionList>
@@ -896,7 +963,19 @@
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
-                
+        
+                <setInstallerVariable>
+                    <name>didError</name>
+                    <value>1</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>0</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+        
                 <throwError>
                     <text>${msg(script.command.line.error)}</text>
                     <ruleList>
@@ -917,7 +996,17 @@
                         </compareText>
                     </ruleList>
                 </throwError>
-                
+                <showWarning>
+                    <text>${msg(warning.during.module.loading)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>2</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </showWarning>
+
             </actionList>
             
             <!-- Only appropriate for installs -->
@@ -964,8 +1053,8 @@
                 </stringTest>
             </ruleList>
         </iniFileSet>
-		
-		<!-- ServiceID -->
+        
+        <!-- ServiceID -->
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
             <section>PostgreSQL/${product_version}</section>
@@ -978,28 +1067,28 @@
                 </stringTest>
             </ruleList>
         </iniFileSet>
-		
-		
-		<!-- Read the actual locale from the config file. We don't know what it was yet as the user may have chosen DEFAULT -->
-		<readFile>
-			<path>${datadir}/postgresql.conf</path>
-			<name>serverconfig</name>
-		</readFile>
-		<setInstallerVariableFromRegEx>
-			<name>actuallocale</name>
-			<text>${serverconfig}</text>
-			<pattern>^.*lc_messages\s*=\s*'([\w]+)'\s+.*$</pattern>
-			<substitution>\1</substitution>
-		</setInstallerVariableFromRegEx>
-						
+        
+        
+        <!-- Read the actual locale from the config file. We don't know what it was yet as the user may have chosen DEFAULT -->
+        <readFile>
+            <path>${datadir}/postgresql.conf</path>
+            <name>serverconfig</name>
+        </readFile>
+        <setInstallerVariableFromRegEx>
+            <name>actuallocale</name>
+            <text>${serverconfig}</text>
+            <pattern>^.*lc_messages\s*=\s*'([^']+)'\s+.*$</pattern>
+            <substitution>\1</substitution>
+        </setInstallerVariableFromRegEx>
+                        
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
             <section>PostgreSQL/${product_version}</section>
             <key>Locale</key>
             <value>${actuallocale}</value>
         </iniFileSet>
-		
-		<!-- Superuser -->
+        
+        <!-- Superuser -->
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
             <section>PostgreSQL/${product_version}</section>
@@ -1047,6 +1136,11 @@
                     <text>${platform_name}</text>
                     <value>osx</value>
                 </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${didError}</text>
+                    <value>1</value>
+                </compareText>
             </ruleList>
         </runProgram>
 
@@ -1061,6 +1155,11 @@
                     <logic>contains</logic>
                     <text>${platform_name}</text>
                     <value>linux</value>
+                </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${didError}</text>
+                    <value>1</value>
                 </compareText>
             </ruleList>
         </runProgram>

@@ -42,6 +42,7 @@ error.could.not.start.server=Failed to start the database server.
 
 progress.text.loading.modules=Loading additional SQL modules...
 error.could.not.load.modules=Failed to load SQL modules into the database cluster.
+warning.during.module.loading=A non-fatal error occured whilst loading database modules. Please check the installation log in /tmp for details.
 
 progress.text.run.stackbuilder=Launch Stack Builder at exit?
 
