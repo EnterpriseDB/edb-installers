@@ -550,45 +550,6 @@
             <pattern>@</pattern>
         </setInstallerVariableFromRegEx>
              
-        <!-- Attempt to stop any existing server. We *always* do this, just in case  -->
-        <!-- the existing installation is broken and it doesn't look like an upgrade -->
-        
-        <!-- MAC: Stop the server -->
-        <runProgram>
-            <program>/sbin/SystemStarter</program>
-            <programArguments>stop postgresql-${product_version}</programArguments>
-            <abortOnError>0</abortOnError>
-            <showMessageOnError>0</showMessageOnError>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-                <fileExists>
-                    <path>/Library/StartupItems/postgresql-${product_version}/postgresql-${product_version}</path>
-                </fileExists>
-            </ruleList>
-        </runProgram>
-        
-        <!-- LINUX: Stop the server -->
-        <runProgram>
-            <program>/etc/init.d/postgresql-${product_version}</program>
-            <programArguments>stop</programArguments>
-            <abortOnError>0</abortOnError>
-            <showMessageOnError>0</showMessageOnError>
-            <ruleList>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-                <fileExists>
-                    <path>/etc/init.d/postgresql-${product_version}</path>
-                </fileExists>
-            </ruleList>
-        </runProgram>
-        
         <!-- Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
@@ -616,7 +577,48 @@
             </ruleList>
         </setInstallerVariable>
     </preInstallationActionList>
-    
+
+    <readyToInstallActionList>    
+        <!-- Attempt to stop any existing server. We *always* do this, just in case  -->
+        <!-- the existing installation is broken and it doesn't look like an upgrade -->
+
+        <!-- MAC: Stop the server -->
+        <runProgram>
+            <program>/sbin/SystemStarter</program>
+            <programArguments>stop postgresql-${product_version}</programArguments>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+                <fileExists>
+                    <path>/Library/StartupItems/postgresql-${product_version}/postgresql-${product_version}</path>
+                </fileExists>
+            </ruleList>
+        </runProgram>
+
+        <!-- LINUX: Stop the server -->
+        <runProgram>
+            <program>/etc/init.d/postgresql-${product_version}</program>
+            <programArguments>stop</programArguments>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+                <fileExists>
+                    <path>/etc/init.d/postgresql-${product_version}</path>
+                </fileExists>
+            </ruleList>
+        </runProgram>
+    </readyToInstallActionList>    
+
     <!-- Postinstallation actions -->
     <postInstallationActionList>
         <logMessage>
