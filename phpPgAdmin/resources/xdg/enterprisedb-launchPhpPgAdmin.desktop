@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=phpPgAdmin
+Exec="INSTALL_DIR/phpPgAdmin/scripts/launchPhpPgAdmin.sh" INSTALL_DIR
+Icon=enterprisedb-launchPhpPgAdmin.png
+Terminal=false
+Type=Application
+

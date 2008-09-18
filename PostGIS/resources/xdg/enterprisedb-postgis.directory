@@ -1,0 +1,7 @@
+[Desktop Entry]
+Version=1.0
+Type=Directory
+Name=PostGIS
+Comment=PostGIS, packaged by EnterpriseDB
+Encoding=UTF-8
+Icon=enterprisedb-postgis.png

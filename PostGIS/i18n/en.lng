@@ -1,0 +1,36 @@
+Installer.Welcome.Title=Setup - EnterpriseDB %1$s
+
+Installer.Welcome.Text=Welcome to the EnterpriseDB %1$s Setup.
+
+install.summary=PostGIS adds support for geographic objects to the PostgreSQL.
+
+error.configure.postgis=Error Configuring PostGIS
+
+pgplus.details.title=PostgreSQL Installation Details
+
+pgplus.details.explanation=Please verify the PostgreSQL installation details
+
+pgplus.details.error=Connection to the PostgreSQL Server failed. Please re-check the details provided.
+
+pgplus.blank.error=Values must be entered for all fields.
+
+spatialdb.details.title=PostGIS Database Details
+
+spatialdb.details.explanation=Please enter the name of the PostGIS Database.
+
+postgis.installdir.error=Installation directory path should not contain white-spaces.
+
+postgis.installdir.pgerror=Installation directory path is not a valid PostgreSQL Server Installation Directory.
+
+progress.text.creating.shortcuts=Creating Menu Shortcuts
+
+templatedb.found.info=A database called 'template_postgis' already exists on your server. If you continue with this installation, this database will be reused. \n\nDo you wish to continue?
+
+db.found.info=The database specified already exists on your server. If you continue with this installation, this database will be reused. \n\nDo you wish to continue?
+
+
+Installer.Installation.Finished.Title=Completing the EnterpriseDB-%1$s Setup Wizard
+
+Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
+
+db.drop.info=Template database and/or Sample database have not been removed from your PostgreSQL Server.

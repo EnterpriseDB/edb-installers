@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Start Apache
+Exec="INSTALL_DIR/scripts/ctlApache.sh" "start"
+Icon=start-Apache.png
+Terminal=false
+Type=Application

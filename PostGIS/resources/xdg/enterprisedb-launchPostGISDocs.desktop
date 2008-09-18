@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=PostGIS Docs
+Exec="INSTALL_DIR/PostGIS/scripts/launchPostGISDocs.sh"
+Icon=launch-PostGISDocs.png
+Terminal=false
+Type=Application

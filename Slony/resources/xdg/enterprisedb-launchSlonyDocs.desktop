@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Slony Docs
+Exec="INSTALL_DIR/Slony/scripts/launchSlonyDocs.sh"
+Icon=launch-SlonyDocs.png
+Terminal=false
+Type=Application
