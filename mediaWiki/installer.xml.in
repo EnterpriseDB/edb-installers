@@ -1,0 +1,1017 @@
+
+<project>
+    <!-- Package details -->
+    <shortName>mediaWiki</shortName>
+    <fullName>mediaWiki</fullName>
+    <version>PG_MEDIAWIKI_VERSION</version>
+    
+    <!-- These options are used on Windows -->
+    <startMenuGroupName>PostgreSQL</startMenuGroupName>
+
+    <!-- Product Specific Options -->
+    <productDisplayName>EnterpriseDB ${product_fullname} ${product_version}</productDisplayName>
+    <productComments>EnterpriseDB ${product_fullname} ${product_version}</productComments>
+    <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
+    <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
+    
+    <!-- The options are used for RPM registration -->
+    <description>${product_fullname} ${product_version} by EnterpriseDB</description>
+    <summary>${msg(install.summary)}</summary>
+    <vendor>EnterpriseDB</vendor>
+    <release>1</release>
+
+    <!-- Installer Size -->
+    <width>550</width>
+    <height>400</height>
+    
+    <!-- Misc package options -->
+    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <enableRollback>0</enableRollback>
+    <requireInstallationByRootUser>1</requireInstallationByRootUser>
+    <saveRelativePaths>1</saveRelativePaths>
+    <outputDirectory>../output</outputDirectory>
+    <uninstallerName>uninstall-${product_shortname}</uninstallerName>
+    <uninstallerDirectory>${installdir}/mediaWiki</uninstallerDirectory>
+    <unattendedModeUI>minimal</unattendedModeUI>
+    <compressionAlgorithm>lzma</compressionAlgorithm>
+    <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+ 
+    <!-- Images -->
+    <leftImage>resources/leftImage.png</leftImage>
+    <logoImage>resources/edblogo.png</logoImage>
+    <splashImage>resources/splash.png</splashImage>
+    <productDisplayIcon>${installdir}/mediaWiki/scripts/images/logo.ico</productDisplayIcon>
+    <windowsExecutableIcon>resources/logo.ico</windowsExecutableIcon>
+    <wmImage>resources/logo.png</wmImage>
+    
+    <!-- i18n files for the UI -->
+    <customLanguageFileList>
+        <language>
+            <code>en</code>
+            <encoding>iso8859-1</encoding>
+            <file>i18n/en.lng</file>
+        </language>
+    </customLanguageFileList>
+    
+    <!-- Initialisation actions -->
+    <initializationActionList>
+
+        <!-- Set the Apache Home -->
+        <setInstallerVariable name="apachehome" value="">
+            <persist>0</persist>
+        </setInstallerVariable>
+        <setInstallerVariable name="apacheport" value="8080">
+            <persist>0</persist>
+        </setInstallerVariable>
+        
+        <!-- Set the php Home -->
+        <setInstallerVariable name="phphome" value="">
+            <persist>0</persist>
+        </setInstallerVariable>
+        
+        <!-- Set the pghost varaible to localhost -->
+        <setInstallerVariable name="pghost" value="localhost">
+            <persist>0</persist>
+        </setInstallerVariable>
+
+        <!-- Set the mediaWiki version(if exists) -->
+        <setInstallerVariable name="mediaWikiVersion" value="">
+            <persist>0</persist>
+        </setInstallerVariable>
+
+	<!-- Set the default values -->
+	<setInstallerVariable name="defaultuser" value=""/>
+	<setInstallerVariable name="defaultpassword" value=""/>
+	<setInstallerVariable name="defaultpghome" value=""/>
+
+	<!-- Set the default values for unattended mode -->
+	<actionGroup>
+	   <actionList>
+		<setInstallerVariable name="defaultuser" value="postgres"/>
+		<setInstallerVariable name="defaultpassword" value="postgres"/>
+	   </actionList>
+	   <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+           </ruleList>
+	</actionGroup>
+  
+        <!-- WIN: Set the  pghome default value for unattended mode -->
+        <actionGroup>
+            <actionList>
+              <setInstallerVariable name="defaultpghome" value="${env(SYSTEMDIR)}\Program Files\PostgreSQL\8.3"/>
+            </actionList>
+            <ruleList>
+              <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        
+        <!-- LIN: Set the  pghome default value for unattended mode -->
+        <actionGroup>
+            <actionList>
+              <setInstallerVariable name="defaultpghome" value="/opt/PostgreSQL/8.3"/>
+            </actionList>
+            <ruleList>
+              <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+
+    </initializationActionList>
+    
+    <!-- Preinstallation actions -->
+    <preInstallationActionList>
+
+        <!-- LIN: Check Previous Installation of mediaWiki -->
+        <actionGroup>
+            <actionList>
+                <iniFileGet>
+                  <file>/etc/postgres-reg.ini</file>  
+                  <section>mediaWiki</section>
+                  <key>Version</key>
+                  <variable>mediaWikiVersion</variable>
+              </iniFileGet>
+            </actionList>            
+              <ruleList>
+                  <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                  </compareText>
+              </ruleList>
+        </actionGroup>
+        
+        <!-- WIN: Check Previous Installation of mediaWiki -->
+         <actionGroup>
+            <actionList>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\mediaWiki</key>
+                    <name>Version</name>
+                    <variable>mediaWikiVersion</variable>
+                </registryGet>
+            </actionList>
+            <ruleList>
+              <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+              </compareText>
+            </ruleList>
+        </actionGroup>
+
+        <!-- Setting the installation type as upgrade if previous installation found -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installationType" value="upgrade" />
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${mediaWikiVersion}</text>
+                    <value></value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+        <!-- WIN : Set the Apache Home , Php Home and Apache Port(default 8080) from registry. ApachePhp Installation would have set these values -->
+        <actionGroup>
+            <actionList>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+                    <name>APACHE_HOME</name>
+                    <variable>apachehome</variable>
+                </registryGet>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+                    <name>APACHE_PORT</name>
+                    <variable>apacheport</variable>
+                </registryGet>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+                    <name>PHP_HOME</name>
+                    <variable>phphome</variable>
+                </registryGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        
+        <!-- LIN : Set the Apache Home , Php Home and Apache Port(default 8080) from registry. ApachePhp Installation would have set these values -->       
+        <actionGroup>
+          <actionList>
+              <iniFileGet>
+                  <file>/etc/postgres-reg.ini</file>  
+                  <section>ApachePhp</section>
+                  <key>APACHE_HOME</key>
+                  <variable>apachehome</variable>
+              </iniFileGet>
+              <iniFileGet>
+                  <file>/etc/postgres-reg.ini</file>  
+                  <section>ApachePhp</section>
+                  <key>APACHE_PORT</key>
+                  <variable>apacheport</variable>
+              </iniFileGet>
+              <iniFileGet>
+                  <file>/etc/postgres-reg.ini</file>  
+                  <section>ApachePhp</section>
+                  <key>PHP_HOME</key>
+                  <variable>phphome</variable>
+              </iniFileGet>
+          </actionList>
+          <ruleList>
+              <compareText>
+                  <logic>contains</logic>
+                  <text>${platform_name}</text>
+                  <value>linux</value>
+              </compareText>
+          </ruleList>
+        </actionGroup>
+        
+        <!-- Abort Installation as Apache Home not found -->
+        <actionGroup>
+            <actionList>
+                <throwError>
+                    <customErrorMessage>${msg(error.apache.notfound)}</customErrorMessage>
+                    <text>Unknown Error</text>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <compareTextLength>
+                    <length>0</length>
+                    <logic>equals</logic>
+                    <text>${apachehome}</text>
+                </compareTextLength>
+            </ruleList>
+        </actionGroup>
+        
+        <!-- Abort Installation as php Home not found -->
+        <actionGroup>
+            <actionList>
+                <throwError>
+                    <customErrorMessage>${msg(error.php.notfound)}</customErrorMessage>
+                    <text>Unknown Error</text>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <compareTextLength>
+                    <length>0</length>
+                    <logic>equals</logic>
+                    <text>${phphome}</text>
+                </compareTextLength>
+            </ruleList>
+        </actionGroup>
+        
+        <!-- WIN: Set the Installation Directory -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installdir" value="${apachehome}\www">
+                    <persist>0</persist>
+                </setInstallerVariable>
+            </actionList>
+            <ruleList>
+              <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+              </compareText>
+          </ruleList>
+        </actionGroup>
+        
+        <!-- LIN: Set the Installation Directory -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installdir" value="${apachehome}/www">
+                    <persist>0</persist>
+                </setInstallerVariable>
+            </actionList>
+            <ruleList>
+              <compareText>
+                  <logic>contains</logic>
+                  <text>${platform_name}</text>
+                  <value>linux</value>
+              </compareText>
+            </ruleList>
+        </actionGroup>
+
+	<!-- LIN: Deleting the config file -->
+        <actionGroup>
+            <actionList>
+                <deleteFile>
+                    <path>${installdir}/mediaWiki/config/LocalSettings.php</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <fileExists>
+                    <path>${installdir}/mediaWiki/config/LocalSettings.php</path>
+                </fileExists>
+		<compareText>
+                   <logic>contains</logic>
+                   <text>${platform_name}</text>
+                   <value>linux</value>
+	        </compareText>
+            </ruleList>
+        </actionGroup>
+		
+	<!-- WIN: Deleting the config file -->
+        <actionGroup>
+            <actionList>
+                <deleteFile>
+                    <path>${installdir}\mediaWiki\config\LocalSettings.php</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <fileExists>
+                    <path>${installdir}\mediaWiki\config\LocalSettings.php</path>
+                </fileExists>
+                <compareText>
+                   <logic>equals</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        
+    </preInstallationActionList>
+    
+    
+    <!-- Post installation actions -->
+    <postInstallationActionList>
+       
+        <!-- LIN: Write the mediaWiki Info to INI File -->
+        <actionGroup>
+            <actionList>
+	      <iniFileSet>
+                  <file>/etc/postgres-reg.ini</file>
+                  <section>mediaWiki</section>
+                  <key>Description</key>
+                  <value>${msg(install.summary)}</value>
+              </iniFileSet>
+	      <iniFileSet>
+                  <file>/etc/postgres-reg.ini</file>
+                  <section>mediaWiki</section>
+                  <key>InstallationDirectory</key>
+                  <value>${installdir}/mediaWiki</value>
+              </iniFileSet>		
+              <iniFileSet>
+                  <file>/etc/postgres-reg.ini</file>  
+                  <section>mediaWiki</section>
+                  <key>Version</key>
+                  <value>${product_version}</value>
+              </iniFileSet>
+            </actionList>
+            <ruleList>
+              <compareText>
+                <text>${platform_name}</text>
+                <logic>contains</logic>
+                <value>linux</value>
+              </compareText>
+            </ruleList>	
+        </actionGroup>
+        
+        <!-- WIN: Run Script to create Role and database -->
+        <actionGroup>     	
+            <actionList>			
+              <runProgram>
+                <customErrorMessage>${msg(Error configuring mediaWiki Application)}</customErrorMessage>
+                <program>${installdir}\mediaWiki\installer\mediaWiki\install.bat</program>
+                <programArguments>"${pghost}" "${pgport}" "${pguser}" "${pgpassword}" "${pghome}"</programArguments>
+		<workingDirectory>${installdir}\mediaWiki\installer\mediaWiki</workingDirectory>
+              </runProgram>
+              <!-- Inform user about the database and role creation -->
+              <showInfo>
+                  <text>${msg(db.create.info)}</text>
+              </showInfo>
+            </actionList>
+            <ruleList>
+              <compareText>
+                <logic>equals</logic>
+                <text>${platform_name}</text>
+                <value>windows</value>
+              </compareText>
+              <compareText>
+                <text>${dbexist}</text>
+                <logic>equals</logic>
+                <value></value>
+              </compareText>
+	       <compareText>
+                <text>${userexist}</text>
+                <logic>equals</logic>
+                <value></value>
+              </compareText>
+              <compareText>
+                <text>${mediaWikiVersion}</text>
+                <logic>equals</logic>
+                <value></value>
+              </compareText>
+            </ruleList>
+        </actionGroup>
+        
+        <!-- LIN: Run Script to create Role and database -->
+        <actionGroup>     	
+            <actionList>			
+              <runProgram>
+                <customErrorMessage>${msg(Error configuring mediaWiki Application)}</customErrorMessage>
+                <program>${installdir}/mediaWiki/installer/mediaWiki/install.sh</program>
+                <programArguments>"${pghost}" "${pgport}" "${pguser}" "${pgpassword}" "${pghome}"</programArguments>
+		<workingDirectory>${installdir}/mediaWiki/installer/mediaWiki</workingDirectory>
+              </runProgram>
+              <!-- Inform user about the database and role creation -->
+              <showInfo>
+                  <text>${msg(db.create.info)}</text>
+              </showInfo>
+            </actionList>
+            <ruleList>
+              <compareText>
+                <logic>contains</logic>
+                <text>${platform_name}</text>
+                <value>linux</value>
+              </compareText>
+              <compareText>
+                <text>${dbexist}</text>
+                <logic>equals</logic>
+                <value></value>
+              </compareText>
+	       <compareText>
+                <text>${userexist}</text>
+                <logic>equals</logic>
+                <value></value>
+              </compareText>
+              <compareText>
+                <text>${mediaWikiVersion}</text>
+                <logic>equals</logic>
+                <value></value>
+              </compareText>
+            </ruleList>
+        </actionGroup>
+        
+        <!-- LIN: Create Menu Shortcuts -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                  <program>${installdir}/mediaWiki/installer/mediaWiki/createshortcuts.sh</program>
+                  <programArguments>"${installdir}"</programArguments>
+                  <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+		  <workingDirectory>${installdir}/mediaWiki/installer/mediaWiki</workingDirectory>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError>
+                </runProgram>              
+            </actionList>
+            <ruleList>
+                <compareText>
+                  <logic>contains</logic>
+                  <text>${platform_name}</text>
+                  <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        
+    </postInstallationActionList>    
+
+    <!-- preUninstallation actions -->    
+    <preUninstallationActionList>
+        
+        <!-- Deleting the config file -->    
+	<actionGroup>
+	    <actionList>
+		<deleteFile>
+		    <path>${installdir}/mediaWiki/LocalSettings.php</path>
+		</deleteFile>
+	    </actionList>
+	    <ruleList>
+		<fileExists>
+		    <path>${installdir}/mediaWiki/LocalSettings.php</path>
+	        </fileExists>
+	    </ruleList>
+	</actionGroup>
+
+        <!-- Deleting the config file -->
+        <actionGroup>
+            <actionList>
+                <deleteFile>
+                    <path>${installdir}/mediaWiki/config/LocalSettings.php</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <fileExists>
+                    <path>${installdir}/mediaWiki/config/LocalSettings.php</path>
+                </fileExists>
+            </ruleList>
+        </actionGroup>
+		
+        <!-- LIN: Unsetting the mediaWiki values in the ini file -->
+        <actionGroup>
+            <actionList>
+		 <iniFileSet>
+                  <file>/etc/postgres-reg.ini</file>
+                  <section>mediaWiki</section>
+                  <key>Description</key>
+                  <value></value>
+                </iniFileSet>
+		 <iniFileSet>
+                  <file>/etc/postgres-reg.ini</file>
+                  <section>mediaWiki</section>
+                  <key>InstallationDirectory</key>
+                  <value></value>
+                </iniFileSet>
+		<iniFileSet>
+                  <file>/etc/postgres-reg.ini</file>
+                  <section>mediaWiki</section>
+                  <key>Version</key>
+                  <value></value>
+	        </iniFileSet>
+                <!-- Remove the menu shortcuts -->
+                <runProgram>
+                  <program>${installdir}/mediaWiki/installer/mediaWiki/removeshortcuts.sh</program>
+                  <programArguments>"${installdir}"</programArguments>
+		  <workingDirectory>${installdir}/mediaWiki/installer/mediaWiki</workingDirectory>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </preUninstallationActionList>
+    
+    <!-- Post un-installation actions -->
+    <postUninstallationActionList>
+        <!-- Promt user about the database and role drop/deletion -->
+        <showInfo>
+            <text>${msg(db.drop.info)}</text>
+        </showInfo>
+    </postUninstallationActionList>
+    
+    <!-- Components -->
+    <componentList>
+        <component>
+            <name>mediaWiki</name>
+            <description>mediaWiki</description>
+            <canBeEdited>0</canBeEdited>
+            <selected>1</selected>
+            <show>1</show>
+            <folderList>
+                
+                <!-- LIN: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/mediaWiki</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+		</folder>
+ 		<folder>
+		    <description>Installation Files</description>
+                    <destination>${installdir}/mediaWiki</destination>
+                    <name>installfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+			<distributionDirectory>
+                            <origin>staging/linux/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch And Menu Scripts</description>
+                    <destination>${installdir}/mediaWiki</destination>
+                    <name>menuandlaunchfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+			<distributionDirectory>
+                            <origin>staging/linux/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+		 </folder>
+
+		 <!-- WIN: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/mediaWiki</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+	        </folder>
+		<folder>
+                    <description>Installation Files</description>
+                    <destination>${installdir}/mediaWiki</destination>
+                    <name>installfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch And Menu Scripts</description>
+                    <destination>${installdir}/mediaWiki</destination>
+                    <name>menuandlaunchfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                 </folder>
+
+            </folderList>
+            
+            <!-- WIN: Start Menu -->
+            <startMenuShortcutList>
+                <!-- Launch mediaWiki -->
+                <startMenuShortcut>
+                     <comment>EnterpriseDB mediaWiki</comment>
+                     <name>mediaWiki</name>
+                     <runInTerminal>0</runInTerminal>
+                     <windowsExec>wscript</windowsExec>
+                     <windowsExecArgs>//NoLogo "${installdir}\mediaWiki\scripts\launchMediaWiki.vbs"</windowsExecArgs>
+                     <windowsIcon>${installdir}\mediaWiki\scripts\images\logo.ico</windowsIcon>
+                </startMenuShortcut>
+            </startMenuShortcutList>
+                       
+       </component>
+    </componentList>
+    <parameterList>
+        <!-- PostgreSQL Server Details Verification Page -->
+        <parameterGroup>
+            <name>pgdetails</name>
+            <title>${msg(pgplus.details.title)}</title>
+            <explanation>${msg(pgplus.details.explanation)}</explanation>
+            <value></value>
+            <default></default>
+            <parameterList>
+                <!-- Postgres Host(Default localhost) -->
+                <stringParameter>
+                    <name>pghost</name>
+                    <description>Host</description>
+                    <explanation></explanation>
+                    <value></value>
+                    <default></default>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <width>40</width>
+                </stringParameter>
+                
+                <!-- Postgres Port(Default 5432) -->
+                <stringParameter>
+                    <name>pgport</name>
+                    <description>Port</description>
+                    <explanation></explanation>
+                    <value></value>
+                    <default>5432</default>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <width>40</width>
+                </stringParameter>
+                
+                <!-- Postgres User -->
+                <stringParameter>
+                    <name>pguser</name>
+                    <description>User Name</description>
+                    <explanation></explanation>
+                    <value></value>
+                    <default>${defaultuser}</default>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <width>40</width>
+                </stringParameter>
+                
+                <!-- Postgres User Password -->
+                <passwordParameter>
+                    <name>pgpassword</name>
+                    <title>Password</title>
+                    <description>Password</description>
+                    <explanation></explanation>
+                    <value></value>
+                    <default>${defaultpassword}</default>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <askForConfirmation>0</askForConfirmation>
+                    <descriptionRetype></descriptionRetype>
+                    <width>40</width>
+                </passwordParameter>
+                
+                <!-- Postgres Home Directory -->
+                <directoryParameter>
+                    <name>pghome</name>
+                    <description>PostgreSQL Home Directory</description>
+                    <explanation></explanation>
+                    <value></value>
+                    <default>${defaultpghome}</default>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <mustBeWritable>0</mustBeWritable>
+                    <mustExist>0</mustExist>
+                    <width>40</width>
+                </directoryParameter>
+                
+                <!-- PostgreSQL Server Installed? -->
+                <booleanParameter>
+                    <name>pginstalled</name>
+                    <description>PostgreSQL Installed</description>
+                    <explanation></explanation>
+                    <value>${pginstalled}</value>
+                    <default>0</default>
+                    <ask>0</ask>
+                    <displayStyle>checkbox-right</displayStyle>
+                </booleanParameter>
+            </parameterList>
+	    <ruleList>
+		<compareText>
+		   <text>${mediaWikiVersion}</text>
+		   <logic>equals</logic>
+		   <value></value>
+		</compareText>
+	    </ruleList>
+
+ 	    <!-- Checking the validity of PostgreSQL Server Details -->
+	    <validationActionList>
+
+		<actionGroup>
+		   <actionList>
+			<throwError>
+			     <text>${msg(pgplus.blank.error)}</text>
+			</throwError>
+		   </actionList>
+          	   <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+		   <ruleList>
+			<compareText>
+			   <text>${pghost}</text>
+			   <logic>equals</logic>
+			   <value></value>
+			</compareText>			
+			<compareText>
+                           <text>${pgport}</text>
+                           <logic>equals</logic>
+                           <value></value>
+                        </compareText>
+			<compareText>
+                           <text>${pguser}</text>
+                           <logic>equals</logic>
+                           <value></value>
+                        </compareText>
+			<compareText>
+                           <text>${pgpassword}</text>
+                           <logic>equals</logic>
+                           <value></value>
+                        </compareText>
+			<compareText>
+                           <text>${pghome}</text>
+                           <logic>equals</logic>
+                           <value></value>
+                        </compareText> 
+		  </ruleList>	
+		</actionGroup>
+
+                <!-- Creating a temporary directory -->
+                <createDirectory path="${system_temp_directory}/${product_fullname}"/>
+                
+		<!-- WIN - Unpack Script Files -->
+                <actionGroup>
+                  <actionList>
+                    <!-- Unpacking the Script file to temporary directory -->
+                    <unpackFile>
+                      <component>mediaWiki</component>
+                      <destination>${system_temp_directory}/${product_fullname}/check-connection.bat</destination>
+                      <folder>installfileswindows</folder>
+                      <origin>installer/mediaWiki/check-connection.bat</origin>
+                    </unpackFile>
+		    <unpackFile>
+                      <component>mediaWiki</component>
+                      <destination>${system_temp_directory}/${product_fullname}/check-db.bat</destination>
+                      <folder>installfileswindows</folder>
+                      <origin>installer/mediaWiki/check-db.bat</origin>
+                    </unpackFile>
+                  </actionList>
+                  <ruleList>
+                    <compareText>
+                      <logic>equals</logic>
+                      <text>${platform_name}</text>
+                      <value>windows</value>
+                    </compareText>
+                  </ruleList>
+                </actionGroup>
+              
+		<!-- LIN: Unpack Script Files -->
+                <actionGroup>
+                  <actionList>
+                    <!-- Unpacking the Script file to temporary directory -->
+                    <unpackFile>
+                      <component>mediaWiki</component>
+                      <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
+                      <folder>installfileslinux</folder>
+                      <origin>installer/mediaWiki/check-connection.sh</origin>
+                    </unpackFile>
+		    <unpackFile>
+	               <component>mediaWiki</component>
+                       <destination>${system_temp_directory}/${product_fullname}/check-db.sh</destination>
+                       <folder>installfileslinux</folder>
+                       <origin>installer/mediaWiki/check-db.sh</origin>
+                    </unpackFile>
+                  </actionList>
+                  <ruleList>
+                    <compareText>
+                      <logic>contains</logic>
+                      <text>${platform_name}</text>
+                      <value>linux</value>
+                    </compareText>
+                  </ruleList>
+                </actionGroup>             
+
+		<!-- WIN: validate the PostgreSQL Server Details -->
+              <actionGroup>
+                <actionList>
+                  <!-- Running the Script to validate the PostgreSQL Server Details -->
+                  <setInstallerVariableFromScriptOutput>
+                        <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
+                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
+                        <name>connection</name>
+                        <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                        <customErrorMessage>${msg(pgplus.details.error)}</customErrorMessage>
+                  </setInstallerVariableFromScriptOutput>
+                </actionList>
+                <ruleList>
+                  <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                  </compareText>
+                </ruleList>
+              </actionGroup>
+
+              <!-- LIN: validate the PostgreSQL Server Details -->
+              <actionGroup>
+                <actionList>
+                  <!-- Running the Script to validate the PostgreSQL Server Details -->
+                  <setInstallerVariableFromScriptOutput>
+                        <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
+                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
+                        <name>connection</name>
+                        <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                        <customErrorMessage>${msg(pgplus.details.error)}</customErrorMessage>
+                  </setInstallerVariableFromScriptOutput>
+                </actionList>
+                <ruleList>
+                  <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                  </compareText>
+                </ruleList>
+              </actionGroup>
+
+	      <setInstallerVariable name="dbexist" value="" />
+              <setInstallerVariable name="userexist" value="" />
+
+               <!-- WIN - Check whether the database and user already exists -->
+               <actionGroup>
+                <actionList>
+                    <!-- WIN - Check whether the database already exists -->
+                    <setInstallerVariableFromScriptOutput>
+                              <name>dbexist</name>
+                              <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
+                              <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "mediawiki"</execArgs>
+                              <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
+                              <abortOnError>0</abortOnError>
+                              <showMessageOnError>0</showMessageOnError>
+                   </setInstallerVariableFromScriptOutput>
+                    <!-- WIN - Check whether the user already exists -->
+                    <setInstallerVariableFromScriptOutput>
+                              <name>userexist</name>
+                              <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
+                              <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "mediawikiuser"</execArgs>
+                              <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
+                              <abortOnError>0</abortOnError>
+                              <showMessageOnError>0</showMessageOnError>
+                   </setInstallerVariableFromScriptOutput>
+                </actionList>
+                <ruleList>
+                   <compareText>
+                       <text>${mediaWikiVersion}</text>
+                       <logic>equals</logic>
+                       <value></value>
+                    </compareText>
+                    <compareText>
+                      <logic>equals</logic>
+                      <text>${platform_name}</text>
+                        <value>windows</value>
+                    </compareText>
+                  </ruleList>
+                </actionGroup>   
+
+		 <!-- LIN: Check whether the database and user already exists -->
+               <actionGroup>
+                  <actionList>
+                     <!-- LIN: Check whether the database already exists -->
+                     <setInstallerVariableFromScriptOutput>
+                        <name>dbexist</name>
+                        <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
+                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "mediawiki"</execArgs>
+                        <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                        <abortOnError>0</abortOnError>
+                        <showMessageOnError>0</showMessageOnError>
+                      </setInstallerVariableFromScriptOutput>
+                      <!-- LIN: Check whether the user already exists -->
+                       <setInstallerVariableFromScriptOutput>
+                        <name>userexist</name>
+                        <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
+                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "mediawikiuser"</execArgs>
+                        <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                        <abortOnError>0</abortOnError>
+                        <showMessageOnError>0</showMessageOnError>
+                      </setInstallerVariableFromScriptOutput>
+                  </actionList>
+                  <ruleList>
+                    <compareText>
+                      <text>${mediaWikiVersion}</text>
+                       <logic>equals</logic>
+                      <value></value>
+                     </compareText>
+                      <compareText>
+                        <logic>contains</logic>
+                        <text>${platform_name}</text>
+                        <value>linux</value>
+                      </compareText>
+                   </ruleList>
+              </actionGroup>
+		
+	      <!-- Inform the user about the existing database and user -->
+              <actionGroup>
+		  <actionList>  
+                      <showQuestion>
+                       <text>${msg(db.found.info)}</text>
+                       <variable>response</variable>
+                     </showQuestion> 
+                   </actionList>
+                   <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                   <ruleList>
+                     <compareText>
+                      <text>${dbexist}</text>
+                      <logic>does_not_equal</logic>
+                      <value></value>
+                     </compareText>
+                     <compareText>
+                      <text>${userexist}</text>
+                      <logic>does_not_equal</logic>
+                      <value></value>
+                     </compareText>
+                     <compareText>
+                      <text>${mediaWikiVersion}</text>
+                      <logic>does_not_equal</logic>
+                      <value></value>
+                     </compareText>
+                   </ruleList>
+                  </actionGroup>
+
+               <!-- Exit the installation if the user wants to quit -->
+               <actionGroup>
+                  <actionList>
+                        <exit>
+                           <exitCode>0</exitCode>
+                        </exit>
+                  </actionList>
+                  <ruleList>
+                        <compareText>
+                           <logic>equals</logic>
+                           <value>no</value>
+                           <text>${response}</text>
+                        </compareText>
+                  </ruleList>
+               </actionGroup>
+
+              </validationActionList>
+        </parameterGroup>
+    </parameterList>
+</project>
+

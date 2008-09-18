@@ -1,0 +1,790 @@
+<project>
+    <!-- Package details -->
+    <shortName>ApachePhp</shortName>
+    <fullName>ApachePhp</fullName>
+    <version>2.2.9-5.2.6</version>
+    
+    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <startMenuGroupName>PostgreSQL</startMenuGroupName>
+
+    <!-- Product Specific Options -->
+    <productComments>EnterpriseDB ${product_fullname}</productComments>
+    <productDisplayName>EnterpriseDB ${product_shortname}</productDisplayName>
+    <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
+    <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
+    
+    <!-- The options are used for RPM registration -->
+    <description>EnterpriseDB ${product_fullname}</description>
+    <summary>${msg(install.summary)}</summary>
+    <vendor>EnterpriseDB</vendor>
+    <release>1</release>
+
+    <!-- Installer Size -->
+    <width>550</width>
+    <height>400</height>
+
+    <!-- Misc options -->
+    <compressionAlgorithm>lzma</compressionAlgorithm>
+    <enableRollback>0</enableRollback>
+    <requireInstallationByRootUser>1</requireInstallationByRootUser>
+    <saveRelativePaths>1</saveRelativePaths>
+    <outputDirectory>../output</outputDirectory>
+    <uninstallerName>uninstall-${product_shortname}</uninstallerName>	
+    <uninstallerDirectory>${installdir}</uninstallerDirectory>
+    <unattendedModeUI>minimal</unattendedModeUI>
+    <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+    
+    <!-- Images -->
+    <leftImage>resources/leftImage.png</leftImage>
+    <logoImage>resources/edblogo.png</logoImage>
+    <splashImage>resources/splash.png</splashImage>
+    <!-- productDisplayIcon>${installdir}/resources/logo.ico</productDisplayIcon>
+    <windowsExecutableIcon>resources/logo.ico</windowsExecutableIcon -->
+    <wmImage>resources/logo.png</wmImage>
+
+    
+    <!-- i18n files for the UI -->
+    <customLanguageFileList>
+        <language>
+            <code>en</code>
+            <encoding>iso8859-1</encoding>
+            <file>i18n/en.lng</file>
+        </language>
+    </customLanguageFileList>
+
+    <!-- Preinstallation actions -->
+    <preInstallationActionList>
+
+        <urlEncode>
+           <text>www.enterprisedb.com</text>
+           <variable>urledb</variable>
+        </urlEncode>
+
+        <!-- Getting apache home value from ini file - Linux -->
+	<actionGroup>
+	   <actionList>
+	    	<setInstallerVariable name="apacheport" value=""/>
+		<iniFileGet>
+		    <file>/etc/postgres-reg.ini</file>
+		    <section>ApachePhp</section>
+		    <key>APACHE_HOME</key>
+		    <variable>apache_home</variable>
+		    <abortOnError>0</abortOnError>
+		    <showMessageOnError>0</showMessageOnError>
+		</iniFileGet>
+		<iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ApachePhp</section>
+                    <key>APACHE_PORT</key>
+                    <variable>apacheport</variable>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </iniFileGet>
+	   </actionList>
+	   <ruleList>
+                <compareText>
+                   <logic>contains</logic>
+                   <text>${platform_name}</text>
+                   <value>linux</value>
+                </compareText>
+         </ruleList>
+	</actionGroup>
+      
+        <!-- Stopping apache if already started - Linux -->
+        <actionGroup>
+           <actionList>
+                <runProgram>
+                    <program>${apache_home}/bin/apachectl</program>
+                    <programArguments>"stop"</programArguments>
+                    <workingDirectory>${apache_home}/bin</workingDirectory>
+		    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+           </actionList>
+           <ruleList>
+                <compareText>
+                   <logic>contains</logic>
+                   <text>${platform_name}</text>
+                   <value>linux</value>
+                </compareText>
+		 <compareText>
+                   <logic>does_not_equal</logic>
+                   <text>${apache_home}</text>
+                   <value></value>
+                </compareText>
+         </ruleList>
+        </actionGroup>
+ 
+
+	<!-- WIN : Set the Apache Port from registry. ApachePhp Installation would have set these values -->
+	<actionGroup>
+            <actionList>
+	    	<setInstallerVariable name="apacheport" value=""/>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+                    <name>APACHE_PORT</name>
+                    <variable>apacheport</variable>
+                </registryGet>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+                    <name>APACHE_HOME</name>
+                    <variable>apachehome</variable>
+                </registryGet>
+            </actionList>
+	    <ruleList>
+                <compareText>
+                   <logic>contains</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+                </compareText>
+            </ruleList>
+
+        </actionGroup>
+
+        <!-- Setting the installation type as upgrade if previous installation found -->
+        <actionGroup>
+	    <actionList>
+		<setInstallerVariable name="installationType" value="upgrade" />
+	    </actionList>
+	    <ruleList>
+		<compareText>
+		    <logic>does_not_equal</logic>		
+		    <text>${apache_home}</text>
+		    <value></value>
+		</compareText>
+            </ruleList>
+	</actionGroup>
+
+        <!-- WIN : Set the Apache Installation Directory from registry. ApachePhp Installation would have set these values -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installdir" value="" persist="1"/>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+                    <name>Location</name>
+                    <variable>installdir</variable>
+                </registryGet>
+            </actionList>
+	    <ruleList>
+                <compareText>
+                   <logic>contains</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+                </compareText>
+            </ruleList>
+
+        </actionGroup> 
+	
+	<!-- Set the default port value for apache -->
+	<setInstallerVariable name="defaultport" value="8080" />
+
+	<!-- Set the default port to the previously installed apache port if exists -->
+        <actionGroup>
+           <actionList>
+	        <setInstallerVariable name="defaultport" value="${apacheport}" />
+	   </actionList>
+	   <ruleList>
+		<compareText>
+		   <logic>does_not_equal</logic>
+		   <value></value>
+		   <text>${apacheport}</text>
+		</compareText>
+	   </ruleList>
+	</actionGroup>
+
+        <!-- Set the default values for unattended mode -->
+        <actionGroup>
+           <actionList>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgreSQL/EnterpriseDB-${product_shortname}" persist="1"/>
+                <setInstallerVariable name="defaultport" value="8080"/>
+           </actionList>
+           <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+           </ruleList>
+        </actionGroup>
+
+ 
+    </preInstallationActionList>
+
+    <!-- Postinstallation actions -->
+    <postInstallationActionList>
+
+	<!-- Setting the PORT, SERVER-ROOT in httpd.conf file -->
+        <actionGroup>
+            <actionList>
+                  <substitute>
+                       <files>${installdir}/apache/conf/httpd.conf</files>
+                       <substitutionList>
+                          <substitution>
+                             <pattern>@@PORT@@</pattern>
+                             <value>${port}</value>
+                          </substitution>
+                          <substitution>
+                            <pattern>@@INSTALL_DIR@@</pattern>
+                            <value>${installdir}/apache</value>
+                           </substitution>
+                       </substitutionList>
+                 </substitute>
+
+		<!-- Configuring Scripts to set the installation path in Apache and Php -->
+		 <runProgram>
+                    <customErrorMessage>${msg(error.configure.apachephp)}</customErrorMessage>
+                    <program>${installdir}/installer/ApachePhp/configureApachePhp.sh</program>
+                    <programArguments>"${installdir}"</programArguments>
+                    <workingDirectory>${installdir}/installer/ApachePhp</workingDirectory>
+                </runProgram>
+
+		<!-- Adding text for php config in apache -->
+		<addTextToFile>
+		    <file>${installdir}/apache/conf/httpd.conf</file>
+		    <text>
+AddHandler php5-script php
+DirectoryIndex index.html index.php
+AddType text/html       php
+		    </text>
+		</addTextToFile>
+
+		<!-- Deleting the default index.html -->
+		<deleteFile>
+			<path>${installdir}/apache/www/index.html</path>
+		</deleteFile>
+
+		<!-- Install ApachePhp as a service -->
+		<copyFile>
+		        <origin>${installdir}/apache/bin/apachectl</origin>
+			<destination>/etc/rc.d/init.d/EnterpriseDBApachePhp</destination>
+		</copyFile>
+           </actionList>
+	    <ruleList>
+                <compareText>
+                   <logic>contains</logic>
+                   <text>${platform_name}</text>
+                   <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+	<actionGroup>
+            <actionList>
+                <!-- Set the Apache Home , PHP Home and Apache Port(default 8080) to inifile. -->
+                <iniFileSet>
+                       <file>/etc/postgres-reg.ini</file>
+                       <section>ApachePhp</section>
+                       <key>APACHE_HOME</key>
+                       <value>${installdir}/apache</value>
+                </iniFileSet>
+                <iniFileSet>
+                       <file>/etc/postgres-reg.ini</file>
+                       <section>ApachePhp</section>
+                       <key>APACHE_PORT</key>
+                       <value>${port}</value>
+                </iniFileSet>
+                <iniFileSet>
+                       <file>/etc/postgres-reg.ini</file>
+                       <section>ApachePhp</section>
+                       <key>PHP_HOME</key>
+                       <value>${installdir}/php</value>
+                </iniFileSet>
+		 <iniFileSet>
+                       <file>/etc/postgres-reg.ini</file>
+                       <section>ApachePhp</section>
+                       <key>Description</key>
+                       <value>${msg(install.summary)}</value>
+                </iniFileSet>
+		 <iniFileSet>
+                       <file>/etc/postgres-reg.ini</file>
+                       <section>ApachePhp</section>
+                       <key>InstallationDirectory</key>
+                       <value>${installdir}</value>
+                </iniFileSet>
+		 <iniFileSet>
+                       <file>/etc/postgres-reg.ini</file>
+                       <section>ApachePhp</section>
+                       <key>Version</key>
+                       <value>${product_version}</value>
+                </iniFileSet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${apacheport}</text>
+                    <value></value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+	<actionGroup>
+           <actionList>
+                <!-- Linux - Creating Menu Shortcuts -->
+                 <runProgram>
+                    <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
+                    <program>${installdir}/installer/ApachePhp/createshortcuts.sh</program>
+                    <programArguments>"${installdir}"</programArguments>
+		    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                    <workingDirectory>${installdir}/installer/ApachePhp</workingDirectory>
+                </runProgram>
+
+                <!-- Linux - Starting Apache -->
+                 <runProgram>
+                    <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
+                    <program>${installdir}/apache/bin/apachectl</program>
+                    <programArguments>"start"</programArguments>
+                    <workingDirectory>${installdir}/apache/bin</workingDirectory>
+                </runProgram>
+           </actionList>
+           <ruleList>
+                <compareText>
+                   <logic>contains</logic>
+                   <text>${platform_name}</text>
+                   <value>linux</value>
+                </compareText>
+          </ruleList>
+        </actionGroup>
+
+	<!-- Install Apache as Service -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <customErrorMessage>${msg(error.install.apache)}</customErrorMessage>
+                    <program>${installdir}\apache\install-apache.bat</program>
+                    <programArguments></programArguments>
+                    <workingDirectory>${installdir}\apache</workingDirectory>
+                </runProgram>
+	    </actionList>
+	    <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+		<compareText>
+                    <logic>equals</logic>
+                    <text>${apacheport}</text>
+                    <value></value>
+                </compareText>
+            </ruleList>
+	</actionGroup>	
+
+        <actionGroup>
+            <actionList>
+                <!-- Set the Apache Home , PHP Home and Apache Port(default 8080) to registry. -->
+                <registrySet>
+                       <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+                       <name>APACHE_HOME</name>
+                       <value>${installdir}\apache</value>
+                </registrySet>
+                <registrySet>
+                       <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+                       <name>APACHE_PORT</name>
+                       <value>${port}</value>
+                </registrySet>
+                <registrySet>
+                       <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+                       <name>PHP_HOME</name>
+                       <value>${installdir}\php</value>
+                </registrySet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+		<compareText>
+                    <logic>equals</logic>
+                    <text>${apacheport}</text>
+                    <value></value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+       
+	<actionGroup>
+	   <actionList>
+		<!-- WIN - Starting Apache -->
+		 <runProgram>
+                    <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
+         	    <program>wscript</program>
+	            <programArguments>//NOLOGO "${installdir}\apache\startApache.vbs" "${installdir}"</programArguments>
+		    <workingDirectory>${installdir}\apache</workingDirectory>	
+        	</runProgram>
+	   </actionList>
+	   <ruleList>
+                <compareText>
+                   <logic>contains</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+                </compareText>
+          </ruleList>
+	</actionGroup>
+
+	<!-- WIN! Deleting Installation helper scripts -->
+
+	<actionGroup>
+	   <actionList>
+		<deleteFile>
+		  <path>${installdir}\installer</path>
+		</deleteFile>
+		<deleteFile>
+		  <path>${installdir}\apache\startApache.vbs</path>
+		</deleteFile>
+		<deleteFile>
+		  <path>${installdir}\apache\stopApache.vbs</path>
+		</deleteFile>
+		<deleteFile>
+		  <path>${installdir}\apache\stopApacheService.bat</path>
+		</deleteFile>
+	  </actionList>
+	  <ruleList>
+                <compareText>
+                   <logic>contains</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+                </compareText>
+          </ruleList>
+	</actionGroup>
+
+    </postInstallationActionList>
+    
+    <!-- preUninstallation actions -->
+    <preUninstallationActionList>
+
+      <!-- Linux actionList -->
+      <actionGroup>
+         <actionList>
+
+	  <!-- Stop Apache -->
+          <runProgram>
+                 <customErrorMessage>${msg(error.uninstall.stop.apache)}</customErrorMessage>
+                 <program>${installdir}/apache/bin/apachectl</program>
+                 <programArguments>"stop"</programArguments>
+                 <workingDirectory>${installdir}/apache/bin</workingDirectory>
+          </runProgram>
+
+	  <!-- Remove the shortcuts -->
+          <runProgram>
+                 <customErrorMessage>${msg(error.uninstall.apache)}</customErrorMessage>
+                 <program>${installdir}/installer/ApachePhp/removeshortcuts.sh</program>
+                 <programArguments>"${installdir}"</programArguments>
+                 <workingDirectory>${installdir}/installer/ApachePhp</workingDirectory>
+          </runProgram>
+
+	  <!-- Unset values in the ini file -->
+          <iniFileSet>
+            <file>/etc/postgres-reg.ini</file>
+            <section>ApachePhp</section>
+            <key>APACHE_HOME</key>
+            <value></value>
+          </iniFileSet>
+	  <iniFileSet>
+            <file>/etc/postgres-reg.ini</file>
+            <section>ApachePhp</section>
+            <key>APACHE_PORT</key>
+            <value></value>
+          </iniFileSet>
+          <iniFileSet>
+            <file>/etc/postgres-reg.ini</file>
+            <section>ApachePhp</section>
+            <key>PHP_HOME</key>
+            <value></value>
+          </iniFileSet>
+	  <iniFileSet>
+            <file>/etc/postgres-reg.ini</file>
+            <section>ApachePhp</section>
+            <key>Description</key>
+            <value></value>
+          </iniFileSet>
+	  <iniFileSet>
+            <file>/etc/postgres-reg.ini</file>
+            <section>ApachePhp</section>
+            <key>InstallationDirectory</key>
+            <value></value>
+          </iniFileSet>
+          <iniFileSet>
+            <file>/etc/postgres-reg.ini</file>
+            <section>ApachePhp</section>
+            <key>Version</key>
+            <value></value>
+          </iniFileSet>
+	
+	  <!-- Uninstall the ApachePhp service -->
+	  <deleteFile>
+		<path>/etc/rc.d/init.d/EnterpriseDBApachePhp</path>
+	  </deleteFile>
+        </actionList>
+        <ruleList>
+           <compareText>
+                <logic>contains</logic>
+                <text>${platform_name}</text>
+                <value>linux</value>
+           </compareText>
+        </ruleList>
+      </actionGroup>
+
+       <!-- WIN actionList -->
+        <actionGroup>
+         <actionList>
+          <!-- Stop Apache -->
+          <runProgram>
+                 <customErrorMessage>${msg(error.uninstall.apache)}</customErrorMessage>
+                 <program>${installdir}\apache\stop-apache.bat</program>
+                 <programArguments></programArguments>
+                 <workingDirectory>${installdir}\apache</workingDirectory>
+          </runProgram>
+
+        <!-- Uninstall Apache Service -->
+        <runProgram>
+                <customErrorMessage>${msg(error.uninstall.apache)}</customErrorMessage>
+                <program>${installdir}\apache\uninstall-apache.bat</program>
+                <programArguments></programArguments>
+                <workingDirectory>${installdir}\apache</workingDirectory>
+          </runProgram>
+        </actionList>
+        <ruleList>
+           <compareText>
+                <logic>contains</logic>
+                <text>${platform_name}</text>
+                <value>windows</value>
+           </compareText>
+        </ruleList>
+      </actionGroup>
+
+	
+      <!-- Deleting the apache server logs if exists -->	
+      <actionGroup>
+	  <actionList>
+		<deleteFile>
+		   <path>${installdir}/apache/logs</path>
+		</deleteFile>
+	  </actionList>
+	  <ruleList>
+		<fileExists>
+		   <path>${installdir}/apache/logs</path>
+	        </fileExists>
+	  </ruleList>
+      </actionGroup>		
+
+    </preUninstallationActionList>
+    
+    <!-- Components -->
+    <componentList>
+        <component>
+            <name>ApachePhp</name>
+            <description>Apache + Php</description>
+            <canBeEdited>0</canBeEdited>
+            <selected>1</selected>
+            <show>1</show>
+            <folderList>
+                <!-- WIN: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfiles</name>
+                    <platforms>all</platforms>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/apache</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/windows/php</origin>
+                        </distributionDirectory>
+			<distributionDirectory>
+                            <origin>staging/windows/installer</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>resources</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+		<folder>
+                    <description>Installation Files</description>
+                    <destination>${installdir}/apache</destination>
+                    <name>installationfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/windows/installer/ApachePhp/install-apache.bat</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/installer/ApachePhp/uninstall-apache.bat</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/installer/ApachePhp/start-apache.bat</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/installer/ApachePhp/stop-apache.bat</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/installer/ApachePhp/restart-apache.bat</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/installer/ApachePhp/startApache.vbs</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch Application Files</description>
+                    <destination>${installdir}/apache</destination>
+                    <name>launchappfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/windows/scripts/launchApachePhp.vbs</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+		<!-- Linux Program Files -->
+		<folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/apache</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/php</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/installer</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/scripts</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>resources</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                 </folder>
+                 <folder>
+                    <description>Startup Files</description>
+                    <destination>${installdir}/apache/www/images</destination>
+                    <name>startupimagefileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>resources/edblogo.gif</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                  </folder>   
+            </folderList>   
+            <!-- WIN: Start Menu -->
+            <startMenuShortcutList>
+                <startMenuShortcut>
+                    <!-- Launch Apache -->
+                    <comment>EnterpriseDB ApachePHP</comment>
+                    <name>EnterpriseDB ApachePHP</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>wscript</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\apache\launchApachePhp.vbs"</windowsExecArgs>
+                    <windowsIcon>${installdir}/resources/run.ico</windowsIcon>
+                </startMenuShortcut>
+            </startMenuShortcutList>
+        </component>
+    </componentList>
+
+    <parameterList>
+        <parameterGroup>
+
+            <!-- Apache Port -->
+            <name>apacheport</name>
+            <title>${msg(apache.details.title)}</title>
+            <explanation>${msg(apache.details.explanation)}</explanation>
+            <value></value>
+            <default></default>
+            <parameterList>
+                <stringParameter>
+                    <name>port</name>
+                    <description>Apache Port</description>
+                    <explanation></explanation>
+                    <value></value>
+                    <default>${defaultport}</default>
+                    <allowEmptyValue>0</allowEmptyValue>
+                    <width>40</width>
+		    <validationActionList>
+		       <throwError>
+			  <text>Unable to bind to the given port number. Please select another one.</text>
+			  <ruleList>
+		  	    <portTest>
+			      <condition>cannot_bind</condition>
+		              <port>${port}</port>
+		            </portTest>
+			  </ruleList>
+			</throwError>
+		   </validationActionList>
+                </stringParameter>
+            </parameterList>
+	    <ruleList>
+		<compareText>
+		   <text>${apacheport}</text>
+		   <logic>equals</logic>
+		   <value></value>
+		</compareText>
+	    </ruleList>	
+        </parameterGroup>
+        
+        <!-- Install Directory -->
+        <directoryParameter>
+            <name>installdir</name>
+            <description>Installer.Parameter.installdir.description</description>
+            <explanation>Installer.Parameter.installdir.explanation</explanation>
+            <value>${platform_install_prefix}/PostgreSQL/EnterpriseDB-${product_shortname}</value>
+            <default>${platform_install_prefix}/PostgreSQL/EnterpriseDB-${product_shortname}</default>
+            <allowEmptyValue>0</allowEmptyValue>
+            <ask>yes</ask>
+            <cliOptionName>prefix</cliOptionName>
+            <mustBeWritable>yes</mustBeWritable>
+            <mustExist>0</mustExist>
+            <width>40</width>
+	    <ruleList>
+                <compareText>
+                   <text>${apacheport}</text>
+                   <logic>equals</logic>
+                   <value></value>
+                </compareText>
+            </ruleList>	
+            <!-- Validating whether installdir contains whitespaces (Linux) -->
+	    <postShowPageActionList>
+		<actionGroup>
+		  <actionList>
+		     <throwError>
+		  	   <text>${msg(apachephp.installdir.error)}</text>
+	  	     </throwError>
+		  </actionList>
+		  <ruleList>
+		    <regExMatch>
+			<text>${installdir}</text>
+			<logic>does_not_match</logic>
+			<pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+		    </regExMatch>
+		    <compareText>
+			<text>${platform_name}</text>
+			<logic>contains</logic>
+			<value>linux</value>
+		    </compareText>
+		    <compareText>
+                        <text>${platform_name}</text>
+                        <logic>contains</logic>
+                        <value>osx</value>
+                    </compareText>	
+                  </ruleList>	
+               </actionGroup>
+	    </postShowPageActionList>	
+        </directoryParameter>        
+    </parameterList>
+</project>

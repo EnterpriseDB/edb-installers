@@ -1,0 +1,552 @@
+
+<project>
+    <!-- Package details -->
+    <shortName>Slony</shortName>
+    <fullName>Slony</fullName>
+    <version>PG_SLONY_VERSION</version>
+    
+    <!-- These options are used on Windows -->
+    <startMenuGroupName>PostgreSQL</startMenuGroupName>
+
+    <!-- Product Specific Options -->
+    <productDisplayName>EnterpriseDB ${product_fullname} ${product_version}</productDisplayName>
+    <productComments>EnterpriseDB ${product_fullname} ${product_version}</productComments>
+    <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
+    <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
+    
+    <!-- The options are used for RPM registration -->
+    <description>${product_fullname} ${product_version} by EnterpriseDB</description>
+    <summary>${msg(install.summary)}</summary>
+    <vendor>EnterpriseDB</vendor>
+    <release>1</release>
+
+    <!-- Installer Size -->
+    <width>550</width>
+    <height>400</height>
+    
+    <!-- Misc package options -->
+    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <enableRollback>0</enableRollback>
+    <requireInstallationByRootUser>1</requireInstallationByRootUser>	
+    <saveRelativePaths>1</saveRelativePaths>
+    <outputDirectory>../output</outputDirectory>
+    <uninstallerDirectory>${installdir}/Slony</uninstallerDirectory>
+    <uninstallerName>uninstall-${product_shortname}</uninstallerName>	
+    <unattendedModeUI>minimal</unattendedModeUI>
+    <compressionAlgorithm>lzma</compressionAlgorithm>
+    <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+ 
+    <!-- Images -->
+    <leftImage>resources/leftImage.png</leftImage>
+    <logoImage>resources/edblogo.png</logoImage>
+    <splashImage>resources/splash.png</splashImage>
+    <wmImage>resources/edblogo.png</wmImage>
+    
+    <!-- i18n files for the UI -->
+    <customLanguageFileList>
+        <language>
+            <code>en</code>
+            <encoding>iso8859-1</encoding>
+            <file>i18n/en.lng</file>
+        </language>
+    </customLanguageFileList>
+   
+     
+    <!-- Initialisation actions -->
+    <initializationActionList>
+        
+        <!-- Set the Slony version(if exists) -->
+        <setInstallerVariable name="SlonyVersion" value="">
+            <persist>0</persist>
+        </setInstallerVariable>
+
+        <!-- WIN: Set the  pghome default value for unattended mode -->
+        <actionGroup>
+            <actionList>
+              <setInstallerVariable name="defaultpghome" value="${env(SYSTEMDIR)}\Program Files\PostgreSQL\8.3"/>
+            </actionList>
+            <ruleList>
+              <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        
+        <!-- LINUX: Set the  pghome default value for unattended mode -->
+        <actionGroup>
+            <actionList>
+              <setInstallerVariable name="defaultpghome" value="/opt/PostgreSQL/8.3"/>
+            </actionList>
+            <ruleList>
+              <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+
+
+    </initializationActionList>
+    
+    <!-- Preinstallation actions -->
+    <preInstallationActionList>
+
+	<setInstallerVariable name="defaultpghome" value="${pghome}" />
+
+ 	<!-- WIN: Set the  pghome default value when pghome not set -->
+        <actionGroup>
+            <actionList>
+              <setInstallerVariable name="defaultpghome" value="${env(SYSTEMDIR)}\Program Files\PostgreSQL\8.3"/>
+            </actionList>
+            <ruleList>
+              <compareText>
+                    <logic>equals</logic>
+                    <text>${pghome}</text>
+                    <value></value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+        <!-- LINUX: Check Previous Installation of Slony -->
+        <actionGroup>
+            <actionList>
+                <iniFileGet>
+                  <file>/etc/postgres-reg.ini</file>  
+                  <section>Slony</section>
+                  <key>Version</key>
+                  <variable>SlonyVersion</variable>
+              </iniFileGet>
+            </actionList>            
+              <ruleList>
+                  <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                  </compareText>
+              </ruleList>
+        </actionGroup>
+
+         <!-- Setting the installation type as upgrade if previous installation found -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installationType" value="upgrade" />
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${SlonyVersion}</text>
+                    <value></value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+        <!-- LINUX: Set the  pghome default value when pghome not set -->
+        <actionGroup>
+            <actionList>
+              <setInstallerVariable name="defaultpghome" value="/opt/PostgreSQL/8.3"/>
+            </actionList>
+            <ruleList>
+              <compareText>
+                    <logic>equals</logic>
+                    <text>${pghome}</text>
+                    <value></value>
+                </compareText>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+  
+        
+        <!-- WIN: Check Previous Installation of Slony -->
+         <actionGroup>
+            <actionList>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Slony</key>
+                    <name>Version</name>
+                    <variable>SlonyVersion</variable>
+                </registryGet>
+            </actionList>
+            <ruleList>
+              <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+              </compareText>
+            </ruleList>
+        </actionGroup>
+
+        <!-- Create a Directory for installation -->
+	<actionGroup>
+	   <actionList>
+	        <createDirectory path="${installdir}/Slony" />
+	   </actionList>
+	   <ruleList>
+		<fileTest>
+		   <path>${installdir}/Slony</path>
+		   <condition>not_exists</condition>
+		</fileTest>
+	   </ruleList>
+	</actionGroup>	
+
+    </preInstallationActionList>
+    
+    
+    <!-- Post installation actions -->
+    <postInstallationActionList>
+       
+        <!-- Write the Slony Version to INI File -->
+        <actionGroup>
+            <actionList>
+	      <iniFileSet>
+                  <file>/etc/postgres-reg.ini</file>
+                  <section>Slony</section>
+                  <key>Description</key>
+                  <value>${msg(install.summary)}</value>
+                </iniFileSet>
+                <iniFileSet>
+                  <file>/etc/postgres-reg.ini</file>
+                  <section>Slony</section>
+                  <key>InstallationDirectory</key>
+                  <value>${installdir}</value>
+                </iniFileSet>
+              <iniFileSet>
+                  <file>/etc/postgres-reg.ini</file>  
+                  <section>Slony</section>
+                  <key>Version</key>
+                  <value>${product_version}</value>
+              </iniFileSet>
+            </actionList>
+            <ruleList>
+              <compareText>
+                <text>${platform_name}</text>
+                <logic>contains</logic>
+                <value>linux</value>
+              </compareText>
+            </ruleList>	
+        </actionGroup>
+        
+        <!-- LINUX: Create Menu Shortcuts -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                  <program>${installdir}/Slony/installer/Slony/createshortcuts.sh</program>
+                  <programArguments>"${installdir}"</programArguments>
+                  <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError>
+                </runProgram>              
+            </actionList>
+            <ruleList>
+                <compareText>
+                  <logic>contains</logic>
+                  <text>${platform_name}</text>
+                  <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+        <!-- LINUX: Configure Slony -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                  <program>${installdir}/Slony/installer/Slony/configureslony.sh</program>
+                  <programArguments>"${installdir}"</programArguments>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError>
+                </runProgram>              
+            </actionList>
+            <ruleList>
+		<compareText>
+		  <logic>equals</logic>
+		  <text>${SlonyVersion}</text>
+		  <value></value>
+		</compareText>
+                <compareText>
+                  <logic>contains</logic>
+                  <text>${platform_name}</text>
+                  <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+
+    </postInstallationActionList>    
+
+    <!-- preUninstallation actions -->    
+    <preUninstallationActionList>
+        
+        <!-- Unsetting the Slony values in the ini file -->
+        <actionGroup>
+            <actionList>
+		<iniFileSet>
+                  <file>/etc/postgres-reg.ini</file>
+                  <section>Slony</section>
+                  <key>Description</key>
+                  <value></value>
+                </iniFileSet>
+                <iniFileSet>
+                  <file>/etc/postgres-reg.ini</file>
+                  <section>Slony</section>
+                  <key>InstallationDirectory</key>
+                  <value></value>
+                </iniFileSet>
+		<iniFileSet>
+                  <file>/etc/postgres-reg.ini</file>
+                  <section>Slony</section>
+                  <key>Version</key>
+                  <value></value>
+	        </iniFileSet>
+                <runProgram>
+                  <program>${installdir}/Slony/installer/Slony/removeshortcuts.sh</program>
+                  <programArguments>"${installdir}"</programArguments>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+	
+        <!-- Setting the pg_config -pkglibdir -->
+	<setInstallerVariableFromScriptOutput>
+             <name>libdir</name>
+             <exec>${installdir}/Slony/installer/Slony/getlibdir.sh</exec>
+             <execArgs></execArgs>
+             <workingDirectory>installdir}/Slony/installer/Slony</workingDirectory>
+             <abortOnError>0</abortOnError>
+             <showMessageOnError>1</showMessageOnError>
+        </setInstallerVariableFromScriptOutput>
+
+        <!-- Deleting library files we copied to other place while installation -->
+	<actionGroup>
+	    <actionList>
+		<setInstallerVariableFromScriptOutput>
+                        <name>libdir</name>
+                        <exec>${installdir}/Slony/installer/Slony/getlibdir.sh</exec>
+                        <execArgs></execArgs>
+                        <workingDirectory>installdir}/Slony/installer/Slony</workingDirectory>
+                        <abortOnError>0</abortOnError>
+                        <showMessageOnError>1</showMessageOnError>
+                </setInstallerVariableFromScriptOutput>
+		<deleteFile>
+			<path>${libdir}/slony1_funcs.so</path>
+		</deleteFile>
+		<deleteFile>
+                        <path>${libdir}/xxid.so</path>
+                </deleteFile>
+	    </actionList>
+	    <ruleList>
+                <compareValues>
+                        <logic>does_not_equal</logic>
+                        <value1>${installdir}/lib</value1>
+                        <value2>${libdir}</value2>
+                </compareValues>
+             </ruleList>
+        </actionGroup>
+    </preUninstallationActionList>
+    
+    <!-- Components -->
+    <componentList>
+        <component>
+            <name>Slony</name>
+            <description>Slony</description>
+            <canBeEdited>0</canBeEdited>
+            <selected>1</selected>
+            <show>1</show>
+            <folderList>
+                
+                <!-- LINUX: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/bin</destination>
+                    <name>programfilesbinlinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux/bin/slon</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux/bin/slonik</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux/bin/slony_logshipper</origin>
+                        </distributionFile>
+                    </distributionFileList>
+		</folder>
+		<folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/lib</destination>
+                    <name>programfilesliblinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux/lib/slony1_funcs.so</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux/lib/xxid.so</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+		<folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/share</destination>
+                    <name>programfilessharelinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/Slony</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+ 		<folder>
+		    <description>Installation Files</description>
+                    <destination>${installdir}/Slony</destination>
+                    <name>installfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+			<distributionDirectory>
+                            <origin>staging/linux/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch And Menu Scripts</description>
+                    <destination>${installdir}/Slony</destination>
+                    <name>menuandlaunchfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+			<distributionDirectory>
+                            <origin>staging/linux/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+		 </folder>
+            </folderList>
+            
+       </component>
+    </componentList>
+		
+    <parameterList>
+	
+        <!-- Postgres Home Directory for CLI Option -->
+        <directoryParameter>
+             <name>pghome</name>
+             <description>PostgreSQL Home Directory</description>
+             <explanation></explanation>
+             <value></value>
+             <default>${installdir}</default>
+             <allowEmptyValue>1</allowEmptyValue>
+             <mustBeWritable>0</mustBeWritable>
+             <mustExist>0</mustExist>
+             <ask>0</ask>
+             <width>40</width>
+        </directoryParameter>
+
+        <!-- Default Postgres Home for CLI Option -->
+        <stringParameter>
+             <name>defaultpghome</name>
+             <description></description>
+             <explanation></explanation>
+             <value></value>
+             <default></default>
+             <ask>0</ask>
+             <allowEmptyValue>1</allowEmptyValue>
+             <width>40</width>
+        </stringParameter>
+
+        <!-- Install Directory -->
+        <directoryParameter>
+            <name>installdir</name>
+            <description>Installer.Parameter.installdir.description</description>
+            <explanation>Installer.Parameter.installdir.explanation</explanation>
+            <value></value>
+            <default>${defaultpghome}</default>
+            <allowEmptyValue>0</allowEmptyValue>
+            <ask>yes</ask>
+            <cliOptionName>prefix</cliOptionName>
+            <mustBeWritable>yes</mustBeWritable>
+            <mustExist>0</mustExist>
+            <width>40</width>
+            <ruleList>
+                <compareText>
+                   <text>${SlonyVersion}</text>
+                   <logic>equals</logic>
+                   <value></value>
+                </compareText>
+            </ruleList>
+
+            <!-- Validating whether installdir contains whitespaces (Linux) -->
+            <validationActionList>
+                <actionGroup>
+                  <actionList>
+                     <throwError>
+                           <text>${msg(slony.installdir.error)}</text>
+                     </throwError>
+                  </actionList>
+                  <ruleList>
+                    <regExMatch>
+                        <text>${installdir}</text>
+                        <logic>matches</logic>
+                        <pattern>^.*\s.*$</pattern>
+                    </regExMatch>
+                    <compareText>
+                        <text>${platform_name}</text>
+                        <logic>contains</logic>
+                        <value>linux</value>
+                    </compareText>
+                  </ruleList>
+               </actionGroup>
+            </validationActionList>
+
+            <validationActionList>
+                <actionGroup>
+                  <actionList>
+                     <throwError>
+                           <text>${msg(slony.installdir.pgerror)}</text>
+                     </throwError>
+                  </actionList>
+                  <ruleList>
+                    <fileTest>
+                        <path>${installdir}/bin/psql</path>
+                        <condition>not_exists</condition>
+                    </fileTest>
+                    <fileTest>
+                        <path>${installdir}/bin/postgres</path>
+                        <condition>not_exists</condition>
+                    </fileTest>
+                    <compareText>
+                        <text>${platform_name}</text>
+                        <logic>contains</logic>
+                        <value>linux</value>
+                    </compareText>
+                  </ruleList>
+               </actionGroup>
+            </validationActionList>
+        </directoryParameter>        
+    </parameterList>
+</project>
+
