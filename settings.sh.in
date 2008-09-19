@@ -8,7 +8,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 
 # Source tarball versions
 
-PG_TARBALL_POSTGRESQL=8.3.3
+PG_TARBALL_POSTGRESQL=8.3.4
 PG_TARBALL_PGADMIN=1.8.4
 PG_TARBALL_DEBUGGER=0.92
 PG_TARBALL_PLJAVA=1.4.0
@@ -16,7 +16,7 @@ PG_TARBALL_PLJAVA=1.4.0
 # PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
 #                     Minor version is revision.build. 
 
-PG_MAJOR_VERSION=8.3
+PG_MAJOR_VERSION=8.4
 PG_MINOR_VERSION=0.1
 
 # Platforms. Set to 1 to enable a specific platform
