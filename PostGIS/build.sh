@@ -28,6 +28,7 @@ then
     #source $WD/PostGIS/build-windows.sh
     echo "Not yet implemented" 
 fi
+
     
 ################################################################################
 # Build preparation
@@ -77,7 +78,7 @@ _prep_PostGIS() {
     tar -zxvf ../../tarballs/proj-$PG_PROJ_TARBALL.tar.gz
 
     echo "Copying the postgresql jar file..."
-    cp ../../tarballs/postgresql-$PG_POSTGRESQL_JAR.jar .
+    tar -jxvf ../../tarballs/pgJDBC-$PG_PGJDBC_TARBALL.tar.bz2
 
     # Per-platform prep
     cd $WD

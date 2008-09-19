@@ -1,0 +1,18 @@
+Installer.Welcome.Title=Setup - EnterpriseDB %1$s
+
+Installer.Welcome.Text=Welcome to the EnterpriseDB %1$s Setup.
+
+install.summary=EnterpriseDB's MySql to PostgreSQL Migration Wizard. 
+
+migrationwizard.installdir.error=Installation directory path should not contain white-spaces.
+
+java.error=Java 1.5 or later is not installed on your system.\nPlease install it before proceed.\nIf it is installed on your system, Please put in the PATH environment variable.
+
+launch.migrationwizard.windows=Do you want to launch Migration wizard now?
+
+progress.text.creating.shortcuts=Creating Menu Shortcuts
+
+Installer.Installation.Finished.Title=Completing the EnterpriseDB-%1$s Setup Wizard
+
+Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
+

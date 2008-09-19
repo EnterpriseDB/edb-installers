@@ -101,3 +101,151 @@ then
     _postprocess_server || exit 1
 fi
 
+# Package: ApachePhp
+if [ $PG_PACKAGE_APACHEPHP == 1 ];
+then
+    cd $WD
+    source ./ApachePhp/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_ApachePhp || exit 1
+        _build_ApachePhp || exit 1
+    fi
+
+    _postprocess_ApachePhp || exit 1
+fi
+
+# Package: mediaWiki
+if [ $PG_PACKAGE_MEDIAWIKI == 1 ];
+then
+    cd $WD
+    source ./mediaWiki/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_mediaWiki || exit 1
+        _build_mediaWiki || exit 1
+    fi
+
+    _postprocess_mediaWiki || exit 1
+fi
+
+# Package: phpWiki
+if [ $PG_PACKAGE_PHPWIKI == 1 ];
+then
+    cd $WD
+    source ./phpWiki/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_phpWiki || exit 1
+        _build_phpWiki || exit 1
+    fi
+
+    _postprocess_phpWiki || exit 1
+fi
+
+# Package: phpBB
+if [ $PG_PACKAGE_PHPBB == 1 ];
+then
+    cd $WD
+    source ./phpBB/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_phpBB || exit 1
+        _build_phpBB || exit 1
+    fi
+
+    _postprocess_phpBB || exit 1
+fi
+
+# Package: Drupal
+if [ $PG_PACKAGE_DRUPAL == 1 ];
+then
+    cd $WD
+    source ./Drupal/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_Drupal || exit 1
+        _build_Drupal || exit 1
+    fi
+
+    _postprocess_Drupal || exit 1
+fi
+
+# Package: phppgadmin
+if [ $PG_PACKAGE_PHPPGADMIN == 1 ];
+then
+    cd $WD
+    source ./phpPgAdmin/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_phpPgAdmin || exit 1
+        _build_phpPgAdmin || exit 1
+    fi
+
+    _postprocess_phpPgAdmin || exit 1
+fi
+
+# Package: pgJDBC
+if [ $PG_PACKAGE_PGJDBC == 1 ];
+then
+    cd $WD
+    source ./pgJDBC/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_pgJDBC || exit 1
+        _build_pgJDBC || exit 1
+    fi
+
+    _postprocess_pgJDBC || exit 1
+fi
+
+# Package: PostGIS
+if [ $PG_PACKAGE_POSTGIS == 1 ];
+then
+    cd $WD
+    source ./PostGIS/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_PostGIS || exit 1
+        _build_PostGIS || exit 1
+    fi
+
+    _postprocess_PostGIS || exit 1
+fi
+
+# Package: Slony
+if [ $PG_PACKAGE_SLONY == 1 ];
+then
+    cd $WD
+    source ./Slony/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_Slony || exit 1
+        _build_Slony || exit 1
+    fi
+    _postprocess_Slony || exit 1
+fi
+
+# Package: MigrationWizard
+if [ $PG_PACKAGE_MIGRATIONWIZARD == 1 ];
+then
+    cd $WD
+    source ./MigrationWizard/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_MigrationWizard || exit 1
+        _build_MigrationWizard || exit 1
+    fi
+    _postprocess_MigrationWizard || exit 1
+fi
+
