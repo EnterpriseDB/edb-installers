@@ -5,8 +5,7 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-    #source $WD/pgJDBC/build-osx.sh
-    echo "Not yet implemented" 
+    source $WD/pgJDBC/build-osx.sh
 fi
 
 # Linux
@@ -60,8 +59,7 @@ _prep_pgJDBC() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-       # _prep_pgJDBC_osx || exit 1
-       echo "Not yet implemented" 
+        _prep_pgJDBC_osx || exit 1
     fi
 
     # Linux
@@ -95,8 +93,7 @@ _build_pgJDBC() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-       # _build_pgJDBC_osx || exit 1
-       echo "Not yet implemented" 
+        _build_pgJDBC_osx || exit 1
     fi
 
     # Linux 
@@ -116,7 +113,7 @@ _build_pgJDBC() {
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
         #_build_pgJDBC_windows || exit 1
-       echo "Not yet implemented" 
+        echo "Not yet implemented" 
     fi
 }
 
@@ -143,8 +140,7 @@ _postprocess_pgJDBC() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-       # _postprocess_pgJDBC_osx || exit 1
-       echo "Not yet implemented" 
+        _postprocess_pgJDBC_osx || exit 1
     fi
 
     # Linux

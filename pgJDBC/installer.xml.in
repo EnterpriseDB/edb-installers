@@ -8,12 +8,16 @@
     <!-- Product Specific Options -->
     <productComments>JDBC drivers for PostgreSQL</productComments>
     <productDisplayName>JDBC drivers for PostgreSQL</productDisplayName>
-	<requireInstallationByRootUser>1</requireInstallationByRootUser>
+    <requireInstallationByRootUser>1</requireInstallationByRootUser>
 
     <!-- The options are used for RPM registration -->
     <description>JDBC Drivers for PostgreSQL </description>
     <summary>JDBC drivers for PostgreSQL distributed by EnterpriseDB</summary>
     <vendor>EnterpriseDB</vendor>
+
+    <!-- Installer Size -->
+    <width>550</width>
+    <height>400</height>
 
     <!-- Misc options -->
     <wrapLicenseFileText>0</wrapLicenseFileText>
@@ -41,10 +45,11 @@
     </customLanguageFileList>
  
     <initializationActionList>
-    <!-- Set the default values for unattended mode -->
+
+    	<!-- LIN : Set the default values for unattended mode -->
         <actionGroup>
            <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgreSQL/pgJDBC"/>
+                <setInstallerVariable name="installdir" value="/opt/PostgreSQL/pgJDBC"/>
            </actionList>
            <ruleList>
                 <compareText>
@@ -52,13 +57,38 @@
                     <text>${installer_ui}</text>
                     <value>unattended</value>
                 </compareText>
+		<compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
            </ruleList>
         </actionGroup>
+
+	<!-- MAC : Set the default values for unattended mode -->
+        <actionGroup>
+           <actionList>
+                <setInstallerVariable name="installdir" value="/Library/PostgreSQL/pgJDBC"/>
+           </actionList>
+           <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+           </ruleList>
+        </actionGroup>
+
     </initializationActionList>
     
     <preInstallationActionList>
 
-        <!-- LIN: Check Previous Installation of pgJDBC-->
+        <!-- LIN & MAC : Check Previous Installation of pgJDBC-->
         <actionGroup>
             <actionList>
                 <iniFileGet>
@@ -70,12 +100,40 @@
             </actionList>
               <ruleList>
                   <compareText>
-                    <logic>contains</logic>
+                    <logic>does_not_equal</logic>
                     <text>${platform_name}</text>
-                    <value>linux</value>
+                    <value>windows</value>
                   </compareText>
               </ruleList>
         </actionGroup>
+
+	<!-- MAC : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/Library/PostgreSQL/pgJDBC</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
+	<!-- LIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/opt/PostgreSQL/pgJDBC</value>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
         
     </preInstallationActionList>
 
@@ -111,9 +169,9 @@
             </actionList>
             <ruleList>
                 <compareText>
-                  <logic>contains</logic>
+                  <logic>does_not_equal</logic>
                   <text>${platform_name}</text>
-                  <value>linux</value>
+                  <value>windows</value>
                 </compareText>
             </ruleList>
         </actionGroup>
@@ -123,12 +181,6 @@
     <preUninstallationActionList>
         <actionGroup>
             <actionList>
-                <runProgram>
-                  <program>${installdir}/installer/pgjdbc/removeshortcuts.sh</program>
-                  <programArguments>"${installdir}"</programArguments>
-		  <abortOnError>0</abortOnError>
-                  <showMessageOnError>0</showMessageOnError>
-                </runProgram>
   		<iniFileSet>
                    <file>/etc/postgres-reg.ini</file>
                    <section>pgJDBC</section>
@@ -150,12 +202,49 @@
             </actionList>
             <ruleList>
                 <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+	<!-- LIN : Remove Menu shortcuts -->
+	<actionGroup>
+	  <actionList>
+		<runProgram>
+                  <program>${installdir}/installer/pgjdbc/removeshortcuts.sh</program>
+                  <programArguments>"${installdir}"</programArguments>
+                  <workingDirectory>${installdir}/installer/pgjdbc</workingDirectory>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+	  </actionList>
+	  <ruleList>
+                <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
                     <value>linux</value>
                 </compareText>
             </ruleList>
+	</actionGroup>
+
+	<!-- MAC : Remove Menu shortcuts -->
+	<actionGroup>
+          <actionList>
+		<deleteFile>
+  			<path>/Applications/PostgreSQL/PostgreSQL JDBC Home Page.app</path>
+		</deleteFile>
+          </actionList>
+          <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
         </actionGroup>
+
     </preUninstallationActionList>
 
     <!-- Components -->
@@ -167,11 +256,12 @@
             <selected>1</selected>
             <show>1</show>
             <folderList>
+
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}</destination>
-                    <name>programfiles</name>
-                    <platforms>all</platforms>
+                    <name>programfileslinux</name>
+                    <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
                             <origin>staging/linux/postgresql-8.3-603.jdbc2.jar</origin>
@@ -190,7 +280,7 @@
 		<folder>
                      <description>Installer Scripts</description>
                     <destination>${installdir}</destination>
-                    <name>installscripts</name>
+                    <name>installscriptslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionDirectory>
@@ -201,7 +291,7 @@
 		<folder>
 		     <description>Menu Scripts</description>
                     <destination>${installdir}</destination>
-                    <name>menuscripts</name>
+                    <name>menuscriptslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
 			<distributionDirectory>
@@ -209,6 +299,50 @@
 			</distributionDirectory>
                     </distributionFileList>
 		</folder>
+
+		<folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/osx/postgresql-8.3-603.jdbc2.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/osx/postgresql-8.3-603.jdbc2ee.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/osx/postgresql-8.3-603.jdbc3.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/osx/postgresql-8.3-603.jdbc4.jar</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                     <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>installscriptsosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                     <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuscriptsosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+
             </folderList>
         </component>
     </componentList>
@@ -219,8 +353,8 @@
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
             <explanation>Installer.Parameter.installdir.explanation</explanation>
-            <value>${platform_install_prefix}/PostgreSQL/pgJDBC</value>
-            <default></default>
+            <value></value>
+	    <default>${default_installdir}</default>
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>prefix</cliOptionName>
