@@ -4,9 +4,9 @@
 # Dave Page, EnterpriseDB
 
 #Check the command line
-if [ $# -ne 10 ]; 
+if [ $# -ne 4 ]; 
 then
-    echo "Usage: $0 <Username> <Password> <Install dir> <Port> <plpgsql> <plperl> <plperlu> <plpythonu> <pltcl> <pltclu>"
+    echo "Usage: $0 <Username> <Password> <Install dir> <Port>"
     exit 127
 fi
 
@@ -14,13 +14,6 @@ USERNAME=$1
 PASSWORD=$2
 INSTALLDIR=$3
 PORT=$4
-PLPGSQL=$5
-PLPERL=$6
-PLPERLU=$7
-PLPYTHONU=$8
-PLTCL=$9
-shift
-PLTCLU=$9
 
 # Exit code
 WARN=0
@@ -47,46 +40,8 @@ echo "localhost:$PORT:*:$USERNAME:$PASSWORD" > /tmp/pgpass.$$ || _die "Failed to
 chown $USERNAME:daemon /tmp/pgpass.$$ || _die "Failed to set the ownership of the password file (/tmp/pgpass.$$)"
 
 # Create the plpgsql language
-if [ $PLPGSQL -eq 1 ];
-then
-    echo "Installing pl/pgsql in the template1 database..."
-    su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -p $PORT -c 'CREATE LANGUAGE plpgsql;' template1" || _warn "Failed to install pl/pgsql in the 'template1' database"
-fi
-
-# Create the plpgsql language
-if [ $PLPERL -eq 1 ];
-then
-    echo "Installing pl/perl in the template1 database..."
-    su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -p $PORT -c 'CREATE LANGUAGE plperl;' template1" || _warn "Failed to install pl/perl in the 'template1' database"
-fi
-
-# Create the plperl language
-if [ $PLPERLU -eq 1 ];
-then
-    echo "Installing pl/perlu in the template1 database..."
-    su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -p $PORT -c 'CREATE LANGUAGE plperlu;' template1" || _warn "Failed to install pl/perlu in the 'template1' database"
-fi
-
-# Create the plpgsql language
-if [ $PLPYTHONU -eq 1 ];
-then
-    echo "Installing pl/pythonu in the template1 database..."
-    su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -p $PORT -c 'CREATE LANGUAGE plpythonu;' template1" || _warn "Failed to install pl/pythonu in the 'template1' database"
-fi
-
-# Create the pltcl language
-if [ $PLTCL -eq 1 ];
-then
-    echo "Installing pl/tcl in the template1 database..."
-    su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -p $PORT -c 'CREATE LANGUAGE pltcl;' template1" || _warn "Failed to install pl/pltcl in the 'template1' database"
-fi
-
-# Create the pltclu language
-if [ $PLTCLU -eq 1 ];
-then
-    echo "Installing pl/tclu in the template1 database..."
-    su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -p $PORT -c 'CREATE LANGUAGE pltclu;' template1" || _warn "Failed to install pl/tclu in the 'template1' database"
-fi
+echo "Installing pl/pgsql in the template1 database..."
+su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -p $PORT -c 'CREATE LANGUAGE plpgsql;' template1" || _warn "Failed to install pl/pgsql in the 'template1' database"
 
 # Install adminpack in the postgres database
 echo "Installing the adminpack module in the postgres database..."

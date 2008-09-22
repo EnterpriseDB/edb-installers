@@ -96,11 +96,6 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libreadline.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libtermcap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
 	
-    # These libraries are needed by the PLs
-    ssh $PG_SSH_LINUX "cp -R /usr/lib/perl5/5.8.5/i386-linux-thread-multi/CORE/libperl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /usr/lib/libtcl8.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /usr/lib/libpython2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-	
     # Now build pgAdmin
 
     # Bootstrap

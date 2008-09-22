@@ -59,15 +59,6 @@ config.port.explanation=Please select the port number the server should listen o
 config.port.invalid=This port number must be a valid integer between 1024 and 65535.
 config.port.in.use=The specified port number is not available. Please enter a different port.
 
-config.langs.title=Procedural languages
-config.langs.explanation=Select the procedural languages you would like to install into the template1 database.
-config.langs.plpgsql=pl/pgsql
-config.langs.plperl=pl/Perl (trusted)
-config.langs.plperlu=pl/Perl (untrusted)
-config.langs.plpythonu=pl/Python (untrusted)
-config.langs.pltcl=pl/Tcl (trusted)
-config.langs.pltclu=pl/Tcl (untrusted)
-
 config.locale.description=Locale
 config.locale.explanation=Select the locale to be used by the new database cluster.
 config.locale.no.locale=You must select a locale to continue.

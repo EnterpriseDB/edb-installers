@@ -34,8 +34,8 @@ PG_ZLIB_TARBALL=1.2.3
 # PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
 #                     Minor version is revision.build. 
 
-PG_MAJOR_VERSION=8.4
-PG_MINOR_VERSION=0.1
+PG_MAJOR_VERSION=8.3
+PG_MINOR_VERSION=4.2
 
 PG_APACHE_VERSION=2.2.9
 

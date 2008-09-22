@@ -960,7 +960,7 @@
                 
                 <runProgram>
                     <program>${installdir}/installer/server/loadmodules.sh</program>
-                    <programArguments>"${supername}" "${superpassword}" "${installdir}" ${serverport} ${install_plpgsql} ${install_plperl} ${install_plperlu} ${install_plpythonu} ${install_pltcl} ${install_pltclu}</programArguments>
+                    <programArguments>"${supername}" "${superpassword}" "${installdir}" ${serverport}</programArguments>
                     <progressText>${msg(progress.text.loading.modules)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -1908,71 +1908,6 @@
             </ruleList>
         </choiceParameter>
 
-        <!-- Which PLs should be installed? -->
-        <parameterGroup>
-            <name>langs</name>
-            <title>${msg(config.langs.title)}</title>
-            <explanation>${msg(config.langs.explanation)}</explanation>
-            
-            <parameterList>
-                <booleanParameter>
-                    <name>install_plpgsql</name>
-                    <ask>yes</ask>
-                    <default>1</default>
-                    <description>${msg(config.langs.plpgsql)}</description>
-                    <cliOptionName>install-plpgsql</cliOptionName>
-                    <displayStyle>checkbox-left</displayStyle>
-                </booleanParameter>
-                <booleanParameter>
-                    <name>install_plperl</name>
-                    <ask>yes</ask>
-                    <default>0</default>
-                    <description>${msg(config.langs.plperl)}</description>
-                    <cliOptionName>install-plperl</cliOptionName>
-                    <displayStyle>checkbox-left</displayStyle>
-                </booleanParameter>            
-                <booleanParameter>
-                    <name>install_plperlu</name>
-                    <ask>yes</ask>
-                    <default>0</default>
-                    <description>${msg(config.langs.plperlu)}</description>
-                    <cliOptionName>install-plperlu</cliOptionName>
-                    <displayStyle>checkbox-left</displayStyle>
-                </booleanParameter>
-                <booleanParameter>
-                    <name>install_plpythonu</name>
-                    <ask>yes</ask>
-                    <default>0</default>
-                    <description>${msg(config.langs.plpythonu)}</description>
-                    <cliOptionName>install-plpythonu</cliOptionName>
-                    <displayStyle>checkbox-left</displayStyle>
-                </booleanParameter>
-                <booleanParameter>
-                    <name>install_pltcl</name>
-                    <ask>yes</ask>
-                    <default>0</default>
-                    <description>${msg(config.langs.pltcl)}</description>
-                    <cliOptionName>install-pltcl</cliOptionName>
-                    <displayStyle>checkbox-left</displayStyle>
-                </booleanParameter>
-                <booleanParameter>
-                    <name>install_pltclu</name>
-                    <ask>yes</ask>
-                    <default>0</default>
-                    <description>${msg(config.langs.pltclu)}</description>
-                    <cliOptionName>install-tclu</cliOptionName>
-                    <displayStyle>checkbox-left</displayStyle>
-                </booleanParameter>
-            </parameterList>
-
-            <ruleList>
-                <compareValues>
-                    <value1>${IsUpgrade}</value1>
-                    <logic>equals</logic>
-                    <value2>0</value2>
-                </compareValues>
-            </ruleList>
-        </parameterGroup>
     </parameterList>
 </project>
 
