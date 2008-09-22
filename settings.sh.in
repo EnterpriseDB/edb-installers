@@ -72,7 +72,8 @@ PG_SLONY_VERSION=I-1.2.14
 # MigrationWizard version.
 PG_MIGRATIONWIZARD_VERSION=1.1
 
-
+# PostgreSQL jdbc jar version used by PostGIS
+PG_POSTGRESQL_JAR=8.3-603.jdbc2
 
 # Platforms. Set to 1 to enable a specific platform
 

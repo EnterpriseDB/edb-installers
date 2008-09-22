@@ -7,8 +7,6 @@
 
 _prep_PostGIS_linux() {
       
-    PG_POSTGRESQL_JAR=8.3-603.jdbc2
-
     # Enter the source directory and cleanup if required
     cd $WD/PostGIS/source
 

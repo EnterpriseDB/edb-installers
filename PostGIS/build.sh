@@ -79,6 +79,7 @@ _prep_PostGIS() {
 
     echo "Copying the postgresql jar file..."
     tar -jxvf ../../tarballs/pgJDBC-$PG_PGJDBC_TARBALL.tar.bz2
+    mv pgJDBC-$PG_PGJDBC_TARBALL/*.jar .
 
     # Per-platform prep
     cd $WD
