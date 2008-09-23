@@ -77,21 +77,11 @@ PG_POSTGIS_VERSION=1.3.3
 PG_SLONY_VERSION=I-1.2.15
 PG_MIGRATIONWIZARD_VERSION=1.1
 
-<<<<<<< settings.sh.in
-# Path for the build machine (/opt/... must be at the end!)
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
-=======
 # PostgreSQL jdbc jar version used by PostGIS
 PG_POSTGRESQL_JAR=8.3-603.jdbc2
 
-# Platforms. Set to 1 to enable a specific platform
-
-PG_ARCH_OSX=1
-
-PG_ARCH_LINUX=0
-PG_ARCH_LINUX_X64=0
-PG_ARCH_WINDOWS=0
->>>>>>> 1.14
+# Path for the build machine (/opt/... must be at the end!)
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 
 # VM config. For each VM we need to know the SSH connection details and the path to the
 #            shared firectory on the host machine containing this file.
