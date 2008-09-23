@@ -3,78 +3,6 @@
 # PostgreSQL Installer build system configuration. 
 # Copy this file to settings.sh, and edit as required for the build setup
 
-# Path for the build machine (/opt/... must be at the end!)
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
-
-# Source tarball versions
-
-PG_TARBALL_POSTGRESQL=8.3.4
-PG_TARBALL_PGADMIN=1.8.4
-PG_TARBALL_DEBUGGER=0.92
-PG_TARBALL_PLJAVA=1.4.0
-
-PG_APACHE_TARBALL=2.2.9
-PG_PHP_TARBALL=5.2.6
-PG_MEDIAWIKI_TARBALL=1.13.0
-PG_PHPWIKI_TARBALL=1.2.11
-PG_PHPBB_TARBALL=3.0.2
-PG_DRUPAL_TARBALL=6.4
-PG_PHPPGADMIN_TARBALL=4.2.1
-PG_PGJDBC_TARBALL=1.0
-PG_GEOS_TARBALL=3.0.0
-PG_PROJ_TARBALL=4.6.0
-PG_POSTGIS_TARBALL=1.3.3
-PG_SLONY_TARBALL=1-1.2.14
-PG_MIGRATIONWIZARD_TARBALL=1.1
-
-PG_OPENSSL_TARBALL=0.9.8i
-PG_ZLIB_TARBALL=1.2.3
-
-
-# PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
-#                     Minor version is revision.build. 
-
-PG_MAJOR_VERSION=8.3
-PG_MINOR_VERSION=4.2
-
-PG_APACHE_VERSION=2.2.9
-
-# php version.
-PG_PHP_VERSION=5.2.6
-
-# mediaWiki version.
-PG_MEDIAWIKI_VERSION=1.13.0
-
-# phpWiki version.
-PG_PHPWIKI_VERSION=1.2.11
-
-# phpBB version.
-PG_PHPBB_VERSION=3.0.2
-
-# Drupal version.
-PG_DRUPAL_VERSION=6.4
-
-# phpPgAdmin version.
-PG_PHPPGADMIN_VERSION=4.2.1
-
-# pgJDBC version.
-PG_PGJDBC_VERSION=1.0
-
-# geos version.
-PG_GEOS_VERSION=3.0.0
-
-# PostGIS version.
-PG_POSTGIS_VERSION=1.3.3
-
-# Slony version.
-PG_SLONY_VERSION=I-1.2.14
-
-# MigrationWizard version.
-PG_MIGRATIONWIZARD_VERSION=1.1
-
-# PostgreSQL jdbc jar version used by PostGIS
-PG_POSTGRESQL_JAR=8.3-603.jdbc2
-
 # Platforms. Set to 1 to enable a specific platform
 
 PG_ARCH_OSX=1
@@ -82,32 +10,6 @@ PG_ARCH_OSX=1
 PG_ARCH_LINUX=0
 PG_ARCH_LINUX_X64=0
 PG_ARCH_WINDOWS=0
-
-# VM config. For each VM we need to know the SSH connection details and the path to the
-#            shared firectory on the host machine containing this file.
-#            On Windows we don't have a shared directory, so specify a build directory
-#            We can also specify additional directorys to include in the path.
-
-PG_SSH_LINUX=buildfarm@bf-linux.edbuk
-PG_PATH_LINUX=/mnt/hgfs/pginstaller-repo
-PG_EXEC_PATH_LINUX=/usr/java/jdk1.5.0_14/bin
-PG_JAVA_HOME_LINUX=/usr/java/jdk1.5.0_14
-
-PG_SSH_LINUX_X64=buildfarm@bf-linux-x64.edbuk
-PG_PATH_LINUX_X64=/mnt/hgfs/pginstaller-repo
-PG_EXEC_PATH_LINUX_X64=/usr/java/jdk1.5.0_14/bin
-PG_JAVA_HOME_LINUX_X64=/usr/java/jdk1.5.0_14
-
-PG_SSH_WINDOWS=buildfarm@bf-windows.edbuk
-PG_PATH_WINDOWS=C:\\\\buildfarm-repo
-
-# CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
-# where we may need to use non-default SDKs if we're building on a platform newer than the
-# oldest supported
-
-PG_ARCH_OSX_CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -headerpad_max_install_names"
-PG_ARCH_OSX_CPPFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -headerpad_max_install_names"
-PG_ARCH_OSX_CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -headerpad_max_install_names"
 
 # Packages. Set to 1 to enable a specific packages. Note that many packages will be interdependent
 #           so you must ensure that all the required dependencies are enabled.
@@ -126,6 +28,98 @@ PG_PACKAGE_SLONY=1
 PG_PACKAGE_TUNINGWIZARD=1
 PG_PACKAGE_MIGRATIONWIZARD=1
 
+# Path for the build machine (/opt/... must be at the end!)
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
+
+# Source tarball versions
+
+PG_TARBALL_POSTGRESQL=8.3.4
+PG_TARBALL_PGADMIN=1.8.4
+PG_TARBALL_DEBUGGER=0.92
+PG_TARBALL_PLJAVA=1.4.0
+
+PG_APACHE_TARBALL=2.2.9
+PG_PHP_TARBALL=5.2.6
+PG_MEDIAWIKI_TARBALL=1.13.1
+PG_PHPWIKI_TARBALL=1.2.11
+PG_PHPBB_TARBALL=3.0.2
+PG_DRUPAL_TARBALL=6.4
+PG_PHPPGADMIN_TARBALL=4.2.1
+PG_PGJDBC_TARBALL=1.0
+PG_GEOS_TARBALL=3.0.0
+PG_PROJ_TARBALL=4.6.1
+PG_POSTGIS_TARBALL=1.3.3
+PG_SLONY_TARBALL=1-1.2.15
+PG_MIGRATIONWIZARD_TARBALL=1.1
+
+PG_OPENSSL_TARBALL=0.9.8i
+PG_ZLIB_TARBALL=1.2.3
+
+
+# PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
+#                     Minor version is revision.build. 
+
+PG_MAJOR_VERSION=8.3
+PG_MINOR_VERSION=4.2
+
+# Other package versions
+
+PG_APACHE_VERSION=2.2.9
+PG_PHP_VERSION=5.2.6
+PG_MEDIAWIKI_VERSION=1.13.0
+PG_PHPWIKI_VERSION=1.2.11
+PG_PHPBB_VERSION=3.0.2
+PG_DRUPAL_VERSION=6.4
+PG_PHPPGADMIN_VERSION=4.2.1
+PG_PGJDBC_VERSION=1.0
+PG_GEOS_VERSION=3.0.0
+PG_POSTGIS_VERSION=1.3.3
+PG_SLONY_VERSION=I-1.2.15
+PG_MIGRATIONWIZARD_VERSION=1.1
+
+<<<<<<< settings.sh.in
+# Path for the build machine (/opt/... must be at the end!)
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
+=======
+# PostgreSQL jdbc jar version used by PostGIS
+PG_POSTGRESQL_JAR=8.3-603.jdbc2
+
+# Platforms. Set to 1 to enable a specific platform
+
+PG_ARCH_OSX=1
+
+PG_ARCH_LINUX=0
+PG_ARCH_LINUX_X64=0
+PG_ARCH_WINDOWS=0
+>>>>>>> 1.14
+
+# VM config. For each VM we need to know the SSH connection details and the path to the
+#            shared firectory on the host machine containing this file.
+#            On Windows we don't have a shared directory, so specify a build directory
+#            We can also specify additional directorys to include in the path.
+
+PG_SSH_LINUX=buildfarm@bf-linux.edbuk
+PG_PATH_LINUX=/mnt/hgfs/pginstaller-repo
+PG_PGHOME_LINUX=$PG_PATH_LINUX/server/staging/linux
+PG_EXEC_PATH_LINUX=/usr/java/jdk1.5.0_14/bin
+PG_JAVA_HOME_LINUX=/usr/java/jdk1.5.0_14
+
+PG_SSH_LINUX_X64=buildfarm@bf-linux-x64.edbuk
+PG_PATH_LINUX_X64=/mnt/hgfs/pginstaller-repo
+PG_PGHOME_LINUX_X64=$PG_PATH_LINUX_X64/server/staging/linux-x64
+PG_EXEC_PATH_LINUX_X64=/usr/java/jdk1.5.0_14/bin
+PG_JAVA_HOME_LINUX_X64=/usr/java/jdk1.5.0_14
+
+PG_SSH_WINDOWS=buildfarm@bf-windows.edbuk
+PG_PATH_WINDOWS=C:\\\\buildfarm-repo
+
+# CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
+# where we may need to use non-default SDKs if we're building on a platform newer than the
+# oldest supported
+
+PG_ARCH_OSX_CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -headerpad_max_install_names"
+PG_ARCH_OSX_CPPFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -headerpad_max_install_names"
+PG_ARCH_OSX_CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -headerpad_max_install_names"
 
 # Miscellaneous options
 
