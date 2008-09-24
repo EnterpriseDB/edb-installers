@@ -99,7 +99,7 @@ _build_PostGIS_linux() {
 
 
     echo "Building postgis-jdbc"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/java/jdbc; export CLASSPATH=$PG_PATH_LINUX/PostGIS/source/postgresql-$PG_POSTGRESQL_JAR.jar:$CLASSPATH; $PG_ANT_HOME_LINUX/bin/ant" || _die "Failed to build postgis-jdbc"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/java/jdbc; export CLASSPATH=$PG_PATH_LINUX/PostGIS/source/postgresql-$PG_POSTGRESQL_JAR.jar:$CLASSPATH; JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX/bin/ant" || _die "Failed to build postgis-jdbc"
    
     echo "Building postgis-doc"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/doc; make" || _die "Failed to build postgis-doc"
