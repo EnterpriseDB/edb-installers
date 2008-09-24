@@ -28,9 +28,6 @@ PG_PACKAGE_SLONY=1
 PG_PACKAGE_TUNINGWIZARD=1
 PG_PACKAGE_MIGRATIONWIZARD=1
 
-# Path for the build machine (/opt/... must be at the end!)
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
-
 # Source tarball versions
 
 PG_TARBALL_POSTGRESQL=8.3.4
@@ -81,7 +78,7 @@ PG_MIGRATIONWIZARD_VERSION=1.1
 PG_POSTGRESQL_JAR=8.3-603.jdbc2
 
 # Path for the build machine (/opt/... must be at the end!)
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/apache-ant-1.7.1/bin:/opt/local/bin
 
 # VM config. For each VM we need to know the SSH connection details and the path to the
 #            shared firectory on the host machine containing this file.
