@@ -101,6 +101,7 @@ PG_ANT_HOME_LINUX_X64=/usr/local/apache-ant-1.7.1
 
 PG_SSH_WINDOWS=buildfarm@bf-windows.edbuk
 PG_PATH_WINDOWS=C:\\\\buildfarm-repo
+PG_ANT_HOME_WINDOWS=C:/apache-ant-1.7.1
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the

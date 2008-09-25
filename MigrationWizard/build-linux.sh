@@ -49,10 +49,10 @@ _build_MigrationWizard_linux() {
     PG_STAGING=$PG_PATH_LINUX/MigrationWizard/staging/linux	
 
     echo "Building migrationwizard"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MigrationWizard/source/migrationwizard.linux; $PG_ANT_HOME_LINUX/bin/ant" || _die "Couldn't build the migrationwizard"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MigrationWizard/source/migrationwizard.linux; JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX/bin/ant" || _die "Couldn't build the migrationwizard"
   
     echo "Building migrationwizard distribution"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MigrationWizard/source/migrationwizard.linux; $PG_ANT_HOME_LINUX/bin/ant dist" || _die "Couldn't build the migrationwizard distribution"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MigrationWizard/source/migrationwizard.linux; JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX/bin/ant dist" || _die "Couldn't build the migrationwizard distribution"
 
     # Copying the MigrationWizard binary to staging directory
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MigrationWizard/source/migrationwizard.linux; mkdir $PG_STAGING/MigrationWizard" || _die "Couldn't create the migrationwizard staging directory (MigrationWizard/staging/linux/MigrationWizard)"

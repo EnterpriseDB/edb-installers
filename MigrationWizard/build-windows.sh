@@ -53,7 +53,7 @@ _build_MigrationWizard_windows() {
     echo "Copying source tree to Windows build VM"
     zip -r migrationwizard.zip migrationwizard.windows || _die "Failed to pack the source tree (migrationwizard.windows)"
     scp migrationwizard.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the source tree to the windows build host (migrationwizard.zip)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /s /q migrationwizard.windows" || _die "Failed to remove th source tree on the windows build host (migrationwizard.zip)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /s /q migrationwizard.windows" 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip migrationwizard.zip" || _die "Failed to unpack the source tree on the windows build host (migrationwizard.zip)"
 	
 
