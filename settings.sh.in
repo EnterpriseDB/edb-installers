@@ -100,7 +100,7 @@ PG_JAVA_HOME_LINUX_X64=/usr/java/jdk1.5.0_14
 PG_ANT_HOME_LINUX_X64=/usr/local/apache-ant-1.7.1
 
 PG_SSH_WINDOWS=buildfarm@bf-windows.edbuk
-PG_PATH_WINDOWS=C:\\\\buildfarm-repo
+PG_PATH_WINDOWS=C:\\\\pginstaller-repo
 PG_ANT_HOME_WINDOWS=C:/apache-ant-1.7.1
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
