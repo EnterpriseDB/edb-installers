@@ -36,6 +36,9 @@ ssh dave.page@sftp.enterprisedb.com mkdir -p pub/pgInstaller/$DATE >> autobuild.
 echo "Uploading output to pub/pgInstaller/$DATE on the sftp server" >> autobuild.log
 scp output/* dave.page@sftp.enterprisedb.com:pub/pgInstaller/$DATE >> autobuild.log 2>&1
 
+echo "Purging old builds from the sftp server" >> autobuild.log
+ssh dave.page@sftp.enterprisedb.com "bin/culldirs \"pub/pgInstaller/*-*-*\" 5" >> autobuild.log 2>&1
+
 echo "#######################################################################" >> autobuild.log
 echo "Build run completed at `date`" >> autobuild.log
 echo "#######################################################################" >> autobuild.log
