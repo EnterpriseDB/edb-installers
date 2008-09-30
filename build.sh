@@ -41,8 +41,9 @@ _check_unix_vm() {
 ################################################################################
 _check_windows_vm() {
     RETVAL=`ssh $1 ls $2 2>&1`
-        RESULT=`echo "$RETVAL" | grep 'No such file or directory' | wc -l`
-        if [ "$RESULT" -ne "0" ];
+        RESULT1=`echo "$RETVAL" | grep 'No such file or directory' | wc -l`
+		RESULT2=`echo "$RETVAL" | grep 'Operation timed out' | wc -l`
+        if [ "$RESULT1" -ne "0" -o "$RESULT2" -ne "0" ];
         then
             _die "The build VM $1 is inaccessible or does not have access to the buildfarm repository at $2"
         fi

@@ -407,7 +407,12 @@ EOT
     unzip $WD/server/staging/windows/output.zip -d $WD/server/staging/windows/ || _die "Failed to unpack the built source tree ($WD/staging/windows/output.zip)"
     rm $WD/server/staging/windows/output.zip
 	
-	# Copy in the pljava binaries
+	# Install the PostgreSQL docs
+	cd $WD/server/staging/doc
+	tar -zxvf $WD/server/source/postgres.windows/doc/postgres.tar.gz || _die "Failed to unpack the PostgreSQL documentation"
+	 
+	# Copy in the pljava binaries/docs
+	cd $WD/server/source/
 	echo "Installing pl/java"
 	cp pljava.windows/*.jar $WD/server/staging/windows/lib || _die "Failed to install the pljava jar files."
 	cp pljava.windows/*.dll $WD/server/staging/windows/lib || _die "Failed to install the pljava dll files."
@@ -434,10 +439,10 @@ _postprocess_server_windows() {
     # Setup the installer scripts. 
     mkdir -p staging/windows/installer/server || _die "Failed to create a directory for the install scripts"
     cp scripts/windows/installruntimes.vbs staging/windows/installer/installruntimes.vbs || _die "Failed to copy the installruntimes script ($WD/scripts/windows/installruntimes.vbs)"
+    cp scripts/windows/getlocales.vbs staging/windows/installer/server/getlocales.vbs || _die "Failed to copy the getlocales script ($WD/scripts/windows/getlocales.vbs)"
 	cp scripts/windows/initcluster.vbs staging/windows/installer/server/initcluster.vbs || _die "Failed to copy the loadmodules script (scripts/windows/initcluster.vbs)"
 	cp scripts/windows/startupcfg.vbs staging/windows/installer/server/startupcfg.vbs || _die "Failed to copy the startupcfg script (scripts/windows/startupcfg.vbs)"
 	cp scripts/windows/createshortcuts.vbs staging/windows/installer/server/createshortcuts.vbs || _die "Failed to copy the createshortcuts script (scripts/windows/createshortcuts.vbs)"
-    cp scripts/windows/removeshortcuts.vbs staging/windows/installer/server/removeshortcuts.vbs || _die "Failed to copy the removeshortcuts script (scripts/windows/removeshortcuts.vbs)"
 	cp scripts/windows/startserver.vbs staging/windows/installer/server/startserver.vbs || _die "Failed to copy the startserver script (scripts/windows/startserver.vbs)"
 	cp scripts/windows/loadmodules.vbs staging/windows/installer/server/loadmodules.vbs || _die "Failed to copy the loadmodules script (scripts/windows/loadmodules.vbs)"
 	
@@ -449,12 +454,12 @@ _postprocess_server_windows() {
     cp scripts/windows/serverctl.vbs staging/windows/scripts/serverctl.vbs || _die "Failed to copy the serverctl script (scripts/windows/serverctl.vbs)"
 	cp scripts/windows/runpsql.bat staging/windows/scripts/runpsql.bat || _die "Failed to copy the runpsql script (scripts/windows/runpsql.bat)"
 	
-	# Copy the global items
-	mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the global images"
-	cp $WD/resources/website.ico staging/windows/scripts/images || _die "Failed to copy the global menu pick image (resources/website.ico)"
-	
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
+	
+	# Rename the installer
+	mv $WD/output/postgresql-$PG_MAJOR_VERSION-windows-installer.exe $WD/output/postgresql-$PG_PACKAGE_VERSION-windows.exe || _die "Failed to rename the installer"
+
     
     cd $WD
 }

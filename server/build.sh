@@ -19,6 +19,12 @@ if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
     source $WD/server/build-linux-x64.sh
 fi
+
+# Windows
+if [ $PG_ARCH_WINDOWS = 1 ];
+then
+    source $WD/server/build-windows.sh
+fi
     
 ################################################################################
 # Build preparation
@@ -96,6 +102,12 @@ _prep_server() {
     then
         _prep_server_linux_x64 || exit 1
     fi
+
+    # Windows
+    if [ $PG_ARCH_WINDOWS = 1 ];
+    then
+        _prep_server_windows || exit 1
+    fi
 }
 
 ################################################################################
@@ -120,6 +132,12 @@ _build_server() {
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
         _build_server_linux_x64 || exit 1
+    fi
+
+    # Windows
+    if [ $PG_ARCH_WINDOWS = 1 ];
+    then
+        _build_server_windows || exit 1
     fi
 }
 
@@ -163,5 +181,11 @@ _postprocess_server() {
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
         _postprocess_server_linux_x64 || exit 1
+    fi
+
+    # Windows
+    if [ $PG_ARCH_WINDOWS = 1 ];
+    then
+        _postprocess_server_windows || exit 1
     fi
 }
