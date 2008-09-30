@@ -17,7 +17,7 @@ strPassword = WScript.Arguments.Item(1)
 strInstallDir = WScript.Arguments.Item(2)
 strDataDir = WScript.Arguments.Item(3)
 iPort = CInt(WScript.Arguments.Item(4))
-strLocale = WScript.Arguments.Item(3)
+strLocale = WScript.Arguments.Item(5)
 
 ' Remove any trailing \'s from the data dir - they will confuse cacls
 If Right(strDataDir, 1) = "\" Then
