@@ -9,10 +9,10 @@ SET /P server="Server [%server%]: "
 SET database=postgres
 SET /P database="Database [%database%]: "
 
-SET port=EDB_PORT
+SET port=PG_PORT
 SET /P port="Port [%port%]: "
 
-SET username=EDB_USERNAME
+SET username=PG_USERNAME
 SET /P username="Username [%username%]: "
 
 REM Run psql

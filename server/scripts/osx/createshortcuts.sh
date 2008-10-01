@@ -63,7 +63,6 @@ chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 # Create the menu 
 FOLDER="/Applications/PostgreSQL $VERSION"
 mkdir -p "$FOLDER" || _die "Failed to create the menu directory ($FOLDER)"
-# mkdir -p "$FOLDER/Configuration files" || _die "Failed to create the menu directory ($FOLDER)"
 mkdir -p "$FOLDER/Documentation" || _die "Failed to create the menu directory ($FOLDER)"
 
 # Create the scripts

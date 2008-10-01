@@ -104,56 +104,96 @@
     <!-- Preinstallation actions -->
     <preInstallationActionList>
         
-        <!-- Get the existing data directory. -->
-        <iniFileGet>
-            <file>${PostgreSqlIni}</file>
-            <key>DataDirectory</key>
-            <section>PostgreSQL/${product_version}</section>
-            <variable>iDataDirectory</variable>
+		<!-- !WIN: Get existing directories -->
+		<actionGroup>
+		    <actionList>
+				<!-- Get the existing data directory. -->
+				<iniFileGet>
+					<file>${PostgreSqlIni}</file>
+					<key>DataDirectory</key>
+					<section>PostgreSQL/${product_version}</section>
+					<variable>iDataDirectory</variable>
+					<ruleList>
+						<fileTest>
+							<condition>readable</condition>
+							<path>${PostgreSqlIni}</path>
+						</fileTest>
+					</ruleList>
+				</iniFileGet>
+				<setInstallerVariable>
+					<name>iDataDirectory</name>
+					<persist>0</persist>
+					<value></value>
+					<ruleList>
+						<fileTest>
+							<condition>not_readable</condition>
+							<path>${PostgreSqlIni}</path>
+						</fileTest>
+					</ruleList>
+				</setInstallerVariable>
+				
+				<!-- Get the base installation path. Any previous package could have set this. -->
+				<iniFileGet>
+					<file>${PostgreSqlIni}</file>
+					<key>InstallationDirectory</key>
+					<section>PostgreSQL/${product_version}</section>
+					<variable>iBaseDirectory</variable>
+					<ruleList>
+						<fileTest>
+							<condition>readable</condition>
+							<path>${PostgreSqlIni}</path>
+						</fileTest>
+					</ruleList>
+				</iniFileGet>
+				<setInstallerVariable>
+					<name>iBaseDirectory</name>
+					<persist>0</persist>
+					<value></value>
+					<ruleList>
+						<fileTest>
+							<condition>not_readable</condition>
+							<path>${PostgreSqlIni}</path>
+						</fileTest>
+					</ruleList>
+				</setInstallerVariable>
+		    </actionList>
+			
             <ruleList>
-                <fileTest>
-                    <condition>readable</condition>
-                    <path>${PostgreSqlIni}</path>
-                </fileTest>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
             </ruleList>
-        </iniFileGet>
-        <setInstallerVariable>
-            <name>iDataDirectory</name>
-            <persist>0</persist>
-            <value></value>
-            <ruleList>
-                <fileTest>
-                    <condition>not_readable</condition>
-                    <path>${PostgreSqlIni}</path>
-                </fileTest>
-            </ruleList>
-        </setInstallerVariable>
+		</actionGroup>
         
-        <!-- Get the base installation path. Any previous package could have set this. -->
-        <iniFileGet>
-            <file>${PostgreSqlIni}</file>
-            <key>InstallationDirectory</key>
-            <section>PostgreSQL/${product_version}</section>
-            <variable>iBaseDirectory</variable>
+		<!-- WIN: Get existing directories -->
+		<actionGroup>
+		    <actionList>
+				<!-- Get the existing data directory. -->
+				<registryGet>
+				    <name>Data Directory</name>
+					<key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+					<variable>iDataDirectory</variable>
+				</registryGet>
+				
+				<!-- Get the existing installation directory. -->
+				<registryGet>
+				    <name>Base Directory</name>
+					<key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+					<variable>iBaseDirectory</variable>
+				</registryGet>
+		    </actionList>
+			
             <ruleList>
-                <fileTest>
-                    <condition>readable</condition>
-                    <path>${PostgreSqlIni}</path>
-                </fileTest>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
             </ruleList>
-        </iniFileGet>
-        <setInstallerVariable>
-            <name>iBaseDirectory</name>
-            <persist>0</persist>
-            <value></value>
-            <ruleList>
-                <fileTest>
-                    <condition>not_readable</condition>
-                    <path>${PostgreSqlIni}</path>
-                </fileTest>
-            </ruleList>
-        </setInstallerVariable>
-        
+		</actionGroup>
+		
         <!-- Debugging -->
         <logMessage>
             <text>Existing base directory: ${iBaseDirectory}</text>
@@ -1630,7 +1670,7 @@
 		
         <!-- WINDOWS: Stop the server -->
         <stopWindowsService>
-            <serviceName>postgres-plus-${product_version}</serviceName>
+            <serviceName>postgresql-${product_version}</serviceName>
             <abortOnError>0</abortOnError>
             <showMessageOnError>1</showMessageOnError>
         </stopWindowsService>
@@ -1970,11 +2010,11 @@
 						</startMenuLinkShortcut>
 						
 						<!-- pgAdmin -->
-						<startMenuLinkShortcut>
+						<startMenuShortcut>
 							<name>pgAdmin documentation</name>
 							<runInTerminal>0</runInTerminal>
 							<windowsExec>${installdir}/pgAdmin III/docs/en_US/pgadmin3.chm</windowsExec>
-						</startMenuLinkShortcut>
+						</startMenuShortcut>
 						
 						<!-- PL Java users guild -->
 						<startMenuLinkShortcut>
@@ -1997,6 +2037,20 @@
 						
 					</startMenuShortcutList>
 				</startMenuFolder>
+				
+				<!-- pgAdmin -->
+				<startMenuShortcut>
+					<name>pgAdmin III</name>
+					<runInTerminal>0</runInTerminal>
+					<windowsExec>${installdir}\bin\pgAdmin3.exe</windowsExec>
+				</startMenuShortcut>
+				
+				<!-- Stackbuilder -->
+				<startMenuShortcut>
+					<name>Application Stack Builder</name>
+					<runInTerminal>0</runInTerminal>
+					<windowsExec>${installdir}\bin\stackbuilder.exe</windowsExec>
+				</startMenuShortcut>
 				
 				<!-- psql -->
 				<startMenuShortcut>
