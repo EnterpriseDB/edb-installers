@@ -32,7 +32,7 @@ _warn() {
 
 # Remove the icon resources
 "$INSTALLDIR/phpBB/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 \
-	"$INSTALLDIR/phpBB/scripts/images/enterprisedb-launchPhpBB.png" ||  _warn "Failed to remove icon resource"
+    "$INSTALLDIR/phpBB/scripts/images/enterprisedb-launchPhpBB.png" ||  _warn "Failed to remove icon resource"
 
 echo "$0 ran to completion"
 exit 0

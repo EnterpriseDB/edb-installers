@@ -18,8 +18,7 @@ fi
 # Linux x64
 if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
-   # source $WD/phpBB/build-linux-x64.sh
-   echo "Not yet implemented"
+    source $WD/phpBB/build-linux-x64.sh
 fi
 
 # Windows
@@ -44,14 +43,14 @@ _prep_phpBB() {
     cd $WD/phpBB/source
 
     # phpBB
-    if [ -e phpBB-$PG_PHPBB_TARBALL ];
+    if [ -e phpBB-$PG_VERSION_PHPBB ];
     then
-      echo "Removing existing phpBB-$PG_PHPBB_TARBALL source directory"
-      rm -rf phpBB-$PG_PHPBB_TARBALL  || _die "Couldn't remove the existing phpBB-$PG_PHPBB_TARBALL source directory (source/phpBB-$PG_PHPBB_TARBALL)"
+      echo "Removing existing phpBB-$PG_VERSION_PHPBB source directory"
+      rm -rf phpBB-$PG_VERSION_PHPBB  || _die "Couldn't remove the existing phpBB-$PG_VERSION_PHPBB source directory (source/phpBB-$PG_VERSION_PHPBB)"
     fi
 
     echo "Unpacking PhpBB source..."
-    tar -jxvf ../../tarballs/phpBB-$PG_PHPBB_TARBALL.tar.bz2
+    extract_file  ../../tarballs/phpBB-$PG_VERSION_PHPBB.tar.bz2 || exit 1
 
     # Per-platform prep
     cd $WD
@@ -72,8 +71,7 @@ _prep_phpBB() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-       # _prep_phpBB_linux_x64 || exit 1
-       echo "Not yet implemented"
+        _prep_phpBB_linux_x64 || exit 1
     fi
 
     # Windows
@@ -81,7 +79,7 @@ _prep_phpBB() {
     then
         _prep_phpBB_windows || exit 1
     fi
-	
+    
 }
 
 ################################################################################
@@ -106,8 +104,7 @@ _build_phpBB() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-       # _build_phpBB_linux_x64 || exit 1
-	echo "Not yet implemented"
+        _build_phpBB_linux_x64 || exit 1
     fi
 
     # Windows
@@ -135,13 +132,14 @@ _postprocess_phpBB() {
     fi
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (phpBB/installer.xml.in)"
 
-    _replace PG_PHPBB_VERSION $PG_PHPBB_VERSION installer.xml || _die "Failed to set the version in the installer project file (phpBB/installer.xml)"
+    _replace PG_VERSION_PHPBB $PG_VERSION_PHPBB installer.xml || _die "Failed to set the version in the installer project file (phpBB/installer.xml)"
+    _replace PG_PACKAGE_PHPBB $PG_PACKAGE_PHPBB installer.xml || _die "Failed to set the Build Numer in the installer project file (phpBB/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
         #_postprocess_phpBB_osx || exit 1
-	echo "Not yet implemented"
+    echo "Not yet implemented"
     fi
 
     # Linux
@@ -153,10 +151,9 @@ _postprocess_phpBB() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_postprocess_phpBB_linux_x64 || exit 1
-	echo "Not yet implemented"
+        _postprocess_phpBB_linux_x64 || exit 1
     fi
-	
+    
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then

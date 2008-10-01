@@ -18,8 +18,7 @@ fi
 # Linux x64
 if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
-   #source $WD/phpWiki/build-linux-x64.sh
-   echo "Not yet implemented"
+   source $WD/phpWiki/build-linux-x64.sh
 fi
 
 # Windows
@@ -44,14 +43,14 @@ _prep_phpWiki() {
     cd $WD/phpWiki/source
 
     # phpWiki
-    if [ -e phpwiki-$PG_PHPWIKI_TARBALL ];
+    if [ -e phpwiki-$PG_VERSION_PHPWIKI ];
     then
-      echo "Removing existing phpwiki-$PG_PHPWIKI_TARBALL source directory"
-      rm -rf phpwiki-$PG_PHPWIKI_TARBALL  || _die "Couldn't remove the existing phpwiki-$PG_PHPWIKI_TARBALL source directory (source/phpwiki-$PG_PHPWIKI_TARBALL)"
+      echo "Removing existing phpwiki-$PG_VERSION_PHPWIKI source directory"
+      rm -rf phpwiki-$PG_VERSION_PHPWIKI  || _die "Couldn't remove the existing phpwiki-$PG_VERSION_PHPWIKI source directory (source/phpwiki-$PG_VERSION_PHPWIKI)"
     fi
 
     echo "Unpacking PhpWiki source..."
-    tar -jxvf ../../tarballs/phpwiki-$PG_PHPWIKI_TARBALL.tar.bz2
+    extract_file  ../../tarballs/phpwiki-$PG_VERSION_PHPWIKI.tar.bz2 || exit 1
 
     # Per-platform prep
     cd $WD
@@ -72,8 +71,7 @@ _prep_phpWiki() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-       #_prep_phpWiki_linux_x64 || exit 1
-       echo "Not yet implemented"
+       _prep_phpWiki_linux_x64 || exit 1
     fi
 
     # Windows
@@ -81,7 +79,7 @@ _prep_phpWiki() {
     then
         _prep_phpWiki_windows || exit 1
     fi
-	
+    
 }
 
 ################################################################################
@@ -106,8 +104,7 @@ _build_phpWiki() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-      #_build_phpWiki_linux_x64 || exit 1
-      echo "Not yet implemented"
+      _build_phpWiki_linux_x64 || exit 1
     fi
 
     # Windows
@@ -135,7 +132,8 @@ _postprocess_phpWiki() {
     fi
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (phpWiki/installer.xml.in)"
 
-    _replace PG_PHPWIKI_VERSION $PG_PHPWIKI_VERSION installer.xml || _die "Failed to set the version in the installer project file (phpWiki/installer.xml)"
+    _replace PG_VERSION_PHPWIKI $PG_VERSION_PHPWIKI installer.xml || _die "Failed to set the version in the installer project file (phpWiki/installer.xml)"
+    _replace PG_PACKAGE_PHPWIKI $PG_PACKAGE_PHPWIKI installer.xml || _die "Failed to set the Build Number in the installer project file (phpWiki/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
@@ -153,10 +151,9 @@ _postprocess_phpWiki() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-      #_postprocess_phpWiki_linux_x64 || exit 1
-      echo "Not yet implemented"
+      _postprocess_phpWiki_linux_x64 || exit 1
     fi
-	
+    
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then

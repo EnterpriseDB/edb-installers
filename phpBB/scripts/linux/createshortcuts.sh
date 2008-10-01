@@ -29,7 +29,7 @@ _warn() {
 # Search & replace in a file - _replace($find, $replace, $file) 
 _replace() {
     sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
-	mv /tmp/$$.tmp $3 || _die "Failed to move /tmp/$$.tmp to $3"
+    mv /tmp/$$.tmp $3 || _die "Failed to move /tmp/$$.tmp to $3"
 }
 
 # Substitute values into a file ($in)
@@ -41,7 +41,7 @@ _fixup_file() {
 cd "$INSTALLDIR/phpBB/scripts/images"
 for i in `ls *.png`
 do
-	"$INSTALLDIR/phpBB/installer/xdg/xdg-icon-resource" install --size 32 $i
+    "$INSTALLDIR/phpBB/installer/xdg/xdg-icon-resource" install --size 32 $i
 done
 
 # Fixup the scripts

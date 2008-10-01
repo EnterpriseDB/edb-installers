@@ -1,0 +1,2 @@
+do shell script "sudo INSTALL_DIR/TuningWizard.app/Contents/MacOS/TuningWizard" with administrator privileges
+

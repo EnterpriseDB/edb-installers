@@ -1,41 +1,34 @@
-
 <project>
     <!-- Package details -->
-    <shortName>phpBB</shortName>
+    <shortName>phpbb</shortName>
     <fullName>phpBB</fullName>
-    <version>PG_PHPBB_VERSION</version>
-    
+    <version>PG_VERSION_PHPBB</version>
     <!-- Product Specific Options -->
     <productDisplayName>${product_fullname} ${product_version} by EnterpriseDB</productDisplayName>
     <productComments>${product_fullname} ${product_version} by EnterpriseDB</productComments>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
-
     <!-- Windows Specific Options -->
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
-    
     <!-- The options are used for RPM registration -->
     <description>${product_fullname} ${product_version} by EnterpriseDB</description>
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
-    
     <!-- Installer Size -->
     <width>550</width>
     <height>400</height>
-    
     <!-- Misc package options -->
-    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUMPHPBB-${platform_name}.${platform_exec_suffix}</installerFilename>
     <enableRollback>0</enableRollback>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <saveRelativePaths>1</saveRelativePaths>
     <unattendedModeUI>minimal</unattendedModeUI>
     <outputDirectory>../output</outputDirectory>
-    <uninstallerName>uninstall-${product_shortname}</uninstallerName>	
-    <uninstallerDirectory>${installdir}/phpBB</uninstallerDirectory>
+    <uninstallerName>uninstall-${product_shortname}</uninstallerName>
+    <uninstallerDirectory>${apachephpinstalldir}</uninstallerDirectory>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
- 
     <!-- Images -->
     <leftImage>resources/leftImage.png</leftImage>
     <logoImage>resources/edblogo.png</logoImage>
@@ -43,7 +36,6 @@
     <productDisplayIcon>${installdir}/phpBB/scripts/images/logo.ico</productDisplayIcon>
     <windowsExecutableIcon>resources/logo.ico</windowsExecutableIcon>
     <wmImage>resources/logo.png</wmImage>
-    
     <!-- i18n files for the UI -->
     <customLanguageFileList>
         <language>
@@ -52,7 +44,6 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
-    
     <!-- Initialisation actions -->
     <initializationActionList>
         <!-- Set the Apache Home -->
@@ -62,53 +53,46 @@
         <setInstallerVariable name="apacheport" value="8080">
             <persist>0</persist>
         </setInstallerVariable>
-        
         <!-- Set the php Home -->
         <setInstallerVariable name="phphome" value="">
             <persist>0</persist>
         </setInstallerVariable>
-        
         <!-- Set the pghost varaible to localhost -->
         <setInstallerVariable name="pghost" value="localhost">
             <persist>0</persist>
         </setInstallerVariable>
-	
-	 <!-- Set the phpBB version(if exists) -->
+        <!-- Set the phpBB version(if exists) -->
         <setInstallerVariable name="phpBBVersion" value="">
             <persist>0</persist>
         </setInstallerVariable>
-
         <!-- Set a temp variable -->
         <setInstallerVariable name="previnstall" value="">
             <persist>0</persist>
         </setInstallerVariable>
-
         <!-- Set the default values -->
         <setInstallerVariable name="defaultuser" value=""/>
         <setInstallerVariable name="defaultpassword" value=""/>
         <setInstallerVariable name="defaultpghome" value=""/>
-
         <!-- Set the default values for unattended mode -->
         <actionGroup>
-           <actionList>
+            <actionList>
                 <setInstallerVariable name="defaultuser" value="postgres"/>
                 <setInstallerVariable name="defaultpassword" value="postgres"/>
-           </actionList>
-           <ruleList>
+            </actionList>
+            <ruleList>
                 <compareText>
                     <logic>equals</logic>
                     <text>${installer_ui}</text>
                     <value>unattended</value>
                 </compareText>
-           </ruleList>
+            </ruleList>
         </actionGroup>
-        
         <!-- WIN: Set the default pghome value for unattended mode -->
         <actionGroup>
-           <actionList>
+            <actionList>
                 <setInstallerVariable name="defaultpghome" value="${env(SYSTEMDIR)}\Program Files\PostgreSQL\8.3"/>
-           </actionList>
-           <ruleList>
+            </actionList>
+            <ruleList>
                 <compareText>
                     <logic>equals</logic>
                     <text>${installer_ui}</text>
@@ -119,15 +103,14 @@
                     <text>${platform_name}</text>
                     <value>windows</value>
                 </compareText>
-           </ruleList>
+            </ruleList>
         </actionGroup>
-        
         <!-- LIN: Set the default values for unattended mode -->
         <actionGroup>
-           <actionList>
+            <actionList>
                 <setInstallerVariable name="defaultpghome" value="/opt/PostgreSQL/8.3"/>
-           </actionList>
-           <ruleList>
+            </actionList>
+            <ruleList>
                 <compareText>
                     <logic>equals</logic>
                     <text>${installer_ui}</text>
@@ -138,35 +121,59 @@
                     <text>${platform_name}</text>
                     <value>linux</value>
                 </compareText>
-           </ruleList>
+            </ruleList>
         </actionGroup>
-        
+        <!-- MAC : Set the    pghome default value for unattended mode -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/8.3"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
     </initializationActionList>
-    
     <!-- Preinstallation actions -->
     <preInstallationActionList>
-
-	<!-- LIN: Check Previous Installation of phpBB-->
+        <!-- Creates the ini file if not exits -->
+        <touchFile path="/etc/postgres-reg.ini">
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </touchFile>
+        <!-- LIN & MAC: Check Previous Installation of phpBB-->
         <actionGroup>
             <actionList>
                 <iniFileGet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>phpBB</section>
-                  <key>Version</key>
-                  <variable>phpBBVersion</variable>
-              </iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>phpBB</section>
+                    <key>Version</key>
+                    <variable>phpBBVersion</variable>
+                </iniFileGet>
             </actionList>
-              <ruleList>
-                  <compareText>
-                    <logic>contains</logic>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
                     <text>${platform_name}</text>
-                    <value>linux</value>
-                  </compareText>
-              </ruleList>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
         </actionGroup>
-
         <!-- WIN: Check Previous Installation of phpBB -->
-         <actionGroup>
+        <actionGroup>
             <actionList>
                 <registryGet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\phpBB</key>
@@ -174,29 +181,29 @@
                     <variable>phpBBVersion</variable>
                 </registryGet>
             </actionList>
-	    <ruleList>
-              <compareText>
-                  <logic>equals</logic>
-                  <text>${platform_name}</text>
-                  <value>windows</value>
-              </compareText>
-	    </ruleList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
         </actionGroup>
-
-	<!-- Setting the installation type as upgrade if previous installation found -->
+        <!-- Setting the installation type as upgrade if previous installation found -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installationType" value="upgrade" />
+                <setInstallerVariable name="installationType" value="upgrade"/>
             </actionList>
             <ruleList>
                 <compareText>
                     <logic>does_not_equal</logic>
                     <text>${phpBBVersion}</text>
-                    <value></value>
+                    <value/>
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- WIN : Set the Apache Home , Php Home and Apache Port(default 8080) from registry. ApachePhp Installation would have set these values -->
+        <!-- WIN : Set the Apache Home , Php Home and Apache Port(default 8080), ApachePhp Installation Directory from registry. -->
+        <!-- ApachePhp Installation would have set these values -->
         <actionGroup>
             <actionList>
                 <registryGet>
@@ -214,6 +221,11 @@
                     <name>PHP_HOME</name>
                     <variable>phphome</variable>
                 </registryGet>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+                    <name>Location</name>
+                    <variable>apachephpinstalldir</variable>
+                </registryGet>
             </actionList>
             <ruleList>
                 <compareText>
@@ -221,40 +233,45 @@
                     <text>${platform_name}</text>
                     <value>windows</value>
                 </compareText>
-            </ruleList>		
+            </ruleList>
         </actionGroup>
-        
-        <!-- LIN: Set the Apache Home , Php Home and Apache Port(default 8080) from registry. ApachePhp Installation would have set these values -->
+        <!-- LIN & MAC : Set the Apache Home , Php Home and Apache Port(default 8080), ApachePhp Installation Directory from registry. -->
+        <!-- ApachePhp Installation would have set these values -->
         <actionGroup>
-          <actionList>
-              <iniFileGet>
-                  <file>/etc/postgres-reg.ini</file>  
-                  <section>ApachePhp</section>
-                  <key>APACHE_HOME</key>
-                  <variable>apachehome</variable>
-              </iniFileGet>
-              <iniFileGet>
-                  <file>/etc/postgres-reg.ini</file>  
-                  <section>ApachePhp</section>
-                  <key>APACHE_PORT</key>
-                  <variable>apacheport</variable>
-              </iniFileGet>
-              <iniFileGet>
-                  <file>/etc/postgres-reg.ini</file>  
-                  <section>ApachePhp</section>
-                  <key>PHP_HOME</key>
-                  <variable>phphome</variable>
-              </iniFileGet>
-          </actionList>
-          <ruleList>
-              <compareText>
-                  <logic>contains</logic>
-                  <text>${platform_name}</text>
-                  <value>linux</value>
-              </compareText>
-          </ruleList>
+            <actionList>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ApachePhp</section>
+                    <key>APACHE_HOME</key>
+                    <variable>apachehome</variable>
+                </iniFileGet>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ApachePhp</section>
+                    <key>APACHE_PORT</key>
+                    <variable>apacheport</variable>
+                </iniFileGet>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ApachePhp</section>
+                    <key>PHP_HOME</key>
+                    <variable>phphome</variable>
+                </iniFileGet>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ApachePhp</section>
+                    <key>InstallationDirectory</key>
+                    <variable>apachephpinstalldir</variable>
+                </iniFileGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
         </actionGroup>
-        
         <!-- Abort Installation as Apache Home not found -->
         <actionGroup>
             <actionList>
@@ -271,7 +288,6 @@
                 </compareTextLength>
             </ruleList>
         </actionGroup>
-        
         <!-- Abort Installation as php Home not found -->
         <actionGroup>
             <actionList>
@@ -288,24 +304,22 @@
                 </compareTextLength>
             </ruleList>
         </actionGroup>
-        
-        <!-- LIN: Set the Installation Directory -->
+        <!-- LIN & MAC: Set the Installation Directory -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="installdir" value="${apachehome}/www">
                     <persist>0</persist>
                 </setInstallerVariable>
             </actionList>
-	    <ruleList>
-              <compareText>
-                  <logic>contains</logic>
-                  <text>${platform_name}</text>
-                  <value>linux</value>
-              </compareText>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
             </ruleList>
         </actionGroup>
-
-	<!-- WIN: Set the Installation Directory -->
+        <!-- WIN: Set the Installation Directory -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="installdir" value="${apachehome}\www">
@@ -313,338 +327,332 @@
                 </setInstallerVariable>
             </actionList>
             <ruleList>
-              <compareText>
-                  <logic>equals</logic>
-                  <text>${platform_name}</text>
-                  <value>windows</value>
-              </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
             </ruleList>
         </actionGroup>
-
-    <!-- WIN: Check Previous Installation -->
+        <!-- Check Previous Installation -->
         <actionGroup>
-          <actionList>
-            <setInstallerVariable>
-              <name>previnstall</name>
-              <value>1</value>
-            </setInstallerVariable>
-          </actionList>
-          <ruleList>
-               <fileExists>
-                  <path>${installdir}/phpBB/install/index.php</path>
-               </fileExists>
-          </ruleList>
-        </actionGroup>  
-	
+            <actionList>
+                <setInstallerVariable>
+                    <name>previnstall</name>
+                    <value>1</value>
+                </setInstallerVariable>
+            </actionList>
+            <ruleList>
+                <fileExists>
+                    <path>${installdir}/phpBB/install/index.php</path>
+                </fileExists>
+            </ruleList>
+        </actionGroup>
         <!-- WIN: Back up conf File -->
         <actionGroup>
-          <actionList>
+            <actionList>
                 <createBackupFile>
-                   <path>${installdir}\phpBB\config.php</path>
+                    <path>${installdir}\phpBB\config.php</path>
                 </createBackupFile>
-          </actionList>
-          <ruleList>
-              <compareText>
-                   <text>${platform_name}</text>
-                   <logic>equals</logic>
-                   <value>windows</value>
-               </compareText>
-          </ruleList>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
         </actionGroup>
-        
-        <!-- LIN: Back up conf File -->
+        <!-- LIN & MAC: Back up conf File -->
         <actionGroup>
-          <actionList>
+            <actionList>
                 <createBackupFile>
-                   <path>${installdir}/phpBB/config.php</path>
+                    <path>${installdir}/phpBB/config.php</path>
                 </createBackupFile>
-          </actionList>
-          <ruleList>
-              <compareText>
-                   <text>${platform_name}</text>
-                   <logic>contains</logic>
-                   <value>linux</value>
-               </compareText>
-          </ruleList>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
         </actionGroup>
-
     </preInstallationActionList>
-    
-    
     <!-- Post installation actions -->
     <postInstallationActionList>
-
         <!-- WIN: Restore the Back up conf File -->
         <actionGroup>
-          <actionList>
-              <deleteFile>
-                <path>${installdir}\phpBB\config.php</path>
-              </deleteFile>
-              <renameFile>
-                <origin>${installdir}\phpBB\config.php.bak0</origin>
-                <destination>${installdir}\phpBB\config.php</destination>
-              </renameFile>
-              <deleteFile>
-                <path>${installdir}\phpBB\config.php.bak0</path>
-              </deleteFile>
-          </actionList>
-          <ruleList>
-            <compareText>	
-              <text>${phpBBVersion}</text>	
-              <logic>does_not_equal</logic>
-              <value></value>
-            </compareText>
-	    <compareText>
-               <text>${platform_name}</text>
-               <logic>equals</logic>
-               <value>windows</value>
-            </compareText>
-	    <fileExists>
-		<path>${installdir}\phpBB\config.php.bak0</path>
-	    </fileExists>
-          </ruleList>
-        </actionGroup>
-          
-        <!-- LIN: Restore the Back up conf File -->
-        <actionGroup>
-          <actionList>
-              <deleteFile>
-                <path>${installdir}/phpBB/config.php</path>
-              </deleteFile>
-              <renameFile>
-                <origin>${installdir}/phpBB/config.php.bak0</origin>
-                <destination>${installdir}/phpBB/config.php</destination>
-              </renameFile>
-              <deleteFile>
-                <path>${installdir}/phpBB/config.php.bak0</path>
-              </deleteFile>
-          </actionList>
-          <ruleList>
-            <compareText>	
-              <text>${phpBBVersion}</text>	
-              <logic>does_not_equal</logic>
-              <value></value>
-            </compareText>
-	    <compareText>
-               <text>${platform_name}</text>
-               <logic>contains</logic>
-               <value>linux</value>
-            </compareText>
-	    <fileExists>
-		<path>${installdir}/phpBB/config.php.bak0</path>
-	    </fileExists>
-          </ruleList>
-        </actionGroup>
-
-        <!-- LIN: Delete Install Directory if previously configured -->
-        <actionGroup>
-           <actionList>
+            <actionList>
                 <deleteFile>
-                   <path>${installdir}/phpBB/install</path>
+                    <path>${installdir}\phpBB\config.php</path>
+                </deleteFile>
+                <renameFile>
+                    <origin>${installdir}\phpBB\config.php.bak0</origin>
+                    <destination>${installdir}\phpBB\config.php</destination>
+                </renameFile>
+                <deleteFile>
+                    <path>${installdir}\phpBB\config.php.bak0</path>
                 </deleteFile>
             </actionList>
             <ruleList>
                 <compareText>
-                   <text>${previnstall}</text>
-                   <logic>does_not_equal</logic>
-                   <value>1</value>
+                    <text>${phpBBVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
                 </compareText>
                 <compareText>
-                   <text>${phpBBVersion}</text>
-                   <logic>does_not_equal</logic>
-                   <value></value>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
                 </compareText>
-		<compareText>
-                   <text>${platform_name}</text>
-                   <logic>contains</logic>
-                   <value>linux</value>
-                </compareText>
-             </ruleList>
+                <fileExists>
+                    <path>${installdir}\phpBB\config.php.bak0</path>
+                </fileExists>
+            </ruleList>
         </actionGroup>
-        
+        <!-- LIN & MAC: Restore the Back up conf File -->
+        <actionGroup>
+            <actionList>
+                <deleteFile>
+                    <path>${installdir}/phpBB/config.php</path>
+                </deleteFile>
+                <renameFile>
+                    <origin>${installdir}/phpBB/config.php.bak0</origin>
+                    <destination>${installdir}/phpBB/config.php</destination>
+                </renameFile>
+                <deleteFile>
+                    <path>${installdir}/phpBB/config.php.bak0</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${phpBBVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
+                </compareText>
+                <fileExists>
+                    <path>${installdir}/phpBB/config.php.bak0</path>
+                </fileExists>
+            </ruleList>
+        </actionGroup>
+        <!-- LIN & MAC: Delete Install Directory if previously configured -->
+        <actionGroup>
+            <actionList>
+                <deleteFile>
+                    <path>${installdir}/phpBB/install</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${previnstall}</text>
+                    <logic>does_not_equal</logic>
+                    <value>1</value>
+                </compareText>
+                <compareText>
+                    <text>${phpBBVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
         <!-- WIN: Delete Install Directory if previously configured -->
         <actionGroup>
-           <actionList>
+            <actionList>
                 <deleteFile>
-                   <path>${installdir}\phpBB\install</path>
+                    <path>${installdir}\phpBB\install</path>
                 </deleteFile>
             </actionList>
             <ruleList>
                 <compareText>
-                   <text>${previnstall}</text>
-                   <logic>does_not_equal</logic>
-                   <value>1</value>
+                    <text>${previnstall}</text>
+                    <logic>does_not_equal</logic>
+                    <value>1</value>
                 </compareText>
                 <compareText>
-                   <text>${phpBBVersion}</text>
-                   <logic>does_not_equal</logic>
-                   <value></value>
+                    <text>${phpBBVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
                 </compareText>
-		<compareText>
-                   <text>${platform_name}</text>
-                   <logic>equals</logic>
-                   <value>windows</value>
-                </compareText>
-             </ruleList>
-        </actionGroup>
-	
-       <!-- Write the phpBB Info to INI File -->
-        <actionGroup>
-            <actionList>
-	      <iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>phpBB</section>
-                  <key>Description</key>
-                  <value>${msg(install.summary)}</value>
-              </iniFileSet>
-	      <iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>phpBB</section>
-                  <key>InstallationDirectory</key>
-                  <value>${installdir}/phpBB</value>
-              </iniFileSet>		
-              <iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>phpBB</section>
-                  <key>Version</key>
-                  <value>${product_version}</value>
-              </iniFileSet>
-            </actionList>
-            <ruleList>
                 <compareText>
-                   <text>${platform_name}</text>
-                   <logic>contains</logic>
-                   <value>linux</value>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
                 </compareText>
             </ruleList>
         </actionGroup>
-
+        <!-- LIN & MAC: Write the phpBB Info to INI File -->
+        <actionGroup>
+            <actionList>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>phpBB</section>
+                    <key>Description</key>
+                    <value>${msg(install.summary)}</value>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>phpBB</section>
+                    <key>InstallationDirectory</key>
+                    <value>${installdir}/phpBB</value>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>phpBB</section>
+                    <key>Version</key>
+                    <value>${product_version}</value>
+                </iniFileSet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
         <!-- WIN: Run the post-installation script -->
-        <actionGroup>
-          <actionList>
-              <runProgram>
-                  <customErrorMessage>${msg(post.install.error)}</customErrorMessage>
-                  <program>${installdir}\phpBB\installer\phpBB\install.bat</program>
-                  <programArguments>"${pghost}" "${pgport}" "${pguser}" "${pgpassword}" "${pghome}"</programArguments>
-              </runProgram>
-            <!-- Inform user about the database and role creation -->
-            <showInfo>
-              <text>${msg(db.create.info)}</text>
-            </showInfo>
-          </actionList>
-          <ruleList>
-              <compareText>
-                <logic>equals</logic>
-                <text>${platform_name}</text>
-                <value>windows</value>
-              </compareText>
-              <compareText>
-                <text>${dbexist}</text>
-                <logic>equals</logic>
-                <value></value>
-              </compareText>
-              <compareText>
-                <text>${userexist}</text>
-                <logic>equals</logic>
-                <value></value>
-              </compareText>
-              <compareText>
-                <text>${phpBBVersion}</text>
-                <logic>equals</logic>
-                <value></value>
-              </compareText>
-            </ruleList>
-        </actionGroup>
-        
-        <!-- LIN : Run Script to create Role and database -->
-        <actionGroup>     	
-            <actionList>
-              <runProgram>
-                <program>${installdir}/phpBB/installer/phpBB/install.sh</program>
-                <programArguments> "${pghost}"  ${pgport} ${pguser} "${pgpassword}" "${pghome}"</programArguments>
-                <workingDirectory>${installdir}/phpBB/installer/phpBB</workingDirectory>
-              </runProgram>
-              <!-- Inform user about the database and role creation -->
-              <showInfo>
-                <text>${msg(db.create.info)}</text>
-              </showInfo>
-            </actionList>
-            <ruleList>
-                <compareText>
-                  <logic>contains</logic>
-                  <text>${platform_name}</text>
-                  <value>linux</value>
-                </compareText>
-                <compareText>
-                  <text>${dbexist}</text>
-                  <logic>equals</logic>
-                  <value></value>
-                </compareText>
-                <compareText>
-                  <text>${userexist}</text>
-                  <logic>equals</logic>
-                  <value></value>
-                </compareText>
-                <compareText>
-                  <text>${phpBBVersion}</text>
-                  <logic>equals</logic>
-                  <value></value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-
-       <!-- LIN: Create Menu Shortcuts -->
         <actionGroup>
             <actionList>
                 <runProgram>
-                  <program>${installdir}/phpBB/installer/phpBB/createshortcuts.sh</program>
-                  <programArguments>"${installdir}"</programArguments>
-                  <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
-                  <workingDirectory>${installdir}/phpBB/installer/phpBB</workingDirectory>
-                  <abortOnError>0</abortOnError>
-                  <showMessageOnError>0</showMessageOnError>
+                    <customErrorMessage>${msg(post.install.error)}</customErrorMessage>
+                    <program>${installdir}\phpBB\installer\phpBB\install.bat</program>
+                    <programArguments>"${pghost}" "${pgport}" "${pguser}" "${pgpassword}" "${pghome}"</programArguments>
+                </runProgram>
+                <!-- Inform user about the database and role creation -->
+                <showInfo>
+                    <text>${msg(db.create.info)}</text>
+                </showInfo>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <compareText>
+                    <text>${dbexist}</text>
+                    <logic>equals</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${userexist}</text>
+                    <logic>equals</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${phpBBVersion}</text>
+                    <logic>equals</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- LIN & MAC: Run Script to create Role and database -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${installdir}/phpBB/installer/phpBB/install.sh</program>
+                    <programArguments> "${pghost}"    ${pgport} ${pguser} "${pgpassword}" "${pghome}"</programArguments>
+                    <workingDirectory>${installdir}/phpBB/installer/phpBB</workingDirectory>
+                </runProgram>
+                <!-- Inform user about the database and role creation -->
+                <showInfo>
+                    <text>${msg(db.create.info)}</text>
+                </showInfo>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <compareText>
+                    <text>${dbexist}</text>
+                    <logic>equals</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${userexist}</text>
+                    <logic>equals</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${phpBBVersion}</text>
+                    <logic>equals</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- LIN & MAC: Create Menu Shortcuts -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${installdir}/phpBB/installer/phpBB/createshortcuts.sh</program>
+                    <programArguments>"${installdir}"</programArguments>
+                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                    <workingDirectory>${installdir}/phpBB/installer/phpBB</workingDirectory>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
                 </runProgram>
             </actionList>
             <ruleList>
                 <compareText>
-                  <logic>contains</logic>
-                  <text>${platform_name}</text>
-                  <value>linux</value>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
                 </compareText>
             </ruleList>
         </actionGroup>
- 
     </postInstallationActionList>
-    
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
-	
-	<!-- Unset the phpBB info from ini file -->
+        <!-- Unset the phpBB info from ini file -->
         <actionGroup>
             <actionList>
-		<iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>phpBB</section>
-                  <key>Description</key>
-                  <value></value>
-                </iniFileSet>
-		<iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>phpBB</section>
-                  <key>InstallationDirectory</key>
-                  <value></value>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>phpBB</section>
+                    <key>Description</key>
+                    <value/>
                 </iniFileSet>
                 <iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>phpBB</section>
-                  <key>Version</key>
-                  <value></value>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>phpBB</section>
+                    <key>InstallationDirectory</key>
+                    <value/>
                 </iniFileSet>
-		<!-- Remove menu shortcuts -->
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>phpBB</section>
+                    <key>Version</key>
+                    <value/>
+                </iniFileSet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- LIN : Remove Menu Shortcuts -->
+        <actionGroup>
+            <actionList>
                 <runProgram>
-                  <program>${installdir}/phpBB/installer/phpBB/removeshortcuts.sh</program>
-                  <programArguments>"${installdir}"</programArguments>
-                  <workingDirectory>${installdir}/phpBB/installer/phpBB</workingDirectory>
+                    <program>${installdir}/phpBB/installer/phpBB/removeshortcuts.sh</program>
+                    <programArguments>"${installdir}"</programArguments>
+                    <workingDirectory>${installdir}/phpBB/installer/phpBB</workingDirectory>
                 </runProgram>
             </actionList>
             <ruleList>
@@ -655,14 +663,26 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-
-        <!-- Deleting some files that will be left by the uninstaller -->   
+        <!-- MAC: Remove Menu shortcuts -->
+        <actionGroup>
+            <actionList>
+                <deleteFile>
+                    <path>/Applications/PostgreSQL/phpBB.app</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- Deleting some files that will be left by the uninstaller -->
         <deleteFile>
-		<path>${installdir}/phpBB/cache</path>
-	</deleteFile>
- 
+            <path>${installdir}/phpBB/cache</path>
+        </deleteFile>
     </preUninstallationActionList>
-
     <!-- Post un-installation actions -->
     <postUninstallationActionList>
         <!-- Promt user about the database and role drop/deleteion -->
@@ -670,7 +690,6 @@
             <text>${msg(db.drop.info)}</text>
         </showInfo>
     </postUninstallationActionList>
-    
     <!-- Components -->
     <componentList>
         <component>
@@ -680,7 +699,6 @@
             <selected>1</selected>
             <show>1</show>
             <folderList>
-            
                 <!-- LIN: Program files -->
                 <folder>
                     <description>Program Files</description>
@@ -715,8 +733,41 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
-		
-		<!-- LIN: Program files -->
+                <!-- LIN-X64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/phpBB</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Files</description>
+                    <destination>${installdir}/phpBB</destination>
+                    <name>installfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu And Launch Scripts</description>
+                    <destination>${installdir}/phpBB</destination>
+                    <name>menuandlaunchfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- WIN: Program files -->
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}</destination>
@@ -749,21 +800,53 @@
                             <origin>staging/windows/scripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
-                </folder>	
-
+                </folder>
+                <!-- MAC: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/phpBB</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Files</description>
+                    <destination>${installdir}/phpBB</destination>
+                    <name>installfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu And Launch Scripts</description>
+                    <destination>${installdir}/phpBB</destination>
+                    <name>menuandlaunchfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
             </folderList>
-            
             <!-- WIN: Start Menu -->
             <startMenuShortcutList>
-				 <!-- Launch phpBB -->
-                                <startMenuShortcut>
-                                    <comment>phpBB</comment>
-                                    <name>phpBB</name>
-                                    <runInTerminal>0</runInTerminal>
-                                    <windowsExec>wscript</windowsExec>
-                                    <windowsExecArgs>//NoLogo "${installdir}\phpBB\scripts\launchPhpBB.vbs"</windowsExecArgs>
-                                    <windowsIcon>${installdir}\phpBB\scripts\images\logo.ico</windowsIcon>
-                                </startMenuShortcut>
+                <!-- Launch phpBB -->
+                <startMenuShortcut>
+                    <comment>phpBB</comment>
+                    <name>phpBB</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>wscript</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\phpBB\scripts\launchPhpBB.vbs"</windowsExecArgs>
+                    <windowsIcon>${installdir}\phpBB\scripts\images\logo.ico</windowsIcon>
+                </startMenuShortcut>
             </startMenuShortcutList>
         </component>
     </componentList>
@@ -773,410 +856,435 @@
             <name>pgdetails</name>
             <title>${msg(pgplus.details.title)}</title>
             <explanation>${msg(pgplus.details.explanation)}</explanation>
-            <value></value>
-            <default></default>
+            <value/>
+            <default/>
             <parameterList>
                 <!-- Postgres Host(Default localhost) -->
                 <stringParameter>
                     <name>pghost</name>
                     <description>Host</description>
-                    <explanation></explanation>
-                    <value></value>
-                    <default></default>
+                    <explanation/>
+                    <value/>
+                    <default/>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
-                
                 <!-- Postgres Port(Default 6543) -->
                 <stringParameter>
                     <name>pgport</name>
                     <description>Port</description>
-                    <explanation></explanation>
-                    <value></value>
+                    <explanation/>
+                    <value/>
                     <default>5432</default>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
-                
                 <!-- Postgres User -->
                 <stringParameter>
                     <name>pguser</name>
                     <description>User Name</description>
-                    <explanation></explanation>
-                    <value></value>
+                    <explanation/>
+                    <value/>
                     <default>${defaultuser}</default>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
-                
                 <!-- Postgres User Password -->
                 <passwordParameter>
                     <name>pgpassword</name>
                     <title>Password</title>
                     <description>Password</description>
-                    <explanation></explanation>
-                    <value></value>
+                    <explanation/>
+                    <value/>
                     <default>${defaultpassword}</default>
                     <allowEmptyValue>1</allowEmptyValue>
                     <askForConfirmation>0</askForConfirmation>
-                    <descriptionRetype></descriptionRetype>
+                    <descriptionRetype/>
                     <width>40</width>
                 </passwordParameter>
-                
                 <!-- Postgres Home Directory -->
                 <directoryParameter>
                     <name>pghome</name>
                     <description>PostgreSQL Home Directory</description>
-                    <explanation></explanation>
-                    <value></value>
+                    <explanation/>
+                    <value/>
                     <default>${defaultpghome}</default>
                     <allowEmptyValue>1</allowEmptyValue>
                     <mustBeWritable>0</mustBeWritable>
                     <mustExist>0</mustExist>
                     <width>40</width>
                 </directoryParameter>
-                
                 <!-- PostgreSQL Server Installed? -->
                 <booleanParameter>
                     <name>pginstalled</name>
                     <description>PostgreSQL Installed</description>
-                    <explanation></explanation>
+                    <explanation/>
                     <value>${pginstalled}</value>
                     <default>0</default>
                     <ask>0</ask>
                     <displayStyle>checkbox-right</displayStyle>
                 </booleanParameter>
             </parameterList>
-             <ruleList>
+            <ruleList>
                 <compareText>
-                   <text>${phpBBVersion}</text>
-                   <logic>equals</logic>
-                   <value></value>
+                    <text>${phpBBVersion}</text>
+                    <logic>equals</logic>
+                    <value/>
                 </compareText>
             </ruleList>
-
-
             <!-- Checking the validity of PostgreSQL Server Details -->
-	    <validationActionList>
-
+            <validationActionList>
                 <actionGroup>
-                   <actionList>
+                    <actionList>
                         <throwError>
-                             <text>${msg(pgplus.blank.error)}</text>
+                            <text>${msg(pgplus.blank.error)}</text>
                         </throwError>
-                   </actionList>
-                   <ruleEvaluationLogic>OR</ruleEvaluationLogic>
-                   <ruleList>
+                    </actionList>
+                    <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                    <ruleList>
                         <compareText>
-                           <text>${pghost}</text>
-                           <logic>equals</logic>
-                           <value></value>
+                            <text>${pghost}</text>
+                            <logic>equals</logic>
+                            <value/>
                         </compareText>
                         <compareText>
-                           <text>${pgport}</text>
-                           <logic>equals</logic>
-                           <value></value>
+                            <text>${pgport}</text>
+                            <logic>equals</logic>
+                            <value/>
                         </compareText>
                         <compareText>
-                           <text>${pguser}</text>
-                           <logic>equals</logic>
-                           <value></value>
+                            <text>${pguser}</text>
+                            <logic>equals</logic>
+                            <value/>
                         </compareText>
                         <compareText>
-                           <text>${pgpassword}</text>
-                           <logic>equals</logic>
-                           <value></value>
+                            <text>${pgpassword}</text>
+                            <logic>equals</logic>
+                            <value/>
                         </compareText>
                         <compareText>
-                           <text>${pghome}</text>
-                           <logic>equals</logic>
-                           <value></value>
+                            <text>${pghome}</text>
+                            <logic>equals</logic>
+                            <value/>
                         </compareText>
-                  </ruleList>
-	         </actionGroup>
-
+                    </ruleList>
+                </actionGroup>
                 <!-- Creating a temporary directory -->
                 <createDirectory path="${system_temp_directory}/${product_fullname}"/>
-
-		<!-- WIN - Unpack Script Files -->
-	      <actionGroup>
-                <actionList>
-                  <!-- Unpacking the Script file to temporary directory -->
-                  <unpackFile>
-                    <component>phpBB</component>
-                    <destination>${system_temp_directory}/${product_fullname}/check-connection.bat</destination>
-                    <folder>installfileswindows</folder>
-                    <origin>installer/phpBB/check-connection.bat</origin>
-                  </unpackFile>
-                  <unpackFile>
-                    <component>phpBB</component>
-                    <destination>${system_temp_directory}/${product_fullname}/check-db.bat</destination>
-                    <folder>installfileswindows</folder>
-                    <origin>installer/phpBB/check-db.bat</origin>
-                  </unpackFile>
-                </actionList>
-                <ruleList>
-                  <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                  </compareText>
-                </ruleList>
-              </actionGroup>	
-               
-              <!-- LIN: Unpack Script Files -->
-              <actionGroup>
-                <actionList>
-                  <!-- Unpacking the Script file to temporary directory -->
-                  <unpackFile>
-                    <component>phpBB</component>
-                    <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
-                    <folder>installfileslinux</folder>
-                    <origin>installer/phpBB/check-connection.sh</origin>
-                  </unpackFile>
-                  <unpackFile>
-                    <component>phpBB</component>
-                    <destination>${system_temp_directory}/${product_fullname}/check-db.sh</destination>
-                    <folder>installfileslinux</folder>
-                    <origin>installer/phpBB/check-db.sh</origin>
-                  </unpackFile>
-                </actionList>
-                <ruleList>
-                  <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                  </compareText>
-                </ruleList>
-              </actionGroup> 
-
-              <!-- WIN: validate the PostgreSQL Server Details -->
-              <actionGroup>
-                <actionList>
-                  <!-- Running the Script to validate the PostgreSQL Server Details -->
-                  <setInstallerVariableFromScriptOutput>
-                        <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
-                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
-                        <name>connection</name>
-                        <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                        <customErrorMessage>${msg(pgplus.details.error)}</customErrorMessage>
-                  </setInstallerVariableFromScriptOutput>
-                </actionList>
-                <ruleList>
-                  <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                  </compareText>
-                </ruleList>
-              </actionGroup>
-
-              <!-- LIN: validate the PostgreSQL Server Details -->
-              <actionGroup>
-                <actionList>
-                  <!-- Running the Script to validate the PostgreSQL Server Details -->
-                  <setInstallerVariableFromScriptOutput>
-                        <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
-                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
-                        <name>connection</name>
-                        <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                        <customErrorMessage>${msg(pgplus.details.error)}</customErrorMessage>
-                  </setInstallerVariableFromScriptOutput>
-                </actionList>
-                <ruleList>
-                  <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                  </compareText>
-                </ruleList>
-              </actionGroup>
-
-              <setInstallerVariable name="dbexist" value="" />
-              <setInstallerVariable name="userexist" value="" />
-
-               <!-- WIN - Check whether the database and user already exists -->
-	       <actionGroup>
-                <actionList>
-                    <!-- WIN - Check whether the database already exists -->
-                    <setInstallerVariableFromScriptOutput>
-                              <name>dbexist</name>
-                              <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
-                              <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "phpbb"</execArgs>
-                              <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
-                              <abortOnError>0</abortOnError>
-                              <showMessageOnError>0</showMessageOnError>
-                   </setInstallerVariableFromScriptOutput>
-                    <!-- WIN - Check whether the user already exists -->
-                    <setInstallerVariableFromScriptOutput>
-                              <name>userexist</name>
-                              <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
-                              <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "phpbbuser"</execArgs>
-                              <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
-                              <abortOnError>0</abortOnError>
-                              <showMessageOnError>0</showMessageOnError>
-                   </setInstallerVariableFromScriptOutput>
-                </actionList>
-                <ruleList>
-                   <compareText>
-                       <text>${phpBBVersion}</text>
-                       <logic>equals</logic>
-                       <value></value>
-                    </compareText>
-                    <compareText>
-                      <logic>equals</logic>
-                      <text>${platform_name}</text>
-                        <value>windows</value>
-                    </compareText>
-                  </ruleList>
-                </actionGroup>	
-
-               <!-- LIN: Check whether the database and user already exists -->
-               <actionGroup>
-                  <actionList>
-                     <!-- LIN: Check whether the database already exists -->
-                     <setInstallerVariableFromScriptOutput>
-                        <name>dbexist</name>
-                        <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
-                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "phpbb"</execArgs>
-                        <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                        <abortOnError>0</abortOnError>
-                        <showMessageOnError>0</showMessageOnError>
-                      </setInstallerVariableFromScriptOutput>
-                      <!-- LIN: Check whether the user already exists -->
-                       <setInstallerVariableFromScriptOutput>
-                        <name>userexist</name>
-                        <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
-                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "phpbbuser"</execArgs>
-                        <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                        <abortOnError>0</abortOnError>
-                        <showMessageOnError>0</showMessageOnError>
-                      </setInstallerVariableFromScriptOutput>
-                  </actionList>
-                  <ruleList>
-                    <compareText>
-                      <text>${phpBBVersion}</text>
-                       <logic>equals</logic>
-                      <value></value>
-                     </compareText>
-                      <compareText>
-                        <logic>contains</logic>
-                        <text>${platform_name}</text>
-                        <value>linux</value>
-                      </compareText>
-                   </ruleList>
-              </actionGroup> 
-           
-              <!-- Inform user about the Existance of database and user  -->
-              <actionGroup>
-                   <actionList>
-                     <showQuestion>
-                       <text>${msg(db.found.info)}</text>
-                       <variable>response</variable>
-                     </showQuestion>
-                   </actionList>
-                   <ruleEvaluationLogic>OR</ruleEvaluationLogic>
-                   <ruleList>
-                     <compareText>
-                      <text>${dbexist}</text>
-                      <logic>does_not_equal</logic>
-                      <value></value>
-                     </compareText>
-		     <compareText>
-                      <text>${userexist}</text>
-                      <logic>does_not_equal</logic>
-                      <value></value>
-                     </compareText>
-                     <compareText>
-                      <text>${phpBBVersion}</text>
-                      <logic>does_not_equal</logic>
-                      <value></value>
-                     </compareText>
-                   </ruleList>
-               </actionGroup>
-
-               <setInstallerVariable name="server_locale" value="" /> 
-
-               <actionGroup>
-                  <actionList>
-                       <!-- WIN: Check whether the servers locales is WIN1252 -->
-                       <setInstallerVariableFromScriptOutput>
-                        <name>server_locale</name>
-                        <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
-                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "WIN1252"</execArgs>
-                        <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                        <abortOnError>0</abortOnError>
-                        <showMessageOnError>0</showMessageOnError>
-                      </setInstallerVariableFromScriptOutput>
-                  </actionList>
-                   <ruleList>
-                      <compareText>
-                        <logic>contains</logic>
-                        <text>${platform_name}</text>
-                        <value>windows</value>
-                      </compareText>
-                   </ruleList>
-              </actionGroup>
-  
-	       <actionGroup>
-		  <actionList>
-		       <!-- LIN: Check whether the servers locales is utf8 -->
-                       <setInstallerVariableFromScriptOutput>
-                        <name>server_locale</name>
-                        <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
-                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "UTF8"</execArgs>
-                        <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                        <abortOnError>0</abortOnError>
-                        <showMessageOnError>0</showMessageOnError>
-                      </setInstallerVariableFromScriptOutput>
-		  </actionList>
-                   <ruleList>
-                      <compareText>
-                        <logic>contains</logic>
-                        <text>${platform_name}</text>
-                        <value>linux</value>
-                      </compareText>
-                   </ruleList>
-              </actionGroup>
- 
-
-               <!-- Exit the installation if the user wants to quit -->
-	       <actionGroup>
-		  <actionList>
-			<exit>
-			   <exitCode>0</exitCode>
-			</exit>	
-                  </actionList>
-		  <ruleList>
-			<compareText>
-			   <logic>equals</logic>
-			   <value>no</value>
-			   <text>${response}</text>
-			</compareText>
-		  </ruleList>
-	       </actionGroup>
-
-               <!-- Exit the installation if the locale does not match -->
-               <actionGroup>
-                  <actionList>
-			<showWarning>
-				<text>${msg(server.locale.error)}</text>
-			</showWarning>
-                        <exit>
-                           <exitCode>0</exitCode>
-                        </exit>
-                  </actionList>
-                  <ruleList>
+                <!-- WIN - Unpack Script Files -->
+                <actionGroup>
+                    <actionList>
+                        <!-- Unpacking the Script file to temporary directory -->
+                        <unpackFile>
+                            <component>phpBB</component>
+                            <destination>${system_temp_directory}/${product_fullname}/check-connection.bat</destination>
+                            <folder>installfileswindows</folder>
+                            <origin>installer/phpBB/check-connection.bat</origin>
+                        </unpackFile>
+                        <unpackFile>
+                            <component>phpBB</component>
+                            <destination>${system_temp_directory}/${product_fullname}/check-db.bat</destination>
+                            <folder>installfileswindows</folder>
+                            <origin>installer/phpBB/check-db.bat</origin>
+                        </unpackFile>
+                    </actionList>
+                    <ruleList>
                         <compareText>
-                           <logic>equals</logic>
-                           <value></value>
-                           <text>${server_locale}</text>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
                         </compareText>
-                  </ruleList>
-               </actionGroup>
-
+                    </ruleList>
+                </actionGroup>
+                <!-- LIN: Unpack Script Files -->
+                <actionGroup>
+                    <actionList>
+                        <!-- Unpacking the Script file to temporary directory -->
+                        <unpackFile>
+                            <component>phpBB</component>
+                            <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
+                            <folder>installfileslinux</folder>
+                            <origin>installer/phpBB/check-connection.sh</origin>
+                        </unpackFile>
+                        <unpackFile>
+                            <component>phpBB</component>
+                            <destination>${system_temp_directory}/${product_fullname}/check-db.sh</destination>
+                            <folder>installfileslinux</folder>
+                            <origin>installer/phpBB/check-db.sh</origin>
+                        </unpackFile>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>linux</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- LIN-X64: Unpack Script Files -->
+                <actionGroup>
+                    <actionList>
+                        <!-- Unpacking the Script file to temporary directory -->
+                        <unpackFile>
+                            <component>phpBB</component>
+                            <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
+                            <folder>installfileslinux-x64</folder>
+                            <origin>installer/phpBB/check-connection.sh</origin>
+                        </unpackFile>
+                        <unpackFile>
+                            <component>phpBB</component>
+                            <destination>${system_temp_directory}/${product_fullname}/check-db.sh</destination>
+                            <folder>installfileslinux-x64</folder>
+                            <origin>installer/phpBB/check-db.sh</origin>
+                        </unpackFile>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- MAC: Unpack Script Files -->
+                <actionGroup>
+                    <actionList>
+                        <!-- Unpacking the Script file to temporary directory -->
+                        <unpackFile>
+                            <component>phpBB</component>
+                            <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
+                            <folder>installfilesosx</folder>
+                            <origin>installer/phpBB/check-connection.sh</origin>
+                        </unpackFile>
+                        <unpackFile>
+                            <component>phpBB</component>
+                            <destination>${system_temp_directory}/${product_fullname}/check-db.sh</destination>
+                            <folder>installfilesosx</folder>
+                            <origin>installer/phpBB/check-db.sh</origin>
+                        </unpackFile>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- WIN: validate the PostgreSQL Server Details -->
+                <actionGroup>
+                    <actionList>
+                        <!-- Running the Script to validate the PostgreSQL Server Details -->
+                        <setInstallerVariableFromScriptOutput>
+                            <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
+                            <name>connection</name>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <customErrorMessage>${msg(pgplus.details.error)}</customErrorMessage>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- LIN & MAC: validate the PostgreSQL Server Details -->
+                <actionGroup>
+                    <actionList>
+                        <!-- Running the Script to validate the PostgreSQL Server Details -->
+                        <setInstallerVariableFromScriptOutput>
+                            <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
+                            <name>connection</name>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <customErrorMessage>${msg(pgplus.details.error)}</customErrorMessage>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <setInstallerVariable name="dbexist" value=""/>
+                <setInstallerVariable name="userexist" value=""/>
+                <!-- WIN - Check whether the database and user already exists -->
+                <actionGroup>
+                    <actionList>
+                        <!-- WIN - Check whether the database already exists -->
+                        <setInstallerVariableFromScriptOutput>
+                            <name>dbexist</name>
+                            <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "phpbb"</execArgs>
+                            <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                        <!-- WIN - Check whether the user already exists -->
+                        <setInstallerVariableFromScriptOutput>
+                            <name>userexist</name>
+                            <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "phpbbuser"</execArgs>
+                            <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <text>${phpBBVersion}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- LIN & MAC: Check whether the database and user already exists -->
+                <actionGroup>
+                    <actionList>
+                        <!-- LIN & MAC: Check whether the database already exists -->
+                        <setInstallerVariableFromScriptOutput>
+                            <name>dbexist</name>
+                            <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "phpbb"</execArgs>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                        <!-- LIN & MAC: Check whether the user already exists -->
+                        <setInstallerVariableFromScriptOutput>
+                            <name>userexist</name>
+                            <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "phpbbuser"</execArgs>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <text>${phpBBVersion}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- Inform user about the Existance of database and user    -->
+                <actionGroup>
+                    <actionList>
+                        <showQuestion>
+                            <text>${msg(db.found.info)}</text>
+                            <variable>response</variable>
+                        </showQuestion>
+                    </actionList>
+                    <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText>
+                            <text>${dbexist}</text>
+                            <logic>does_not_equal</logic>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <text>${userexist}</text>
+                            <logic>does_not_equal</logic>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <text>${phpBBVersion}</text>
+                            <logic>does_not_equal</logic>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <setInstallerVariable name="server_locale" value=""/>
+                <actionGroup>
+                    <actionList>
+                        <!-- WIN: Check whether the servers locales is WIN1252 -->
+                        <setInstallerVariableFromScriptOutput>
+                            <name>server_locale</name>
+                            <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "WIN1252"</execArgs>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <!-- LIN & MAC: Check whether the servers locales is utf8 -->
+                        <setInstallerVariableFromScriptOutput>
+                            <name>server_locale</name>
+                            <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "UTF8"</execArgs>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- Exit the installation if the user wants to quit -->
+                <actionGroup>
+                    <actionList>
+                        <exit>
+                            <exitCode>0</exitCode>
+                        </exit>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <value>no</value>
+                            <text>${response}</text>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- Exit the installation if the locale does not match -->
+                <actionGroup>
+                    <actionList>
+                        <showWarning>
+                            <text>${msg(server.locale.error)}</text>
+                        </showWarning>
+                        <exit>
+                            <exitCode>0</exitCode>
+                        </exit>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <value/>
+                            <text>${server_locale}</text>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
             </validationActionList>
         </parameterGroup>
     </parameterList>
 </project>
-

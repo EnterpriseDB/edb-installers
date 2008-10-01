@@ -5,8 +5,7 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-    #source $WD/Slony/build-osx.sh
-    echo "Not yet implemented" 
+    source $WD/Slony/build-osx.sh
 fi
 
 # Linux
@@ -18,8 +17,7 @@ fi
 # Linux x64
 if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
-    #source $WD/Slony/build-linux-x64.sh
-    echo "Not yet implemented" 
+    source $WD/Slony/build-linux-x64.sh
 fi
 
 # Windows
@@ -47,14 +45,14 @@ _prep_Slony() {
 
 
     # SLONY
-    if [ -e SLONY-$PG_SLONY_TARBALL ];
+    if [ -e slony1-$PG_VERSION_SLONY ];
     then
-      echo "Removing existing SLONY-$PG_SLONY_TARBALL source directory"
-      rm -rf slony$PG_SLONY_TARBALL  || _die "Couldn't remove the existing slony$PG_SLONY_TARBALL source directory (source/SLONY-$PG_SLONY_TARBALL)"
+      echo "Removing existing SLONY-$PG_VERSION_SLONY source directory"
+      rm -rf slony1-$PG_VERSION_SLONY  || _die "Couldn't remove the existing slony1-$PG_VERSION_SLONY source directory (source/slony1--$PG_VERSION_SLONY)"
     fi
 
     echo "Unpacking SLONY source..."
-    tar -jxvf $WD/tarballs/slony$PG_SLONY_TARBALL.tar.bz2
+    extract_file  $WD/tarballs/slony1-$PG_VERSION_SLONY.tar.bz2 || exit 1 
 
     # Per-platform prep
     cd $WD
@@ -62,8 +60,7 @@ _prep_Slony() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_prep_Slony_osx || exit 1
-        echo "Not yet implemented" 
+        _prep_Slony_osx || exit 1
     fi
 
     # Linux
@@ -75,8 +72,7 @@ _prep_Slony() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_prep_Slony_linux_x64 || exit 1
-        echo "Not yet implemented" 
+        _prep_Slony_linux_x64 || exit 1
     fi
 
     # Windows
@@ -97,8 +93,7 @@ _build_Slony() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_build_Slony_osx || exit 1
-        echo "Not yet implemented" 
+        _build_Slony_osx || exit 1
     fi
 
     # Linux 
@@ -110,8 +105,7 @@ _build_Slony() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_build_Slony_linux_x64 || exit 1
-        echo "Not yet implemented" 
+        _build_Slony_linux_x64 || exit 1
     fi
 
     # Windows
@@ -137,15 +131,17 @@ _postprocess_Slony() {
         rm installer.xml
     fi
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (Slony/installer.xml.in)"
-
-
-    _replace PG_SLONY_VERSION $PG_SLONY_VERSION installer.xml || _die "Failed to set the major version in the installer project file (Slony/installer.xml)"
+ 
+     PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
+ 
+    _replace PG_VERSION_SLONY "PG$PG_CURRENT_VERSION-$PG_VERSION_SLONY" installer.xml || _die "Failed to set the major version in the installer project file (Slony/installer.xml)"
+    _replace PG_PACKAGE_SLONY $PG_PACKAGE_SLONY installer.xml || _die "Failed to set the Build Number in the installer project file (Slony/installer.xml)"
+    _replace PG_CURRENT_VERSION $PG_CURRENT_VERSION installer.xml || _die "Failed to set the Major Number in the installer project file (Slony/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_postprocess_Slony_osx || exit 1
-        echo "Not yet implemented" 
+        _postprocess_Slony_osx || exit 1
     fi
 
     # Linux
@@ -157,10 +153,9 @@ _postprocess_Slony() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_postprocess_Slony_linux_x64 || exit 1
-        echo "Not yet implemented" 
+        _postprocess_Slony_linux_x64 || exit 1
     fi
-	
+    
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then

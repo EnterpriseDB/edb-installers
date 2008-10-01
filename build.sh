@@ -20,9 +20,9 @@ _init() {
 
     # Grab the working directory
     WD=`pwd`
-	
-	# Set the package versions string
-	PG_PACKAGE_VERSION=$PG_MAJOR_VERSION.`echo $PG_MINOR_VERSION | sed -e 's/\./-/'`
+    
+    # Set the package versions string
+    PG_PACKAGE_VERSION=$PG_MAJOR_VERSION.`echo $PG_MINOR_VERSION | sed -e 's/\./-/'`
 }
 
 ################################################################################
@@ -30,10 +30,10 @@ _init() {
 ################################################################################
 _check_unix_vm() {
     RETVAL=`ssh $1 ls $2/settings.sh 2>&1`
-	if [ "$RETVAL" != "$2/settings.sh" ];
-	then
-	    _die "The build VM $1 is inaccessible or does not have access to the buildfarm repository at $2"
-	fi
+    if [ "$RETVAL" != "$2/settings.sh" ];
+    then
+        _die "The build VM $1 is inaccessible or does not have access to the buildfarm repository at $2"
+    fi
 }
 
 ################################################################################
@@ -42,7 +42,7 @@ _check_unix_vm() {
 _check_windows_vm() {
     RETVAL=`ssh $1 ls $2 2>&1`
         RESULT1=`echo "$RETVAL" | grep 'No such file or directory' | wc -l`
-		RESULT2=`echo "$RETVAL" | grep 'Operation timed out' | wc -l`
+        RESULT2=`echo "$RETVAL" | grep 'Operation timed out' | wc -l`
         if [ "$RESULT1" -ne "0" -o "$RESULT2" -ne "0" ];
         then
             _die "The build VM $1 is inaccessible or does not have access to the buildfarm repository at $2"
@@ -207,6 +207,21 @@ then
     _postprocess_pgJDBC || exit 1
 fi
 
+# Package: psqlODBC
+if [ $PG_PACKAGE_PSQLODBC == 1 ];
+then
+    cd $WD
+    source ./psqlODBC/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_psqlODBC || exit 1
+        _build_psqlODBC || exit 1
+    fi
+
+    _postprocess_psqlODBC || exit 1
+fi
+
 # Package: PostGIS
 if [ $PG_PACKAGE_POSTGIS == 1 ];
 then
@@ -234,6 +249,20 @@ then
         _build_Slony || exit 1
     fi
     _postprocess_Slony || exit 1
+fi
+
+# Package: TuningWizard
+if [ $PG_PACKAGE_TUNINGWIZARD == 1 ];
+then
+    cd $WD
+    source ./TuningWizard/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_TuningWizard || exit 1
+        _build_TuningWizard || exit 1
+    fi
+    _postprocess_TuningWizard || exit 1
 fi
 
 # Package: MigrationWizard

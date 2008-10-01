@@ -21,7 +21,7 @@ _prep_MigrationWizard_linux() {
     chmod ugo+w migrationwizard.linux || _die "Couldn't set the permissions on the source directory"
 
     # Grab a copy of the migrationwizard source tree
-    cp -R wizard/* migrationwizard.linux || _die "Failed to copy the source code (source/migrationwizard-$PG_MIGRATIONWIZARD_TARBALL)"
+    cp -R wizard/* migrationwizard.linux || _die "Failed to copy the source code (source/migrationwizard-$PG_VERSION_MIGRATIONWIZARD)"
     chmod -R ugo+w migrationwizard.linux || _die "Couldn't set the permissions on the source directory"
 
 
@@ -45,8 +45,8 @@ _prep_MigrationWizard_linux() {
 
 _build_MigrationWizard_linux() {
 
-    # build migrationwizard	
-    PG_STAGING=$PG_PATH_LINUX/MigrationWizard/staging/linux	
+    # build migrationwizard    
+    PG_STAGING=$PG_PATH_LINUX/MigrationWizard/staging/linux    
 
     echo "Building migrationwizard"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MigrationWizard/source/migrationwizard.linux; JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX/bin/ant" || _die "Couldn't build the migrationwizard"
@@ -75,7 +75,7 @@ _postprocess_MigrationWizard_linux() {
     chmod ugo+x staging/linux/installer/MigrationWizard/createshortcuts.sh
 
     cp scripts/linux/removeshortcuts.sh staging/linux/installer/MigrationWizard/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
-    chmod ugo+x staging/linux/installer/MigrationWizard/removeshortcuts.sh	
+    chmod ugo+x staging/linux/installer/MigrationWizard/removeshortcuts.sh    
 
     mkdir -p staging/linux/scripts || _die "Failed to create a directory for the launch scripts"
     cp -R scripts/linux/launchMigrationWizard.sh staging/linux/scripts/launchMigrationWizard.sh || _die "Failed to copy the launch scripts (scripts/linux)"
@@ -88,7 +88,6 @@ _postprocess_MigrationWizard_linux() {
     # Copy in the menu pick images and XDG items
     mkdir -p staging/linux/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
-    cp resources/*.ico staging/linux/scripts/images || _die "Failed to copy the icon images (resourcedds/*.ico)"
 
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the menu pick items"
     cp resources/xdg/enterprisedb-postgres.directory staging/linux/scripts/xdg/enterprisedb-postgres.directory || _die "Failed to copy a menu pick directory"

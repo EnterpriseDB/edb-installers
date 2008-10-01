@@ -1,25 +1,21 @@
 <project>
     <!-- Package details -->
-    <shortName>pgJDBC</shortName>
+    <shortName>pgjdbc</shortName>
     <fullName>JDBC drivers for PostgreSQL</fullName>
-    <version>PG_PGJDBC_VERSION</version>
-
-    
+    <version>PG_VERSION_PGJDBC</version>
     <!-- Product Specific Options -->
     <productComments>JDBC drivers for PostgreSQL</productComments>
     <productDisplayName>JDBC drivers for PostgreSQL</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
-
     <!-- The options are used for RPM registration -->
     <description>JDBC Drivers for PostgreSQL </description>
     <summary>JDBC drivers for PostgreSQL distributed by EnterpriseDB</summary>
     <vendor>EnterpriseDB</vendor>
-
     <!-- Installer Size -->
     <width>550</width>
     <height>400</height>
-
     <!-- Misc options -->
+    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUMPGJDBC-${platform_name}.${platform_exec_suffix}</installerFilename>
     <wrapLicenseFileText>0</wrapLicenseFileText>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <unattendedModeUI>minimal</unattendedModeUI>
@@ -28,13 +24,11 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
-
     <!-- Images -->
     <leftImage>resources/leftImage.png</leftImage>
     <logoImage>resources/edblogo.png</logoImage>
     <splashImage>resources/splash.png</splashImage>
     <wmImage>resources/logo.png</wmImage>
-
     <!-- i18n files for the UI -->
     <customLanguageFileList>
         <language>
@@ -43,34 +37,31 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
- 
     <initializationActionList>
-
-    	<!-- LIN : Set the default values for unattended mode -->
+        <!-- LIN : Set the default values for unattended mode -->
         <actionGroup>
-           <actionList>
+            <actionList>
                 <setInstallerVariable name="installdir" value="/opt/PostgreSQL/pgJDBC"/>
-           </actionList>
-           <ruleList>
+            </actionList>
+            <ruleList>
                 <compareText>
                     <logic>equals</logic>
                     <text>${installer_ui}</text>
                     <value>unattended</value>
                 </compareText>
-		<compareText>
+                <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
                     <value>linux</value>
                 </compareText>
-           </ruleList>
+            </ruleList>
         </actionGroup>
-
-	<!-- MAC : Set the default values for unattended mode -->
+        <!-- MAC : Set the default values for unattended mode -->
         <actionGroup>
-           <actionList>
+            <actionList>
                 <setInstallerVariable name="installdir" value="/Library/PostgreSQL/pgJDBC"/>
-           </actionList>
-           <ruleList>
+            </actionList>
+            <ruleList>
                 <compareText>
                     <logic>equals</logic>
                     <text>${installer_ui}</text>
@@ -81,33 +72,57 @@
                     <text>${platform_name}</text>
                     <value>osx</value>
                 </compareText>
-           </ruleList>
+            </ruleList>
         </actionGroup>
-
     </initializationActionList>
-    
     <preInstallationActionList>
-
+        <!-- Creates the ini file if not exits -->
+        <touchFile path="/etc/postgres-reg.ini">
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </touchFile>
         <!-- LIN & MAC : Check Previous Installation of pgJDBC-->
         <actionGroup>
             <actionList>
                 <iniFileGet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>pgJDBC</section>
-                  <key>Version</key>
-                  <variable>pgJdbcVersion</variable>
-              </iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>pgJDBC</section>
+                    <key>Version</key>
+                    <variable>pgJdbcVersion</variable>
+                </iniFileGet>
             </actionList>
-              <ruleList>
-                  <compareText>
+            <ruleList>
+                <compareText>
                     <logic>does_not_equal</logic>
                     <text>${platform_name}</text>
                     <value>windows</value>
-                  </compareText>
-              </ruleList>
+                </compareText>
+            </ruleList>
         </actionGroup>
-
-	<!-- MAC : Set the default installation directory -->
+        <!-- Set the installation directory in case of re-install/upgrade -->
+        <actionGroup>
+            <actionList>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>pgJDBC</section>
+                    <key>InstallationDirectory</key>
+                    <variable>installdir</variable>
+                </iniFileGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${pgJdbcVersion}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- MAC : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
@@ -120,8 +135,7 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
-
-	<!-- LIN : Set the default installation directory -->
+        <!-- LIN : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
@@ -134,70 +148,67 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
-        
     </preInstallationActionList>
-
     <postInstallationActionList>
         <actionGroup>
             <actionList>
-		<iniFileSet>
-		  <file>/etc/postgres-reg.ini</file>
-		  <section>pgJDBC</section>
-		  <key>Description</key>
-		  <value>${product_fullname}</value>
-		</iniFileSet>
-		<iniFileSet>
-		  <file>/etc/postgres-reg.ini</file>
-		  <section>pgJDBC</section>
-		  <key>InstallationDirectory</key>
-		  <value>${installdir}</value>
-		</iniFileSet>
-		<iniFileSet>
-		  <file>/etc/postgres-reg.ini</file>
-		  <section>pgJDBC</section>
-		  <key>Version</key>
-		  <value>${product_version}</value>
-		</iniFileSet>			
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>pgJDBC</section>
+                    <key>Description</key>
+                    <value>${product_fullname}</value>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>pgJDBC</section>
+                    <key>InstallationDirectory</key>
+                    <value>${installdir}</value>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>pgJDBC</section>
+                    <key>Version</key>
+                    <value>${product_version}</value>
+                </iniFileSet>
                 <runProgram>
-                  <program>${installdir}/installer/pgjdbc/createshortcuts.sh</program>
-                  <programArguments>"${installdir}"</programArguments>
-                  <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
-		  <workingDirectory>${installdir}/installer/pgjdbc</workingDirectory>
-                  <abortOnError>0</abortOnError>
-                  <showMessageOnError>0</showMessageOnError>
+                    <program>${installdir}/installer/pgjdbc/createshortcuts.sh</program>
+                    <programArguments>"${installdir}"</programArguments>
+                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                    <workingDirectory>${installdir}/installer/pgjdbc</workingDirectory>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
                 </runProgram>
             </actionList>
             <ruleList>
                 <compareText>
-                  <logic>does_not_equal</logic>
-                  <text>${platform_name}</text>
-                  <value>windows</value>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
                 </compareText>
             </ruleList>
         </actionGroup>
     </postInstallationActionList>
-
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
         <actionGroup>
             <actionList>
-  		<iniFileSet>
-                   <file>/etc/postgres-reg.ini</file>
-                   <section>pgJDBC</section>
-                   <key>Description</key>
-                  <value></value>
-                </iniFileSet>		
-		<iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>pgJDBC</section>
-                  <key>InstallationDirectory</key>
-                  <value></value>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>pgJDBC</section>
+                    <key>Description</key>
+                    <value/>
                 </iniFileSet>
                 <iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>pgJDBC</section>
-                  <key>Version</key>
-                  <value></value>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>pgJDBC</section>
+                    <key>InstallationDirectory</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>pgJDBC</section>
+                    <key>Version</key>
+                    <value/>
                 </iniFileSet>
             </actionList>
             <ruleList>
@@ -208,35 +219,33 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-
-	<!-- LIN : Remove Menu shortcuts -->
-	<actionGroup>
-	  <actionList>
-		<runProgram>
-                  <program>${installdir}/installer/pgjdbc/removeshortcuts.sh</program>
-                  <programArguments>"${installdir}"</programArguments>
-                  <workingDirectory>${installdir}/installer/pgjdbc</workingDirectory>
-                  <abortOnError>0</abortOnError>
-                  <showMessageOnError>0</showMessageOnError>
+        <!-- LIN : Remove Menu shortcuts -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${installdir}/installer/pgjdbc/removeshortcuts.sh</program>
+                    <programArguments>"${installdir}"</programArguments>
+                    <workingDirectory>${installdir}/installer/pgjdbc</workingDirectory>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
                 </runProgram>
-	  </actionList>
-	  <ruleList>
+            </actionList>
+            <ruleList>
                 <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
                     <value>linux</value>
                 </compareText>
             </ruleList>
-	</actionGroup>
-
-	<!-- MAC : Remove Menu shortcuts -->
-	<actionGroup>
-          <actionList>
-		<deleteFile>
-  			<path>/Applications/PostgreSQL/PostgreSQL JDBC Home Page.app</path>
-		</deleteFile>
-          </actionList>
-          <ruleList>
+        </actionGroup>
+        <!-- MAC : Remove Menu shortcuts -->
+        <actionGroup>
+            <actionList>
+                <deleteFile>
+                    <path>/Applications/PostgreSQL/PostgreSQL JDBC Home Page.app</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
                 <compareText>
                     <logic>equals</logic>
                     <text>${platform_name}</text>
@@ -244,9 +253,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-
     </preUninstallationActionList>
-
     <!-- Components -->
     <componentList>
         <component>
@@ -256,7 +263,7 @@
             <selected>1</selected>
             <show>1</show>
             <folderList>
-
+                <!-- LIN- Program files -->
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}</destination>
@@ -277,8 +284,8 @@
                         </distributionFile>
                     </distributionFileList>
                 </folder>
-		<folder>
-                     <description>Installer Scripts</description>
+                <folder>
+                    <description>Installer Scripts</description>
                     <destination>${installdir}</destination>
                     <name>installscriptslinux</name>
                     <platforms>linux</platforms>
@@ -288,19 +295,62 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
-		<folder>
-		     <description>Menu Scripts</description>
+                <folder>
+                    <description>Menu Scripts</description>
                     <destination>${installdir}</destination>
                     <name>menuscriptslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
-			<distributionDirectory>
-			    <origin>staging/linux/scripts</origin>
-			</distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/scripts</origin>
+                        </distributionDirectory>
                     </distributionFileList>
-		</folder>
-
-		<folder>
+                </folder>
+                <!-- LIN-X64 - Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux-x64/postgresql-8.3-603.jdbc2.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux-x64/postgresql-8.3-603.jdbc2ee.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux-x64/postgresql-8.3-603.jdbc3.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux-x64/postgresql-8.3-603.jdbc4.jar</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>installscriptslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuscriptslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- MAC Program Files -->
+                <folder>
                     <description>Program Files</description>
                     <destination>${installdir}</destination>
                     <name>programfilesosx</name>
@@ -321,7 +371,7 @@
                     </distributionFileList>
                 </folder>
                 <folder>
-                     <description>Installer Scripts</description>
+                    <description>Installer Scripts</description>
                     <destination>${installdir}</destination>
                     <name>installscriptsosx</name>
                     <platforms>osx</platforms>
@@ -332,7 +382,7 @@
                     </distributionFileList>
                 </folder>
                 <folder>
-                     <description>Menu Scripts</description>
+                    <description>Menu Scripts</description>
                     <destination>${installdir}</destination>
                     <name>menuscriptsosx</name>
                     <platforms>osx</platforms>
@@ -342,19 +392,17 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
-
             </folderList>
         </component>
     </componentList>
-
     <!-- Install Directory -->
     <parameterList>
         <directoryParameter>
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
             <explanation>Installer.Parameter.installdir.explanation</explanation>
-            <value></value>
-	    <default>${default_installdir}</default>
+            <value/>
+            <default>${default_installdir}</default>
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>prefix</cliOptionName>
@@ -363,9 +411,9 @@
             <width>40</width>
             <ruleList>
                 <compareText>
-                   <text>${pgJdbcVersion}</text>
-                   <logic>equals</logic>
-                   <value></value>
+                    <text>${pgJdbcVersion}</text>
+                    <logic>equals</logic>
+                    <value/>
                 </compareText>
             </ruleList>
         </directoryParameter>

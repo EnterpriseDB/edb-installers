@@ -27,7 +27,7 @@ _warn() {
 # Search & replace in a file - _replace($find, $replace, $file) 
 _replace() {
     sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" 
-	cp /tmp/$$.tmp $3 
+    cp /tmp/$$.tmp $3 
     cat /tmp/$$.tmp >> /tmp/tmp1.txt
 }
 
@@ -35,7 +35,7 @@ _replace() {
 _compile_script() {
     _replace PG_JDBC_APPDIR "$INSTALLDIR" "$1"
     osacompile -x -o "$2" "$1" 
-	cp "$3" "$2/Contents/Resources/applet.icns"
+    cp "$3" "$2/Contents/Resources/applet.icns"
 }
 
 # Create the menu 

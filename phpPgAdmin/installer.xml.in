@@ -1,42 +1,34 @@
-
 <project>
-     <!-- Package details -->
-    <shortName>phpPgAdmin</shortName>
+    <!-- Package details -->
+    <shortName>phppgadmin</shortName>
     <fullName>phpPgAdmin</fullName>
-    <version>PG_PHPPGADMIN_VERSION</version>
-
+    <version>PG_VERSION_PHPPGADMIN</version>
     <!-- These options are used on Windows -->
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
-    
     <!-- Product Specific Options -->
     <productDisplayName>${product_fullname} ${product_version} by EnterpriseDB</productDisplayName>
     <productComments>${product_fullname} ${product_version} by EnterpriseDB</productComments>
     <productDisplayIcon>resources/logo.ico</productDisplayIcon>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
-    
     <!-- The options are used for RPM registration -->
     <description>phpPgAdmin</description>
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
-
     <!-- Installer Size -->
     <width>550</width>
     <height>400</height>
-
     <!-- Misc package options -->
-    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUMPHPPGADMIN-${platform_name}.${platform_exec_suffix}</installerFilename>
     <enableRollback>0</enableRollback>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <saveRelativePaths>1</saveRelativePaths>
     <unattendedModeUI>minimal</unattendedModeUI>
     <outputDirectory>../output</outputDirectory>
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
-    <uninstallerDirectory>${installdir}/phpPgAdmin</uninstallerDirectory>
-    <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>	
-    
- 
+    <uninstallerDirectory>${apachephpinstalldir}</uninstallerDirectory>
+    <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
     <!-- Images -->
     <leftImage>resources/leftImage.png</leftImage>
     <logoImage>resources/edblogo.png</logoImage>
@@ -44,7 +36,6 @@
     <productDisplayIcon>${installdir}/phpPgAdmin/scripts/images/install.ico</productDisplayIcon>
     <windowsExecutableIcon>resources/install.ico</windowsExecutableIcon>
     <wmImage>resources/logo.png</wmImage>
-    
     <!-- i18n files for the UI -->
     <customLanguageFileList>
         <language>
@@ -53,10 +44,8 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
-    
     <!-- Initialisation actions -->
     <initializationActionList>
-    
         <!-- Set the Apache Home -->
         <setInstallerVariable name="apachehome" value="">
             <persist>0</persist>
@@ -64,31 +53,26 @@
         <setInstallerVariable name="apacheport" value="8080">
             <persist>0</persist>
         </setInstallerVariable>
-        
         <!-- Set the php Home -->
         <setInstallerVariable name="phphome" value="">
             <persist>0</persist>
         </setInstallerVariable>
-        
         <!-- Set the pghost varaible to localhost -->
         <setInstallerVariable name="pghost" value="localhost">
             <persist>0</persist>
         </setInstallerVariable>
-
         <!-- Set the phpPgAdmin version(if exists) -->
         <setInstallerVariable name="phpPgAdminVersion" value="">
             <persist>0</persist>
         </setInstallerVariable>
-	
-         <!-- Set the default values -->
+        <!-- Set the default values -->
         <setInstallerVariable name="defaultpghome" value=""/>
-
         <!-- WIN: Set the default values for unattended mode -->
         <actionGroup>
-           <actionList>
+            <actionList>
                 <setInstallerVariable name="defaultpghome" value="${env(SYSTEMDIR)}\Program Files\PostgreSQL\8.3"/>
-           </actionList>
-           <ruleList>
+            </actionList>
+            <ruleList>
                 <compareText>
                     <logic>equals</logic>
                     <text>${installer_ui}</text>
@@ -99,15 +83,14 @@
                     <text>${platform_name}</text>
                     <value>windows</value>
                 </compareText>
-           </ruleList>
+            </ruleList>
         </actionGroup>
-        
         <!-- LIN: Set the default values for unattended mode -->
         <actionGroup>
-           <actionList>
+            <actionList>
                 <setInstallerVariable name="defaultpghome" value="/opt/PostgreSQL/8.3"/>
-           </actionList>
-           <ruleList>
+            </actionList>
+            <ruleList>
                 <compareText>
                     <logic>equals</logic>
                     <text>${installer_ui}</text>
@@ -118,16 +101,41 @@
                     <text>${platform_name}</text>
                     <value>linux</value>
                 </compareText>
-           </ruleList>
+            </ruleList>
         </actionGroup>
-        
+        <!-- MAC : Set the    pghome default value for unattended mode -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/8.3"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
     </initializationActionList>
-    
     <!-- Preinstallation actions -->
     <preInstallationActionList>
-       
+        <!-- Creates the ini file if not exits -->
+        <touchFile path="/etc/postgres-reg.ini">
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </touchFile>
         <!-- WIN: Check Previous Installation of phpPgAdmin -->
-         <actionGroup>
+        <actionGroup>
             <actionList>
                 <registryGet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\phpPgAdmin</key>
@@ -143,40 +151,39 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        
-        <!-- LIN: Check Previous Installation of mediaWiki -->
+        <!-- LIN & MAC: Check Previous Installation of mediaWiki -->
         <actionGroup>
             <actionList>
                 <iniFileGet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>phpPgAdmin</section>
-                  <key>Version</key>
-                  <variable>phpPgAdminVersion</variable>
-              </iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>phpPgAdmin</section>
+                    <key>Version</key>
+                    <variable>phpPgAdminVersion</variable>
+                </iniFileGet>
             </actionList>
-              <ruleList>
-                  <compareText>
-                    <logic>contains</logic>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
                     <text>${platform_name}</text>
-                    <value>linux</value>
-                  </compareText>
-              </ruleList>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
         </actionGroup>
-       
         <!-- Setting the installation type as upgrade if previous installation found -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installationType" value="upgrade" />
+                <setInstallerVariable name="installationType" value="upgrade"/>
             </actionList>
             <ruleList>
                 <compareText>
                     <logic>does_not_equal</logic>
                     <text>${phpPgAdminVersion}</text>
-                    <value></value>
+                    <value/>
                 </compareText>
             </ruleList>
-        </actionGroup> 
-        <!-- WIN: Set the Apache Home , Php Home and Apache Port(default 8080) from registry. ApachePhp Installation would have set these values -->
+        </actionGroup>
+        <!-- WIN: Set the Apache Home , Php Home and Apache Port(default 8080), ApachePhp Installation Directory from registry. -->
+        <!--    ApachePhp Installation would have set these values -->
         <actionGroup>
             <actionList>
                 <registryGet>
@@ -194,6 +201,11 @@
                     <name>PHP_HOME</name>
                     <variable>phphome</variable>
                 </registryGet>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+                    <name>Location</name>
+                    <variable>apachephpinstalldir</variable>
+                </registryGet>
             </actionList>
             <ruleList>
                 <compareText>
@@ -203,38 +215,43 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        
-        <!-- LIN : Set the Apache Home , Php Home and Apache Port(default 8080) from registry. ApachePhp Installation would have set these values -->       
+        <!-- LIN & MAC: Set the Apache Home , Php Home and Apache Port(default 8080), ApachePhp Installation Directory from registry. -->
+        <!--    ApachePhp Installation would have set these values -->
         <actionGroup>
-          <actionList>
-              <iniFileGet>
-                  <file>/etc/postgres-reg.ini</file>  
-                  <section>ApachePhp</section>
-                  <key>APACHE_HOME</key>
-                  <variable>apachehome</variable>
-              </iniFileGet>
-              <iniFileGet>
-                  <file>/etc/postgres-reg.ini</file>  
-                  <section>ApachePhp</section>
-                  <key>APACHE_PORT</key>
-                  <variable>apacheport</variable>
-              </iniFileGet>
-              <iniFileGet>
-                  <file>/etc/postgres-reg.ini</file>  
-                  <section>ApachePhp</section>
-                  <key>PHP_HOME</key>
-                  <variable>phphome</variable>
-              </iniFileGet>
-          </actionList>
-          <ruleList>
-              <compareText>
-                  <logic>contains</logic>
-                  <text>${platform_name}</text>
-                  <value>linux</value>
-              </compareText>
-          </ruleList>
+            <actionList>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ApachePhp</section>
+                    <key>APACHE_HOME</key>
+                    <variable>apachehome</variable>
+                </iniFileGet>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ApachePhp</section>
+                    <key>APACHE_PORT</key>
+                    <variable>apacheport</variable>
+                </iniFileGet>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ApachePhp</section>
+                    <key>PHP_HOME</key>
+                    <variable>phphome</variable>
+                </iniFileGet>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ApachePhp</section>
+                    <key>InstallationDirectory</key>
+                    <variable>apachephpinstalldir</variable>
+                </iniFileGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
         </actionGroup>
-        
         <!-- Abort Installation as Apache Home not found -->
         <actionGroup>
             <actionList>
@@ -251,7 +268,6 @@
                 </compareTextLength>
             </ruleList>
         </actionGroup>
-        
         <!-- Abort Installation as php Home not found -->
         <actionGroup>
             <actionList>
@@ -268,7 +284,6 @@
                 </compareTextLength>
             </ruleList>
         </actionGroup>
-        
         <!-- WIN: Set the Installation Directory -->
         <actionGroup>
             <actionList>
@@ -277,15 +292,14 @@
                 </setInstallerVariable>
             </actionList>
             <ruleList>
-              <compareText>
-                  <logic>equals</logic>
-                  <text>${platform_name}</text>
-                  <value>windows</value>
-              </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
             </ruleList>
         </actionGroup>
-        
-        <!-- LIN: Set the Installation Directory -->
+        <!-- LIN & MAC: Set the Installation Directory -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="installdir" value="${apachehome}/www">
@@ -293,152 +307,144 @@
                 </setInstallerVariable>
             </actionList>
             <ruleList>
-              <compareText>
-                  <logic>contains</logic>
-                  <text>${platform_name}</text>
-                  <value>linux</value>
-              </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
             </ruleList>
         </actionGroup>
-        
-        <!-- WIN: Creating back up of config file -->	
+        <!-- WIN: Creating back up of config file -->
         <actionGroup>
             <actionList>
-              <createBackupFile>
-                  <path>${installdir}\phpPgAdmin\conf\config.inc.php</path>
-              </createBackupFile>
+                <createBackupFile>
+                    <path>${installdir}\phpPgAdmin\conf\config.inc.php</path>
+                </createBackupFile>
             </actionList>
             <ruleList>
-              <compareText>
-                    <value></value>
+                <compareText>
+                    <value/>
                     <logic>does_not_equal</logic>
                     <text>${phpPgAdminVersion}</text>
-              </compareText>
-              <compareText>
-                  <logic>equals</logic>
-                  <text>${platform_name}</text>
-                  <value>windows</value>
-              </compareText>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
             </ruleList>
         </actionGroup>
-
-	<!-- LIN: Creating back up of config file -->
+        <!-- LIN & MAC: Creating back up of config file -->
         <actionGroup>
             <actionList>
-              <createBackupFile>
-                  <path>${installdir}/phpPgAdmin/conf/config.inc.php</path>
-              </createBackupFile>
+                <createBackupFile>
+                    <path>${installdir}/phpPgAdmin/conf/config.inc.php</path>
+                </createBackupFile>
             </actionList>
             <ruleList>
-              <compareText>
-                    <value></value>
+                <compareText>
+                    <value/>
                     <logic>does_not_equal</logic>
                     <text>${phpPgAdminVersion}</text>
-              </compareText>
-              <compareText>
-                  <logic>contains</logic>
-                  <text>${platform_name}</text>
-                  <value>linux</value>
-              </compareText>
+                </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
             </ruleList>
         </actionGroup>
-
     </preInstallationActionList>
-
     <!-- Postinstallation actions -->
     <postInstallationActionList>
-        
-         <!-- LIN: Write the phpPgAdmin Info to INI File -->
+        <!-- LIN & MAC: Write the phpPgAdmin Info to INI File -->
         <actionGroup>
             <actionList>
-	      <iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>phpPgAdmin</section>
-                  <key>Description</key>
-                  <value>${msg(install.summary)}</value>
-              </iniFileSet>
-	      <iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>phpPgAdmin</section>
-                  <key>InstallationDirectory</key>
-                  <value>${installdir}/phpPgAdmin</value>
-              </iniFileSet>	
-              <iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>phpPgAdmin</section>
-                  <key>Version</key>
-                  <value>${product_version}</value>
-              </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>phpPgAdmin</section>
+                    <key>Description</key>
+                    <value>${msg(install.summary)}</value>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>phpPgAdmin</section>
+                    <key>InstallationDirectory</key>
+                    <value>${installdir}/phpPgAdmin</value>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>phpPgAdmin</section>
+                    <key>Version</key>
+                    <value>${product_version}</value>
+                </iniFileSet>
             </actionList>
             <ruleList>
-              <compareText>
-                <text>${platform_name}</text>
-                <logic>contains</logic>
-                <value>linux</value>
-              </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
+                </compareText>
             </ruleList>
         </actionGroup>
-        
-        <!-- WIN: Restoring the Back up File  -->
+        <!-- WIN: Restoring the Back up File    -->
         <actionGroup>
-          <actionList>
-              <deleteFile>
-                <path>${installdir}\phpPgAdmin\conf\config.inc.php</path>
-              </deleteFile>		
-              <renameFile>
-                <origin>${installdir}\phpPgAdmin\conf\config.inc.php.bak0</origin>
-                <destination>${installdir}\phpPgAdmin\conf\config.inc.php</destination>
-              </renameFile>
-              <deleteFile>
-                <path>${installdir}\phpPgAdmin\conf\config.inc.php.bak0</path>
-              </deleteFile>		
-          </actionList>
-          <ruleList>
-              <compareText>
-                <value></value>
-                <logic>does_not_equal</logic>
-                <text>${phpPgAdminVersion}</text>
-              </compareText>
-              <compareText>
-                <text>${platform_name}</text>
-                <logic>equals</logic>
-                <value>windows</value>
-              </compareText>
-	      <fileExists>
-		<path>${installdir}\phpPgAdmin\conf\config.inc.php.bak0</path>
-	      </fileExists>	
-          </ruleList>
+            <actionList>
+                <deleteFile>
+                    <path>${installdir}\phpPgAdmin\conf\config.inc.php</path>
+                </deleteFile>
+                <renameFile>
+                    <origin>${installdir}\phpPgAdmin\conf\config.inc.php.bak0</origin>
+                    <destination>${installdir}\phpPgAdmin\conf\config.inc.php</destination>
+                </renameFile>
+                <deleteFile>
+                    <path>${installdir}\phpPgAdmin\conf\config.inc.php.bak0</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <value/>
+                    <logic>does_not_equal</logic>
+                    <text>${phpPgAdminVersion}</text>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
+                </compareText>
+                <fileExists>
+                    <path>${installdir}\phpPgAdmin\conf\config.inc.php.bak0</path>
+                </fileExists>
+            </ruleList>
         </actionGroup>
-
-	<!-- WIN: Restoring the Back up File  -->
+        <!-- LIN & MAC: Restoring the Back up File    -->
         <actionGroup>
-          <actionList>
-              <deleteFile>
-                <path>${installdir}/phpPgAdmin/conf/config.inc.php</path>
-              </deleteFile>
-              <renameFile>
-                <origin>${installdir}/phpPgAdmin/conf/config.inc.php.bak0</origin>
-                <destination>${installdir}/phpPgAdmin/conf/config.inc.php</destination>
-              </renameFile>
-              <deleteFile>
-                <path>${installdir}/phpPgAdmin/conf/config.inc.php.bak0</path>
-              </deleteFile>
-          </actionList>
-          <ruleList>
-              <compareText>
-                <value></value>
-                <logic>does_not_equal</logic>
-                <text>${phpPgAdminVersion}</text>
-              </compareText>
-              <compareText>
-                <text>${platform_name}</text>
-                <logic>contains</logic>
-                <value>linux</value>
-              </compareText>
-          </ruleList>
+            <actionList>
+                <deleteFile>
+                    <path>${installdir}/phpPgAdmin/conf/config.inc.php</path>
+                </deleteFile>
+                <renameFile>
+                    <origin>${installdir}/phpPgAdmin/conf/config.inc.php.bak0</origin>
+                    <destination>${installdir}/phpPgAdmin/conf/config.inc.php</destination>
+                </renameFile>
+                <deleteFile>
+                    <path>${installdir}/phpPgAdmin/conf/config.inc.php.bak0</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <value/>
+                    <logic>does_not_equal</logic>
+                    <text>${phpPgAdminVersion}</text>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
         </actionGroup>
-
-        <!-- WIN: Configuring phpPgAdmin  -->
+        <!-- WIN: Configuring phpPgAdmin    -->
         <actionGroup>
             <actionList>
                 <!-- Substitute pghome and phphome in the helper script. It will change the '/' to '\\' in the path-->
@@ -456,15 +462,13 @@
                         </substitution>
                     </substitutionList>
                 </substitute>
-                        
                 <!-- Setting an local installer variable -->
                 <setInstallerVariableFromScriptOutput>
                     <exec>${installdir}\phpPgAdmin\installer\phpPgAdmin\setPath.bat</exec>
-                    <execArgs></execArgs>
+                    <execArgs/>
                     <name>slashPath</name>
                     <workingDirectory>${installdir}</workingDirectory>
                 </setInstallerVariableFromScriptOutput>
-                        
                 <!-- Substitute the pgdump and pg_dumpall path in the config.inc.php file -->
                 <substitute>
                     <files>${installdir}/phpPgAdmin/conf/config.inc.php</files>
@@ -485,7 +489,7 @@
                 <compareText>
                     <text>${pghome}</text>
                     <logic>does_not_equal</logic>
-                    <value></value>
+                    <value/>
                 </compareText>
                 <compareText>
                     <text>${platform_name}</text>
@@ -493,15 +497,14 @@
                     <value>windows</value>
                 </compareText>
                 <compareText>
-                    <value></value>
+                    <value/>
                     <logic>equals</logic>
                     <text>${phpPgAdminVersion}</text>
-              </compareText>
+                </compareText>
             </ruleList>
         </actionGroup>
-                
-       <!-- WIN: Configuring phpPgAdmin  -->
-         <actionGroup>
+        <!-- WIN: Configuring phpPgAdmin    -->
+        <actionGroup>
             <actionList>
                 <substitute>
                     <files>${installdir}/phpPgAdmin/conf/config.inc.php</files>
@@ -518,22 +521,21 @@
                     </substitutionList>
                 </substitute>
             </actionList>
-	    <ruleList>
+            <ruleList>
                 <compareText>
                     <text>${platform_name}</text>
                     <logic>equals</logic>
                     <value>windows</value>
                 </compareText>
                 <compareText>
-                    <value></value>
+                    <value/>
                     <logic>equals</logic>
                     <text>${phpPgAdminVersion}</text>
                 </compareText>
             </ruleList>
         </actionGroup>
-
-        <!-- LIN: Configuring phpPgAdmin  -->
-         <actionGroup>
+        <!-- LIN & MAC: Configuring phpPgAdmin    -->
+        <actionGroup>
             <actionList>
                 <substitute>
                     <files>${installdir}/phpPgAdmin/conf/config.inc.php</files>
@@ -561,17 +563,16 @@
             <ruleList>
                 <compareText>
                     <text>${platform_name}</text>
-                    <logic>contains</logic>
-                    <value>linux</value>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
                 </compareText>
                 <compareText>
-                    <value></value>
+                    <value/>
                     <logic>equals</logic>
                     <text>${phpPgAdminVersion}</text>
                 </compareText>
             </ruleList>
         </actionGroup>
-                
         <!-- Substitute the pgdump and pg_dumpall (both blank) path in the config.inc.php file if pghome is not set -->
         <substitute>
             <files>${installdir}/phpPgAdmin/conf/config.inc.php</files>
@@ -579,77 +580,85 @@
             <substitutionList>
                 <substitution>
                     <pattern>@@PGDUMP@@</pattern>
-                    <value></value>
+                    <value/>
                 </substitution>
                 <substitution>
                     <pattern>@@PGDUMPALL@@</pattern>
-                    <value></value>
+                    <value/>
                 </substitution>
             </substitutionList>
             <ruleList>
                 <compareText>
                     <text>${pghome}</text>
                     <logic>equals</logic>
-                    <value></value>
+                    <value/>
                 </compareText>
                 <compareText>
-                    <value></value>
+                    <value/>
                     <logic>equals</logic>
                     <text>${phpPgAdminVersion}</text>
-              </compareText>
+                </compareText>
             </ruleList>
         </substitute>
-        
-        <!-- LIN: Create Menu Shortcuts -->
+        <!-- LIN & MAC: Create Menu Shortcuts -->
         <actionGroup>
             <actionList>
                 <runProgram>
-                  <program>${installdir}/phpPgAdmin/installer/phpPgAdmin/createshortcuts.sh</program>
-                  <programArguments>"${installdir}"</programArguments>
-                  <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
-                  <abortOnError>0</abortOnError>
-                  <showMessageOnError>0</showMessageOnError>
+                    <program>${installdir}/phpPgAdmin/installer/phpPgAdmin/createshortcuts.sh</program>
+                    <programArguments>"${installdir}"</programArguments>
+                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
                 </runProgram>
             </actionList>
             <ruleList>
                 <compareText>
-                  <logic>contains</logic>
-                  <text>${platform_name}</text>
-                  <value>linux</value>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
                 </compareText>
             </ruleList>
-        </actionGroup>                
-           
-     </postInstallationActionList>
-    
-     <!-- preUninstallation actions -->
-     <preUninstallationActionList>
-	
-	<!-- Unset the phpPgAdmin info from ini file -->
+        </actionGroup>
+    </postInstallationActionList>
+    <!-- preUninstallation actions -->
+    <preUninstallationActionList>
+        <!-- LIN & MAC: Unset the phpPgAdmin info from ini file -->
         <actionGroup>
             <actionList>
-		<iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>phpPgAdmin</section>
-                  <key>Description</key>
-                  <value></value>
-                </iniFileSet>
-		<iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>phpPgAdmin</section>
-                  <key>InstallationDirectory</key>
-                  <value></value>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>phpPgAdmin</section>
+                    <key>Description</key>
+                    <value/>
                 </iniFileSet>
                 <iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>phpPgAdmin</section>
-                  <key>Version</key>
-                  <value></value>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>phpPgAdmin</section>
+                    <key>InstallationDirectory</key>
+                    <value/>
                 </iniFileSet>
-		<!-- Remove the menu shortcuts -->
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>phpPgAdmin</section>
+                    <key>Version</key>
+                    <value/>
+                </iniFileSet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- LIN : Remove Menu Shortcuts -->
+        <actionGroup>
+            <actionList>
                 <runProgram>
-                  <program>${installdir}/phpPgAdmin/installer/phpPgAdmin/removeshortcuts.sh</program>
-                  <programArguments>"${installdir}"</programArguments>
+                    <program>${installdir}/phpPgAdmin/installer/phpPgAdmin/removeshortcuts.sh</program>
+                    <programArguments>"${installdir}"</programArguments>
+                    <workingDirectory>${installdir}/phpPgAdmin/installer/phpPgAdmin</workingDirectory>
                 </runProgram>
             </actionList>
             <ruleList>
@@ -660,8 +669,22 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+        <!-- MAC: Remove Menu shortcuts -->
+        <actionGroup>
+            <actionList>
+                <deleteFile>
+                    <path>/Applications/PostgreSQL/phpPgAdmin.app</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
     </preUninstallationActionList>
-    
     <!-- Components -->
     <componentList>
         <component>
@@ -671,7 +694,6 @@
             <selected>1</selected>
             <show>1</show>
             <folderList>
-
                 <!-- LIN: Program files -->
                 <folder>
                     <description>Program Files</description>
@@ -705,9 +727,42 @@
                             <origin>staging/linux/scripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
-                 </folder>
-            	
-		<!-- WIN: Program files -->
+                </folder>
+                <!-- LIN-X64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/phpPgAdmin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installation Files</description>
+                    <destination>${installdir}/phpPgAdmin</destination>
+                    <name>installfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch And Menu Scripts</description>
+                    <destination>${installdir}/phpPgAdmin</destination>
+                    <name>menuandlaunchfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- WIN: Program files -->
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}</destination>
@@ -740,76 +795,102 @@
                             <origin>staging/windows/scripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
-                 </folder>     
-            
-	    </folderList>
-            
+                </folder>
+                <!-- MAC: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/phpPgAdmin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installation Files</description>
+                    <destination>${installdir}/phpPgAdmin</destination>
+                    <name>installfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch And Menu Scripts</description>
+                    <destination>${installdir}/phpPgAdmin</destination>
+                    <name>menuandlaunchfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+            </folderList>
             <!-- WIN: Start Menu -->
             <startMenuShortcutList>
-                                <!-- Launch phpPgAdmin -->
-                                <startMenuShortcut>
-                                    <comment>phpPgAdmin</comment>
-                                    <name>phpPgAdmin</name>
-                                    <runInTerminal>0</runInTerminal>
-                                    <windowsExec>wscript</windowsExec>
-                                    <windowsExecArgs>//NoLogo "${installdir}\phpPgAdmin\scripts\launchPhpPgAdmin.vbs"</windowsExecArgs>
-                                    <windowsIcon>${installdir}\phpPgAdmin\scripts\images\run.ico</windowsIcon>
-                                </startMenuShortcut>
-                                
+                <!-- Launch phpPgAdmin -->
+                <startMenuShortcut>
+                    <comment>phpPgAdmin</comment>
+                    <name>phpPgAdmin</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>wscript</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\phpPgAdmin\scripts\launchPhpPgAdmin.vbs"</windowsExecArgs>
+                    <windowsIcon>${installdir}\phpPgAdmin\scripts\images\run.ico</windowsIcon>
+                </startMenuShortcut>
             </startMenuShortcutList>
         </component>
     </componentList>
-    
-    <parameterList>     
+    <parameterList>
         <!-- PostgreSQL Server Details Verification Page -->
         <parameterGroup>
             <name>pgdetails</name>
             <title>${msg(pgplus.details.title)}</title>
             <explanation>${msg(pgplus.details.explanation)}</explanation>
-            <value></value>
-            <default></default>
+            <value/>
+            <default/>
             <parameterList>
-                
                 <!-- Postgres Host(Default localhost) -->
                 <stringParameter>
                     <name>pghost</name>
                     <description>Host</description>
-                    <explanation></explanation>
-                    <value></value>
-                    <default></default>
+                    <explanation/>
+                    <value/>
+                    <default/>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
-                
                 <!-- Postgres Port(Default 5432) -->
                 <stringParameter>
                     <name>pgport</name>
                     <description>Port</description>
-                    <explanation></explanation>
-                    <value></value>
+                    <explanation/>
+                    <value/>
                     <default>5432</default>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
-                
                 <!-- Postgres Home Directory -->
                 <directoryParameter>
                     <name>pghome</name>
                     <description>PostgreSQL Home Directory</description>
-                    <explanation></explanation>
-                    <value></value>
+                    <explanation/>
+                    <value/>
                     <default>${defaultpghome}</default>
                     <allowEmptyValue>1</allowEmptyValue>
                     <mustBeWritable>0</mustBeWritable>
                     <mustExist>0</mustExist>
                     <width>40</width>
                 </directoryParameter>
-                
                 <!-- PostgreSQL Server Installed? -->
                 <booleanParameter>
                     <name>pginstalled</name>
                     <description>PostgreSQL Installed</description>
-                    <explanation></explanation>
+                    <explanation/>
                     <value>${pginstalled}</value>
                     <default>0</default>
                     <ask>0</ask>
@@ -817,36 +898,34 @@
                 </booleanParameter>
             </parameterList>
             <ruleList>
-              <compareText>
-                <text>${phpPgAdminVersion}</text>
-                <logic>equals</logic>
-                <value></value>
-              </compareText>
-            </ruleList>
-            
-            <validationActionList>
-              <actionGroup>
-                <actionList>
-                  <throwError>
-                    <text>${msg(pgplus.blank.error)}</text>
-                  </throwError>
-                </actionList>
-          	   <ruleEvaluationLogic>OR</ruleEvaluationLogic>
-                <ruleList>
-                  <compareText>
-                    <text>${pghost}</text>
+                <compareText>
+                    <text>${phpPgAdminVersion}</text>
                     <logic>equals</logic>
-                    <value></value>
-                  </compareText>			
-                  <compareText>
-                     <text>${pgport}</text>
-                     <logic>equals</logic>
-                     <value></value>
-                  </compareText>
-                </ruleList>	
-              </actionGroup>
+                    <value/>
+                </compareText>
+            </ruleList>
+            <validationActionList>
+                <actionGroup>
+                    <actionList>
+                        <throwError>
+                            <text>${msg(pgplus.blank.error)}</text>
+                        </throwError>
+                    </actionList>
+                    <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText>
+                            <text>${pghost}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <text>${pgport}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
             </validationActionList>
         </parameterGroup>
     </parameterList>
 </project>
-

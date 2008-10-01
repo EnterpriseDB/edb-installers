@@ -21,7 +21,7 @@ _prep_PostGIS_linux() {
     chmod ugo+w postgis.linux || _die "Couldn't set the permissions on the source directory"
 
     # Grab a copy of the postgis source tree
-    cp -R postgis-$PG_POSTGIS_TARBALL/* postgis.linux || _die "Failed to copy the source code (source/postgis-$PG_POSTGIS_TARBALL)"
+    cp -R postgis-$PG_VERSION_POSTGIS/* postgis.linux || _die "Failed to copy the source code (source/postgis-$PG_VERSION_POSTGIS)"
     chmod -R ugo+w postgis.linux || _die "Couldn't set the permissions on the source directory"
 
     if [ -e geos.linux ];
@@ -35,7 +35,7 @@ _prep_PostGIS_linux() {
     chmod ugo+w geos.linux || _die "Couldn't set the permissions on the source directory"
 
     # Grab a copy of the geos source tree
-    cp -R geos-$PG_GEOS_TARBALL/* geos.linux || _die "Failed to copy the source code (source/geos-$PG_GEOS_TARBALL)"
+    cp -R geos-$PG_TARBALL_GEOS/* geos.linux || _die "Failed to copy the source code (source/geos-$PG_TARBALL_GEOS)"
     chmod -R ugo+w geos.linux || _die "Couldn't set the permissions on the source directory"
 
     if [ -e proj.linux ];
@@ -49,7 +49,7 @@ _prep_PostGIS_linux() {
     chmod ugo+w proj.linux || _die "Couldn't set the permissions on the source directory"
 
     # Grab a copy of the proj source tree
-    cp -R proj-$PG_PROJ_TARBALL/* proj.linux || _die "Failed to copy the source code (source/proj-$PG_PROJ_TARBALL)"
+    cp -R proj-$PG_TARBALL_PROJ/* proj.linux || _die "Failed to copy the source code (source/proj-$PG_TARBALL_PROJ)"
     chmod -R ugo+w proj.linux || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -72,8 +72,8 @@ _prep_PostGIS_linux() {
 
 _build_PostGIS_linux() {
 
-    # build postgis	
-    PG_STAGING=$PG_PATH_LINUX/PostGIS/staging/linux	
+    # build postgis    
+    PG_STAGING=$PG_PATH_LINUX/PostGIS/staging/linux    
 
     # Configure the source tree
     echo "Configuring the proj source tree"
@@ -91,7 +91,7 @@ _build_PostGIS_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/geos.linux; make install" || _die "Failed to install geos"
 
     echo "Configuring the postgis source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/; export PATH=$PG_STAGING/proj/bin:$PG_STAGING/geos/bin:$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj/lib:$PG_STAGING/geos/lib:$LD_LIBRARY_PATH; ./configure --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_LINUX/bin/pg_config --with-geos=$PG_STAGING/geos/bin/geos-config --with-proj=$PG_STAGING/proj"  || _die "Failed to configure postgis"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/; export PATH=$PG_STAGING/proj/bin:$PG_STAGING/geos/bin:\$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj/lib:$PG_STAGING/geos/lib:\$LD_LIBRARY_PATH; ./configure --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_LINUX/bin/pg_config --with-geos=$PG_STAGING/geos/bin/geos-config --with-proj=$PG_STAGING/proj"  || _die "Failed to configure postgis"
 
     echo "Building postgis"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux; make" || _die "Failed to build postgis"
@@ -99,7 +99,7 @@ _build_PostGIS_linux() {
 
 
     echo "Building postgis-jdbc"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/java/jdbc; export CLASSPATH=$PG_PATH_LINUX/PostGIS/source/postgresql-$PG_POSTGRESQL_JAR.jar:$CLASSPATH; JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX/bin/ant" || _die "Failed to build postgis-jdbc"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/java/jdbc; export CLASSPATH=$PG_PATH_LINUX/PostGIS/source/postgresql-$PG_JAR_POSTGRESQL.jar:$CLASSPATH; $PG_ANT_HOME_LINUX/bin/ant" || _die "Failed to build postgis-jdbc"
    
     echo "Building postgis-doc"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/doc; make" || _die "Failed to build postgis-doc"
@@ -111,7 +111,7 @@ _build_PostGIS_linux() {
     mv staging/linux/PostGIS/share/doc staging/linux/PostGIS/
     mv staging/linux/PostGIS/share/man staging/linux/PostGIS/
 }
-	
+    
 
 
 ################################################################################
@@ -120,7 +120,7 @@ _build_PostGIS_linux() {
 
 _postprocess_PostGIS_linux() {
 
-    PG_STAGING=$PG_PATH_LINUX/PostGIS/staging/linux	
+    PG_STAGING=$PG_PATH_LINUX/PostGIS/staging/linux
 
     #Configure the files in PostGIS
     filelist=`grep -rlI "$PG_STAGING" "$WD/PostGIS/staging/linux" | grep -v Binary`
@@ -129,7 +129,7 @@ _postprocess_PostGIS_linux() {
 
     for file in $filelist
     do
-        _replace "$PG_STAGING" @@INSTALL_DIR@@ "$file"
+        _replace "$PG_STAGING/PostGIS" @@INSTALL_DIR@@ "$file"
         chmod ugo+x "$file"
     done
 
@@ -137,8 +137,8 @@ _postprocess_PostGIS_linux() {
 
     echo "Copying required dependent libraries from proj and geos packages"
     cp staging/linux/geos/lib/libgeos_c.so.1 staging/linux/PostGIS/lib/
-    cp staging/linux/geos/lib/libgeos-$PG_GEOS_VERSION.so staging/linux/PostGIS/lib/
-    cp staging/linux/proj/lib/libproj.so.0 staging/linux/PostGIS/lib/
+    cp staging/linux/geos/lib/libgeos-$PG_TARBALL_GEOS.so staging/linux/PostGIS/lib/
+    cp staging/linux/proj/lib/libproj.so.0 staging/linux/PostGIS/lib/  
 
     echo "Copying Readme files"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux; cp README.postgis $PG_STAGING/PostGIS/doc"
@@ -154,7 +154,7 @@ _postprocess_PostGIS_linux() {
     echo "Copying jdbc docs"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/java/jdbc; cp postgis-jdbc-javadoc.zip $PG_STAGING/PostGIS/doc/postgis/jdbc"
     cd staging/linux/PostGIS/doc/postgis/jdbc
-    unzip -o postgis-jdbc-javadoc.zip || _warn "Failed to unzip jdbc docs"
+    extract_file postgis-jdbc-javadoc.zip || exit 1
     rm postgis-jdbc-javadoc.zip  || _warn "Failed to remove jdbc docs zip file"
 
     cd $WD/PostGIS
@@ -169,7 +169,7 @@ _postprocess_PostGIS_linux() {
     mkdir -p staging/linux/PostGIS/jdbc
 
     echo "Copying postgis-jdbc"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/java/jdbc; cp postgis_$PG_POSTGIS_VERSION.jar $PG_STAGING/PostGIS/jdbc"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/java/jdbc; cp postgis_$PG_VERSION_POSTGIS.jar $PG_STAGING/PostGIS/jdbc"
 
     mkdir -p staging/linux/installer/PostGIS || _die "Failed to create a directory for the install scripts"
 
@@ -183,7 +183,7 @@ _postprocess_PostGIS_linux() {
     chmod ugo+x staging/linux/installer/PostGIS/createpostgisdb.sh
 
     cp scripts/linux/removeshortcuts.sh staging/linux/installer/PostGIS/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
-    chmod ugo+x staging/linux/installer/PostGIS/removeshortcuts.sh	
+    chmod ugo+x staging/linux/installer/PostGIS/removeshortcuts.sh    
 
     cp scripts/linux/check-connection.sh staging/linux/installer/PostGIS/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux/check-connection.sh)"
     chmod ugo+x staging/linux/installer/PostGIS/check-connection.sh

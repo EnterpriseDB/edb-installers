@@ -21,7 +21,7 @@ _prep_ApachePhp_linux() {
     chmod ugo+w apache.linux || _die "Couldn't set the permissions on the source directory"
 
     # Grab a copy of the apache source tree
-    cp -R httpd-$PG_APACHE_TARBALL/* apache.linux || _die "Failed to copy the source code (source/httpd-$PG_APACHE_TARBALL)"
+    cp -R httpd-$PG_VERSION_APACHE/* apache.linux || _die "Failed to copy the source code (source/httpd-$PG_VERSION_APACHE)"
     chmod -R ugo+w apache.linux || _die "Couldn't set the permissions on the source directory"
 
     if [ -e php.linux ];
@@ -35,7 +35,7 @@ _prep_ApachePhp_linux() {
     chmod ugo+w php.linux || _die "Couldn't set the permissions on the source directory"
 
     # Grab a copy of the php source tree
-    cp -R php-$PG_PHP_TARBALL/* php.linux || _die "Failed to copy the source code (source/php-$PG_PHP_TARBALL)"
+    cp -R php-$PG_VERSION_PHP/* php.linux || _die "Failed to copy the source code (source/php-$PG_VERSION_PHP)"
     chmod -R ugo+w php.linux || _die "Couldn't set the permissions on the source directory"
 
 
@@ -75,6 +75,7 @@ _build_ApachePhp_linux() {
     _replace "$PG_STAGING/apache" "@@INSTALL_DIR@@" "$WD/ApachePhp/staging/linux/apache/conf/httpd.conf"
     _replace "Listen 80" "Listen @@PORT@@" "$WD/ApachePhp/staging/linux/apache/conf/httpd.conf"
     _replace "htdocs" "www" "$WD/ApachePhp/staging/linux/apache/conf/httpd.conf"
+    _replace "#ServerName www.example.com:80" "ServerName localhost:@@PORT@@" "$WD/ApachePhp/staging/linux/apache/conf/httpd.conf"
 
     #Configure the apachectl script file
     _replace "\$HTTPD -k \$ARGV" "\"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux/apache/bin/apachectl"
@@ -82,7 +83,7 @@ _build_ApachePhp_linux() {
     _replace "\$HTTPD \$ARGV" "\"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux/apache/bin/apachectl"   chmod ugo+x "$PG_STAGING/apache/bin/apachectl" 
      
     echo "Configuring the php source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux/; sh ./configure --prefix=$PG_STAGING/php --with-apxs2"=$PG_STAGING/apache/bin/apxs --with-config-file-path=$PG_STAGING/php --with-pgsql=$PG_PGHOME_LINUX || _die "Failed to configure php"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux/; sh ./configure --prefix=$PG_STAGING/php --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=$PG_STAGING/php --with-pgsql=$PG_PGHOME_LINUX" || _die "Failed to configure php"
 
     echo "Building php"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux; make" || _die "Failed to build php"
@@ -123,8 +124,8 @@ _postprocess_ApachePhp_linux() {
 
     for file in $filelist
     do
-	_replace "$PG_STAGING" @@INSTALL_DIR@@ "$file"
-	chmod ugo+x "$file"
+    _replace "$PG_STAGING" @@INSTALL_DIR@@ "$file"
+    chmod ugo+x "$file"
     done  
 
     cd $WD/ApachePhp
@@ -147,6 +148,9 @@ _postprocess_ApachePhp_linux() {
 
     cp scripts/linux/configureApachePhp.sh staging/linux/installer/ApachePhp/configureApachePhp.sh || _die "Failed to copy the configureApachePhp script (scripts/linux/configureApachePhp.sh)"
     chmod ugo+x staging/linux/installer/ApachePhp/configureApachePhp.sh
+
+    cp scripts/linux/startupcfg.sh staging/linux/installer/ApachePhp/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/linux/startupcfg.sh)"
+    chmod ugo+x staging/linux/installer/ApachePhp/startupcfg.sh
    
     mkdir -p staging/linux/scripts || _die "Failed to create a directory for the launch scripts"
     # Copy the launch scripts
@@ -184,8 +188,8 @@ _postprocess_ApachePhp_linux() {
     cp resources/index.php staging/linux/apache/www || _die "Failed to copy index.php"
     chmod ugo+x staging/linux/apache/www/index.php
 
-    _replace PG_APACHE_VERSION $PG_APACHE_VERSION "staging/linux/apache/www/index.php" 
-    _replace PG_PHP_VERSION $PG_PHP_VERSION "staging/linux/apache/www/index.php" 
+    _replace PG_VERSION_APACHE $PG_VERSION_APACHE "staging/linux/apache/www/index.php" 
+    _replace PG_VERSION_PHP $PG_VERSION_PHP "staging/linux/apache/www/index.php" 
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"

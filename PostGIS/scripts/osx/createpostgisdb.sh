@@ -1,0 +1,12 @@
+#!/bin/bash
+
+export PGHOST=$1
+export PGPORT=$2
+export PGUSER=$3
+export PGPASSWORD=$4
+PGHOME=$5
+INSTALLDIR=$5
+
+# Creating postgis database
+"$PGHOME/bin/createdb" -T template_postgis $6 
+

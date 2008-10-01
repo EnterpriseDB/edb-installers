@@ -9,7 +9,7 @@ _prep_phpWiki_linux() {
 
     # Enter the source directory and cleanup if required
     cd $WD/phpWiki/source
-	
+    
     if [ -e phpWiki.linux ];
     then
       echo "Removing existing phpWiki.linux source directory"
@@ -18,9 +18,9 @@ _prep_phpWiki_linux() {
 
     echo "Creating staging directory ($WD/phpWiki/source/phpWiki.linux)"
     mkdir -p $WD/phpWiki/source/phpWiki.linux || _die "Couldn't create the phpWiki.linux directory"
-	
+    
     # Grab a copy of the source tree
-    cp -R phpwiki-$PG_PHPWIKI_TARBALL/* phpWiki.linux || _die "Failed to copy the source code (source/phpwiki-$PG_PHPWIKI_TARBALL)"
+    cp -R phpwiki-$PG_VERSION_PHPWIKI/* phpWiki.linux || _die "Failed to copy the source code (source/phpwiki-$PG_VERSION_PHPWIKI)"
     chmod -R ugo+w phpWiki.linux || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -42,7 +42,7 @@ _prep_phpWiki_linux() {
 
 _build_phpWiki_linux() {
 
-	cd $WD    
+    cd $WD    
 
 }
 
@@ -99,7 +99,7 @@ _postprocess_phpWiki_linux() {
      # copy logo Image
     cp resources/logo.ico staging/linux/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"
 
-	
+    
     mkdir -p staging/linux/installer/xdg || _die "Failed to create a directory for the menu pick xdg files"
 
     # Copy in installation xdg Files

@@ -9,7 +9,7 @@ _prep_mediaWiki_windows() {
 
     # Enter the source directory and cleanup if required
     cd $WD/mediaWiki/source
-	
+    
     if [ -e mediaWiki.windows ];
     then
       echo "Removing existing mediaWiki.windows source directory"
@@ -18,9 +18,9 @@ _prep_mediaWiki_windows() {
 
     echo "Creating staging directory ($WD/mediaWiki/source/mediaWiki.windows)"
     mkdir -p $WD/mediaWiki/source/mediaWiki.windows || _die "Couldn't create the mediaWiki.windows directory"
-	
+    
     # Grab a copy of the source tree
-    cp -R mediawiki-$PG_MEDIAWIKI_TARBALL/* mediaWiki.windows || _die "Failed to copy the source code (source/mediaWiki-$PG_MEDIAWIKI_TARBALL)"
+    cp -R mediawiki-$PG_VERSION_MEDIAWIKI/* mediaWiki.windows || _die "Failed to copy the source code (source/mediaWiki-$PG_VERSION_MEDIAWIKI)"
     chmod -R ugo+w mediaWiki.windows || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -41,8 +41,8 @@ _prep_mediaWiki_windows() {
 ################################################################################
 
 _build_mediaWiki_windows() {
-	
-	cd $WD
+    
+    cd $WD
 
 }
 

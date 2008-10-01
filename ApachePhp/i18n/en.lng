@@ -8,6 +8,8 @@ error.install.apache=Error Installing Apache
 
 error.configure.apachephp=Error Configuring Apache
 
+error.service.apachephp=Error Installing Apache as a Service
+
 error.uninstall.apache=Error Uninstalling Apache
 
 error.uninstall.stop.apache=Error Stopping Apache

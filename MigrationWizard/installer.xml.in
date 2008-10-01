@@ -1,47 +1,39 @@
-
 <project>
     <!-- Package details -->
-    <shortName>MigrationWizard</shortName>
+    <shortName>migrationwizard</shortName>
     <fullName>MigrationWizard</fullName>
-    <version>PG_MIGRATIONWIZARD_VERSION</version>
-    
+    <version>PG_VERSION_MIGRATIONWIZARD</version>
     <!-- These options are used on Windows -->
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
-
     <!-- Product Specific Options -->
     <productDisplayName>EnterpriseDB ${product_fullname} ${product_version}</productDisplayName>
     <productComments>EnterpriseDB ${product_fullname} ${product_version}</productComments>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
-    
     <!-- The options are used for RPM registration -->
     <description>${product_fullname} ${product_version} by EnterpriseDB</description>
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
-
     <!-- Installer Size -->
     <width>550</width>
     <height>400</height>
-    
     <!-- Misc package options -->
-    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUMMIGRATIONWIZARD-${platform_name}.${platform_exec_suffix}</installerFilename>
     <enableRollback>0</enableRollback>
-    <requireInstallationByRootUser>1</requireInstallationByRootUser>	
+    <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <saveRelativePaths>1</saveRelativePaths>
     <outputDirectory>../output</outputDirectory>
     <uninstallerDirectory>${installdir}</uninstallerDirectory>
-    <uninstallerName>uninstall-${product_shortname}</uninstallerName>	
+    <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <unattendedModeUI>minimal</unattendedModeUI>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
- 
     <!-- Images -->
     <leftImage>resources/leftImage.png</leftImage>
     <logoImage>resources/edblogo.png</logoImage>
     <splashImage>resources/splash.png</splashImage>
     <wmImage>resources/edblogo.png</wmImage>
-    
     <!-- i18n files for the UI -->
     <customLanguageFileList>
         <language>
@@ -50,73 +42,122 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
-   
-     
     <!-- Initialisation actions -->
     <initializationActionList>
-        
         <!-- Set the MigrationWizard version(if exists) -->
         <setInstallerVariable name="MigrationWizardVersion" value="">
             <persist>0</persist>
         </setInstallerVariable>
-
         <!-- Detecting Java, Abort if not found -->
-	<autodetectJava>
+        <autodetectJava>
             <promptUser>0</promptUser>
             <validVersionList>
                 <validVersion>
-                    <maxVersion></maxVersion>
+                    <maxVersion/>
                     <minVersion>1.5.0</minVersion>
                     <requireJDK>0</requireJDK>
-                    <vendor></vendor>
+                    <vendor/>
                 </validVersion>
             </validVersionList>
             <abortOnError>1</abortOnError>
             <showMessageOnError>1</showMessageOnError>
             <customErrorMessage>${msg(java.error)}</customErrorMessage>
-       </autodetectJava>
-
+        </autodetectJava>
     </initializationActionList>
-    
     <!-- Preinstallation actions -->
     <preInstallationActionList>
-
-
-        <!-- LINUX: Check Previous Installation of MigrationWizard -->
-        <actionGroup>
-            <actionList>
-                <iniFileGet>
-                  <file>/etc/postgres-reg.ini</file>  
-                  <section>MigrationWizard</section>
-                  <key>Version</key>
-                  <variable>MigrationWizardVersion</variable>
-              </iniFileGet>
-            </actionList>            
-              <ruleList>
-                  <compareText>
+        <!-- Creates the ini file if not exits -->
+        <touchFile path="/etc/postgres-reg.ini">
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </touchFile>
+        <!-- MAC : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/Library/PostgreSQL/EnterpriseDB-MigrationWizard</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- LIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/opt/PostgreSQL/EnterpriseDB-MigrationWizard</value>
+            <ruleList>
+                <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
                     <value>linux</value>
-                  </compareText>
-              </ruleList>
-        </actionGroup>
-
-         <!-- Setting the installation type as upgrade if previous installation found -->
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- WIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${env(ProgramFiles)}\PostgreSQL\EnterpriseDB-MigrationWizard</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- LIN & MAC: Check Previous Installation of MigrationWizard -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installationType" value="upgrade" />
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>MigrationWizard</section>
+                    <key>Version</key>
+                    <variable>MigrationWizardVersion</variable>
+                </iniFileGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!--    LIN & MAC: Set the Installation Directory in case of re-install/upgrade -->
+        <actionGroup>
+            <actionList>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>MigrationWizard</section>
+                    <key>InstallationDirectory</key>
+                    <variable>installdir</variable>
+                </iniFileGet>
             </actionList>
             <ruleList>
                 <compareText>
                     <logic>does_not_equal</logic>
                     <text>${MigrationWizardVersion}</text>
-                    <value></value>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
                 </compareText>
             </ruleList>
         </actionGroup>
-
         <!-- WIN: Check Previous Installation of MigrationWizard -->
-         <actionGroup>
+        <actionGroup>
             <actionList>
                 <registryGet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationWizard</key>
@@ -125,144 +166,191 @@
                 </registryGet>
             </actionList>
             <ruleList>
-              <compareText>
-                  <logic>equals</logic>
-                  <text>${platform_name}</text>
-                  <value>windows</value>
-              </compareText>
-            </ruleList>
-        </actionGroup>
-
-    </preInstallationActionList>
-    
-    
-    <!-- Post installation actions -->
-    <postInstallationActionList>
-       
-        <!-- Write the MigrationWizard Version to INI File -->
-        <actionGroup>
-            <actionList>
-	      <iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>MigrationWizard</section>
-                  <key>Description</key>
-                  <value>${msg(install.summary)}</value>
-                </iniFileSet>
-                <iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>MigrationWizard</section>
-                  <key>InstallationDirectory</key>
-                  <value>${installdir}</value>
-                </iniFileSet>
-              <iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>  
-                  <section>MigrationWizard</section>
-                  <key>Version</key>
-                  <value>${product_version}</value>
-              </iniFileSet>
-            </actionList>
-            <ruleList>
-              <compareText>
-                <text>${platform_name}</text>
-                <logic>contains</logic>
-                <value>linux</value>
-              </compareText>
-            </ruleList>	
-        </actionGroup>
-	
-        <!-- LIN: Setting the installation directory in the launch script -->
-	<actionGroup>
-	    <actionList>
-		<substitute>
-		       <files>${installdir}/scripts/launchMigrationWizard.sh</files>
-                       <substitutionList>
-                          <substitution>
-                            <pattern>@@INSTALLDIR@@</pattern>
-                            <value>${installdir}</value>
-                           </substitution>
-                       </substitutionList>
-                 </substitute>
-	     </actionList>
-	     <ruleList>
-              <compareText>
-                <text>${platform_name}</text>
-                <logic>contains</logic>
-                <value>linux</value>
-              </compareText>
-            </ruleList>
-	</actionGroup>
-
-        <!-- LINUX: Create Menu Shortcuts -->
-        <actionGroup>
-            <actionList>
-                <runProgram>
-                  <program>${installdir}/installer/MigrationWizard/createshortcuts.sh</program>
-                  <programArguments>"${installdir}"</programArguments>
-                  <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
-                  <abortOnError>1</abortOnError>
-                  <showMessageOnError>1</showMessageOnError>
-                </runProgram>              
-            </actionList>
-            <ruleList>
                 <compareText>
-                  <logic>contains</logic>
-                  <text>${platform_name}</text>
-                  <value>linux</value>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
                 </compareText>
             </ruleList>
         </actionGroup>
-
-	<!-- WIN: Setting the installation directory in the launch script -->
+        <!-- WIN: Set the Installation Directory in case of re-install/upgrade -->
+        <actionGroup>
+            <actionList>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationWizard</key>
+                    <name>Location</name>
+                    <variable>installdir</variable>
+                </registryGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${MigrationWizardVersion}</text>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- Setting the installation type as upgrade if previous installation found -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installationType" value="upgrade"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${MigrationWizardVersion}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </preInstallationActionList>
+    <!-- Post installation actions -->
+    <postInstallationActionList>
+        <!-- LIN & MAC: Write the MigrationWizard Version to INI File -->
+        <actionGroup>
+            <actionList>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>MigrationWizard</section>
+                    <key>Description</key>
+                    <value>${msg(install.summary)}</value>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>MigrationWizard</section>
+                    <key>InstallationDirectory</key>
+                    <value>${installdir}</value>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>MigrationWizard</section>
+                    <key>Version</key>
+                    <value>${product_version}</value>
+                </iniFileSet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- LIN & MAC: Setting the installation directory in the launch script -->
         <actionGroup>
             <actionList>
                 <substitute>
-                       <files>${installdir}\scripts\launchMigrationWizard.bat</files>
-                       <substitutionList>
-                          <substitution>
+                    <files>${installdir}/scripts/launchMigrationWizard.sh</files>
+                    <substitutionList>
+                        <substitution>
                             <pattern>@@INSTALLDIR@@</pattern>
                             <value>${installdir}</value>
-                           </substitution>
-                       </substitutionList>
-                 </substitute>
-             </actionList>
-             <ruleList>
-              <compareText>
-                <text>${platform_name}</text>
-                <logic>contains</logic>
-                <value>windows</value>
-              </compareText>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@JAVA@@</pattern>
+                            <value>${java_executable}</value>
+                        </substitution>
+                    </substitutionList>
+                </substitute>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
+                </compareText>
             </ruleList>
         </actionGroup>
-
-    </postInstallationActionList>    
-
-    <!-- preUninstallation actions -->    
-    <preUninstallationActionList>
-        
-        <!-- Unsetting the MigrationWizard values in the ini file -->
+        <!-- WIN: Setting the installation directory in the launch script -->
         <actionGroup>
             <actionList>
-		<iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>MigrationWizard</section>
-                  <key>Description</key>
-                  <value></value>
+                <substitute>
+                    <files>${installdir}\scripts\launchMigrationWizard.bat</files>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>@@INSTALLDIR@@</pattern>
+                            <value>${installdir}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>@@JAVA@@</pattern>
+                            <value>${java_executable}</value>
+                        </substitution>
+                    </substitutionList>
+                </substitute>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>contains</logic>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- LIN & MAC: Create Menu Shortcuts -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${installdir}/installer/MigrationWizard/createshortcuts.sh</program>
+                    <programArguments>"${installdir}"</programArguments>
+                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                    <abortOnError>1</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </postInstallationActionList>
+    <!-- preUninstallation actions -->
+    <preUninstallationActionList>
+        <!-- LIN & MAC: Unsetting the MigrationWizard values in the ini file -->
+        <actionGroup>
+            <actionList>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>MigrationWizard</section>
+                    <key>Description</key>
+                    <value/>
                 </iniFileSet>
                 <iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>MigrationWizard</section>
-                  <key>InstallationDirectory</key>
-                  <value></value>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>MigrationWizard</section>
+                    <key>InstallationDirectory</key>
+                    <value/>
                 </iniFileSet>
-		<iniFileSet>
-                  <file>/etc/postgres-reg.ini</file>
-                  <section>MigrationWizard</section>
-                  <key>Version</key>
-                  <value></value>
-	        </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>MigrationWizard</section>
+                    <key>Version</key>
+                    <value/>
+                </iniFileSet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- LIN : Remove Menu shortcuts -->
+        <actionGroup>
+            <actionList>
                 <runProgram>
-                  <program>${installdir}/installer/MigrationWizard/removeshortcuts.sh</program>
-                  <programArguments>"${installdir}"</programArguments>
+                    <program>${installdir}/installer/MigrationWizard/removeshortcuts.sh</program>
+                    <programArguments>"${installdir}"</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
                 </runProgram>
             </actionList>
             <ruleList>
@@ -273,8 +361,22 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+        <!-- MAC : Remove Menu shortcuts -->
+        <actionGroup>
+            <actionList>
+                <deleteFile>
+                    <path>/Applications/PostgreSQL/Migration Wizard.app</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
     </preUninstallationActionList>
-   
     <!-- Components -->
     <componentList>
         <component>
@@ -284,8 +386,7 @@
             <selected>1</selected>
             <show>1</show>
             <folderList>
-                
-                <!-- LINUX: Program files -->
+                <!-- LIN: Program files -->
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}</destination>
@@ -295,18 +396,18 @@
                         <distributionFile>
                             <origin>staging/linux/MigrationWizard/MigrationWizard.jar</origin>
                         </distributionFile>
-			<distributionDirectory>
+                        <distributionDirectory>
                             <origin>staging/linux/MigrationWizard/lib</origin>
                         </distributionDirectory>
                     </distributionFileList>
-		</folder>
- 		<folder>
-		    <description>Installation Files</description>
+                </folder>
+                <folder>
+                    <description>Installation Files</description>
                     <destination>${installdir}</destination>
                     <name>installfileslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
-			<distributionDirectory>
+                        <distributionDirectory>
                             <origin>staging/linux/installer</origin>
                         </distributionDirectory>
                     </distributionFileList>
@@ -317,13 +418,49 @@
                     <name>menuandlaunchfileslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
-			<distributionDirectory>
+                        <distributionDirectory>
                             <origin>staging/linux/scripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
-		 </folder>
-
-                 <!-- WIN: Program files -->
+                </folder>
+                <!-- LIN-X64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesbinlinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux-x64/MigrationWizard/MigrationWizard.jar</origin>
+                        </distributionFile>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/MigrationWizard/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installation Files</description>
+                    <destination>${installdir}</destination>
+                    <name>installfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch And Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuandlaunchfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- WIN: Program files -->
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}</destination>
@@ -359,53 +496,83 @@
                             <origin>staging/windows/scripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
-                 </folder>
- 
-                
+                </folder>
+                <!-- MAC: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesbinosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/osx/MigrationWizard/MigrationWizard.jar</origin>
+                        </distributionFile>
+                        <distributionDirectory>
+                            <origin>staging/osx/MigrationWizard/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installation Files</description>
+                    <destination>${installdir}</destination>
+                    <name>installfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch And Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuandlaunchfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
             </folderList>
-
             <!-- WIN: Start Menu -->
             <startMenuShortcutList>
                 <!-- Launch MigrationWizard -->
                 <startMenuShortcut>
-                     <comment>MigrationWizard</comment>
-                     <name>MigrationWizard</name>
-                     <runInTerminal>0</runInTerminal>
-                     <windowsExec>wscript</windowsExec>
-                     <windowsExecArgs>//NoLogo "${installdir}\scripts\launchMigrationWizard.vbs&quot; &quot;&quot; &quot;${java_executable}&quot; &quot;-jar MigrationWizard.jar&quot; &quot;${installdir}&quot;"</windowsExecArgs>
-                     <windowsIcon>${installdir}\scripts\images\application.ico</windowsIcon>
+                    <comment>MigrationWizard</comment>
+                    <name>MigrationWizard</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>wscript</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\launchMigrationWizard.vbs" "" "${java_executable}" "-jar MigrationWizard.jar" "${installdir}""</windowsExecArgs>
+                    <windowsIcon>${installdir}\scripts\images\application.ico</windowsIcon>
                 </startMenuShortcut>
             </startMenuShortcutList>
-            
-       </component>
+        </component>
     </componentList>
-
     <finalPageActionList>
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>wscript</program>
-            <programArguments>//nologo &quot;${installdir}\\scripts\\launchMigrationWizard.vbs&quot; &quot;&quot; &quot;${java_executable}&quot; &quot;-jar MigrationWizard.jar&quot; &quot;${installdir}&quot;</programArguments>
+            <programArguments>//nologo "${installdir}\\scripts\\launchMigrationWizard.vbs" "" "${java_executable}" "-jar MigrationWizard.jar" "${installdir}"</programArguments>
             <progressText>${msg(launch.migrationwizard.windows)}</progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
-	        <compareText>
-	            <logic>contains</logic>
-		    <text>${platform_name}</text>
-		    <value>windows</value>
-		</compareText>		  
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
             </ruleList>
         </runProgram>
     </finalPageActionList>
-   
     <parameterList>
-
         <!-- Install Directory -->
         <directoryParameter>
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
             <explanation>Installer.Parameter.installdir.explanation</explanation>
-            <value>${platform_install_prefix}/PostgreSQL/EnterpriseDB-${product_shortname}</value>
-            <default>${platform_install_prefix}/PostgreSQL/EnterpriseDB-${product_shortname}</default>
+            <value/>
+            <default>${default_installdir}</default>
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>prefix</cliOptionName>
@@ -414,35 +581,33 @@
             <width>40</width>
             <ruleList>
                 <compareText>
-                   <text>${MigrationWizardVersion}</text>
-                   <logic>equals</logic>
-                   <value></value>
+                    <text>${MigrationWizardVersion}</text>
+                    <logic>equals</logic>
+                    <value/>
                 </compareText>
             </ruleList>
-
             <!-- Validating whether installdir contains whitespaces (Linux) -->
             <validationActionList>
                 <actionGroup>
-                  <actionList>
-                     <throwError>
-                           <text>${msg(migrationwizard.installdir.error)}</text>
-                     </throwError>
-                  </actionList>
-                  <ruleList>
-                    <regExMatch>
-                        <text>${installdir}</text>
-                        <logic>matches</logic>
-                        <pattern>^.*\s.*$</pattern>
-                    </regExMatch>
-                    <compareText>
-                        <text>${platform_name}</text>
-                        <logic>contains</logic>
-                        <value>linux</value>
-                    </compareText>
-                  </ruleList>
-               </actionGroup>
+                    <actionList>
+                        <throwError>
+                            <text>${msg(migrationwizard.installdir.error)}</text>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <regExMatch>
+                            <text>${installdir}</text>
+                            <logic>matches</logic>
+                            <pattern>^.*\s.*$</pattern>
+                        </regExMatch>
+                        <compareText>
+                            <text>${platform_name}</text>
+                            <logic>does_not_equal</logic>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
             </validationActionList>
-        </directoryParameter>        
+        </directoryParameter>
     </parameterList>
 </project>
-

@@ -9,7 +9,7 @@ _prep_phpBB_windows() {
 
     # Enter the source directory and cleanup if required
     cd $WD/phpBB/source
-	
+    
     if [ -e phpBB.windows ];
     then
       echo "Removing existing phpBB.windows source directory"
@@ -18,9 +18,9 @@ _prep_phpBB_windows() {
 
     echo "Creating staging directory ($WD/phpBB/source/phpBB.windows)"
     mkdir -p $WD/phpBB/source/phpBB.windows || _die "Couldn't create the phpBB.windows directory"
-	
+    
     # Grab a copy of the source tree
-    cp -R phpBB-$PG_PHPBB_TARBALL/* phpBB.windows || _die "Failed to copy the source code (source/phpBB-$PG_PHPBB_TARBALL)"
+    cp -R phpBB-$PG_VERSION_PHPBB/* phpBB.windows || _die "Failed to copy the source code (source/phpBB-$PG_VERSION_PHPBB)"
     chmod -R ugo+w phpBB.windows || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -42,7 +42,7 @@ _prep_phpBB_windows() {
 
 _build_phpBB_windows() {
 
-	cd $WD    
+    cd $WD    
 }
 
 ################################################################################
@@ -76,7 +76,7 @@ _postprocess_phpBB_windows() {
     # Copy in the menu pick images
     mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/logo.ico staging/windows/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"
-	
+    
     #configuring the install/install_install.php file  
     _replace "\$url = (\!in_array(false, \$passed)) ? \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=database\&amp;language=\$language\" : \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=requirements\&amp;language=\$language" "\$url = (\!in_array(false, \$passed)) ? \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=database\&amp;language=\$language\&amp;dbname=phpbb\&amp;dbuser=phpbbuser\&amp;dbpasswd=phpbbuser\&amp;dbms=postgres\&amp;dbhost=localhost\&amp;dbport=5432\" : \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=requirements\&amp;language=\$language\&amp;dbname=phpbb\&amp;dbuser=phpbbuser\&amp;dbpasswd=phpbbuser\&amp;dbms=postgres\&amp;dbhost=localhost\&amp;dbport=5432" "$WD/phpBB/staging/windows/phpBB/install/install_install.php" 
 

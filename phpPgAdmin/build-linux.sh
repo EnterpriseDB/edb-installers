@@ -9,7 +9,7 @@ _prep_phpPgAdmin_linux() {
 
     # Enter the source directory and cleanup if required
     cd $WD/phpPgAdmin/source
-	
+    
     if [ -e phpPgAdmin.linux ];
     then
       echo "Removing existing phpPgAdmin.linux source directory"
@@ -18,9 +18,9 @@ _prep_phpPgAdmin_linux() {
 
     echo "Creating staging directory ($WD/phpPgAdmin/source/phpPgAdmin.linux)"
     mkdir -p $WD/phpPgAdmin/source/phpPgAdmin.linux || _die "Couldn't create the phpPgAdmin.linux directory"
-	
+    
     # Grab a copy of the source tree
-    cp -R phpPgAdmin-$PG_PHPPGADMIN_TARBALL/* phpPgAdmin.linux || _die "Failed to copy the source code (source/phpPgAdmin-$PG_PHPPGADMIN_TARBALL)"
+    cp -R phpPgAdmin-$PG_VERSION_PHPPGADMIN/* phpPgAdmin.linux || _die "Failed to copy the source code (source/phpPgAdmin-$PG_VERSION_PHPPGADMIN)"
     chmod -R ugo+w phpPgAdmin.linux || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -42,7 +42,7 @@ _prep_phpPgAdmin_linux() {
 
 _build_phpPgAdmin_linux() {
 
-	cd $WD
+    cd $WD
 }
 
 
@@ -80,7 +80,7 @@ _postprocess_phpPgAdmin_linux() {
     cp resources/enterprisedb-postgres.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
     cp resources/install.ico staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
-	
+    
     mkdir -p staging/linux/installer/xdg || _die "Failed to create a directory for the menu pick xdg files"
     # Copy in installation xdg Files
     cp -R $WD/scripts/xdg/xdg* staging/linux/installer/xdg/ || _die "Failed to copy the xdg files (resources/)"    

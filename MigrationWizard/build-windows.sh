@@ -21,7 +21,7 @@ _prep_MigrationWizard_windows() {
     chmod ugo+w migrationwizard.windows || _die "Couldn't set the permissions on the source directory"
 
     # Grab a copy of the migrationwizard source tree
-    cp -R wizard/* migrationwizard.windows || _die "Failed to copy the source code (source/migrationwizard-$PG_MIGRATIONWIZARD_TARBALL)"
+    cp -R wizard/* migrationwizard.windows || _die "Failed to copy the source code (source/migrationwizard-$PG_VERSION_MIGRATIONWIZARD)"
     chmod -R ugo+w migrationwizard.windows || _die "Couldn't set the permissions on the source directory"
 
 
@@ -45,34 +45,35 @@ _prep_MigrationWizard_windows() {
 
 _build_MigrationWizard_windows() {
 
-    # build migrationwizard	
+    # build migrationwizard    
     PG_STAGING=$PG_PATH_WINDOWS
 
     # Zip up the source directory and copy it to the build host, then unzip
     cd $WD/MigrationWizard/source/
     echo "Copying source tree to Windows build VM"
     zip -r migrationwizard.zip migrationwizard.windows || _die "Failed to pack the source tree (migrationwizard.windows)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST \"migrationwizard.zip\" del /q migrationwizard.zip" || _die "Failed to remove the source tree on the windows build host (migrationwizard.zip)"
     scp migrationwizard.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the source tree to the windows build host (migrationwizard.zip)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /s /q migrationwizard.windows" 
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST \"migrationwizard.windows\" rd /s /q migrationwizard.windows" || _die "Failed to remove the source tree on the windows build host (migrationwizard.windows)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip migrationwizard.zip" || _die "Failed to unpack the source tree on the windows build host (migrationwizard.zip)"
-	
+    
 
     echo "Building migrationwizard"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/migrationwizard.windows; $PG_ANT_HOME_WINDOWS/bin/ant" || _die "Couldn't build the migrationwizard"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\migrationwizard.windows; cmd /c \"$PG_ANT_WINDOWS\\\\bin\\\\ant\"" || _die "Couldn't build the migrationwizard"
   
     echo "Building migrationwizard distribution"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/migrationwizard.windows; $PG_ANT_HOME_WINDOWS/bin/ant dist" || _die "Couldn't build the migrationwizard distribution jars"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\migrationwizard.windows; cmd /c \"$PG_ANT_WINDOWS\\\\bin\\\\ant dist\"" || _die "Couldn't build the migrationwizard distribution jars"
 
     # Zip up the installed code, copy it back here, and unpack.
     echo "Copying built tree to host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/migrationwizard.windows; cmd /c zip -r dist.zip dist" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/migrationwizard.windows)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\migrationwizard.windows; cmd /c zip -r dist.zip dist" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/migrationwizard.windows)"
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/migrationwizard.windows/dist.zip $WD/MigrationWizard/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/migrationwizard.windows/dist.zip)"
     unzip $WD/MigrationWizard/staging/windows/dist.zip -d $WD/MigrationWizard/staging/windows/ || _die "Failed to unpack the built source tree ($WD/staging/windows/dist.zip)"
     rm $WD/MigrationWizard/staging/windows/dist.zip
     mv $WD/MigrationWizard/staging/windows/dist $WD/MigrationWizard/staging/windows/MigrationWizard || _die "Failed to rename the dist folder"
 
 }
-	
+    
 
 
 ################################################################################

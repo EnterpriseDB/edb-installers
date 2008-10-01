@@ -1,0 +1,546 @@
+<project>
+    <!-- Package details -->
+    <shortName>tuningwizard</shortName>
+    <fullName>TuningWizard</fullName>
+    <version>PG_VERSION_TUNINGWIZARD</version>
+    <!-- These options are used on Windows -->
+    <startMenuGroupName>PostgreSQL</startMenuGroupName>
+    <!-- Product Specific Options -->
+    <productDisplayName>EnterpriseDB ${product_fullname} ${product_version}</productDisplayName>
+    <productComments>EnterpriseDB ${product_fullname} ${product_version}</productComments>
+    <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
+    <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
+    <!-- The options are used for RPM registration -->
+    <description>${product_fullname} ${product_version} by EnterpriseDB</description>
+    <summary>${msg(install.summary)}</summary>
+    <vendor>EnterpriseDB</vendor>
+    <release>1</release>
+    <!-- Installer Size -->
+    <width>550</width>
+    <height>400</height>
+    <!-- Misc package options -->
+    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUMTUNINGWIZARD-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <enableRollback>0</enableRollback>
+    <requireInstallationByRootUser>1</requireInstallationByRootUser>
+    <saveRelativePaths>1</saveRelativePaths>
+    <outputDirectory>../output</outputDirectory>
+    <uninstallerDirectory>${installdir}</uninstallerDirectory>
+    <uninstallerName>uninstall-${product_shortname}</uninstallerName>
+    <unattendedModeUI>minimal</unattendedModeUI>
+    <compressionAlgorithm>lzma</compressionAlgorithm>
+    <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+    <!-- Images -->
+    <leftImage>resources/leftImage.png</leftImage>
+    <logoImage>resources/edblogo.png</logoImage>
+    <splashImage>resources/splash.png</splashImage>
+    <wmImage>resources/edblogo.png</wmImage>
+    <!-- i18n files for the UI -->
+    <customLanguageFileList>
+        <language>
+            <code>en</code>
+            <encoding>iso8859-1</encoding>
+            <file>i18n/en.lng</file>
+        </language>
+    </customLanguageFileList>
+    <!-- Initialisation actions -->
+    <initializationActionList>
+        <!-- Set the TuningWizard version(if exists) -->
+        <setInstallerVariable name="TuningWizardVersion" value="">
+            <persist>0</persist>
+        </setInstallerVariable>
+    </initializationActionList>
+    <!-- Preinstallation actions -->
+    <preInstallationActionList>
+        <!-- Creates the ini file if not exits -->
+        <touchFile path="/etc/postgres-reg.ini">
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </touchFile>
+        <!-- MAC : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/Library/PostgreSQL/EnterpriseDB-TuningWizard</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- LIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/opt/PostgreSQL/EnterpriseDB-TuningWizard</value>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- WIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${env(ProgramFiles)}\PostgreSQL\EnterpriseDB-TuningWizard</value>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- LIN & MAC: Check Previous Installation of TuningWizard -->
+        <actionGroup>
+            <actionList>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>TuningWizard</section>
+                    <key>Version</key>
+                    <variable>TuningWizardVersion</variable>
+                </iniFileGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- LIN & MAC: Set the Installation Directory in case of re-install/upgrade-->
+        <actionGroup>
+            <actionList>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>TuningWizard</section>
+                    <key>InstallationDirectory</key>
+                    <variable>installdir</variable>
+                </iniFileGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${TuningWizardVersion}</text>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- WIN: Check Previous Installation of TuningWizard -->
+        <actionGroup>
+            <actionList>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\TuningWizard</key>
+                    <name>Version</name>
+                    <variable>TuningWizardVersion</variable>
+                </registryGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- WIN: Set the Installation Directory in case of re-install/upgrade-->
+        <actionGroup>
+            <actionList>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\TuningWizard</key>
+                    <name>Location</name>
+                    <variable>installdir</variable>
+                </registryGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${TuningWizardVersion}</text>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- Setting the installation type as upgrade if previous installation found -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installationType" value="upgrade"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${TuningWizardVersion}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </preInstallationActionList>
+    <!-- Post installation actions -->
+    <postInstallationActionList>
+        <!-- Write the TuningWizard Version to INI File -->
+        <actionGroup>
+            <actionList>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>TuningWizard</section>
+                    <key>Description</key>
+                    <value>${msg(install.summary)}</value>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>TuningWizard</section>
+                    <key>InstallationDirectory</key>
+                    <value>${installdir}</value>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>TuningWizard</section>
+                    <key>Version</key>
+                    <value>${product_version}</value>
+                </iniFileSet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- LIN & MAC: Setting the installation directory in the launch script -->
+        <actionGroup>
+            <actionList>
+                <substitute>
+                    <files>${installdir}/scripts/launchTuningWizard.sh</files>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>@@INSTALLDIR@@</pattern>
+                            <value>${installdir}</value>
+                        </substitution>
+                    </substitutionList>
+                </substitute>
+                <substitute>
+                    <files>${installdir}/scripts/ctlTuningWizard.sh</files>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>@@INSTALLDIR@@</pattern>
+                            <value>${installdir}</value>
+                        </substitution>
+                    </substitutionList>
+                </substitute>
+                <substitute>
+                    <files>${installdir}/scripts/runTuningWizard.sh</files>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>@@INSTALLDIR@@</pattern>
+                            <value>${installdir}</value>
+                        </substitution>
+                    </substitutionList>
+                </substitute>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>contains</logic>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- LIN & MAC: Create Menu Shortcuts -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${installdir}/installer/TuningWizard/createshortcuts.sh</program>
+                    <programArguments>"${installdir}"</programArguments>
+                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                    <abortOnError>1</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </postInstallationActionList>
+    <!-- preUninstallation actions -->
+    <preUninstallationActionList>
+        <!-- Unsetting the TuningWizard values in the ini file -->
+        <actionGroup>
+            <actionList>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>TuningWizard</section>
+                    <key>Description</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>TuningWizard</section>
+                    <key>InstallationDirectory</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>TuningWizard</section>
+                    <key>Version</key>
+                    <value/>
+                </iniFileSet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- LIN : Remove Menu shortcuts -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${installdir}/installer/TuningWizard/removeshortcuts.sh</program>
+                    <programArguments>"${installdir}"</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- MAC : Remove Menu shortcuts -->
+        <actionGroup>
+            <actionList>
+                <deleteFile>
+                    <path>/Applications/PostgreSQL/Tuning Wizard.app</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </preUninstallationActionList>
+    <!-- Components -->
+    <componentList>
+        <component>
+            <name>TuningWizard</name>
+            <description>TuningWizard</description>
+            <canBeEdited>0</canBeEdited>
+            <selected>1</selected>
+            <show>1</show>
+            <folderList>
+                <!-- LIN: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesbinlinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux/TuningWizard/TuningWizard</origin>
+                        </distributionFile>
+                        <distributionDirectory>
+                            <origin>staging/linux/TuningWizard/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installation Files</description>
+                    <destination>${installdir}</destination>
+                    <name>installfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch And Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuandlaunchfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- LIN-X64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesbinlinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux-x64/TuningWizard/TuningWizard</origin>
+                        </distributionFile>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/TuningWizard/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installation Files</description>
+                    <destination>${installdir}</destination>
+                    <name>installfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch And Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuandlaunchfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- MAC: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesbinosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/TuningWizard/TuningWizard.app</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installation Files</description>
+                    <destination>${installdir}</destination>
+                    <name>installfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch And Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuandlaunchfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- WIN: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesbinwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/TuningWizard/TuningWizard.exe</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>resources/TuningWizard.ico</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+            </folderList>
+            <!-- WIN: Start Menu -->
+            <startMenuShortcutList>
+                <startMenuShortcut>
+                    <!-- Launch TuningWizard -->
+                    <comment>TuningWizard</comment>
+                    <name>TuningWizard</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>"${installdir}\TuningWizard.exe"</windowsExec>
+                    <windowsExecArgs/>
+                    <windowsIcon>${installdir}/TuningWizard.ico</windowsIcon>
+                </startMenuShortcut>
+            </startMenuShortcutList>
+        </component>
+    </componentList>
+    <parameterList>
+        <!-- Install Directory -->
+        <directoryParameter>
+            <name>installdir</name>
+            <description>Installer.Parameter.installdir.description</description>
+            <explanation>Installer.Parameter.installdir.explanation</explanation>
+            <value/>
+            <default>${default_installdir}</default>
+            <allowEmptyValue>0</allowEmptyValue>
+            <ask>yes</ask>
+            <cliOptionName>prefix</cliOptionName>
+            <mustBeWritable>yes</mustBeWritable>
+            <mustExist>0</mustExist>
+            <width>40</width>
+            <ruleList>
+                <compareText>
+                    <text>${TuningWizardVersion}</text>
+                    <logic>equals</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+            <!-- Validating whether installdir contains whitespaces (Linux | Mac) -->
+            <validationActionList>
+                <actionGroup>
+                    <actionList>
+                        <throwError>
+                            <text>${msg(tuningwizard.installdir.error)}</text>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <regExMatch>
+                            <text>${installdir}</text>
+                            <logic>matches</logic>
+                            <pattern>^.*\s.*$</pattern>
+                        </regExMatch>
+                        <compareText>
+                            <text>${platform_name}</text>
+                            <logic>does_not_equal</logic>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+            </validationActionList>
+        </directoryParameter>
+    </parameterList>
+</project>

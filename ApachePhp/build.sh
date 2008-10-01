@@ -6,7 +6,7 @@
 if [ $PG_ARCH_OSX = 1 ]; 
 then
     #source $WD/ApachePhp/build-osx.sh
-    echo "Not yet implemented"
+    echo "Not yet implemented!"
 fi
 
 # Linux
@@ -18,8 +18,7 @@ fi
 # Linux x64
 if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
-    #source $WD/ApachePhp/build-linux-x64.sh
-    echo "Not yet implemented"
+    source $WD/ApachePhp/build-linux-x64.sh
 fi
 
 # Windows
@@ -47,34 +46,38 @@ _prep_ApachePhp() {
 
 
     # Apache
-    if [ -e httpd-$PG_APACHE_TARBALL ];
+    if [ -e httpd-$PG_VERSION_APACHE ];
     then
-      echo "Removing existing httpd-$PG_APACHE_TARBALL source directory"
-      rm -rf httpd-$PG_APACHE_TARBALL  || _die "Couldn't remove the existing httpd-$PG_APACHE_TARBALL source directory (source/httpd-$PG_APACHE_TARBALL)"
+      echo "Removing existing httpd-$PG_VERSION_APACHE source directory"
+      rm -rf httpd-$PG_VERSION_APACHE  || _die "Couldn't remove the existing httpd-$PG_VERSION_APACHE source directory (source/httpd-$PG_VERSION_APACHE)"
     fi
 
+    if [ $PG_ARCH_WINDOWS = 1 ];
+    then
+        #if [ -e httpd.windows ]; then
+        #    rm -rf apache.windows || _die "Couldn't remove the existing httpd.windows source directory (source/httpd.windows)"
+        #fi
+        #extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-win32-src.zip || exit 1
+        #extract_file ../../tarballs/zlib-$PG_TARBALL_ZLIB.tar.bz2 ||exit 1
+        #extract_file ../../tarballs/openssl-$PG_TARBALL_OPENSSL.tar.gz !! exit 1
+        #mv httpd-$PG_VERSION_APACHE apache.windows || _die "Couldn't move httpd-$PG_VERSION_APACHE as httpd.windows"
+        echo "Not yet implemented"
+    fi
     echo "Unpacking apache source..."
     if [[ $PG_ARCH_LINUX = 1 || $PG_ARCH_LINUX_X64 = 1 || $PG_ARCH_OSX = 1 ]];
     then
-        tar -jxvf ../../tarballs/httpd-$PG_APACHE_TARBALL.tar.bz2
-    fi
-    if [ $PG_ARCH_WINDOWS = 1 ];
-    then
-        #unzip -o ../../tarballs/httpd-$PG_APACHE_TARBALL-win32-src.zip
-        #tar -jxvf ../../tarballs/zlib-$PG_ZLIB_TARBALL.tar.bz2
-        #tar -zxvf ../../tarballs/openssl-$PG_OPENSSL_TARBALL.tar.gz
-        echo "Not yet implemented"
+        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE.tar.bz2 || exit 1
     fi
 
     # php
-    if [ -e php-$PG_PHP_TARBALL ];
+    if [ -e php-$PG_VERSION_PHP ];
     then
-      echo "Removing existing php-$PG_PHP_TARBALL source directory"
-      rm -rf php-$PG_PHP_TARBALL  || _die "Couldn't remove the existing php-$PG_PHP_TARBALL source directory (source/php-$PG_PHP_TARBALL)"
+      echo "Removing existing php-$PG_VERSION_PHP source directory"
+      rm -rf php-$PG_VERSION_PHP  || _die "Couldn't remove the existing php-$PG_VERSION_PHP source directory (source/php-$PG_VERSION_PHP)"
     fi
 
     echo "Unpacking php source..."
-    tar -jxvf ../../tarballs/php-$PG_PHP_TARBALL.tar.bz2
+    extract_file ../../tarballs/php-$PG_VERSION_PHP.tar.bz2 || exit 1
  
     # Per-platform prep
     cd $WD
@@ -83,7 +86,7 @@ _prep_ApachePhp() {
     if [ $PG_ARCH_OSX = 1 ]; 
     then
         #_prep_ApachePhp_osx || exit 1
-        echo "Not yet implemented"
+        echo "Not yet implemented!"
     fi
 
     # Linux
@@ -95,8 +98,7 @@ _prep_ApachePhp() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_prep_ApachePhp_linux_x64 || exit 1
-        echo "Not yet implemented"
+        _prep_ApachePhp_linux_x64 || exit 1
     fi
 
     # Windows
@@ -105,7 +107,7 @@ _prep_ApachePhp() {
         #_prep_ApachePhp_windows || exit 1
         echo "Not yet implemented"
     fi
-	
+    
 }
 
 ################################################################################
@@ -118,7 +120,7 @@ _build_ApachePhp() {
     if [ $PG_ARCH_OSX = 1 ]; 
     then
         #_build_ApachePhp_osx || exit 1
-        echo "Not yet implemented"
+        echo "Not yet implemented!"
     fi
 
     # Linux 
@@ -130,8 +132,7 @@ _build_ApachePhp() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_build_ApachePhp_linux_x64 || exit 1
-        echo "Not yet implemented"
+        _build_ApachePhp_linux_x64 || exit 1
     fi
 
     # Windows
@@ -160,13 +161,14 @@ _postprocess_ApachePhp() {
     fi
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (ApachePhp/installer.xml.in)"
 
-    _replace PG_APACHEPHP_VERSION $PG_APACHE_VERSION-$PG_PHP_VERSION installer.xml || _die "Failed to set the major version in the installer project file (ApachePhp/installer.xml)"
+    _replace PG_VERSION_APACHEPHP $PG_VERSION_APACHE-$PG_VERSION_PHP installer.xml || _die "Failed to set the major version in the installer project file (ApachePhp/installer.xml)"
+    _replace PG_PACKAGE_APACHEPHP $PG_PACKAGE_APACHEPHP installer.xml || _die "Failed to set the major version in the installer project file (ApachePhp/installer.xml)"
  
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
         #_postprocess_ApachePhp_osx || exit 1
-        echo "Not yet implemented"
+        echo "Not yet implemented!"
     fi
 
     # Linux
@@ -178,10 +180,9 @@ _postprocess_ApachePhp() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_postprocess_ApachePhp_linux_x64 || exit 1
-        echo "Not yet implemented"
+        _postprocess_ApachePhp_linux_x64 || exit 1
     fi
-	
+    
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then

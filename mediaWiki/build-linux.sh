@@ -9,7 +9,7 @@ _prep_mediaWiki_linux() {
 
     # Enter the source directory and cleanup if required
     cd $WD/mediaWiki/source
-	
+    
     if [ -e mediaWiki.linux ];
     then
       echo "Removing existing mediaWiki.linux source directory"
@@ -18,9 +18,9 @@ _prep_mediaWiki_linux() {
 
     echo "Creating staging directory ($WD/mediaWiki/source/mediaWiki.linux)"
     mkdir -p $WD/mediaWiki/source/mediaWiki.linux || _die "Couldn't create the mediaWiki.linux directory"
-	
+    
     # Grab a copy of the source tree
-    cp -R mediawiki-$PG_MEDIAWIKI_TARBALL/* mediaWiki.linux || _die "Failed to copy the source code (source/mediaWiki-$PG_MEDIAWIKI_TARBALL)"
+    cp -R mediawiki-$PG_VERSION_MEDIAWIKI/* mediaWiki.linux || _die "Failed to copy the source code (source/mediaWiki-$PG_VERSION_MEDIAWIKI)"
     chmod -R ugo+w mediaWiki.linux || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -42,7 +42,7 @@ _prep_mediaWiki_linux() {
 
 _build_mediaWiki_linux() {
 
-	cd $WD
+    cd $WD
 }
 
 
@@ -60,7 +60,7 @@ _postprocess_mediaWiki_linux() {
     # Setup the installer scripts.
     mkdir -p staging/linux/installer/mediaWiki || _die "Failed to create a directory for the install scripts"
     cp scripts/linux/check-connection.sh staging/linux/installer/mediaWiki/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux/check-connection.sh)"
-    chmod ugo+x staging/linux/installer/mediaWiki/check-connection.sh	
+    chmod ugo+x staging/linux/installer/mediaWiki/check-connection.sh    
    
     cp scripts/linux/check-db.sh staging/linux/installer/mediaWiki/check-db.sh || _die "Failed to copy the check-db.sh script (scripts/linux/check-db.sh)"
     chmod ugo+x staging/linux/installer/mediaWiki/check-db.sh

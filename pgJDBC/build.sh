@@ -17,8 +17,7 @@ fi
 # Linux x64
 if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
-    #source $WD/pgJDBC/build-linux-x64.sh
-    echo "Not yet implemented" 
+    source $WD/pgJDBC/build-linux-x64.sh
 fi
 
 # Windows
@@ -44,14 +43,14 @@ _prep_pgJDBC() {
     cd $WD/pgJDBC/source
 
     # pgJDBC
-    if [ -e pgJDBC-$PG_PGJDBC_TARBALL ];
+    if [ -e pgJDBC-$PG_VERSION_PGJDBC ];
     then
-      echo "Removing existing pgJDBC-$PG_PGJDBC_TARBALL source directory"
-      rm -rf pgJDBC-$PG_PGJDBC_TARBALL  || _die "Couldn't remove the existing pgJDBC-$PG_PGJDBC_TARBALL source directory (source/pgJDBC-$PG_PGJDBC_TARBALL)"
+      echo "Removing existing pgJDBC-$PG_VERSION_PGJDBC source directory"
+      rm -rf pgJDBC-$PG_VERSION_PGJDBC  || _die "Couldn't remove the existing pgJDBC-$PG_VERSION_PGJDBC source directory (source/pgJDBC-$PG_VERSION_PGJDBC)"
     fi
 
     echo "Unpacking pgJDBC source..."
-    tar -jxvf ../../tarballs/pgJDBC-$PG_PGJDBC_TARBALL.tar.bz2
+    extract_file ../../tarballs/pgJDBC-$PG_VERSION_PGJDBC.tar.bz2 || exit 1
 
     # Per-platform prep
     cd $WD
@@ -71,8 +70,7 @@ _prep_pgJDBC() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-       # _prep_pgJDBC_linux_x64 || exit 1
-       echo "Not yet implemented" 
+        _prep_pgJDBC_linux_x64 || exit 1
     fi
 
     # Windows
@@ -81,7 +79,7 @@ _prep_pgJDBC() {
         #_prep_pgJDBC_windows || exit 1
        echo "Not yet implemented" 
     fi
-	
+    
 }
 
 ################################################################################
@@ -105,8 +103,7 @@ _build_pgJDBC() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-       #_build_pgJDBC_linux_x64 || exit 1
-       echo "Not yet implemented" 
+       _build_pgJDBC_linux_x64 || exit 1
     fi
 
     # Windows
@@ -134,8 +131,9 @@ _postprocess_pgJDBC() {
         rm installer.xml
     fi
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (pgJDBC/installer.xml.in)"
-	
-    _replace PG_PGJDBC_VERSION $PG_PGJDBC_VERSION installer.xml || _die "Failed to set the version in the installer project file (pgJDBC/installer.xml)"
+    
+    _replace PG_VERSION_PGJDBC $PG_VERSION_PGJDBC installer.xml || _die "Failed to set the version in the installer project file (pgJDBC/installer.xml)"
+    _replace PG_PACKAGE_PGJDBC $PG_PCKAGE_PGJDBC installer.xml || _die "Failed to set the Build Number in the installer project file (pgJDBC/installer.xml)"
    
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
@@ -152,10 +150,9 @@ _postprocess_pgJDBC() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-       # _postprocess_pgJDBC_linux_x64 || exit 1
-       echo "Not yet implemented" 
+        _postprocess_pgJDBC_linux_x64 || exit 1
     fi
-	
+    
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then

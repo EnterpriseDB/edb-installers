@@ -9,7 +9,7 @@ _prep_phpWiki_windows() {
 
     # Enter the source directory and cleanup if required
     cd $WD/phpWiki/source
-	
+    
     if [ -e phpWiki.windows ];
     then
       echo "Removing existing phpWiki.windows source directory"
@@ -18,9 +18,9 @@ _prep_phpWiki_windows() {
 
     echo "Creating staging directory ($WD/phpWiki/source/phpWiki.windows)"
     mkdir -p $WD/phpWiki/source/phpWiki.windows || _die "Couldn't create the phpWiki.windows directory"
-	
+    
     # Grab a copy of the source tree
-    cp -R phpwiki-$PG_PHPWIKI_TARBALL/* phpWiki.windows || _die "Failed to copy the source code (source/phpwiki-$PG_PHPWIKI_TARBALL)"
+    cp -R phpwiki-$PG_VERSION_PHPWIKI/* phpWiki.windows || _die "Failed to copy the source code (source/phpwiki-$PG_VERSION_PHPWIKI)"
     chmod -R ugo+w phpWiki.windows || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -41,8 +41,8 @@ _prep_phpWiki_windows() {
 ################################################################################
 
 _build_phpWiki_windows() {
-	
-	    cd $WD    
+    
+        cd $WD    
 
 }
 
@@ -87,7 +87,7 @@ _postprocess_phpWiki_windows() {
     
     cp resources/logo.ico staging/windows/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"
 
-	
+    
      #Configure the conf.php file
     _replace "\$WhichDatabase = 'default';" "\$WhichDatabase = 'pgsql';" "$WD/phpWiki/staging/windows/phpWiki/lib/config.php"
     _replace "localhost" "@@PGHOST@@" "$WD/phpWiki/staging/windows/phpWiki/lib/config.php"

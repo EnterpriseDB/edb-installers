@@ -2,7 +2,7 @@
 ##################################################################################
 # launchbrowser.sh
 #
-# Author: Sibte Abbas <sibte@enterprisedb.com>	
+# Author: Sibte Abbas <sibte@enterprisedb.com>    
 #
 # Launch a url (supplied as parameter) in a web browser in a platform 
 # independent manner. Since as till now(07-30-07) there are no standards 
@@ -23,8 +23,8 @@
 #
 usage()
 {
-	printf "usage:\n"
-	printf "$0 <url>\n"
+    printf "usage:\n"
+    printf "$0 <url>\n"
 }
 
 ###########################################################################
@@ -33,21 +33,21 @@ usage()
 
 if [ $# -ne 1 ]
 then
-	usage
-	exit 1
+    usage
+    exit 1
 fi
 
 URL="$1"
 if [ -n "$BROWSER" ]
 then
-	# the browser environment variable is defined, now check if it contains
-	# path to a valid web browser
-	BPATH=`which $BROWSER`
-	if [ $? -eq 0 ]	# the browser is valid, so invoke the command
-	then
-		$BPATH "$URL"
-		exit 0
-	fi
+    # the browser environment variable is defined, now check if it contains
+    # path to a valid web browser
+    BPATH=`which $BROWSER`
+    if [ $? -eq 0 ]    # the browser is valid, so invoke the command
+    then
+        $BPATH "$URL"
+        exit 0
+    fi
 fi
 
 # The $BROWSER environment variable is either not defined or does not point to a valid
@@ -59,20 +59,20 @@ BRW_LIST="firefox mozilla opera konqueror netscape epiphany safari"
 
 for i in $BRW_LIST
 do
-	BPATH=`which $i`
-	if [ $? -eq 0 ]
-	then
-		$BPATH "$URL"
-		BRW_FOUND=1
-		break
-	fi
+    BPATH=`which $i`
+    if [ $? -eq 0 ]
+    then
+        $BPATH "$URL"
+        BRW_FOUND=1
+        break
+    fi
 done
 
 # exit with no success exit code (i.e 1) if browser was not found
 if [ $BRW_FOUND -eq 0 ]
 then
-	exit 1
+    exit 1
 else
-	exit 0
+    exit 0
 fi
 

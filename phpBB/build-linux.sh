@@ -9,7 +9,7 @@ _prep_phpBB_linux() {
 
     # Enter the source directory and cleanup if required
     cd $WD/phpBB/source
-	
+    
     if [ -e phpBB.linux ];
     then
       echo "Removing existing phpBB.linux source directory"
@@ -18,9 +18,9 @@ _prep_phpBB_linux() {
 
     echo "Creating staging directory ($WD/phpBB/source/phpBB.linux)"
     mkdir -p $WD/phpBB/source/phpBB.linux || _die "Couldn't create the phpBB.linux directory"
-	
+    
     # Grab a copy of the source tree
-    cp -R phpBB-$PG_PHPBB_TARBALL/* phpBB.linux || _die "Failed to copy the source code (source/phpBB-$PG_PHPBB_TARBALL)"
+    cp -R phpBB-$PG_VERSION_PHPBB/* phpBB.linux || _die "Failed to copy the source code (source/phpBB-$PG_VERSION_PHPBB)"
     chmod -R ugo+w phpBB.linux || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -41,7 +41,7 @@ _prep_phpBB_linux() {
 ################################################################################
 
 _build_phpBB_linux() {
-	
+    
     cd $WD
 }
 
@@ -93,7 +93,7 @@ _postprocess_phpBB_linux() {
     cp resources/enterprisedb-postgres.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
      # copy logo Image
     cp resources/logo.ico staging/linux/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"
-	
+    
     mkdir -p staging/linux/installer/xdg || _die "Failed to create a directory for the menu pick xdg files"
 
     # Copy in installation xdg Files

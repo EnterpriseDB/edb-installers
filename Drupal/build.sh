@@ -18,8 +18,7 @@ fi
 # Linux x64
 if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
-    #source $WD/Drupal/build-linux-x64.sh
-    echo "Not yet implemented"
+    source $WD/Drupal/build-linux-x64.sh
 fi
 
 # Windows
@@ -44,14 +43,14 @@ _prep_Drupal() {
     cd $WD/Drupal/source
 
     # Drupal
-    if [ -e drupal-$PG_DRUPAL_TARBALL ];
+    if [ -e drupal-$PG_VERSION_DRUPAL ];
     then
-      echo "Removing existing drupal-$PG_DRUPAL_TARBALL source directory"
-      rm -rf drupal-$PG_DRUPAL_TARBALL  || _die "Couldn't remove the existing drupal-$PG_DRUPAL_TARBALL source directory (source/drupal-$PG_DRUPAL_TARBALL)"
+      echo "Removing existing drupal-$PG_VERSION_DRUPAL source directory"
+      rm -rf drupal-$PG_VERSION_DRUPAL  || _die "Couldn't remove the existing drupal-$PG_VERSION_DRUPAL source directory (source/drupal-$PG_VERSION_DRUPAL)"
     fi
 
     echo "Unpacking MediaWiki source..."
-    tar -jxvf ../../tarballs/drupal-$PG_DRUPAL_TARBALL.tar.bz2
+    extract_file  ../../tarballs/drupal-$PG_VERSION_DRUPAL.tar.bz2 || exit 1
 
     # Per-platform prep
     cd $WD
@@ -72,8 +71,7 @@ _prep_Drupal() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_prep_Drupal_linux_x64 || exit 1
-        echo "Not yet implemented"
+        _prep_Drupal_linux_x64 || exit 1
     fi
 
     # Windows
@@ -81,7 +79,7 @@ _prep_Drupal() {
     then
         _prep_Drupal_windows || exit 1
     fi
-	
+    
 }
 
 ################################################################################
@@ -106,8 +104,7 @@ _build_Drupal() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_build_Drupal_linux_x64 || exit 1
-        echo "Not yet implemented"
+        _build_Drupal_linux_x64 || exit 1
     fi
 
     # Windows
@@ -134,7 +131,8 @@ _postprocess_Drupal() {
     fi
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (Drupal/installer.xml.in)"
 
-    _replace PG_DRUPAL_VERSION $PG_DRUPAL_VERSION installer.xml || _die "Failed to set the version in the installer project file (Drupal/installer.xml)"
+    _replace PG_VERSION_DRUPAL $PG_VERSION_DRUPAL installer.xml || _die "Failed to set the version in the installer project file (Drupal/installer.xml)"
+    _replace PG_PACKAGE_DRUPAL $PG_PACKAGE_DRUPAL installer.xml || _die "Failed to set the Build Number in the installer project file (Drupal/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
@@ -152,10 +150,9 @@ _postprocess_Drupal() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_postprocess_Drupal_linux_x64 || exit 1
-        echo "Not yet implemented"
+        _postprocess_Drupal_linux_x64 || exit 1
     fi
-	
+    
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then

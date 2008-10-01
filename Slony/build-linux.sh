@@ -21,7 +21,7 @@ _prep_Slony_linux() {
     chmod ugo+w slony.linux || _die "Couldn't set the permissions on the source directory"
 
     # Grab a copy of the slony source tree
-    cp -R slony$PG_SLONY_TARBALL/* slony.linux || _die "Failed to copy the source code (source/slony$PG_SLONY_TARBALL)"
+    cp -R slony1-$PG_VERSION_SLONY/* slony.linux || _die "Failed to copy the source code (source/slony1-$PG_VERSION_SLONY)"
     chmod -R ugo+w slony.linux || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one

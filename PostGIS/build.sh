@@ -5,8 +5,7 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-    #source $WD/PostGIS/build-osx.sh
-    echo "Not yet implemented" 
+    source $WD/PostGIS/build-osx.sh
 fi
 
 # Linux
@@ -18,15 +17,13 @@ fi
 # Linux x64
 if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
-    #source $WD/PostGIS/build-linux-x64.sh
-    echo "Not yet implemented" 
+    source $WD/PostGIS/build-linux-x64.sh
 fi
 
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
     #source $WD/PostGIS/build-windows.sh
-    echo "Not yet implemented" 
 fi
 
     
@@ -48,38 +45,38 @@ _prep_PostGIS() {
 
 
     # postgis
-    if [ -e postgis-$PG_POSTGIS_TARBALL ];
+    if [ -e postgis-$PG_VERSION_POSTGIS ];
     then
-      echo "Removing existing postgis-$PG_POSTGIS_TARBALL source directory"
-      rm -rf postgis-$PG_POSTGIS_TARBALL  || _die "Couldn't remove the existing postgis-$PG_POSTGIS_TARBALL source directory (source/postgis-$PG_POSTGIS_TARBALL)"
+      echo "Removing existing postgis-$PG_VERSION_POSTGIS source directory"
+      rm -rf postgis-$PG_VERSION_POSTGIS  || _die "Couldn't remove the existing postgis-$PG_VERSION_POSTGIS source directory (source/postgis-$PG_VERSION_POSTGIS)"
     fi
 
     echo "Unpacking postgis source..."
-    tar -zxvf ../../tarballs/postgis-$PG_POSTGIS_TARBALL.tar.gz
+    extract_file  ../../tarballs/postgis-$PG_VERSION_POSTGIS.tar.gz || exit 1
 
     # geos
-    if [ -e geos-$PG_GEOS_TARBALL ];
+    if [ -e geos-$PG_TARBALL_GEOS ];
     then
-      echo "Removing existing geos-$PG_GEOS_TARBALL source directory"
-      rm -rf geos-$PG_GEOS_TARBALL  || _die "Couldn't remove the existing geos-$PG_GEOS_TARBALL source directory (source/geos-$PG_GEOS_TARBALL)"
+      echo "Removing existing geos-$PG_TARBALL_GEOS source directory"
+      rm -rf geos-$PG_TARBALL_GEOS || _die "Couldn't remove the existing geos-$PG_TARBALL_GEOS source directory (source/geos-$PG_TARBALL_GEOS)"
     fi
 
     echo "Unpacking geos source..."
-    tar -jxvf ../../tarballs/geos-$PG_GEOS_TARBALL.tar.bz2
+    extract_file  ../../tarballs/geos-$PG_TARBALL_GEOS.tar.bz2 || exit 1 
 
     # proj
-    if [ -e proj-$PG_PROJ_TARBALL ];
+    if [ -e proj-$PG_TARBALL_PROJ ];
     then
-      echo "Removing existing proj-$PG_PROJ_TARBALL source directory"
-      rm -rf proj-$PG_PROJ_TARBALL  || _die "Couldn't remove the existing proj-$PG_PROJ_TARBALL source directory (source/proj-$PG_PROJ_TARBALL)"
+      echo "Removing existing proj-$PG_TARBALL_PROJ source directory"
+      rm -rf proj-$PG_TARBALL_PROJ  || _die "Couldn't remove the existing proj-$PG_TARBALL_PROJ source directory (source/proj-$PG_TARBALL_PROJ)"
     fi
 
     echo "Unpacking proj source..."
-    tar -zxvf ../../tarballs/proj-$PG_PROJ_TARBALL.tar.gz
+    extract_file  ../../tarballs/proj-$PG_TARBALL_PROJ.tar.gz || exit 1 
 
-    echo "Copying the postgresql jar file..."
-    tar -jxvf ../../tarballs/pgJDBC-$PG_PGJDBC_TARBALL.tar.bz2
-    mv pgJDBC-$PG_PGJDBC_TARBALL/*.jar .
+    echo "Extracting the postgresql jar file..."
+    extract_file  ../../tarballs/pgJDBC-$PG_VERSION_PGJDBC.tar.bz2 || exit 1 
+    mv pgJDBC-$PG_VERSION_PGJDBC/*.jar .
 
     # Per-platform prep
     cd $WD
@@ -87,8 +84,7 @@ _prep_PostGIS() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_prep_PostGIS_osx || exit 1
-        echo "Not yet implemented" 
+        _prep_PostGIS_osx || exit 1
     fi
 
     # Linux
@@ -100,8 +96,7 @@ _prep_PostGIS() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_prep_PostGIS_linux_x64 || exit 1
-        echo "Not yet implemented" 
+        _prep_PostGIS_linux_x64 || exit 1
     fi
 
     # Windows
@@ -110,7 +105,7 @@ _prep_PostGIS() {
         #_prep_PostGIS_windows || exit 1
         echo "Not yet implemented" 
     fi
-	
+    
 }
 
 ################################################################################
@@ -122,8 +117,7 @@ _build_PostGIS() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_build_PostGIS_osx || exit 1
-        echo "Not yet implemented" 
+        _build_PostGIS_osx || exit 1
     fi
 
     # Linux 
@@ -135,8 +129,7 @@ _build_PostGIS() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_build_PostGIS_linux_x64 || exit 1
-        echo "Not yet implemented" 
+        _build_PostGIS_linux_x64 || exit 1
     fi
 
     # Windows
@@ -165,15 +158,21 @@ _postprocess_PostGIS() {
     fi
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (PostGIS/installer.xml.in)"
 
-    _replace PG_POSTGIS_VERSION $PG_POSTGIS_VERSION installer.xml || _die "Failed to set the major version in the installer project file (PostGIS/installer.xml)"
+    PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
 
-    _replace PG_GEOS_VERSION $PG_GEOS_VERSION installer.xml || _die "Failed to set the major version of geos in the installer project file (PostGIS/installer.xml)"
+
+    _replace PG_VERSION_POSTGIS "PG$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS" installer.xml || _die "Failed to set the major version in the installer project file (PostGIS/installer.xml)"
+
+    _replace PG_TARBALL_GEOS $PG_TARBALL_GEOS installer.xml || _die "Failed to set the major version of geos in the installer project file (PostGIS/installer.xml)"
+    
+    _replace PG_PACKAGE_POSTGIS $PG_PACKAGE_POSTGIS installer.xml || _die "Failed to set Build Number in the installer project file (PostGIS/installer.xml)"
+
+    _replace PG_CURRENT_VERSION $PG_CURRENT_VERSION installer.xml || _die "Failed to set the Current Number in the installer project file (PostGIS/installer.xml)"
  
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_postprocess_PostGIS_osx || exit 1
-        echo "Not yet implemented"
+        _postprocess_PostGIS_osx || exit 1
     fi
 
     # Linux
@@ -185,10 +184,9 @@ _postprocess_PostGIS() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_postprocess_PostGIS_linux_x64 || exit 1
-        echo "Not yet implemented"
+        _postprocess_PostGIS_linux_x64 || exit 1
     fi
-	
+    
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
@@ -196,3 +194,4 @@ _postprocess_PostGIS() {
         echo "Not yet implemented"
     fi
 }
+

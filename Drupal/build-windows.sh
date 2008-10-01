@@ -9,7 +9,7 @@ _prep_Drupal_windows() {
 
     # Enter the source directory and cleanup if required
     cd $WD/Drupal/source
-	
+    
     if [ -e Drupal.windows ];
     then
       echo "Removing existing Drupal.windows source directory"
@@ -18,9 +18,9 @@ _prep_Drupal_windows() {
 
     echo "Creating staging directory ($WD/Drupal/source/Drupal.windows)"
     mkdir -p $WD/Drupal/source/Drupal.windows || _die "Couldn't create the Drupal.windows directory"
-	
+    
     # Grab a copy of the source tree
-    cp -R drupal-$PG_DRUPAL_TARBALL/* Drupal.windows || _die "Failed to copy the source code (source/drupal-$PG_DRUPAL_TARBALL)"
+    cp -R drupal-$PG_VERSION_DRUPAL/* Drupal.windows || _die "Failed to copy the source code (source/drupal-$PG_VERSION_DRUPAL)"
     chmod -R ugo+w Drupal.windows || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -42,7 +42,7 @@ _prep_Drupal_windows() {
 
 _build_Drupal_windows() {
 
-	cd $WD
+    cd $WD
 }
 
 
@@ -75,7 +75,7 @@ _postprocess_Drupal_windows() {
     # Copy in the menu pick images
     mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/logo.ico staging/windows/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"
-	
+    
     #Configure the install.php file
     _replace " '#default_value' => \$db_path," " '#default_value' => drupal," "$WD/Drupal/staging/windows/Drupal/install.php"
     _replace " '#default_value' => \$db_user," " '#default_value' => drupaluser," "$WD/Drupal/staging/windows/Drupal/install.php"

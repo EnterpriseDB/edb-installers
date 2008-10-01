@@ -28,7 +28,5 @@ Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of val
 
 pgplus.blank.error=Values must be entered for all fields.
 
-pgplus.blank.error=Values must be entered for all fields.
-
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 

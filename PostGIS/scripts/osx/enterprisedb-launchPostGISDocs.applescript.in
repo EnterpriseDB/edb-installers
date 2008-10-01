@@ -1,0 +1,1 @@
+do shell script "INSTALL_DIR/PostGIS/scripts/launchbrowser.sh file://$INSTALL_DIR/doc/contrib/html/postgis/postgis.html"

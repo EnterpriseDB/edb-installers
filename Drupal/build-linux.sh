@@ -9,7 +9,7 @@ _prep_Drupal_linux() {
 
     # Enter the source directory and cleanup if required
     cd $WD/Drupal/source
-	
+    
     if [ -e Drupal.linux ];
     then
       echo "Removing existing Drupal.linux source directory"
@@ -18,9 +18,9 @@ _prep_Drupal_linux() {
 
     echo "Creating staging directory ($WD/Drupal/source/Drupal.linux)"
     mkdir -p $WD/Drupal/source/Drupal.linux || _die "Couldn't create the Drupal.linux directory"
-	
+    
     # Grab a copy of the source tree
-    cp -R drupal-$PG_DRUPAL_TARBALL/* Drupal.linux || _die "Failed to copy the source code (source/drupal-$PG_DRUPAL_TARBALL)"
+    cp -R drupal-$PG_VERSION_DRUPAL/* Drupal.linux || _die "Failed to copy the source code (source/drupal-$PG_VERSION_DRUPAL)"
     chmod -R ugo+w Drupal.linux || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -42,7 +42,7 @@ _prep_Drupal_linux() {
 
 _build_Drupal_linux() {
 
-	cd $WD
+    cd $WD
 }
 
 
@@ -93,7 +93,7 @@ _postprocess_Drupal_linux() {
     cp resources/enterprisedb-postgres.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/enterprisedb-postgres.png)"
      # copy logo Image
     cp resources/logo.ico staging/linux/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"
-	
+    
     mkdir -p staging/linux/installer/xdg || _die "Failed to create a directory for the menu pick xdg files"
 
     # Copy in installation xdg Files

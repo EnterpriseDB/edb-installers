@@ -9,7 +9,7 @@ _prep_phpPgAdmin_windows() {
 
     # Enter the source directory and cleanup if required
     cd $WD/phpPgAdmin/source
-	
+    
     if [ -e phpPgAdmin.windows ];
     then
       echo "Removing existing phpPgAdmin.windows source directory"
@@ -18,9 +18,9 @@ _prep_phpPgAdmin_windows() {
 
     echo "Creating staging directory ($WD/phpPgAdmin/source/phpPgAdmin.windows)"
     mkdir -p $WD/phpPgAdmin/source/phpPgAdmin.windows || _die "Couldn't create the phpPgAdmin.windows directory"
-	
+    
     # Grab a copy of the source tree
-    cp -R phpPgAdmin-$PG_PHPPGADMIN_TARBALL/* phpPgAdmin.windows || _die "Failed to copy the source code (source/phpPgAdmin-$PG_PHPPGADMIN_TARBALL)"
+    cp -R phpPgAdmin-$PG_VERSION_PHPPGADMIN/* phpPgAdmin.windows || _die "Failed to copy the source code (source/phpPgAdmin-$PG_VERSION_PHPPGADMIN)"
     chmod -R ugo+w phpPgAdmin.windows || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -42,7 +42,7 @@ _prep_phpPgAdmin_windows() {
 
 _build_phpPgAdmin_windows() {
 
-	cd $WD
+    cd $WD
 }
 
 

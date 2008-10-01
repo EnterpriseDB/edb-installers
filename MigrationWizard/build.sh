@@ -5,8 +5,7 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-    #source $WD/MigrationWizard/build-osx.sh
-    echo "Not yet implemented"
+    source $WD/MigrationWizard/build-osx.sh
 fi
 
 # Linux
@@ -18,8 +17,7 @@ fi
 # Linux x64
 if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
-    #source $WD/MigrationWizard/build-linux-x64.sh
-    echo "Not yet implemented"
+    source $WD/MigrationWizard/build-linux-x64.sh
 fi
 
 # Windows
@@ -44,25 +42,24 @@ _prep_MigrationWizard() {
     # Enter the source directory and cleanup if required
     cd $WD/MigrationWizard/source
 
-
-    # migrationwizard
-    if [ -e wizard ];
+    if [ ! -e wizard ];
     then
-      echo "Removing existing wizard source directory"
-      rm -rf wizard  || _die "Couldn't remove the existing wizard source directory (source/wizard)"
+      echo "Please fetch the MigrationWizard sources from the cvs."
+      echo "Repository for the MigrationWizard is: /cvs/MIGRATIONWIZARD"
+      _die "Please correct above message"
     fi
 
-    echo "Unpacking migrationwizard source..."
-    tar -jxvf ../../tarballs/MigrationWizard-$PG_MIGRATIONWIZARD_TARBALL.tar.bz2
-
+    cd $WD/MigrationWizard/source/wizard
+    echo "Fetching MigrationWizard sources from the cvs..."
+    cvs update
+    
     # Per-platform prep
     cd $WD
     
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_prep_MigrationWizard_osx || exit 1
-        echo "Not yet implemented"
+        _prep_MigrationWizard_osx || exit 1
     fi
 
     # Linux
@@ -74,8 +71,7 @@ _prep_MigrationWizard() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_prep_MigrationWizard_linux_x64 || exit 1
-        echo "Not yet implemented"
+        _prep_MigrationWizard_linux_x64 || exit 1
     fi
 
     # Windows
@@ -83,7 +79,7 @@ _prep_MigrationWizard() {
     then
         _prep_MigrationWizard_windows || exit 1
     fi
-	
+    
 }
 
 ################################################################################
@@ -95,8 +91,7 @@ _build_MigrationWizard() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_build_MigrationWizard_osx || exit 1
-        echo "Not yet implemented"
+        _build_MigrationWizard_osx || exit 1
     fi
 
     # Linux 
@@ -108,8 +103,7 @@ _build_MigrationWizard() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_build_MigrationWizard_linux_x64 || exit 1
-        echo "Not yet implemented"
+        _build_MigrationWizard_linux_x64 || exit 1
     fi
 
     # Windows
@@ -137,13 +131,13 @@ _postprocess_MigrationWizard() {
     fi
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (MigrationWizard/installer.xml.in)"
 
-    _replace PG_MIGRATIONWIZARD_VERSION $PG_MIGRATIONWIZARD_VERSION installer.xml || _die "Failed to set the major version in the installer project file (MigrationWizard/installer.xml)"
+    _replace PG_VERSION_MIGRATIONWIZARD $PG_VERSION_MIGRATIONWIZARD installer.xml || _die "Failed to set the major version in the installer project file (MigrationWizard/installer.xml)"
+    _replace PG_PACKAGE_MIGRATIONWIZARD $PG_PACKAGE_MIGRATIONWIZARD installer.xml || _die "Failed to set the Build Number in the installer project file (MigrationWizard/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_postprocess_MigrationWizard_osx || exit 1
-        echo "Not yet implemented"
+        _postprocess_MigrationWizard_osx || exit 1
     fi
 
     # Linux
@@ -155,10 +149,9 @@ _postprocess_MigrationWizard() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_postprocess_MigrationWizard_linux_x64 || exit 1
-        echo "Not yet implemented"
+        _postprocess_MigrationWizard_linux_x64 || exit 1
     fi
-	
+    
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then

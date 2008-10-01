@@ -20,7 +20,7 @@ _prep_pgJDBC_osx() {
     mkdir -p $WD/pgJDBC/source/pgJDBC.osx || _die "Couldn't create the pgJDBC.osx directory"
 
     # Grab a copy of the source tree
-    cp -R pgJDBC-$PG_PGJDBC_TARBALL/* pgJDBC.osx || _die "Failed to copy the source code (source/pgJDBC-$PG_PGJDBC_TARBALL)"
+    cp -R pgJDBC-$PG_VERSION_PGJDBC/* pgJDBC.osx || _die "Failed to copy the source code (source/pgJDBC-$PG_VERSION_PGJDBC)"
     chmod -R ugo+w pgJDBC.osx || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -79,10 +79,10 @@ _postprocess_pgJDBC_osx() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
     # Zip up the output
-	cd $WD/output
-	zip -r pgJDBC-$PG_PGJDBC_VERSION-osx-installer.zip pgJDBC-$PG_PGJDBC_VERSION-osx-installer.app/ || _die "Failed to zip the installer bundle"
-	rm -rf pgJDBC-$PG_PGJDBC_VERSION-osx-installer.app/ || _die "Failed to remove the unpacked installer bundle"
-	
+    cd $WD/output
+    zip -r pgJDBC-$PG_PGJDBC_VERSION-osx-installer.zip pgJDBC-$PG_PGJDBC_VERSION-osx-installer.app/ || _die "Failed to zip the installer bundle"
+    rm -rf pgJDBC-$PG_PGJDBC_VERSION-osx-installer.app/ || _die "Failed to remove the unpacked installer bundle"
+    
     cd $WD
 }
 

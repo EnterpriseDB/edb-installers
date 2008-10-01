@@ -18,8 +18,7 @@ fi
 # Linux x64
 if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
-    #source $WD/phpPgAdmin/build-linux-x64.sh
-    echo "Not yet implemented"
+    source $WD/phpPgAdmin/build-linux-x64.sh
 fi
 
 # Windows
@@ -44,14 +43,14 @@ _prep_phpPgAdmin() {
     cd $WD/phpPgAdmin/source
 
     # phpPgAdmin
-    if [ -e phpwiki-$PG_PHPWIKI_TARBALL ];
+    if [ -e phpPgAdmin-$PG_VERSION_PHPPGADMIN ];
     then
-      echo "Removing existing phpPgAdmin-$PG_PHPPGADMIN_TARBALL source directory"
-      rm -rf phpPgAdmin-$PG_PHPPGADMIN_TARBALL  || _die "Couldn't remove the existing phpPgAdmin-$PG_PHPPGADMIN_TARBALL source directory (source/phpPgAdmin-$PG_PHPPGADMIN_TARBALL)"
+      echo "Removing existing phpPgAdmin-$PG_VERSION_PHPPGADMIN source directory"
+      rm -rf phpPgAdmin-$PG_VERSION_PHPPGADMIN  || _die "Couldn't remove the existing phpPgAdmin-$PG_VERSION_PHPPGADMIN source directory (source/phpPgAdmin-$PG_VERSION_PHPPGADMIN)"
     fi
 
     echo "Unpacking phpPgAdmin source..."
-    tar -jxvf ../../tarballs/phpPgAdmin-$PG_PHPPGADMIN_TARBALL.tar.bz2
+    extract_file  ../../tarballs/phpPgAdmin-$PG_VERSION_PHPPGADMIN.tar.bz2 || exit 1
 
     # Per-platform prep
     cd $WD
@@ -72,8 +71,7 @@ _prep_phpPgAdmin() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_prep_phpPgAdmin_linux_x64 || exit 1
-        echo "Not yet implemented"
+        _prep_phpPgAdmin_linux_x64 || exit 1
     fi
 
     # Windows
@@ -81,7 +79,7 @@ _prep_phpPgAdmin() {
     then
         _prep_phpPgAdmin_windows || exit 1
     fi
-	
+    
 }
 
 ################################################################################
@@ -106,8 +104,7 @@ _build_phpPgAdmin() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_build_phpPgAdmin_linux_x64 || exit 1
-        echo "Not yet implemented"
+        _build_phpPgAdmin_linux_x64 || exit 1
     fi
 
     # Windows
@@ -135,7 +132,8 @@ _postprocess_phpPgAdmin() {
     fi
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (phpPgAdmin/installer.xml.in)"
 
-    _replace PG_PHPPGADMIN_VERSION $PG_PHPPGADMIN_VERSION installer.xml || _die "Failed to set the version in the installer project file (phpPgAdmin/installer.xml)"
+    _replace PG_VERSION_PHPPGADMIN $PG_VERSION_PHPPGADMIN installer.xml || _die "Failed to set the version in the installer project file (phpPgAdmin/installer.xml)"
+    _replace PG_PACKAGE_PHPPGADMIN $PG_PACKAGE_PHPPGADMIN installer.xml || _die "Failed to set the Build Number in the installer project file (phpPgAdmin/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
@@ -153,10 +151,9 @@ _postprocess_phpPgAdmin() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_postprocess_phpPgAdmin_linux_x64 || exit 1
-        echo "Not yet implemented"
+        _postprocess_phpPgAdmin_linux_x64 || exit 1
     fi
-	
+    
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
