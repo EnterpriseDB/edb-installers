@@ -78,6 +78,10 @@ _postprocess_pgJDBC_osx() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
+    # Zip up the output
+	zip -R pgJDBC-8.3-603-osx-installer.app/ pgJDBC-8.3-603-osx-installer.zip || _die "Failed to zip the installer bundle"
+	rm -rf pgJDBC-8.3-603-osx-installer.app/ || _die "Failed to remove the unpacked installer bundle"
+	
     cd $WD
 }
 
