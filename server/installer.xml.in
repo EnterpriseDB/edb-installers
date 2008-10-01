@@ -2572,11 +2572,11 @@
             
         </labelParameter>
         
-        <!-- Superuser password. Show this if not an upgrade -->
+        <!-- Superuser password. Show this if not an upgrade, unless this is Windows -->
         <passwordParameter>
             <name>superpassword</name>
             <description>${msg(config.superpassword.description)}</description>
-            <explanation>${msg(config.superpassword.explanation)}</explanation>
+            <explanation>${_explanation}</explanation>
             <value></value>
             <default>${defaultpassword}</default>
             <allowEmptyValue>1</allowEmptyValue>
@@ -2584,6 +2584,27 @@
             <cliOptionName>superpassword</cliOptionName>
             <descriptionRetype>${msg(config.superpassword.confirm)}</descriptionRetype>
             <width>20</width>
+		
+		    <preShowPageActionList>
+			    <setInstallerVariable>
+				    <name>_explanation</name>
+					<value>${msg(config.superpassword.explanation)}</value>
+				</setInstallerVariable>
+				
+				<!-- On Windows, we need a different explanation -->
+				<setInstallerVariable>
+				    <name>_explanation</name>
+					<value>${msg(config.superpassword.explanation.windows)}</value>
+
+					<ruleList>
+						<compareText>
+							<logic>equals</logic>
+							<text>${platform_name}</text>
+							<value>windows</value>
+						</compareText>
+					</ruleList>
+				</setInstallerVariable>
+			</preShowPageActionList>
 			
             <validationActionList>
                 <throwError>
@@ -2600,7 +2621,7 @@
                 <actionGroup>
                     <actionList>
                         <runProgram>
-                            <program>${system_temp_directory}\postgresplus_installer\validateuser.exe</program>
+                            <program>${system_temp_directory}\postgresql_installer\validateuser.exe</program>
                             <!-- The dot at the beginning of the arguments is the domain -->
                             <programArguments>. "${supername}" "${superpassword}"</programArguments>
                             <abortOnError>0</abortOnError>
@@ -2618,7 +2639,7 @@
                             </ruleList>
                         </throwError>
                         <throwError>
-                            <text>${msg(config.superpassword.incorrect)}</text>
+                            <text>${msg(config.superpassword.incorrect.windows)}</text>
                             <ruleList>
                                 <compareText>
                                     <logic>equals</logic>

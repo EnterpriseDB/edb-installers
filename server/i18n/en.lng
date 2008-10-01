@@ -51,8 +51,10 @@ config.datadir.explanation=Please select a directory under which to store your d
 
 config.superpassword.description=Password
 config.superpassword.explanation=Please provide a password for the database superuser (${supername}).
+config.superpassword.explanation.windows=Please provide a password for the database superuser and service account (${supername}). If the service account already exists in Windows, you must enter the current password for the account.
 config.superpassword.confirm=Retype password
 config.superpassword.no.password=You must enter a password to continue.
+config.superpassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the ${supername} windows user account.
 
 config.port.description=Port
 config.port.explanation=Please select the port number the server should listen on.
