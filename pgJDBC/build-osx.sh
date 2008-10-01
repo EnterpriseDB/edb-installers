@@ -16,7 +16,7 @@ _prep_pgJDBC_osx() {
       rm -rf pgJDBC.osx  || _die "Couldn't remove the existing pgJDBC.osx source directory (source/pgJDBC.osx)"
     fi
    
-    echo "Creating staging directory ($WD/pgJDBC/source/pgJDBC.osx)"
+    echo "Creating source directory ($WD/pgJDBC/source/pgJDBC.osx)"
     mkdir -p $WD/pgJDBC/source/pgJDBC.osx || _die "Couldn't create the pgJDBC.osx directory"
 
     # Grab a copy of the source tree
@@ -79,8 +79,9 @@ _postprocess_pgJDBC_osx() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
     # Zip up the output
-	zip -R pgJDBC-8.3-603-osx-installer.app/ pgJDBC-8.3-603-osx-installer.zip || _die "Failed to zip the installer bundle"
-	rm -rf pgJDBC-8.3-603-osx-installer.app/ || _die "Failed to remove the unpacked installer bundle"
+	cd $WD/output
+	zip -r pgJDBC-$PG_PGJDBC_VERSION-osx-installer.zip pgJDBC-$PG_PGJDBC_VERSION-osx-installer.app/ || _die "Failed to zip the installer bundle"
+	rm -rf pgJDBC-$PG_PGJDBC_VERSION-osx-installer.app/ || _die "Failed to remove the unpacked installer bundle"
 	
     cd $WD
 }

@@ -2,7 +2,7 @@
     <!-- Package details -->
     <shortName>pgJDBC</shortName>
     <fullName>JDBC drivers for PostgreSQL</fullName>
-    <version>8.3-603</version>
+    <version>PG_PGJDBC_VERSION</version>
 
     
     <!-- Product Specific Options -->
