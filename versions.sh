@@ -11,23 +11,6 @@ PG_TARBALL_ZLIB=1.2.3
 PG_TARBALL_GEOS=3.0.0
 PG_TARBALL_PROJ=4.6.0
 
-# Packages. Set to 1 to enable a specific packages. Note that many packages will be interdependent
-#           so you must ensure that all the required dependencies are enabled.
-
-PG_PACKAGE_SERVER=1
-PG_PACKAGE_APACHEPHP=1
-PG_PACKAGE_MEDIAWIKI=1
-PG_PACKAGE_PHPWIKI=1
-PG_PACKAGE_PHPBB=1
-PG_PACKAGE_DRUPAL=1
-PG_PACKAGE_PHPPGADMIN=1
-PG_PACKAGE_PGJDBC=1
-PG_PACKAGE_PSQLODBC=1
-PG_PACKAGE_POSTGIS=1
-PG_PACKAGE_SLONY=1
-PG_PACKAGE_TUNINGWIZARD=1
-PG_PACKAGE_MIGRATIONWIZARD=1
-
 # PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
 #                     Minor version is revision.build. 
 
