@@ -262,9 +262,9 @@
         </unpackFile>
        <unpackFile>
             <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer/getlocales.vbs</destination>
+            <destination>${system_temp_directory}/postgresql_installer/getlocales.exe</destination>
             <folder>programfileswindows</folder>
-            <origin>installer/server/getlocales.vbs</origin>
+            <origin>installer/server/getlocales.exe</origin>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -633,8 +633,7 @@
                 </runProgram>
 				
                 <runProgram>
-                    <program>cscript</program>
-					<programArguments>//NoLogo "${system_temp_directory}\postgresql_installer\getlocales.vbs"</programArguments>
+                    <program>${system_temp_directory}\postgresql_installer\getlocales.exe</program>
                     <ruleList>
                         <compareText>
                             <logic>equals</logic>
@@ -708,6 +707,30 @@
             <substitution>xxATxx</substitution>
             <name>locale</name>
             <pattern>@</pattern>
+        </setInstallerVariableFromRegEx>
+        <setInstallerVariableFromRegEx>
+            <text>${locale}</text>
+            <substitution>xxSPxx</substitution>
+            <name>locale</name>
+            <pattern>\s</pattern>
+        </setInstallerVariableFromRegEx>
+        <setInstallerVariableFromRegEx>
+            <text>${locale}</text>
+            <substitution>xxOBxx</substitution>
+            <name>locale</name>
+            <pattern>\(</pattern>
+        </setInstallerVariableFromRegEx>
+        <setInstallerVariableFromRegEx>
+            <text>${locale}</text>
+            <substitution>xxCBxx</substitution>
+            <name>locale</name>
+            <pattern>\)</pattern>
+        </setInstallerVariableFromRegEx>
+        <setInstallerVariableFromRegEx>
+            <text>${locale}</text>
+            <substitution>xxCOMMAxx</substitution>
+            <name>locale</name>
+            <pattern>,</pattern>
         </setInstallerVariableFromRegEx>
              
         <!-- Set the default installation directory -->
@@ -977,6 +1000,30 @@
                     <name>reallocale</name>
                     <pattern>xxATxx</pattern>
                 </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <text>${reallocale}</text>
+                    <substitution> </substitution>
+                    <name>reallocale</name>
+                    <pattern>xxSPxx</pattern>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <text>${reallocale}</text>
+                    <substitution>(</substitution>
+                    <name>reallocale</name>
+                    <pattern>xxOBxx</pattern>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <text>${reallocale}</text>
+                    <substitution>)</substitution>
+                    <name>reallocale</name>
+                    <pattern>xxCBxx</pattern>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <text>${reallocale}</text>
+                    <substitution>,</substitution>
+                    <name>reallocale</name>
+                    <pattern>xxCOMMAxx</pattern>
+                </setInstallerVariableFromRegEx>
                 
                 <!-- Initdb -->
                 <runProgram>
@@ -996,7 +1043,7 @@
 				
                 <runProgram>
                     <program>cscript</program>
-                    <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${supername}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} ${reallocale}</programArguments>
+                    <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${supername}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} "${reallocale}"</programArguments>
                     <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>

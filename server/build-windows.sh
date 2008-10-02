@@ -70,6 +70,7 @@ _prep_server_windows() {
 	ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q pgadmin.windows"
 	ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q stackbuilder.windows"
 	ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q createuser"	
+	ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q getlocales"	
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q validateuser"
 	
 	# Cleanup local files
@@ -257,18 +258,20 @@ EOT
     # Zip up the scripts directories and copy them to the build host, then unzip
 	cd $WD/server/scripts/windows/
     echo "Copying scripts source tree to Windows build VM"
-    zip -r scripts.zip vc-build.bat createuser validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build.bat, createuser, validateuser)"
+    zip -r scripts.zip vc-build.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build.bat, createuser, getlocales, validateuser)"
 
     scp scripts.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the scripts source tree to the windows build host (scripts.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip scripts.zip" || _die "Failed to unpack the scripts source tree on the windows build host (scripts.zip)"	
 	
     # Build the code and install into a temporary directory
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/createuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcproj" || _die "Failed to build createuser on the windows build host"
+	ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/getlocales; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat getlocales.vcproj" || _die "Failed to build getlocales on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/validateuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcproj" || _die "Failed to build validateuser on the windows build host"
 	
     # Move the resulting binaries into place
 	ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\output\\\\installer\\\\server" || _die "Failed to create the server directory on the windows build host"
 	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\createuser\\\\release\\\\createuser.exe $PG_PATH_WINDOWS\\\\output\\\\installer\\\\server" || _die "Failed to copy the createuser proglet on the windows build host" 
+	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\getlocales\\\\release\\\\getlocales.exe $PG_PATH_WINDOWS\\\\output\\\\installer\\\\server" || _die "Failed to copy the getlocales proglet on the windows build host" 
 	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\validateuser\\\\release\\\\validateuser.exe $PG_PATH_WINDOWS\\\\output\\\\installer\\\\server" || _die "Failed to copy the validateuser proglet on the windows build host" 
 	
     # Zip up the source directory and copy it to the build host, then unzip
@@ -439,7 +442,6 @@ _postprocess_server_windows() {
     # Setup the installer scripts. 
     mkdir -p staging/windows/installer/server || _die "Failed to create a directory for the install scripts"
     cp scripts/windows/installruntimes.vbs staging/windows/installer/installruntimes.vbs || _die "Failed to copy the installruntimes script ($WD/scripts/windows/installruntimes.vbs)"
-    cp scripts/windows/getlocales.vbs staging/windows/installer/server/getlocales.vbs || _die "Failed to copy the getlocales script ($WD/scripts/windows/getlocales.vbs)"
 	cp scripts/windows/initcluster.vbs staging/windows/installer/server/initcluster.vbs || _die "Failed to copy the loadmodules script (scripts/windows/initcluster.vbs)"
 	cp scripts/windows/startupcfg.vbs staging/windows/installer/server/startupcfg.vbs || _die "Failed to copy the startupcfg script (scripts/windows/startupcfg.vbs)"
 	cp scripts/windows/createshortcuts.vbs staging/windows/installer/server/createshortcuts.vbs || _die "Failed to copy the createshortcuts script (scripts/windows/createshortcuts.vbs)"
