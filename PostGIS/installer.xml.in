@@ -348,11 +348,13 @@
                     <customErrorMessage>${msg(error.configure.postgis)}</customErrorMessage>
                     <program>${installdir}/PostGIS/installer/PostGIS/configurePostGIS.sh</program>
                     <programArguments>"${installdir}"</programArguments>
+                    <progressText>${msg(progress.text.configure.postgis)}</progressText>
                     <workingDirectory>${installdir}/PostGIS/installer/PostGIS</workingDirectory>
                 </runProgram>
                 <runProgram>
                     <program>${installdir}/PostGIS/installer/PostGIS/createtemplatedb.sh</program>
                     <programArguments>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</programArguments>
+                    <progressText>${msg(progress.text.creating.templatedb)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -373,11 +375,12 @@
         <!-- Create Spatial Database if user selected for it-->
         <actionGroup>
             <actionList>
-                <runProgram>
-                    <program>${installdir}/PostGIS/installer/PostGIS/createpostgisdb.sh</program>
-                    <programArguments>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "${dbname}"</programArguments>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
+               <runProgram>
+                  <program>${installdir}/PostGIS/installer/PostGIS/createpostgisdb.sh</program>
+                  <programArguments>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "${dbname}"</programArguments>
+                  <progressText>${msg(progress.text.creating.spatialdb)}</progressText>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError>
                 </runProgram>
             </actionList>
             <ruleList>

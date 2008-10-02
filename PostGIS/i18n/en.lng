@@ -23,6 +23,9 @@ postgis.installdir.error=Installation directory path should not contain white-sp
 postgis.installdir.pgerror=Installation directory path is not a valid PostgreSQL Server Installation Directory.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
+progress.text.configure.postgis=Configuring PostGIS Scripts
+progress.text.creating.templatedb=Creating Template Database
+progress.text.creating.spatialdb=Creating Spatial Database
 
 templatedb.found.info=A database called 'template_postgis' already exists on your server. If you continue with this installation, this database will be reused. \n\nDo you wish to continue?
 
