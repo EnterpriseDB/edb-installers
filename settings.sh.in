@@ -11,62 +11,6 @@ PG_ARCH_LINUX=0
 PG_ARCH_LINUX_X64=0
 PG_ARCH_WINDOWS=0
 
-# Packages. Set to 1 to enable a specific packages. Note that many packages will be interdependent
-#           so you must ensure that all the required dependencies are enabled.
-
-PG_PACKAGE_SERVER=1
-PG_PACKAGE_APACHEPHP=1
-PG_PACKAGE_MEDIAWIKI=1
-PG_PACKAGE_PHPWIKI=1
-PG_PACKAGE_PHPBB=1
-PG_PACKAGE_DRUPAL=1
-PG_PACKAGE_PHPPGADMIN=1
-PG_PACKAGE_PGJDBC=1
-PG_PACKAGE_PSQLODBC=1
-PG_PACKAGE_POSTGIS=1
-PG_PACKAGE_SLONY=1
-PG_PACKAGE_TUNINGWIZARD=1
-PG_PACKAGE_MIGRATIONWIZARD=1
-
-# PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
-#                     Minor version is revision.build. 
-
-PG_MAJOR_VERSION=8.3
-PG_MINOR_VERSION=4.2
-
-# Other package versions
-
-PG_APACHE_VERSION=2.2.9
-PG_PHP_VERSION=5.2.6
-PG_MEDIAWIKI_VERSION=1.13.0
-PG_PHPWIKI_VERSION=1.2.11
-PG_PHPBB_VERSION=3.0.2
-PG_DRUPAL_VERSION=6.4
-PG_PHPPGADMIN_VERSION=4.2.1
-PG_PGJDBC_VERSION=8.3-603
-PG_GEOS_VERSION=3.0.0
-PG_POSTGIS_VERSION=1.3.3
-PG_SLONY_VERSION=1.2.15
-PG_MIGRATIONWIZARD_VERSION=1.1
-PG_VERSION_PSQLODBC=08.03.0200
-PG_VERSION_TUNINGWIZARD=1.1
-
-# Package Build numbers
-PG_BUILDNUM_APACHEPHP=1
-PG_BUILDNUM_MEDIAWIKI=1
-PG_BUILDNUM_PHPWIKI=1
-PG_BUILDNUM_PHPBB=1
-PG_BUILDNUM_DRUPAL=1
-PG_BUILDNUM_PHPPGADMIN=1
-PG_BUILDNUM_PGJDBC=1
-PG_BUILDNUM_PSQLODBC=1
-PG_BUILDNUM_POSTGIS=1
-PG_BUILDNUM_SLONY=1
-PG_BUILDNUM_TUNINGWIZARD=1
-PG_BUILDNUM_MIGRATIONWIZARD=1
-
-
-
 # Path for the build machine (/opt/... must be at the end!)
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/apache-ant-1.7.1/bin:/opt/local/bin
 
@@ -91,11 +35,20 @@ PG_ANT_HOME_LINUX_X64=/usr/local/apache-ant-1.7.1
 
 PG_SSH_WINDOWS=buildfarm@bf-windows.edbuk
 PG_PATH_WINDOWS=C:\\\\pginstaller-repo
-PG_ANT_HOME_WINDOWS=C:/apache-ant-1.7.1
+PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 8"
+PG_FRAMEWORKDIR_WINDOWS="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework"
+PG_FRAMEWORKVERSION_WINDOWS=v2.0.50727
+PG_FRAMEWORKSDKDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 8\\\\SDK\\\\v2.0"
+PG_DEVENVDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 8\\\\Common7\\\\IDE"
+PG_PGBUILD_WINDOWS="C:\\\\pgBuild"
+PG_WXWIN_WINDOWS="$PG_PGBUILD_WINDOWS\\\\wxWidgets"
+PG_CMAKE_WINDOWS="C:\\\\Program Files\\\\CMake 2.6"
+PG_ANT_WINDOWS="$PG_PGBUILD_WINDOWS\\\\apache-ant-1.7.1"
 
 PG_PATH_OSX=`pwd`
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging/osx
 PG_ANT_HOME_OSX=/opt/apache-ant-1.7.1
+PG_DOCBOOK_OSX=$HOME/docbook-xsl-1.74.0
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the
@@ -104,11 +57,6 @@ PG_ANT_HOME_OSX=/opt/apache-ant-1.7.1
 PG_ARCH_OSX_CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -headerpad_max_install_names"
 PG_ARCH_OSX_CPPFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -headerpad_max_install_names"
 PG_ARCH_OSX_CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -headerpad_max_install_names"
-
-# Miscellaneous options
-
-# PostgreSQL jdbc jar version used by PostGIS
-PG_POSTGRESQL_JAR=8.3-603.jdbc2
 
 # The InstallBuilder main binary.
 PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder Enterprise 5.4.13/bin/Builder.app/Contents/MacOS/installbuilder.sh"

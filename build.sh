@@ -6,6 +6,9 @@
 # Common utilties
 source ./common.sh
 
+# Package Versions 
+source ./versions.sh
+
 # Get the build settings
 if [ ! -f ./settings.sh ];
 then
