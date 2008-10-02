@@ -132,7 +132,7 @@ _postprocess_Drupal() {
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (Drupal/installer.xml.in)"
 
     _replace PG_VERSION_DRUPAL $PG_VERSION_DRUPAL installer.xml || _die "Failed to set the version in the installer project file (Drupal/installer.xml)"
-    _replace PG_PACKAGE_DRUPAL $PG_PACKAGE_DRUPAL installer.xml || _die "Failed to set the Build Number in the installer project file (Drupal/installer.xml)"
+    _replace PG_BUILDNUM_DRUPAL $PG_BUILDNUM_DRUPAL installer.xml || _die "Failed to set the Build Number in the installer project file (Drupal/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

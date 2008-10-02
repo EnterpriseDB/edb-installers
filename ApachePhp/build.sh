@@ -162,7 +162,7 @@ _postprocess_ApachePhp() {
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (ApachePhp/installer.xml.in)"
 
     _replace PG_VERSION_APACHEPHP $PG_VERSION_APACHE-$PG_VERSION_PHP installer.xml || _die "Failed to set the major version in the installer project file (ApachePhp/installer.xml)"
-    _replace PG_PACKAGE_APACHEPHP $PG_PACKAGE_APACHEPHP installer.xml || _die "Failed to set the major version in the installer project file (ApachePhp/installer.xml)"
+    _replace PG_BUILDNUM_APACHEPHP $PG_BUILDNUM_APACHEPHP installer.xml || _die "Failed to set the major version in the installer project file (ApachePhp/installer.xml)"
  
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

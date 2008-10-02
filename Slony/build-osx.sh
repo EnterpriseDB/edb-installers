@@ -150,8 +150,8 @@ _postprocess_Slony_osx() {
         rm -rf slony.img
     fi
     mkdir slony.img || _die "Failed to create DMG staging directory"
-    mv slony_I_PG$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUMSLONY-osx.app slony.img || _die "Failed to copy the installer bundle into the DMG staging directory"
-    hdiutil create -quiet -srcfolder slony.img -format UDZO -volname "Slony $PG_VERSION_SLONY" -ov "slony_I_PG$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUMSLONY-osx.dmg" || _die "Failed to create the disk image (output/slony_I_PG$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUMSLONY-osx.dmg)"
+    mv slony_I_PG$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app slony.img || _die "Failed to copy the installer bundle into the DMG staging directory"
+    hdiutil create -quiet -srcfolder slony.img -format UDZO -volname "Slony $PG_VERSION_SLONY" -ov "slony_I_PG$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.dmg" || _die "Failed to create the disk image (output/slony_I_PG$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.dmg)"
     rm -rf slony.img
  
     

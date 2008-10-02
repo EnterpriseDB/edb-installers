@@ -133,7 +133,7 @@ _postprocess_pgJDBC() {
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (pgJDBC/installer.xml.in)"
     
     _replace PG_VERSION_PGJDBC $PG_VERSION_PGJDBC installer.xml || _die "Failed to set the version in the installer project file (pgJDBC/installer.xml)"
-    _replace PG_PACKAGE_PGJDBC $PG_PCKAGE_PGJDBC installer.xml || _die "Failed to set the Build Number in the installer project file (pgJDBC/installer.xml)"
+    _replace PG_BUILDNUM_PGJDBC $PG_BUILDNUM_PGJDBC installer.xml || _die "Failed to set the Build Number in the installer project file (pgJDBC/installer.xml)"
    
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

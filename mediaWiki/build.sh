@@ -133,7 +133,7 @@ _postprocess_mediaWiki() {
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (mediaWiki/installer.xml.in)"
 
     _replace PG_VERSION_MEDIAWIKI $PG_VERSION_MEDIAWIKI installer.xml || _die "Failed to set the version in the installer project file (mediaWiki/installer.xml)"
-    _replace PG_PACKAGE_MEDIAWIKI $PG_PACKAGE_MEDIAWIKI installer.xml || _die "Failed to set the Build Number in the installer project file (mediaWiki/installer.xml)"
+    _replace PG_BUILDNUM_MEDIAWIKI $PG_BUILDNUM_MEDIAWIKI installer.xml || _die "Failed to set the Build Number in the installer project file (mediaWiki/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

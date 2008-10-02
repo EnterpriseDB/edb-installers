@@ -99,8 +99,8 @@ _postprocess_TuningWizard_osx() {
         rm -rf tuningwizard.img
     fi
     mkdir tuningwizard.img || _die "Failed to create DMG staging directory"
-    mv tuningwizard-$PG_VERSION_TUNINGWIZARD-$PG_BUILDNUMTUNINGWIZARD-osx.app tuningwizard.img || _die "Failed to copy the installer bundle into the DMG staging directory"
-    hdiutil create -quiet -srcfolder tuningwizard.img -format UDZO -volname "TuningWizard $PG_VERSION_TUNINGWIZARD-$PG_BUILDNUMTUNINGWIZARD" -ov "tuningwizard-$PG_VERSION_TUNINGWIZARD-$PG_BUILDNUMTUNINGWIZARD-osx.dmg" || _die "Failed to create the disk image (output/tuningwizard-$PG_VERSION_TUNINGWIZARD-$PG_BUILDNUMTUNINGWIZARD-osx.dmg)"
+    mv tuningwizard-$PG_VERSION_TUNINGWIZARD-$PG_BUILDNUM_TUNINGWIZARD-osx.app tuningwizard.img || _die "Failed to copy the installer bundle into the DMG staging directory"
+    hdiutil create -quiet -srcfolder tuningwizard.img -format UDZO -volname "TuningWizard $PG_VERSION_TUNINGWIZARD-$PG_BUILDNUM_TUNINGWIZARD" -ov "tuningwizard-$PG_VERSION_TUNINGWIZARD-$PG_BUILDNUM_TUNINGWIZARD-osx.dmg" || _die "Failed to create the disk image (output/tuningwizard-$PG_VERSION_TUNINGWIZARD-$PG_BUILDNUM_TUNINGWIZARD-osx.dmg)"
     rm -rf tuningwizard.img
        
     cd $WD

@@ -96,8 +96,8 @@ _postprocess_MigrationWizard_osx() {
         rm -rf migrationwizard.img
     fi
     mkdir migrationwizard.img || _die "Failed to create DMG staging directory"
-    mv migrationwizard-$PG_VERSION_MIGRATIONWIZARD-$PG_BUILDNUMMIGRATIONWIZARD-osx.app migrationwizard.img || _die "Failed to copy the installer bundle into the DMG staging directory"
-    hdiutil create -quiet -srcfolder migrationwizard.img -format UDZO -volname "MigrationWizard $PG_VERSION_MIGRATIONWIZARD-$PG_BUILDNUMMIGRATIONWIZARD" -ov "migrationwizard-$PG_VERSION_MIGRATIONWIZARD-$PG_BUILDNUMMIGRATIONWIZARD-osx.dmg" || _die "Failed to create the disk image (output/migrationwizard-$PG_VERSION_MIGRATIONWIZARD-$PG_BUILDNUMMIGRATIONWIZARD-osx.dmg)"
+    mv migrationwizard-$PG_VERSION_MIGRATIONWIZARD-$PG_BUILDNUM_MIGRATIONWIZARD-osx.app migrationwizard.img || _die "Failed to copy the installer bundle into the DMG staging directory"
+    hdiutil create -quiet -srcfolder migrationwizard.img -format UDZO -volname "MigrationWizard $PG_VERSION_MIGRATIONWIZARD-$PG_BUILDNUM_MIGRATIONWIZARD" -ov "migrationwizard-$PG_VERSION_MIGRATIONWIZARD-$PG_BUILDNUM_MIGRATIONWIZARD-osx.dmg" || _die "Failed to create the disk image (output/migrationwizard-$PG_VERSION_MIGRATIONWIZARD-$PG_BUILDNUM_MIGRATIONWIZARD-osx.dmg)"
     rm -rf migrationwizard.img
 
     

@@ -242,8 +242,8 @@ _postprocess_PostGIS_osx() {
         rm -rf postgis.img
     fi
     mkdir postgis.img || _die "Failed to create DMG staging directory"
-    mv postgis_PG$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUMPOSTGIS-osx.app postgis.img || _die "Failed to copy the installer bundle into the DMG staging directory"
-    hdiutil create -quiet -srcfolder postgis.img -format UDZO -volname "postgis_PG$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUMPOSTGIS" -ov "postgis_PG$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUMPOSTGIS-osx.dmg" || _die "Failed to create the disk image (output/postgis-$PG_VERSION_POSTGIS-$PG_BUILDNUMPOSTGIS-osx.dmg)"
+    mv postgis_PG$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app postgis.img || _die "Failed to copy the installer bundle into the DMG staging directory"
+    hdiutil create -quiet -srcfolder postgis.img -format UDZO -volname "postgis_PG$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS" -ov "postgis_PG$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.dmg" || _die "Failed to create the disk image (output/postgis-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.dmg)"
     rm -rf postgis.img
     
     cd $WD

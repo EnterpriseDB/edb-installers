@@ -165,7 +165,7 @@ _postprocess_PostGIS() {
 
     _replace PG_TARBALL_GEOS $PG_TARBALL_GEOS installer.xml || _die "Failed to set the major version of geos in the installer project file (PostGIS/installer.xml)"
     
-    _replace PG_PACKAGE_POSTGIS $PG_PACKAGE_POSTGIS installer.xml || _die "Failed to set Build Number in the installer project file (PostGIS/installer.xml)"
+    _replace PG_BUILDNUM_POSTGIS $PG_BUILDNUM_POSTGIS installer.xml || _die "Failed to set Build Number in the installer project file (PostGIS/installer.xml)"
 
     _replace PG_CURRENT_VERSION $PG_CURRENT_VERSION installer.xml || _die "Failed to set the Current Number in the installer project file (PostGIS/installer.xml)"
  

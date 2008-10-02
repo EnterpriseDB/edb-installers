@@ -132,7 +132,7 @@ _postprocess_MigrationWizard() {
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (MigrationWizard/installer.xml.in)"
 
     _replace PG_VERSION_MIGRATIONWIZARD $PG_VERSION_MIGRATIONWIZARD installer.xml || _die "Failed to set the major version in the installer project file (MigrationWizard/installer.xml)"
-    _replace PG_PACKAGE_MIGRATIONWIZARD $PG_PACKAGE_MIGRATIONWIZARD installer.xml || _die "Failed to set the Build Number in the installer project file (MigrationWizard/installer.xml)"
+    _replace PG_BUILDNUM_MIGRATIONWIZARD $PG_BUILDNUM_MIGRATIONWIZARD installer.xml || _die "Failed to set the Build Number in the installer project file (MigrationWizard/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

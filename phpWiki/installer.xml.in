@@ -19,7 +19,7 @@
     <width>550</width>
     <height>400</height>
     <!-- Misc options -->
-    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUMPHPWIKI-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUM_PHPWIKI-${platform_name}.${platform_exec_suffix}</installerFilename>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <enableRollback>0</enableRollback>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>

@@ -15,7 +15,7 @@
     <width>550</width>
     <height>400</height>
     <!-- Misc options -->
-    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUMPGJDBC-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUM_PGJDBC-${platform_name}.${platform_exec_suffix}</installerFilename>
     <wrapLicenseFileText>0</wrapLicenseFileText>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <unattendedModeUI>minimal</unattendedModeUI>

@@ -133,7 +133,7 @@ _postprocess_phpBB() {
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (phpBB/installer.xml.in)"
 
     _replace PG_VERSION_PHPBB $PG_VERSION_PHPBB installer.xml || _die "Failed to set the version in the installer project file (phpBB/installer.xml)"
-    _replace PG_PACKAGE_PHPBB $PG_PACKAGE_PHPBB installer.xml || _die "Failed to set the Build Numer in the installer project file (phpBB/installer.xml)"
+    _replace PG_BUILDNUM_PHPBB $PG_BUILDNUM_PHPBB installer.xml || _die "Failed to set the Build Numer in the installer project file (phpBB/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

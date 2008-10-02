@@ -12,7 +12,7 @@
     <width>550</width>
     <height>400</height>
     <!-- Misc options -->
-    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUMPSQLODBC-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUM_PSQLODBC-${platform_name}.${platform_exec_suffix}</installerFilename>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <unattendedModeUI>minimal</unattendedModeUI>
     <description>ODBC Drivers for PostgreSQL </description>

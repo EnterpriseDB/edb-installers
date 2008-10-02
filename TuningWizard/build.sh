@@ -134,7 +134,7 @@ _postprocess_TuningWizard() {
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (TuningWizard/installer.xml.in)"
 
     _replace PG_VERSION_TUNINGWIZARD $PG_VERSION_TUNINGWIZARD installer.xml || _die "Failed to set the major version in the installer project file (TuningWizard/installer.xml)"
-    _replace PG_PACKAGE_TUNINGWIZARD $PG_PACKAGE_TUNINGWIZARD installer.xml || _die "Failed to set the major version in the installer project file (TuningWizard/installer.xml)"
+    _replace PG_BUILDNUM_TUNINGWIZARD $PG_BUILDNUM_TUNINGWIZARD installer.xml || _die "Failed to set the major version in the installer project file (TuningWizard/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

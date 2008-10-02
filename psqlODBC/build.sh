@@ -148,7 +148,7 @@ _postprocess_psqlODBC() {
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (psqlODBC/installer.xml.in)"
     
     _replace PG_VERSION_PSQLODBC $PG_VERSION_PSQLODBC installer.xml || _die "Failed to set the version in the installer project file (psqlODBC/installer.xml)"
-    _replace PG_PACKAGE_PSQLODBC $PG_PACKAGE_PSQLODBC installer.xml || _die "Failed to set the Build Number in the installer project file (psqlODBC/installer.xml)"
+    _replace PG_BUILDNUM_PSQLODBC $PG_BUILDNUM_PSQLODBC installer.xml || _die "Failed to set the Build Number in the installer project file (psqlODBC/installer.xml)"
    
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

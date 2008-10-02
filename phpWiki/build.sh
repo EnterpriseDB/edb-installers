@@ -133,7 +133,7 @@ _postprocess_phpWiki() {
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (phpWiki/installer.xml.in)"
 
     _replace PG_VERSION_PHPWIKI $PG_VERSION_PHPWIKI installer.xml || _die "Failed to set the version in the installer project file (phpWiki/installer.xml)"
-    _replace PG_PACKAGE_PHPWIKI $PG_PACKAGE_PHPWIKI installer.xml || _die "Failed to set the Build Number in the installer project file (phpWiki/installer.xml)"
+    _replace PG_BUILDNUM_PHPWIKI $PG_BUILDNUM_PHPWIKI installer.xml || _die "Failed to set the Build Number in the installer project file (phpWiki/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

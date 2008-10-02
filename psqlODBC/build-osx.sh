@@ -121,8 +121,8 @@ _postprocess_psqlODBC_osx() {
         rm -rf psqlodbc.img
     fi
     mkdir psqlodbc.img || _die "Failed to create DMG staging directory"
-    mv psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUMPSQLODBC-osx.app psqlodbc.img || _die "Failed to copy the installer bundle into the DMG staging directory"
-    hdiutil create -quiet -srcfolder psqlodbc.img -format UDZO -volname "psqlODBC $PG_VERSION_PSQLODBC-$PG_BUILDNUMPSQLODBC" -ov "psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUMPSQLODBC-osx.dmg" || _die "Failed to create the disk image (output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUMPSQLODBC-osx.dmg)"
+    mv psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app psqlodbc.img || _die "Failed to copy the installer bundle into the DMG staging directory"
+    hdiutil create -quiet -srcfolder psqlodbc.img -format UDZO -volname "psqlODBC $PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC" -ov "psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.dmg" || _die "Failed to create the disk image (output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.dmg)"
     rm -rf psqlodbc.img
   
     cd $WD
