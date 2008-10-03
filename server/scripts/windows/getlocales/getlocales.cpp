@@ -92,9 +92,6 @@ BOOL CALLBACK process_installed_locales(LPTSTR lpLocaleString)
 			case '.':
 				strcat_s(output, sizeof(output), "xxDOTxx");
 				break;
-			case '.':
-				strcat_s(output, sizeof(output), "xxDOTxx");
-				break;
 			case ' ':
 				strcat_s(output, sizeof(output), "xxSPxx");
 				break;
