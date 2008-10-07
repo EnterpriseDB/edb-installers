@@ -7,8 +7,9 @@
 #include <stdlib.h>
 
 /* List of all locales supported by the system */
-static 
-char **locales_list = NULL;
+static char **locale_list = NULL;
+size_t num_locales = 0;
+size_t locale_len = 1024 * sizeof(char);
 
 /*
  * translates received lpLocaleString to a proper locale name and appends it
@@ -22,7 +23,7 @@ BOOL CALLBACK process_installed_locales(LPTSTR lpLocaleString)
 	int len_country;
 	char *language;
 	char *country;
-	char output[512] = "";
+	char tmp[512] = "";
 
 	locale_id = strtoul(lpLocaleString, NULL, 16);
 
@@ -49,73 +50,90 @@ BOOL CALLBACK process_installed_locales(LPTSTR lpLocaleString)
 		switch (language[x])
 		{
 			case '@':
-				strcat_s(output, sizeof(output), "xxATxx");
+				strcat_s(tmp, sizeof(tmp), "xxATxx");
 				break;
 			case '-':
-				strcat_s(output, sizeof(output), "xxDASHxx");
+				strcat_s(tmp, sizeof(tmp), "xxDASHxx");
 				break;
 			case '_':
-				strcat_s(output, sizeof(output), "xxUSxx");
+				strcat_s(tmp, sizeof(tmp), "xxUSxx");
 				break;
 			case '.':
-				strcat_s(output, sizeof(output), "xxDOTxx");
+				strcat_s(tmp, sizeof(tmp), "xxDOTxx");
 				break;
 			case ' ':
-				strcat_s(output, sizeof(output), "xxSPxx");
+				strcat_s(tmp, sizeof(tmp), "xxSPxx");
 				break;
 			case '(':
-				strcat_s(output, sizeof(output), "xxOBxx");
+				strcat_s(tmp, sizeof(tmp), "xxOBxx");
 				break;
 			case ')':
-				strcat_s(output, sizeof(output), "xxCBxx");
+				strcat_s(tmp, sizeof(tmp), "xxCBxx");
 				break;
 			default:
-				strncat_s(output, sizeof(output), language + x, 1);
+				strncat_s(tmp, sizeof(tmp), language + x, 1);
 		}
 	}
 
-	strcat_s(output, sizeof(output), "xxCOMMAxxxxSPxx");
+	strcat_s(tmp, sizeof(tmp), "xxCOMMAxxxxSPxx");
 
 	for (unsigned int x=0; x < strlen(country); x++)
 	{
 		switch (country[x])
 		{
 			case '@':
-				strcat_s(output, sizeof(output), "xxATxx");
+				strcat_s(tmp, sizeof(tmp), "xxATxx");
 				break;
 			case '-':
-				strcat_s(output, sizeof(output), "xxDASHxx");
+				strcat_s(tmp, sizeof(tmp), "xxDASHxx");
 				break;
 			case '_':
-				strcat_s(output, sizeof(output), "xxUSxx");
+				strcat_s(tmp, sizeof(tmp), "xxUSxx");
 				break;
 			case '.':
-				strcat_s(output, sizeof(output), "xxDOTxx");
+				strcat_s(tmp, sizeof(tmp), "xxDOTxx");
 				break;
 			case ' ':
-				strcat_s(output, sizeof(output), "xxSPxx");
+				strcat_s(tmp, sizeof(tmp), "xxSPxx");
 				break;
 			case '(':
-				strcat_s(output, sizeof(output), "xxOBxx");
+				strcat_s(tmp, sizeof(tmp), "xxOBxx");
 				break;
 			case ')':
-				strcat_s(output, sizeof(output), "xxCBxx");
+				strcat_s(tmp, sizeof(tmp), "xxCBxx");
 				break;
 			default:
-				strncat_s(output, sizeof(output), country + x, 1);
+				strncat_s(tmp, sizeof(tmp), country + x, 1);
 		}
 	}
 	
 	// Skip locales with ' in the name - we can't use these anyway.
-	if (!strstr(output, "'"))
-	    sprintf_s(output, sizeof(output), "%s=%s, %s", output, language, country);
+	if (!strstr(tmp, "'"))
+	{
+		locale_list[num_locales] = (char *)malloc(locale_len);
+		ZeroMemory(locale_list[num_locales], locale_len);
+	    sprintf_s(locale_list[num_locales], locale_len, "%s=%s, %s", tmp, language, country);
+	}
 
-	printf("%s\n", output);
+	// Add another element to the locale list
+	num_locales++;
+	locale_list = (char **)realloc(locale_list, (num_locales + 1) * sizeof(*locale_list));
+	if (!locale_list)
+		return FALSE;
 
 	free(language);
 	free(country);
     
 	return TRUE;
+}
+
+// String comparison function for qsort
+int cstring_cmp(const void *a, const void *b)
+{
+    const char **ia = (const char **)a;
+    const char **ib = (const char **)b;
+
+    return strcmp(*ia, *ib);
 }
 
 int main(int argc, char *argv[])
@@ -127,10 +145,31 @@ int main(int argc, char *argv[])
 		return 127;
 	}
 	
+	// Setup the array
+	locale_list = (char **)malloc((num_locales + 1) * sizeof(*locale_list));
+	if (!locale_list)
+	{
+        fprintf(stderr, "Failed to allocate memory for the locale list\n");
+		return 3;
+	}
+
 	if (!EnumSystemLocales(&process_installed_locales, LCID_INSTALLED))
             return 2;
 
-	fprintf(stdout, "%s ran to completion\n", argv[0]);
+	// If we see a NULL locale_list here, it's because the realloc failed.
+	if (!locale_list)
+	{
+        fprintf(stderr, "Failed to allocate memory for the locale list\n");
+		return 3;
+	}
+
+	// Sort the array
+    qsort(locale_list, num_locales, sizeof(char *), cstring_cmp);
+
+	// Print the output array
+    for (unsigned int x=0; x < num_locales; x++)
+		fprintf(stdout, "%s\n", locale_list[x]);
+
 	return 0;
 }
 
