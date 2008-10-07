@@ -16,7 +16,7 @@ _prep_psqlODBC_osx() {
       rm -rf psqlODBC.osx  || _die "Couldn't remove the existing psqlODBC.osx source directory (source/psqlODBC.osx)"
     fi
    
-    echo "Creating staging directory ($WD/psqlODBC/source/psqlODBC.osx)"
+    echo "Creating source directory ($WD/psqlODBC/source/psqlODBC.osx)"
     mkdir -p $WD/psqlODBC/source/psqlODBC.osx || _die "Couldn't create the psqlODBC.osx directory"
 
     # Grab a copy of the source tree
@@ -37,11 +37,6 @@ _prep_psqlODBC_osx() {
     echo "Creating staging directory ($WD/psqlODBC/staging/osx)"
     mkdir -p $WD/psqlODBC/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/psqlODBC/staging/osx || _die "Couldn't set the permissions on the staging directory"
-
-    ODBCINST=`which odbc_config`
-    if [ $ODBCINST = "" ]; then
-       _die "Couldn't find unixODBC"
-    fi
     
 }
 

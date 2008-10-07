@@ -16,7 +16,7 @@ _prep_psqlODBC_linux() {
       rm -rf psqlODBC.linux  || _die "Couldn't remove the existing psqlODBC.linux source directory (source/psqlODBC.linux)"
     fi
    
-    echo "Creating staging directory ($WD/psqlODBC/source/psqlODBC.linux)"
+    echo "Creating source directory ($WD/psqlODBC/source/psqlODBC.linux)"
     mkdir -p $WD/psqlODBC/source/psqlODBC.linux || _die "Couldn't create the psqlODBC.linux directory"
 
     # Grab a copy of the source tree

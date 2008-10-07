@@ -16,7 +16,7 @@ _prep_psqlODBC_linux_x64() {
       rm -rf psqlODBC.linux-x64  || _die "Couldn't remove the existing psqlODBC.linux-x64 source directory (source/psqlODBC.linux-x64)"
     fi
    
-    echo "Creating staging directory ($WD/psqlODBC/source/psqlODBC.linux-x64)"
+    echo "Creating source directory ($WD/psqlODBC/source/psqlODBC.linux-x64)"
     mkdir -p $WD/psqlODBC/source/psqlODBC.linux-x64 || _die "Couldn't create the psqlODBC.linux-x64 directory"
 
     # Grab a copy of the source tree
@@ -70,14 +70,14 @@ _build_psqlODBC_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; cp -R templates/* $PG_STAGING/templates " || _die "Failed to copy the templates directory to staging directory"
 
     # Copy in the dependency libraries
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib/libcrypt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib/libcom_err.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib/libexpat.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib/libgssapi_krb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib/libkrb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib/libk5crypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcom_err.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libexpat.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libgssapi_krb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libkrb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libk5crypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libpq.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     
 }
