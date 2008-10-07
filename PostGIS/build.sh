@@ -24,6 +24,7 @@ fi
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
     #source $WD/PostGIS/build-windows.sh
+	echo "Not yet implemented"
 fi
 
     
