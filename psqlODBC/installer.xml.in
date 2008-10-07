@@ -496,7 +496,7 @@
         <actionGroup>
             <actionList>
                 <iniFileSet>
-                    <file>${odbcinstpath}</file>
+                    <file>${odbcuninstallfile}</file>
                     <section>ODBC Drivers</section>
                     <key>psqlODBC</key>
                     <value/>

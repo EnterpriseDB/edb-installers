@@ -100,7 +100,7 @@ _build_PostGIS_osx() {
 
     echo "Configuring the postgis source tree"
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/
-    PATH=$PG_STAGING/proj/bin:$PG_STAGING/geos/bin:$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj/lib:$PG_STAGING/geos/lib:\$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" ./configure --disable-dependency-tracking --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_OSX/bin/pg_config --with-geos=$PG_STAGING/geos/bin/geos-config --with-proj=$PG_STAGING/proj || _die "Failed to configure postgis"
+    PATH=$PG_STAGING/proj/bin:$PG_STAGING/geos/bin:$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj/lib:$PG_STAGING/geos/lib:\$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" ./configure --disable-dependency-tracking --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_OSX/bin/pg_config --with-geos=$PG_STAGING/geos/bin/geos-config --with-proj=$PG_STAGING/proj --with-xsl=$PG_DOCBOOK_OSX || _die "Failed to configure postgis"
 
     echo "Building postgis"
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" make || _die "Failed to build postgis"
