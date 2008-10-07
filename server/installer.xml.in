@@ -72,6 +72,13 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
+		
+		<!-- Get a default port number - ideally 5432 -->
+		<getFreePort>
+		    <variable>defaultport</variable>
+			<initialPort>5432</initialPort>
+			<finalPort>65535</finalPort>
+		</getFreePort>
         
         <!-- Upgrading? -->
         <setInstallerVariable>
@@ -2731,7 +2738,7 @@
             <description>${msg(config.port.description)}</description>
             <explanation>${msg(config.port.explanation)}</explanation>
             <value></value>
-            <default>5432</default>
+            <default>${defaultport}</default>
             <allowEmptyValue>1</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>serverport</cliOptionName>
