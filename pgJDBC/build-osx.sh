@@ -80,8 +80,8 @@ _postprocess_pgJDBC_osx() {
 
     # Zip up the output
     cd $WD/output
-    zip -r pgJDBC-$PG_PGJDBC_VERSION-osx-installer.zip pgJDBC-$PG_PGJDBC_VERSION-osx-installer.app/ || _die "Failed to zip the installer bundle"
-    rm -rf pgJDBC-$PG_PGJDBC_VERSION-osx-installer.app/ || _die "Failed to remove the unpacked installer bundle"
+    zip -r pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.zip pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app/ || _die "Failed to remove the unpacked installer bundle"
     
     cd $WD
 }
