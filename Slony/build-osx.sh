@@ -142,17 +142,11 @@ _postprocess_Slony_osx() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
-    # Now we need to turn this into a DMG file
-    echo "Creating disk image"
+    # Zip up the output
     cd $WD/output
-    if [ -d slony.img ];
-    then
-        rm -rf slony.img
-    fi
-    mkdir slony.img || _die "Failed to create DMG staging directory"
-    mv slony_I_PG$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app slony.img || _die "Failed to copy the installer bundle into the DMG staging directory"
-    hdiutil create -quiet -srcfolder slony.img -format UDZO -volname "Slony $PG_VERSION_SLONY" -ov "slony_I_PG$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.dmg" || _die "Failed to create the disk image (output/slony_I_PG$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.dmg)"
-    rm -rf slony.img
+	PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
+    zip -r slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.zip slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/ || _die "Failed to remove the unpacked installer bundle"
  
     
     cd $WD

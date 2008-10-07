@@ -87,21 +87,13 @@ _postprocess_TuningWizard_osx() {
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/enterprisedb-launchTuningWizard.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/enterprisedb-launchTuningWizard.icns)"
 
-
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
-    # Now we need to turn this into a DMG file
-    echo "Creating disk image"
+    # Zip up the output
     cd $WD/output
-    if [ -d tuningwizard.img ];
-    then
-        rm -rf tuningwizard.img
-    fi
-    mkdir tuningwizard.img || _die "Failed to create DMG staging directory"
-    mv tuningwizard-$PG_VERSION_TUNINGWIZARD-$PG_BUILDNUM_TUNINGWIZARD-osx.app tuningwizard.img || _die "Failed to copy the installer bundle into the DMG staging directory"
-    hdiutil create -quiet -srcfolder tuningwizard.img -format UDZO -volname "TuningWizard $PG_VERSION_TUNINGWIZARD-$PG_BUILDNUM_TUNINGWIZARD" -ov "tuningwizard-$PG_VERSION_TUNINGWIZARD-$PG_BUILDNUM_TUNINGWIZARD-osx.dmg" || _die "Failed to create the disk image (output/tuningwizard-$PG_VERSION_TUNINGWIZARD-$PG_BUILDNUM_TUNINGWIZARD-osx.dmg)"
-    rm -rf tuningwizard.img
+    zip -r tuningwizard-$PG_VERSION_TUNINGWIZARD-$PG_BUILDNUM_TUNINGWIZARD-osx.zip tuningwizard-$PG_VERSION_TUNINGWIZARD-$PG_BUILDNUM_TUNINGWIZARD-osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf tuningwizard-$PG_VERSION_TUNINGWIZARD-$PG_BUILDNUM_TUNINGWIZARD-osx.app/ || _die "Failed to remove the unpacked installer bundle"
        
     cd $WD
 }

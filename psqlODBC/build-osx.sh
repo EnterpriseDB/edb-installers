@@ -108,17 +108,10 @@ _postprocess_psqlODBC_osx() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
  
-    # Now we need to turn this into a DMG file
-    echo "Creating disk image"
+    # Zip up the output
     cd $WD/output
-    if [ -d psqlodbc.img ];
-    then
-        rm -rf psqlodbc.img
-    fi
-    mkdir psqlodbc.img || _die "Failed to create DMG staging directory"
-    mv psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app psqlodbc.img || _die "Failed to copy the installer bundle into the DMG staging directory"
-    hdiutil create -quiet -srcfolder psqlodbc.img -format UDZO -volname "psqlODBC $PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC" -ov "psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.dmg" || _die "Failed to create the disk image (output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.dmg)"
-    rm -rf psqlodbc.img
+    zip -r psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.zip psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/ || _die "Failed to remove the unpacked installer bundle"
   
     cd $WD
 }

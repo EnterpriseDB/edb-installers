@@ -234,17 +234,10 @@ _postprocess_PostGIS_osx() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
-    # Now we need to turn this into a DMG file
-    echo "Creating disk image"
+    # Zip up the output
     cd $WD/output
-    if [ -d postgis.img ];
-    then
-        rm -rf postgis.img
-    fi
-    mkdir postgis.img || _die "Failed to create DMG staging directory"
-    mv postgis_PG$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app postgis.img || _die "Failed to copy the installer bundle into the DMG staging directory"
-    hdiutil create -quiet -srcfolder postgis.img -format UDZO -volname "postgis_PG$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS" -ov "postgis_PG$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.dmg" || _die "Failed to create the disk image (output/postgis-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.dmg)"
-    rm -rf postgis.img
+    zip -r postgis-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.zip postgis-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf postgis-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app/ || _die "Failed to remove the unpacked installer bundle"
     
     cd $WD
 }

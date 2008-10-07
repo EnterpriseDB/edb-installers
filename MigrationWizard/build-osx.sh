@@ -88,17 +88,10 @@ _postprocess_MigrationWizard_osx() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
-    # Now we need to turn this into a DMG file
-    echo "Creating disk image"
+    # Zip up the output
     cd $WD/output
-    if [ -d migrationwizard.img ];
-    then
-        rm -rf migrationwizard.img
-    fi
-    mkdir migrationwizard.img || _die "Failed to create DMG staging directory"
-    mv migrationwizard-$PG_VERSION_MIGRATIONWIZARD-$PG_BUILDNUM_MIGRATIONWIZARD-osx.app migrationwizard.img || _die "Failed to copy the installer bundle into the DMG staging directory"
-    hdiutil create -quiet -srcfolder migrationwizard.img -format UDZO -volname "MigrationWizard $PG_VERSION_MIGRATIONWIZARD-$PG_BUILDNUM_MIGRATIONWIZARD" -ov "migrationwizard-$PG_VERSION_MIGRATIONWIZARD-$PG_BUILDNUM_MIGRATIONWIZARD-osx.dmg" || _die "Failed to create the disk image (output/migrationwizard-$PG_VERSION_MIGRATIONWIZARD-$PG_BUILDNUM_MIGRATIONWIZARD-osx.dmg)"
-    rm -rf migrationwizard.img
+    zip -r migrationwizard-$PG_VERSION_MIGRATIONWIZARD-$PG_BUILDNUM_MIGRATIONWIZARD-osx.zip migrationwizard-$PG_VERSION_MIGRATIONWIZARD-$PG_BUILDNUM_MIGRATIONWIZARD-osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf migrationwizard-$PG_VERSION_MIGRATIONWIZARD-$PG_BUILDNUM_MIGRATIONWIZARD-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     
     cd $WD
