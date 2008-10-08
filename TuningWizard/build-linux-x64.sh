@@ -60,15 +60,15 @@ _build_TuningWizard_linux_x64() {
 
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/TuningWizard/source/tuningwizard.linux-x64; mkdir $PG_STAGING/TuningWizard/lib" || _die "Failed to create the lib directory"
     # Copy in the dependency libraries
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib/libssl.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib/libcrypto.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib/libcrypt.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib/libcom_err.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib/libexpat.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib/libgssapi_krb5.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib/libkrb5.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib/libk5crypto.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib/libtiff.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libssl.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypto.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypt.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcom_err.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libexpat.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libgssapi_krb5.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libkrb5.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libk5crypto.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libtiff.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
 
 }
     

@@ -84,7 +84,7 @@ if NOT EXIST "tuningwizard.windows" unzip tuningwizard.zip
 
 cd tuningwizard.windows
 REM Configure TuningWizard
-cmake CMakeLists.txt
+cmake -D wxWidgets_CONFIGURATION=mswu CMakeLists.txt
 
 REM Compiling TuningWizard
 devenv TuningWizard.vcproj /build release
