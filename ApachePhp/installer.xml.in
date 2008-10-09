@@ -521,6 +521,21 @@ AddType text/html         php
         </compareText>
       </ruleList>
     </actionGroup>
+    <!-- Substituting Apache-Home in the run script -->
+    <substitute>
+      <files>${installdir}/scripts/runApache.sh</files>
+         <substitutionList>
+            <substitution>
+               <pattern>@@APACHE_HOME@@</pattern>
+               <value>${installdir}/apache</value>
+            </substitution>
+         </substitutionList>
+         <ruleList>
+            <fileExists>
+               <path>${installdir}/scripts/runApache.sh</path>
+            </fileExists>
+         </ruleList>
+    </substitute>
   </postInstallationActionList>
   <!-- preUninstallation actions -->
   <preUninstallationActionList>
