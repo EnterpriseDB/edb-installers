@@ -1413,6 +1413,34 @@
                 </compareValues>
             </ruleList>
         </actionGroup>
+		
+		<!-- Register the message formatting DLLs on Windows -->
+		<runProgram>
+		    <program>${env(SYSTEMROOT)}\system32\regsvr32.exe</program>
+		    <programArguments>/s "${installdir}/lib/pgevent.dll"</programArguments>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>1</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+		</runProgram>
+		<runProgram>
+		    <program>${env(SYSTEMROOT)}\system32\regsvr32.exe</program>
+		    <programArguments>/s "${installdir}/bin/pgaevent.dll"</programArguments>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>1</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+		</runProgram>
         
         <!-- Set these last - if we get this far, initdb must have succeeded -->
         <!-- Data directory -->
@@ -1856,6 +1884,34 @@
             <serviceName>postgresql-${product_version}</serviceName>
             <abortOnError>0</abortOnError>
         </deleteWindowsService>
+		
+		<!-- Unregister the message formatting DLLs on Windows -->
+		<runProgram>
+		    <program>${env(SYSTEMROOT)}\system32\regsvr32.exe</program>
+		    <programArguments>/s /u "${installdir}/lib/pgevent.dll"</programArguments>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>1</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+		</runProgram>
+		<runProgram>
+		    <program>${env(SYSTEMROOT)}\system32\regsvr32.exe</program>
+		    <programArguments>/s /u "${installdir}/bin/pgaevent.dll"</programArguments>
+			<abortOnError>0</abortOnError>
+            <showMessageOnError>1</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+		</runProgram>
 
     </preUninstallationActionList>
 
