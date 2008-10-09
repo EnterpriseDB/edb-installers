@@ -164,7 +164,7 @@ _build_postgis() {
     echo "#endif" >> config.h
 
     echo "Building PostGIS"
-    MACOSX_DEPLOYMENT_TARGET=10.4 make CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" LDFLAGS="-arch i386 -arch ppc" -j 2 || _die "Failed to build PostGIS"
+    MACOSX_DEPLOYMENT_TARGET=10.4 make CFLAGS="-mmacosx-version-min=10.4 -headerpad_max_install_names -arch i386 -arch ppc" LDFLAGS="-arch i386 -arch ppc" -j 2 || _die "Failed to build PostGIS"
     make prefix=$PG_STAGING/PostGIS install || _die "Failed to install PostGIS"
 
     cd $WD
