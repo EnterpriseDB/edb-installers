@@ -68,12 +68,32 @@ _build_ApachePhp_osx() {
 
     echo "Configuring the apache source tree for Intel"
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" ./configure --prefix=$PG_STAGING/apache --disable-dependency-tracking --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for i386"
+    mv srclib/apr-util/xml/expat/acconfig.h srclib/apr-util/xml/expat/acconfig_i386.h
+    mv srclib/pcre/config.h srclib/pcre/config_i386.h
   
     echo "Configuring the apache source tree for ppc"
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" ./configure --prefix=$PG_STAGING/apache --disable-dependency-tracking --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for ppc"
+    mv srclib/apr-util/xml/expat/acconfig.h srclib/apr-util/xml/expat/acconfig_ppc.h
+    mv srclib/pcre/config.h srclib/pcre/config_ppc.h
 
     echo "Configuring the apache source tree for Universal"
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 " ./configure --prefix=$PG_STAGING/apache --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache  || _die "Failed to configure apache for Universal"
+
+    # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
+    echo "#ifdef __BIG_ENDIAN__" > srclib/apr-util/xml/expat/acconfig.h
+    echo "#include \"acconfig_ppc.h\"" >> srclib/apr-util/xml/expat/acconfig.h
+    echo "#else" >> srclib/apr-util/xml/expat/acconfig.h
+    echo "#include \"acconfig_i386.h\"" >> srclib/apr-util/xml/expat/acconfig.h
+    echo "#endif" >> srclib/apr-util/xml/expat/acconfig.h
+
+    echo "#ifdef __BIG_ENDIAN__" > srclib/pcre/config.h
+    echo "#include \"config_ppc.h\"" >> srclib/pcre/config.h
+    echo "#else" >> srclib/pcre/config.h
+    echo "#include \"config_i386.h\"" >> srclib/pcre/config.h
+    echo "#endif" >> srclib/pcre/config.h
+
+    # Hackup the httpd config to get suitable paths in the binary
+    _replace "#define HTTPD_ROOT \"$PG_STAGING/apache\"" "#define HTTPD_ROOT \"/Library/EnterpriseDB-ApachePhp/apache\"" include/ap_config_auto.h
 
     echo "Building apache"
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" make || _die "Failed to build apache"
@@ -93,12 +113,21 @@ _build_ApachePhp_osx() {
 
     echo "Configuring the php source tree for intel"
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" ./configure --with-libxml-dir=/usr --with-openssl --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite || _die "Failed to configure PHP for intel"
+    mv main/php_config.h main/php_config_i386.h
  
     echo "Configuring the php source tree for ppc"
     CFLAGS="$PG_ARCH_OSX_CFLAG -arch ppc" ./configure --with-libxml-dir=/usr --with-openssl --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite || _die "Failed to configure PHP for ppc"
+    mv main/php_config.h main/php_config_ppc.h
  
     echo "Configuring the php source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" ./configure --with-libxml-dir=/usr --with-openssl --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite || _die "Failed to configure PHP for Universal" 
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" ./configure --with-libxml-dir=/usr --with-openssl --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite || _die "Failed to configure PHP for Universal"
+
+    # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
+    echo "#ifdef __BIG_ENDIAN__" > main/php_config.h
+    echo "#include \"php_config_ppc.h\"" >> main/php_config.h
+    echo "#else" >> main/php_config.h
+    echo "#include \"php_config_i386.h\"" >> main/php_config.h
+    echo "#endif" >> main/php_config.h
 
     echo "Building php"
     cd $PG_PATH_OSX/ApachePhp/source/php.osx
