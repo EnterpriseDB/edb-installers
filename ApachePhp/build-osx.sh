@@ -67,17 +67,17 @@ _build_ApachePhp_osx() {
     # Configure the source tree
 
     echo "Configuring the apache source tree for Intel"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" ./configure --prefix=$PG_STAGING/apache --disable-dependency-tracking --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for i386"
+    CFLAGS="-mmacosx-version-min=10.4 -headerpad_max_install_names -arch i386" ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for i386"
     mv srclib/apr-util/xml/expat/acconfig.h srclib/apr-util/xml/expat/acconfig_i386.h
     mv srclib/pcre/config.h srclib/pcre/config_i386.h
   
     echo "Configuring the apache source tree for ppc"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" ./configure --prefix=$PG_STAGING/apache --disable-dependency-tracking --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for ppc"
+    CFLAGS="-mmacosx-version-min=10.4 -headerpad_max_install_names -arch ppc" ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for ppc"
     mv srclib/apr-util/xml/expat/acconfig.h srclib/apr-util/xml/expat/acconfig_ppc.h
     mv srclib/pcre/config.h srclib/pcre/config_ppc.h
 
     echo "Configuring the apache source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 " ./configure --prefix=$PG_STAGING/apache --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache  || _die "Failed to configure apache for Universal"
+    CFLAGS="-mmacosx-version-min=10.4 -headerpad_max_install_names -arch ppc -arch i386 " ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache  || _die "Failed to configure apache for Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     echo "#ifdef __BIG_ENDIAN__" > srclib/apr-util/xml/expat/acconfig.h
