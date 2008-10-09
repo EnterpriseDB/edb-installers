@@ -83,14 +83,20 @@ _build_PostGIS_osx() {
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" make || _die "Failed to build proj"
     make install || _die "Failed to install proj"
 
+    # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
+    _rewrite_so_refs $WD/PostGIS/staging/osx/proj lib @loader_path/..
+
     cd $PG_PATH_OSX/PostGIS/source/geos.osx
 
     echo "Configuring the geos source tree"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" CXXFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" ./configure --prefix=$PG_STAGING/geos --disable-dependency-tracking || _die "Failed to configure geos"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" ./configure --prefix=$PG_STAGING/geos --disable-dependent-tracking || _die "Failed to configure geos"
 
     echo "Building geos"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" CXXFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" LDFLAGS="-arch i386 -arch ppc" make || _die "Failed to build geos"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" make || _die "Failed to build geos"
     make install || _die "Failed to install geos"
+
+    # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
+    _rewrite_so_refs $WD/PostGIS/staging/osx/geos lib @loader_path/..
 
     echo "Configuring the postgis source tree"
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/
@@ -121,8 +127,6 @@ _build_PostGIS_osx() {
     cp staging/osx/proj/lib/*dylib staging/osx/PostGIS/lib || _die "Failed to copy dependent libraries"
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
-    _rewrite_so_refs $WD/PostGIS/staging/osx/proj lib @loader_path/..
-    _rewrite_so_refs $WD/PostGIS/staging/osx/geos lib @loader_path/..
     _rewrite_so_refs $WD/PostGIS/staging/osx/PostGIS bin @loader_path/..
     _rewrite_so_refs $WD/PostGIS/staging/osx/PostGIS lib @loader_path/..
 
