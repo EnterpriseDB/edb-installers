@@ -19,7 +19,7 @@
     <width>550</width>
     <height>400</height>
     <!-- Misc package options -->
-    <installerFilename>${product_shortname}_${product_version}-PG_BUILDNUM_POSTGIS-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-pgPG_CURRENT_VERSION-${product_version}-PG_BUILDNUM_POSTGIS-${platform_name}.${platform_exec_suffix}</installerFilename>
     <enableRollback>0</enableRollback>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <saveRelativePaths>1</saveRelativePaths>
