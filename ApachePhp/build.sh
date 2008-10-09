@@ -5,8 +5,7 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-    #source $WD/ApachePhp/build-osx.sh
-    echo "Not yet implemented!"
+    source $WD/ApachePhp/build-osx.sh
 fi
 
 # Linux
@@ -85,8 +84,7 @@ _prep_ApachePhp() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_prep_ApachePhp_osx || exit 1
-        echo "Not yet implemented!"
+        _prep_ApachePhp_osx || exit 1
     fi
 
     # Linux
@@ -119,8 +117,7 @@ _build_ApachePhp() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_build_ApachePhp_osx || exit 1
-        echo "Not yet implemented!"
+        _build_ApachePhp_osx || exit 1
     fi
 
     # Linux 
@@ -167,8 +164,7 @@ _postprocess_ApachePhp() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_postprocess_ApachePhp_osx || exit 1
-        echo "Not yet implemented!"
+        _postprocess_ApachePhp_osx || exit 1
     fi
 
     # Linux

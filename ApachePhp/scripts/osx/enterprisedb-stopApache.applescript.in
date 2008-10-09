@@ -1,0 +1,4 @@
+set ret to do shell script "INSTALL_DIR/scripts/runApache.sh stop > /tmp/apachemsg.txt 2>&1" with administrator privileges
+set output to do shell script "cat /tmp/apachemsg.txt" with administrator privileges
+set ret to do shell script "rm /tmp/apachemsg.txt" with administrator privileges
+display dialog output buttons {"OK"} with icon 1 default button 1
