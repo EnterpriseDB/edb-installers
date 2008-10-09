@@ -22,7 +22,8 @@ rm -rf output/* >> autobuild.log 2>&1
 
 # Self update
 echo "Updating build system" >> autobuild.log
-CVS_RSH=ssh cvs update -dP >> autobuild.log 2>&1
+export CVS_RSH=ssh 
+cvs update -dP >> autobuild.log 2>&1
 
 # Run the build, and dump the output to a log file
 echo "Running the build" >> autobuild.log
