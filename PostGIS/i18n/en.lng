@@ -2,7 +2,7 @@ Installer.Welcome.Title=Setup - EnterpriseDB %1$s
 
 Installer.Welcome.Text=Welcome to the EnterpriseDB %1$s Setup.
 
-install.summary=PostGIS adds support for geographic objects to the PostgreSQL.
+install.summary=PostGIS adds support for geographic objects to PostgreSQL.
 
 error.configure.postgis=Error Configuring PostGIS
 
@@ -18,9 +18,9 @@ spatialdb.details.title=PostGIS Database Details
 
 spatialdb.details.explanation=Please enter the name of the PostGIS Database.
 
-postgis.installdir.error=Installation directory path should not contain white-spaces.
+postgis.installdir.error=The installation directory path should not contain white-spaces.
 
-postgis.installdir.pgerror=Installation directory path is not a valid PostgreSQL Server Installation Directory.
+postgis.installdir.pgerror=The installation directory path is not a valid PostgreSQL Server Installation Directory.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 progress.text.configure.postgis=Configuring PostGIS Scripts
@@ -36,6 +36,6 @@ Installer.Installation.Finished.Title=Completing the EnterpriseDB-%1$s Setup Wiz
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
-db.drop.info=Template database and/or Sample database have not been removed from your PostgreSQL Server.
+db.drop.info=The template database and sample database have not been removed from your PostgreSQL Server.
 
-postgis.incompatible.install.error=An incomaptible version of PostGIS already installed. \nPlease remove the incomaptible installation before installing this version. 
+postgis.incompatible.install.error=An incomaptible version of PostGIS is already installed. \nPlease remove the incomaptible installation before installing this version. 
