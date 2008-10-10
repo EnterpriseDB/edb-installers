@@ -619,7 +619,7 @@ AddType text/html         php
     </actionGroup>
     <!-- MAC: Remove menu shortcuts -->
     <deleteFile>
-      <path>/Applications/PostgreSQL/EnterpriseDB-ApachePhp</path>
+      <path>/Applications/PostgreSQL/EnterpriseDB ApachePhp</path>
       <ruleList>
         <compareText>
           <logic>equals</logic>
