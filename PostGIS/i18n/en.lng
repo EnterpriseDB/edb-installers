@@ -37,3 +37,5 @@ Installer.Installation.Finished.Title=Completing the EnterpriseDB-%1$s Setup Wiz
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
 db.drop.info=Template database and/or Sample database have not been removed from your PostgreSQL Server.
+
+postgis.incompatible.install.error=An incomaptible version of PostGIS already installed. \nPlease remove the incomaptible installation before installing this version. 
