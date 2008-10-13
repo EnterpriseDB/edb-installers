@@ -51,8 +51,26 @@ _build_psqlODBC_osx() {
     SOURCE_DIR=$PG_PATH_OSX/psqlODBC/source/psqlODBC.osx
     cd $SOURCE_DIR
 
-    echo "Configuring psqlODBC sources for both i386 and ppc"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --with-iodbc --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for ppc and i386 both"
+    echo "Configuring psqlODBC sources for intel"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --with-iodbc --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for intel"
+
+    mv config.h config_i386.h
+
+    echo "Configuring psqlODBC sources for ppc"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --with-iodbc --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for ppc"
+
+    mv config.h config_ppc.h
+
+    echo "Configuring psqlODBC sources for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --with-iodbc --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for Universal"
+
+    # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
+    echo "#ifdef __BIG_ENDIAN__" > config.h
+    echo "#include \"config_ppc.h\"" >> config.h
+    echo "#else" >> config.h
+    echo "#include \"config_i386.h\"" >> config.h
+    echo "#endif" >> config.h
+
     
     echo "Compiling psqlODBC"
     make || _die "Couldn't compile sources"
