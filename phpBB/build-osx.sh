@@ -1,0 +1,107 @@
+#!/bin/bash
+
+    
+################################################################################
+# Build preparation
+################################################################################
+
+_prep_phpBB_osx() {
+
+    # Enter the source directory and cleanup if required
+    cd $WD/phpBB/source
+	
+    if [ -e phpBB.osx ];
+    then
+      echo "Removing existing phpBB.osx source directory"
+      rm -rf phpBB.osx  || _die "Couldn't remove the existing phpBB.osx source directory (source/phpBB.osx)"
+    fi
+
+    echo "Creating staging directory ($WD/phpBB/source/phpBB.osx)"
+    mkdir -p $WD/phpBB/source/phpBB.osx || _die "Couldn't create the phpBB.osx directory"
+	
+    # Grab a copy of the source tree
+    cp -R phpBB-$PG_VERSION_PHPBB/* phpBB.osx || _die "Failed to copy the source code (source/phpBB-$PG_VERSION_PHPBB)"
+    chmod -R ugo+w phpBB.osx || _die "Couldn't set the permissions on the source directory"
+
+    # Remove any existing staging directory that might exist, and create a clean one
+    if [ -e $WD/phpBB/staging/osx/phpBB ];
+    then
+      echo "Removing existing staging directory"
+      rm -rf $WD/phpBB/staging/osx/phpBB || _die "Couldn't remove the existing staging directory"
+    fi
+
+    echo "Creating staging directory ($WD/phpBB/staging/osx)"
+    mkdir -p $WD/phpBB/staging/osx/phpBB || _die "Couldn't create the staging directory"
+
+
+}
+
+################################################################################
+# PG Build
+################################################################################
+
+_build_phpBB_osx() {
+	
+    cd $WD
+}
+
+################################################################################
+# PG Build
+################################################################################
+
+_postprocess_phpBB_osx() {
+
+
+    cp -R $WD/phpBB/source/phpBB.osx/* $WD/phpBB/staging/osx/phpBB || _die "Failed to copy the phpBB Source into the staging directory"
+
+    cd $WD/phpBB
+
+    # Setup the installer scripts.
+    mkdir -p staging/osx/installer/phpBB || _die "Failed to create a directory for the install scripts"
+    cp scripts/osx/check-connection.sh staging/osx/installer/phpBB/check-connection.sh || _die "Failed to copy the check-connection script (scripts/osx/check-connection.sh)"
+    chmod ugo+x staging/osx/installer/phpBB/check-connection.sh
+
+    cp scripts/osx/check-db.sh staging/osx/installer/phpBB/check-db.sh || _die "Failed to copy the check-db.sh script (scripts/osx/check-db.sh)"
+    chmod ugo+x staging/osx/installer/phpBB/check-db.sh
+
+    cp scripts/osx/createshortcuts.sh staging/osx/installer/phpBB/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/osx/createshortcuts.sh)"
+    chmod ugo+x staging/osx/installer/phpBB/createshortcuts.sh
+
+    cp scripts/osx/install.sh staging/osx/installer/phpBB/install.sh || _die "Failed to copy the install.sh script (scripts/osx/install.sh)"
+    chmod ugo+x staging/osx/installer/phpBB/install.sh
+
+    # Setup the phpBB Launch Scripts
+    mkdir -p staging/osx/scripts || _die "Failed to create a directory for the phpBB Launch Scripts"
+
+    cp scripts/osx/enterprisedb-launchPhpBB.applescript.in staging/osx/scripts/enterprisedb-launchPhpBB.applescript || _die "Failed to copy the enterprisedb-launchPhpBB.applescript.in  script (scripts/osx/enterprisedb-launchPhpBB.applescript)"
+    chmod ugo+x staging/osx/scripts/enterprisedb-launchPhpBB.applescript
+
+    cp scripts/osx/launchbrowser.sh staging/osx/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser.sh script (scripts/osx/launchbrowser.sh)"
+    chmod ugo+x staging/osx/scripts/launchbrowser.sh
+
+    # Copy in the menu pick images
+    mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
+    cp resources/enterprisedb-launchPhpBB.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/enterprisedb-launchPhpBB.icns)"
+	
+    #configuring the install/install_install.php file  
+    _replace "\$url = (\!in_array(false, \$passed)) ? \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=database\&amp;language=\$language\" : \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=requirements\&amp;language=\$language" "\$url = (\!in_array(false, \$passed)) ? \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=database\&amp;language=\$language\&amp;dbname=phpbb\&amp;dbuser=phpbbuser\&amp;dbpasswd=phpbbuser\&amp;dbms=postgres\&amp;dbhost=localhost\&amp;dbport=5432\" : \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=requirements\&amp;language=\$language\&amp;dbname=phpbb\&amp;dbuser=phpbbuser\&amp;dbpasswd=phpbbuser\&amp;dbms=postgres\&amp;dbhost=localhost\&amp;dbport=5432" "$WD/phpBB/staging/osx/phpBB/install/install_install.php" 
+
+    chmod ugo+w staging/osx/phpBB/cache || _die "Couldn't set the permissions on the cache directory"
+    chmod ugo+w staging/osx/phpBB/files || _die "Couldn't set the permissions on the files directory"
+    chmod ugo+w staging/osx/phpBB/store || _die "Couldn't set the permissions on the store directory"
+    chmod ugo+w staging/osx/phpBB/config.php || _die "Couldn't set the permissions on the config File"
+
+
+    # Build the installer
+    "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
+
+    # Zip up the output
+    cd $WD/output
+    zip -r phpbb-$PG_VERSION_PHPBB-$PG_BUILDNUM_PHPBB-osx.zip phpbb-$PG_VERSION_PHPBB-$PG_BUILDNUM_PHPBB-osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf phpbb-$PG_VERSION_PHPBB-$PG_BUILDNUM_PHPBB-osx.app/ || _die "Failed to remove the unpacked installer bundle"
+
+
+    cd $WD
+
+}
+
