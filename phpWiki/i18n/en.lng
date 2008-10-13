@@ -1,6 +1,6 @@
-Installer.Welcome.Title=Setup - EnterpriseDB %1$s Setup Wizard
+Installer.Welcome.Title=Setup 1$s Setup Wizard
 
-Installer.Welcome.Text=Welcome to the EnterpriseDB %1$s Setup Wizard.
+Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
 
 error.apache.notfound=No apache Found. Please run the EnterpriseDB ApachePhp for Apache installation.
 
@@ -22,7 +22,7 @@ pgplus.details.error=Connection to the PostgreSQL Server failed. Please re-check
 
 post.install.error=Error Configuring phpWiki Application.
 
-Installer.Installation.Finished.Title=Completing the EnterpriseDB-%1$s Setup Wizard
+Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 

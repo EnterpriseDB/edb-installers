@@ -5,8 +5,7 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-   #source $WD/phpWiki/build-osx.sh
-   echo "Not yet implemented"
+   source $WD/phpWiki/build-osx.sh
 fi
 
 # Linux
@@ -58,8 +57,7 @@ _prep_phpWiki() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-       #_prep_phpWiki_osx || exit 1
-       echo "Not yet implemented"
+       _prep_phpWiki_osx || exit 1
     fi
 
     # Linux
@@ -91,8 +89,7 @@ _build_phpWiki() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-       #_build_phpWiki_osx || exit 1
-       echo "Not yet implemented"
+       _build_phpWiki_osx || exit 1
     fi
 
     # Linux 
@@ -138,8 +135,7 @@ _postprocess_phpWiki() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-       #_postprocess_phpWiki_osx || exit 1
-       echo "Not yet implemented"
+       _postprocess_phpWiki_osx || exit 1
     fi
 
     # Linux
