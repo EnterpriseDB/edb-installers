@@ -411,7 +411,8 @@ EOT
     rm $WD/server/staging/windows/output.zip
 	
 	# Install the PostgreSQL docs
-	cd $WD/server/staging/windows/doc || _die "Failed to change to the doc directory"
+	mkdir -p $WD/server/staging/windows/doc/postgresql/html || _die "Failed to create the doc directory"
+	cd $WD/server/staging/windows/doc/postgresql/html || _die "Failed to change to the doc directory"
 	tar -zxvf $WD/server/source/postgres.windows/doc/postgres.tar.gz || _die "Failed to unpack the PostgreSQL documentation"
 	 
 	# Copy in the pljava binaries/docs
