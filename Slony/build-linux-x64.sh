@@ -91,10 +91,13 @@ _postprocess_Slony_linux_x64() {
     cp scripts/linux-x64/createshortcuts.sh staging/linux-x64/installer/Slony/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux-x64/createshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/Slony/createshortcuts.sh
 
+    cp scripts/linux-x64/getMajorVersion.sh staging/linux-x64/installer/Slony/getMajorVersion.sh || _die "Failed to copy the getMajorVersion script (scripts/linux-x64/getMajorVersion.sh)"
+    chmod ugo+x staging/linux-x64/installer/Slony/getMajorVersion.sh
+
     cp scripts/linux-x64/removeshortcuts.sh staging/linux-x64/installer/Slony/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux-x64/removeshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/Slony/removeshortcuts.sh
 
-    cp scripts/linux-x64/configureslony.sh staging/linux-x64/installer/Slony/configureslony.sh || _die "Failed to copy the createshortcuts script (scripts/linux-x64/configureslony.sh)"
+    cp scripts/linux-x64/configureslony.sh staging/linux-x64/installer/Slony/configureslony.sh || _die "Failed to copy the configureSlony script (scripts/linux-x64/configureslony.sh)"
     chmod ugo+x staging/linux-x64/installer/Slony/configureslony.sh
 
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the launch scripts"
@@ -111,7 +114,7 @@ _postprocess_Slony_linux_x64() {
     cp resources/*.png staging/linux-x64/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
     mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp resources/xdg/enterprisedb-postgres.directory staging/linux-x64/scripts/xdg/enterprisedb-postgres.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql-$PG_MAJOR_VERSION.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/enterprisedb-launchSlonyDocs.desktop staging/linux-x64/scripts/xdg/enterprisedb-launchSlonyDocs.desktop || _die "Failed to copy a menu pick desktop"
 
  

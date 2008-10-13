@@ -19,7 +19,7 @@
     <width>550</width>
     <height>400</height>
     <!-- Misc package options -->
-    <installerFilename>slony-${product_version}-PG_BUILDNUM_SLONY-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>slony-pgPG_CURRENT_VERSION-${product_version}-PG_BUILDNUM_SLONY-${platform_name}.${platform_exec_suffix}</installerFilename>
     <enableRollback>0</enableRollback>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <saveRelativePaths>1</saveRelativePaths>
@@ -48,8 +48,15 @@
         <setInstallerVariable name="SlonyVersion" value="">
             <persist>0</persist>
         </setInstallerVariable>
+        <setInstallerVariable name="SlonyMajorVersion" value="SLONY_MAJOR_VERSION">
+            <persist>0</persist>
+        </setInstallerVariable>
         <!-- Set the PG Current version(if exists) -->
         <setInstallerVariable name="PGCurrentVersion" value="PG_CURRENT_VERSION">
+            <persist>1</persist>
+        </setInstallerVariable>
+        <!-- Set the PG Major Version -->
+        <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION">
             <persist>1</persist>
         </setInstallerVariable>
         <!-- WIN: Set the    pghome default value for unattended mode -->
@@ -231,6 +238,62 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+	    <!-- Create Temporaray Directory -->
+        <createDirectory path="${system_temp_directory}/${product_fullname}" />
+	    <!-- Unpack the script to get Slony major version -->
+        <unpackFile>
+            <component>Slony</component>
+            <destination>${system_temp_directory}/${product_fullname}/getMajorVersion.sh</destination>
+            <folder>installfilesosx</folder>
+            <origin>installer/Slony/getMajorVersion.sh</origin>
+	    <ruleList>
+		<compareText>
+		    <logic>equals</logic>
+		    <text>${platform_name}</text>
+		    <value>osx</value>
+		</compareText>
+	    </ruleList>
+        </unpackFile>
+	    <unpackFile>
+            <component>Slony</component>
+            <destination>${system_temp_directory}/${product_fullname}/getMajorVersion.sh</destination>
+            <folder>installfileslinux</folder>
+            <origin>installer/Slony/getMajorVersion.sh</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </unpackFile>
+	    <unpackFile>
+            <component>Slony</component>
+            <destination>${system_temp_directory}/${product_fullname}/getMajorVersion.sh</destination>
+            <folder>installfileslinux-x64</folder>
+            <origin>installer/slony/getMajorVersion.sh</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+            </ruleList>
+        </unpackFile>
+	    <!-- Get Slony Major Version Number if installed -->
+	    <setInstallerVariableFromScriptOutput>
+            <name>SlonyMajorVersionInstalled</name>
+	        <exec>${system_temp_directory}/${product_fullname}/getMajorVersion.sh</exec>
+            <execArgs>${SlonyVersion}</execArgs>
+	        <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+	        <ruleList>
+		       <compareText>
+                   <logic>does_not_equal</logic>
+                   <text>${SlonyVersion}</text>
+                   <value/>
+               </compareText>
+            </ruleList>
+	    </setInstallerVariableFromScriptOutput>
         <!-- LIN & MAC: Set installation directory in case of reinstall/upgrade -->
         <actionGroup>
             <actionList>
@@ -252,6 +315,11 @@
                     <text>${SlonyVersion}</text>
                     <value/>
                 </compareText>
+                <compareValues>
+                    <logic>equals</logic>
+                    <value1>${SlonyMajorVersion}</value1>
+                    <value2>${SlonyMajorVersionInstalled}</value2>
+                </compareValues>
             </ruleList>
         </actionGroup>
         <!-- Setting the installation type as upgrade if previous installation found -->
@@ -265,6 +333,11 @@
                     <text>${SlonyVersion}</text>
                     <value/>
                 </compareText>
+		        <compareValues>
+                    <logic>equals</logic>
+                    <value1>${SlonyMajorVersion}</value1>
+                    <value2>${SlonyMajorVersionInstalled}</value2>
+                </compareValues>
             </ruleList>
         </actionGroup>
     </preInstallationActionList>
@@ -305,7 +378,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/Slony/installer/Slony/createshortcuts.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
+                    <programArguments>"${installdir}" "${PGMajorVersion}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -402,7 +475,7 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>/Applications/PostgreSQL/Slony Documentation.app</path>
+                    <path>/Applications/PostgreSQL PG_MAJOR_VERSION/Slony Documentation.app</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -684,12 +757,18 @@
             <mustBeWritable>yes</mustBeWritable>
             <mustExist>0</mustExist>
             <width>40</width>
+	        <ruleEvaluationLogic>OR</ruleEvaluationLogic>
             <ruleList>
                 <compareText>
                     <text>${SlonyVersion}</text>
                     <logic>equals</logic>
                     <value/>
                 </compareText>
+                <compareValues>
+                    <logic>does_not_equal</logic>
+                    <value1>${SlonyMajorVersion}</value1>
+                    <value2>${SlonyMajorVersionInstalled}</value2>
+                </compareValues>
             </ruleList>
             <!-- Validating whether installdir contains whitespaces (Linux) -->
             <validationActionList>

@@ -43,7 +43,7 @@ _prep_Slony_osx() {
 
 
 ################################################################################
-# PG Build
+# Slony Build
 ################################################################################
 
 _build_Slony_osx() {
@@ -53,7 +53,26 @@ _build_Slony_osx() {
 
     echo "Configuring the slony source tree"
     cd $PG_PATH_OSX/Slony/source/slony.osx/
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --prefix=$PG_PGHOME_OSX --with-pgconfigdir=$PG_PGHOME_OSX/bin  || _die "Failed to configure slony"
+
+    echo "Configuring the slony source tree for intel"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --prefix=$PG_PGHOME_OSX --with-pgconfigdir=$PG_PGHOME_OSX/bin  || _die "Failed to configure slony for intel"
+
+    mv config.h config_i386.h 
+
+    echo "Configuring the slony source tree for ppc"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --prefix=$PG_PGHOME_OSX --with-pgconfigdir=$PG_PGHOME_OSX/bin  || _die "Failed to configure slony for ppc"
+
+   mv config.h config_ppc.h 
+
+    echo "Configuring the slony source tree for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --prefix=$PG_PGHOME_OSX --with-pgconfigdir=$PG_PGHOME_OSX/bin  || _die "Failed to configure slony for Universal"
+
+    # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
+    echo "#ifdef __BIG_ENDIAN__" > config.h
+    echo "#include \"config_ppc.h\"" >> config.h
+    echo "#else" >> config.h
+    echo "#include \"config_i386.h\"" >> config.h
+    echo "#endif" >> config.h
 
     echo "Building slony"
     cd $PG_PATH_OSX/Slony/source/slony.osx
@@ -113,7 +132,7 @@ _build_Slony_osx() {
 
 
 ################################################################################
-# PG Build
+# Slony Postprocess
 ################################################################################
 
 _postprocess_Slony_osx() {
@@ -126,7 +145,10 @@ _postprocess_Slony_osx() {
     cp scripts/osx/createshortcuts.sh staging/osx/installer/Slony/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/osx/createshortcuts.sh)"
     chmod ugo+x staging/osx/installer/Slony/createshortcuts.sh
 
-    cp scripts/osx/configureslony.sh staging/osx/installer/Slony/configureslony.sh || _die "Failed to copy the createshortcuts script (scripts/osx/configureslony.sh)"
+    cp scripts/osx/getMajorVersion.sh staging/osx/installer/Slony/getMajorVersion.sh || _die "Failed to copy the getMajorVersion script (scripts/osx/getMajorVersion.sh)"
+    chmod ugo+x staging/osx/installer/Slony/getMajorVersion.sh
+
+    cp scripts/osx/configureslony.sh staging/osx/installer/Slony/configureslony.sh || _die "Failed to copy the configureSlony script (scripts/osx/configureslony.sh)"
     chmod ugo+x staging/osx/installer/Slony/configureslony.sh
 
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the launch scripts"

@@ -91,10 +91,13 @@ _postprocess_Slony_linux() {
     cp scripts/linux/createshortcuts.sh staging/linux/installer/Slony/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux/installer/Slony/createshortcuts.sh
 
-    cp scripts/linux/removeshortcuts.sh staging/linux/installer/Slony/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
-    chmod ugo+x staging/linux/installer/Slony/removeshortcuts.sh
-
-    cp scripts/linux/configureslony.sh staging/linux/installer/Slony/configureslony.sh || _die "Failed to copy the createshortcuts script (scripts/linux/configureslony.sh)"
+    cp scripts/linux/getMajorVersion.sh staging/linux/installer/Slony/getMajorVersion.sh || _die "Failed to copy the getMajorVersion script (scripts/linux/getMajorVersion.sh)"
+    chmod ugo+x staging/linux/installer/Slony/getMajorVersion.sh
+   
+    cp scripts/linux/check-pgversion.sh staging/linux/installer/Slony/check-pgversion.sh || _die "Failed to copy the check-pgversion script (scripts/linux/check-pgversion.sh)"
+    chmod ugo+x staging/linux/installer/Slony/check-pgversion.sh
+ 
+    cp scripts/linux/configureslony.sh staging/linux/installer/Slony/configureslony.sh || _die "Failed to copy the configureSlony script (scripts/linux/configureslony.sh)"
     chmod ugo+x staging/linux/installer/Slony/configureslony.sh
 
     mkdir -p staging/linux/scripts || _die "Failed to create a directory for the launch scripts"
@@ -111,7 +114,7 @@ _postprocess_Slony_linux() {
     cp resources/*.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp resources/xdg/enterprisedb-postgres.directory staging/linux/scripts/xdg/enterprisedb-postgres.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql-$PG_MAJOR_VERSION.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/enterprisedb-launchSlonyDocs.desktop staging/linux/scripts/xdg/enterprisedb-launchSlonyDocs.desktop || _die "Failed to copy a menu pick desktop"
 
  
