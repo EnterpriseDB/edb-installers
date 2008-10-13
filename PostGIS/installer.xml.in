@@ -56,6 +56,10 @@
         <setInstallerVariable name="PostGISVersion" value="">
             <persist>0</persist>
         </setInstallerVariable>
+	    <!-- Set the PG Major Version -->
+        <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION">
+            <persist>1</persist>
+        </setInstallerVariable>
         <!-- Set the default values -->
         <setInstallerVariable name="defaultuser" value=""/>
         <setInstallerVariable name="defaultpassword" value=""/>
@@ -326,7 +330,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/PostGIS/installer/PostGIS/createshortcuts.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
+                    <programArguments>"${installdir}" "${PGMajorVersion}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -380,40 +384,6 @@
                 </compareText>
             </ruleList>
         </runProgram>
-        <!-- Create Spatial Database if user selected for it-->
-        <actionGroup>
-            <actionList>
-               <runProgram>
-                  <program>${installdir}/PostGIS/installer/PostGIS/createpostgisdb.sh</program>
-                  <programArguments>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "${dbname}"</programArguments>
-                  <progressText>${msg(progress.text.creating.spatialdb)}</progressText>
-                  <abortOnError>0</abortOnError>
-                  <showMessageOnError>0</showMessageOnError>
-                </runProgram>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-                <compareText>
-                    <text>${spatialdbexists}</text>
-                    <logic>does_not_equal</logic>
-                    <value>yes</value>
-                </compareText>
-                <compareValues>
-                    <logic>does_not_equal</logic>
-                    <value1>${PostGISVersion}</value1>
-                    <value2>${product_version}</value2>
-                </compareValues>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${createdb}</text>
-                    <value>1</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
     </postInstallationActionList>
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
@@ -469,7 +439,7 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>/Applications/PostgreSQL/PostGIS</path>
+                    <path>/Applications/PostgreSQL PG_MAJOR_VERSION/PostGIS</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -963,18 +933,8 @@
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
-	            <!-- Create spatial database? -->
-                <booleanParameter>
-                    <name>createdb</name>
-                    <description>Create Spatial Database</description>
-                    <explanation/>
-                    <value/>
-                    <default>1</default>
-                    <ask>1</ask>
-                    <displayStyle>checkbox-left</displayStyle>
-                </booleanParameter>
-            	<!-- Postgres Home Directory -->
-                <directoryParameter>
+                <!-- Postgres Home Directory -->
+                 <directoryParameter>
                     <name>pghome</name>
                     <description>PostgreSQL Home Directory</description>
                     <explanation/>
@@ -1249,116 +1209,7 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
-	            <!-- Exit the installation if the user wants to quit -->
-                <actionGroup>
-                    <actionList>
-                        <exit>
-                            <exitCode>0</exitCode>
-                        </exit>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <value>no</value>
-                            <text>${response}</text>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-            </validationActionList>
-        </parameterGroup>
-        <parameterGroup>
-            <name>spatialdbdetails</name>
-            <title>${msg(spatialdb.details.title)}</title>
-            <explanation>${msg(spatialdb.details.explanation)}</explanation>
-            <value/>
-            <default/>
-            <parameterList>
-            <!-- Database name(default postgis) -->
-                <stringParameter>
-                    <name>dbname</name>
-                    <description>Database Name</description>
-                    <explanation/>
-                    <value/>
-                    <default>postgis</default>
-                    <allowEmptyValue>0</allowEmptyValue>
-                    <width>40</width>
-                </stringParameter>
-            </parameterList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${createdb}</text>
-                    <value>1</value>
-                </compareText>
-		<compareValues>
-                    <logic>does_not_equal</logic>
-                    <value1>${PostGISVersion}</value1>
-                    <value2>${product_version}</value2>
-                </compareValues>
-            </ruleList>
-            <validationActionList>
-                <setInstallerVariable name="dbexist" value=""/>
-	            <!-- WIN - Check whether the database and user already exists -->
-                <actionGroup>
-                    <actionList>
-	                    <!-- WIN - Check whether the database already exists -->
-                        <setInstallerVariableFromScriptOutput>
-                            <name>dbexist</name>
-                            <exec>${system_temp_directory}\${product_fullname\check-db.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "${dbname}"</execArgs>
-                            <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-	            <!-- LIN & MAC: Check whether the database and user already exists -->
-                <actionGroup>
-                    <actionList>
-	                    <!-- LIN & MAC: Check whether the database already exists -->
-                        <setInstallerVariableFromScriptOutput>
-                            <name>dbexist</name>
-                            <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "${dbname}"</execArgs>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-	            <!-- Inform the user about the existing database and user -->
-                <actionGroup>
-                    <actionList>
-                        <showQuestion>
-                            <text>${msg(db.found.info)}</text>
-                            <variable>response</variable>
-                        </showQuestion>
-                        <setInstallerVariable name="spatialdbexists" value="yes"/>
-                    </actionList>
-                    <ruleEvaluationLogic>OR</ruleEvaluationLogic>
-                    <ruleList>
-                        <compareText>
-                            <text>${dbexist}</text>
-                            <logic>does_not_equal</logic>
-                            <value/>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-	            <!-- Exit the installation if the user wants to quit -->
+                <!-- Exit the installation if the user wants to quit -->
                 <actionGroup>
                     <actionList>
                         <exit>

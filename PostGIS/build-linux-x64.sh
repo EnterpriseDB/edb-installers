@@ -210,7 +210,7 @@ _postprocess_PostGIS_linux_x64() {
     cp resources/*.png staging/linux-x64/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
     mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp resources/xdg/enterprisedb-postgres.directory staging/linux-x64/scripts/xdg/enterprisedb-postgres.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql-$PG_MAJOR_VERSION.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/enterprisedb-postgis.directory staging/linux-x64/scripts/xdg/enterprisedb-postgis.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/enterprisedb-launchPostGISDocs.desktop staging/linux-x64/scripts/xdg/enterprisedb-launchPostGISDocs.desktop || _die "Failed to copy a menu pick desktop"
     cp resources/xdg/enterprisedb-launchJDBCDocs.desktop staging/linux-x64/scripts/xdg/enterprisedb-launchJDBCDocs.desktop || _die "Failed to copy a menu pick desktop"
