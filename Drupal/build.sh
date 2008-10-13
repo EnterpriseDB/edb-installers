@@ -5,8 +5,7 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-    #source $WD/Drupal/build-osx.sh
-    echo "Not yet implemented"
+    source $WD/Drupal/build-osx.sh
 fi
 
 # Linux
@@ -58,8 +57,7 @@ _prep_Drupal() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_prep_Drupal_osx || exit 1
-        echo "Not yet implemented"
+        _prep_Drupal_osx || exit 1
     fi
 
     # Linux
@@ -91,8 +89,7 @@ _build_Drupal() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_build_Drupal_osx || exit 1
-        echo "Not yet implemented"
+        _build_Drupal_osx || exit 1
     fi
 
     # Linux 
@@ -137,8 +134,7 @@ _postprocess_Drupal() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_postprocess_Drupal_osx || exit 1
-        echo "Not yet implemented"
+        _postprocess_Drupal_osx || exit 1
     fi
 
     # Linux
