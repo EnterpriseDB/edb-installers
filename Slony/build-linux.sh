@@ -94,9 +94,6 @@ _postprocess_Slony_linux() {
     cp scripts/linux/getMajorVersion.sh staging/linux/installer/Slony/getMajorVersion.sh || _die "Failed to copy the getMajorVersion script (scripts/linux/getMajorVersion.sh)"
     chmod ugo+x staging/linux/installer/Slony/getMajorVersion.sh
    
-    cp scripts/linux/check-pgversion.sh staging/linux/installer/Slony/check-pgversion.sh || _die "Failed to copy the check-pgversion script (scripts/linux/check-pgversion.sh)"
-    chmod ugo+x staging/linux/installer/Slony/check-pgversion.sh
- 
     cp scripts/linux/configureslony.sh staging/linux/installer/Slony/configureslony.sh || _die "Failed to copy the configureSlony script (scripts/linux/configureslony.sh)"
     chmod ugo+x staging/linux/installer/Slony/configureslony.sh
 
