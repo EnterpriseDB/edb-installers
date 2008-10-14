@@ -78,10 +78,11 @@ _build_ApachePhp_linux() {
     _replace "#ServerName www.example.com:80" "ServerName localhost:@@PORT@@" "$WD/ApachePhp/staging/linux/apache/conf/httpd.conf"
 
     #Configure the apachectl script file
-    _replace "\$HTTPD -k \$ARGV" "\"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux/apache/bin/apachectl"
-    _replace "\$HTTPD -t" "\"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux/apache/bin/apachectl"
-    _replace "\$HTTPD \$ARGV" "\"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux/apache/bin/apachectl"   chmod ugo+x "$PG_STAGING/apache/bin/apachectl" 
-     
+    _replace "\$HTTPD -k \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux/apache/bin/apachectl"
+    _replace "\$HTTPD -t" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux/apache/bin/apachectl"
+    _replace "\$HTTPD \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux/apache/bin/apachectl"
+    ssh $PG_SSH_LINUX "chmod ugo+x \"$PG_STAGING/apache/bin/apachectl\"" 
+    
     echo "Configuring the php source tree"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux/; sh ./configure --prefix=$PG_STAGING/php --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=$PG_STAGING/php --with-pgsql=$PG_PGHOME_LINUX" || _die "Failed to configure php"
 

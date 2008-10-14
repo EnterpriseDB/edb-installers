@@ -6,23 +6,6 @@ then
         exit 1
 fi
 
-# action function to perform Apache start, stop, restart
-_action() {
-
-     echo "Trying to $1 Apache ....."
-     response=`su -m -c "/opt/PostgreSQL/EnterpriseDB-ApachePhp/apache/bin/apachectl $1"`
-     if [ "x$response" == "x" ]; then
-         if [ $1 == "stop" ]; then
-             echo "Apache stopped Sucessfully"
-         else
-             echo "Apache started Successfully"
-         fi
-     else
-               echo ERROR: $response
-     fi
-}
-
-
 case $1 in
         start) action=start
                 ;;
@@ -58,23 +41,31 @@ fi
 # Run selected operation
 if [ $USE_SUDO != "1" ];
 then
-        if [ $action == "restart" ]; then
-                _action "stop"
-         echo "" 
-                _action "start"
-        else
-                _action "$action"
-        fi
-    
+
+     response=`su -m -c "@@APACHE_HOME@@/bin/apachectl $action"`
+ 
+else
+     response=`sudo "@@APACHE_HOME@@/bin/apachectl $action"`
+
+fi
+
+if [ "x$response" == "x" ]; then
+    if [ $action == "stop" ]; then
+         echo "Apache stopped Sucessfully"
+    else
+         echo "Apache" "$action"ed "Successfully"
+    fi
 else
     if [ $action == "restart" ]; then
-                _action "stop" 
-                 echo ""
-                _action "start"
+        apache_status=`ps -ef | grep @@APACHE_HOME@@/bin/httpd | grep -v "grep"`
+        if [ "x$apache_status" == "x" ]; then
+                echo "Error Starting Apache."
         else
-                _action "$action"
+                echo "Apache restarted successfully."
         fi
-
+    else
+        echo ERROR: $response
+    fi
 fi
 
 printf "\n\n"
