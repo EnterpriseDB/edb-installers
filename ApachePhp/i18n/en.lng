@@ -20,7 +20,7 @@ apache.details.title=Apache Server Details
 
 apache.details.explanation=Please specify a Port on which Apache will run
 
-apachephp.installdir.error=Installation directory path should not contain white-spaces.
+apachephp.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 
