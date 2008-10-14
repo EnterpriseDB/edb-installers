@@ -8,7 +8,7 @@ error.configure.slony=Error Configuring Slony
 
 slony.installdir.error=Installation directory path should not contain white-spaces.
 
-slony.installdir.pgerror=Installation directory path is not a valid PostgreSQL Server Installation Directory.
+slony.installdir.pgerror=The installation directory path is not a valid PostgreSQL Server installation directory. Please select the correct path, or install the PostgreSQL Server and try again.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 

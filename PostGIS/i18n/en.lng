@@ -20,7 +20,7 @@ spatialdb.details.explanation=Please enter the name of the PostGIS Database.
 
 postgis.installdir.error=The installation directory path should not contain white-spaces.
 
-postgis.installdir.pgerror=The installation directory path is not a valid PostgreSQL Server Installation Directory.
+postgis.installdir.pgerror=The installation directory path is not a valid PostgreSQL Server installation directory. Please select the correct path, or install the PostgreSQL Server and try again.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 progress.text.configure.postgis=Configuring PostGIS Scripts
