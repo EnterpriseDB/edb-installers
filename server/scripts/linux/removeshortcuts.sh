@@ -19,6 +19,9 @@ WARN=0
 # Working directory
 WD=`pwd`
 
+# Version string, for the xdg filenames
+VERSION_STR=`echo $VERSION | sed 's/\./_/g'`
+
 # Error handlers
 _die() {
     echo $1
@@ -32,24 +35,24 @@ _warn() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system --noupdate \
-	  "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
-	  "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION.directory" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION.desktop" || _warn "Failed to remove the documentation menu"
+	  "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION_STR.directory" \
+	  "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION_STR.directory" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION_STR.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION_STR.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION_STR.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION_STR.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION_STR.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION_STR.desktop" || _warn "Failed to remove the documentation menu"
 
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
-	  "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
-	  "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-start-$VERSION.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION.desktop" || _warn "Failed to remove the top level menu"
+	  "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION_STR.directory" \
+	  "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION_STR.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION_STR.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION_STR.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-start-$VERSION_STR.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION_STR.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION_STR.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop" || _warn "Failed to remove the top level menu"
 	  
 # Remove the icon resources
 cd "$INSTALLDIR/scripts/images"

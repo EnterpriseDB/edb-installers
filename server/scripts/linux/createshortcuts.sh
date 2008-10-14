@@ -22,6 +22,9 @@ WARN=0
 # Working directory
 WD=`pwd`
 
+# Version string, for the xdg filenames
+VERSION_STR=`echo $VERSION | sed 's/\./_/g'`
+
 # Error handlers
 _die() {
     echo $1
@@ -48,6 +51,35 @@ _fixup_file() {
     _replace PG_DATADIR $DATADIR $1
 }
 
+# We need to remove any old shortcuts created by the Beta/RC installers, as they 
+# used a version numbering scheme that could confuse XDG
+if [ -f "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory"];
+then
+   # Remove the menu shortcuts
+   "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system --noupdate \
+          "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
+          "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION.directory" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION.desktop" 
+
+   "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
+          "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
+          "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-start-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION.desktop"
+
+    rm "$INSTALLDIR/scripts/xdg/"pg-*-$VERSION.directory
+    rm "$INSTALLDIR/scripts/xdg/"pg-*-$VERSION.desktop
+fi
+
+
 # Create the icon resources
 cd "$INSTALLDIR/scripts/images"
 for i in `ls *.png`
@@ -67,42 +99,42 @@ _fixup_file "$INSTALLDIR/scripts/serverctl.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION.directory"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-start-$VERSION.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION_STR.directory"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION_STR.directory"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-start-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system --noupdate \
-      "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
-	  "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-start-$VERSION.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION.desktop" || _warn "Failed to create the top level menu"
+      "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION_STR.directory" \
+	  "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION_STR.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION_STR.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION_STR.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-start-$VERSION_STR.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION_STR.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION_STR.desktop" \
+	  "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop" || _warn "Failed to create the top level menu"
 
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system \
-      "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
-      "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION.directory" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION.desktop" || _warn "Failed to create the documentation menu"
+      "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION_STR.directory" \
+      "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION_STR.directory" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION_STR.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION_STR.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION_STR.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION_STR.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION_STR.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION_STR.desktop" || _warn "Failed to create the documentation menu"
 
 # Not entirely relevant to this script, but pre-cofigure pgAdmin while we're here
 # Pre-register the server with pgAdmin, if the user doesn't already have a pgAdmin preferences file

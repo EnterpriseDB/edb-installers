@@ -131,8 +131,8 @@ _build_server_linux_x64() {
 
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxslt.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-	ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libexpat.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-	ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libtiff.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libexpat.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libtiff.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
 
     # Copy the Postgres utilities
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/bin/pg_dump $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
@@ -213,22 +213,25 @@ _postprocess_server_linux_x64() {
     cp resources/*.png staging/linux-x64/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
     mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
 
-    cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql-$PG_MAJOR_VERSION.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/pg-documentation.directory staging/linux-x64/scripts/xdg/pg-documentation-$PG_MAJOR_VERSION.directory || _die "Failed to copy a menu pick directory"
+    # Version string, for the xdg filenames
+    PG_VERSION_STR=`echo $PG_MAJOR_VERSION | sed 's/\./_/g'`
 
-    cp resources/xdg/pg-doc-installationnotes.desktop staging/linux-x64/scripts/xdg/pg-doc-installationnotes-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-doc-pgadmin.desktop staging/linux-x64/scripts/xdg/pg-doc-pgadmin-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-doc-pljava-readme.desktop staging/linux-x64/scripts/xdg/pg-doc-pljava-readme-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-doc-pljava.desktop staging/linux-x64/scripts/xdg/pg-doc-pljava-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-doc-postgresql-releasenotes.desktop staging/linux-x64/scripts/xdg/pg-doc-postgresql-releasenotes-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-doc-postgresql.desktop staging/linux-x64/scripts/xdg/pg-doc-postgresql-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-pgadmin.desktop staging/linux-x64/scripts/xdg/pg-pgadmin-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-psql.desktop staging/linux-x64/scripts/xdg/pg-psql-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-reload.desktop staging/linux-x64/scripts/xdg/pg-reload-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-restart.desktop staging/linux-x64/scripts/xdg/pg-restart-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
-	cp resources/xdg/pg-stackbuilder.desktop staging/linux-x64/scripts/xdg/pg-stackbuilder-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-start.desktop staging/linux-x64/scripts/xdg/pg-start-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-stop.desktop staging/linux-x64/scripts/xdg/pg-stop-$PG_MAJOR_VERSION.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/pg-documentation.directory staging/linux-x64/scripts/xdg/pg-documentation-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
+
+    cp resources/xdg/pg-doc-installationnotes.desktop staging/linux-x64/scripts/xdg/pg-doc-installationnotes-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-doc-pgadmin.desktop staging/linux-x64/scripts/xdg/pg-doc-pgadmin-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-doc-pljava-readme.desktop staging/linux-x64/scripts/xdg/pg-doc-pljava-readme-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-doc-pljava.desktop staging/linux-x64/scripts/xdg/pg-doc-pljava-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-doc-postgresql-releasenotes.desktop staging/linux-x64/scripts/xdg/pg-doc-postgresql-releasenotes-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-doc-postgresql.desktop staging/linux-x64/scripts/xdg/pg-doc-postgresql-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-pgadmin.desktop staging/linux-x64/scripts/xdg/pg-pgadmin-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-psql.desktop staging/linux-x64/scripts/xdg/pg-psql-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-reload.desktop staging/linux-x64/scripts/xdg/pg-reload-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-restart.desktop staging/linux-x64/scripts/xdg/pg-restart-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+	cp resources/xdg/pg-stackbuilder.desktop staging/linux-x64/scripts/xdg/pg-stackbuilder-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-start.desktop staging/linux-x64/scripts/xdg/pg-start-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pg-stop.desktop staging/linux-x64/scripts/xdg/pg-stop-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
     
     # Copy the launch scripts
     cp scripts/linux/launchpsql.sh staging/linux-x64/scripts/launchpsql.sh || _die "Failed to copy the launchpsql script (scripts/linux/launchpsql.sh)"
