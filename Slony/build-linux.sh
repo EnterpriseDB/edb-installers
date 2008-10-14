@@ -102,7 +102,9 @@ _postprocess_Slony_linux() {
 
     mkdir -p staging/linux/scripts || _die "Failed to create a directory for the launch scripts"
     cp -R scripts/linux/launchbrowser.sh staging/linux/scripts/launchbrowser.sh || _die "Failed to copy the launch scripts (scripts/linux)"
+	chmod ugo+x staging/linux/scripts/launchbrowser.sh
     cp -R scripts/linux/launchSlonyDocs.sh staging/linux/scripts/launchSlonyDocs.sh || _die "Failed to copy the launch scripts (scripts/linux)"
+    chmod ugo+x staging/linux/scripts/launchSlonyDocs.sh 
 
     # Copy the XDG scripts
     mkdir -p staging/linux/installer/xdg || _die "Failed to create a directory for the xdg scripts"

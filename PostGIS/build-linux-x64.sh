@@ -197,8 +197,11 @@ _postprocess_PostGIS_linux_x64() {
 
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the launch scripts"
     cp -R scripts/linux-x64/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launch scripts (scripts/linux-x64)"
+	chmod ugo+x staging/linux-x64/scripts/launchbrowser.sh
     cp -R scripts/linux-x64/launchPostGISDocs.sh staging/linux-x64/scripts/launchPostGISDocs.sh || _die "Failed to copy the launch scripts (scripts/linux-x64)"
-    cp -R scripts/linux-x64/launchJDBCDocs.sh staging/linux-x64/scripts/launchJDBCDocs.sh || _die "Failed to copy the launch scripts (scripts/linux-x64)"
+    chmod ugo+x staging/linux-x64/scripts/launchPostGISDocs.sh 
+	cp -R scripts/linux-x64/launchJDBCDocs.sh staging/linux-x64/scripts/launchJDBCDocs.sh || _die "Failed to copy the launch scripts (scripts/linux-x64)"
+    chmod ugo+x staging/linux-x64/scripts/launchJDBCDocs.sh 
 
     # Copy the XDG scripts
     mkdir -p staging/linux-x64/installer/xdg || _die "Failed to create a directory for the xdg scripts"
