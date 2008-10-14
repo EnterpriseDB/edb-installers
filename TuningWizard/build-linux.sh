@@ -91,8 +91,13 @@ _postprocess_TuningWizard_linux() {
 
     mkdir -p staging/linux/scripts || _die "Failed to create a directory for the launch scripts"
     cp -R scripts/linux/launchTuningWizard.sh staging/linux/scripts/launchTuningWizard.sh || _die "Failed to copy the launch scripts (scripts/linux)"
+    chmod ugo+x staging/linux/scripts/launchTuningWizard.sh
+
     cp -R scripts/linux/ctlTuningWizard.sh staging/linux/scripts/ctlTuningWizard.sh || _die "Failed to copy the launch scripts (scripts/linux)"
+    chmod ugo+x staging/linux/scripts/ctlTuningWizard.sh
+
     cp -R scripts/linux/runTuningWizard.sh staging/linux/scripts/runTuningWizard.sh || _die "Failed to copy the launch scripts (scripts/linux)"
+    chmod ugo+x staging/linux/scripts/runTuningWizard.sh
 
     # Copy the XDG scripts
     mkdir -p staging/linux/installer/xdg || _die "Failed to create a directory for the xdg scripts"

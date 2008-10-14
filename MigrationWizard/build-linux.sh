@@ -79,6 +79,7 @@ _postprocess_MigrationWizard_linux() {
 
     mkdir -p staging/linux/scripts || _die "Failed to create a directory for the launch scripts"
     cp -R scripts/linux/launchMigrationWizard.sh staging/linux/scripts/launchMigrationWizard.sh || _die "Failed to copy the launch scripts (scripts/linux)"
+    chmod ugo+x staging/linux/scripts/launchMigrationWizard.sh
 
     # Copy the XDG scripts
     mkdir -p staging/linux/installer/xdg || _die "Failed to create a directory for the xdg scripts"

@@ -60,13 +60,20 @@ _postprocess_phpPgAdmin_linux_x64() {
     # Setup the installer scripts.
     mkdir -p staging/linux-x64/installer/phpPgAdmin || _die "Failed to create a directory for the install scripts"
     cp scripts/linux-x64/createshortcuts.sh staging/linux-x64/installer/phpPgAdmin/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux-x64/createshortcuts.sh)"
+    chmod ugo+x staging/linux-x64/installer/phpPgAdmin/createshortcuts.sh
+
     cp scripts/linux-x64/removeshortcuts.sh staging/linux-x64/installer/phpPgAdmin/removeshortcuts.sh || _die "Failed to copy the removeshortcuts.sh (scripts/linux-x64/removeshortcuts.sh)"
+    chmod ugo+x  staging/linux-x64/installer/phpPgAdmin/removeshortcuts.sh
 
     # Setup the phpPgAdmin Launch Scripts
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the phpPgAdmin Launch Scripts"
 
     cp scripts/linux-x64/launchPhpPgAdmin.sh staging/linux-x64/scripts/launchPhpPgAdmin.sh || _die "Failed to copy the launchPhpWiki.sh  script (scripts/linux-x64/launchPhpWiki.sh)"
+    chmod ugo+x staging/linux-x64/scripts/launchPhpPgAdmin.sh
+
     cp scripts/linux-x64/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser.sh script (scripts/linux-x64/launchbrowser.sh)"
+    chmod ugo+x staging/linux-x64/scripts/launchbrowser.sh
+
     chmod -R ugo+x scripts/linux-x64 || _die "Couldn't set the permissions on the scripts directory"
 
      # Setup the phpPgAdmin xdg Files
