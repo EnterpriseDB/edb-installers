@@ -152,10 +152,7 @@ _postprocess_Slony_osx() {
     chmod ugo+x staging/osx/installer/Slony/configureslony.sh
 
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the launch scripts"
-    cp -R scripts/osx/launchbrowser.sh staging/osx/scripts/launchbrowser.sh || _die "Failed to copy the launch scripts (scripts/osx)"
-    chmod ugo+x staging/osx/scripts/launchbrowser.sh
     cp -R scripts/osx/enterprisedb-launchSlonyDocs.applescript.in staging/osx/scripts/enterprisedb-launchSlonyDocs.applescript || _die "Failed to copy the launch script (scripts/osx/enterprisedb-launchSlonyDocs.applescript.in)"
-    chmod ugo+x staging/osx/scripts/enterprisedb-launchSlonyDocs.applescript
 
     # Copy in the menu pick images and XDG items
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"

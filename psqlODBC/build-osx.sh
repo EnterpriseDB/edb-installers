@@ -113,11 +113,7 @@ _postprocess_psqlODBC_osx() {
 
     #Setup the launch scripts
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the launch scripts"
-    cp scripts/osx/launchbrowser.sh staging/osx/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/osx/scripts/launchbrowser.sh)"
-    chmod ugo+x staging/osx/scripts/launchbrowser.sh
-    
     cp scripts/osx/enterprisedb-launchOdbcDocs.applescript.in staging/osx/scripts/enterprisedb-launchOdbcDocs.applescript || _die "Failed to copy the enterprisedb-launchOdbcDocs.applescript.in script (scripts/osx/scripts/enterprisedb-launchOdbcDocs.applescript)"
-    chmod ugo+x staging/osx/scripts/enterprisedb-launchOdbcDocs.applescript
 
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"

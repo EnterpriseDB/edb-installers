@@ -301,9 +301,6 @@ _postprocess_PostGIS_osx() {
     chmod ugo+x $PG_STAGING/installer/PostGIS/check-db.sh
 
     mkdir -p $PG_STAGING/scripts || _die "Failed to create a directory for the launch scripts"
-    cp -R $PG_PATH_OSX/PostGIS/scripts/osx/launchbrowser.sh $PG_STAGING/scripts/launchbrowser.sh || _die "Failed to copy the launch scripts (scripts/osx)"
-    chmod ugo+x $PG_STAGING/scripts/launchbrowser.sh
-
     cp -R $PG_PATH_OSX/PostGIS/scripts/osx/enterprisedb-launchJdbcDocs.applescript.in $PG_STAGING/scripts/enterprisedb-launchJdbcDocs.applescript || _die "Failed to copy the launch script (scripts/osx/enterprisedb-launchJdbcDocs.applescript.in)"
     cp -R $PG_PATH_OSX/PostGIS/scripts/osx/enterprisedb-launchPostGISDocs.applescript.in $PG_STAGING/scripts/enterprisedb-launchPostGISDocs.applescript || _die "Failed to copy the launch script (scripts/osx/enterprisedb-launchPostGISDocs.applescript.in)"
 

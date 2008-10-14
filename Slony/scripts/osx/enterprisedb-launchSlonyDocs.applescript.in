@@ -1,1 +1,1 @@
-do shell script "INSTALL_DIR/scripts/launchbrowser.sh http://www.slony.info/documentation/"
+open location "http://www.slony.info/documentation/"

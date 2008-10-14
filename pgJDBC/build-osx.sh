@@ -65,11 +65,7 @@ _postprocess_pgJDBC_osx() {
 
     # Setup Launch Scripts
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the launch scripts"
-    cp scripts/osx/launchbrowser.sh staging/osx/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/osx/launchbrowser.sh)"
-    chmod ugo+x staging/osx/scripts/launchbrowser.sh
-    
     cp scripts/osx/pgjdbc.applescript staging/osx/scripts/pgjdbc.applescript || _die "Failed to copy the pgjdbc.applescript script (scripts/osx/pgjdbc.applescript)"
-    chmod ugo+x staging/osx/scripts/pgjdbc.applescript
 
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
