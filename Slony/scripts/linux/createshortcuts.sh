@@ -1,14 +1,19 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 2 ]; 
+if [ $# -ne 3 ]; 
 then
-    echo "Usage: $0 <Install dir> <PG_MAJOR_VERSION>"
+    echo "Usage: $0 <Install dir> <PG_MAJOR_VERSION> <PG_VERSION_SLONY>"
     exit 127
 fi
 
 INSTALLDIR="$1"
 VERSION=$2
+PG_VERSION_SLONY=$3
+
+# Version string, for the xdg filenames
+PG_VERSION_STR=`echo $VERSION | sed 's/\./_/g'`
+SLONY_VERSION_STR=`echo $PG_VERSION_SLONY | cut -f1,2 -d "." | sed 's/\./_/g'`
 
 # Exit code
 WARN=0
@@ -53,16 +58,16 @@ _fixup_file "$INSTALLDIR/Slony/scripts/launchSlonyDocs.sh"
 chmod ugo+x "$INSTALLDIR/Slony/scripts/launchSlonyDocs.sh"
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/Slony/scripts/xdg/enterprisedb-launchSlonyDocs.desktop"
-_fixup_file "$INSTALLDIR/Slony/scripts/xdg/pg-postgresql-$VERSION.directory"
+_fixup_file "$INSTALLDIR/Slony/scripts/xdg/enterprisedb-launchSlonyDocs-$SLONY_VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/Slony/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory"
 
-chmod ugo+x "$INSTALLDIR/Slony/scripts/xdg/enterprisedb-launchSlonyDocs.desktop"
-chmod ugo+x "$INSTALLDIR/Slony/scripts/xdg/pg-postgresql-$VERSION.directory"
+chmod ugo+x "$INSTALLDIR/Slony/scripts/xdg/enterprisedb-launchSlonyDocs-$SLONY_VERSION_STR.desktop"
+chmod ugo+x "$INSTALLDIR/Slony/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/Slony/installer/xdg/xdg-desktop-menu" install --mode system --novendor \
-         "$INSTALLDIR/Slony/scripts/xdg/pg-postgresql-$VERSION.directory" \
-    "$INSTALLDIR/Slony/scripts/xdg/enterprisedb-launchSlonyDocs.desktop"  || _warn "Failed to create the Slony menu"
+         "$INSTALLDIR/Slony/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory" \
+    "$INSTALLDIR/Slony/scripts/xdg/enterprisedb-launchSlonyDocs-$SLONY_VERSION_STR.desktop"  || _warn "Failed to create the Slony menu"
 
 echo "$0 ran to completion"
 exit 0

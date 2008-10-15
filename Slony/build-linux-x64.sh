@@ -88,22 +88,23 @@ _postprocess_Slony_linux_x64() {
 
     mkdir -p staging/linux-x64/installer/Slony || _die "Failed to create a directory for the install scripts"
 
-    cp scripts/linux-x64/createshortcuts.sh staging/linux-x64/installer/Slony/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux-x64/createshortcuts.sh)"
+    cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/Slony/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/Slony/createshortcuts.sh
 
-    cp scripts/linux-x64/getMajorVersion.sh staging/linux-x64/installer/Slony/getMajorVersion.sh || _die "Failed to copy the getMajorVersion script (scripts/linux-x64/getMajorVersion.sh)"
-    chmod ugo+x staging/linux-x64/installer/Slony/getMajorVersion.sh
+    cp scripts/linux/check-pgversion.sh staging/linux-x64/installer/Slony/check-pgversion.sh || _die "Failed to copy the check-pgversion script (scripts/linux/check-pgversion.sh)"
+    chmod ugo+x staging/linux-x64/installer/Slony/check-pgversion.sh
 
-    cp scripts/linux-x64/removeshortcuts.sh staging/linux-x64/installer/Slony/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux-x64/removeshortcuts.sh)"
+    cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/Slony/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/Slony/removeshortcuts.sh
 
-    cp scripts/linux-x64/configureslony.sh staging/linux-x64/installer/Slony/configureslony.sh || _die "Failed to copy the configureSlony script (scripts/linux-x64/configureslony.sh)"
+    cp scripts/linux/configureslony.sh staging/linux-x64/installer/Slony/configureslony.sh || _die "Failed to copy the configureSlony script (scripts/linux/configureslony.sh)"
     chmod ugo+x staging/linux-x64/installer/Slony/configureslony.sh
 
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the launch scripts"
-    cp -R scripts/linux-x64/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launch scripts (scripts/linux-x64)"
-	chmod ugo+x staging/linux-x64/scripts/launchbrowser.sh
-    cp -R scripts/linux-x64/launchSlonyDocs.sh staging/linux-x64/scripts/launchSlonyDocs.sh || _die "Failed to copy the launch scripts (scripts/linux-x64)"
+    cp -R scripts/linux/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launch scripts (scripts/linux)"
+    chmod ugo+x staging/linux-x64/scripts/launchbrowser.sh
+
+    cp -R scripts/linux/launchSlonyDocs.sh staging/linux-x64/scripts/launchSlonyDocs.sh || _die "Failed to copy the launch scripts (scripts/linux)"
     chmod ugo+x staging/linux-x64/scripts/launchSlonyDocs.sh
 
     # Copy the XDG scripts
@@ -115,9 +116,13 @@ _postprocess_Slony_linux_x64() {
     mkdir -p staging/linux-x64/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.png staging/linux-x64/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
+    # Version string, for the xdg filenames
+    PG_VERSION_STR=`echo $PG_MAJOR_VERSION | sed 's/\./_/g'`
+    SLONY_VERSION_STR=`echo $PG_VERSION_SLONY | cut -f1,2 -d "." | sed 's/\./_/g'`
+
     mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql-$PG_MAJOR_VERSION.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/enterprisedb-launchSlonyDocs.desktop staging/linux-x64/scripts/xdg/enterprisedb-launchSlonyDocs.desktop || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/enterprisedb-launchSlonyDocs.desktop staging/linux-x64/scripts/xdg/enterprisedb-launchSlonyDocs-$SLONY_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
 
  
     # Build the installer
