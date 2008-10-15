@@ -1,14 +1,19 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 2 ]; 
+if [ $# -ne 3 ]; 
 then
-    echo "Usage: $0 <Install dir> <PG_MAJOR_VERSION>"
+    echo "Usage: $0 <Install dir> <PG_MAJOR_VERSION> <PG_VERSION_POSTGIS>"
     exit 127
 fi
 
 INSTALLDIR="$1"
 VERSION=$2
+PG_VERSION_POSTGIS=$3
+
+# Version string, for the xdg filenames
+PG_VERSION_STR=`echo $VERSION | sed 's/\./_/g'`
+POSTGIS_VERSION_STR=`echo $PG_VERSION_POSTGIS | sed 's/\./_/g'`
 
 # Exit code
 WARN=0
@@ -55,21 +60,21 @@ chmod ugo+x "$INSTALLDIR/PostGIS/scripts/launchPostGISDocs.sh"
 chmod ugo+x "$INSTALLDIR/PostGIS/scripts/launchJDBCDocs.sh"
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchPostGISDocs.desktop"
-_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchJDBCDocs.desktop"
-_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$VERSION.directory"
+_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchJDBCDocs-$POSTGIS_VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory"
 
-chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchPostGISDocs.desktop"
-chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchJDBCDocs.desktop"
-chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-postgis.directory"
-chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$VERSION.directory"
+chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop"
+chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchJDBCDocs-$POSTGIS_VERSION_STR.desktop"
+chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-postgis-$POSTGIS_VERSION_STR.directory"
+chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/PostGIS/installer/xdg/xdg-desktop-menu" install --mode system \
-         "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$VERSION.directory" \
-         "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-postgis.directory" \
-    "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchPostGISDocs.desktop" \
-    "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchJDBCDocs.desktop"  || _warn "Failed to create the PostGIS menu"
+         "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory" \
+         "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-postgis-$POSTGIS_VERSION_STR.directory" \
+    "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop" \
+    "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchJDBCDocs-$POSTGIS_VERSION_STR.desktop"  || _warn "Failed to create the PostGIS menu"
 
 echo "$0 ran to completion"
 exit 0

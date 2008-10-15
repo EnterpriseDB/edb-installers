@@ -174,34 +174,39 @@ _postprocess_PostGIS_linux_x64() {
 
     mkdir -p staging/linux-x64/installer/PostGIS || _die "Failed to create a directory for the install scripts"
 
-    cp scripts/linux-x64/createshortcuts.sh staging/linux-x64/installer/PostGIS/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux-x64/createshortcuts.sh)"
+    cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/PostGIS/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/createshortcuts.sh
 
-    cp scripts/linux-x64/createtemplatedb.sh staging/linux-x64/installer/PostGIS/createtemplatedb.sh || _die "Failed to copy the createtemplatedb script (scripts/linux-x64/createtemplatedb.sh)"
+    cp scripts/linux/createtemplatedb.sh staging/linux-x64/installer/PostGIS/createtemplatedb.sh || _die "Failed to copy the createtemplatedb script (scripts/linux/createtemplatedb.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/createtemplatedb.sh
 
-    cp scripts/linux-x64/createpostgisdb.sh staging/linux-x64/installer/PostGIS/createpostgisdb.sh || _die "Failed to copy the createpostgisdb script (scripts/linux-x64/createpostgisdb.sh)"
+    cp scripts/linux/createpostgisdb.sh staging/linux-x64/installer/PostGIS/createpostgisdb.sh || _die "Failed to copy the createpostgisdb script (scripts/linux/createpostgisdb.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/createpostgisdb.sh
 
-    cp scripts/linux-x64/removeshortcuts.sh staging/linux-x64/installer/PostGIS/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux-x64/removeshortcuts.sh)"
+    cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/PostGIS/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/removeshortcuts.sh    
 
-    cp scripts/linux-x64/check-connection.sh staging/linux-x64/installer/PostGIS/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux-x64/check-connection.sh)"
+    cp scripts/linux/check-connection.sh staging/linux-x64/installer/PostGIS/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux/check-connection.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/check-connection.sh
 
-    cp scripts/linux-x64/configurePostGIS.sh staging/linux-x64/installer/PostGIS/configurePostGIS.sh || _die "Failed to copy the configurePostGIS script (scripts/linux-x64/configurePostGIS.sh)"
+    cp scripts/linux/configurePostGIS.sh staging/linux-x64/installer/PostGIS/configurePostGIS.sh || _die "Failed to copy the configurePostGIS script (scripts/linux/configurePostGIS.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/configurePostGIS.sh
 
-    cp scripts/linux-x64/check-db.sh staging/linux-x64/installer/PostGIS/check-db.sh || _die "Failed to copy the check-db script (scripts/linux-x64/check-db.sh)"
+    cp scripts/linux/check-pgversion.sh staging/linux-x64/installer/PostGIS/check-pgversion.sh || _die "Failed to copy the check-pgversion script (scripts/linux/check-pgversion.sh)"
+    chmod ugo+x staging/linux-x64/installer/PostGIS/check-pgversion.sh
+
+    cp scripts/linux/check-db.sh staging/linux-x64/installer/PostGIS/check-db.sh || _die "Failed to copy the check-db script (scripts/linux/check-db.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/check-db.sh
 
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the launch scripts"
-    cp -R scripts/linux-x64/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launch scripts (scripts/linux-x64)"
-	chmod ugo+x staging/linux-x64/scripts/launchbrowser.sh
-    cp -R scripts/linux-x64/launchPostGISDocs.sh staging/linux-x64/scripts/launchPostGISDocs.sh || _die "Failed to copy the launch scripts (scripts/linux-x64)"
-    chmod ugo+x staging/linux-x64/scripts/launchPostGISDocs.sh 
-	cp -R scripts/linux-x64/launchJDBCDocs.sh staging/linux-x64/scripts/launchJDBCDocs.sh || _die "Failed to copy the launch scripts (scripts/linux-x64)"
-    chmod ugo+x staging/linux-x64/scripts/launchJDBCDocs.sh 
+    cp -R scripts/linux/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launch scripts (scripts/linux)"
+    chmod ugo+x staging/linux-x64/scripts/launchbrowser.sh
+
+    cp -R scripts/linux/launchPostGISDocs.sh staging/linux-x64/scripts/launchPostGISDocs.sh || _die "Failed to copy the launch scripts (scripts/linux)"
+    chmod ugo+x staging/linux-x64/scripts/launchPostGISDocs.sh
+
+    cp -R scripts/linux/launchJDBCDocs.sh staging/linux-x64/scripts/launchJDBCDocs.sh || _die "Failed to copy the launch scripts (scripts/linux)"
+    chmod ugo+x staging/linux-x64/scripts/launchJDBCDocs.sh
 
     # Copy the XDG scripts
     mkdir -p staging/linux-x64/installer/xdg || _die "Failed to create a directory for the xdg scripts"
@@ -212,11 +217,15 @@ _postprocess_PostGIS_linux_x64() {
     mkdir -p staging/linux-x64/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.png staging/linux-x64/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
+    # Version string, for the xdg filenames
+    PG_VERSION_STR=`echo $PG_MAJOR_VERSION | sed 's/\./_/g'`
+    POSTGIS_VERSION_STR=`echo $PG_VERSION_POSTGIS | sed 's/\./_/g'`
+
     mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql-$PG_MAJOR_VERSION.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/enterprisedb-postgis.directory staging/linux-x64/scripts/xdg/enterprisedb-postgis.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/enterprisedb-launchPostGISDocs.desktop staging/linux-x64/scripts/xdg/enterprisedb-launchPostGISDocs.desktop || _die "Failed to copy a menu pick desktop"
-    cp resources/xdg/enterprisedb-launchJDBCDocs.desktop staging/linux-x64/scripts/xdg/enterprisedb-launchJDBCDocs.desktop || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/enterprisedb-postgis.directory staging/linux-x64/scripts/xdg/enterprisedb-postgis-$POSTGIS_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/enterprisedb-launchPostGISDocs.desktop staging/linux-x64/scripts/xdg/enterprisedb-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/enterprisedb-launchJDBCDocs.desktop staging/linux-x64/scripts/xdg/enterprisedb-launchJDBCDocs-$POSTGIS_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"

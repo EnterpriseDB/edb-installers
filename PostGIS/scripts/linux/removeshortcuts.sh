@@ -1,13 +1,17 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 1 ]; 
+if [ $# -ne 2 ];
 then
-    echo "Usage: $0 <Install dir>"
+    echo "Usage: $0 <Install dir> <PG_VERSION_POSTGIS>"
     exit 127
 fi
 
 INSTALLDIR="$1"
+PG_VERSION_POSTGIS=$2
+
+# Version string, for the xdg filenames
+POSTGIS_VERSION_STR=`echo $PG_VERSION_POSTGIS | sed 's/\./_/g'`
 
 # Exit code
 WARN=0
@@ -28,9 +32,9 @@ _warn() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/PostGIS/installer/xdg/xdg-desktop-menu" uninstall --mode system \
-    "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-postgis.directory" \
-    "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchPostGISDocs.desktop" \
-    "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchJDBCDocs.desktop" || _warn "Failed to remove the PostGIS menu"
+    "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-postgis-$POSTGIS_VERSION_STR.directory" \
+    "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop" \
+    "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchJDBCDocs-$POSTGIS_VERSION_STR.desktop" || _warn "Failed to remove the PostGIS menu"
 
       
 # Remove the icon resources

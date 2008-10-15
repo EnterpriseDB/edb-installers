@@ -191,6 +191,9 @@ _postprocess_PostGIS_linux() {
     cp scripts/linux/configurePostGIS.sh staging/linux/installer/PostGIS/configurePostGIS.sh || _die "Failed to copy the configurePostGIS script (scripts/linux/configurePostGIS.sh)"
     chmod ugo+x staging/linux/installer/PostGIS/configurePostGIS.sh
 
+    cp scripts/linux/check-pgversion.sh staging/linux/installer/PostGIS/check-pgversion.sh || _die "Failed to copy the check-pgversion script (scripts/linux/check-pgversion.sh)"
+    chmod ugo+x staging/linux/installer/PostGIS/check-pgversion.sh
+ 
     cp scripts/linux/check-db.sh staging/linux/installer/PostGIS/check-db.sh || _die "Failed to copy the check-db script (scripts/linux/check-db.sh)"
     chmod ugo+x staging/linux/installer/PostGIS/check-db.sh
 
@@ -211,11 +214,15 @@ _postprocess_PostGIS_linux() {
     mkdir -p staging/linux/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
+    # Version string, for the xdg filenames
+    PG_VERSION_STR=`echo $PG_MAJOR_VERSION | sed 's/\./_/g'`
+    POSTGIS_VERSION_STR=`echo $PG_VERSION_POSTGIS | sed 's/\./_/g'`
+
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql-$PG_MAJOR_VERSION.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/enterprisedb-postgis.directory staging/linux/scripts/xdg/enterprisedb-postgis.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/enterprisedb-launchPostGISDocs.desktop staging/linux/scripts/xdg/enterprisedb-launchPostGISDocs.desktop || _die "Failed to copy a menu pick desktop"
-    cp resources/xdg/enterprisedb-launchJDBCDocs.desktop staging/linux/scripts/xdg/enterprisedb-launchJDBCDocs.desktop || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/enterprisedb-postgis.directory staging/linux/scripts/xdg/enterprisedb-postgis-$POSTGIS_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/enterprisedb-launchPostGISDocs.desktop staging/linux/scripts/xdg/enterprisedb-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/enterprisedb-launchJDBCDocs.desktop staging/linux/scripts/xdg/enterprisedb-launchJDBCDocs-$POSTGIS_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"

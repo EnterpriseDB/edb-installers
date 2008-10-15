@@ -297,6 +297,9 @@ _postprocess_PostGIS_osx() {
     cp $PG_PATH_OSX/PostGIS/scripts/osx/configurePostGIS.sh $PG_STAGING/installer/PostGIS/configurePostGIS.sh || _die "Failed to copy the configurePostGIS script (scripts/osx/configurePostGIS.sh)"
     chmod ugo+x $PG_STAGING/installer/PostGIS/configurePostGIS.sh
 
+    cp $PG_PATH_OSX/PostGIS/scripts/osx/check-pgversion.sh $PG_STAGING/installer/PostGIS/check-pgversion.sh || _die "Failed to copy the check-pgversion script (scripts/osx/check-pgversion.sh)"
+    chmod ugo+x $PG_STAGING/installer/PostGIS/check-pgversion.sh
+
     cp $PG_PATH_OSX/PostGIS/scripts/osx/check-db.sh $PG_STAGING/installer/PostGIS/check-db.sh || _die "Failed to copy the check-db script (scripts/osx/check-db.sh)"
     chmod ugo+x $PG_STAGING/installer/PostGIS/check-db.sh
 

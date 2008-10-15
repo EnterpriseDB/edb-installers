@@ -330,7 +330,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/PostGIS/installer/PostGIS/createshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${PGMajorVersion}"</programArguments>
+                    <programArguments>"${installdir}" "${PGMajorVersion}" "${product_version}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -422,7 +422,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/PostGIS/installer/PostGIS/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
+                    <programArguments>"${installdir}" "${product_version}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -1288,6 +1288,73 @@
                             <text>${platform_name}</text>
                             <logic>does_not_equal</logic>
                             <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+            </validationActionList>
+            <validationActionList>
+                <createDirectory path="${system_temp_directory}/${product_fullname}" />
+                <unpackFile>
+                    <component>PostGIS</component>
+                    <destination>${system_temp_directory}/${product_fullname}/check-pgversion.sh</destination>
+                    <folder>installfilesosx</folder>
+                    <origin>installer/PostGIS/check-pgversion.sh</origin>
+                    <ruleList>
+                        <compareText>
+                           <text>${platform_name}</text>
+                           <logic>equals</logic>
+                           <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                </unpackFile>
+                <unpackFile>
+                    <component>PostGIS</component>
+                    <destination>${system_temp_directory}/${product_fullname}/check-pgversion.sh</destination>
+                    <folder>installfileslinux</folder>
+                    <origin>installer/PostGIS/check-pgversion.sh</origin>
+                    <ruleList>
+                        <compareText>
+                           <text>${platform_name}</text>
+                           <logic>equals</logic>
+                           <value>linux</value>
+                        </compareText>
+                    </ruleList>
+                </unpackFile>
+                <unpackFile>
+                    <component>PostGIS</component>
+                    <destination>${system_temp_directory}/${product_fullname}/check-pgversion.sh</destination>
+                    <folder>installfileslinux-x64</folder>
+                    <origin>installer/PostGIS/check-pgversion.sh</origin>
+                    <ruleList>
+                        <compareText>
+                           <text>${platform_name}</text>
+                           <logic>equals</logic>
+                           <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+                </unpackFile>
+                <setInstallerVariableFromScriptOutput>
+                    <name>pg_version</name>
+                    <exec>${system_temp_directory}/${product_fullname}/check-pgversion.sh</exec>
+                    <execArgs>"${installdir}"</execArgs>
+                    <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                </setInstallerVariableFromScriptOutput>
+            </validationActionList>
+            <validationActionList>
+                <actionGroup>
+                    <actionList>
+                        <showWarning>
+                            <text>${msg(postgis.incompatible.pg.error)}</text>
+                        </showWarning>
+                        <exit>
+                            <exitCode>0</exitCode>
+                        </exit>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${pg_version}</text>
+                            <value>PG_MAJOR_VERSION</value>            
                         </compareText>
                     </ruleList>
                 </actionGroup>
