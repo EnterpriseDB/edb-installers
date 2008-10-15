@@ -257,7 +257,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>ApachePhp</section>
                     <key>InstallationDirectory</key>
-                    <variable>${apachephpinstalldir}</variable>
+                    <variable>apachephpinstalldir</variable>
                 </iniFileGet>
             </actionList>
             <ruleList>
