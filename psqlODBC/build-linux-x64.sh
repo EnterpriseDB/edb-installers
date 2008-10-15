@@ -93,18 +93,18 @@ _postprocess_psqlODBC_linux_x64() {
 
     # Setup the installer scripts.
     mkdir -p staging/linux-x64/installer/psqlODBC || _die "Failed to create a directory for the install scripts"
-    cp scripts/linux-x64/removeshortcuts.sh staging/linux-x64/installer/psqlODBC/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux-x64/removeshortcuts.sh)"
+    cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/psqlODBC/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/psqlODBC/removeshortcuts.sh
     
-    cp scripts/linux-x64/createshortcuts.sh staging/linux-x64/installer/psqlODBC/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux-x64/createshortcuts.sh)"
+    cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/psqlODBC/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/psqlODBC/createshortcuts.sh
 
-    cp scripts/linux-x64/getodbcinstpath.sh staging/linux-x64/installer/psqlODBC/getodbcinstpath.sh || _die "Failed to copy the getodbcinstpath.sh script (scripts/linux-x64/getodbcinstpath.sh)"
+    cp scripts/linux/getodbcinstpath.sh staging/linux-x64/installer/psqlODBC/getodbcinstpath.sh || _die "Failed to copy the getodbcinstpath.sh script (scripts/linux/getodbcinstpath.sh)"
     chmod ugo+x staging/linux-x64/installer/psqlODBC/getodbcinstpath.sh
 
     #Setup the launch scripts
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the launch scripts"
-    cp scripts/linux-x64/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux-x64/scripts/launchbrowser.sh)"
+    cp scripts/linux/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/scripts/launchbrowser.sh)"
     chmod ugo+x staging/linux-x64/scripts/launchbrowser.sh
 
     mkdir -p staging/linux-x64/installer/xdg || _die "Failed to create a directory for the menu pick xdg files"
