@@ -6,7 +6,7 @@ install.summary=Slony is a "master to multiple slaves" replication system suppor
 
 error.configure.slony=Error Configuring Slony
 
-slony.installdir.error=Installation directory path should not contain white-spaces.
+slony.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
 slony.installdir.pgerror=The installation directory path is not a valid PostgreSQL Server installation directory. Please select the correct path, or install the PostgreSQL Server and try again.
 
