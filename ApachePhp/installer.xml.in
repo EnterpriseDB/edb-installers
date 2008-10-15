@@ -934,9 +934,10 @@ AddType text/html         php
       <postShowPageActionList>
         <actionGroup>
           <actionList>
-            <throwError>
+            <showWarning>
               <text>${msg(apachephp.installdir.error)}</text>
-            </throwError>
+            </showWarning>
+            <setInstallerVariable name="next_page" value="installdir"/>
           </actionList>
           <ruleList>
             <regExMatch>

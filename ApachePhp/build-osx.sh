@@ -190,10 +190,6 @@ _postprocess_ApachePhp_osx() {
     chmod ugo+x staging/osx/installer/ApachePhp/startupcfg.sh
    
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the launch scripts"
-    # Copy the launch scripts
-
-    cp scripts/osx/launchbrowser.sh staging/osx/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/osx/launchbrowser.sh)"
-    chmod ugo+x staging/osx/scripts/launchbrowser.sh
 
     cp scripts/osx/runApache.sh staging/osx/scripts/runApache.sh || _die "Failed to copy the runApache script (scripts/osx/runApache.sh)"
     chmod ugo+x staging/osx/scripts/runApache.sh
@@ -208,6 +204,8 @@ _postprocess_ApachePhp_osx() {
     cp scripts/osx/enterprisedb-startApache.applescript.in staging/osx/scripts/enterprisedb-startApache.applescript || _die "Failed to copy a menu pick desktop"
     cp scripts/osx/enterprisedb-stopApache.applescript.in staging/osx/scripts/enterprisedb-stopApache.applescript || _die "Failed to copy a menu pick desktop"
     cp scripts/osx/enterprisedb-restartApache.applescript.in staging/osx/scripts/enterprisedb-restartApache.applescript || _die "Failed to copy a menu pick desktop"
+    cp scripts/osx/getapacheport.sh staging/osx/scripts/getapacheport.sh || _die "Failed to copy the getapacheport script (scripts/osx/getapacheport.sh)"
+    chmod ugo+x staging/osx/scripts/getapacheport.sh
 
     cp resources/index.php staging/osx/apache/www || _die "Failed to copy index.php"
     chmod ugo+x staging/osx/apache/www/index.php

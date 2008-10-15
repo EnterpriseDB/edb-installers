@@ -1,1 +1,6 @@
-do shell script "INSTALL_DIR/scripts/launchbrowser.sh "
+set ret to do shell script "INSTALL_DIR/scripts/getapacheport.sh > /tmp/apacheport.txt 2>&1"
+set output to do shell script "cat /tmp/apacheport.txt"
+set ret to do shell script "rm /tmp/apacheport.txt" 
+open location output
+
+

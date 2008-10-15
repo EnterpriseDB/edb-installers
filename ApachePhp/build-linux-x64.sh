@@ -140,30 +140,30 @@ _postprocess_ApachePhp_linux_x64() {
     mkdir -p staging/linux-x64/apache/www/images || _die "Failed to create a directory for the images"
     chmod ugo+wx staging/linux-x64/apache/www/images
 
-    cp scripts/linux-x64/createshortcuts.sh staging/linux-x64/installer/ApachePhp/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux-x64/createshortcuts.sh)"
+    cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/ApachePhp/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/ApachePhp/createshortcuts.sh
 
-    cp scripts/linux-x64/removeshortcuts.sh staging/linux-x64/installer/ApachePhp/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux-x64/removeshortcuts.sh)"
+    cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/ApachePhp/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/ApachePhp/removeshortcuts.sh
 
-    cp scripts/linux-x64/configureApachePhp.sh staging/linux-x64/installer/ApachePhp/configureApachePhp.sh || _die "Failed to copy the configureApachePhp script (scripts/linux-x64/configureApachePhp.sh)"
+    cp scripts/linux/configureApachePhp.sh staging/linux-x64/installer/ApachePhp/configureApachePhp.sh || _die "Failed to copy the configureApachePhp script (scripts/linux/configureApachePhp.sh)"
     chmod ugo+x staging/linux-x64/installer/ApachePhp/configureApachePhp.sh
 
-    cp scripts/linux-x64/startupcfg.sh staging/linux-x64/installer/ApachePhp/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/linux-x64/startupcfg.sh)"
+    cp scripts/linux/startupcfg.sh staging/linux-x64/installer/ApachePhp/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/linux/startupcfg.sh)"
     chmod ugo+x staging/linux-x64/installer/ApachePhp/startupcfg.sh    
    
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the launch scripts"
     # Copy the launch scripts
-    cp scripts/linux-x64/launchApachePhp.sh staging/linux-x64/scripts/launchApachePhp.sh || _die "Failed to copy the launchApachePhp script (scripts/linux-x64/launchApachePhp.sh)"
+    cp scripts/linux/launchApachePhp.sh staging/linux-x64/scripts/launchApachePhp.sh || _die "Failed to copy the launchApachePhp script (scripts/linux/launchApachePhp.sh)"
     chmod ugo+x staging/linux-x64/scripts/launchApachePhp.sh
 
-    cp scripts/linux-x64/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux-x64/launchbrowser.sh)"
+    cp scripts/linux/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
     chmod ugo+x staging/linux-x64/scripts/launchbrowser.sh
 
-    cp scripts/linux-x64/ctlApache.sh staging/linux-x64/scripts/ctlApache.sh || _die "Failed to copy the ctlApache script (scripts/linux-x64/ctlApache.sh)"
+    cp scripts/linux/ctlApache.sh staging/linux-x64/scripts/ctlApache.sh || _die "Failed to copy the ctlApache script (scripts/linux/ctlApache.sh)"
     chmod ugo+x staging/linux-x64/scripts/ctlApache.sh
 
-    cp scripts/linux-x64/runApache.sh staging/linux-x64/scripts/runApache.sh || _die "Failed to copy the runApache script (scripts/linux-x64/runApache.sh)"
+    cp scripts/linux/runApache.sh staging/linux-x64/scripts/runApache.sh || _die "Failed to copy the runApache script (scripts/linux/runApache.sh)"
     chmod ugo+x staging/linux-x64/scripts/runApache.sh
 
     chmod ugo+x staging/linux-x64/php/php.ini
