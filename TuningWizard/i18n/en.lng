@@ -4,7 +4,7 @@ Installer.Welcome.Text=Welcome to the EnterpriseDB Tuning Wizard Setup.
 
 install.summary=TuningWizard configures the PostgreSQL Server so that it performs in most efficient manner.
 
-tuningwizard.installdir.error=Installation directory path should not contain white-spaces.
+tuningwizard.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 
