@@ -71,14 +71,14 @@ _postprocess_MigrationWizard_linux_x64() {
 
     mkdir -p staging/linux-x64/installer/MigrationWizard || _die "Failed to create a directory for the install scripts"
 
-    cp scripts/linux-x64/createshortcuts.sh staging/linux-x64/installer/MigrationWizard/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux-x64/createshortcuts.sh)"
+    cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/MigrationWizard/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/MigrationWizard/createshortcuts.sh
 
-    cp scripts/linux-x64/removeshortcuts.sh staging/linux-x64/installer/MigrationWizard/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux-x64/removeshortcuts.sh)"
+    cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/MigrationWizard/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/MigrationWizard/removeshortcuts.sh    
 
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the launch scripts"
-    cp -R scripts/linux-x64/launchMigrationWizard.sh staging/linux-x64/scripts/launchMigrationWizard.sh || _die "Failed to copy the launch scripts (scripts/linux-x64)"
+    cp -R scripts/linux/launchMigrationWizard.sh staging/linux-x64/scripts/launchMigrationWizard.sh || _die "Failed to copy the launch scripts (scripts/linux)"
     chmod ugo+x staging/linux-x64/scripts/launchMigrationWizard.sh
 
     # Copy the XDG scripts
