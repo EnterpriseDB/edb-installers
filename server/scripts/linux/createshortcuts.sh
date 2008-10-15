@@ -53,7 +53,7 @@ _fixup_file() {
 
 # We need to remove any old shortcuts created by the Beta/RC installers, as they 
 # used a version numbering scheme that could confuse XDG
-if [ -f "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory"];
+if [ -f "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" ];
 then
    # Remove the menu shortcuts
    "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system --noupdate \
