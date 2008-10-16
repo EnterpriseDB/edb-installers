@@ -77,7 +77,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- LIN: Set the    pghome default value for unattended mode -->
+        <!-- LIN & LIN64: Set the pghome default value for unattended mode -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="defaultpghome" value="/opt/PostgreSQL/8.3"/>
@@ -145,7 +145,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- LIN: Set the    pghome default value when pghome not set -->
+        <!-- LIN & LIN64: Set the pghome default value when pghome not set -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="defaultpghome" value="/opt/PostgreSQL/8.3"/>
@@ -290,7 +290,7 @@
                     <text>${SlonyVersion}</text>
                     <value/>
                 </compareText>
-		        <compareValues>
+                <compareValues>
                     <logic>equals</logic>
                     <value1>${SlonyMajorVersion}</value1>
                     <value2>${SlonyMajorVersionInstalled}</value2>
@@ -409,7 +409,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- LIN : Remove Menu shortcuts -->
+        <!-- LIN & LIN64: Remove Menu shortcuts -->
         <actionGroup>
             <actionList>
                 <runProgram>
@@ -714,7 +714,7 @@
             <mustBeWritable>yes</mustBeWritable>
             <mustExist>0</mustExist>
             <width>40</width>
-	        <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+            <ruleEvaluationLogic>OR</ruleEvaluationLogic>
             <ruleList>
                 <compareText>
                     <text>${SlonyVersion}</text>
