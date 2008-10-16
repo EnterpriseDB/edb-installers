@@ -71,18 +71,12 @@ _build_ApachePhp_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/apache.linux; make" || _die "Failed to build apache"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/apache.linux; make install" || _die "Failed to install apache"
 
-    #Configure the httpd.conf file
+    # Configure the httpd.conf file
     _replace "$PG_STAGING/apache" "@@INSTALL_DIR@@" "$WD/ApachePhp/staging/linux/apache/conf/httpd.conf"
     _replace "Listen 80" "Listen @@PORT@@" "$WD/ApachePhp/staging/linux/apache/conf/httpd.conf"
     _replace "htdocs" "www" "$WD/ApachePhp/staging/linux/apache/conf/httpd.conf"
     _replace "#ServerName www.example.com:80" "ServerName localhost:@@PORT@@" "$WD/ApachePhp/staging/linux/apache/conf/httpd.conf"
 
-    #Configure the apachectl script file
-    _replace "\$HTTPD -k \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux/apache/bin/apachectl"
-    _replace "\$HTTPD -t" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux/apache/bin/apachectl"
-    _replace "\$HTTPD \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux/apache/bin/apachectl"
-    ssh $PG_SSH_LINUX "chmod ugo+x \"$PG_STAGING/apache/bin/apachectl\"" 
-    
     echo "Configuring the php source tree"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux/; sh ./configure --prefix=$PG_STAGING/php --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=$PG_STAGING/php --with-pgsql=$PG_PGHOME_LINUX" || _die "Failed to configure php"
 
@@ -103,6 +97,28 @@ _build_ApachePhp_linux() {
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libpq.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
 
+    # Configure the apachectl script file
+    _replace "\$HTTPD -k \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux/apache/bin/apachectl"
+    _replace "\$HTTPD -t" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux/apache/bin/apachectl"
+    _replace "\$HTTPD \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux/apache/bin/apachectl"
+    
+    ssh $PG_SSH_LINUX "chmod ugo+x \"$PG_STAGING/apache/bin/apachectl\""
+    
+    # Add LD_PRELOAD in envvars scripts
+    echo "CWD=\`pwd\`" >> $WD/ApachePhp/staging/linux/apache/bin/envvars
+    echo "cd @@INSTALL_DIR@@/apache/lib" >> $WD/ApachePhp/staging/linux/apache/bin/envvars
+    echo "files=\`ls *.so*\`" >> $WD/ApachePhp/staging/linux/apache/bin/envvars
+    echo "cd \$CWD" >> $WD/ApachePhp/staging/linux/apache/bin/envvars
+    echo "for f in \$files " >> $WD/ApachePhp/staging/linux/apache/bin/envvars
+    echo "do" >> $WD/ApachePhp/staging/linux/apache/bin/envvars
+    echo "    BROKEN=\`file @@INSTALL_DIR@@/apache/lib/\$f | grep broken\`" >> $WD/ApachePhp/staging/linux/apache/bin/envvars
+    echo "    if [ \"xBROKEN\" == \"x\" ]; then " >> $WD/ApachePhp/staging/linux/apache/bin/envvars
+    echo "        LD_PRELOAD=@@INSTALL_DIR@@/apache/lib/\$f:\$LD_PRELOAD" >> $WD/ApachePhp/staging/linux/apache/bin/envvars
+    echo "    fi" >> $WD/ApachePhp/staging/linux/apache/bin/envvars
+    echo "done" >> $WD/ApachePhp/staging/linux/apache/bin/envvars
+    echo "export LD_PRELOAD" >> $WD/ApachePhp/staging/linux/apache/bin/envvars
+    echo " " >> $WD/ApachePhp/staging/linux/apache/bin/envvars
+    ssh $PG_SSH_LINUX "chmod ugo+x \"$PG_STAGING/apache/bin/envvars\""
 
     cd $WD
     

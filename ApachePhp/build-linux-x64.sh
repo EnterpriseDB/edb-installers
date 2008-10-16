@@ -101,7 +101,24 @@ _build_ApachePhp_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libk5crypto.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libpq.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
-
+  
+    ssh $PG_SSH_LINUX "chmod ugo+x \"$PG_STAGING/apache/bin/apachectl\""
+    
+    # Add LD_PRELOAD in envvars scripts
+    echo "CWD=\`pwd\`" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "cd @@INSTALL_DIR@@/apache/lib" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "files=\`ls *.so*\`" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "cd \$CWD" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "for f in \$files " >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "do" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "    BROKEN=\`file @@INSTALL_DIR@@/apache/lib/\$f | grep broken\`" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "    if [ \"xBROKEN\" == \"x\" ]; then " >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "        LD_PRELOAD=@@INSTALL_DIR@@/apache/lib/\$f:\$LD_PRELOAD" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "    fi" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "done" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "export LD_PRELOAD" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo " " >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    ssh $PG_SSH_LINUX "chmod ugo+x \"$PG_STAGING/apache/bin/envvars\""
 
     cd $WD
     
