@@ -183,8 +183,12 @@
         </compareText>
       </ruleList>
     </actionGroup>
-    <!-- Set the default port value for apache -->
-    <setInstallerVariable name="defaultport" value="8080"/>
+    <!-- Get a default port number - ideally 8080 -->
+    <getFreePort>
+        <variable>defaultport</variable>
+        <initialPort>8080</initialPort>
+        <finalPort>65535</finalPort>
+    </getFreePort>
     <!-- Set the default port to the previously installed apache port if exists -->
     <actionGroup>
       <actionList>
@@ -885,20 +889,54 @@ AddType text/html         php
           <name>port</name>
           <description>Apache Port</description>
           <explanation/>
-          <value/>
+          <value>${defaultport}</value>
           <default>${defaultport}</default>
           <allowEmptyValue>0</allowEmptyValue>
           <width>40</width>
           <validationActionList>
-            <throwError>
-              <text>Unable to bind to the given port number. Please select another one.</text>
-              <ruleList>
-                <portTest>
-                  <condition>cannot_bind</condition>
-                  <port>${port}</port>
-                </portTest>
-              </ruleList>
-            </throwError>
+              <throwError>
+                  <text>${msg(config.port.invalid)}</text>
+                  <ruleList>
+                     <stringTest>
+                         <text>${port}</text>
+                         <type>not_digit</type>
+                     </stringTest>
+                  </ruleList>
+              </throwError>
+              <throwError>
+                  <text>${msg(config.port.invalid)}</text>
+                  <ruleList>
+                     <stringTest>
+                         <text>${port}</text>
+                         <type>empty</type>
+                     </stringTest>
+                  </ruleList>
+              </throwError>
+              <throwError>
+                  <text>${msg(config.port.invalid)}</text>
+                  <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                  <ruleList>
+                     <compareValues>
+                         <value1>${port}</value1>
+                         <logic>less</logic>
+                         <value2>1024</value2>
+                     </compareValues>
+                     <compareValues>
+                         <value1>${port}</value1>
+                         <logic>greater</logic>
+                         <value2>65535</value2>
+                     </compareValues>
+                  </ruleList>
+              </throwError>
+              <throwError>
+                  <text>${msg(config.port.in.use)}</text>
+                  <ruleList>
+                      <portTest>
+                         <condition>cannot_bind</condition>
+                         <port>${port}</port>
+                      </portTest>
+                  </ruleList>
+              </throwError>
           </validationActionList>
         </stringParameter>
       </parameterList>
