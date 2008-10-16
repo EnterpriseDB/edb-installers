@@ -49,7 +49,9 @@ else
 
 fi
 
-if [ "x$response" == "x" ]; then
+CODE=`echo $?`
+
+if [ "x$response" == "x" ]  & [ "$CODE" == 0 ]; then
     if [ $action == "stop" ]; then
          echo "Apache stopped Sucessfully"
     else
