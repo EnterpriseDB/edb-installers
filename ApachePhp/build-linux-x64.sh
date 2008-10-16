@@ -102,8 +102,6 @@ _build_ApachePhp_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libpq.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
   
-    ssh $PG_SSH_LINUX "chmod ugo+x \"$PG_STAGING/apache/bin/apachectl\""
-    
     # Add LD_PRELOAD in envvars scripts
     echo "CWD=\`pwd\`" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
     echo "cd @@INSTALL_DIR@@/apache/lib" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
@@ -118,7 +116,7 @@ _build_ApachePhp_linux_x64() {
     echo "done" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
     echo "export LD_PRELOAD" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
     echo " " >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    ssh $PG_SSH_LINUX "chmod ugo+x \"$PG_STAGING/apache/bin/envvars\""
+    ssh $PG_SSH_LINUX_X64 "chmod ugo+x \"$PG_STAGING/apache/bin/envvars\""
 
     cd $WD
     
