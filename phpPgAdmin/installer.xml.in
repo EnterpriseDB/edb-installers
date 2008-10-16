@@ -571,6 +571,11 @@
                     <logic>equals</logic>
                     <text>${phpPgAdminVersion}</text>
                 </compareText>
+                <compareText>
+                    <value/>
+                    <logic>does_not_equal</logic>
+                    <text>${pghome}</text>
+                </compareText>
             </ruleList>
         </actionGroup>
         <!-- Substitute the pgdump and pg_dumpall (both blank) path in the config.inc.php file if pghome is not set -->
@@ -869,8 +874,8 @@
                     <name>pgport</name>
                     <description>Port</description>
                     <explanation/>
-                    <value/>
-                    <default>5432</default>
+                    <value>5432</value>
+                    <default/>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
@@ -926,6 +931,130 @@
                     </ruleList>
                 </actionGroup>
             </validationActionList>
+            <validationActionList>
+                <throwError>
+                    <text>${msg(config.pgport.invalid)}</text>
+                    <ruleList>
+                        <stringTest>
+                            <text>${pgport}</text>
+                            <type>not_digit</type>
+                        </stringTest>
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(config.pgport.invalid)}</text>
+                    <ruleList>
+                        <stringTest>
+                            <text>${pgport}</text>
+                            <type>empty</type>
+                        </stringTest>
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(config.pgport.invalid)}</text>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                       <compareValues>
+                           <value1>${pgport}</value1>
+                           <logic>less</logic>
+                           <value2>1024</value2>
+                       </compareValues>
+                       <compareValues>
+                           <value1>${pgport}</value1>
+                           <logic>greater</logic>
+                           <value2>65535</value2>
+                       </compareValues>
+                   </ruleList>
+              </throwError>
+            </validationActionList>
+            <postShowPageActionList>
+                <!-- LIN, LIN64 & MAC : PGHOME Validation -->
+                <showQuestion>
+                    <text>${msg(config.pghome.invalid)}</text>
+                    <variable>resp</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_exists</condition>
+                            <path>${pghome}/bin/pg_dump</path>
+                        </fileTest>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${pghome}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </showQuestion>
+                <!-- WIN : PGHOME Validation -->
+                <showQuestion>
+                    <text>${msg(config.pghome.invalid)}</text>
+                    <variable>resp</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_exists</condition>
+                            <path>${pghome}\bin\pg_dump.exe</path>
+                        </fileTest>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${pghome}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </showQuestion>
+                <showQuestion>
+                    <text>${msg(pghome.blank.notice)}</text>
+                    <variable>response</variable>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${pghome}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </showQuestion>
+                <setInstallerVariable>
+                    <name>pghome</name>
+                    <value/>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${resp}</text>
+                            <value>yes</value>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${pghome}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable>
+                    <name>next_page</name>
+                    <value>pgdetails</value>
+                    <ruleEvaluationLogic>OR</ruleEvaluationLogic> 
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${response}</text>
+                            <value>no</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${resp}</text>
+                            <value>no</value>
+                        </compareText>
+                    </ruleList> 
+                </setInstallerVariable>
+            </postShowPageActionList>
         </parameterGroup>
     </parameterList>
 </project>

@@ -20,7 +20,14 @@ Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
-pgplus.blank.error=Values must be entered for all fields.
+pgplus.blank.error=Values must be entered for host/port fields.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 
+config.pgport.invalid=This port number must be a valid integer between 1024 and 65535.
+
+config.pgport.in.use=The specified port number is not available. Please enter a different port.
+
+config.pghome.invalid=The specified PGHOME Path does not have pg_dump/pg_dumpall utilities.\nExport Feature of phpPgAdmin will be disabled. \n\nDo you wish to continue?
+
+pghome.blank.notice=PGHOME not set.\nExport Feature of phpPgAdmin will be disabled. \n\nDo you wish to continue?
