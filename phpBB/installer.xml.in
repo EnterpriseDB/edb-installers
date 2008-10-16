@@ -613,6 +613,27 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+        <!-- Substituting PGPORT and PGHOST Values in install/install.php -->
+        <substitute>
+            <files>${installdir}/phpBB/install/install_install.php</files>
+            <substitutionList>
+                <substitution>
+                    <pattern>@@PORT@@</pattern>
+                    <value>${pgport}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@HOST@@</pattern>
+                    <value>${pghost}</value>
+                </substitution>
+            </substitutionList>
+            <ruleList>
+                <compareText>
+                    <text>${phpBBVersion}</text>
+                    <logic>equals</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </substitute>
     </postInstallationActionList>
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
@@ -1015,7 +1036,7 @@
                     </actionList>
                     <ruleList>
                         <compareText>
-                            <logic>contains</logic>
+                            <logic>equals</logic>
                             <text>${platform_name}</text>
                             <value>linux</value>
                         </compareText>
@@ -1040,7 +1061,7 @@
                     </actionList>
                     <ruleList>
                         <compareText>
-                            <logic>contains</logic>
+                            <logic>equals</logic>
                             <text>${platform_name}</text>
                             <value>linux-x64</value>
                         </compareText>

@@ -14,11 +14,11 @@ IF "%PGPORT%" == "" SET PGPORT=6543
 SET PGDATABASE=postgres
 
 
-REM Creating user for sample application
+REM Creating user for phpbb application
 "%PG_HOME%\bin\psql.exe" -U %PGUSER% -c "CREATE ROLE phpbbuser PASSWORD 'phpbbuser' NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN"
 
-REM Creating database for sample application
-"%PG_HOME%\bin\psql.exe" -U %PGUSER% -c "CREATE DATABASE phpbb OWNER phpBBuser ENCODING 'utf8'"
+REM Creating database for phpbb application
+"%PG_HOME%\bin\psql.exe" -U %PGUSER% -c "CREATE DATABASE phpbb OWNER phpbbuser ENCODING 'utf8'"
 
 
 :end
