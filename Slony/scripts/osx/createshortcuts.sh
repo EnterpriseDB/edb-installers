@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 2 ]; 
+if [ $# -lt 2 ]; 
 then
     echo "Usage: $0 <Install dir> <PG_MAJOR_VERSION>"
     exit 127
