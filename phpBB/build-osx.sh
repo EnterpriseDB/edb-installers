@@ -76,8 +76,8 @@ _postprocess_phpBB_osx() {
     cp scripts/osx/enterprisedb-launchPhpBB.applescript.in staging/osx/scripts/enterprisedb-launchPhpBB.applescript || _die "Failed to copy the enterprisedb-launchPhpBB.applescript.in  script (scripts/osx/enterprisedb-launchPhpBB.applescript)"
     chmod ugo+x staging/osx/scripts/enterprisedb-launchPhpBB.applescript
 
-    cp scripts/osx/launchbrowser.sh staging/osx/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser.sh script (scripts/osx/launchbrowser.sh)"
-    chmod ugo+x staging/osx/scripts/launchbrowser.sh
+    cp scripts/osx/getapacheport.sh staging/osx/scripts/getapacheport.sh || _die "Failed to copy the getapacheport.sh script (scripts/osx/getapacheport.sh)"
+    chmod ugo+x staging/osx/scripts/getapacheport.sh
 
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"

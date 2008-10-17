@@ -58,28 +58,28 @@ _postprocess_phpBB_linux_x64() {
 
     # Setup the installer scripts.
     mkdir -p staging/linux-x64/installer/phpBB || _die "Failed to create a directory for the install scripts"
-    cp scripts/linux-x64/check-connection.sh staging/linux-x64/installer/phpBB/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux-x64/check-connection.sh)"
+    cp scripts/linux/check-connection.sh staging/linux-x64/installer/phpBB/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux/check-connection.sh)"
     chmod ugo+x staging/linux-x64/installer/phpBB/check-connection.sh
 
-    cp scripts/linux-x64/check-db.sh staging/linux-x64/installer/phpBB/check-db.sh || _die "Failed to copy the check-db.sh script (scripts/linux-x64/check-db.sh)"
+    cp scripts/linux/check-db.sh staging/linux-x64/installer/phpBB/check-db.sh || _die "Failed to copy the check-db.sh script (scripts/linux/check-db.sh)"
     chmod ugo+x staging/linux-x64/installer/phpBB/check-db.sh
 
-    cp scripts/linux-x64/createshortcuts.sh staging/linux-x64/installer/phpBB/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux-x64/createshortcuts.sh)"
+    cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/phpBB/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/phpBB/createshortcuts.sh
 
-    cp scripts/linux-x64/install.sh staging/linux-x64/installer/phpBB/install.sh || _die "Failed to copy the install.sh script (scripts/linux-x64/install.sh)"
+    cp scripts/linux/install.sh staging/linux-x64/installer/phpBB/install.sh || _die "Failed to copy the install.sh script (scripts/linux/install.sh)"
     chmod ugo+x staging/linux-x64/installer/phpBB/install.sh
 
-    cp scripts/linux-x64/removeshortcuts.sh staging/linux-x64/installer/phpBB/removeshortcuts.sh || _die "Failed to copy the removeshortcuts.sh (scripts/linux-x64/removeshortcuts.sh)"
+    cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/phpBB/removeshortcuts.sh || _die "Failed to copy the removeshortcuts.sh (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/phpBB/removeshortcuts.sh
 
     # Setup the phpBB Launch Scripts
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the phpBB Launch Scripts"
 
-    cp scripts/linux-x64/launchPhpBB.sh staging/linux-x64/scripts/launchPhpBB.sh || _die "Failed to copy the launchPhpBB.sh  script (scripts/linux-x64/launchPhpBB.sh)"
+    cp scripts/linux/launchPhpBB.sh staging/linux-x64/scripts/launchPhpBB.sh || _die "Failed to copy the launchPhpBB.sh  script (scripts/linux/launchPhpBB.sh)"
     chmod ugo+x staging/linux-x64/scripts/launchPhpBB.sh
 
-    cp scripts/linux-x64/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser.sh script (scripts/linux-x64/launchbrowser.sh)"
+    cp scripts/linux/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser.sh script (scripts/linux/launchbrowser.sh)"
     chmod ugo+x staging/linux-x64/scripts/launchbrowser.sh
 
      # Setup the phpBB xdg Files
