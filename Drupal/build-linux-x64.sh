@@ -59,27 +59,27 @@ _postprocess_Drupal_linux_x64() {
 
     # Setup the installer scripts.
     mkdir -p staging/linux-x64/installer/Drupal || _die "Failed to create a directory for the install scripts"
-    cp scripts/linux-x64/check-connection.sh staging/linux-x64/installer/Drupal/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux-x64/check-connection.sh)"
+    cp scripts/linux/check-connection.sh staging/linux-x64/installer/Drupal/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux/check-connection.sh)"
     chmod ugo+x staging/linux-x64/installer/Drupal/check-connection.sh
 
-    cp scripts/linux-x64/check-db.sh staging/linux-x64/installer/Drupal/check-db.sh || _die "Failed to copy the check-db.sh script (scripts/linux-x64/check-db.sh)"
+    cp scripts/linux/check-db.sh staging/linux-x64/installer/Drupal/check-db.sh || _die "Failed to copy the check-db.sh script (scripts/linux/check-db.sh)"
     chmod ugo+x staging/linux-x64/installer/Drupal/check-db.sh
 
-    cp scripts/linux-x64/createshortcuts.sh staging/linux-x64/installer/Drupal/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux-x64/createshortcuts.sh)"
+    cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/Drupal/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/Drupal/createshortcuts.sh
 
-    cp scripts/linux-x64/install.sh staging/linux-x64/installer/Drupal/install.sh || _die "Failed to copy the install.sh script (scripts/linux-x64/install.sh)"
+    cp scripts/linux/install.sh staging/linux-x64/installer/Drupal/install.sh || _die "Failed to copy the install.sh script (scripts/linux/install.sh)"
     chmod ugo+x staging/linux-x64/installer/Drupal/install.sh
 
-    cp scripts/linux-x64/removeshortcuts.sh staging/linux-x64/installer/Drupal/removeshortcuts.sh || _die "Failed to copy the removeshortcuts.sh (scripts/linux-x64/removeshortcuts.sh)"
+    cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/Drupal/removeshortcuts.sh || _die "Failed to copy the removeshortcuts.sh (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/Drupal/removeshortcuts.sh
 
     # Setup the Drupal launch Files
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the Drupal Launch Files"
-    cp scripts/linux-x64/launchDrupal.sh staging/linux-x64/scripts/launchDrupal.sh || _die "Failed to copy the launchDrupal.sh  script (scripts/linux-x64/launchDrupal.sh)"
+    cp scripts/linux/launchDrupal.sh staging/linux-x64/scripts/launchDrupal.sh || _die "Failed to copy the launchDrupal.sh  script (scripts/linux/launchDrupal.sh)"
     chmod ugo+x staging/linux-x64/scripts/launchDrupal.sh
 
-    cp scripts/linux-x64/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser.sh script (scripts/linux-x64/launchbrowser.sh)"
+    cp scripts/linux/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser.sh script (scripts/linux/launchbrowser.sh)"
     chmod ugo+x staging/linux-x64/scripts/launchbrowser.sh
 
      # Setup the Drupal xdg Files

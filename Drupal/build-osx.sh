@@ -73,11 +73,12 @@ _postprocess_Drupal_osx() {
 
     # Setup the Drupal launch Files
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the Drupal Launch Files"
+
+    cp scripts/osx/getapacheport.sh staging/osx/scripts/getapacheport.sh || _die "Failed to copy the getapacheport.sh script (scripts/osx/getapacheport.sh)"
+    chmod ugo+x staging/osx/scripts/getapacheport.sh
+ 
     cp scripts/osx/enterprisedb-launchDrupal.applescript.in staging/osx/scripts/enterprisedb-launchDrupal.applescript || _die "Failed to copy the enterprisedb-launchDrupal.applescript.in  script (scripts/osx/enterprisedb-launchDrupal.applescript)"
     chmod ugo+x staging/osx/scripts/enterprisedb-launchDrupal.applescript
-
-    cp scripts/osx/launchbrowser.sh staging/osx/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser.sh script (scripts/osx/launchbrowser.sh)"
-    chmod ugo+x staging/osx/scripts/launchbrowser.sh
 
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
