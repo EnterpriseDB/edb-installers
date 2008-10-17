@@ -134,7 +134,7 @@ _postprocess_Slony() {
  
      PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
 
-     SLONY_MAJOR_VERSION=`echo $PG_VERSION_SLONY | cut -f1 -d "."`
+     SLONY_MAJOR_VERSION=`echo $PG_VERSION_SLONY | cut -f1,2 -d "."`
  
     _replace PG_VERSION_SLONY "$PG_VERSION_SLONY" installer.xml || _die "Failed to set the major version in the installer project file (Slony/installer.xml)"
     _replace PG_BUILDNUM_SLONY $PG_BUILDNUM_SLONY installer.xml || _die "Failed to set the Build Number in the installer project file (Slony/installer.xml)"
