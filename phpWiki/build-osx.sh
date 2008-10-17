@@ -79,8 +79,8 @@ _postprocess_phpWiki_osx() {
     cp scripts/osx/enterprisedb-launchPhpWiki.applescript.in staging/osx/scripts/enterprisedb-launchPhpWiki.applescript || _die "Failed to copy the enterprisedb-launchPhpWiki.applescript.in  script (scripts/osx/enterprisedb-launchPhpWiki.applescript)"
     chmod ugo+x staging/osx/scripts/enterprisedb-launchPhpWiki.applescript
 
-    cp scripts/osx/launchbrowser.sh staging/osx/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser.sh script (scripts/osx/launchbrowser.sh)"
-    chmod ugo+x staging/osx/scripts/launchbrowser.sh
+    cp scripts/osx/getapacheport.sh staging/osx/scripts/getapacheport.sh || _die "Failed to copy the getapacheport.sh script (scripts/osx/getapacheport.sh)"
+    chmod ugo+x staging/osx/scripts/getapacheport.sh
 
     chmod -R ugo+x scripts/osx || _die "Couldn't set the permissions on the scripts directory"
 
