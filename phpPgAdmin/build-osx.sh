@@ -66,8 +66,9 @@ _postprocess_phpPgAdmin_osx() {
 
     cp scripts/osx/enterprisedb-launchPhpPgAdmin.applescript.in staging/osx/scripts/enterprisedb-launchPhpPgAdmin.applescript || _die "Failed to copy the enterprisedb-launchPhpPgAdmin.applescript  script (scripts/osx/enterprisedb-launchPhpPgAdmin.applescript.in)"
     
-    cp scripts/osx/launchbrowser.sh staging/osx/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser.sh script (scripts/osx/launchbrowser.sh)"
-    chmod -R ugo+x scripts/osx || _die "Couldn't set the permissions on the scripts directory"
+
+    cp scripts/osx/getapacheport.sh staging/osx/scripts/getapacheport.sh || _die "Failed to copy the getapacheport.sh script (scripts/osx/getapacheport.sh)"
+    chmod -R ugo+x staging/osx/scripts/getapacheport.sh || _die "Couldn't set the permissions on the getapacheport.sh"
 
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"

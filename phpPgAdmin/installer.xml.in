@@ -549,6 +549,34 @@
                             <pattern>@@PGDUMPALL@@</pattern>
                             <value>${pghome}/bin/pg_dumpall</value>
                         </substitution>
+                    </substitutionList>
+                </substitute>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
+                </compareText>
+                <compareText>
+                    <value/>
+                    <logic>equals</logic>
+                    <text>${phpPgAdminVersion}</text>
+                </compareText>
+                <compareText>
+                    <value/>
+                    <logic>does_not_equal</logic>
+                    <text>${pghome}</text>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- LIN & MAC: Configuring phpPgAdmin - setting PGHOST and PGPORT in conf file   -->
+	    <actionGroup>
+            <actionList>
+                <substitute>
+                    <files>${installdir}/phpPgAdmin/conf/config.inc.php</files>
+                    <type>regexp</type>
+                    <substitutionList>
                         <substitution>
                             <pattern>@@PGHOST@@</pattern>
                             <value>${pghost}</value>
@@ -570,11 +598,6 @@
                     <value/>
                     <logic>equals</logic>
                     <text>${phpPgAdminVersion}</text>
-                </compareText>
-                <compareText>
-                    <value/>
-                    <logic>does_not_equal</logic>
-                    <text>${pghome}</text>
                 </compareText>
             </ruleList>
         </actionGroup>
