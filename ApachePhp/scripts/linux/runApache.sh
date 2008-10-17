@@ -60,7 +60,7 @@ if [ "x$response" == "x" ]  & [ "$CODE" == 0 ]; then
 else
     if [ $action == "restart" ]; then
         apache_status=`ps -ef | grep @@APACHE_HOME@@/bin/httpd | grep -v "grep"`
-        if [ "x$apache_status" == "x" ]; then
+        if [ "x$apache_status" == "x" ] & [ "$CODE" != 0 ]; then
                 echo "Error Starting Apache."
         else
                 echo "Apache restarted successfully."
