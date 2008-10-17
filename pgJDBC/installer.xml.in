@@ -416,6 +416,29 @@
                     <value/>
                 </compareText>
             </ruleList>
+            <!-- Validating whether installdir contains whitespaces (Linux) -->
+            <postShowPageActionList>
+                <actionGroup>
+                    <actionList>  
+                        <showWarning>
+                            <text>${msg(pgjdbc.installdir.error)}</text>
+                        </showWarning>
+                        <setInstallerVariable name="next_page" value="installdir"/>
+                    </actionList>
+                    <ruleList>
+                       <regExMatch>
+                           <text>${installdir}</text>
+                           <logic>does_not_match</logic>
+                           <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                       </regExMatch>
+                       <compareText>
+                           <logic>does_not_equal</logic>
+                           <text>${platform_name}</text>
+                           <value>windows</value>
+                       </compareText>
+                    </ruleList>
+	        </actionGroup> 
+            </postShowPageActionList>
         </directoryParameter>
     </parameterList>
 </project>
