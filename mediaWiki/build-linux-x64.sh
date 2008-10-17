@@ -59,27 +59,27 @@ _postprocess_mediaWiki_linux_x64() {
 
     # Setup the installer scripts.
     mkdir -p staging/linux-x64/installer/mediaWiki || _die "Failed to create a directory for the install scripts"
-    cp scripts/linux-x64/check-connection.sh staging/linux-x64/installer/mediaWiki/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux-x64/check-connection.sh)"
+    cp scripts/linux/check-connection.sh staging/linux-x64/installer/mediaWiki/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux/check-connection.sh)"
     chmod ugo+x staging/linux-x64/installer/mediaWiki/check-connection.sh    
    
-    cp scripts/linux-x64/check-db.sh staging/linux-x64/installer/mediaWiki/check-db.sh || _die "Failed to copy the check-db.sh script (scripts/linux-x64/check-db.sh)"
+    cp scripts/linux/check-db.sh staging/linux-x64/installer/mediaWiki/check-db.sh || _die "Failed to copy the check-db.sh script (scripts/linux/check-db.sh)"
     chmod ugo+x staging/linux-x64/installer/mediaWiki/check-db.sh
 
-    cp scripts/linux-x64/createshortcuts.sh staging/linux-x64/installer/mediaWiki/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux-x64/createshortcuts.sh)"
+    cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/mediaWiki/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/mediaWiki/createshortcuts.sh
 
-    cp scripts/linux-x64/install.sh staging/linux-x64/installer/mediaWiki/install.sh || _die "Failed to copy the install.sh script (scripts/linux-x64/install.sh)"
+    cp scripts/linux/install.sh staging/linux-x64/installer/mediaWiki/install.sh || _die "Failed to copy the install.sh script (scripts/linux/install.sh)"
     chmod ugo+x staging/linux-x64/installer/mediaWiki/install.sh
 
-    cp scripts/linux-x64/removeshortcuts.sh staging/linux-x64/installer/mediaWiki/removeshortcuts.sh || _die "Failed to copy the removeshortcuts.sh (scripts/linux-x64/removeshortcuts.sh)"
+    cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/mediaWiki/removeshortcuts.sh || _die "Failed to copy the removeshortcuts.sh (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/mediaWiki/removeshortcuts.sh
 
     # Setup the mediaWiki launch Files
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the mediaWiki Launch Files"
-    cp scripts/linux-x64/launchMediaWiki.sh staging/linux-x64/scripts/launchMediaWiki.sh || _die "Failed to copy the launchMediaWiki.sh  script (scripts/linux-x64/launchMediaWiki.sh)"
+    cp scripts/linux/launchMediaWiki.sh staging/linux-x64/scripts/launchMediaWiki.sh || _die "Failed to copy the launchMediaWiki.sh  script (scripts/linux/launchMediaWiki.sh)"
     chmod ugo+x staging/linux-x64/scripts/launchMediaWiki.sh
 
-    cp scripts/linux-x64/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser.sh script (scripts/linux-x64/launchbrowser.sh)"
+    cp scripts/linux/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser.sh script (scripts/linux/launchbrowser.sh)"
     chmod ugo+x staging/linux-x64/scripts/launchbrowser.sh
 
      # Setup the mediaWiki xdg Files

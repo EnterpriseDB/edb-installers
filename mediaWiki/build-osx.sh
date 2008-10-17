@@ -1,4 +1,4 @@
-#!/bin/bash
+		#!/bin/bash
 
 
 ################################################################################
@@ -75,8 +75,8 @@ _postprocess_mediaWiki_osx() {
     cp scripts/osx/enterprisedb-launchMediaWiki.applescript.in staging/osx/scripts/enterprisedb-launchMediaWiki.applescript || _die "Failed to copy the enterprisedb-launchMediaWiki.applescript.in  script (scripts/osx/enterprisedb-launchMediaWiki.applescript)"
     chmod ugo+x staging/osx/scripts/enterprisedb-launchMediaWiki.applescript
 
-    cp scripts/osx/launchbrowser.sh staging/osx/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser.sh script (scripts/osx/launchbrowser.sh)"
-    chmod ugo+x staging/osx/scripts/launchbrowser.sh
+    cp scripts/osx/getapacheport.sh staging/osx/scripts/getapacheport.sh || _die "Failed to copy the getapacheport.sh script (scripts/osx/getapacheport.sh)"
+    chmod ugo+x staging/osx/scripts/getapacheport.sh
 
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
