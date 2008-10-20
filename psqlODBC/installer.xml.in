@@ -252,6 +252,7 @@
                 </compareText>
             </ruleList>
         </touchFile>
+        <!-- Linux : Checking for libodbc.so -->
         <setInstallerVariable name="odbcinstpath" value="/etc/odbcinst.ini" >
             <ruleList>
                 <fileExists>
@@ -263,12 +264,30 @@
                     <text>${odbcinstpath}</text>
                 </compareTextLength>
                 <compareText>
-                    <logic>contains</logic>
+                    <logic>equals</logic>
                     <text>${platform_name}</text>
                     <value>linux</value>
                 </compareText>
             </ruleList>
-        </setInstallerVariable>    
+        </setInstallerVariable>  
+        <!-- Linux-X64 : Checking for libodbc.so -->
+        <setInstallerVariable name="odbcinstpath" value="/etc/odbcinst.ini" >
+            <ruleList>
+                <fileExists>
+                   <path>/usr/lib64/libodbc.so</path>
+                </fileExists>
+                <compareTextLength>
+                    <length>0</length>
+                    <logic>equals</logic>
+                    <text>${odbcinstpath}</text>
+                </compareTextLength>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
         <!-- Exit if unixODBC not found -->
         <actionGroup>
             <actionList>
