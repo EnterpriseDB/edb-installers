@@ -41,7 +41,7 @@ _fixup_file() {
 cd "$INSTALLDIR/phpWiki/scripts/images"
 for i in `ls *.png`
 do
-    "$INSTALLDIR/phpWiki/installer/xdg/xdg-icon-resource" install --size 32 $i
+    "$INSTALLDIR/phpWiki/installer/xdg/xdg-icon-resource" install --size 32 --novendor $i
 done
 
 # Fixup the scripts
