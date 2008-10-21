@@ -51,23 +51,25 @@ fi
 
 CODE=`echo $?`
 
-if [ "x$response" == "x" ]  & [ "$CODE" == 0 ]; then
-    if [ $action == "stop" ]; then
-         echo "Apache stopped Sucessfully"
+if [ "$CODE" == 0 ]; then
+    if [ "x$response" == "x" ]; then
+         if [ $action == "stop" ]; then
+                echo "Apache stopped Sucessfully"
+         else
+                echo "Apache" "$action"ed "Successfully"
+         fi
     else
-         echo "Apache" "$action"ed "Successfully"
-    fi
-else
-    if [ $action == "restart" ]; then
-        apache_status=`ps -ef | grep @@APACHE_HOME@@/bin/httpd | grep -v "grep"`
-        if [ "x$apache_status" == "x" ] & [ "$CODE" != 0 ]; then
-                echo "Error Starting Apache."
-        else
-                echo "Apache restarted successfully."
-        fi
-    else
-        echo ERROR: $response
-    fi
+         if [ $action == "restart" ]; then
+                apache_status=`ps -ef | grep @@APACHE_HOME@@/bin/httpd | grep -v "grep"`
+                if [ "x$apache_status" == "x" ]; then
+                	 echo "Error Starting Apache."
+                else
+                	echo "Apache restarted successfully."
+        	fi
+    	else
+       		echo ERROR: $response
+    	fi
+   fi
 fi
 
 printf "\n\n"
