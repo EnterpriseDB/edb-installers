@@ -38,11 +38,8 @@ _fixup_file() {
 }
 
 # Create the icon resources
-cd "$INSTALLDIR/Drupal/scripts/images"
-for i in `ls *.png`
-do
-    "$INSTALLDIR/Drupal/installer/xdg/xdg-icon-resource" install --size 32 --novendor $i
-done
+"$INSTALLDIR/Drupal/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/Drupal/scripts/images/enterprisedb-postgres.png"
+"$INSTALLDIR/Drupal/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/Drupal/scripts/images/enterprisedb-launchDrupal.png"
 
 # Fixup the scripts
 _fixup_file "$INSTALLDIR/Drupal/scripts/launchbrowser.sh"

@@ -3,6 +3,6 @@ Version=1.0
 Encoding=UTF-8
 Name=Migration Wizard
 Exec="INSTALL_DIR/scripts/launchMigrationWizard.sh"
-Icon=launch-MigrationWizard.png
+Icon=enterprisedb-launchMigrationWizard.png
 Terminal=false
 Type=Application

@@ -3,7 +3,7 @@ Version=1.0
 Encoding=UTF-8
 Name=psqlODBC Documentation
 Exec="INSTALL_DIR/scripts/launchbrowser.sh" http://psqlodbc.projects.postgresql.org/
-Icon=launch-OdbcDocs.png
+Icon=enterprisedb-launchOdbcDocs.png
 Terminal=false
 Type=Application
 

@@ -3,6 +3,6 @@ Version=1.0
 Encoding=UTF-8
 Name=Stop Apache
 Exec="INSTALL_DIR/scripts/ctlApache.sh" "stop"
-Icon=stop-Apache.png
+Icon=enterprisedb-stopApache.png
 Terminal=false
 Type=Application

@@ -42,7 +42,7 @@ _fixup_file() {
 
 # Create the icon resources
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/enterprisedb-postgres.png" 
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/launch-OdbcDocs.png" 
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/enterprisedb-launchOdbcDocs.png" 
 
 # Fixup the scripts
 chmod ugo+x "$INSTALLDIR/installer/psqlODBC/"*.sh

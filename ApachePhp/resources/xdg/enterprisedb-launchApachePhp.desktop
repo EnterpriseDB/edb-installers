@@ -3,6 +3,6 @@ Version=1.0
 Encoding=UTF-8
 Name=ApachePhp
 Exec="INSTALL_DIR/scripts/launchApachePhp.sh"
-Icon=launch-ApachePhp.png
+Icon=enterprisedb-launchApachePhp.png
 Terminal=false
 Type=Application

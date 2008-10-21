@@ -38,11 +38,8 @@ _fixup_file() {
 }
 
 # Create the icon resources
-cd "$INSTALLDIR/phpBB/scripts/images"
-for i in `ls *.png`
-do
-    "$INSTALLDIR/phpBB/installer/xdg/xdg-icon-resource" install --size 32 --novendor $i
-done
+"$INSTALLDIR/phpBB/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpBB/scripts/images/enterprisedb-postgres.png"
+"$INSTALLDIR/phpBB/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpBB/scripts/images/enterprisedb-launchPhpBB.png"
 
 # Fixup the scripts
 _fixup_file "$INSTALLDIR/phpBB/scripts/launchbrowser.sh"

@@ -45,11 +45,8 @@ _fixup_file() {
 }
 
 # Create the icon resources
-cd "$INSTALLDIR/Slony/scripts/images"
-for i in `ls *.png`
-do
-    "$INSTALLDIR/Slony/installer/xdg/xdg-icon-resource" install --size 32 --novendor $i
-done
+"$INSTALLDIR/Slony/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/Slony/scripts/images/enterprisedb-postgres.png"
+"$INSTALLDIR/Slony/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/Slony/scripts/images/enterprisedb-launchSlonyDocs.png"
 
 # Fixup the scripts
 chmod ugo+x "$INSTALLDIR/Slony/installer/Slony/"*.sh
@@ -65,7 +62,7 @@ chmod ugo+x "$INSTALLDIR/Slony/scripts/xdg/enterprisedb-launchSlonyDocs-$SLONY_V
 chmod ugo+x "$INSTALLDIR/Slony/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
-"$INSTALLDIR/Slony/installer/xdg/xdg-desktop-menu" install --mode system --novendor \
+"$INSTALLDIR/Slony/installer/xdg/xdg-desktop-menu" install --mode system  \
          "$INSTALLDIR/Slony/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory" \
     "$INSTALLDIR/Slony/scripts/xdg/enterprisedb-launchSlonyDocs-$SLONY_VERSION_STR.desktop"  || _warn "Failed to create the Slony menu"
 

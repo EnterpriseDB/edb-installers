@@ -41,11 +41,8 @@ _fixup_file() {
 }
 
 # Create the icon resources
-cd "$INSTALLDIR/scripts/images"
-for i in `ls *.png`
-do
-    "$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 --novendor $i
-done
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/enterprisedb-postgres.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/enterprisedb-launchTuningWizard.png"
 
 # Fixup the scripts
 chmod ugo+x "$INSTALLDIR/installer/TuningWizard/"*.sh

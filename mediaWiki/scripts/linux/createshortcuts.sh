@@ -38,11 +38,8 @@ _fixup_file() {
 }
 
 # Create the icon resources
-cd "$INSTALLDIR/mediaWiki/scripts/images"
-for i in `ls *.png`
-do
-    "$INSTALLDIR/mediaWiki/installer/xdg/xdg-icon-resource" install --size 32 --novendor $i
-done
+"$INSTALLDIR/mediaWiki/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/mediaWiki/scripts/images/enterprisedb-postgres.png"
+"$INSTALLDIR/mediaWiki/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/mediaWiki/scripts/images/enterprisedb-launchMediaWiki.png"
 
 # Fixup the scripts
 _fixup_file "$INSTALLDIR/mediaWiki/scripts/launchbrowser.sh"

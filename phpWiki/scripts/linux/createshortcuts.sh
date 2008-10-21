@@ -38,11 +38,8 @@ _fixup_file() {
 }
 
 # Create the icon resources
-cd "$INSTALLDIR/phpWiki/scripts/images"
-for i in `ls *.png`
-do
-    "$INSTALLDIR/phpWiki/installer/xdg/xdg-icon-resource" install --size 32 --novendor $i
-done
+"$INSTALLDIR/phpWiki/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpWiki/scripts/images/enterprisedb-postgres.png"
+"$INSTALLDIR/phpWiki/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpWiki/scripts/images/enterprisedb-launchPhpWiki.png"
 
 # Fixup the scripts
 _fixup_file "$INSTALLDIR/phpWiki/scripts/launchbrowser.sh"

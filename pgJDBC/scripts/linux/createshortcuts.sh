@@ -38,11 +38,8 @@ _fixup_file() {
 }
 
 # Create the icon resources
-cd "$INSTALLDIR/scripts/images"
-for i in `ls *.png`
-do
-    "$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 --novendor $i
-done
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/enterprisedb-postgres.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/mozilla-browse.png"
 
 # Fixup the scripts
 
@@ -54,7 +51,7 @@ _fixup_file "$INSTALLDIR/scripts/xdg/enterprisedb-postgres.directory"
 _fixup_file "$INSTALLDIR/scripts/xdg/enterprisedb-launchpgJDBC.desktop"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
-"$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system  --novendor \
+"$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system \
       "$INSTALLDIR/scripts/xdg/enterprisedb-postgres.directory" \
       "$INSTALLDIR/scripts/xdg/enterprisedb-launchpgJDBC.desktop"  || _warn "Failed to create the pgJDBC menu"
 

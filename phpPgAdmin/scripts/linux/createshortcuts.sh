@@ -38,11 +38,8 @@ _fixup_file() {
 }
 
 # Create the icon resources
-cd "$INSTALLDIR/phpPgAdmin/scripts/images"
-for i in `ls *.png`
-do
-    "$INSTALLDIR/phpPgAdmin/installer/xdg/xdg-icon-resource" install --size 32 --novendor $i
-done
+"$INSTALLDIR/phpPgAdmin/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpPgAdmin/scripts/images/enterprisedb-postgres.png"
+"$INSTALLDIR/phpPgAdmin/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpPgAdmin/scripts/images/enterprisedb-launchPhpPgAdmin.png"
 
 # Fixup the scripts
 _fixup_file "$INSTALLDIR/phpPgAdmin/scripts/launchbrowser.sh"

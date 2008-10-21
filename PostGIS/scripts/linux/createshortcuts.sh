@@ -45,11 +45,10 @@ _fixup_file() {
 }
 
 # Create the icon resources
-cd "$INSTALLDIR/PostGIS/scripts/images"
-for i in `ls *.png`
-do
-    "$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 --novendor $i
-done
+"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/enterprisedb-postgres.png"
+"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/enterprisedb-postgis.png"
+"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/enterprisedb-launchPostGISDocs.png"
+"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/enterprisedb-launchJDBCDocs.png"
 
 # Fixup the scripts
 chmod ugo+x "$INSTALLDIR/PostGIS/installer/PostGIS/"*.sh
