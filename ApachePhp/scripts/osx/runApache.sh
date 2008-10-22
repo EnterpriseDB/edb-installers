@@ -28,7 +28,7 @@ if [ "x$response" == "x" ]; then
     fi
 else
     if [ $action == "restart" ]; then
-        apache_status=`ps -ef | grep @@APACHE_HOME@@/bin/httpd | grep -v "grep"`
+        apache_status=`ps ax | grep @@APACHE_HOME@@/bin/httpd | grep -v "grep"`
         if [ "x$apache_status" == "x" ]; then
                 echo "Error Starting Apache."
         else
