@@ -69,6 +69,8 @@
         <setInstallerVariable name="defaultuser" value=""/>
         <setInstallerVariable name="defaultpassword" value=""/>
         <setInstallerVariable name="defaultpghome" value=""/>
+        <setInstallerVariable name="dbexist" value=""/>
+        <setInstallerVariable name="userexist" value=""/>
         <!-- Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
@@ -804,7 +806,7 @@
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
-                <!-- Postgres Port(Default 6543) -->
+                <!-- Postgres Port(Default 5432) -->
                 <stringParameter>
                     <name>pgport</name>
                     <description>Port</description>
