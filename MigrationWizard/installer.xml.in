@@ -53,10 +53,10 @@
             <promptUser>0</promptUser>
             <validVersionList>
                 <validVersion>
+		    <vendor>sun</vendor>
                     <maxVersion/>
                     <minVersion>1.5.0</minVersion>
                     <requireJDK>0</requireJDK>
-                    <vendor/>
                 </validVersion>
             </validVersionList>
             <abortOnError>1</abortOnError>
