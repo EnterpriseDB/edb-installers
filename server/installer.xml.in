@@ -1875,14 +1875,6 @@
         </deleteWindowsService>
 		
         <!-- WINDOWS: Unregister the event message DLL -->
-        <showWarning>
-            <text>${product_version}</text>
-            <ruleList>
-                <logic>contains</logic>
-                <text>${platform_name}</text>
-                <value>windows</value>
-            </ruleList>
-        </showWarning>
         <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
             <name>EventMessageFile</name>
