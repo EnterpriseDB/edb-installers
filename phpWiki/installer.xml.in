@@ -25,6 +25,7 @@
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <saveRelativePaths>1</saveRelativePaths>
     <outputDirectory>../output</outputDirectory>
+    <unattendedModeUI>minimal</unattendedModeUI>
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <uninstallerDirectory>${apachephpinstalldir}</uninstallerDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
