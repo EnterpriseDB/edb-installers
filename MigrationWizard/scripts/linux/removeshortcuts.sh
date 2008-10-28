@@ -28,11 +28,11 @@ _warn() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
-    "$INSTALLDIR/scripts/xdg/enterprisedb-launchMigrationWizard.desktop" || _warn "Failed to remove the MigrationWizard menu"
+    "$INSTALLDIR/scripts/xdg/pg-launchMigrationWizard.desktop" || _warn "Failed to remove the MigrationWizard menu"
 
       
 # Remove the icon resources
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/launch-MigrationWizard.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-launchMigrationWizard.png"
 echo "$0 ran to completion"
 exit 0
 

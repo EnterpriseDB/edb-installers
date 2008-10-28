@@ -91,8 +91,8 @@ _postprocess_MigrationWizard_linux() {
     cp resources/*.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp resources/xdg/enterprisedb-postgres.directory staging/linux/scripts/xdg/enterprisedb-postgres.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/enterprisedb-launchMigrationWizard.desktop staging/linux/scripts/xdg/enterprisedb-launchMigrationWizard.desktop || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/pg-launchMigrationWizard.desktop staging/linux/scripts/xdg/pg-launchMigrationWizard.desktop || _die "Failed to copy a menu pick desktop"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"

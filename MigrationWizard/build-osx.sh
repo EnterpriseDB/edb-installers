@@ -79,11 +79,11 @@ _postprocess_MigrationWizard_osx() {
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the launch scripts"
     cp -R scripts/osx/launchMigrationWizard.sh staging/osx/scripts/launchMigrationWizard.sh || _die "Failed to copy the launch scripts (scripts/osx)"
 
-    cp scripts/osx/enterprisedb-launchMigrationWizard.applescript.in staging/osx/scripts/enterprisedb-launchMigrationWizard.applescript || _die "Failed to copy a "
+    cp scripts/osx/pg-launchMigrationWizard.applescript.in staging/osx/scripts/pg-launchMigrationWizard.applescript || _die "Failed to copy a launch script"
     
     # Copy in the menu pick images 
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/enterprisedb-launchMigrationWizard.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/enterprisedb-launchMigrationWizard.icns)"
+    cp resources/pg-launchMigrationWizard.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/pg-launchMigrationWizard.icns)"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
