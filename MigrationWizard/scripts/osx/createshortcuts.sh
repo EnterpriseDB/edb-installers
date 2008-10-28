@@ -28,7 +28,6 @@ _warn() {
 _replace() {
     sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" 
     cp /tmp/$$.tmp $3 
-    cat /tmp/$$.tmp >> /tmp/tmp1.txt
 }
 
 # Compile a script - _compile_script($in.applescript, $out.app, $image)
