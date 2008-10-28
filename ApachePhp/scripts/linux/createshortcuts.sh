@@ -38,7 +38,7 @@ _fixup_file() {
 }
 
 # Create the icon resources
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-postgres.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-postgresql.png"
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-apachephp.png"
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-launchApachePhp.png"
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-startApache.png"
@@ -58,7 +58,7 @@ _fixup_file "$INSTALLDIR/scripts/xdg/pg-restartApache.desktop"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system \
-         "$INSTALLDIR/scripts/xdg/pg-postgres.directory" \
+         "$INSTALLDIR/scripts/xdg/pg-postgresql.directory" \
          "$INSTALLDIR/scripts/xdg/pg-apachephp.directory" \
     "$INSTALLDIR/scripts/xdg/pg-launchApachePhp.desktop" \
     "$INSTALLDIR/scripts/xdg/pg-startApache.desktop" \

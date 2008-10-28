@@ -4,4 +4,4 @@ Type=Directory
 Name=EnterpriseDB ApachePhp
 Comment=ApachePhp, packaged by EnterpriseDB
 Encoding=UTF-8
-Icon=enterprisedb-apachephp.png
+Icon=pg-apachephp.png

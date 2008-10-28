@@ -195,7 +195,7 @@ _postprocess_ApachePhp_linux() {
     cp resources/*.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp resources/xdg/pg-postgres.directory staging/linux/scripts/xdg/pg-postgres.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/pg-apachephp.directory staging/linux/scripts/xdg/pg-apachephp.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/pg-launchApachePhp.desktop staging/linux/scripts/xdg/pg-launchApachePhp.desktop || _die "Failed to copy a menu pick desktop"
     cp resources/xdg/pg-startApache.desktop staging/linux/scripts/xdg/pg-startApache.desktop || _die "Failed to copy a menu pick desktop"

@@ -3,6 +3,6 @@ Version=1.0
 Encoding=UTF-8
 Name=Start Apache
 Exec="INSTALL_DIR/scripts/ctlApache.sh" "start"
-Icon=enterprisedb-startApache.png
+Icon=pg-startApache.png
 Terminal=false
 Type=Application
