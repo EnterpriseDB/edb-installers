@@ -72,11 +72,8 @@ _postprocess_pgJDBC_linux() {
 
     # Setup the pgJDBC xdg Files
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the launch scripts"
-    cp resources/xdg/enterprisedb-launchpgJDBC.desktop staging/linux/scripts/xdg/enterprisedb-launchpgJDBC.desktop || _die "Failed to copy the xdg files "
-    chmod ugo+x staging/linux/scripts/xdg/enterprisedb-launchpgJDBC.desktop
-
-    cp resources/xdg/enterprisedb-postgres.directory staging/linux/scripts/xdg/enterprisedb-postgres.directory || _die "Failed to copy the xdg files "
-    chmod ugo+x staging/linux/scripts/xdg/enterprisedb-postgres.directory
+    cp resources/xdg/pg-launchpgJDBC.desktop staging/linux/scripts/xdg/pg-launchpgJDBC.desktop || _die "Failed to copy the xdg files "
+    cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql.directory || _die "Failed to copy the xdg files "
 
     # Copy in the menu pick images
     mkdir -p staging/linux/scripts/images || _die "Failed to create a directory for the menu pick images"

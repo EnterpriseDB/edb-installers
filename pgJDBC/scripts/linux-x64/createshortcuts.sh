@@ -50,13 +50,13 @@ chmod ugo+x "$INSTALLDIR/installer/pgjdbc/"*.sh
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/scripts/xdg/enterprisedb-postgres.directory"
-_fixup_file "$INSTALLDIR/scripts/xdg/enterprisedb-launchpgJDBC.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-postgresql.directory"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-launchpgJDBC.desktop"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system  --novendor \
-      "$INSTALLDIR/scripts/xdg/enterprisedb-postgres.directory" \
-      "$INSTALLDIR/scripts/xdg/enterprisedb-launchpgJDBC.desktop"  || _warn "Failed to create the pgJDBC menu"
+      "$INSTALLDIR/scripts/xdg/pg-postgresql.directory" \
+      "$INSTALLDIR/scripts/xdg/pg-launchpgJDBC.desktop"  || _warn "Failed to create the pgJDBC menu"
 
 echo "$0 ran to completion"
 exit 0

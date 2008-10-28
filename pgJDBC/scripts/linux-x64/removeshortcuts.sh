@@ -27,8 +27,8 @@ _warn() {
 }
 
 # Remove the menu shortcuts
-"$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system --noupdate \
-        "$INSTALLDIR/scripts/xdg/enterprisedb-launchpgJDBC.desktop"  || _warn "Failed to Remove the pgJDBC menu"
+"$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
+        "$INSTALLDIR/scripts/xdg/pg-launchpgJDBC.desktop"  || _warn "Failed to Remove the pgJDBC menu"
       
 # Remove the icon resources
 echo "$0 ran to completion"
