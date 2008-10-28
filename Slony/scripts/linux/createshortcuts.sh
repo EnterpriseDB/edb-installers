@@ -45,8 +45,8 @@ _fixup_file() {
 }
 
 # Create the icon resources
-"$INSTALLDIR/Slony/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/Slony/scripts/images/enterprisedb-postgres.png"
-"$INSTALLDIR/Slony/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/Slony/scripts/images/enterprisedb-launchSlonyDocs.png"
+"$INSTALLDIR/Slony/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/Slony/scripts/images/pg-postgresql.png"
+"$INSTALLDIR/Slony/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/Slony/scripts/images/pg-launchSlonyDocs.png"
 
 # Fixup the scripts
 chmod ugo+x "$INSTALLDIR/Slony/installer/Slony/"*.sh
@@ -55,16 +55,16 @@ _fixup_file "$INSTALLDIR/Slony/scripts/launchSlonyDocs.sh"
 chmod ugo+x "$INSTALLDIR/Slony/scripts/launchSlonyDocs.sh"
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/Slony/scripts/xdg/enterprisedb-launchSlonyDocs-$SLONY_VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/Slony/scripts/xdg/pg-launchSlonyDocs-$SLONY_VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/Slony/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory"
 
-chmod ugo+x "$INSTALLDIR/Slony/scripts/xdg/enterprisedb-launchSlonyDocs-$SLONY_VERSION_STR.desktop"
+chmod ugo+x "$INSTALLDIR/Slony/scripts/xdg/pg-launchSlonyDocs-$SLONY_VERSION_STR.desktop"
 chmod ugo+x "$INSTALLDIR/Slony/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/Slony/installer/xdg/xdg-desktop-menu" install --mode system  \
          "$INSTALLDIR/Slony/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory" \
-    "$INSTALLDIR/Slony/scripts/xdg/enterprisedb-launchSlonyDocs-$SLONY_VERSION_STR.desktop"  || _warn "Failed to create the Slony menu"
+    "$INSTALLDIR/Slony/scripts/xdg/pg-launchSlonyDocs-$SLONY_VERSION_STR.desktop"  || _warn "Failed to create the Slony menu"
 
 echo "$0 ran to completion"
 exit 0

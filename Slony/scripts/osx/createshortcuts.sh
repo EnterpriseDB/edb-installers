@@ -43,7 +43,7 @@ _compile_script() {
 mkdir -p "$FOLDER" 
 
 # Create the scripts
-_compile_script "$INSTALLDIR/scripts/enterprisedb-launchSlonyDocs.applescript" "$FOLDER/Slony Documentation.app" "$INSTALLDIR/scripts/images/enterprisedb-launchSlonyDocs.icns"
+_compile_script "$INSTALLDIR/scripts/pg-launchSlonyDocs.applescript" "$FOLDER/Slony Documentation.app" "$INSTALLDIR/scripts/images/pg-launchSlonyDocs.icns"
 
 echo "$0 ran to completion"
 exit 0

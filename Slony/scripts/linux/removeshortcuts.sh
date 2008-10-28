@@ -32,7 +32,7 @@ _warn() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/Slony/installer/xdg/xdg-desktop-menu" uninstall --mode system   \
-    "$INSTALLDIR/Slony/scripts/xdg/enterprisedb-launchSlonyDocs-$SLONY_VERSION_STR.desktop" || _warn "Failed to remove the Slony menu"
+    "$INSTALLDIR/Slony/scripts/xdg/pg-launchSlonyDocs-$SLONY_VERSION_STR.desktop" || _warn "Failed to remove the Slony docs menu item"
 
       
 # Remove the icon resources
