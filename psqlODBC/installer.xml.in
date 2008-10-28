@@ -379,18 +379,12 @@
                     <file>${odbcinstpath}</file>
                     <section>psqlODBC</section>
                     <key>Description</key>
-                    <value>PostgreSQL driver for Linux</value>
+                    <value>PostgreSQL ODBC driver</value>
                 </iniFileSet>
                 <iniFileSet>
                     <file>${odbcinstpath}</file>
                     <section>psqlODBC</section>
                     <key>Driver</key>
-                    <value>${installdir}/lib/psqlodbcw.so</value>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>${odbcinstpath}</file>
-                    <section>psqlODBC</section>
-                    <key>Setup</key>
                     <value>${installdir}/lib/psqlodbcw.so</value>
                 </iniFileSet>
         	<!-- LIN & MAC: Create Menu Shortcuts -->
@@ -513,12 +507,6 @@
                     <file>${odbcuninstallfile}</file>
                     <section>psqlODBC</section>
                     <key>Driver</key>
-                    <value/>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>${odbcuninstallfile}</file>
-                    <section>psqlODBC</section>
-                    <key>Setup</key>
                     <value/>
                 </iniFileSet>
             </actionList>
