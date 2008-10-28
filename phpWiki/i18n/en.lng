@@ -2,17 +2,17 @@ Installer.Welcome.Title=Setup %1$s Setup Wizard
 
 Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
 
-error.apache.notfound=No apache Found. Please run the EnterpriseDB ApachePhp for Apache installation.
+error.apache.notfound=No Apache server was found. Please run the EnterpriseDB ApachePHP installer.
 
-error.php.notfound=No php Found. Please run the EnterpriseDB ApachePhp for php installation.
+error.php.notfound=No suitable PHP installation was found. Please run the EnterpriseDB ApachePHP installer.
 
 db.create.info=Created a database role with name "phpwikiuser" and password "phpwikiuser". \nCreated a database named "phpwiki", owned by "phpwikiuser".
 
-db.drop.info=The phpwiki database and user account have not been removed from your PostgreSQL server.\n\nNOTE: Apache needs to be restarted for removal of phpwiki database and phpwikiuser from the server. 
+db.drop.info=The phpWiki database and user account have not been removed from your PostgreSQL server.\n\nNOTE: Apache needs to be restarted for removal of phpwiki database and phpwikiuser from the server. 
 
 db.found.info=A database called 'phpwiki' and user called 'phpwikiuser' already exists on your server. If you continue with this installation, this database will be reused, however phpWiki may require additional manual reconfiguration for correct operation. \n\nDo you wish to continue? 
 
-install.summary=phpWiki - WikiWikiWeb is a web site where anyone can edit the pages through an HTML form. Linking is done automatically on the server side; all pages are stored in a database
+install.summary=phpWiki - A WikiWikiWeb is a web site where anyone can edit the pages through an HTML form. Linking is done automatically on the server side; all pages are stored in a database
 
 pgplus.details.title=PostgreSQL Installation Details 
 

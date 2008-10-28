@@ -2,13 +2,13 @@ Installer.Welcome.Title=Setup %1$s Setup Wizard
 
 Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
 
-error.apache.notfound=No apache Found. Please run the EnterpriseDB ApachePhp for Apache installation.
+error.apache.notfound=No Apache server was found. Please run the EnterpriseDB ApachePHP installer.
 
-error.php.notfound=No php Found. Please run the EnterpriseDB ApachePhp for php installation.
+error.php.notfound=No suitable PHP installation was found. Please run the EnterpriseDB ApachePHP installer.
 
-db.create.info=Created a database role with name "phpbbuser" and password "phpbbuser". \nCreated a database named "phpbb", owned by "phpbb".
+db.create.info=Created a database role with the name "phpbbuser" and password "phpbbuser". \nCreated a database named "phpbb", owned by "phpbb".
 
-db.drop.info=The phpbb database and user account phpbbuser have not been removed from your PostgreSQL server
+db.drop.info=The phpBB database and user account phpbbuser have not been removed from your PostgreSQL server
 
 db.found.info=A database called 'phpbb' and user called 'phpbbuser' already exists on your server. If you continue with this installation, this database will be reused, however phpBB may require additional manual reconfiguration for correct operation. \n\nDo you wish to continue?.
 
@@ -30,4 +30,4 @@ Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
-server.locale.error=PostgreSQL Server locale does not allow to create database in UTF8 encoding.\n\nAborting Installation.
+server.locale.error=The PostgreSQL Server locale does not allow databases to be create with UTF-8 encoding.\n\nAborting Installation.

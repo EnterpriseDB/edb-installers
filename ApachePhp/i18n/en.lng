@@ -2,7 +2,7 @@ Installer.Welcome.Title=Setup EnterpriseDB %1$s
 
 Installer.Welcome.Text=Welcome to the EnterpriseDB %1$s Setup Wizard.
 
-install.summary=Apache + Php is the Bundle of Apache HTTP Server and PHP
+install.summary=ApachePHP is a preconfigured Apache webserver with PHP, compiled for use with PostgreSQL
 
 error.install.apache=Error Installing Apache
 
@@ -18,7 +18,7 @@ error.start.apache=Error Starting Apache
 
 apache.details.title=Apache Server Details
 
-apache.details.explanation=Please specify a Port on which Apache will run
+apache.details.explanation=Please specify a port on which Apache will run
 
 config.port.invalid=This port number must be a valid integer between 1024 and 65535.
 

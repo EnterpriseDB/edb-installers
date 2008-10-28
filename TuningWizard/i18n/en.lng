@@ -2,7 +2,7 @@ Installer.Welcome.Title=Setup EnterpriseDB Tuning Wizard
 
 Installer.Welcome.Text=Welcome to the EnterpriseDB Tuning Wizard Setup.
 
-install.summary=TuningWizard configures the PostgreSQL Server so that it performs in most efficient manner.
+install.summary=The Tuning Wizard performs basic tuning of your PostgreSQL server for the workload you select on your hardware.
 
 tuningwizard.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 

@@ -2,9 +2,9 @@ Installer.Welcome.Title=Setup %1$s Setup Wizard
 
 Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
 
-error.apache.notfound=No apache Found. Please run the EnterpriseDB ApachePhp for Apache installation.
+error.apache.notfound=No Apache server was found. Please run the EnterpriseDB ApachePHP installer.
 
-error.php.notfound=No php Found. Please run the EnterpriseDB ApachePhp for php installation.
+error.php.notfound=No suitable PHP installation was found. Please run the EnterpriseDB ApachePHP installer.
 
 install.summary=phpPgAdmin is a web-based administration tool for PostgreSQL. It is perfect for PostgreSQL DBAs, newbies and hosting services.
 
@@ -28,6 +28,6 @@ config.pgport.invalid=This port number must be a valid integer between 1024 and 
 
 config.pgport.in.use=The specified port number is not available. Please enter a different port.
 
-config.pghome.invalid=The specified PGHOME Path does not have pg_dump/pg_dumpall utilities.\nExport Feature of phpPgAdmin will be disabled. \n\nDo you wish to continue?
+config.pghome.invalid=The specified PGHOME path does not have pg_dump/pg_dumpall utilities.\nExport features of phpPgAdmin will be disabled. \n\nDo you wish to continue?
 
-pghome.blank.notice=PGHOME not set.\nExport Feature of phpPgAdmin will be disabled. \n\nDo you wish to continue?
+pghome.blank.notice=PGHOME not set.\nExport features of phpPgAdmin will be disabled. \n\nDo you wish to continue?

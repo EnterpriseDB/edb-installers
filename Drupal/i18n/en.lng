@@ -2,17 +2,17 @@ Installer.Welcome.Title=Setup %1$s Setup Wizard
 
 Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
 
-error.apache.notfound=No apache Found. Please run the EnterpriseDB ApachePhp for Apache installation.
+error.apache.notfound=No Apache server was found. Please run the EnterpriseDB ApachePhp installer.
 
-error.php.notfound=No php Found. Please run the EnterpriseDB ApachePhp for php installation.
+error.php.notfound=No PHP installation was found. Please run the EnterpriseDB ApachePhp installer.
 
-db.create.info=Created a database role with name "drupaluser" and password "drupaluser". \nCreated a database named "drupal", owned by "drupaluser".
+db.create.info=Created a database role with the name "drupaluser" and password "drupaluser". \nCreated a database named "drupal", owned by "drupaluser".
 
-db.drop.info=The drupal database and user account have not been removed from your PostgreSQL server.
+db.drop.info=The Drupal database and user account have not been removed from your PostgreSQL server.
 
-db.found.info=A database called 'drupal' and user called 'drupaluser' already exists on your server. If you continue with this installation, this database will be reused, however Drupal may require additional manual reconfiguration for correct operation. \n\nDo you wish to continue?
+db.found.info=A database called 'drupal' and user called 'drupaluser' already exist on your server. If you continue with this installation, this database will be reused, however Drupal may require additional manual reconfiguration for correct operation. \n\nDo you wish to continue?
 
-install.summary=Drupal is an engine suitable to setup or build a content driven or community driven website. Modular design allows flexibility in design.
+install.summary=Drupal is popular content managment system for building websites.
 
 pgplus.details.title=PostgreSQL Installation Details 
 

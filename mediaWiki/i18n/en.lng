@@ -2,17 +2,17 @@ Installer.Welcome.Title=Setup %1$s Setup Wizard
 
 Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
 
-error.apache.notfound=No apache Found. Please run the EnterpriseDB ApachePhp for Apache installation.
+error.apache.notfound=No Apache server was found. Please run the EnterpriseDB ApachePHP installer.
 
-error.php.notfound=No php Found. Please run the EnterpriseDB ApachePhp for php installation.
+error.php.notfound=No suitable PHP installation was found. Please run the EnterpriseDB ApachePHP installer.
 
-db.create.info=Created a database role with name "mediawikiuser" and password "mediawikiuser". \nCreated a database named "mediawiki", owned by "mediawikiuser".
+db.create.info=Created a database role with the name "mediawikiuser" and password "mediawikiuser". \nCreated a database named "mediawiki", owned by "mediawikiuser".
 
-db.drop.info=The mediawiki database and user account have not been removed from your PostgreSQL server.
+db.drop.info=The mediaWiki database and user account have not been removed from your PostgreSQL server.
 
-db.found.info=A database called 'mediawiki' and user called 'mediawikiuser' already exists on your server. If you continue with this installation, this database will be reused, however mediaWiki may require additional manual reconfiguration for correct operation. \n\nDo you wish to continue?
+db.found.info=A database called 'mediawiki' and user called 'mediawikiuser' already exist on your server. If you continue with this installation, this database will be reused, however mediaWiki may require additional manual reconfiguration for correct operation. \n\nDo you wish to continue?
 
-install.summary=MediaWiki is a free software wiki package originally written for Wikipedia. It is now used by several other projects of the non-profit Wikimedia Foundation and by many other wikis, including this website, the home of MediaWiki.
+install.summary=MediaWiki is a free wiki package originally written for Wikipedia. It is now used by several other projects of the non-profit Wikimedia Foundation and by many other wikis.
 
 pgplus.details.title=PostgreSQL Installation Details
 

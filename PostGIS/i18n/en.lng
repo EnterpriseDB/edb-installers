@@ -35,6 +35,6 @@ Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of val
 
 db.drop.info=Template database, 'template_postgis' have not been removed from your PostgreSQL Server.
 
-postgis.incompatible.install.error=An incomaptible version of PostGIS is already installed. \nPlease remove the incomaptible installation before installing this version. 
+postgis.incompatible.install.error=An incomaptible version of PostGIS is already installed. \nPlease remove the incompatible installation before installing this version. 
 
-postgis.incompatible.pg.error=The PostgreSQL Server Installation is incomaptible with this version of PostGIS.
+postgis.incompatible.pg.error=The PostgreSQL Server Installation is incompatible with this version of PostGIS.
