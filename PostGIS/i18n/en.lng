@@ -33,7 +33,7 @@ Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
-db.drop.info=Template database, 'template_postgis' have not been removed from your PostgreSQL Server.
+db.drop.info=The template database 'template_postgis' has not been removed from your PostgreSQL Server.
 
 postgis.incompatible.install.error=An incomaptible version of PostGIS is already installed. \nPlease remove the incompatible installation before installing this version. 
 
