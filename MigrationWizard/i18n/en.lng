@@ -2,11 +2,11 @@ Installer.Welcome.Title=Setup EnterpriseDB Migration Wizard
 
 Installer.Welcome.Text=Welcome to the EnterpriseDB Migration Wizard Setup.
 
-install.summary=EnterpriseDB's MySql to PostgreSQL Migration Wizard. 
+install.summary=EnterpriseDB's MySQL to PostgreSQL Migration Wizard. 
 
 migrationwizard.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
-java.error=Java 1.5 or later is not installed on your system.\nPlease install it before proceed.\nIf it is installed on your system, Please put in the PATH environment variable.
+java.error=Java 1.5 or later is not installed on your system.\nPlease ensure it is installed and in the system PATH before re-running the installer.
 
 launch.migrationwizard.windows=Do you want to launch Migration wizard now?
 
