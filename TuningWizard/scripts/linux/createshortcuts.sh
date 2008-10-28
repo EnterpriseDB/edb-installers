@@ -37,7 +37,7 @@ _replace() {
 
 # Substitute values into a file ($in)
 _fixup_file() {
-    _replace INSTALL_DIR "$INSTALLDIR" "$1"
+    _replace INSTALLDIR "$INSTALLDIR" "$1"
 }
 
 # Create the icon resources
@@ -47,8 +47,10 @@ _fixup_file() {
 # Fixup the scripts
 chmod ugo+x "$INSTALLDIR/installer/TuningWizard/"*.sh
 _fixup_file "$INSTALLDIR/scripts/launchTuningWizard.sh"
+_fixup_file "$INSTALLDIR/scripts/runTuningWizard.sh"
 
 chmod ugo+x "$INSTALLDIR/scripts/launchTuningWizard.sh"
+chmod ugo+x "$INSTALLDIR/scripts/runTuningWizard.sh"
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
 _fixup_file "$INSTALLDIR/scripts/xdg/enterprisedb-launchTuningWizard.desktop"

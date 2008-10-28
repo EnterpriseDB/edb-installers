@@ -94,9 +94,6 @@ _postprocess_TuningWizard_linux_x64() {
     cp -R scripts/linux/launchTuningWizard.sh staging/linux-x64/scripts/launchTuningWizard.sh || _die "Failed to copy the launch scripts (scripts/linux)"
     chmod ugo+x staging/linux-x64/scripts/launchTuningWizard.sh
 
-    cp -R scripts/linux/ctlTuningWizard.sh staging/linux-x64/scripts/ctlTuningWizard.sh || _die "Failed to copy the launch scripts (scripts/linux)"
-    chmod ugo+x staging/linux-x64/scripts/ctlTuningWizard.sh
-
     cp -R scripts/linux/runTuningWizard.sh staging/linux-x64/scripts/runTuningWizard.sh || _die "Failed to copy the launch scripts (scripts/linux)"
     chmod ugo+x staging/linux-x64/scripts/runTuningWizard.sh
 
