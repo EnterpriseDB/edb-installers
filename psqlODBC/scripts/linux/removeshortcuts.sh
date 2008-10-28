@@ -31,7 +31,7 @@ _warn() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
-      "$INSTALLDIR/scripts/xdg/enterprisedb-launchOdbcDocs.desktop"  || _warn "Failed to Remove the pgODBC menu"
+      "$INSTALLDIR/scripts/xdg/pg-launchOdbcDocs.desktop"  || _warn "Failed to Remove the pgODBC menu"
       
 # Remove the icon resources
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/launch-OdbcDocs.png"

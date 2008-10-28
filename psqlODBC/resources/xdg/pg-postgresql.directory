@@ -4,4 +4,4 @@ Type=Directory
 Name=PostgreSQL
 Comment=PostgreSQL, packaged by EnterpriseDB
 Encoding=UTF-8
-Icon=enterprisedb-postgres.png
+Icon=pg-postgresql.png

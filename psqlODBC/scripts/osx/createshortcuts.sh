@@ -42,7 +42,7 @@ _compile_script() {
 mkdir -p "$FOLDER" 
 
 # Create the scripts
-_compile_script "$INSTALLDIR/scripts/enterprisedb-launchOdbcDocs.applescript" "$FOLDER/psqlODBC Documentation.app" "$INSTALLDIR/scripts/images/enterprisedb-launchOdbcDocs.icns"
+_compile_script "$INSTALLDIR/scripts/pg-launchOdbcDocs.applescript" "$FOLDER/psqlODBC Documentation.app" "$INSTALLDIR/scripts/images/pg-launchOdbcDocs.icns"
 
 echo "$0 ran to completion"
 exit 0

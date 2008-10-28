@@ -113,11 +113,11 @@ _postprocess_psqlODBC_osx() {
 
     #Setup the launch scripts
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the launch scripts"
-    cp scripts/osx/enterprisedb-launchOdbcDocs.applescript.in staging/osx/scripts/enterprisedb-launchOdbcDocs.applescript || _die "Failed to copy the enterprisedb-launchOdbcDocs.applescript.in script (scripts/osx/scripts/enterprisedb-launchOdbcDocs.applescript)"
+    cp scripts/osx/pg-launchOdbcDocs.applescript.in staging/osx/scripts/pg-launchOdbcDocs.applescript || _die "Failed to copy the pg-launchOdbcDocs.applescript.in script (scripts/osx/scripts/pg-launchOdbcDocs.applescript)"
 
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/enterprisedb-launchOdbcDocs.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/enterprisedb-launchOdbcDocs.icns)"
+    cp resources/pg-launchOdbcDocs.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/pg-launchOdbcDocs.icns)"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"

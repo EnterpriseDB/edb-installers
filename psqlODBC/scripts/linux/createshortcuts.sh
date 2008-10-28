@@ -41,20 +41,20 @@ _fixup_file() {
 }
 
 # Create the icon resources
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/enterprisedb-postgres.png" 
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/enterprisedb-launchOdbcDocs.png" 
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-postgresql.png" 
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-launchOdbcDocs.png" 
 
 # Fixup the scripts
 chmod ugo+x "$INSTALLDIR/installer/psqlODBC/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/scripts/xdg/enterprisedb-postgres.directory"
-_fixup_file "$INSTALLDIR/scripts/xdg/enterprisedb-launchOdbcDocs.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-postgresql.directory"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-launchOdbcDocs.desktop"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system  \
-      "$INSTALLDIR/scripts/xdg/enterprisedb-postgres.directory" \
-      "$INSTALLDIR/scripts/xdg/enterprisedb-launchOdbcDocs.desktop"  || _warn "Failed to create the pgODBC menu"
+      "$INSTALLDIR/scripts/xdg/pg-postgresql.directory" \
+      "$INSTALLDIR/scripts/xdg/pg-launchOdbcDocs.desktop"  || _warn "Failed to create the pgODBC menu"
 
 echo "$0 ran to completion"
 exit 0
