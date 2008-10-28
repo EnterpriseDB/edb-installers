@@ -26,8 +26,7 @@ _warn() {
 # Search & replace in a file - _replace($find, $replace, $file) 
 _replace() {
     sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" 
-	cp /tmp/$$.tmp $3 
-    cat /tmp/$$.tmp >> /tmp/tmp1.txt
+    mv /tmp/$$.tmp $3 
 }
 
 # Substitute values into a file ($in)

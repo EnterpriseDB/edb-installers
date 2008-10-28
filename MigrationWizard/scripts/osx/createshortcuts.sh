@@ -27,7 +27,7 @@ _warn() {
 # Search & replace in a file - _replace($find, $replace, $file) 
 _replace() {
     sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" 
-    cp /tmp/$$.tmp $3 
+    mv /tmp/$$.tmp $3 
 }
 
 # Compile a script - _compile_script($in.applescript, $out.app, $image)
