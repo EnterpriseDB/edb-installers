@@ -195,12 +195,12 @@ _postprocess_ApachePhp_linux() {
     cp resources/*.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp resources/xdg/enterprisedb-postgres.directory staging/linux/scripts/xdg/enterprisedb-postgres.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/enterprisedb-apachephp.directory staging/linux/scripts/xdg/enterprisedb-apachephp.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/enterprisedb-launchApachePhp.desktop staging/linux/scripts/xdg/enterprisedb-launchApachePhp.desktop || _die "Failed to copy a menu pick desktop"
-    cp resources/xdg/enterprisedb-startApache.desktop staging/linux/scripts/xdg/enterprisedb-startApache.desktop || _die "Failed to copy a menu pick desktop"
-    cp resources/xdg/enterprisedb-stopApache.desktop staging/linux/scripts/xdg/enterprisedb-stopApache.desktop || _die "Failed to copy a menu pick desktop"
-    cp resources/xdg/enterprisedb-restartApache.desktop staging/linux/scripts/xdg/enterprisedb-restartApache.desktop || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/pg-postgres.directory staging/linux/scripts/xdg/pg-postgres.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/pg-apachephp.directory staging/linux/scripts/xdg/pg-apachephp.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/pg-launchApachePhp.desktop staging/linux/scripts/xdg/pg-launchApachePhp.desktop || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/pg-startApache.desktop staging/linux/scripts/xdg/pg-startApache.desktop || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/pg-stopApache.desktop staging/linux/scripts/xdg/pg-stopApache.desktop || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/pg-restartApache.desktop staging/linux/scripts/xdg/pg-restartApache.desktop || _die "Failed to copy a menu pick desktop"
 
     cp resources/index.php staging/linux/apache/www || _die "Failed to copy index.php"
     chmod ugo+x staging/linux/apache/www/index.php

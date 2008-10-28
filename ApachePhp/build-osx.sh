@@ -200,10 +200,10 @@ _postprocess_ApachePhp_osx() {
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/*.icns)"
 
-    cp scripts/osx/enterprisedb-launchApachePhp.applescript.in staging/osx/scripts/enterprisedb-launchApachePhp.applescript || _die "Failed to copy a menu pick desktop"
-    cp scripts/osx/enterprisedb-startApache.applescript.in staging/osx/scripts/enterprisedb-startApache.applescript || _die "Failed to copy a menu pick desktop"
-    cp scripts/osx/enterprisedb-stopApache.applescript.in staging/osx/scripts/enterprisedb-stopApache.applescript || _die "Failed to copy a menu pick desktop"
-    cp scripts/osx/enterprisedb-restartApache.applescript.in staging/osx/scripts/enterprisedb-restartApache.applescript || _die "Failed to copy a menu pick desktop"
+    cp scripts/osx/pg-launchApachePhp.applescript.in staging/osx/scripts/pg-launchApachePhp.applescript || _die "Failed to copy a menu pick desktop"
+    cp scripts/osx/pg-startApache.applescript.in staging/osx/scripts/pg-startApache.applescript || _die "Failed to copy a menu pick desktop"
+    cp scripts/osx/pg-stopApache.applescript.in staging/osx/scripts/pg-stopApache.applescript || _die "Failed to copy a menu pick desktop"
+    cp scripts/osx/pg-restartApache.applescript.in staging/osx/scripts/pg-restartApache.applescript || _die "Failed to copy a menu pick desktop"
     cp scripts/osx/getapacheport.sh staging/osx/scripts/getapacheport.sh || _die "Failed to copy the getapacheport script (scripts/osx/getapacheport.sh)"
     chmod ugo+x staging/osx/scripts/getapacheport.sh
 

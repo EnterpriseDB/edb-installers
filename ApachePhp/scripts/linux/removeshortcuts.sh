@@ -28,19 +28,19 @@ _warn() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system   \
-    "$INSTALLDIR/scripts/xdg/enterprisedb-apachephp.directory" \
-    "$INSTALLDIR/scripts/xdg/enterprisedb-launchApachePhp.desktop" \
-    "$INSTALLDIR/scripts/xdg/enterprisedb-startApache.desktop" \
-    "$INSTALLDIR/scripts/xdg/enterprisedb-stopApache.desktop" \
-    "$INSTALLDIR/scripts/xdg/enterprisedb-restartApache.desktop" || _warn "Failed to remove the ApachePhp menu"
+    "$INSTALLDIR/scripts/xdg/pg-apachephp.directory" \
+    "$INSTALLDIR/scripts/xdg/pg-launchApachePhp.desktop" \
+    "$INSTALLDIR/scripts/xdg/pg-startApache.desktop" \
+    "$INSTALLDIR/scripts/xdg/pg-stopApache.desktop" \
+    "$INSTALLDIR/scripts/xdg/pg-restartApache.desktop" || _warn "Failed to remove the ApachePhp menu"
 
       
 # Remove the icon resources
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/enterprisedb-apachephp.png"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/launch-ApachePhp.png"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/start-Apache.png"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/stop-Apache.png"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/restart-Apache.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-apachephp.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-launchApachePhp.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-startApache.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-stopApache.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-restartApache.png"
 
 echo "$0 ran to completion"
 exit 0

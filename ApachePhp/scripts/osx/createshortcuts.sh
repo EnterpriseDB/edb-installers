@@ -38,10 +38,10 @@ _fixup_file() {
 }
 
 # Fixup the scripts
-_fixup_file "$INSTALLDIR/scripts/enterprisedb-launchApachePhp.applescript"
-_fixup_file "$INSTALLDIR/scripts/enterprisedb-startApache.applescript" 
-_fixup_file "$INSTALLDIR/scripts/enterprisedb-stopApache.applescript"
-_fixup_file "$INSTALLDIR/scripts/enterprisedb-restartApache.applescript" 
+_fixup_file "$INSTALLDIR/scripts/pg-launchApachePhp.applescript"
+_fixup_file "$INSTALLDIR/scripts/pg-startApache.applescript" 
+_fixup_file "$INSTALLDIR/scripts/pg-stopApache.applescript"
+_fixup_file "$INSTALLDIR/scripts/pg-restartApache.applescript" 
 
 
 
@@ -58,10 +58,10 @@ mkdir -p "$FOLDER"
 mkdir -p "$FOLDER/EnterpriseDB ApachePhp" || _die "Failed to create the menu directory ($FOLDER/EnterpriseDB ApachePhp)"
 
 # Create the scripts
-_compile_script "$INSTALLDIR/scripts/enterprisedb-launchApachePhp.applescript" "$FOLDER/EnterpriseDB ApachePhp/ApachePhp.app" "$INSTALLDIR/scripts/images/enterprisedb-launchApachePhp.icns"
-_compile_script "$INSTALLDIR/scripts/enterprisedb-startApache.applescript" "$FOLDER/EnterpriseDB ApachePhp/Start Apache.app" "$INSTALLDIR/scripts/images/enterprisedb-startApache.icns"
-_compile_script "$INSTALLDIR/scripts/enterprisedb-stopApache.applescript" "$FOLDER/EnterpriseDB ApachePhp/Stop Apache.app" "$INSTALLDIR/scripts/images/enterprisedb-stopApache.icns"
-_compile_script "$INSTALLDIR/scripts/enterprisedb-restartApache.applescript" "$FOLDER/EnterpriseDB ApachePhp/Restart Apache.app" "$INSTALLDIR/scripts/images/enterprisedb-restartApache.icns"
+_compile_script "$INSTALLDIR/scripts/pg-launchApachePhp.applescript" "$FOLDER/EnterpriseDB ApachePhp/ApachePhp.app" "$INSTALLDIR/scripts/images/pg-launchApachePhp.icns"
+_compile_script "$INSTALLDIR/scripts/pg-startApache.applescript" "$FOLDER/EnterpriseDB ApachePhp/Start Apache.app" "$INSTALLDIR/scripts/images/pg-startApache.icns"
+_compile_script "$INSTALLDIR/scripts/pg-stopApache.applescript" "$FOLDER/EnterpriseDB ApachePhp/Stop Apache.app" "$INSTALLDIR/scripts/images/pg-stopApache.icns"
+_compile_script "$INSTALLDIR/scripts/pg-restartApache.applescript" "$FOLDER/EnterpriseDB ApachePhp/Restart Apache.app" "$INSTALLDIR/scripts/images/pg-restartApache.icns"
 
 echo "$0 ran to completion"
 exit 0
