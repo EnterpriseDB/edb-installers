@@ -31,11 +31,11 @@ _warn() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
-    "$INSTALLDIR/scripts/xdg/enterprisedb-launchTuningWizard.desktop" || _warn "Failed to remove the TuningWizard menu"
+    "$INSTALLDIR/scripts/xdg/pg-launchTuningWizard.desktop" || _warn "Failed to remove the TuningWizard menu"
 
       
 # Remove the icon resources
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/launch-TuningWizard.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-launchTuningWizard.png"
 echo "$0 ran to completion"
 exit 0
 

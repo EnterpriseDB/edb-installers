@@ -107,8 +107,8 @@ _postprocess_TuningWizard_linux_x64() {
     cp resources/*.png staging/linux-x64/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
     mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp resources/xdg/enterprisedb-postgres.directory staging/linux-x64/scripts/xdg/enterprisedb-postgres.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/enterprisedb-launchTuningWizard.desktop staging/linux-x64/scripts/xdg/enterprisedb-launchTuningWizard.desktop || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/pg-launchTuningWizard.desktop staging/linux-x64/scripts/xdg/pg-launchTuningWizard.desktop || _die "Failed to copy a menu pick desktop"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"

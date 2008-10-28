@@ -3,6 +3,6 @@ Version=1.0
 Encoding=UTF-8
 Name=Tuning Wizard
 Exec="INSTALLDIR/scripts/launchTuningWizard.sh"
-Icon=enterprisedb-launchTuningWizard.png
+Icon=pg-launchTuningWizard.png
 Terminal=false
 Type=Application

@@ -42,7 +42,7 @@ _compile_script() {
 mkdir -p "$FOLDER" || _die "Failed to create the menu directory ($FOLDER)"
 
 # Create the scripts
-_compile_script "$INSTALLDIR/scripts/enterprisedb-launchTuningWizard.applescript" "$FOLDER/Tuning Wizard.app" "$INSTALLDIR/scripts/images/enterprisedb-launchTuningWizard.icns"
+_compile_script "$INSTALLDIR/scripts/pg-launchTuningWizard.applescript" "$FOLDER/Tuning Wizard.app" "$INSTALLDIR/scripts/images/pg-launchTuningWizard.icns"
 
 echo "$0 ran to completion"
 exit 0

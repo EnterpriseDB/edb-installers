@@ -81,11 +81,11 @@ _postprocess_TuningWizard_osx() {
     chmod ugo+x staging/osx/installer/TuningWizard/createshortcuts.sh
 
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the launch scripts"
-    cp scripts/osx/enterprisedb-launchTuningWizard.applescript.in staging/osx/scripts/enterprisedb-launchTuningWizard.applescript || _die "Failed to copy applescript (scripts/osx/enterprisedb-launchTuningWizard.applescript.in)"
+    cp scripts/osx/pg-launchTuningWizard.applescript.in staging/osx/scripts/pg-launchTuningWizard.applescript || _die "Failed to copy applescript (scripts/osx/pg-launchTuningWizard.applescript.in)"
 
     # Copy in the menu pick images 
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/enterprisedb-launchTuningWizard.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/enterprisedb-launchTuningWizard.icns)"
+    cp resources/pg-launchTuningWizard.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/pg-launchTuningWizard.icns)"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"

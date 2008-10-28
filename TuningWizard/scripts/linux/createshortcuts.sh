@@ -41,8 +41,8 @@ _fixup_file() {
 }
 
 # Create the icon resources
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/enterprisedb-postgres.png"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/enterprisedb-launchTuningWizard.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-postgresql.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-launchTuningWizard.png"
 
 # Fixup the scripts
 chmod ugo+x "$INSTALLDIR/installer/TuningWizard/"*.sh
@@ -53,15 +53,15 @@ chmod ugo+x "$INSTALLDIR/scripts/launchTuningWizard.sh"
 chmod ugo+x "$INSTALLDIR/scripts/runTuningWizard.sh"
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/scripts/xdg/enterprisedb-launchTuningWizard.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-launchTuningWizard.desktop"
 
-chmod ugo+x "$INSTALLDIR/scripts/xdg/enterprisedb-launchTuningWizard.desktop"
-chmod ugo+x "$INSTALLDIR/scripts/xdg/enterprisedb-postgres.directory"
+chmod ugo+x "$INSTALLDIR/scripts/xdg/pg-launchTuningWizard.desktop"
+chmod ugo+x "$INSTALLDIR/scripts/xdg/pg-postgresql.directory"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system \
-         "$INSTALLDIR/scripts/xdg/enterprisedb-postgres.directory" \
-    "$INSTALLDIR/scripts/xdg/enterprisedb-launchTuningWizard.desktop"  || _warn "Failed to create the TuningWizard menu"
+         "$INSTALLDIR/scripts/xdg/pg-postgresql.directory" \
+    "$INSTALLDIR/scripts/xdg/pg-launchTuningWizard.desktop"  || _warn "Failed to create the TuningWizard menu"
 
 echo "$0 ran to completion"
 exit 0
