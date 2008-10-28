@@ -3,6 +3,6 @@ Version=1.0
 Encoding=UTF-8
 Name=JDBC Docs
 Exec="INSTALL_DIR/PostGIS/scripts/launchJDBCDocs.sh"
-Icon=enterprisedb-launchJDBCDocs.png
+Icon=pg-launchPostGISJDBCDocs.png
 Terminal=false
 Type=Application

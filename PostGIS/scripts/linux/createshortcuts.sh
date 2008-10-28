@@ -45,10 +45,10 @@ _fixup_file() {
 }
 
 # Create the icon resources
-"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/enterprisedb-postgres.png"
-"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/enterprisedb-postgis.png"
-"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/enterprisedb-launchPostGISDocs.png"
-"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/enterprisedb-launchJDBCDocs.png"
+"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-postgresql.png"
+"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-postgis.png"
+"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-launchPostGISDocs.png"
+"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-launchPostGISJDBCDocs.png"
 
 # Fixup the scripts
 chmod ugo+x "$INSTALLDIR/PostGIS/installer/PostGIS/"*.sh
@@ -59,21 +59,21 @@ chmod ugo+x "$INSTALLDIR/PostGIS/scripts/launchPostGISDocs.sh"
 chmod ugo+x "$INSTALLDIR/PostGIS/scripts/launchJDBCDocs.sh"
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop"
-_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchJDBCDocs-$POSTGIS_VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory"
 
-chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop"
-chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchJDBCDocs-$POSTGIS_VERSION_STR.desktop"
-chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-postgis-$POSTGIS_VERSION_STR.directory"
+chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop"
+chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR.desktop"
+chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgis-$POSTGIS_VERSION_STR.directory"
 chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/PostGIS/installer/xdg/xdg-desktop-menu" install --mode system \
          "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory" \
-         "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-postgis-$POSTGIS_VERSION_STR.directory" \
-    "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop" \
-    "$INSTALLDIR/PostGIS/scripts/xdg/enterprisedb-launchJDBCDocs-$POSTGIS_VERSION_STR.desktop"  || _warn "Failed to create the PostGIS menu"
+         "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgis-$POSTGIS_VERSION_STR.directory" \
+    "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop" \
+    "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR.desktop"  || _warn "Failed to create the PostGIS menu"
 
 echo "$0 ran to completion"
 exit 0

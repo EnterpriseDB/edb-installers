@@ -304,13 +304,13 @@ _postprocess_PostGIS_osx() {
     chmod ugo+x $PG_STAGING/installer/PostGIS/check-db.sh
 
     mkdir -p $PG_STAGING/scripts || _die "Failed to create a directory for the launch scripts"
-    cp -R $PG_PATH_OSX/PostGIS/scripts/osx/enterprisedb-launchJdbcDocs.applescript.in $PG_STAGING/scripts/enterprisedb-launchJdbcDocs.applescript || _die "Failed to copy the launch script (scripts/osx/enterprisedb-launchJdbcDocs.applescript.in)"
-    cp -R $PG_PATH_OSX/PostGIS/scripts/osx/enterprisedb-launchPostGISDocs.applescript.in $PG_STAGING/scripts/enterprisedb-launchPostGISDocs.applescript || _die "Failed to copy the launch script (scripts/osx/enterprisedb-launchPostGISDocs.applescript.in)"
+    cp -R $PG_PATH_OSX/PostGIS/scripts/osx/pg-launchJdbcDocs.applescript.in $PG_STAGING/scripts/pg-launchJdbcDocs.applescript || _die "Failed to copy the launch script (scripts/osx/pg-launchJdbcDocs.applescript.in)"
+    cp -R $PG_PATH_OSX/PostGIS/scripts/osx/pg-launchPostGISDocs.applescript.in $PG_STAGING/scripts/pg-launchPostGISDocs.applescript || _die "Failed to copy the launch script (scripts/osx/pg-launchPostGISDocs.applescript.in)"
 
     # Copy in the menu pick images 
     mkdir -p $PG_PATH_OSX/PostGIS/staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp $PG_PATH_OSX/PostGIS/resources/enterprisedb-launchPostGISDocs.icns $PG_PATH_OSX/PostGIS/staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/enterprisedb-launchPostGISDocs.icns)"
-    cp $PG_PATH_OSX/PostGIS/resources/enterprisedb-launchJdbcDocs.icns $PG_PATH_OSX/PostGIS/staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/enterprisedb-launchJdbcDocs.icns)"
+    cp $PG_PATH_OSX/PostGIS/resources/pg-launchPostGISDocs.icns $PG_PATH_OSX/PostGIS/staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchPostGISDocs.icns)"
+    cp $PG_PATH_OSX/PostGIS/resources/pg-launchJdbcDocs.icns $PG_PATH_OSX/PostGIS/staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchJdbcDocs.icns)"
 
     cd $PG_PATH_OSX/PostGIS/
     # Build the installer
