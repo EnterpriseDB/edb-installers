@@ -1,1 +1,1 @@
-open location "http://jdbc.postgresql.org/"
+open location "file://INSTALL_DIR/doc/postgis/jdbc/index.html"

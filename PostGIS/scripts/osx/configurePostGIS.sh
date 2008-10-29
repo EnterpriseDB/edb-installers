@@ -16,7 +16,7 @@ _replace() {
 
 cd "$1"
 
-filelist=`grep -rl @@INSTALL_DIR@@ *`
+filelist=`grep -rl @@INSTALL_DIR@@ share`
 
 
 for file in $filelist
