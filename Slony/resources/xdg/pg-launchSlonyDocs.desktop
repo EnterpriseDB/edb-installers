@@ -3,6 +3,6 @@ Version=1.0
 Encoding=UTF-8
 Name=Slony Documentation
 Exec="INSTALL_DIR/Slony/scripts/launchSlonyDocs.sh"
-Icon=enterprisedb-launchSlonyDocs.png
+Icon=pg-launchSlonyDocs.png
 Terminal=false
 Type=Application
