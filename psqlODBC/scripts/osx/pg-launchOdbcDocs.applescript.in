@@ -1,1 +1,1 @@
-open location "http://psqlodbc.projects.postgresql.org/"
+open location "file://INSTALL_DIR/docs/index.html"
