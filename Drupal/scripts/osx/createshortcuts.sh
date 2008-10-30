@@ -41,7 +41,7 @@ _compile_script() {
 mkdir -p "$FOLDER" || _die "Failed to create the menu directory ($FOLDER)"
 
 # Create the scripts
-_compile_script "$INSTALLDIR/scripts/enterprisedb-launchDrupal.applescript" "$FOLDER/Drupal.app" "$INSTALLDIR/scripts/images/enterprisedb-launchDrupal.icns"
+_compile_script "$INSTALLDIR/scripts/pg-launchDrupal.applescript" "$FOLDER/Drupal.app" "$INSTALLDIR/scripts/images/pg-launchDrupal.icns"
 
 echo "$0 ran to completion"
 exit 0

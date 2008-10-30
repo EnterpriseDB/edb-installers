@@ -77,12 +77,12 @@ _postprocess_Drupal_osx() {
     cp scripts/osx/getapacheport.sh staging/osx/scripts/getapacheport.sh || _die "Failed to copy the getapacheport.sh script (scripts/osx/getapacheport.sh)"
     chmod ugo+x staging/osx/scripts/getapacheport.sh
  
-    cp scripts/osx/enterprisedb-launchDrupal.applescript.in staging/osx/scripts/enterprisedb-launchDrupal.applescript || _die "Failed to copy the enterprisedb-launchDrupal.applescript.in  script (scripts/osx/enterprisedb-launchDrupal.applescript)"
-    chmod ugo+x staging/osx/scripts/enterprisedb-launchDrupal.applescript
+    cp scripts/osx/pg-launchDrupal.applescript.in staging/osx/scripts/pg-launchDrupal.applescript || _die "Failed to copy the pg-launchDrupal.applescript.in  script (scripts/osx/pg-launchDrupal.applescript)"
+    chmod ugo+x staging/osx/scripts/pg-launchDrupal.applescript
 
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/enterprisedb-launchDrupal.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/launchDrupal.icns)"
+    cp resources/pg-launchDrupal.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchDrupal.icns)"
 	
     #Configure the install.php file
     _replace " '#default_value' => \$db_path," " '#default_value' => drupal," "$WD/Drupal/staging/osx/Drupal/install.php"

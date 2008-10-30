@@ -84,13 +84,13 @@ _postprocess_Drupal_linux_x64() {
 
      # Setup the Drupal xdg Files
     mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the Drupal xdg Files"
-    cp resources/xdg/enterprisedb-launchDrupal.desktop staging/linux-x64/scripts/xdg/enterprisedb-launchDrupal.desktop || _die "Failed to copy the xdg files (resources)"
-    cp resources/xdg/enterprisedb-postgres.directory staging/linux-x64/scripts/xdg/enterprisedb-postgres.directory || _die "Failed to copy the xdg files (resources)"
+    cp resources/xdg/pg-launchDrupal.desktop staging/linux-x64/scripts/xdg/pg-launchDrupal.desktop || _die "Failed to copy the xdg files (resources)"
+    cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql.directory || _die "Failed to copy the xdg files (resources)"
 
     # Copy in the menu pick images
     mkdir -p staging/linux-x64/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/enterprisedb-launchDrupal.png staging/linux-x64/scripts/images || _die "Failed to copy the menu pick images (resources/launchDrupal.png)"
-    cp resources/enterprisedb-postgres.png staging/linux-x64/scripts/images || _die "Failed to copy the menu pick images (resources/enterprisedb-postgres.png)"
+    cp resources/pg-launchDrupal.png staging/linux-x64/scripts/images || _die "Failed to copy the menu pick images (resources/pg-launchDrupal.png)"
+    cp resources/pg-postgresql.png staging/linux-x64/scripts/images || _die "Failed to copy the menu pick images (resources/pg-postgresql.png)"
      # copy logo Image
     cp resources/logo.ico staging/linux-x64/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"
 	

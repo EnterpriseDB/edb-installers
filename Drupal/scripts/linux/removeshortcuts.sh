@@ -28,11 +28,11 @@ _warn() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/Drupal/installer/xdg/xdg-desktop-menu" uninstall --mode system  \
-    "$INSTALLDIR/Drupal/scripts/xdg/enterprisedb-launchDrupal.desktop"  || _warn "Failed to remove the Drupal menu"
+    "$INSTALLDIR/Drupal/scripts/xdg/pg-launchDrupal.desktop"  || _warn "Failed to remove the Drupal menu"
       
 # Remove the icon resources
 "$INSTALLDIR/Drupal/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32  \
-    "$INSTALLDIR/Drupal/scripts/images/enterprisedb-launchDrupal.png" || _warn "Failed to remove icon resource"
+    "$INSTALLDIR/Drupal/scripts/images/pg-launchDrupal.png" || _warn "Failed to remove icon resource"
 
 echo "$0 ran to completion"
 exit 0
