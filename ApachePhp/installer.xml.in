@@ -43,6 +43,27 @@
       <file>i18n/en.lng</file>
     </language>
   </customLanguageFileList>
+  <!-- Prebuild Actions -->
+  <preBuildActionList>
+    <setInstallerVariable name="originalplatform" value="${platform_name}"/>
+    <setInstallerVariable name="originalplatform" value="linux-x32">
+        <ruleList>
+            <compareText text="${platform_name}" value="linux"/>
+        </ruleList>
+    </setInstallerVariable>
+   </preBuildActionList>
+  <!-- Initialisation actions -->
+  <initializationActionList>
+      <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
+      <throwError>
+        <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
+        <text>Unknown Error</text>
+        <ruleList>
+          <platformTest type="linux-x64"/>
+          <compareText text="${originalplatform}" value="linux-x32"/>
+        </ruleList>
+      </throwError>
+  </initializationActionList>
   <!-- Preinstallation actions -->
   <preInstallationActionList>
     <!-- Creates the ini file if not exits -->
@@ -877,6 +898,7 @@ AddType text/html         php
     </component>
   </componentList>
   <parameterList>
+    <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
     <parameterGroup>
       <!-- Apache Port -->
       <name>apacheport</name>

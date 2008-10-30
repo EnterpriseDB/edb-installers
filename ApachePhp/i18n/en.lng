@@ -4,6 +4,8 @@ Installer.Welcome.Text=Welcome to the EnterpriseDB %1$s Setup Wizard.
 
 install.summary=ApachePHP is a preconfigured Apache webserver with PHP, compiled for use with PostgreSQL
 
+platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
+
 error.install.apache=Error Installing Apache
 
 error.configure.apachephp=Error Configuring Apache
