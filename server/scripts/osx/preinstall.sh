@@ -19,7 +19,7 @@ then
         echo 'kern.sysv.shmmni=256' >> /etc/sysctl.conf
         echo 'kern.sysv.shmseg=64' >> /etc/sysctl.conf
         echo 'kern.sysv.shmall=8192' >> /etc/sysctl.conf
-        echo "Your shared memory configuration has been adjusted with new settings in /etc/sysctl.conf. Please reboot the system to allow the new settings to take effect and re-run the installer."
+        echo "Your shared memory configuration has been adjusted with new settings in /etc/sysctl.conf. Please reboot the system to allow the new settings to take effect and re-run the installer. If you wish to restore the default settings in the future, simply delete /etc/sysctl.conf and reboot."
         exit 2
     fi
     
@@ -35,7 +35,7 @@ then
         echo 'kern.sysv.shmmni=256' >> /etc/sysctl.conf
         echo 'kern.sysv.shmseg=64' >> /etc/sysctl.conf
         echo 'kern.sysv.shmall=8192' >> /etc/sysctl.conf
-        echo "Your shared memory configuration has been adjusted with new settings in /etc/sysctl.conf. Please reboot the system to allow the new settings to take effect and re-run the installer."
+        echo "Your shared memory configuration has been adjusted with new settings in /etc/sysctl.conf. Please reboot the system to allow the new settings to take effect and re-run the installer. If you wish to restore the default settings in the future, simply delete /etc/sysctl.conf and reboot."
         exit 4
     fi
 fi
