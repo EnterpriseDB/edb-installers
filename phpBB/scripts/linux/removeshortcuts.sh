@@ -28,11 +28,11 @@ _warn() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/phpBB/installer/xdg/xdg-desktop-menu" uninstall --mode system  \
-        "$INSTALLDIR/phpBB/scripts/xdg/enterprisedb-launchPhpBB.desktop" || _warn "Failed to remove the phpBB menu"
+        "$INSTALLDIR/phpBB/scripts/xdg/pg-launchPhpBB.desktop" || _warn "Failed to remove the phpBB menu"
 
 # Remove the icon resources
 "$INSTALLDIR/phpBB/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 \
-    "$INSTALLDIR/phpBB/scripts/images/enterprisedb-launchPhpBB.png" ||  _warn "Failed to remove icon resource"
+    "$INSTALLDIR/phpBB/scripts/images/pg-launchPhpBB.png" ||  _warn "Failed to remove icon resource"
 
 echo "$0 ran to completion"
 exit 0

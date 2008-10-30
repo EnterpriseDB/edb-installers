@@ -3,7 +3,7 @@ Version=1.0
 Encoding=UTF-8
 Name=phpBB
 Exec="INSTALL_DIR/phpBB/scripts/launchPhpBB.sh" INSTALL_DIR
-Icon=enterprisedb-launchPhpBB.png
+Icon=pg-launchPhpBB.png
 Terminal=false
 Type=Application
 

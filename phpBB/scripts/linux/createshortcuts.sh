@@ -38,8 +38,8 @@ _fixup_file() {
 }
 
 # Create the icon resources
-"$INSTALLDIR/phpBB/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpBB/scripts/images/enterprisedb-postgres.png"
-"$INSTALLDIR/phpBB/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpBB/scripts/images/enterprisedb-launchPhpBB.png"
+"$INSTALLDIR/phpBB/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpBB/scripts/images/pg-postgresql.png"
+"$INSTALLDIR/phpBB/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpBB/scripts/images/pg-launchPhpBB.png"
 
 # Fixup the scripts
 _fixup_file "$INSTALLDIR/phpBB/scripts/launchbrowser.sh"
@@ -49,13 +49,13 @@ chmod ugo+x "$INSTALLDIR/phpBB/scripts/"*.sh
 chmod ugo+x "$INSTALLDIR/phpBB/installer/phpBB/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/phpBB/scripts/xdg/enterprisedb-postgres.directory"
-_fixup_file "$INSTALLDIR/phpBB/scripts/xdg/enterprisedb-launchPhpBB.desktop"
+_fixup_file "$INSTALLDIR/phpBB/scripts/xdg/pg-postgresql.directory"
+_fixup_file "$INSTALLDIR/phpBB/scripts/xdg/pg-launchPhpBB.desktop"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/phpBB/installer/xdg/xdg-desktop-menu" install --mode system \
-      "$INSTALLDIR/phpBB/scripts/xdg/enterprisedb-postgres.directory" \
-      "$INSTALLDIR/phpBB/scripts/xdg/enterprisedb-launchPhpBB.desktop"  || _warn "Failed to create the phpBB menu"
+      "$INSTALLDIR/phpBB/scripts/xdg/pg-postgresql.directory" \
+      "$INSTALLDIR/phpBB/scripts/xdg/pg-launchPhpBB.desktop"  || _warn "Failed to create the phpBB menu"
 
 echo "$0 ran to completion"
 exit 0

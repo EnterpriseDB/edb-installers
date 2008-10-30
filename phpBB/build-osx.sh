@@ -73,15 +73,15 @@ _postprocess_phpBB_osx() {
     # Setup the phpBB Launch Scripts
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the phpBB Launch Scripts"
 
-    cp scripts/osx/enterprisedb-launchPhpBB.applescript.in staging/osx/scripts/enterprisedb-launchPhpBB.applescript || _die "Failed to copy the enterprisedb-launchPhpBB.applescript.in  script (scripts/osx/enterprisedb-launchPhpBB.applescript)"
-    chmod ugo+x staging/osx/scripts/enterprisedb-launchPhpBB.applescript
+    cp scripts/osx/pg-launchPhpBB.applescript.in staging/osx/scripts/pg-launchPhpBB.applescript || _die "Failed to copy the pg-launchPhpBB.applescript.in  script (scripts/osx/pg-launchPhpBB.applescript)"
+    chmod ugo+x staging/osx/scripts/pg-launchPhpBB.applescript
 
     cp scripts/osx/getapacheport.sh staging/osx/scripts/getapacheport.sh || _die "Failed to copy the getapacheport.sh script (scripts/osx/getapacheport.sh)"
     chmod ugo+x staging/osx/scripts/getapacheport.sh
 
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/enterprisedb-launchPhpBB.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/enterprisedb-launchPhpBB.icns)"
+    cp resources/pg-launchPhpBB.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchPhpBB.icns)"
 	
     #configuring the install/install_install.php file  
     _replace "\$url = (\!in_array(false, \$passed)) ? \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=database\&amp;language=\$language\" : \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=requirements\&amp;language=\$language" "\$url = (\!in_array(false, \$passed)) ? \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=database\&amp;language=\$language\&amp;dbname=phpbb\&amp;dbuser=phpbbuser\&amp;dbpasswd=phpbbuser\&amp;dbms=postgres\&amp;dbhost=@@HOST@@\&amp;dbport=@@PORT@@\" : \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=requirements\&amp;language=\$language\&amp;dbname=phpbb\&amp;dbuser=phpbbuser\&amp;dbpasswd=phpbbuser\&amp;dbms=postgres\&amp;dbhost=@@HOST@@\&amp;dbport=@@PORT@@" "$WD/phpBB/staging/osx/phpBB/install/install_install.php" 

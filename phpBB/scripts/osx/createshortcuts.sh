@@ -41,7 +41,7 @@ _compile_script() {
 mkdir -p "$FOLDER" || _die "Failed to create the menu directory ($FOLDER)"
 
 # Create the scripts
-_compile_script "$INSTALLDIR/scripts/enterprisedb-launchPhpBB.applescript" "$FOLDER/phpBB.app" "$INSTALLDIR/scripts/images/enterprisedb-launchPhpBB.icns"
+_compile_script "$INSTALLDIR/scripts/pg-launchPhpBB.applescript" "$FOLDER/phpBB.app" "$INSTALLDIR/scripts/images/pg-launchPhpBB.icns"
 
 echo "$0 ran to completion"
 exit 0

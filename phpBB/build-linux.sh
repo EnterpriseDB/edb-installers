@@ -84,13 +84,13 @@ _postprocess_phpBB_linux() {
 
      # Setup the phpBB xdg Files
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the phpBB xdg Files"
-    cp resources/xdg/enterprisedb-launchPhpBB.desktop staging/linux/scripts/xdg/enterprisedb-launchPhpBB.desktop || _die "Failed to copy the xdg files (resources)"
-    cp resources/xdg/enterprisedb-postgres.directory staging/linux/scripts/xdg/enterprisedb-postgres.directory || _die "Failed to copy the xdg files (resources)"
+    cp resources/xdg/pg-launchPhpBB.desktop staging/linux/scripts/xdg/pg-launchPhpBB.desktop || _die "Failed to copy the xdg files (resources)"
+    cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql.directory || _die "Failed to copy the xdg files (resources)"
 
     # Copy in the menu pick images
     mkdir -p staging/linux/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/enterprisedb-launchPhpBB.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
-    cp resources/enterprisedb-postgres.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
+    cp resources/pg-launchPhpBB.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
+    cp resources/pg-postgresql.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
      # copy logo Image
     cp resources/logo.ico staging/linux/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"
     
