@@ -41,7 +41,7 @@ _compile_script() {
 mkdir -p "$FOLDER" || _die "Failed to create the menu directory ($FOLDER)"
 
 # Create the scripts
-_compile_script "$INSTALLDIR/scripts/enterprisedb-launchMediaWiki.applescript" "$FOLDER/mediaWiki.app" "$INSTALLDIR/scripts/images/enterprisedb-launchMediaWiki.icns"
+_compile_script "$INSTALLDIR/scripts/pg-launchMediaWiki.applescript" "$FOLDER/mediaWiki.app" "$INSTALLDIR/scripts/images/pg-launchMediaWiki.icns"
 
 echo "$0 ran to completion"
 exit 0

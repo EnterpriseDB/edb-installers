@@ -28,11 +28,11 @@ _warn() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/mediaWiki/installer/xdg/xdg-desktop-menu" uninstall --mode system  \
-    "$INSTALLDIR/mediaWiki/scripts/xdg/enterprisedb-launchMediaWiki.desktop"  || _warn "Failed to remove the mediaWiki menu"
+    "$INSTALLDIR/mediaWiki/scripts/xdg/pg-launchMediaWiki.desktop"  || _warn "Failed to remove the mediaWiki menu"
       
 # Remove the icon resources
 "$INSTALLDIR/mediaWiki/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32  \
-    "$INSTALLDIR/mediaWiki/scripts/images/enterprisedb-launchMediaWiki.png" || _warn "Failed to remove icon resource"
+    "$INSTALLDIR/mediaWiki/scripts/images/pg-launchMediaWiki.png" || _warn "Failed to remove icon resource"
 
 echo "$0 ran to completion"
 exit 0

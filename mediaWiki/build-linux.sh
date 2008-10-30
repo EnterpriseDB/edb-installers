@@ -84,13 +84,13 @@ _postprocess_mediaWiki_linux() {
 
      # Setup the mediaWiki xdg Files
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the mediaWiki xdg Files"
-    cp resources/xdg/enterprisedb-launchMediaWiki.desktop staging/linux/scripts/xdg/enterprisedb-launchMediaWiki.desktop || _die "Failed to copy the xdg files (resources)"
-    cp resources/xdg/enterprisedb-postgres.directory staging/linux/scripts/xdg/enterprisedb-postgres.directory || _die "Failed to copy the xdg files (resources)"
+    cp resources/xdg/pg-launchMediaWiki.desktop staging/linux/scripts/xdg/pg-launchMediaWiki.desktop || _die "Failed to copy the xdg files (resources)"
+    cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql.directory || _die "Failed to copy the xdg files (resources)"
 
     # Copy in the menu pick images
     mkdir -p staging/linux/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/enterprisedb-launchMediaWiki.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/launchMediaWiki.png)"
-    cp resources/enterprisedb-postgres.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/postgres.png)"
+    cp resources/pg-launchMediaWiki.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/launchMediaWiki.png)"
+    cp resources/pg-postgresql.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/postgresql.png)"
     # copy logo Image 
     cp resources/logo.ico staging/linux/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"
 

@@ -72,15 +72,15 @@ _postprocess_mediaWiki_osx() {
 
     # Setup the mediaWiki launch Files
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the mediaWiki Launch Files"
-    cp scripts/osx/enterprisedb-launchMediaWiki.applescript.in staging/osx/scripts/enterprisedb-launchMediaWiki.applescript || _die "Failed to copy the enterprisedb-launchMediaWiki.applescript.in  script (scripts/osx/enterprisedb-launchMediaWiki.applescript)"
-    chmod ugo+x staging/osx/scripts/enterprisedb-launchMediaWiki.applescript
+    cp scripts/osx/pg-launchMediaWiki.applescript.in staging/osx/scripts/pg-launchMediaWiki.applescript || _die "Failed to copy the pg-launchMediaWiki.applescript.in  script (scripts/osx/pg-launchMediaWiki.applescript)"
+    chmod ugo+x staging/osx/scripts/pg-launchMediaWiki.applescript
 
     cp scripts/osx/getapacheport.sh staging/osx/scripts/getapacheport.sh || _die "Failed to copy the getapacheport.sh script (scripts/osx/getapacheport.sh)"
     chmod ugo+x staging/osx/scripts/getapacheport.sh
 
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/enterprisedb-launchMediaWiki.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/enterprisedb-launchMediaWiki.icns)"
+    cp resources/pg-launchMediaWiki.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchMediaWiki.icns)"
 
     #Configure the config/index.php file
     _replace "\$conf->DBname = importPost( \"DBname\", \"wikidb\" );" "\$conf->DBname = importPost( \"DBname\", \"mediawiki\" );" "$WD/mediaWiki/staging/osx/mediaWiki/config/index.php"

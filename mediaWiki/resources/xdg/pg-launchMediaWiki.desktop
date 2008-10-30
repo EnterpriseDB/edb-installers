@@ -3,7 +3,7 @@ Version=1.0
 Encoding=UTF-8
 Name=mediaWiki
 Exec="INSTALL_DIR/mediaWiki/scripts/launchMediaWiki.sh" INSTALL_DIR
-Icon=enterprisedb-launchMediaWiki.png
+Icon=pg-launchMediaWiki.png
 Terminal=false
 Type=Application
 

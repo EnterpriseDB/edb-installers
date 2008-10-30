@@ -38,8 +38,8 @@ _fixup_file() {
 }
 
 # Create the icon resources
-"$INSTALLDIR/mediaWiki/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/mediaWiki/scripts/images/enterprisedb-postgres.png"
-"$INSTALLDIR/mediaWiki/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/mediaWiki/scripts/images/enterprisedb-launchMediaWiki.png"
+"$INSTALLDIR/mediaWiki/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/mediaWiki/scripts/images/pg-postgresql.png"
+"$INSTALLDIR/mediaWiki/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/mediaWiki/scripts/images/pg-launchMediaWiki.png"
 
 # Fixup the scripts
 _fixup_file "$INSTALLDIR/mediaWiki/scripts/launchbrowser.sh"
@@ -49,13 +49,13 @@ chmod ugo+x "$INSTALLDIR/mediaWiki/scripts/"*.sh
 chmod ugo+x "$INSTALLDIR/mediaWiki/installer/mediaWiki/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/mediaWiki/scripts/xdg/enterprisedb-postgres.directory"
-_fixup_file "$INSTALLDIR/mediaWiki/scripts/xdg/enterprisedb-launchMediaWiki.desktop"
+_fixup_file "$INSTALLDIR/mediaWiki/scripts/xdg/pg-postgresql.directory"
+_fixup_file "$INSTALLDIR/mediaWiki/scripts/xdg/pg-launchMediaWiki.desktop"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/mediaWiki/installer/xdg/xdg-desktop-menu" install --mode system  \
-      "$INSTALLDIR/mediaWiki/scripts/xdg/enterprisedb-postgres.directory"  \
-      "$INSTALLDIR/mediaWiki/scripts/xdg/enterprisedb-launchMediaWiki.desktop"  || _warn "Failed to create the mediaWiki menu"
+      "$INSTALLDIR/mediaWiki/scripts/xdg/pg-postgresql.directory"  \
+      "$INSTALLDIR/mediaWiki/scripts/xdg/pg-launchMediaWiki.desktop"  || _warn "Failed to create the mediaWiki menu"
 
 echo "$0 ran to completion"
 exit 0
