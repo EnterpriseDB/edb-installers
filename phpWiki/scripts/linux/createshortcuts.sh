@@ -38,8 +38,8 @@ _fixup_file() {
 }
 
 # Create the icon resources
-"$INSTALLDIR/phpWiki/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpWiki/scripts/images/enterprisedb-postgres.png"
-"$INSTALLDIR/phpWiki/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpWiki/scripts/images/enterprisedb-launchPhpWiki.png"
+"$INSTALLDIR/phpWiki/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpWiki/scripts/images/pg-postgresql.png"
+"$INSTALLDIR/phpWiki/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpWiki/scripts/images/pg-launchPhpWiki.png"
 
 # Fixup the scripts
 _fixup_file "$INSTALLDIR/phpWiki/scripts/launchbrowser.sh"
@@ -49,13 +49,13 @@ chmod ugo+x "$INSTALLDIR/phpWiki/scripts/"*.sh
 chmod ugo+x "$INSTALLDIR/phpWiki/installer/phpWiki/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/phpWiki/scripts/xdg/enterprisedb-postgres.directory"
-_fixup_file "$INSTALLDIR/phpWiki/scripts/xdg/enterprisedb-launchPhpWiki.desktop"
+_fixup_file "$INSTALLDIR/phpWiki/scripts/xdg/pg-postgresql.directory"
+_fixup_file "$INSTALLDIR/phpWiki/scripts/xdg/pg-launchPhpWiki.desktop"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/phpWiki/installer/xdg/xdg-desktop-menu" install --mode system \
-      "$INSTALLDIR/phpWiki/scripts/xdg/enterprisedb-postgres.directory"  \
-      "$INSTALLDIR/phpWiki/scripts/xdg/enterprisedb-launchPhpWiki.desktop"  || _warn "Failed to create the phpWiki menu"
+      "$INSTALLDIR/phpWiki/scripts/xdg/pg-postgresql.directory"  \
+      "$INSTALLDIR/phpWiki/scripts/xdg/pg-launchPhpWiki.desktop"  || _warn "Failed to create the phpWiki menu"
 
 echo "$0 ran to completion"
 exit 0

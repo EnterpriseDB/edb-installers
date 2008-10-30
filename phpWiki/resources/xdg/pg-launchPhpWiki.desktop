@@ -3,7 +3,7 @@ Version=1.0
 Encoding=UTF-8
 Name=phpWiki
 Exec="INSTALL_DIR/phpWiki/scripts/launchPhpWiki.sh" INSTALL_DIR
-Icon=enterprisedb-launchPhpWiki.png
+Icon=pg-launchPhpWiki.png
 Terminal=false
 Type=Application
 

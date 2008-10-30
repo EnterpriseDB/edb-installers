@@ -41,7 +41,7 @@ _compile_script() {
 mkdir -p "$FOLDER" || _die "Failed to create the menu directory ($FOLDER)"
 
 # Create the scripts
-_compile_script "$INSTALLDIR/scripts/enterprisedb-launchPhpWiki.applescript" "$FOLDER/phpWiki.app" "$INSTALLDIR/scripts/images/enterprisedb-launchPhpWiki.icns"
+_compile_script "$INSTALLDIR/scripts/pg-launchPhpWiki.applescript" "$FOLDER/phpWiki.app" "$INSTALLDIR/scripts/images/pg-launchPhpWiki.icns"
 
 echo "$0 ran to completion"
 exit 0

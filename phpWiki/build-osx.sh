@@ -76,8 +76,8 @@ _postprocess_phpWiki_osx() {
     # Setup the phpWiki Launch Scripts
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the phpWiki Launch Scripts"
 
-    cp scripts/osx/enterprisedb-launchPhpWiki.applescript.in staging/osx/scripts/enterprisedb-launchPhpWiki.applescript || _die "Failed to copy the enterprisedb-launchPhpWiki.applescript.in  script (scripts/osx/enterprisedb-launchPhpWiki.applescript)"
-    chmod ugo+x staging/osx/scripts/enterprisedb-launchPhpWiki.applescript
+    cp scripts/osx/pg-launchPhpWiki.applescript.in staging/osx/scripts/pg-launchPhpWiki.applescript || _die "Failed to copy the pg-launchPhpWiki.applescript.in  script (scripts/osx/pg-launchPhpWiki.applescript)"
+    chmod ugo+x staging/osx/scripts/pg-launchPhpWiki.applescript
 
     cp scripts/osx/getapacheport.sh staging/osx/scripts/getapacheport.sh || _die "Failed to copy the getapacheport.sh script (scripts/osx/getapacheport.sh)"
     chmod ugo+x staging/osx/scripts/getapacheport.sh
@@ -86,7 +86,7 @@ _postprocess_phpWiki_osx() {
 
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/enterprisedb-launchPhpWiki.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/enterprisedb-launchPhpWiki.icns)"
+    cp resources/pg-launchPhpWiki.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchPhpWiki.icns)"
      
     #Configure the conf.php file
     _replace "\$WhichDatabase = 'default';" "\$WhichDatabase = 'pgsql';" "$WD/phpWiki/staging/osx/phpWiki/lib/config.php"

@@ -28,11 +28,11 @@ _warn() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/phpWiki/installer/xdg/xdg-desktop-menu" uninstall --mode system  \
-    "$INSTALLDIR/phpWiki/scripts/xdg/enterprisedb-launchPhpWiki.desktop"  || _warn "Failed to remove the phpWiki menu"
+    "$INSTALLDIR/phpWiki/scripts/xdg/pg-launchPhpWiki.desktop"  || _warn "Failed to remove the phpWiki menu"
       
 # Remove the icon resources
 "$INSTALLDIR/phpWiki/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32  \
-    "$INSTALLDIR/phpWiki/scripts/images/enterprisedb-launchPhpWiki.png" || _warn "Failed to remove icon resource"
+    "$INSTALLDIR/phpWiki/scripts/images/pg-launchPhpWiki.png" || _warn "Failed to remove icon resource"
 
 echo "$0 ran to completion"
 exit 0

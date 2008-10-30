@@ -89,13 +89,13 @@ _postprocess_phpWiki_linux() {
 
      # Setup the phpWiki xdg Files
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the phpWiki xdg Files"
-    cp resources/xdg/enterprisedb-launchPhpWiki.desktop staging/linux/scripts/xdg/enterprisedb-launchPhpWiki.desktop || _die "Failed to copy the xdg files (resources)"
-    cp resources/xdg/enterprisedb-postgres.directory staging/linux/scripts/xdg/enterprisedb-postgres.directory || _die "Failed to copy the xdg files (resources)"
+    cp resources/xdg/pg-launchPhpWiki.desktop staging/linux/scripts/xdg/pg-launchPhpWiki.desktop || _die "Failed to copy the xdg files (resources)"
+    cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql.directory || _die "Failed to copy the xdg files (resources)"
 
     # Copy in the menu pick images
     mkdir -p staging/linux/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/enterprisedb-launchPhpWiki.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
-    cp resources/enterprisedb-postgres.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
+    cp resources/pg-launchPhpWiki.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
+    cp resources/pg-postgresql.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
      # copy logo Image
     cp resources/logo.ico staging/linux/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"
 
