@@ -38,8 +38,8 @@ _fixup_file() {
 }
 
 # Create the icon resources
-"$INSTALLDIR/phpPgAdmin/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpPgAdmin/scripts/images/enterprisedb-postgres.png"
-"$INSTALLDIR/phpPgAdmin/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpPgAdmin/scripts/images/enterprisedb-launchPhpPgAdmin.png"
+"$INSTALLDIR/phpPgAdmin/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpPgAdmin/scripts/images/pg-postgresql.png"
+"$INSTALLDIR/phpPgAdmin/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/phpPgAdmin/scripts/images/pg-launchPhpPgAdmin.png"
 
 # Fixup the scripts
 _fixup_file "$INSTALLDIR/phpPgAdmin/scripts/launchbrowser.sh"
@@ -49,13 +49,13 @@ chmod ugo+x "$INSTALLDIR/phpPgAdmin/scripts/"*.sh
 chmod ugo+x "$INSTALLDIR/phpPgAdmin/installer/phpPgAdmin/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/phpPgAdmin/scripts/xdg/enterprisedb-postgres.directory"
-_fixup_file "$INSTALLDIR/phpPgAdmin/scripts/xdg/enterprisedb-launchPhpPgAdmin.desktop"
+_fixup_file "$INSTALLDIR/phpPgAdmin/scripts/xdg/pg-postgresql.directory"
+_fixup_file "$INSTALLDIR/phpPgAdmin/scripts/xdg/pg-launchPhpPgAdmin.desktop"
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/phpPgAdmin/installer/xdg/xdg-desktop-menu" install --mode system \
-      "$INSTALLDIR/phpPgAdmin/scripts/xdg/enterprisedb-postgres.directory"  \
-      "$INSTALLDIR/phpPgAdmin/scripts/xdg/enterprisedb-launchPhpPgAdmin.desktop"  || _warn "Failed to create the phpPgAdmin menu"
+      "$INSTALLDIR/phpPgAdmin/scripts/xdg/pg-postgresql.directory"  \
+      "$INSTALLDIR/phpPgAdmin/scripts/xdg/pg-launchPhpPgAdmin.desktop"  || _warn "Failed to create the phpPgAdmin menu"
 
 echo "$0 ran to completion"
 exit 0

@@ -28,11 +28,11 @@ _warn() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/phpPgAdmin/installer/xdg/xdg-desktop-menu" uninstall --mode system  \
-    "$INSTALLDIR/phpPgAdmin/scripts/xdg/enterprisedb-launchPhpPgAdmin.desktop"  || _warn "Failed to remove the phpPgAdmin menu"
+    "$INSTALLDIR/phpPgAdmin/scripts/xdg/pg-launchPhpPgAdmin.desktop"  || _warn "Failed to remove the phpPgAdmin menu"
       
 # Remove the icon resources
 "$INSTALLDIR/phpPgAdmin/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32  \
-    "$INSTALLDIR/phpPgAdmin/scripts/images/enterprisedb-launchPhpPgAdmin.png" || _warn "Failed to remove icon resource"
+    "$INSTALLDIR/phpPgAdmin/scripts/images/pg-launchPhpPgAdmin.png" || _warn "Failed to remove icon resource"
 
 echo "$0 ran to completion"
 exit 0

@@ -78,13 +78,13 @@ _postprocess_phpPgAdmin_linux() {
 
      # Setup the phpPgAdmin xdg Files
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the phpPgAdmin xdg Files"
-    cp resources/xdg/enterprisedb-launchPhpPgAdmin.desktop staging/linux/scripts/xdg/enterprisedb-launchPhpPgAdmin.desktop || _die "Failed to copy the xdg files (resources)"
-    cp resources/xdg/enterprisedb-postgres.directory staging/linux/scripts/xdg/enterprisedb-postgres.directory || _die "Failed to copy the xdg files (resources)"
+    cp resources/xdg/pg-launchPhpPgAdmin.desktop staging/linux/scripts/xdg/pg-launchPhpPgAdmin.desktop || _die "Failed to copy the xdg files (resources)"
+    cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql.directory || _die "Failed to copy the xdg files (resources)"
 
     # Copy in the menu pick images
     mkdir -p staging/linux/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/enterprisedb-launchPhpPgAdmin.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
-    cp resources/enterprisedb-postgres.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
+    cp resources/pg-launchPhpPgAdmin.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
+    cp resources/pg-postgresql.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
     cp resources/install.ico staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
     

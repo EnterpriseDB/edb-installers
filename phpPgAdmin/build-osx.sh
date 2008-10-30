@@ -64,7 +64,7 @@ _postprocess_phpPgAdmin_osx() {
     # Setup the phpPgAdmin Launch Scripts
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the phpPgAdmin Launch Scripts"
 
-    cp scripts/osx/enterprisedb-launchPhpPgAdmin.applescript.in staging/osx/scripts/enterprisedb-launchPhpPgAdmin.applescript || _die "Failed to copy the enterprisedb-launchPhpPgAdmin.applescript  script (scripts/osx/enterprisedb-launchPhpPgAdmin.applescript.in)"
+    cp scripts/osx/pg-launchPhpPgAdmin.applescript.in staging/osx/scripts/pg-launchPhpPgAdmin.applescript || _die "Failed to copy the pg-launchPhpPgAdmin.applescript  script (scripts/osx/pg-launchPhpPgAdmin.applescript.in)"
     
 
     cp scripts/osx/getapacheport.sh staging/osx/scripts/getapacheport.sh || _die "Failed to copy the getapacheport.sh script (scripts/osx/getapacheport.sh)"
@@ -72,7 +72,7 @@ _postprocess_phpPgAdmin_osx() {
 
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/enterprisedb-launchPhpPgAdmin.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/enterprisedb-launchPhpPgAdmin.icns)"
+    cp resources/pg-launchPhpPgAdmin.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchPhpPgAdmin.icns)"
 	
     #Configure the conf.php file
     _replace "\$conf\['servers'\]\[0\]\['host'\] = '';" "\$conf\['servers'\]\[0\]\['host'\] = '@@PGHOST@@';" "$WD/phpPgAdmin/staging/osx/phpPgAdmin/conf/config.inc.php"
