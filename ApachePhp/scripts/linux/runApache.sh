@@ -45,23 +45,23 @@ then
      response=`su -m -c "@@APACHE_HOME@@/bin/apachectl $action"`
  
 else
-     response=`sudo "@@APACHE_HOME@@/bin/apachectl $action"`
+     response=`sudo "@@APACHE_HOME@@/bin/apachectl" $action`
 
 fi
 
 CODE=`echo $?`
 
-if [ "$CODE" == 0 ]; then
-    if [ "x$response" == "x" ]; then
-         if [ $action == "stop" ]; then
+if [ "$CODE" = 0 ] ; then
+    if [ "x$response" = "x" ] ; then
+         if [ $action = "stop" ] ; then
                 echo "Apache stopped Sucessfully"
          else
                 echo "Apache" "$action"ed "Successfully"
          fi
     else
-         if [ $action == "restart" ]; then
+         if [ $action = "restart" ] ; then
                 apache_status=`ps -ef | grep @@APACHE_HOME@@/bin/httpd | grep -v "grep"`
-                if [ "x$apache_status" == "x" ]; then
+                if [ "x$apache_status" = "x" ] ; then
                 	 echo "Error Starting Apache."
                 else
                 	echo "Apache restarted successfully."

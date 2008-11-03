@@ -110,7 +110,7 @@ _build_ApachePhp_linux_x64() {
     echo "for f in \$files " >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
     echo "do" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
     echo "    BROKEN=\`file @@INSTALL_DIR@@/apache/lib/\$f | grep broken\`" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "    if [ \"x\$BROKEN\" == \"x\" ]; then " >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "    if [ \"x\$BROKEN\" = \"x\" ] ; then " >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
     echo "        LD_PRELOAD=@@INSTALL_DIR@@/apache/lib/\$f:\$LD_PRELOAD" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
     echo "    fi" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
     echo "done" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
