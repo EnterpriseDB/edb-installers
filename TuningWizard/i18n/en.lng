@@ -12,3 +12,7 @@ Installer.Installation.Finished.Title=Completing the EnterpriseDB Tuning Wizard 
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
+Installer.Ready.Text1=Setup is now ready to begin installing EnterpriseDB Tuning Wizard on your computer.
+
+Installer.Installing.Text=Please wait while Setup installs EnterpriseDB Tuning Wizard on your computer.
+
