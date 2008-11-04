@@ -10,8 +10,8 @@
     <productUrlHelpLink>http://www.postgresql.org/docs</productUrlHelpLink>
     <productUrlInfoAbout>http://www.postgresql.org/</productUrlInfoAbout>
     <startMenuGroupName>PostgreSQL ${product_version}</startMenuGroupName>
-	<vendor>PostgreSQL Global Development Group</vendor>
-	
+    <vendor>PostgreSQL Global Development Group</vendor>
+    
     <!-- Misc paackage options -->
     <enableRollback>0</enableRollback>
     <outputDirectory>../output</outputDirectory>
@@ -72,13 +72,13 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
-		
-		<!-- Get a default port number - ideally 5432 -->
-		<getFreePort>
-		    <variable>defaultport</variable>
-			<initialPort>5432</initialPort>
-			<finalPort>65535</finalPort>
-		</getFreePort>
+        
+        <!-- Get a default port number - ideally 5432 -->
+        <getFreePort>
+            <variable>defaultport</variable>
+            <initialPort>5432</initialPort>
+            <finalPort>65535</finalPort>
+        </getFreePort>
         
         <!-- Upgrading? -->
         <setInstallerVariable>
@@ -98,77 +98,22 @@
             <name>CatalogVersion</name>
             <value>PG_CATALOG_VERSION</value>
         </setInstallerVariable>
+       
+        <actionGroup>
+            <actionList>
+ 
+                <!-- Set the ini filename -->
+                <setInstallerVariable>
+                    <name>PostgreSqlIni</name>
+                    <persist>1</persist>
+                    <value>/etc/postgres-reg.ini</value>
+                </setInstallerVariable>
         
-        <!-- Set the ini filename -->
-        <setInstallerVariable>
-            <name>PostgreSqlIni</name>
-            <persist>1</persist>
-            <value>/etc/postgres-reg.ini</value>
-        </setInstallerVariable>
-        
-        <logMessage>
-            <text>Using ini file: ${PostgreSqlIni}</text>
-        </logMessage>
-        
-    </initializationActionList>
-    
-    <!-- Preinstallation actions -->
-    <preInstallationActionList>
-        
-		<!-- !WIN: Get existing directories -->
-		<actionGroup>
-		    <actionList>
-				<!-- Get the existing data directory. -->
-				<iniFileGet>
-					<file>${PostgreSqlIni}</file>
-					<key>DataDirectory</key>
-					<section>PostgreSQL/${product_version}</section>
-					<variable>iDataDirectory</variable>
-					<ruleList>
-						<fileTest>
-							<condition>readable</condition>
-							<path>${PostgreSqlIni}</path>
-						</fileTest>
-					</ruleList>
-				</iniFileGet>
-				<setInstallerVariable>
-					<name>iDataDirectory</name>
-					<persist>0</persist>
-					<value></value>
-					<ruleList>
-						<fileTest>
-							<condition>not_readable</condition>
-							<path>${PostgreSqlIni}</path>
-						</fileTest>
-					</ruleList>
-				</setInstallerVariable>
-				
-				<!-- Get the base installation path. Any previous package could have set this. -->
-				<iniFileGet>
-					<file>${PostgreSqlIni}</file>
-					<key>InstallationDirectory</key>
-					<section>PostgreSQL/${product_version}</section>
-					<variable>iBaseDirectory</variable>
-					<ruleList>
-						<fileTest>
-							<condition>readable</condition>
-							<path>${PostgreSqlIni}</path>
-						</fileTest>
-					</ruleList>
-				</iniFileGet>
-				<setInstallerVariable>
-					<name>iBaseDirectory</name>
-					<persist>0</persist>
-					<value></value>
-					<ruleList>
-						<fileTest>
-							<condition>not_readable</condition>
-							<path>${PostgreSqlIni}</path>
-						</fileTest>
-					</ruleList>
-				</setInstallerVariable>
-		    </actionList>
-			
+                <logMessage>
+                    <text>Using ini file: ${PostgreSqlIni}</text>
+                </logMessage>
+            </actionList>
+
             <ruleList>
                 <compareText>
                     <logic>does_not_equal</logic>
@@ -176,26 +121,94 @@
                     <value>windows</value>
                 </compareText>
             </ruleList>
-		</actionGroup>
+        </actionGroup>
+ 
+    </initializationActionList>
+    
+    <!-- Preinstallation actions -->
+    <preInstallationActionList>
         
-		<!-- WIN: Get existing directories -->
-		<actionGroup>
-		    <actionList>
-				<!-- Get the existing data directory. -->
-				<registryGet>
-				    <name>Data Directory</name>
-					<key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
-					<variable>iDataDirectory</variable>
-				</registryGet>
-				
-				<!-- Get the existing installation directory. -->
-				<registryGet>
-				    <name>Base Directory</name>
-					<key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
-					<variable>iBaseDirectory</variable>
-				</registryGet>
-		    </actionList>
-			
+        <!-- !WIN: Get existing directories -->
+        <actionGroup>
+            <actionList>
+                <!-- Get the existing data directory. -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>DataDirectory</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iDataDirectory</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>iDataDirectory</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
+                
+                <!-- Get the base installation path. Any previous package could have set this. -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>InstallationDirectory</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iBaseDirectory</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>iBaseDirectory</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
+            </actionList>
+            
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        
+        <!-- WIN: Get existing directories -->
+        <actionGroup>
+            <actionList>
+                <!-- Get the existing data directory. -->
+                <registryGet>
+                    <name>Data Directory</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <variable>iDataDirectory</variable>
+                </registryGet>
+                
+                <!-- Get the existing installation directory. -->
+                <registryGet>
+                    <name>Base Directory</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <variable>iBaseDirectory</variable>
+                </registryGet>
+            </actionList>
+            
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -203,8 +216,8 @@
                     <value>windows</value>
                 </compareText>
             </ruleList>
-		</actionGroup>
-		
+        </actionGroup>
+        
         <!-- Debugging -->
         <logMessage>
             <text>Existing base directory: ${iBaseDirectory}</text>
@@ -284,7 +297,7 @@
                 </compareText>
             </ruleList>
         </unpackFile>
-		        
+                
         <!-- pg_controldata (used to check existing clusters) -->
         <unpackFile>
             <component>default</component>
@@ -359,7 +372,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-		
+        
         <actionGroup>
             <actionList>
                 <unpackFile>
@@ -475,7 +488,7 @@
                         </compareText>
                     </ruleList>
                 </runProgram>
-				
+                
                 <runProgram>
                     <program>${system_temp_directory}\postgresql_installer\pg_controldata.exe</program>
                     <programArguments>"${iDataDirectory}"</programArguments>
@@ -631,7 +644,7 @@
                         </option>
                     </optionList>
                 </addChoiceOptions>
-				
+                
                 <runProgram>
                     <program>${system_temp_directory}/postgresql_installer/getlocales.sh</program>
                     <ruleList>
@@ -642,7 +655,7 @@
                         </compareText>
                     </ruleList>
                 </runProgram>
-				
+                
                 <runProgram>
                     <program>${system_temp_directory}\postgresql_installer\getlocales.exe</program>
                     <ruleList>
@@ -653,7 +666,7 @@
                         </compareText>
                     </ruleList>
                 </runProgram>
-				
+                
                 <throwError>
                     <text>${msg(script.command.line.error)}</text>
                     <ruleList>
@@ -770,7 +783,7 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
-		
+        
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
@@ -824,7 +837,7 @@
                 </fileExists>
             </ruleList>
         </runProgram>
-		
+        
         <!-- WINDOWS: Stop the server -->
         <stopWindowsService>
             <serviceName>postgresql-${product_version}</serviceName>
@@ -868,11 +881,11 @@
                 </compareText>
             </ruleList>
         </iniFileSet>
-		<registrySet>
-			<key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
-			<name>Base Directory</name>
-			<value>${installdir}</value>
-		</registrySet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+            <name>Base Directory</name>
+            <value>${installdir}</value>
+        </registrySet>
         
         <!-- Log version number -->
         <logMessage>
@@ -891,11 +904,11 @@
                 </compareText>
             </ruleList>
         </iniFileSet>
-		<registrySet>
-			<key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
-			<name>Version</name>
-			<value>${product_version}</value>
-		</registrySet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+            <name>Version</name>
+            <value>${product_version}</value>
+        </registrySet>
 
         <!-- Track if any errors occurred so we can hide the Run Stackbuilder option -->
         <setInstallerVariable>
@@ -933,7 +946,7 @@
                 </compareText>
             </ruleList>
         </runProgram>
-		
+        
         <runProgram>
             <program>${installdir}\installer\server\createuser.exe</program>
             <!-- The dot at the beginning of the arguments is the domain -->
@@ -1051,7 +1064,7 @@
                         </compareText>
                     </ruleList>
                 </runProgram>
-				
+                
                 <runProgram>
                     <program>cscript</program>
                     <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${supername}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} "${reallocale}"</programArguments>
@@ -1138,7 +1151,7 @@
                 </compareText>
             </ruleList>
         </runProgram>
-		
+        
         <runProgram>
             <program>cscript</program>
             <programArguments>//NoLogo "${installdir}\installer\server\startupcfg.vbs" ${product_version} "${supername}" "${superpassword}" "${installdir}" "${datadir}"</programArguments>
@@ -1227,7 +1240,7 @@
                 </compareText>
             </ruleList>
         </runProgram>
-		
+        
         <setInstallerVariable>
             <name>didError</name>
             <value>1</value>
@@ -1291,7 +1304,7 @@
                 </compareText>
             </ruleList>
         </runProgram>
-		
+        
         <setInstallerVariable>
             <name>didError</name>
             <value>1</value>
@@ -1413,23 +1426,23 @@
                 </compareValues>
             </ruleList>
         </actionGroup>
-		
-		<!-- Register the message formatting DLL on Windows -->
-		<registrySet>
-		    <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
-			<name>EventMessageFile</name>
-		    <value>${installdir}\lib\pgevent.dll</value>
+        
+        <!-- Register the message formatting DLL on Windows -->
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
+            <name>EventMessageFile</name>
+            <value>${installdir}\lib\pgevent.dll</value>
             <abortOnError>0</abortOnError>
             <showMessageOnError>1</showMessageOnError>
-		</registrySet>
-		<registrySet>
-		    <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
-			<name>TypesSupported</name>
-		    <value>7</value>
-			<type>REG_DWORD</type>
+        </registrySet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
+            <name>TypesSupported</name>
+            <value>7</value>
+            <type>REG_DWORD</type>
             <abortOnError>0</abortOnError>
             <showMessageOnError>1</showMessageOnError>
-		</registrySet>
+        </registrySet>
         
         <!-- Set these last - if we get this far, initdb must have succeeded -->
         <!-- Data directory -->
@@ -1453,28 +1466,28 @@
                 </compareText>
             </ruleList>
         </iniFileSet>
-		<registrySet>
-			<key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
-			<name>Data Directory</name>
-			<value>${datadir}</value>
-			<ruleList>
-				<stringTest>
-					<text>${datadir}</text>
-					<type>not_empty</type>
-				</stringTest>
-			 </ruleList>
-		</registrySet>
-		<registrySet>
-			<key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
-			<name>Data Directory</name>
-			<value>${datadir}</value>
-			<ruleList>
-				<stringTest>
-					<text>${datadir}</text>
-					<type>not_empty</type>
-				</stringTest>
-			 </ruleList>
-		</registrySet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+            <name>Data Directory</name>
+            <value>${datadir}</value>
+            <ruleList>
+                <stringTest>
+                    <text>${datadir}</text>
+                    <type>not_empty</type>
+                </stringTest>
+             </ruleList>
+        </registrySet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+            <name>Data Directory</name>
+            <value>${datadir}</value>
+            <ruleList>
+                <stringTest>
+                    <text>${datadir}</text>
+                    <type>not_empty</type>
+                </stringTest>
+             </ruleList>
+        </registrySet>
         
         <!-- Port -->
         <logMessage>
@@ -1497,18 +1510,18 @@
                 </compareText>
             </ruleList>
         </iniFileSet>
-		<registrySet>
-			<key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
-			<name>Port</name>
-			<value>${serverport}</value>
-			<type>REG_DWORD</type>
-			<ruleList>
-				<stringTest>
-					<text>${serverport}</text>
-					<type>not_empty</type>
-				</stringTest>
-			 </ruleList>
-		</registrySet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+            <name>Port</name>
+            <value>${serverport}</value>
+            <type>REG_DWORD</type>
+            <ruleList>
+                <stringTest>
+                    <text>${serverport}</text>
+                    <type>not_empty</type>
+                </stringTest>
+             </ruleList>
+        </registrySet>
         
         <!-- ServiceID -->
         <iniFileSet>
@@ -1528,11 +1541,11 @@
                 </compareText>
             </ruleList>
         </iniFileSet>
-		<registrySet>
-			<key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
-			<name>Service ID</name>
-			<value>postgresql-${product_version}</value>
-		</registrySet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+            <name>Service ID</name>
+            <value>postgresql-${product_version}</value>
+        </registrySet>
         
         
         <!-- Read the actual locale from the config file. We don't know what it was yet as the user may have chosen DEFAULT -->
@@ -1552,19 +1565,19 @@
             <section>PostgreSQL/${product_version}</section>
             <key>Locale</key>
             <value>${actuallocale}</value>
-			<ruleList>
+            <ruleList>
                 <compareText>
                     <logic>does_not_equal</logic>
                     <text>${platform_name}</text>
                     <value>windows</value>
                 </compareText>
-			</ruleList>
+            </ruleList>
         </iniFileSet>
-		<registrySet>
-			<key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
-			<name>Locale</name>
-			<value>${actuallocale}</value>
-		</registrySet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+            <name>Locale</name>
+            <value>${actuallocale}</value>
+        </registrySet>
         
         <!-- Superuser -->
         <iniFileSet>
@@ -1584,28 +1597,28 @@
                 </compareText>
             </ruleList>
         </iniFileSet>
-		<registrySet>
-			<key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
-			<name>Database Superuser</name>
-			<value>${supername}</value>
-			<ruleList>
-				<stringTest>
-					<text>${supername}</text>
-					<type>not_empty</type>
-				</stringTest>
-			 </ruleList>
-		</registrySet>
-		<registrySet>
-			<key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
-			<name>Service Account</name>
-			<value>.\${supername}</value>
-			<ruleList>
-				<stringTest>
-					<text>${supername}</text>
-					<type>not_empty</type>
-				</stringTest>
-			 </ruleList>
-		</registrySet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+            <name>Database Superuser</name>
+            <value>${supername}</value>
+            <ruleList>
+                <stringTest>
+                    <text>${supername}</text>
+                    <type>not_empty</type>
+                </stringTest>
+             </ruleList>
+        </registrySet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+            <name>Service Account</name>
+            <value>.\${supername}</value>
+            <ruleList>
+                <stringTest>
+                    <text>${supername}</text>
+                    <type>not_empty</type>
+                </stringTest>
+             </ruleList>
+        </registrySet>
         
         <!-- Log server description -->
         <logMessage>
@@ -1616,26 +1629,26 @@
             <section>PostgreSQL/${product_version}</section>
             <key>Description</key>
             <value>PostgreSQL ${product_version}</value>
-			<ruleList>
+            <ruleList>
                 <compareText>
                     <logic>does_not_equal</logic>
                     <text>${platform_name}</text>
                     <value>windows</value>
                 </compareText>
-			</ruleList>
+            </ruleList>
         </iniFileSet>
-		<registrySet>
-			<key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
-			<name>Display Name</name>
-			<value>PostgreSQL ${product_version}</value>
-		</registrySet>
-		
-		<!-- The Windows product code, used to link to the installation -->
-		<registrySet>
-			<key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
-			<name>Product Code</name>
-			<value>postgresql-${product_version}</value>
-		</registrySet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+            <name>Display Name</name>
+            <value>PostgreSQL ${product_version}</value>
+        </registrySet>
+        
+        <!-- The Windows product code, used to link to the installation -->
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+            <name>Product Code</name>
+            <value>postgresql-${product_version}</value>
+        </registrySet>
         
         <!-- All done!! -->
         <logMessage>
@@ -1687,7 +1700,7 @@
                 </compareText>
             </ruleList>
         </runProgram>
-		
+        
         <runProgram>
             <!-- Windows: Run stackbuilder -->
             <program>${installdir}/bin/stackbuilder.exe</program>
@@ -1742,7 +1755,7 @@
                 </compareText>
             </ruleList>
         </runProgram>
-		
+        
         <!-- WINDOWS: Stop the server -->
         <stopWindowsService>
             <serviceName>postgresql-${product_version}</serviceName>
@@ -1774,38 +1787,51 @@
                 </compareText>
             </ruleList>
         </runProgram>
+    
+        <actionGroup> 
+            <actionList>
+            
+                <!-- Version -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Version</key>
+                    <value></value>
+                </iniFileSet>
         
-        <!-- Version -->
-        <iniFileSet>
-            <file>${PostgreSqlIni}</file>
-            <section>PostgreSQL/${product_version}</section>
-            <key>Version</key>
-            <value></value>
-        </iniFileSet>
+                <!-- Installation directory -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>InstallationDirectory</key>
+                    <value></value>
+                </iniFileSet>
         
-        <!-- Installation directory -->
-        <iniFileSet>
-            <file>${PostgreSqlIni}</file>
-            <section>PostgreSQL/${product_version}</section>
-            <key>InstallationDirectory</key>
-            <value></value>
-        </iniFileSet>
-        
-        <!-- Description -->
-        <iniFileSet>
-            <file>${PostgreSqlIni}</file>
-            <section>PostgreSQL/${product_version}</section>
-            <key>Description</key>
-            <value></value>
-        </iniFileSet>
+                <!-- Description -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Description</key>
+                    <value></value>
+                </iniFileSet>
        
-        <!-- ServiceID -->
-        <iniFileSet>
-            <file>${PostgreSqlIni}</file>
-            <section>PostgreSQL/${product_version}</section>
-            <key>ServiceID</key>
-            <value></value>
-        </iniFileSet>
+                <!-- ServiceID -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>ServiceID</key>
+                    <value></value>
+                </iniFileSet>
+             </actionList>
+
+             <ruleList>
+                 <compareText>
+                     <logic>does_not_equal</logic>
+                     <text>${platform_name}</text>
+                     <value>windows</value>
+                 </compareText>
+             </ruleList>
+        </actionGroup>
  
         <!-- MAC: Remove the startup item -->
         <deleteFile>
@@ -1867,13 +1893,13 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-		
+        
         <!-- WINDOWS: Remove the service -->
         <deleteWindowsService>
             <serviceName>postgresql-${product_version}</serviceName>
             <abortOnError>0</abortOnError>
         </deleteWindowsService>
-		
+        
         <!-- WINDOWS: Unregister the event message DLL -->
         <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
@@ -1884,61 +1910,50 @@
             <name>TypesSupported</name>
         </registryDelete>
 
-        <registrySet>
+        <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
             <name>Base Directory</name>
-            <value/>
-        </registrySet>
-        <registrySet>
+        </registryDelete>
+        <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
             <name>Data Directory</name>
-            <value/>
-        </registrySet>
-        <registrySet>
+        </registryDelete>
+        <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
             <name>Service ID</name>
-            <value/>
-        </registrySet>
-        <registrySet>
+        </registryDelete>
+        <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
             <name>Version</name>
-            <value/>
-        </registrySet>
-        <registrySet>
+        </registryDelete>
+        <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
             <name>Datebase Superuser</name>
-            <value/>
-        </registrySet>
-        <registrySet>
+        </registryDelete>
+        <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
             <name>Data Directory</name>
-            <value/>
-        </registrySet>
-        <registrySet>
+        </registryDelete>
+        <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
             <name>Display Name</name>
-            <value/>
-        </registrySet>
-        <registrySet>
+        </registryDelete>
+        <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
             <name>Locale</name>
-            <value/>
-        </registrySet>
-        <registrySet>
+        </registryDelete>
+        <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
             <name>Port</name>
-            <value/>
-        </registrySet>
-        <registrySet>
+        </registryDelete>
+        <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
             <name>Product Code</name>
-            <value/>
-        </registrySet>
-        <registrySet>
+        </registryDelete>
+        <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
             <name>Service Account</name>
-            <value/>
-        </registrySet>
+        </registryDelete>
     </preUninstallationActionList>
 
     <!-- Post-uninstall actions -->
@@ -2075,7 +2090,7 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
-				
+                
                 <!-- WIN: Program files -->
                 <folder>
                     <description>Program Files</description>
@@ -2115,129 +2130,129 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
-			</folderList>
-				
-			<!-- WIN: Start Menu -->
-			<startMenuShortcutList>
-			
-				<startMenuFolder>
-					<name>Documentation</name>
-					<platforms>windows</platforms>
-					<startMenuShortcutList>
-				
-						<!-- Installation notes -->
-						<startMenuLinkShortcut>
-							<name>Installation notes</name>
-							<runInTerminal>0</runInTerminal>
-							<url>file://${installdir}/doc/installation-notes.html</url>
-							<windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
-						</startMenuLinkShortcut>
-						
-						<!-- PostgreSQL -->
-						<startMenuLinkShortcut>
-							<name>PostgreSQL documentation</name>
-							<runInTerminal>0</runInTerminal>
-							<url>file://${installdir}/doc/postgresql/html/index.html</url>
-							<windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
-						</startMenuLinkShortcut>
-						
-						<!-- PostgreSQL release notes -->
-						<startMenuLinkShortcut>
-							<name>PostgreSQL release notes</name>
-							<runInTerminal>0</runInTerminal>
-							<url>file://${installdir}/doc/postgresql/html/release.html</url>
-							<windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
-						</startMenuLinkShortcut>
-						
-						<!-- pgAdmin -->
-						<startMenuShortcut>
-							<name>pgAdmin documentation</name>
-							<runInTerminal>0</runInTerminal>
-							<windowsExec>${installdir}/pgAdmin III/docs/en_US/pgadmin3.chm</windowsExec>
-						</startMenuShortcut>
-						
-						<!-- PL Java users guild -->
-						<startMenuLinkShortcut>
-							<name>PL Java users guide</name>
-							<runInTerminal>0</runInTerminal>
-							<url>file://${installdir}/doc/pljava/userguide.html</url>
-							<windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
-						</startMenuLinkShortcut>
-						
-						<!-- PL Java README -->
-						<startMenuLinkShortcut>
-							<name>PL Java README</name>
-							<runInTerminal>0</runInTerminal>
-							<url>file://${installdir}/doc/pljava/readme.html</url>
-							<windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
-						</startMenuLinkShortcut>
-						
-						
-						<!-- TODO: Rest of the docs -->
-						
-					</startMenuShortcutList>
-				</startMenuFolder>
-				
-				<!-- pgAdmin -->
-				<startMenuShortcut>
-					<name>pgAdmin III</name>
-					<runInTerminal>0</runInTerminal>
-					<windowsExec>${installdir}\bin\pgAdmin3.exe</windowsExec>
-				</startMenuShortcut>
-				
-				<!-- Stackbuilder -->
-				<startMenuShortcut>
-					<name>Application Stack Builder</name>
-					<runInTerminal>0</runInTerminal>
-					<windowsExec>${installdir}\bin\stackbuilder.exe</windowsExec>
-				</startMenuShortcut>
-				
-				<!-- psql -->
-				<startMenuShortcut>
-					<name>SQL Shell (psql)</name>
-					<runInTerminal>0</runInTerminal>
-					<windowsExec>${installdir}\scripts\runpsql.bat</windowsExec>
-					<windowsIcon>${installdir}\scripts\images\pg-psql.ico</windowsIcon>
-				</startMenuShortcut>
-				
-				<!-- Reload config -->
-				<startMenuShortcut>
-					<name>Reload Configuration</name>
-					<runInTerminal>0</runInTerminal>
-					<windowsExec>cscript.exe</windowsExec>
-					<windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" reload wait</windowsExecArgs>
-					<windowsIcon>${installdir}\scripts\images\pg-reload.ico</windowsIcon>
-				</startMenuShortcut>
-				
-				<!-- Restart server -->
-				<startMenuShortcut>
-					<name>Restart Server</name>
-					<runInTerminal>0</runInTerminal>
-					<windowsExec>cscript.exe</windowsExec>
-					<windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" restart wait</windowsExecArgs>
-					<windowsIcon>${installdir}\scripts\images\pg-restart.ico</windowsIcon>
-				</startMenuShortcut>
-				
-				<!-- Start server -->
-				<startMenuShortcut>
-					<name>Start Server</name>
-					<runInTerminal>0</runInTerminal>
-					<windowsExec>cscript.exe</windowsExec>
-					<windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" start wait</windowsExecArgs>
-					<windowsIcon>${installdir}\scripts\images\pg-start.ico</windowsIcon>
-				</startMenuShortcut>
-				
-				<!-- Stop server -->
-				<startMenuShortcut>
-					<name>Stop Server</name>
-					<runInTerminal>0</runInTerminal>
-					<windowsExec>cscript.exe</windowsExec>
-					<windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" stop wait</windowsExecArgs>
-					<windowsIcon>${installdir}\scripts\images\pg-stop.ico</windowsIcon>
-				</startMenuShortcut>
-			
-			</startMenuShortcutList>
-				
+            </folderList>
+                
+            <!-- WIN: Start Menu -->
+            <startMenuShortcutList>
+            
+                <startMenuFolder>
+                    <name>Documentation</name>
+                    <platforms>windows</platforms>
+                    <startMenuShortcutList>
+                
+                        <!-- Installation notes -->
+                        <startMenuLinkShortcut>
+                            <name>Installation notes</name>
+                            <runInTerminal>0</runInTerminal>
+                            <url>file://${installdir}/doc/installation-notes.html</url>
+                            <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                        </startMenuLinkShortcut>
+                        
+                        <!-- PostgreSQL -->
+                        <startMenuLinkShortcut>
+                            <name>PostgreSQL documentation</name>
+                            <runInTerminal>0</runInTerminal>
+                            <url>file://${installdir}/doc/postgresql/html/index.html</url>
+                            <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                        </startMenuLinkShortcut>
+                        
+                        <!-- PostgreSQL release notes -->
+                        <startMenuLinkShortcut>
+                            <name>PostgreSQL release notes</name>
+                            <runInTerminal>0</runInTerminal>
+                            <url>file://${installdir}/doc/postgresql/html/release.html</url>
+                            <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                        </startMenuLinkShortcut>
+                        
+                        <!-- pgAdmin -->
+                        <startMenuShortcut>
+                            <name>pgAdmin documentation</name>
+                            <runInTerminal>0</runInTerminal>
+                            <windowsExec>${installdir}/pgAdmin III/docs/en_US/pgadmin3.chm</windowsExec>
+                        </startMenuShortcut>
+                        
+                        <!-- PL Java users guild -->
+                        <startMenuLinkShortcut>
+                            <name>PL Java users guide</name>
+                            <runInTerminal>0</runInTerminal>
+                            <url>file://${installdir}/doc/pljava/userguide.html</url>
+                            <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                        </startMenuLinkShortcut>
+                        
+                        <!-- PL Java README -->
+                        <startMenuLinkShortcut>
+                            <name>PL Java README</name>
+                            <runInTerminal>0</runInTerminal>
+                            <url>file://${installdir}/doc/pljava/readme.html</url>
+                            <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                        </startMenuLinkShortcut>
+                        
+                        
+                        <!-- TODO: Rest of the docs -->
+                        
+                    </startMenuShortcutList>
+                </startMenuFolder>
+                
+                <!-- pgAdmin -->
+                <startMenuShortcut>
+                    <name>pgAdmin III</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}\bin\pgAdmin3.exe</windowsExec>
+                </startMenuShortcut>
+                
+                <!-- Stackbuilder -->
+                <startMenuShortcut>
+                    <name>Application Stack Builder</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}\bin\stackbuilder.exe</windowsExec>
+                </startMenuShortcut>
+                
+                <!-- psql -->
+                <startMenuShortcut>
+                    <name>SQL Shell (psql)</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}\scripts\runpsql.bat</windowsExec>
+                    <windowsIcon>${installdir}\scripts\images\pg-psql.ico</windowsIcon>
+                </startMenuShortcut>
+                
+                <!-- Reload config -->
+                <startMenuShortcut>
+                    <name>Reload Configuration</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" reload wait</windowsExecArgs>
+                    <windowsIcon>${installdir}\scripts\images\pg-reload.ico</windowsIcon>
+                </startMenuShortcut>
+                
+                <!-- Restart server -->
+                <startMenuShortcut>
+                    <name>Restart Server</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" restart wait</windowsExecArgs>
+                    <windowsIcon>${installdir}\scripts\images\pg-restart.ico</windowsIcon>
+                </startMenuShortcut>
+                
+                <!-- Start server -->
+                <startMenuShortcut>
+                    <name>Start Server</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" start wait</windowsExecArgs>
+                    <windowsIcon>${installdir}\scripts\images\pg-start.ico</windowsIcon>
+                </startMenuShortcut>
+                
+                <!-- Stop server -->
+                <startMenuShortcut>
+                    <name>Stop Server</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" stop wait</windowsExecArgs>
+                    <windowsIcon>${installdir}\scripts\images\pg-stop.ico</windowsIcon>
+                </startMenuShortcut>
+            
+            </startMenuShortcutList>
+                
         </component>
     </componentList>
     
@@ -2264,8 +2279,8 @@
             <!-- Note that this validation occurs in a postShowPageActionList due     -->
             <!-- to some odd behaviour in InstallBuilder in the way <allowEmptyValue> -->
             <!-- interacts with default values, on the advice of tech support         -->
-			
-			<!-- !WIN: Always check if the installation directory path looks valid -->      
+            
+            <!-- !WIN: Always check if the installation directory path looks valid -->      
             <postShowPageActionList>
                 <actionGroup>
                     <actionList>
@@ -2281,14 +2296,14 @@
                             <logic>does_not_match</logic>
                             <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
                         </regExMatch>
-						<compareText>
-							<logic>does_not_equal</logic>
-							<text>${platform_name}</text>
-							<value>windows</value>
-						</compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
                     </ruleList>
                 </actionGroup>
-				
+                
                 <!-- WIN: Always check if the installation directory path looks valid -->        
                 <actionGroup>
                     <actionList>
@@ -2304,14 +2319,14 @@
                             <logic>does_not_match</logic>
                             <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-]*)$</pattern>
                         </regExMatch>
-						<compareText>
-							<logic>equals</logic>
-							<text>${platform_name}</text>
-							<value>windows</value>
-						</compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
                     </ruleList>
                 </actionGroup>
-				
+                
             </postShowPageActionList>
         </directoryParameter>
         
@@ -2381,14 +2396,14 @@
                             <logic>does_not_match</logic>
                             <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
                         </regExMatch>
-						<compareText>
-							<logic>does_not_equal</logic>
-							<text>${platform_name}</text>
-							<value>windows</value>
-						</compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
                     </ruleList>
                 </actionGroup>
-				
+                
                 <!-- WIN: Always check if the data directory path looks valid and is writeable -->        
                 <actionGroup>
                     <!-- We need this because this isn't a validateActionList> -->
@@ -2407,11 +2422,11 @@
                             <logic>does_not_match</logic>
                             <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-]*)$</pattern>
                         </regExMatch>
-						<compareText>
-							<logic>equals</logic>
-							<text>${platform_name}</text>
-							<value>windows</value>
-						</compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
                     </ruleList>
                 </actionGroup>
  
@@ -2422,28 +2437,28 @@
                     <substitution></substitution>
                     <name>_re</name>
                     <pattern>\/$</pattern>
-					
+                    
                     <ruleList>
-						<compareText>
-							<logic>does_not_equal</logic>
-							<text>${platform_name}</text>
-							<value>windows</value>
-						</compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
                     </ruleList>
                 </setInstallerVariableFromRegEx>
-				
+                
                 <setInstallerVariableFromRegEx>
                     <text>${datadir}</text>
                     <substitution></substitution>
                     <name>_re</name>
                     <pattern>\\$</pattern>
-					
+                    
                     <ruleList>
-						<compareText>
-							<logic>equals</logic>
-							<text>${platform_name}</text>
-							<value>windows</value>
-						</compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
                     </ruleList>
                 </setInstallerVariableFromRegEx>
 
@@ -2453,13 +2468,13 @@
                     <substitution>\/</substitution>
                     <name>_re</name>
                     <pattern>\/</pattern>
-					
+                    
                     <ruleList>
-						<compareText>
-							<logic>does_not_equal</logic>
-							<text>${platform_name}</text>
-							<value>windows</value>
-						</compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
                     </ruleList>
                 </setInstallerVariableFromRegEx>
 
@@ -2468,43 +2483,43 @@
                     <substitution>\\\\</substitution>
                     <name>_re</name>
                     <pattern>\\</pattern>
-					
+                    
                     <ruleList>
-						<compareText>
-							<logic>equals</logic>
-							<text>${platform_name}</text>
-							<value>windows</value>
-						</compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
                     </ruleList>
                 </setInstallerVariableFromRegEx>
-				
+                
                 <!-- build the regexp -->
                 <setInstallerVariable>
                     <name>_re</name>
                     <value>^${_re}\/([0-9a-zA-Z_/\.\-]*)</value>
-					
+                    
                     <ruleList>
-						<compareText>
-							<logic>does_not_equal</logic>
-							<text>${platform_name}</text>
-							<value>windows</value>
-						</compareText>
-					</ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
                 </setInstallerVariable>
 
                 <setInstallerVariable>
                     <name>_re</name>
                     <value>^${_re}\\([0-9a-zA-Z_\\\s\.\-]*)</value>
-					
+                    
                     <ruleList>
-						<compareText>
-							<logic>equals</logic>
-							<text>${platform_name}</text>
-							<value>windows</value>
-						</compareText>
-					</ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
                 </setInstallerVariable>
-				                
+                                
                 <!-- Check the data directory does not match the installation directory -->        
                 <actionGroup>
                     <!-- We need this because this isn't a validateActionList> -->
@@ -2604,7 +2619,7 @@
                                 </compareText>
                             </ruleList>
                         </runProgram>
-						
+                        
                         <runProgram>
                             <program>${system_temp_directory}\postgresql_installer\pg_controldata.exe</program>
                             <programArguments>"${datadir}"</programArguments>
@@ -2724,28 +2739,28 @@
             <cliOptionName>superpassword</cliOptionName>
             <descriptionRetype>${msg(config.superpassword.confirm)}</descriptionRetype>
             <width>20</width>
-		
-		    <preShowPageActionList>
-			    <setInstallerVariable>
-				    <name>_explanation</name>
-					<value>${msg(config.superpassword.explanation)}</value>
-				</setInstallerVariable>
-				
-				<!-- On Windows, we need a different explanation -->
-				<setInstallerVariable>
-				    <name>_explanation</name>
-					<value>${msg(config.superpassword.explanation.windows)}</value>
+        
+            <preShowPageActionList>
+                <setInstallerVariable>
+                    <name>_explanation</name>
+                    <value>${msg(config.superpassword.explanation)}</value>
+                </setInstallerVariable>
+                
+                <!-- On Windows, we need a different explanation -->
+                <setInstallerVariable>
+                    <name>_explanation</name>
+                    <value>${msg(config.superpassword.explanation.windows)}</value>
 
-					<ruleList>
-						<compareText>
-							<logic>equals</logic>
-							<text>${platform_name}</text>
-							<value>windows</value>
-						</compareText>
-					</ruleList>
-				</setInstallerVariable>
-			</preShowPageActionList>
-			
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+            </preShowPageActionList>
+            
             <validationActionList>
                 <throwError>
                     <text>${msg(config.superpassword.no.password)}</text>
@@ -2798,7 +2813,7 @@
                     </ruleList>
                 </actionGroup>
             </validationActionList>
-			           
+                       
             <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
                 <compareValues>
