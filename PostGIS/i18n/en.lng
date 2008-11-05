@@ -4,6 +4,8 @@ Installer.Welcome.Text=Welcome to the %1$s Setup.
 
 install.summary=PostGIS adds support for geographic objects to PostgreSQL.
 
+platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
+
 error.configure.postgis=Error Configuring PostGIS
 
 pgplus.details.title=PostgreSQL Installation Details

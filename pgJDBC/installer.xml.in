@@ -37,7 +37,25 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+    <!-- Prebuild Actons-->
+    <preBuildActionList>
+      <setInstallerVariable name="originalplatform" value="${platform_name}"/>
+      <setInstallerVariable name="originalplatform" value="linux-x32">
+          <ruleList>
+              <compareText text="${platform_name}" value="linux"/>
+          </ruleList>
+      </setInstallerVariable>
+    </preBuildActionList>
     <initializationActionList>
+	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
+        <throwError>
+          <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+            <platformTest type="linux-x64"/>
+            <compareText text="${originalplatform}" value="linux-x32"/>
+          </ruleList>
+        </throwError>
         <!-- LIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
@@ -397,6 +415,7 @@
     </componentList>
     <!-- Install Directory -->
     <parameterList>
+	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <directoryParameter>
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>

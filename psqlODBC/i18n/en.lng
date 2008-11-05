@@ -4,6 +4,8 @@ Installer.Welcome.Text=Welcome to the %1$s Setup.
 
 install.summary=ODBC drivers for PostgreSQL distributed by EnterpriseDB
 
+platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
+
 error.unixodbc.notfound=unixODBC could not be found. Please install unixODBC or if it is already installed, add its bin directory to your PATH environment variable.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts

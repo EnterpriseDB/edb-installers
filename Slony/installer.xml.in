@@ -42,8 +42,26 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+    <!-- Prebuild Actons-->
+    <preBuildActionList>
+      <setInstallerVariable name="originalplatform" value="${platform_name}"/>
+      <setInstallerVariable name="originalplatform" value="linux-x32">
+          <ruleList>
+              <compareText text="${platform_name}" value="linux"/>
+          </ruleList>
+      </setInstallerVariable>
+    </preBuildActionList>
     <!-- Initialisation actions -->
     <initializationActionList>
+	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
+        <throwError>
+          <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+            <platformTest type="linux-x64"/>
+            <compareText text="${originalplatform}" value="linux-x32"/>
+          </ruleList>
+        </throwError>
         <!-- Set the Slony version(if exists) -->
         <setInstallerVariable name="SlonyVersion" value="">
             <persist>0</persist>
@@ -677,6 +695,7 @@
         </component>
     </componentList>
     <parameterList>
+	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <!-- Postgres Home Directory for CLI Option -->
         <directoryParameter>
             <name>pghome</name>
