@@ -16,7 +16,7 @@ strUsername = WScript.Arguments.Item(0)
 strPassword = WScript.Arguments.Item(1)
 strInstallDir = WScript.Arguments.Item(2)
 strDataDir = WScript.Arguments.Item(3)
-iPort = CInt(WScript.Arguments.Item(4))
+lPort = CLng(WScript.Arguments.Item(4))
 strLocale = WScript.Arguments.Item(5)
 
 ' Remove any trailing \'s from the data dir - they will confuse cacls
@@ -142,7 +142,7 @@ Set objConfFile = objFso.OpenTextFile(strDataDir & "\postgresql.conf", ForReadin
 strConfig = objConfFile.ReadAll
 objConfFile.Close
 strConfig = Replace(strConfig, "#listen_addresses = 'localhost'", "listen_addresses = '*'")
-strConfig = Replace(strConfig, "#port = 5432", "port = " & iPort)
+strConfig = Replace(strConfig, "#port = 5432", "port = " & lPort)
 strConfig = Replace(strConfig, "#log_destination = 'stderr'", "log_destination = 'stderr'")
 strConfig = Replace(strConfig, "#logging_collector = off", "logging_collector = on")
 strConfig = Replace(strConfig, "#log_line_prefix = ''", "log_line_prefix = '%%t '")
