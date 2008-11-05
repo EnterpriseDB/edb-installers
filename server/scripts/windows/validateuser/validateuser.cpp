@@ -758,6 +758,8 @@ int main(int argc, TCHAR * argv[])
 		return 127;
 	}
 	
+	sprintf_s(domain, sizeof(domain), argv[1]);
+
 	// Check domain of system, either system is domain controller or not.
 	if(CheckDomain(domain, sizeof(domain), &isWin2k))
 	{
