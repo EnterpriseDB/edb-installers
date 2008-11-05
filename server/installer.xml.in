@@ -36,9 +36,29 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+
+    <!-- Prebuild Actons-->
+    <preBuildActionList>
+      <setInstallerVariable name="originalplatform" value="${platform_name}"/>
+      <setInstallerVariable name="originalplatform" value="linux-x32">
+          <ruleList>
+              <compareText text="${platform_name}" value="linux"/>
+          </ruleList>
+      </setInstallerVariable>
+    </preBuildActionList>
     
     <!-- Initialisation actions -->
     <initializationActionList>
+	
+	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
+        <throwError>
+          <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+            <platformTest type="linux-x64"/>
+            <compareText text="${originalplatform}" value="linux-x32"/>
+          </ruleList>
+        </throwError>
         
         <!-- Set the superusername -->
         <!-- TODO: Make this user configurable -->
@@ -2258,7 +2278,9 @@
     
     
     <parameterList>
-        
+     
+	    <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+   
         <!-- Installation directory. Only show if ${iBaseDirectory} is empty -->
         <directoryParameter>
             <name>installdir</name>
