@@ -67,6 +67,9 @@ _postprocess_phpBB_osx() {
     cp scripts/osx/createshortcuts.sh staging/osx/installer/phpBB/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/osx/createshortcuts.sh)"
     chmod ugo+x staging/osx/installer/phpBB/createshortcuts.sh
 
+    cp scripts/osx/getserverlocale.sh staging/osx/installer/phpBB/getserverlocale.sh || _die "Failed to copy the getserverlocale.sh script (scripts/osx/getserverlocale.sh)"
+    chmod ugo+x staging/osx/installer/phpBB/getserverlocale.sh
+
     cp scripts/osx/install.sh staging/osx/installer/phpBB/install.sh || _die "Failed to copy the install.sh script (scripts/osx/install.sh)"
     chmod ugo+x staging/osx/installer/phpBB/install.sh
 

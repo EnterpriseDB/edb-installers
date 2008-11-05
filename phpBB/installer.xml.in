@@ -1054,6 +1054,12 @@
                             <folder>installfileslinux</folder>
                             <origin>installer/phpBB/check-db.sh</origin>
                         </unpackFile>
+                        <unpackFile>
+                            <component>phpBB</component>
+                            <destination>${system_temp_directory}/${product_fullname}/getserverlocale.sh</destination>
+                            <folder>installfileslinux</folder>
+                            <origin>installer/phpBB/getserverlocale.sh</origin>
+                        </unpackFile>
                     </actionList>
                     <ruleList>
                         <compareText>
@@ -1078,6 +1084,12 @@
                             <destination>${system_temp_directory}/${product_fullname}/check-db.sh</destination>
                             <folder>installfileslinux-x64</folder>
                             <origin>installer/phpBB/check-db.sh</origin>
+                        </unpackFile>
+                        <unpackFile>
+                            <component>phpBB</component>
+                            <destination>${system_temp_directory}/${product_fullname}/getserverlocale.sh</destination>
+                            <folder>installfileslinux-x64</folder>
+                            <origin>installer/phpBB/getserverlocale.sh</origin>
                         </unpackFile>
                     </actionList>
                     <ruleList>
@@ -1104,6 +1116,13 @@
                             <folder>installfilesosx</folder>
                             <origin>installer/phpBB/check-db.sh</origin>
                         </unpackFile>
+                        <unpackFile>
+                            <component>phpBB</component>
+                            <destination>${system_temp_directory}/${product_fullname}/getserverlocale.sh</destination>
+                            <folder>installfilesosx</folder>
+                            <origin>installer/phpBB/getserverlocale.sh</origin>
+                        </unpackFile>
+
                     </actionList>
                     <ruleList>
                         <compareText>
@@ -1252,47 +1271,6 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
-                <setInstallerVariable name="server_locale" value=""/>
-                <actionGroup>
-                    <actionList>
-                        <!-- WIN: Check whether the servers locales is WIN1252 -->
-                        <setInstallerVariableFromScriptOutput>
-                            <name>server_locale</name>
-                            <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "WIN1252"</execArgs>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>contains</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <actionGroup>
-                    <actionList>
-                        <!-- LIN & MAC: Check whether the servers locales is utf8 -->
-                        <setInstallerVariableFromScriptOutput>
-                            <name>server_locale</name>
-                            <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "UTF8"</execArgs>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
                 <!-- Exit the installation if the user wants to quit -->
                 <actionGroup>
                     <actionList>
@@ -1308,6 +1286,42 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
+                <setInstallerVariable name="server_locale" value=""/>
+                <actionGroup>
+                    <actionList>
+                        <!-- LIN & MAC: Check whether the servers locales is utf8 -->
+                        <setInstallerVariableFromScriptOutput>
+                            <name>server_locale</name>
+                            <exec>${system_temp_directory}/${product_fullname}/getserverlocale.sh</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" </execArgs>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <compareText>
+                            <text>${dbexist}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText> 
+                        <compareText>
+                            <text>${userexist}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <text>${phpBBVersion}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
                 <!-- Exit the installation if the locale does not match -->
                 <actionGroup>
                     <actionList>
@@ -1320,9 +1334,32 @@
                     </actionList>
                     <ruleList>
                         <compareText>
-                            <logic>equals</logic>
+                            <logic>does_not_equal</logic>
                             <value/>
                             <text>${server_locale}</text>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_contain</logic>
+                            <value>UTF-8</value>
+                            <nocase>1</nocase>
+                            <text>${server_locale}</text>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <value>C</value>
+                            <nocase>1</nocase>
+                            <text>${server_locale}</text>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <value>POSIX</value>
+                            <nocase>1</nocase>
+                            <text>${server_locale}</text>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
                         </compareText>
                     </ruleList>
                 </actionGroup>
