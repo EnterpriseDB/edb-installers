@@ -67,6 +67,13 @@ Sub Warn(msg)
     iWarn = 2
 End Sub
 
+Function CreateDirectory(DirectoryPath)
+    If objFso.FolderExists(DirectoryPath) Then Exit Function
+
+    Call CreateDirectory(objFso.GetParentFolderName(DirectoryPath))
+    objFso.CreateFolder(DirectoryPath)
+End Function
+
 ' Create a password file
 strInitdbPass = objTempFolder.Path & "\" & objFso.GetTempName
 Set objInitdbPass = objFso.OpenTextFile(strInitdbPass, ForWriting, True)
@@ -76,7 +83,7 @@ objInitdbPass.Close
 
 ' Create the data directory
 If objFso.FolderExists(strDataDir) <> True Then
-    objFso.CreateFolder strDataDir
+    CreateDirectory(strDataDir)
     If Err.number <> 0 Then
         Die "Failed to create the data directory (" & strDataDir & ")"
     End If
