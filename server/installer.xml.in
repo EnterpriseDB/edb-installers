@@ -2279,7 +2279,7 @@
     
     <parameterList>
      
-	    <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+        <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
    
         <!-- Installation directory. Only show if ${iBaseDirectory} is empty -->
         <directoryParameter>
@@ -2291,6 +2291,7 @@
             <ask>yes</ask>
             <cliOptionName>prefix</cliOptionName>
             <width>30</width>
+            <mustBeWritable>yes</mustBeWritable>
             <ruleList>
                 <stringTest>
                     <text>${iBaseDirectory}</text>
@@ -2385,6 +2386,7 @@
             <ask>yes</ask>
             <cliOptionName>datadir</cliOptionName>
             <width>30</width>
+            <mustBeWritable>yes</mustBeWritable>
             <ruleList>
                 <compareValues>
                     <value1>${IsUpgrade}</value1>
