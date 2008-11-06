@@ -1923,56 +1923,14 @@
         <!-- WINDOWS: Unregister the event message DLL -->
         <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
-            <name>EventMessageFile</name>
-        </registryDelete>
-        <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
-            <name>TypesSupported</name>
         </registryDelete>
 
         <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
-            <name>Base Directory</name>
         </registryDelete>
-        <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
-            <name>Data Directory</name>
-        </registryDelete>
-        <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
-            <name>Service ID</name>
-        </registryDelete>
-        <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
-            <name>Version</name>
-        </registryDelete>
+
         <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
-            <name>Datebase Superuser</name>
-        </registryDelete>
-        <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
-            <name>Data Directory</name>
-        </registryDelete>
-        <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
-            <name>Display Name</name>
-        </registryDelete>
-        <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
-            <name>Locale</name>
-        </registryDelete>
-        <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
-            <name>Port</name>
-        </registryDelete>
-        <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
-            <name>Product Code</name>
-        </registryDelete>
-        <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
-            <name>Service Account</name>
         </registryDelete>
     </preUninstallationActionList>
 
