@@ -557,8 +557,8 @@
             <startMenuShortcutList>
                 <!-- Launch MigrationWizard -->
                 <startMenuShortcut>
-                    <comment>MigrationWizard</comment>
-                    <name>MigrationWizard</name>
+                    <comment>EnterpriseDB MySQL Migration Wizard</comment>
+                    <name>Migration Wizard</name>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>wscript</windowsExec>
                     <windowsExecArgs>//NoLogo "${installdir}\scripts\launchMigrationWizard.vbs" "" "${java_executable}" "-jar MigrationWizard.jar" "${installdir}""</windowsExecArgs>

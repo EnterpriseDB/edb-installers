@@ -506,8 +506,8 @@
             <startMenuShortcutList>
                 <startMenuShortcut>
                     <!-- Launch TuningWizard -->
-                    <comment>TuningWizard</comment>
-                    <name>TuningWizard</name>
+                    <comment>EnterpriseDB Tuning Wizard</comment>
+                    <name>Tuning Wizard</name>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>"${installdir}\TuningWizard.exe"</windowsExec>
                     <windowsExecArgs/>
