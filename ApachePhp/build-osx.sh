@@ -112,15 +112,15 @@ _build_ApachePhp_osx() {
     cd $PG_PATH_OSX/ApachePhp/source/php.osx
 
     echo "Configuring the php source tree for intel"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" ./configure --with-libxml-dir=/usr --with-openssl --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite || _die "Failed to configure PHP for intel"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" ./configure --with-libxml-dir=/usr --with-openssl --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite || _die "Failed to configure PHP for intel"
     mv main/php_config.h main/php_config_i386.h
  
     echo "Configuring the php source tree for ppc"
-    CFLAGS="$PG_ARCH_OSX_CFLAG -arch ppc" ./configure --with-libxml-dir=/usr --with-openssl --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite || _die "Failed to configure PHP for ppc"
+    CFLAGS="$PG_ARCH_OSX_CFLAG -arch ppc" ./configure --with-libxml-dir=/usr --with-openssl --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite || _die "Failed to configure PHP for ppc"
     mv main/php_config.h main/php_config_ppc.h
  
     echo "Configuring the php source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" ./configure --with-libxml-dir=/usr --with-openssl --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite || _die "Failed to configure PHP for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" ./configure --with-libxml-dir=/usr --with-openssl --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite || _die "Failed to configure PHP for Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     echo "#ifdef __BIG_ENDIAN__" > main/php_config.h
@@ -137,10 +137,18 @@ _build_ApachePhp_osx() {
     make install || _die "Failed to install php"
     cd $PG_PATH_OSX/ApachePhp/source/php.osx
     cp php.ini-recommended $PG_STAGING/php/php.ini || _die "Failed to copy php.ini file"
- 
+    
+    install_name_tool -change "$PG_PGHOME_OSX/lib/libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$WD/ApachePhp/staging/osx/php/bin/php"
+
     cp $PG_PGHOME_OSX/lib/libpq.*dylib $PG_STAGING/php/lib || _die "Failed to copy libpq to php lib "
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
-    _rewrite_so_refs $WD/ApachePhp/staging/osx apache/modules/libphp*.so @loader_path/../../..
+    _rewrite_so_refs $WD/ApachePhp/staging/osx apache/modules @loader_path/../..
+
+    files=`ls $WD/ApachePhp/staging/osx/apache/modules/libphp*.so`
+    for file in $files
+    do 
+        install_name_tool -change "libpq.5.dylib" "@loader_path/../../php/lib/libpq.5.dylib" $file
+    done
 
     cd $WD
 }

@@ -25,11 +25,3 @@ _replace @@INSTALL_DIR@@ "$1" "$file"
  chmod +x "$file"
 done
 
-
-cd $1/apache/modules/
-
-filelist=`ls libphp*so`
-for file in $filelist
-do
-	sudo install_name_tool -change "libpq.5.dylib" "$1/php/lib/libpq.5.dylib" "$file"
-done

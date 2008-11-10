@@ -318,8 +318,16 @@
 AddHandler php5-script php
 DirectoryIndex index.html index.php
 AddType text/html         php
+PhpIniDir "${installdir}/php"
             </text>
         </addTextToFile>
+        <!-- setting the PHP session path-->
+        <iniFileSet>
+          <file>${installdir}/php/php.ini</file>
+          <section>Session</section>
+          <key>session.save_path</key>
+          <value>/tmp</value>
+        </iniFileSet>
         <!-- Deleting the default index.html -->
         <deleteFile>
           <path>${installdir}/apache/www/index.html</path>
