@@ -73,6 +73,9 @@ _postprocess_phpBB_linux_x64() {
     cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/phpBB/removeshortcuts.sh || _die "Failed to copy the removeshortcuts.sh (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/phpBB/removeshortcuts.sh
 
+    cp scripts/linux/getserverlocale.sh staging/linux-x64/installer/phpBB/getserverlocale.sh || _die "Failed to copy the getserverlocale.sh (scripts/linux/getserverlocale.sh)"
+    chmod ugo+x staging/linux-x64/installer/phpBB/getserverlocale.sh
+
     # Setup the phpBB Launch Scripts
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the phpBB Launch Scripts"
 
