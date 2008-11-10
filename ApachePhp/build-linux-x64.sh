@@ -75,6 +75,7 @@ _build_ApachePhp_linux_x64() {
     _replace "$PG_STAGING/apache" "@@INSTALL_DIR@@" "$WD/ApachePhp/staging/linux-x64/apache/conf/httpd.conf"
     _replace "Listen 80" "Listen @@PORT@@" "$WD/ApachePhp/staging/linux-x64/apache/conf/httpd.conf"
     _replace "htdocs" "www" "$WD/ApachePhp/staging/linux-x64/apache/conf/httpd.conf"
+    _replace "#ServerName www.example.com:80" "ServerName localhost:@@PORT@@" "$WD/ApachePhp/staging/linux-x64/apache/conf/httpd.conf"
 
     #Configure the apachectl script file
     _replace "\$HTTPD -k \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux-x64/apache/bin/apachectl"
