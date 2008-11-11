@@ -8,7 +8,7 @@ error.apache.notfound=No Apache server was found. Please run the EnterpriseDB Ap
 
 error.php.notfound=No suitable PHP installation was found. Please run the EnterpriseDB ApachePHP installer.
 
-db.create.info=Created a database role with name "phpwikiuser" and password "phpwikiuser". \nCreated a database named "phpwiki", owned by "phpwikiuser".
+db.create.info=Created a database role with name "phpwikiuser" and password "phpwikiuser". \n\nCreated a database named "phpwiki", owned by "phpwikiuser".
 
 db.drop.info=The phpWiki database and user account have not been removed from your PostgreSQL server.\n\nNOTE: Apache needs to be restarted for removal of phpwiki database and phpwikiuser from the server. 
 

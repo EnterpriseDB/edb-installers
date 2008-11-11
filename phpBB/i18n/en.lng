@@ -8,7 +8,7 @@ error.apache.notfound=No Apache server was found. Please run the EnterpriseDB Ap
 
 error.php.notfound=No suitable PHP installation was found. Please run the EnterpriseDB ApachePHP installer.
 
-db.create.info=Created a database role with the name "phpbbuser" and password "phpbbuser". \nCreated a database named "phpbb", owned by "phpbb".
+db.create.info=Created a database role with the name "phpbbuser" and password "phpbbuser". \n\nCreated a database named "phpbb", owned by "phpbbuser".
 
 db.drop.info=The phpBB database and user account phpbbuser have not been removed from your PostgreSQL server
 
