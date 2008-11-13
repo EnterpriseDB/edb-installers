@@ -49,7 +49,7 @@ _prep_Drupal() {
     fi
 
     echo "Unpacking MediaWiki source..."
-    extract_file  ../../tarballs/drupal-$PG_VERSION_DRUPAL.tar.bz2 || exit 1
+    extract_file  ../../tarballs/drupal-$PG_VERSION_DRUPAL.tar.gz || exit 1
 
     # Per-platform prep
     cd $WD
