@@ -76,6 +76,9 @@ _postprocess_MigrationWizard_osx() {
     cp scripts/osx/createshortcuts.sh staging/osx/installer/MigrationWizard/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/osx/createshortcuts.sh)"
     chmod ugo+x staging/osx/installer/MigrationWizard/createshortcuts.sh
 
+    cp scripts/osx/configuredockicon.sh staging/osx/installer/MigrationWizard/configuredockicon.sh || _die "Failed to copy the configuredockicon script (scripts/osx/configuredockicon.sh)"
+    chmod ugo+x staging/osx/installer/MigrationWizard/configuredockicon.sh
+    
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the launch scripts"
     cp -R scripts/osx/launchMigrationWizard.sh staging/osx/scripts/launchMigrationWizard.sh || _die "Failed to copy the launch scripts (scripts/osx)"
 
