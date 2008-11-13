@@ -79,6 +79,10 @@ _postprocess_TuningWizard_osx() {
     cp scripts/osx/createshortcuts.sh staging/osx/installer/TuningWizard/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/osx/createshortcuts.sh)"
 
     chmod ugo+x staging/osx/installer/TuningWizard/createshortcuts.sh
+    
+    cp scripts/osx/configuredockicon.sh staging/osx/installer/TuningWizard/configuredockicon.sh || _die "Failed to copy the configuredockicon script (scripts/osx/configuredockicon.sh)"
+
+    chmod ugo+x staging/osx/installer/TuningWizard/configuredockicon.sh
 
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the launch scripts"
     cp scripts/osx/pg-launchTuningWizard.applescript.in staging/osx/scripts/pg-launchTuningWizard.applescript || _die "Failed to copy applescript (scripts/osx/pg-launchTuningWizard.applescript.in)"
