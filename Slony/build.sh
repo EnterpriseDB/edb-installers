@@ -52,7 +52,7 @@ _prep_Slony() {
     fi
 
     echo "Unpacking SLONY source..."
-    extract_file  $WD/tarballs/slony1-$PG_VERSION_SLONY.tar.bz2 || exit 1 
+    extract_file  $WD/tarballs/slony1-$PG_VERSION_SLONY || exit 1 
 
     # Per-platform prep
     cd $WD

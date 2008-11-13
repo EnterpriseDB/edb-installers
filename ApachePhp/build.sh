@@ -56,16 +56,16 @@ _prep_ApachePhp() {
         #if [ -e httpd.windows ]; then
         #    rm -rf apache.windows || _die "Couldn't remove the existing httpd.windows source directory (source/httpd.windows)"
         #fi
-        #extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-win32-src.zip || exit 1
-        #extract_file ../../tarballs/zlib-$PG_TARBALL_ZLIB.tar.bz2 ||exit 1
-        #extract_file ../../tarballs/openssl-$PG_TARBALL_OPENSSL.tar.gz !! exit 1
+        #extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-win32-src || exit 1
+        #extract_file ../../tarballs/zlib-$PG_TARBALL_ZLIB ||exit 1
+        #extract_file ../../tarballs/openssl-$PG_TARBALL_OPENSSL !! exit 1
         #mv httpd-$PG_VERSION_APACHE apache.windows || _die "Couldn't move httpd-$PG_VERSION_APACHE as httpd.windows"
         echo "Not yet implemented"
     fi
     echo "Unpacking apache source..."
     if [[ $PG_ARCH_LINUX = 1 || $PG_ARCH_LINUX_X64 = 1 || $PG_ARCH_OSX = 1 ]];
     then
-        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE.tar.bz2 || exit 1
+        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE || exit 1
     fi
 
     # php
@@ -76,7 +76,7 @@ _prep_ApachePhp() {
     fi
 
     echo "Unpacking php source..."
-    extract_file ../../tarballs/php-$PG_VERSION_PHP.tar.bz2 || exit 1
+    extract_file ../../tarballs/php-$PG_VERSION_PHP || exit 1
  
     # Per-platform prep
     cd $WD

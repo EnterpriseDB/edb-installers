@@ -49,7 +49,7 @@ _prep_phpPgAdmin() {
     fi
 
     echo "Unpacking phpPgAdmin source..."
-    extract_file  ../../tarballs/phpPgAdmin-$PG_VERSION_PHPPGADMIN.tar.bz2 || exit 1
+    extract_file  ../../tarballs/phpPgAdmin-$PG_VERSION_PHPPGADMIN || exit 1
 
     # Per-platform prep
     cd $WD

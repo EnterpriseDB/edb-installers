@@ -50,7 +50,7 @@ _prep_pgJDBC() {
     fi
 
     echo "Unpacking pgJDBC source..."
-    extract_file ../../tarballs/pgJDBC-$PG_VERSION_PGJDBC.tar.bz2 || exit 1
+    extract_file ../../tarballs/pgJDBC-$PG_VERSION_PGJDBC || exit 1
 
     # Per-platform prep
     cd $WD

@@ -49,7 +49,7 @@ _prep_phpWiki() {
     fi
 
     echo "Unpacking PhpWiki source..."
-    extract_file  ../../tarballs/phpwiki-$PG_VERSION_PHPWIKI.tar.bz2 || exit 1
+    extract_file  ../../tarballs/phpwiki-$PG_VERSION_PHPWIKI || exit 1
 
     # Per-platform prep
     cd $WD

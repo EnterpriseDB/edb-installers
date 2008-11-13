@@ -49,7 +49,7 @@ _prep_phpBB() {
     fi
 
     echo "Unpacking PhpBB source..."
-    extract_file  ../../tarballs/phpBB-$PG_VERSION_PHPBB.tar.bz2 || exit 1
+    extract_file  ../../tarballs/phpBB-$PG_VERSION_PHPBB || exit 1
 
     # Per-platform prep
     cd $WD

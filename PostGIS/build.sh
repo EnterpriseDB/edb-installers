@@ -53,7 +53,7 @@ _prep_PostGIS() {
     fi
 
     echo "Unpacking postgis source..."
-    extract_file  ../../tarballs/postgis-$PG_VERSION_POSTGIS.tar.gz || exit 1
+    extract_file  ../../tarballs/postgis-$PG_VERSION_POSTGIS || exit 1
 
     # geos
     if [ -e geos-$PG_TARBALL_GEOS ];
@@ -63,7 +63,7 @@ _prep_PostGIS() {
     fi
 
     echo "Unpacking geos source..."
-    extract_file  ../../tarballs/geos-$PG_TARBALL_GEOS.tar.bz2 || exit 1 
+    extract_file  ../../tarballs/geos-$PG_TARBALL_GEOS || exit 1 
 
     # proj
     if [ -e proj-$PG_TARBALL_PROJ ];
@@ -73,10 +73,10 @@ _prep_PostGIS() {
     fi
 
     echo "Unpacking proj source..."
-    extract_file  ../../tarballs/proj-$PG_TARBALL_PROJ.tar.gz || exit 1 
+    extract_file  ../../tarballs/proj-$PG_TARBALL_PROJ || exit 1 
 
     echo "Extracting the postgresql jar file..."
-    extract_file  ../../tarballs/pgJDBC-$PG_VERSION_PGJDBC.tar.bz2 || exit 1 
+    extract_file  ../../tarballs/pgJDBC-$PG_VERSION_PGJDBC || exit 1 
     mv pgJDBC-$PG_VERSION_PGJDBC/*.jar .
 
     # Per-platform prep

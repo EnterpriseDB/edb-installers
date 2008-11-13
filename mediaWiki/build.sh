@@ -49,7 +49,7 @@ _prep_mediaWiki() {
     fi
 
     echo "Unpacking MediaWiki source..."
-    extract_file ../../tarballs/mediawiki-$PG_VERSION_MEDIAWIKI.tar.gz || exit 1
+    extract_file ../../tarballs/mediawiki-$PG_VERSION_MEDIAWIKI || exit 1
 
     # Per-platform prep
     cd $WD

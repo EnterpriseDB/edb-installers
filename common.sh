@@ -82,40 +82,17 @@ extract_file()
 
     FILENAME=$1
 
-    # Check - if parameter is provided
-    if [ "x$FILENAME" == "x" ]; then
-        _die "Please provide an archived file as parameter with extract_file function"
-    fi
-
-    # Check - if the given file exists
-    if [ ! -e $FILENAME ]; then
-        _die "The given file does not exist ($FILENAME)"
-    fi
-
-    BASENAME=`basename $FILENAME`
-
-    # Convert the given file name to lower case
-    LFILENAME=`echo $BASENAME | tr "[:upper:]" "[:lower:]"`
-        
-    # Check if it is a zip file
-    ZIPNAME=`basename $LFILENAME .zip`
-    TGZNAME=`basename $LFILENAME .tar.gz`
-    if [ "x$TGZNAME" == "x$LFILENAME" ]; then
-        TGZNAME=`basename $LFILENAME .tgz`
-    fi
-
-    BZ2NAME=`basename $LFILENAME .tar.bz2`
-
-    if [ "x$ZIPNAME" != "x$LFILENAME" ]; then
-        # This is a zip file
-        unzip -o $FILENAME
-    elif [ "x$TGZNAME" != "x$LFILENAME" ]; then
-        # This is a tar.gz tarball
-        tar -zxvf $FILENAME
-    elif [ "x$BZ2NAME" != "x$LFILENAME" ]; then
-        # This is a tar.bz2 tarball
-        tar -jxvf $FILENAME
+    if [ -e $FILENAME.zip ]; then
+       # This is a zip file
+       unzip -o $FILENAME.zip
+    elif [ -e $FILENAME.tar.gz ]; then
+       # This is a tar.gz tarball
+       tar -zxvf $FILENAME.tar.gz
+    elif [ -e $FILENAME.tar.bz2 ]; then
+       # This is a tar.bz2 tarball
+       tar -jxvf $FILENAME.tar.bz2
     else
-        _die "Given file type not supported ($FILENAME)"
+       echo "tarball doesn't exist for the this Package"
+       exit 1
     fi
 }
