@@ -43,5 +43,11 @@ mkdir -p "$FOLDER" || _die "Failed to create the menu directory ($FOLDER)"
 # Create the scripts
 _compile_script "$INSTALLDIR/scripts/pg-launchMigrationWizard.applescript" "$FOLDER/Migration Wizard.app" "$INSTALLDIR/scripts/images/pg-launchMigrationWizard.icns"
 
+cd $FOLDER/Migration\ Wizard.app/Contents
+
+_replace \<\/dict\> "<key>LSUIElement</key><string>1</string></dict>" "Info.plist"
+
+cd $WD
+
 echo "$0 ran to completion"
 exit 0

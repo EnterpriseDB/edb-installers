@@ -328,23 +328,6 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-	<!-- MAC: Configure Dock Icon -->
-        <actionGroup>
-            <actionList>
-                <runProgram>
-                    <program>${installdir}/installer/MigrationWizard/configuredockicon.sh</program>
-                    <abortOnError>1</abortOnError>
-                    <showMessageOnError>1</showMessageOnError>
-                </runProgram>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
     </postInstallationActionList>
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
