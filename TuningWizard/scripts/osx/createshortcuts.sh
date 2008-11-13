@@ -43,5 +43,11 @@ mkdir -p "$FOLDER" || _die "Failed to create the menu directory ($FOLDER)"
 # Create the scripts
 _compile_script "$INSTALLDIR/scripts/pg-launchTuningWizard.applescript" "$FOLDER/Tuning Wizard.app" "$INSTALLDIR/scripts/images/pg-launchTuningWizard.icns"
 
+cd $FOLDER/Tuning\ Wizard.app/Contents
+
+_replace \<\/dict\> "<key>LSUIElement</key><string>1</string></dict>" "Info.plist"
+
+cd $WD
+
 echo "$0 ran to completion"
 exit 0
