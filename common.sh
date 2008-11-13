@@ -91,6 +91,9 @@ extract_file()
     elif [ -e $FILENAME.tar.bz2 ]; then
        # This is a tar.bz2 tarball
        tar -jxvf $FILENAME.tar.bz2
+    elif [ -e $FILENAME.tgz ]; then
+       # This is a tgz tarball
+       tar -zxvf $FILENAME.tgz
     else
        echo "tarball doesn't exist for the this Package"
        exit 1

@@ -154,7 +154,7 @@ _postprocess_PostGIS_linux_x64() {
     echo "Copying jdbc docs"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java/jdbc; cp postgis-jdbc-javadoc.zip $PG_STAGING/PostGIS/doc/postgis/jdbc"
     cd staging/linux-x64/PostGIS/doc/postgis/jdbc
-    extract_file postgis-jdbc-javadoc.zip || exit 1
+    extract_file postgis-jdbc-javadoc || exit 1
     rm postgis-jdbc-javadoc.zip  || _warn "Failed to remove jdbc docs zip file"
 
     cd $WD/PostGIS

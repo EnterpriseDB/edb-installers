@@ -258,7 +258,7 @@ _postprocess_PostGIS_osx() {
     then
         cp postgis-jdbc-javadoc.zip $PG_STAGING/PostGIS/doc/postgis/jdbc || _die "Failed to copy jdbc docs "
         cd $PG_STAGING/PostGIS/doc/postgis/jdbc
-        extract_file postgis-jdbc-javadoc.zip || exit 1
+        extract_file postgis-jdbc-javadoc || exit 1
         rm postgis-jdbc-javadoc.zip  || echo "Failed to remove jdbc docs zip file"
     else
         echo "Couldn't find the jdbc docs zip file"
