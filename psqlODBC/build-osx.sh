@@ -100,9 +100,6 @@ _postprocess_psqlODBC_osx() {
     cp scripts/osx/getodbcinstpath.sh staging/osx/installer/psqlODBC/getodbcinstpath.sh || _die "Failed to copy the getodbcinstpath.sh script (scripts/osx/getodbcinstpath.sh)"
     chmod ugo+x staging/osx/installer/psqlODBC/getodbcinstpath.sh
 
-    cp scripts/osx/configurepsqlODBC.sh staging/osx/installer/psqlODBC/configurepsqlODBC.sh || _die "Failed to copy the configurepsqlODBC.sh script (scripts/osx/configurepsqlODBC.sh)"
-    chmod ugo+x staging/osx/installer/psqlODBC/configurepsqlODBC.sh
-
     #Setup the launch scripts
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the launch scripts"
     cp scripts/osx/pg-launchOdbcDocs.applescript.in staging/osx/scripts/pg-launchOdbcDocs.applescript || _die "Failed to copy the pg-launchOdbcDocs.applescript.in script (scripts/osx/scripts/pg-launchOdbcDocs.applescript)"
