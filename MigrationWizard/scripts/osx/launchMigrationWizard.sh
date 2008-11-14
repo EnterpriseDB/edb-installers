@@ -1,3 +1,3 @@
 #!/bin/bash
-@@JAVA@@ -Xdock:name="Migration Wizard" -jar @@INSTALLDIR@@/MigrationWizard.jar 
+@@JAVA@@ -Xdock:name="Migration Wizard" -Xdock:icon="@@INSTALLDIR@@/scripts/images/pg-launchMigrationWizard.icns" -jar @@INSTALLDIR@@/MigrationWizard.jar 
 exit 0
