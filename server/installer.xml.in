@@ -19,6 +19,7 @@
     <saveRelativePaths>1</saveRelativePaths>
     <defaultUnixGroup>daemon</defaultUnixGroup>
     <defaultUnixOwner>root</defaultUnixOwner>
+    <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
     
     <!-- Images -->
     <leftImage>../resources/pg-side.png</leftImage>
