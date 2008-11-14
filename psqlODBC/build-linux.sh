@@ -22,10 +22,6 @@ _prep_psqlODBC_linux() {
     # Grab a copy of the source tree
     cp -R psqlodbc-$PG_VERSION_PSQLODBC/* psqlODBC.linux || _die "Failed to copy the source code (source/psqlODBC-$PG_VERSION_PSQLODBC)"
 
-    # Grab a copy of the docs 
-    cp -R docs psqlODBC.linux || _die "Failed to copy the source code (source/docs)"
-    cp -R templates psqlODBC.linux || _die "Failed to copy the source code (source/templates)"
-
     chmod -R ugo+w psqlODBC.linux || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -58,11 +54,6 @@ _build_psqlODBC_linux() {
     ssh $PG_SSH_LINUX "cd $SOURCE_DIR; make" || _die "Couldn't compile the psqlODBC sources"
     echo "Installing psqlODBC into the sources"
     ssh $PG_SSH_LINUX "cd $SOURCE_DIR; make install" || _die "Couldn't install the psqlODBC into statging directory" 
-    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; mkdir $PG_STAGING/docs " || _die "Failed to create the docs directory"
-    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; mkdir $PG_STAGING/templates " || _die "Failed to create the template directory"
-
-    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; cp -R docs/* $PG_STAGING/docs " || _die "Failed to copy the docs directory to staging directory"
-    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; cp -R templates/* $PG_STAGING/templates " || _die "Failed to copy the templates directory to staging directory"
 
     # Copy in the dependency libraries
     ssh $PG_SSH_LINUX "cp -R /lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"

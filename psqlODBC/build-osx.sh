@@ -22,9 +22,6 @@ _prep_psqlODBC_osx() {
     # Grab a copy of the source tree
     cp -R psqlodbc-$PG_VERSION_PSQLODBC/* psqlODBC.osx || _die "Failed to copy the source code (source/psqlODBC-$PG_VERSION_PSQLODBC)"
 
-    # Grab a copy of the docs 
-    cp -R templates psqlODBC.osx || _die "Failed to copy the source code (source/templates)"
-
     chmod -R ugo+w psqlODBC.osx || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -78,15 +75,10 @@ _build_psqlODBC_osx() {
     echo "Installing psqlODBC into the sources"
     make install || _die "Couldn't install psqlODBC"
 
-    mkdir $PG_STAGING/docs || _die "Failed to create the docs directory"
-    mkdir $PG_STAGING/templates || _die "Failed to create the template directory"
-
-    cp -R docs/* $PG_STAGING/docs  || _die "Failed to copy the docs directory to staging directory"
-    cp -R templates/* $PG_STAGING/templates  || _die "Failed to copy the templates directory to staging directory"
-
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     cp -R $PG_PGHOME_OSX/lib/libpq.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library"
     _rewrite_so_refs $WD/psqlODBC/staging/osx lib @loader_path/..
+    install_name_tool -change "libpq.5.dylib" "@loader_path/libpq.5.dylib" "$PG_STAGING/lib/psqlodbcw.so"
 
 }
 

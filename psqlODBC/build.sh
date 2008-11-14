@@ -52,21 +52,6 @@ _prep_psqlODBC() {
     echo "Unpacking psqlODBC source..."
     extract_file  ../../tarballs/psqlODBC-$PG_VERSION_PSQLODBC || exit 1 
     
-    # psqlODBC Docs
-    if [ -e docs ];
-    then
-      echo "Removing existing docs source directory"
-      rm -rf docs  || _die "Couldn't remove the existing docs source directory (source/docs)"
-    fi
-   
-    if [ -e templates ];
-    then
-      echo "Removing existing templates source directory"
-      rm -rf templates  || _die "Couldn't remove the existing templates source directory (source/templates)"
-    fi
-    echo "Unpacking psqlODBC-docs source..."
-    extract_file  ../../tarballs/psqlODBC-docs-$PG_VERSION_PSQLODBC || exit 1
-
     # Per-platform prep
     cd $WD
     

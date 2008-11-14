@@ -514,23 +514,11 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- MAC | Configuring the psqlODBC -->
-        <runProgram>
-            <program>${installdir}/installer/psqlODBC/configurepsqlODBC.sh</program>
-            <programArguments>"${installdir}"</programArguments>
-            <abortOnError>0</abortOnError>
-            <showMessageOnError>0</showMessageOnError>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </runProgram>
     </postInstallationActionList>
+
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
+
     <!-- LIN & MAC: Unsetting the values in INI File-->
         <actionGroup>
             <actionList>
@@ -656,12 +644,6 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux/docs</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux/templates</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
                             <origin>staging/linux/lib</origin>
                         </distributionDirectory>
                         <distributionDirectory>
@@ -680,12 +662,6 @@
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/docs</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/templates</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
                             <origin>staging/linux-x64/lib</origin>
                         </distributionDirectory>
                         <distributionDirectory>
@@ -703,12 +679,6 @@
                     <name>programfilesosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/osx/docs</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/osx/templates</origin>
-                        </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/osx/lib</origin>
                         </distributionDirectory>
