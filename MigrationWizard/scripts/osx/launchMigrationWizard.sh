@@ -1,3 +1,3 @@
 #!/bin/bash
-@@JAVA@@ -jar @@INSTALLDIR@@/MigrationWizard.jar 
+@@JAVA@@ -Xdock:name="Migration Wizard" -jar @@INSTALLDIR@@/MigrationWizard.jar 
 exit 0
