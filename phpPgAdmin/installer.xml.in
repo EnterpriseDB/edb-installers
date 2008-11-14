@@ -3,22 +3,27 @@
     <shortName>phppgadmin</shortName>
     <fullName>phpPgAdmin</fullName>
     <version>PG_VERSION_PHPPGADMIN</version>
+
     <!-- These options are used on Windows -->
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
+
     <!-- Product Specific Options -->
     <productDisplayName>${product_fullname} ${product_version} by EnterpriseDB</productDisplayName>
     <productComments>${product_fullname} ${product_version} by EnterpriseDB</productComments>
     <productDisplayIcon>resources/logo.ico</productDisplayIcon>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
+
     <!-- The options are used for RPM registration -->
     <description>phpPgAdmin</description>
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
+
     <!-- Installer Size -->
     <width>550</width>
     <height>400</height>
+
     <!-- Misc package options -->
     <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUM_PHPPGADMIN-${platform_name}.${platform_exec_suffix}</installerFilename>
     <enableRollback>0</enableRollback>
@@ -29,13 +34,13 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <uninstallerDirectory>${apachephpinstalldir}</uninstallerDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+
     <!-- Images -->
-    <leftImage>resources/leftImage.png</leftImage>
-    <logoImage>resources/edblogo.png</logoImage>
-    <splashImage>resources/splash.png</splashImage>
+    <disableSplashScreen>1</disableSplashScreen>
+    <leftImage>../resources/pg-side.png</leftImage>
     <productDisplayIcon>${installdir}/phpPgAdmin/scripts/images/install.ico</productDisplayIcon>
     <windowsExecutableIcon>resources/install.ico</windowsExecutableIcon>
-    <wmImage>resources/logo.png</wmImage>
+
     <!-- i18n files for the UI -->
     <customLanguageFileList>
         <language>

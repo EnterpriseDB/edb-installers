@@ -51,7 +51,7 @@ _prep_MigrationWizard() {
 
     cd $WD/MigrationWizard/source/wizard
     echo "Fetching MigrationWizard sources from the cvs..."
-    cvs update
+    cvs update -dP
     
     # Per-platform prep
     cd $WD

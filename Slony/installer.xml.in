@@ -18,6 +18,7 @@
     <!-- Installer Size -->
     <width>550</width>
     <height>400</height>
+
     <!-- Misc package options -->
     <installerFilename>slony-pgPG_CURRENT_VERSION-${product_version}-PG_BUILDNUM_SLONY-${platform_name}.${platform_exec_suffix}</installerFilename>
     <enableRollback>0</enableRollback>
@@ -29,11 +30,11 @@
     <unattendedModeUI>minimal</unattendedModeUI>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+
     <!-- Images -->
-    <leftImage>resources/leftImage.png</leftImage>
-    <logoImage>resources/edblogo.png</logoImage>
-    <splashImage>resources/splash.png</splashImage>
-    <wmImage>resources/edblogo.png</wmImage>
+    <disableSplashScreen>1</disableSplashScreen>
+    <leftImage>../resources/pg-side.png</leftImage>
+
     <!-- i18n files for the UI -->
     <customLanguageFileList>
         <language>

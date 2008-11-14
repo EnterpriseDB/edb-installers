@@ -4,13 +4,16 @@
     <fullName>ODBC drivers for PostgreSQL</fullName>
     <version>PG_VERSION_PSQLODBC</version>
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
+
     <!-- Product Specific Options -->
     <productComments>ODBC drivers for PostgreSQL</productComments>
     <productDisplayName>ODBC drivers for PostgreSQL</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
+
     <!-- Installer Size -->
     <width>550</width>
     <height>400</height>
+
     <!-- Misc options -->
     <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUM_PSQLODBC-${platform_name}.${platform_exec_suffix}</installerFilename>
     <compressionAlgorithm>lzma</compressionAlgorithm>
@@ -24,11 +27,12 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <uninstallerDirectory>${installdir}</uninstallerDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+
     <!-- Images -->
-    <leftImage>resources/leftImage.png</leftImage>
-    <logoImage>resources/edblogo.png</logoImage>
-    <splashImage>resources/splash.png</splashImage>
+    <disableSplashScreen>1</disableSplashScreen>
+    <leftImage>../resources/pg-side.png</leftImage>
     <wmImage>resources/logo.png</wmImage>
+
     <!-- i18n files for the UI -->
     <customLanguageFileList>
         <language>

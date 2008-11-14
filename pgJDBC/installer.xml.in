@@ -11,9 +11,11 @@
     <description>JDBC Drivers for PostgreSQL </description>
     <summary>JDBC drivers for PostgreSQL distributed by EnterpriseDB</summary>
     <vendor>EnterpriseDB</vendor>
+
     <!-- Installer Size -->
     <width>550</width>
     <height>400</height>
+
     <!-- Misc options -->
     <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUM_PGJDBC-${platform_name}.${platform_exec_suffix}</installerFilename>
     <wrapLicenseFileText>0</wrapLicenseFileText>
@@ -24,11 +26,11 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+
     <!-- Images -->
-    <leftImage>resources/leftImage.png</leftImage>
-    <logoImage>resources/edblogo.png</logoImage>
-    <splashImage>resources/splash.png</splashImage>
-    <wmImage>resources/logo.png</wmImage>
+    <disableSplashScreen>1</disableSplashScreen>
+    <leftImage>../resources/pg-side.png</leftImage>
+
     <!-- i18n files for the UI -->
     <customLanguageFileList>
         <language>

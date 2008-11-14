@@ -11,6 +11,10 @@
     <productUrlInfoAbout>http://www.postgresql.org/</productUrlInfoAbout>
     <startMenuGroupName>PostgreSQL ${product_version}</startMenuGroupName>
     <vendor>PostgreSQL Global Development Group</vendor>
+
+    <!-- Installer Size -->
+    <width>550</width>
+    <height>400</height>
     
     <!-- Misc paackage options -->
     <enableRollback>0</enableRollback>

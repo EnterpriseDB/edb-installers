@@ -3,21 +3,26 @@
     <shortName>phpwiki</shortName>
     <fullName>phpWiki</fullName>
     <version>PG_VERSION_PHPWIKI</version>
+
     <!-- Windows Specific Options -->
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
+
     <!-- product Specific Options -->
     <productComments>${product_fullname} ${product_version} by EnterpriseDB</productComments>
     <productDisplayName>phpWiki ${product_version} by EnterpriseDB</productDisplayName>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
+
     <!-- The options are used for RPM registration -->
     <description>${product_shortname} ${product_version} by EnterpriseDB</description>
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
+
     <!-- Installer Size -->
     <width>550</width>
     <height>400</height>
+
     <!-- Misc options -->
     <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUM_PHPWIKI-${platform_name}.${platform_exec_suffix}</installerFilename>
     <compressionAlgorithm>lzma</compressionAlgorithm>
@@ -29,13 +34,13 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <uninstallerDirectory>${apachephpinstalldir}</uninstallerDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+
     <!-- Images -->
-    <leftImage>resources/leftImage.png</leftImage>
-    <logoImage>resources/edblogo.png</logoImage>
-    <splashImage>resources/splash.png</splashImage>
+    <disableSplashScreen>1</disableSplashScreen>
+    <leftImage>../resources/pg-side.png</leftImage>
     <productDisplayIcon>${installdir}/phpwiki/scripts/images/logo.ico</productDisplayIcon>
     <windowsExecutableIcon>resources/logo.ico</windowsExecutableIcon>
-    <wmImage>resources/logo.png</wmImage>
+
     <!-- i18n files for the UI -->
     <customLanguageFileList>
         <language>

@@ -15,9 +15,11 @@
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
+
     <!-- Installer Size -->
     <width>550</width>
     <height>400</height>
+
     <!-- Misc package options -->
     <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUM_MEDIAWIKI-${platform_name}.${platform_exec_suffix}</installerFilename>
     <enableRollback>0</enableRollback>
@@ -29,13 +31,13 @@
     <unattendedModeUI>minimal</unattendedModeUI>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+
     <!-- Images -->
-    <leftImage>resources/leftImage.png</leftImage>
-    <logoImage>resources/edblogo.png</logoImage>
-    <splashImage>resources/splash.png</splashImage>
+    <disableSplashScreen>1</disableSplashScreen>
+    <leftImage>../resources/pg-side.png</leftImage>
     <productDisplayIcon>${installdir}/mediaWiki/scripts/images/logo.ico</productDisplayIcon>
     <windowsExecutableIcon>resources/logo.ico</windowsExecutableIcon>
-    <wmImage>resources/logo.png</wmImage>
+
     <!-- i18n files for the UI -->
     <customLanguageFileList>
         <language>
