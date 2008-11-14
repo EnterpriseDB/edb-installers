@@ -15,6 +15,7 @@ PG_ARCH_WINDOWS=0
 #           so you must ensure that all the required dependencies are enabled.
 
 PG_PACKAGE_SERVER=1
+PG_PACKAGE_DEVSERVER=0
 PG_PACKAGE_APACHEPHP=1
 PG_PACKAGE_MEDIAWIKI=1
 PG_PACKAGE_PHPWIKI=1

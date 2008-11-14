@@ -105,6 +105,20 @@ then
     _postprocess_server || exit 1
 fi
 
+# Package: DevServer
+if [ $PG_PACKAGE_DEVSERVER == 1 ];
+then
+    source ./DevServer/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_devserver || exit 1
+        _build_devserver || exit 1
+    fi
+
+    _postprocess_devserver || exit 1
+fi
+
 # Package: ApachePhp
 if [ $PG_PACKAGE_APACHEPHP == 1 ];
 then
