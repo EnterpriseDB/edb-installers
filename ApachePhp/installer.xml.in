@@ -1006,7 +1006,7 @@ PhpIniDir "${installdir}\php"
                      <compareValues>
                          <value1>${port}</value1>
                          <logic>less</logic>
-                         <value2>1</value2>
+                         <value2>1024</value2>
                      </compareValues>
                      <compareValues>
                          <value1>${port}</value1>
