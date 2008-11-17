@@ -48,7 +48,7 @@ _prep_Drupal() {
       rm -rf drupal-$PG_VERSION_DRUPAL  || _die "Couldn't remove the existing drupal-$PG_VERSION_DRUPAL source directory (source/drupal-$PG_VERSION_DRUPAL)"
     fi
 
-    echo "Unpacking MediaWiki source..."
+    echo "Unpacking Drupal source..."
     extract_file  ../../tarballs/drupal-$PG_VERSION_DRUPAL || exit 1
 
     # Per-platform prep
