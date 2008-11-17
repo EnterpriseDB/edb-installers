@@ -6,7 +6,7 @@
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
 
     <!-- Product Specific Options -->
-    <productComments>ODBC drivers for PostgreSQL</productComments>
+    <productComments>ODBC drivers for PostgreSQL, packaged by EnterpriseDB</productComments>
     <productDisplayName>ODBC drivers for PostgreSQL</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
 
@@ -18,10 +18,10 @@
     <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUM_PSQLODBC-${platform_name}.${platform_exec_suffix}</installerFilename>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <unattendedModeUI>minimal</unattendedModeUI>
-    <description>ODBC Drivers for PostgreSQL </description>
+    <description>ODBC Drivers for PostgreSQL, packaged by EnterpriseDB </description>
     <enableRollback>0</enableRollback>
     <saveRelativePaths>1</saveRelativePaths>
-    <summary>ODBC drivers for PostgreSQL distributed by EnterpriseDB</summary>
+    <summary>ODBC drivers for PostgreSQL</summary>
     <vendor>EnterpriseDB</vendor>
     <outputDirectory>../output</outputDirectory>
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>

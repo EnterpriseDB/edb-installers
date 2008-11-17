@@ -4,7 +4,7 @@
     <fullName>JDBC drivers for PostgreSQL</fullName>
     <version>PG_VERSION_PGJDBC</version>
     <!-- Product Specific Options -->
-    <productComments>JDBC drivers for PostgreSQL</productComments>
+    <productComments>JDBC drivers for PostgreSQL, packaged by EnterpriseDB</productComments>
     <productDisplayName>JDBC drivers for PostgreSQL</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <!-- The options are used for RPM registration -->

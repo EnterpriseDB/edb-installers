@@ -4,8 +4,8 @@
     <fullName>phpBB</fullName>
     <version>PG_VERSION_PHPBB</version>
     <!-- Product Specific Options -->
-    <productDisplayName>${product_fullname} ${product_version} by EnterpriseDB</productDisplayName>
-    <productComments>${product_fullname} ${product_version} by EnterpriseDB</productComments>
+    <productDisplayName>${product_fullname} ${product_version}</productDisplayName>
+    <productComments>${product_fullname} ${product_version}, packaged by EnterpriseDB</productComments>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
 

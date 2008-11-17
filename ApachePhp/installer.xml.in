@@ -5,8 +5,8 @@
   <version>PG_VERSION_APACHEPHP</version>
   <startMenuGroupName>PostgreSQL</startMenuGroupName>
   <!-- Product Specific Options -->
-  <productComments>EnterpriseDB ${product_fullname}</productComments>
-  <productDisplayName>EnterpriseDB ${product_fullname}</productDisplayName>
+  <productComments>${product_fullname} ${product_version}, packaged by EnterpriseDB</productComments>
+  <productDisplayName>${product_fullname} ${product_version}</productDisplayName>
   <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
   <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
   <!-- The options are used for RPM registration -->
