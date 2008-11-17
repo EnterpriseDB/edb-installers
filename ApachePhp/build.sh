@@ -23,8 +23,7 @@ fi
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
-    #source $WD/ApachePhp/build-windows.sh
-    echo "Not yet implemented"
+    source $WD/ApachePhp/build-windows.sh
 fi
     
 ################################################################################
@@ -51,18 +50,17 @@ _prep_ApachePhp() {
       rm -rf httpd-$PG_VERSION_APACHE  || _die "Couldn't remove the existing httpd-$PG_VERSION_APACHE source directory (source/httpd-$PG_VERSION_APACHE)"
     fi
 
+    echo "Unpacking apache source..."
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #if [ -e httpd.windows ]; then
-        #    rm -rf apache.windows || _die "Couldn't remove the existing httpd.windows source directory (source/httpd.windows)"
-        #fi
-        #extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-win32-src || exit 1
-        #extract_file ../../tarballs/zlib-$PG_TARBALL_ZLIB ||exit 1
-        #extract_file ../../tarballs/openssl-$PG_TARBALL_OPENSSL !! exit 1
-        #mv httpd-$PG_VERSION_APACHE apache.windows || _die "Couldn't move httpd-$PG_VERSION_APACHE as httpd.windows"
-        echo "Not yet implemented"
+        if [ -e apache.windows ]; then
+            rm -rf apache.windows || _die "Couldn't remove the existing apache.windows source directory (source/apache.windows)"
+        fi
+        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-win32-src || exit 1
+        extract_file ../../tarballs/zlib-$PG_TARBALL_ZLIB ||exit 1
+        extract_file ../../tarballs/openssl-$PG_TARBALL_OPENSSL !! exit 1
+        mv httpd-$PG_VERSION_APACHE apache.windows || _die "Couldn't move httpd-$PG_VERSION_APACHE as apache.windows"
     fi
-    echo "Unpacking apache source..."
     if [[ $PG_ARCH_LINUX = 1 || $PG_ARCH_LINUX_X64 = 1 || $PG_ARCH_OSX = 1 ]];
     then
         extract_file ../../tarballs/httpd-$PG_VERSION_APACHE || exit 1
@@ -102,8 +100,7 @@ _prep_ApachePhp() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_prep_ApachePhp_windows || exit 1
-        echo "Not yet implemented"
+        _prep_ApachePhp_windows || exit 1
     fi
     
 }
@@ -135,8 +132,7 @@ _build_ApachePhp() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_build_ApachePhp_windows || exit 1
-        echo "Not yet implemented"
+        _build_ApachePhp_windows || exit 1
     fi
 }
 
@@ -158,8 +154,12 @@ _postprocess_ApachePhp() {
     fi
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (ApachePhp/installer.xml.in)"
 
+    PHP_MAJOR_VERSION=`echo $PG_VERSION_PHP | cut -f1 -d "." ` 
+
     _replace PG_VERSION_APACHEPHP $PG_VERSION_APACHE-$PG_VERSION_PHP installer.xml || _die "Failed to set the major version in the installer project file (ApachePhp/installer.xml)"
     _replace PG_BUILDNUM_APACHEPHP $PG_BUILDNUM_APACHEPHP installer.xml || _die "Failed to set the major version in the installer project file (ApachePhp/installer.xml)"
+    _replace PHP_MAJOR_VERSION $PHP_MAJOR_VERSION installer.xml || _die "Failed to set the major version in the installer project file (ApachePhp/installer.xml)"
+    
  
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
@@ -182,7 +182,6 @@ _postprocess_ApachePhp() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_postprocess_ApachePhp_windows || exit 1
-        echo "Not yet implemented"
+        _postprocess_ApachePhp_windows || exit 1
     fi
 }

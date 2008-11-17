@@ -83,6 +83,7 @@
     <actionGroup>
       <actionList>
         <setInstallerVariable name="apacheport" value=""/>
+        <setInstallerVariable name="apache_home" value=""/>
         <iniFileGet>
           <file>/etc/postgres-reg.ini</file>
           <section>ApachePhp</section>
@@ -157,6 +158,7 @@
     <actionGroup>
       <actionList>
         <setInstallerVariable name="apacheport" value=""/>
+        <setInstallerVariable name="apache_home" value=""/>
         <registryGet>
           <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
           <name>APACHE_PORT</name>
@@ -165,7 +167,12 @@
         <registryGet>
           <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
           <name>APACHE_HOME</name>
-          <variable>apachehome</variable>
+          <variable>apache_home</variable>
+        </registryGet>
+        <registryGet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+          <name>Location</name>
+          <variable>installdir</variable>
         </registryGet>
       </actionList>
       <ruleList>
@@ -174,6 +181,35 @@
           <text>${platform_name}</text>
           <value>windows</value>
         </compareText>
+      </ruleList>
+    </actionGroup>
+    <actionGroup>
+      <actionList> 
+         <!-- Unpacking the Script file to temporary directory -->
+         <unpackFile>
+           <component>ApachePhp</component>
+           <destination>${system_temp_directory}/vcredist_x86.exe</destination>
+           <folder>programfileswindows</folder>
+           <origin>php/vcredist_x86.exe</origin>
+         </unpackFile>
+         <!-- Running VC Dist file | WIN  -->
+         <runProgram>
+            <program>${system_temp_directory}/vcredist_x86.exe</program>
+            <programArguments>"/Q"</programArguments>
+            <workingDirectory>${system_temp_directory}</workingDirectory>
+         </runProgram>
+      </actionList>
+      <ruleList>
+         <compareText>
+            <logic>equals</logic>
+            <text>${platform_name}</text>
+            <value>windows</value>
+         </compareText>
+         <compareText>
+            <logic>equals</logic>
+            <text>${apache_home}</text>
+            <value/>
+         </compareText>
       </ruleList>
     </actionGroup>
     <!-- Setting the installation type as upgrade if previous installation found -->
@@ -189,24 +225,26 @@
         </compareText>
       </ruleList>
     </actionGroup>
-    <!-- WIN : Set the Apache Installation Directory from registry. ApachePhp Installation would have set these values -->
-    <actionGroup>
-      <actionList>
-        <setInstallerVariable name="installdir" value="" persist="1"/>
-        <registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
-          <name>Location</name>
-          <variable>installdir</variable>
-        </registryGet>
-      </actionList>
+    <!-- Stopping apache if already started - Windows  -->
+    <runProgram>
+      <program>wscript</program>
+      <programArguments>//NOLOGO "${installdir}/installer/ApachePhp/stopApache.vbs" "${installdir}"</programArguments>
+      <workingDirectory>${installdir}/installer/ApachePhp</workingDirectory>
+      <abortOnError>0</abortOnError>
+      <showMessageOnError>0</showMessageOnError>
       <ruleList>
         <compareText>
-          <logic>contains</logic>
+          <logic>equals</logic>
           <text>${platform_name}</text>
           <value>windows</value>
         </compareText>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${apache_home}</text>
+          <value/>
+        </compareText>
       </ruleList>
-    </actionGroup>
+    </runProgram>
     <!-- Get a default port number - ideally 8080 -->
     <getFreePort>
         <variable>defaultport</variable>
@@ -291,51 +329,75 @@
   </preInstallationActionList>
   <!-- Postinstallation actions -->
   <postInstallationActionList>
+    <!-- WIN| Substituting Apache-Home in the install/uninstall service script -->
+    <substitute>
+      <files>${installdir}/installer/ApachePhp/install-apache.bat</files>
+         <substitutionList>
+            <substitution>
+               <pattern>@@APACHE_HOME@@</pattern>
+               <value>${installdir}\apache</value>
+            </substitution>
+         </substitutionList>
+         <ruleList>
+            <compareText>
+               <logic>equals</logic>
+               <text>${platform_name}</text>
+               <value>windows</value>
+            </compareText>
+         </ruleList>
+    </substitute>
+    <substitute>
+      <files>${installdir}/installer/ApachePhp/uninstall-apache.bat</files>
+         <substitutionList>
+            <substitution>
+               <pattern>@@APACHE_HOME@@</pattern>
+               <value>${installdir}\apache</value>
+            </substitution>
+         </substitutionList>
+         <ruleList>
+            <compareText>
+               <logic>equals</logic>
+               <text>${platform_name}</text>
+               <value>windows</value>
+            </compareText>
+         </ruleList>
+    </substitute>
+    <substitute>
+      <files>${installdir}/installer/ApachePhp/start-apache.bat</files>
+         <substitutionList>
+            <substitution>
+               <pattern>@@APACHE_HOME@@</pattern>
+               <value>${installdir}\apache</value>
+            </substitution>
+         </substitutionList>
+         <ruleList>
+            <compareText>
+               <logic>equals</logic>
+               <text>${platform_name}</text>
+               <value>windows</value>
+            </compareText>
+         </ruleList>
+    </substitute>
     <!-- Setting the PORT, SERVER-ROOT in httpd.conf file -->
-    <actionGroup>
-      <actionList>
-        <substitute>
-          <files>${installdir}/apache/conf/httpd.conf</files>
-          <substitutionList>
-            <substitution>
-              <pattern>@@PORT@@</pattern>
-              <value>${port}</value>
-            </substitution>
-            <substitution>
-              <pattern>@@INSTALL_DIR@@</pattern>
-              <value>${installdir}/apache</value>
-            </substitution>
-          </substitutionList>
-        </substitute>
-        <!-- Configuring Scripts to set the installation path in Apache and Php -->
-        <runProgram>
-          <customErrorMessage>${msg(error.configure.apachephp)}</customErrorMessage>
-          <program>${installdir}/installer/ApachePhp/configureApachePhp.sh</program>
-          <programArguments>"${installdir}"</programArguments>
-          <workingDirectory>${installdir}/installer/ApachePhp</workingDirectory>
-        </runProgram>
-        <!-- Adding text for php config in apache -->
-        <addTextToFile>
-          <file>${installdir}/apache/conf/httpd.conf</file>
-          <text>
-AddHandler php5-script php
-DirectoryIndex index.html index.php
-AddType text/html         php
-PhpIniDir "${installdir}/php"
-            </text>
-        </addTextToFile>
-        <!-- setting the PHP session path-->
-        <iniFileSet>
-          <file>${installdir}/php/php.ini</file>
-          <section>Session</section>
-          <key>session.save_path</key>
-          <value>/tmp</value>
-        </iniFileSet>
-        <!-- Deleting the default index.html -->
-        <deleteFile>
-          <path>${installdir}/apache/www/index.html</path>
-        </deleteFile>
-      </actionList>
+    <substitute>
+       <files>${installdir}/apache/conf/httpd.conf</files>
+       <substitutionList>
+         <substitution>
+           <pattern>@@PORT@@</pattern>
+           <value>${port}</value>
+         </substitution>
+         <substitution>
+           <pattern>@@INSTALL_DIR@@</pattern>
+           <value>${installdir}/apache</value>
+         </substitution>
+       </substitutionList>
+    </substitute>
+    <!-- Configuring Scripts to set the installation path in Apache and Php -->
+    <runProgram>
+      <customErrorMessage>${msg(error.configure.apachephp)}</customErrorMessage>
+      <program>${installdir}/installer/ApachePhp/configureApachePhp.sh</program>
+      <programArguments>"${installdir}"</programArguments>
+      <workingDirectory>${installdir}/installer/ApachePhp</workingDirectory>
       <ruleList>
         <compareText>
           <logic>does_not_equal</logic>
@@ -343,7 +405,53 @@ PhpIniDir "${installdir}/php"
           <value>windows</value>
         </compareText>
       </ruleList>
-    </actionGroup>
+    </runProgram>
+    <!-- LIN | MAC: Adding text for php config in apache -->
+    <addTextToFile>
+       <file>${installdir}/apache/conf/httpd.conf</file>
+       <text>
+AddHandler phpPHP_MAJOR_VERSION-script php
+DirectoryIndex index.html index.php
+AddType text/html         php
+PhpIniDir "${installdir}/php"
+       </text>
+       <ruleList>
+          <compareText>
+             <logic>does_not_equal</logic>
+             <text>${platform_name}</text>
+             <value>windows</value>
+          </compareText>
+       </ruleList>
+    </addTextToFile>
+    <!-- WIN: Adding text for php config in apache -->
+    <addTextToFile>
+       <file>${installdir}/apache/conf/httpd.conf</file>
+       <text>
+LoadModule phpPHP_MAJOR_VERSION_module "${installdir}\php\phpPHP_MAJOR_VERSIONapache2_2.dll"
+AddHandler phpPHP_MAJOR_VERSION-script php
+DirectoryIndex index.html index.php
+AddType text/html         php
+PhpIniDir "${installdir}\php"
+       </text>
+       <ruleList>
+          <compareText>
+             <logic>equals</logic>
+             <text>${platform_name}</text>
+             <value>windows</value>
+          </compareText>
+       </ruleList>
+    </addTextToFile>
+    <!-- setting the PHP session path-->
+    <iniFileSet>
+       <file>${installdir}/php/php.ini</file>
+       <section>Session</section>
+       <key>session.save_path</key>
+       <value>${system_temp_directory}</value>
+    </iniFileSet>
+    <!-- Deleting the default index.html -->
+    <deleteFile>
+        <path>${installdir}/apache/www/index.html</path>
+    </deleteFile>
     <!-- Install ApachePhp as a service -->
     <runProgram>
       <customErrorMessage>${msg(error.service.apachephp)}</customErrorMessage>
@@ -442,9 +550,9 @@ PhpIniDir "${installdir}/php"
       <actionList>
         <runProgram>
           <customErrorMessage>${msg(error.install.apache)}</customErrorMessage>
-          <program>${installdir}\apache\install-apache.bat</program>
+          <program>${installdir}\installer\ApachePhp\install-apache.bat</program>
           <programArguments/>
-          <workingDirectory>${installdir}\apache</workingDirectory>
+          <workingDirectory>${installdir}\installer\ApachePhp</workingDirectory>
         </runProgram>
       </actionList>
       <ruleList>
@@ -521,33 +629,9 @@ PhpIniDir "${installdir}/php"
         <runProgram>
           <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
           <program>wscript</program>
-          <programArguments>//NOLOGO "${installdir}\apache\startApache.vbs" "${installdir}"</programArguments>
-          <workingDirectory>${installdir}\apache</workingDirectory>
+          <programArguments>//NOLOGO "${installdir}\installer\ApachePhp\startApache.vbs" "${installdir}"</programArguments>
+          <workingDirectory>${installdir}\installer\ApachePhp</workingDirectory>
         </runProgram>
-      </actionList>
-      <ruleList>
-        <compareText>
-          <logic>contains</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </actionGroup>
-    <!-- WIN! Deleting Installation helper scripts -->
-    <actionGroup>
-      <actionList>
-        <deleteFile>
-          <path>${installdir}\installer</path>
-        </deleteFile>
-        <deleteFile>
-          <path>${installdir}\apache\startApache.vbs</path>
-        </deleteFile>
-        <deleteFile>
-          <path>${installdir}\apache\stopApache.vbs</path>
-        </deleteFile>
-        <deleteFile>
-          <path>${installdir}\apache\stopApacheService.bat</path>
-        </deleteFile>
       </actionList>
       <ruleList>
         <compareText>
@@ -678,19 +762,12 @@ PhpIniDir "${installdir}/php"
     <!-- WIN actionList -->
     <actionGroup>
       <actionList>
-        <!-- Stop Apache -->
-        <runProgram>
-          <customErrorMessage>${msg(error.uninstall.apache)}</customErrorMessage>
-          <program>${installdir}\apache\stop-apache.bat</program>
-          <programArguments/>
-          <workingDirectory>${installdir}\apache</workingDirectory>
-        </runProgram>
         <!-- Uninstall Apache Service -->
         <runProgram>
           <customErrorMessage>${msg(error.uninstall.apache)}</customErrorMessage>
-          <program>${installdir}\apache\uninstall-apache.bat</program>
+          <program>${installdir}\installer\ApachePhp\uninstall-apache.bat</program>
           <programArguments/>
-          <workingDirectory>${installdir}\apache</workingDirectory>
+          <workingDirectory>${installdir}\installer\ApachePhp</workingDirectory>
         </runProgram>
       </actionList>
       <ruleList>
@@ -747,44 +824,21 @@ PhpIniDir "${installdir}/php"
               <origin>staging/windows/installer</origin>
             </distributionDirectory>
             <distributionDirectory>
+              <origin>staging/windows/scripts</origin>
+            </distributionDirectory>
+            <distributionDirectory>
               <origin>resources</origin>
             </distributionDirectory>
           </distributionFileList>
         </folder>
         <folder>
-          <description>Installation Files</description>
-          <destination>${installdir}/apache</destination>
-          <name>installationfileswindows</name>
+          <description>Startup Files</description>
+          <destination>${installdir}/apache/www/images</destination>
+          <name>startupimagefileswindows</name>
           <platforms>windows</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/windows/installer/ApachePhp/install-apache.bat</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/windows/installer/ApachePhp/uninstall-apache.bat</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/windows/installer/ApachePhp/start-apache.bat</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/windows/installer/ApachePhp/stop-apache.bat</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/windows/installer/ApachePhp/restart-apache.bat</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/windows/installer/ApachePhp/startApache.vbs</origin>
-            </distributionFile>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Launch Application Files</description>
-          <destination>${installdir}/apache</destination>
-          <name>launchappfileswindows</name>
-          <platforms>windows</platforms>
-          <distributionFileList>
-            <distributionFile>
-              <origin>staging/windows/scripts/launchApachePhp.vbs</origin>
+              <origin>resources/edblogo.gif</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -902,7 +956,7 @@ PhpIniDir "${installdir}/php"
           <name>EnterpriseDB ApachePHP</name>
           <runInTerminal>0</runInTerminal>
           <windowsExec>wscript</windowsExec>
-          <windowsExecArgs>//NoLogo "${installdir}\apache\launchApachePhp.vbs"</windowsExecArgs>
+          <windowsExecArgs>//NoLogo "${installdir}\scripts\launchApachePhp.vbs"</windowsExecArgs>
           <windowsIcon>${installdir}/resources/run.ico</windowsIcon>
         </startMenuShortcut>
       </startMenuShortcutList>
@@ -1001,8 +1055,8 @@ PhpIniDir "${installdir}/php"
           <value/>
         </compareText>
       </ruleList>
-      <!-- Validating whether installdir contains whitespaces (Linux) -->
       <postShowPageActionList>
+        <!-- Validating whether installdir is valid (Linux | MAC) -->
         <actionGroup>
           <actionList>
             <showWarning>
@@ -1017,8 +1071,29 @@ PhpIniDir "${installdir}/php"
               <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
             </regExMatch>
             <compareText>
-              <logic>does_not_equal</logic>
               <text>${platform_name}</text>
+              <logic>does_not_equal</logic>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </actionGroup>
+        <!-- Validating whether installdir is valid (Windows) -->
+        <actionGroup>
+          <actionList>
+            <showWarning>
+              <text>${msg(apachephp.installdir.error)}</text>
+            </showWarning>
+            <setInstallerVariable name="next_page" value="installdir"/>
+          </actionList>
+          <ruleList>
+            <regExMatch>
+              <text>${installdir}</text>
+              <logic>does_not_match</logic>
+              <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-]*)$</pattern>
+            </regExMatch>
+            <compareText>
+              <text>${platform_name}</text>
+              <logic>equals</logic>
               <value>windows</value>
             </compareText>
           </ruleList>
