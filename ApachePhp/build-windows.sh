@@ -126,7 +126,7 @@ EOT
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; if [ \"x`which awk`\" != \"x\" ]; then cp `which awk` awk.exe; fi"
     
     scp build-apache.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-apache.bat"
+	ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-apache.bat"
 
     #Building php
 
@@ -138,7 +138,7 @@ EOT
 @SET PGBUILD=C:\pgBuild
 @SET PG_HOME_PATH=$PG_PATH_WINDOWS\output
 @CALL "C:\Program Files\Microsoft Visual Studio 8\VC\vcvarsall.bat"
-@CALL "C:\Program Files\Microsoft Platform SDK for Windows XP SP2\SetEnv.Bat"
+@CALL "C:\Program Files\Microsoft Platform SDK\SetEnv.cmd"
 @SET INCLUDE=$PG_PATH_WINDOWS\apache.staging\include;%INCLUDE%
 @SET LIB=%PGBUILD%\libxml2\lib;%PGBUILD%\libxslt\lib;%LIB%
 @SET PATH=%PGBUILD%\bison\bin;%PGBUILD%\flex\bin;%PATH%
@@ -160,7 +160,7 @@ EOT
 @REM Have make to change to compile bcmath properly
 @IF EXIST "ext\bcmath\libbcmath\src\config.h" @copy /Y ext\bcmath\libbcmath\src\config.h ext\bcmath\config.h
 @REM Copy WinResrc.h in current directory as winres.h
-@IF EXIST "C:\Program Files\Microsoft Platform SDK for Windows XP SP2\Include\WinResrc.h" @copy "C:\Program Files\Microsoft Platform SDK for Windows XP SP2\Include\WinResrc.h" winres.h
+@IF EXIST "C:\Program Files\Microsoft Platform SDK\Include\WinResrc.h" @copy "C:\Program Files\Microsoft Platform SDK\Include\WinResrc.h" winres.h
 
 
 @ECHO Generating configuration files
