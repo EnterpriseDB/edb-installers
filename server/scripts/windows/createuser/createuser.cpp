@@ -59,7 +59,7 @@ bool CreateUser(LPTSTR domain, LPTSTR username, LPTSTR password, TCHAR *errbuf, 
 	DWORD dwError = 0;
 	NET_API_STATUS nStatus;
 	int nLen;
-	char comment[] = "Postgres Plus service account";
+	char comment[] = "PostgreSQL service account";
 	WCHAR wUsername[100], wPassword[100], wComment[100];
 	
 	nLen = MultiByteToWideChar(CP_ACP, 0, username, -1, NULL, (int)NULL);
@@ -323,6 +323,7 @@ bool CheckUserPrivileges(LPTSTR domain, LPTSTR username, TCHAR *errbuf, DWORD er
 int main(int argc, TCHAR * argv[])
 {
 	TCHAR domain[256], username[256], password[256], errmsg[1024];
+    OSVERSIONINFOEX verinfo;
 
 	// Check the command line
 	if (argc != 4)
@@ -334,11 +335,46 @@ int main(int argc, TCHAR * argv[])
 	// Cleanup the command line arguments
 	if (strcmp(argv[1], ".") == 0)
 	{
-		DWORD size=sizeof(domain);
-		GetComputerName(domain, &size);
+		// If this is a domain controller, we need to use the domain
+		// name, otherwise, we use the computer name.
+        ZeroMemory(&verinfo,sizeof(verinfo));
+        verinfo.dwOSVersionInfoSize = sizeof(verinfo);
+
+	    if (!GetVersionEx((OSVERSIONINFO*)&verinfo))
+		{
+			fprintf(stderr, "Failed to retrieve the operating system version information.\n");
+			return 1;	
+		}
+
+		if (verinfo.wProductType == VER_NT_DOMAIN_CONTROLLER)
+		{
+			// It's a DC
+			WKSTA_INFO_100 *wkinfo = NULL;
+			NET_API_STATUS status;
+
+			status = NetWkstaGetInfo(NULL, 100, (LPBYTE*)&wkinfo);
+			if (status != NERR_Success)
+			{
+			    fprintf(stderr, "Failed to retrieve workstation information.\n");
+			    return 1;	
+			}
+
+			sprintf_s(domain, sizeof(domain), "%S", wkinfo->wki100_langroup);
+
+			if (wkinfo != NULL)
+				NetApiBufferFree(wkinfo);
+		}
+		else
+		{
+			// It's a workstation or server
+		    DWORD size=sizeof(domain);
+		    GetComputerName(domain, &size);
+		}
 	}
 	else
+	{
 		sprintf_s(domain, sizeof(domain), argv[1]);
+	}
 
 	sprintf_s(username, sizeof(username), argv[2]);
 	sprintf_s(password, sizeof(password), argv[3]);
