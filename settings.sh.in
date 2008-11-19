@@ -63,6 +63,7 @@ PG_PGBUILD_WINDOWS="C:\\\\pgBuild"
 PG_WXWIN_WINDOWS="$PG_PGBUILD_WINDOWS\\\\wxWidgets"
 PG_CMAKE_WINDOWS="C:\\\\Program Files\\\\CMake 2.6"
 PG_ANT_WINDOWS="$PG_PGBUILD_WINDOWS\\\\apache-ant-1.7.1"
+PG_PSDK_WINDOWS="C:\\\\Program Files\\\\Microsoft Platform SDK"
 
 PG_PATH_OSX=`pwd`
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging/osx

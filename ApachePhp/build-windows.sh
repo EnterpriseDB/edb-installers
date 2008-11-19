@@ -137,8 +137,9 @@ EOT
 @SET BUILD_DIR=%~dp0
 @SET PGBUILD=C:\pgBuild
 @SET PG_HOME_PATH=$PG_PATH_WINDOWS\output
-@CALL "C:\Program Files\Microsoft Visual Studio 8\VC\vcvarsall.bat"
-@CALL "C:\Program Files\Microsoft Platform SDK\SetEnv.cmd"
+@CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
+IF EXIST "$PG_PSDK_WINDOWS\SetEnv.Bat" @CALL "$PG_PSDK_WINDOWS\SetEnv.Bat"
+IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 @SET INCLUDE=$PG_PATH_WINDOWS\apache.staging\include;%INCLUDE%
 @SET LIB=%PGBUILD%\libxml2\lib;%PGBUILD%\libxslt\lib;%LIB%
 @SET PATH=%PGBUILD%\bison\bin;%PGBUILD%\flex\bin;%PATH%
@@ -160,7 +161,7 @@ EOT
 @REM Have make to change to compile bcmath properly
 @IF EXIST "ext\bcmath\libbcmath\src\config.h" @copy /Y ext\bcmath\libbcmath\src\config.h ext\bcmath\config.h
 @REM Copy WinResrc.h in current directory as winres.h
-@IF EXIST "C:\Program Files\Microsoft Platform SDK\Include\WinResrc.h" @copy "C:\Program Files\Microsoft Platform SDK\Include\WinResrc.h" winres.h
+@IF EXIST "$PG_PSDK_WINDOWS\Include\WinResrc.h" @copy "$PG_PSDK_WINDOWS\Include\WinResrc.h" winres.h
 
 
 @ECHO Generating configuration files
@@ -195,11 +196,11 @@ IF NOT EXIST php.staging/php.exe @GOTO installation-failed
 @COPY "%PGBUILD%\gettext\bin\libintl3.dll" php.staging || echo Failed to copy gettext\bin\libintl3.dll && EXIT -1
 @COPY "%PGBUILD%\gettext\bin\libiconv2.dll" php.staging || echo Failed to copy gettext\bin\libiconv2.dll && EXIT -1
 @COPY "%PGBUILD%\libxml2\bin\libxml2.dll" php.staging || echo Failed to copy libxml2\bin\libxml2.dll && EXIT -1
-@COPY "%PGBUILD%\libxslt\bin\libxslt.dll" php.staging || echo Failed to copy libxslt\bin\libxml2.dll && EXIT -1
+@COPY "%PGBUILD%\libxslt\bin\libxslt.dll" php.staging || echo Failed to copy libxslt\bin\libxslt.dll && EXIT -1
 @COPY "%PGBUILD%\zlib\zlib1.dll" php.staging || echo Failed to copy zlib\zlib1.dll && EXIT -1
-@COPY "%PGBUILD%\krb5\bin\krb5_32.dll" php.staging || echo Failed to copy krb5\bin\krb5_32.dll && EXIT -1
-@COPY "%PGBUILD%\krb5\bin\comerr32.dll" php.staging || echo Failed to copy krb5\bin\comerr32.dll && EXIT -1
-@COPY "%PGBUILD%\krb5\bin\gssapi32.dll" php.staging || echo Failed to copy krb5\bin\gssapi32.dll && EXIT -1
+@COPY "%PGBUILD%\krb5\bin\i386\krb5_32.dll" php.staging || @COPY "%PGBUILD%\krb5\bin\krb5_32.dll" php.staging || echo Failed to copy krb5\bin\krb5_32.dll && EXIT -1
+@COPY "%PGBUILD%\krb5\bin\i386\comerr32.dll" php.staging || @COPY "%PGBUILD%\krb5\bin\comerr32.dll" php.staging || echo Failed to copy krb5\bin\comerr32.dll && EXIT -1
+@COPY "%PGBUILD%\krb5\bin\i386\gssapi32.dll" php.staging || @COPY "%PGBUILD%\krb5\bin\gssapi32.dll" php.staging || echo Failed to copy krb5\bin\gssapi32.dll && EXIT -1
 @COPY "%PG_HOME_PATH%\bin\libpq.dll" php.staging || echo Failed to copy libpq.dll && EXIT -1
 @COPY "%PG_HOME_PATH%\bin\k5sprt32.dll" php.staging || echo Failed to copy k5sprt32.dll && EXIT -1
 
