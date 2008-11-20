@@ -469,7 +469,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>Drupal</section>
                     <key>Version</key>
-                    <value>${product_version}</value>
+                    <value>${product_version}-PG_BUILDNUM_DRUPAL</value>
                 </iniFileSet>
             </actionList>
             <ruleList>
@@ -574,6 +574,27 @@
             </ruleList>
         </actionGroup>
     </postInstallationActionList>
+    <!-- finalPage actions -->
+    <finalPageActionList>
+	<!-- WIN: Write product Version to registry -->
+        <actionGroup>
+	    <show>0</show>
+            <actionList>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Drupal</key>
+                    <name>Version</name>
+                    <value>${product_version}-PG_BUILDNUM_DRUPAL</value>
+                </registrySet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </finalPageActionList>
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
         <!-- LIN & MAC: Unset the Drupal Info from the ini file -->

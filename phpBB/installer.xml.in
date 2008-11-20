@@ -534,7 +534,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>phpBB</section>
                     <key>Version</key>
-                    <value>${product_version}</value>
+                    <value>${product_version}-PG_BUILDNUM_PHPBB</value>
                 </iniFileSet>
             </actionList>
             <ruleList>
@@ -659,6 +659,27 @@
             </ruleList>
         </substitute>
     </postInstallationActionList>
+    <!-- finalPage actions -->
+    <finalPageActionList>
+        <!-- WIN: Write product Version to registry -->
+        <actionGroup>
+            <show>0</show>
+            <actionList>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\phpBB</key>
+                    <name>Version</name>
+                    <value>${product_version}-PG_BUILDNUM_PHPBB</value>
+                </registrySet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </finalPageActionList>
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
         <!-- Unset the phpBB info from ini file -->
