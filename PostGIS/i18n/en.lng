@@ -20,6 +20,8 @@ spatialdb.details.title=PostGIS Database Details
 
 spatialdb.details.explanation=Please enter the name of the PostGIS Database.
 
+postgis.installdir.empty=The installation directory cannot be empty
+
 postgis.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
 postgis.installdir.pgerror=The installation directory path is not a valid PostgreSQL Server installation directory. Please select the correct path, or install the PostgreSQL Server and try again.

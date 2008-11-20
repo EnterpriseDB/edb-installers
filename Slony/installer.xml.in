@@ -132,39 +132,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-    </initializationActionList>
-    <!-- Preinstallation actions -->
-    <preInstallationActionList>
-        <!-- Creates the ini file if not exits -->
-        <touchFile path="/etc/postgres-reg.ini">
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </touchFile>
-        <setInstallerVariable name="defaultpghome" value="${pghome}"/>
-        <!-- WIN: Set the    pghome default value when pghome not set -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="defaultpghome" value="${env(SYSTEMDIR)}\Program Files\PostgreSQL\8.3"/>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${pghome}</text>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- LIN & LIN64: Set the pghome default value when pghome not set -->
+	<!-- LIN & LIN64: Set the pghome default value when pghome not set -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="defaultpghome" value="/opt/PostgreSQL/8.3"/>
@@ -197,6 +165,38 @@
                     <logic>equals</logic>
                     <text>${platform_name}</text>
                     <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </initializationActionList>
+    <!-- Preinstallation actions -->
+    <preInstallationActionList>
+        <!-- Creates the ini file if not exits -->
+        <touchFile path="/etc/postgres-reg.ini">
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </touchFile>
+        <setInstallerVariable name="defaultpghome" value="${pghome}"/>
+        <!-- WIN: Set the    pghome default value when pghome not set -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="defaultpghome" value="${env(SYSTEMDIR)}\Program Files\PostgreSQL\8.3"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${pghome}</text>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
                 </compareText>
             </ruleList>
         </actionGroup>
@@ -338,7 +338,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>Slony_I_PG${PGCurrentVersion}</section>
                     <key>Version</key>
-                    <value>${product_version}</value>
+                    <value>${product_version}-PG_BUILDNUM_SLONY</value>
                 </iniFileSet>
             </actionList>
             <ruleList>
@@ -726,12 +726,12 @@
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
             <explanation>Installer.Parameter.installdir.explanation</explanation>
-            <value/>
-            <default>${defaultpghome}</default>
+            <value>${defaultpghome}</value>
+            <default/>
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>prefix</cliOptionName>
-            <mustBeWritable>yes</mustBeWritable>
+            <!--mustBeWritable>yes</mustBeWritable-->
             <mustExist>0</mustExist>
             <width>40</width>
             <ruleEvaluationLogic>OR</ruleEvaluationLogic>
@@ -747,10 +747,29 @@
                     <value2>${SlonyMajorVersionInstalled}</value2>
                 </compareValues>
             </ruleList>
+	    <!-- Validating whether installdir is empty -->
+	    <validationActionList>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="installdir" value="${defaultpghome}" />
+                        <throwError>
+                            <text>${msg(slony.installdir.empty)}</text>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <text>${installdir}</text>
+                            <logic>equals</logic>
+                            <value />
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+            </validationActionList>
             <!-- Validating whether installdir contains whitespaces (Linux) -->
             <validationActionList>
                 <actionGroup>
                     <actionList>
+                        <setInstallerVariable name="installdir" value="${defaultpghome}" />
                         <throwError>
                             <text>${msg(slony.installdir.error)}</text>
                         </throwError>
@@ -766,12 +785,17 @@
                             <logic>does_not_equal</logic>
                             <value>windows</value>
                         </compareText>
+			<fileTest>
+                            <path>${installdir}</path>
+                            <condition>not_writable</condition>
+                        </fileTest>
                     </ruleList>
                 </actionGroup>
             </validationActionList>
             <validationActionList>
                 <actionGroup>
                     <actionList>
+                        <setInstallerVariable name="installdir" value="${defaultpghome}" />
                         <throwError>
                             <text>${msg(slony.installdir.pgerror)}</text>
                         </throwError>

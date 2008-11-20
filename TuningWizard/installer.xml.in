@@ -68,20 +68,7 @@
         <setInstallerVariable name="TuningWizardVersion" value="">
             <persist>0</persist>
         </setInstallerVariable>
-    </initializationActionList>
-    <!-- Preinstallation actions -->
-    <preInstallationActionList>
-        <!-- Creates the ini file if not exits -->
-        <touchFile path="/etc/postgres-reg.ini">
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </touchFile>
-        <!-- MAC : Set the default installation directory -->
+	<!-- MAC : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
@@ -120,6 +107,19 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
+    </initializationActionList>
+    <!-- Preinstallation actions -->
+    <preInstallationActionList>
+        <!-- Creates the ini file if not exits -->
+        <touchFile path="/etc/postgres-reg.ini">
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </touchFile>
         <!-- LIN & MAC: Check Previous Installation of TuningWizard -->
         <actionGroup>
             <actionList>
@@ -235,7 +235,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>TuningWizard</section>
                     <key>Version</key>
-                    <value>${product_version}</value>
+                    <value>${product_version}-PG_BUILDNUM_TUNINGWIZARD</value>
                 </iniFileSet>
             </actionList>
             <ruleList>
@@ -305,6 +305,27 @@
             </ruleList>
         </actionGroup>
     </postInstallationActionList>
+    <!-- finalPage actions -->
+    <finalPageActionList>
+        <!-- WIN: Write product Version to registry -->
+        <actionGroup>
+            <show>0</show>
+            <actionList>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\TuningWizard</key>
+                    <name>Version</name>
+                    <value>${product_version}-PG_BUILDNUM_TUNINGWIZARD</value>
+                </registrySet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </finalPageActionList>
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
         <!-- Unsetting the TuningWizard values in the ini file -->
@@ -525,12 +546,12 @@
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
             <explanation>Installer.Parameter.installdir.explanation</explanation>
-            <value/>
-            <default>${default_installdir}</default>
+            <value>${default_installdir}</value>
+            <default/>
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>prefix</cliOptionName>
-            <mustBeWritable>yes</mustBeWritable>
+            <!--mustBeWritable>yes</mustBeWritable-->
             <mustExist>0</mustExist>
             <width>40</width>
             <ruleList>
@@ -540,10 +561,29 @@
                     <value/>
                 </compareText>
             </ruleList>
+	    <!-- Validating whether installdir is empty -->
+            <validationActionList>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="installdir" value="${default_installdir}" />
+                        <throwError>
+                            <text>${msg(tuningwizard.installdir.empty)}</text>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <text>${installdir}</text>
+                            <logic>equals</logic>
+                            <value />
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+            </validationActionList>
             <!-- Validating whether installdir contains whitespaces (Linux | Mac) -->
             <validationActionList>
                 <actionGroup>
                     <actionList>
+                        <setInstallerVariable name="installdir" value="${default_installdir}" />
                         <throwError>
                             <text>${msg(tuningwizard.installdir.error)}</text>
                         </throwError>
@@ -559,6 +599,10 @@
                             <logic>does_not_equal</logic>
                             <value>windows</value>
                         </compareText>
+			<fileTest>
+                            <path>${installdir}</path>
+                            <condition>not_writable</condition>
+                        </fileTest>
                     </ruleList>
                 </actionGroup>
             </validationActionList>

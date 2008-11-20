@@ -6,6 +6,8 @@ install.summary=The Tuning Wizard performs basic tuning of your PostgreSQL serve
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 
+tuningwizard.installdir.empty=The installation directory cannot be empty
+
 tuningwizard.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts

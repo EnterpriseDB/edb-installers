@@ -94,6 +94,32 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+	<!-- MAC : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/Library/PostgreSQL/pgJDBC</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- LIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/opt/PostgreSQL/pgJDBC</value>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
     </initializationActionList>
     <preInstallationActionList>
         <!-- Creates the ini file if not exits -->
@@ -142,32 +168,6 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- MAC : Set the default installation directory -->
-        <setInstallerVariable>
-            <name>default_installdir</name>
-            <persist>1</persist>
-            <value>/Library/PostgreSQL/pgJDBC</value>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
-        <!-- LIN : Set the default installation directory -->
-        <setInstallerVariable>
-            <name>default_installdir</name>
-            <persist>1</persist>
-            <value>/opt/PostgreSQL/pgJDBC</value>
-            <ruleList>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
     </preInstallationActionList>
     <postInstallationActionList>
         <actionGroup>
@@ -188,7 +188,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>pgJDBC</section>
                     <key>Version</key>
-                    <value>${product_version}</value>
+                    <value>${product_version}-PG_BUILDNUM_PGJDBC</value>
                 </iniFileSet>
                 <runProgram>
                     <program>${installdir}/installer/pgjdbc/createshortcuts.sh</program>
@@ -422,12 +422,12 @@
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
             <explanation>Installer.Parameter.installdir.explanation</explanation>
-            <value/>
-            <default>${default_installdir}</default>
+            <value>${default_installdir}</value>
+            <default/>
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>prefix</cliOptionName>
-            <mustBeWritable>yes</mustBeWritable>
+            <!--mustBeWritable>yes</mustBeWritable-->
             <mustExist>0</mustExist>
             <width>40</width>
             <ruleList>
@@ -437,6 +437,24 @@
                     <value/>
                 </compareText>
             </ruleList>
+	    <!-- Validating whether installdir is empty -->
+            <validationActionList>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="installdir" value="${default_installdir}" />
+                        <throwError>
+                            <text>${msg(pgjdbc.installdir.empty)}</text>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <text>${installdir}</text>
+                            <logic>equals</logic>
+                            <value />
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+            </validationActionList>
             <!-- Validating whether installdir contains whitespaces (Linux) -->
             <postShowPageActionList>
                 <actionGroup>
