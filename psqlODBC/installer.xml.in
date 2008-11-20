@@ -96,6 +96,32 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+	<!-- MAC : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/Library/PostgreSQL/psqlODBC</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- LIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/opt/PostgreSQL/psqlODBC</value>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="odbcinstpath" value="">
             <persist>1</persist>
         </setInstallerVariable>
@@ -142,7 +168,7 @@
             <ruleList>
                 <compareText>
                     <logic>does_not_equal</logic>
-                    <text>${psqlODBCVerion}</text>
+                    <text>${psqlODBCVersion}</text>
                     <value/>
                 </compareText>
                 <compareText>
@@ -371,32 +397,6 @@
         <setInstallerVariable name="odbcuninstallfile" value="${odbcinstpath}">
             <persist>1</persist>
         </setInstallerVariable>
-        <!-- MAC : Set the default installation directory -->
-        <setInstallerVariable>
-            <name>default_installdir</name>
-            <persist>1</persist>
-            <value>/Library/PostgreSQL/psqlODBC</value>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
-        <!-- LIN : Set the default installation directory -->
-        <setInstallerVariable>
-            <name>default_installdir</name>
-            <persist>1</persist>
-            <value>/opt/PostgreSQL/psqlODBC</value>
-            <ruleList>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
     </preInstallationActionList>
     <postInstallationActionList>
     <!-- Setting the installation directory in the PostgreSQL.ini file -->
@@ -432,7 +432,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>psqlODBC</section>
                     <key>Version</key>
-                    <value>${product_version}</value>
+                    <value>${product_version}-PG_BUILDNUM_PSQLODBC</value>
                 </iniFileSet>
                 <iniFileSet>
                     <file>${odbcinstpath}</file>
@@ -703,12 +703,11 @@
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
             <explanation>Installer.Parameter.installdir.explanation</explanation>
-            <value/>
-            <default>${default_installdir}</default>
+            <value>${default_installdir}</value>
+            <default/>
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>prefix</cliOptionName>
-            <mustBeWritable>yes</mustBeWritable>
             <mustExist>0</mustExist>
             <width>40</width>
             <ruleList>
@@ -718,6 +717,24 @@
                     <value/>
                 </compareText>
             </ruleList>
+	    <!-- Validating whether installdir is empty -->
+            <validationActionList>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="installdir" value="${default_installdir}" />
+                        <throwError>
+                            <text>${msg(psqlodbc.installdir.empty)}</text>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <text>${installdir}</text>
+                            <logic>equals</logic>
+                            <value />
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+            </validationActionList>
             <!-- Validating whether installdir contains whitespaces (Linux) -->
             <postShowPageActionList>
                 <actionGroup>
@@ -738,6 +755,10 @@
                            <text>${platform_name}</text>
                            <value>windows</value>
                        </compareText>
+		       <fileTest>
+                            <path>${installdir}</path>
+                            <condition>not_writable</condition>
+                        </fileTest>
                     </ruleList>
                 </actionGroup>
             </postShowPageActionList>

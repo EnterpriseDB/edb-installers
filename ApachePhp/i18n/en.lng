@@ -26,6 +26,8 @@ config.port.invalid=This port number must be a valid integer between 1024 and 65
 
 config.port.in.use=The specified port number is not available. Please enter a different port.
 
+apachephp.installdir.empty=The installation directory cannot be empty
+
 apachephp.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
