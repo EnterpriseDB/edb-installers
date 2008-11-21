@@ -296,3 +296,17 @@ then
     _postprocess_MigrationWizard || exit 1
 fi
 
+# Package: pgphonehome
+if [ $PG_PACKAGE_PGPHONEHOME == 1 ];
+then
+    cd $WD
+    source ./pgphonehome/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_pgphonehome || exit 1
+        _build_pgphonehome || exit 1
+    fi
+    _postprocess_pgphonehome || exit 1
+fi
+

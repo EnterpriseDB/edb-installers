@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=pgphonehome
+Exec="INSTALL_DIR/pgph/scripts/launchpgphonehome.sh" INSTALL_DIR
+Icon=pg-launchpgphonehome.png
+Terminal=false
+Type=Application
+

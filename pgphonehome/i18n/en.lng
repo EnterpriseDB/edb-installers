@@ -1,0 +1,37 @@
+Installer.Welcome.Title=Setup %1$s Setup Wizard
+
+Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
+
+error.apache.notfound=No apache Found. Please run the ApachePhp-1.0.exe for Apache installation.
+
+error.php.notfound=No php Found. Please run the ApachePhp-1.0.exe for php installation.
+
+apache.restart.question=The installer will restart the Apache Server.\n\nDo you wish to continue?
+
+error.stop.apache=Failed to stop apache.
+
+error.start.apache=Failed to start apache.
+
+install.summary=pgphonehome is a remote monitoring interface for your Postgres and Postgres Plus servers.
+
+pgplus.details.title=PostgreSQL User Installation Details 
+
+pgplus.details.explanation=Please verify the PostgreSQL installation details
+
+pgplus.details.error=Connection to the PostgreSQL Server failed. Please re-check the details provided.
+
+post.install.error=Error Configuring pgRemote Application.
+
+pgplus.blank.error=Values must be entered for all fields.
+
+pgphonehome.details.title=pgphonehome User Account 
+
+pgphonehome.details.explanation=Please Enter The pgphonehome User Account Details
+
+progress.text.creating.shortcuts=Creating Menu Shortcuts
+
+Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
+
+Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
+
+
