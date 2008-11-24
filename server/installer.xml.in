@@ -800,7 +800,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>/opt/PostgreSQL/${product_version}</value>
+            <value>${platform_install_prefix}/PostgreSQL/${product_version}</value>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
@@ -813,7 +813,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>C:/Program Files/PostgreSQL/${product_version}</value>
+            <value>${platform_install_prefix}/PostgreSQL/${product_version}</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>

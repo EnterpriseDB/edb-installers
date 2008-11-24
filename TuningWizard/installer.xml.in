@@ -85,7 +85,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>/opt/PostgreSQL/EnterpriseDB-TuningWizard</value>
+            <value>${platform_install_prefix}/PostgreSQL/EnterpriseDB-TuningWizard</value>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
@@ -98,7 +98,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${env(ProgramFiles)}\PostgreSQL\EnterpriseDB-TuningWizard</value>
+            <value>${platform_install_prefix}\PostgreSQL\EnterpriseDB-TuningWizard</value>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>

@@ -81,7 +81,7 @@
         <!-- WIN: Set the    pghome default value for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="defaultpghome" value="${env(SYSTEMDIR)}\Program Files\PostgreSQL\8.3"/>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\8.3"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -99,7 +99,7 @@
         <!-- LIN & LIN64: Set the pghome default value for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="defaultpghome" value="/opt/PostgreSQL/8.3"/>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/8.3"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -135,7 +135,7 @@
 	<!-- LIN & LIN64: Set the pghome default value when pghome not set -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="defaultpghome" value="/opt/PostgreSQL/8.3"/>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/8.3"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -185,7 +185,7 @@
         <!-- WIN: Set the    pghome default value when pghome not set -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="defaultpghome" value="${env(SYSTEMDIR)}\Program Files\PostgreSQL\8.3"/>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\8.3"/>
             </actionList>
             <ruleList>
                 <compareText>
