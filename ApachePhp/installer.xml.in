@@ -546,11 +546,6 @@ PhpIniDir "${installdir}\php"
           <text>${platform_name}</text>
           <value>windows</value>
         </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${apacheport}</text>
-          <value/>
-        </compareText>
       </ruleList>
     </actionGroup>
     <actionGroup>
@@ -649,11 +644,6 @@ PhpIniDir "${installdir}\php"
           <logic>equals</logic>
           <text>${platform_name}</text>
           <value>windows</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${apacheport}</text>
-          <value/>
         </compareText>
       </ruleList>
     </actionGroup>
