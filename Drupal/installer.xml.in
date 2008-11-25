@@ -214,7 +214,7 @@
                     <value/>
                 </compareText>
             </ruleList>
-        </actionGroup>
+        </actionGroup> 
         <!-- WIN: Set the Apache Home , Php Home and Apache Port(default 8080), ApachePhp Installation Directory from registry.-->
         <!--    ApachePhp Installation would have set these values -->
         <actionGroup>
@@ -347,12 +347,113 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <!-- Win: deleting installation helper files (Clean-up for upgrade) -->
+        <deleteFile>
+            <path>${installdir}\drupal\install.bat</path>
+            <ruleList>
+                <compareText>
+                    <text>${drupalVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
+                </compareText>
+                <fileExists>
+                    <path>${installdir}\drupal\install.bat</path>
+                </fileExists>
+            </ruleList>
+        </deleteFile>
+
+        <deleteFile>
+            <path>${installdir}\drupal\launchDrupal.vbs</path>
+            <ruleList>
+                <compareText>
+                    <text>${drupalVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
+                </compareText>
+                <fileExists>
+                    <path>${installdir}\drupal\launchDrupal.vbs</path>
+                </fileExists>
+            </ruleList>
+        </deleteFile>
+
+        
+        <!-- LIN & MAC: Moving the uninstaller from www context -->
+        <actionGroup>
+            <actionList>
+                <copyFile>
+                    <origin>${installdir}/drupal/uninstall-Drupal</origin>
+                    <destination>${apachephpinstalldir}/uninstall-${product_shortname}</destination>
+                </copyFile>
+                <deleteFile>
+                    <path>${installdir}/drupal/uninstall-Drupal</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${drupalVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
+                </compareText>
+                <fileExists>
+                    <path>${installdir}/drupal/uninstall-Drupal</path>
+                </fileExists> 
+            </ruleList>
+        </actionGroup>
+
+        <!-- WIN: Moving the uninstaller from www context -->
+        <actionGroup>
+            <actionList>
+                <copyFile>
+                    <origin>${installdir}\drupal\uninstall-Drupal.exe</origin>
+                    <destination>${apachephpinstalldir}\uninstall-${product_shortname}.exe</destination>
+                </copyFile>
+                <deleteFile>
+                    <path>${installdir}\drupal\uninstall-Drupal.exe</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${drupalVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
+                </compareText>
+                <fileExists>
+                    <path>${installdir}\drupal\uninstall-Drupal.exe</path>
+                </fileExists> 
+            </ruleList>
+        </actionGroup> 
+
+
         <!-- LIN & MAC: Creating back up of config file -->
         <actionGroup>
             <actionList>
                 <createBackupFile>
                     <path>${installdir}/Drupal/sites/default/settings.php</path>
                 </createBackupFile>
+                <deleteFile>
+                    <path>${installdir}/Drupal/sites/default/settings.php</path>
+                </deleteFile> 
             </actionList>
             <ruleList>
                 <compareText>
@@ -373,6 +474,9 @@
                 <createBackupFile>
                     <path>${installdir}\Drupal\sites\default\settings.php</path>
                 </createBackupFile>
+                <deleteFile>
+                    <path>${installdir}\Drupal\sites\default\settings.php</path>
+                </deleteFile>
             </actionList>
             <ruleList>
                 <compareText>
@@ -484,7 +588,7 @@
         <actionGroup>
             <actionList>
                 <runProgram>
-                    <customErrorMessage>${msg(post.install.error)    }</customErrorMessage>
+                    <customErrorMessage>${msg(post.install.error)}</customErrorMessage>
                     <program>${installdir}\Drupal\installer\Drupal\install.bat</program>
                     <programArguments>"${pghost}" "${pgport}" "${pguser}" "${pgpassword}" "${pghome}" "${installdir}"</programArguments>
                     <workingDirectory>${installdir}\Drupal</workingDirectory>
@@ -573,6 +677,53 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <!-- Upgrade From Old Windows Installation -->
+        <actionGroup>
+            <actionList>
+                <registrySet> 
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Drupal 6.4</key>
+                    <name>UninstallString</name>
+                    <value>${apachephpinstalldir}\uninstall-drupal.exe</value>
+                </registrySet>
+                <addFilesToUninstaller>
+                    <files>${apachephpinstalldir}\uninstall-drupal.exe</files>
+                </addFilesToUninstaller>   
+                <substitute>
+                    <files>${installdir}/Drupal/installer/Drupal/modifyShortCut.vbs</files>
+                    <substitutionList>
+                        <substitution>
+                           <pattern>@@APACHE_HOME@@</pattern>
+                           <value>${apachehome}</value>
+                        </substitution>
+                        <substitution>
+                           <pattern>@@ALL_USERS_PROFILE@@</pattern>
+                           <value>${env(ALLUSERSPROFILE)}</value>
+                        </substitution>
+                   </substitutionList>
+                </substitute>
+                <runProgram>
+                    <program>wscript</program>
+                    <programArguments>"${installdir}\Drupal\installer\Drupal\modifyShortCut.vbs"</programArguments>
+                    <workingDirectory>${installdir}\Drupal\installer\Drupal</workingDirectory>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${drupalVersion}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+  
     </postInstallationActionList>
     <!-- finalPage actions -->
     <finalPageActionList>
