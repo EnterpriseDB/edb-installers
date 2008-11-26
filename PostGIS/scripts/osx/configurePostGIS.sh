@@ -37,7 +37,12 @@ cd $1/PostGIS
 filelist=`ls lib`
 for file in $filelist
 do 
-     cp lib/$file $1/lib
+     if [ ! -e $1/lib ];
+     then
+            mkdir -p  $1/lib
+            chmod  a+w $1/lib
+     fi
+     cp lib/$file $1/lib/
      echo "rm -f $1/lib/$file" >> $1/PostGIS/installer/PostGIS/removeFiles.sh    
 done 
 rm -rf lib
