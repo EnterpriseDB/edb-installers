@@ -7,5 +7,5 @@ echo       then it will not run successfully.
 rem Go to the directory from where it has been called
 
 rem Install the server
-"@@APACHE_HOME@@\bin\httpd.exe" -k install -n "EnterpriseDB-ApachePhp"
+"@@APACHE_HOME@@\bin\httpd.exe" -k install -n "EnterpriseDB ApachePHP"
 

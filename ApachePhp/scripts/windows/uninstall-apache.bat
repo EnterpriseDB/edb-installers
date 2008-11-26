@@ -5,6 +5,6 @@ echo       If you have not started this as a administrator,
 echo       then it will not run successfully.
 
 
-"@@APACHE_HOME@@\bin\httpd.exe" -k stop -n "EnterpriseDB-ApachePhp"
-"@@APACHE_HOME@@\bin\httpd.exe" -k uninstall -n "EnterpriseDB-ApachePhp"
+"@@APACHE_HOME@@\bin\httpd.exe" -k stop -n "EnterpriseDB ApachePHP"
+"@@APACHE_HOME@@\bin\httpd.exe" -k uninstall -n "EnterpriseDB ApachePHP"
 

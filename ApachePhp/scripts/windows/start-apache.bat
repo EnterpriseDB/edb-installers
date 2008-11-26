@@ -4,5 +4,5 @@ echo       or from the Administrator console.
 echo       If you have not started this as a administrator,
 echo       then it will not run successfully.
 
-"@@APACHE_HOME@@\bin\httpd.exe" -k start -n "EnterpriseDB-ApachePhp"
+"@@APACHE_HOME@@\bin\httpd.exe" -k start -n "EnterpriseDB ApachePHP"
 

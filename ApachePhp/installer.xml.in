@@ -35,9 +35,6 @@
   <disableSplashScreen>1</disableSplashScreen>
   <leftImage>../resources/pg-side.png</leftImage>
 
-  <!-- productDisplayIcon>${installdir}/resources/logo.ico</productDisplayIcon>
-    <windowsExecutableIcon>resources/logo.ico</windowsExecutableIcon -->
-
   <!-- i18n files for the UI -->
   <customLanguageFileList>
     <language>
@@ -162,6 +159,14 @@
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
         </iniFileGet>
+        <iniFileGet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApachePhp</section>
+          <key>Version</key>
+          <variable>apachephpVersion</variable>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </iniFileGet>
       </actionList>
       <ruleList>
         <compareText>
@@ -265,6 +270,11 @@
           <name>Location</name>
           <variable>installdir</variable>
         </registryGet>
+	<registryGet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+          <name>Version</name>
+          <variable>apachephpVersion</variable>
+        </registryGet>
       </actionList>
       <ruleList>
         <compareText>
@@ -279,6 +289,22 @@
         </compareText>
       </ruleList>    
     </actionGroup>
+
+    <!-- Getting the Version Installed minus the buildnum --> 
+    <setInstallerVariableFromRegEx>
+        <name>apachephpVersionInstalled</name>
+        <text>${apachephpVersion}</text>
+        <pattern>([0-9]*)-[0-9]*$</pattern>
+        <substitution>\1</substitution>
+        <ruleList>
+           <compareText>
+               <logic>does_not_equal</logic>
+               <text>${apachephpVersion}</text>
+               <value/>
+           </compareText>
+        </ruleList>
+   </setInstallerVariableFromRegEx>
+
     <actionGroup>
       <actionList> 
          <!-- Unpacking the Script file to temporary directory -->
@@ -308,19 +334,7 @@
          </compareText>
       </ruleList>
     </actionGroup>
-    <!-- Setting the installation type as upgrade if previous installation found -->
-    <actionGroup>
-      <actionList>
-        <setInstallerVariable name="installationType" value="upgrade"/>
-      </actionList>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${apache_home}</text>
-          <value/>
-        </compareText>
-      </ruleList>
-    </actionGroup>
+
     <!-- Stopping apache if already started - Windows  -->
     <runProgram>
       <program>wscript</program>
@@ -339,8 +353,123 @@
           <text>${apache_home}</text>
           <value/>
         </compareText>
+        <fileExists>
+          <path>${installdir}/installer/ApachePhp/stopApache.vbs</path>
+        </fileExists>
       </ruleList>
     </runProgram>
+    <!-- Stopping apache if already started - (Old) Windows  -->
+    <runProgram>
+      <program>wscript</program>
+      <programArguments>//NOLOGO "${installdir}/apache/stopApache.vbs" "${installdir}\apache"</programArguments>
+      <workingDirectory>${installdir}/apache</workingDirectory>
+      <abortOnError>0</abortOnError>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${apache_home}</text>
+          <value/>
+        </compareText>
+        <fileExists>
+          <path>${installdir}/apache/stopApache.vbs</path>
+        </fileExists>
+      </ruleList>
+    </runProgram>
+
+    <!-- WIN: Renaming the uninstaller (Old) Windows upgrade -->
+    <actionGroup>
+        <actionList>
+            <deleteFile>
+                <path>${installdir}\uninstall.exe</path>
+            </deleteFile>
+        </actionList>
+        <ruleList>
+            <compareText>
+                <text>${apache_home}</text>
+                <logic>does_not_equal</logic>
+                <value/>
+            </compareText>
+            <compareText>
+                <text>${platform_name}</text>
+                <logic>equals</logic>
+                <value>windows</value>
+            </compareText>
+            <fileExists>
+                <path>${installdir}\uninstall.exe</path>
+            </fileExists>
+        </ruleList>
+    </actionGroup>
+
+
+    <!-- Deleting file from (Old) Windows installation -->
+    <actionGroup>
+        <actionList>
+            <deleteFile>
+               <path>${installdir}/apache/stopApache.vbs</path>
+               <showMessageOnError>0</showMessageOnError>
+               <abortOnError>0</abortOnError>
+            </deleteFile>
+            <deleteFile>
+               <path>${installdir}/apache/startApache.vbs</path>
+               <showMessageOnError>0</showMessageOnError>
+               <abortOnError>0</abortOnError>
+            </deleteFile>
+            <deleteFile>
+               <path>${installdir}/apache/launchApachePhp.vbs</path>
+               <showMessageOnError>0</showMessageOnError>
+               <abortOnError>0</abortOnError>
+            </deleteFile> 
+            <deleteFile>
+               <path>${installdir}/apache/stop-apache.bat</path>
+               <showMessageOnError>0</showMessageOnError>
+               <abortOnError>0</abortOnError>
+            </deleteFile>
+            <deleteFile>
+               <path>${installdir}/apache/start-apache.bat</path>
+               <showMessageOnError>0</showMessageOnError>
+               <abortOnError>0</abortOnError>
+            </deleteFile>
+             <deleteFile>
+               <path>${installdir}/apache/restart-apache.bat</path>
+               <showMessageOnError>0</showMessageOnError>
+               <abortOnError>0</abortOnError>
+            </deleteFile>
+            <deleteFile>
+               <path>${installdir}/apache/install-apache.bat</path>
+               <showMessageOnError>0</showMessageOnError>
+               <abortOnError>0</abortOnError>
+            </deleteFile>
+            <deleteFile>
+               <path>${installdir}/apache/uninstall-apache.bat</path>
+               <showMessageOnError>0</showMessageOnError>
+               <abortOnError>0</abortOnError>
+            </deleteFile> 
+            <deleteFile>
+               <path>${installdir}/apache/stopApacheService.bat</path>
+               <showMessageOnError>0</showMessageOnError>
+               <abortOnError>0</abortOnError>
+            </deleteFile> 
+        </actionList>
+        <ruleList>
+            <compareText>
+               <logic>equals</logic>
+               <text>${platform_name}</text>
+               <value>windows</value>
+            </compareText>
+            <compareText>
+               <logic>does_not_equal</logic>
+               <text>${apache_home}</text>
+               <value/>
+            </compareText>
+        </ruleList> 
+    </actionGroup>
+
     <!-- Get a default port number - ideally 8080 -->
     <getFreePort>
         <variable>defaultport</variable>
@@ -680,6 +809,91 @@ PhpIniDir "${installdir}\php"
             </fileExists>
          </ruleList>
     </substitute>
+
+    <!-- Delete Add/Remove Programs Entry From Old Windows Installation -->
+    <actionGroup>
+        <actionList>
+            <registryDelete>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
+                <name>Comments</name>
+                <showMessageOnError>0</showMessageOnError>
+                <abortOnError>0</abortOnError>
+            </registryDelete>
+            <registryDelete>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
+                <name>Contact</name>
+                <showMessageOnError>0</showMessageOnError>
+                <abortOnError>0</abortOnError>
+            </registryDelete>
+            <registryDelete>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
+                <name>DisplayName</name>
+                <showMessageOnError>0</showMessageOnError>
+                <abortOnError>0</abortOnError>
+            </registryDelete>
+            <registryDelete>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
+                <name>DisplayVersion</name>
+                <showMessageOnError>0</showMessageOnError>
+                <abortOnError>0</abortOnError>
+            </registryDelete>
+            <registryDelete>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
+                <name>HelpLink</name>
+                <showMessageOnError>0</showMessageOnError>
+                <abortOnError>0</abortOnError>
+            </registryDelete>
+            <registryDelete>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
+                <name>InstallLocation</name>
+                <showMessageOnError>0</showMessageOnError>
+                <abortOnError>0</abortOnError>
+            </registryDelete>
+            <registryDelete>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
+                <name>NoModify</name>
+                <showMessageOnError>0</showMessageOnError>
+                <abortOnError>0</abortOnError>
+            </registryDelete>
+            <registryDelete>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
+                <name>NoRepair</name>
+                <showMessageOnError>0</showMessageOnError>
+                <abortOnError>0</abortOnError>
+            </registryDelete>
+            <registryDelete>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
+                <name>Publisher</name>
+                <showMessageOnError>0</showMessageOnError>
+                <abortOnError>0</abortOnError>
+            </registryDelete>
+            <registryDelete>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
+                <name>UninstallString</name>
+                <showMessageOnError>0</showMessageOnError>
+                <abortOnError>0</abortOnError>
+            </registryDelete>
+            <registryDelete>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
+                <name>UrlInfoAbout</name>
+                <showMessageOnError>0</showMessageOnError>
+                <abortOnError>0</abortOnError>
+            </registryDelete>
+        </actionList>
+        <ruleList>
+            <compareText>
+                <logic>equals</logic>
+                <text>${platform_name}</text>
+                <value>windows</value>
+            </compareText>
+            <compareText>
+                <logic>does_not_equal</logic>
+                <text>${apache_home}</text>
+                <value/>
+            </compareText>
+        </ruleList>
+    </actionGroup> -->
+
   </postInstallationActionList>
   <!-- finalPage actions -->
     <finalPageActionList>
@@ -817,7 +1031,7 @@ PhpIniDir "${installdir}\php"
       </actionList>
       <ruleList>
         <compareText>
-          <logic>contains</logic>
+          <logic>equals</logic>
           <text>${platform_name}</text>
           <value>windows</value>
         </compareText>
@@ -837,6 +1051,26 @@ PhpIniDir "${installdir}\php"
       </ruleList>
     </actionGroup>
   </preUninstallationActionList>
+
+  <postUninstallationActionList>
+    <!-- Deleting the left over files from Old Installation -->
+    <deleteFile>
+       <path>${installdir}</path>
+       <showMessageOnError>0</showMessageOnError>
+       <abortOnError>0</abortOnError>
+       <ruleList>
+           <fileExists>
+               <path>${installdir}</path>
+           </fileExists>
+           <compareText>
+               <text>${platform_name}</text>
+               <logic>equals</logic>
+               <value>windows</value>
+           </compareText>       
+       </ruleList>
+    </deleteFile>
+  </postUninstallationActionList>
+
   <!-- Components -->
   <componentList>
     <component>
