@@ -815,67 +815,6 @@ PhpIniDir "${installdir}\php"
         <actionList>
             <registryDelete>
                 <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
-                <name>Comments</name>
-                <showMessageOnError>0</showMessageOnError>
-                <abortOnError>0</abortOnError>
-            </registryDelete>
-            <registryDelete>
-                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
-                <name>Contact</name>
-                <showMessageOnError>0</showMessageOnError>
-                <abortOnError>0</abortOnError>
-            </registryDelete>
-            <registryDelete>
-                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
-                <name>DisplayName</name>
-                <showMessageOnError>0</showMessageOnError>
-                <abortOnError>0</abortOnError>
-            </registryDelete>
-            <registryDelete>
-                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
-                <name>DisplayVersion</name>
-                <showMessageOnError>0</showMessageOnError>
-                <abortOnError>0</abortOnError>
-            </registryDelete>
-            <registryDelete>
-                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
-                <name>HelpLink</name>
-                <showMessageOnError>0</showMessageOnError>
-                <abortOnError>0</abortOnError>
-            </registryDelete>
-            <registryDelete>
-                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
-                <name>InstallLocation</name>
-                <showMessageOnError>0</showMessageOnError>
-                <abortOnError>0</abortOnError>
-            </registryDelete>
-            <registryDelete>
-                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
-                <name>NoModify</name>
-                <showMessageOnError>0</showMessageOnError>
-                <abortOnError>0</abortOnError>
-            </registryDelete>
-            <registryDelete>
-                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
-                <name>NoRepair</name>
-                <showMessageOnError>0</showMessageOnError>
-                <abortOnError>0</abortOnError>
-            </registryDelete>
-            <registryDelete>
-                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
-                <name>Publisher</name>
-                <showMessageOnError>0</showMessageOnError>
-                <abortOnError>0</abortOnError>
-            </registryDelete>
-            <registryDelete>
-                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
-                <name>UninstallString</name>
-                <showMessageOnError>0</showMessageOnError>
-                <abortOnError>0</abortOnError>
-            </registryDelete>
-            <registryDelete>
-                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
-                <name>UrlInfoAbout</name>
                 <showMessageOnError>0</showMessageOnError>
                 <abortOnError>0</abortOnError>
             </registryDelete>
@@ -892,7 +831,7 @@ PhpIniDir "${installdir}\php"
                 <value/>
             </compareText>
         </ruleList>
-    </actionGroup> -->
+    </actionGroup> 
 
   </postInstallationActionList>
   <!-- finalPage actions -->
@@ -1051,25 +990,6 @@ PhpIniDir "${installdir}\php"
       </ruleList>
     </actionGroup>
   </preUninstallationActionList>
-
-  <postUninstallationActionList>
-    <!-- Deleting the left over files from Old Installation -->
-    <deleteFile>
-       <path>${installdir}</path>
-       <showMessageOnError>0</showMessageOnError>
-       <abortOnError>0</abortOnError>
-       <ruleList>
-           <fileExists>
-               <path>${installdir}</path>
-           </fileExists>
-           <compareText>
-               <text>${platform_name}</text>
-               <logic>equals</logic>
-               <value>windows</value>
-           </compareText>       
-       </ruleList>
-    </deleteFile>
-  </postUninstallationActionList>
 
   <!-- Components -->
   <componentList>
