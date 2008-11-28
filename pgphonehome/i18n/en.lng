@@ -14,7 +14,7 @@ error.stop.apache=Failed to stop apache.
 
 error.start.apache=Failed to start apache.
 
-install.summary=pgphonehome is a remote monitoring interface for your Postgres and Postgres Plus servers.
+install.summary=pgPhoneHome is a remote monitoring interface for your Postgres and Postgres Plus servers.
 
 pgplus.details.title=PostgreSQL Installation Details 
 
@@ -26,11 +26,15 @@ post.install.error=Error Configuring pgphonehome Application.
 
 pgplus.blank.error=Values must be entered for all fields.
 
-pgphonehome.details.title=pgphonehome User Account 
+htpasswd.fail.error=Password creation utility (APACHE_HOME/bin/htpasswd) failed to create the password file.
 
-pgphonehome.details.explanation=Please Enter The pgphonehome User Account Details
+pgphonehome.details.title=pgPhoneHome User Account 
+
+pgphonehome.details.explanation=Please Enter The pgPhoneHome User Account Details.(These credentials are required when you launch the application.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
+
+progress.passwd.file.create=Creating Password File
 
 Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
 

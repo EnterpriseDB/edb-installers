@@ -64,21 +64,9 @@ _postprocess_pgphonehome_osx() {
     cp scripts/osx/check-httpd.sh staging/osx/installer/pgph/check-httpd.sh || _die "Failed to copy the check-httpd script (scripts/osx/check-httpd.sh)"
     chmod ugo+x staging/osx/installer/pgph/check-httpd.sh
 
-    cp scripts/osx/createshortcuts.sh staging/osx/installer/pgph/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/osx/createshortcuts.sh)"
-    chmod ugo+x staging/osx/installer/pgph/createshortcuts.sh
-
-    # Setup the pgphonehome Launch Scripts
-    mkdir -p staging/osx/scripts || _die "Failed to create a directory for the pgphonehome Launch Scripts"
-
-    cp scripts/osx/pg-launchpgphonehome.applescript.in staging/osx/scripts/pg-launchpgphonehome.applescript || _die "Failed to copy the pg-launchpgphonehome.applescript.in  script (scripts/osx/pg-launchpgphonehome.applescript)"
-    chmod ugo+x staging/osx/scripts/pg-launchpgphonehome.applescript
-
-    cp scripts/osx/getapacheport.sh staging/osx/scripts/getapacheport.sh || _die "Failed to copy the getapacheport.sh script (scripts/osx/getapacheport.sh)"
-    chmod ugo+x staging/osx/scripts/getapacheport.sh
-
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/pg-launchpgphonehome.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchpgphonehome.icns)"
+    cp resources/*.ico staging/osx/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"
 
     cp staging/osx/pgph/config.php.in staging/osx/pgph/config.php || _die "Failed to copy the config file"
     rm -f staging/osx/pgph/config.php.in  || _die "Failed to remove the template config file"
@@ -93,8 +81,8 @@ _postprocess_pgphonehome_osx() {
 
     # Zip up the output
     cd $WD/output
-    zip -r pgphonehome-$PG_VERSION_PGPHONEHOME-$PG_BUILDNUM_PGPHONEHOME-osx.zip pgphonehome-$PG_VERSION_PGPHONEHOME-$PG_BUILDNUM_PGPHONEHOME-osx.app/ || _die "Failed to zip the installer bundle"
-    rm -rf pgphonehome-$PG_VERSION_PGPHONEHOME-$PG_BUILDNUM_PGPHONEHOME-osx.app/ || _die "Failed to remove the unpacked installer bundle"
+    zip -r pgPhoneHome-$PG_VERSION_PGPHONEHOME-$PG_BUILDNUM_PGPHONEHOME-osx.zip pgPhoneHome-$PG_VERSION_PGPHONEHOME-$PG_BUILDNUM_PGPHONEHOME-osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf pgPhoneHome-$PG_VERSION_PGPHONEHOME-$PG_BUILDNUM_PGPHONEHOME-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
 

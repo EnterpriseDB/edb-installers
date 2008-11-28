@@ -1,7 +1,7 @@
 <project>
     <!-- Package details -->
-    <shortName>pgphonehome</shortName>
-    <fullName>pgphonehome</fullName>
+    <shortName>pgPhoneHome</shortName>
+    <fullName>pgPhoneHome</fullName>
     <version>PG_VERSION_PGPHONEHOME</version>
     
     <!-- These options are used on Windows -->
@@ -38,7 +38,7 @@
     
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
-    <leftImage>../resources/pg-side.png</leftImage>
+    <leftImage>../resources/edb-side.png</leftImage>
     <productDisplayIcon>${installdir}/pgph/scripts/images/logo.ico</productDisplayIcon>
     <windowsExecutableIcon>resources/logo.ico</windowsExecutableIcon>
 
@@ -101,20 +101,79 @@
         <setInstallerVariable name="defaultpassword" value=""/>
         <setInstallerVariable name="defaultpghome" value=""/>
 
-        <!-- Set the default values for unattended mode -->
+        <!-- ALL: Set the default values for unattended mode -->
         <actionGroup>
            <actionList>
-        	<setInstallerVariable name="defaultusername" value="${env(USERNAME)}"/>
-	        <setInstallerVariable name="defaultpasswd" value=""/>
+                <setInstallerVariable name="defaultpasswd" value=""/>
                 <setInstallerVariable name="defaultuser" value="postgres"/>
                 <setInstallerVariable name="defaultpassword" value="postgres"/>
-                <setInstallerVariable name="defaultpghome" value="${env(SYSTEMDIR)}\Program Files\PostgreSQL\8.3"/>
            </actionList>
            <ruleList>
                 <compareText>
                     <logic>equals</logic>
                     <text>${installer_ui}</text>
                     <value>unattended</value>
+                </compareText>
+           </ruleList>
+        </actionGroup>
+
+
+        <!-- WIN: Set the default values for unattended mode -->
+        <actionGroup>
+           <actionList>
+        	<setInstallerVariable name="defaultusername" value="${env(USERNAME)}"/>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\8.3"/>
+           </actionList>
+           <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+           </ruleList>
+        </actionGroup>
+
+        <!-- LINUX: Set the default values for unattended mode -->
+        <actionGroup>
+           <actionList>
+                <setInstallerVariable name="defaultusername" value="${env(USERNAME)}"/>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/8.3"/>
+           </actionList>
+           <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+           </ruleList>
+        </actionGroup> 
+ 
+        <!-- MAC: Set the default values for unattended mode -->
+        <actionGroup>
+           <actionList>
+                <setInstallerVariable name="defaultusername" value="${env(USER)}"/>
+                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/8.3"/>
+           </actionList>
+           <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
                 </compareText>
            </ruleList>
         </actionGroup>
@@ -127,7 +186,7 @@
 
         <!-- Check Previous Installation of pgphonehome -->
         <registryGet>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgphonehome</key>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgPhoneHome</key>
             <name>Version</name>
             <variable>pgphonehomeVersion</variable>
             <ruleList>
@@ -141,7 +200,7 @@
 
         <iniFileGet>
            <file>/etc/postgres-reg.ini</file>
-           <section>pgphonehome</section>
+           <section>pgPhoneHome</section>
            <key>Version</key>
            <variable>pgphonehomeVersion</variable>
            <ruleList>
@@ -153,36 +212,6 @@
            </ruleList>
         </iniFileGet> 
 
-        <!-- Ask user whether he wants to stop apache and continue -->
-        <showQuestion>
-           <text>${msg(apache.restart.question)}</text>
-           <variable>response</variable>
-           <ruleList>
-              <compareText>
-                 <logic>equals</logic>
-                 <text>${pgphonehomeVersion}</text>
-                 <value/>
-              </compareText>
-           </ruleList>
-        </showQuestion>
-
-        <!-- Exit the installation if the user selects 'no' -->
-        <exit>
-          <exitCode>0</exitCode>
-          <ruleList>
-              <compareText>
-                 <logic>equals</logic>
-                 <text>${response}</text>
-                 <value>no</value>
-              </compareText>
-              <compareText>
-                 <logic>equals</logic>
-                 <text>${pgphonehomeVersion}</text>
-                 <value/>
-              </compareText>
-           </ruleList>
-        </exit>
-        
         <!-- WIN : Set the Apache Home , Php Home and Port(default 8080) from registry. ApachePhp Installation would have set these values -->
         <actionGroup>
             <actionList>
@@ -292,6 +321,37 @@
               <value>${apachehome}</value>
               <persist>1</persist>
         </setInstallerVariable> 
+
+        <!-- Ask user whether he wants to stop apache and continue -->
+        <showQuestion>
+           <text>${msg(apache.restart.question)}</text>
+           <variable>response</variable>
+           <ruleList>
+              <compareText>
+                 <logic>equals</logic>
+                 <text>${pgphonehomeVersion}</text>
+                 <value/>
+              </compareText>
+           </ruleList>
+        </showQuestion>
+
+        <!-- Exit the installation if the user selects 'no' -->
+        <exit>
+          <exitCode>0</exitCode>
+          <ruleList>
+              <compareText>
+                 <logic>equals</logic>
+                 <text>${response}</text>
+                 <value>no</value>
+              </compareText>
+              <compareText>
+                 <logic>equals</logic>
+                 <text>${pgphonehomeVersion}</text>
+                 <value/>
+              </compareText>
+           </ruleList>
+        </exit>
+
 
         <!-- Lin | MAC :Stop the apache server -->
         <runProgram>
@@ -439,35 +499,21 @@
          </ruleList>		
 	</actionGroup>
          
-         <!-- WIN: Adding .htaccess and .htpasswd files -->
+         <!-- WIN: Adding .htpasswd files -->
 	 <actionGroup>
           <actionList>
-	    <createDirectory>
-		<path>${env(APPDATA)}\pgph</path>
-	    </createDirectory>
             <runProgram>
 		<program>${apachehome}\bin\htpasswd</program>
-                <programArguments>"-bc" "${env(APPDATA)}\pgph\.htpasswd" "${username}" "${password}" </programArguments>
+                <programArguments>"-bcs" "${env(APPDATA)}\pgPhoneHome.htpasswd" "${username}" "${password}" </programArguments>
                 <workingDirectory>${apachehome}\bin</workingDirectory>
-                <showMessageOnError>0</showMessageOnError>
+                <customErrorMessage>${msg(htpasswd.fail.error)}</customErrorMessage>
+                <progressText>${msg(progress.passwd.file.create)}</progressText> 
+                <showMessageOnError>1</showMessageOnError>
                 <abortOnError>0</abortOnError>
             </runProgram>
-            <touchFile path="${installdir}\pgph\.htaccess" />
-	    <addTextToFile>
-		<file>${installdir}\pgph\.htaccess</file>
-		<text>
-# Don't show directory listings for URLs which map to a directory.
-Options -Indexes
-
-# Securing website
-
-AuthType Basic
-AuthUserFile "${env(APPDATA)}\pgph\.htpasswd"
-AuthName ${product_fullname}
-
-require valid-user
-</text>	
-	    </addTextToFile>
+            <showInfo>
+                <text>The password file is saved at location: ${env(APPDATA)}\pgPhoneHome.htpasswd</text>
+            </showInfo>  
           </actionList>
           <ruleList>
             <compareText>
@@ -483,35 +529,21 @@ require valid-user
          </ruleList>
         </actionGroup>
 
-         <!-- Linux | MAC: Adding .htaccess and .htpasswd files -->
+         <!-- Linux | MAC: Adding .htpasswd files -->
          <actionGroup>
           <actionList>
-            <createDirectory>
-                <path>/etc/pgph</path>
-            </createDirectory>
             <runProgram>
                 <program>${apachehome}/bin/htpasswd</program>
-                <programArguments>"-bc" "/etc/pgph/.htpasswd" "${username}" "${password}" </programArguments>
+                <programArguments>"-bcs" "/etc/pgPhoneHome.htpasswd" "${username}" "${password}" </programArguments>
                 <workingDirectory>${apachehome}/bin</workingDirectory>
-                <showMessageOnError>0</showMessageOnError>
+                <progressText>${msg(progress.passwd.file.create)}</progressText> 
+                <customErrorMessage>${msg(htpasswd.fail.error)}</customErrorMessage> 
+                <showMessageOnError>1</showMessageOnError>
                 <abortOnError>0</abortOnError>
             </runProgram>
-            <touchFile path="${installdir}/pgph/.htaccess" />
-            <addTextToFile>
-                <file>${installdir}/pgph/.htaccess</file>
-                <text>
-# Don't show directory listings for URLs which map to a directory.
-Options -Indexes
-
-# Securing website
-
-AuthType Basic
-AuthUserFile /etc/pgph/.htpasswd
-AuthName ${product_fullname} 
-
-require valid-user
-</text>
-            </addTextToFile>
+            <showInfo>
+                <text>The password file is saved at location: /etc/pgPhoneHome.htpasswd</text>
+            </showInfo>  
           </actionList>
           <ruleList>
             <compareText>
@@ -527,45 +559,24 @@ require valid-user
          </ruleList>
         </actionGroup> 
 
-        <!-- LIN & MAC: Create Menu Shortcuts -->
-        <actionGroup>
-            <actionList>
-                <runProgram>
-                    <program>${installdir}/pgph/installer/pgph/createshortcuts.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
-                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
-                    <workingDirectory>${installdir}/pgph/installer/pgph</workingDirectory>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                </runProgram>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-
-         <!-- LIN & MAC: Write the pgphonehome Info to INI File -->
+        <!-- LIN & MAC: Write the pgphonehome Info to INI File -->
         <actionGroup>
             <actionList>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgphonehome</section>
+                    <section>pgPhoneHome</section>
                     <key>Description</key>
                     <value>${msg(install.summary)}</value>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgphonehome</section>
+                    <section>pgPhoneHome</section>
                     <key>InstallationDirectory</key>
                     <value>${installdir}/pgph</value>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgphonehome</section>
+                    <section>pgPhoneHome</section>
                     <key>Version</key>
                     <value>${product_version}</value>
                 </iniFileSet>
@@ -699,9 +710,17 @@ require valid-user
            <text>
 &lt;Directory "${apachehome}\www\pgph"&gt;
    AllowOverride All
-   Options Indexes FollowSymLinks Includes
+   Options FollowSymLinks Includes
+   # Securing website
+
+   AuthType Basic
+   AuthUserFile "${env(APPDATA)}\pgPhoneHome.htpasswd"
+   AuthName ${product_fullname}
+
+   require valid-user
    Order allow,deny
    Allow from all
+
 &lt;/Directory&gt;
            </text>
            <ruleList>
@@ -724,9 +743,17 @@ require valid-user
            <text>
 &lt;Directory "${apachehome}/www/pgph"&gt;
    AllowOverride All
-   Options Indexes FollowSymLinks Includes
+   Options FollowSymLinks Includes
+   # Securing website
+
+   AuthType Basic
+   AuthUserFile /etc/pgPhoneHome.htpasswd
+   AuthName ${product_fullname}
+
+   require valid-user
    Order allow,deny
    Allow from all
+
 &lt;/Directory&gt;
            </text>
            <ruleList>
@@ -786,8 +813,12 @@ require valid-user
                </compareText>
            </ruleList>
         </runProgram>
+        <showInfo>
+             <text>You can access pgPhoneHome at : http://(Server's IP):${apacheport}/pgph </text>
+        </showInfo>
 
     </postInstallationActionList>
+
 
     <preUninstallationActionList>
 
@@ -836,19 +867,19 @@ require valid-user
             <actionList>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgphonehome</section>
+                    <section>pgPhoneHome</section>
                     <key>Description</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgphonehome</section>
+                    <section>pgPhoneHome</section>
                     <key>InstallationDirectory</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgphonehome</section>
+                    <section>pgPhoneHome</section>
                     <key>Version</key>
                     <value/>
                 </iniFileSet>
@@ -862,39 +893,6 @@ require valid-user
             </ruleList>
         </actionGroup>
       
-        <!-- LIN : Remove Menu Shortcuts -->
-        <actionGroup>
-            <actionList>
-                <runProgram>
-                    <program>${installdir}/pgph/installer/pgph/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
-                    <workingDirectory>${installdir}/pgph/installer/pgph</workingDirectory>
-                </runProgram>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- MAC: Remove Menu shortcuts -->
-        <actionGroup>
-            <actionList>
-                <deleteFile>
-                    <path>/Applications/PostgreSQL/pgph.app</path>
-                </deleteFile>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-
     </preUninstallationActionList>
     
     <!-- Components -->
@@ -1036,18 +1034,6 @@ require valid-user
                 </folder>
  
             </folderList>
-            <!-- WIN: Start Menu -->
-            <startMenuShortcutList>
-	         <!-- Launch pgphonehome -->
-                 <startMenuShortcut>
-                     <comment>pgphonehome</comment>
-                     <name>pgphonehome</name>
-                     <runInTerminal>0</runInTerminal>
-                     <windowsExec>wscript</windowsExec>
-                     <windowsExecArgs>//NoLogo "${installdir}\pgph\scripts\launchPgPhoneHome.vbs"</windowsExecArgs>
-                     <windowsIcon>${installdir}/pgph/resources/run.ico</windowsIcon>
-                 </startMenuShortcut>
-            </startMenuShortcutList>
         </component>
     </componentList>
     <parameterList>

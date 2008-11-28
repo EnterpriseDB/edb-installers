@@ -64,12 +64,6 @@ _postprocess_pgphonehome_windows() {
     cp scripts/windows/check-httpd.bat staging/windows/installer/pgph/check-httpd.bat || _die "Failed to copy the check-httpd.bat script (scripts/windows/check-httpd.bat)"
     chmod ugo+x staging/windows/installer/pgph/check-httpd.bat
 
-    # Setup the pgphonehome Launch Scripts
-    mkdir -p staging/windows/scripts || _die "Failed to create a directory for the pgphonehome Launch Scripts"
-
-    cp scripts/windows/launchPgPhoneHome.vbs staging/windows/scripts/launchPgPhoneHome.vbs || _die "Failed to copy the launchPgPhoneHome.vbs  script (scripts/windows/launchPgPhoneHome.vbs)"
-    chmod ugo+x staging/windows/scripts/launchPgPhoneHome.vbs
-
     # Copy in the menu pick images
     mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.ico staging/windows/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"
