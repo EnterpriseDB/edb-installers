@@ -3,6 +3,6 @@ Version=1.0
 Encoding=UTF-8
 Name=pgAdmin III
 Exec=PG_INSTALLDIR/scripts/launchpgadmin.sh
-Icon=pg-pgadmin.png
+Icon=pg-pgadmin-PG_VERSION_STR.png
 Terminal=false
 Type=Application

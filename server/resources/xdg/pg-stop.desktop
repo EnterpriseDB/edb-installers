@@ -3,6 +3,6 @@ Version=1.0
 Encoding=UTF-8
 Name=Stop server
 Exec=PG_INSTALLDIR/scripts/launchsvrctl.sh stop
-Icon=pg-stop.png
+Icon=pg-stop-PG_VERSION_STR.png
 Terminal=false
 Type=Application

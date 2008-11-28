@@ -3,6 +3,6 @@ Version=1.0
 Encoding=UTF-8
 Name=Restart server
 Exec=PG_INSTALLDIR/scripts/launchsvrctl.sh restart
-Icon=pg-restart.png
+Icon=pg-restart-PG_VERSION_STR.png
 Terminal=false
 Type=Application

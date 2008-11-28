@@ -3,6 +3,6 @@ Version=1.0
 Encoding=UTF-8
 Name=SQL Shell (psql)
 Exec=PG_INSTALLDIR/scripts/launchpsql.sh
-Icon=pg-psql.png
+Icon=pg-psql-PG_VERSION_STR.png
 Terminal=false
 Type=Application

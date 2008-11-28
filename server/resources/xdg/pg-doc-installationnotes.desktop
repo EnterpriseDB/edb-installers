@@ -5,4 +5,4 @@ Name=Installation notes
 Exec="PG_INSTALLDIR/scripts/launchbrowser.sh" file://PG_INSTALLDIR/doc/installation-notes.html
 Terminal=false
 Type=Application
-Icon=pg-help.png
+Icon=pg-help-PG_VERSION_STR.png

@@ -44,6 +44,7 @@ _replace() {
 
 # Substitute values into a file ($in)
 _fixup_file() {
+    _replace PG_VERSION_STR $VERSION_STR $1
     _replace PG_MAJOR_VERSION $VERSION $1
     _replace PG_USERNAME $USERNAME $1
     _replace PG_PORT $PORT $1

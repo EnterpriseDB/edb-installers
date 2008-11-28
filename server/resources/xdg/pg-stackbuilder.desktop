@@ -3,6 +3,6 @@ Version=1.0
 Encoding=UTF-8
 Name=Application Stack Builder
 Exec=PG_INSTALLDIR/scripts/launchstackbuilder.sh
-Icon=pg-stackbuilder.png
+Icon=pg-stackbuilder-PG_VERSION_STR.png
 Terminal=false
 Type=Application

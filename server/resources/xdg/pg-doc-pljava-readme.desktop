@@ -5,4 +5,4 @@ Name=PL Java README
 Exec="PG_INSTALLDIR/scripts/launchbrowser.sh" file://PG_INSTALLDIR/doc/pljava/readme.html
 Terminal=false
 Type=Application
-Icon=pg-help.png
+Icon=pg-help-PG_VERSION_STR.png

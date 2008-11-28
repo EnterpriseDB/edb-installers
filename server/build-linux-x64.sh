@@ -208,13 +208,33 @@ _postprocess_server_linux_x64() {
     cp -R $WD/scripts/xdg/xdg* staging/linux-x64/installer/xdg || _die "Failed to copy the xdg scripts (scripts/xdg/*)"
     chmod ugo+x staging/linux-x64/installer/xdg/xdg*
     
-    # Copy in the menu pick images and XDG items
-    mkdir -p staging/linux-x64/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/*.png staging/linux-x64/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
-    mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-
     # Version string, for the xdg filenames
     PG_VERSION_STR=`echo $PG_MAJOR_VERSION | sed 's/\./_/g'`
+
+    # Copy in the menu pick images and XDG items
+    mkdir -p staging/linux-x64/scripts/images || _die "Failed to create a directory for the menu pick images"
+    
+    cp resources/pg-help.png staging/linux/scripts/images/pg-help-$PG_VERSION_STR.png || _die "Failed to copy a menu pick im
+age"
+    cp resources/pg-pgadmin.png staging/linux/scripts/images/pg-pgadmin-$PG_VERSION_STR.png || _die "Failed to copy a menu p
+ick image"
+    cp resources/pg-postgresql.png staging/linux/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy a
+menu pick image"
+    cp resources/pg-psql.png staging/linux/scripts/images/pg-psql-$PG_VERSION_STR.png || _die "Failed to copy a menu pick im
+age"
+    cp resources/pg-reload.png staging/linux/scripts/images/pg-reload-$PG_VERSION_STR.png || _die "Failed to copy a menu pic
+k image"
+    cp resources/pg-restart.png staging/linux/scripts/images/pg-restart-$PG_VERSION_STR.png || _die "Failed to copy a menu p
+ick image"
+    cp resources/pg-stackbuilder.png staging/linux/scripts/images/pg-stackbuilder-$PG_VERSION_STR.png || _die "Failed to cop
+y a menu pick image"
+    cp resources/pg-start.png staging/linux/scripts/images/pg-start-$PG_VERSION_STR.png || _die "Failed to copy a menu pick
+image"
+    cp resources/pg-stop.png staging/linux/scripts/images/pg-stop-$PG_VERSION_STR.png || _die "Failed to copy a menu pick im
+age"
+
+    mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
+
 
     cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/pg-documentation.directory staging/linux-x64/scripts/xdg/pg-documentation-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
