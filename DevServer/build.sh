@@ -163,6 +163,10 @@ _prep_DevServer() {
     echo "Unpacking pljava source..."
     tar -zxvf ../../tarballs/pljava-src-$PG_TARBALL_PLJAVA.tar.gz
 
+	echo "Patching pl/java source..."
+    cd pljava-1.4.0
+    patch -p0 < ../../../tarballs/pljava-fix.patch
+	
     # Per-platform prep
     cd $WD
     

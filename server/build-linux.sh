@@ -88,6 +88,10 @@ _build_server_linux() {
     echo "Building debugger module"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/pldebugger; make" || _die "Failed to build the debugger module"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
+	if [ ! -e $WD/server/staging/linux/doc ];
+	then
+	    mkdir -p $WD/server/staging/linux/doc || _die "Failed to create the doc directory"
+	fi
     cp "$WD/server/source/postgres.linux/contrib/pldebugger/README.pldebugger" $WD/server/staging/linux/doc || _die "Failed to copy the debugger README into the staging directory"
 	
     # Copy in the dependency libraries

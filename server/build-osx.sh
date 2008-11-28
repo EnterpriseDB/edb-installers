@@ -112,6 +112,10 @@ _build_server_osx() {
     cd pldebugger
     make || _die "Failed to build the debugger module"
     make install || _die "Failed to install the debugger module"
+	if [ ! -e $WD/server/staging/osx/doc ];
+	then
+	    mkdir -p $WD/server/staging/osx/doc || _die "Failed to create the doc directory"
+	fi
     cp README.pldebugger $WD/server/staging/osx/doc || _die "Failed to copy the debugger README into the staging directory"
 
     # Now, build pgAdmin
