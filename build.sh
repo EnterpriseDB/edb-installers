@@ -112,11 +112,11 @@ then
 
     if [ $SKIPBUILD == 0 ];
     then
-        _prep_devserver || exit 1
-        _build_devserver || exit 1
+        _prep_DevServer || exit 1
+        _build_DevServer || exit 1
     fi
 
-    _postprocess_devserver || exit 1
+    _postprocess_DevServer || exit 1
 fi
 
 # Package: ApachePhp
