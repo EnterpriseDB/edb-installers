@@ -379,7 +379,7 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>${installdir}/drupal/uninstall</path>
+                    <path>${installdir}/drupal/uninstall-Drupal</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -394,7 +394,7 @@
                     <value>windows</value>
                 </compareText>
                 <fileExists>
-                    <path>${installdir}/drupal/uninstall</path>
+                    <path>${installdir}/drupal/uninstall-Drupal</path>
                 </fileExists> 
             </ruleList>
         </actionGroup>
@@ -403,7 +403,7 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>${installdir}\drupal\uninstall.exe</path>
+                    <path>${installdir}\drupal\uninstall-Drupal.exe</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -418,7 +418,7 @@
                     <value>windows</value>
                 </compareText>
                 <fileExists>
-                    <path>${installdir}\drupal\uninstall.exe</path>
+                    <path>${installdir}\drupal\uninstall-Drupal.exe</path>
                 </fileExists> 
             </ruleList>
         </actionGroup> 
