@@ -41,11 +41,11 @@ chown $USERNAME:daemon /tmp/pgpass.$$ || _die "Failed to set the ownership of th
 
 # Create the plpgsql language
 echo "Installing pl/pgsql in the template1 database..."
-su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -p $PORT -c 'CREATE LANGUAGE plpgsql;' template1" || _warn "Failed to install pl/pgsql in the 'template1' database"
+su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -U $USERNAME -p $PORT -c 'CREATE LANGUAGE plpgsql;' template1" || _warn "Failed to install pl/pgsql in the 'template1' database"
 
 # Install adminpack in the postgres database
 echo "Installing the adminpack module in the postgres database..."
-su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -p $PORT postgres < $INSTALLDIR/share/postgresql/contrib/adminpack.sql" || _warn "Failed to install the 'adminpack' module in the 'postgres' database"
+su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -U $USERNAME -p $PORT postgres < $INSTALLDIR/share/postgresql/contrib/adminpack.sql" || _warn "Failed to install the 'adminpack' module in the 'postgres' database"
 
 # Cleanup
 if [ -f /tmp/pgpass.$$ ];
