@@ -38,8 +38,8 @@
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
     <leftImage>../resources/pg-side.png</leftImage>
-    <productDisplayIcon>${installdir}/phpPgAdmin/scripts/images/install.ico</productDisplayIcon>
-    <windowsExecutableIcon>resources/install.ico</windowsExecutableIcon>
+    <productDisplayIcon>${installdir}/phpPgAdmin/scripts/images/logo.ico</productDisplayIcon>
+    <windowsExecutableIcon>resources/logo.ico</windowsExecutableIcon>
 
     <!-- i18n files for the UI -->
     <customLanguageFileList>
@@ -1006,7 +1006,7 @@
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>wscript</windowsExec>
                     <windowsExecArgs>//NoLogo "${installdir}\phpPgAdmin\scripts\launchPhpPgAdmin.vbs"</windowsExecArgs>
-                    <windowsIcon>${installdir}\phpPgAdmin\scripts\images\run.ico</windowsIcon>
+                    <windowsIcon>${installdir}\phpPgAdmin\scripts\images\logo.ico</windowsIcon>
                 </startMenuShortcut>
             </startMenuShortcutList>
         </component>

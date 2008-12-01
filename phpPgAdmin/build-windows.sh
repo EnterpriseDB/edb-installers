@@ -72,7 +72,7 @@ _postprocess_phpPgAdmin_windows() {
     # Copy in the menu pick images
     mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/install.ico staging/windows/scripts/images || _die "Failed to copy the menu pick images (resources/install.ico)"
-    cp resources/run.ico staging/windows/scripts/images || _die "Failed to copy the menu pick images (resources/run.ico)"
+    cp resources/logo.ico staging/windows/scripts/images || _die "Failed to copy the menu pick images (resources/logo.ico)"
 
     #Configure the conf.php file
     _replace "\$conf\['servers'\]\[0\]\['host'\] = '';" "\$conf\['servers'\]\[0\]\['host'\] = '@@PGHOST@@';" "$WD/phpPgAdmin/staging/windows/phpPgAdmin/conf/config.inc.php"
