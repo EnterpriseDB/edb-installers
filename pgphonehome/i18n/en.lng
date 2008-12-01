@@ -2,7 +2,7 @@ Installer.Welcome.Title=Setup %1$s Setup Wizard
 
 Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
 
-platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
+platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now.
 
 error.apache.notfound=No Apache server was found. Please run the EnterpriseDB ApachePHP installer.
 
@@ -10,11 +10,11 @@ error.php.notfound=No suitable PHP installation was found. Please run the Enterp
 
 apache.restart.question=The installer will restart the Apache Server.\n\nDo you wish to continue?
 
-error.stop.apache=Failed to stop apache.
+error.stop.apache=Failed to stop Apache.
 
-error.start.apache=Failed to start apache.
+error.start.apache=Failed to start Apache.
 
-install.summary=pgPhoneHome is a remote monitoring interface for your Postgres and Postgres Plus servers.
+install.summary=pgPhoneHome is a remote monitoring interface for Postgres and Postgres Plus designed for the Apple iPhone and iPod touch..
 
 pgplus.details.title=PostgreSQL Installation Details 
 
@@ -22,15 +22,15 @@ pgplus.details.explanation=Please verify the PostgreSQL installation details
 
 pgplus.details.error=Connection to the PostgreSQL Server failed. Please re-check the details provided.
 
-post.install.error=Error Configuring pgphonehome Application.
+post.install.error=Error configuring pgPhonehome.
 
 pgplus.blank.error=Values must be entered for all fields.
 
-htpasswd.fail.error=Password creation utility (APACHE_HOME/bin/htpasswd) failed to create the password file.
+htpasswd.fail.error=The password creation utility (APACHE_HOME/bin/htpasswd) failed to create the password file.
 
 pgphonehome.details.title=pgPhoneHome User Account 
 
-pgphonehome.details.explanation=Please Enter The pgPhoneHome User Account Details.(These credentials are required when you launch the application.
+pgphonehome.details.explanation=Please enter the pgPhoneHome user account Details. These credentials will be required when you launch the application from your iPhone or iPod Touch.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 
