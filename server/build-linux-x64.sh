@@ -218,23 +218,23 @@ _postprocess_server_linux_x64() {
     # Copy in the menu pick images and XDG items
     mkdir -p staging/linux-x64/scripts/images || _die "Failed to create a directory for the menu pick images"
     
-    cp resources/pg-help.png staging/linux/scripts/images/pg-help-$PG_VERSION_STR.png || _die "Failed to copy a menu pick im
+    cp resources/pg-help.png staging/linux-x64/scripts/images/pg-help-$PG_VERSION_STR.png || _die "Failed to copy a menu pick im
 age"
-    cp resources/pg-pgadmin.png staging/linux/scripts/images/pg-pgadmin-$PG_VERSION_STR.png || _die "Failed to copy a menu p
+    cp resources/pg-pgadmin.png staging/linux-x64/scripts/images/pg-pgadmin-$PG_VERSION_STR.png || _die "Failed to copy a menu p
 ick image"
-    cp resources/pg-postgresql.png staging/linux/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy a
+    cp resources/pg-postgresql.png staging/linux-x64/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy a
 menu pick image"
-    cp resources/pg-psql.png staging/linux/scripts/images/pg-psql-$PG_VERSION_STR.png || _die "Failed to copy a menu pick im
+    cp resources/pg-psql.png staging/linux-x64/scripts/images/pg-psql-$PG_VERSION_STR.png || _die "Failed to copy a menu pick im
 age"
-    cp resources/pg-reload.png staging/linux/scripts/images/pg-reload-$PG_VERSION_STR.png || _die "Failed to copy a menu pic
+    cp resources/pg-reload.png staging/linux-x64/scripts/images/pg-reload-$PG_VERSION_STR.png || _die "Failed to copy a menu pic
 k image"
-    cp resources/pg-restart.png staging/linux/scripts/images/pg-restart-$PG_VERSION_STR.png || _die "Failed to copy a menu p
+    cp resources/pg-restart.png staging/linux-x64/scripts/images/pg-restart-$PG_VERSION_STR.png || _die "Failed to copy a menu p
 ick image"
-    cp resources/pg-stackbuilder.png staging/linux/scripts/images/pg-stackbuilder-$PG_VERSION_STR.png || _die "Failed to cop
+    cp resources/pg-stackbuilder.png staging/linux-x64/scripts/images/pg-stackbuilder-$PG_VERSION_STR.png || _die "Failed to cop
 y a menu pick image"
-    cp resources/pg-start.png staging/linux/scripts/images/pg-start-$PG_VERSION_STR.png || _die "Failed to copy a menu pick
+    cp resources/pg-start.png staging/linux-x64/scripts/images/pg-start-$PG_VERSION_STR.png || _die "Failed to copy a menu pick
 image"
-    cp resources/pg-stop.png staging/linux/scripts/images/pg-stop-$PG_VERSION_STR.png || _die "Failed to copy a menu pick im
+    cp resources/pg-stop.png staging/linux-x64/scripts/images/pg-stop-$PG_VERSION_STR.png || _die "Failed to copy a menu pick im
 age"
 
     mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
