@@ -513,6 +513,11 @@
             </runProgram>
             <showInfo>
                 <text>The password file is saved at location: ${env(APPDATA)}\pgPhoneHome.htpasswd</text>
+                <ruleList>
+                    <fileExists>
+                        <path>${env(APPDATA)}\pgPhoneHome.htpasswd</path>
+                    </fileExists>
+                </ruleList>
             </showInfo>  
           </actionList>
           <ruleList>
@@ -543,6 +548,11 @@
             </runProgram>
             <showInfo>
                 <text>The password file is saved at location: /etc/pgPhoneHome.htpasswd</text>
+                <ruleList>
+                    <fileExists>
+                        <path>/etc/pgPhoneHome.htpasswd</path>
+                    </fileExists>
+                </ruleList>
             </showInfo>  
           </actionList>
           <ruleList>
