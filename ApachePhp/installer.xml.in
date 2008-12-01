@@ -382,7 +382,7 @@
       </ruleList>
     </runProgram>
 
-    <!-- WIN: Renaming the uninstaller (Old) Windows upgrade -->
+    <!-- WIN: Delete the uninstaller (Old) Windows upgrade -->
     <actionGroup>
         <actionList>
             <deleteFile>
@@ -405,6 +405,22 @@
             </fileExists>
         </ruleList>
     </actionGroup>
+    
+    <deleteFile>
+        <path>${installdir}/resources</path>
+        <showMessageOnError>0</showMessageOnError>
+        <abortOnError>0</abortOnError>
+         <ruleList>
+            <compareText>
+                <text>${apache_home}</text>
+                <logic>does_not_equal</logic>
+                <value/>
+            </compareText>
+            <fileExists>
+                <path>${installdir}/resources</path>
+            </fileExists>
+        </ruleList>
+    </deleteFile>
 
 
     <!-- Deleting file from (Old) Windows installation -->
@@ -1025,9 +1041,6 @@ PhpIniDir "${installdir}\php"
             <distributionDirectory>
               <origin>staging/windows/scripts</origin>
             </distributionDirectory>
-            <distributionDirectory>
-              <origin>resources</origin>
-            </distributionDirectory>
           </distributionFileList>
         </folder>
         <folder>
@@ -1059,9 +1072,6 @@ PhpIniDir "${installdir}\php"
             </distributionDirectory>
             <distributionDirectory>
               <origin>staging/linux/scripts</origin>
-            </distributionDirectory>
-            <distributionDirectory>
-              <origin>resources</origin>
             </distributionDirectory>
           </distributionFileList>
         </folder>
@@ -1095,9 +1105,6 @@ PhpIniDir "${installdir}\php"
             <distributionDirectory>
               <origin>staging/linux-x64/scripts</origin>
             </distributionDirectory>
-            <distributionDirectory>
-              <origin>resources</origin>
-            </distributionDirectory>
           </distributionFileList>
         </folder>
         <folder>
@@ -1130,9 +1137,6 @@ PhpIniDir "${installdir}\php"
             <distributionDirectory>
               <origin>staging/osx/scripts</origin>
             </distributionDirectory>
-            <distributionDirectory>
-              <origin>resources</origin>
-            </distributionDirectory>
           </distributionFileList>
         </folder>
         <folder>
@@ -1156,7 +1160,7 @@ PhpIniDir "${installdir}\php"
           <runInTerminal>0</runInTerminal>
           <windowsExec>wscript</windowsExec>
           <windowsExecArgs>//NoLogo "${installdir}\scripts\launchApachePhp.vbs"</windowsExecArgs>
-          <windowsIcon>${installdir}/resources/run.ico</windowsIcon>
+          <windowsIcon>${installdir}\scripts\images\run.ico</windowsIcon>
         </startMenuShortcut>
       </startMenuShortcutList>
     </component>

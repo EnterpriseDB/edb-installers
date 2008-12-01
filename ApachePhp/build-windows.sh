@@ -298,6 +298,10 @@ _postprocess_ApachePhp_windows() {
     # Copy the launch scripts
     cp scripts/windows/launchApachePhp.vbs staging/windows/scripts/launchApachePhp.vbs || _die "Failed to copy the launchApachePhp script (scripts/windows/launchApachePhp.bat)"
 
+    # Copy in the menu pick images
+    mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the menu pick images"
+    cp resources/*.ico staging/windows/scripts/images || _die "Failed to copy the menu pick images (resources/logo.ico)" 
+
     cp resources/index.php staging/windows/apache/www || _die "Failed to copy index.php"
     chmod ugo+x staging/windows/apache/www/index.php
 
