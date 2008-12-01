@@ -8,8 +8,8 @@
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
 
     <!-- product Specific Options -->
-    <productComments>${product_fullname} ${product_version}</productComments>
-    <productDisplayName>${product_fullname} ${product_version}, packaged by EnterpriseDB</productDisplayName>
+    <productComments>${product_fullname} ${product_version}, packaged by EnterpriseDB</productComments>
+    <productDisplayName>${product_fullname} ${product_version}</productDisplayName>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
 
@@ -211,19 +211,6 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- Setting the installation type as upgrade if previous installation found -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="installationType" value="upgrade"/>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${phpWikiVersion}</text>
-                    <value/>
-                </compareText>
-            </ruleList>
-        </actionGroup>
         <!-- WIN : Set the Apache Home , Php Home and Port(default 8080), ApachePhp Installation Directory from registry. -->
         <!--    ApachePhp Installation would have set these values -->
         <actionGroup>
@@ -396,6 +383,95 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+ 
+        <!-- Win: deleting installation helper files (Clean-up for upgrade) -->
+        <deleteFile>
+            <path>${installdir}\phpWiki\install.bat</path>
+            <ruleList>
+                <compareText>
+                    <text>${phpWikiVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
+                </compareText>
+                <fileExists>
+                    <path>${installdir}\phpWiki\install.bat</path>
+                </fileExists>
+            </ruleList>
+        </deleteFile>
+
+        <deleteFile>
+            <path>${installdir}\phpWiki\launchPhpWiki.vbs</path>
+            <ruleList>
+                <compareText>
+                    <text>${phpWikiVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
+                </compareText>
+                <fileExists>
+                    <path>${installdir}\phpWiki\launchPhpWiki.vbs</path>
+                </fileExists>
+            </ruleList>
+        </deleteFile>
+
+        <!-- LIN & MAC: Deleting the uninstaller from www context -->
+        <actionGroup>
+            <actionList>
+                <deleteFile>
+                    <path>${installdir}/phpWiki/uninstall-phpWiki</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${phpWikiVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
+                </compareText>
+                <fileExists>
+                    <path>${installdir}/phpWiki/uninstall-phpWiki</path>
+                </fileExists>
+            </ruleList>
+        </actionGroup>
+
+        <!-- WIN: Deleting the uninstaller from www context -->
+        <actionGroup>
+            <actionList>
+                <deleteFile>
+                    <path>${installdir}\phpWiki\uninstall-phpWiki.exe</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${phpWikiVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
+                </compareText>
+                <fileExists>
+                    <path>${installdir}\phpWiki\uninstall-phpWiki.exe</path>
+                </fileExists>
+            </ruleList>
+        </actionGroup>
+
+
     </preInstallationActionList>
     <!-- Postinstallation actions -->
     <postInstallationActionList>
@@ -611,6 +687,43 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+         <!-- Getting the Version Installed minus the buildnum -->
+        <setInstallerVariableFromRegEx>
+            <name>phpWikiVersionInstalled</name>
+            <text>${phpWikiVersion}</text>
+            <pattern>([0-9]*)-[0-9]*$</pattern>
+            <substitution>\1</substitution>
+            <ruleList>
+              <compareText>
+                 <logic>does_not_equal</logic>
+                 <text>${phpWikiVersion}</text>
+                 <value/>
+              </compareText>
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+
+        <!-- Upgrade From Old Windows Installation -->
+        <actionGroup>
+            <actionList>
+                <registryDelete>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\phpWiki ${phpWikiVersionInstalled}</key>
+                </registryDelete>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${phpWikiVersion}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
     </postInstallationActionList>
     <!-- finalPage actions -->
     <finalPageActionList>
