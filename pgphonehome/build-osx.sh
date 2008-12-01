@@ -81,8 +81,8 @@ _postprocess_pgphonehome_osx() {
 
     # Zip up the output
     cd $WD/output
-    zip -r pgPhoneHome-$PG_VERSION_PGPHONEHOME-$PG_BUILDNUM_PGPHONEHOME-osx.zip pgPhoneHome-$PG_VERSION_PGPHONEHOME-$PG_BUILDNUM_PGPHONEHOME-osx.app/ || _die "Failed to zip the installer bundle"
-    rm -rf pgPhoneHome-$PG_VERSION_PGPHONEHOME-$PG_BUILDNUM_PGPHONEHOME-osx.app/ || _die "Failed to remove the unpacked installer bundle"
+    zip -r pgphonehome-$PG_VERSION_PGPHONEHOME-$PG_BUILDNUM_PGPHONEHOME-osx.zip pgphonehome-$PG_VERSION_PGPHONEHOME-$PG_BUILDNUM_PGPHONEHOME-osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf pgphonehome-$PG_VERSION_PGPHONEHOME-$PG_BUILDNUM_PGPHONEHOME-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
 

@@ -1,6 +1,6 @@
 <project>
     <!-- Package details -->
-    <shortName>pgPhoneHome</shortName>
+    <shortName>pgphonehome</shortName>
     <fullName>pgPhoneHome</fullName>
     <version>PG_VERSION_PGPHONEHOME</version>
     
@@ -504,7 +504,7 @@
           <actionList>
             <runProgram>
 		<program>${apachehome}\bin\htpasswd</program>
-                <programArguments>"-bcs" "${env(APPDATA)}\pgPhoneHome.htpasswd" "${username}" "${password}" </programArguments>
+                <programArguments>"-bcs" "${env(APPDATA)}\pgphonehome.htpasswd" "${username}" "${password}" </programArguments>
                 <workingDirectory>${apachehome}\bin</workingDirectory>
                 <customErrorMessage>${msg(htpasswd.fail.error)}</customErrorMessage>
                 <progressText>${msg(progress.passwd.file.create)}</progressText> 
@@ -512,10 +512,10 @@
                 <abortOnError>0</abortOnError>
             </runProgram>
             <showInfo>
-                <text>The password file is saved at location: ${env(APPDATA)}\pgPhoneHome.htpasswd</text>
+                <text>The password file is saved at location: ${env(APPDATA)}\pgphonehome.htpasswd</text>
                 <ruleList>
                     <fileExists>
-                        <path>${env(APPDATA)}\pgPhoneHome.htpasswd</path>
+                        <path>${env(APPDATA)}\pgphonehome.htpasswd</path>
                     </fileExists>
                 </ruleList>
             </showInfo>  
@@ -539,7 +539,7 @@
           <actionList>
             <runProgram>
                 <program>${apachehome}/bin/htpasswd</program>
-                <programArguments>"-bcs" "/etc/pgPhoneHome.htpasswd" "${username}" "${password}" </programArguments>
+                <programArguments>"-bcs" "/etc/pgphonehome.htpasswd" "${username}" "${password}" </programArguments>
                 <workingDirectory>${apachehome}/bin</workingDirectory>
                 <progressText>${msg(progress.passwd.file.create)}</progressText> 
                 <customErrorMessage>${msg(htpasswd.fail.error)}</customErrorMessage> 
@@ -547,10 +547,10 @@
                 <abortOnError>0</abortOnError>
             </runProgram>
             <showInfo>
-                <text>The password file is saved at location: /etc/pgPhoneHome.htpasswd</text>
+                <text>The password file is saved at location: /etc/pgphonehome.htpasswd</text>
                 <ruleList>
                     <fileExists>
-                        <path>/etc/pgPhoneHome.htpasswd</path>
+                        <path>/etc/pgphonehome.htpasswd</path>
                     </fileExists>
                 </ruleList>
             </showInfo>  
@@ -588,7 +588,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>pgPhoneHome</section>
                     <key>Version</key>
-                    <value>${product_version}</value>
+                    <value>${product_version}-PG_BUILDNUM_PGPHONEHOME</value>
                 </iniFileSet>
             </actionList>
             <ruleList>
@@ -802,6 +802,42 @@
            </ruleList>
         </runProgram>
 
+        <!-- Getting the Version Installed minus the buildnum -->
+        <setInstallerVariableFromRegEx>
+            <name>pgphonehomeVersionInstalled</name>
+            <text>${pgphonehomeVersion}</text>
+            <pattern>([0-9]*)-[0-9]*$</pattern>
+            <substitution>\1</substitution>
+            <ruleList>
+              <compareText>
+                 <logic>does_not_equal</logic>
+                 <text>${pgphonehomeVersion}</text>
+                 <value/>
+              </compareText>
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+
+        <!-- Upgrade From Old Windows Installation -->
+        <actionGroup>
+            <actionList>
+                <registryDelete>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\pgPhoneHome ${pgphonehomeVersionInstalled}</key>
+                </registryDelete>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${pgphonehomeVersion}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
         <!-- WIN :Start the apache server -->
         <runProgram>
            <program>wscript</program>
@@ -826,9 +862,29 @@
         <showInfo>
              <text>You can access pgPhoneHome at : http://(Server's IP):${apacheport}/pgph </text>
         </showInfo>
-
     </postInstallationActionList>
 
+    <!-- finalPage actions -->
+    <finalPageActionList>
+        <!-- WIN: Write product Version to registry -->
+        <actionGroup>
+            <show>0</show>
+            <actionList>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgPhoneHome</key>
+                    <name>Version</name>
+                    <value>${product_version}-PG_BUILDNUM_PGPHONEHOME</value>
+                </registrySet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </finalPageActionList>
 
     <preUninstallationActionList>
 
