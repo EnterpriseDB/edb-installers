@@ -202,19 +202,6 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- Setting the installation type as upgrade if previous installation found -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="installationType" value="upgrade"/>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${drupalVersion}</text>
-                    <value/>
-                </compareText>
-            </ruleList>
-        </actionGroup> 
         <!-- WIN: Set the Apache Home , Php Home and Apache Port(default 8080), ApachePhp Installation Directory from registry.-->
         <!--    ApachePhp Installation would have set these values -->
         <actionGroup>
@@ -388,13 +375,9 @@
         </deleteFile>
 
         
-        <!-- LIN & MAC: Moving the uninstaller from www context -->
+        <!-- LIN & MAC: Deleting the uninstaller from www context -->
         <actionGroup>
             <actionList>
-                <copyFile>
-                    <origin>${installdir}/drupal/uninstall-Drupal</origin>
-                    <destination>${apachephpinstalldir}/uninstall-${product_shortname}</destination>
-                </copyFile>
                 <deleteFile>
                     <path>${installdir}/drupal/uninstall-Drupal</path>
                 </deleteFile>
@@ -416,13 +399,9 @@
             </ruleList>
         </actionGroup>
 
-        <!-- WIN: Moving the uninstaller from www context -->
+        <!-- WIN: Deleting the uninstaller from www context -->
         <actionGroup>
             <actionList>
-                <copyFile>
-                    <origin>${installdir}\drupal\uninstall-Drupal.exe</origin>
-                    <destination>${apachephpinstalldir}\uninstall-${product_shortname}.exe</destination>
-                </copyFile>
                 <deleteFile>
                     <path>${installdir}\drupal\uninstall-Drupal.exe</path>
                 </deleteFile>
@@ -678,37 +657,31 @@
             </ruleList>
         </actionGroup>
 
+        <!-- Getting the Version Installed minus the buildnum -->
+        <setInstallerVariableFromRegEx>
+            <name>drupalVersionInstalled</name>
+            <text>${drupalVersion}</text>
+            <pattern>([0-9]*)-[0-9]*$</pattern>
+            <substitution>\1</substitution>
+            <ruleList>
+              <compareText>
+                 <logic>does_not_equal</logic>
+                 <text>${drupalVersion}</text>
+                 <value/>
+              </compareText>
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+
+
         <!-- Upgrade From Old Windows Installation -->
         <actionGroup>
             <actionList>
-                <registrySet> 
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Drupal 6.4</key>
-                    <name>UninstallString</name>
-                    <value>${apachephpinstalldir}\uninstall-drupal.exe</value>
-                </registrySet>
+                <registryDelete> 
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Drupal ${drupalVersionInstalled}</key>
+                </registryDelete>
                 <addFilesToUninstaller>
                     <files>${apachephpinstalldir}\uninstall-drupal.exe</files>
                 </addFilesToUninstaller>   
-                <substitute>
-                    <files>${installdir}/Drupal/installer/Drupal/modifyShortCut.vbs</files>
-                    <substitutionList>
-                        <substitution>
-                           <pattern>@@APACHE_HOME@@</pattern>
-                           <value>${apachehome}</value>
-                        </substitution>
-                        <substitution>
-                           <pattern>@@ALL_USERS_PROFILE@@</pattern>
-                           <value>${env(ALLUSERSPROFILE)}</value>
-                        </substitution>
-                   </substitutionList>
-                </substitute>
-                <runProgram>
-                    <program>wscript</program>
-                    <programArguments>"${installdir}\Drupal\installer\Drupal\modifyShortCut.vbs"</programArguments>
-                    <workingDirectory>${installdir}\Drupal\installer\Drupal</workingDirectory>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                </runProgram>
             </actionList>
             <ruleList>
                 <compareText>

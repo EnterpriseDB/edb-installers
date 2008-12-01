@@ -61,9 +61,6 @@ _postprocess_Drupal_windows() {
     cp scripts/windows/check-connection.bat staging/windows/installer/Drupal/check-connection.bat || _die "Failed to copy the check-connection script (scripts/windows/check-connection.bat)"
     chmod ugo+x staging/windows/installer/Drupal/check-connection.bat
 
-    cp scripts/windows/modifyShortCut.vbs staging/windows/installer/Drupal/modifyShortCut.vbs || _die "Failed to copy the modifyShortCut script (scripts/windows/modifyShortCut.vbs)"
-    chmod ugo+x staging/windows/installer/Drupal/modifyShortCut.vbs
-
     cp scripts/windows/check-db.bat staging/windows/installer/Drupal/check-db.bat || _die "Failed to copy the check-db.bat script (scripts/windows/check-db.bat)"
     chmod ugo+x staging/windows/installer/Drupal/check-db.bat
 
