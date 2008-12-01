@@ -207,19 +207,6 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- Setting the installation type as upgrade if previous installation found -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="installationType" value="upgrade"/>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${mediaWikiVersion}</text>
-                    <value/>
-                </compareText>
-            </ruleList>
-        </actionGroup>
         <!-- WIN : Set the Apache Home , Php Home and Apache Port(default 8080), ApachePhp Installation Directory from registry. -->
         <!--    ApachePhp Installation would have set these values -->
         <actionGroup>
@@ -388,6 +375,94 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <!-- Win: deleting installation helper files (Clean-up for upgrade) -->
+        <deleteFile>
+            <path>${installdir}\mediaWiki\install.bat</path>
+            <ruleList>
+                <compareText>
+                    <text>${mediaWikiVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
+                </compareText>
+                <fileExists>
+                    <path>${installdir}\mediaWiki\install.bat</path>
+                </fileExists>
+            </ruleList>
+        </deleteFile>
+
+        <deleteFile>
+            <path>${installdir}\mediaWiki\launchMediaWiki.vbs</path>
+            <ruleList>
+                <compareText>
+                    <text>${mediaWikiVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
+                </compareText>
+                <fileExists>
+                    <path>${installdir}\mediaWiki\launchMediaWiki.vbs</path>
+                </fileExists>
+            </ruleList>
+        </deleteFile>
+
+        <!-- LIN & MAC: Deleting the uninstaller from www context -->
+        <actionGroup>
+            <actionList>
+                <deleteFile>
+                    <path>${installdir}/mediaWiki/uninstall</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${mediaWikiVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
+                </compareText>
+                <fileExists>
+                    <path>${installdir}/mediaWiki/uninstall</path>
+                </fileExists>
+            </ruleList>
+        </actionGroup>
+
+        <!-- WIN: Deleting the uninstaller from www context -->
+        <actionGroup>
+            <actionList>
+                <deleteFile>
+                    <path>${installdir}\mediaWiki\uninstall.exe</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${mediaWikiVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
+                </compareText>
+                <fileExists>
+                    <path>${installdir}\mediaWiki\uninstall.exe</path>
+                </fileExists>
+            </ruleList>
+        </actionGroup> 
+ 
     </preInstallationActionList>
     <!-- Post installation actions -->
     <postInstallationActionList>
@@ -515,6 +590,43 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <!-- Getting the Version Installed minus the buildnum -->
+        <setInstallerVariableFromRegEx>
+            <name>mediaWikiVersionInstalled</name>
+            <text>${mediaWikiVersion}</text>
+            <pattern>([0-9]*)-[0-9]*$</pattern>
+            <substitution>\1</substitution>
+            <ruleList>
+              <compareText>
+                 <logic>does_not_equal</logic>
+                 <text>${mediaWikiVersion}</text>
+                 <value/>
+              </compareText>
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+
+        <!-- Upgrade From Old Windows Installation -->
+        <actionGroup>
+            <actionList>
+                <registryDelete>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\mediaWiki ${mediaWikiVersionInstalled}</key>
+                </registryDelete>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${mediaWikiVersion}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
     </postInstallationActionList>
     <!-- finalPage actions -->
     <finalPageActionList>
