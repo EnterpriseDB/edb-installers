@@ -379,7 +379,7 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>${installdir}/drupal/uninstall-Drupal</path>
+                    <path>${installdir}/drupal/uninstall</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -394,7 +394,7 @@
                     <value>windows</value>
                 </compareText>
                 <fileExists>
-                    <path>${installdir}/drupal/uninstall-Drupal</path>
+                    <path>${installdir}/drupal/uninstall</path>
                 </fileExists> 
             </ruleList>
         </actionGroup>
@@ -403,7 +403,7 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>${installdir}\drupal\uninstall-Drupal.exe</path>
+                    <path>${installdir}\drupal\uninstall.exe</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -418,7 +418,7 @@
                     <value>windows</value>
                 </compareText>
                 <fileExists>
-                    <path>${installdir}\drupal\uninstall-Drupal.exe</path>
+                    <path>${installdir}\drupal\uninstall.exe</path>
                 </fileExists> 
             </ruleList>
         </actionGroup> 
@@ -679,9 +679,6 @@
                 <registryDelete> 
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Drupal ${drupalVersionInstalled}</key>
                 </registryDelete>
-                <addFilesToUninstaller>
-                    <files>${apachephpinstalldir}\uninstall-drupal.exe</files>
-                </addFilesToUninstaller>   
             </actionList>
             <ruleList>
                 <compareText>
