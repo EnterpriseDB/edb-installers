@@ -512,7 +512,7 @@
                 <abortOnError>0</abortOnError>
             </runProgram>
             <showInfo>
-                <text>The password file is saved at location: ${env(APPDATA)}\pgphonehome.htpasswd</text>
+                <text>${msg(pgphonehome.htpasswd.path.info.windows)}</text>
                 <ruleList>
                     <fileExists>
                         <path>${env(APPDATA)}\pgphonehome.htpasswd</path>
@@ -547,7 +547,7 @@
                 <abortOnError>0</abortOnError>
             </runProgram>
             <showInfo>
-                <text>The password file is saved at location: /etc/pgphonehome.htpasswd</text>
+                <text>${msg(pgphonehome.htpasswd.path.info)}</text>
                 <ruleList>
                     <fileExists>
                         <path>/etc/pgphonehome.htpasswd</path>
@@ -860,7 +860,7 @@
            </ruleList>
         </runProgram>
         <showInfo>
-             <text>You can access pgPhoneHome at : http://(Server's IP):${apacheport}/pgph </text>
+             <text>${msg(pgphonehome.url.info)}</text>
         </showInfo>
     </postInstallationActionList>
 
