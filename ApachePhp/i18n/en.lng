@@ -2,6 +2,10 @@ Installer.Welcome.Title=Setup EnterpriseDB %1$s
 
 Installer.Welcome.Text=Welcome to the EnterpriseDB %1$s Setup Wizard.
 
+upgrade.existing.installation.title=Existing installation
+
+upgrade.existing.installation.description=An existing ApachePhp installation has been found at ${installdir}. This installation will be upgraded.
+
 install.summary=ApachePHP is a preconfigured Apache webserver with PHP, compiled for use with PostgreSQL
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
