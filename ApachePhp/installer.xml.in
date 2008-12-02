@@ -1296,10 +1296,6 @@ PhpIniDir "${installdir}\php"
               <logic>does_not_equal</logic>
               <value>windows</value>
             </compareText>
-	    <fileTest>
-               <path>${installdir}</path>
-               <condition>not_writable</condition>
-             </fileTest>
           </ruleList>
         </actionGroup>
         <!-- Validating whether installdir is valid (Windows) -->
@@ -1322,6 +1318,22 @@ PhpIniDir "${installdir}\php"
               <logic>equals</logic>
               <value>windows</value>
             </compareText>
+          </ruleList>
+        </actionGroup>
+        <!-- Validating whether installdir is writable -->
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="installdir" value="${default_installdir}" />
+            <showWarning>
+              <text>${msg(apachephp.installdir.error)}</text>
+            </showWarning>
+            <setInstallerVariable name="next_page" value="installdir"/>
+          </actionList>
+          <ruleList>
+            <fileTest>
+               <path>${installdir}</path>
+               <condition>not_writable</condition>
+            </fileTest>
           </ruleList>
         </actionGroup>
       </postShowPageActionList>
