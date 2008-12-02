@@ -8,6 +8,12 @@ error.apache.notfound=No Apache server was found. Please run the EnterpriseDB Ap
 
 error.php.notfound=No suitable PHP installation was found. Please run the EnterpriseDB ApachePHP installer.
 
+apache.restart.question=The installer will restart the Apache Server.\n\nDo you wish to continue?
+
+error.stop.apache=Failed to stop Apache.
+
+error.start.apache=Failed to start Apache.
+
 install.summary=phpPgAdmin is a web-based administration tool for PostgreSQL. It is perfect for PostgreSQL DBAs, newbies and hosting services.
 
 pgplus.details.title=PostgreSQL Installation Details 

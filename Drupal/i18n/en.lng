@@ -8,6 +8,12 @@ error.apache.notfound=No Apache server was found. Please run the EnterpriseDB Ap
 
 error.php.notfound=No PHP installation was found. Please run the EnterpriseDB ApachePhp installer.
 
+apache.restart.question=The installer will restart the Apache Server.\n\nDo you wish to continue?
+
+error.stop.apache=Failed to stop Apache.
+
+error.start.apache=Failed to start Apache.
+
 db.create.info=Created a database role with the name "drupaluser" and password "drupaluser". \n\nCreated a database named "drupal", owned by "drupaluser".
 
 db.drop.info=The Drupal database and user account have not been removed from your PostgreSQL server.

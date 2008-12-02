@@ -61,9 +61,6 @@ _postprocess_pgphonehome_osx() {
     cp scripts/osx/check-connection.sh staging/osx/installer/pgph/check-connection.sh || _die "Failed to copy the check-connection script (scripts/osx/check-connection.sh)"
     chmod ugo+x staging/osx/installer/pgph/check-connection.sh
 
-    cp scripts/osx/check-httpd.sh staging/osx/installer/pgph/check-httpd.sh || _die "Failed to copy the check-httpd script (scripts/osx/check-httpd.sh)"
-    chmod ugo+x staging/osx/installer/pgph/check-httpd.sh
-
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.ico staging/osx/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"

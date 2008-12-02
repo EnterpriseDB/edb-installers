@@ -61,9 +61,6 @@ _postprocess_pgphonehome_windows() {
     cp scripts/windows/check-connection.bat staging/windows/installer/pgph/check-connection.bat || _die "Failed to copy the check-connection script (scripts/windows/check-connection.bat)"
     chmod ugo+x staging/windows/installer/pgph/check-connection.bat
 
-    cp scripts/windows/check-httpd.bat staging/windows/installer/pgph/check-httpd.bat || _die "Failed to copy the check-httpd.bat script (scripts/windows/check-httpd.bat)"
-    chmod ugo+x staging/windows/installer/pgph/check-httpd.bat
-
     # Copy in the menu pick images
     mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.ico staging/windows/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"

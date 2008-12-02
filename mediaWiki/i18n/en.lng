@@ -8,6 +8,12 @@ error.apache.notfound=No Apache server was found. Please run the EnterpriseDB Ap
 
 error.php.notfound=No suitable PHP installation was found. Please run the EnterpriseDB ApachePHP installer.
 
+apache.restart.question=The installer will restart the Apache Server.\n\nDo you wish to continue?
+
+error.stop.apache=Failed to stop Apache.
+
+error.start.apache=Failed to start Apache.
+
 db.create.info=Created a database role with the name "mediawikiuser" and password "mediawikiuser". \n\nCreated a database named "mediawiki", owned by "mediawikiuser".
 
 db.drop.info=The mediaWiki database and user account have not been removed from your PostgreSQL server.

@@ -326,12 +326,17 @@
         <showQuestion>
            <text>${msg(apache.restart.question)}</text>
            <variable>response</variable>
+           <ruleEvaluationLogic>OR</ruleEvaluationLogic>
            <ruleList>
               <compareText>
                  <logic>equals</logic>
                  <text>${pgphonehomeVersion}</text>
                  <value/>
               </compareText>
+              <fileTest>
+                 <path>${apachehome}/conf/addons/application_secure.conf</path>
+                 <condition>not_exists</condition>
+              </fileTest> 
            </ruleList>
         </showQuestion>
 
@@ -369,8 +374,8 @@
                </compareText>
                <compareText>
                    <logic>equals</logic>
-                   <text>${pgphonehomeVersion}</text>
-                   <value/>
+                   <text>${response}</text>
+                   <value>yes</value>
                </compareText>
            </ruleList>
         </runProgram>
@@ -391,8 +396,8 @@
                </compareText>
                <compareText>
                    <logic>equals</logic>
-                   <text>${pgphonehomeVersion}</text>
-                   <value/>
+                   <text>${response}</text>
+                   <value>yes</value>
                </compareText>
            </ruleList>    
         </runProgram>
@@ -600,47 +605,12 @@
             </ruleList>
         </actionGroup>
 
-         <substitute>
-           <files>${installdir}/pgph/installer/pgph/check-httpd.sh</files>
-           <substitutionList>
-             <substitution>
-                 <pattern>@@APACHE_HOME@@</pattern>
-                 <value>${apachehome}</value>
-             </substitution>
-          </substitutionList>
-          <ruleList>
-              <compareText>
-                  <text>${platform_name}</text>
-                  <logic>does_not_equal</logic>
-                  <value>windows</value>
-              </compareText>
-          </ruleList>
-        </substitute>
-       
-        <substitute>
-           <files>${installdir}\pgph\installer\pgph\check-httpd.bat</files>
-           <substitutionList>
-             <substitution>
-                 <pattern>@@APACHE_HOME@@</pattern>
-                 <value>${apachehome}</value>
-             </substitution>
-          </substitutionList>
-          <ruleList>
-              <compareText>
-                  <text>${platform_name}</text>
-                  <logic>equals</logic>
-                  <value>windows</value>
-              </compareText>
-          </ruleList>
-        </substitute>
- 
-
-        <setInstallerVariableFromScriptOutput>
-            <exec>${installdir}/pgph/installer/pgph/check-httpd.sh</exec>
-            <execArgs/>
-            <name>confText</name>
-            <workingDirectory>${installdir}/pgph/installer/pgph</workingDirectory>
-            <showMessageOnError>0</showMessageOnError>
+       <!-- LIN| MAC: Finding whether the include line is already there in the httpd.conf file -->
+       <setInstallerVariableFromScriptOutput>
+          <exec>grep</exec>
+          <execArgs>"include conf/addons/\*\.conf" "${apachehome}/conf/httpd.conf"</execArgs>
+          <name>confText</name>
+          <showMessageOnError>0</showMessageOnError>
             <abortOnError>0</abortOnError>
             <ruleList>
                 <compareText>
@@ -649,14 +619,14 @@
                     <value>windows</value>
                 </compareText>
             </ruleList>
-        </setInstallerVariableFromScriptOutput>  
+        </setInstallerVariableFromScriptOutput>
 
+        <!-- WIN: Finding whether the include line is already there in the httpd.conf file -->
         <setInstallerVariableFromScriptOutput>
-            <exec>${installdir}\pgph\installer\pgph\check-httpd.bat</exec>
-            <execArgs/>
-            <name>confText</name>
-            <workingDirectory>${installdir}\pgph\installer\pgph</workingDirectory>
-            <showMessageOnError>0</showMessageOnError>
+          <exec>find</exec>
+          <execArgs>"include conf\addons\*.conf" "${apachehome}\conf\httpd.conf"</execArgs>
+          <name>confText</name>
+          <showMessageOnError>0</showMessageOnError>
             <abortOnError>0</abortOnError>
             <ruleList>
                 <compareText>
@@ -711,6 +681,75 @@
               </fileTest>
            </ruleList>
         </createDirectory>
+
+        <!-- Linux | MAC: Adding a application secure conf which prohibit directory listings of applications under www context -->
+        <actionGroup>
+           <actionList>
+             <touchFile path="${apachehome}/conf/addons/application_secure.conf" />
+             <addTextToFile>
+                   <file>${apachehome}/conf/addons/application_secure.conf</file>
+                   <text>
+&lt;Directory "${apachehome}/www/*/scripts"&gt;
+   Options -Indexes -FollowSymLinks
+   Order allow,deny
+   Deny from all
+&lt;/Directory&gt;
+
+&lt;Directory "${apachehome}/www/*/installer"&gt;
+   Options -Indexes -FollowSymLinks
+   Order allow,deny
+   Deny from all
+&lt;/Directory&gt;
+                   </text>
+             </addTextToFile>
+           </actionList>
+           <ruleList>
+              <fileTest>
+                 <path>${apachehome}/conf/addons/application_secure.conf</path>
+                 <condition>not_exists</condition>
+              </fileTest>
+              <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+              </compareText>
+          </ruleList>
+        </actionGroup>
+
+        <!-- WIN: Adding a application secure conf which prohibit directory listings of applications under www context -->
+        <actionGroup>
+           <actionList>
+             <touchFile path="${apachehome}\conf\addons\application_secure.conf" />
+             <addTextToFile>
+                   <file>${apachehome}\conf\addons\application_secure.conf</file>
+                   <text>
+&lt;Directory "${apachehome}\www\*\scripts"&gt;
+   Options -Indexes -FollowSymLinks
+   Order allow,deny
+   Deny from all
+&lt;/Directory&gt;
+
+&lt;Directory "${apachehome}\www\*\installer"&gt;
+   Options -Indexes -FollowSymLinks
+   Order allow,deny
+   Deny from all
+&lt;/Directory&gt;
+                   </text>
+             </addTextToFile>
+           </actionList>
+           <ruleList>
+             <fileTest>
+                 <path>${apachehome}\conf\addons\application_secure.conf</path>
+                 <condition>not_exists</condition>
+             </fileTest>
+             <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+             </compareText>
+           </ruleList>
+        </actionGroup>
+
   
         <touchFile path="${apachehome}/conf/addons/${product_fullname}.conf" />
 
@@ -796,8 +835,8 @@
                </compareText>
                <compareText>
                    <logic>equals</logic>
-                   <text>${pgphonehomeVersion}</text>
-                   <value/>
+                   <text>${response}</text>
+                   <value>yes</value>
                </compareText>
            </ruleList>
         </runProgram>
@@ -854,8 +893,8 @@
                </compareText>
                <compareText>
                    <logic>equals</logic>
-                   <text>${pgphonehomeVersion}</text>
-                   <value/>
+                   <text>${response}</text>
+                   <value>yes</value>
                </compareText>
            </ruleList>
         </runProgram>

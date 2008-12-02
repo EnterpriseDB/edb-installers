@@ -61,9 +61,6 @@ _postprocess_pgphonehome_linux() {
     cp scripts/linux/check-connection.sh staging/linux/installer/pgph/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux/check-connection.sh)"
     chmod ugo+x staging/linux/installer/pgph/check-connection.sh
 
-    cp scripts/linux/check-httpd.sh staging/linux/installer/pgph/check-httpd.sh || _die "Failed to copy the check-httpd script (scripts/linux/check-httpd.sh)"
-    chmod ugo+x staging/linux/installer/pgph/check-httpd.sh
-
      # copy logo Image
     cp resources/*.ico staging/linux/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"
     

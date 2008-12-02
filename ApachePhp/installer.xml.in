@@ -593,6 +593,8 @@ AddHandler phpPHP_MAJOR_VERSION-script php
 DirectoryIndex index.html index.php
 AddType text/html         php
 PhpIniDir "${installdir}/php"
+
+include conf/addons/*.conf
        </text>
        <ruleList>
           <compareText>
@@ -611,6 +613,8 @@ AddHandler phpPHP_MAJOR_VERSION-script php
 DirectoryIndex index.html index.php
 AddType text/html         php
 PhpIniDir "${installdir}\php"
+
+include conf\addons\*.conf
        </text>
        <ruleList>
           <compareText>
@@ -620,6 +624,85 @@ PhpIniDir "${installdir}\php"
           </compareText>
        </ruleList>
     </addTextToFile>
+
+    <!-- Creating a addons directory for additional conf files -->
+    <createDirectory path="${installdir}/apache/conf/addons" >
+        <ruleList>
+             <fileTest>
+                 <path>${installdir}/apache/conf/addons</path>
+                 <condition>not_exists</condition>
+             </fileTest>
+        </ruleList>
+    </createDirectory>
+
+    <!-- Linux | MAC: Adding a application secure conf which prohibit directory listings of applications under www context -->
+    <actionGroup>
+        <actionList>
+             <touchFile path="${installdir}/apache/conf/addons/application_secure.conf" />
+             <addTextToFile>
+                   <file>${installdir}/apache/conf/addons/application_secure.conf</file>
+                   <text>
+&lt;Directory "${installdir}/apache/www/*/scripts"&gt;
+   Options -Indexes -FollowSymLinks
+   Order allow,deny
+   Deny from all
+&lt;/Directory&gt;
+
+&lt;Directory "${installdir}/apache/www/*/installer"&gt;
+   Options -Indexes -FollowSymLinks
+   Order allow,deny
+   Deny from all
+&lt;/Directory&gt;
+                   </text>
+             </addTextToFile>
+        </actionList>
+        <ruleList>
+             <fileTest>
+                 <path>${installdir}/apache/conf/addons/application_secure.conf</path>
+                 <condition>not_exists</condition>
+             </fileTest>         
+             <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+             </compareText> 
+        </ruleList>
+     </actionGroup>    
+ 
+    <!-- WIN: Adding a application secure conf which prohibit directory listings of applications under www context -->
+    <actionGroup>
+        <actionList>
+             <touchFile path="${installdir}\apache\conf\addons\application_secure.conf" />
+             <addTextToFile>
+                   <file>${installdir}\apache\conf\addons\application_secure.conf</file>
+                   <text>
+&lt;Directory "${installdir}\apache\www\*\scripts"&gt;
+   Options -Indexes -FollowSymLinks
+   Order allow,deny
+   Deny from all
+&lt;/Directory&gt;
+
+&lt;Directory "${installdir}\apache\www\*\installer"&gt;
+   Options -Indexes -FollowSymLinks
+   Order allow,deny
+   Deny from all
+&lt;/Directory&gt;
+                   </text>
+             </addTextToFile>
+        </actionList>
+        <ruleList>
+             <fileTest>
+                 <path>${installdir}\apache\conf\addons\application_secure.conf</path>
+                 <condition>not_exists</condition>
+             </fileTest>         
+             <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+             </compareText>
+        </ruleList>
+     </actionGroup>
+
     <!-- setting the PHP session path-->
     <iniFileSet>
        <file>${installdir}/php/php.ini</file>

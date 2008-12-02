@@ -313,6 +313,75 @@
                 </compareTextLength>
             </ruleList>
         </actionGroup>
+
+        <!-- Ask user whether he wants to stop apache and continue -->
+        <showQuestion>
+           <text>${msg(apache.restart.question)}</text>
+           <variable>response</variable>
+           <ruleList>
+              <fileTest>
+                 <path>${apachehome}/conf/addons/application_secure.conf</path>
+                 <condition>not_exists</condition>
+              </fileTest>
+           </ruleList>
+        </showQuestion>
+
+        <!-- Exit the installation if the user selects 'no' -->
+        <exit>
+          <exitCode>0</exitCode>
+          <ruleList>
+              <compareText>
+                 <logic>equals</logic>
+                 <text>${response}</text>
+                 <value>no</value>
+              </compareText>
+           </ruleList>
+        </exit>
+
+        <!-- Lin | MAC :Stop the apache server -->
+        <runProgram>
+           <program>${apachehome}/bin/apachectl</program>
+           <programArguments>"stop"</programArguments>
+           <workingDirectory>${apachehome}/bin</workingDirectory>
+           <showMessageOnError>1</showMessageOnError>
+           <customErrorMessage>${msg(error.stop.apache)}</customErrorMessage>
+           <abortOnError>1</abortOnError>
+           <ruleList>
+               <compareText>
+                   <logic>does_not_equal</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+               </compareText>
+               <compareText>
+                   <logic>equals</logic>
+                   <text>${response}</text>
+                   <value>yes</value>
+               </compareText>
+           </ruleList>
+        </runProgram>
+
+        <!-- WIN :Stop the apache server -->
+        <runProgram>
+           <program>wscript</program>
+           <programArguments>//NOLOGO "${apachephpinstalldir}\installer\ApachePhp\stopApache.vbs" "${apachephpinstalldir}"</programArguments>
+           <workingDirectory>${apachephpinstalldir}/installer/ApachePhp</workingDirectory>
+           <showMessageOnError>1</showMessageOnError>
+           <customErrorMessage>${msg(error.stop.apache)}</customErrorMessage>
+           <abortOnError>1</abortOnError>
+           <ruleList>
+               <compareText>
+                   <logic>equals</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+               </compareText>
+               <compareText>
+                   <logic>equals</logic>
+                   <text>${response}</text>
+                   <value>yes</value>
+               </compareText>
+           </ruleList>
+        </runProgram>
+
         <!-- LIN & MAC: Set the Installation Directory -->
         <actionGroup>
             <actionList>
@@ -723,6 +792,196 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+       <!-- LIN| MAC: Finding whether the include line is already there in the httpd.conf file -->
+       <setInstallerVariableFromScriptOutput>
+          <exec>grep</exec>
+          <execArgs>"include conf/addons/\*\.conf" "${apachehome}/conf/httpd.conf"</execArgs>
+          <name>confText</name>
+          <showMessageOnError>0</showMessageOnError>
+            <abortOnError>0</abortOnError>
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariableFromScriptOutput>
+
+        <!-- WIN: Finding whether the include line is already there in the httpd.conf file -->
+        <setInstallerVariableFromScriptOutput>
+          <exec>find</exec>
+          <execArgs>"include conf\addons\*.conf" "${apachehome}\conf\httpd.conf"</execArgs>
+          <name>confText</name>
+          <showMessageOnError>0</showMessageOnError>
+            <abortOnError>0</abortOnError>
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariableFromScriptOutput>
+
+         <!-- WIN: Modifying the httpd.conf file -->
+        <addTextToFile>
+           <file>${apachehome}\conf\httpd.conf</file>
+           <text>include conf\addons\*.conf</text>
+           <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${confText}</text>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+           </ruleList>
+        </addTextToFile>
+
+        <!-- Linux| MAC: Modifying the httpd.conf file -->
+        <addTextToFile>
+           <file>${apachehome}/conf/httpd.conf</file>
+           <text>include conf/addons/*.conf</text>
+           <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${confText}</text>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+           </ruleList>
+        </addTextToFile>
+
+        <!-- Creating a addons directory for additional conf files -->
+        <createDirectory path="${apachehome}/conf/addons" >
+           <ruleList>
+             <fileTest>
+                 <path>${apachehome}/conf/addons</path>
+                 <condition>not_exists</condition>
+             </fileTest>
+           </ruleList>
+        </createDirectory>
+
+        <!-- Linux | MAC: Adding a application secure conf which prohibit directory listings of applications under www context -->
+        <actionGroup>
+           <actionList>
+             <touchFile path="${apachehome}/conf/addons/application_secure.conf" />
+             <addTextToFile>
+                   <file>${apachehome}/conf/addons/application_secure.conf</file>
+                   <text>
+&lt;Directory "${apachehome}/www/*/scripts"&gt;
+   Options -Indexes -FollowSymLinks
+   Order allow,deny
+   Deny from all
+&lt;/Directory&gt;
+
+&lt;Directory "${apachehome}/www/*/installer"&gt;
+   Options -Indexes -FollowSymLinks
+   Order allow,deny
+   Deny from all
+&lt;/Directory&gt;
+                   </text>
+             </addTextToFile>
+           </actionList>
+           <ruleList>
+             <fileTest>
+                 <path>${apachehome}/conf/addons/application_secure.conf</path>
+                 <condition>not_exists</condition>
+             </fileTest>
+             <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+             </compareText>
+           </ruleList>
+        </actionGroup>
+
+        <!-- WIN: Adding a application secure conf which prohibit directory listings of applications under www context -->
+        <actionGroup>
+           <actionList>
+             <touchFile path="${apachehome}\conf\addons\application_secure.conf" />
+             <addTextToFile>
+                   <file>${apachehome}\conf\addons\application_secure.conf</file>
+                   <text>
+&lt;Directory "${apachehome}\www\*\scripts"&gt;
+   Options -Indexes -FollowSymLinks
+   Order allow,deny
+   Deny from all
+&lt;/Directory&gt;
+
+&lt;Directory "${apachehome}\www\*\installer"&gt;
+   Options -Indexes -FollowSymLinks
+   Order allow,deny
+   Deny from all
+&lt;/Directory&gt;
+                   </text>
+             </addTextToFile>
+           </actionList>
+           <ruleList>
+             <fileTest>
+                 <path>${apachehome}\conf\addons\application_secure.conf</path>
+                 <condition>not_exists</condition>
+             </fileTest>
+             <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+             </compareText>
+           </ruleList>
+        </actionGroup>
+
+        <!-- Lin | MAC :Start the apache server -->
+        <runProgram>
+           <program>${apachehome}/bin/apachectl</program>
+           <programArguments>"start"</programArguments>
+           <workingDirectory>${apachehome}/bin</workingDirectory>
+           <showMessageOnError>1</showMessageOnError>
+           <customErrorMessage>${msg(error.stop.apache)}</customErrorMessage>
+           <abortOnError>0</abortOnError>
+           <ruleList>
+               <compareText>
+                   <logic>does_not_equal</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+               </compareText>
+               <compareText>
+                   <logic>equals</logic>
+                   <text>${response}</text>
+                   <value>yes</value>
+               </compareText>
+           </ruleList>
+        </runProgram>
+
+        <!-- WIN :Start the apache server -->
+        <runProgram>
+           <program>wscript</program>
+           <programArguments>//NOLOGO "${apachephpinstalldir}\installer\ApachePhp\startApache.vbs" "${apachephpinstalldir}"</programArguments>
+           <workingDirectory>${apachephpinstalldir}/installer/ApachePhp</workingDirectory>
+           <showMessageOnError>1</showMessageOnError>
+           <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
+           <abortOnError>0</abortOnError>
+           <ruleList>
+               <compareText>
+                   <logic>equals</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+               </compareText>
+               <compareText>
+                   <logic>equals</logic>
+                   <text>${response}</text>
+                   <value>yes</value>
+               </compareText>
+           </ruleList>
+        </runProgram>
 
     </postInstallationActionList>
     <!-- finalPage actions -->
