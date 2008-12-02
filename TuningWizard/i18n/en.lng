@@ -2,6 +2,10 @@ Installer.Welcome.Title=Setup EnterpriseDB Tuning Wizard
 
 Installer.Welcome.Text=Welcome to the EnterpriseDB Tuning Wizard Setup.
 
+upgrade.existing.installation.title=Existing installation
+
+upgrade.existing.installation.description=An existing TuningWizard installation has been found at ${installdir}. This installation will be upgraded.
+
 install.summary=The Tuning Wizard performs basic tuning of your PostgreSQL server for the workload you select on your hardware.
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
