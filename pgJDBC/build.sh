@@ -23,8 +23,7 @@ fi
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
-    #source $WD/pgJDBC/build-windows.sh
-    echo "Not yet implemented" 
+    source $WD/pgJDBC/build-windows.sh
 fi
     
 ################################################################################
@@ -76,8 +75,7 @@ _prep_pgJDBC() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_prep_pgJDBC_windows || exit 1
-       echo "Not yet implemented" 
+        _prep_pgJDBC_windows || exit 1
     fi
     
 }
@@ -109,8 +107,7 @@ _build_pgJDBC() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_build_pgJDBC_windows || exit 1
-        echo "Not yet implemented" 
+        _build_pgJDBC_windows || exit 1
     fi
 }
 
@@ -156,7 +153,6 @@ _postprocess_pgJDBC() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-       #_postprocess_pgJDBC_windows || exit 1
-       echo "Not yet implemented" 
+       _postprocess_pgJDBC_windows || exit 1
     fi
 }
