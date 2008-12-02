@@ -61,10 +61,6 @@ _postprocess_pgphonehome_osx() {
     cp scripts/osx/check-connection.sh staging/osx/installer/pgph/check-connection.sh || _die "Failed to copy the check-connection script (scripts/osx/check-connection.sh)"
     chmod ugo+x staging/osx/installer/pgph/check-connection.sh
 
-    # Copy in the menu pick images
-    mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/*.ico staging/osx/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"
-
     cp staging/osx/pgph/config.php.in staging/osx/pgph/config.php || _die "Failed to copy the config file"
     rm -f staging/osx/pgph/config.php.in  || _die "Failed to remove the template config file"
 

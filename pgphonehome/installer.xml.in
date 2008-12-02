@@ -39,8 +39,6 @@
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
     <leftImage>../resources/edb-side.png</leftImage>
-    <productDisplayIcon>${installdir}/pgph/scripts/images/logo.ico</productDisplayIcon>
-    <windowsExecutableIcon>resources/logo.ico</windowsExecutableIcon>
 
     <!-- i18n files for the UI -->
     <customLanguageFileList>

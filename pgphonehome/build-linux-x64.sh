@@ -61,9 +61,6 @@ _postprocess_pgphonehome_linux_x64() {
     cp scripts/linux/check-connection.sh staging/linux-x64/installer/pgph/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux/check-connection.sh)"
     chmod ugo+x staging/linux-x64/installer/pgph/check-connection.sh
 
-     # copy logo Image
-    cp resources/*.ico staging/linux-x64/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"
-    
     cp staging/linux-x64/pgph/config.php.in staging/linux-x64/pgph/config.php || _die "Failed to copy the config file"
     rm -f staging/linux-x64/pgph/config.php.in  || _die "Failed to remove the template config file"
 
