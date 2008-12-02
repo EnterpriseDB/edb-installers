@@ -41,7 +41,7 @@ _compile_script() {
 mkdir -p "$FOLDER" 
 
 # Create the scripts
-_compile_script "$INSTALLDIR/scripts/pgjdbc.applescript" "$FOLDER/PostgreSQL JDBC Home Page.app" "$INSTALLDIR/scripts/images/pgjdbc.icns"
+_compile_script "$INSTALLDIR/scripts/pgjdbc.applescript" "$FOLDER/PostgreSQL JDBC Home Page.app" "$INSTALLDIR/scripts/images/pg-launchPgJDBC.icns"
 
 echo "$0 ran to completion"
 exit 0

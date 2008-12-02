@@ -31,6 +31,7 @@ _warn() {
         "$INSTALLDIR/scripts/xdg/pg-launchpgJDBC.desktop"  || _warn "Failed to Remove the pgJDBC menu"
       
 # Remove the icon resources
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-launchPgJDBC.png"
 echo "$0 ran to completion"
 exit 0
 
