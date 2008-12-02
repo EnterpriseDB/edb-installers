@@ -2,6 +2,10 @@ nstaller.Welcome.Title=Setup %1$s
 
 Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
 
+upgrade.existing.installation.title=Existing installation
+
+upgrade.existing.installation.description=An existing pgJDBC installation has been found at ${installdir}. This installation will be upgraded.
+
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 
 progress.text.creating.shortcuts=Creating menu shortcuts

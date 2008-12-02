@@ -479,5 +479,18 @@
 	        </actionGroup> 
             </postShowPageActionList>
         </directoryParameter>
+	<!-- Explain that we're using an existing installation directory -->
+        <labelParameter>
+            <name>upgrade</name>
+            <title>${msg(upgrade.existing.installation.title)}</title>
+            <description>${msg(upgrade.existing.installation.description)}</description>
+            <ruleList>
+		<compareText>
+                    <text>${pgJdbcVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </labelParameter>
     </parameterList>
 </project>
