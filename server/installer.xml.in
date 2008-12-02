@@ -583,6 +583,18 @@
                 <logMessage>
                     <text>Switching to upgrade mode with cluster: ${datadir}</text>
                 </logMessage>
+
+                <!-- Read the port number from the config file -->
+                <readFile>
+                    <path>${datadir}/postgresql.conf</path>
+                    <name>serverconfig</name>
+                </readFile>
+                <setInstallerVariableFromRegEx>
+                    <name>defaultport</name>
+                    <text>${serverconfig}</text>
+                    <pattern>^.*port\s*=\s*([\d]+)\s+.*$</pattern>
+                    <substitution>\1</substitution>
+                </setInstallerVariableFromRegEx>
             </actionList>
             
             <ruleList>
@@ -2659,6 +2671,18 @@
                         <logMessage>
                             <text>Switching to upgrade mode with cluster: ${datadir}</text>
                         </logMessage>
+
+                        <!-- Read the port number from the config file -->
+                        <readFile>
+                            <path>${datadir}/postgresql.conf</path>
+                            <name>serverconfig</name>
+                        </readFile>
+                        <setInstallerVariableFromRegEx>
+                            <name>defaultport</name>
+                            <text>${serverconfig}</text>
+                            <pattern>^.*port\s*=\s*([\d]+)\s+.*$</pattern>
+                            <substitution>\1</substitution>
+                        </setInstallerVariableFromRegEx>
                     </actionList>
 
                     <!-- We only check the data directory if it exists and isn't empty -->
