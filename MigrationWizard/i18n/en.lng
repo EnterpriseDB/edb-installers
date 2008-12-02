@@ -2,6 +2,10 @@ Installer.Welcome.Title=Setup EnterpriseDB Migration Wizard
 
 Installer.Welcome.Text=Welcome to the EnterpriseDB Migration Wizard Setup.
 
+upgrade.existing.installation.title=Existing installation
+
+upgrade.existing.installation.description=An existing MigrationWizard installation has been found at ${installdir}. This installation will be upgraded.
+
 install.summary=EnterpriseDB's MySQL to PostgreSQL Migration Wizard. 
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
