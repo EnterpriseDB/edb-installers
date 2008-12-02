@@ -1331,6 +1331,7 @@ include conf\addons\*.conf
       <allowEmptyValue>0</allowEmptyValue>
       <ask>yes</ask>
       <cliOptionName>prefix</cliOptionName>
+      <mustBeWritable>yes</mustBeWritable>
       <mustExist>0</mustExist>
       <width>40</width>
       <ruleList>
@@ -1401,22 +1402,6 @@ include conf\addons\*.conf
               <logic>equals</logic>
               <value>windows</value>
             </compareText>
-          </ruleList>
-        </actionGroup>
-        <!-- Validating whether installdir is writable -->
-        <actionGroup>
-          <actionList>
-            <setInstallerVariable name="installdir" value="${default_installdir}" />
-            <showWarning>
-              <text>${msg(apachephp.installdir.error)}</text>
-            </showWarning>
-            <setInstallerVariable name="next_page" value="installdir"/>
-          </actionList>
-          <ruleList>
-            <fileTest>
-               <path>${installdir}</path>
-               <condition>not_writable</condition>
-            </fileTest>
           </ruleList>
         </actionGroup>
       </postShowPageActionList>

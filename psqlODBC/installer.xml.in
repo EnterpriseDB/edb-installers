@@ -708,6 +708,7 @@
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>prefix</cliOptionName>
+            <mustBeWritable>yes</mustBeWritable>
             <mustExist>0</mustExist>
             <width>40</width>
             <ruleList>
@@ -755,10 +756,6 @@
                            <text>${platform_name}</text>
                            <value>windows</value>
                        </compareText>
-		       <fileTest>
-                            <path>${installdir}</path>
-                            <condition>not_writable</condition>
-                        </fileTest>
                     </ruleList>
                 </actionGroup>
             </postShowPageActionList>

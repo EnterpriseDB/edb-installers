@@ -618,7 +618,7 @@
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>prefix</cliOptionName>
-            <!--mustBeWritable>yes</mustBeWritable-->
+            <mustBeWritable>yes</mustBeWritable>
             <mustExist>0</mustExist>
             <width>40</width>
             <ruleList>
@@ -658,8 +658,8 @@
                     <ruleList>
                         <regExMatch>
                             <text>${installdir}</text>
-                            <logic>matches</logic>
-                            <pattern>^.*\s.*$</pattern>
+                            <logic>does_not_match</logic>
+                            <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
                         </regExMatch>
                         <compareText>
                             <text>${platform_name}</text>
@@ -689,22 +689,6 @@
                              <value>windows</value>
                         </compareText>
                    </ruleList>
-                </actionGroup>
-                <!-- Validating whether installdir is writable -->
-                <actionGroup>
-                   <actionList>
-                       <setInstallerVariable name="installdir" value="${default_installdir}" />
-                       <showWarning>
-                          <text>${msg(migrationwizard.installdir.error)}</text>
-                       </showWarning>
-                       <setInstallerVariable name="next_page" value="installdir"/>
-                  </actionList>
-                  <ruleList>
-                       <fileTest>
-                          <path>${installdir}</path>
-                          <condition>not_writable</condition>
-                       </fileTest>
-                  </ruleList>
                 </actionGroup>
             </validationActionList>
         </directoryParameter>
