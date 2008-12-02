@@ -1427,5 +1427,18 @@
                 </actionGroup>
             </validationActionList>
         </directoryParameter>
+	<!-- Explain that we're using an existing installation directory -->
+	<labelParameter>
+            <name>upgrade</name>
+            <title>${msg(upgrade.existing.installation.title)}</title>
+            <description>${msg(upgrade.existing.installation.description)}</description>
+            <ruleList>
+		<compareText>
+                    <logic>contains</logic>
+                    <text>${PostGISVersion}</text>
+                    <value>PG_VERSION_POSTGIS</value>
+                </compareText>
+            </ruleList>
+        </labelParameter>
     </parameterList>
 </project>
