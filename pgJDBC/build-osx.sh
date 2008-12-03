@@ -69,7 +69,7 @@ _postprocess_pgJDBC_osx() {
 
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/pgjdbc.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/pgjdbc.icns)"
+    cp resources/*.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/*.icns)"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
