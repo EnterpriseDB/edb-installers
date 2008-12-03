@@ -1031,9 +1031,6 @@
                         <distributionDirectory>
                             <origin>staging/windows/scripts</origin>
                         </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>resources</origin>
-                        </distributionDirectory>
                     </distributionFileList>
                 </folder>
    
@@ -1062,9 +1059,6 @@
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/linux/scripts</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>resources</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1095,9 +1089,6 @@
                         <distributionDirectory>
                             <origin>staging/linux-x64/scripts</origin>
                         </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>resources</origin>
-                        </distributionDirectory>
                     </distributionFileList>
                 </folder>
    
@@ -1126,9 +1117,6 @@
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/osx/scripts</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>resources</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
