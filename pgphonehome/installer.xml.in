@@ -379,13 +379,11 @@
         </runProgram>
 
         <!-- WIN :Stop the apache server -->
-        <runProgram>
-           <program>wscript</program>
-           <programArguments>//NOLOGO "${apachephpinstalldir}\installer\ApachePhp\stopApache.vbs" "${apachephpinstalldir}"</programArguments>
-           <workingDirectory>${apachephpinstalldir}/installer/ApachePhp</workingDirectory>
+        <stopWindowsService>
+           <serviceName>EnterpriseDB ApachePHP</serviceName>
+           <abortOnError>1</abortOnError>
            <showMessageOnError>1</showMessageOnError>
            <customErrorMessage>${msg(error.stop.apache)}</customErrorMessage>
-           <abortOnError>1</abortOnError>
            <ruleList>
                <compareText>
                    <logic>equals</logic>
@@ -397,8 +395,8 @@
                    <text>${response}</text>
                    <value>yes</value>
                </compareText>
-           </ruleList>    
-        </runProgram>
+           </ruleList>
+        </stopWindowsService>
 
         <!-- WIN: Set the Installation Directory -->
         <setInstallerVariable name="installdir" value="${apachehome}\www">
@@ -876,13 +874,11 @@
         </actionGroup>
 
         <!-- WIN :Start the apache server -->
-        <runProgram>
-           <program>wscript</program>
-           <programArguments>//NOLOGO "${apachephpinstalldir}\installer\ApachePhp\startApache.vbs" "${apachephpinstalldir}"</programArguments>
-           <workingDirectory>${apachephpinstalldir}/installer/ApachePhp</workingDirectory>
+        <startWindowsService>
+           <serviceName>EnterpriseDB ApachePHP</serviceName>
+           <abortOnError>1</abortOnError>
            <showMessageOnError>1</showMessageOnError>
            <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
-           <abortOnError>0</abortOnError>
            <ruleList>
                <compareText>
                    <logic>equals</logic>
@@ -895,7 +891,8 @@
                    <value>yes</value>
                </compareText>
            </ruleList>
-        </runProgram>
+        </startWindowsService>
+
         <showInfo>
              <text>${msg(pgphonehome.url.info)}</text>
         </showInfo>
