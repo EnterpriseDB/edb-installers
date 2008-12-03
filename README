@@ -143,7 +143,11 @@ and then unpack the archive in /opt/local/share/sgml
 
 5) Ensure that all the unpacked files are world readable.
 
-6) Create the file /opt/local/share/sgml/catalog, with the following contents:
+6) Run the following command in the docbook-4.2 directory:
+
+    perl -pi -e 's/iso-(.*).gml/ISO\1/g' docbook.cat
+
+7) Create the file /opt/local/share/sgml/catalog, with the following contents:
 
 CATALOG "openjade/catalog"    
 CATALOG "docbook-4.2/docbook.cat"
