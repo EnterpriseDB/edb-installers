@@ -14,6 +14,8 @@ Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
+install.summary=JDBC Drivers for PostgreSQL Server.
+
 pgjdbc.installdir.empty=The installation directory cannot be empty
 
 pgjdbc.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.

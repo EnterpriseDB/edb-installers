@@ -1,17 +1,17 @@
 <project>
     <!-- Package details -->
     <shortName>pgjdbc</shortName>
-    <fullName>JDBC drivers for PostgreSQL</fullName>
+    <fullName>pgJDBC</fullName>
     <version>PG_VERSION_PGJDBC</version>
     <!-- These options are used on Windows -->
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
     <!-- Product Specific Options -->
     <productComments>JDBC drivers for PostgreSQL, packaged by EnterpriseDB</productComments>
-    <productDisplayName>JDBC drivers for PostgreSQL</productDisplayName>
+    <productDisplayName>${product_fullname} ${product_version}</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <!-- The options are used for RPM registration -->
     <description>JDBC Drivers for PostgreSQL </description>
-    <summary>JDBC drivers for PostgreSQL distributed by EnterpriseDB</summary>
+    <summary>JDBC drivers for PostgreSQL, packaged by EnterpriseDB</summary>
     <vendor>EnterpriseDB</vendor>
 
     <!-- Installer Size -->
@@ -225,6 +225,30 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+   
+        <!-- WIN: Set the installation directory in case of re-install/upgrade -->
+        <actionGroup>
+            <actionList>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgJDBC</key>
+                    <name>Location</name>
+                    <variable>installdir</variable>
+                </registryGet> 
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${pgJdbcVersion}</text>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+  
     </preInstallationActionList>
     <postInstallationActionList>
         <actionGroup>
@@ -233,7 +257,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>pgJDBC</section>
                     <key>Description</key>
-                    <value>${product_fullname}</value>
+                    <value>${msg(install.summary)}</value>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
