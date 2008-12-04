@@ -535,6 +535,19 @@
          </ruleList>
         </actionGroup>
 
+        <!-- Setting the LD_LIBRARY_PATH variable -->
+        <setEnvironmentVariable>
+             <name>LD_LIBRARY_PATH</name>
+             <value>${apachehome}/lib</value>
+             <ruleList>
+                <compareText>
+                   <logic>does_not_equal</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+                </compareText> 
+             </ruleList>
+        </setEnvironmentVariable>  
+
          <!-- Linux | MAC: Adding .htpasswd files -->
          <actionGroup>
           <actionList>
