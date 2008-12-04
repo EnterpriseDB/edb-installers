@@ -6,7 +6,7 @@ upgrade.existing.installation.title=Existing installation
 
 upgrade.existing.installation.description=An existing psqlODBC installation has been found at ${installdir}. This installation will be upgraded.
 
-install.summary=ODBC drivers for PostgreSQL distributed by EnterpriseDB
+install.summary=ODBC drivers for PostgreSQL Server.
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 
@@ -22,3 +22,4 @@ psqlodbc.installdir.empty=The installation directory cannot be empty
 
 psqlodbc.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
+progress.text.register.odbc.windows=Registering ODBC Drivers.

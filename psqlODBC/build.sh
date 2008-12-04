@@ -23,8 +23,7 @@ fi
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
-    #source $WD/psqlODBC/build-windows.sh
-    echo "Not yet implemented"
+    source $WD/psqlODBC/build-windows.sh
 fi
     
 ################################################################################
@@ -76,8 +75,7 @@ _prep_psqlODBC() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_prep_psqlODBC_windows || exit 1
-        echo "Not yet implemented"
+        _prep_psqlODBC_windows || exit 1
     fi
     
 }
@@ -109,8 +107,7 @@ _build_psqlODBC() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_build_psqlODBC_windows || exit 1
-        echo "Not yet implemented"
+        _build_psqlODBC_windows || exit 1
     fi
 }
 
@@ -131,9 +128,12 @@ _postprocess_psqlODBC() {
         rm installer.xml
     fi
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (psqlODBC/installer.xml.in)"
+
+    PSQLODBC_MAJOR_VERSION=`echo $PG_VERSION_PSQLODBC | cut -f1,2 -d "." | sed -e 's:\.::g'`
     
     _replace PG_VERSION_PSQLODBC $PG_VERSION_PSQLODBC installer.xml || _die "Failed to set the version in the installer project file (psqlODBC/installer.xml)"
     _replace PG_BUILDNUM_PSQLODBC $PG_BUILDNUM_PSQLODBC installer.xml || _die "Failed to set the Build Number in the installer project file (psqlODBC/installer.xml)"
+    _replace PSQLODBC_MAJOR_VERSION $PSQLODBC_MAJOR_VERSION installer.xml || _die "Failed to set the psqlODBC major version number in the installer project file (psqlODBC/installer.xml)"
    
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
@@ -156,7 +156,6 @@ _postprocess_psqlODBC() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_postprocess_psqlODBC_windows || exit 1
-        echo "Not yet implemented"
+        _postprocess_psqlODBC_windows || exit 1
     fi
 }
