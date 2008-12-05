@@ -164,7 +164,18 @@ _prep_DevServer() {
 	echo "Patching pl/java source..."
     cd pljava-1.4.0
     patch -p0 < ../../../tarballs/pljava-fix.patch
-	
+
+    echo "making another source tree for building postgres Docs"
+    if [ -e postgres.docs ];
+    then
+      echo "Removing existing postgres.docs source directory"
+      rm -rf postgres.docs  || _die "Couldn't remove the existing postgres.docs source directory (source/postgres.docs)"
+    fi
+
+    # Grab a copy of the source tree
+    cp -R pgsql postgres.docs || _die "Failed to copy the source code (source/pgsql)"
+    chmod -R ugo+w postgres.docs || _die "Couldn't set the permissions on the source directory"
+
     # Per-platform prep
     cd $WD
     
@@ -200,34 +211,8 @@ _prep_DevServer() {
 _build_DevServer() {
 
     cd $WD/DevServer/source/postgres.docs
-    cvs -z3 update -dP
     echo "configuring postgres for osx to build Documentation"
-    if [ ! -e $WD/DevServer/staging/osx ];
-    then
-	echo "Creating staging directory for osx"
-	mkdir -p $WD/DevServer/staging/osx || _die "Couldn't create the staging directory"
-    fi
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" ./configure --host=powerpc-apple-darwin --prefix=$WD/DevServer/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5  || _die "Failed to configure postgres for i386"
-    mv src/include/pg_config.h src/include/pg_config_i386.h
-
-    echo "Configuring the postgres source tree for PPC"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" ./configure --host=i386-apple-darwin --prefix=$WD/DevServer/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 || _die "Failed to configure postgres for PPC"
-    mv src/include/pg_config.h src/include/pg_config_ppc.h
-
-    echo "Configuring the postgres source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" ./configure --prefix=$WD/DevServer/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 || _die "Failed to configure postgres for Universal"
-
-    # Create a replacement pg_config.h that will pull in the appropriate architecture-specific one:
-    echo "#ifdef __BIG_ENDIAN__" > src/include/pg_config.h
-    echo "#include \"pg_config_ppc.h\"" >> src/include/pg_config.h
-    echo "#else" >> src/include/pg_config.h
-    echo "#include \"pg_config_i386.h\"" >> src/include/pg_config.h
-    echo "#endif" >> src/include/pg_config.h
-
-    # Fixup the makefiles
-    echo "Post-processing Makefiles for Universal Binary build"
-    find . -name Makefile -print -exec perl -p -i.backup -e 's/\Q$(LD) $(LDREL) $(LDOUT)\E (\S+) (.+)/\$(LD) -arch ppc \$(LDREL) \$(LDOUT) $1.ppc $2; \$(LD) -arch i386 \$(LDREL) \$(LDOUT) $1.i386 $2; lipo -create -output $1 $1.ppc $1.i386/' {} \; || _die "Failed to post-process the postgres Makefiles for Universal build"
-    
+    ./configure || _die "Failed to configure postgres source to build documentation" 
     cd doc/src
     make postgres.tar.gz || _die "Failed to build Postgres Documentation"
     cd $WD
