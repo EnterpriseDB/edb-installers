@@ -112,8 +112,6 @@ then
     mv /tmp/$$.tmp $WD/DevServer/build-windows.sh
     sed '/pgaevent/ s/^/#/' $WD/DevServer/build-windows.sh > /tmp/$$.tmp
     mv /tmp/$$.tmp $WD/DevServer/build-windows.sh
-    sed '/postgres.tar.gz/ s/^/#/' $WD/DevServer/build-windows.sh > /tmp/$$.tmp
-    mv /tmp/$$.tmp $WD/DevServer/build-windows.sh
     source $WD/DevServer/build-windows.sh
 fi
     
@@ -201,27 +199,64 @@ _prep_DevServer() {
 
 _build_DevServer() {
 
+    cd $WD/DevServer/source/postgres.docs
+    cvs -z3 update -dP
+    echo "configuring postgres for osx to build Documentation"
+    if [ ! -e $WD/DevServer/staging/osx ];
+    then
+	echo "Creating staging directory for osx"
+	mkdir -p $WD/DevServer/staging/osx || _die "Couldn't create the staging directory"
+    fi
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" ./configure --host=powerpc-apple-darwin --prefix=$WD/DevServer/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5  || _die "Failed to configure postgres for i386"
+    mv src/include/pg_config.h src/include/pg_config_i386.h
+
+    echo "Configuring the postgres source tree for PPC"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" ./configure --host=i386-apple-darwin --prefix=$WD/DevServer/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 || _die "Failed to configure postgres for PPC"
+    mv src/include/pg_config.h src/include/pg_config_ppc.h
+
+    echo "Configuring the postgres source tree for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" ./configure --prefix=$WD/DevServer/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 || _die "Failed to configure postgres for Universal"
+
+    # Create a replacement pg_config.h that will pull in the appropriate architecture-specific one:
+    echo "#ifdef __BIG_ENDIAN__" > src/include/pg_config.h
+    echo "#include \"pg_config_ppc.h\"" >> src/include/pg_config.h
+    echo "#else" >> src/include/pg_config.h
+    echo "#include \"pg_config_i386.h\"" >> src/include/pg_config.h
+    echo "#endif" >> src/include/pg_config.h
+
+    # Fixup the makefiles
+    echo "Post-processing Makefiles for Universal Binary build"
+    find . -name Makefile -print -exec perl -p -i.backup -e 's/\Q$(LD) $(LDREL) $(LDOUT)\E (\S+) (.+)/\$(LD) -arch ppc \$(LDREL) \$(LDOUT) $1.ppc $2; \$(LD) -arch i386 \$(LDREL) \$(LDOUT) $1.i386 $2; lipo -create -output $1 $1.ppc $1.i386/' {} \; || _die "Failed to post-process the postgres Makefiles for Universal build"
+    
+    cd doc/src
+    make postgres.tar.gz || _die "Failed to build Postgres Documentation"
+    cd $WD
+   
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
+	cp $WD/DevServer/source/postgres.docs/doc/src/postgres.tar.gz $WD/DevServer/source/postgres.osx/doc/
         _build_DevServer_osx || exit 1
     fi
 
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
+	cp $WD/DevServer/source/postgres.docs/doc/src/postgres.tar.gz $WD/DevServer/source/postgres.linux/doc/
         _build_DevServer_linux || exit 1
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
+	cp $WD/DevServer/source/postgres.docs/doc/src/postgres.tar.gz $WD/DevServer/source/postgres.linux-x64/doc/
         _build_DevServer_linux_x64 || exit 1
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
+	cp $WD/DevServer/source/postgres.docs/doc/src/postgres.tar.gz $WD/DevServer/source/postgres.windows/doc/
         _build_DevServer_windows || exit 1
     fi
 }
