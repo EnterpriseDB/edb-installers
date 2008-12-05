@@ -125,9 +125,6 @@ _postprocess_psqlODBC_windows() {
 
     cd $WD/psqlODBC
 
-    mkdir -p staging/windows/installer/psqlODBC || _die "Failed to create directory for installation helper files"
-    cp scripts/windows/register-driver.bat staging/windows/installer/psqlODBC || _die "Failed to copy the register-driver batch file"
- 
     mkdir -p staging/windows/scripts/images || _die "Failed to create directory for menu images"
     cp resources/*.ico staging/windows/scripts/images || _die "Failed to copy menu icon image"
 

@@ -589,36 +589,116 @@
             </ruleList>
         </actionGroup>
 
-        <!-- WIN| Substituting values in the register-driver script -->
-        <substitute>
-           <files>${installdir}\PSQLODBC_MAJOR_VERSION\installer\psqlODBC\register-driver.bat</files>
-           <substitutionList>
-              <substitution>
-                 <pattern>@@INSTALL_DIR@@</pattern>
-                 <value>${installdir}\PSQLODBC_MAJOR_VERSION</value>
-              </substitution>
-              <substitution>
-                 <pattern>@@VERSION@@</pattern>
-                 <value>${product_version}</value>
-              </substitution> 
-           </substitutionList>
-           <ruleList>
-              <compareText>
-                 <logic>equals</logic>
-                 <text>${platform_name}</text>
-                 <value>windows</value>
-              </compareText>
-           </ruleList>
-        </substitute>
-
         <!--WIN: Register ODBC Drivers -->
-        <runProgram>
-            <program>${installdir}\PSQLODBC_MAJOR_VERSION\installer\psqlODBC\register-driver.bat</program>
-            <programArguments/>
-            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-            <abortOnError>0</abortOnError>
-            <showMessageOnError>1</showMessageOnError>
-        </runProgram>  
+        <actionGroup>
+            <actionList>
+                 <!-- ANSI -->
+                 <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
+                    <name>APILevel</name>
+                    <value>1</value>
+                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                 </registrySet>
+                 <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
+                    <name>ConnectFunctions</name>
+                    <value>YYN</value>
+                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                 </registrySet>
+                 <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
+                    <name>Driver</name>
+                    <value>${installdir}\PSQLODBC_MAJOR_VERSION\bin\psqlodbc30a.dll</value>
+                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                 </registrySet>
+                 <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
+                    <name>DriverODBCVer</name>
+                    <value>${product_version}</value>
+                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                 </registrySet>
+                 <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
+                    <name>FileUsage</name>
+                    <value>0</value>
+                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                 </registrySet>
+                 <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
+                    <name>Setup</name>
+                    <value>${installdir}\PSQLODBC_MAJOR_VERSION\bin\psqlodbc30a.dll</value>
+                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                 </registrySet>
+                 <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
+                    <name>SQLLevel</name>
+                    <value>1</value>
+                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                 </registrySet>
+                 <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers</key>
+                    <name>PostgreSQL ODBC Driver(ANSI)</name>
+                    <value>Installed</value>
+                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                 </registrySet>
+                 <!-- UNICODE -->
+                 <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
+                    <name>APILevel</name>
+                    <value>1</value>
+                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                 </registrySet>
+                 <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
+                    <name>ConnectFunctions</name>
+                    <value>YYN</value>
+                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                 </registrySet>
+                 <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
+                    <name>Driver</name>
+                    <value>${installdir}\PSQLODBC_MAJOR_VERSION\bin\psqlodbc35w.dll</value>
+                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                 </registrySet>
+                 <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
+                    <name>DriverODBCVer</name>
+                    <value>${product_version}</value>
+                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                 </registrySet>
+                 <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
+                    <name>FileUsage</name>
+                    <value>0</value>
+                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                 </registrySet>
+                 <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
+                    <name>Setup</name>
+                    <value>${installdir}\PSQLODBC_MAJOR_VERSION\bin\psqlodbc35w.dll</value>
+                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                 </registrySet>
+                 <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
+                    <name>SQLLevel</name>
+                    <value>1</value>
+                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                 </registrySet>
+                 <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers</key>
+                    <name>PostgreSQL ODBC Driver(UNICODE)</name>
+                    <value>Installed</value>
+                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                 </registrySet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
 
     </postInstallationActionList>
 
@@ -893,9 +973,6 @@
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/windows/scripts</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/windows/installer</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
