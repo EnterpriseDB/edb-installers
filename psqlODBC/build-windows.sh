@@ -109,10 +109,10 @@ EOT
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/krb5/bin/i386/gssapi32.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/krb5/bin/i386/k5sprt32.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/krb5/bin/i386/krb5_32.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/krb5/bin/i386/msvcr71.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/krb5/bin/i386/comerr32.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/libiconv/bin/libiconv2.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/libiconv/bin/libintl3.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/libiconv/bin/libintl3.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll"
+    scp $PG_SSH_WINDOWS:C:/Windows/System32/msvcr71.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll"
 
 }
 
