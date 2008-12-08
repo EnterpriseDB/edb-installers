@@ -310,3 +310,16 @@ then
     _postprocess_pgphonehome || exit 1
 fi
 
+# Package: Npgsql
+if [ $PG_PACKAGE_NPGSQL == 1 ];
+then
+    cd $WD
+    source ./Npgsql/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_Npgsql || exit 1
+        _build_Npgsql || exit 1
+    fi
+    _postprocess_Npgsql || exit 1
+fi
