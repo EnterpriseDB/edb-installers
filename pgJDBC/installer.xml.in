@@ -242,7 +242,7 @@
                     <value/>
                 </compareText>
                 <compareText>
-                    <logic>does_not_equal</logic>
+                    <logic>equals</logic>
                     <text>${platform_name}</text>
                     <value>windows</value>
                 </compareText>
