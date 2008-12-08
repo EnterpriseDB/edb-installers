@@ -112,6 +112,8 @@ then
     mv /tmp/$$.tmp $WD/DevServer/build-windows.sh
     sed '/pgaevent/ s/^/#/' $WD/DevServer/build-windows.sh > /tmp/$$.tmp
     mv /tmp/$$.tmp $WD/DevServer/build-windows.sh
+    sed '/postgres.tar.gz/ s/^/#/' $WD/DevServer/build-windows.sh > /tmp/$$.tmp
+    mv /tmp/$$.tmp $WD/DevServer/build-windows.sh
     source $WD/DevServer/build-windows.sh
 fi
     
@@ -221,29 +223,37 @@ _build_DevServer() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-	    cp $WD/DevServer/source/postgres.docs/doc/src/postgres.tar.gz $WD/DevServer/source/postgres.osx/doc/
         _build_DevServer_osx || exit 1
+	mkdir -p $WD/DevServer/staging/osx/doc/postgresql/html
+	cd $WD/DevServer/staging/osx/doc/postgresql/html
+	tar -zxvf $WD/DevServer/source/postgres.docs/doc/src/postgres.tar.gz || _die "Failed to unpack postgres docs into staging directory ($WD/DevServer/staging/osx/doc/postgresql/html)"
     fi
 
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-	    cp $WD/DevServer/source/postgres.docs/doc/src/postgres.tar.gz $WD/DevServer/source/postgres.linux/doc/
         _build_DevServer_linux || exit 1
+	mkdir -p $WD/DevServer/staging/linux/doc/postgresql/html
+        cd $WD/DevServer/staging/linux/doc/postgresql/html
+        tar -zxvf $WD/DevServer/source/postgres.docs/doc/src/postgres.tar.gz || _die "Failed to unpack postgres docs into staging directory ($WD/DevServer/staging/linux/doc/postgresql/html)"
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-	    cp $WD/DevServer/source/postgres.docs/doc/src/postgres.tar.gz $WD/DevServer/source/postgres.linux-x64/doc/
         _build_DevServer_linux_x64 || exit 1
+	mkdir -p $WD/DevServer/staging/linux-x64/doc/postgresql/html
+        cd $WD/DevServer/staging/linux-x64/doc/postgresql/html
+        tar -zxvf $WD/DevServer/source/postgres.docs/doc/src/postgres.tar.gz || _die "Failed to unpack postgres docs into staging directory ($WD/DevServer/staging/linux-x64/doc/postgresql/html)"
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-	    cp $WD/DevServer/source/postgres.docs/doc/src/postgres.tar.gz $WD/DevServer/source/postgres.windows/doc/
         _build_DevServer_windows || exit 1
+	mkdir -p $WD/DevServer/staging/windows/doc/postgresql/html
+        cd $WD/DevServer/staging/windows/postgresql/html
+        tar -zxvf $WD/DevServer/source/postgres.docs/doc/src/postgres.tar.gz || _die "Failed to unpack postgres docs into staging directory ($WD/DevServer/staging/windows/doc/postgresql/html)"
     fi
 }
 
