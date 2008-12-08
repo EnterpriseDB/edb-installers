@@ -1,0 +1,7 @@
+[Desktop Entry]
+Version=1.0
+Type=Directory
+Name=Npgsql
+Comment=Npgsql, packaged by EnterpriseDB
+Encoding=UTF-8
+Icon=pg-npgsql.png
