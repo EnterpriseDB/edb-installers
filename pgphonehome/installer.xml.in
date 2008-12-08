@@ -772,7 +772,7 @@
    # Securing website
 
    AuthType Basic
-   AuthUserFile "${env(APPDATA)}\pgPhoneHome.htpasswd"
+   AuthUserFile "${env(APPDATA)}\pgphonehome.htpasswd"
    AuthName ${product_fullname}
 
    require valid-user
@@ -805,7 +805,7 @@
    # Securing website
 
    AuthType Basic
-   AuthUserFile /etc/pgPhoneHome.htpasswd
+   AuthUserFile /etc/pgphonehome.htpasswd
    AuthName ${product_fullname}
 
    require valid-user
