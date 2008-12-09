@@ -269,7 +269,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>Npgsql</section>
                     <key>Version</key>
-                    <value>${product_version}-PG_BUILDNUM_npgsql</value>
+                    <value>${product_version}-PG_BUILDNUM_NPGSQL</value>
                 </iniFileSet>
                 <runProgram>
                     <program>${installdir}/installer/npgsql/createshortcuts.sh</program>

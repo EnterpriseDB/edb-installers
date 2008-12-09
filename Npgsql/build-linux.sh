@@ -54,6 +54,7 @@ _build_Npgsql_linux() {
 _postprocess_Npgsql_linux() {
  
     cp -R $WD/Npgsql/source/Npgsql.linux/* $WD/Npgsql/staging/linux || _die "Failed to copy the Npgsql Source into the staging directory"
+    chmod -R ugo+rx $WD/Npgsql/staging/linux/docs
 
     cd $WD/Npgsql
 

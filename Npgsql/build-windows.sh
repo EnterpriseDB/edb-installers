@@ -53,6 +53,7 @@ _build_Npgsql_windows() {
 _postprocess_Npgsql_windows() {
  
     cp -R $WD/Npgsql/source/Npgsql.windows/* $WD/Npgsql/staging/windows || _die "Failed to copy the Npgsql Source into the staging directory"
+    chmod -R ugo+rx $WD/Npgsql/staging/windows/docs
 
     cd $WD/Npgsql
     

@@ -54,6 +54,7 @@ _build_Npgsql_osx() {
 _postprocess_Npgsql_osx() {
  
     cp -R $WD/Npgsql/source/Npgsql.osx/* $WD/Npgsql/staging/osx || _die "Failed to copy the Npgsql Source into the staging directory"
+    chmod -R ugo+rx $WD/Npgsql/staging/osx/docs
 
     cd $WD/Npgsql
 
