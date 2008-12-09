@@ -7,7 +7,7 @@
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
     <!-- Product Specific Options -->
     <productComments>Npgsql - .Net Data Provider for Postgresql packaged by EnterpriseDB</productComments>
-    <productDisplayName>Npgsql</productDisplayName>
+    <productDisplayName>${product_fullname} ${product_version}</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <!-- The options are used for RPM registration -->
     <description>Npgsql - .Net Data Provider for Postgresql</description>
@@ -232,7 +232,7 @@
 	        <registryGet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Npgsql</key>
                     <name>Location</name>
-                    <variable>npgsqlVersion</variable>
+                    <variable>installdir</variable>
                 </registryGet>
             </actionList>
             <ruleList>
