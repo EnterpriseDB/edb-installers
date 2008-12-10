@@ -32,13 +32,13 @@ echo "Running the build" >> autobuild.log
 # Create a remote directory and upload the output.
 DATE=`date +'%Y-%m-%d'`
 echo "Creating pub/pgInstaller/$DATE on the sftp server" >> autobuild.log
-ssh dave.page@sftp.enterprisedb.com mkdir -p pub/pgInstaller/$DATE >> autobuild.log 2>&1
+ssh dpage@sftp.enterprisedb.com mkdir -p pub/pgInstaller/$DATE >> autobuild.log 2>&1
 
 echo "Uploading output to pub/pgInstaller/$DATE on the sftp server" >> autobuild.log
-scp output/* dave.page@sftp.enterprisedb.com:pub/pgInstaller/$DATE >> autobuild.log 2>&1
+scp output/* dpage@sftp.enterprisedb.com:pub/pgInstaller/$DATE >> autobuild.log 2>&1
 
 echo "Purging old builds from the sftp server" >> autobuild.log
-ssh dave.page@sftp.enterprisedb.com "bin/culldirs \"pub/pgInstaller/*-*-*\" 3" >> autobuild.log 2>&1
+ssh dpage@sftp.enterprisedb.com "bin/culldirs \"pub/pgInstaller/*-*-*\" 3" >> autobuild.log 2>&1
 
 echo "#######################################################################" >> autobuild.log
 echo "Build run completed at `date`" >> autobuild.log
