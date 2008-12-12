@@ -105,20 +105,6 @@ then
     _postprocess_server || exit 1
 fi
 
-# Package: DevServer
-if [ $PG_PACKAGE_DEVSERVER == 1 ];
-then
-    source ./DevServer/build.sh
-
-    if [ $SKIPBUILD == 0 ];
-    then
-        _prep_DevServer || exit 1
-        _build_DevServer || exit 1
-    fi
-
-    _postprocess_DevServer || exit 1
-fi
-
 # Package: ApachePhp
 if [ $PG_PACKAGE_APACHEPHP == 1 ];
 then
@@ -322,4 +308,19 @@ then
         _build_Npgsql || exit 1
     fi
     _postprocess_Npgsql || exit 1
+fi
+
+# Package: DevServer
+# ALWAYS BUILD THIS LAST!!
+if [ $PG_PACKAGE_DEVSERVER == 1 ];
+then
+    source ./DevServer/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_DevServer || exit 1
+        _build_DevServer || exit 1
+    fi
+
+    _postprocess_DevServer || exit 1
 fi
