@@ -12,20 +12,27 @@ cp -R $WD/server/scripts/* $WD/DevServer/scripts || _die "Failed to copy the scr
 # Copy the resources folder from server
 if [ -e $WD/DevServer/resources ]; then
     echo "Removing existing resources directory"
-    rm -rf $WD/DevServer/resources _die "couldn't remove the resources directory"
+    rm -rf $WD/DevServer/resources || _die "couldn't remove the resources directory"
 fi
 echo "creating resources directory"
 mkdir -p $WD/DevServer/resources || _die "Failed to create directory for resources"
 cp -R $WD/server/resources/* $WD/DevServer/resources || _die "Failed to copy the resources folder from server to DevServer"
 
+_replace "PostgreSQL .\.." "PostgreSQL Development Build" "$WD/DevServer/resources/installation-notes.html" || _die "Failed to change the Version in installation-notes.html"
+
+_replace "Welcome to the PostgreSQL Development Build Installation Wizard" "Welcome to the PostgreSQL Development Build Installation Wizard. This is a pre-release version of PostgreSQL intended for testing only. <b>Not for production use</b>" "$WD/DevServer/resources/installation-notes.html" || _die "Failed to include Development Build Description in installation-notes.html"
+
 # Copy the i18n folder from server
 if [ -e $WD/DevServer/i18n ]; then
     echo "Removing existing i18n directory"
-    rm -rf $WD/DevServer/i18n _die "couldn't remove the i18n directory"
+    rm -rf $WD/DevServer/i18n || _die "couldn't remove the i18n directory"
 fi
 echo "creating i18n directory"
 mkdir -p $WD/DevServer/i18n || _die "Failed to create directory for i18n"
 cp -R $WD/server/i18n/* $WD/DevServer/i18n || _die "Failed to copy the i18n folder from server to DevServer"
+echo "Writing DevServer Description for Installer first screen"
+echo "Installer.Welcome.Title=Setup %1\$s Setup Wizard" >> $WD/DevServer/i18n/en.lng
+echo "Installer.Welcome.Text=Welcome to the %1\$s Setup Wizard. \n\nThis is a pre-release development build intended for testing only. Not for production use" >> $WD/DevServer/i18n/en.lng
 
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
