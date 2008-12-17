@@ -201,7 +201,7 @@
         </compareText>
       </ruleList>
     </actionGroup>
-    <!-- Stopping apache if already started - Linux  -->
+    <!-- Stopping apache if already started - Linux | MAC  -->
     <runProgram>
       <program>${apache_home}/bin/apachectl</program>
       <programArguments>"stop"</programArguments>
@@ -210,32 +210,15 @@
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
         <compareText>
-          <logic>contains</logic>
+          <logic>does_not_equal</logic>
           <text>${platform_name}</text>
-          <value>linux</value>
+          <value>windows</value>
         </compareText>
         <compareText>
           <logic>does_not_equal</logic>
           <text>${apache_home}</text>
           <value/>
         </compareText>
-      </ruleList>
-    </runProgram>
-    <!-- MAC: Stop the server -->
-    <runProgram>
-      <program>/sbin/SystemStarter</program>
-      <programArguments>stop EnterpriseDBApachePhp</programArguments>
-      <abortOnError>0</abortOnError>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>osx</value>
-        </compareText>
-        <fileExists>
-          <path>/Library/StartupItems/EnterpriseDB-ApachePhp/EnterpriseDBApachePhp</path>
-        </fileExists>
       </ruleList>
     </runProgram>
     <!-- WIN : Set the Apache Port from registry. ApachePhp Installation would have set these values -->
@@ -848,6 +831,49 @@ include conf\addons\*.conf
         </compareText>
       </ruleList>
     </actionGroup>
+    
+     <!-- MAC: Install Apache as Service (in upgrade) for older installations -->
+    <actionGroup>
+      <actionList>
+        <runProgram>
+          <customErrorMessage>${msg(error.install.apache)}</customErrorMessage>
+          <program>${installdir}/installer/ApachePhp/startupcfg.sh</program>
+          <programArguments>"${installdir}"</programArguments>
+          <workingDirectory>${installdir}/installer/ApachePhp</workingDirectory>
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${apacheport}</text>
+          <value/>
+        </compareText>
+	<fileExists>
+          <path>/Library/StartupItems/EnterpriseDB-ApachePhp</path>
+        </fileExists>
+      </ruleList>
+    </actionGroup>
+    
+    <!-- MAC: Remove the startup item from older installations -->
+    <deleteFile>
+      <path>/Library/StartupItems/EnterpriseDB-ApachePhp</path>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+	<fileExists>
+          <path>/Library/StartupItems/EnterpriseDB-ApachePhp</path>
+        </fileExists>
+      </ruleList>
+    </deleteFile>
+
     <actionGroup>
       <actionList>
         <!-- Set the Apache Home , PHP Home and Apache Port(default 8080) to registry. -->
@@ -1045,9 +1071,10 @@ include conf\addons\*.conf
         </compareText>
       </ruleList>
     </deleteFile>
-    <!-- MAC: Remove the startup item -->
+
+    <!-- MAC: Uninstall Apache Service -->
     <deleteFile>
-      <path>/Library/StartupItems/EnterpriseDB-ApachePhp</path>
+      <path>/Library/LaunchDaemons/com.edb.launchd.apache.plist</path>
       <ruleList>
         <compareText>
           <logic>equals</logic>

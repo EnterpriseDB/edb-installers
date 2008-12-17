@@ -24,63 +24,34 @@ _warn() {
 }
 
 # Configure database startup
-mkdir -p "/Library/StartupItems/EnterpriseDB-ApachePhp" || _die "Failed to create the startup directory (/Library/StartupItems/EnterpriseDB-ApachePhp)"
+mkdir -p /Library/LaunchDaemons || _die "Failed to create directory for root daemons"
 
 # Write the plist file
-cat <<EOT > "/Library/StartupItems/EnterpriseDB-ApachePhp/StartupParameters.plist"
-{
-  Description   = "EnterpriseDB-ApachePhp";
-  Provides      = ("EnterpriseDB-ApachePhp");
-  Requires      = ("Resolver");
-  Preference    = "Late";
-  Messages =
-  {
-    start = "Starting Apache";
-    stop  = "Stopping Apache";
-    restart  = "Restarting Apache";
-  };
-}
+cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.apache.plist"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
+        "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Disabled</key>
+	<false/>
+        <key>Label</key>
+        <string>com.edb.launchd.apache</string>
+        <key>ProgramArguments</key>
+        <array>
+                <string>$INSTALLDIR/apache/bin/apachectl</string>
+                <string>start</string>
+        </array>
+        <key>RunAtLoad</key>
+        <true/>
+	<key>UserName</key>
+        <string>root</string>
+</dict>
+</plist>
 EOT
 
-# Write the startup script
-cat <<EOT > "/Library/StartupItems/EnterpriseDB-ApachePhp/EnterpriseDBApachePhp"
-#!/bin/sh
-
-. /etc/rc.common
-
-# /EnterpriseDB-ApachePhp Service script for OS/X
-
-StartService ()
-{
-	ConsoleMessage "Starting Apache"
-	su -c "$INSTALLDIR/apache/bin/apachectl start"
-	ConsoleMessage "Apache started successfully"
-}
-
-StopService()
-{
-	ConsoleMessage "Stopping Apache"
-	su -c "$INSTALLDIR/apache/bin/apachectl stop"
-	ConsoleMessage "Apache stoped successfully"
-}
-
-
-RestartService ()
-{
-    StopService
-    sleep 2
-    StartService
-}
-
-
-RunService "\$1"
-EOT
-
-# Fixup the permissions on the StartupItems
-chown -R root:wheel "/Library/StartupItems/EnterpriseDB-ApachePhp/" || _warn "Failed to set the ownership of the startup item (/Library/StartupItems/EnterpriseDB-ApachePhp/)"
-chmod 0755 "/Library/StartupItems/EnterpriseDB-ApachePhp/" || _warn "Failed to set the permissions on the startup item (/Library/StartupItems/EnterpriseDB-ApachePhp/)"
-chmod 0755 "/Library/StartupItems/EnterpriseDB-ApachePhp/EnterpriseDBApachePhp" || _warn "Failed to set the permissions on the startup item (/Library/StartupItems/EnterpriseDB-ApachePhp/EnterpriseDBApachePhp)"
-chmod 0644 "/Library/StartupItems/EnterpriseDB-ApachePhp/StartupParameters.plist" || _warn "Failed to set the permissions on the startup item (/Library/StartupItems/EnterpriseDB-ApachePhp/StartupParameters.plist)"
+# Fixup the permissions on the launchDaemon
+chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.apache.plist" || _warn "Failed to set the ownership of the launchd daemon for apache (/Library/LaunchDaemons/com.edb.launchd.apache.plist)"
 
 echo "$0 ran to completion"
 exit $WARN
