@@ -305,6 +305,7 @@
             </ruleList>
         </actionGroup>
     </postInstallationActionList>
+
     <!-- finalPage actions -->
     <finalPageActionList>
         <!-- WIN: Write product Version to registry -->
@@ -325,7 +326,13 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <launchBrowser>
+            <url>http://www.enterprisedb.com/tservices/professional_services.do</url>
+            <progressText>${msg(Installer.Installation.Finished.Visit.Us)}</progressText>
+        </launchBrowser>
     </finalPageActionList>
+
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
         <!-- Unsetting the TuningWizard values in the ini file -->
