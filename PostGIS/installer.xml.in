@@ -1,17 +1,17 @@
 <project>
     <!-- Package details -->
     <shortName>postgis</shortName>
-    <fullName>PostGIS</fullName>
+    <fullName>PostGIS_PGPG_CURRENT_VERSION</fullName>
     <version>PG_VERSION_POSTGIS</version>
     <!-- These options are used on Windows -->
-    <startMenuGroupName>PostgreSQL</startMenuGroupName>
+    <startMenuGroupName>PostgreSQL PG_MAJOR_VERSION</startMenuGroupName>
     <!-- Product Specific Options -->
-    <productDisplayName>${product_fullname} ${product_version}</productDisplayName>
-    <productComments>${product_fullname} ${product_version}, packaged by EnterpriseDB</productComments>
+    <productDisplayName>PostGIS ${product_version}</productDisplayName>
+    <productComments>PostGIS ${product_version}, packaged by EnterpriseDB</productComments>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
     <!-- The options are used for RPM registration -->
-    <description>${product_fullname} ${product_version}, packaged by EnterpriseDB</description>
+    <description>PostGIS ${product_version}, packaged by EnterpriseDB</description>
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
@@ -151,6 +151,26 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <!-- WIN: Set the    pghome default value when pghome not set -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\8.3"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${pghome}</text>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
 	<!-- LIN: Set the    pghome default value when pghome not set -->
         <actionGroup>
             <actionList>
@@ -201,24 +221,6 @@
             </ruleList>
         </touchFile>
         <setInstallerVariable name="defaultpghome" value="${pghome}"/>
-        <!-- WIN: Set the    pghome default value when pghome not set -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\8.3"/>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${pghome}</text>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
         <!-- WIN: Check Previous Installation of PostGIS -->
         <actionGroup>
             <actionList>
@@ -404,7 +406,125 @@
                 </compareText>
             </ruleList>
         </runProgram>
+
+        <setInstallerVariableFromRegEx>
+            <name>installdir_str</name>
+            <text>${installdir}</text>
+            <pattern>\\</pattern>
+            <substitution>/</substitution>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${installdir}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+        <showInfo text="${installdir_str}" />
+ 
+
+        <substitute>
+           <files>${installdir}\share\lwpostgis.sql</files>
+           <substitutionList>
+              <substitution>
+                 <pattern>@@INSTALL_DIR@@</pattern>
+                 <value>${installdir_str}</value>
+              </substitution>
+          </substitutionList>
+          <ruleList>
+              <compareText>
+                 <logic>equals</logic>
+                 <text>${platform_name}</text>
+                 <value>windows</value>
+              </compareText>
+           </ruleList>
+        </substitute>
+  
+        <substitute>
+           <files>${installdir}\share\lwpostgis_upgrade.sql</files>
+           <substitutionList>
+              <substitution>
+                 <pattern>@@INSTALL_DIR@@</pattern>
+                 <value>${installdir_str}</value>
+              </substitution>
+          </substitutionList>
+          <ruleList>
+              <compareText>
+                 <logic>equals</logic>
+                 <text>${platform_name}</text>
+                 <value>windows</value>
+              </compareText>
+           </ruleList>
+        </substitute>
+
+        <substitute>
+           <files>${installdir}\PostGIS\installer\PostGIS\createtemplatedb.bat</files>
+           <substitutionList>
+              <substitution>
+                 <pattern>@@INSTALL_DIR@@</pattern>
+                 <value>${installdir}</value>
+              </substitution>
+          </substitutionList>
+          <ruleList>
+              <compareText>
+                 <logic>equals</logic>
+                 <text>${platform_name}</text>
+                 <value>windows</value>
+              </compareText>
+           </ruleList>
+        </substitute>
+
+        <!-- Create Template Spatial Database -->
+        <runProgram>
+            <program>${installdir}\PostGIS\installer\PostGIS\createtemplatedb.bat</program>
+            <programArguments>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</programArguments>
+            <progressText>${msg(progress.text.creating.templatedb)}</progressText>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>1</showMessageOnError>
+            <workingDirectory>${installdir}\PostGIS\installer\PostGIS</workingDirectory>
+            <ruleList>
+                <compareText>
+                    <text>${templatedbexists}</text>
+                    <logic>does_not_equal</logic>
+                    <value>yes</value>
+                </compareText>
+                <compareValues>
+                    <logic>does_not_equal</logic>
+                    <value1>${PostGISVersion}</value1>
+                    <value2>${product_version}</value2>
+                </compareValues>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+
     </postInstallationActionList>
+
+   <!-- finalPage actions -->
+    <finalPageActionList>
+        <!-- WIN: Write product Version to registry -->
+        <actionGroup>
+            <show>0</show>
+            <actionList>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostGIS_PG${PGCurrentVersion}</key>
+                    <name>Version</name>
+                    <value>${product_version}-PG_BUILDNUM_POSTGIS</value>
+                </registrySet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </finalPageActionList>
+ 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
         <!-- LIN & MAC: Unsetting the PostGIS values in the ini file -->
@@ -512,6 +632,148 @@
             <selected>1</selected>
             <show>1</show>
             <folderList>
+                <!-- WIN: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/bin</destination>
+                    <name>programfilesbinwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/windows/bin/pgsql2shp.exe</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/bin/shp2pgsql.exe</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/bin/libgeos_c-1.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/bin/libproj.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/bin/libgeos-PG_GEOS_DLL_VERSION.dll</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/doc</destination>
+                    <name>programfilesdocwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/windows/doc/README.pgsql2shp</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/doc/README.shp2pgsql</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/doc/README.postgis</origin>
+                        </distributionFile>
+                        <distributionDirectory>
+                            <origin>staging/windows/doc/postgis</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/doc/contrib</destination>
+                    <name>programfilesdoccontribwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/doc/contrib/html</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/lib</destination>
+                    <name>programfileslibwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/windows/lib/liblwgeom.dll</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/man/man1</destination>
+                    <name>programfilesmanwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/windows/man/man1/pgsql2shp.1</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/man/man1/shp2pgsql.1</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/share</destination>
+                    <name>programfilessharewindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/windows/share/lwpostgis.sql</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/share/lwpostgis_upgrade.sql</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/share/spatial_ref_sys.sql</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/share/contrib</destination>
+                    <name>programfilessharecontribwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/share/contrib/postgis</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/jdbc</destination>
+                    <name>programfilesjdbcwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/windows/jdbc/postgis_${product_version}.jar</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installation Files</description>
+                    <destination>${installdir}/PostGIS</destination>
+                    <name>installfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch And Menu Scripts</description>
+                    <destination>${installdir}/PostGIS</destination>
+                    <name>menuandlaunchfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+	        
                 <!-- LIN: Program files -->
                 <folder>
                     <description>Program Files</description>
@@ -909,6 +1171,30 @@
                     </distributionFileList>
                 </folder>
             </folderList>
+            <!-- WIN: Start Menu -->
+            <startMenuShortcutList>
+                 <!-- Launch PostGIS -->
+                 <startMenuFolder>
+                    <name>PostGIS</name>
+                    <platforms>windows</platforms>
+                    <startMenuShortcutList>
+                       <startMenuLinkShortcut>
+                           <comment>PostGIS Documentation</comment>
+                           <name>PostGIS Documentation</name>
+                           <runInTerminal>0</runInTerminal>
+                           <url>file://${installdir}/doc/contrib/html/postgis/postgis.html</url>
+                           <windowsIcon>${installdir}\PostGIS\scripts\images\pg-launchPostGISDocs.ico</windowsIcon>
+                        </startMenuLinkShortcut>
+                        <startMenuLinkShortcut>
+                           <comment>PostGIS JDBC Documentation</comment>
+                           <name>PostGIS JDBC Documentation</name>
+                           <runInTerminal>0</runInTerminal>
+                           <url>file://${installdir}/doc/postgis/jdbc/index.html</url>
+                           <windowsIcon>${installdir}\PostGIS\scripts\images\pg-launchPostGISDocs.ico</windowsIcon>
+                        </startMenuLinkShortcut>
+                    </startMenuShortcutList>
+                 </startMenuFolder> 
+            </startMenuShortcutList>
         </component>
     </componentList>
     <parameterList>
@@ -1257,7 +1543,7 @@
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>prefix</cliOptionName>
-            <!--mustBeWritable>yes</mustBeWritable-->
+            <mustBeWritable>yes</mustBeWritable>
             <mustExist>0</mustExist>
             <width>40</width>
             <ruleList>
@@ -1285,32 +1571,52 @@
 		    </ruleList>
 		</actionGroup>
 	    </validationActionList>
-            <!-- Validating whether installdir contains whitespaces (Linux) -->
             <validationActionList>
+                <!-- Validating whether installdir contains whitespaces (Linux) -->
                 <actionGroup>
-                    <actionList>
-			<setInstallerVariable name="installdir" value="${defaultpghome}" />
-                        <throwError>
-                            <text>${msg(postgis.installdir.error)}</text>
-                        </throwError>
-                    </actionList>
-                    <ruleList>
-                        <regExMatch>
-                            <text>${installdir}</text>
-                            <logic>matches</logic>
-                            <pattern>^.*\s.*$</pattern>
-                        </regExMatch>
-                        <compareText>
-                            <text>${platform_name}</text>
-                            <logic>does_not_equal</logic>
-                            <value>windows</value>
-                        </compareText>   
-			<fileTest>
-			    <path>${installdir}</path>
-			    <condition>not_writable</condition>
-			</fileTest>
-                    </ruleList>
+                   <actionList>
+                       <setInstallerVariable name="installdir" value="${default_installdir}" />
+                       <showWarning>
+                          <text>${msg(postgis.installdir.error)}</text>
+                       </showWarning>
+                       <setInstallerVariable name="next_page" value="installdir"/>
+                   </actionList>
+                   <ruleList>
+                     <regExMatch>
+                         <text>${installdir}</text>
+                         <logic>does_not_match</logic>
+                         <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                     </regExMatch>
+                     <compareText>
+                         <text>${platform_name}</text>
+                         <logic>does_not_equal</logic>
+                         <value>windows</value>
+                     </compareText>
+                  </ruleList>
                 </actionGroup>
+                <!-- Validating whether installdir is valid (Windows) -->
+                <actionGroup>
+                   <actionList>
+                       <setInstallerVariable name="installdir" value="${default_installdir}" />
+                       <showWarning>
+                          <text>${msg(postgis.installdir.error)}</text>
+                       </showWarning>
+                       <setInstallerVariable name="next_page" value="installdir"/>
+                   </actionList>
+                   <ruleList>
+                     <regExMatch>
+                         <text>${installdir}</text>
+                         <logic>does_not_match</logic>
+                         <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-]*)$</pattern>
+                     </regExMatch>
+                     <compareText>
+                         <text>${platform_name}</text>
+                         <logic>equals</logic>
+                         <value>windows</value>
+                     </compareText>
+                  </ruleList>
+                </actionGroup>
+
             </validationActionList>
             <validationActionList>
                 <actionGroup>
@@ -1383,7 +1689,40 @@
                     <exec>${system_temp_directory}/${product_fullname}/check-pgversion.sh</exec>
                     <execArgs>"${installdir}"</execArgs>
                     <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                    <ruleList>
+                        <compareText>
+                           <text>${platform_name}</text>
+                           <logic>does_not_equal</logic>
+                           <value>windows</value>
+                        </compareText>
+                    </ruleList>
                 </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                    <name>pg_version_str</name>
+                    <exec>${installdir}\bin\pg_config.exe</exec>
+                    <execArgs>--version</execArgs>
+                    <workingDirectory>${installdir}\bin</workingDirectory>
+                    <ruleList>
+                        <compareText>
+                           <text>${platform_name}</text>
+                           <logic>equals</logic>
+                           <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromRegEx>
+                      <name>pg_version</name>
+                      <text>${pg_version_str}</text>
+                      <pattern>^PostgreSQL ([0-9].[0-9]).[0-9]$</pattern>
+                      <substitution>\1</substitution>
+                      <ruleList>
+                         <compareText>
+                             <logic>does_not_equal</logic>
+                             <text>${pg_version_str}</text>
+                             <value/>
+                        </compareText>
+                      </ruleList>
+                </setInstallerVariableFromRegEx>
             </validationActionList>
             <validationActionList>
                 <actionGroup>
@@ -1410,17 +1749,38 @@
                         <showWarning>
                             <text>${msg(postgis.incompatible.install.error)}</text>
                         </showWarning>
-			            <exit>
+		            	<exit>
 			                <exitCode>0</exitCode>
 			            </exit>
                     </actionList>
                     <ruleList>
                         <fileExists>
-                            <path>${installdir}/lib/liblwgeom.so</path>
+                            <path>${installdir}/bin/pgsql2shp</path>
                         </fileExists>
                         <compareText>
                             <text>${platform_name}</text>
                             <logic>does_not_equal</logic>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <actionGroup>
+                    <actionList>
+                        <showWarning>
+                            <text>${msg(postgis.incompatible.install.error)}</text>
+                        </showWarning>
+                         <exit>
+                             <exitCode>0</exitCode>
+                         </exit>
+                    </actionList>
+                    <ruleList>
+                        <fileExists>
+                            <path>${installdir}\bin\pgsql2shp.exe</path>
+                        </fileExists>
+                        <compareText>
+                            <text>${platform_name}</text>
+                            <logic>equals</logic>
                             <value>windows</value>
                         </compareText>
                     </ruleList>

@@ -23,8 +23,7 @@ fi
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
-    #source $WD/PostGIS/build-windows.sh
-	echo "Not yet implemented"
+    source $WD/PostGIS/build-windows.sh
 fi
 
     
@@ -44,6 +43,15 @@ _prep_PostGIS() {
     # Enter the source directory and cleanup if required
     cd $WD/PostGIS/source
 
+    #postgresql for windows
+    if [ ! -e postgresql-$PG_TARBALL_POSTGRESQL ];
+    then
+      extract_file  ../../tarballs/postgresql-$PG_TARBALL_POSTGRESQL || exit 1
+      cd postgresql-$PG_TARBALL_POSTGRESQL
+      patch -p0 < ../../../tarballs/mingw_build.patch
+    fi
+
+    cd $WD/PostGIS/source
 
     # postgis
     if [ -e postgis-$PG_VERSION_POSTGIS ];
@@ -103,8 +111,7 @@ _prep_PostGIS() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_prep_PostGIS_windows || exit 1
-        echo "Not yet implemented" 
+        _prep_PostGIS_windows || exit 1
     fi
     
 }
@@ -136,8 +143,7 @@ _build_PostGIS() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_build_PostGIS_windows || exit 1
-        echo "Not yet implemented" 
+        _build_PostGIS_windows || exit 1
     fi
 }
 
@@ -161,6 +167,8 @@ _postprocess_PostGIS() {
 
     PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
 
+    PG_GEOS_DLL_VERSION=`echo $PG_TARBALL_GEOS | sed -e 's:\.:-:g'`
+
     _replace PG_VERSION_POSTGIS "$PG_VERSION_POSTGIS" installer.xml || _die "Failed to set the major version in the installer project file (PostGIS/installer.xml)"
 
     _replace PG_TARBALL_GEOS $PG_TARBALL_GEOS installer.xml || _die "Failed to set the major version of geos in the installer project file (PostGIS/installer.xml)"
@@ -170,6 +178,7 @@ _postprocess_PostGIS() {
     _replace PG_CURRENT_VERSION $PG_CURRENT_VERSION installer.xml || _die "Failed to set the PG Current Number in the installer project file (PostGIS/installer.xml)"
     
     _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION installer.xml || _die "Failed to set the PG MAJOR Number in the installer project file (PostGIS/installer.xml)"
+    _replace PG_GEOS_DLL_VERSION $PG_GEOS_DLL_VERSION installer.xml || _die "Failed to set the PG MAJOR Number in the installer project file (PostGIS/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
@@ -192,8 +201,7 @@ _postprocess_PostGIS() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_postprocess_PostGIS_windows || exit 1
-        echo "Not yet implemented"
+        _postprocess_PostGIS_windows || exit 1
     fi
 }
 

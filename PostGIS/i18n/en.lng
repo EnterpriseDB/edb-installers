@@ -1,6 +1,20 @@
-Installer.Welcome.Title=Setup %1$s
+Installer.Welcome.Title=Setup PostGIS
 
-Installer.Welcome.Text=Welcome to the %1$s Setup.
+Installer.Welcome.Text=Welcome to the PostGIS Setup.
+
+Installer.Parameter.installdir.explanation=Please specify the directory where PostGIS will be installed.
+
+Installer.Ready.Text1=Setup is now ready to begin installing PostGIS on your computer.
+
+Installer.Installing.Text=Please wait while Setup installs PostGIS on your computer.
+
+Installer.Installation.Finished.Title=Completing the PostGIS Setup Wizard.
+
+Installer.Installation.Finished.Text=Setup has finished installing PostGIS on your computer.
+
+Installer.Uninstallation.ConfirmationQuestion=Do you want to uninstall PostGIS and all of its modules?
+
+Installer.Uninstallation.Title=Uninstalling PostGIS
 
 upgrade.existing.installation.title=Existing installation
 
@@ -37,7 +51,7 @@ progress.text.creating.spatialdb=Creating Spatial Database
 
 templatedb.found.info=A database called 'template_postgis' already exists on your server. If you continue with this installation, this database will be reused. \n\nDo you wish to continue?
 
-Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
+Installer.Installation.Finished.Title=Completing the PostGIS Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 

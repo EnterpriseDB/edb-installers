@@ -81,7 +81,7 @@ _build_geos() {
     mv source/headers/config.h source/headers/config_i386.h
 
     echo "Configuring the Geos source tree for PPC"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/goes --disable-dependency-tracking || _die "Failed to configure Geos for PPC"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/geos --disable-dependency-tracking || _die "Failed to configure Geos for PPC"
     mv source/headers/config.h source/headers/config_ppc.h
 
     echo "Configuring the Geos source tree for Universal"
@@ -95,7 +95,7 @@ _build_geos() {
     echo "#endif" >> source/headers/config.h
 
     echo "Building Geos"
-    MACOSX_DEPLOYMENT_TARGET=10.4 make CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS -arch i386 -arch ppc" LDFLAGS="-arch i386 -arch ppc" -j 2 || _die "Failed to build Geos"
+    MACOSX_DEPLOYMENT_TARGET=10.4 make LDFLAGS="-arch i386 -arch ppc" -j 2 || _die "Failed to build Geos"
     make prefix=$PG_STAGING/geos install || _die "Failed to install Geos"
 
     cd $WD
