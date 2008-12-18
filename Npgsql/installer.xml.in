@@ -51,6 +51,24 @@
       </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
+	<setInstallerVariable name="productFullName" persist="1" value="Npgsql for Mono 2.0.x">
+          <ruleList>
+              <compareText>
+		<logic>does_not_equal</logic>
+                <text>${platform_name}</text>
+                <value>windows</value>
+              </compareText>
+          </ruleList>
+        </setInstallerVariable>
+	<setInstallerVariable name="productFullName" persist="1" value="Npgsql for .Net 2.0">
+          <ruleList>
+              <compareText>
+                <logic>equals</logic>
+                <text>${platform_name}</text>
+                <value>windows</value>
+              </compareText>
+          </ruleList>
+        </setInstallerVariable>
 	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
