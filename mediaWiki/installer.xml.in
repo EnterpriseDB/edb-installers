@@ -2,16 +2,16 @@
     <!-- Package details -->
     <shortName>mediawiki</shortName>
     <fullName>mediaWiki</fullName>
-    <version>PG_VERSION_MEDIAWIKI</version>
+    <version>PG_VERSION_MEDIAWIKI-PG_BUILDNUM_MEDIAWIKI</version>
     <!-- These options are used on Windows -->
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
     <!-- Product Specific Options -->
-    <productDisplayName>${product_fullname} ${product_version}</productDisplayName>
-    <productComments>${product_fullname} ${product_version}, packaged by EnterpriseDB</productComments>
+    <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
+    <productComments>${product_fullname} ${productVersion}, packaged by EnterpriseDB</productComments>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
     <!-- The options are used for RPM registration -->
-    <description>${product_fullname} ${product_version} by EnterpriseDB</description>
+    <description>${product_fullname} ${productVersion} by EnterpriseDB</description>
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
@@ -21,7 +21,7 @@
     <height>400</height>
 
     <!-- Misc package options -->
-    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUM_MEDIAWIKI-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
     <enableRollback>0</enableRollback>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <saveRelativePaths>1</saveRelativePaths>
@@ -57,6 +57,7 @@
      </preBuildActionList>
     <!-- Initialisation actions -->
     <initializationActionList>
+	<setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_MEDIAWIKI" />
 	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -552,7 +553,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>mediaWiki</section>
                     <key>Version</key>
-                    <value>${product_version}-PG_BUILDNUM_MEDIAWIKI</value>
+                    <value>${product_version}</value>
                 </iniFileSet>
             </actionList>
             <ruleList>
@@ -883,27 +884,6 @@
         </startWindowsService>
 
     </postInstallationActionList>
-    <!-- finalPage actions -->
-    <finalPageActionList>
-        <!-- WIN: Write product Version to registry -->
-        <actionGroup>
-            <show>0</show>
-            <actionList>
-                <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\mediaWiki</key>
-                    <name>Version</name>
-                    <value>${product_version}-PG_BUILDNUM_MEDIAWIKI</value>
-                </registrySet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-    </finalPageActionList>
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
         <!-- Deleting the config file -->

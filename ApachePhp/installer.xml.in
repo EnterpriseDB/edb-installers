@@ -2,11 +2,11 @@
   <!-- Package details -->
   <shortName>apachephp</shortName>
   <fullName>ApachePhp</fullName>
-  <version>PG_VERSION_APACHEPHP</version>
+  <version>PG_VERSION_APACHEPHP-PG_BUILDNUM_APACHEPHP</version>
   <startMenuGroupName>PostgreSQL</startMenuGroupName>
   <!-- Product Specific Options -->
-  <productComments>${product_fullname} ${product_version}, packaged by EnterpriseDB</productComments>
-  <productDisplayName>${product_fullname} ${product_version}</productDisplayName>
+  <productComments>${product_fullname} ${productVersion}, packaged by EnterpriseDB</productComments>
+  <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
   <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
   <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
   <!-- The options are used for RPM registration -->
@@ -20,7 +20,7 @@
   <height>400</height>
 
   <!-- Misc options -->
-  <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUM_APACHEPHP-${platform_name}.${platform_exec_suffix}</installerFilename>
+  <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
   <compressionAlgorithm>lzma</compressionAlgorithm>
   <enableRollback>0</enableRollback>
   <requireInstallationByRootUser>1</requireInstallationByRootUser>
@@ -54,6 +54,7 @@
    </preBuildActionList>
   <!-- Initialisation actions -->
   <initializationActionList>
+      <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_APACHEPHP" />	
       <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
       <throwError>
         <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -748,7 +749,7 @@ include conf\addons\*.conf
           <file>/etc/postgres-reg.ini</file>
           <section>ApachePhp</section>
           <key>Version</key>
-          <value>${product_version}-PG_BUILDNUM_APACHEPHP</value>
+          <value>${product_version}</value>
         </iniFileSet>
       </actionList>
       <ruleList>
@@ -959,27 +960,6 @@ include conf\addons\*.conf
     </actionGroup> 
 
   </postInstallationActionList>
-  <!-- finalPage actions -->
-    <finalPageActionList>
-        <!-- WIN: Write product Version to registry -->
-        <actionGroup>
-            <show>0</show>
-            <actionList>
-                <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
-                    <name>Version</name>
-                    <value>${product_version}-PG_BUILDNUM_APACHEPHP</value>
-                </registrySet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-    </finalPageActionList>
   <!-- preUninstallation actions -->
   <preUninstallationActionList>
     <!-- Linux | Mac actionList -->

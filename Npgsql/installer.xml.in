@@ -2,12 +2,12 @@
     <!-- Package details -->
     <shortName>npgsql</shortName>
     <fullName>Npgsql</fullName>
-    <version>PG_VERSION_NPGSQL</version>
+    <version>PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL</version>
     <!-- These options are used on Windows -->
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
     <!-- Product Specific Options -->
     <productComments>Npgsql - .Net Data Provider for Postgresql packaged by EnterpriseDB</productComments>
-    <productDisplayName>${product_fullname} ${product_version}</productDisplayName>
+    <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <!-- The options are used for RPM registration -->
     <description>Npgsql - .Net Data Provider for Postgresql</description>
@@ -19,7 +19,7 @@
     <height>400</height>
 
     <!-- Misc options -->
-    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUM_NPGSQL-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
     <wrapLicenseFileText>0</wrapLicenseFileText>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <unattendedModeUI>minimal</unattendedModeUI>
@@ -51,6 +51,7 @@
       </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
+	<setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_NPGSQL" />
 	<setInstallerVariable name="productFullName" persist="1" value="Npgsql for Mono 2.0.x">
           <ruleList>
               <compareText>
@@ -60,7 +61,7 @@
               </compareText>
           </ruleList>
         </setInstallerVariable>
-	<setInstallerVariable name="productFullName" persist="1" value="Npgsql for .Net 2.0">
+	<setInstallerVariable name="productFullName" persist="1" value="Npgsql for .Net 2.0 and .Net 3.5">
           <ruleList>
               <compareText>
                 <logic>equals</logic>
@@ -287,7 +288,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>Npgsql</section>
                     <key>Version</key>
-                    <value>${product_version}-PG_BUILDNUM_NPGSQL</value>
+                    <value>${product_version}</value>
                 </iniFileSet>
                 <runProgram>
                     <program>${installdir}/installer/npgsql/createshortcuts.sh</program>
@@ -307,27 +308,6 @@
             </ruleList>
         </actionGroup>
     </postInstallationActionList>
-    <!-- finalPage actions -->
-    <finalPageActionList>
-        <!-- WIN: Write product Version to registry -->
-        <actionGroup>
-            <show>0</show>
-            <actionList>
-                <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Npgsql</key>
-                    <name>Version</name>
-                    <value>${product_version}-PG_BUILDNUM_NPGSQL</value>
-                </registrySet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-    </finalPageActionList>
 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>

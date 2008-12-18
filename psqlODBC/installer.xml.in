@@ -2,12 +2,12 @@
     <!-- Package details -->
     <shortName>psqlodbc</shortName>
     <fullName>psqlODBC</fullName>
-    <version>PG_VERSION_PSQLODBC</version>
+    <version>PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC</version>
     <!-- These options are used on Windows -->
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
     <!-- Product Specific Options -->
     <productComments>ODBC drivers for PostgreSQL, packaged by EnterpriseDB</productComments>
-    <productDisplayName>${product_fullname} ${product_version}</productDisplayName>
+    <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
 
     <!-- Installer Size -->
@@ -15,7 +15,7 @@
     <height>400</height>
 
     <!-- Misc options -->
-    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUM_PSQLODBC-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <unattendedModeUI>minimal</unattendedModeUI>
     <description>ODBC Drivers for PostgreSQL, packaged by EnterpriseDB </description>
@@ -51,6 +51,7 @@
       </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
+        <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PSQLODBC" />
 	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -502,7 +503,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>psqlODBC</section>
                     <key>Version</key>
-                    <value>${product_version}-PG_BUILDNUM_PSQLODBC</value>
+                    <value>${product_version}</value>
                 </iniFileSet>
                 <iniFileSet>
                     <file>${odbcinstpath}</file>
@@ -614,7 +615,7 @@
                  <registrySet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
                     <name>DriverODBCVer</name>
-                    <value>${product_version}</value>
+                    <value>${productVersion}</value>
                     <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
                  </registrySet>
                  <registrySet>
@@ -663,7 +664,7 @@
                  <registrySet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
                     <name>DriverODBCVer</name>
-                    <value>${product_version}</value>
+                    <value>${productVersion}</value>
                     <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
                  </registrySet>
                  <registrySet>
@@ -701,29 +702,6 @@
         </actionGroup>
 
     </postInstallationActionList>
-
-    <!-- finalPage actions -->
-    <finalPageActionList>
-        <!-- WIN: Write product Version to registry -->
-        <actionGroup>
-            <show>0</show>
-            <actionList>
-                <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\psqlODBC</key>
-                    <name>Version</name>
-                    <value>${product_version}-PG_BUILDNUM_PSQLODBC</value>
-                </registrySet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-    </finalPageActionList>
-
 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>

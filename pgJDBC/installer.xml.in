@@ -2,12 +2,12 @@
     <!-- Package details -->
     <shortName>pgjdbc</shortName>
     <fullName>pgJDBC</fullName>
-    <version>PG_VERSION_PGJDBC</version>
+    <version>PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC</version>
     <!-- These options are used on Windows -->
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
     <!-- Product Specific Options -->
     <productComments>JDBC drivers for PostgreSQL, packaged by EnterpriseDB</productComments>
-    <productDisplayName>${product_fullname} ${product_version}</productDisplayName>
+    <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <!-- The options are used for RPM registration -->
     <description>JDBC Drivers for PostgreSQL </description>
@@ -19,7 +19,7 @@
     <height>400</height>
 
     <!-- Misc options -->
-    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUM_PGJDBC-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
     <wrapLicenseFileText>0</wrapLicenseFileText>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <unattendedModeUI>minimal</unattendedModeUI>
@@ -51,6 +51,7 @@
       </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
+        <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PGJDBC" />
 	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -269,7 +270,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>pgJDBC</section>
                     <key>Version</key>
-                    <value>${product_version}-PG_BUILDNUM_PGJDBC</value>
+                    <value>${product_version}</value>
                 </iniFileSet>
                 <runProgram>
                     <program>${installdir}/installer/pgjdbc/createshortcuts.sh</program>
@@ -289,27 +290,6 @@
             </ruleList>
         </actionGroup>
     </postInstallationActionList>
-    <!-- finalPage actions -->
-    <finalPageActionList>
-        <!-- WIN: Write product Version to registry -->
-        <actionGroup>
-            <show>0</show>
-            <actionList>
-                <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgJDBC</key>
-                    <name>Version</name>
-                    <value>${product_version}-PG_BUILDNUM_PGJDBC</value>
-                </registrySet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-    </finalPageActionList>
 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>

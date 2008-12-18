@@ -2,16 +2,16 @@
     <!-- Package details -->
     <shortName>postgis</shortName>
     <fullName>PostGIS_PGPG_CURRENT_VERSION</fullName>
-    <version>PG_VERSION_POSTGIS</version>
+    <version>PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS</version>
     <!-- These options are used on Windows -->
     <startMenuGroupName>PostgreSQL PG_MAJOR_VERSION</startMenuGroupName>
     <!-- Product Specific Options -->
-    <productDisplayName>PostGIS ${product_version}</productDisplayName>
-    <productComments>PostGIS ${product_version}, packaged by EnterpriseDB</productComments>
+    <productDisplayName>PostGIS ${productVersion}</productDisplayName>
+    <productComments>PostGIS ${productVersion}, packaged by EnterpriseDB</productComments>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
     <!-- The options are used for RPM registration -->
-    <description>PostGIS ${product_version}, packaged by EnterpriseDB</description>
+    <description>PostGIS ${productVersion}, packaged by EnterpriseDB</description>
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
@@ -21,7 +21,7 @@
     <height>400</height>
 
     <!-- Misc package options -->
-    <installerFilename>${product_shortname}-pgPG_CURRENT_VERSION-${product_version}-PG_BUILDNUM_POSTGIS-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-pgPG_CURRENT_VERSION-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
     <enableRollback>0</enableRollback>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <saveRelativePaths>1</saveRelativePaths>
@@ -55,6 +55,7 @@
     </preBuildActionList>
     <!-- Initialisation actions -->
     <initializationActionList>
+	<setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_POSTGIS" />
 	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -336,7 +337,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>PostGIS_PG${PGCurrentVersion}</section>
                     <key>Version</key>
-                    <value>${product_version}-PG_BUILDNUM_POSTGIS</value>
+                    <value>${product_version}</value>
                 </iniFileSet>
             </actionList>
             <ruleList>
@@ -352,7 +353,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/PostGIS/installer/PostGIS/createshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${PGMajorVersion}" "${product_version}"</programArguments>
+                    <programArguments>"${installdir}" "${PGMajorVersion}" "${productVersion}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -397,7 +398,7 @@
                 <compareValues>
                     <logic>does_not_equal</logic>
                     <value1>${PostGISVersion}</value1>
-                    <value2>${product_version}</value2>
+                    <value2>${productVersion}</value2>
                 </compareValues>
                 <compareText>
                     <logic>does_not_equal</logic>
@@ -489,7 +490,7 @@
                 <compareValues>
                     <logic>does_not_equal</logic>
                     <value1>${PostGISVersion}</value1>
-                    <value2>${product_version}</value2>
+                    <value2>${productVersion}</value2>
                 </compareValues>
                 <compareText>
                     <logic>equals</logic>
@@ -501,28 +502,6 @@
 
     </postInstallationActionList>
 
-   <!-- finalPage actions -->
-    <finalPageActionList>
-        <!-- WIN: Write product Version to registry -->
-        <actionGroup>
-            <show>0</show>
-            <actionList>
-                <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostGIS_PG${PGCurrentVersion}</key>
-                    <name>Version</name>
-                    <value>${product_version}-PG_BUILDNUM_POSTGIS</value>
-                </registrySet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-    </finalPageActionList>
- 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
         <!-- LIN & MAC: Unsetting the PostGIS values in the ini file -->
@@ -560,7 +539,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/PostGIS/installer/PostGIS/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${product_version}"</programArguments>
+                    <programArguments>"${installdir}" "${productVersion}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -745,7 +724,7 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/windows/jdbc/postgis_${product_version}.jar</origin>
+                            <origin>staging/windows/jdbc/postgis_PG_VERSION_POSTGIS.jar</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -878,7 +857,7 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/linux/PostGIS/jdbc/postgis_${product_version}.jar</origin>
+                            <origin>staging/linux/PostGIS/jdbc/postgis_PG_VERSION_POSTGIS.jar</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -1010,7 +989,7 @@
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/linux-x64/PostGIS/jdbc/postgis_${product_version}.jar</origin>
+                            <origin>staging/linux-x64/PostGIS/jdbc/postgis_PG_VERSION_POSTGIS.jar</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -1142,7 +1121,7 @@
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/osx/PostGIS/jdbc/postgis_${product_version}.jar</origin>
+                            <origin>staging/osx/PostGIS/jdbc/postgis_PG_VERSION_POSTGIS.jar</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -1277,7 +1256,7 @@
                 <compareValues>
                     <logic>does_not_equal</logic>
                     <value1>${PostGISVersion}</value1>
-                    <value2>${product_version}</value2>
+                    <value2>${productVersion}</value2>
                 </compareValues>
             </ruleList>
             <!-- Checking the validity of PostgreSQL Server Details -->

@@ -2,16 +2,16 @@
     <!-- Package details -->
     <shortName>tuningwizard</shortName>
     <fullName>TuningWizard</fullName>
-    <version>PG_VERSION_TUNINGWIZARD</version>
+    <version>PG_VERSION_TUNINGWIZARD-PG_BUILDNUM_TUNINGWIZARD</version>
     <!-- These options are used on Windows -->
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
     <!-- Product Specific Options -->
-    <productDisplayName>EnterpriseDB ${product_fullname} ${product_version}</productDisplayName>
-    <productComments>EnterpriseDB ${product_fullname} ${product_version}</productComments>
+    <productDisplayName>EnterpriseDB ${product_fullname} ${productVersion}</productDisplayName>
+    <productComments>EnterpriseDB ${product_fullname} ${productVersion}</productComments>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
     <!-- The options are used for RPM registration -->
-    <description>${product_fullname} ${product_version} by EnterpriseDB</description>
+    <description>${product_fullname} ${productVersion} by EnterpriseDB</description>
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
@@ -21,7 +21,7 @@
     <height>400</height>
 
     <!-- Misc package options -->
-    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUM_TUNINGWIZARD-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
     <enableRollback>0</enableRollback>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <saveRelativePaths>1</saveRelativePaths>
@@ -55,6 +55,7 @@
     </preBuildActionList>
     <!-- Initialisation actions -->
     <initializationActionList>
+	<setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_TUNINGWIZARD" />
 	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -235,7 +236,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>TuningWizard</section>
                     <key>Version</key>
-                    <value>${product_version}-PG_BUILDNUM_TUNINGWIZARD</value>
+                    <value>${product_version}</value>
                 </iniFileSet>
             </actionList>
             <ruleList>
@@ -305,34 +306,6 @@
             </ruleList>
         </actionGroup>
     </postInstallationActionList>
-
-    <!-- finalPage actions -->
-    <finalPageActionList>
-        <!-- WIN: Write product Version to registry -->
-        <actionGroup>
-            <show>0</show>
-            <actionList>
-                <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\TuningWizard</key>
-                    <name>Version</name>
-                    <value>${product_version}-PG_BUILDNUM_TUNINGWIZARD</value>
-                </registrySet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-
-        <launchBrowser>
-            <url>http://www.enterprisedb.com/tservices/professional_services.do</url>
-            <progressText>${msg(Installer.Installation.Finished.Visit.Us)}</progressText>
-        </launchBrowser>
-    </finalPageActionList>
-
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
         <!-- Unsetting the TuningWizard values in the ini file -->

@@ -2,11 +2,11 @@
     <!-- Package details -->
     <shortName>pgphonehome</shortName>
     <fullName>pgPhoneHome</fullName>
-    <version>PG_VERSION_PGPHONEHOME</version>
+    <version>PG_VERSION_PGPHONEHOME-PG_BUILDNUM_PGPHONEHOME</version>
     
     <!-- These options are used on Windows -->
-    <productDisplayName>${product_fullname} ${product_version}</productDisplayName>
-    <productComments>${product_fullname} ${product_version} by EnterpriseDB</productComments>
+    <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
+    <productComments>${product_fullname} ${productVersion} by EnterpriseDB</productComments>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
 
@@ -14,7 +14,7 @@
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
     
     <!-- The options are used for RPM registration -->
-    <description>${product_fullname} ${product_version} by EnterpriseDB</description>
+    <description>${product_fullname} ${productVersion} by EnterpriseDB</description>
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
@@ -24,7 +24,7 @@
     <height>400</height>
 
     <!-- Misc package options -->
-    <installerFilename>${product_shortname}-${product_version}-PG_BUILDNUM_PGPHONEHOME-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
     <enableRollback>0</enableRollback>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <saveRelativePaths>1</saveRelativePaths>
@@ -59,6 +59,7 @@
      </preBuildActionList>
     <!-- Initialisation actions -->
     <initializationActionList>
+	<setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PGPHONEHOME" />
 	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -602,7 +603,7 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>pgPhoneHome</section>
                     <key>Version</key>
-                    <value>${product_version}-PG_BUILDNUM_PGPHONEHOME</value>
+                    <value>${product_version}</value>
                 </iniFileSet>
             </actionList>
             <ruleList>
@@ -910,28 +911,6 @@
              <text>${msg(pgphonehome.url.info)}</text>
         </showInfo>
     </postInstallationActionList>
-
-    <!-- finalPage actions -->
-    <finalPageActionList>
-        <!-- WIN: Write product Version to registry -->
-        <actionGroup>
-            <show>0</show>
-            <actionList>
-                <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgPhoneHome</key>
-                    <name>Version</name>
-                    <value>${product_version}-PG_BUILDNUM_PGPHONEHOME</value>
-                </registrySet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-    </finalPageActionList>
 
     <preUninstallationActionList>
 
