@@ -420,8 +420,6 @@
                 </compareText>
             </ruleList>
         </setInstallerVariableFromRegEx>
-        <showInfo text="${installdir_str}" />
- 
 
         <substitute>
            <files>${installdir}\share\lwpostgis.sql</files>
