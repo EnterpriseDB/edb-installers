@@ -1,17 +1,17 @@
 <project>
     <!-- Package details -->
     <shortName>slony</shortName>
-    <fullName>Slony</fullName>
+    <fullName>Slony_I_PGPG_CURRENT_VERSION</fullName>
     <version>PG_VERSION_SLONY</version>
     <!-- These options are used on Windows -->
-    <startMenuGroupName>PostgreSQL</startMenuGroupName>
+    <startMenuGroupName>PostgreSQL PG_MAJOR_VERSION</startMenuGroupName>
     <!-- Product Specific Options -->
-    <productDisplayName>${product_fullname} ${product_version}</productDisplayName>
-    <productComments>${product_fullname} ${product_version}, packaged by EnterpriseDB</productComments>
+    <productDisplayName>Slony ${product_version}</productDisplayName>
+    <productComments>Slony ${product_version}, packaged by EnterpriseDB</productComments>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
     <!-- The options are used for RPM registration -->
-    <description>${product_fullname} ${product_version}, packaged by EnterpriseDB</description>
+    <description>Slony ${product_version}, packaged by EnterpriseDB</description>
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
@@ -132,6 +132,24 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+        <!-- WIN: Set the pghome default value when pghome not set -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\8.3"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${pghome}</text>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
 	<!-- LIN & LIN64: Set the pghome default value when pghome not set -->
         <actionGroup>
             <actionList>
@@ -182,24 +200,6 @@
             </ruleList>
         </touchFile>
         <setInstallerVariable name="defaultpghome" value="${pghome}"/>
-        <!-- WIN: Set the    pghome default value when pghome not set -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\8.3"/>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${pghome}</text>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
         <!-- WIN: Check Previous Installation of Slony -->
         <actionGroup>
             <actionList>
@@ -210,28 +210,6 @@
                 </registryGet>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- WIN: Set installation directory in case of reinstall/upgrade -->
-        <actionGroup>
-            <actionList>
-                <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Slony_I_PG${PGCurrentVersion}</key>
-                    <name>Location</name>
-                    <variable>installdir</variable>
-                </registryGet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${SlonyVersion)</text>
-                    <value/>
-                </compareText>
                 <compareText>
                     <logic>equals</logic>
                     <text>${platform_name}</text>
@@ -296,6 +274,33 @@
                     <value1>${SlonyMajorVersion}</value1>
                     <value2>${SlonyMajorVersionInstalled}</value2>
                 </compareValues>
+            </ruleList>
+        </actionGroup>
+        <!-- WIN: Set installation directory in case of reinstall/upgrade -->
+        <actionGroup>
+            <actionList>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Slony_I_PG${PGCurrentVersion}</key>
+                    <name>Location</name>
+                    <variable>installdir</variable>
+                </registryGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${SlonyVersion)</text>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <compareValues>
+                    <logic>equals</logic>
+                    <value1>${SlonyMajorVersion}</value1>
+                    <value2>${SlonyMajorVersionInstalled}</value2>
+                </compareValues>   
             </ruleList>
         </actionGroup>
         <!-- Setting the installation type as upgrade if previous installation found -->
@@ -391,7 +396,149 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <setInstallerVariableFromScriptOutput>
+            <name>pg_pkglibdir_str</name>
+            <exec>${installdir}\bin\pg_config.exe</exec>
+            <execArgs>--pkglibdir</execArgs>
+            <workingDirectory>${installdir}\bin</workingDirectory>
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariableFromScriptOutput>
+
+        <setInstallerVariableFromScriptOutput>
+            <name>pg_sharedir_str</name>
+            <exec>${installdir}\bin\pg_config.exe</exec>
+            <execArgs>--sharedir</execArgs>
+            <workingDirectory>${installdir}\bin</workingDirectory>
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariableFromScriptOutput>
+
+        <setInstallerVariableFromRegEx>
+            <name>pg_pkglibdir</name>
+            <text>${pg_pkglibdir_str}</text>
+            <pattern>/</pattern>
+            <substitution>\</substitution>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${pg_version_str}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+ 
+        <setInstallerVariableFromRegEx>
+            <name>pg_sharedir</name>
+            <text>${pg_sharedir_str}</text>
+            <pattern>/</pattern>
+            <substitution>\</substitution>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${pg_version_str}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </setInstallerVariableFromRegEx> 
+ 
+        <substitute>
+             <files>${installdir}\Slony\installer\Slony\configureslony.bat</files>
+             <substitutionList>
+                <substitution>
+                   <pattern>@@PKG_LIBDIR@@</pattern>
+                   <value>${pg_pkglibdir}</value>
+                </substitution>
+                <substitution>
+                   <pattern>@@SHARE_DIR@@</pattern>
+                   <value>${pg_sharedir}</value>
+                </substitution>
+             </substitutionList>
+             <ruleList>
+                 <compareText>
+                     <logic>equals</logic>
+                     <text>${platform_name}</text>
+                     <value>windows</value>
+                 </compareText>
+             </ruleList>
+        </substitute>
+
+        <!-- WIN: Configure Slony -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${installdir}\Slony\installer\Slony\configureslony.bat</program>
+                    <programArguments>"${installdir}"</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${SlonyVersion}</text>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+        <substitute>
+             <files>${installdir}\Slony\installer\Slony\removeFiles.bat</files>
+             <substitutionList>
+                <substitution>
+                   <pattern>"</pattern>
+                   <value></value>
+                </substitution>
+             </substitutionList>
+             <ruleList>
+                 <compareText>
+                     <logic>equals</logic>
+                     <text>${platform_name}</text>
+                     <value>windows</value>
+                 </compareText>
+             </ruleList>
+        </substitute>
+   
     </postInstallationActionList>
+
+    <!-- finalPage actions -->
+    <finalPageActionList>
+        <!-- WIN: Write product Version to registry -->
+        <actionGroup>
+            <show>0</show>
+            <actionList>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Slony_I_PG${PGCurrentVersion}</key>
+                    <name>Version</name>
+                    <value>${product_version}-PG_BUILDNUM_SLONY</value>
+                </registrySet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </finalPageActionList>
+
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
         <!-- Set the PG Current version(if exists) -->
@@ -487,6 +634,33 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+ 
+        <!-- WIN: Deleting library files we copied to other place while installation -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${installdir}\Slony\installer\Slony\removeFiles.bat</program>
+                    <programArguments>"${installdir}"</programArguments>
+                </runProgram>
+                <!-- Deleting the file created during installation -->
+                <deleteFile>
+                    <path>${installdir}\Slony\installer\Slony\removeFiles.bat</path>
+                    <ruleList>
+                        <fileExists>
+                            <path>${installdir}\Slony\installer\Slony\removeFiles.bat</path>
+                        </fileExists>
+                    </ruleList>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
     </preUninstallationActionList>
     <!-- Components -->
     <componentList>
@@ -497,6 +671,74 @@
             <selected>1</selected>
             <show>1</show>
             <folderList>
+                <!-- WIN: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/bin</destination>
+                    <name>programfilesbinwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/windows/bin/slon.exe</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/bin/slonik.exe</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/bin/pthreadGC2.dll</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/lib</destination>
+                    <name>programfileslibwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/windows/lib/slony1_funcs.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/lib/xxid.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/lib/slevent.dll</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/share</destination>
+                    <name>programfilessharewindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/Slony</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installation Files</description>
+                    <destination>${installdir}/Slony</destination>
+                    <name>installfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch And Menu Scripts</description>
+                    <destination>${installdir}/Slony</destination>
+                    <name>menuandlaunchfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
                 <!-- LIN: Program files -->
                 <folder>
                     <description>Program Files</description>
@@ -693,6 +935,17 @@
                     </distributionFileList>
                 </folder>
             </folderList>
+            <!-- WIN: Start Menu -->
+            <startMenuShortcutList>
+                 <!-- Launch Slony -->
+                 <startMenuLinkShortcut>
+                    <comment>Slony Documentation</comment>
+                    <name>Slony Documentation</name>
+                    <runInTerminal>0</runInTerminal>
+                    <url>http://www.slony.info/documentation/</url>
+                    <windowsIcon>${installdir}\Slony\scripts\images\pg-launchSlonyDocs.ico</windowsIcon>
+                 </startMenuLinkShortcut>
+            </startMenuShortcutList>
         </component>
     </componentList>
     <parameterList>
@@ -731,7 +984,7 @@
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
             <cliOptionName>prefix</cliOptionName>
-            <!--mustBeWritable>yes</mustBeWritable-->
+            <mustBeWritable>yes</mustBeWritable>
             <mustExist>0</mustExist>
             <width>40</width>
             <ruleEvaluationLogic>OR</ruleEvaluationLogic>
@@ -765,33 +1018,54 @@
                     </ruleList>
                 </actionGroup>
             </validationActionList>
-            <!-- Validating whether installdir contains whitespaces (Linux) -->
             <validationActionList>
+                <!-- Validating whether installdir contains whitespaces (Linux) -->
                 <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="installdir" value="${defaultpghome}" />
-                        <throwError>
-                            <text>${msg(slony.installdir.error)}</text>
-                        </throwError>
-                    </actionList>
-                    <ruleList>
-                        <regExMatch>
-                            <text>${installdir}</text>
-                            <logic>matches</logic>
-                            <pattern>^.*\s.*$</pattern>
-                        </regExMatch>
-                        <compareText>
-                            <text>${platform_name}</text>
-                            <logic>does_not_equal</logic>
-                            <value>windows</value>
-                        </compareText>
-			<fileTest>
-                            <path>${installdir}</path>
-                            <condition>not_writable</condition>
-                        </fileTest>
-                    </ruleList>
+                   <actionList>
+                       <setInstallerVariable name="installdir" value="${default_installdir}" />
+                       <showWarning>
+                          <text>${msg(slony.installdir.error)}</text>
+                       </showWarning>
+                       <setInstallerVariable name="next_page" value="installdir"/>
+                   </actionList>
+                   <ruleList>
+                     <regExMatch>
+                         <text>${installdir}</text>
+                         <logic>does_not_match</logic>
+                         <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                     </regExMatch>
+                     <compareText>
+                         <text>${platform_name}</text>
+                         <logic>does_not_equal</logic>
+                         <value>windows</value>
+                     </compareText>
+                  </ruleList>
                 </actionGroup>
+                <!-- Validating whether installdir is valid (Windows) -->
+                <actionGroup>
+                   <actionList>
+                       <setInstallerVariable name="installdir" value="${default_installdir}" />
+                       <showWarning>
+                          <text>${msg(slony.installdir.error)}</text>
+                       </showWarning>
+                       <setInstallerVariable name="next_page" value="installdir"/>
+                   </actionList>
+                   <ruleList>
+                     <regExMatch>
+                         <text>${installdir}</text>
+                         <logic>does_not_match</logic>
+                         <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-]*)$</pattern>
+                     </regExMatch>
+                     <compareText>
+                         <text>${platform_name}</text>
+                         <logic>equals</logic>
+                         <value>windows</value>
+                     </compareText>
+                  </ruleList>
+                </actionGroup>
+
             </validationActionList>
+
             <validationActionList>
                 <actionGroup>
                     <actionList>
@@ -818,7 +1092,7 @@
                 </actionGroup>
             </validationActionList>
             <validationActionList>
-            <createDirectory path="${system_temp_directory}/${product_fullname}" />
+                <createDirectory path="${system_temp_directory}/${product_fullname}" />
                 <unpackFile>
                     <component>Slony</component>
                     <destination>${system_temp_directory}/${product_fullname}/check-pgversion.sh</destination>
@@ -863,7 +1137,40 @@
                     <exec>${system_temp_directory}/${product_fullname}/check-pgversion.sh</exec>
                     <execArgs>"${installdir}"</execArgs>
                     <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                    <ruleList>
+                        <compareText>
+                           <text>${platform_name}</text>
+                           <logic>does_not_equal</logic>
+                           <value>windows</value>
+                        </compareText>
+                    </ruleList> 
                 </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                    <name>pg_version_str</name>
+                    <exec>${installdir}\bin\pg_config.exe</exec>
+                    <execArgs>--version</execArgs>
+                    <workingDirectory>${installdir}\bin</workingDirectory>
+                    <ruleList>
+                        <compareText>
+                           <text>${platform_name}</text>
+                           <logic>equals</logic>
+                           <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromRegEx>
+                      <name>pg_version</name>
+                      <text>${pg_version_str}</text>
+                      <pattern>^PostgreSQL ([0-9].[0-9]).[0-9]$</pattern>
+                      <substitution>\1</substitution>
+                      <ruleList>
+                         <compareText>
+                             <logic>does_not_equal</logic>
+                             <text>${pg_version_str}</text>
+                             <value/>
+                        </compareText>
+                      </ruleList>
+                </setInstallerVariableFromRegEx>
             </validationActionList>
             <validationActionList>
                 <actionGroup>
@@ -901,6 +1208,26 @@
                         <compareText>
                             <text>${platform_name}</text>
                             <logic>does_not_equal</logic>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <showWarning>
+                            <text>${msg(slony.incompatible.install.error)}</text>
+                        </showWarning>
+                        <exit>
+                            <exitCode>0</exitCode>
+                        </exit>
+                    </actionList>
+                    <ruleList>
+                        <fileExists>
+                            <path>${installdir}\bin\slon.exe</path>
+                        </fileExists>
+                        <compareText>
+                            <text>${platform_name}</text>
+                            <logic>equals</logic>
                             <value>windows</value>
                         </compareText>
                     </ruleList>

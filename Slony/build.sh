@@ -23,8 +23,7 @@ fi
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
-    #source $WD/Slony/build-windows.sh
-    echo "Not yet implemented" 
+    source $WD/Slony/build-windows.sh
 fi
     
 ################################################################################
@@ -43,6 +42,15 @@ _prep_Slony() {
     # Enter the source directory and cleanup if required
     cd $WD/Slony/source
 
+    #postgresql for windows
+    if [ ! -e postgresql-$PG_TARBALL_POSTGRESQL ];
+    then
+      extract_file  ../../tarballs/postgresql-$PG_TARBALL_POSTGRESQL || exit 1
+      cd postgresql-$PG_TARBALL_POSTGRESQL
+      patch -p0 < ../../../tarballs/mingw_build.patch
+    fi
+
+    cd $WD/Slony/source
 
     # SLONY
     if [ -e slony1-$PG_VERSION_SLONY ];
@@ -78,8 +86,7 @@ _prep_Slony() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_prep_Slony_windows || exit 1
-        echo "Not yet implemented" 
+        _prep_Slony_windows || exit 1
     fi
 
 }
@@ -111,8 +118,7 @@ _build_Slony() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_build_Slony_windows || exit 1
-        echo "Not yet implemented" 
+        _build_Slony_windows || exit 1
     fi
 }
 
@@ -163,8 +169,7 @@ _postprocess_Slony() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_postprocess_Slony_windows || exit 1
-        echo "Not yet implemented" 
+        _postprocess_Slony_windows || exit 1
     fi
 }
 
