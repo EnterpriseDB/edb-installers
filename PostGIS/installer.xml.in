@@ -239,28 +239,6 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- WIN: Set Installation Directory in case of re-install/upgrade -->
-        <actionGroup>
-            <actionList>
-                <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostGIS_PG${PGCurrentVersion}</key>
-                    <name>Location</name>
-                    <variable>installdir</variable>
-                </registryGet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${PostGISVersion}</text>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
         <!-- LIN & MAC: Check Previous Installation of PostGIS -->
         <actionGroup>
             <actionList>
@@ -279,6 +257,42 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+        <!-- Getting the Version Installed minus the buildnum -->
+        <setInstallerVariableFromRegEx>
+            <name>PostGISVersionInstalled</name>
+            <text>${PostGISVersion}</text>
+            <pattern>([0-9]*)-[0-9]*$</pattern>
+            <substitution>\1</substitution>
+            <ruleList>
+               <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>${PostGISVersion}</text>
+                  <value/>
+               </compareText>
+            </ruleList>
+         </setInstallerVariableFromRegEx>
+        <!-- WIN: Set Installation Directory in case of re-install/upgrade -->
+        <actionGroup>
+            <actionList>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostGIS_PG${PGCurrentVersion}</key>
+                    <name>Location</name>
+                    <variable>installdir</variable>
+                </registryGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${PostGISVersionInstalled}</text>
+                    <value>PG_VERSION_POSTGIS</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
         <!-- LIN | MAC : Set Installation Directory in case of re-install/upgrade -->
         <actionGroup>
             <actionList>
@@ -291,8 +305,8 @@
             </actionList>
             <ruleList>
                 <compareText>
-                    <logic>contains</logic>
-                    <text>${PostGISVersion}</text>
+                    <logic>equals</logic>
+                    <text>${PostGISVersionInstalled}</text>
                     <value>PG_VERSION_POSTGIS</value>
                 </compareText>
                 <compareText>
@@ -309,8 +323,8 @@
             </actionList>
             <ruleList>
                 <compareText>
-                    <logic>contains</logic>
-                    <text>${PostGISVersion}</text>
+                    <logic>equals</logic>
+                    <text>${PostGISVersionInstalled}</text>
                     <value>PG_VERSION_POSTGIS</value>
                 </compareText>
             </ruleList>
@@ -397,7 +411,7 @@
                 </compareText>
                 <compareValues>
                     <logic>does_not_equal</logic>
-                    <value1>${PostGISVersion}</value1>
+                    <value1>${PostGISVersionInstalled}</value1>
                     <value2>${productVersion}</value2>
                 </compareValues>
                 <compareText>
@@ -419,6 +433,11 @@
                     <text>${installdir}</text>
                     <value/>
                 </compareText>
+                <compareText>
+                 <logic>equals</logic>
+                 <text>${platform_name}</text>
+                 <value>windows</value>
+              </compareText>
             </ruleList>
         </setInstallerVariableFromRegEx>
 
@@ -489,7 +508,7 @@
                 </compareText>
                 <compareValues>
                     <logic>does_not_equal</logic>
-                    <value1>${PostGISVersion}</value1>
+                    <value1>${PostGISVersionInstalled}</value1>
                     <value2>${productVersion}</value2>
                 </compareValues>
                 <compareText>
@@ -1255,7 +1274,7 @@
             <ruleList>
                 <compareValues>
                     <logic>does_not_equal</logic>
-                    <value1>${PostGISVersion}</value1>
+                    <value1>${PostGISVersionInstalled}</value1>
                     <value2>${productVersion}</value2>
                 </compareValues>
             </ruleList>
@@ -1525,8 +1544,8 @@
             <width>40</width>
             <ruleList>
                 <compareText>
-                    <logic>does_not_contain</logic>
-                    <text>${PostGISVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <text>${PostGISVersionInstalled}</text>
                     <value>PG_VERSION_POSTGIS</value>
                 </compareText>
             </ruleList>
@@ -1698,6 +1717,11 @@
                              <text>${pg_version_str}</text>
                              <value/>
                         </compareText>
+                        <compareText>
+                           <text>${platform_name}</text>
+                           <logic>equals</logic>
+                           <value>windows</value>
+                        </compareText>
                       </ruleList>
                 </setInstallerVariableFromRegEx>
             </validationActionList>
@@ -1771,8 +1795,8 @@
             <description>${msg(upgrade.existing.installation.description)}</description>
             <ruleList>
 		<compareText>
-                    <logic>contains</logic>
-                    <text>${PostGISVersion}</text>
+                    <logic>equals</logic>
+                    <text>${PostGISVersionInstalled}</text>
                     <value>PG_VERSION_POSTGIS</value>
                 </compareText>
             </ruleList>
