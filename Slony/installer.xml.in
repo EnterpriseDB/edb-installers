@@ -434,7 +434,7 @@
             <ruleList>
                 <compareText>
                     <logic>does_not_equal</logic>
-                    <text>${pg_version_str}</text>
+                    <text>${pg_pkglibdir_str}</text>
                     <value/>
                 </compareText>
             </ruleList>
@@ -448,7 +448,7 @@
             <ruleList>
                 <compareText>
                     <logic>does_not_equal</logic>
-                    <text>${pg_version_str}</text>
+                    <text>${pg_sharedir_str}</text>
                     <value/>
                 </compareText>
             </ruleList>
@@ -1147,6 +1147,11 @@
                              <logic>does_not_equal</logic>
                              <text>${pg_version_str}</text>
                              <value/>
+                        </compareText>
+                        <compareText>
+                           <text>${platform_name}</text>
+                           <logic>equals</logic>
+                           <value>windows</value>
                         </compareText>
                       </ruleList>
                 </setInstallerVariableFromRegEx>
