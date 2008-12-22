@@ -71,6 +71,9 @@
         <setInstallerVariable name="SlonyMajorVersion" value="SLONY_MAJOR_VERSION">
             <persist>0</persist>
         </setInstallerVariable>
+        <setInstallerVariable name="SlonyMajorVersionInstalled" value="">
+            <persist>0</persist>
+        </setInstallerVariable>
         <!-- Set the PG Current version(if exists) -->
         <setInstallerVariable name="PGCurrentVersion" value="PG_CURRENT_VERSION">
             <persist>1</persist>
@@ -302,6 +305,154 @@
                     <value1>${SlonyMajorVersion}</value1>
                     <value2>${SlonyMajorVersionInstalled}</value2>
                 </compareValues>   
+            </ruleList>
+        </actionGroup>
+        <!-- Exit the installation if the PostGIS version installed is not the same as the current Version -->
+        <actionGroup>
+            <actionList>
+                <showWarning>
+                    <text>${msg(slony.incompatible.install.error)}</text>
+                </showWarning>
+                <exit>
+                   <exitCode>0</exitCode>
+                </exit>
+            </actionList>
+            <ruleList>
+                <compareValues>
+                    <logic>does_not_equal</logic>
+                    <value1>${SlonyMajorVersion}</value1>
+                    <value2>${SlonyMajorVersionInstalled}</value2>
+                </compareValues>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${SlonyMajorVersionInstalled}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- LIN | MAC : Exit the installation if the installdir is not valid (Unattended mode) -->
+        <actionGroup>
+            <actionList>
+                <showWarning>
+                    <text>${msg(slony.installdir.pgerror)}</text>
+                </showWarning>
+                <exit>
+                   <exitCode>0</exitCode>
+                </exit>
+            </actionList>
+            <ruleList>
+                <fileTest>
+                    <path>${installdir}/bin/pg_config</path>
+                    <condition>not_exists</condition>
+                </fileTest>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- WIN: Exit the installation if the installdir is not valid (Unattended mode) -->
+        <actionGroup>
+            <actionList>
+                <showWarning>
+                    <text>${msg(slony.installdir.pgerror)}</text>
+                </showWarning>
+                <exit>
+                   <exitCode>0</exitCode>
+                </exit>
+            </actionList>
+            <ruleList>
+                <fileTest>
+                    <path>${installdir}\bin\pg_config.exe</path>
+                    <condition>not_exists</condition>
+                </fileTest>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- Exits the installation if the postgresql version is not compatible with postgis version (Unattended mode) -->
+        <actionGroup>
+            <actionList>
+                 <setInstallerVariableFromScriptOutput>
+                    <name>pg_version_str</name>
+                    <exec>${installdir}/bin/pg_config</exec>
+                    <execArgs>--version</execArgs>
+                    <workingDirectory>${installdir}/bin</workingDirectory>
+                    <ruleList>
+                       <compareText>
+                          <text>${platform_name}</text>
+                          <logic>does_not_equal</logic>
+                          <value>windows</value>
+                       </compareText>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                    <name>pg_version_str</name>
+                    <exec>${installdir}\bin\pg_config.exe</exec>
+                    <execArgs>--version</execArgs>
+                    <workingDirectory>${installdir}\bin</workingDirectory>
+                    <ruleList>
+                       <compareText>
+                          <text>${platform_name}</text>
+                          <logic>equals</logic>
+                          <value>windows</value>
+                       </compareText>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromRegEx>
+                      <name>pg_version</name>
+                      <text>${pg_version_str}</text>
+                      <pattern>^PostgreSQL ([0-9].[0-9]).[0-9]$</pattern>
+                      <substitution>\1</substitution>
+                      <ruleList>
+                         <compareText>
+                             <logic>does_not_equal</logic>
+                             <text>${pg_version_str}</text>
+                             <value/>
+                        </compareText>
+                      </ruleList>
+                </setInstallerVariableFromRegEx>
+                <showWarning>
+                    <text>${msg(slony.installdir.pgerror)}</text>
+                    <ruleList>
+                      <compareText>
+                          <logic>does_not_equal</logic>
+                          <text>${pg_version}</text>
+                           <value>PG_MAJOR_VERSION</value>
+                      </compareText>
+                   </ruleList>
+                </showWarning>
+                <exit>
+                   <exitCode>0</exitCode>
+                   <ruleList>
+                      <compareText>
+                          <logic>does_not_equal</logic>
+                          <text>${pg_version}</text>
+                           <value>PG_MAJOR_VERSION</value>
+                      </compareText>
+                   </ruleList>
+                </exit>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
             </ruleList>
         </actionGroup>
         <!-- Setting the installation type as upgrade if previous installation found -->
@@ -1042,7 +1193,6 @@
                      </compareText>
                   </ruleList>
                 </actionGroup>
-
             </validationActionList>
 
             <validationActionList>
@@ -1055,17 +1205,32 @@
                     </actionList>
                     <ruleList>
                         <fileTest>
-                            <path>${installdir}/bin/psql</path>
-                            <condition>not_exists</condition>
-                        </fileTest>
-                        <fileTest>
-                            <path>${installdir}/bin/postgres</path>
-                            <condition>not_exists</condition>
+                           <path>${installdir}/bin/pg_config</path>
+                           <condition>not_exists</condition>
                         </fileTest>
                         <compareText>
-                            <text>${platform_name}</text>
-                            <logic>does_not_equal</logic>
-                            <value>windows</value>
+                           <text>${platform_name}</text>
+                           <logic>does_not_equal</logic>
+                           <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="installdir" value="${defaultpghome}" />
+                        <throwError>
+                            <text>${msg(slony.installdir.pgerror)}</text>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <fileTest>
+                           <path>${installdir}\bin\pg_config.exe</path>
+                           <condition>not_exists</condition>
+                        </fileTest>
+                        <compareText>
+                           <text>${platform_name}</text>
+                           <logic>equals</logic>
+                           <value>windows</value>
                         </compareText>
                     </ruleList>
                 </actionGroup>
@@ -1171,48 +1336,6 @@
                             <logic>does_not_equal</logic>
                             <text>${pg_version}</text>
                             <value>PG_MAJOR_VERSION</value>            
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-            </validationActionList>
-            <validationActionList>
-                <actionGroup>
-                    <actionList>
-                        <showWarning>
-                            <text>${msg(slony.incompatible.install.error)}</text>
-                        </showWarning>
-                        <exit>
-                            <exitCode>0</exitCode>
-                        </exit>
-                    </actionList>
-                    <ruleList>
-                        <fileExists>
-                            <path>${installdir}/bin/slon</path>
-                        </fileExists>
-                        <compareText>
-                            <text>${platform_name}</text>
-                            <logic>does_not_equal</logic>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <actionGroup>
-                    <actionList>
-                        <showWarning>
-                            <text>${msg(slony.incompatible.install.error)}</text>
-                        </showWarning>
-                        <exit>
-                            <exitCode>0</exitCode>
-                        </exit>
-                    </actionList>
-                    <ruleList>
-                        <fileExists>
-                            <path>${installdir}\bin\slon.exe</path>
-                        </fileExists>
-                        <compareText>
-                            <text>${platform_name}</text>
-                            <logic>equals</logic>
-                            <value>windows</value>
                         </compareText>
                     </ruleList>
                 </actionGroup>
