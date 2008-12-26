@@ -24,10 +24,10 @@ _prep_pgphonehome_osx() {
     chmod -R ugo+w pgphonehome.osx || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/pgphonehome/staging/osx/pgphonehome ];
+    if [ -e $WD/pgphonehome/staging/osx ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/pgphonehome/staging/osx/pgphonehome || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/pgphonehome/staging/osx || _die "Couldn't remove the existing staging directory"
     fi
 
     echo "Creating staging directory ($WD/pgphonehome/staging/osx)"

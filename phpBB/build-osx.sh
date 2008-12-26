@@ -24,10 +24,10 @@ _prep_phpBB_osx() {
     chmod -R ugo+w phpBB.osx || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/phpBB/staging/osx/phpBB ];
+    if [ -e $WD/phpBB/staging/osx ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/phpBB/staging/osx/phpBB || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/phpBB/staging/osx || _die "Couldn't remove the existing staging directory"
     fi
 
     echo "Creating staging directory ($WD/phpBB/staging/osx)"

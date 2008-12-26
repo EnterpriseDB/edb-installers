@@ -24,10 +24,10 @@ _prep_phpWiki_windows() {
     chmod -R ugo+w phpWiki.windows || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/phpWiki/staging/windows/phpWiki ];
+    if [ -e $WD/phpWiki/staging/windows ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/phpWiki/staging/windows/phpWiki || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/phpWiki/staging/windows || _die "Couldn't remove the existing staging directory"
     fi
 
     echo "Creating staging directory ($WD/phpWiki/staging/windows)"

@@ -1020,9 +1020,6 @@
                         <distributionDirectory>
                             <origin>staging/windows/installer</origin>
                         </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/windows/scripts</origin>
-                        </distributionDirectory>
                     </distributionFileList>
                 </folder>
    
@@ -1048,9 +1045,6 @@
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/linux/installer</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux/scripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1078,9 +1072,6 @@
                         <distributionDirectory>
                             <origin>staging/linux-x64/installer</origin>
                         </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/scripts</origin>
-                        </distributionDirectory>
                     </distributionFileList>
                 </folder>
    
@@ -1106,9 +1097,6 @@
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/osx/installer</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/osx/scripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>

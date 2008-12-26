@@ -24,10 +24,10 @@ _prep_mediaWiki_osx() {
     chmod -R ugo+w mediaWiki.osx || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/mediaWiki/staging/osx/mediaWiki ];
+    if [ -e $WD/mediaWiki/staging/osx ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/mediaWiki/staging/osx/mediaWiki || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/mediaWiki/staging/osx || _die "Couldn't remove the existing staging directory"
     fi
 
     echo "Creating staging directory ($WD/mediaWiki/staging/osx)"

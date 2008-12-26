@@ -24,10 +24,10 @@ _prep_pgphonehome_windows() {
     chmod -R ugo+w pgphonehome.windows || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/pgphonehome/staging/windows/pgphonehome ];
+    if [ -e $WD/pgphonehome/staging/windows ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/pgphonehome/staging/windows/pgphonehome || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/pgphonehome/staging/windows || _die "Couldn't remove the existing staging directory"
     fi
 
     echo "Creating staging directory ($WD/pgphonehome/staging/windows)"

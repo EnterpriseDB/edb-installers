@@ -24,10 +24,10 @@ _prep_mediaWiki_windows() {
     chmod -R ugo+w mediaWiki.windows || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/mediaWiki/staging/windows/mediaWiki ];
+    if [ -e $WD/mediaWiki/staging/windows ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/mediaWiki/staging/windows/mediaWiki || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/mediaWiki/staging/windows || _die "Couldn't remove the existing staging directory"
     fi
 
     echo "Creating staging directory ($WD/mediaWiki/staging/windows)"

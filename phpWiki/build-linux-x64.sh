@@ -24,10 +24,10 @@ _prep_phpWiki_linux_x64() {
     chmod -R ugo+w phpWiki.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/phpWiki/staging/linux-x64/phpWiki ];
+    if [ -e $WD/phpWiki/staging/linux-x64 ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/phpWiki/staging/linux-x64/phpWiki || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/phpWiki/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
     fi
 
     echo "Creating staging directory ($WD/phpWiki/staging/linux-x64)"

@@ -24,10 +24,10 @@ _prep_mediaWiki_linux() {
     chmod -R ugo+w mediaWiki.linux || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/mediaWiki/staging/linux/mediaWiki ];
+    if [ -e $WD/mediaWiki/staging/linux ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/mediaWiki/staging/linux/mediaWiki || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/mediaWiki/staging/linux || _die "Couldn't remove the existing staging directory"
     fi
 
     echo "Creating staging directory ($WD/mediaWiki/staging/linux)"

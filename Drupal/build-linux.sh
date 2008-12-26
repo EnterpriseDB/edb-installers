@@ -24,10 +24,10 @@ _prep_Drupal_linux() {
     chmod -R ugo+w Drupal.linux || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/Drupal/staging/linux/Drupal ];
+    if [ -e $WD/Drupal/staging/linux ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/Drupal/staging/linux/Drupal || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/Drupal/staging/linux || _die "Couldn't remove the existing staging directory"
     fi
 
     echo "Creating staging directory ($WD/Drupal/staging/linux)"

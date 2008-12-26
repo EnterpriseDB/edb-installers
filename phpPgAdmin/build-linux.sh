@@ -24,10 +24,10 @@ _prep_phpPgAdmin_linux() {
     chmod -R ugo+w phpPgAdmin.linux || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/phpPgAdmin/staging/linux/phpPgAdmin ];
+    if [ -e $WD/phpPgAdmin/staging/linux ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/phpPgAdmin/staging/linux/phpPgAdmin || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/phpPgAdmin/staging/linux || _die "Couldn't remove the existing staging directory"
     fi
 
     echo "Creating staging directory ($WD/phpPgAdmin/staging/linux)"
