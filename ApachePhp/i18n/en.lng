@@ -2,6 +2,8 @@ Installer.Welcome.Title=Setup EnterpriseDB %1$s
 
 Installer.Welcome.Text=Welcome to the EnterpriseDB %1$s Setup Wizard.
 
+Installer.Installing.Title=Installing ${product_fullname}
+
 upgrade.existing.installation.title=Existing installation
 
 upgrade.existing.installation.description=An existing ApachePhp installation has been found at ${installdir}. This installation will be upgraded.

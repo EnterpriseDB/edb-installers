@@ -2,6 +2,8 @@ Installer.Welcome.Title=Setup Slony
 
 Installer.Welcome.Text=Welcome to the Slony Setup.
 
+Installer.Installing.Title=Installing ${product_fullname}
+
 Installer.Parameter.installdir.explanation=Please specify the directory where Slony will be installed.
 
 Installer.Ready.Text1=Setup is now ready to begin installing Slony on your computer.

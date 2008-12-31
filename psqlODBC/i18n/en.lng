@@ -2,6 +2,8 @@ Installer.Welcome.Title=Setup %1$s
 
 Installer.Welcome.Text=Welcome to the %1$s Setup.
 
+Installer.Installing.Title=Installing ${product_fullname}
+
 upgrade.existing.installation.title=Existing installation
 
 upgrade.existing.installation.description=An existing psqlODBC installation has been found at ${installdir}. This installation will be upgraded.

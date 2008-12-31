@@ -2,6 +2,8 @@ Installer.Welcome.Title=Setup ${productFullName}
 
 Installer.Welcome.Text=Welcome to the ${productFullName} Setup Wizard.
 
+Installer.Installing.Title=Installing ${product_fullname}
+
 upgrade.existing.installation.title=Existing installation
 
 upgrade.existing.installation.description=An existing Npgsql installation has been found at ${installdir}. This installation will be upgraded.
