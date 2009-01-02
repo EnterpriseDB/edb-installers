@@ -1028,9 +1028,28 @@ include conf\addons\*.conf
           <workingDirectory>${installdir}/installer/ApachePhp</workingDirectory>
         </runProgram>
         <!-- Uninstall the ApachePhp service -->
+
+	<!-- Attempt to remove any runlevel config with chkconfig -->
+        <runProgram>
+          <program>/sbin/chkconfig</program>
+          <programArguments>--del EnterpriseDBApachePhp</programArguments>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </runProgram>
+
+        <!-- Remove the startup script -->
         <deleteFile>
-          <path>/etc/rc.d/init.d/EnterpriseDBApachePhp</path>
+  	   <path>/etc/init.d/EnterpriseDBApachePhp</path>
         </deleteFile>
+
+        <!-- Attempt to remove any runlevel config with update-rc.d -->
+        <runProgram>
+          <program>/usr/sbin/update-rc.d</program>
+          <programArguments>-f EnterpriseDBApachePhp remove</programArguments>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </runProgram>
+
       </actionList>
       <ruleList>
         <compareText>
