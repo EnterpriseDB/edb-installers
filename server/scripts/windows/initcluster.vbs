@@ -125,25 +125,6 @@ if iRet <> 0 Then
     Warn "Failed to grant 'Domain Admins' access to the data directory (" & strDataDir & ") - probably not on a domain."
 End If
 
-If objFso.FolderExists(strInstallDir & "\logs") <> True Then
-    objFso.CreateFolder strInstallDir & "\logs"
-    If Err.number <> 0 Then
-        Die "Failed to create the log directory (" & strInstallDir & "\logs" & ")"
-    End If
-End If
-
-WScript.Echo "Securing Log directory:"
-iRet = DoCmd("echo y|cacls """ & strInstallDir & "\logs" & """ /T /G Administrators:F """ & strUsername & """:C")
-if iRet <> 0 Then
-    Warn "Failed to secure the log directory (" & strInstallDir & "\logs" & ")"
-End If
-
-' Attempt to allow Domain Admins access. This may fail if we're not on a domain.
-iRet = DoCmd("echo y|cacls """ & strInstallDir & "\logs" & """ /E /T /G ""Domain Admins"":F")
-if iRet <> 0 Then
-    Warn "Failed to grant 'Domain Admins' access to the log directory (" & strInstallDir & "\logs" & ") - probably not on a domain."
-End If
-
 ' Edit the config files
 ' Set the following in postgresql.conf:
 '      listen_addresses = '*'
