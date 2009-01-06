@@ -39,6 +39,7 @@ the kernel, you can use the sysctl utility:
 The database server can now be installed.
 
 For more information on PostgreSQL's use of shared memory, please see:
+
 http://www.postgresql.org/docs/current/static/kernel-resources.html#SYSVIPC
 
 Support
