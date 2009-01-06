@@ -1,0 +1,53 @@
+PostgreSQL One Click Installer README
+=====================================
+
+Shared Memory
+-------------
+
+PostgreSQL uses shared memory extensively for caching and inter-process 
+communication. Unfortunately, the default configuration of Mac OS X does
+not allow suitable amounts of shared memory to be created to run the 
+database server.
+
+Before running the installation, please ensure that your system is 
+configured to allow the use of larger amounts of shared memory. Note that
+this does not 'reserve' any memory so it is safe to configure much higher
+values than you might initially need. You can do this by editting the 
+file /etc/sysctl.conf - e.g.
+
+% sudo vi /etc/sysctl.conf
+
+On a MacBook Pro with 2GB of RAM, the author's sysctl.conf contains:
+
+kern.sysv.shmmax=1610612736
+kern.sysv.shmall=393216
+kern.sysv.shmmin=1
+kern.sysv.shmmni=32
+kern.sysv.shmseg=8
+kern.maxprocperuid=512
+kern.maxproc=2048
+
+Note that (kern.sysv.shmall * 4096) should be greater than or equal to
+kern.sysv.shmmax. kern.sysv.shmmax must also be a multiple of 4096.
+
+Once you have edited (or created) the file, reboot before continuing with 
+the installation. If you wish to check the settings currently being used by 
+the kernel, you can use the sysctl utility:
+
+% sysctl -a
+
+The database server can now be installed.
+
+For more information on PostgreSQL's use of shared memory, please see:
+http://www.postgresql.org/docs/current/static/kernel-resources.html#SYSVIPC
+
+Support
+-------
+
+For help with this installer, please visit the forum at:
+
+http://forums.enterprisedb.com/forums/show/9.page
+
+For help with the packages within the installer, please visit the packages
+website.
+
