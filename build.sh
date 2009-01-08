@@ -310,6 +310,20 @@ then
     _postprocess_Npgsql || exit 1
 fi
 
+# Package: pgAgent
+if [ $PG_PACKAGE_PGAGENT == 1 ];
+then
+    cd $WD
+    source ./pgAgent/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_pgAgent || exit 1
+        _build_pgAgent || exit 1
+    fi
+    _postprocess_pgAgent || exit 1
+fi
+
 # Package: DevServer
 # ALWAYS BUILD THIS LAST!!
 if [ $PG_PACKAGE_DEVSERVER == 1 ];

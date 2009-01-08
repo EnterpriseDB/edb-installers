@@ -1,0 +1,75 @@
+Installer.Welcome.Title=Setup %1$s
+
+Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
+
+Installer.Ready.Text1=Setup is now ready to begin installing pgAgent on your computer.
+
+Installer.Installing.Text=Please wait while Setup installs pgAgent on your computer.
+
+ask.user.name=For starting , pgAgent needs a user (Other than root). By default pgAgent uses postgres user account.Do you want to continue with that.Press No to change the user account.
+
+upgrade.existing.installation.title=Existing installation
+
+upgrade.existing.installation.description=An existing pgAgent installation has been found at ${installdir}. This installation will be upgraded.
+
+progress.text.creating.user=Creating user name 
+
+install.summary=pgAgent is a job scheduler for PostgreSQL which may be managed using pgAdmin
+
+configure.pgagent.schema=Created and configured the pgagent schema in postgres database which will be used by pgAgent
+
+error.install.pgagent=Error Installing pgAgent as Service
+
+schema.drop.info=The pgagent Schema and ${unixuser} user account have not been removed from your system.
+
+pgagent.installdir.empty=The installation directory cannot be empty
+
+pgagent.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
+
+pgagent.installdir.pgerror=The installation directory path is not a valid PostgreSQL Server installation directory. Please select the correct path, or install the PostgreSQL Server and try again.
+
+platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
+
+error.stop.pgagent=Failed to stop pgAgent
+
+error.install.pgagent=Failed to Install pgAgent Service
+
+error.start.pgagent=Failed to start pgAgent
+
+error.uninstall.pgagent=Failed to uninstall pgAgent Service
+
+pgplus.details.title=PostgreSQL Installation Details 
+
+pgplus.details.explanation=Please verify the PostgreSQL installation details
+
+config.password.confirm=Retype password
+
+windowsuserpassword.details.title=Password
+
+windowsuserpassword.details.explanation=Please provide the Password for postgres windows User
+
+unixuserpassword.details.title=UserName and Password
+
+unixuserpassword.details.explanation=Please Enter User Name and password for a User with which pgAgent will run.
+
+config.windowspassword.no.password=You must enter a password to continue.
+
+script.command.line.error=The script was called with an invalid command line
+
+config.windowspassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the postgres windows user account.
+
+pgplus.details.error=Connection to the PostgreSQL Server failed. Please re-check the details provided.
+
+post.install.error=Error Configuring pgAgent Application.
+
+Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
+
+Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
+
+pgplus.blank.error=Values must be entered for all fields.
+
+progress.text.creating.shortcuts=Creating Menu Shortcuts
+
+config.superpassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the postgres windows user account.
+
+
