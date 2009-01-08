@@ -52,7 +52,7 @@
     </preBuildActionList>
     <initializationActionList>
 	<setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_NPGSQL" />
-	<setInstallerVariable name="productFullName" persist="1" value="Npgsql for Mono 2.0.x">
+	<setInstallerVariable name="productFullName" persist="1" value="Npgsql for Mono 2.0">
           <ruleList>
               <compareText>
 		<logic>does_not_equal</logic>
