@@ -44,6 +44,7 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+
     <!-- Prebuild Actions -->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>
@@ -53,9 +54,11 @@
           </ruleList>
       </setInstallerVariable>
      </preBuildActionList>
+
     <!-- Initialisation actions -->
     <initializationActionList>
 	<setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PGAGENT" />
+
 	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -65,14 +68,17 @@
             <compareText text="${originalplatform}" value="linux-x32"/>
           </ruleList>
         </throwError>
+
 	<!-- Set the pghost varaible to localhost -->
         <setInstallerVariable name="pghost" value="localhost">
             <persist>0</persist>
         </setInstallerVariable>
+
         <!-- Set the default values -->
         <setInstallerVariable name="defaultuser" value=""/>
         <setInstallerVariable name="defaultpassword" value=""/>
         <setInstallerVariable name="defaultpghome" value=""/>
+
         <!-- Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
@@ -87,6 +93,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
         <!-- WIN: Set the    pghome default value for unattended mode -->
         <actionGroup>
             <actionList>
@@ -105,6 +112,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
         <!-- LIN: Set the    pghome default value for unattended mode -->
         <actionGroup>
             <actionList>
@@ -123,6 +131,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
         <!-- MAC : Set the    pghome default value for unattended mode -->
         <actionGroup>
             <actionList>
@@ -200,6 +209,7 @@
         </actionGroup>
 
     </initializationActionList>
+
     <!-- Preinstallation actions -->
     <preInstallationActionList>
 
@@ -426,6 +436,7 @@
 		    <abortOnError>0</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
                 </runProgram>
+
                 <!-- Inform user about configuring pgagent Schema -->
                 <showInfo>
                     <text>${msg(configure.pgagent.schema)}</text>
@@ -456,6 +467,7 @@
 		    <abortOnError>0</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
                 </runProgram>
+
                 <!-- Inform user about configuring pgagent Schema -->
                 <showInfo>
                     <text>${msg(configure.pgagent.schema)}</text>
@@ -813,6 +825,7 @@
         </showInfo>
     </postUninstallationActionList>
     <!-- Components -->
+
     <componentList>
         <component>
             <name>pgAgent</name>
@@ -1103,8 +1116,8 @@
 
         <parameterGroup>
             <name>pgdetails</name>
-            <title>${msg(pgplus.details.title)}</title>
-            <explanation>${msg(pgplus.details.explanation)}</explanation>
+            <title>${msg(pg.details.title)}</title>
+            <explanation>${msg(pg.details.explanation)}</explanation>
             <value/>
             <default/>
             <parameterList>
@@ -1188,7 +1201,7 @@
                 <actionGroup>
                     <actionList>
                         <throwError>
-                            <text>${msg(pgplus.blank.error)}</text>
+                            <text>${msg(pg.blank.error)}</text>
                         </throwError>
                     </actionList>
                     <ruleEvaluationLogic>OR</ruleEvaluationLogic>
@@ -1297,7 +1310,7 @@
                             <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <customErrorMessage>${msg(pgplus.details.error)}</customErrorMessage>
+                            <customErrorMessage>${msg(pg.details.error)}</customErrorMessage>
                         </setInstallerVariableFromScriptOutput>
                     </actionList>
                     <ruleList>
@@ -1317,7 +1330,7 @@
                             <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <customErrorMessage>${msg(pgplus.details.error)}</customErrorMessage>
+                            <customErrorMessage>${msg(pg.details.error)}</customErrorMessage>
                         </setInstallerVariableFromScriptOutput>
                     </actionList>
                     <ruleList>

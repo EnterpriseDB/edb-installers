@@ -6,21 +6,21 @@ Installer.Ready.Text1=Setup is now ready to begin installing pgAgent on your com
 
 Installer.Installing.Text=Please wait while Setup installs pgAgent on your computer.
 
-ask.user.name=For starting , pgAgent needs a user (Other than root). By default pgAgent uses postgres user account.Do you want to continue with that.Press No to change the user account.
+ask.user.name=Please enter the user account under which pgAgent should run. The account will be created if required.
 
 upgrade.existing.installation.title=Existing installation
 
 upgrade.existing.installation.description=An existing pgAgent installation has been found at ${installdir}. This installation will be upgraded.
 
-progress.text.creating.user=Creating user name 
+progress.text.creating.user=Creating user account
 
 install.summary=pgAgent is a job scheduler for PostgreSQL which may be managed using pgAdmin
 
-configure.pgagent.schema=Created and configured the pgagent schema in postgres database which will be used by pgAgent
+configure.pgagent.schema=Created and configured the pgagent schema in postgres database. 
 
-error.install.pgagent=Error Installing pgAgent as Service
+error.install.pgagent=Error Installing the pgAgent service
 
-schema.drop.info=The pgagent Schema and ${unixuser} user account have not been removed from your system.
+schema.drop.info=The pgagent schema and ${unixuser} user account have not been removed from your system.
 
 pgagent.installdir.empty=The installation directory cannot be empty
 
@@ -32,44 +32,42 @@ platform.not.match=You are trying to run a 32bit installer in a 64bit machine. T
 
 error.stop.pgagent=Failed to stop pgAgent
 
-error.install.pgagent=Failed to Install pgAgent Service
+error.install.pgagent=Failed to install the pgAgent service
 
 error.start.pgagent=Failed to start pgAgent
 
-error.uninstall.pgagent=Failed to uninstall pgAgent Service
+error.uninstall.pgagent=Failed to uninstall the pgAgent service
 
-pgplus.details.title=PostgreSQL Installation Details 
+pg.details.title=PostgreSQL Installation Details 
 
-pgplus.details.explanation=Please verify the PostgreSQL installation details
+pg.details.explanation=Please verify the PostgreSQL installation details
 
 config.password.confirm=Retype password
 
 windowsuserpassword.details.title=Password
 
-windowsuserpassword.details.explanation=Please provide the Password for postgres windows User
+windowsuserpassword.details.explanation=Please provide the password for the service user account.
 
-unixuserpassword.details.title=UserName and Password
+unixuserpassword.details.title=Username and password
 
-unixuserpassword.details.explanation=Please Enter User Name and password for a User with which pgAgent will run.
+unixuserpassword.details.explanation=Please enter the username and password for the user under which pgAgent will run.
 
 config.windowspassword.no.password=You must enter a password to continue.
 
 script.command.line.error=The script was called with an invalid command line
 
-config.windowspassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the postgres windows user account.
+config.windowspassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the service user account.
 
-pgplus.details.error=Connection to the PostgreSQL Server failed. Please re-check the details provided.
+pg.details.error=Connection to the PostgreSQL Server failed. Please re-check the details provided.
 
-post.install.error=Error Configuring pgAgent Application.
+post.install.error=Error configuring pgAgent.
 
 Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
-pgplus.blank.error=Values must be entered for all fields.
+pg.blank.error=Values must be entered for all fields.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
-
-config.superpassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the postgres windows user account.
 
 
