@@ -70,8 +70,8 @@ _build_pgAgent_windows() {
     cd $WD/pgAgent
     SOURCE_DIR=$PG_PATH_WINDOWS/pgAgent.windows
 
-    echo "configuring pgAgent sources"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; export PGDIR=$PG_PATH_WINDOWS/output ; cmake CMakeLists.txt " || _die "Couldn't configure the pgAgent sources"
+    echo "Configuring pgAgent sources"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; PGDIR=$PG_PATH_WINDOWS/output WXWIN=$PG_WXWIN_WINDOWS cmake ." || _die "Couldn't configure the pgAgent sources"
     echo "Building pgAgent"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; export PGDIR=$PG_PATH_WINDOWS/output ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgagent.vcproj RELEASE" || _die "Failed to build pgAgent on the build host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/validateuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
