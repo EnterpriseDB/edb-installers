@@ -11,6 +11,6 @@ SET PGDATABASE=postgres
 REM Creating pl/pgsql language
 "%PG_HOME%\bin\createlang.exe" plpgsql postgres
 
-CD "%PG_HOME%\pgAdmin III"
+CD "%PG_HOME%\pgAgent"
 REM Creating and configuring pgAgent Schema
-CALL "%PG_HOME%\bin\psql.exe" -f scripts\pgagent.sql
+CALL "%PG_HOME%\bin\psql.exe" -f "%PG_HOME%\pgAgent\share\pgagent.sql"

@@ -113,7 +113,7 @@
             </ruleList>
         </actionGroup>
 
-        <!-- LIN: Set the    pghome default value for unattended mode -->
+        <!-- LIN : Set the    pghome default value for unattended mode -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/8.3"/>
@@ -170,7 +170,7 @@
             </ruleList>
         </actionGroup>
 
-        <!-- LIN: Set the    pghome default value when pghome not set -->
+        <!-- LIN : Set the    pghome default value when pghome not set -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/8.3"/>
@@ -225,7 +225,7 @@
         </touchFile>
 	<setInstallerVariable name="defaultpghome" value="${pghome}"/>
 
-        <!-- LIN & MAC: Check Previous Installation of pgAgent -->
+        <!-- LIN & MAC : Check Previous Installation of pgAgent -->
         <actionGroup>
             <actionList>
                 <iniFileGet>
@@ -244,7 +244,7 @@
             </ruleList>
         </actionGroup>
 	
-	<!-- LIN & MAC: Set the installation directory in case of re-install/upgrade -->
+	<!-- LIN & MAC : Set the installation directory in case of re-install/upgrade -->
         <actionGroup>
             <actionList>
                 <iniFileGet>
@@ -268,7 +268,7 @@
             </ruleList>
         </actionGroup>
 
-        <!-- WIN: Check Previous Installation of pgAgent -->
+        <!-- WIN : Check Previous Installation of pgAgent -->
         <actionGroup>
             <actionList>
                 <registryGet>
@@ -286,7 +286,7 @@
             </ruleList>
         </actionGroup>
 
-	<!-- WIN: Set the installation directory in case of re-install/upgrade -->
+	<!-- WIN : Set the installation directory in case of re-install/upgrade -->
         <actionGroup>
             <actionList>
                 <registryGet>
@@ -309,7 +309,7 @@
             </ruleList>
         </actionGroup>
 
-	<!-- LIN: Stop the pgAgent Service -->
+	<!-- LIN : Stop the pgAgent Service -->
         <runProgram>
             <program>/etc/init.d/pgagent</program>
             <programArguments>stop</programArguments>
@@ -329,7 +329,7 @@
             </ruleList>
         </runProgram>
 
-	<!-- WIN :Stop the pgAgent Service -->
+	<!-- WIN : Stop the pgAgent Service -->
         <stopWindowsService>
            <serviceName>pgagent</serviceName>
            <abortOnError>0</abortOnError>
@@ -374,7 +374,7 @@
     <!-- Postinstallation actions -->
     <postInstallationActionList>
         
-	<!-- LIN & MAC: Write the pgAgent Info to INI File -->
+	<!-- LIN & MAC : Write the pgAgent Info to INI File -->
         <actionGroup>
             <actionList>
                 <iniFileSet>
@@ -456,7 +456,7 @@
             </ruleList>
         </actionGroup>
 
-        <!-- LIN & MAC: Run Script for creating and configuring pgAgent schema -->
+        <!-- LIN & MAC : Run Script for creating and configuring pgAgent schema -->
         <actionGroup>
             <actionList>
                 <runProgram>
@@ -489,35 +489,35 @@
 	
 	<substitute>
 	    <files>${installdir}/pgAgent/installer/pgAgent/pgagentctl.sh</files>
-        	<substitutionList>
-            	  <substitution>
-	            <pattern>INSTALL_DIR</pattern>
-        	    <value>${installdir}</value>
-		  </substitution>
-            	  <substitution>
-	            <pattern>PG_PORT</pattern>
-        	    <value>${pgport}</value>
-		  </substitution>
-            	  <substitution>
-	            <pattern>PG_USER</pattern>
-        	    <value>${pguser}</value>
-		  </substitution>
-	        </substitutionList>
-        	<ruleList>
-	          <compareText>
-        	     <logic>equals</logic>
-	             <text>${platform_name}</text>
-        	     <value>osx</value>
-	          </compareText>
-		  <compareText>
+            <substitutionList>
+                <substitution>
+                    <pattern>INSTALL_DIR</pattern>
+                    <value>${installdir}</value>
+                </substitution>
+                <substitution>
+                    <pattern>PG_PORT</pattern>
+                    <value>${pgport}</value>
+                </substitution>
+                <substitution>
+                    <pattern>PG_USER</pattern>
+                    <value>${pguser}</value>
+                </substitution>
+            </substitutionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+                <compareText>
                     <text>${pgAgentVersion}</text>
                     <logic>equals</logic>
                     <value/>
-                  </compareText>
-        	</ruleList>
+                </compareText>
+            </ruleList>
 	</substitute>
 
-	 <substitute>
+	<substitute>
             <files>${installdir}/pgAgent/installer/pgAgent/pgpass</files>
                 <substitutionList>
                   <substitution>
@@ -573,7 +573,7 @@
      	  </ruleList>
 	</actionGroup>
 
-	<!-- LIN|MAC: Install pgAgent as Service -->
+	<!-- LIN & MAC : Install pgAgent as Service -->
 	<actionGroup>
 	    <actionList>
               <runProgram>
@@ -581,7 +581,7 @@
         	  <program>${installdir}/pgAgent/installer/pgAgent/startupcfg.sh</program>
 	          <programArguments>"${pgport}" "${pguser}" "${unixuser}" "${installdir}"</programArguments>
         	  <workingDirectory>${installdir}/pgAgent/installer/pgAgent</workingDirectory>
-		  <progressText>Starting pgAgent service</progressText>
+		  <progressText>Configure pgAgent service</progressText>
 		  <abortOnError>0</abortOnError>
                   <showMessageOnError>0</showMessageOnError>
 	      </runProgram>
@@ -600,7 +600,7 @@
 	    </ruleList>
         </actionGroup>
 
-	<!-- WIN :Start the pgAgent service (Before that try to start PostgreSQL server)-->
+	<!-- WIN : Start the pgAgent service (Before that try to start PostgreSQL server)-->
 	<startWindowsService>
            <serviceName>postgresql-${pg_version}</serviceName>
            <abortOnError>0</abortOnError>
@@ -626,7 +626,7 @@
            </ruleList>
         </startWindowsService>
 	
-	<!-- LIN: Start the pgAgent service (Before that try to start PostgreSQL server)-->
+	<!-- LIN & LIN-X64 : Start the pgAgent service (Before that try to start PostgreSQL server) 
 	<actionGroup>
 	   <actionList>
 	        <runProgram>
@@ -636,10 +636,10 @@
 	            <showMessageOnError>0</showMessageOnError>
         	</runProgram>
 		<runProgram>
-	            <program>/etc/init.d/pgagent</program>
-        	    <programArguments>start</programArguments>
+	            <program>/bin/sh</program>
+        	    <programArguments>/etc/init.d/pgagent start</programArguments>
 	            <abortOnError>0</abortOnError>
-        	    <showMessageOnError>0</showMessageOnError>
+        	    <showMessageOnError>1</showMessageOnError>
 	        </runProgram>
 	   </actionList>
 	   <ruleList>
@@ -650,8 +650,9 @@
                </compareText>
            </ruleList>
 	</actionGroup>
+        -->
 
-	<!-- MAC: Start the pgAgent service (Before that try to start PostgreSQL server)-->
+	<!-- MAC : Start the pgAgent service (Before that try to start PostgreSQL server)-->
 	<runProgram>
             <program>${installdir}/installer/server/startserver.sh</program>
             <programArguments>${pg_version}</programArguments>
@@ -689,7 +690,7 @@
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
 
-        <!-- LIN & MAC: Unset the pgAgent Info from the ini file -->
+        <!-- LIN & MAC : Unset the pgAgent Info from the ini file -->
         <actionGroup>
             <actionList>
                 <iniFileSet>
@@ -731,9 +732,9 @@
 	      </stopWindowsService>
 	      <runProgram>
         	  <customErrorMessage>${msg(error.uninstall.pgagent)}</customErrorMessage>
-	          <program>${installdir}\pgAgent\installer\pgAgent\uninstall-pgagent.bat</program>
-        	  <programArguments>"${installdir}"</programArguments>
-	          <workingDirectory>${installdir}\pgAgent\installer\pgAgent</workingDirectory>
+	          <program>${installdir}\bin\pgagent.exe</program>
+        	  <programArguments>REMOVE pgagent</programArguments>
+	          <workingDirectory>${installdir}\bin</workingDirectory>
 		  <abortOnError>0</abortOnError>
                   <showMessageOnError>1</showMessageOnError>
               </runProgram>
@@ -747,7 +748,7 @@
 	    </ruleList>
 	</actionGroup>
 
-	<!-- MAC: Stop and Uninstall pgAgent Service -->
+	<!-- MAC : Stop and Uninstall pgAgent Service -->
 	<actionGroup>
 	    <actionList>
 		<!-- MAC: Stop the pgAgent Service -->
@@ -771,7 +772,7 @@
             </ruleList>
 	</actionGroup>
 
-	<!-- LIN: Stop and Uninstall pgAgent Service -->
+	<!-- LIN : Stop and Uninstall pgAgent Service -->
         <actionGroup>
             <actionList>
 
@@ -829,31 +830,31 @@
     <componentList>
         <component>
             <name>pgAgent</name>
-            <description>pgAgent components </description>
+            <description>pgAgent components</description>
             <canBeEdited>0</canBeEdited>
             <selected>1</selected>
             <show>1</show>
             <folderList>
-                <!-- LIN: Program files -->
+                <!-- LIN : Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}/bin</destination>
+                    <destination>${installdir}</destination>
                     <name>programfileslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux/pgagent</origin>
+                            <origin>staging/linux/bin</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
 		<folder>
                     <description>Configure Files</description>
-                    <destination>${installdir}/pgAdmin3/share/pgadmin3</destination>
+                    <destination>${installdir}/pgAgent/share</destination>
                     <name>configurefileslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux/pgagent.sql</origin>
+                            <origin>staging/linux/share/pgagent.sql</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -868,26 +869,38 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
-                <!-- LIN-X64: Program files -->
+                <folder>
+                    <description>Other Files</description>
+                    <destination>${installdir}/pgAgent</destination>
+                    <name>otherfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/LICENSE</origin>
+                            <origin>staging/linux/README</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- LIN-X64 : Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}/bin</destination>
+                    <destination>${installdir}</destination>
                     <name>programfileslinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/pgagent</origin>
+                            <origin>staging/linux-x64/bin</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
 		<folder>
                     <description>Configure Files</description>
-                    <destination>${installdir}/pgAdmin3/share/pgadmin3</destination>
+                    <destination>${installdir}/pgAgent/share</destination>
                     <name>configurefileslinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/pgagent.sql</origin>
+                            <origin>staging/linux-x64/share/pgagent.sql</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -902,7 +915,20 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
-                <!-- WIN: Program files -->
+                <folder>
+                    <description>Other Files</description>
+                    <destination>${installdir}/pgAgent</destination>
+                    <name>otherfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/LICENSE</origin>
+                            <origin>staging/linux-x64/README</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+
+                <!-- WIN : Program files -->
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}/bin</destination>
@@ -911,12 +937,13 @@
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/windows/pgagent.exe</origin>
+                            <origin>staging/windows/pgaevent.dll</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
 		<folder>
                     <description>Configure Files</description>
-                    <destination>${installdir}/pgAdmin III/scripts</destination>
+                    <destination>${installdir}/pgAgent/share</destination>
                     <name>configurefileswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
@@ -936,7 +963,19 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
-                <!-- MAC: Program files -->
+                <folder>
+                    <description>Other Files</description>
+                    <destination>${installdir}/pgAgent</destination>
+                    <name>otherfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/LICENSE</origin>
+                            <origin>staging/windows/README</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- MAC : Program files -->
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}/bin</destination>
@@ -944,18 +983,18 @@
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/osx/pgagent</origin>
+                            <origin>staging/osx/bin</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
 		<folder>
                     <description>Configure Files</description>
-                    <destination>${installdir}/pgAdmin3/share/pgadmin3</destination>
+                    <destination>${installdir}/pgAgnet/share</destination>
                     <name>configurefilesosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/osx/pgagent.sql</origin>
+                            <origin>staging/osx/share/pgagent.sql</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -970,6 +1009,18 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+                <folder>
+                    <description>Other Files</description>
+                    <destination>${installdir}/pgAgent</destination>
+                    <name>otherfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/LICENSE</origin>
+                            <origin>staging/osx/README</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
             </folderList>
         </component>
     </componentList>
@@ -981,7 +1032,7 @@
         <directoryParameter>
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
-            <explanation>Installer.Parameter.installdir.explanation</explanation>
+            <explanation>Installation Directory must be a PostgreSQL Home directory. pgAgent will be installed under PostgreSQL only.</explanation>
             <value>${defaultpghome}</value>
             <default/>
             <allowEmptyValue>0</allowEmptyValue>
@@ -1225,92 +1276,29 @@
                 </actionGroup>
                 <!-- Creating a temporary directory -->
                 <createDirectory path="${system_temp_directory}/${product_fullname}"/>
-                <!-- WIN - Unpack Script Files -->
-                <actionGroup>
-                    <actionList>
-                        <!-- Unpacking the Script file to temporary directory -->
-                        <unpackFile>
-                            <component>pgAgent</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-connection.bat</destination>
-                            <folder>installfileswindows</folder>
-                            <origin>installer/pgAgent/check-connection.bat</origin>
-                        </unpackFile>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <!-- LIN: Unpack Script Files -->
-                <actionGroup>
-                    <actionList>
-                        <!-- Unpacking the Script file to temporary directory -->
-                        <unpackFile>
-                            <component>pgAgent</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
-                            <folder>installfileslinux</folder>
-                            <origin>installer/pgAgent/check-connection.sh</origin>
-                        </unpackFile>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>linux</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <!-- LIN-X64: Unpack Script Files -->
-                <actionGroup>
-                    <actionList>
-                        <!-- Unpacking the Script file to temporary directory -->
-                        <unpackFile>
-                            <component>pgAgent</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
-                            <folder>installfileslinux-x64</folder>
-                            <origin>installer/pgAgent/check-connection.sh</origin>
-                        </unpackFile>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>linux-x64</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <!-- MAC: Unpack Script Files -->
-                <actionGroup>
-                    <actionList>
-                        <!-- Unpacking the Script file to temporary directory -->
-                        <unpackFile>
-                            <component>pgAgent</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
-                            <folder>installfilesosx</folder>
-                            <origin>installer/pgAgent/check-connection.sh</origin>
-                        </unpackFile>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>osx</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
                 <!-- WIN: validate the PostgreSQL Server Details -->
                 <actionGroup>
                     <actionList>
                         <!-- Running the Script to validate the PostgreSQL Server Details -->
+                        <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+                        <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+                        <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+                        <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
                         <setInstallerVariableFromScriptOutput>
-                            <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
+                            <exec>${installdir}\bin\psql.exe</exec>
+                            <execArgs>-l</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <customErrorMessage>${msg(pg.details.error)}</customErrorMessage>
+                        </setInstallerVariableFromScriptOutput>
+                        <!-- Check for existing pgagent schema -->
+                        <setInstallerVariableFromScriptOutput>
+                            <exec>${installdir}\bin\psql.exe</exec>
+                            <execArgs>-t -c "SELECT has_schema_privilege('pgagent', 'USAGE')"</execArgs>
+                            <name>pgagent_schema</name>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <showMessageOnError>0</showMessageOnError>
+                            <abortOnError>0</abortOnError>
                         </setInstallerVariableFromScriptOutput>
                     </actionList>
                     <ruleList>
@@ -1325,19 +1313,50 @@
                 <actionGroup>
                     <actionList>
                         <!-- Running the Script to validate the PostgreSQL Server Details -->
+                        <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+                        <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+                        <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+                        <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
                         <setInstallerVariableFromScriptOutput>
-                            <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
+                            <exec>${installdir}/bin/psql</exec>
+                            <execArgs>-l</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <customErrorMessage>${msg(pg.details.error)}</customErrorMessage>
                         </setInstallerVariableFromScriptOutput>
+                        <!-- Check for existing pgagent schema -->
+                        <setInstallerVariableFromScriptOutput>
+                            <exec>${installdir}/bin/psql</exec>
+                            <execArgs>-t -c "SELECT has_schema_privilege('pgagent', 'USAGE')"</execArgs>
+                            <name>pgagent_schema</name>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <showMessageOnError>0</showMessageOnError>
+                            <abortOnError>0</abortOnError>
+                        </setInstallerVariableFromScriptOutput>
+
                     </actionList>
                     <ruleList>
                         <compareText>
                             <logic>does_not_equal</logic>
                             <text>${platform_name}</text>
                             <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <!-- Check if pgagent schema variable is set or not -->
+                <actionGroup>
+                    <actionList>
+                        <showWarning>
+                            <text>${msg(pgagent.schema.error)}</text>
+                        </showWarning>
+                        <setInstallerVariable name="next_page" value="pgdetails"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                           <logic>does_not_equal</logic>
+                           <text>${pgagent_schema}</text>
+                           <value/>
                         </compareText>
                     </ruleList>
                 </actionGroup>
@@ -1355,6 +1374,11 @@
                             <text>${platform_name}</text>
                             <logic>does_not_equal</logic>
                             <value>windows</value>
+                        </compareText>
+                        <compareText>
+                           <logic>equals</logic>
+                           <text>${pgagent_schema}</text>
+                           <value/>
                         </compareText>
                     </ruleList>
                 </actionGroup>

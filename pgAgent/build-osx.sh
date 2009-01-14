@@ -7,6 +7,10 @@
 
 _prep_pgAgent_osx() {
 
+    echo "#####################################"
+    echo "# pgAgent : OSX : Build preparation #"
+    echo "#####################################"
+
     # Enter the source directory and cleanup if required
     cd $WD/pgAgent/source
 	
@@ -37,10 +41,14 @@ _prep_pgAgent_osx() {
 }
 
 ################################################################################
-# PG Build
+# pgAgent Build
 ################################################################################
 
 _build_pgAgent_osx() {
+
+    echo "#####################################"
+    echo "# pgAgent : OSX : Build             #"
+    echo "#####################################"
 
     cd $WD/pgAgent
 
@@ -50,10 +58,11 @@ _build_pgAgent_osx() {
     echo "Building pgAgent sources"
     cd $SOURCE_DIR
     export PGDIR=$PG_PGHOME_OSX
-    cmake CMakeLists.txt || _die "Couldn't configure the pgAgent sources"
+    cmake -DCMAKE_INSTALL_PREFIX=$PG_STAGING CMakeLists.txt || _die "Couldn't configure the pgAgent sources"
     echo "Compiling pgAgent"
     cd $SOURCE_DIR
     make || _die "Couldn't compile the pgAgent sources"
+    make install || _die "Couldn't install pgAgent"
 
 }
 
@@ -64,37 +73,19 @@ _build_pgAgent_osx() {
 
 _postprocess_pgAgent_osx() {
 
-
-    cp -R $WD/pgAgent/source/pgAgent.osx/* $WD/pgAgent/staging/osx || _die "Failed to copy the pgAgent Source into the staging directory"
-
-    cd $WD/pgAgent
+    echo "#####################################"
+    echo "# pgAgent : OSX : Post Process      #"
+    echo "#####################################"
 
     # Setup the installer scripts.
-    mkdir -p staging/osx/installer/pgAgent || _die "Failed to create a directory for the install scripts"
+    cd $PG_PATH_OSX/pgAgent/staging
+    mkdir -p $PG_PATH_OSX/pgAgent/staging/osx/installer/pgAgent || _die "Failed to create a directory for the install scripts"
 
-    cp scripts/osx/check-connection.sh staging/osx/installer/pgAgent/check-connection.sh || _die "Failed to copy the check-connection script (scripts/osx/check-connection.sh)"
-    chmod ugo+x staging/osx/installer/pgAgent/check-connection.sh
+    cp -f $PG_PATH_OSX/pgAgent/scripts/osx/*.sh   $PG_PATH_OSX/pgAgent/staging/osx/installer/pgAgent/ || _die "Failed to copy the installer scripts"
+    cp -f $PG_PATH_OSX/pgAgent/scripts/osx/pgpass $PG_PATH_OSX/pgAgent/staging/osx/installer/pgAgent/ || _die "Failed to copy the pgpass script (scripts/osx/pgpass)"
+    chmod ugo+x $PG_PATH_OSX/pgAgent/staging/osx/installer/pgAgent/*
 
-     cp scripts/osx/install.sh staging/osx/installer/pgAgent/install.sh || _die "Failed to copy the install script (scripts/osx/install.sh)"
-    chmod ugo+x staging/osx/installer/pgAgent/install.sh
-
-    cp scripts/osx/pgpass staging/osx/installer/pgAgent/pgpass || _die "Failed to copy the pgpass file (scripts/osx/pgpass)"
-    chmod ugo+x staging/osx/installer/pgAgent/pgpass
-
-    cp $WD/server/scripts/osx/createuser.sh staging/osx/installer/pgAgent/createuser.sh || _die "Failed to copy the createuser script ($WD/server/scripts/osx/createuser.sh)"
-    chmod ugo+x staging/osx/installer/pgAgent/createuser.sh
-
-    cp scripts/osx/check-pgversion.sh staging/osx/installer/pgAgent/check-pgversion.sh || _die "Failed to copy the check-pgversion script ($WD/PostGIS/scripts/osx/check-pgversion.sh)"
-    chmod ugo+x staging/osx/installer/pgAgent/check-pgversion.sh
-
-    cp scripts/osx/startupcfg.sh staging/osx/installer/pgAgent/startupcfg.sh || _die "Failed to copy the install script (scripts/osx/startupcfg.sh)"
-    chmod ugo+x staging/osx/installer/pgAgent/startupcfg.sh
-
-    cp scripts/osx/pgagentctl.sh staging/osx/installer/pgAgent/pgagentctl.sh || _die "Failed to copy the install script (scripts/osx/pgagentctl.sh)"
-    chmod ugo+x staging/osx/installer/pgAgent/pgagentctl.sh
-
-    # Setup the pgAgent Launch Scripts
-    mkdir -p staging/osx/scripts || _die "Failed to create a directory for the pgAgent Launch Scripts"
+    cd $WD/pgAgent
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
@@ -103,7 +94,6 @@ _postprocess_pgAgent_osx() {
     cd $WD/output
     zip -r pgAgent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip pgAgent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app/ || _die "Failed to zip the installer bundle"
     rm -rf pgAgent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app/ || _die "Failed to remove the unpacked installer bundle"
-
 
     cd $WD
 

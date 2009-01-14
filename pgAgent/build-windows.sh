@@ -1,11 +1,15 @@
 #!/bin/bash
 
-    
+
 ################################################################################
 # Build preparation
 ################################################################################
 
 _prep_pgAgent_windows() {
+
+    echo "#####################################"
+    echo "# pgAgent : WIN : Build preparation #"
+    echo "#####################################"
 
     # Enter the source directory and cleanup if required
     cd $WD/pgAgent/source
@@ -23,13 +27,11 @@ _prep_pgAgent_windows() {
     cp -R pgAgent-$PG_VERSION_PGAGENT-Source/* pgAgent.windows || _die "Failed to copy the source code (source/pgAgent-$PG_VERSION_PGAGENT)"
     chmod -R ugo+w pgAgent.windows || _die "Couldn't set the permissions on the source directory"
 
+    # Copy validateuser to pgAgent directory
+    cp -R $WD/pgAgent/scripts/windows/validateuser $WD/pgAgent/source/pgAgent.windows/validateuser || _die "Failed to copy scripts(validateuser)"
+
     echo "Archieving pgAgent sources"
     zip -r pgAgent.zip pgAgent.windows/ || _die "Couldn't create archieve of the pgAgent sources (pgAgent.zip)"
-
-    cd $WD/pgAgent/scripts/windows
-    echo "Archieving pgAgent scripts(validateuser)"
-    zip -r scripts.zip validateuser/ || _die "Couldn't create archieve of the pgAgent scripts(validateuser) (scripts.zip)"
-    cd $WD/pgAgent/source
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/pgAgent/staging/windows ];
@@ -45,81 +47,72 @@ _prep_pgAgent_windows() {
     # Clean sources on Windows VM
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST pgAgent.zip del /S /Q pgAgent.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\pgAgent.zip on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST scripts.zip del /S /Q scripts.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\scripts.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST pgAgent.windows rd /S /Q pgAgent.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\pgAgent.windows directory on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST validateuser rd /S /Q validateuser"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST pgAgent.output rd /S /Q pgAgent.output" || _die "Couldn't remove the $PG_PATH_WINDOWS\\pgAgent.windows directory on Windows VM"
 
     # Copy sources on windows VM
     echo "Copying pgAgent sources to Windows VM"
-
     scp pgAgent.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the pgAgent archieve to windows VM (pgAgent.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip pgAgent.zip" || _die "Couldn't extract pgAgent archieve on windows VM (pgAgent.zip)"
-
-    scp $WD/pgAgent/scripts/windows/scripts.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the scripts archieve to windows VM (scripts.zip)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip scripts.zip" || _die "Couldn't extract scripts archieve on windows VM (scripts.zip)"
-    rm $WD/pgAgent/scripts/windows/scripts.zip
 
 }
 
 ################################################################################
-# PG Build
+# pgAgent Build
 ################################################################################
 
 _build_pgAgent_windows() {
 
+    echo "###############################"
+    echo "# pgAgent : WIN : Build       #"
+    echo "###############################"
+
     cd $WD/pgAgent
     SOURCE_DIR=$PG_PATH_WINDOWS/pgAgent.windows
+    OUTPUT_DIR=$PG_PATH_WINDOWS\\\\pgAgent.output
 
     echo "Configuring pgAgent sources"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; PGDIR=$PG_PATH_WINDOWS/output WXWIN=$PG_WXWIN_WINDOWS cmake ." || _die "Couldn't configure the pgAgent sources"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; PGDIR=$PG_PATH_WINDOWS/output WXWIN=$PG_WXWIN_WINDOWS cmake -DCMAKE_INSTALL_PREFIX=$OUTPUT_DIR ." || _die "Couldn't configure the pgAgent sources"
     echo "Building pgAgent"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; export PGDIR=$PG_PATH_WINDOWS/output ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgagent.vcproj RELEASE" || _die "Failed to build pgAgent on the build host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/validateuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/pgaevent; export PGDIR=$PG_PATH_WINDOWS/output ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgaevent.vcproj RELEASE" || _die "Failed to build pgaevent on the build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/validateuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
 
+    echo "Installing pgAgent"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c cmake -DBUILD_TYPE=RELEASE -P cmake_install.cmake" || _die "Failed to install pgAgent in output directory"
+     
     echo "copying application files into Release Folder"
-
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgAgent.windows\\\\pgagent.sql $PG_PATH_WINDOWS\\\\pgAgent.windows\\\\release" || _die "Failed to copy a program file on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgAgent.windows\\\\pgaevent $PG_PATH_WINDOWS\\\\pgAgent.windows\\\\release" || _die "Failed to copy a program file on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\validateuser\\\\release\\\\validateuser.exe $PG_PATH_WINDOWS\\\\pgAgent.windows\\\\release" || _die "Failed to copy a program file on the windows build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy validateuser\\\\release\\\\validateuser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
  
-    echo "Copying built tree to Unix host"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR\\\\release; cmd /c zip -r ..\\\\release.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$SOURCE_DIR/release)"
-    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/pgAgent.windows/release.zip $WD/pgAgent/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$SOURCE_DIR/release.zip)"
-    unzip $WD/pgAgent/staging/windows/release.zip -d $WD/pgAgent/staging/windows/ || _die "Failed to unpack the built source tree ($WD/pgAgent/staging/windows/release.zip)"
-    rm $WD/pgAgent/staging/windows/release.zip
+    cd $WD/pgAgent/staging/windows
+    echo "Copying built tree to Windows host"
+    ssh $PG_SSH_WINDOWS "cd $OUTPUT_DIR; cmd /c zip -r pgagent_output.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$OUTPUT_DIR)"
+    scp $PG_SSH_WINDOWS:$OUTPUT_DIR\\\\pgagent_output.zip $WD/pgAgent/staging/windows/pgagent_output.zip || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$OUTPUT_DIR/pgagent_output.zip)"
+    unzip -o $WD/pgAgent/staging/windows/pgagent_output.zip -d $WD/pgAgent/staging/windows || _die "Failed to unpack the built source tree ($WD/pgAgent/staging/windows/pgagent_output.zip)"
+    rm -f $WD/pgAgent/staging/windows/pgagent_output.zip
+
 }
 
 
 ################################################################################
-# PG Build
+# pgAgent Post Process
 ################################################################################
 
 _postprocess_pgAgent_windows() {
 
+    echo "#####################################"
+    echo "# pgAgent : WIN : Post Process      #"
+    echo "#####################################"
 
-    cp -R $WD/pgAgent/source/pgAgent.windows/* $WD/pgAgent/staging/windows || _die "Failed to copy the pgAgent Source into the staging directory"
-    
+    # Setup the installer scripts
+    mkdir -p $WD/pgAgent/staging/windows/installer/pgAgent || _die "Failed to create a directory for the install scripts"
+    cp -f $WD/pgAgent/staging/windows/validateuser.exe $WD/pgAgent/staging/windows/installer/pgAgent/ || _die "Failed to copy validateuser.exe (staging/windows/validateuser.exe)"
+
+    # Copy scripts into staging directory
+    cp -f $WD/pgAgent/scripts/windows/*.bat $WD/pgAgent/staging/windows/installer/pgAgent/ || _die "Failed to copy the install scripts (scripts/windows/*.bat)"
+    chmod ugo+x $WD/pgAgent/staging/windows/installer/pgAgent/*
+
     cd $WD/pgAgent
-
-    # Setup the installer scripts.
-    mkdir -p staging/windows/installer/pgAgent || _die "Failed to create a directory for the install scripts"
-
-    cp scripts/windows/check-connection.bat staging/windows/installer/pgAgent/check-connection.bat || _die "Failed to copy the check-connection script (scripts/windows/check-connection.bat)"
-    chmod ugo+x staging/windows/installer/pgAgent/check-connection.bat
-
-    cp scripts/windows/install-pgagent.bat staging/windows/installer/pgAgent/install-pgagent.bat || _die "Failed to copy the install script (scripts/windows/install-pgagent.bat)"
-    chmod ugo+x staging/windows/installer/pgAgent/install-pgagent.bat
-
-    cp scripts/windows/uninstall-pgagent.bat staging/windows/installer/pgAgent/uninstall-pgagent.bat || _die "Failed to copy the uninstall script (scripts/windows/uninstall-pgagent.bat)"
-    chmod ugo+x staging/windows/installer/pgAgent/uninstall-pgagent.bat
-
-    cp scripts/windows/configure-pgagent.bat staging/windows/installer/pgAgent/configure-pgagent.bat || _die "Failed to copy the configure script (scripts/windows/configure-pgagent.bat)"
-    chmod ugo+x staging/windows/installer/pgAgent/configure-pgagent.bat
-
-    cp staging/windows/validateuser.exe staging/windows/installer/pgAgent || _die "Failed to copy the validateuser binary (scripts/windows/configure-pgagent.bat)"
-
-    # Setup the pgAgent Launch Scripts
-    mkdir -p staging/windows/scripts || _die "Failed to create a directory for the pgAgent Launch Scripts"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"

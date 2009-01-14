@@ -38,9 +38,7 @@ cat <<EOT > "/etc/init.d/pgagent"
 #!/bin/bash
 #
 # chkconfig: 2345 85 15
-# description: 
-
-# pgAgent Service script for Linux
+# description: pgAgent Service script for Linux
 
 start()
 {
@@ -67,6 +65,18 @@ stop()
     else
         kill -9 \$PID
     fi
+}
+status()
+{
+    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/pgAgent/service.log host=localhost port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
+
+    if [ "x$PID" = "x" ];
+    then
+        echo "pgAgent not running"
+    else
+        echo "pgAgent is running (PID: $PID)"
+    fi
+    exit 0
 }
 
 # See how we were called.
@@ -95,8 +105,8 @@ chmod 0755 "/etc/init.d/pgagent" || _warn "Failed to set the permissions on the 
 # Configure the startup. On Redhat and friends we use chkconfig. On Debian, update-rc.d
 # These utilities aren't entirely standard, so use both from their standard locations on
 # each distro family. 
-RET=`type /sbin/chkconfig > /dev/null 2>&1 || echo fail`
-if [ ! $RET ];
+CHKCONFIG=`type /sbin/chkconfig > /dev/null 2>&1 || echo fail`
+if [ ! $CHKCONFIG ];
 then
     /sbin/chkconfig --add pgagent
     if [ $? -ne 0 ]; then
@@ -104,14 +114,28 @@ then
     fi
 fi
 
-RET=`type /usr/sbin/update-rc.d > /dev/null 2>&1 || echo fail`
-if [ ! $RET ];
+UPDATECONFIG=`type /usr/sbin/update-rc.d > /dev/null 2>&1 || echo fail`
+if [ ! $UPDATECONFIG ];
 then
     /usr/sbin/update-rc.d pgagent defaults
     if [ $? -ne 0 ]; then
         _warn "Failed to configure the service startup with update-rc.d"
     fi
 fi
+
+
+#SERVICE=`which service`
+#echo "Starting pgagent"
+#if [ ! "x$SERVICE" = "x" ]; then
+#    $SERVICE pgagent start
+#    if [ $? -ne 0 ]; then
+#        _warn "Failed to start pgagent"
+#    fi
+#elif [ -f /sbin/service ]; then
+#    /sbin/service pgagent start    
+#else
+#    /etc/init.d/pgagent start
+#fi
 
 echo "$0 ran to completion"
 exit $WARN

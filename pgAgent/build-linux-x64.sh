@@ -6,6 +6,10 @@
 ################################################################################
 
 _prep_pgAgent_linux_x64() {
+ 
+    echo "###########################################"
+    echo "# pgAgent : LINUX-X64 : Build preparation #"
+    echo "###########################################"
 
     # Enter the source directory and cleanup if required
     cd $WD/pgAgent/source
@@ -42,15 +46,23 @@ _prep_pgAgent_linux_x64() {
 
 _build_pgAgent_linux_x64() {
 
+    echo "###########################################"
+    echo "# pgAgent : LINUX-X64 : Build             #"
+    echo "###########################################"
+
     cd $WD/pgAgent
 
     PG_STAGING=$PG_PATH_LINUX_X64/pgAgent/staging/linux-x64
     SOURCE_DIR=$PG_PATH_LINUX_X64/pgAgent/source/pgAgent.linux-x64
 
     echo "Building pgAgent sources"
-    ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; cmake CMakeLists.txt " || _die "Couldn't configure the pgAgent sources"
+    ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; cmake -DCMAKE_INSTALL_PREFIX=$PG_STAGING CMakeLists.txt " || _die "Couldn't configure the pgAgent sources"
+
     echo "Compiling pgAgent"
     ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; make" || _die "Couldn't compile the pgAgent sources"
+
+    echo "Installing pgAgent"
+    ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; make install" || _die "Couldn't install pgAgent"
 
 }
 
@@ -61,34 +73,18 @@ _build_pgAgent_linux_x64() {
 
 _postprocess_pgAgent_linux_x64() {
 
-
-    cp -R $WD/pgAgent/source/pgAgent.linux-x64/* $WD/pgAgent/staging/linux-x64 || _die "Failed to copy the pgAgent Source into the staging directory"
-
-    cd $WD/pgAgent
+    echo "###########################################"
+    echo "# pgAgent : LINUX-X64 : Post Process      #"
+    echo "###########################################"
 
     # Setup the installer scripts.
-    mkdir -p staging/linux-x64/installer/pgAgent || _die "Failed to create a directory for the install scripts"
+    mkdir -p $WD/pgAgent/staging/linux-x64/installer/pgAgent || _die "Failed to create a directory for the install scripts"
 
-    cp scripts/linux/check-connection.sh staging/linux-x64/installer/pgAgent/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux/check-connection.sh)"
-    chmod ugo+x staging/linux-x64/installer/pgAgent/check-connection.sh
+    cp -f $WD/pgAgent/scripts/linux/*.sh $WD/pgAgent/staging/linux-x64/installer/pgAgent  || _die "Failed to copy installer scripts (scripts/linux/*.sh)"
+    cp -f $WD/pgAgent/scripts/linux/pgpass $WD/pgAgent/staging/linux-x64/installer/pgAgent || _die "Failed to copy the pgpass file (scripts/linux/pgpass)"
+    chmod ugo+x $WD/pgAgent/staging/linux-x64/installer/pgAgent/*
 
-    cp scripts/linux/install.sh staging/linux-x64/installer/pgAgent/install.sh || _die "Failed to copy the install script (scripts/linux/install.sh)"
-    chmod ugo+x staging/linux-x64/installer/pgAgent/install.sh
-
-    cp scripts/linux/pgpass staging/linux-x64/installer/pgAgent/pgpass || _die "Failed to copy the pgpass file (scripts/linux/pgpass)"
-    chmod ugo+x staging/linux-x64/installer/pgAgent/pgpass
-
-    cp $WD/server/scripts/linux/createuser.sh staging/linux-x64/installer/pgAgent/createuser.sh || _die "Failed to copy the createuser script ($WD/server/scripts/linux/createuser.sh)"
-    chmod ugo+x staging/linux-x64/installer/pgAgent/createuser.sh
-
-    cp scripts/linux/check-pgversion.sh staging/linux-x64/installer/pgAgent/check-pgversion.sh || _die "Failed to copy the check-pgversion script ($WD/PostGIS/scripts/linux/check-pgversion.sh)"
-    chmod ugo+x staging/linux-x64/installer/pgAgent/check-pgversion.sh
-
-    cp scripts/linux/startupcfg.sh staging/linux-x64/installer/pgAgent/startupcfg.sh || _die "Failed to copy the install script (scripts/linux-x64/startupcfg.sh)"
-    chmod ugo+x staging/linux-x64/installer/pgAgent/startupcfg.sh
-
-    # Setup the pgAgent Launch Scripts
-    mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the pgAgent Launch Scripts"
+    cd $WD/pgAgent
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
