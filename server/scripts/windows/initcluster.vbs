@@ -122,7 +122,7 @@ End If
 ' Attempt to allow Domain Admins access. This may fail if we're not on a domain.
 iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /G ""Domain Admins"":F")
 if iRet <> 0 Then
-    Warn "Failed to grant 'Domain Admins' access to the data directory (" & strDataDir & ") - probably not on a domain."
+    WScript.Echo "Failed to grant 'Domain Admins' access to the data directory (" & strDataDir & ") - probably not on a domain."
 End If
 
 ' Edit the config files
