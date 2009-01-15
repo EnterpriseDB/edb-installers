@@ -989,7 +989,7 @@
                 </folder>
 		<folder>
                     <description>Configure Files</description>
-                    <destination>${installdir}/pgAgnet/share</destination>
+                    <destination>${installdir}/pgAgent/share</destination>
                     <name>configurefilesosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
