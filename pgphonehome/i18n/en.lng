@@ -40,7 +40,9 @@ progress.passwd.file.create=Creating Password File
 
 Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
 
-Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
+Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of enterprise-class products and services based on PostgreSQL, the world's most advanced open source database.
+
+Installer.Installation.Finished.Visit.Us=Visit our website to learn more about our Postgres management and monitoring solutions.
 
 pgphonehome.url.info=You can access pgPhoneHome on your Apple iPhone or iPod Touch at:\n\nhttp://<server address>:${apacheport}/pgph 
 

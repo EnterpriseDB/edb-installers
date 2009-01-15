@@ -48,6 +48,7 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+	
     <!-- Prebuild Actions -->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>
@@ -57,9 +58,11 @@
           </ruleList>
       </setInstallerVariable>
      </preBuildActionList>
+	 
     <!-- Initialisation actions -->
     <initializationActionList>
 	<setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PGPHONEHOME" />
+	
 	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -69,6 +72,7 @@
             <compareText text="${originalplatform}" value="linux-x32"/>
           </ruleList>
         </throwError>
+		
         <!-- Set the Apache Home -->
         <setInstallerVariable name="apachehome" value="">
             <persist>1</persist>
@@ -912,6 +916,14 @@
         </showInfo>
     </postInstallationActionList>
 
+    <!-- finalPage actions -->
+    <finalPageActionList>
+        <launchBrowser>
+            <url>http://www.enterprisedb.com/installer/phonehome.do</url>
+            <progressText>${msg(Installer.Installation.Finished.Visit.Us)}</progressText>
+        </launchBrowser>
+    </finalPageActionList>
+	
     <preUninstallationActionList>
 
         <!-- Delete the .htaccess file created during installation -->

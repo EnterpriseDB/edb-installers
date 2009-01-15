@@ -20,9 +20,9 @@ progress.text.creating.shortcuts=Creating Menu Shortcuts
 
 Installer.Installation.Finished.Title=Completing the EnterpriseDB Tuning Wizard Setup Wizard
 
-Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.
+Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of enterprise-class products and services based on PostgreSQL, the world's most advanced open source database.
 
-Installer.Installation.Finished.Visit.Us=Visit our website to learn more about our tuning and server healthcheck services?
+Installer.Installation.Finished.Visit.Us=Visit our website to learn more about our Postgres database performance solutions.
 
 Installer.Ready.Text1=Setup is now ready to begin installing EnterpriseDB Tuning Wizard on your computer.
 

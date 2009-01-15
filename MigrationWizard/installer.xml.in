@@ -3,13 +3,16 @@
     <shortName>migrationwizard</shortName>
     <fullName>MigrationWizard</fullName>
     <version>PG_VERSION_MIGRATIONWIZARD-PG_BUILDNUM_MIGRATIONWIZARD</version>
+	
     <!-- These options are used on Windows -->
     <startMenuGroupName>PostgreSQL</startMenuGroupName>
+	
     <!-- Product Specific Options -->
     <productDisplayName>EnterpriseDB ${product_fullname} ${productVersion}</productDisplayName>
     <productComments>EnterpriseDB ${product_fullname} ${productVersion}</productComments>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
+	
     <!-- The options are used for RPM registration -->
     <description>${product_fullname} ${productVersion} by EnterpriseDB</description>
     <summary>${msg(install.summary)}</summary>
@@ -44,6 +47,7 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+	
     <!-- Prebuild Actons-->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>
@@ -53,9 +57,11 @@
           </ruleList>
       </setInstallerVariable>
     </preBuildActionList>
+	
     <!-- Initialisation actions -->
     <initializationActionList>
 	<setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_MIGRATIONWIZARD" />
+	
 	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -65,10 +71,12 @@
             <compareText text="${originalplatform}" value="linux-x32"/>
           </ruleList>
         </throwError>
+		
         <!-- Set the MigrationWizard version(if exists) -->
         <setInstallerVariable name="MigrationWizardVersion" value="">
             <persist>0</persist>
         </setInstallerVariable>
+		
         <!-- Detecting Java, Abort if not found -->
         <autodetectJava>
             <promptUser>0</promptUser>
@@ -84,7 +92,8 @@
             <showMessageOnError>1</showMessageOnError>
             <customErrorMessage>${msg(java.error)}</customErrorMessage>
         </autodetectJava>
-	<!-- MAC : Set the default installation directory -->
+		
+	    <!-- MAC : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
@@ -97,6 +106,7 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
+		
         <!-- LIN : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
@@ -110,6 +120,7 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
+		
         <!-- WIN : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
@@ -124,8 +135,10 @@
             </ruleList>
         </setInstallerVariable>
     </initializationActionList>
+	
     <!-- Preinstallation actions -->
     <preInstallationActionList>
+	
         <!-- Creates the ini file if not exits -->
         <touchFile path="/etc/postgres-reg.ini">
             <ruleList>
@@ -136,6 +149,7 @@
                 </compareText>
             </ruleList>
         </touchFile>
+		
         <!-- LIN & MAC: Check Previous Installation of MigrationWizard -->
         <actionGroup>
             <actionList>
@@ -154,6 +168,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!--    LIN & MAC: Set the Installation Directory in case of re-install/upgrade -->
         <actionGroup>
             <actionList>
@@ -177,6 +192,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- WIN: Check Previous Installation of MigrationWizard -->
         <actionGroup>
             <actionList>
@@ -194,6 +210,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- WIN: Set the Installation Directory in case of re-install/upgrade -->
         <actionGroup>
             <actionList>
@@ -216,6 +233,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- Setting the installation type as upgrade if previous installation found -->
         <actionGroup>
             <actionList>
@@ -230,8 +248,10 @@
             </ruleList>
         </actionGroup>
     </preInstallationActionList>
+	
     <!-- Post installation actions -->
     <postInstallationActionList>
+	
         <!-- LIN & MAC: Write the MigrationWizard Version to INI File -->
         <actionGroup>
             <actionList>
@@ -262,6 +282,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- LIN & MAC: Setting the installation directory in the launch script -->
         <actionGroup>
             <actionList>
@@ -287,6 +308,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- WIN: Setting the installation directory in the launch script -->
         <actionGroup>
             <actionList>
@@ -312,6 +334,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- LIN & MAC: Create Menu Shortcuts -->
         <actionGroup>
             <actionList>
@@ -332,8 +355,18 @@
             </ruleList>
         </actionGroup>
     </postInstallationActionList>
+	
+	<!-- final page actions -->
+    <finalPageActionList>
+        <launchBrowser>
+            <url>http://www.enterprisedb.com/installer/migration.do</url>
+            <progressText>${msg(Installer.Installation.Finished.Visit.Us)}</progressText>
+        </launchBrowser>
+    </finalPageActionList>
+	
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
+	
         <!-- LIN & MAC: Unsetting the MigrationWizard values in the ini file -->
         <actionGroup>
             <actionList>
@@ -364,6 +397,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- LIN : Remove Menu shortcuts -->
         <actionGroup>
             <actionList>
@@ -382,6 +416,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- MAC : Remove Menu shortcuts -->
         <actionGroup>
             <actionList>
@@ -398,6 +433,7 @@
             </ruleList>
         </actionGroup>
     </preUninstallationActionList>
+	
     <!-- Components -->
     <componentList>
         <component>
@@ -407,6 +443,7 @@
             <selected>1</selected>
             <show>1</show>
             <folderList>
+			
                 <!-- LIN: Program files -->
                 <folder>
                     <description>Program Files</description>
@@ -444,6 +481,7 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+				
                 <!-- LIN-X64: Program files -->
                 <folder>
                     <description>Program Files</description>
@@ -481,6 +519,7 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+				
                 <!-- WIN: Program files -->
                 <folder>
                     <description>Program Files</description>
@@ -518,6 +557,7 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+				
                 <!-- MAC: Program files -->
                 <folder>
                     <description>Program Files</description>
@@ -556,8 +596,10 @@
                     </distributionFileList>
                 </folder>
             </folderList>
+			
             <!-- WIN: Start Menu -->
             <startMenuShortcutList>
+			
                 <!-- Launch MigrationWizard -->
                 <startMenuShortcut>
                     <comment>EnterpriseDB MySQL Migration Wizard</comment>
@@ -570,24 +612,10 @@
             </startMenuShortcutList>
         </component>
     </componentList>
-    <finalPageActionList>
-        <runProgram>
-            <abortOnError>0</abortOnError>
-            <program>wscript</program>
-            <programArguments>//nologo "${installdir}\\scripts\\launchMigrationWizard.vbs" "" "${java_executable}" "-jar MigrationWizard.jar" "${installdir}"</programArguments>
-            <progressText>${msg(launch.migrationwizard.windows)}</progressText>
-            <showMessageOnError>0</showMessageOnError>
-            <ruleList>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </runProgram>
-    </finalPageActionList>
+	
     <parameterList>
 	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+	
         <!-- Install Directory -->
         <directoryParameter>
             <name>installdir</name>
@@ -608,6 +636,7 @@
                     <value/>
                 </compareText>
             </ruleList>
+			
             <!-- Validating whether installdir is empty -->
 	    <validationActionList>
                 <actionGroup>
@@ -626,6 +655,7 @@
                     </ruleList>
                 </actionGroup>
             </validationActionList>
+			
             <!-- Validating whether installdir contains whitespaces (Linux) -->
             <validationActionList>
                 <actionGroup>
@@ -648,6 +678,7 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
+				
                 <!-- Validating whether installdir is valid (Windows) -->
                 <actionGroup>
                     <actionList>
@@ -672,7 +703,8 @@
                 </actionGroup>
             </validationActionList>
         </directoryParameter>
-	<!-- Explain that we're using an existing installation directory -->
+		
+	    <!-- Explain that we're using an existing installation directory -->
         <labelParameter>
             <name>upgrade</name>
             <title>${msg(upgrade.existing.installation.title)}</title>
