@@ -4,15 +4,16 @@ echo       or from the Administrator console.
 echo       If you have not started this as a administrator,
 echo       then it will not run successfully.
 
-SET USER_PASSWORD=%1
-SET PG_PORT=%2
-SET PG_USER=%3
-SET PG_PASSWORD=%4
-SET INSTALL_DIR="%5"
+SET SYS_USER=%1
+SET USER_PASSWORD=%2
+SET PG_PORT=%3
+SET PG_USER=%4
+SET PG_PASSWORD=%5
 
 rem Write PG_PASSWORD to pgpass.conf File
 echo localhost:%PG_PORT%:*:%PG_USER%:%PG_PASSWORD% >> "%APPDATA%\postgresql\pgpass.conf"
 
+cd "%6"
 rem Install the pgAgent service
-"%INSTALL_DIR%\bin\pgagent.exe" INSTALL pgagent -l2 -u %PG_USER% -p %USER_PASSWORD% host=localhost port=%PG_PORT% dbname=postgres user=%PG_USER%
+bin\pgagent.exe INSTALL pgagent -l2 -u %SYS_USER% -p %USER_PASSWORD% host=localhost port=%PG_PORT% dbname=postgres user=%PG_USER%
 

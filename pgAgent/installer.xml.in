@@ -553,7 +553,7 @@
               <runProgram>
                   <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
 	          <program>${installdir}\pgAgent\installer\pgAgent\install-pgagent.bat</program>
-        	  <programArguments>"${windowspassword}" "${pgport}" "${pguser}" "${pgpassword}" "${installdir}"</programArguments>
+        	  <programArguments>"${system_username}" "${windowspassword}" "${pgport}" "${pguser}" "${pgpassword}" "${installdir}"</programArguments>
 	          <workingDirectory>${installdir}\pgAgent\installer\pgAgent</workingDirectory>
 		  <abortOnError>0</abortOnError>
                   <showMessageOnError>0</showMessageOnError>
@@ -1537,8 +1537,8 @@
             <parameterList>
 		<passwordParameter>
                     <name>windowspassword</name>
-                    <title>Windows UserPassword</title>
-                    <description>Windows UserPassword</description>
+                    <title>Password</title>
+                    <description>System Password</description>
                     <explanation/>
                     <value/>
                     <default></default>
@@ -1582,7 +1582,7 @@
                 <runProgram>
                     <program>${system_temp_directory}\${product_fullname}\validateuser.exe</program>
                     <!-- The dot at the beginning of the arguments is the domain -->
-                    <programArguments>. "postgres" "${windowspassword}"</programArguments>
+                    <programArguments>. "${system_username}" "${windowspassword}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>

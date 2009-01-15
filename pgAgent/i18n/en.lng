@@ -46,7 +46,7 @@ config.password.confirm=Retype password
 
 windowsuserpassword.details.title=Password
 
-windowsuserpassword.details.explanation=Please provide the password for the service user account.
+windowsuserpassword.details.explanation=Please provide password for the operating system user(${system_username}). This will be required to manage the pgAgent service.
 
 unixuserpassword.details.title=Username and password
 

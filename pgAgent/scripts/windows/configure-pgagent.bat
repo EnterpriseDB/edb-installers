@@ -4,13 +4,14 @@ SET PGHOST=%1
 SET PGPORT=%2
 SET PGUSER=%3
 SET PGPASSWORD=%4
-SET PG_HOME="%5"
 
 SET PGDATABASE=postgres
 
-REM Creating pl/pgsql language
-"%PG_HOME%\bin\createlang.exe" plpgsql postgres
+REM Change Directory to InstallDir
+CD "%5"
 
-CD "%PG_HOME%\pgAgent"
+REM Creating pl/pgsql language
+bin\createlang.exe plpgsql postgres
+
 REM Creating and configuring pgAgent Schema
-CALL "%PG_HOME%\bin\psql.exe" -f "%PG_HOME%\pgAgent\share\pgagent.sql"
+CALL bin\psql.exe -f pgAgent\share\pgagent.sql
