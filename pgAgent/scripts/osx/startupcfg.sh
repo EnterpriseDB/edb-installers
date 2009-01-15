@@ -11,7 +11,11 @@ PG_PORT=$1
 PG_USER=$2
 SYSTEM_USER=$3
 INSTALL_DIR=$4
-USER_HOME_DIR=`cat /etc/passwd | grep $SYSTEM_USER | cut -d":" -f6`
+USER_HOME_DIR=`su $SYSTEM_USER -c "echo ~"`
+
+if [ ! -f $USER_HOME_DIR ]; then
+    mkdir -p $USER_HOME_DIR
+fi
 
 # Exit code
 WARN=0
@@ -28,10 +32,10 @@ _warn() {
 }
 
 touch $INSTALL_DIR/pgAgent/service.log
-chown $SYSTEM_USER:$SYSTEM_USER $INSTALL_DIR/pgAgent/service.log
+chown $SYSTEM_USER $INSTALL_DIR/pgAgent/service.log
 cat $INSTALL_DIR/pgAgent/installer/pgAgent/pgpass >> $USER_HOME_DIR/.pgpass
+chown $SYSTEM_USER $USER_HOME_DIR/.pgpass
 chmod 0600 $USER_HOME_DIR/.pgpass
-chown $SYSTEM_USER:$SYSTEM_USER $USER_HOME_DIR/.pgpass
 
 # Configure database startup
 mkdir -p /Library/LaunchDaemons || _die "Failed to create directory for root daemons"

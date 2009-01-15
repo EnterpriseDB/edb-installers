@@ -502,6 +502,10 @@
                     <pattern>PG_USER</pattern>
                     <value>${pguser}</value>
                 </substitution>
+                <substitution>
+                    <pattern>SYSTEM_USER</pattern>
+                    <value>${unixuser}</value>
+                </substitution>
             </substitutionList>
             <ruleList>
                 <compareText>
@@ -652,21 +656,9 @@
 	</actionGroup>
         -->
 
-	<!-- MAC : Start the pgAgent service (Before that try to start PostgreSQL server)-->
-	<runProgram>
-            <program>${installdir}/installer/server/startserver.sh</program>
-            <programArguments>${pg_version}</programArguments>
-            <abortOnError>0</abortOnError>
-            <showMessageOnError>0</showMessageOnError>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </runProgram>
-        <runProgram>
+	<!-- MAC : Start the pgAgent service -->
+        <!-- Disabled pgAgent service startup -->
+        <!-- runProgram>
             <program>${installdir}/pgAgent/installer/pgAgent/pgagentctl.sh</program>
             <programArguments>start</programArguments>
             <abortOnError>0</abortOnError>
@@ -678,7 +670,7 @@
                     <value>osx</value>
                 </compareText>
             </ruleList>
-        </runProgram>
+        </runProgram -->
 
 	<!-- Delete the temporary pgpass File -->
 	<deleteFile>
@@ -978,7 +970,7 @@
                 <!-- MAC : Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}/bin</destination>
+                    <destination>${installdir}</destination>
                     <name>programfilesosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
