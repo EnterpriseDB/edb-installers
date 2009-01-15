@@ -54,7 +54,7 @@ _build_pgAgent_linux() {
     SOURCE_DIR=$PG_PATH_LINUX/pgAgent/source/pgAgent.linux
 
     echo "Building pgAgent sources"
-    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; PGDIR=$PG_PATH_LINUX/server/staging/linux cmake -DCMAKE_INSTALL_PREFIX=$PG_STAGING CMakeLists.txt " || _die "Couldn't configure the pgAgent sources"
+    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; PGDIR=$PG_PGHOME_LINUX cmake -DCMAKE_INSTALL_PREFIX=$PG_STAGING CMakeLists.txt " || _die "Couldn't configure the pgAgent sources"
     echo "Compiling pgAgent"
     ssh $PG_SSH_LINUX "cd $SOURCE_DIR; make" || _die "Couldn't compile the pgAgent sources"
     echo "Installing pgAgent"

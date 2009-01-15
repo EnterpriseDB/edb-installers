@@ -57,8 +57,7 @@ _build_pgAgent_osx() {
 
     echo "Building pgAgent sources"
     cd $SOURCE_DIR
-    export PGDIR=$PG_PGHOME_OSX
-    cmake -DCMAKE_INSTALL_PREFIX=$PG_STAGING CMakeLists.txt || _die "Couldn't configure the pgAgent sources"
+    WXWIN=/usr/local PGDIR=$PG_PGHOME_OSX cmake -DCMAKE_INSTALL_PREFIX=$PG_STAGING CMakeLists.txt || _die "Couldn't configure the pgAgent sources"
     echo "Compiling pgAgent"
     cd $SOURCE_DIR
     make || _die "Couldn't compile the pgAgent sources"
