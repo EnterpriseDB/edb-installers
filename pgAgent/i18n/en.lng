@@ -6,7 +6,7 @@ Installer.Ready.Text1=Setup is now ready to begin installing pgAgent on your com
 
 Installer.Installing.Text=Please wait while Setup installs pgAgent on your computer.
 
-ask.user.name=Do you want to use postgres system user to manage pgAgent?
+ask.user.name=Do you want to run pgAgent under the 'postgres' user account?
 
 upgrade.existing.installation.title=Existing installation
 
@@ -14,11 +14,11 @@ upgrade.existing.installation.description=An existing pgAgent installation has b
 
 progress.text.creating.user=Creating user account
 
-install.summary=pgAgent is a job scheduler for PostgreSQL which may be managed using pgAdmin
+install.summary=pgAgent is a job scheduler for PostgreSQL which may be managed using pgAdmin.
 
 configure.pgagent.schema=Created and configured the pgagent schema in postgres database. 
 
-error.install.pgagent=Error Installing the pgAgent service
+error.install.pgagent=Error Installing the pgAgent service.
 
 schema.drop.info=The pgagent schema and ${unixuser} user account have not been removed from the system.
 
@@ -50,7 +50,7 @@ windowsuserpassword.details.explanation=Please provide password for the operatin
 
 unixuserpassword.details.title=Username and password
 
-unixuserpassword.details.explanation=Please enter the operating system user and password for whom pgAgent should run.\n(.pgpass file will be saved in his/her directory.)
+unixuserpassword.details.explanation=Please enter the operating system username and password for whom pgAgent should run.\nNote that a .pgpass file containing the database password will be saved in the user's home directory.
 
 config.windowspassword.no.password=You must enter a password to continue.
 
