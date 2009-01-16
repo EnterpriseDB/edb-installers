@@ -55,7 +55,7 @@ _fixup_file() {
 # We need to remove any old shortcuts created by the Beta/RC installers, as they 
 # used a version numbering scheme that could confuse XDG
 
-if [ $VERSION_STR = $VERSION ];
+if [ "x$VERSION_STR" = "x$VERSION" ];
 then
     VERSION=""
     DevServer=1
@@ -87,7 +87,7 @@ then
     rm "$INSTALLDIR/scripts/xdg/"pg-*-$VERSION.desktop
 fi
 
-if [ $DevServer = 1 ];
+if [ "x$DevServer" = "x1" ];
 then
     VERSION=$VERSION_STR
 fi
