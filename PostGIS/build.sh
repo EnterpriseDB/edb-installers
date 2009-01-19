@@ -23,8 +23,7 @@ fi
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
-    #source $WD/PostGIS/build-windows.sh
-    echo "Not Yet Implemented"
+    source $WD/PostGIS/build-windows.sh
 fi
 
     
@@ -112,8 +111,7 @@ _prep_PostGIS() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-       # _prep_PostGIS_windows || exit 1
-       echo "Not Yet Implemented"
+        _prep_PostGIS_windows || exit 1
     fi
     
 }
@@ -145,8 +143,7 @@ _build_PostGIS() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_build_PostGIS_windows || exit 1
-        echo "Not Yet Implemented"
+        _build_PostGIS_windows || exit 1
     fi
 }
 
@@ -204,8 +201,7 @@ _postprocess_PostGIS() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_postprocess_PostGIS_windows || exit 1
-        echo "Not Yet Implemented"
+        _postprocess_PostGIS_windows || exit 1
     fi
 }
 

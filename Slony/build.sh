@@ -23,8 +23,7 @@ fi
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
-    #source $WD/Slony/build-windows.sh
-    echo "Not Yet Implemented"
+    source $WD/Slony/build-windows.sh
 fi
     
 ################################################################################
@@ -87,8 +86,7 @@ _prep_Slony() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_prep_Slony_windows || exit 1
-        echo "Not Yet Implemented"
+        _prep_Slony_windows || exit 1
     fi
 
 }
@@ -120,8 +118,7 @@ _build_Slony() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_build_Slony_windows || exit 1
-        echo "Not Yet Implemented"
+        _build_Slony_windows || exit 1
     fi
 }
 
@@ -172,8 +169,7 @@ _postprocess_Slony() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_postprocess_Slony_windows || exit 1
-        echo "Not Yet Implemented"
+        _postprocess_Slony_windows || exit 1
     fi
 }
 
