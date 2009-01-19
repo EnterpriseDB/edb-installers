@@ -2,7 +2,7 @@ Installer.Welcome.Title=Setup PostGIS
 
 Installer.Welcome.Text=Welcome to the PostGIS Setup.
 
-Installer.Installing.Title=Installing ${product_fullname}
+Installer.Installing.Title=Installing PostGIS ${product_version}
 
 Installer.Parameter.installdir.explanation=Please specify the directory where PostGIS will be installed.
 
