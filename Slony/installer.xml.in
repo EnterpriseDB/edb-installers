@@ -3,18 +3,22 @@
     <shortName>slony</shortName>
     <fullName>Slony_I_PGPG_CURRENT_VERSION</fullName>
     <version>PG_VERSION_SLONY-PG_BUILDNUM_SLONY</version>
+	
     <!-- These options are used on Windows -->
-    <startMenuGroupName>PostgreSQL PG_MAJOR_VERSION</startMenuGroupName>
+    <startMenuGroupName>${branding}</startMenuGroupName>
+	
     <!-- Product Specific Options -->
     <productDisplayName>Slony ${productVersion}</productDisplayName>
     <productComments>Slony ${productVersion}, packaged by EnterpriseDB</productComments>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
+	
     <!-- The options are used for RPM registration -->
     <description>Slony ${productVersion}, packaged by EnterpriseDB</description>
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
+	
     <!-- Installer Size -->
     <width>550</width>
     <height>400</height>
@@ -43,6 +47,7 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+	
     <!-- Prebuild Actons-->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>
@@ -52,9 +57,11 @@
           </ruleList>
       </setInstallerVariable>
     </preBuildActionList>
+	
     <!-- Initialisation actions -->
     <initializationActionList>
 	<setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_SLONY" />
+	
 	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -64,6 +71,7 @@
             <compareText text="${originalplatform}" value="linux-x32"/>
           </ruleList>
         </throwError>
+		
         <!-- Set the Slony version(if exists) -->
         <setInstallerVariable name="SlonyVersion" value="">
             <persist>0</persist>
@@ -74,14 +82,17 @@
         <setInstallerVariable name="SlonyMajorVersionInstalled" value="">
             <persist>0</persist>
         </setInstallerVariable>
+		
         <!-- Set the PG Current version(if exists) -->
         <setInstallerVariable name="PGCurrentVersion" value="PG_CURRENT_VERSION">
             <persist>1</persist>
         </setInstallerVariable>
+		
         <!-- Set the PG Major Version -->
         <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION">
             <persist>1</persist>
         </setInstallerVariable>
+		
         <!-- WIN: Set the    pghome default value for unattended mode -->
         <actionGroup>
             <actionList>
@@ -100,6 +111,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- LIN & LIN64: Set the pghome default value for unattended mode -->
         <actionGroup>
             <actionList>
@@ -118,7 +130,8 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- MAC: Set the    pghome default value for unattended mode -->
+		
+        <!-- MAC: Set the pghome default value for unattended mode -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/8.3"/>
@@ -136,6 +149,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- WIN: Set the pghome default value when pghome not set -->
         <actionGroup>
             <actionList>
@@ -154,7 +168,8 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-	<!-- LIN & LIN64: Set the pghome default value when pghome not set -->
+		
+	    <!-- LIN & LIN64: Set the pghome default value when pghome not set -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/8.3"/>
@@ -172,7 +187,8 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- MAC: Set the    pghome default value when pghome not set -->
+		
+        <!-- MAC: Set the pghome default value when pghome not set -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/8.3"/>
@@ -191,8 +207,10 @@
             </ruleList>
         </actionGroup>
     </initializationActionList>
+	
     <!-- Preinstallation actions -->
     <preInstallationActionList>
+	
         <!-- Creates the ini file if not exits -->
         <touchFile path="/etc/postgres-reg.ini">
             <ruleList>
@@ -204,9 +222,17 @@
             </ruleList>
         </touchFile>
         <setInstallerVariable name="defaultpghome" value="${pghome}"/>
-        <!-- WIN: Check Previous Installation of Slony -->
+		
+        <!-- WIN: Get the branding & check Previous Installation of Slony -->
         <actionGroup>
             <actionList>
+				<!-- Get the branding -->
+                <registryGet>
+                    <name>Branding</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Slony_I_PG${PGCurrentVersion}</key>
+                    <variable>iBranding</variable>
+                </registryGet>
+				
                 <registryGet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Slony_I_PG${PGCurrentVersion}</key>
                     <name>Version</name>
@@ -221,9 +247,35 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- LIN & MAC: Check Previous Installation of Slony -->
+		
+        <!-- LIN & MAC: Get the branding & check Previous Installation of Slony -->
         <actionGroup>
             <actionList>
+                <!-- Get the branding. -->
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <key>Branding</key>
+                    <section>Slony_I_PG${PGCurrentVersion}</section>
+                    <variable>iBranding</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>/etc/postgres-reg.ini</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>iBranding</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>/etc/postgres-reg.ini</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
+			
                 <iniFileGet>
                     <file>/etc/postgres-reg.ini</file>
                     <section>Slony_I_PG${PGCurrentVersion}</section>
@@ -252,6 +304,36 @@
                </compareText>
             </ruleList>
         </setInstallerVariableFromRegEx>
+		
+		<!-- Set the branding to whatever we read, or, set the default -->
+		<setInstallerVariable>
+			<name>branding</name>
+			<persist>0</persist>
+			<value>${iBranding}</value>
+			<ruleList>
+				<compareText>
+					<logic>does_not_equal</logic>
+					<text>${iBranding}</text>
+					<value></value>
+				</compareText>
+			</ruleList>
+		</setInstallerVariable>
+		<setInstallerVariable>
+			<name>branding</name>
+			<persist>0</persist>
+			<value>PostgreSQL PG_MAJOR_VERSION</value>
+			<ruleList>
+				<compareText>
+					<logic>equals</logic>
+					<text>${branding}</text>
+					<value></value>
+				</compareText>
+			</ruleList>
+		</setInstallerVariable>
+        <logMessage>
+            <text>Using branding: ${branding}</text>
+        </logMessage>
+		
         <!-- LIN & MAC: Set installation directory in case of reinstall/upgrade -->
         <actionGroup>
             <actionList>
@@ -280,6 +362,8 @@
                 </compareValues>
             </ruleList>
         </actionGroup>
+		
+		
         <!-- WIN: Set installation directory in case of reinstall/upgrade -->
         <actionGroup>
             <actionList>
@@ -307,7 +391,8 @@
                 </compareValues>   
             </ruleList>
         </actionGroup>
-        <!-- Exit the installation if the PostGIS version installed is not the same as the current Version -->
+		
+        <!-- Exit the installation if the Slony version installed is not the same as the current Version -->
         <actionGroup>
             <actionList>
                 <showWarning>
@@ -330,6 +415,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- LIN | MAC : Exit the installation if the installdir is not valid (Unattended mode) -->
         <actionGroup>
             <actionList>
@@ -357,6 +443,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- WIN: Exit the installation if the installdir is not valid (Unattended mode) -->
         <actionGroup>
             <actionList>
@@ -384,7 +471,8 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- Exits the installation if the postgresql version is not compatible with postgis version (Unattended mode) -->
+		
+        <!-- Exits the installation if the postgresql version is not compatible with slony version (Unattended mode) -->
         <actionGroup>
             <actionList>
                  <setInstallerVariableFromScriptOutput>
@@ -455,6 +543,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- Setting the installation type as upgrade if previous installation found -->
         <actionGroup>
             <actionList>
@@ -474,8 +563,10 @@
             </ruleList>
         </actionGroup>
     </preInstallationActionList>
+	
     <!-- Post installation actions -->
     <postInstallationActionList>
+	
         <!-- LIN & MAC: Write the Slony Version to INI File -->
         <actionGroup>
             <actionList>
@@ -506,12 +597,13 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- LIN & MAC: Create Menu Shortcuts -->
         <actionGroup>
             <actionList>
                 <runProgram>
                     <program>${installdir}/Slony/installer/Slony/createshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${PGMajorVersion}" "${productVersion}" </programArguments>
+                    <programArguments>"${installdir}" "${PGMajorVersion}" "${productVersion}" "${branding}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -525,6 +617,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- LIN & MAC: Configure Slony -->
         <actionGroup>
             <actionList>
@@ -666,15 +759,40 @@
                  </compareText>
              </ruleList>
         </substitute>
+		
+		<!-- Branding info -->
+        <logMessage>
+            <text>Write the server branding to the ini file...</text>
+        </logMessage>
+        <iniFileSet>
+            <file>/etc/postgres-reg.ini</file>
+            <section>Slony_I_PG${PGCurrentVersion}</section>
+            <key>Branding</key>
+            <value>${branding}</value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </iniFileSet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Slony_I_PG${PGCurrentVersion}</key>
+            <name>Branding</name>
+            <value>${branding}</value>
+        </registrySet>
    
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
+	
         <!-- Set the PG Current version(if exists) -->
         <setInstallerVariable name="PGCurrentVersion" value="PG_CURRENT_VERSION">
             <persist>1</persist>
         </setInstallerVariable>
+		
         <!-- LIN & MAC: Unsetting the Slony values in the ini file -->
         <actionGroup>
             <actionList>
@@ -705,12 +823,13 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- LIN & LIN64: Remove Menu shortcuts -->
         <actionGroup>
             <actionList>
                 <runProgram>
                     <program>${installdir}/Slony/installer/Slony/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${productVersion}" </programArguments>
+                    <programArguments>"${installdir}" "${productVersion}" "${PGCurrentVersion}" "${branding}"</programArguments>
                     <workingDirectory>${installdir}/Slony/installer/Slony</workingDirectory>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -724,11 +843,12 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- MAC : Remove Menu shortcuts -->
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>/Applications/PostgreSQL PG_MAJOR_VERSION/Slony Documentation.app</path>
+                    <path>/Applications/${branding}/Slony Documentation.app</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -739,6 +859,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- LIN & MAC: Deleting library files we copied to other place while installation -->
         <actionGroup>
             <actionList>
@@ -746,6 +867,7 @@
                     <program>${installdir}/Slony/installer/Slony/removeFiles.sh</program>
                     <programArguments>"${installdir}"</programArguments>
                 </runProgram>
+				
                 <!-- Deleting the file created during installation -->
                 <deleteFile>
                     <path>${installdir}/Slony/installer/Slony/removeFiles.sh</path>
@@ -772,6 +894,7 @@
                     <program>${installdir}\Slony\installer\Slony\removeFiles.bat</program>
                     <programArguments>"${installdir}"</programArguments>
                 </runProgram>
+				
                 <!-- Deleting the file created during installation -->
                 <deleteFile>
                     <path>${installdir}\Slony\installer\Slony\removeFiles.bat</path>
@@ -790,8 +913,29 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
+		<!-- Cleanup the branding info -->
+		<iniFileSet>
+			<file>/etc/postgres-reg.ini</file>
+			<section>Slony_I_PG${PGCurrentVersion}</section>
+			<key>Branding</key>
+			<value></value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+		</iniFileSet>
+        <registryDelete>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Slony_I_PG${PGCurrentVersion}</key>
+			<name>Branding</name>
+        </registryDelete>
+
 
     </preUninstallationActionList>
+	
     <!-- Components -->
     <componentList>
         <component>
@@ -1078,8 +1222,11 @@
             </startMenuShortcutList>
         </component>
     </componentList>
+	
     <parameterList>
-	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+	    <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+		<stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
+		
         <!-- Postgres Home Directory for CLI Option -->
         <directoryParameter>
             <name>pghome</name>
@@ -1093,6 +1240,7 @@
             <ask>0</ask>
             <width>40</width>
         </directoryParameter>
+		
         <!-- Default Postgres Home for CLI Option -->
         <stringParameter>
             <name>defaultpghome</name>
@@ -1104,6 +1252,7 @@
             <allowEmptyValue>1</allowEmptyValue>
             <width>40</width>
         </stringParameter>
+		
         <!-- Install Directory -->
         <directoryParameter>
             <name>installdir</name>
@@ -1130,6 +1279,7 @@
                     <value2>${SlonyMajorVersionInstalled}</value2>
                 </compareValues>
             </ruleList>
+			
 	    <!-- Validating whether installdir is empty -->
 	    <validationActionList>
                 <actionGroup>
@@ -1171,6 +1321,7 @@
                      </compareText>
                   </ruleList>
                 </actionGroup>
+				
                 <!-- Validating whether installdir is valid (Windows) -->
                 <actionGroup>
                    <actionList>

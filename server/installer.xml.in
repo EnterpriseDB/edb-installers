@@ -9,7 +9,7 @@
     <productComments>The PostgreSQL DDBMS, version ${product_version}, packaged by EnterpriseDB</productComments>
     <productUrlHelpLink>http://www.postgresql.org/docs</productUrlHelpLink>
     <productUrlInfoAbout>http://www.postgresql.org/</productUrlInfoAbout>
-    <startMenuGroupName>PostgreSQL ${product_version}</startMenuGroupName>
+	<startMenuGroupName>${branding}</startMenuGroupName>
     <vendor>PostgreSQL Global Development Group</vendor>
 
     <!-- Installer Size -->
@@ -154,7 +154,7 @@
     <!-- Preinstallation actions -->
     <preInstallationActionList>
         
-        <!-- !WIN: Get existing directories -->
+        <!-- !WIN: Get existing directories & branding -->
         <actionGroup>
             <actionList>
                 <!-- Get the existing data directory. -->
@@ -206,6 +206,31 @@
                         </fileTest>
                     </ruleList>
                 </setInstallerVariable>
+				
+                <!-- Get the branding. -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>Branding</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iBranding</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>iBranding</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
             </actionList>
             
             <ruleList>
@@ -217,7 +242,7 @@
             </ruleList>
         </actionGroup>
         
-        <!-- WIN: Get existing directories -->
+        <!-- WIN: Get existing directories & branding -->
         <actionGroup>
             <actionList>
                 <!-- Get the existing data directory. -->
@@ -233,6 +258,13 @@
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
                     <variable>iBaseDirectory</variable>
                 </registryGet>
+				
+				<!-- Get the branding -->
+                <registryGet>
+                    <name>Branding</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <variable>iBranding</variable>
+                </registryGet>
             </actionList>
             
             <ruleList>
@@ -243,6 +275,32 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
+		<!-- Set the branding to whatever we read, or, set the default -->
+		<setInstallerVariable>
+			<name>branding</name>
+			<persist>0</persist>
+			<value>${iBranding}</value>
+			<ruleList>
+				<compareText>
+					<logic>does_not_equal</logic>
+					<text>${iBranding}</text>
+					<value></value>
+				</compareText>
+			</ruleList>
+		</setInstallerVariable>
+		<setInstallerVariable>
+			<name>branding</name>
+			<persist>0</persist>
+			<value>PostgreSQL ${product_version}</value>
+			<ruleList>
+				<compareText>
+					<logic>equals</logic>
+					<text>${branding}</text>
+					<value></value>
+				</compareText>
+			</ruleList>
+		</setInstallerVariable>
         
         <!-- Debugging -->
         <logMessage>
@@ -250,6 +308,9 @@
         </logMessage>
         <logMessage>
             <text>Existing data directory: ${iDataDirectory}</text>
+        </logMessage>
+        <logMessage>
+            <text>Using branding: ${branding}</text>
         </logMessage>
         
         <!-- Temp directory for preflight scripts -->
@@ -1251,7 +1312,7 @@
         <!-- Shortcuts -->
         <runProgram>
             <program>${installdir}/installer/server/createshortcuts.sh</program>
-            <programArguments>${product_version} "${supername}" ${serverport} "${installdir}" "${datadir}"</programArguments>
+            <programArguments>${product_version} "${supername}" ${serverport} "${branding}" "${installdir}" "${datadir}"</programArguments>
             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -1266,7 +1327,7 @@
        
         <runProgram>
             <program>cscript</program>
-            <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts.vbs" ${product_version} "${supername}" ${serverport} "${installdir}" "${datadir}"</programArguments>
+            <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts.vbs" ${product_version} "${supername}" ${serverport} "${branding}" "${installdir}" "${datadir}"</programArguments>
             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -1681,6 +1742,29 @@
             <value>PostgreSQL ${product_version}</value>
         </registrySet>
         
+		<!-- Branding info -->
+        <logMessage>
+            <text>Write the server branding to the ini file...</text>
+        </logMessage>
+        <iniFileSet>
+            <file>${PostgreSqlIni}</file>
+            <section>PostgreSQL/${product_version}</section>
+            <key>Branding</key>
+            <value>${branding}</value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </iniFileSet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+            <name>Branding</name>
+            <value>${branding}</value>
+        </registrySet>
+				
         <!-- The Windows product code, used to link to the installation -->
         <registrySet>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
@@ -1701,7 +1785,7 @@
          <runProgram>
             <!-- MAC: Run stackbuilder -->
             <program>open</program>
-            <programArguments>"/Applications/PostgreSQL ${product_version}/Application Stack Builder.app"</programArguments>
+            <programArguments>"/Applications/${branding}/Application Stack Builder.app"</programArguments>
             <progressText>${msg(progress.text.run.stackbuilder)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -1803,7 +1887,7 @@
         
         <!-- MAC: Remove menu shortcuts -->
         <deleteFile>
-            <path>/Applications/PostgreSQL ${product_version}</path>
+            <path>/Applications/${branding}</path>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -1816,7 +1900,7 @@
         <!-- LINUX: Remove menu shortcuts -->
         <runProgram>
             <program>${installdir}/installer/server/removeshortcuts.sh</program>
-            <programArguments>"${installdir}" ${product_version}</programArguments>
+            <programArguments>"${installdir}" ${product_version} "${branding}"</programArguments>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
@@ -1858,6 +1942,14 @@
                     <file>${PostgreSqlIni}</file>
                     <section>PostgreSQL/${product_version}</section>
                     <key>ServiceID</key>
+                    <value></value>
+                </iniFileSet>
+				
+                <!-- Branding -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Branding</key>
                     <value></value>
                 </iniFileSet>
              </actionList>
@@ -2256,6 +2348,7 @@
     <parameterList>
      
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+		<stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
    
         <!-- Installation directory. Only show if ${iBaseDirectory} is empty -->
         <directoryParameter>

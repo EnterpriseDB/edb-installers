@@ -4,17 +4,18 @@
 # Dave Page, EnterpriseDB
 
 # Check the command line
-if [ $# -ne 5 ]; 
+if [ $# -ne 6 ]; 
 then
-    echo "Usage: $0 <Major.Minor version> <Username> <Port> <Install dir> <Data dir>"
+    echo "Usage: $0 <Major.Minor version> <Username> <Port> <Branding> <Install dir> <Data dir>"
     exit 127
 fi
 
 VERSION=$1
 USERNAME=$2
 PORT=$3
-INSTALLDIR=$4
-DATADIR=$5
+BRANDING=$4
+INSTALLDIR=$5
+DATADIR=$6
 
 # Exit code
 WARN=0
@@ -61,7 +62,7 @@ _fixup_file "$INSTALLDIR/scripts/runpsql.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Create the menu 
-FOLDER="/Applications/PostgreSQL $VERSION"
+FOLDER="/Applications/$BRANDING"
 mkdir -p "$FOLDER" || _die "Failed to create the menu directory ($FOLDER)"
 mkdir -p "$FOLDER/Documentation" || _die "Failed to create the menu directory ($FOLDER)"
 

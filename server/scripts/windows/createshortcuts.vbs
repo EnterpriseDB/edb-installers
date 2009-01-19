@@ -10,16 +10,17 @@ Const ForReading = 1
 Const ForWriting = 2
 
 ' Check the command line
-If WScript.Arguments.Count <> 5 Then
- Wscript.Echo "Usage: createshortcuts.vbs <Major.Minor version> <Username> <Port> <Install dir> <Data dir>"
+If WScript.Arguments.Count <> 6 Then
+ Wscript.Echo "Usage: createshortcuts.vbs <Major.Minor version> <Username> <Port> <Branding> <Install dir> <Data dir>"
  Wscript.Quit 127
 End If
 
 strVersion = WScript.Arguments.Item(0)
 strUsername = WScript.Arguments.Item(1)
 iPort = CInt(WScript.Arguments.Item(2))
-strInstallDir = WScript.Arguments.Item(3)
-strDataDir = WScript.Arguments.Item(4)
+strBranding = WScript.Arguments.Item(3)
+strInstallDir = WScript.Arguments.Item(4)
+strDataDir = WScript.Arguments.Item(5)
 
 Set objShell = WScript.CreateObject("WScript.Shell")
 Set objFso = WScript.CreateObject("Scripting.FileSystemObject")

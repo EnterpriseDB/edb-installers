@@ -4,17 +4,18 @@
 # Dave Page, EnterpriseDB
 
 # Check the command line
-if [ $# -ne 5 ]; 
+if [ $# -ne 6 ]; 
 then
-    echo "Usage: $0 <Major.Minor version> <Username> <Port> <Install dir> <Data dir>"
+    echo "Usage: $0 <Major.Minor version> <Username> <Port> <Branding> <Install dir> <Data dir>"
     exit 127
 fi
 
 VERSION=$1
 USERNAME=$2
 PORT=$3
-INSTALLDIR=$4
-DATADIR=$5
+BRANDING=$4
+INSTALLDIR=$5
+DATADIR=$6
 
 # Exit code
 WARN=0
@@ -24,6 +25,17 @@ WD=`pwd`
 
 # Version string, for the xdg filenames
 VERSION_STR=`echo $VERSION | sed 's/\./_/g'`
+
+# Branding string, for the xdg filenames. If the branding is 'PostgreSQL X.Y',
+# Don't do anything to ensure we remain backwards compatible.
+if [ "x$BRANDING" = "xPostgreSQL $VERSION" ];
+then
+    BRANDING_STR="postgresql-$VERSION_STR"
+    BRANDED=0
+else
+    BRANDING_STR=`echo $BRANDING | sed 's/\./_/g' | sed 's/ /_/g'`
+	BRANDED=1
+fi
 
 # Error handlers
 _die() {
@@ -48,8 +60,9 @@ _fixup_file() {
     _replace PG_MAJOR_VERSION $VERSION $1
     _replace PG_USERNAME $USERNAME $1
     _replace PG_PORT $PORT $1
-    _replace PG_INSTALLDIR $INSTALLDIR $1
-    _replace PG_DATADIR $DATADIR $1
+    _replace PG_INSTALLDIR "$INSTALLDIR" $1
+    _replace PG_DATADIR "$DATADIR" $1
+	_replace PG_BRANDING "$BRANDING" $1
 }
 
 # We need to remove any old shortcuts created by the Beta/RC installers, as they 
@@ -87,7 +100,7 @@ then
     rm "$INSTALLDIR/scripts/xdg/"pg-*-$VERSION.desktop
 fi
 
-if [ "x$DevServer" = "x1" ];
+if [ $DevServer -eq 1 ];
 then
     VERSION=$VERSION_STR
 fi
@@ -128,9 +141,16 @@ _fixup_file "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop"
 
+# Copy the primary desktop file to the branded version. We don't do this if
+# the installation is not branded, to retain backwards compatibility.
+if [ $BRANDED -ne 0 ];
+then
+    cp "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION_STR.directory" "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory"
+fi
+
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system --noupdate \
-      "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION_STR.directory" \
+      "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory" \
 	  "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION_STR.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION_STR.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION_STR.desktop" \
@@ -140,7 +160,7 @@ _fixup_file "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop"
 	  "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop" || _warn "Failed to create the top level menu"
 
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system \
-      "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION_STR.directory" \
+      "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory" \
       "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION_STR.directory" \
           "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION_STR.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION_STR.desktop" \
