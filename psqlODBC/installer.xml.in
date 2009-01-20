@@ -3,8 +3,10 @@
     <shortName>psqlodbc</shortName>
     <fullName>psqlODBC</fullName>
     <version>PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC</version>
+	
     <!-- These options are used on Windows -->
-    <startMenuGroupName>PostgreSQL</startMenuGroupName>
+    <startMenuGroupName>${branding}</startMenuGroupName>
+	
     <!-- Product Specific Options -->
     <productComments>ODBC drivers for PostgreSQL, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
@@ -41,6 +43,7 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+	
     <!-- Prebuild Actons-->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>
@@ -52,7 +55,8 @@
     </preBuildActionList>
     <initializationActionList>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PSQLODBC" />
-	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
+		
+	    <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
           <text>Unknown Error</text>
@@ -61,6 +65,7 @@
             <compareText text="${originalplatform}" value="linux-x32"/>
           </ruleList>
         </throwError>
+		
         <!-- WIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
@@ -79,7 +84,8 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-	<!-- LIN: Set the default values for unattended mode -->
+		
+	    <!-- LIN: Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgreSQL/psqlODBC"/>
@@ -97,6 +103,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- MAC: Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
@@ -115,7 +122,8 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-	<!-- MAC : Set the default installation directory -->
+		
+	    <!-- MAC : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
@@ -141,6 +149,7 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
+		
         <!-- WIN : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
@@ -158,8 +167,9 @@
             <persist>1</persist>
         </setInstallerVariable>
     </initializationActionList>
+	
     <preInstallationActionList>
-    <!-- Creates the ini file if not exits -->
+		<!-- Creates the ini file if not exits -->
         <touchFile path="/etc/postgres-reg.ini">
             <ruleList>
                 <compareText>
@@ -169,9 +179,18 @@
                 </compareText>
             </ruleList>
         </touchFile>
-        <!-- LIN & MAC: Check Previous Installation of psqlODBC-->
+		
+        <!-- LIN & MAC: Get the branding & check Previous Installation of psqlODBC -->
         <actionGroup>
             <actionList>
+                <!-- Get the branding. -->
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <key>Branding</key>
+                    <section>psqlODBC</section>
+                    <variable>iBranding</variable>
+                </iniFileGet>
+				
                 <iniFileGet>
                     <file>/etc/postgres-reg.ini</file>
                     <section>psqlODBC</section>
@@ -187,9 +206,18 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- WIN: Check Previous Installation of psqlODBC-->
+		
+        <!-- WIN: Get the branding & check Previous Installation of psqlODBC-->
         <actionGroup>
             <actionList>
+			
+				<!-- Get the branding -->
+                <registryGet>
+                    <name>Branding</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\psqlODBC</key>
+                    <variable>iBranding</variable>
+                </registryGet>
+				
                 <registryGet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\psqlODBC</key>
                     <name>Version</name>
@@ -204,6 +232,62 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
+		<!-- If there appears to be an existing installation, with no Branding value. --> 
+		<!-- force the default value. Otherwise, set the branding to whatever we read, -->
+		<!-- or, set the default -->
+		
+		<!-- Existing, old install (version, but no branding) -->
+		<setInstallerVariable>
+			<name>branding</name>
+			<persist>0</persist>
+			<value>PostgreSQL</value>
+			<ruleList>
+				<compareText>
+					<logic>does_not_equal</logic>
+					<text>${psqlODBCVersion}</text>
+					<value></value>
+				</compareText>
+				<compareText>
+					<logic>equals</logic>
+					<text>${iBranding}</text>
+					<value></value>
+				</compareText>
+			</ruleList>
+		</setInstallerVariable>
+		
+		<!-- Existing install, with branding -->
+		<setInstallerVariable>
+			<name>branding</name>
+			<persist>0</persist>
+			<value>${iBranding}</value>
+			<ruleList>
+				<compareText>
+					<logic>does_not_equal</logic>
+					<text>${iBranding}</text>
+					<value></value>
+				</compareText>
+			</ruleList>
+		</setInstallerVariable>
+		
+		<!-- New install, nothing set on the command line -->
+		<setInstallerVariable>
+			<name>branding</name>
+			<persist>0</persist>
+			<value>PostgreSQL</value>
+			<ruleList>
+				<compareText>
+					<logic>equals</logic>
+					<text>${branding}</text>
+					<value></value>
+				</compareText>
+			</ruleList>
+		</setInstallerVariable>
+		
+        <logMessage>
+            <text>Using branding: ${branding}</text>
+        </logMessage>
+		
         <!-- LIN & MAC: Set the installation directory in case of re-install/upgrade -->
         <actionGroup>
             <actionList>
@@ -517,10 +601,11 @@
                     <key>Driver</key>
                     <value>${installdir}/lib/psqlodbcw.so</value>
                 </iniFileSet>
-        	<!-- LIN & MAC: Create Menu Shortcuts -->
+				
+        	    <!-- LIN & MAC: Create Menu Shortcuts -->
                 <runProgram>
                     <program>${installdir}/installer/psqlODBC/createshortcuts.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
+                    <programArguments>"${installdir}" "${branding}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -534,6 +619,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- MAC: register with Driver manager -->
         <actionGroup>
             <actionList>
@@ -552,6 +638,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- Deleting the conf file if exists -->
         <actionGroup>
             <actionList>
@@ -570,6 +657,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- Adding the driver installation conf file -->
         <actionGroup>
             <actionList>
@@ -701,6 +789,29 @@
             </ruleList>
         </actionGroup>
 
+		<!-- Branding info -->
+        <logMessage>
+            <text>Write the branding to the ini file...</text>
+        </logMessage>
+        <iniFileSet>
+            <file>/etc/postgres-reg.ini</file>
+            <section>psqlODBC</section>
+            <key>Branding</key>
+            <value>${branding}</value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </iniFileSet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\psqlODBC</key>
+            <name>Branding</name>
+            <value>${branding}</value>
+        </registrySet>
+		
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
@@ -748,6 +859,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- MAC: unregister with Driver manager -->
         <actionGroup>
             <actionList>
@@ -766,12 +878,13 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- LIN : Remove Menu shortcuts -->
         <actionGroup>
             <actionList>
                 <runProgram>
                     <program>${installdir}/installer/psqlODBC/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
+                    <programArguments>"${installdir}" "${branding}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -784,11 +897,12 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- MAC : Remove Menu shortcuts -->
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>/Applications/PostgreSQL/psqlODBC Documentation.app</path>
+                    <path>/Applications/${branding}/psqlODBC Documentation.app</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -799,6 +913,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
         <!-- Deleting the driver installion conf file -->
         <actionGroup>
             <actionList>
@@ -867,6 +982,25 @@
                </compareText>
            </ruleList>
       </registryDelete>
+	  
+		<!-- Cleanup the branding info -->
+		<iniFileSet>
+			<file>/etc/postgres-reg.ini</file>
+			<section>psqlODBC</section>
+			<key>Branding</key>
+			<value></value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+		</iniFileSet>
+        <registryDelete>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\psqlODBC</key>
+			<name>Branding</name>
+        </registryDelete>
   
     </preUninstallationActionList>
     <componentList>
@@ -877,6 +1011,7 @@
             <selected>1</selected>
             <show>1</show>
             <folderList>
+			
                 <!--LIN: Program Files -->
                 <folder>
                     <description>Program Files</description>
@@ -895,6 +1030,7 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+				
         	    <!--LIN-X64: Program Files -->
                 <folder>
                     <description>Program Files</description>
@@ -913,6 +1049,7 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+				
 	            <!--MAC: Program Files -->
                 <folder>
                     <description>Program Files</description>
@@ -931,6 +1068,7 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+				
                 <!--WIN : Program Files -->
                 <folder>
                     <description>Program Files</description>
@@ -955,8 +1093,10 @@
                     </distributionFileList>
                 </folder>
             </folderList>
+			
             <!-- WIN: Start Menu -->
             <startMenuShortcutList>
+			
             <!-- Launch psqlODBC -->
                  <startMenuLinkShortcut>
                     <comment>psqlODBC Documentation</comment>
@@ -968,8 +1108,11 @@
             </startMenuShortcutList>
         </component>
     </componentList>
+	
     <parameterList>
-	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+	    <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+		<stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
+		
         <directoryParameter>
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
@@ -989,7 +1132,8 @@
                     <value/>
                 </compareText>
             </ruleList>
-	    <!-- Validating whether installdir is empty -->
+			
+	        <!-- Validating whether installdir is empty -->
             <validationActionList>
                 <actionGroup>
                     <actionList>
@@ -1007,6 +1151,7 @@
                     </ruleList>
                 </actionGroup>
             </validationActionList>
+			
             <!-- Validating whether installdir contains whitespaces (Linux) -->
             <postShowPageActionList>
                 <actionGroup>

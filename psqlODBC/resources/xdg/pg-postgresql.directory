@@ -1,7 +1,7 @@
 [Desktop Entry]
 Version=1.0
 Type=Directory
-Name=PostgreSQL
+Name=PG_BRANDING
 Comment=PostgreSQL, packaged by EnterpriseDB
 Encoding=UTF-8
 Icon=pg-postgresql.png
