@@ -231,6 +231,32 @@
                         </fileTest>
                     </ruleList>
                 </setInstallerVariable>
+				
+				<!-- Get the version installed. We use this to figure out if we have a pre-branding installation -->
+			    <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>Version</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>brandingVer</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>brandingVer</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
+				
             </actionList>
             
             <ruleList>
@@ -265,6 +291,14 @@
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
                     <variable>iBranding</variable>
                 </registryGet>
+				
+				<!-- Get the version installed. We use this to figure out if we have a pre-branding installation -->
+                <registryGet>
+                    <name>Version</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <variable>brandingVer</variable>
+                </registryGet>
+								
             </actionList>
             
             <ruleList>
@@ -276,7 +310,30 @@
             </ruleList>
         </actionGroup>
 		
-		<!-- Set the branding to whatever we read, or, set the default -->
+		<!-- If there appears to be an existing installation, with no Branding value. --> 
+		<!-- force the default value. Otherwise, set the branding to whatever we read, -->
+		<!-- or, set the default -->
+		
+		<!-- Existing, old install (version, but no branding) -->
+		<setInstallerVariable>
+			<name>branding</name>
+			<persist>0</persist>
+			<value>PostgreSQL ${product_version}</value>
+			<ruleList>
+				<compareText>
+					<logic>does_not_equal</logic>
+					<text>${brandingVer}</text>
+					<value></value>
+				</compareText>
+				<compareText>
+					<logic>equals</logic>
+					<text>${iBranding}</text>
+					<value></value>
+				</compareText>
+			</ruleList>
+		</setInstallerVariable>
+		
+		<!-- Existing install, with branding -->
 		<setInstallerVariable>
 			<name>branding</name>
 			<persist>0</persist>
@@ -289,6 +346,8 @@
 				</compareText>
 			</ruleList>
 		</setInstallerVariable>
+		
+		<!-- New install, nothing set on the command line -->
 		<setInstallerVariable>
 			<name>branding</name>
 			<persist>0</persist>

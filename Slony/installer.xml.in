@@ -93,7 +93,7 @@
             <persist>1</persist>
         </setInstallerVariable>
 		
-        <!-- WIN: Set the    pghome default value for unattended mode -->
+        <!-- WIN: Set the pghome default value for unattended mode -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\8.3"/>
@@ -257,24 +257,7 @@
                     <key>Branding</key>
                     <section>Slony_I_PG${PGCurrentVersion}</section>
                     <variable>iBranding</variable>
-                    <ruleList>
-                        <fileTest>
-                            <condition>readable</condition>
-                            <path>/etc/postgres-reg.ini</path>
-                        </fileTest>
-                    </ruleList>
                 </iniFileGet>
-                <setInstallerVariable>
-                    <name>iBranding</name>
-                    <persist>0</persist>
-                    <value></value>
-                    <ruleList>
-                        <fileTest>
-                            <condition>not_readable</condition>
-                            <path>/etc/postgres-reg.ini</path>
-                        </fileTest>
-                    </ruleList>
-                </setInstallerVariable>
 			
                 <iniFileGet>
                     <file>/etc/postgres-reg.ini</file>
@@ -305,7 +288,30 @@
             </ruleList>
         </setInstallerVariableFromRegEx>
 		
-		<!-- Set the branding to whatever we read, or, set the default -->
+		<!-- If there appears to be an existing installation, with no Branding value. --> 
+		<!-- force the default value. Otherwise, set the branding to whatever we read, -->
+		<!-- or, set the default -->
+		
+		<!-- Existing, old install (version, but no branding) -->
+		<setInstallerVariable>
+			<name>branding</name>
+			<persist>0</persist>
+			<value>PostgreSQL PG_MAJOR_VERSION</value>
+			<ruleList>
+				<compareText>
+					<logic>does_not_equal</logic>
+					<text>${SlonyVersion}</text>
+					<value></value>
+				</compareText>
+				<compareText>
+					<logic>equals</logic>
+					<text>${iBranding}</text>
+					<value></value>
+				</compareText>
+			</ruleList>
+		</setInstallerVariable>
+		
+		<!-- Existing install, with branding -->
 		<setInstallerVariable>
 			<name>branding</name>
 			<persist>0</persist>
@@ -318,6 +324,8 @@
 				</compareText>
 			</ruleList>
 		</setInstallerVariable>
+		
+		<!-- New install, nothing set on the command line -->
 		<setInstallerVariable>
 			<name>branding</name>
 			<persist>0</persist>
@@ -330,6 +338,7 @@
 				</compareText>
 			</ruleList>
 		</setInstallerVariable>
+		
         <logMessage>
             <text>Using branding: ${branding}</text>
         </logMessage>
@@ -762,7 +771,7 @@
 		
 		<!-- Branding info -->
         <logMessage>
-            <text>Write the server branding to the ini file...</text>
+            <text>Write the branding to the ini file...</text>
         </logMessage>
         <iniFileSet>
             <file>/etc/postgres-reg.ini</file>

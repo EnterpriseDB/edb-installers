@@ -55,7 +55,7 @@ _warn() {
 # Only remove the directory file if it's branded
 if [ $BRANDED -ne 0 ];
 then
-    rm "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory"
+    rm "$INSTALLDIR/Slony/scripts/xdg/pg-$BRANDING_STR.directory"
 fi
 
 echo "$0 ran to completion"
