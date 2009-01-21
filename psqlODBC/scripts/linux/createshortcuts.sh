@@ -17,7 +17,7 @@ BRANDING=$2
 # Don't do anything to ensure we remain backwards compatible.
 if [ "x$BRANDING" = "xPostgreSQL" ];
 then
-    BRANDING_STR="postgresql-$PG_VERSION_STR"
+    BRANDING_STR="postgresql"
     BRANDED=0
 else
     BRANDING_STR=`echo $BRANDING | sed 's/\./_/g' | sed 's/ /_/g'`
