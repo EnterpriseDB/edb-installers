@@ -56,8 +56,10 @@ wscript.quit
 end if
 
 rc=WshShell.Run("runas /user:" & sUser & " " & CHR(34) & sCmd & CHR(34), 2, FALSE)
-Wscript.Sleep 30 'need to give time for window to open.
-WshShell.AppActivate(WinPath) 'make sure we grab the right window to send password to
+
+DO WHILE WshShell.AppActivate(WinPath) = 0
+    Wscript.Sleep 10 'need to give time for window to open.
+LOOP
 WshShell.SendKeys sPass 'send the password to the waiting window.
 
 set WshShell=Nothing
@@ -72,7 +74,7 @@ wscript.quit
 '************************
 Sub Usage()
 On Error Resume Next
-msg="Usage: cscript|wscript vbrunas.vbs Username Password Command" & VBCRLF & VBCRLF & "You should use the full path where necessary and put long file names or commands" & VBCRLF & "with parameters in quotes" & VBCRLF & VBCRLF &"For example:" & VBCRLF &" cscript vbrunas.vbs quilogy\jhicks luckydog e:\scripts\admin.vbs" & VBCRLF & VBCRLF &" cscript vbrunas.vbs quilogy\jhicks luckydog " & CHR(34) &"e:\program files\scripts\admin.vbs 1stParameter 2ndParameter" & CHR(34)& VBCRLF & VBCRLF & VBCLRF & "cscript vbrunas.vbs /?|-? will display this message."
+msg="Usage: cscript|wscript vbrunas.vbs Username Password Command" & VBCRLF & VBCRLF & "You should use the full path where necessary and put long file names or commands" & VBCRLF & "with parameters in quotes"
 
 wscript.echo msg
 
