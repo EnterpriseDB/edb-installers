@@ -20,7 +20,7 @@ configure.pgagent.schema=Created and configured the pgagent schema in postgres d
 
 error.install.pgagent=Error Installing the pgAgent service.
 
-schema.drop.info=The pgagent schema and ${unixuser} user account have not been removed from the system.
+schema.drop.info=The pgagent schema and user account have not been removed from the system.
 
 pgagent.installdir.empty=The installation directory cannot be empty.
 
@@ -42,25 +42,13 @@ pg.details.title=PostgreSQL Installation Details
 
 pg.details.explanation=Please verify the PostgreSQL installation details
 
-config.password.confirm=Retype password
-
-windowsuserpassword.details.title=Password
-
-windowsuserpassword.details.explanation=Please provide password for the operating system user(${system_username}). This will be required to manage the pgAgent service.
-
-unixuserpassword.details.title=Username and password
-
-unixuserpassword.details.explanation=Please enter the operating system username and password for whom pgAgent should run.\nNote that a .pgpass file containing the database password will be saved in the user's home directory.
-
-config.windowspassword.no.password=You must enter a password to continue.
-
 script.command.line.error=The script was called with an invalid command line
 
-config.windowspassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the service user account.
+config.systempassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the service user account.
 
 pg.details.error=Connection to the PostgreSQL Server failed. Please re-check the details provided.
 
-pgagent.schema.error=Please remove the existing pgagent schema to continue.
+pgagent.schema.error=The pgagent schema found on the postgres database.\nDo you want to use the existing pgagent?\n(pgAgent may not work properly in this case.)
 
 post.install.error=Error configuring pgAgent.
 
@@ -71,5 +59,25 @@ Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of val
 pg.blank.error=Values must be entered for all fields.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
+
+systempassword.blank.error=Please provide the password to continue. It will be require to manage the pgAgent service.
+
+systemuser.blank.error=User name can not be blank.
+
+config.syspassword.confirm=Retype Password
+
+config.syspassword.explanation=Operating system user password
+
+config.syspassword.description=System user Password
+
+config.systemuser.description=Operating system username
+
+sysuser.details.title=pgAgent service handler(user)
+
+sysuser.details.explanation=Please provide the user name.\nThis account will be useful to manage the pgAgent service.\nThe .pgpass file will be created in its home directory.\nIn case, the user does not exist, it will be created.
+
+sysuser.details.explanation.windows=Please provide the details below.\nThis account will be useful to manage the pgAgent service.\nThe pgpass.conf file will be created in its APPDATA\postgres directory. In case, the user does not exist, it will be created.
+
+pgagent.installdir.explanation=Please select an empty directory for pgAgent installation.
 
 

@@ -17,19 +17,21 @@ _die() {
 }
 
 
-# Create the group if required
-if [ "x`cat /etc/group|cut -f1 -d':'|grep $1`" = "x" ];
-then
-    groupadd $1 || _die $1
-fi
-
 # Create the user account if required
 if [ "x`cat /etc/passwd|cut -f1 -d':'|grep $1`" != "x" ];
 then
     echo "User account '$1' already exists"
     exit 0
 else
-	useradd -m -c "PostgreSQL" -d "$2" -g $1 $1 || _die $1
+
+    # Create the group if required
+    if [ "x`cat /etc/group|cut -f1 -d':'|grep $1`" = "x" ];
+    then
+        groupadd $1 || _die $1
+    fi
+ 
+    useradd -m -c "PostgreSQL" -d "$2" -g $1 $1 || _die $1
+
 fi
 
 echo "$0 ran to completion"

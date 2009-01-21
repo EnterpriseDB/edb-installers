@@ -52,8 +52,8 @@ _build_pgAgent_osx() {
 
     cd $WD/pgAgent
 
-    PG_STAGING=$PG_PATH_OSX/pgAgent/staging/osx
-    SOURCE_DIR=$PG_PATH_OSX/pgAgent/source/pgAgent.osx
+    PG_STAGING=$WD/pgAgent/staging/osx
+    SOURCE_DIR=$WD/pgAgent/source/pgAgent.osx
 
     echo "Building pgAgent sources"
     cd $SOURCE_DIR
@@ -62,6 +62,14 @@ _build_pgAgent_osx() {
     cd $SOURCE_DIR
     make || _die "Couldn't compile the pgAgent sources"
     make install || _die "Couldn't install pgAgent"
+
+    mkdir -p $PG_STAGING/lib
+
+    # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
+    cp -R $PG_PGHOME_OSX/bin/psql $PG_STAGING/bin || _die "Failed to copy psql"
+    cp -R $PG_PGHOME_OSX/lib/libpq.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library (libpq.5.dylib)"
+    _rewrite_so_refs $WD/pgAgent/staging/osx lib @loader_path/..
+    install_name_tool -change "libpq.5.dylib" "@loader_path/libpq.5.dylib" "$PG_STAGING/bin/psql"
 
 }
 

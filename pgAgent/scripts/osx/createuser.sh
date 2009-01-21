@@ -31,7 +31,7 @@ else
     dscl . create /users/$1 gid 1
     dscl . create /users/$1 home $2
     dscl . create /users/$1 shell /bin/bash
-    dscl . create /users/$1 realname "PostgreSQL"
+    dscl . create /users/$1 realname "pgAgent"
 fi
 
 echo "$0 ran to completion"

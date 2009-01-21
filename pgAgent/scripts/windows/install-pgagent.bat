@@ -10,8 +10,8 @@ SET PG_PORT=%3
 SET PG_USER=%4
 SET PG_PASSWORD=%5
 
-rem Write PG_PASSWORD to pgpass.conf File
-echo localhost:%PG_PORT%:*:%PG_USER%:%PG_PASSWORD% >> "%APPDATA%\postgresql\pgpass.conf"
+REM Write PG_PASSWORD to pgpass.conf File
+REM echo localhost:%PG_PORT%:*:%PG_USER%:%PG_PASSWORD% >> "%APPDATA%\postgresql\pgpass.conf"
 
 cd "%6"
 rem Install the pgAgent service
