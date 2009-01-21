@@ -80,4 +80,14 @@ sysuser.details.explanation.windows=Please provide the details below.\nThis acco
 
 pgagent.installdir.explanation=Please select an empty directory for pgAgent installation.
 
+error.could.not.create.user=Could not create the user '${systemuser}'.
 
+error.stop.pgagent=Could not stop pgagent service.
+
+error.uninstall.pgagent=Error uninstalling pgAgent.
+
+progress.text.creating.pgagentschema=Creating pgagent schema on postgres database
+
+progress.text.creating.plpgsql=Creating the language 'pgplsql'
+
+progress.text.creating.user=Creating the user '${systemuser}'
