@@ -31,9 +31,9 @@ _warn() {
     WARN=2
 }
 
-touch $INSTALL_DIR/pgAgent/service.log
-chown $SYSTEM_USER $INSTALL_DIR/pgAgent/service.log
-cat $INSTALL_DIR/pgAgent/installer/pgAgent/pgpass >> $USER_HOME_DIR/.pgpass
+touch $INSTALL_DIR/service.log
+chown $SYSTEM_USER $INSTALL_DIR/service.log
+cat $INSTALL_DIR/installer/pgAgent/pgpass >> $USER_HOME_DIR/.pgpass
 chown $SYSTEM_USER $USER_HOME_DIR/.pgpass
 chmod 0600 $USER_HOME_DIR/.pgpass
 
@@ -53,7 +53,7 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pgagent.plist"
         <string>com.edb.launchd.pgagent</string>
         <key>ProgramArguments</key>
         <array>
-                <string>$INSTALL_DIR/pgAgent/installer/pgAgent/pgagentctl.sh</string>
+                <string>$INSTALL_DIR/installer/pgAgent/pgagentctl.sh</string>
                 <string>start</string>
         </array>
         <key>RunAtLoad</key>

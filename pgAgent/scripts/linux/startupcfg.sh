@@ -27,9 +27,9 @@ _warn() {
 }
 
 USER_HOME_DIR=`cat /etc/passwd | grep $SYSTEM_USER | cut -d":" -f6`
-touch $INSTALL_DIR/pgAgent/service.log
-chown $SYSTEM_USER:$SYSTEM_USER $INSTALL_DIR/pgAgent/service.log
-cat $INSTALL_DIR/pgAgent/installer/pgAgent/pgpass >> $USER_HOME_DIR/.pgpass
+touch $INSTALL_DIR/service.log
+chown $SYSTEM_USER:$SYSTEM_USER $INSTALL_DIR/service.log
+cat $INSTALL_DIR/installer/pgAgent/pgpass >> $USER_HOME_DIR/.pgpass
 chmod 0600 $USER_HOME_DIR/.pgpass
 chown $SYSTEM_USER:$SYSTEM_USER $USER_HOME_DIR/.pgpass
 
@@ -42,11 +42,11 @@ cat <<EOT > "/etc/init.d/pgagent"
 
 start()
 {
-    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/pgAgent/service.log host=localhost port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=localhost port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "exec $INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/pgAgent/service.log host=localhost port=$PG_PORT dbname=postgres user=$PG_USER " &
+       su $SYSTEM_USER -c "exec $INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=localhost port=$PG_PORT dbname=postgres user=$PG_USER " &
        exit 0
     else
        echo "pgAgent already running"
@@ -56,7 +56,7 @@ start()
 
 stop()
 {
-    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/pgAgent/service.log host=localhost port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=localhost port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -68,7 +68,7 @@ stop()
 }
 status()
 {
-    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/pgAgent/service.log host=localhost port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=localhost port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x$PID" = "x" ];
     then
