@@ -33,6 +33,9 @@ _prep_pgAgent_windows() {
     # Copy createuser to pgAgent directory
     cp -R $WD/pgAgent/scripts/windows/createuser $WD/pgAgent/source/pgAgent.windows/createuser || _die "Failed to copy scripts(createuser)"
 
+    # Copy RunProgramAsUser to pgAgent directory
+    cp -R $WD/pgAgent/scripts/windows/RunProgramAsUser $WD/pgAgent/source/pgAgent.windows/RunProgramAsUser || _die "Failed to copy scripts(createuser)"
+
     echo "Archieving pgAgent sources"
     zip -r pgAgent.zip pgAgent.windows/ || _die "Couldn't create archieve of the pgAgent sources (pgAgent.zip)"
 
@@ -82,6 +85,7 @@ _build_pgAgent_windows() {
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/pgaevent; export PGDIR=$PG_PATH_WINDOWS/output ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgaevent.vcproj RELEASE" || _die "Failed to build pgaevent on the build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/validateuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/createuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/RunProgramAsUser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat RunProgramAsUser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
 
     echo "Installing pgAgent"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c cmake -DBUILD_TYPE=RELEASE -P cmake_install.cmake" || _die "Failed to install pgAgent in output directory"
@@ -89,6 +93,7 @@ _build_pgAgent_windows() {
     echo "copying application files into the output directory"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy validateuser\\\\release\\\\validateuser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy createuser\\\\release\\\\createuser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy RunProgramAsUser\\\\release\\\\RunProgramAsUser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
  
     cd $WD/pgAgent/staging/windows
     echo "Copying built tree to Windows host"

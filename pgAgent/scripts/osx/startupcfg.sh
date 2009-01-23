@@ -1,16 +1,17 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 4 ]; 
+if [ $# -ne 5 ]; 
 then
-    echo "Usage: $0 <PGPORT> <PGUSER> <SYSTEM_USER> <Install dir> "
+echo "Usage: $0 <PG_HOST> <PG_PORT> <PG_USER> <SYSTEM_USER> <Install dir> "
     exit 127
 fi
 
-PG_PORT=$1
-PG_USER=$2
-SYSTEM_USER=$3
-INSTALL_DIR=$4
+PG_HOST=$1
+PG_PORT=$2
+PG_USER=$3
+SYSTEM_USER=$4
+INSTALL_DIR=$5
 USER_HOME_DIR=`su $SYSTEM_USER -c "echo ~"`
 
 if [ ! -f $USER_HOME_DIR ]; then

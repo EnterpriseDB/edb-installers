@@ -1,16 +1,17 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 4 ]; 
+if [ $# -ne 5 ]; 
 then
-    echo "Usage: $0 <PGPORT> <PGUSER> <SYSTEMUSER> <Install dir> "
+echo "Usage: $0 <PG_HOST> <PG_PORT> <PG_USER> <SYSTEMUSER> <Install dir> "
     exit 127
 fi
 
-PG_PORT=$1
-PG_USER=$2
-SYSTEM_USER=$3
-INSTALL_DIR=$4
+PG_HOST=$1
+PG_PORT=$2
+PG_USER=$3
+SYSTEM_USER=$4
+INSTALL_DIR=$5
 
 # Exit code
 WARN=0
@@ -42,11 +43,11 @@ cat <<EOT > "/etc/init.d/pgagent"
 
 start()
 {
-    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=localhost port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=PG_HOST port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "exec $INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=localhost port=$PG_PORT dbname=postgres user=$PG_USER " &
+       su $SYSTEM_USER -c "exec $INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=PG_HOST port=$PG_PORT dbname=postgres user=$PG_USER " &
        exit 0
     else
        echo "pgAgent already running"
@@ -56,7 +57,7 @@ start()
 
 stop()
 {
-    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=localhost port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=PG_HOST port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -68,7 +69,7 @@ stop()
 }
 status()
 {
-    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=localhost port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=PG_HOST port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x$PID" = "x" ];
     then

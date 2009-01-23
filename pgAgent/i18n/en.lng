@@ -66,17 +66,17 @@ systemuser.blank.error=User name can not be blank.
 
 config.syspassword.confirm=Retype Password
 
-config.syspassword.explanation=Operating system user password
-
-config.syspassword.description=System user Password
+config.syspassword.description=System User Password
 
 config.systemuser.description=Operating system username
 
 sysuser.details.title=pgAgent service handler(user)
 
-sysuser.details.explanation=Please provide the user name.\nThis account will be useful to manage the pgAgent service.\nThe .pgpass file will be created in its home directory.\nIn case, the user does not exist, it will be created.
+sysuser.details.explanation=Please provide the user name.\nThis account will manage the pgAgent service.\nThe .pgpass file will be created in its home directory.\nIn case, the user does not exist, it will be created.
 
-sysuser.details.explanation.windows=Please provide the details below.\nThis account will be useful to manage the pgAgent service.\nThe pgpass.conf file will be created in its APPDATA\postgres directory. In case, the user does not exist, it will be created.
+sysuser.details.explanation.windows=Please provide the details below.\nThis account will manage the pgAgent service.\nThe pgpass.conf file will be created in its APPDATA\postgres directory.\nIn case, the user does not exist, it will be created.
+
+sysuser.details.explanation.withuser.windows=Please provide password for the ${systemuser}.\nThis account will manage the pgAgent service.
 
 pgagent.installdir.explanation=Please select an empty directory for pgAgent installation.
 
@@ -91,3 +91,7 @@ progress.text.creating.pgagentschema=Creating pgagent schema on postgres databas
 progress.text.creating.plpgsql=Creating the language 'pgplsql'
 
 progress.text.creating.user=Creating the user '${systemuser}'
+
+error.create.pgpass=Could not create/append the pgpass.conf file in {systemuser}'s APPDATA directory.
+
+

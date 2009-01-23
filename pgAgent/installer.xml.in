@@ -75,6 +75,7 @@
     <setInstallerVariable name="defaultpguser" value="postgres"/>
     <setInstallerVariable name="defaultpgport" value="5432"/>
     <setInstallerVariable name="defaultinstalldir" value=""/>
+    <setInstallerVariable name="systemuser" value="" persist="1"/>
     <setInstallerVariable>
       <name>defaultpgpassword</name>
       <value>postgres</value>
@@ -125,21 +126,14 @@
     <!-- Set the default system user, to be used only in unnattended mode -->
     <setInstallerVariable>
       <name>defaultsysuser</name>
+      <value/>
+    </setInstallerVariable>
+    <setInstallerVariable>
+      <name>defaultsysuser</name>
       <value>postgres</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
-          <text>${installer_ui}</text>
-          <value>unattended</value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>defaultsysuser</name>
-      <value></value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
           <text>${installer_ui}</text>
           <value>unattended</value>
         </compareText>
@@ -209,6 +203,12 @@
           <key>Version</key>
           <variable>pgAgentVersion</variable>
         </iniFileGet>
+        <iniFileGet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>pgAgent</section>
+          <key>ServiceManager</key>
+          <variable>systemuser</variable>
+        </iniFileGet>
       </actionList>
       <ruleList>
         <compareText>
@@ -268,6 +268,11 @@
           <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent</key>
           <name>Location</name>
           <variable>installdir</variable>
+        </registryGet>
+        <registryGet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent</key>
+          <name>ServiceManager</name>
+          <variable>systemuser</variable>
         </registryGet>
       </actionList>
       <ruleList>
@@ -369,6 +374,12 @@
           <key>Version</key>
           <value>${product_version}</value>
         </iniFileSet>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>pgAgent</section>
+          <key>ServiceManager</key>
+          <value>${systemuser}</value>
+        </iniFileSet>
       </actionList>
       <ruleList>
         <compareText>
@@ -378,7 +389,11 @@
         </compareText>
       </ruleList>
     </actionGroup>
-    
+    <registrySet>
+      <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent</key>
+      <name>ServiceManager</name>
+      <value>${systemuser}</value>
+    </registrySet>
     <!-- Create the user account with which pgAgent will run-->
     <runProgram>
       <program>${installdir}/installer/pgAgent/createuser.sh</program>
@@ -524,13 +539,16 @@
         </compareText>
       </ruleList>
     </actionGroup>
-
     <substitute>
       <files>${installdir}/installer/pgAgent/pgagentctl.sh</files>
       <substitutionList>
         <substitution>
           <pattern>INSTALL_DIR</pattern>
           <value>${installdir}</value>
+        </substitution>
+        <substitution>
+          <pattern>PG_HOST</pattern>
+          <value>${pghost}</value>
         </substitution>
         <substitution>
           <pattern>PG_PORT</pattern>
@@ -562,6 +580,10 @@
       <files>${installdir}/installer/pgAgent/pgpass</files>
       <substitutionList>
         <substitution>
+          <pattern>PG_HOST</pattern>
+          <value>${pghost}</value>
+        </substitution>
+        <substitution>
           <pattern>PG_PORT</pattern>
           <value>${pgport}</value>
         </substitution>
@@ -587,29 +609,71 @@
         </compareText>
       </ruleList>
     </substitute>
-    
-    <!-- WIN : Install pgAgent as Service -->
+
+    <!-- WIN :                                                                   -->
+    <!--     1. Create/Append pgpass.conf file in systemuser's appdata directory -->
+    <!--     2. Create/Reinstall the pgAgent service                             -->
     <actionGroup>
       <actionList>
+        <copyFile>
+          <origin>${installdir}\installer\pgAgent\createPGPASSCONF.bat</origin>
+          <destination>${env(windir)}</destination>
+        </copyFile>
+        <substitute>
+          <files>${env(windir)}\createPGPASSCONF.bat</files>
+          <substitutionList>
+            <substitution>
+              <pattern>PG_HOST</pattern>
+              <value>${pghost}</value>
+            </substitution>
+            <substitution>
+              <pattern>PG_PORT</pattern>
+              <value>${pgport}</value>
+            </substitution>
+            <substitution>
+              <pattern>PG_USER</pattern>
+              <value>${pguser}</value>
+            </substitution>
+            <substitution>
+              <pattern>PG_PASSWORD</pattern>
+              <value>${pgpassword}</value>
+            </substitution>
+          </substitutionList>
+        </substitute>
+        <unpackFile>
+          <component>runas</component>
+          <destination>${system_temp_directory}\${product_fullname}\bin\RunProgramAsUser.exe</destination>
+          <folder>runasfilewindows</folder>
+          <origin>RunProgramAsUser.exe</origin>
+        </unpackFile>
+        <runProgram>
+          <customErrorMessage>${msg(error.create.pgpass)}</customErrorMessage>
+          <program>${system_temp_directory}\${product_fullname}\bin\RunProgramAsUser.exe</program>
+	  <programArguments>${systemuser} ${systempassword} ${env(windir)}\createPGPASSCONF.bat</programArguments>
+	  <workingDirectory>${windir}</workingDirectory>
+          <abortOnError>0</abortOnError>
+	  <showMessageOnError>1</showMessageOnError>
+       </runProgram>
+       <deleteFile>
+         <path>${system_temp_directory}\${product_fullname}\bin\RunProgramAsUser.exe</path>
+       </deleteFile>
+
+        <!-- WIN : Install pgAgent as Service -->
+        <!--       Try to reinstall the service in upgrade mode -->
         <runProgram>
           <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
-          <program>${installdir}\installer\pgAgent\install-pgagent.bat</program>
-          <programArguments>"${systemuser}" "${systempassword}" "${pgport}" "${pguser}" "${pgpassword}" "${installdir}"</programArguments>
-          <workingDirectory>${installdir}\installer\pgAgent</workingDirectory>
+          <program>${installdir}\bin\pgagent.exe</program>
+	  <programArguments>INSTALL pgagent -u ${systemuser} -p ${systempassword} host=${pghost} port=${pgport} user=${pguser} dbname=postgres</programArguments>
+          <workingDirectory>${installdir}\bin</workingDirectory>
           <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
+	  <showMessageOnError>1</showMessageOnError>
         </runProgram>
       </actionList>
       <ruleList>
         <compareText>
           <logic>equals</logic>
           <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${pgAgentVersion}</text>
-          <value/>
+	  <value>windows</value>
         </compareText>
       </ruleList>
     </actionGroup>
@@ -899,10 +963,12 @@
           <name>otherfileslinux</name>
           <platforms>linux</platforms>
           <distributionFileList>
-            <distributionDirectory>
+            <distributionFile>
               <origin>staging/linux/LICENSE</origin>
+            </distributionFile>
+            <distributionFile>
               <origin>staging/linux/README</origin>
-            </distributionDirectory>
+            </distributionFile>
           </distributionFileList>
         </folder>
 
@@ -957,10 +1023,12 @@
           <name>otherfileslinux-x64</name>
           <platforms>linux-x64</platforms>
           <distributionFileList>
-            <distributionDirectory>
+            <distributionFile>
               <origin>staging/linux-x64/LICENSE</origin>
+            </distributionFile>
+	    <distributionFile>
               <origin>staging/linux-x64/README</origin>
-            </distributionDirectory>
+            </distributionFile>
           </distributionFileList>
         </folder>
 
@@ -1018,10 +1086,12 @@
           <name>otherfileswindows</name>
           <platforms>windows</platforms>
           <distributionFileList>
-            <distributionDirectory>
+            <distributionFile>
               <origin>staging/windows/LICENSE</origin>
+            </distributionFile>
+	    <distributionFile>
               <origin>staging/windows/README</origin>
-            </distributionDirectory>
+            </distributionFile>
           </distributionFileList>
         </folder>
 
@@ -1066,10 +1136,33 @@
           <name>otherfilesosx</name>
           <platforms>osx</platforms>
           <distributionFileList>
-            <distributionDirectory>
+            <distributionFile>
               <origin>staging/osx/LICENSE</origin>
+            </distributionFile>
+	    <distributionFile>
               <origin>staging/osx/README</origin>
-            </distributionDirectory>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+      </folderList>
+    </component>
+    <component>
+      <name>runas</name>
+      <description>pgAgent components</description>
+      <canBeEdited>0</canBeEdited>
+      <selected>0</selected>
+      <show>0</show>
+      <folderList>
+        <!-- WIN : RunProgramAsUser executable -->
+        <folder>
+          <description>RunProgramAsUser</description>
+          <destination>${installdir}\bin</destination>
+          <name>runasfilewindows</name>
+          <platforms>windows</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/windows/RunProgramAsUser.exe</origin>
+            </distributionFile>
           </distributionFileList>
         </folder>
       </folderList>
@@ -1526,13 +1619,18 @@
               <text>${pgAgentVersion}</text>
               <value/>
             </compareText>
+            <compareText>
+              <logic>equals</logic>
+              <text>${use_exist_schema}</text>
+              <value>yes</value>
+            </compareText>
           </ruleList>
         </actionGroup>
 
         <!-- Set systemuser as postgres, if user answers 'yes' for above question -->
         <actionGroup>
           <actionList>
-            <setInstallerVariable name="systemuser" value="" persist="1"/>
+              <setInstallerVariable name="systemuser" value=""/>
           </actionList>
         </actionGroup>
         <actionGroup>
@@ -1557,6 +1655,41 @@
       <default/>
       <!-- Do not show this page if reinstallation other than windows -->
       <preShowPageActionList>
+        <setInstallerVariable>
+          <name>_explanation</name>
+          <value>${msg(sysuser.details.explanation)}</value>
+        </setInstallerVariable>
+
+        <!-- On Windows, we need a different explanation -->
+        <setInstallerVariable>
+          <name>_explanation</name>
+          <value>${msg(sysuser.details.explanation.windows)}</value>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </setInstallerVariable>
+
+        <!-- On Windows, we need a different explanation -->
+        <setInstallerVariable>
+          <name>_explanation</name>
+          <value>${msg(sysuser.details.explanation.withuser.windows)}</value>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${systemuser}</text>
+              <value/>
+            </compareText>
+          </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable>
           <name>usepostgres</name>
           <value>yes</value>
@@ -1584,12 +1717,19 @@
           <allowEmptyValue>1</allowEmptyValue>
           <width>40</width>
           <cliOptionName>systemuser</cliOptionName>
-          <cliOptionShow>yes</cliOptionShow>
+	  <cliOptionShow>yes</cliOptionShow>
+	  <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${systemuser}</text>
+              <value/>
+            </compareText>
+	  </ruleList>
         </stringParameter>
         <passwordParameter>
           <name>systempassword</name>
           <description>${msg(config.syspassword.description)}</description>
-          <explanation>${msg(config.syspassword.explanation)}</explanation>
+          <explanation/>
           <value/>
           <default>${defaultsyspassword}</default>
           <allowEmptyValue>1</allowEmptyValue>
@@ -1699,24 +1839,6 @@
       </actionGroup>
       </validationActionList>
       <preShowPageActionList>
-        <setInstallerVariable>
-          <name>_explanation</name>
-          <value>${msg(sysuser.details.explanation)}</value>
-        </setInstallerVariable>
-
-        <!-- On Windows, we need a different explanation -->
-        <setInstallerVariable>
-          <name>_explanation</name>
-          <value>${msg(sysuser.details.explanation.windows)}</value>
-
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${platform_name}</text>
-              <value>windows</value>
-            </compareText>
-          </ruleList>
-        </setInstallerVariable>
      </preShowPageActionList>
    </parameterGroup>
   </parameterList>
