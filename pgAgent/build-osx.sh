@@ -99,8 +99,8 @@ _postprocess_pgAgent_osx() {
 
     # Zip up the output
     cd $WD/output
-    zip -r pgAgent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip pgAgent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app/ || _die "Failed to zip the installer bundle"
-    rm -rf pgAgent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app/ || _die "Failed to remove the unpacked installer bundle"
+    zip -r pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
 
