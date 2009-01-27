@@ -235,7 +235,7 @@ _postprocess_PostGIS_windows() {
     done
 
     #Copy postgis.html from osx build
-    cp $WD/PostGIS/staging/osx/PostGIS/doc/contrib/html/postgis/postgis.html $WD/PostGIS/staging/windows/doc/contrib/html/postgis/ || _die "Failed to copy the postgis.html file"
+    cp $WD/PostGIS/staging/osx/PostGIS/doc/postgis/postgis.html $WD/PostGIS/staging/windows/doc/contrib/html/postgis/ || _die "Failed to copy the postgis.html file"
 
     cd $WD/PostGIS
 
