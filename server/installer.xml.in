@@ -9,7 +9,7 @@
     <productComments>The PostgreSQL DDBMS, version ${product_version}, packaged by EnterpriseDB</productComments>
     <productUrlHelpLink>http://www.postgresql.org/docs</productUrlHelpLink>
     <productUrlInfoAbout>http://www.postgresql.org/</productUrlInfoAbout>
-	<startMenuGroupName>${branding}</startMenuGroupName>
+    <startMenuGroupName>${branding}</startMenuGroupName>
     <vendor>PostgreSQL Global Development Group</vendor>
 
     <!-- Installer Size -->
@@ -55,8 +55,8 @@
     
     <!-- Initialisation actions -->
     <initializationActionList>
-	
-	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
+    
+    <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
           <text>Unknown Error</text>
@@ -206,7 +206,7 @@
                         </fileTest>
                     </ruleList>
                 </setInstallerVariable>
-				
+                
                 <!-- Get the branding. -->
                 <iniFileGet>
                     <file>${PostgreSqlIni}</file>
@@ -231,9 +231,9 @@
                         </fileTest>
                     </ruleList>
                 </setInstallerVariable>
-				
-				<!-- Get the version installed. We use this to figure out if we have a pre-branding installation -->
-			    <iniFileGet>
+                
+                <!-- Get the version installed. We use this to figure out if we have a pre-branding installation -->
+                <iniFileGet>
                     <file>${PostgreSqlIni}</file>
                     <key>Version</key>
                     <section>PostgreSQL/${product_version}</section>
@@ -256,7 +256,7 @@
                         </fileTest>
                     </ruleList>
                 </setInstallerVariable>
-				
+                
             </actionList>
             
             <ruleList>
@@ -284,21 +284,21 @@
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
                     <variable>iBaseDirectory</variable>
                 </registryGet>
-				
-				<!-- Get the branding -->
+                
+                <!-- Get the branding -->
                 <registryGet>
                     <name>Branding</name>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
                     <variable>iBranding</variable>
                 </registryGet>
-				
-				<!-- Get the version installed. We use this to figure out if we have a pre-branding installation -->
+                
+                <!-- Get the version installed. We use this to figure out if we have a pre-branding installation -->
                 <registryGet>
                     <name>Version</name>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
                     <variable>brandingVer</variable>
                 </registryGet>
-								
+                                
             </actionList>
             
             <ruleList>
@@ -309,57 +309,57 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-		
-		<!-- If there appears to be an existing installation, with no Branding value. --> 
-		<!-- force the default value. Otherwise, set the branding to whatever we read, -->
-		<!-- or, set the default -->
-		
-		<!-- Existing, old install (version, but no branding) -->
-		<setInstallerVariable>
-			<name>branding</name>
-			<persist>0</persist>
-			<value>PostgreSQL ${product_version}</value>
-			<ruleList>
-				<compareText>
-					<logic>does_not_equal</logic>
-					<text>${brandingVer}</text>
-					<value></value>
-				</compareText>
-				<compareText>
-					<logic>equals</logic>
-					<text>${iBranding}</text>
-					<value></value>
-				</compareText>
-			</ruleList>
-		</setInstallerVariable>
-		
-		<!-- Existing install, with branding -->
-		<setInstallerVariable>
-			<name>branding</name>
-			<persist>0</persist>
-			<value>${iBranding}</value>
-			<ruleList>
-				<compareText>
-					<logic>does_not_equal</logic>
-					<text>${iBranding}</text>
-					<value></value>
-				</compareText>
-			</ruleList>
-		</setInstallerVariable>
-		
-		<!-- New install, nothing set on the command line -->
-		<setInstallerVariable>
-			<name>branding</name>
-			<persist>0</persist>
-			<value>PostgreSQL ${product_version}</value>
-			<ruleList>
-				<compareText>
-					<logic>equals</logic>
-					<text>${branding}</text>
-					<value></value>
-				</compareText>
-			</ruleList>
-		</setInstallerVariable>
+        
+        <!-- If there appears to be an existing installation, with no Branding value. --> 
+        <!-- force the default value. Otherwise, set the branding to whatever we read, -->
+        <!-- or, set the default -->
+        
+        <!-- Existing, old install (version, but no branding) -->
+        <setInstallerVariable>
+            <name>branding</name>
+            <persist>0</persist>
+            <value>PostgreSQL ${product_version}</value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${brandingVer}</text>
+                    <value></value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${iBranding}</text>
+                    <value></value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        
+        <!-- Existing install, with branding -->
+        <setInstallerVariable>
+            <name>branding</name>
+            <persist>0</persist>
+            <value>${iBranding}</value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${iBranding}</text>
+                    <value></value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        
+        <!-- New install, nothing set on the command line -->
+        <setInstallerVariable>
+            <name>branding</name>
+            <persist>0</persist>
+            <value>PostgreSQL ${product_version}</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${branding}</text>
+                    <value></value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
         
         <!-- Debugging -->
         <logMessage>
@@ -1801,7 +1801,7 @@
             <value>PostgreSQL ${product_version}</value>
         </registrySet>
         
-		<!-- Branding info -->
+        <!-- Branding info -->
         <logMessage>
             <text>Write the server branding to the ini file...</text>
         </logMessage>
@@ -1823,7 +1823,7 @@
             <name>Branding</name>
             <value>${branding}</value>
         </registrySet>
-				
+                
         <!-- The Windows product code, used to link to the installation -->
         <registrySet>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
@@ -2003,7 +2003,7 @@
                     <key>ServiceID</key>
                     <value></value>
                 </iniFileSet>
-				
+                
                 <!-- Branding -->
                 <iniFileSet>
                     <file>${PostgreSqlIni}</file>
@@ -2407,7 +2407,7 @@
     <parameterList>
      
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
-		<stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
+        <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
    
         <!-- Installation directory. Only show if ${iBaseDirectory} is empty -->
         <directoryParameter>
@@ -2468,7 +2468,7 @@
                         <regExMatch>
                             <text>${installdir}</text>
                             <logic>does_not_match</logic>
-                            <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-]*)$</pattern>
+                            <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
                         </regExMatch>
                         <compareText>
                             <logic>equals</logic>
@@ -2572,7 +2572,7 @@
                         <regExMatch>
                             <text>${datadir}</text>
                             <logic>does_not_match</logic>
-                            <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-]*)$</pattern>
+                            <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
                         </regExMatch>
                         <compareText>
                             <logic>equals</logic>
@@ -2630,11 +2630,27 @@
                     </ruleList>
                 </setInstallerVariableFromRegEx>
 
-                <setInstallerVariableFromRegEx>
-                    <text>${_re}</text>
-                    <substitution>\\\\</substitution>
-                    <name>_re</name>
-                    <pattern>\\</pattern>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariableFromRegEx>
+                            <text>${_re}</text>
+                            <substitution>\\\\</substitution>
+                            <name>_re</name>
+                            <pattern>\\</pattern>
+                        </setInstallerVariableFromRegEx>
+                        <setInstallerVariableFromRegEx>
+                            <text>${_re}</text>
+                            <substitution>\\(</substitution>
+                            <name>_re</name>
+                            <pattern>\(</pattern>
+                        </setInstallerVariableFromRegEx>
+                        <setInstallerVariableFromRegEx>
+                            <text>${_re}</text>
+                            <substitution>\\)</substitution>
+                            <name>_re</name>
+                            <pattern>\)</pattern>
+                        </setInstallerVariableFromRegEx>
+                    </actionList>
                     
                     <ruleList>
                         <compareText>
@@ -2643,7 +2659,7 @@
                             <value>windows</value>
                         </compareText>
                     </ruleList>
-                </setInstallerVariableFromRegEx>
+                </actionGroup>
                 
                 <!-- build the regexp -->
                 <setInstallerVariable>
@@ -2661,7 +2677,7 @@
 
                 <setInstallerVariable>
                     <name>_re</name>
-                    <value>^${_re}\\([0-9a-zA-Z_\\\s\.\-]*)</value>
+                    <value>^${_re}\\([0-9a-zA-Z_\\\s\.\-\(\)]*)</value>
                     
                     <ruleList>
                         <compareText>
