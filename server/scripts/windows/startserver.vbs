@@ -48,6 +48,9 @@ Else
     WScript.Echo "Service " & objService.Name & " is already running"
 End If
 
+' Give the server a change to finish any recovery etc. Shouldn't be required with -w, but...
+WScript.Sleep(5000)
+
 WScript.Echo "startserver.vbs ran to completion"
 WScript.Quit 0
 
