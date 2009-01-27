@@ -82,7 +82,7 @@ bool TestLogin(LPTSTR domain, LPTSTR username, LPTSTR password)
     if (!LogonUser(username,
                    domain,
                    password,
-                   LOGON32_LOGON_SERVICE,
+                   LOGON32_LOGON_NETWORK,
                    LOGON32_PROVIDER_DEFAULT,
                    &token))
     {
