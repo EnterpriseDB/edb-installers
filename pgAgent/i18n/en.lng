@@ -18,7 +18,7 @@ install.summary=pgAgent is a job scheduler for PostgreSQL which may be managed u
 
 configure.pgagent.schema=Created and configured the pgagent schema in postgres database. 
 
-error.install.pgagent=Error Installing the pgAgent service.
+error.install.pgagent=Error nstalling the pgAgent service.
 
 schema.drop.info=The pgagent schema and user account have not been removed from the system.
 
@@ -48,7 +48,7 @@ config.systempassword.incorrect.windows=The password specified was incorrect. Pl
 
 pg.details.error=Connection to the PostgreSQL Server failed. Please re-check the details provided.
 
-pgagent.schema.error=The pgagent schema found on the postgres database.\nDo you want to use the existing pgagent?\n(pgAgent may not work properly in this case.)
+pgagent.schema.error=The pgagent schema found in the postgres database.\nDo you want to use the existing configuration?\n(pgAgent may not work properly in this case.)
 
 post.install.error=Error configuring pgAgent.
 
@@ -60,38 +60,38 @@ pg.blank.error=Values must be entered for all fields.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 
-systempassword.blank.error=Please provide the password to continue. It will be require to manage the pgAgent service.
+systempassword.blank.error=Please provide the password to continue. It will be required to setup the pgAgent service.
 
 systemuser.blank.error=User name can not be blank.
 
-config.syspassword.confirm=Retype Password
+config.syspassword.confirm=Retype password
 
-config.syspassword.description=System User Password
+config.syspassword.description=System user password
 
 config.systemuser.description=Operating system username
 
-sysuser.details.title=pgAgent service handler(user)
+sysuser.details.title=pgAgent service account
 
-sysuser.details.explanation=Please provide the user name.\nThis account will manage the pgAgent service.\nThe .pgpass file will be created in its home directory.\nIn case, the user does not exist, it will be created.
+sysuser.details.explanation=Please provide the user name of the account under which the pgAgent service will run.\nThe .pgpass file will be created in the account home directory.\nIf the user account does not exist it will be created.
 
-sysuser.details.explanation.windows=Please provide the details below.\nThis account will manage the pgAgent service.\nThe pgpass.conf file will be created in its APPDATA\postgres directory.\nIn case, the user does not exist, it will be created.
+sysuser.details.explanation.windows=Please provide the username and password of the account under which the pgAgent service will run.\nThe pgpass.conf file will be created in its %APPDATA%\postgresql directory.\nIf the user account does not exist, it will be created.
 
-sysuser.details.explanation.withuser.windows=Please provide password for the ${systemuser}.\nThis account will manage the pgAgent service.
+sysuser.details.explanation.withuser.windows=Please provide password for the ${systemuser}.\nThe pgAgent service will be run under this account.
 
 pgagent.installdir.explanation=Please select an empty directory for pgAgent installation.
 
 error.could.not.create.user=Could not create the user '${systemuser}'.
 
-error.stop.pgagent=Could not stop pgagent service.
+error.stop.pgagent=Could not stop the pgAgent service.
 
 error.uninstall.pgagent=Error uninstalling pgAgent.
 
-progress.text.creating.pgagentschema=Creating pgagent schema on postgres database
+progress.text.creating.pgagentschema=Creating the 'pgagent' schema in the 'postgres' database
 
-progress.text.creating.plpgsql=Creating the language 'pgplsql'
+progress.text.creating.plpgsql=Creating the language 'plpgsql'
 
 progress.text.creating.user=Creating the user '${systemuser}'
 
-error.create.pgpass=Could not create/append the pgpass.conf file in {systemuser}'s APPDATA directory.
+error.create.pgpass=Could not create or modify the pgpass.conf file in the {systemuser} user's %APPDATA%\postgresql directory.
 
 
