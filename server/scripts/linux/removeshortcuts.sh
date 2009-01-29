@@ -10,6 +10,12 @@ then
     exit 127
 fi
 
+# Search & replace in a file - _replace($find, $replace, $file) 
+_replace() {
+    sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
+        mv /tmp/$$.tmp $3 || _die "Failed to move /tmp/$$.tmp to $3"
+}
+
 INSTALLDIR=$1
 VERSION=$2
 BRANDING=$3
@@ -28,10 +34,12 @@ VERSION_STR=`echo $VERSION | sed 's/\./_/g'`
 if [ "x$BRANDING" = "xPostgreSQL $VERSION" ];
 then
     BRANDING_STR="postgresql-$VERSION_STR"
+    DOC_BRANDING_STR="documentation-$VERSION_STR"
     BRANDED=0
 else
     BRANDING_STR=`echo $BRANDING | sed 's/\./_/g' | sed 's/ /_/g'`
-	BRANDED=1
+    DOC_BRANDING_STR=$BRANDING_STR"_documentation"
+    BRANDED=1
 fi
 
 # Error handlers
@@ -47,8 +55,6 @@ _warn() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system --noupdate \
-	  "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory" \
-	  "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION_STR.directory" \
           "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION_STR.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION_STR.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION_STR.desktop" \
@@ -57,7 +63,6 @@ _warn() {
           "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION_STR.desktop" || _warn "Failed to remove the documentation menu"
 
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
-	  "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory" \
 	  "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION_STR.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION_STR.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION_STR.desktop" \
@@ -77,7 +82,37 @@ done
 if [ $BRANDED -ne 0 ];
 then
     rm "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory"
+    rm "$INSTALLDIR/scripts/xdg/pg-$DOC_BRANDING_STR.directory"
 fi
+
+xdg_dir_name=menus
+
+xdg_system_dirs="$XDG_CONFIG_DIRS"
+[ -n "$xdg_system_dirs" ] || xdg_system_dirs=/etc/xdg
+xdg_global_dir=
+for x in `echo $xdg_system_dirs | sed 's/:/ /g'` ; do
+   if [ -w $x/$xdg_dir_name ] ; then
+       xdg_global_dir="$x/$xdg_dir_name"
+       break
+   fi
+done
+xdg_global_dir="$xdg_global_dir/applications-merged"
+
+# Hack up the XDG menu files to make sure everything really does go.
+_replace "<Filename>pg-psql-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
+_replace "<Filename>pg-reload-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
+_replace "<Filename>pg-restart-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
+_replace "<Filename>pg-start-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
+_replace "<Filename>pg-stop-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
+_replace "<Filename>pg-pgadmin-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
+_replace "<Filename>pg-stackbuilder-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
+
+_replace "<Filename>pg-doc-installationnotes-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR-pg-$DOC_BRANDING_STR.menu"
+_replace "<Filename>pg-doc-postgresql-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR-pg-$DOC_BRANDING_STR.menu"
+_replace "<Filename>pg-doc-postgresql-releasenotes-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR-pg-$DOC_BRANDING_STR.menu"
+_replace "<Filename>pg-doc-pgadmin-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR-pg-$DOC_BRANDING_STR.menu"
+_replace "<Filename>pg-doc-pljava-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR-pg-$DOC_BRANDING_STR.menu"
+_replace "<Filename>pg-doc-pljava-readme-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR-pg-$DOC_BRANDING_STR.menu"
 
 echo "$0 ran to completion"
 exit 0

@@ -31,10 +31,12 @@ VERSION_STR=`echo $VERSION | sed 's/\./_/g'`
 if [ "x$BRANDING" = "xPostgreSQL $VERSION" ];
 then
     BRANDING_STR="postgresql-$VERSION_STR"
+    DOC_BRANDING_STR="documentation-$VERSION_STR"
     BRANDED=0
 else
     BRANDING_STR=`echo $BRANDING | sed 's/\./_/g' | sed 's/ /_/g'`
-	BRANDED=1
+    DOC_BRANDING_STR=$BRANDING_STR"_documentation"
+    BRANDED=1
 fi
 
 # Error handlers
@@ -100,7 +102,7 @@ then
     rm "$INSTALLDIR/scripts/xdg/"pg-*-$VERSION.desktop
 fi
 
-if [ $DevServer -eq 1 ];
+if [ "x$DevServer" = "x1" ];
 then
     VERSION=$VERSION_STR
 fi
@@ -146,6 +148,7 @@ _fixup_file "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop"
 if [ $BRANDED -ne 0 ];
 then
     cp "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION_STR.directory" "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory"
+    cp "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION_STR.directory" "$INSTALLDIR/scripts/xdg/pg-$DOC_BRANDING_STR.directory"
 fi
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
@@ -161,7 +164,7 @@ fi
 
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system \
       "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory" \
-      "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION_STR.directory" \
+      "$INSTALLDIR/scripts/xdg/pg-$DOC_BRANDING_STR.directory" \
           "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION_STR.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION_STR.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION_STR.desktop" \
