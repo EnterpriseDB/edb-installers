@@ -838,7 +838,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/Slony/installer/Slony/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${productVersion}" "${PGCurrentVersion}" "${branding}"</programArguments>
+                    <programArguments>"${installdir}" "${productVersion}" "${PGMajorVersion}" "${branding}"</programArguments>
                     <workingDirectory>${installdir}/Slony/installer/Slony</workingDirectory>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
