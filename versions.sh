@@ -33,7 +33,7 @@ PG_BUILDNUM_PGAGENT=1
 #                     Minor version is revision.build. 
 
 PG_MAJOR_VERSION=8.3
-PG_MINOR_VERSION=5.2
+PG_MINOR_VERSION=6.1
 
 # Other package versions
 PG_VERSION_APACHE=2.2.10
