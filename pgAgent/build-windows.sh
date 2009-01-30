@@ -113,8 +113,8 @@ _build_pgAgent_windows() {
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/krb5/bin/i386/k5sprt32.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (k5sprt32.dll)"
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/krb5/bin/i386/krb5_32.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (krb5_32.dll)"
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/krb5/bin/i386/comerr32.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (comerr32.dll)"
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/gettext/bin/libiconv2.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libiconv2.dll)"
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/gettext/bin/libintl3.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libintl3.dll)"
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/gettext/bin/libiconv-2.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libiconv-2.dll)"
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/gettext/bin/libintl-8.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libintl-8.dll)"
     scp $PG_SSH_WINDOWS:C:/Windows/System32/msvcr71.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (msvcr71.dll)"
 
 }
