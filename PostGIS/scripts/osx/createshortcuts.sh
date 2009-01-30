@@ -1,15 +1,18 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -lt 2 ]; 
+if [ $# -ne 4 ]; 
 then
-    echo "Usage: $0 <Install dir> <PG_MAJOR_VERSION>"
+    echo "Usage: $0 <Install dir> <PG Version> <Slony Version> <Branding>" 
     exit 127
 fi
 
 INSTALLDIR=$1
-VERSION=$2
-FOLDER="/Applications/PostgreSQL $VERSION/PostGIS"
+PG_VERSION=$2
+SLONY_VERSION=$3
+BRANDING=$4
+
+FOLDER="/Applications/$BRANDING"
 
 # Exit code
 WARN=0
