@@ -3,7 +3,7 @@
   <shortName>apachephp</shortName>
   <fullName>ApachePhp</fullName>
   <version>PG_VERSION_APACHEPHP-PG_BUILDNUM_APACHEPHP</version>
-  <startMenuGroupName>PostgreSQL</startMenuGroupName>
+  <startMenuGroupName>${branding}</startMenuGroupName>
   <!-- Product Specific Options -->
   <productComments>${product_fullname} ${productVersion}, packaged by EnterpriseDB</productComments>
   <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
@@ -168,6 +168,15 @@
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
         </iniFileGet>
+        <!-- LIN & MAC: Get the branding & check Previous Installation of psqlODBC -->
+        <iniFileGet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApachePhp</section>
+          <key>Branding</key>
+          <variable>iBranding</variable>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </iniFileGet>
       </actionList>
       <ruleList>
         <compareText>
@@ -237,6 +246,11 @@
           <name>APACHE_HOME</name>
           <variable>apache_home</variable>
         </registryGet>
+        <registryGet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+          <name>Branding</name>
+          <variable>iBranding</variable>
+        </registryGet>
       </actionList>
       <ruleList>
         <compareText>
@@ -274,6 +288,56 @@
       </ruleList>    
     </actionGroup>
 
+    <!-- If there appears to be an existing installation, with no Branding value. -->
+    <!-- force the default value. Otherwise, set the branding to whatever we read, -->
+    <!-- or, set the default -->
+    <!-- Existing, old install (version, but no branding) -->
+    <setInstallerVariable>
+      <name>branding</name>
+      <persist>0</persist>
+      <value>PostgreSQL</value>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${apachephpVersion}</text>
+          <value/>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${iBranding}</text>
+          <value/>
+        </compareText>
+      </ruleList>
+    </setInstallerVariable>
+    <!-- Existing install, with branding -->
+    <setInstallerVariable>
+      <name>branding</name>
+      <persist>0</persist>
+      <value>${iBranding}</value>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${iBranding}</text>
+          <value/>
+        </compareText>
+      </ruleList>
+    </setInstallerVariable>
+    <!-- New install, nothing set on the command line -->
+    <setInstallerVariable>
+      <name>branding</name>
+      <persist>0</persist>
+      <value>PostgreSQL</value>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${branding}</text>
+          <value/>
+        </compareText>
+      </ruleList>
+    </setInstallerVariable>
+    <logMessage>
+      <text>Using branding: ${branding}</text>
+    </logMessage>
     <!-- Getting the Version Installed minus the buildnum --> 
     <setInstallerVariableFromRegEx>
         <name>apachephpVersionInstalled</name>
@@ -751,6 +815,12 @@ include conf\addons\*.conf
           <key>Version</key>
           <value>${product_version}</value>
         </iniFileSet>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApachePhp</section>
+          <key>Branding</key>
+          <value>${branding}</value>
+        </iniFileSet>
       </actionList>
       <ruleList>
         <compareText>
@@ -766,7 +836,7 @@ include conf\addons\*.conf
         <runProgram>
           <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
           <program>${installdir}/installer/ApachePhp/createshortcuts.sh</program>
-          <programArguments>"${installdir}"</programArguments>
+          <programArguments>"${installdir}" "${branding}"</programArguments>
           <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
           <workingDirectory>${installdir}/installer/ApachePhp</workingDirectory>
         </runProgram>
@@ -893,6 +963,11 @@ include conf\addons\*.conf
           <name>PHP_HOME</name>
           <value>${installdir}\php</value>
         </registrySet>
+        <registrySet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+          <name>Branding</name>
+          <value>${branding}</value>
+        </registrySet>
       </actionList>
       <ruleList>
         <compareText>
@@ -1009,6 +1084,12 @@ include conf\addons\*.conf
           <key>Version</key>
           <value/>
         </iniFileSet>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApachePhp</section>
+          <key>Branding</key>
+          <value/>
+        </iniFileSet>
       </actionList>
       <ruleList>
         <compareText>
@@ -1024,7 +1105,7 @@ include conf\addons\*.conf
         <runProgram>
           <customErrorMessage>${msg(error.uninstall.apache)}</customErrorMessage>
           <program>${installdir}/installer/ApachePhp/removeshortcuts.sh</program>
-          <programArguments>"${installdir}"</programArguments>
+          <programArguments>"${installdir}" "${branding}"</programArguments>
           <workingDirectory>${installdir}/installer/ApachePhp</workingDirectory>
         </runProgram>
         <!-- Uninstall the ApachePhp service -->
@@ -1061,7 +1142,7 @@ include conf\addons\*.conf
     </actionGroup>
     <!-- MAC: Remove menu shortcuts -->
     <deleteFile>
-      <path>/Applications/PostgreSQL/EnterpriseDB ApachePhp</path>
+      <path>/Applications/${branding}/EnterpriseDB ApachePhp</path>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -1276,6 +1357,7 @@ include conf\addons\*.conf
   </componentList>
   <parameterList>
     <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+    <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
     <parameterGroup>
       <!-- Apache Port -->
       <name>apacheport</name>

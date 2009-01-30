@@ -1,13 +1,25 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 1 ]; 
+if [ $# -ne 2 ]; 
 then
-    echo "Usage: $0 <Install dir>"
+    echo "Usage: $0 <Install dir> <Branding>"
     exit 127
 fi
 
 INSTALLDIR="$1"
+BRANDING=$2
+
+# Branding string, for the xdg filenames. If the branding is 'PostgreSQL',
+# Don't do anything to ensure we remain backwards compatible.
+if [ "x$BRANDING" = "xPostgreSQL" ];
+then
+    BRANDING_STR="postgresql"
+    BRANDED=0
+else
+    BRANDING_STR=`echo $BRANDING | sed 's/\./_/g' | sed 's/ /_/g'`
+	BRANDED=1
+fi
 
 # Exit code
 WARN=0
@@ -41,6 +53,32 @@ _warn() {
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-startApache.png"
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-stopApache.png"
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-restartApache.png"
+
+# Only remove the directory file if it's branded
+if [ $BRANDED -ne 0 ];
+then
+    rm "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory"
+    rm "$INSTALLDIR/scripts/xdg/pg-apachephp.directory" 
+fi
+
+xdg_dir_name=menus
+
+xdg_system_dirs="$XDG_CONFIG_DIRS"
+[ -n "$xdg_system_dirs" ] || xdg_system_dirs=/etc/xdg
+xdg_global_dir=
+for x in `echo $xdg_system_dirs | sed 's/:/ /g'` ; do
+   if [ -w $x/$xdg_dir_name ] ; then
+       xdg_global_dir="$x/$xdg_dir_name"
+       break
+   fi
+done
+xdg_global_dir="$xdg_global_dir/applications-merged"
+
+# Hack up the XDG menu files to make sure everything really does go.
+_replace "<Filename>pg-launchApachePhp.desktop</Filename>" "" "$xdg_global_dir/pg-apachephp.menu"
+_replace "<Filename>pg-startApache.desktop</Filename>" "" "$xdg_global_dir/pg-apachephp.menu"
+_replace "<Filename>pg-stopApache.desktop</Filename>" "" "$xdg_global_dir/pg-apachephp.menu"
+_replace "<Filename>pg-restartApache.desktop</Filename>" "" "$xdg_global_dir/pg-apachephp.menu"
 
 echo "$0 ran to completion"
 exit 0
