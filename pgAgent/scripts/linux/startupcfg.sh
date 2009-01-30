@@ -41,6 +41,19 @@ cat <<EOT > "/etc/init.d/pgagent"
 # chkconfig: 2345 85 15
 # description: pgAgent Service script for Linux
 
+### BEGIN INIT INFO
+# Provides:          EnterpriseDB
+# Required-Start:    $syslog
+# Required-Stop:     $syslog
+# Should-Start:  
+# Should-Stop:  
+# Default-Start:     2 3 4 5
+# Default-Stop:      1 6
+# Short-Description: pgAgent 
+# Description:       pgAgent
+### END INIT INFO
+
+
 start()
 {
     PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=PG_HOST port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
