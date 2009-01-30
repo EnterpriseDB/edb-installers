@@ -76,11 +76,11 @@ _build_server_osx() {
     
     # Configure the source tree
     echo "Configuring the postgres source tree for Intel"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" ./configure --host=powerpc-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety || _die "Failed to configure postgres for i386"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" ./configure --host=i386-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety || _die "Failed to configure postgres for i386"
     mv src/include/pg_config.h src/include/pg_config_i386.h
 
     echo "Configuring the postgres source tree for PPC"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" ./configure --host=i386-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety || _die "Failed to configure postgres for PPC"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" ./configure --host=powerpc-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety || _die "Failed to configure postgres for PPC"
     mv src/include/pg_config.h src/include/pg_config_ppc.h
 
     echo "Configuring the postgres source tree for Universal"
