@@ -5,7 +5,7 @@
     <version>PG_VERSION_MIGRATIONWIZARD-PG_BUILDNUM_MIGRATIONWIZARD</version>
 	
     <!-- These options are used on Windows -->
-    <startMenuGroupName>PostgreSQL</startMenuGroupName>
+    <startMenuGroupName>${branding}</startMenuGroupName>
 	
     <!-- Product Specific Options -->
     <productDisplayName>EnterpriseDB ${product_fullname} ${productVersion}</productDisplayName>
@@ -156,6 +156,12 @@
                 <iniFileGet>
                     <file>/etc/postgres-reg.ini</file>
                     <section>MigrationWizard</section>
+                    <key>Branding</key>
+                    <variable>iBranding</variable>
+                </iniFileGet>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>MigrationWizard</section>
                     <key>Version</key>
                     <variable>MigrationWizardVersion</variable>
                 </iniFileGet>
@@ -198,6 +204,11 @@
             <actionList>
                 <registryGet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationWizard</key>
+                    <name>Branding</name>
+                    <variable>iBranding</variable>
+                </registryGet>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationWizard</key>
                     <name>Version</name>
                     <variable>MigrationWizardVersion</variable>
                 </registryGet>
@@ -233,6 +244,61 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
+        <!-- If there appears to be an existing installation, with no Branding value. --> 
+	<!-- force the default value. Otherwise, set the branding to whatever we read, -->
+	<!-- or, set the default -->
+	
+	<!-- Existing, old install (version, but no branding) -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>PostgreSQL</value>
+		<ruleList>
+			<compareText>
+				<logic>does_not_equal</logic>
+				<text>${MigrationWizardVersion}</text>
+				<value></value>
+			</compareText>
+			<compareText>
+				<logic>equals</logic>
+				<text>${iBranding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+	
+	<!-- Existing install, with branding -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>${iBranding}</value>
+		<ruleList>
+			<compareText>
+				<logic>does_not_equal</logic>
+				<text>${iBranding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+	
+	<!-- New install, nothing set on the command line -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>PostgreSQL</value>
+		<ruleList>
+			<compareText>
+				<logic>equals</logic>
+				<text>${branding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+	
+        <logMessage>
+            <text>Using branding: ${branding}</text>
+        </logMessage>        
 		
         <!-- Setting the installation type as upgrade if previous installation found -->
         <actionGroup>
@@ -272,6 +338,12 @@
                     <section>MigrationWizard</section>
                     <key>Version</key>
                     <value>${product_version}</value>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>MigrationWizard</section>
+                    <key>Branding</key>
+                    <value>${branding}</value>
                 </iniFileSet>
             </actionList>
             <ruleList>
@@ -340,7 +412,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/installer/MigrationWizard/createshortcuts.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
+                    <programArguments>"${installdir}" "${branding}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <abortOnError>1</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
@@ -354,6 +426,18 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationWizard</key>
+            <name>Branding</name>
+            <variable>${branding}</variable>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </registrySet>
     </postInstallationActionList>
 	
 	<!-- final page actions -->
@@ -388,6 +472,12 @@
                     <key>Version</key>
                     <value/>
                 </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>MigrationWizard</section>
+                    <key>Branding</key>
+                    <value/>
+                </iniFileSet>
             </actionList>
             <ruleList>
                 <compareText>
@@ -403,7 +493,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/installer/MigrationWizard/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
+                    <programArguments>"${installdir}" "${branding}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -421,7 +511,7 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>/Applications/PostgreSQL/Migration Wizard.app</path>
+                    <path>/Applications/${branding}/Migration Wizard.app</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -615,7 +705,7 @@
 	
     <parameterList>
 	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
-	
+	<stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <!-- Install Directory -->
         <directoryParameter>
             <name>installdir</name>
