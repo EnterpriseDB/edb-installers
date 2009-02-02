@@ -227,7 +227,7 @@
 		<ruleList>
 			<compareText>
 				<logic>does_not_equal</logic>
-				<text>${psqlODBCVersion}</text>
+				<text>${pgJdbcVersion}</text>
 				<value></value>
 			</compareText>
 			<compareText>
