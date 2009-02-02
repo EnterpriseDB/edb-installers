@@ -4,7 +4,7 @@
     <fullName>Drupal</fullName>
     <version>PG_VERSION_DRUPAL-PG_BUILDNUM_DRUPAL</version>
     <!-- Windows Specific Options -->
-    <startMenuGroupName>PostgreSQL</startMenuGroupName>
+    <startMenuGroupName>${branding}</startMenuGroupName>
     <productComments>${product_fullname} ${productVersion}, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_shortname} ${productVersion}</productDisplayName>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
@@ -172,6 +172,20 @@
                 </compareText>
             </ruleList>
         </touchFile>
+         <!-- Get the Branding -->
+         <iniFileGet>
+            <file>/etc/postgres-reg.ini</file>
+            <section>Drupal</section>
+            <key>Branding</key>
+            <variable>iBranding</variable>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </iniFileGet>
         <!-- LIN & MAC: Check Previous Installation of Drupal -->
         <iniFileGet>
             <file>/etc/postgres-reg.ini</file>
@@ -189,6 +203,11 @@
         <!-- WIN: Check Previous Installation of Drupal -->
         <actionGroup>
             <actionList>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Drupal</key>
+                    <name>Branding</name>
+                    <variable>iBranding</variable>
+                </registryGet>
                 <registryGet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Drupal</key>
                     <name>Version</name>
@@ -538,6 +557,61 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+	<!-- If there appears to be an existing installation, with no Branding value. --> 
+	<!-- force the default value. Otherwise, set the branding to whatever we read, -->
+	<!-- or, set the default -->
+	
+	<!-- Existing, old install (version, but no branding) -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>PostgreSQL</value>
+		<ruleList>
+			<compareText>
+				<logic>does_not_equal</logic>
+				<text>${drupalVersion}</text>
+				<value></value>
+			</compareText>
+			<compareText>
+				<logic>equals</logic>
+				<text>${iBranding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+	
+	<!-- Existing install, with branding -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>${iBranding}</value>
+		<ruleList>
+			<compareText>
+				<logic>does_not_equal</logic>
+				<text>${iBranding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+	
+	<!-- New install, nothing set on the command line -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>PostgreSQL</value>
+		<ruleList>
+			<compareText>
+				<logic>equals</logic>
+				<text>${branding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+	
+        <logMessage>
+            <text>Using branding: ${branding}</text>
+        </logMessage> 
     </preInstallationActionList>
     <!-- Postinstallation actions -->
     <postInstallationActionList>
@@ -615,6 +689,12 @@
                     <section>Drupal</section>
                     <key>InstallationDirectory</key>
                     <value>${installdir}/Drupal</value>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>Drupal</section>
+                    <key>Branding</key>
+                    <value>${branding}</value>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
@@ -709,7 +789,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/Drupal/installer/Drupal/createshortcuts.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
+                    <programArguments>"${installdir}" "${branding}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <workingDirectory>${installdir}/Drupal/installer/Drupal</workingDirectory>
                     <abortOnError>0</abortOnError>
@@ -949,6 +1029,18 @@
                </compareText>
            </ruleList>
         </startWindowsService>
+        <registrySet>
+           <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Drupal</key>
+           <name>Branding</name>
+           <value>${branding}</value>
+           <ruleList>
+               <compareText>
+                   <logic>equals</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+               </compareText>
+           </ruleList>
+        </registrySet>
  
     </postInstallationActionList>
     <!-- preUninstallation actions -->
@@ -971,6 +1063,12 @@
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
                     <section>Drupal</section>
+                    <key>Branding</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>Drupal</section>
                     <key>Version</key>
                     <value/>
                 </iniFileSet>
@@ -988,7 +1086,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/Drupal/installer/Drupal/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
+                    <programArguments>"${installdir}" "${branding}"</programArguments>
                     <workingDirectory>${installdir}/Drupal/installer/Drupal</workingDirectory>
                 </runProgram>
             </actionList>
@@ -1004,7 +1102,7 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>/Applications/PostgreSQL/Drupal.app</path>
+                    <path>/Applications/${branding}/Drupal.app</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -1185,6 +1283,7 @@
     </componentList>
     <parameterList>
 	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+	<stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <!-- PostgreSQL Server Details Verification Page -->
         <parameterGroup>
             <name>pgdetails</name>
