@@ -1,14 +1,15 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -lt 1 ]; 
+if [ $# -ne 2 ]; 
 then
-    echo "Usage: $0 <Install dir> "
+    echo "Usage: $0 <Install dir> <Branding>"
     exit 127
 fi
 
 INSTALLDIR=$1
-FOLDER="/Applications/PostgreSQL/Npgsql"
+BRANDING=$2
+FOLDER="/Applications/$BRANDING/Npgsql"
 
 # Exit code
 WARN=0

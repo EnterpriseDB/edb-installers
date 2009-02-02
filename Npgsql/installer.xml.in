@@ -4,7 +4,7 @@
     <fullName>Npgsql</fullName>
     <version>PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL</version>
     <!-- These options are used on Windows -->
-    <startMenuGroupName>PostgreSQL</startMenuGroupName>
+    <startMenuGroupName>${branding}</startMenuGroupName>
     <!-- Product Specific Options -->
     <productComments>Npgsql - .Net Data Provider for Postgresql packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
@@ -190,6 +190,12 @@
                 <iniFileGet>
                     <file>/etc/postgres-reg.ini</file>
                     <section>Npgsql</section>
+                    <key>Branding</key>
+                    <variable>iBranding</variable>
+                </iniFileGet>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>Npgsql</section>
                     <key>Version</key>
                     <variable>npgsqlVersion</variable>
                 </iniFileGet>
@@ -208,6 +214,11 @@
             <actionList>
                 <registryGet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Npgsql</key>
+                    <name>Branding</name>
+                    <variable>iBranding</variable>
+                </registryGet>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Npgsql</key>
                     <name>Version</name>
                     <variable>npgsqlVersion</variable>
                 </registryGet>
@@ -220,6 +231,61 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+	<!-- If there appears to be an existing installation, with no Branding value. --> 
+	<!-- force the default value. Otherwise, set the branding to whatever we read, -->
+	<!-- or, set the default -->
+	
+	<!-- Existing, old install (version, but no branding) -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>PostgreSQL</value>
+		<ruleList>
+			<compareText>
+				<logic>does_not_equal</logic>
+				<text>${npgsqlVersion}</text>
+				<value></value>
+			</compareText>
+			<compareText>
+				<logic>equals</logic>
+				<text>${iBranding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+	
+	<!-- Existing install, with branding -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>${iBranding}</value>
+		<ruleList>
+			<compareText>
+				<logic>does_not_equal</logic>
+				<text>${iBranding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+	
+	<!-- New install, nothing set on the command line -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>PostgreSQL</value>
+		<ruleList>
+			<compareText>
+				<logic>equals</logic>
+				<text>${branding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+	
+        <logMessage>
+            <text>Using branding: ${branding}</text>
+        </logMessage>        
 
         <!-- Set the installation directory in case of re-install/upgrade -->
         <actionGroup>
@@ -290,9 +356,15 @@
                     <key>Version</key>
                     <value>${product_version}</value>
                 </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>Npgsql</section>
+                    <key>Branding</key>
+                    <value>${branding}</value>
+                </iniFileSet>
                 <runProgram>
                     <program>${installdir}/installer/npgsql/createshortcuts.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
+                    <programArguments>"${installdir}" "${branding}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <workingDirectory>${installdir}/installer/npgsql</workingDirectory>
                     <abortOnError>0</abortOnError>
@@ -307,6 +379,18 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+	    <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Npgsql</key>
+            <name>Branding</name>
+            <value>${branding}</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </registrySet>
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
@@ -331,6 +415,12 @@
                     <key>Version</key>
                     <value/>
                 </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>Npgsql</section>
+                    <key>Branding</key>
+                    <value/>
+                </iniFileSet>
             </actionList>
             <ruleList>
                 <compareText>
@@ -345,7 +435,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/installer/npgsql/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
+                    <programArguments>"${installdir}" "{branding}"</programArguments>
                     <workingDirectory>${installdir}/installer/npgsql</workingDirectory>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -363,7 +453,7 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>/Applications/PostgreSQL/Npgsql</path>
+                    <path>/Applications/${branding}/Npgsql</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -552,6 +642,7 @@
     <!-- Install Directory -->
     <parameterList>
 	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+	<stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <directoryParameter>
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
