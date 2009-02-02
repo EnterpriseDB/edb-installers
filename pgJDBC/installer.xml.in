@@ -4,7 +4,7 @@
     <fullName>pgJDBC</fullName>
     <version>PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC</version>
     <!-- These options are used on Windows -->
-    <startMenuGroupName>PostgreSQL</startMenuGroupName>
+    <startMenuGroupName>${branding}</startMenuGroupName>
     <!-- Product Specific Options -->
     <productComments>JDBC drivers for PostgreSQL, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
@@ -166,9 +166,15 @@
                 </compareText>
             </ruleList>
         </touchFile>
-        <!-- LIN & MAC : Check Previous Installation of pgJDBC-->
+        <!-- LIN & MAC : Get the branding & check Previous Installation of pgJDBC-->
         <actionGroup>
             <actionList>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>pgJDBC</section>
+                    <key>Branding</key>
+                    <variable>iBranding</variable>
+                </iniFileGet>
                 <iniFileGet>
                     <file>/etc/postgres-reg.ini</file>
                     <section>pgJDBC</section>
@@ -188,6 +194,12 @@
         <!-- WIN : Check Previous Installation of pgJDBC-->
         <actionGroup>
             <actionList>
+                <!-- Get the branding -->
+                <registryGet>
+                    <name>Branding</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgJDBC</key>
+                    <variable>iBranding</variable>
+                </registryGet> 
                 <registryGet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgJDBC</key>
                     <name>Version</name>
@@ -203,6 +215,60 @@
             </ruleList>
         </actionGroup>
 
+	<!-- If there appears to be an existing installation, with no Branding value. --> 
+	<!-- force the default value. Otherwise, set the branding to whatever we read, -->
+	<!-- or, set the default -->
+	
+	<!-- Existing, old install (version, but no branding) -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>PostgreSQL</value>
+		<ruleList>
+			<compareText>
+				<logic>does_not_equal</logic>
+				<text>${psqlODBCVersion}</text>
+				<value></value>
+			</compareText>
+			<compareText>
+				<logic>equals</logic>
+				<text>${iBranding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+	
+	<!-- Existing install, with branding -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>${iBranding}</value>
+		<ruleList>
+			<compareText>
+				<logic>does_not_equal</logic>
+				<text>${iBranding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+	
+	<!-- New install, nothing set on the command line -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>PostgreSQL</value>
+		<ruleList>
+			<compareText>
+				<logic>equals</logic>
+				<text>${branding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+	
+        <logMessage>
+            <text>Using branding: ${branding}</text>
+        </logMessage>
         <!-- Set the installation directory in case of re-install/upgrade -->
         <actionGroup>
             <actionList>
@@ -274,7 +340,7 @@
                 </iniFileSet>
                 <runProgram>
                     <program>${installdir}/installer/pgjdbc/createshortcuts.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
+                    <programArguments>"${installdir}" "${branding}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <workingDirectory>${installdir}/installer/pgjdbc</workingDirectory>
                     <abortOnError>0</abortOnError>
@@ -289,6 +355,28 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+        <!-- Branding info -->
+        <logMessage>
+            <text>Write the branding to the ini file...</text>
+        </logMessage>
+        <iniFileSet>
+            <file>/etc/postgres-reg.ini</file>
+            <section>pgJDBC</section>
+            <key>Branding</key>
+            <value>${branding}</value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </iniFileSet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgJDBC</key>
+            <name>Branding</name>
+            <value>${branding}</value>
+        </registrySet>
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
@@ -313,6 +401,12 @@
                     <key>Version</key>
                     <value/>
                 </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>pgJDBC</section>
+                    <key>Branding</key>
+                    <value/>
+                </iniFileSet>
             </actionList>
             <ruleList>
                 <compareText>
@@ -327,7 +421,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/installer/pgjdbc/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
+                    <programArguments>"${installdir}" "${branding}"</programArguments>
                     <workingDirectory>${installdir}/installer/pgjdbc</workingDirectory>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -345,7 +439,7 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>/Applications/PostgreSQL/PostgreSQL JDBC Home Page.app</path>
+                    <path>/Applications/${branding}/PostgreSQL JDBC Home Page.app</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -544,6 +638,7 @@
     <!-- Install Directory -->
     <parameterList>
 	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+        <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <directoryParameter>
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
