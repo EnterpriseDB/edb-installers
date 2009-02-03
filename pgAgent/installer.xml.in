@@ -10,6 +10,7 @@
   <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
   <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
   <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
+  <startMenuGroupName></startMenuGroupName>
 
   <!-- The options are used for RPM registration -->
   <description>${product_shortname} ${productVersion}, packaged by EnterpriseDB</description>
