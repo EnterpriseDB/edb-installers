@@ -429,7 +429,7 @@
         <registrySet>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationWizard</key>
             <name>Branding</name>
-            <variable>${branding}</variable>
+            <value>${branding}</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
