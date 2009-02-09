@@ -92,6 +92,6 @@ progress.text.creating.plpgsql=Creating the language 'plpgsql'
 
 progress.text.creating.user=Creating the user '${systemuser}'
 
-error.create.pgpass=Could not create or modify the pgpass.conf file in the {systemuser} user's %APPDATA%\postgresql directory.
+error.create.pgpass=Could not create or modify the pgpass.conf file in the ${systemuser}'s %APPDATA%\postgresql directory.
 
 

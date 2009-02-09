@@ -13,12 +13,11 @@ GOTO ERROR
 
 :Next
   ECHO APPDATA:%CD%
-  IF NOT EXIST "postgres" mkdir postgres
-  CD postgres
+  IF NOT EXIST "postgresql" mkdir postgresql
+  CD postgresql
   ECHO PG_HOST:PG_PORT:*:PG_USER:PG_PASSWORD >> pgpass.conf
   ECHO Successfully appended values in %CD%\pgpass.conf
   GOTO END
-
 
 :ERROR
   ECHO Could not find APPDATA Directory

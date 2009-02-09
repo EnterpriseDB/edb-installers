@@ -157,11 +157,7 @@
         <setInstallerVariable name="defaultinstalldir" value="${platform_install_prefix}/pgAgent"/>
       </actionList>
       <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
       </ruleList>
     </actionGroup>
    
@@ -171,11 +167,7 @@
         <setInstallerVariable name="defaultpgpassword" value="postgres"/>
       </actionList>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${installer_ui}</text>
-          <value>unattended</value>
-        </compareText>
+        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
       </ruleList>
     </actionGroup>
   </initializationActionList>
@@ -186,11 +178,7 @@
     <!-- Creates the ini file if not exits -->
     <touchFile path="/etc/postgres-reg.ini">
       <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
       </ruleList>
     </touchFile>
     <setInstallerVariable name="defaultinstalldir" value="${installdir}"/>
@@ -229,18 +217,13 @@
           <key>ServiceManager</key>
           <variable>systemuser</variable>
         </iniFileGet>
+        <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGUSER" variable="pguser"/>
+        <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" variable="pgport"/>
+        <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" variable="pghost"/>
      </actionList>
       <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${pgAgentVersion}</text>
-          <value/>
-        </compareText>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
+        <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/> 
       </ruleList>
     </actionGroup>
     
@@ -254,11 +237,7 @@
         </registryGet>
       </actionList>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
+        <compareText logic="equals" text="${platform_name}" value="windows"/> 
       </ruleList>
     </actionGroup>
     
@@ -275,18 +254,13 @@
           <name>ServiceManager</name>
           <variable>systemuser</variable>
         </registryGet>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGUSER" variable="pguser"/>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGHOST" variable="pghost"/>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGPORT" variable="pgport"/>
       </actionList>
       <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${pgAgentVersion}</text>
-          <value/>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
+        <compareText logic="equals" text="${platform_name}" value="windows"/> 
+        <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/> 
       </ruleList>
     </actionGroup>
     
@@ -297,16 +271,8 @@
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
-        <compareText>
-          <logic>contains</logic>
-          <text>${platform_name}</text>
-          <value>linux</value>
-        </compareText>
-        <compareText>
-          <text>${pgAgentVersion}</text>
-          <logic>does_not_equal</logic>
-          <value/>
-        </compareText>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+        <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
       </ruleList>
     </runProgram>
     
@@ -317,16 +283,8 @@
       <showMessageOnError>0</showMessageOnError>
       <customErrorMessage>${msg(error.stop.pgagent)}</customErrorMessage>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-        <compareText>
-          <text>${pgAgentVersion}</text>
-          <logic>does_not_equal</logic>
-          <value/>
-        </compareText>
+        <compareText logic="equals" text="${platform_name}" value="windows"/> 
+        <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/> 
       </ruleList>
     </stopWindowsService>
     
@@ -337,16 +295,8 @@
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>osx</value>
-        </compareText>
-        <compareText>
-          <text>${pgAgentVersion}</text>
-          <logic>does_not_equal</logic>
-          <value/>
-        </compareText>
+        <compareText logic="equals" text="${platform_name}" value="osx"/> 
+        <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/> 
       </ruleList>
     </runProgram>
   </preInstallationActionList>
@@ -357,59 +307,25 @@
     <!-- LIN & MAC : Write the pgAgent Info to INI File -->
     <actionGroup>
       <actionList>
-        <iniFileSet>
-          <file>/etc/postgres-reg.ini</file>
-          <section>pgAgent</section>
-          <key>Description</key>
-          <value>${msg(install.summary)}</value>
-        </iniFileSet>
-        <iniFileSet>
-          <file>/etc/postgres-reg.ini</file>
-          <section>pgAgent</section>
-          <key>InstallationDirectory</key>
-          <value>${installdir}</value>
-        </iniFileSet>
-        <iniFileSet>
-          <file>/etc/postgres-reg.ini</file>
-          <section>pgAgent</section>
-          <key>Version</key>
-          <value>${product_version}</value>
-        </iniFileSet>
-        <iniFileSet>
-          <file>/etc/postgres-reg.ini</file>
-          <section>pgAgent</section>
-          <key>ServiceManager</key>
-          <value>${systemuser}</value>
-        </iniFileSet>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="Description" value="${msg(install.summary)}"/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="InstallationDirectory" value="${installdir}"/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="Version" value="${product_version}"/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="ServiceManager" value="${systemuser}"/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGUSER" value="${pguser}"/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" value="${pghost}"/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" value="${pgport}"/>
       </actionList>
       <ruleList>
-        <compareText>
-          <text>${platform_name}</text>
-          <logic>does_not_equal</logic>
-          <value>windows</value>
-        </compareText>
+        <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
       </ruleList>
     </actionGroup>
-    <registrySet>
-      <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent</key>
-      <name>Description</name>
-      <value>${msg(install.summary)}</value>
-    </registrySet>
-    <registrySet>
-      <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent</key>
-      <name>Location</name>
-      <value>${installdir}</value>
-    </registrySet>
-    <registrySet>
-      <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent</key>
-      <name>Version</name>
-      <value>${product_version}</value>
-    </registrySet>
-    <registrySet>
-      <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent</key>
-      <name>ServiceManager</name>
-      <value>${systemuser}</value>
-    </registrySet>
+    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Description" value="${msg(install.summary)}"/>
+    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Location" value="${installdir}"/>
+    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Version" value="${product_version}"/>
+    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="ServiceManager" value="${systemuser}"/>
+    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGUSER" value="${pguser}"/>
+    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGHOST" value="${pghost}"/>
+    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGPORT" value="${pgport}"/>
     <!-- Create the user account with which pgAgent will run-->
     <runProgram>
       <program>${installdir}/installer/pgAgent/createuser.sh</program>
@@ -440,47 +356,23 @@
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${pgAgentVersion}</text>
-          <value/>
-        </compareText>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
       </ruleList>
     </runProgram>
 
     <throwError>
       <text>${msg(script.command.line.error)}</text>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>127</text>
-          <value>${program_exit_code}</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${pgAgentVersion}</text>
-          <value/>
-        </compareText>
+        <compareText logic="equals" text="127" value="${program_exit_code}"/>
+        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
       </ruleList>
     </throwError>
     <throwError>
       <text>${msg(error.could.not.create.user)}</text>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>1</text>
-          <value>${program_exit_code}</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${pgAgentVersion}</text>
-          <value/>
-        </compareText>
+        <compareText logic="equals" text="1" value="${program_exit_code}"/>
+        <compareText logic="equals" text="${pgAgentVersion" value=""/>
       </ruleList>
     </throwError>
 
@@ -544,7 +436,11 @@
           </ruleList>
         </runProgram>
         <!-- Inform user about configuring pgagent Schema -->
-        <showInfo text="${msg(configure.pgagent.schema)}"/>
+        <showInfo text="${msg(configure.pgagent.schema)}">
+          <ruleList>
+            <compareText logic="equals" text="${pgagent_schema}" value=""/>
+          </ruleList>
+        </showInfo>
       </actionList>
     </actionGroup>
     <substitute>
@@ -657,7 +553,7 @@
         <runProgram>
           <customErrorMessage>${msg(error.create.pgpass)}</customErrorMessage>
           <program>${system_temp_directory}\${product_fullname}\bin\RunProgramAsUser.exe</program>
-          <programArguments>${systemuser} ${systempassword} ${env(windir)}\createPGPASSCONF.bat</programArguments>
+          <programArguments>${systemuser} ${systempassword} "${env(windir)}\createPGPASSCONF.bat"</programArguments>
           <workingDirectory>${windir}</workingDirectory>
           <abortOnError>0</abortOnError>
           <showMessageOnError>1</showMessageOnError>
@@ -665,13 +561,26 @@
        <deleteFile>
          <path>${system_temp_directory}\${product_fullname}\bin\RunProgramAsUser.exe</path>
        </deleteFile>
+        <deleteFile>
+          <path>${env(windir)}\createPGPASSCONF.bat</path>
+        </deleteFile>
 
         <!-- WIN : Install pgAgent as Service -->
-        <!--       Try to reinstall the service in upgrade mode -->
+        <!-- WIN : Remove the existing service, if any exist, when upgrading/reinstalling -->
+        <runProgram>
+          <program>${installdir}\bin\pgagent.exe</program>
+          <programArguments>REMOVE pgAgent</programArguments>
+          <workingDirectory>${installdir}\bin</workingDirectory>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
+          </ruleList>
+        </runProgram>
         <runProgram>
           <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
           <program>${installdir}\bin\pgagent.exe</program>
-          <programArguments>INSTALL pgagent -u ${systemuser} -p ${systempassword} host=${pghost} port=${pgport} user=${pguser} dbname=postgres</programArguments>
+          <programArguments>INSTALL pgAgent -u ${systemuser} -p ${systempassword} host=${pghost} port=${pgport} user=${pguser} dbname=postgres</programArguments>
           <workingDirectory>${installdir}\bin</workingDirectory>
           <abortOnError>0</abortOnError>
           <showMessageOnError>1</showMessageOnError>
@@ -715,15 +624,11 @@
     
     <!-- WIN : Start the pgAgent service -->
     <startWindowsService>
-      <serviceName>pgagent</serviceName>
+      <serviceName>pgAgent</serviceName>
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
     </startWindowsService>
     
@@ -739,11 +644,7 @@
         </runProgram>
       </actionList>
       <ruleList>
-        <compareText>
-          <logic>contains</logic>
-          <text>${platform_name}</text>
-          <value>linux</value>
-        </compareText>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
       </ruleList>
     </actionGroup>
     -->
@@ -756,11 +657,7 @@
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>osx</value>
-        </compareText>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </runProgram -->
 
@@ -776,31 +673,15 @@
     <!-- LIN & MAC : Unset the pgAgent Info from the ini file -->
     <actionGroup>
       <actionList>
-        <iniFileSet>
-          <file>/etc/postgres-reg.ini</file>
-          <section>pgAgent</section>
-          <key>Description</key>
-          <value/>
-        </iniFileSet>
-        <iniFileSet>
-          <file>/etc/postgres-reg.ini</file>
-          <section>pgAgent</section>
-          <key>InstallationDirectory</key>
-          <value/>
-        </iniFileSet>
-        <iniFileSet>
-          <file>/etc/postgres-reg.ini</file>
-          <section>pgAgent</section>
-          <key>Version</key>
-          <value/>
-        </iniFileSet>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="Description" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="InstallationDirectory" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="Version" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGUSER" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" value=""/>
       </actionList>
       <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
       </ruleList>
     </actionGroup>
 
@@ -808,7 +689,7 @@
     <actionGroup>
       <actionList>
         <stopWindowsService>
-          <serviceName>pgagent</serviceName>
+          <serviceName>pgAgent</serviceName>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
           <customErrorMessage>${msg(error.stop.pgagent)}</customErrorMessage>
@@ -823,11 +704,7 @@
         </runProgram>
       </actionList>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
     </actionGroup>
 
@@ -848,11 +725,7 @@
         </deleteFile>
       </actionList>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>osx</value>
-        </compareText>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </actionGroup>
 
@@ -1341,13 +1214,6 @@
         </stringParameter>
 
       </parameterList>
-      <ruleList>
-        <compareText>
-          <text>${pgAgentVersion}</text>
-          <logic>equals</logic>
-          <value/>
-        </compareText>
-      </ruleList>
 
       <!-- Checking the validity of PostgreSQL Server Details -->
       <validationActionList>
@@ -1632,44 +1498,14 @@
           </ruleList>
         </actionGroup>
 
-        <!-- Inform the user if he/she wants to use postgres to manage pgAgent service -->
-        <actionGroup>
-          <actionList>
-            <showQuestion>
-              <text>${msg(ask.user.name)}</text>
-              <variable>usepostgres</variable>
-            </showQuestion>
-          </actionList>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${pgAgentVersion}</text>
-              <value/>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${use_exist_schema}</text>
-              <value>yes</value>
-            </compareText>
-          </ruleList>
-        </actionGroup>
-
-        <!-- Set systemuser as postgres, if user answers 'yes' for above question -->
-        <actionGroup>
-          <actionList>
-            <setInstallerVariable name="systemuser" value=""/>
-          </actionList>
-        </actionGroup>
+        <!-- Set systemuser as postgres -->
         <actionGroup>
           <actionList>
             <setInstallerVariable name="systemuser" value="postgres" persist="1"/>
           </actionList>
           <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${usepostgres}</text>
-              <value>yes</value>
-            </compareText>
+            <compareText logic="equals" text="${pgAgentVersion}" value=""/>
+            <compareText logic="equals" text="${systemuser}" value=""/>
           </ruleList>
         </actionGroup>
       </validationActionList>
@@ -1703,16 +1539,8 @@
           <name>_explanation</name>
           <value>${msg(sysuser.details.explanation.withuser.windows)}</value>
           <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${platform_name}</text>
-              <value>windows</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${usepostgres}</text>
-              <value>yes</value>
-            </compareText>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
           </ruleList>
         </setInstallerVariable>
       </preShowPageActionList>
@@ -1728,16 +1556,7 @@
           <cliOptionName>systemuser</cliOptionName>
           <cliOptionShow>yes</cliOptionShow>
           <ruleList>
-            <compareText>
-              <logic>does_not_equal</logic>
-              <text>${usepostgres}</text>
-              <value>yes</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${pgAgentVersion}</text>
-              <value/>
-            </compareText>
+            <compareText logic="equals" text="${pgAgentVersion}" value=""/>
           </ruleList>
         </stringParameter>
         <passwordParameter>
@@ -1752,26 +1571,14 @@
           <descriptionRetype>${msg(config.syspassword.confirm)}</descriptionRetype>
           <width>40</width>
           <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${platform_name}</text>
-              <value>windows</value>
-            </compareText>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
         </passwordParameter>
       </parameterList>
       <ruleEvaluationLogic>OR</ruleEvaluationLogic>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${usepostgres}</text>
-          <value>no</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
+        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
       <validationActionList>
         <actionGroup>
