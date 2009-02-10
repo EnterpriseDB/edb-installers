@@ -98,6 +98,22 @@ EOT
 # Fixup the permissions on the StartupItems
 chmod 0755 "/etc/init.d/postgresql-$VERSION" || _warn "Failed to set the permissions on the startup script (/etc/init.d/postgresql-$VERSION/)"
 
+# Remove the libraries that are already present in the system.
+library_list=`ls $INSTALLDIR/lib`
+
+for library in $library_list
+do 
+     flag1=`ls /lib/$library > /dev/null 2>&1`
+     flag2=`ls /usr/lib/$library > /dev/null 2>&1`
+     # If found delete the library from the INSTALLDIR/lib 
+     if [ "x$flag1" != "x" -o "y$flag2" != "y" ]  
+     then 
+           rm -f $INSTALLDIR/lib/$library   || _die "Failed to remove the library $library"
+     fi
+done 
+        
+
+
 # Configure the startup. On Redhat and friends we use chkconfig. On Debian, update-rc.d
 # These utilities aren't entirely standard, so use both from their standard locations on
 # each distro family. 
