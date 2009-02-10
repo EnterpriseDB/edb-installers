@@ -68,6 +68,7 @@ _fixup_file "$INSTALLDIR/scripts/xdg/pg-launchApachePhp.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-startApache.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-stopApache.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-restartApache.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-postgresql.directory"
 
 # Copy the primary desktop file to the branded version. We don't do this if
 # the installation is not branded, to retain backwards compatibility.
