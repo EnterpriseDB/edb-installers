@@ -98,6 +98,45 @@ EOT
 # Fixup the permissions on the StartupItems
 chmod 0755 "/etc/init.d/postgresql-$VERSION" || _warn "Failed to set the permissions on the startup script (/etc/init.d/postgresql-$VERSION/)"
 
+_process_libs() {
+
+  lib_dir=$1
+  libname=$2
+
+  # Remove the libraries that are already present in the system.
+  cd $lib_dir	
+  library_list=`ls $libname*`
+
+  for library in $library_list
+  do
+     if [ -d "/lib64" ]
+     then
+       flag1=`ls /lib64/$library`
+     else
+       flag1=`ls /lib/$library`
+     fi
+     if [ -d "/usr/lib64" ]
+     then
+       flag2=`ls /usr/lib64/$library`
+     else
+       flag2=`ls /usr/lib/$library`
+     fi
+     # If found delete the library from the INSTALLDIR/lib 
+     if [ "x$flag1" != "x" -o "y$flag2" != "y" ]
+     then
+           rm -f $library   || _die "Failed to remove the library $library"
+     fi
+  done
+
+}
+
+# Process server libs
+_process_libs "$INSTALLDIR/lib" "libssl.so"
+_process_libs "$INSTALLDIR/lib" "libcrypto.so"
+_process_libs "$INSTALLDIR/lib" "libreadline.so"
+_process_libs "$INSTALLDIR/lib" "libtermcap.so"
+
+
 # Configure the startup. On Redhat and friends we use chkconfig. On Debian, update-rc.d
 # These utilities aren't entirely standard, so use both from their standard locations on
 # each distro family. 
