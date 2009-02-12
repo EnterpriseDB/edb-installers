@@ -1002,6 +1002,53 @@
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
         </stopWindowsService>
+
+        <!-- 
+             In case of upgrade,
+             Delete the dependent libraries from the existing installation
+             The current installer will put only the required version of these libraries
+         -->     
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>rm</program>
+                    <programArguments>-f ${installdir}/lib/libssl.so*</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram> 
+                <runProgram>
+                    <program>rm</program>
+                    <programArguments>-f ${installdir}/lib/libcrypto.so*</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram> 
+                <runProgram>
+                    <program>rm</program>
+                    <programArguments>-f ${installdir}/lib/libreadline.so*</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram> 
+                <runProgram>
+                    <program>rm</program>
+                    <programArguments>-f ${installdir}/lib/libtermcap.so*</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram> 
+            </actionList> 
+            <ruleList>
+                <compareText>
+                    <text>${IsUpgrade}</text>
+                    <logic>equals</logic>
+                    <value>1</value>
+                </compareText> 
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>  
+
     </readyToInstallActionList>    
 
     <!-- Postinstallation actions -->
