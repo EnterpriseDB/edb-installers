@@ -56,11 +56,11 @@ cat <<EOT > "/etc/init.d/pgagent"
 
 start()
 {
-    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=PG_HOST port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=$PG_HOST port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "exec $INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=PG_HOST port=$PG_PORT dbname=postgres user=$PG_USER " &
+       su $SYSTEM_USER -c "exec $INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=$PG_HOST port=$PG_PORT dbname=postgres user=$PG_USER " &
        exit 0
     else
        echo "pgAgent already running"
@@ -70,7 +70,7 @@ start()
 
 stop()
 {
-    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=PG_HOST port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=$PG_HOST port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -82,7 +82,7 @@ stop()
 }
 status()
 {
-    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=PG_HOST port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=$PG_HOST port=$PG_PORT dbname=postgres user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x$PID" = "x" ];
     then
