@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="RunProgramAsUser"
+	Name="CreatePGPassconfForUser"
 	ProjectGUID="{6690A32E-7546-4C9C-9368-FF1DA20B4E51}"
-	RootNamespace="RunProgramAsUser"
+	RootNamespace="CreatePGPassconfForUser.c"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -48,6 +48,7 @@
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -122,6 +123,7 @@
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="0"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -177,7 +179,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\RunProgramAsUser.cpp"
+				RelativePath=".\CreatePGPassconfForUser.c"
 				>
 			</File>
 		</Filter>

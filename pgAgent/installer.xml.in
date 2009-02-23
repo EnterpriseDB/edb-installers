@@ -40,11 +40,7 @@
 
   <!-- i18n files for the UI -->
   <customLanguageFileList>
-    <language>
-      <code>en</code>
-      <encoding>iso8859-1</encoding>
-      <file>i18n/en.lng</file>
-    </language>
+    <language code="en" encoding="iso8859-1" file="i18n/en.lng"/>
   </customLanguageFileList>
 
   <!-- Prebuild Actions -->
@@ -75,101 +71,49 @@
     <setInstallerVariable name="defaultpghost" value="localhost"/>
     <setInstallerVariable name="defaultpguser" value="postgres"/>
     <setInstallerVariable name="defaultpgport" value="5432"/>
-    <setInstallerVariable name="defaultinstalldir" value=""/>
-    <setInstallerVariable name="systemuser" value="" persist="1"/>
-    <setInstallerVariable>
-      <name>defaultpgpassword</name>
-      <value>postgres</value>
+
+    <setInstallerVariableFromRegEx>
+      <name>pgagent_installer_schema_version</name>
+      <text>${productVersion}</text>
+      <pattern>^([0-9]*).(.*)$</pattern>
+      <substitution>\1</substitution>
+    </setInstallerVariableFromRegEx>
+
+    <!-- Set the default postgres password, to be used only in unnattended mode -->
+    <setInstallerVariable name="defaultpgpassword" value=""/>
+    <setInstallerVariable name="defaultpgpassword" value="postgres">
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${installer_ui}</text>
-          <value>unattended</value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>defaultpgpassword</name>
-      <value/>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${installer_ui}</text>
-          <value>unattended</value>
-        </compareText>
+        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
       </ruleList>
     </setInstallerVariable>
 
     <!-- Set the default system password, to be used only in unnattended mode -->
-    <setInstallerVariable>
-      <name>defaultsyspassword</name>
-      <value>postgres</value>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${installer_ui}</text>
-          <value>unattended</value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>defaultsyspassword</name>
-      <value></value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${installer_ui}</text>
-          <value>unattended</value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-
-    <!-- Set the default system user, to be used only in unnattended mode -->
-    <setInstallerVariable>
-      <name>defaultsysuser</name>
-      <value/>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>defaultsysuser</name>
-      <value>postgres</value>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${installer_ui}</text>
-          <value>unattended</value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <actionGroup>
-      <actionList>
-        <setInstallerVariable name="defaultinstalldir" value="${platform_install_prefix}\pgAgent"/>
-      </actionList>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </actionGroup>
-    <actionGroup>
-      <actionList>
-        <setInstallerVariable name="defaultinstalldir" value="${platform_install_prefix}/pgAgent"/>
-      </actionList>
-      <ruleList>
-        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-      </ruleList>
-    </actionGroup>
-   
-    <!-- Set the default values for unattended mode -->
-    <actionGroup>
-      <actionList>
-        <setInstallerVariable name="defaultpgpassword" value="postgres"/>
-      </actionList>
+    <setInstallerVariable name="defaultsyspassword" value=""/>
+    <setInstallerVariable name="defaultsyspassword" value="postgres">
       <ruleList>
         <compareText logic="equals" text="${installer_ui}" value="unattended"/>
       </ruleList>
-    </actionGroup>
+    </setInstallerVariable>
+
+    <!-- Set the system user, to be used only in unnattended mode -->
+    <setInstallerVariable name="systemuser" value=""/>
+    <setInstallerVariable name="systemuser" value="postgres">
+      <ruleList>
+        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <!-- Set the installation directory for different platform -->
+    <setInstallerVariable name="defaultinstalldir" value="${platform_install_prefix}\pgAgent">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="defaultinstalldir" value="${platform_install_prefix}/pgAgent">
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </setInstallerVariable>
   </initializationActionList>
   
   <!-- Preinstallation actions -->
@@ -186,41 +130,22 @@
     <!-- LIN & MAC : Check Previous Installation of pgAgent -->
     <actionGroup>
       <actionList>
-        <iniFileGet>
-          <file>/etc/postgres-reg.ini</file>
-          <section>pgAgent</section>
-          <key>Version</key>
-          <variable>pgAgentVersion</variable>
-        </iniFileGet>
+        <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="Version" variable="pgAgentVersion"/>
       </actionList>
       <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
       </ruleList>
     </actionGroup>
     
     <!-- LIN & MAC : Set the installation directory in case of re-install/upgrade -->
     <actionGroup>
       <actionList>
-        <iniFileGet>
-          <file>/etc/postgres-reg.ini</file>
-          <section>pgAgent</section>
-          <key>InstallationDirectory</key>
-          <variable>installdir</variable>
-        </iniFileGet>
-        <iniFileGet>
-          <file>/etc/postgres-reg.ini</file>
-          <section>pgAgent</section>
-          <key>ServiceManager</key>
-          <variable>systemuser</variable>
-        </iniFileGet>
+        <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="InstallationDirectory" variable="installdir"/>
+        <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="ServiceManager" variable="systemuser"/>
         <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGUSER" variable="pguser"/>
         <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" variable="pgport"/>
         <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" variable="pghost"/>
-     </actionList>
+      </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/> 
@@ -230,11 +155,7 @@
     <!-- WIN : Check Previous Installation of pgAgent -->
     <actionGroup>
       <actionList>
-        <registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent</key>
-          <name>Version</name>
-          <variable>pgAgentVersion</variable>
-        </registryGet>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Version" variable="pgAgentVersion"/>
       </actionList>
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/> 
@@ -244,16 +165,8 @@
     <!-- WIN : Set the installation directory in case of re-install/upgrade -->
     <actionGroup>
       <actionList>
-        <registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent</key>
-          <name>Location</name>
-          <variable>installdir</variable>
-        </registryGet>
-        <registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent</key>
-          <name>ServiceManager</name>
-          <variable>systemuser</variable>
-        </registryGet>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Location" variable="installdir"/>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="ServiceManager" variable="systemuser"/>
         <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGUSER" variable="pguser"/>
         <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGHOST" variable="pghost"/>
         <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGPORT" variable="pgport"/>
@@ -319,6 +232,7 @@
         <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
       </ruleList>
     </actionGroup>
+
     <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Description" value="${msg(install.summary)}"/>
     <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Location" value="${installdir}"/>
     <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Version" value="${product_version}"/>
@@ -326,6 +240,7 @@
     <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGUSER" value="${pguser}"/>
     <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGHOST" value="${pghost}"/>
     <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGPORT" value="${pgport}"/>
+
     <!-- Create the user account with which pgAgent will run-->
     <runProgram>
       <program>${installdir}/installer/pgAgent/createuser.sh</program>
@@ -334,16 +249,8 @@
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${pgAgentVersion}</text>
-          <value/>
-        </compareText>
+        <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+        <compareText text="${pgAgentVersion}" logic="equals" value=""/>
       </ruleList>
     </runProgram>
 
@@ -372,7 +279,7 @@
       <text>${msg(error.could.not.create.user)}</text>
       <ruleList>
         <compareText logic="equals" text="1" value="${program_exit_code}"/>
-        <compareText logic="equals" text="${pgAgentVersion" value=""/>
+        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
       </ruleList>
     </throwError>
 
@@ -393,7 +300,7 @@
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-            <compareText logic="equals" text="${plpgsql}" value=""/>
+            <compareText logic="equals" text="${plpgsql_exist}" value=""/>
           </ruleList>
         </runProgram>
 
@@ -405,11 +312,10 @@
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
-            <compareText logic="equals" text="${plpgsql}" value=""/>
+            <compareText logic="equals" text="${plpgsql_exist}" value=""/>
           </ruleList>
         </runProgram>
 
- 
         <!-- Create pgagent schema -->
         <runProgram>
           <program>${installdir}/bin/psql</program>
@@ -419,98 +325,106 @@
           <showMessageOnError>0</showMessageOnError>
           <workingDirectory>${installdir}/bin</workingDirectory>
           <ruleList>
-            <compareText logic="equals" text="${pgagent_schema}" value=""/>
+            <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
           </ruleList>
         </runProgram>
         <runProgram>
           <program>${installdir}\installer\pgAgent\configurePgAgent.bat</program>
-          <programArguments>"CREATE_PGAGENT_SCHEMA" "${installdir}\bin\psql.exe" "${installdir}/share/pgagent.sql"</programArguments>
+          <programArguments>"CREATE_PGAGENT_SCHEMA" "${installdir}\bin\psql.exe" "${installdir}\share\pgagent.sql"</programArguments>
           <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
           <workingDirectory>${installdir}/bin</workingDirectory>
           <ruleList>
-            <compareText logic="equals" text="${pgagent_schema}" value=""/>
+            <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
         </runProgram>
+
         <!-- Inform user about configuring pgagent Schema -->
         <showInfo text="${msg(configure.pgagent.schema)}">
           <ruleList>
-            <compareText logic="equals" text="${pgagent_schema}" value=""/>
+            <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
           </ruleList>
         </showInfo>
+
+        <!-- Upgrade schema pgagent -->
+        <runProgram>
+          <program>${installdir}/bin/psql</program>
+          <programArguments>-t -f "${installdir}/share/pgagent_upgrade.sql"</programArguments>
+          <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <workingDirectory>${installdir}/bin</workingDirectory>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+            <compareText logic="equals" text="${upgrade_schema}" value="yes"/>
+            <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
+          </ruleList>
+        </runProgram>
+        <runProgram>
+          <program>${installdir}\installer\pgAgent\configurePgAgent.bat</program>
+          <programArguments>"UPGRADE_PGAGENT_SCHEMA" "${installdir}\bin\psql.exe" "${installdir}\share\pgagent_upgrade.sql"</programArguments>
+          <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <workingDirectory>${installdir}/bin</workingDirectory>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+            <compareText logic="equals" text="${upgrade_schema}" value="yes"/>
+            <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- Inform user about configuring pgagent schema manually -->
+        <showInfo text="${msg(info.pgagent.schema.manual.upgrade)}">
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
+            <compareText logic="equals" text="${upgrade_schema}" value="no"/>
+            <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
+          </ruleList>
+        </showInfo>
+        <showInfo text="${msg(info.pgagent.schema.manual.upgrade.windows)}">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
+            <compareText logic="equals" text="${upgrade_schema}" value="no"/>
+            <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
+          </ruleList>
+        </showInfo>
+
       </actionList>
     </actionGroup>
     <substitute>
       <files>${installdir}/installer/pgAgent/pgagentctl.sh</files>
       <substitutionList>
-        <substitution>
-          <pattern>INSTALL_DIR</pattern>
-          <value>${installdir}</value>
-        </substitution>
-        <substitution>
-          <pattern>PG_HOST</pattern>
-          <value>${pghost}</value>
-        </substitution>
-        <substitution>
-          <pattern>PG_PORT</pattern>
-          <value>${pgport}</value>
-        </substitution>
-        <substitution>
-          <pattern>PG_USER</pattern>
-          <value>${pguser}</value>
-        </substitution>
-        <substitution>
-          <pattern>SYSTEM_USER</pattern>
-          <value>${systemuser}</value>
-        </substitution>
+        <substitution pattern="INSTALL_DIR" value="${installdir}"/>
+        <substitution pattern="PG_HOST" value="${pghost}"/>
+        <substitution pattern="PG_PORT" value="${pgport}"/>
+        <substitution pattern="PG_USER" value="${pguser}"/>
+        <substitution pattern="SYSTEM_USER" value="${systemuser}"/>
       </substitutionList>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>osx</value>
-        </compareText>
-        <compareText>
-          <text>${pgAgentVersion}</text>
-          <logic>equals</logic>
-          <value/>
-        </compareText>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
+        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
       </ruleList>
     </substitute>
     <substitute>
       <files>${installdir}/installer/pgAgent/pgpass</files>
       <substitutionList>
-        <substitution>
-          <pattern>PG_HOST</pattern>
-          <value>${pghost}</value>
-        </substitution>
-        <substitution>
-          <pattern>PG_PORT</pattern>
-          <value>${pgport}</value>
-        </substitution>
-        <substitution>
-          <pattern>PG_USER</pattern>
-          <value>${pguser}</value>
-        </substitution>
-        <substitution>
-          <pattern>PG_PASSWORD</pattern>
-          <value>${pgpassword}</value>
-        </substitution>
+        <substitution pattern="INSTALL_DIR" value="${installdir}"/>
+        <substitution pattern="PG_HOST" value="${pghost}"/>
+        <substitution pattern="PG_PORT" value="${pgport}"/>
+        <substitution pattern="PG_USER" value="${pguser}"/>
+        <substitution pattern="PG_PASSWORD" value="${pgpassword}"/>
       </substitutionList>
       <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-        <compareText>
-          <text>${pgAgentVersion}</text>
-          <logic>equals</logic>
-          <value/>
-        </compareText>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
       </ruleList>
     </substitute>
 
@@ -519,50 +433,22 @@
     <!--     2. Create/Reinstall the pgAgent service                             -->
     <actionGroup>
       <actionList>
-        <copyFile>
-          <origin>${installdir}\installer\pgAgent\createPGPASSCONF.bat</origin>
-          <destination>${env(windir)}</destination>
-        </copyFile>
-        <substitute>
-          <files>${env(windir)}\createPGPASSCONF.bat</files>
-          <substitutionList>
-            <substitution>
-              <pattern>PG_HOST</pattern>
-              <value>${pghost}</value>
-            </substitution>
-            <substitution>
-              <pattern>PG_PORT</pattern>
-              <value>${pgport}</value>
-            </substitution>
-            <substitution>
-              <pattern>PG_USER</pattern>
-              <value>${pguser}</value>
-            </substitution>
-            <substitution>
-              <pattern>PG_PASSWORD</pattern>
-              <value>${pgpassword}</value>
-            </substitution>
-          </substitutionList>
-        </substitute>
         <unpackFile>
-          <component>runas</component>
-          <destination>${system_temp_directory}\${product_fullname}\bin\RunProgramAsUser.exe</destination>
-          <folder>runasfilewindows</folder>
-          <origin>RunProgramAsUser.exe</origin>
+          <component>createpgpassconf</component>
+          <destination>${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe</destination>
+          <folder>createpgpassconfforuser</folder>
+          <origin>CreatePGPassconfForUser.exe</origin>
         </unpackFile>
         <runProgram>
           <customErrorMessage>${msg(error.create.pgpass)}</customErrorMessage>
-          <program>${system_temp_directory}\${product_fullname}\bin\RunProgramAsUser.exe</program>
-          <programArguments>${systemuser} ${systempassword} "${env(windir)}\createPGPASSCONF.bat"</programArguments>
+          <program>${installdir}\installer\pgAgent\configurePgAgent.bat</program>
+          <programArguments>CREATE_PGPASS_CONF "${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe" ${systemuser} ${systempassword} ${pghost} ${pgport} postgres ${pguser} ${pgpassword}</programArguments>
           <workingDirectory>${windir}</workingDirectory>
           <abortOnError>0</abortOnError>
           <showMessageOnError>1</showMessageOnError>
-       </runProgram>
-       <deleteFile>
-         <path>${system_temp_directory}\${product_fullname}\bin\RunProgramAsUser.exe</path>
-       </deleteFile>
+        </runProgram>
         <deleteFile>
-          <path>${env(windir)}\createPGPASSCONF.bat</path>
+          <path>${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe</path>
         </deleteFile>
 
         <!-- WIN : Install pgAgent as Service -->
@@ -587,11 +473,7 @@
         </runProgram>
       </actionList>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
     </actionGroup>
     
@@ -609,16 +491,8 @@
         </runProgram>
       </actionList>
       <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${pgAgentVersion}</text>
-          <value/>
-        </compareText>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
       </ruleList>
     </actionGroup>
     
@@ -765,11 +639,7 @@
         </runProgram>
       </actionList>
       <ruleList>
-        <compareText>
-          <logic>contains</logic>
-          <text>${platform_name}</text>
-          <value>linux</value>
-        </compareText>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
       </ruleList>
     </actionGroup>
   </preUninstallationActionList>
@@ -1028,21 +898,21 @@
       </folderList>
     </component>
     <component>
-      <name>runas</name>
-      <description>pgAgent components</description>
+      <name>createpgpassconf</name>
+      <description>Create pgpass.conf for given user</description>
       <canBeEdited>0</canBeEdited>
       <selected>0</selected>
       <show>0</show>
       <folderList>
-        <!-- WIN : RunProgramAsUser executable -->
+        <!-- WIN : CreatePGPassconfForUser executable -->
         <folder>
-          <description>RunProgramAsUser</description>
+          <description>CreatePGPassconfForUser</description>
           <destination>${installdir}\bin</destination>
-          <name>runasfilewindows</name>
+          <name>createpgpassconfforuser</name>
           <platforms>windows</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/windows/RunProgramAsUser.exe</origin>
+              <origin>staging/windows/CreatePGPassconfForUser.exe</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -1068,11 +938,7 @@
       <mustExist>0</mustExist>
       <width>40</width>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${pgAgentVersion}</text>
-          <value/>
-        </compareText>
+        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
       </ruleList>
 
       <!-- Validating whether installdir is empty -->
@@ -1085,11 +951,7 @@
             </throwError>
           </actionList>
           <ruleList>
-            <compareText>
-              <text>${installdir}</text>
-              <logic>equals</logic>
-              <value/>
-            </compareText>
+            <compareText logic="equals" text="${installdir}" value=""/>
           </ruleList>
         </actionGroup>
       </validationActionList>
@@ -1107,16 +969,8 @@
             <setInstallerVariable name="next_page" value="installdir"/>
           </actionList>
           <ruleList>
-            <regExMatch>
-              <text>${installdir}</text>
-              <logic>does_not_match</logic>
-              <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
-            </regExMatch>
-            <compareText>
-              <text>${platform_name}</text>
-              <logic>does_not_equal</logic>
-              <value>windows</value>
-            </compareText>
+            <regExMatch text="${installdir}" logic="does_not_match" pattern="^/([0-9a-zA-Z_/\.\-]*)$"/>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
           </ruleList>
         </actionGroup>
 
@@ -1130,16 +984,8 @@
             <setInstallerVariable name="next_page" value="installdir"/>
           </actionList>
           <ruleList>
-            <regExMatch>
-              <text>${installdir}</text>
-              <logic>does_not_match</logic>
-              <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
-            </regExMatch>
-            <compareText>
-              <text>${platform_name}</text>
-              <logic>equals</logic>
-              <value>windows</value>
-            </compareText>
+            <regExMatch text="${installdir}" logic="does_not_match" pattern="^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$"/>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
         </actionGroup>
       </validationActionList>
@@ -1151,11 +997,7 @@
       <title>${msg(upgrade.existing.installation.title)}</title>
       <description>${msg(upgrade.existing.installation.description)}</description>
       <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${pgAgentVersion}</text>
-          <value/>
-        </compareText>
+        <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
       </ruleList>
     </labelParameter>
     <parameterGroup>
@@ -1208,12 +1050,19 @@
           <description>Port</description>
           <explanation/>
           <value/>
-          <default>5432</default>
+          <default>${defaultpgport}</default>
           <allowEmptyValue>1</allowEmptyValue>
           <width>40</width>
         </stringParameter>
 
       </parameterList>
+
+      <preShowPageActionList>
+        <setInstallerVariable name="pgagent_schema_exist" value="0"/>
+        <setInstallerVariable name="pgagent_schema_version_function_exist" value="0"/>
+        <setInstallerVariable name="pgagent_current_schema_version" value=""/>
+        <setInstallerVariable name="upgrade_schema" value="yes"/>
+      </preShowPageActionList>
 
       <!-- Checking the validity of PostgreSQL Server Details -->
       <validationActionList>
@@ -1225,21 +1074,9 @@
           </actionList>
           <ruleEvaluationLogic>OR</ruleEvaluationLogic>
           <ruleList>
-            <compareText>
-              <text>${pgport}</text>
-              <logic>equals</logic>
-              <value/>
-            </compareText>
-            <compareText>
-              <text>${pguser}</text>
-              <logic>equals</logic>
-              <value/>
-            </compareText>
-            <compareText>
-              <text>${pgpassword}</text>
-              <logic>equals</logic>
-              <value/>
-            </compareText>
+            <compareText logic="equals" text="${pgport}" value=""/>
+            <compareText logic="equals" text="${pguser}" value=""/>
+            <compareText logic="equals" text="${pgpassword}" value=""/>
           </ruleList>
         </actionGroup>
 
@@ -1260,11 +1097,7 @@
               <folder>programfileslinux</folder>
               <origin>bin/psql</origin>
               <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="linux"/>
               </ruleList>
             </unpackFile>
             <unpackDirectory>
@@ -1273,11 +1106,7 @@
               <folder>libfileslinux</folder>
               <origin>lib</origin>
               <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="linux"/>
               </ruleList>
             </unpackDirectory>
             
@@ -1288,11 +1117,7 @@
               <folder>programfileslinux-x64</folder>
               <origin>bin/psql</origin>
               <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux-x64</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
               </ruleList>
             </unpackFile>
             <unpackDirectory>
@@ -1301,11 +1126,7 @@
               <folder>libfileslinux-x64</folder>
               <origin>lib</origin>
               <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux-x64</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
               </ruleList>
             </unpackDirectory>
 
@@ -1316,11 +1137,7 @@
               <folder>programfilesosx</folder>
               <origin>bin/psql</origin>
               <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
               </ruleList>
             </unpackFile>
             <unpackDirectory>
@@ -1329,11 +1146,7 @@
               <folder>libfilesosx</folder>
               <origin>lib</origin>
               <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
               </ruleList>
             </unpackDirectory>
 
@@ -1344,11 +1157,7 @@
               <folder>libfileswindows</folder>
               <origin>bin\psql.exe</origin>
               <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
               </ruleList>
             </unpackFile>
             <unpackFile>
@@ -1357,11 +1166,7 @@
               <folder>installfileswindows</folder>
               <origin>installer/pgAgent/configurePgAgent.bat</origin>
               <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
               </ruleList>
             </unpackFile>
 
@@ -1371,11 +1176,7 @@
               <folder>libfileswindows</folder>
               <origin>bin</origin>
               <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
               </ruleList>
             </unpackDirectory>
 
@@ -1384,6 +1185,7 @@
             <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
             <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
             <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+            <setEnvironmentVariable name="PGDATABASE" value="postgres"/>
             <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/${product_fullname}/lib"/>
 
             <setInstallerVariableFromScriptOutput>
@@ -1412,7 +1214,7 @@
             <setInstallerVariableFromScriptOutput>
               <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
               <execArgs>-t -c "SELECT lanname FROM pg_language WHERE lanname='plpgsql'"</execArgs>
-              <name>plpgsql</name>
+              <name>plpgsql_exist</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
@@ -1424,7 +1226,7 @@
             <setInstallerVariableFromScriptOutput>
               <exec>${system_temp_directory}\${product_fullname}\bin\checkPG.bat</exec>
               <execArgs>"CHECK_PLPGSQL" "${system_temp_directory}\${product_fullname}\bin\psql.exe"</execArgs>
-              <name>plpgsql</name>
+              <name>plpgsql_exist</name>
               <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
@@ -1437,7 +1239,7 @@
             <setInstallerVariableFromScriptOutput>
               <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
               <execArgs>-t -c "SELECT has_schema_privilege('pgagent', 'USAGE')"</execArgs>
-              <name>pgagent_schema</name>
+              <name>pgagent_schema_exist</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
@@ -1448,7 +1250,7 @@
             <setInstallerVariableFromScriptOutput>
               <exec>${system_temp_directory}\${product_fullname}\bin\checkPG.bat</exec>
               <execArgs>"CHECK_PGAGENT_SCHEMA" "${system_temp_directory}\${product_fullname}\bin\psql.exe"</execArgs>
-              <name>pgagent_schema</name>
+              <name>pgagent_schema_exist</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
@@ -1456,45 +1258,108 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
               </ruleList>
             </setInstallerVariableFromScriptOutput>
+
+            <!-- Check for pgagent_schema_version function exist -->
+            <setInstallerVariableFromScriptOutput>
+              <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
+              <execArgs>-t -c "SELECT COUNT(*) FROM pg_proc WHERE proname = 'pgagent_schema_version' AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'pgagent') AND prorettype = (SELECT oid FROM pg_type WHERE typname = 'int2') AND proargtypes = ''"</execArgs>
+              <name>pgagent_schema_version_function_exist</name>
+              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+              <showMessageOnError>0</showMessageOnError>
+              <abortOnError>0</abortOnError>
+              <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+            <setInstallerVariableFromScriptOutput>
+              <exec>${system_temp_directory}\${product_fullname}\bin\checkPG.bat</exec>
+              <execArgs>"CHECK_PGAGENT_SCHEMA_VERSION_FUNCTION_EXIST" "${system_temp_directory}\${product_fullname}\bin\psql.exe"</execArgs>
+              <name>pgagent_schema_version_function_exist</name>
+              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+              <showMessageOnError>0</showMessageOnError>
+              <abortOnError>0</abortOnError>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+
+            <!-- Check for the current version of the pgagent schema -->
+            <setInstallerVariableFromScriptOutput>
+              <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
+              <execArgs>-t -c "SELECT pgagent.pgagent_schema_version()"</execArgs>
+              <name>pgagent_current_schema_version</name>
+              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+              <showMessageOnError>0</showMessageOnError>
+              <abortOnError>0</abortOnError>
+              <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+                <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+            <setInstallerVariableFromScriptOutput>
+              <exec>${system_temp_directory}\${product_fullname}\bin\checkPG.bat</exec>
+              <execArgs>"CHECK_CURRENT_PGAGENT_SCHEMA_VERSION" "${system_temp_directory}\${product_fullname}\bin\psql.exe"</execArgs>
+              <name>pgagent_current_schema_version</name>
+              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+              <showMessageOnError>0</showMessageOnError>
+              <abortOnError>0</abortOnError>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+                <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
           </actionList>
         </actionGroup>
 
-        <!-- Initially set use_exist_schema to no -->
-        <setInstallerVariable>
-          <name>use_exist_schema</name>
-          <value>yes</value>
-        </setInstallerVariable>
-
-        <!-- Ask if user wants to use existing pgagent schema -->
+        <!-- For pgagent schema already exists -->
         <actionGroup>
           <actionList>
-            <showQuestion>
-              <text>${msg(pgagent.schema.error)}</text>
-              <variable>use_exist_schema</variable>
-            </showQuestion>
-            <setInstallerVariable>
-              <name>next_page</name>
-              <value>pgdetails</value>
+
+            <!-- 1. pgagent schema exist and pgagent_schema_version function does not exist -->
+            <showQuestion text="${msg(pgagent.schema.older.exist)}" variable="upgrade_schema">
               <ruleList>
-                <compareText>
-                  <logic>equals</logic>
-                  <text>${use_exist_schema}</text>
-                  <value>no</value>
-                </compareText>
+                <compareText logic="does_not_equal" text="${pgagent_schema_version_function_exist}" value="1"/>
               </ruleList>
-            </setInstallerVariable>
+            </showQuestion>
+
+            <!-- 2. pgagnet schema exist and pgagent_schema_version function exists,
+                    but current_schema_version less than the installer_schema_version -->
+            <showQuestion text="${msg(pgagent.schema.older.version.exist)}" variable="upgrade_schema">
+              <ruleList>
+                <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
+                <compareValues logic="less" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
+              </ruleList>
+            </showQuestion>
+
+            <!-- 3. pgagnet schema exist and pgagent_schema_version function exists,
+                    and current_schema_version matches the installer_schema_version -->
+            <showInfo text="${msg(pgagent.schema.found)}">
+              <ruleList>
+                <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
+                <compareValues logic="equals" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
+              </ruleList>
+            </showInfo>
+
+            <!-- 4. pgagnet schema exist and pgagent_schema_version function exists,
+                    but current_schema_version greater than the installer_schema_version -->
+            <actionGroup>
+              <actionList>
+                <throwError text="${msg(pgagent.schema.newer.version.exist)}"/>
+                <setInstallerVariable name="next_page" value="pgdetails"/>
+              </actionList>
+              <ruleList>
+                <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
+                <compareValues logic="greater" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
+              </ruleList>
+            </actionGroup>
+
           </actionList>
           <ruleList>
-            <compareText>
-              <logic>does_not_equal</logic>
-              <text>${pgagent_schema}</text>
-              <value/>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${pgAgentVersion}</text>
-              <value/>
-            </compareText>
+            <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
           </ruleList>
         </actionGroup>
 
@@ -1526,11 +1391,7 @@
           <name>_explanation</name>
           <value>${msg(sysuser.details.explanation.windows)}</value>
           <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${platform_name}</text>
-              <value>windows</value>
-            </compareText>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
         </setInstallerVariable>
 
@@ -1550,7 +1411,7 @@
           <description>${msg(config.systemuser.description)}</description>
           <explanation/>
           <value/>
-          <default>${defaultsysuser}</default>
+          <default/>
           <allowEmptyValue>1</allowEmptyValue>
           <width>40</width>
           <cliOptionName>systemuser</cliOptionName>
@@ -1588,11 +1449,7 @@
             </throwError>
           </actionList>
           <ruleList>
-            <compareText>
-              <text>${systemuser}</text>
-              <logic>equals</logic>
-              <value/>
-            </compareText>
+            <compareText logic="equals" text="${systemuser}" value=""/>
           </ruleList>
         </actionGroup>
         <actionGroup>
@@ -1602,16 +1459,8 @@
             </throwError>
           </actionList>
           <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${platform_name}</text>
-              <value>windows</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${systempassword}</text>
-              <value/>
-            </compareText>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <compareText logic="equals" text="${systempassword}" value=""/>
           </ruleList>
         </actionGroup>
         <!-- WIN : Validate user name & password -->
@@ -1632,30 +1481,18 @@
             <throwError>
               <text>${msg(script.command.line.error)}</text>
               <ruleList>
-                <compareText>
-                  <logic>equals</logic>
-                  <text>127</text>
-                  <value>${program_exit_code}</value>
-                </compareText>
+                <compareText logic="equals" text="${program_exit_code}" value="127"/>
               </ruleList>
             </throwError>
             <throwError>
               <text>${msg(config.systempassword.incorrect.windows)}</text>
               <ruleList>
-                <compareText>
-                  <logic>equals</logic>
-                  <text>1</text>
-                  <value>${program_exit_code}</value>
-                </compareText>
+                <compareText logic="equals" text="${program_exit_code}" value="1"/>
               </ruleList>
             </throwError>
           </actionList>
           <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${platform_name}</text>
-              <value>windows</value>
-            </compareText>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
       </actionGroup>
       </validationActionList>
