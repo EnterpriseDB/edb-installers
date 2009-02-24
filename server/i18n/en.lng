@@ -14,6 +14,7 @@ error.data.directory.matches.install=The data directory must not be a parent of 
 error.data.directory.registered.broken=A data directory is registered in ${PostgreSqlIni} but is neither empty, or a recognisable data directory.
 error.data.directory.existing.broken=An existing data directory has been selected but is neither empty, or a recognisable data directory.
 error.data.directory.incompatible=The existing data directory (catalog version: ${CurrentCatalogVersion}) is not compatible with this server (catalog version: ${CatalogVersion}).
+error.data.directory.incompatible.datetime=The existing data directory (Date/time setting: ${CurrentDateTimeSettings}) is not compatible with this server (Date/time setting: ${DateTimeSetting}).
 
 error.shared.memory.manual=Your system seems to be configured with less than 32MB of shared memory, which is required for this application. Please see the installer README file for more information on how to configure shared memory settings.
 error.shared.memory.updated=Your shared memory configuration has been adjusted with new settings in /etc/sysctl.conf. Please reboot the system to allow the new settings to take effect and re-run the installer. If you wish to restore the default settings in the future, simply delete /etc/sysctl.conf and reboot.
