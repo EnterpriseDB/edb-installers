@@ -57,8 +57,8 @@ _prep_ApachePhp() {
             rm -rf apache.windows || _die "Couldn't remove the existing apache.windows source directory (source/apache.windows)"
         fi
         extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-win32-src || exit 1
-        extract_file ../../tarballs/zlib-$PG_TARBALL_ZLIB ||exit 1
-        extract_file ../../tarballs/openssl-$PG_TARBALL_OPENSSL !! exit 1
+        extract_file ../../tarballs/zlib-$PG_TARBALL_ZLIB || exit 1
+        extract_file ../../tarballs/openssl-$PG_TARBALL_OPENSSL || exit 1
         mv httpd-$PG_VERSION_APACHE apache.windows || _die "Couldn't move httpd-$PG_VERSION_APACHE as apache.windows"
     fi
 
