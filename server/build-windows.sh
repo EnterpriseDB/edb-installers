@@ -460,6 +460,18 @@ _postprocess_server_windows() {
     cp scripts/windows/serverctl.vbs staging/windows/scripts/serverctl.vbs || _die "Failed to copy the serverctl script (scripts/windows/serverctl.vbs)"
 	cp scripts/windows/runpsql.bat staging/windows/scripts/runpsql.bat || _die "Failed to copy the runpsql script (scripts/windows/runpsql.bat)"
 	
+    PG_DATETIME_SETTING=`cat staging/windows/include/pg_config.h | grep "#define USE_INTEGER_DATETIMES 1"`
+
+    if [ "x$PG_DATETIME_SETTING" = "x" ]
+    then
+          PG_DATETIME_SETTING="floating-point numbers"
+    else
+          PG_DATETIME_SETTING="64-bit integers"
+    fi
+
+    _replace PG_DATETIME_SETTING "$PG_DATETIME_SETTING" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"
+
+	
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 	

@@ -125,6 +125,12 @@
             <value>PG_CATALOG_VERSION</value>
         </setInstallerVariable>
        
+        <!-- Date/Time Setting -->
+        <setInstallerVariable>
+            <name>DateTimeSetting</name>
+            <value>PG_DATETIME_SETTING</value>
+        </setInstallerVariable>
+       
         <actionGroup>
             <actionList>
  
@@ -656,10 +662,21 @@
                     <substitution>\1</substitution>
                 </setInstallerVariableFromRegEx>
                 
+                <setInstallerVariableFromRegEx>
+                    <name>CurrentDateTimeSettings</name>
+                    <text>${program_stdout}</text>
+                    <pattern>^.*Date/time type storage:\s+([\d\w\-]+\s+[\w]+).*$</pattern>
+                    <substitution>\1</substitution>
+                </setInstallerVariableFromRegEx>
+
                 <logMessage>
                     <text>Existing cluster catalog version: ${CurrentCatalogVersion}, installer catalog version: ${CatalogVersion}</text>
                 </logMessage>
                 
+                <logMessage>
+                    <text>Existing cluster Date/time settings: ${CurrentDateTimeSettings}, installer Date/time settings: ${DateTimeSetting}</text>
+                </logMessage>
+
                 <throwError>
                     <text>${msg(error.data.directory.incompatible)}</text>
                     <ruleList>
@@ -667,6 +684,17 @@
                             <value>${CurrentCatalogVersion}</value>
                             <logic>does_not_equal</logic>
                             <text>${CatalogVersion}</text>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+
+                <throwError>
+                    <text>${msg(error.data.directory.incompatible.datetime)}</text>
+                    <ruleList>
+                        <compareText>
+                            <value>${CurrentDateTimeSettings}</value>
+                            <logic>does_not_equal</logic>
+                            <text>${DateTimeSetting}</text>
                         </compareText>
                     </ruleList>
                 </throwError>
@@ -1002,6 +1030,53 @@
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
         </stopWindowsService>
+
+        <!-- 
+             In case of upgrade,
+             Delete the dependent libraries from the existing installation
+             The current installer will put only the required version of these libraries
+         -->     
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>rm</program>
+                    <programArguments>-f ${installdir}/lib/libssl.so*</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram> 
+                <runProgram>
+                    <program>rm</program>
+                    <programArguments>-f ${installdir}/lib/libcrypto.so*</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram> 
+                <runProgram>
+                    <program>rm</program>
+                    <programArguments>-f ${installdir}/lib/libreadline.so*</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram> 
+                <runProgram>
+                    <program>rm</program>
+                    <programArguments>-f ${installdir}/lib/libtermcap.so*</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram> 
+            </actionList> 
+            <ruleList>
+                <compareText>
+                    <text>${IsUpgrade}</text>
+                    <logic>equals</logic>
+                    <value>1</value>
+                </compareText> 
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>  
+
     </readyToInstallActionList>    
 
     <!-- Postinstallation actions -->
@@ -2809,8 +2884,20 @@
                             <substitution>\1</substitution>
                         </setInstallerVariableFromRegEx>
                         
+                        <setInstallerVariableFromRegEx>
+                            <name>CurrentDateTimeSettings</name>
+                            <text>${program_stdout}</text>
+                            <pattern>^.*Date/time type storage:\s+([\d\w\-]+\s+[\w]+).*$</pattern>
+                            <substitution>\1</substitution>
+                        </setInstallerVariableFromRegEx>
+
+                       
                         <logMessage>
                             <text>Existing cluster catalog version: ${CurrentCatalogVersion}, installer catalog version: ${CatalogVersion}</text>
+                        </logMessage>
+                        
+                        <logMessage>
+                            <text>Existing cluster Date/time settings: ${CurrentDateTimeSettings}, installer Date/time settings: ${DateTimeSetting}</text>
                         </logMessage>
                         
                         <actionGroup>
@@ -2825,6 +2912,22 @@
                                     <value>${CurrentCatalogVersion}</value>
                                     <logic>does_not_equal</logic>
                                     <text>${CatalogVersion}</text>
+                                </compareText>
+                            </ruleList>
+                        </actionGroup>
+
+                        <actionGroup>
+                            <actionList>
+                                <setInstallerVariable name="next_page" value="datadir"/>
+                                <throwError>
+                                    <text>${msg(error.data.directory.incompatible.datetime)}</text>
+                                </throwError>
+                            </actionList>
+                            <ruleList>
+                                <compareText>
+                                    <value>${CurrentDateTimeSettings}</value>
+                                    <logic>does_not_equal</logic>
+                                    <text>${DateTimeSetting}</text>
                                 </compareText>
                             </ruleList>
                         </actionGroup>

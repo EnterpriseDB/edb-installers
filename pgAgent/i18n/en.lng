@@ -18,25 +18,21 @@ install.summary=pgAgent is a job scheduler for PostgreSQL which may be managed u
 
 configure.pgagent.schema=Created and configured the pgagent schema in postgres database. 
 
-error.install.pgagent=Error nstalling the pgAgent service.
-
 schema.drop.info=The pgagent schema and user account have not been removed from the system.
 
 pgagent.installdir.empty=The installation directory cannot be empty.
 
 pgagent.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
-pgagent.installdir.pgerror=The installation directory path is not a valid PostgreSQL Server installation directory.\nPlease select the correct path, or install the PostgreSQL Server and try again.
-
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
-
-error.stop.pgagent=Failed to stop pgAgent
 
 error.install.pgagent=Failed to install the pgAgent service
 
+error.uninstall.pgagent=Failed to uninstall the pgAgent service
+
 error.start.pgagent=Failed to start pgAgent
 
-error.uninstall.pgagent=Failed to uninstall the pgAgent service
+error.stop.pgagent=Could not stop the pgAgent service.
 
 pg.details.title=PostgreSQL Installation Details 
 
@@ -47,8 +43,6 @@ script.command.line.error=The script was called with an invalid command line
 config.systempassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the service user account.
 
 pg.details.error=Connection to the PostgreSQL Server failed. Please re-check the details provided.
-
-pgagent.schema.error=The pgagent schema found in the postgres database.\nDo you want to use the existing configuration?\n(pgAgent may not work properly in this case.)
 
 post.install.error=Error configuring pgAgent.
 
@@ -82,11 +76,9 @@ pgagent.installdir.explanation=Please select an empty directory for pgAgent inst
 
 error.could.not.create.user=Could not create the user '${systemuser}'.
 
-error.stop.pgagent=Could not stop the pgAgent service.
-
-error.uninstall.pgagent=Error uninstalling pgAgent.
-
 progress.text.creating.pgagentschema=Creating the 'pgagent' schema in the 'postgres' database
+
+progress.text.upgrading.pgagentschema=Upgrading the 'pgagent' schema for version ${pgagent_installer_schema_version}
 
 progress.text.creating.plpgsql=Creating the language 'plpgsql'
 
@@ -94,4 +86,15 @@ progress.text.creating.user=Creating the user '${systemuser}'
 
 error.create.pgpass=Could not create or modify the pgpass.conf file in the ${systemuser}'s %APPDATA%\postgresql directory.
 
+info.pgagent.schema.manual.upgrade=pgAgent will not be able to start until you manually upgrade the pgagent schema.\nYou will be able to find the upgrade script at "${installdir}/share/pgagent_upgrade.sql"
+
+info.pgagent.schema.manual.upgrade.windows=pgAgent will not be able to start until you manually upgrade the pgagent schema.\nYou will be able to find the upgrade script at "${installdir}\share\pgagent_upgrade.sql"
+
+pgagent.schema.found=A 'pgagent' schema of the correct version was found in the 'postgres' database and will be reused by this installation.
+
+pgagent.schema.newer.version.exist=A newer version of 'pgagent' schema found on your postgres database.\nPlease download the latest version of the pgAgent installer.\nIf you want to use the same installer, than remove the 'pgagent' schema from your postgres database.
+
+pgagent.schema.older.exist=An older version of the 'pgagent' schema was found.\nDo you want to upgrade the schema to version ${pgagent_installer_schema_version}?
+
+pgagent.schema.older.version.exist=An older version (${pgagent_current_schema_version}) of the 'pgagent' schema was found.\nDo you want to upgrade the schema to version ${pgagent_installer_schema_version}?
 
