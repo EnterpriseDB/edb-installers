@@ -6,19 +6,20 @@ export PGHOST=$1
 export PGPORT=$2
 export PGUSER=$3
 export PGPASSWORD=$4
-PG_HOME=$5
+TEMPDIR=$5
 INSTALL_DIR=$6
 
-PGDATABASE=postgres
+DB=$7
+export LD_LIBRARY_PATH=$TEMPDIR
 
 echo "Creating user for wiki application"
-$PG_HOME/bin/psql -U $PGUSER -c "CREATE ROLE phpwikiuser PASSWORD 'phpwikiuser' CREATEDB CREATEROLE INHERIT LOGIN"
+$TEMPDIR/psql -d $DB -U $PGUSER -c "CREATE ROLE phpwikiuser PASSWORD 'phpwikiuser' CREATEDB CREATEROLE INHERIT LOGIN"
 
 echo "Creating database for wiki application"
-$PG_HOME/bin/psql -U $PGUSER -c "CREATE DATABASE phpwiki OWNER phpwikiuser"
+$TEMPDIR/psql -d $DB -U $PGUSER -c "CREATE DATABASE phpwiki OWNER phpwikiuser"
 
 export PGPASSWORD=phpwikiuser
-$PG_HOME/bin/psql -U phpwikiuser -d phpwiki -f $INSTALL_DIR/phpWiki/wiki.sql
+$TEMPDIR/psql -U phpwikiuser -d phpwiki -f $INSTALL_DIR/phpWiki/wiki.sql
 
 PGPASSWORD=$OLD_PGPASSWORD
 

@@ -4,7 +4,9 @@ export PGHOST=$1
 export PGPORT=$2
 export PGUSER=$3
 export PGPASSWORD=$4
-PGHOME=$5
+TEMPDIR=$5
+DB=$6
+export LD_LIBRARY_PATH=$TEMPDIR
 
-$PGHOME/bin/psql -l
+$TEMPDIR/psql -d $DB -l
 

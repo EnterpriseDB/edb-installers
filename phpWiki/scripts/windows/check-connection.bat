@@ -8,7 +8,9 @@ SET PGUSER=%3
 
 SET PGPASSWORD=%4
 
-SET PGHOME="%5"
+SET TEMPDIR="%5"
 
-"%PGHOME%\bin\psql.exe" -l
+SET DB=%6
+
+"%TEMPDIR%\psql.exe" -d %DB% -l
 

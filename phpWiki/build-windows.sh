@@ -43,6 +43,24 @@ _prep_phpWiki_windows() {
 _build_phpWiki_windows() {
     
         cd $WD    
+    # Copy the various support files into place
+
+    mkdir -p phpWiki/staging/windows/instscripts || _die "Failed to create the instscripts directory"
+    cp -R server/staging/windows/lib/libpq* phpWiki/staging/windows/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -R server/staging/windows/bin/psql.exe phpWiki/staging/windows/instscripts/ || _die "Failed to copy psql in instscripts"
+    cp -R server/staging/windows/bin/ssleay32.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libeay32.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/iconv.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libintl-8.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libiconv-2.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libiconv-2.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/comerr32.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/krb5_32.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/k5sprt32.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libxml2.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libxslt.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/zlib1.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/msvcr71.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
 
 }
 
