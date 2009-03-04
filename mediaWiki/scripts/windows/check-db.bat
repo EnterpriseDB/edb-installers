@@ -8,8 +8,10 @@ SET PGUSER=%3
 
 SET PGPASSWORD=%4
 
-SET PGHOME="%5"
+SET TEMPDIR="%5"
 
-"%PGHOME%\bin\psql.exe" -l | findstr %6
+SET DB=%7
+
+"%TEMPDIR%\psql.exe" -d %DB% -l | findstr %6
 
 

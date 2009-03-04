@@ -43,6 +43,25 @@ _prep_pgphonehome_windows() {
 _build_pgphonehome_windows() {
 
     cd $WD    
+    # Copy the various support files into place
+
+    mkdir -p pgphonehome/staging/windows/instscripts || _die "Failed to create the instscripts directory"
+    cp -R server/staging/windows/lib/libpq* pgphonehome/staging/windows/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -R server/staging/windows/bin/psql.exe pgphonehome/staging/windows/instscripts/ || _die "Failed to copy psql in instscripts"
+    cp -R server/staging/windows/bin/ssleay32.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libeay32.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/iconv.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libintl-8.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libiconv-2.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libiconv-2.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/comerr32.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/krb5_32.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/k5sprt32.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libxml2.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libxslt.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/zlib1.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/msvcr71.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+ 
 }
 
 ################################################################################
