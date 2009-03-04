@@ -86,9 +86,9 @@
             <persist>0</persist>
         </setInstallerVariable>
         <!-- Set the default values -->
+        <setInstallerVariable name="pgdatabase" value="postgres"/>
         <setInstallerVariable name="defaultuser" value=""/>
         <setInstallerVariable name="defaultpassword" value=""/>
-        <setInstallerVariable name="defaultpghome" value=""/>
         <setInstallerVariable name="dbexist" value=""/>
         <setInstallerVariable name="userexist" value=""/>
         <!-- Set the default values for unattended mode -->
@@ -102,60 +102,6 @@
                     <logic>equals</logic>
                     <text>${installer_ui}</text>
                     <value>unattended</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- WIN: Set the    pghome default value for unattended mode -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\8.3"/>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- LIN: Set the    pghome default value for unattended mode -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/8.3"/>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- MAC : Set the    pghome default value for unattended mode -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/8.3"/>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
                 </compareText>
             </ruleList>
         </actionGroup>
@@ -612,6 +558,59 @@
         <logMessage>
             <text>Using branding: ${branding}</text>
         </logMessage> 
+        <unpackDirectory>
+            <origin>instscripts</origin>
+            <folder>installfileslinux</folder>
+            <destination>${system_temp_directory}</destination>
+            <component>Drupal</component>
+            <ruleList>
+                <compareText>
+                     <text>${platform_name}</text>
+                     <logic>equals</logic>
+                     <value>linux</value>
+                </compareText>
+            </ruleList>
+        </unpackDirectory>
+        <unpackDirectory>
+            <origin>instscripts</origin>
+            <folder>installfileslinux-x64</folder>
+            <destination>${system_temp_directory}</destination>
+            <component>Drupal</component>
+            <ruleList>
+                <compareText>
+                     <text>${platform_name}</text>
+                     <logic>equals</logic>
+                     <value>linux-x64</value>
+                </compareText>
+            </ruleList>
+        </unpackDirectory>
+        <unpackDirectory>
+            <origin>instscripts</origin>
+            <folder>installfilesosx</folder>
+            <destination>${system_temp_directory}</destination>
+            <component>Drupal</component>
+            <ruleList>
+                <compareText>
+                     <text>${platform_name}</text>
+                     <logic>equals</logic>
+                     <value>osx</value>
+                </compareText>
+            </ruleList>
+        </unpackDirectory>
+        <unpackDirectory>
+            <origin>instscripts</origin>
+            <folder>installfileswindows</folder>
+            <destination>${system_temp_directory}</destination>
+            <component>Drupal</component>
+            <ruleList>
+                <compareText>
+                     <text>${platform_name}</text>
+                     <logic>equals</logic>
+                     <value>windows</value>
+                </compareText>
+            </ruleList>
+        </unpackDirectory> 
+
     </preInstallationActionList>
     <!-- Postinstallation actions -->
     <postInstallationActionList>
@@ -717,7 +716,7 @@
                 <runProgram>
                     <customErrorMessage>${msg(post.install.error)}</customErrorMessage>
                     <program>${installdir}\Drupal\installer\Drupal\install.bat</program>
-                    <programArguments>"${pghost}" "${pgport}" "${pguser}" "${pgpassword}" "${pghome}" "${installdir}"</programArguments>
+                    <programArguments> "${pghost}" "${pgport}" "${pguser}" "${pgpassword}" "${system_temp_directory}\instscripts" "${pgdatabase}"</programArguments>
                     <workingDirectory>${installdir}\Drupal</workingDirectory>
                 </runProgram>
                 <!-- Inform user about the database and role creation -->
@@ -753,7 +752,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/Drupal/installer/Drupal/install.sh</program>
-                    <programArguments>"${pghost}" "${pgport}" "${pguser}" "${pgpassword}" "${pghome}" "${installdir}"</programArguments>
+                    <programArguments> "${pghost}" "${pgport}" "${pguser}" "${pgpassword}" "${system_temp_directory}/instscripts" "${pgdatabase}"</programArguments>
                     <workingDirectory>${installdir}/Drupal/installer/Drupal</workingDirectory>
                 </runProgram>
                 <!-- Inform user about the database and role creation -->
@@ -1041,6 +1040,12 @@
                </compareText>
            </ruleList>
         </registrySet>
+        <deleteFile>
+            <path>${installdir}/instscripts</path>
+        </deleteFile>
+        <deleteFile>
+            <path>${system_temp_directory}/instscripts</path>
+        </deleteFile>
  
     </postInstallationActionList>
     <!-- preUninstallation actions -->
@@ -1151,6 +1156,9 @@
                         <distributionDirectory>
                             <origin>staging/linux/installer</origin>
                         </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/instscripts</origin>
+                        </distributionDirectory>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1184,6 +1192,9 @@
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/linux-x64/installer</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/instscripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1219,6 +1230,9 @@
                         <distributionDirectory>
                             <origin>staging/windows/installer</origin>
                         </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/windows/instscripts</origin>
+                        </distributionDirectory>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1252,6 +1266,9 @@
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/osx/installer</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/osx/instscripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1335,18 +1352,18 @@
                     <descriptionRetype/>
                     <width>40</width>
                 </passwordParameter>
-                <!-- Postgres Home Directory -->
-                <directoryParameter>
-                    <name>pghome</name>
-                    <description>PostgreSQL Home Directory</description>
+                <!-- Default database-->
+                <stringParameter>
+                    <name>pgdatabase</name>
+                    <description>Default Database</description>
                     <explanation/>
                     <value/>
-                    <default>${defaultpghome}</default>
+                    <cliOptionName>dbname</cliOptionName>
+                    <default>postgres</default>
                     <allowEmptyValue>1</allowEmptyValue>
-                    <mustBeWritable>0</mustBeWritable>
-                    <mustExist>0</mustExist>
                     <width>40</width>
-                </directoryParameter>
+                    <ask>0</ask>
+                </stringParameter>
                 <!-- PostgreSQL Server Installed? -->
                 <booleanParameter>
                     <name>pginstalled</name>
@@ -1392,11 +1409,6 @@
                         </compareText>
                         <compareText>
                             <text>${pgpassword}</text>
-                            <logic>equals</logic>
-                            <value/>
-                        </compareText>
-                        <compareText>
-                            <text>${pghome}</text>
                             <logic>equals</logic>
                             <value/>
                         </compareText>
@@ -1510,10 +1522,11 @@
                         <!-- Running the Script to validate the PostgreSQL Server Details -->
                         <setInstallerVariableFromScriptOutput>
                             <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <customErrorMessage>${msg(pgplus.details.error)}</customErrorMessage>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError> 
                         </setInstallerVariableFromScriptOutput>
                     </actionList>
                     <ruleList>
@@ -1524,16 +1537,44 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="pgdatabase" value="edb" />
+                        <!-- Running the Script to validate the PostgreSQL Server Details -->
+                        <setInstallerVariableFromScriptOutput>
+                            <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
+                            <name>connection</name>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${connection}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
                 <!-- LIN & MAC: validate the PostgreSQL Server Details -->
                 <actionGroup>
                     <actionList>
                         <!-- Running the Script to validate the PostgreSQL Server Details -->
                         <setInstallerVariableFromScriptOutput>
                             <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <customErrorMessage>${msg(pgplus.details.error)}</customErrorMessage>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
                         </setInstallerVariableFromScriptOutput>
                     </actionList>
                     <ruleList>
@@ -1544,6 +1585,52 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="pgdatabase" value="edb" />
+                        <!-- Running the Script to validate the PostgreSQL Server Details -->
+                        <setInstallerVariableFromScriptOutput>
+                            <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
+                            <name>connection</name>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${connection}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <actionGroup>
+                    <actionList>
+                        <showWarning>
+                             <text>${msg(pgplus.details.error)}</text>
+                        </showWarning> 
+                        <setInstallerVariable>
+                             <name>next_page</name>
+                             <value>pgdetails</value>
+                        </setInstallerVariable> 
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${connection}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
                 <setInstallerVariable name="dbexist" value=""/>
                 <setInstallerVariable name="userexist" value=""/>
                 <!-- WIN - Check whether the database and user already exists -->
@@ -1553,7 +1640,7 @@
                         <setInstallerVariableFromScriptOutput>
                             <name>dbexist</name>
                             <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "drupal"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "drupal" "${pgdatabase}"</execArgs>
                             <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -1562,7 +1649,8 @@
                         <setInstallerVariableFromScriptOutput>
                             <name>userexist</name>
                             <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "drupaluser"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "drupaluser" "${pgdatabase}"</execArgs>
+
                             <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -1588,7 +1676,8 @@
                         <setInstallerVariableFromScriptOutput>
                             <name>dbexist</name>
                             <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "drupal"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}/instscripts" "drupal" "${pgdatabase}"</execArgs>
+
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -1597,7 +1686,7 @@
                         <setInstallerVariableFromScriptOutput>
                             <name>userexist</name>
                             <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "drupaluser"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "drupaluser" "${pgdatabase}"</execArgs>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
