@@ -1835,7 +1835,7 @@
                         <setInstallerVariableFromScriptOutput>
                             <name>server_locale</name>
                             <exec>${system_temp_directory}/${product_fullname}/getserverlocale.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" </execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
