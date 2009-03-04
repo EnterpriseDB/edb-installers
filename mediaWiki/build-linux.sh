@@ -43,6 +43,15 @@ _prep_mediaWiki_linux() {
 _build_mediaWiki_linux() {
 
     cd $WD
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; mkdir -p mediaWiki/staging/linux/instscripts" || _die "Failed to create instscripts directory"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/bin/psql mediaWiki/staging/linux/instscripts" || _die "Failed to copy psql binary"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libpq.so* mediaWiki/staging/linux/instscripts" || _die "Failed to copy libpq.so"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libcrypto.so* mediaWiki/staging/linux/instscripts" || _die "Failed to copy libcrypto.so"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libssl.so* mediaWiki/staging/linux/instscripts" || _die "Failed to copy libssl.so"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libreadline.so* mediaWiki/staging/linux/instscripts" || _die "Failed to copy libreadline.so"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libtermcap.so* mediaWiki/staging/linux/instscripts" || _die "Failed to copy libtermcap.so"
+
+
 }
 
 
