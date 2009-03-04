@@ -43,6 +43,14 @@ _prep_phpBB_linux_x64() {
 _build_phpBB_linux_x64() {
     
     cd $WD
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; mkdir -p phpBB/staging/linux-x64/instscripts" || _die "Failed to create instscripts directory"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/bin/psql phpBB/staging/linux-x64/instscripts" || _die "Failed to copy psql binary"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libpq.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libpq.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libcrypto.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libcrypto.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libssl.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libssl.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libreadline.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libreadline.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libtermcap.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libtermcap.so"
+
 }
 
 ################################################################################
