@@ -415,8 +415,9 @@ EOT
 	cd $WD/server/staging/windows/doc/postgresql/html || _die "Failed to change to the doc directory"
 	tar -zxvf $WD/server/source/postgres.windows/doc/postgres.tar.gz || _die "Failed to unpack the PostgreSQL documentation"
 	
-	# Copy in the plDebugger docs
-	cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/README.pldebugger $WD/server/staging/osx/doc
+	# Copy in the plDebugger docs & SQL script
+	cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/README.pldebugger $WD/server/staging/windows/doc
+	cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi.sql $WD/server/staging/windows/share/contrib
 	 
 	# Copy in the pljava binaries/docs
 	cd $WD/server/source/

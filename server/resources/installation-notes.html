@@ -45,7 +45,7 @@ The debugger plugin is disabled by default for performance reasons. To enable it
   <li>Edit the postgresql.conf file in the data directory and modify the shared_preload_libraries config option to look like:<br>&nbsp;<br>
       <code>shared_preload_libraries = '$libdir/plugins/plugin_debugger.so'</code><br>&nbsp;</li>
   <li>Restart the PostgreSQL server.<br>&nbsp;</li>
-  <li>Run &lt;Installation directory&gt;/share/postgresql/contrib/pldbgapi.sql in the database you wish to debug using psql or the pgAdmin query tool.
+  <li>Run <i>&lt;Installation directory&gt;/share/postgresql/contrib/pldbgapi.sql</i> (or <i>&lt;Installation directory&gt;/share/contrib/pldbgapi.sql</i> on Windows) in the database you wish to debug using psql or the pgAdmin query tool.
 </ol>
 
 <p>For further information, please see the pgAdmin online help, and the debugger plugin <a href="README.pldebugger">README file</a>. 
