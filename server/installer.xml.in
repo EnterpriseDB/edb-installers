@@ -553,6 +553,14 @@
                     <folder>programfileswindows</folder>
                     <origin>installer/server/validateuser.exe</origin>
                 </unpackFile>
+
+                <!-- Create user binary   -->
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}\postgresql_installer\createuser.exe</destination>
+                    <folder>programfileswindows</folder>
+                    <origin>installer/server/createuser.exe</origin>
+                </unpackFile>
                 
                 <!-- We will also need to get the VC++ runtimes installed on Windows, before we do anything with binaries -->
                 <unpackFile>
@@ -1180,21 +1188,6 @@
             </ruleList>
         </runProgram>
         
-        <runProgram>
-            <program>${installdir}\installer\server\createuser.exe</program>
-            <!-- The dot at the beginning of the arguments is the domain -->
-            <programArguments>. "${supername}" "${superpassword}"</programArguments>
-            <progressText>${msg(progress.text.creating.user)}</progressText>
-            <abortOnError>0</abortOnError>
-            <showMessageOnError>0</showMessageOnError>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </runProgram>
        
         <setInstallerVariable>
             <name>didError</name>
@@ -3054,6 +3047,72 @@
                         </stringTest>
                     </ruleList>
                 </throwError>
+                
+                <actionGroup>
+                    <actionList>
+                        <runProgram>
+                            <program>${system_temp_directory}\postgresql_installer\createuser.exe</program>
+                            <!-- The dot at the beginning of the arguments is the domain -->
+                            <programArguments>. "${supername}" "${superpassword}"</programArguments>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+
+                        <throwError>
+                            <text>${msg(script.command.line.error)}</text>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>127</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                            </ruleList>
+                        </throwError>
+                        <throwError>
+                            <text>${msg(error.could.not.create.user)}</text>
+                            <ruleList>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>2203</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>2245</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>0</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                            </ruleList>
+                        </throwError>
+                        <throwError>
+                            <text>${msg(config.superpassword.format.error.windows)}</text>
+                            <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>2203</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>2245</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                            </ruleList>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
                 
                 <!-- On Windows we need to validate the password if the user account exists -->
                 <actionGroup>

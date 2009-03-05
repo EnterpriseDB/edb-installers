@@ -52,7 +52,7 @@ bool CheckUserExists(LPTSTR domain, LPTSTR username)
 	return false;
 }
 
-bool CreateUser(LPTSTR domain, LPTSTR username, LPTSTR password, TCHAR *errbuf, DWORD errsize)
+NET_API_STATUS CreateUser(LPTSTR domain, LPTSTR username, LPTSTR password, TCHAR *errbuf, DWORD errsize)
 {
 	USER_INFO_1 ui;
 	DWORD dwLevel = 1;
@@ -114,10 +114,9 @@ bool CreateUser(LPTSTR domain, LPTSTR username, LPTSTR password, TCHAR *errbuf, 
 
 		sprintf_s(errbuf, errsize, "The service user account '%s\\%s' could not be created: %s\n", domain, username, accterr);
 
-		return false;
 	}
 
-	return true;
+    return nStatus;
 }
 
 static struct _privInfo {
@@ -382,10 +381,11 @@ int main(int argc, TCHAR * argv[])
 	// Check to see if the user account exists
 	if (!CheckUserExists(domain, username))
 	{
-		if (!CreateUser(domain, username, password, errmsg, sizeof(errmsg)/sizeof(TCHAR) - 1))
+        NET_API_STATUS status;
+        status = CreateUser(domain, username, password, errmsg, sizeof(errmsg)/sizeof(TCHAR) - 1);
+        if (status != NERR_Success)
 		{
-			fprintf(stderr, errmsg);
-			return 1;
+            return status;
 		}
 	}
     else
