@@ -193,8 +193,8 @@ IF NOT EXIST php.staging/php.exe @GOTO installation-failed
 @COPY "%PGBUILD%\OpenSSL\bin\libeay32.dll" php.staging || echo Failed to copy OpenSSL\bin\libeay32.dll && EXIT -1
 
 @COPY "%PGBUILD%\iconv\bin\iconv.dll" php.staging || echo Failed to copy iconv\bin\iconv.dll && EXIT -1
-@COPY "%PGBUILD%\gettext\bin\libintl3.dll" php.staging || echo Failed to copy gettext\bin\libintl3.dll && EXIT -1
-@COPY "%PGBUILD%\gettext\bin\libiconv2.dll" php.staging || echo Failed to copy gettext\bin\libiconv2.dll && EXIT -1
+@COPY "%PGBUILD%\gettext\bin\libintl-8.dll" php.staging || echo Failed to copy gettext\bin\libintl3.dll && EXIT -1
+@COPY "%PGBUILD%\gettext\bin\libiconv-2.dll" php.staging || echo Failed to copy gettext\bin\libiconv2.dll && EXIT -1
 @COPY "%PGBUILD%\libxml2\bin\libxml2.dll" php.staging || echo Failed to copy libxml2\bin\libxml2.dll && EXIT -1
 @COPY "%PGBUILD%\libxslt\bin\libxslt.dll" php.staging || echo Failed to copy libxslt\bin\libxslt.dll && EXIT -1
 @COPY "%PGBUILD%\zlib\zlib1.dll" php.staging || echo Failed to copy zlib\zlib1.dll && EXIT -1
