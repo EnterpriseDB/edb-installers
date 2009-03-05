@@ -30,11 +30,11 @@ error.could.not.create.user=The service user account '${supername}' could not be
 
 progress.text.initialising.cluster=Initialising the database cluster (this may take a few minutes)...
 error.could.not.initialise.cluster=The database cluster initialisation failed.
-warning.during.cluster.initialisation=A non-fatal error occured during cluster initialisation. Please check the installation log in /tmp for details.
+warning.during.cluster.initialisation=A non-fatal error occured during cluster initialisation. Please check the installation log in ${system_temp_directory} for details.
 
 progress.text.configuring.startup=Configuring database server startup...
 error.could.not.configure.startup=Failed to configure the database to auto-start at boot time.
-warning.during.startup.configuration=A non-fatal error occured during startup configuration. Please check the installation log in /tmp for details.
+warning.during.startup.configuration=A non-fatal error occured during startup configuration. Please check the installation log in ${system_temp_directory} for details.
 
 progress.text.creating.shortcuts=Creating menu shortcuts...
 warning.could.not.create.shortcuts=A non-fatal error occur whilst creating menu shortcuts.
@@ -44,7 +44,7 @@ error.could.not.start.server=Failed to start the database server.
 
 progress.text.loading.modules=Loading additional SQL modules...
 error.could.not.load.modules=Failed to load SQL modules into the database cluster.
-warning.during.module.loading=A non-fatal error occured whilst loading database modules. Please check the installation log in /tmp for details.
+warning.during.module.loading=A non-fatal error occured whilst loading database modules. Please check the installation log in ${system_temp_directory} for details.
 
 progress.text.run.stackbuilder=Launch Stack Builder at exit?\n\nStack Builder may be used to download and install additional tools, drivers and applications to complement your PostgreSQL installation.
 
