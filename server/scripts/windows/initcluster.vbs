@@ -35,6 +35,30 @@ strBatchFile = Replace(objFso.GetTempName, ".tmp", ".bat")
 strOutputFile = objTempFolder.Path & "\" & objFso.GetTempName
 Set objFso = CreateObject("Scripting.FileSystemObject")
 
+' Is this Vista or above?
+Function IsVistaOrNewer()
+    Set objWMI = GetObject("winmgmts:\\.\root\cimv2")
+    Set colItems = objWMI.ExecQuery("Select * from Win32_OperatingSystem",,48)
+	
+    For Each objItem In colItems
+        strVersion = Left(objItem.Version, 3)
+    Next
+	
+    If InStr(strVersion, ".") > 0 Then
+        majorVersion = CInt(Left(strVersion,  InStr(strVersion, ".") - 1))
+    ElseIf InStr(strVersion, ",") > 0 Then
+        majorVersion = CInt(Left(strVersion,  InStr(strVersion, ",") - 1))
+    Else
+        majorVersion = CInt(strVersion)
+    End If
+	
+    If majorVersion >= 6.0 Then
+        IsVistaOrNewer = True
+    Else
+        IsVistaOrNewer = False
+    End If
+End Function
+
 ' Execute a command
 Function DoCmd(strCmd)
     Set objBatchFile = objTempFolder.CreateTextFile(strBatchFile, True)
@@ -89,9 +113,14 @@ If objFso.FolderExists(strDataDir) <> True Then
     End If
 End If
 
-WScript.Echo "Ensuring we can write to the data directory"
 Set objNetwork = CreateObject("WScript.Network")
-iRet = DoCmd("echo y|cacls """ & strDataDir & """ /T /G """ & objNetwork.Username & """:F")
+If IsVistaOrNewer() = True Then
+    WScript.Echo "Ensuring we can write to the data directory (using icacls):"
+    iRet = DoCmd("icacls """ & strDataDir & """ /T /C /grant:r """ & objNetwork.Username & """:F /inheritance:r")
+Else
+    WScript.Echo "Ensuring we can write to the data directory (using cacls):"
+    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /T /G """ & objNetwork.Username & """:F")
+End If
 if iRet <> 0 Then
     Warn "Failed to ensure the data directory is accessible (" & strDataDir & ")"
 End If
@@ -108,19 +137,27 @@ if iRet <> 0 Then
 End If
 
 ' Delete the password file
-objFso.DeleteFile strInitdbPass, True
-if Err.number <> 0 Then
-    Warn "Failed to remove the initdb password file (" & strInitdbPass & ")"
+If objFso.FileExists(strInitdbPass) Then
+    objFso.DeleteFile strInitdbPass, True
 End If
 
-WScript.Echo "Securing data directory:"
-iRet = DoCmd("echo y|cacls """ & strDataDir & """ /T /G Administrators:F """ & strUsername & """:C")
+If IsVistaOrNewer() = True Then
+    WScript.Echo "Securing data directory (using icacls):"
+    iRet = DoCmd("icacls """ & strDataDir & """ /T /grant:r *S-1-5-32-544:M /grant:r """ & strUsername & """:M")
+Else
+    WScript.Echo "Securing data directory (using cacls):"
+    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /T /G Administrators:F """ & strUsername & """:C")
+End If
 if iRet <> 0 Then
     Warn "Failed to secure the data directory (" & strDataDir & ")"
 End If
 
 ' Attempt to allow Domain Admins access. This may fail if we're not on a domain.
-iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /G ""Domain Admins"":F")
+If IsVistaOrNewer() = True Then
+    iRet = DoCmd("icacls """ & strDataDir & """ /T /grant:r ""Domain Admins"":F")
+Else
+    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /G ""Domain Admins"":F")
+End If
 if iRet <> 0 Then
     WScript.Echo "Failed to grant 'Domain Admins' access to the data directory (" & strDataDir & ") - probably not on a domain."
 End If
