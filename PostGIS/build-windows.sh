@@ -163,7 +163,7 @@ REM Configuring the postgis source tree
 @echo cd $PG_PATH_WINDOWS/postgis.windows/; export PATH=$PG_STAGING/proj.staging/bin:$PG_STAGING/geos.staging/bin:\$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj.staging/lib:$PG_STAGING/geos.staging/lib:\$LD_LIBRARY_PATH; ./configure --prefix=$PG_STAGING/postgis.staging --with-pgsql=$PG_PGHOME_MINGW_WINDOWS/bin/pg_config --with-geos=$PG_STAGING/geos.staging/bin/geos-config --with-proj=$PG_STAGING/proj.staging; make; make install | $PG_MSYS_WINDOWS\bin\sh --login -i
 
 REM Building postgis-jdbc
-@echo cd $PG_PATH_WINDOWS/postgis.windows/java/jdbc; export CLASSPATH=$PG_STAGING/postgis.windows/postgresql-$PG_JAR_POSTGRESQL.jar; export JAVA_HOME=$PG_JAVA_HOME_MINGW_WINDOWS; $PG_ANT_HOME_WINDOWS/bin/ant | $PG_MSYS_WINDOWS\bin\sh --login -i
+@echo cd $PG_PATH_WINDOWS/postgis.windows/java/jdbc; export CLASSPATH=$PG_STAGING/postgis.windows/postgresql-$PG_JAR_POSTGRESQL.jar; export JAVA_HOME=$PG_JAVA_HOME_MINGW_WINDOWS; $PG_ANT_HOME_MINGW_WINDOWS/bin/ant | $PG_MSYS_WINDOWS\bin\sh --login -i
    
 EOT
 
