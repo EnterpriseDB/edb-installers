@@ -324,6 +324,19 @@ then
     _postprocess_pgAgent || exit 1
 fi
 
+#Package: Meta Installer
+if [ $PG_PACKAGE_META == 1 ];
+then
+    source ./MetaInstaller/build.sh
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_metainstaller || exit 1
+        _build_metainstaller || exit 1
+    fi
+        _postprocess_metainstaller || exit 1
+fi
+
+
 # Package: DevServer
 # ALWAYS BUILD THIS LAST!!
 if [ $PG_PACKAGE_DEVSERVER == 1 ];
@@ -338,3 +351,5 @@ then
 
     _postprocess_DevServer || exit 1
 fi
+
+

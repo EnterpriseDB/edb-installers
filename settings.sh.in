@@ -31,7 +31,7 @@ PG_PACKAGE_MIGRATIONWIZARD=1
 PG_PACKAGE_PGPHONEHOME=1
 PG_PACKAGE_NPGSQL=1
 PG_PACKAGE_PGAGENT=1
-
+PG_PACKAGE_META=1
 
 # Path for the build machine (/opt/... must be at the end!)
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/apache-ant-1.7.1/bin:/opt/local/bin

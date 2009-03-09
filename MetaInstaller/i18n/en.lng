@@ -1,0 +1,144 @@
+Installer.Setup.Title=Postgres Plus Setup
+
+
+default.locale=Default locale
+
+upgrade.existing.installation.title=Existing installation
+upgrade.existing.installation.description=An existing Postgres Plus installation has been found at ${iBaseDirectory}. This installation will be upgraded.
+
+upgrade.existing.datadir.title=Existing data directory
+upgrade.existing.datadir.description=An existing data directory has been found at ${datadir} set to use port ${serverport}. This directory and it's configuration will be used for this installation.
+
+pgplus.details.title=PostgreSQL Installation Details
+
+pgplus.details.explanation=Please verify the PostgreSQL installation details
+
+pgplus.details.error=Connection to the PostgreSQL Server failed. Please re-check the details provided.
+pgplus.ws.error=Connection to the WebService failed. Please re-check the internet connection.
+pgplus.modify.error=Error in modifying postgresql.conf
+
+error.install.directory.invalid=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
+
+platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
+error.data.directory.invalid=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.', and '_', and must be writable.
+error.data.directory.matches.install=The data directory must not be a parent of or the same as the installation directory.
+error.data.directory.registered.broken=A data directory is registered in ${PostgreSqlIni} but is neither empty, or a recognisable data directory.
+error.data.directory.existing.broken=An existing data directory has been selected but is neither empty, or a recognisable data directory.
+error.data.directory.incompatible=The existing data directory (catalog version: ${CurrentCatalogVersion}) is not compatible with this server (catalog version: ${CatalogVersion}).
+
+error.shared.memory.manual=Your system seems to be configured with less than 32MB of shared memory, which is required for this application. Please see the installer README file for more information on how to configure shared memory settings.
+error.shared.memory.updated=Your shared memory configuration has been adjusted with new settings in /etc/sysctl.conf. Please reboot the system to allow the new settings to take effect and re-run the installer. If you wish to restore the default settings in the future, simply delete /etc/sysctl.conf and reboot.
+error.shared.memory.shmall.manual=Your system seems to be configured with a setting for SHMALL which is less than SHMMAX/4096. Please see the installer README file for more information on how to configure shared memory settings.
+error.shared.memory.shmall.updated=Your shared memory configuration has been adjusted with new settings in /etc/sysctl.conf. Please reboot the system to allow the new settings to take effect and re-run the installer. If you wish to restore the default settings in the future, simply delete /etc/sysctl.conf and reboot.
+
+warning.could.not.stop.server=The installed server could not be stopped.
+
+script.command.line.error=The script was called with an invalid command line
+
+progress.text.creating.user=Creating service user account...
+error.could.not.create.user=The service user account '${supername}' could not be created.
+
+progress.text.initialising.cluster=Initialising the database cluster (this may take a few minutes)...
+error.could.not.initialise.cluster=The database cluster initialisation failed.
+warning.during.cluster.initialisation=A non-fatal error occured during cluster initialisation. Please check the installation log in /tmp for details.
+
+progress.text.configuring.startup=Configuring database server startup...
+error.could.not.configure.startup=Failed to configure the database to auto-start at boot time.
+warning.during.startup.configuration=A non-fatal error occured during startup configuration. Please check the installation log in /tmp for details.
+
+progress.text.creating.shortcuts=Creating menu shortcuts...
+warning.could.not.create.shortcuts=A non-fatal error occur whilst creating menu shortcuts.
+
+progress.text.starting.server=Starting the database server...
+progress.text.stoping.server=Stoping the database server...
+error.could.not.start.server=Failed to start the database server.
+
+progress.text.loading.modules=Loading additional SQL modules...
+error.could.not.load.modules=Failed to load SQL modules into the database cluster.
+warning.during.module.loading=A non-fatal error occured whilst loading database modules. Please check the installation log in /tmp for details.
+
+progress.text.run.stackbuilder=Launch Stack Builder at exit?
+
+templatedb.found.info=A database called 'template_postgis' already exists on your server. If you continue with this installation, this database will be reused. Selecting 'No' will unselect the PosGIS. \n\nDo you wish to continue?
+
+config.datadir.description=Data Directory
+config.datadir.explanation=Please select a directory under which to store your data.
+
+config.superpassword.description=Password
+config.superpassword.explanation=Please provide a password for the database superuser (${supername}).
+config.superpassword.explanation.windows=Please provide a password for the database superuser and service account (${supername}). If the service account already exists in Windows, you must enter the current password for the account.
+config.superpassword.confirm=Retype password
+config.superpassword.no.password=You must enter a password to continue.
+config.superpassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the ${supername} windows user account.
+
+config.port.description=Port
+config.port.explanation=Please select the port number the server should listen on.
+config.port.invalid=This port number must be a valid integer between 1024 and 65535.
+config.port.in.use=The specified port number is not available. Please enter a different port.
+
+config.locale.description=Locale
+config.locale.explanation=Select the locale to be used by the new database cluster.
+config.locale.no.locale=You must select a locale to continue.
+
+info.datadirectory.user.kept=The data directory (${datadir}) and service user account (${supername}) have not been removed.
+
+valueadded.title.value= Value Added Services
+valueadded.dbInstallTuning.rb1.value= Database Installation Tuning
+valueadded.dbInstallTuning.lbl.value=Database Installation Tuning is a Web service that communicates with your server environment during installation of Postgres Plus.  The Web service will automatically optimize your Postgres Plus database for your chosen server configuration.
+valueadded.updateNotification.rb2.value= Update Notification Service
+valueadded.updateNotification.lbl.value=The Update Notification Service automatically informs you, via email, when security patches and other updates are available for your Postgres Plus database server.  It also provides you with information on how to download and apply the updates.
+
+existingUser.title.value= Registered user?
+existingUser.lbl.text.value=If you already have an account at EnterpriseDB, please enter your logon details on the following screen. If you are not registered, your web browser will display the EnterpriseDB website where you can register and then continue with the installation process.
+userAuth.existing.user.lbl.value= Are you existing Postgres Plus user?
+
+userAuth.title.value= User Authentication
+userAuth.email.value= Email
+error.invalid.email.value= Invalid email address. You must provide a valid email address.  Please try again.
+error.invalid.password.value= Password is empty or contains invalid characters. Please enter valid password.
+userAuth.existing.password.value= Password
+userAuth.new.user.lbl.value= New User
+
+server_utilization.title.value= Server Utilization
+server_utilization.development.title.value= Development (e.g. a developer's laptop)
+server_utilization.development.lbl.value= This is a development machine and many other applications will be running on it. Stress testing should not be performed with this configuration. Postgres Plus will use a minimal amount of memory.
+
+server_utilization.mixed.title.value= General Purpose (e.g. a web or application server)
+server_utilization.mixed.lbl.value= Several applications will be running on this machine. Choose this option for web/application servers. System shared memory setting will be updated automatically, if required.
+
+server_utilization.dedicated.title.value= Dedicated (a server running only Postgres Plus)
+server_utilization.dedicated.lbl.value= This machine is dedicated to run Postgres Plus and will use available memory to optimize performance. System shared memory setting will be updated automatically, if required.
+server_utilization.explaination.lbl.value= Please select the type of server, to determine the amount of system resources that may be utilised:
+
+workload_profile.title.value= Workload Profile
+workload_profile.transaction.title.value= Transaction Processing (OLTP systems)
+workload_profile.transaction.lbl.value= The running application is a transaction-intensive application.
+
+workload_profile.general.title.value= General Purpose (OLTP and reporting workloads)
+workload_profile.general.lbl.value= The database will be used for both transaction process as well as complex queries and reporting.
+
+workload_profile.reporting.title.value= Reporting (Complex queries or OLAP workloads)
+workload_profile.reporting.lbl.value= The database will be used for reporting applications.
+workload_profile.explaination.lbl.value= Please select the type of workload this server will be used for:
+
+ws.email.notification.value= An email has been sent to the provided email address.
+ws.email.not.authenticated= The email and/or password are not valid. Please try again.
+ws.email.not.valid= The email address has not been validated. An email has been sent to the email address that you provided. Please follow the directions in the email to validate your email address.
+ws.email.already.exists= This email address already exists.  Please use Existing User fields or enter a new email address to continue.
+ws.exception.from.server= An error occured. Please try again.
+ws.internet.not.connected= Error in calling web service. Please try again.
+
+ws.email.not.valid.dynatune= Email is not validated, please register your email.
+
+lbl.email.value=Please enter your enterprisedb.com login and password here. If you do not have one please go to www.enterprisedb.com and register.
+
+portlocale.title.value= Port
+
+unixodbc.not.exists= UnixODBC is required to install psqlODBC.
+
+dbserver.required.pgerror=Database Server is required component. Please select Database Server and try again.
+
+uninstall.restart.message=Some files will be removed after system restart.
+
+progress.text.run.stackbuilder=Launch Stack Builder at exit?
+
