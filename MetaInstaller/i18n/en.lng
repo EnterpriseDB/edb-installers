@@ -37,6 +37,8 @@ script.command.line.error=The script was called with an invalid command line
 
 progress.text.creating.user=Creating service user account...
 error.could.not.create.user=The service user account '${supername}' could not be created.
+config.superpassword.format.error.windows=The password specified does not meet the local or domain policy. Check the minimum password length, password complexity and password history requirements.
+
 
 progress.text.initialising.cluster=Initialising the database cluster (this may take a few minutes)...
 error.could.not.initialise.cluster=The database cluster initialisation failed.

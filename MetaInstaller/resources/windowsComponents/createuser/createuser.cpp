@@ -52,14 +52,14 @@ bool CheckUserExists(LPTSTR domain, LPTSTR username)
 	return false;
 }
 
-bool CreateUser(LPTSTR domain, LPTSTR username, LPTSTR password, TCHAR *errbuf, DWORD errsize)
+NET_API_STATUS CreateUser(LPTSTR domain, LPTSTR username, LPTSTR password, TCHAR *errbuf, DWORD errsize)
 {
 	USER_INFO_1 ui;
 	DWORD dwLevel = 1;
 	DWORD dwError = 0;
 	NET_API_STATUS nStatus;
 	int nLen;
-	char comment[] = "Postgres Plus service account";
+	char comment[] = "PostgreSQL service account";
 	WCHAR wUsername[100], wPassword[100], wComment[100];
 	
 	nLen = MultiByteToWideChar(CP_ACP, 0, username, -1, NULL, (int)NULL);
@@ -114,10 +114,9 @@ bool CreateUser(LPTSTR domain, LPTSTR username, LPTSTR password, TCHAR *errbuf, 
 
 		sprintf_s(errbuf, errsize, "The service user account '%s\\%s' could not be created: %s\n", domain, username, accterr);
 
-		return false;
 	}
 
-	return true;
+    return nStatus;
 }
 
 static struct _privInfo {
@@ -323,6 +322,7 @@ bool CheckUserPrivileges(LPTSTR domain, LPTSTR username, TCHAR *errbuf, DWORD er
 int main(int argc, TCHAR * argv[])
 {
 	TCHAR domain[256], username[256], password[256], errmsg[1024];
+    OSVERSIONINFOEX verinfo;
 
 	// Check the command line
 	if (argc != 4)
@@ -334,11 +334,46 @@ int main(int argc, TCHAR * argv[])
 	// Cleanup the command line arguments
 	if (strcmp(argv[1], ".") == 0)
 	{
-		DWORD size=sizeof(domain);
-		GetComputerName(domain, &size);
+		// If this is a domain controller, we need to use the domain
+		// name, otherwise, we use the computer name.
+        ZeroMemory(&verinfo,sizeof(verinfo));
+        verinfo.dwOSVersionInfoSize = sizeof(verinfo);
+
+	    if (!GetVersionEx((OSVERSIONINFO*)&verinfo))
+		{
+			fprintf(stderr, "Failed to retrieve the operating system version information.\n");
+			return 1;	
+		}
+
+		if (verinfo.wProductType == VER_NT_DOMAIN_CONTROLLER)
+		{
+			// It's a DC
+			WKSTA_INFO_100 *wkinfo = NULL;
+			NET_API_STATUS status;
+
+			status = NetWkstaGetInfo(NULL, 100, (LPBYTE*)&wkinfo);
+			if (status != NERR_Success)
+			{
+			    fprintf(stderr, "Failed to retrieve workstation information.\n");
+			    return 1;	
+			}
+
+			sprintf_s(domain, sizeof(domain), "%S", wkinfo->wki100_langroup);
+
+			if (wkinfo != NULL)
+				NetApiBufferFree(wkinfo);
+		}
+		else
+		{
+			// It's a workstation or server
+		    DWORD size=sizeof(domain);
+		    GetComputerName(domain, &size);
+		}
 	}
 	else
+	{
 		sprintf_s(domain, sizeof(domain), argv[1]);
+	}
 
 	sprintf_s(username, sizeof(username), argv[2]);
 	sprintf_s(password, sizeof(password), argv[3]);
@@ -346,10 +381,11 @@ int main(int argc, TCHAR * argv[])
 	// Check to see if the user account exists
 	if (!CheckUserExists(domain, username))
 	{
-		if (!CreateUser(domain, username, password, errmsg, sizeof(errmsg)/sizeof(TCHAR) - 1))
+        NET_API_STATUS status;
+        status = CreateUser(domain, username, password, errmsg, sizeof(errmsg)/sizeof(TCHAR) - 1);
+        if (status != NERR_Success)
 		{
-			fprintf(stderr, errmsg);
-			return 1;
+            return status;
 		}
 	}
     else

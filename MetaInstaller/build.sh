@@ -72,7 +72,7 @@ _prep_metainstaller() {
 }
 
 ################################################################################
-# Build server
+# Build MetaInstaller
 ################################################################################
 
 _build_metainstaller() {
@@ -103,7 +103,7 @@ _build_metainstaller() {
 }
 
 ################################################################################
-# Postprocess server
+# Postprocess MetaInstaller
 ################################################################################
 #
 # Note that this is the only step run if we're executed with -skipbuild so it must

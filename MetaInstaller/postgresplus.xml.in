@@ -2123,7 +2123,7 @@
             <persist>0</persist>
             <value>0</value>
         </setInstallerVariable>
-        <runProgram>
+       <!-- <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}\postgresplus\createuser.exe</program>
             <programArguments>. "${supername}" "${superpassword}"</programArguments>
@@ -2148,7 +2148,7 @@
                     <value>${program_exit_code}</value>
                 </compareText>
             </ruleList>
-        </setInstallerVariable>
+        </setInstallerVariable>-->
 
 	<!-- Run linux programs -->
 
@@ -7110,7 +7110,7 @@ Windows scripts -->
 	<!-- Switch to upgrade mode -->
 	<actionList>
 	<!-- Do we have a pg_control file? -->
-	<actionGroup>
+			<actionGroup>
                             <actionList>
                                 <setInstallerVariable name="next_page" value="datadir">
                                     <persist>0</persist>
@@ -7127,6 +7127,87 @@ Windows scripts -->
                             </ruleList>
                         </actionGroup>
 
+			<!-- starts here -->
+
+			<!-- Do we have a valid catalog version? -->
+                        <runProgram>
+                            <program>${system_temp_directory}/postgresplus/pgcontrol/pg_controldata</program>
+                            <programArguments>"${datadir}"</programArguments>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>${platform_name}</text>
+                                    <value>osx</value>
+                                </compareText>
+                            </ruleList>
+                        </runProgram>
+                        
+                        <runProgram>
+                            <program>${system_temp_directory}/postgresplus/runpgcontroldata.sh</program>
+                            <programArguments>${system_temp_directory}/postgresplus/pgcontrol "${datadir}"</programArguments>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                            <ruleList>
+                                <compareText>
+                                    <logic>contains</logic>
+                                    <text>${platform_name}</text>
+                                    <value>linux</value>
+                                </compareText>
+                            </ruleList>
+                        </runProgram>
+                        
+                        <runProgram>
+                            <program>${system_temp_directory}\postgresplus\pgcontrol\pg_controldata.exe</program>
+                            <programArguments>"${datadir}"</programArguments>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>${platform_name}</text>
+                                    <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </runProgram>
+                        
+                        <setInstallerVariableFromRegEx>
+                            <name>CurrentCatalogVersion</name>
+                            <text>${program_stdout}</text>
+                            <pattern>^.*Catalog version number:\s+([\d]+).*$</pattern>
+                            <substitution>\1</substitution>
+                        </setInstallerVariableFromRegEx>
+                        
+                        <logMessage>
+                            <text>Existing cluster catalog version: ${CurrentCatalogVersion}, installer catalog version: ${CatalogVersion}</text>
+                        </logMessage>
+                        <!--<showWarning><text>Current Catalog Version=${CurrentCatalogVersion} and CatalogVersion=${CatalogVersion}</text></showWarning>-->
+                        <actionGroup>
+                            <actionList>
+                                <setInstallerVariable name="next_page" value="datadir"/>
+                                <throwError>
+                                    <text>${msg(error.data.directory.incompatible)}</text>
+                                </throwError>
+                            </actionList>
+                            <ruleList>
+                                <compareText>
+                                    <value>${CurrentCatalogVersion}</value>
+                                    <logic>does_not_equal</logic>
+                                    <text>${CatalogVersion}</text>
+                                </compareText>
+                            </ruleList>
+                        </actionGroup>
+                    </actionList>
+                    
+                    <!-- Switch to upgrade mode -->
+                    <actionList>
+                        <setInstallerVariable>
+                            <name>IsUpgrade</name>
+                            <value>1</value>
+                        </setInstallerVariable>
+
+		<!-- ends here -->
 	
 	
 			<logMessage>
@@ -7277,6 +7358,72 @@ Windows scripts -->
                         </stringTest>
                     </ruleList>
                 </throwError>
+
+	<actionGroup>
+                    <actionList>
+                        <runProgram>
+                            <program>${system_temp_directory}\postgresplus\createuser.exe</program>
+                            <!-- The dot at the beginning of the arguments is the domain -->
+                            <programArguments>. "${supername}" "${superpassword}"</programArguments>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+			<!--<showWarning><text>. "${supername}" "${superpassword}"</text></showWarning>-->
+                        <throwError>
+                            <text>${msg(script.command.line.error)}</text>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>127</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                            </ruleList>
+                        </throwError>
+                        <throwError>
+                            <text>${msg(error.could.not.create.user)}</text>
+                            <ruleList>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>2203</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>2245</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>0</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                            </ruleList>
+                        </throwError>
+                        <throwError>
+                            <text>${msg(config.superpassword.format.error.windows)}</text>
+                            <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>2203</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>2245</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                            </ruleList>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
 
 	<!-- On Windows we need to validate the password if the user account exists -->
 	<actionGroup>

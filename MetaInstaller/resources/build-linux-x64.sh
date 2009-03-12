@@ -1,4 +1,4 @@
-######################## Build C components for Linux ######################################################
+######################## Build C components for Linux-x64 ######################################################
 
 cd ./linux-x64Components/features
 ./build.sh
