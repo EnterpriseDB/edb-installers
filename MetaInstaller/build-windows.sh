@@ -76,6 +76,23 @@ _build_metainstaller_windows() {
 
     cd $WD/server/staging/windows/installer
     cp -R vcredist_x86.exe  $WD/MetaInstaller/resources/scripts/windows || _die "Failed to copy the vcredist_x86.exe  (MetaInstaller/resources/scripts/windows)"
+
+
+    cd $WD/PostGIS/scripts/windows
+    cp -R check-connection.bat  $WD/MetaInstaller/resources/scripts/windows || _die "Failed to copy the check-connection.bat  (MetaInstaller/resources/scripts/windows)"
+
+    cp -R check-db.bat  $WD/MetaInstaller/resources/scripts/windows || _die "Failed to copy the check-db.bat  (MetaInstaller/resources/scripts/windows)"
+   
+    cd $WD/server/staging/windows/installer/server
+    cp -R getlocales.exe  $WD/MetaInstaller/resources/scripts/windows || _die "Failed to copy the getlocales.exe  (MetaInstaller/resources/scripts/windows)"
+
+   cp -R validateuser.exe  $WD/MetaInstaller/resources/scripts/windows || _die "Failed to copy the validateuser.exe  (MetaInstaller/resources/scripts/windows)"
+
+   cp -R createuser.exe  $WD/MetaInstaller/resources/scripts/windows || _die "Failed to copy the createuser.exe  (MetaInstaller/resources/scripts/windows)"
+
+
+    cd $WD/server/scripts/windows
+    cp -R installruntimes.vbs  $WD/MetaInstaller/resources/scripts/windows || _die "Failed to copy the installruntimes.vbs  (MetaInstaller/resources/scripts/windows)"
 	
 	# Create a build script for VC++
 	cd $WD/MetaInstaller/resources
@@ -110,7 +127,7 @@ EOT
 	
     # Build the code and install into a temporary directory
 
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/windowsComponents/createuser; cmd /c $PG_PATH_WINDOWS\\\\metavc-build.bat createuser.vcproj" || _die "Failed to build createuser on the windows build host"
+    #ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/windowsComponents/createuser; cmd /c $PG_PATH_WINDOWS\\\\metavc-build.bat createuser.vcproj" || _die "Failed to build createuser on the windows build host"
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/windowsComponents/dbserver_guid/dbserver_guid/dbserver_guid; cmd /c $PG_PATH_WINDOWS\\\\metavc-build.bat dbserver_guid.vcproj" || _die "Failed to build dbserver_guid on the windows build host"
 
@@ -122,17 +139,17 @@ EOT
   
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/windowsComponents/modifyPostgresql/modifyPostgresql; cmd /c $PG_PATH_WINDOWS\\\\metavc-build.bat modifyPostgresql.vcproj" || _die "Failed to build modifyPostgresql on the windows build host"
 
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/windowsComponents/validateosuser/validateuser; cmd /c $PG_PATH_WINDOWS\\\\metavc-build.bat validateuser.vcproj" || _die "Failed to build validateosuser on the windows build host"
+    #ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/windowsComponents/validateosuser/validateuser; cmd /c $PG_PATH_WINDOWS\\\\metavc-build.bat validateuser.vcproj" || _die "Failed to build validateosuser on the windows build host"
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/windowsComponents/validateUser; cmd /c $PG_PATH_WINDOWS\\\\metavc-build.bat validateUser.vcproj" || _die "Failed to build validateUser on the windows build host"
 
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/windowsComponents/getlocales; cmd /c $PG_PATH_WINDOWS\\\\metavc-build.bat getlocales.vcproj" || _die "Failed to build getlocales on the windows build host"
+    #ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/windowsComponents/getlocales; cmd /c $PG_PATH_WINDOWS\\\\metavc-build.bat getlocales.vcproj" || _die "Failed to build getlocales on the windows build host"
 
 	
     # Move the resulting binaries into place
 	ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\meta_output_scripts\\\\scripts\\\\windows" || _die "Failed to create the windows directory on the windows build host"
 
-	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\windowsComponents\\\\createuser\\\\Release\\\\createuser.exe $PG_PATH_WINDOWS\\\\meta_output_scripts\\\\scripts\\\\windows" || _die "Failed to copy the createuser proglet on the windows build host" 
+	#ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\windowsComponents\\\\createuser\\\\Release\\\\createuser.exe $PG_PATH_WINDOWS\\\\meta_output_scripts\\\\scripts\\\\windows" || _die "Failed to copy the createuser proglet on the windows build host" 
 
 	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\windowsComponents\\\\dbserver_guid\\\\dbserver_guid\\\\dbserver_guid\\\\Release\\\\dbserver_guid.exe $PG_PATH_WINDOWS\\\\meta_output_scripts\\\\scripts\\\\windows" || _die "Failed to copy the dbserver_guid proglet on the windows build host" 
 
@@ -144,11 +161,11 @@ EOT
 
 	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\windowsComponents\\\\modifyPostgresql\\\\modifyPostgresql\\\\Release\\\\modifyPostgresql.exe $PG_PATH_WINDOWS\\\\meta_output_scripts\\\\scripts\\\\windows" || _die "Failed to copy the modifyPostgresql proglet on the windows build host" 
 
-	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\windowsComponents\\\\validateosuser\\\\validateuser\\\\Release\\\\validateuser.exe $PG_PATH_WINDOWS\\\\meta_output_scripts\\\\scripts\\\\windows" || _die "Failed to copy the validateuser proglet on the windows build host" 
+	#ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\windowsComponents\\\\validateosuser\\\\validateuser\\\\Release\\\\validateuser.exe $PG_PATH_WINDOWS\\\\meta_output_scripts\\\\scripts\\\\windows" || _die "Failed to copy the validateuser proglet on the windows build host" 
 
 	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\windowsComponents\\\\validateUser\\\\Release\\\\validateUserClient.exe $PG_PATH_WINDOWS\\\\meta_output_scripts\\\\scripts\\\\windows" || _die "Failed to copy the validateUserClient proglet on the windows build host" 
 
-	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\windowsComponents\\\\getlocales\\\\Release\\\\getlocales.exe $PG_PATH_WINDOWS\\\\meta_output_scripts\\\\scripts\\\\windows" || _die "Failed to copy the getlocales proglet on the windows build host"
+	#ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\windowsComponents\\\\getlocales\\\\Release\\\\getlocales.exe $PG_PATH_WINDOWS\\\\meta_output_scripts\\\\scripts\\\\windows" || _die "Failed to copy the getlocales proglet on the windows build host"
 
     
     # Zip up the installed code, copy it back here, and unpack.

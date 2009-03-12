@@ -49,6 +49,19 @@ _build_metainstaller_linux() {
   cp -R pg_controldata  $WD/MetaInstaller/resources/scripts/linux/pgcontrol || _die "Failed to copy the pg_controldata  (MetaInstaller/resources/scripts/linux/pgcontrol)"
   cd $WD/server/staging/linux
   cp -R lib  $WD/MetaInstaller/resources/scripts/linux/pgcontrol || _die "Failed to copy the lib/  (MetaInstaller/resources/scripts/linux/pgcontrol)"
+
+  cd $WD/PostGIS/scripts/linux
+  cp -R check-connection.sh  $WD/MetaInstaller/resources/scripts/linux || _die "Failed to copy the check-connection.sh  (MetaInstaller/resources/scripts/linux)"
+
+  cp -R check-db.sh  $WD/MetaInstaller/resources/scripts/linux || _die "Failed to copy the check-db.sh  (MetaInstaller/resources/scripts/linux)"
+   
+  cd $WD/server/scripts/linux
+  cp -R getlocales.sh  $WD/MetaInstaller/resources/scripts/linux || _die "Failed to copy the getlocales.sh  (MetaInstaller/resources/scripts/linux)"
+
+  cp -R runpgcontroldata.sh  $WD/MetaInstaller/resources/scripts/linux || _die "Failed to copy the runpgcontroldata.sh  (MetaInstaller/resources/scripts/linux)"
+
+  cp -R startserver.sh  $WD/MetaInstaller/resources/scripts/linux || _die "Failed to copy the startserver.sh  (MetaInstaller/resources/scripts/linux)"
+
   ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MetaInstaller/resources/; sh ./build-linux.sh" || _die "Failed to build C components"
 }
 

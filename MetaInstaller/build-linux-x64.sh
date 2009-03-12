@@ -50,6 +50,19 @@ _build_metainstaller_linux_x64() {
 
   cd $WD/server/staging/linux-x64
   cp -R lib  $WD/MetaInstaller/resources/scripts/linux-x64/pgcontrol || _die "Failed to copy the lib/  (MetaInstaller/resources/scripts/linux-x64/pgcontrol)"
+
+  cd $WD/PostGIS/scripts/linux
+  cp -R check-connection.sh  $WD/MetaInstaller/resources/scripts/linux-x64 || _die "Failed to copy the check-connection.sh  (MetaInstaller/resources/scripts/linux-x64)"
+
+  cp -R check-db.sh  $WD/MetaInstaller/resources/scripts/linux-x64 || _die "Failed to copy the check-db.sh  (MetaInstaller/resources/scripts/linux-x64)"
+   
+  cd $WD/server/scripts/linux
+  cp -R getlocales.sh  $WD/MetaInstaller/resources/scripts/linux-x64 || _die "Failed to copy the getlocales.sh  (MetaInstaller/resources/scripts/linux-x64)"
+
+  cp -R runpgcontroldata.sh  $WD/MetaInstaller/resources/scripts/linux-x64 || _die "Failed to copy the runpgcontroldata.sh  (MetaInstaller/resources/scripts/linux-x64)"
+
+  cp -R startserver.sh  $WD/MetaInstaller/resources/scripts/linux-x64 || _die "Failed to copy the startserver.sh  (MetaInstaller/resources/scripts/linux-x64)"
+
   ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MetaInstaller/resources/; sh ./build-linux-x64.sh" || _die "Failed to build C components"
 
 }

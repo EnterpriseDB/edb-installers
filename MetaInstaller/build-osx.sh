@@ -77,6 +77,19 @@ _build_metainstaller_osx() {
     mkdir pgcontrol
     cd $WD/server/staging/osx/bin
     cp -R pg_controldata  $WD/MetaInstaller/resources/scripts/osx/pgcontrol || _die "Failed to copy the pg_controldata  (MetaInstaller/resources/scripts/osx/pgcontrol)"
+
+    cd $WD/PostGIS/scripts/osx
+    cp -R check-connection.sh  $WD/MetaInstaller/resources/scripts/osx || _die "Failed to copy the check-connection.sh  (MetaInstaller/resources/scripts/osx)"
+
+    cp -R check-db.sh  $WD/MetaInstaller/resources/scripts/osx || _die "Failed to copy the check-db.sh  (MetaInstaller/resources/scripts/osx)"
+   
+    cd $WD/server/scripts/osx
+    cp -R getlocales.sh  $WD/MetaInstaller/resources/scripts/osx || _die "Failed to copy the getlocales.sh  (MetaInstaller/resources/scripts/osx)"
+
+    cp -R preinstall.sh  $WD/MetaInstaller/resources/scripts/osx || _die "Failed to copy the preinstall.sh  (MetaInstaller/resources/scripts/osx)"
+
+    cp -R startserver.sh  $WD/MetaInstaller/resources/scripts/osx || _die "Failed to copy the startserver.sh  (MetaInstaller/resources/scripts/osx)"
+
     cd $WD/MetaInstaller/resources
     echo "Building osx components..."
     ./build-osx.sh    
