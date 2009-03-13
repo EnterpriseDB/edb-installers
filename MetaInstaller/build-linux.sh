@@ -35,6 +35,12 @@ _prep_metainstaller_linux() {
     rm -rf *.o
     rm -rf lib
     rm -rf pgcontrol
+
+    rm -rf check-connection.sh
+    rm -rf check-db.sh
+    rm -rf getlocales.sh
+    rm -rf runpgcontroldata.sh
+    rm -rf startserver.sh
 }
 
 ################################################################################

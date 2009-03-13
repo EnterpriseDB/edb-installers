@@ -64,6 +64,12 @@ _prep_metainstaller_osx() {
 
     rm -rf *.o
     rm -rf pgcontrol
+
+    rm -rf check-connection.sh
+    rm -rf check-db.sh
+    rm -rf getlocales.sh
+    rm -rf preinstall.sh
+    rm -rf startserver.sh
 }
 
 

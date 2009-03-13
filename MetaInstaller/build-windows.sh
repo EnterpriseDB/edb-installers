@@ -35,7 +35,11 @@ _prep_metainstaller_windows() {
 
     rm -rf *.exe
     rm -rf pgcontrol
-    
+
+    rm -rf check-connection.bat
+    rm -rf check-db.bat
+    rm -rf installruntimes.vbs
+        
     # Cleanup the build host
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q meta_output_scripts"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q windowsComponents"
