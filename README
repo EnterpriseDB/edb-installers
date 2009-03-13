@@ -68,7 +68,8 @@ Build platform
 The build platform is Mac OS X Tiger. We use OS X because it allows us to run
 all other Intel based OS's on the same machine. All other supported platforms
 are run in VMWare Fusion virtual machines, with the exception of Solaris Sparc
-which obviously must be an external machine.
+which obviously must be an external machine. The supported platforms can be set
+as external machines if required by exposing nfs shares from mac.
 
 A number of additional dependencies are required when setting up the system,
 such as libxml2 and libxslt, as well as useful utilties such as wget. Setting
@@ -94,6 +95,7 @@ export PATH=$PATH:/opt/local/bin:/opt/local/sbin
 
 $ sudo port install bison
 $ sudo port install wget
+$ sudo port ossp-uuid
 
 Dependency libraries must be built with a little more control to ensure they 
 use the correct SDK to allow them to be used on Tiger and above. We manually
@@ -127,6 +129,11 @@ Configuring DocBook SGML on Mac OS X with MacPorts.
     docbook-xsl
     docbook2X
 
+Note: opensp might give error for universal mode, if installation fails, try
+turning off universal mode:
+
+sudo port install opensp -universal
+
 2) Download the docbook-dsssl stylesheets from 
 http://sourceforge.net/project/showfiles.php?group_id=21935&package_id=16611 
 and then unpack the archive in /opt/local/share/sgml
@@ -152,6 +159,8 @@ and then unpack the archive in /opt/local/share/sgml
 CATALOG "openjade/catalog"    
 CATALOG "docbook-4.2/docbook.cat"
 CATALOG "docbook-dsssl-1.79/catalog"  
+
+8) Make sure that settings.sh is updated with docbook installation path.
 
 Build VMs
 ---------
@@ -189,11 +198,32 @@ The Windows VM is the most tricky to setup:
 - Install the a basic installation of Cygwin from http://www.cygwin.com/. 
   Include the OpenSSH package.
 - Configure sshd with ssh-host-config, using the buildfarm user account as
-  the service account.
+  the service account. Make sure that openssh log file has correct ownership
+  and permissions. It is absolotely necessary NOT to use default local account
+  with sshd because compilation will fail when invoked via ssh.
 - Make sure that port 22/TCP is open in the Windows Firewall configuration.
 - Install the public ssh key in C:\Cygwin\home\buildfarm\.ssh
 - Install zip.exe and unzip.exe into the System32 directory. These utilities
   can be found at ftp://ftp.tex.ac.uk/tex-archive/tools/zip/info-zip/WIN32/
+- Create folder 'c:\pgBuild'
+- Depending upon the modules to build, install various utilities in c:\pgBuild
+- Install bison, flex, diffutils in c:\pgBuild (Available from http://gnuwin32.sourceforge.net)
+- Prebuilt iconv, libxml2, libxslt, openssl and zlib from http://zlatkovic.com/pub/libxml,
+  install them in c:\pgBuild
+- gettext (Please consult developer for specific version for PostgreSQL)
+- Mingw (gcc and g++). 
+- MSys 1.0 
+- Compile and install ZLib in Msys using --prefix=/mingw
+- krb5 in c:\pgBuild
+- vcredist in c:\pgBuild
+- apache ANT in c:\pgBuild
+- wxWidgets in c:\pgBuild
+ 
+Build Machines as external machines
+-----------------------------------
+In order to set build machines as external machines, Create NFS share pointing to 
+top level 'pginstaller' directory on Mac. For this purpose free tool 'NFS Manager' 
+can be used. On linux side, update /etc/fstab to create nfs mount to this NFS share. 
 
 Build scripts
 -------------
