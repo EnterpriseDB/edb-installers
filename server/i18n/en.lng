@@ -1,5 +1,7 @@
 default.locale=Default locale
 
+error.installing.runtimes=An error occured executing the Microsoft VC++ runtime installer.
+
 upgrade.existing.installation.title=Existing installation
 upgrade.existing.installation.description=An existing PostgreSQL installation has been found at ${iBaseDirectory}. This installation will be upgraded.
 
