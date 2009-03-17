@@ -71,6 +71,7 @@
     <setInstallerVariable name="defaultpghost" value="localhost"/>
     <setInstallerVariable name="defaultpguser" value="postgres"/>
     <setInstallerVariable name="defaultpgport" value="5432"/>
+    <setInstallerVariable name="defaultpgdbname" value="postgres"/>
 
     <setInstallerVariableFromRegEx>
       <name>pgagent_installer_schema_version</name>
@@ -145,6 +146,7 @@
         <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGUSER" variable="pguser"/>
         <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" variable="pgport"/>
         <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" variable="pghost"/>
+        <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGDATABASE" variable="pgdbname"/>
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
@@ -227,6 +229,7 @@
         <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGUSER" value="${pguser}"/>
         <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" value="${pghost}"/>
         <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" value="${pgport}"/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGDATABASE" value="${pgdbname}"/>
       </actionList>
       <ruleList>
         <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
@@ -240,6 +243,7 @@
     <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGUSER" value="${pguser}"/>
     <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGHOST" value="${pghost}"/>
     <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGPORT" value="${pgport}"/>
+    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGDATABASE" value="${pgdbname}"/>
 
     <!-- Create the user account with which pgAgent will run-->
     <runProgram>
@@ -399,6 +403,67 @@
 
       </actionList>
     </actionGroup>
+
+    <!-- Create pgagent schema in unattended mode -->
+    <actionGroup>
+      <actionList>
+        <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+        <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+        <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+        <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
+        <!-- Create plpgsql, if not exists -->
+        <runProgram>
+          <program>${installdir}/bin/psql</program>
+          <programArguments>-t -c "CREATE LANGUAGE plpgsql"</programArguments>
+          <progressText>${msg(progress.text.creating.plpgsql)}</progressText>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+          </ruleList>
+        </runProgram>
+
+        <runProgram>
+          <program>${installdir}\installer\pgAgent\configurePgAgent.bat</program>
+          <programArguments>"CREATE_PLPGSQL" "${installdir}\bin\psql.exe"</programArguments>
+          <progressText>${msg(progress.text.creating.plpgsql)}</progressText>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- Create pgagent schema -->
+        <runProgram>
+          <program>${installdir}/bin/psql</program>
+          <programArguments>-t -f "${installdir}/share/pgagent.sql"</programArguments>
+          <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <workingDirectory>${installdir}/bin</workingDirectory>
+          <ruleList>
+            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </runProgram>
+        <runProgram>
+          <program>${installdir}\installer\pgAgent\configurePgAgent.bat</program>
+          <programArguments>"CREATE_PGAGENT_SCHEMA" "${installdir}\bin\psql.exe" "${installdir}\share\pgagent.sql"</programArguments>
+          <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <workingDirectory>${installdir}/bin</workingDirectory>
+          <ruleList>
+            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </runProgram>
+      </actionList>
+    </actionGroup>
     <substitute>
       <files>${installdir}/installer/pgAgent/pgagentctl.sh</files>
       <substitutionList>
@@ -407,6 +472,7 @@
         <substitution pattern="PG_PORT" value="${pgport}"/>
         <substitution pattern="PG_USER" value="${pguser}"/>
         <substitution pattern="SYSTEM_USER" value="${systemuser}"/>
+        <substitution pattern="PG_DATABASE" value="${pgdbname}"/>
       </substitutionList>
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
@@ -421,6 +487,7 @@
         <substitution pattern="PG_PORT" value="${pgport}"/>
         <substitution pattern="PG_USER" value="${pguser}"/>
         <substitution pattern="PG_PASSWORD" value="${pgpassword}"/>
+        <substitution pattern="PG_DATABASE" value="${pgdbname}"/>
       </substitutionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -442,7 +509,7 @@
         <runProgram>
           <customErrorMessage>${msg(error.create.pgpass)}</customErrorMessage>
           <program>${installdir}\installer\pgAgent\configurePgAgent.bat</program>
-          <programArguments>CREATE_PGPASS_CONF "${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe" ${systemuser} ${systempassword} ${pghost} ${pgport} postgres ${pguser} ${pgpassword}</programArguments>
+          <programArguments>CREATE_PGPASS_CONF "${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe" ${systemuser} ${systempassword} ${pghost} ${pgport} ${pgdbname} ${pguser} ${pgpassword}</programArguments>
           <workingDirectory>${windir}</workingDirectory>
           <abortOnError>0</abortOnError>
           <showMessageOnError>1</showMessageOnError>
@@ -466,7 +533,7 @@
         <runProgram>
           <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
           <program>${installdir}\bin\pgagent.exe</program>
-          <programArguments>INSTALL pgAgent -u ${systemuser} -p ${systempassword} host=${pghost} port=${pgport} user=${pguser} dbname=postgres</programArguments>
+          <programArguments>INSTALL pgAgent -u ${systemuser} -p ${systempassword} host=${pghost} port=${pgport} user=${pguser} dbname=${pgdbname}</programArguments>
           <workingDirectory>${installdir}\bin</workingDirectory>
           <abortOnError>0</abortOnError>
           <showMessageOnError>1</showMessageOnError>
@@ -483,7 +550,7 @@
         <runProgram>
           <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
           <program>${installdir}/installer/pgAgent/startupcfg.sh</program>
-          <programArguments>"${pghost}" "${pgport}" "${pguser}" "${systemuser}" "${installdir}"</programArguments>
+          <programArguments>"${pghost}" "${pgport}" "${pguser}" "${systemuser}" "${installdir}" "${pgdbname}"</programArguments>
           <workingDirectory>${installdir}/installer/pgAgent</workingDirectory>
           <progressText>Configure pgAgent service</progressText>
           <abortOnError>0</abortOnError>
@@ -553,6 +620,7 @@
         <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGUSER" value=""/>
         <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" value=""/>
         <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGDATABASE" value=""/>
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -1055,6 +1123,16 @@
           <width>40</width>
         </stringParameter>
 
+        <stringParameter cliOptionName="dbname" ask="0" cliOptionShow="0">
+          <name>pgdbname</name>
+          <description>Database</description>
+          <explanation/>
+          <value/>
+          <default>${defaultpgdbname}</default>
+          <allowEmptyValue>1</allowEmptyValue>
+          <width>40</width>
+        </stringParameter>
+
       </parameterList>
 
       <preShowPageActionList>
@@ -1077,6 +1155,7 @@
             <compareText logic="equals" text="${pgport}" value=""/>
             <compareText logic="equals" text="${pguser}" value=""/>
             <compareText logic="equals" text="${pgpassword}" value=""/>
+            <compareText logic="equals" text="${pgdbname}" value=""/>
           </ruleList>
         </actionGroup>
 
@@ -1185,12 +1264,12 @@
             <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
             <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
             <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-            <setEnvironmentVariable name="PGDATABASE" value="postgres"/>
+            <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
             <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/${product_fullname}/lib"/>
 
             <setInstallerVariableFromScriptOutput>
               <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
-              <execArgs>-l</execArgs>
+              <execArgs>-l ${pgdbname}</execArgs>
               <name>connection</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
               <customErrorMessage>${msg(pg.details.error)}</customErrorMessage>
@@ -1201,7 +1280,7 @@
 
             <setInstallerVariableFromScriptOutput>
               <exec>${system_temp_directory}\${product_fullname}\bin\checkPG.bat</exec>
-              <execArgs>"CHECK_CONNECTION" "${system_temp_directory}\${product_fullname}\bin\psql.exe"</execArgs>
+              <execArgs>"CHECK_CONNECTION" "${system_temp_directory}\${product_fullname}\bin\psql.exe" "${pgdbname}"</execArgs>
               <name>connection</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
               <customErrorMessage>${msg(pg.details.error)}</customErrorMessage>
