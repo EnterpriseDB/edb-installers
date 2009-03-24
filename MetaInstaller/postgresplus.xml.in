@@ -3,9 +3,9 @@
     <fullName>Postgres Plus</fullName>
     <version>PG_VERSION_METAINSTALLER</version>
     <productDisplayName>${product_fullname} ${product_version}</productDisplayName>
-    <leftImage>resources/images/left_side.png</leftImage>
-    <!--<logoImage>resources/images/enterprisedb.gif</logoImage>-->
-    <splashImage>resources/images/splash_screen.png</splashImage>
+    <leftImage>../resources/edb-side.png</leftImage>
+    <!--<logoImage>resources/enterprisedb.gif</logoImage>-->
+    <splashImage>../resources/splash_screen.png</splashImage>
     <preUninstallationScript>${installdir}/uninstall.sh</preUninstallationScript>
     <preUninstallationScriptArguments>${uninstall_dbserver1} ${uninstall_slony1} ${uninstall_pgJdbc1} ${uninstall_postgis1} ${uninstall_psqlOdbc1} ${installdir}</preUninstallationScriptArguments>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
@@ -4106,7 +4106,7 @@
                     <platforms>linux</platforms>
 		    <distributionFileList>
 			<distributionFile>
-                            <origin>resources/scripts/linux/uninstall.sh</origin>
+                            <origin>staging/linux/scripts/uninstall.sh</origin>
                         </distributionFile>
 		    </distributionFileList>
 	        </folder>
@@ -4118,7 +4118,7 @@
                     <platforms>linux-x64</platforms>
 		    <distributionFileList>
 			<distributionFile>
-                            <origin>resources/scripts/linux-x64/uninstall.sh</origin>
+                            <origin>staging/linux-x64/scripts/uninstall.sh</origin>
                         </distributionFile>
 		    </distributionFileList>
 	        </folder>
@@ -4130,7 +4130,7 @@
                     <platforms>windows</platforms>
 		    <distributionFileList>
 			<distributionFile>
-                            <origin>resources/scripts/windows/uninstall.bat</origin>
+                            <origin>staging/windows/scripts/uninstall.bat</origin>
                         </distributionFile>
 		    </distributionFileList>
 	        </folder>
@@ -4142,7 +4142,7 @@
                     <platforms>osx</platforms>
 		    <distributionFileList>
 			<distributionFile>
-                            <origin>resources/scripts/osx/uninstall.sh</origin>
+                            <origin>staging/osx/scripts/uninstall.sh</origin>
                         </distributionFile>
 		    </distributionFileList>
 	        </folder>
@@ -4170,66 +4170,66 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/linux/postgresql-PG_PACKAGE_VERSION-linux.bin</origin>
+                            <origin>staging/linux/postgresql-PG_PACKAGE_VERSION-linux.bin</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux/getlocales.sh</origin>
+                            <origin>staging/linux/scripts/getlocales.sh</origin>
                         </distributionFile>
                         <!--<distributionFile>
-                            <origin>resources/scripts/linux/uninstall.sh</origin>
+                            <origin>staging/linux/scripts/uninstall.sh</origin>
                         </distributionFile>-->
                         <distributionFile>
-                            <origin>resources/scripts/linux/generate_uuid.sh</origin>
+                            <origin>staging/linux/scripts/generate_uuid.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux/sysinfo.sh</origin>
+                            <origin>staging/linux/scripts/sysinfo.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux/validateUserClient.o</origin>
+                            <origin>staging/linux/scripts/validateUserClient.o</origin>
                         </distributionFile>
 
 			<!--<distributionFile>
-                            <origin>resources/scripts/linux/createNewUserClient.o</origin>
+                            <origin>staging/linux/scripts/createNewUserClient.o</origin>
                         </distributionFile>-->
 			<distributionFile>
-                            <origin>resources/scripts/linux/isUserValidated.o</origin>
+                            <origin>staging/linux/scripts/isUserValidated.o</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux/dynaTuneClient.o</origin>
+                            <origin>staging/linux/scripts/dynaTuneClient.o</origin>
                         </distributionFile>
 
 			<distributionFile>
-                            <origin>resources/scripts/linux/runvalidateUserClient.sh</origin>
+                            <origin>staging/linux/scripts/runvalidateUserClient.sh</origin>
                         </distributionFile>
 
 			<!--<distributionFile>
-                            <origin>resources/scripts/linux/runcreateNewUserClient.sh</origin>
+                            <origin>staging/linux/scripts/runcreateNewUserClient.sh</origin>
                         </distributionFile>-->
 			<distributionFile>
-                            <origin>resources/scripts/linux/runisUserValidated.sh</origin>
+                            <origin>staging/linux/scripts/runisUserValidated.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux/rundynaTuneClient.sh</origin>
+                            <origin>staging/linux/scripts/rundynaTuneClient.sh</origin>
                         </distributionFile>
 			<distributionDirectory>
-                            <origin>resources/scripts/linux/lib</origin>
+                            <origin>staging/linux/scripts/lib</origin>
                         </distributionDirectory>
 
 <!-- starts here -->
 			<distributionDirectory>
-                            <origin>resources/scripts/linux/pgcontrol</origin>
+                            <origin>staging/linux/scripts/pgcontrol</origin>
                         </distributionDirectory>
 			<distributionFile>
-                            <origin>resources/scripts/linux/runpgcontroldata.sh</origin>
+                            <origin>staging/linux/scripts/runpgcontroldata.sh</origin>
                         </distributionFile>
 
 <!-- ends here -->
 
                         <distributionFile>
-                            <origin>resources/scripts/linux/features.o</origin>
+                            <origin>staging/linux/scripts/features.o</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux/modifyPostgresql.o</origin>
+                            <origin>staging/linux/scripts/modifyPostgresql.o</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -4242,61 +4242,61 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <!--<distributionFile>
-                            <origin>resources/scripts/linux/uninstall.sh</origin>
+                            <origin>staging/linux/scripts/uninstall.sh</origin>
                         </distributionFile>-->
                         <distributionFile>
-                            <origin>resources/scripts/linux/generate_uuid.sh</origin>
+                            <origin>staging/linux/scripts/generate_uuid.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux/sysinfo.sh</origin>
+                            <origin>staging/linux/scripts/sysinfo.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux/validateUserClient.o</origin>
+                            <origin>staging/linux/scripts/validateUserClient.o</origin>
                         </distributionFile>
 
 			<!--<distributionFile>
-                            <origin>resources/scripts/linux/createNewUserClient.o</origin>
+                            <origin>staging/linux/scripts/createNewUserClient.o</origin>
                         </distributionFile>-->
 			<distributionFile>
-                            <origin>resources/scripts/linux/isUserValidated.o</origin>
+                            <origin>staging/linux/scripts/isUserValidated.o</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux/dynaTuneClient.o</origin>
+                            <origin>staging/linux/scripts/dynaTuneClient.o</origin>
                         </distributionFile>
 
 			<distributionFile>
-                            <origin>resources/scripts/linux/runvalidateUserClient.sh</origin>
+                            <origin>staging/linux/scripts/runvalidateUserClient.sh</origin>
                         </distributionFile>
 
 			<!--<distributionFile>
-                            <origin>resources/scripts/linux/runcreateNewUserClient.sh</origin>
+                            <origin>staging/linux/scripts/runcreateNewUserClient.sh</origin>
                         </distributionFile>-->
 			<distributionFile>
-                            <origin>resources/scripts/linux/runisUserValidated.sh</origin>
+                            <origin>staging/linux/scripts/runisUserValidated.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux/rundynaTuneClient.sh</origin>
+                            <origin>staging/linux/scripts/rundynaTuneClient.sh</origin>
                         </distributionFile>
 			<distributionDirectory>
-                            <origin>resources/scripts/linux/lib</origin>
+                            <origin>staging/linux/scripts/lib</origin>
                         </distributionDirectory>
 
 <!-- starts here -->
 			<distributionDirectory>
-                            <origin>resources/scripts/linux/pgcontrol</origin>
+                            <origin>staging/linux/scripts/pgcontrol</origin>
                         </distributionDirectory>
 			<distributionFile>
-                            <origin>resources/scripts/linux/runpgcontroldata.sh</origin>
+                            <origin>staging/linux/scripts/runpgcontroldata.sh</origin>
                         </distributionFile>
 
 <!-- ends here -->
 		
 
                         <distributionFile>
-                            <origin>resources/scripts/linux/features.o</origin>
+                            <origin>staging/linux/scripts/features.o</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux/modifyPostgresql.o</origin>
+                            <origin>staging/linux/scripts/modifyPostgresql.o</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -4310,66 +4310,66 @@
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/linux-x64/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</origin>
+                            <origin>staging/linux-x64/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/getlocales.sh</origin>
+                            <origin>staging/linux-x64/scripts/getlocales.sh</origin>
                         </distributionFile>
                         <!--<distributionFile>
-                            <origin>resources/scripts/linux-x64/uninstall.sh</origin>
+                            <origin>staging/linux-x64/scripts/uninstall.sh</origin>
                         </distributionFile>-->
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/generate_uuid.sh</origin>
+                            <origin>staging/linux-x64/scripts/generate_uuid.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/sysinfo.sh</origin>
+                            <origin>staging/linux-x64/scripts/sysinfo.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/validateUserClient.o</origin>
+                            <origin>staging/linux-x64/scripts/validateUserClient.o</origin>
                         </distributionFile>
 
 			<!--<distributionFile>
-                            <origin>resources/scripts/linux-x64/createNewUserClient.o</origin>
+                            <origin>staging/linux-x64/scripts/createNewUserClient.o</origin>
                         </distributionFile>-->
 			<distributionFile>
-                            <origin>resources/scripts/linux-x64/isUserValidated.o</origin>
+                            <origin>staging/linux-x64/scripts/isUserValidated.o</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/dynaTuneClient.o</origin>
+                            <origin>staging/linux-x64/scripts/dynaTuneClient.o</origin>
                         </distributionFile>
 
 			<distributionFile>
-                            <origin>resources/scripts/linux-x64/runvalidateUserClient.sh</origin>
+                            <origin>staging/linux-x64/scripts/runvalidateUserClient.sh</origin>
                         </distributionFile>
 
 			<!--<distributionFile>
-                            <origin>resources/scripts/linux-x64/runcreateNewUserClient.sh</origin>
+                            <origin>staging/linux-x64/scripts/runcreateNewUserClient.sh</origin>
                         </distributionFile>-->
 			<distributionFile>
-                            <origin>resources/scripts/linux-x64/runisUserValidated.sh</origin>
+                            <origin>staging/linux-x64/scripts/runisUserValidated.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/rundynaTuneClient.sh</origin>
+                            <origin>staging/linux-x64/scripts/rundynaTuneClient.sh</origin>
                         </distributionFile>
 			<distributionDirectory>
-                            <origin>resources/scripts/linux-x64/lib</origin>
+                            <origin>staging/linux-x64/scripts/lib</origin>
                         </distributionDirectory>
 
 <!-- starts here -->
 			<distributionDirectory>
-                            <origin>resources/scripts/linux-x64/pgcontrol</origin>
+                            <origin>staging/linux-x64/scripts/pgcontrol</origin>
                         </distributionDirectory>
 			<distributionFile>
-                            <origin>resources/scripts/linux-x64/runpgcontroldata.sh</origin>
+                            <origin>staging/linux-x64/scripts/runpgcontroldata.sh</origin>
                         </distributionFile>
 
 <!-- ends here -->
 
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/features.o</origin>
+                            <origin>staging/linux-x64/scripts/features.o</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/modifyPostgresql.o</origin>
+                            <origin>staging/linux-x64/scripts/modifyPostgresql.o</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -4384,60 +4384,60 @@
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <!--<distributionFile>
-                            <origin>resources/scripts/linux-x64/uninstall.sh</origin>
+                            <origin>staging/linux-x64/scripts/uninstall.sh</origin>
                         </distributionFile>-->
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/generate_uuid.sh</origin>
+                            <origin>staging/linux-x64/scripts/generate_uuid.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/sysinfo.sh</origin>
+                            <origin>staging/linux-x64/scripts/sysinfo.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/validateUserClient.o</origin>
+                            <origin>staging/linux-x64/scripts/validateUserClient.o</origin>
                         </distributionFile>
 
 			<!--<distributionFile>
-                            <origin>resources/scripts/linux-x64/createNewUserClient.o</origin>
+                            <origin>staging/linux-x64/scripts/createNewUserClient.o</origin>
                         </distributionFile>-->
 			<distributionFile>
-                            <origin>resources/scripts/linux-x64/isUserValidated.o</origin>
+                            <origin>staging/linux-x64/scripts/isUserValidated.o</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/dynaTuneClient.o</origin>
+                            <origin>staging/linux-x64/scripts/dynaTuneClient.o</origin>
                         </distributionFile>
 
 			<distributionFile>
-                            <origin>resources/scripts/linux-x64/runvalidateUserClient.sh</origin>
+                            <origin>staging/linux-x64/scripts/runvalidateUserClient.sh</origin>
                         </distributionFile>
 
 			<!--<distributionFile>
-                            <origin>resources/scripts/linux-x64/runcreateNewUserClient.sh</origin>
+                            <origin>staging/linux-x64/scripts/runcreateNewUserClient.sh</origin>
                         </distributionFile>-->
 			<distributionFile>
-                            <origin>resources/scripts/linux-x64/runisUserValidated.sh</origin>
+                            <origin>staging/linux-x64/scripts/runisUserValidated.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/rundynaTuneClient.sh</origin>
+                            <origin>staging/linux-x64/scripts/rundynaTuneClient.sh</origin>
                         </distributionFile>
 			<distributionDirectory>
-                            <origin>resources/scripts/linux-x64/lib</origin>
+                            <origin>staging/linux-x64/scripts/lib</origin>
                         </distributionDirectory>
 
 <!-- starts here -->
 			<distributionDirectory>
-                            <origin>resources/scripts/linux-x64/pgcontrol</origin>
+                            <origin>staging/linux-x64/scripts/pgcontrol</origin>
                         </distributionDirectory>
 			<distributionFile>
-                            <origin>resources/scripts/linux-x64/runpgcontroldata.sh</origin>
+                            <origin>staging/linux-x64/scripts/runpgcontroldata.sh</origin>
                         </distributionFile>
 
 <!-- ends here -->
 
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/features.o</origin>
+                            <origin>staging/linux-x64/scripts/features.o</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/modifyPostgresql.o</origin>
+                            <origin>staging/linux-x64/scripts/modifyPostgresql.o</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -4451,56 +4451,56 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/windows/postgresql-PG_PACKAGE_VERSION-windows.exe</origin>
+                            <origin>staging/windows/postgresql-PG_PACKAGE_VERSION-windows.exe</origin>
                         </distributionFile>
                         <!--<distributionFile>
-                            <origin>resources/scripts/windows/uninstall.bat</origin>
+                            <origin>staging/windows/scripts/uninstall.bat</origin>
                         </distributionFile>-->
 
                         <distributionFile>
-                            <origin>resources/scripts/windows/getlocales.exe</origin>
+                            <origin>staging/windows/scripts/getlocales.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/windows/createuser.exe</origin>
+                            <origin>staging/windows/scripts/createuser.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/windows/validateuser.exe</origin>
+                            <origin>staging/windows/scripts/validateuser.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/windows/dbserver_guid.exe</origin>
+                            <origin>staging/windows/scripts/dbserver_guid.exe</origin>
                         </distributionFile>
 
 	
 			<distributionFile>
-                            <origin>resources/scripts/windows/validateUserClient.exe</origin>
+                            <origin>staging/windows/scripts/validateUserClient.exe</origin>
                         </distributionFile>
 
 			<!--<distributionFile>
-                            <origin>resources/scripts/windows/createNewUser.exe</origin>
+                            <origin>staging/windows/scripts/createNewUser.exe</origin>
                         </distributionFile>-->
 			<distributionFile>
-                            <origin>resources/scripts/windows/isUserValidated.exe</origin>
+                            <origin>staging/windows/scripts/isUserValidated.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/windows/getDynaTune.exe</origin>
+                            <origin>staging/windows/scripts/getDynaTune.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/windows/features.exe</origin>
+                            <origin>staging/windows/scripts/features.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/windows/modifyPostgresql.exe</origin>
+                            <origin>staging/windows/scripts/modifyPostgresql.exe</origin>
                         </distributionFile>
 
 <!-- starts here -->
 			<distributionDirectory>
-                            <origin>resources/scripts/windows/pgcontrol</origin>
+                            <origin>staging/windows/scripts/pgcontrol</origin>
                         </distributionDirectory>
 
 			<distributionFile>
-                            <origin>resources/scripts/windows/vcredist_x86.exe</origin>
+                            <origin>staging/windows/scripts/vcredist_x86.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/windows/installruntimes.vbs</origin>
+                            <origin>staging/windows/scripts/installruntimes.vbs</origin>
                         </distributionFile>
 			
 <!-- ends here -->
@@ -4528,46 +4528,46 @@
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/mac/postgresql-PG_PACKAGE_VERSION-osx.app</origin>
+                            <origin>staging/osx/postgresql-PG_PACKAGE_VERSION-osx.app</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/osx/getlocales.sh</origin>
+                            <origin>staging/osx/scripts/getlocales.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/osx/preinstall.sh</origin>
+                            <origin>staging/osx/scripts/preinstall.sh</origin>
                         </distributionFile>
                         <!--<distributionFile>
-                            <origin>resources/scripts/osx/uninstall.sh</origin>
+                            <origin>staging/osx/scripts/uninstall.sh</origin>
                         </distributionFile>-->
                         <distributionFile>
-                            <origin>resources/scripts/osx/generate_uuid.sh</origin>
+                            <origin>staging/osx/scripts/generate_uuid.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/osx/sysinfo.sh</origin>
+                            <origin>staging/osx/scripts/sysinfo.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/osx/validateUserClient.o</origin>
+                            <origin>staging/osx/scripts/validateUserClient.o</origin>
                         </distributionFile>
 
 			<!--<distributionFile>
-                            <origin>resources/scripts/osx/createNewUserClient.o</origin>
+                            <origin>staging/osx/scripts/createNewUserClient.o</origin>
                         </distributionFile>-->
 	<distributionFile>
-                            <origin>resources/scripts/osx/isUserValidated.o</origin>
+                            <origin>staging/osx/scripts/isUserValidated.o</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/osx/dynaTuneClient.o</origin>
+                            <origin>staging/osx/scripts/dynaTuneClient.o</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/osx/features.o</origin>
+                            <origin>staging/osx/scripts/features.o</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/osx/modifyPostgresql.o</origin>
+                            <origin>staging/osx/scripts/modifyPostgresql.o</origin>
                         </distributionFile>
 
 <!-- starts here -->
 			<distributionDirectory>
-                            <origin>resources/scripts/osx/pgcontrol</origin>
+                            <origin>staging/osx/scripts/pgcontrol</origin>
                         </distributionDirectory>
 			
 
@@ -4599,7 +4599,7 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/linux/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux.bin</origin>
+                            <origin>staging/linux/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux.bin</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -4610,7 +4610,7 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <!--<distributionFile>
-                            <origin>resources/scripts/linux/uninstall.sh</origin>
+                            <origin>staging/linux/scripts/uninstall.sh</origin>
                         </distributionFile>-->
 
 	
@@ -4626,7 +4626,7 @@
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/linux-x64/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux-x64.bin</origin>
+                            <origin>staging/linux-x64/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux-x64.bin</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -4637,7 +4637,7 @@
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <!--<distributionFile>
-                            <origin>resources/scripts/linux-x64/uninstall.sh</origin>
+                            <origin>staging/linux-x64/scripts/uninstall.sh</origin>
                         </distributionFile>-->
 
 	
@@ -4654,10 +4654,10 @@
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>installers/mac/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-osx.app</origin>
+                            <origin>staging/osx/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-osx.app</origin>
                         </distributionDirectory>
                         <!--<distributionFile>
-                            <origin>resources/scripts/osx/uninstall.sh</origin>
+                            <origin>staging/osx/scripts/uninstall.sh</origin>
                         </distributionFile>-->
 
 	            </distributionFileList>
@@ -4671,10 +4671,10 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/windows/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-windows.exe</origin>
+                            <origin>staging/windows/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-windows.exe</origin>
                         </distributionFile>
                        <!-- <distributionFile>
-                            <origin>resources/scripts/windows/uninstall.bat</origin>
+                            <origin>staging/windows/scripts/uninstall.bat</origin>
                         </distributionFile>-->
                     </distributionFileList>
                 </folder>
@@ -4743,7 +4743,7 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/linux/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux.bin</origin>
+                            <origin>staging/linux/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux.bin</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -4754,7 +4754,7 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <!--<distributionFile>
-                            <origin>resources/scripts/linux/uninstall.sh</origin>
+                            <origin>staging/linux/scripts/uninstall.sh</origin>
                         </distributionFile>-->
 
 	
@@ -4771,7 +4771,7 @@
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/linux-x64/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux-x64.bin</origin>
+                            <origin>staging/linux-x64/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux-x64.bin</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -4782,7 +4782,7 @@
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <!--<distributionFile>
-                            <origin>resources/scripts/linux-x64/uninstall.sh</origin>
+                            <origin>staging/linux-x64/scripts/uninstall.sh</origin>
                         </distributionFile>-->
 
 	
@@ -4797,10 +4797,10 @@
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>installers/mac/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-osx.app</origin>
+                            <origin>staging/osx/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-osx.app</origin>
                         </distributionDirectory>
                         <!--<distributionFile>
-                            <origin>resources/scripts/osx/uninstall.sh</origin>
+                            <origin>staging/osx/scripts/uninstall.sh</origin>
                         </distributionFile>-->
 
 	
@@ -4815,10 +4815,10 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/windows/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-windows.exe</origin>
+                            <origin>staging/windows/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-windows.exe</origin>
                         </distributionFile>
                         <!--<distributionFile>
-                            <origin>resources/scripts/windows/uninstall.bat</origin>
+                            <origin>staging/windows/scripts/uninstall.bat</origin>
                         </distributionFile>-->
                     </distributionFileList>
                 </folder>
@@ -4884,13 +4884,13 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/linux/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux.bin</origin>
+                            <origin>staging/linux/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux.bin</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux/check-connection.sh</origin>
+                            <origin>staging/linux/scripts/check-connection.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux/check-db.sh</origin>
+                            <origin>staging/linux/scripts/check-db.sh</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -4901,13 +4901,13 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                        <!-- <distributionFile>
-                            <origin>resources/scripts/linux/uninstall.sh</origin>
+                            <origin>staging/linux/scripts/uninstall.sh</origin>
                         </distributionFile>-->
                         <distributionFile>
-                            <origin>resources/scripts/linux/check-connection.sh</origin>
+                            <origin>staging/linux/scripts/check-connection.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux/check-db.sh</origin>
+                            <origin>staging/linux/scripts/check-db.sh</origin>
                         </distributionFile>
 
 	
@@ -4923,13 +4923,13 @@
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/linux-x64/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-x64.bin</origin>
+                            <origin>staging/linux-x64/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-x64.bin</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/check-connection.sh</origin>
+                            <origin>staging/linux-x64/scripts/check-connection.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/check-db.sh</origin>
+                            <origin>staging/linux-x64/scripts/check-db.sh</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -4940,13 +4940,13 @@
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                        <!-- <distributionFile>
-                            <origin>resources/scripts/linux-x64/uninstall.sh</origin>
+                            <origin>staging/linux-x64/scripts/uninstall.sh</origin>
                         </distributionFile>-->
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/check-connection.sh</origin>
+                            <origin>staging/linux-x64/scripts/check-connection.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/linux-x64/check-db.sh</origin>
+                            <origin>staging/linux-x64/scripts/check-db.sh</origin>
                         </distributionFile>
 
 	
@@ -4961,16 +4961,16 @@
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>installers/mac/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-osx.app</origin>
+                            <origin>staging/osx/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-osx.app</origin>
                         </distributionDirectory>
                         <distributionFile>
-                            <origin>resources/scripts/osx/check-connection.sh</origin>
+                            <origin>staging/osx/scripts/check-connection.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/osx/check-db.sh</origin>
+                            <origin>staging/osx/scripts/check-db.sh</origin>
                         </distributionFile>
                        <!-- <distributionFile>
-                            <origin>resources/scripts/osx/uninstall.sh</origin>
+                            <origin>staging/osx/scripts/uninstall.sh</origin>
                         </distributionFile>-->
 
 	
@@ -4985,22 +4985,22 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/windows/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-windows.exe</origin>
+                            <origin>staging/windows/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-windows.exe</origin>
                         </distributionFile>
                         <!--<distributionFile>
-                            <origin>resources/scripts/windows/uninstall.bat</origin>
+                            <origin>staging/windows/scripts/uninstall.bat</origin>
                         </distributionFile>-->
                         <distributionFile>
-                            <origin>resources/scripts/windows/createuser.exe</origin>
+                            <origin>staging/windows/scripts/createuser.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/windows/validateuser.exe</origin>
+                            <origin>staging/windows/scripts/validateuser.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/windows/check-connection.bat</origin>
+                            <origin>staging/windows/scripts/check-connection.bat</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>resources/scripts/windows/check-db.bat</origin>
+                            <origin>staging/windows/scripts/check-db.bat</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -5067,7 +5067,7 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/linux/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux.bin</origin>
+                            <origin>staging/linux/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux.bin</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -5078,7 +5078,7 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                        <!-- <distributionFile>
-                            <origin>resources/scripts/linux/uninstall.sh</origin>
+                            <origin>staging/linux/scripts/uninstall.sh</origin>
                         </distributionFile>-->
 
 	
@@ -5094,7 +5094,7 @@
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/linux-x64/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux-x64.bin</origin>
+                            <origin>staging/linux-x64/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux-x64.bin</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -5105,7 +5105,7 @@
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                        <!-- <distributionFile>
-                            <origin>resources/scripts/linux-x64/uninstall.sh</origin>
+                            <origin>staging/linux-x64/scripts/uninstall.sh</origin>
                         </distributionFile>-->
 
 	
@@ -5121,10 +5121,10 @@
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>installers/mac/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-osx.app</origin>
+                            <origin>staging/osx/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-osx.app</origin>
                         </distributionDirectory>
                        <!-- <distributionFile>
-                            <origin>resources/scripts/osx/uninstall.sh</origin>
+                            <origin>staging/osx/scripts/uninstall.sh</origin>
                         </distributionFile>-->
 
 	
@@ -5139,10 +5139,10 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/windows/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-windows.exe</origin>
+                            <origin>staging/windows/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-windows.exe</origin>
                         </distributionFile>
                         <!--<distributionFile>
-                            <origin>resources/scripts/windows/uninstall.bat</origin>
+                            <origin>staging/windows/scripts/uninstall.bat</origin>
                         </distributionFile>-->
                     </distributionFileList>
                 </folder>
@@ -5212,10 +5212,10 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>installers/windows/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-windows.exe</origin>
+                            <origin>staging/windows/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-windows.exe</origin>
                         </distributionFile>
                         <!--<distributionFile>
-                            <origin>resources/scripts/windows/uninstall.bat</origin>
+                            <origin>staging/windows/scripts/uninstall.bat</origin>
                         </distributionFile>-->
                     </distributionFileList>
                 </folder>

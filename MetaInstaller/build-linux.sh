@@ -5,42 +5,70 @@
 ################################################################################
 
 _prep_metainstaller_linux() {
+
     # Enter the source directory and cleanup if required
-    cd $WD/MetaInstaller/installers
-    
-    if [ -e linux ];
+    cd $WD/MetaInstaller/source
+
+    if [ -e MetaInstaller.linux ];
     then
-      echo "Removing existing linux installers directory"
-      rm -rf linux  || _die "Couldn't remove the existing linux installers directory (installers/linux)"
+      echo "Removing existing MetaInstaller.linux source directory"
+      rm -rf MetaInstaller.linux  || _die "Couldn't remove the existing MetaInstaller.linux source directory (source/MetaInstaller.linux)"
     fi
 
-    mkdir linux
+    echo "Creating source directory ($WD/MetaInstaller/source/MetaInstaller.linux)"
+    mkdir -p $WD/MetaInstaller/source/MetaInstaller.linux || _die "Couldn't create the MetaInstaller.linux directory"
+
+    # Enter the staging directory and cleanup if required
+   
+    if [ -e $WD/MetaInstaller/staging/linux ];
+    then
+      echo "Removing existing linux staging directory"
+      rm -rf $WD/MetaInstaller/staging/linux  || _die "Couldn't remove the existing linux staging directory (staging/linux)"
+    fi
+
+    echo "Creating staging directory ($WD/MetaInstaller/staging/linux)"
+    mkdir -p $WD/MetaInstaller/staging/linux || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/MetaInstaller/staging/linux || _die "Couldn't set the permissions on the staging directory"
+
 
     PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
     
        
     # Grab a copy of the postgresql installer
-    cp -R "$WD/output/postgresql-$PG_PACKAGE_VERSION-linux.bin"  $WD/MetaInstaller/installers/linux || _die "Failed to copy the postgresql installer (installers/linux/postgresql-$PG_PACKAGE_VERSION-linux.bin)"
+    cp -R "$WD/output/postgresql-$PG_PACKAGE_VERSION-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the postgresql installer (staging/linux/postgresql-$PG_PACKAGE_VERSION-linux.bin)"
     # Grab a copy of the slony installer
-    cp -R "$WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-linux.bin"  $WD/MetaInstaller/installers/linux || _die "Failed to copy the slony installer (installers/linux/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-linux.bin)"
+    cp -R "$WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the slony installer (staging/linux/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-linux.bin)"
     # Grab a copy of the pgjdbc installer
-    cp -R "$WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-linux.bin"  $WD/MetaInstaller/installers/linux || _die "Failed to copy the pgjdbc installer (installers/linux/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-linux.bin)"
+    cp -R "$WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the pgjdbc installer (staging/linux/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-linux.bin)"
     # Grab a copy of the psqlodbc installer
-    cp -R "$WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-linux.bin"  $WD/MetaInstaller/installers/linux || _die "Failed to copy the psqlodbc installer (installers/linux/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-linux.bin)"
+    cp -R "$WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the psqlodbc installer (staging/linux/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-linux.bin)"
     # Grab a copy of the postgis installer
-    cp -R "$WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-linux.bin"  $WD/MetaInstaller/installers/linux || _die "Failed to copy the postgis installer (installers/linux/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-linux.bin)"
+    cp -R "$WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the postgis installer (staging/linux/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-linux.bin)"
 
-    cd $WD/MetaInstaller/resources/scripts/linux
+    cd $WD/MetaInstaller
+    mkdir -p staging/linux/scripts/pgcontrol
+  
+    cp -R $WD/server/staging/linux/bin/pg_controldata  $WD/MetaInstaller/staging/linux/scripts/pgcontrol || _die "Failed to copy the pg_controldata  (MetaInstaller/staging/linux/scripts/pgcontrol)"
+    cd $WD/server/staging/linux
+    cp -R lib  $WD/MetaInstaller/staging/linux/scripts/pgcontrol || _die "Failed to copy the lib/  (MetaInstaller/staging/linux/scripts/pgcontrol)"
+    cp -R $WD/PostGIS/scripts/linux/check-connection.sh  $WD/MetaInstaller/staging/linux/scripts || _die "Failed to copy the check-connection.sh  (MetaInstaller/staging/linux/scripts)"
+    cp -R $WD/PostGIS/scripts/linux/check-db.sh  $WD/MetaInstaller/staging/linux/scripts || _die "Failed to copy the check-db.sh  (MetaInstaller/staging/linux/scripts)"
+    cp -R $WD/server/scripts/linux/getlocales.sh  $WD/MetaInstaller/staging/linux/scripts || _die "Failed to copy the getlocales.sh  (MetaInstaller/staging/linux/scripts)"
+    cp -R $WD/server/scripts/linux/runpgcontroldata.sh  $WD/MetaInstaller/staging/linux/scripts || _die "Failed to copy the runpgcontroldata.sh  (MetaInstaller/staging/linux/scripts)"
+    cp -R $WD/server/scripts/linux/startserver.sh  $WD/MetaInstaller/staging/linux/scripts || _die "Failed to copy the startserver.sh  (MetaInstaller/staging/linux/scripts)"
+    cp -R $WD/MetaInstaller/scripts/linux/*.sh  $WD/MetaInstaller/staging/linux/scripts/ || _die "Failed to copy the scripts"
 
-    rm -rf *.o
-    rm -rf lib
-    rm -rf pgcontrol
+    if [ -e $WD/MetaInstaller/staging/linux/scripts/lib ];
+    then
+      echo "Removing existing lib directory"
+      rm -rf $WD/MetaInstaller/staging/linux/scripts/lib
+    fi
 
-    rm -rf check-connection.sh
-    rm -rf check-db.sh
-    rm -rf getlocales.sh
-    rm -rf runpgcontroldata.sh
-    rm -rf startserver.sh
+    mkdir $WD/MetaInstaller/staging/linux/scripts/lib
+
+    ssh $PG_SSH_LINUX "cp -r /lib/libssl.so* $PG_PATH_LINUX/MetaInstaller/staging/linux/scripts/lib/."
+    ssh $PG_SSH_LINUX "cp -r /lib/libcrypto.so* $PG_PATH_LINUX/MetaInstaller/staging/linux/scripts/lib/."
+    
 }
 
 ################################################################################
@@ -49,26 +77,23 @@ _prep_metainstaller_linux() {
 
 _build_metainstaller_linux() {
 
-  cd $WD/MetaInstaller/resources/scripts/linux
-  mkdir pgcontrol
-  cd $WD/server/staging/linux/bin
-  cp -R pg_controldata  $WD/MetaInstaller/resources/scripts/linux/pgcontrol || _die "Failed to copy the pg_controldata  (MetaInstaller/resources/scripts/linux/pgcontrol)"
-  cd $WD/server/staging/linux
-  cp -R lib  $WD/MetaInstaller/resources/scripts/linux/pgcontrol || _die "Failed to copy the lib/  (MetaInstaller/resources/scripts/linux/pgcontrol)"
+    cp -R $WD/MetaInstaller/scripts/linux/* $WD/MetaInstaller/source/MetaInstaller.linux/ || _die "Failed to copy the utilities to source folder"
 
-  cd $WD/PostGIS/scripts/linux
-  cp -R check-connection.sh  $WD/MetaInstaller/resources/scripts/linux || _die "Failed to copy the check-connection.sh  (MetaInstaller/resources/scripts/linux)"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MetaInstaller/source/MetaInstaller.linux/features/; gcc -o features.o features.c" || _die "Failed to build the features utility"
+    cp $WD/MetaInstaller/source/MetaInstaller.linux/features/features.o $WD/MetaInstaller/staging/linux/scripts/ || _die "Failed to copy the features utility to the staging directory"
 
-  cp -R check-db.sh  $WD/MetaInstaller/resources/scripts/linux || _die "Failed to copy the check-db.sh  (MetaInstaller/resources/scripts/linux)"
-   
-  cd $WD/server/scripts/linux
-  cp -R getlocales.sh  $WD/MetaInstaller/resources/scripts/linux || _die "Failed to copy the getlocales.sh  (MetaInstaller/resources/scripts/linux)"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MetaInstaller/source/MetaInstaller.linux/getDynaTune/; gcc -DWITH_OPENSSL -I. -o dynaTuneClient.o getDynaTuneInfoClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the dynaTuneClient utility"
+    cp $WD/MetaInstaller/source/MetaInstaller.linux/getDynaTune/dynaTuneClient.o $WD/MetaInstaller/staging/linux/scripts/ || _die "Failed to copy the dynaTuneClient utility to the staging directory"
 
-  cp -R runpgcontroldata.sh  $WD/MetaInstaller/resources/scripts/linux || _die "Failed to copy the runpgcontroldata.sh  (MetaInstaller/resources/scripts/linux)"
+   ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MetaInstaller/source/MetaInstaller.linux/isUserValidated/; gcc -DWITH_OPENSSL -I. -o isUserValidated.o WSisUserValidated.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the isUserValidated utility"
+    cp $WD/MetaInstaller/source/MetaInstaller.linux/isUserValidated/isUserValidated.o $WD/MetaInstaller/staging/linux/scripts/ || _die "Failed to copy the isUserValidated utility to the staging directory"
 
-  cp -R startserver.sh  $WD/MetaInstaller/resources/scripts/linux || _die "Failed to copy the startserver.sh  (MetaInstaller/resources/scripts/linux)"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MetaInstaller/source/MetaInstaller.linux/modifyPostgresql/; gcc -o modifyPostgresql.o replaceDynatune.c" || _die "Failed to build the modifyPostgresql utility"
+    cp $WD/MetaInstaller/source/MetaInstaller.linux/modifyPostgresql/modifyPostgresql.o $WD/MetaInstaller/staging/linux/scripts/ || _die "Failed to copy the modifyPostgresql utility to the staging directory"
 
-  ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MetaInstaller/resources/; sh ./build-linux.sh" || _die "Failed to build C components"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MetaInstaller/source/MetaInstaller.linux/validateUser/; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
+    cp $WD/MetaInstaller/source/MetaInstaller.linux/validateUser/validateUserClient.o $WD/MetaInstaller/staging/linux/scripts/ || _die "Failed to copy the validateUserClient utility to the staging directory"
+    
 }
 
 ################################################################################

@@ -8,68 +8,86 @@ _prep_metainstaller_osx() {
 
 
     # Enter the source directory and cleanup if required
-   
-    cd $WD/MetaInstaller/installers
-      
-    if [ -e mac ];
+    cd $WD/MetaInstaller/source
+
+    if [ -e MetaInstaller.osx ];
     then
-      echo "Removing existing mac installers directory"
-      rm -rf mac  || _die "Couldn't remove the existing mac installers directory (installers/mac)"
+      echo "Removing existing MetaInstaller.osx source directory"
+      rm -rf MetaInstaller.osx  || _die "Couldn't remove the existing MetaInstaller.osx source directory (source/MetaInstaller.osx)"
     fi
 
-    mkdir mac
+    echo "Creating source directory ($WD/MetaInstaller/source/MetaInstaller.osx)"
+    mkdir -p $WD/MetaInstaller/source/MetaInstaller.osx || _die "Couldn't create the MetaInstaller.osx directory"
+
+
+    # Enter the staging directory and cleanup if required
+   
+    if [ -e $WD/MetaInstaller/staging/osx ];
+    then
+      echo "Removing existing osx staging directory"
+      rm -rf $WD/MetaInstaller/staging/osx  || _die "Couldn't remove the existing osx staging directory (staging/osx)"
+    fi
+
+    echo "Creating staging directory ($WD/MetaInstaller/staging/osx)"
+    mkdir -p $WD/MetaInstaller/staging/osx || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/MetaInstaller/staging/osx || _die "Couldn't set the permissions on the staging directory"
 
     PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
     
        
     # Grab a copy of the postgresql installer
-    cp -R "$WD/output/postgresql-$PG_PACKAGE_VERSION-osx.dmg"  $WD/MetaInstaller/installers/mac || _die "Failed to copy the postgresql installer (installers/mac/postgresql-$PG_PACKAGE_VERSION-osx.zip)"
+    cp -R "$WD/output/postgresql-$PG_PACKAGE_VERSION-osx.dmg"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the postgresql installer (staging/osx/postgresql-$PG_PACKAGE_VERSION-osx.zip)"
     # Grab a copy of the slony installer
-    cp -R "$WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.zip"  $WD/MetaInstaller/installers/mac || _die "Failed to copy the slony installer (installers/mac/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.zip)"
+    cp -R "$WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the slony installer (staging/osx/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.zip)"
     # Grab a copy of the pgjdbc installer
-    cp -R "$WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.zip"  $WD/MetaInstaller/installers/mac || _die "Failed to copy the pgjdbc installer (installers/mac/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.zip)"
+    cp -R "$WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the pgjdbc installer (staging/osx/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.zip)"
     # Grab a copy of the psqlodbc installer
-    cp -R "$WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.zip"  $WD/MetaInstaller/installers/mac || _die "Failed to copy the psqlodbc installer (installers/mac/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.zip)"
+    cp -R "$WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the psqlodbc installer (staging/osx/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.zip)"
     # Grab a copy of the postgis installer
-    cp -R "$WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.zip"  $WD/MetaInstaller/installers/mac || _die "Failed to copy the postgis installer (installers/mac/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.zip)"
+    cp -R "$WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the postgis installer (staging/osx/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.zip)"
 
-    cd $WD/MetaInstaller/installers/mac
-
+    cd $WD/MetaInstaller/staging/osx
    
     hdiutil attach postgresql-$PG_PACKAGE_VERSION-osx.dmg
 
     cd "/Volumes/PostgreSQL $PG_PACKAGE_VERSION"
 
-    cp -R postgresql-$PG_PACKAGE_VERSION-osx.app $WD/MetaInstaller/installers/mac/postgresql-$PG_PACKAGE_VERSION-osx.app
+    cp -R postgresql-$PG_PACKAGE_VERSION-osx.app $WD/MetaInstaller/staging/osx/postgresql-$PG_PACKAGE_VERSION-osx.app
 
-    cd $WD/MetaInstaller/installers/mac
+    cd $WD/MetaInstaller/staging/osx
 
     hdiutil eject "/Volumes/PostgreSQL $PG_PACKAGE_VERSION"
+    rm -f postgresql-$PG_PACKAGE_VERSION-osx.dmg
 
     # unzip slony    
     unzip slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.zip
+    rm -f slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.zip
 
     # unzip pgjdbc
     unzip pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.zip
+    rm -f pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.zip
 
     # unzip psqlodbc
     unzip psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.zip
+    rm -f psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.zip
 
     # unzip postgis
     unzip postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.zip
+    rm -f postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.zip
 
-    # removing intermediate files
+    cd $WD/MetaInstaller
+    mkdir -p staging/osx/scripts/pgcontrol
+    cp -R $WD/server/staging/osx/bin/pg_controldata  staging/osx/scripts/pgcontrol/ || _die "Failed to copy the pg_controldata  (staging/osx/scripts/pgcontrol)"
+    cp -R $WD/server/staging/osx/installer/server/getlocales.sh  staging/osx/scripts/ || _die "Failed to copy the getlocales.sh"
+    cp -R $WD/server/staging/osx/installer/server/preinstall.sh  staging/osx/scripts/ || _die "Failed to copy the preinstall.sh"
+    cp -R $WD/server/staging/osx/installer/server/startserver.sh  staging/osx/scripts/ || _die "Failed to copy the startserver.sh"
+    cp -R $WD/PostGIS/staging/osx/installer/PostGIS/check-connection.sh  staging/osx/scripts/ || _die "Failed to copy the check-connection.sh"
+    cp -R $WD/PostGIS/staging/osx/installer/PostGIS/check-db.sh  staging/osx/scripts/ || _die "Failed to copy the check-db.sh"
 
-    cd $WD/MetaInstaller/resources/scripts/osx
+    cp -R $WD/MetaInstaller/scripts/osx/*.sh  staging/osx/scripts/ || _die "Failed to copy the scripts"
 
-    rm -rf *.o
-    rm -rf pgcontrol
 
-    rm -rf check-connection.sh
-    rm -rf check-db.sh
-    rm -rf getlocales.sh
-    rm -rf preinstall.sh
-    rm -rf startserver.sh
+
 }
 
 
@@ -79,26 +97,31 @@ _prep_metainstaller_osx() {
 ################################################################################
 
 _build_metainstaller_osx() {
-    cd $WD/MetaInstaller/resources/scripts/osx
-    mkdir pgcontrol
-    cd $WD/server/staging/osx/bin
-    cp -R pg_controldata  $WD/MetaInstaller/resources/scripts/osx/pgcontrol || _die "Failed to copy the pg_controldata  (MetaInstaller/resources/scripts/osx/pgcontrol)"
+    
+   # Build the utilities.
 
-    cd $WD/PostGIS/scripts/osx
-    cp -R check-connection.sh  $WD/MetaInstaller/resources/scripts/osx || _die "Failed to copy the check-connection.sh  (MetaInstaller/resources/scripts/osx)"
+    cp -R $WD/MetaInstaller/scripts/osx/* $WD/MetaInstaller/source/MetaInstaller.osx/ || _die "Failed to copy the utilities to source folder"
 
-    cp -R check-db.sh  $WD/MetaInstaller/resources/scripts/osx || _die "Failed to copy the check-db.sh  (MetaInstaller/resources/scripts/osx)"
+    cd $WD/MetaInstaller/source/MetaInstaller.osx/features
+    gcc -o features.o $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 features.c  || _die "Failed to build the features utility"
+    cp features.o $WD/MetaInstaller/staging/osx/scripts/ || _die "Failed to copy the features utility to the staging directory"
+
+    cd $WD/MetaInstaller/source/MetaInstaller.osx/getDynaTune
+    gcc -DWITH_OPENSSL -I. -O0 -o dynaTuneClient.o $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 getDynaTuneInfoClient.c soapC.c stdsoap2.c soapClient.c -lssl -lcrypto  || _die "Failed to build the getDynaTune utility"
+    cp dynaTuneClient.o $WD/MetaInstaller/staging/osx/scripts/ || _die "Failed to copy the getDynaTune utility to the staging directory"
+
+    cd $WD/MetaInstaller/source/MetaInstaller.osx/isUserValidated
+    gcc -DWITH_OPENSSL -I. -o isUserValidated.o $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 WSisUserValidated.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto || _die "Failes to build the isUserValidated utility"
+    cp isUserValidated.o $WD/MetaInstaller/staging/osx/scripts/ || _die "Failed to copy the isUserValidated utility to the staging directory"
    
-    cd $WD/server/scripts/osx
-    cp -R getlocales.sh  $WD/MetaInstaller/resources/scripts/osx || _die "Failed to copy the getlocales.sh  (MetaInstaller/resources/scripts/osx)"
+    cd $WD/MetaInstaller/source/MetaInstaller.osx/modifyPostgresql
+    gcc -o modifyPostgresql.o $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 replaceDynatune.c || _die "Failes to build the modifyPostgresql utility"
+    cp modifyPostgresql.o $WD/MetaInstaller/staging/osx/scripts/ || _die "Failed to copy the modifyPostgresql utility to the staging directory"
 
-    cp -R preinstall.sh  $WD/MetaInstaller/resources/scripts/osx || _die "Failed to copy the preinstall.sh  (MetaInstaller/resources/scripts/osx)"
+    cd $WD/MetaInstaller/source/MetaInstaller.osx/validateUser
+    gcc -DWITH_OPENSSL -I. -o validateUserClient.o $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto || _die "Failes to build the validateUserClient utility"
+    cp validateUserClient.o $WD/MetaInstaller/staging/osx/scripts/ || _die "Failed to copy the validateUserClient utility to the staging directory"
 
-    cp -R startserver.sh  $WD/MetaInstaller/resources/scripts/osx || _die "Failed to copy the startserver.sh  (MetaInstaller/resources/scripts/osx)"
-
-    cd $WD/MetaInstaller/resources
-    echo "Building osx components..."
-    ./build-osx.sh    
 }
 
 
