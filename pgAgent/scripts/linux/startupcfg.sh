@@ -54,6 +54,7 @@ cat <<EOT > "/etc/init.d/pgagent"
 # Description:       pgAgent
 ### END INIT INFO
 
+export LD_LIBRARY_PATH=$INSTALL_DIR/lib:$LD_LIBRARY_PATH
 
 start()
 {
@@ -71,7 +72,7 @@ start()
 
 stop()
 {
-    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=$PG_HOST port=$PG_PORT dbname=PG_DATABASE user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l2 -s $INSTALL_DIR/service.log host=$PG_HOST port=$PG_PORT dbname=$PG_DATABASE user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
