@@ -163,6 +163,8 @@ IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 @REM Copy WinResrc.h in current directory as winres.h
 @IF EXIST "$PG_PSDK_WINDOWS\Include\WinResrc.h" @copy "$PG_PSDK_WINDOWS\Include\WinResrc.h" winres.h
 
+@REM Patch the configure macros for a change in 5.2.9
+@ECHO #define HAVE_STRNLEN 1 >> win32\build\config.w32.h.in
 
 @ECHO Generating configuration files
 @cscript /nologo win32\build\buildconf.js 
