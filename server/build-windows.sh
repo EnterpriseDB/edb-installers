@@ -309,7 +309,7 @@ EOT
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/pgadmin; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgadmin3.vcproj RELEASE" || _die "Failed to build pgAdmin on the build host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/xtra/pgagent; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgagent.vcproj RELEASE" || _die "Failed to build pgAgent on the build host"
 	ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/xtra/pgaevent; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgaevent.vcproj RELEASE" || _die "Failed to build pgaevent on the build host"
-	ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/docs; cmd /c builddocs.bat" || _die "Failed to build the docs on the build host"
+	ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/docs; WXWIN=C:/pgBuild/wxWidgets cmd /c builddocs.bat" || _die "Failed to build the docs on the build host"
 		
 	# Copy the application files into place
 	ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\"" || _die "Failed to create a directory on the windows build host" || _die "Failed to create the studio directory on the build host"
