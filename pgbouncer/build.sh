@@ -1,0 +1,168 @@
+#!/bin/bash
+
+# Read the various build scripts
+
+# Mac OS X
+if [ $PG_ARCH_OSX = 1 ]; 
+then
+    source $WD/pgbouncer/build-osx.sh
+fi
+
+# Linux
+if [ $PG_ARCH_LINUX = 1 ];
+then
+    source $WD/pgbouncer/build-linux.sh
+fi
+
+# Linux x64
+if [ $PG_ARCH_LINUX_X64 = 1 ];
+then
+    source $WD/pgbouncer/build-linux-x64.sh
+fi
+
+# Windows
+if [ $PG_ARCH_WINDOWS = 1 ];
+then
+    source $WD/pgbouncer/build-windows.sh
+fi
+    
+################################################################################
+# Build preparation
+################################################################################
+
+_prep_pgbouncer() {
+
+    # Create the source directory if required
+    if [ ! -e $WD/pgbouncer/source ];
+    then
+        mkdir $WD/pgbouncer/source
+    fi
+
+    # Enter the source directory and cleanup if required
+    cd $WD/pgbouncer/source
+
+    # libevent
+    if [ -e libevent-$PG_TARBALL_LIBEVENT ];
+    then
+      echo "Removing existing libevent-$PG_TARBALL_LIBEVENT source directory"
+      rm -rf libevent-$PG_TARBALL_LIBEVENT  || _die "Couldn't remove the existing libevent-$PG_TARBALL_LIBEVENT source directory (source/libevent-$PG_TARBALL_LIBEVENT)"
+    fi
+
+    echo "Unpacking libevent source..."
+    extract_file ../../tarballs/libevent-$PG_TARBALL_LIBEVENT || exit 1
+
+    # pgbouncer
+    if [ -e pgbouncer-$PG_VERSION_PGBOUNCER ];
+    then
+      echo "Removing existing pgbouncer-$PG_VERSION_PGBOUNCER source directory"
+      rm -rf pgbouncer-$PG_VERSION_PGBOUNCER  || _die "Couldn't remove the existing pgbouncer-$PG_VERSION_PGBOUNCER source directory (source/pgbouncer-$PG_VERSION_PGBOUNCER)"
+    fi
+
+    echo "Unpacking pgbouncer source..."
+    extract_file ../../tarballs/pgbouncer-$PG_VERSION_PGBOUNCER || exit 1
+
+    # Per-platform prep
+    cd $WD
+    
+    # Mac OS X
+    if [ $PG_ARCH_OSX = 1 ]; 
+    then
+        _prep_pgbouncer_osx || exit 1
+    fi
+
+    # Linux
+    if [ $PG_ARCH_LINUX = 1 ];
+    then
+        _prep_pgbouncer_linux || exit 1
+    fi
+
+    # Linux x64
+    if [ $PG_ARCH_LINUX_X64 = 1 ];
+    then
+        _prep_pgbouncer_linux_x64 || exit 1
+    fi
+
+    # Windows
+    if [ $PG_ARCH_WINDOWS = 1 ];
+    then
+        _prep_pgbouncer_windows || exit 1
+    fi
+    
+}
+
+################################################################################
+# Build pgbouncer
+################################################################################
+
+_build_pgbouncer() {
+
+    # Mac OSX
+    if [ $PG_ARCH_OSX = 1 ]; 
+    then
+        _build_pgbouncer_osx || exit 1
+    fi
+
+    # Linux 
+    if [ $PG_ARCH_LINUX = 1 ];
+    then
+        _build_pgbouncer_linux || exit 1
+    fi
+
+    # Linux x64
+    if [ $PG_ARCH_LINUX_X64 = 1 ];
+    then
+       _build_pgbouncer_linux_x64 || exit 1
+    fi
+
+    # Windows
+    if [ $PG_ARCH_WINDOWS = 1 ];
+    then
+        _build_pgbouncer_windows || exit 1
+    fi
+}
+
+################################################################################
+# Postprocess pgbouncer
+################################################################################
+#
+# Note that this is the only step run if we're executed with -skipbuild so it must
+# be possible to run this against a pre-built tree.
+_postprocess_pgbouncer() {
+
+    cd $WD/pgbouncer
+
+
+    # Prepare the installer XML file
+    if [ -f installer.xml ];
+    then
+        rm installer.xml
+    fi
+    cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (pgbouncer/installer.xml.in)"
+    
+    _replace PG_VERSION_PGBOUNCER $PG_VERSION_PGBOUNCER installer.xml || _die "Failed to set the version in the installer project file (pgbouncer/installer.xml)"
+    _replace PG_BUILDNUM_PGBOUNCER $PG_BUILDNUM_PGBOUNCER installer.xml || _die "Failed to set the Build Number in the installer project file (pgbouncer/installer.xml)"
+   
+    # Mac OSX
+    if [ $PG_ARCH_OSX = 1 ]; 
+    then
+        _postprocess_pgbouncer_osx || exit 1
+    fi
+
+    # Linux
+    if [ $PG_ARCH_LINUX = 1 ];
+    then
+        _postprocess_pgbouncer_linux || exit 1
+    fi
+
+    # Linux x64
+    if [ $PG_ARCH_LINUX_X64 = 1 ];
+    then
+        _postprocess_pgbouncer_linux_x64 || exit 1
+    fi
+    
+    # Windows
+    if [ $PG_ARCH_WINDOWS = 1 ];
+    then
+       _postprocess_pgbouncer_windows || exit 1
+    fi
+}

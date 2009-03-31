@@ -324,6 +324,34 @@ then
     _postprocess_pgAgent || exit 1
 fi
 
+# Package: pgmemcache
+if [ $PG_PACKAGE_PGMEMCACHE == 1 ];
+then
+    cd $WD
+    source ./pgmemcache/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_pgmemcache || exit 1
+        _build_pgmemcache || exit 1
+    fi
+    _postprocess_pgmemcache || exit 1
+fi
+
+# Package: pgbouncer
+if [ $PG_PACKAGE_PGBOUNCER == 1 ];
+then
+    cd $WD
+    source ./pgbouncer/build.sh
+
+    if [ $SKIPBUILD == 0 ];
+    then
+        _prep_pgbouncer || exit 1
+        _build_pgbouncer || exit 1
+    fi
+    _postprocess_pgbouncer || exit 1
+fi
+
 #Package: Meta Installer
 if [ $PG_PACKAGE_META == 1 ];
 then
