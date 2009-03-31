@@ -77,6 +77,8 @@ _prep_pgbouncer_windows() {
 
 _build_pgbouncer_windows() {
 
+    PG_PGBUILD_MINGW_WINDOWS=`echo $PG_PGBUILD_WINDOWS | sed -e 's/://g' -e 's:\\\\:/:g' -e 's:^:/:g'`
+
     cat <<EOT > "build-libevent.bat"
 
 @SET PATH=$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;C:\Perl\bin;C:\Python25;C:\Tcl\bin;
@@ -88,10 +90,10 @@ EOT
 
     cat <<EOT > "build-pgbouncer.bat"
 
-@SET PATH=$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;C:\Perl\bin;C:\Python25;C:\Tcl\bin;C:\regex-2.7\bin
+@SET PATH=$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;C:\Perl\bin;C:\Python25;C:\Tcl\bin;$PG_PGBUILD_WINDOWS\regex\bin
 
 REM Configuring, building the pgbouncer source tree
-@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD; cd pgbouncer.windows; CPPFLAGS="-I/c/regex-2.7/include" LDFLAGS="-L/c/regex-2.7/lib" ./configure --prefix=\$COMMONDIR/pgbouncer.staging --with-libevent=\$COMMONDIR/libevent.staging; make; make install  | $PG_MSYS_WINDOWS\bin\sh --login -i
+@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD; cd pgbouncer.windows; CPPFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS/regex/include" LDFLAGS="-L$PG_PGBUILD_MINGW_WINDOWS/regex/lib" ./configure --prefix=\$COMMONDIR/pgbouncer.staging --with-libevent=\$COMMONDIR/libevent.staging; make; make install  | $PG_MSYS_WINDOWS\bin\sh --login -i
 
 EOT
 
