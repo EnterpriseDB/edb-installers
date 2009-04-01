@@ -197,7 +197,10 @@ _postprocess_metainstaller_windows() {
     # Build the installer
 
     "$PG_INSTALLBUILDER_BIN" build postgresplus.xml windows || _die "Failed to build the installer"
-    
+    # Rename the installer
+    mv $WD/output/postgresplus-$PG_MAJOR_VERSION-windows-installer.exe $WD/output/postgresplus-$PG_PACKAGE_VERSION-windows.exe || _die "Failed to rename the installer"    
+
+
     cd $WD
 	    
 }

@@ -105,5 +105,8 @@ _postprocess_metainstaller_linux_x64() {
     cd  $WD/MetaInstaller
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build postgresplus.xml linux-x64 || _die "Failed to build the installer"
+    # Rename the installer
+    mv $WD/output/postgresplus-$PG_MAJOR_VERSION-linux-x64-installer.bin $WD/output/postgresplus-$PG_PACKAGE_VERSION-linux-x64.bin || _die "Failed to rename the installer"
+
     cd $WD
 }

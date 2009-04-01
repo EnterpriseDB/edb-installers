@@ -135,6 +135,9 @@ echo "Building osx Meta Installer"
     # Build the installer
 
     "$PG_INSTALLBUILDER_BIN" build postgresplus.xml osx || _die "Failed to build the installer"
+
+    # Rename the installer
+    mv $WD/output/postgresplus-$PG_MAJOR_VERSION-osx-installer.app $WD/output/postgresplus-$PG_PACKAGE_VERSION-osx.app || _die "Failed to rename the installer"
     
     # Now we need to turn this into a DMG file
 
@@ -149,11 +152,11 @@ echo "Building osx Meta Installer"
 
     mkdir metainstaller.img || _die "Failed to create DMG staging directory"
 
-    mv $WD/output/postgresplus-$PG_VERSION_METAINSTALLER-osx-installer.app metainstaller.img || _die "Failed to copy the installer bundle into the DMG staging directory"
+    mv $WD/output/postgresplus-$PG_PACKAGE_VERSION-osx.app metainstaller.img || _die "Failed to copy the installer bundle into the DMG staging directory"
 
-    hdiutil create -quiet -srcfolder metainstaller.img -format UDZO -volname "PostgresPlus $PG_VERSION_METAINSTALLER" -ov "postgresplus-$PG_VERSION_METAINSTALLER-osx.dmg" || _die "Failed to create the disk image (staging/postgresplus-$PG_VERSION_METAINSTALLER-osx.dmg)"
+    hdiutil create -quiet -srcfolder metainstaller.img -format UDZO -volname "PostgresPlus $PG_PACKAGE_VERSION" -ov "postgresplus-$PG_PACKAGE_VERSION-osx.dmg" || _die "Failed to create the disk image (staging/postgresplus-$$PG_PACKAGE_VERSION-osx.dmg)"
 
-    mv postgresplus-$PG_VERSION_METAINSTALLER-osx.dmg $WD/output/
+    mv postgresplus-$PG_PACKAGE_VERSION-osx.dmg $WD/output/
 
     rm -rf metainstaller.img
     cd $WD
