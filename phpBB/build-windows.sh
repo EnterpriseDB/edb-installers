@@ -48,6 +48,7 @@ _build_phpBB_windows() {
     mkdir -p phpBB/staging/windows/instscripts || _die "Failed to create the instscripts directory"
     cp -R server/staging/windows/lib/libpq* phpBB/staging/windows/instscripts/ || _die "Failed to copy libpq in instscripts"
     cp -R server/staging/windows/bin/psql.exe phpBB/staging/windows/instscripts/ || _die "Failed to copy psql in instscripts"
+    cp -R server/staging/windows/bin/gssapi32.dll phpBB/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/ssleay32.dll phpBB/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/libeay32.dll phpBB/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/iconv.dll phpBB/staging/windows/instscripts/ || _die "Failed to copy dependent libs"

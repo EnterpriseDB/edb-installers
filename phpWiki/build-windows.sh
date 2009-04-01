@@ -48,6 +48,7 @@ _build_phpWiki_windows() {
     mkdir -p phpWiki/staging/windows/instscripts || _die "Failed to create the instscripts directory"
     cp -R server/staging/windows/lib/libpq* phpWiki/staging/windows/instscripts/ || _die "Failed to copy libpq in instscripts"
     cp -R server/staging/windows/bin/psql.exe phpWiki/staging/windows/instscripts/ || _die "Failed to copy psql in instscripts"
+    cp -R server/staging/windows/bin/gssapi32.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/ssleay32.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/libeay32.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/iconv.dll phpWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
