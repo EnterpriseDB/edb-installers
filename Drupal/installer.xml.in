@@ -1041,7 +1041,7 @@
            </ruleList>
         </registrySet>
         <deleteFile>
-            <path>${installdir}/instscripts</path>
+            <path>${installdir}/Drupal/instscripts</path>
         </deleteFile>
         <deleteFile>
             <path>${system_temp_directory}/instscripts</path>

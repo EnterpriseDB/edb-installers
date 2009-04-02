@@ -964,7 +964,7 @@
            </ruleList>
         </startWindowsService>
         <deleteFile>
-            <path>${installdir}/instscripts</path>
+            <path>${installdir}/mediaWiki/instscripts</path>
         </deleteFile>
         <deleteFile>
             <path>${system_temp_directory}/instscripts</path>

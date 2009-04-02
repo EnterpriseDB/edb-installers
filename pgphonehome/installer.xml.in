@@ -966,7 +966,7 @@
              <text>${msg(pgphonehome.url.info)}</text>
         </showInfo>
         <deleteFile>
-            <path>${installdir}/instscripts</path>
+            <path>${installdir}/pgph/instscripts</path>
         </deleteFile>
         <deleteFile>
             <path>${system_temp_directory}/instscripts</path>
