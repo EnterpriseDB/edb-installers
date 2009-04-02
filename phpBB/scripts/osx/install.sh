@@ -9,7 +9,7 @@ export PGPASSWORD=$4
 TEMPDIR=$5
 DB=$6
 export LD_LIBRARY_PATH=$TEMPDIR
-
+cd $TEMPDIR
 echo "Creating user for phpbb application"
 $TEMPDIR/psql -d $DB -U $PGUSER -c "CREATE ROLE phpbbuser PASSWORD 'phpbbuser' NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN"
 

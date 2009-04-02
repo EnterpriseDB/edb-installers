@@ -7,6 +7,6 @@ export PGPASSWORD=$4
 TEMPDIR=$5
 DB=$6
 export LD_LIBRARY_PATH=$TEMPDIR
-
+cd $TEMPDIR
 $TEMPDIR/psql -d $DB -l
 

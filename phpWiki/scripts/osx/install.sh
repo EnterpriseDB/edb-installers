@@ -11,7 +11,7 @@ INSTALL_DIR=$6
 
 DB=$7
 export LD_LIBRARY_PATH=$TEMPDIR
-
+cd $TEMPDIR
 echo "Creating user for wiki application"
 $TEMPDIR/psql -d $DB -U $PGUSER -c "CREATE ROLE phpwikiuser PASSWORD 'phpwikiuser' CREATEDB CREATEROLE INHERIT LOGIN"
 

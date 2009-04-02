@@ -10,6 +10,8 @@ TEMPDIR=$5
 DB=$6
 export LD_LIBRARY_PATH=$TEMPDIR
 
+cd $TEMPDIR
+
 echo "Creating user for Drupal application"
 $TEMPDIR/psql -d $DB -U $PGUSER -c "CREATE ROLE drupaluser PASSWORD 'drupaluser' NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN"
 
