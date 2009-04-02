@@ -1634,6 +1634,7 @@
 
                 <actionGroup>
                     <actionList>
+                        <setInstallerVariable name="pgdatabase" value="postgres" />
                         <showWarning>
                              <text>${msg(pgplus.details.error)}</text>
                         </showWarning> 
