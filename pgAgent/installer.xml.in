@@ -115,6 +115,28 @@
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
       </ruleList>
     </setInstallerVariable>
+    <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{7299052b-02a4-4627-81f2-1818da5d550d}" name="DisplayVersion" variable="VC_REDIST_2005_VERSION"/>
+    <actionGroup>
+      <actionList>
+        <unpackFile>
+          <component>configuration</component>
+          <destination>${system_temp_directory}\${product_fullname}\vcredist_x86.exe</destination>
+          <folder>vcredistwindows</folder>
+          <origin>vcredist_x86.exe</origin>
+        </unpackFile>
+        <runProgram>
+          <program>${system_temp_directory}\${product_fullname}\vcredist_x86.exe</program>
+          <programArguments>/q</programArguments>
+          <workingDirectory>${windir}</workingDirectory>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </runProgram> 
+      </actionList>
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+        <compareText logic="equals" text="${VC_REDIST_2005_VERSION}" value=""/>
+      </ruleList>
+    </actionGroup>
   </initializationActionList>
   
   <!-- Preinstallation actions -->
@@ -501,7 +523,7 @@
     <actionGroup>
       <actionList>
         <unpackFile>
-          <component>createpgpassconf</component>
+          <component>configuration</component>
           <destination>${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe</destination>
           <folder>createpgpassconfforuser</folder>
           <origin>CreatePGPassconfForUser.exe</origin>
@@ -858,12 +880,12 @@
           <name>pgagentbinarywindows</name>
           <platforms>windows</platforms>
           <distributionFileList>
-              <distributionFile>
-                  <origin>staging/windows/pgagent.exe</origin>
-              </distributionFile>
-              <distributionFile>
-                  <origin>staging/windows/pgaevent.dll</origin>
-              </distributionFile>
+            <distributionFile>
+              <origin>staging/windows/pgagent.exe</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/windows/pgaevent.dll</origin>
+            </distributionFile>
           </distributionFileList>
        </folder>
        <folder>
@@ -895,7 +917,7 @@
           <platforms>windows</platforms>
           <distributionFileList>
             <distributionDirectory>
-                <origin>staging/windows/installer</origin>
+              <origin>staging/windows/installer</origin>
             </distributionDirectory>
           </distributionFileList>
         </folder>
@@ -908,7 +930,7 @@
             <distributionFile>
               <origin>staging/windows/LICENSE</origin>
             </distributionFile>
-	    <distributionFile>
+            <distributionFile>
               <origin>staging/windows/README</origin>
             </distributionFile>
           </distributionFileList>
@@ -966,8 +988,8 @@
       </folderList>
     </component>
     <component>
-      <name>createpgpassconf</name>
-      <description>Create pgpass.conf for given user</description>
+      <name>configuration</name>
+      <description>Configure</description>
       <canBeEdited>0</canBeEdited>
       <selected>0</selected>
       <show>0</show>
@@ -982,6 +1004,17 @@
             <distributionFile>
               <origin>staging/windows/CreatePGPassconfForUser.exe</origin>
             </distributionFile>
+          </distributionFileList>
+        </folder>
+        <folder>
+          <description>Visual C++.Net 2005 Redistribution Files</description>
+          <destination>${installdir}</destination>
+          <name>vcredistwindows</name>
+          <platforms>windows</platforms>
+          <distributionFileList>
+            <distributionDirectory>
+              <origin>staging/windows/vcredist_x86.exe</origin>
+            </distributionDirectory>
           </distributionFileList>
         </folder>
       </folderList>
@@ -1292,7 +1325,7 @@
             <!-- Check if plpgsql exists -->
             <setInstallerVariableFromScriptOutput>
               <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
-              <execArgs>-t -c "SELECT lanname FROM pg_language WHERE lanname='plpgsql'"</execArgs>
+              <execArgs>-t -A -c "SELECT lanname FROM pg_language WHERE lanname='plpgsql'"</execArgs>
               <name>plpgsql_exist</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
@@ -1317,7 +1350,7 @@
             <!-- Check for existing pgagent schema -->
             <setInstallerVariableFromScriptOutput>
               <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
-              <execArgs>-t -c "SELECT has_schema_privilege('pgagent', 'USAGE')"</execArgs>
+              <execArgs>-t -A -c "SELECT has_schema_privilege('pgagent', 'USAGE')"</execArgs>
               <name>pgagent_schema_exist</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
@@ -1341,7 +1374,7 @@
             <!-- Check for pgagent_schema_version function exist -->
             <setInstallerVariableFromScriptOutput>
               <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
-              <execArgs>-t -c "SELECT COUNT(*) FROM pg_proc WHERE proname = 'pgagent_schema_version' AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'pgagent') AND prorettype = (SELECT oid FROM pg_type WHERE typname = 'int2') AND proargtypes = ''"</execArgs>
+              <execArgs>-t -A -c "SELECT COUNT(*) FROM pg_proc WHERE proname = 'pgagent_schema_version' AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'pgagent') AND prorettype = (SELECT oid FROM pg_type WHERE typname = 'int2') AND proargtypes = ''"</execArgs>
               <name>pgagent_schema_version_function_exist</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
@@ -1367,7 +1400,7 @@
             <!-- Check for the current version of the pgagent schema -->
             <setInstallerVariableFromScriptOutput>
               <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
-              <execArgs>-t -c "SELECT pgagent.pgagent_schema_version()"</execArgs>
+              <execArgs>-t -A -c "SELECT pgagent.pgagent_schema_version()"</execArgs>
               <name>pgagent_current_schema_version</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>

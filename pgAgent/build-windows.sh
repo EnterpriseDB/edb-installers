@@ -54,7 +54,7 @@ _prep_pgAgent_windows() {
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST pgAgent.zip del /S /Q pgAgent.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\pgAgent.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST pgAgent.windows rd /S /Q pgAgent.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\pgAgent.windows directory on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST pgAgent.output rd /S /Q pgAgent.output" || _die "Couldn't remove the $PG_PATH_WINDOWS\\pgAgent.windows directory on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST pgAgent.output rd /S /Q pgAgent.output" || _die "Couldn't remove the $PG_PATH_WINDOWS\\pgAgent.output directory on Windows VM"
 
     # Copy sources on windows VM
     echo "Copying pgAgent sources to Windows VM"
@@ -94,6 +94,7 @@ _build_pgAgent_windows() {
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy validateuser\\\\release\\\\validateuser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy createuser\\\\release\\\\createuser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy CreatePGPassconfForUser\\\\release\\\\CreatePGPassconfForUser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy /Y C:\\\\pgBuild\\\\vcredist\\\\vcredist_x86.exe $OUTPUT_DIR" || _die "Failed to copy the VC++ runtimes on the windows build host"
  
     cd $WD/pgAgent/staging/windows
     echo "Copying built tree to Windows host"
@@ -106,7 +107,7 @@ _build_pgAgent_windows() {
 
     echo "Copying dependent libraries from the windows VM to staging directory"
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output/bin/psql.exe $STAGING_DIR/bin || _die "Failed to copy psql.exe"
-    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output/lib/libpq.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libpq.dll)"
+    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output/bin/libpq.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libpq.dll)"
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/openssl/bin/ssleay32.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (ssleay32.dll)"
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/openssl/bin/libeay32.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libeay32.dll)"
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/krb5/bin/i386/gssapi32.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (gssapi32.dll)"
