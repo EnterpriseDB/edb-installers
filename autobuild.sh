@@ -3,6 +3,8 @@
 # pgInstaller auto build script
 # Dave Page, EnterpriseDB
 
+# Any changes to this file should be made to all the git branches.
+
 if [ $# -ne 1 ]; 
 then
     echo "Usage: $0 <build dir>"
@@ -20,6 +22,10 @@ echo "#######################################################################" >
 echo "Cleaning up old output" >> autobuild.log
 rm -rf output/* >> autobuild.log 2>&1
 
+# Switch to master branch
+echo "Switching to master branch" >> autobuild.log
+/opt/local/bin/git checkout master >> autobuild.log 2>&1
+
 # Self update
 echo "Updating build system" >> autobuild.log
 /opt/local/bin/git pull >> autobuild.log 2>&1
@@ -27,6 +33,18 @@ echo "Updating build system" >> autobuild.log
 # Run the build, and dump the output to a log file
 echo "Running the build" >> autobuild.log
 ./build.sh > output/build.log 2>&1
+
+# Switch to REL-8_3 branch
+echo "Switching to REL-8_3 branch" >> autobuild.log
+/opt/local/bin/git checkout REL-8_3 >> autobuild.log 2>&1
+
+# Self update
+echo "Updating REL-8_3 branch build system" >> autobuild.log
+/opt/local/bin/git pull >> autobuild.log 2>&1
+
+# Run the build, and dump the output to a log file
+echo "Running the build (REL-8_3) " >> autobuild.log
+./build.sh >> output/build.log 2>&1
 
 # Create a remote directory and upload the output.
 DATE=`date +'%Y-%m-%d'`
