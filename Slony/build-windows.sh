@@ -125,12 +125,10 @@ EOT
 
    ssh $PG_SSH_WINDOWS "mkdir -p $PG_PATH_WINDOWS/Slony.staging/lib" || _die "Failed to create the bin directory"
    ssh $PG_SSH_WINDOWS "cp $PG_PGHOME_WINDOWS/lib/slony1_funcs.dll $PG_PATH_WINDOWS/Slony.staging/lib" || _die "Failed to copy slony_funcs.dll to staging directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_PGHOME_WINDOWS/lib/xxid.dll $PG_PATH_WINDOWS/Slony.staging/lib" || _die "Failed to copy xxid.dll to staging directory"
    ssh $PG_SSH_WINDOWS "cp $PG_PGHOME_WINDOWS/lib/slevent.dll $PG_PATH_WINDOWS/Slony.staging/lib" || _die "Failed to copy slevent.dll to staging directory"
 
    ssh $PG_SSH_WINDOWS "mkdir -p $PG_PATH_WINDOWS/Slony.staging/Slony" || _die "Failed to create the bin directory"
    ssh $PG_SSH_WINDOWS "cp $PG_PGHOME_WINDOWS/share/slony*.sql $PG_PATH_WINDOWS/Slony.staging/Slony" || _die "Failed to share files to staging directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_PGHOME_WINDOWS/share/xxid.*.sql $PG_PATH_WINDOWS/Slony.staging/Slony" || _die "Failed to share files to staging directory"
 
    # Zip up the installed code, copy it back here, and unpack.
    echo "Copying slony built tree to Unix host"

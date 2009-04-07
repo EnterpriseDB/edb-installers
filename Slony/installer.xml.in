@@ -982,9 +982,6 @@
                             <origin>staging/windows/lib/slony1_funcs.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/windows/lib/xxid.dll</origin>
-                        </distributionFile>
-                        <distributionFile>
                             <origin>staging/windows/lib/slevent.dll</origin>
                         </distributionFile>
                     </distributionFileList>
@@ -1049,9 +1046,6 @@
                         <distributionFile>
                             <origin>staging/linux/lib/slony1_funcs.so</origin>
                         </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux/lib/xxid.so</origin>
-                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1114,9 +1108,6 @@
                         <distributionFile>
                             <origin>staging/linux-x64/lib/slony1_funcs.so</origin>
                         </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux-x64/lib/xxid.so</origin>
-                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1178,9 +1169,6 @@
                     <distributionFileList>
                         <distributionFile>
                             <origin>staging/osx/lib/slony1_funcs.so</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/osx/lib/xxid.so</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>

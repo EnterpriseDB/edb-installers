@@ -80,11 +80,9 @@ _postprocess_Slony_linux_x64() {
     
     mkdir -p $WD/Slony/staging/linux-x64/lib
     ssh $PG_SSH_LINUX_X64 "cp $PG_PGHOME_LINUX_X64/lib/postgresql/slony1_funcs.so $PG_STAGING/lib" || _die "Failed to copy slony_funs.so to staging directory"
-    ssh $PG_SSH_LINUX_X64 "cp $PG_PGHOME_LINUX_X64/lib/postgresql/xxid.so $PG_STAGING/lib" || _die "Failed to copy xxid.so to staging directory"
 
     mkdir -p $WD/Slony/staging/linux-x64/Slony
     ssh $PG_SSH_LINUX_X64 "cp $PG_PGHOME_LINUX_X64/share/postgresql/slony*.sql $PG_STAGING/Slony" || _die "Failed to share files to staging directory"
-    ssh $PG_SSH_LINUX_X64 "cp $PG_PGHOME_LINUX_X64/share/postgresql/xxid.*.sql $PG_STAGING/Slony" || _die "Failed to share files to staging directory"
 
     mkdir -p staging/linux-x64/installer/Slony || _die "Failed to create a directory for the install scripts"
 

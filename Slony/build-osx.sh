@@ -78,18 +78,7 @@ _build_Slony_osx() {
     cd $PG_PATH_OSX/Slony/source/slony.osx
     make || _die "Failed to build slony"
 
-    echo "Hacking xxid.so & slony1_funcs.so as it bundles only i386 version on Intel machine"
-    if [ -e $PG_PATH_OSX/Slony/source/slony.osx/src/xxid ]; then
-        cd $PG_PATH_OSX/Slony/source/slony.osx/src/xxid
-        if [ -e xxid.so ]; then
-            echo "Removing existing xxid.so"
-            rm -f xxid.so || _die "Couldn't remove xxid.so"
-        fi
-        if [ -e xxid.o ]; then
-            echo "Recreate xxid.so with both i386 & ppc architecture"
-            gcc $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -bundle -o xxid.so xxid.o -bundle_loader $PG_PGHOME_OSX/bin/postgres || _die "Couldn't create the hacked xxid.so"
-        fi
-    fi
+    echo "Hacking slony1_funcs.so as it bundles only i386 version on Intel machine"
     if [ -e $PG_PATH_OSX/Slony/source/slony.osx/src/backend ]; then
         cd $PG_PATH_OSX/Slony/source/slony.osx/src/backend
         if [ -e slony1_funcs.so ]; then
@@ -116,11 +105,9 @@ _build_Slony_osx() {
 
     mkdir -p $WD/Slony/staging/osx/lib
     cp $PG_PGHOME_OSX/lib/postgresql/slony1_funcs.so $PG_STAGING/lib || _die "Failed to copy slony_funcs.so to staging directory"
-    cp $PG_PGHOME_OSX/lib/postgresql/xxid.so $PG_STAGING/lib || _die "Failed to copy xxid.so to staging directory"
 
     mkdir -p $WD/Slony/staging/osx/Slony
     cp $PG_PGHOME_OSX/share/postgresql/slony*.sql $PG_STAGING/Slony || _die "Failed to share files to staging directory"
-    cp $PG_PGHOME_OSX/share/postgresql/xxid.*.sql $PG_STAGING/Slony || _die "Failed to share files to staging directory"
 
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
