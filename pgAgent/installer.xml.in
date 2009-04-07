@@ -120,12 +120,12 @@
       <actionList>
         <unpackFile>
           <component>configuration</component>
-          <destination>${system_temp_directory}\${product_fullname}\vcredist_x86.exe</destination>
+          <destination>${system_temp_directory}\vcredist_x86.exe</destination>
           <folder>vcredistwindows</folder>
           <origin>vcredist_x86.exe</origin>
         </unpackFile>
         <runProgram>
-          <program>${system_temp_directory}\${product_fullname}\vcredist_x86.exe</program>
+          <program>${system_temp_directory}\vcredist_x86.exe</program>
           <programArguments>/q</programArguments>
           <workingDirectory>${windir}</workingDirectory>
           <abortOnError>0</abortOnError>
@@ -409,16 +409,16 @@
         <showInfo text="${msg(info.pgagent.schema.manual.upgrade)}">
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-            <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
-            <compareText logic="equals" text="${upgrade_schema}" value="no"/>
+            <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+            <compareText logic="does_not_equal" text="${upgrade_schema}" value="yes"/>
             <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
           </ruleList>
         </showInfo>
         <showInfo text="${msg(info.pgagent.schema.manual.upgrade.windows)}">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
-            <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
-            <compareText logic="equals" text="${upgrade_schema}" value="no"/>
+            <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+            <compareText logic="does_not_equal" text="${upgrade_schema}" value="yes"/>
             <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
           </ruleList>
         </showInfo>
@@ -907,6 +907,7 @@
           <distributionFileList>
             <distributionDirectory>
               <origin>staging/windows/pgagent.sql</origin>
+              <origin>staging/windows/pgagent_upgrade.sql</origin>
             </distributionDirectory>
           </distributionFileList>
         </folder>
@@ -1310,7 +1311,6 @@
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
               </ruleList>
             </setInstallerVariableFromScriptOutput>
-
             <setInstallerVariableFromScriptOutput>
               <exec>${system_temp_directory}\${product_fullname}\bin\checkPG.bat</exec>
               <execArgs>"CHECK_CONNECTION" "${system_temp_directory}\${product_fullname}\bin\psql.exe" "${pgdbname}"</execArgs>
@@ -1321,6 +1321,7 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
               </ruleList>
             </setInstallerVariableFromScriptOutput>
+            <stringModify text="${connection}" variable="connection" logic="trim"/>
 
             <!-- Check if plpgsql exists -->
             <setInstallerVariableFromScriptOutput>
@@ -1334,7 +1335,6 @@
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
               </ruleList>
             </setInstallerVariableFromScriptOutput>
-
             <setInstallerVariableFromScriptOutput>
               <exec>${system_temp_directory}\${product_fullname}\bin\checkPG.bat</exec>
               <execArgs>"CHECK_PLPGSQL" "${system_temp_directory}\${product_fullname}\bin\psql.exe"</execArgs>
@@ -1346,6 +1346,7 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
               </ruleList>
             </setInstallerVariableFromScriptOutput>
+            <stringModify text="${plpgsql_exist}" variable="plpgsql_exist" logic="trim"/>
 
             <!-- Check for existing pgagent schema -->
             <setInstallerVariableFromScriptOutput>
@@ -1370,6 +1371,7 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
               </ruleList>
             </setInstallerVariableFromScriptOutput>
+            <stringModify text="${pgagent_schema_exist}" variable="pgagent_schema_exist" logic="trim"/>
 
             <!-- Check for pgagent_schema_version function exist -->
             <setInstallerVariableFromScriptOutput>
@@ -1396,6 +1398,7 @@
                 <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
               </ruleList>
             </setInstallerVariableFromScriptOutput>
+            <stringModify text="${pgagent_schema_version_function_exist}" variable="pgagent_schema_version_function_exist" logic="trim"/>
 
             <!-- Check for the current version of the pgagent schema -->
             <setInstallerVariableFromScriptOutput>
@@ -1424,6 +1427,8 @@
                 <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
               </ruleList>
             </setInstallerVariableFromScriptOutput>
+            <stringModify text="${pgagent_current_schema_version}" variable="pgagent_current_schema_version" logic="trim"/>
+
           </actionList>
         </actionGroup>
 
