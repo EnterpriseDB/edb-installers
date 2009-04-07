@@ -30,4 +30,4 @@ PG_VERSION_SLONY=1.2.15
 
 # PostgreSQL jdbc jar version used by PostGIS
 PG_JAR_POSTGRESQL=8.3-604.jdbc2
-
+PG_VERSION_PGJDBC=8.3-604
