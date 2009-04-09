@@ -905,10 +905,12 @@
           <name>configurefileswindows</name>
           <platforms>windows</platforms>
           <distributionFileList>
-            <distributionDirectory>
+            <distributionFile>
               <origin>staging/windows/pgagent.sql</origin>
+            </distributionFile>
+            <distributionFile>
               <origin>staging/windows/pgagent_upgrade.sql</origin>
-            </distributionDirectory>
+            </distributionFile>
           </distributionFileList>
         </folder>
         <folder>
