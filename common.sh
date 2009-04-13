@@ -50,6 +50,7 @@ _rewrite_so_refs() {
                                     # Change the library ID
                                     ID=`otool -D $FILE_PATH/$FILE | grep $BASE_PATH | grep -v ":"`
                                     ID1=`otool -D $FILE_PATH/$FILE | grep "/opt/local" | grep -v ":"`
+                                    ID2=`otool -D $FILE_PATH/$FILE | grep "/usr/local" | grep -v ":"`
                                    
                                     for DLL in $ID; do
                                             echo "    - rewriting ID: $DLL"
@@ -68,11 +69,20 @@ _rewrite_so_refs() {
                                             install_name_tool -id "$NEW_DLL" "$FILE_PATH/$FILE"
                                     done
                                     
+                                    for DLL in $ID2; do
+                                            echo "    - rewriting ID: $DLL"
+                                            NEW_DLL=`echo $DLL | sed -e "s^/usr/local/lib/^^g"`
+                                            echo "                to: $NEW_DLL"
+
+                                            install_name_tool -id "$NEW_DLL" "$FILE_PATH/$FILE"
+                                    done
+                                    
                             fi
 
                             # Now change the referenced libraries
                             DLIST=`otool -L $FILE_PATH/$FILE | grep $BASE_PATH | grep -v ":" | awk '{ print $1 }'`
                             DLIST1=`otool -L $FILE_PATH/$FILE | grep "/opt/local" | grep -v ":" | awk '{ print $1 }'`
+                            DLIST2=`otool -L $FILE_PATH/$FILE | grep "/usr/local" | grep -v ":" | awk '{ print $1 }'`
 
                             for DLL in $DLIST; do
                                     echo "    - rewriting ref: $DLL"
@@ -87,6 +97,15 @@ _rewrite_so_refs() {
                                     echo "    - rewriting ref: $DLL"
 
                                     NEW_DLL=`echo $DLL | sed -e "s^/opt/local/^^g"`
+                                    echo "                 to: $LOADER_PATH/$NEW_DLL"
+
+                                    install_name_tool -change "$DLL" "$LOADER_PATH/$NEW_DLL" "$FILE_PATH/$FILE" 
+                            done
+
+                            for DLL in $DLIST2; do
+                                    echo "    - rewriting ref: $DLL"
+
+                                    NEW_DLL=`echo $DLL | sed -e "s^/usr/local/^^g"`
                                     echo "                 to: $LOADER_PATH/$NEW_DLL"
 
                                     install_name_tool -change "$DLL" "$LOADER_PATH/$NEW_DLL" "$FILE_PATH/$FILE" 
