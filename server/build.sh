@@ -70,12 +70,17 @@ _prep_server() {
 
     echo "Unpacking pgAdmin source..."
     tar -zxvf ../../tarballs/pljava-src-$PG_TARBALL_PLJAVA.tar.gz
+    cd pljava-$PG_TARBALL_PLJAVA 
+    patch -p0 < ../../../tarballs/pljava-fix.patch  
 
     # Debugger
     cd $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib
 
     echo "Unpacking debugger source..."
-    tar -zxvf ../../../../tarballs/edb-debugger-$PG_TARBALL_DEBUGGER.tgz
+    #tar -zxvf ../../../../tarballs/edb-debugger-$PG_TARBALL_DEBUGGER.tgz
+    cp -R ../../../../DevServer/source/pgsql/contrib/pldebugger .
+    cd pldebugger
+    cvs -z3 update -dP   
 	
 	# StackBuilder (CVS Tree)
 	echo "Updating the StackBuilder source tree..."
