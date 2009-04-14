@@ -230,7 +230,7 @@ _postprocess_server_osx() {
     cp scripts/osx/pgadmin.applescript.in staging/osx/scripts/pgadmin.applescript || _die "Failed to to the menu pick script (scripts/osx/pgadmin.applescript.in)"
     cp scripts/osx/stackbuilder.applescript.in staging/osx/scripts/stackbuilder.applescript || _die "Failed to to the menu pick script (scripts/osx/stackbuilder.applescript.in)"
 	
-    PG_DATETIME_SETTING_OSX=`cat staging/osx/include/pg_config.h | grep "#define USE_INTEGER_DATETIMES 1"`
+    PG_DATETIME_SETTING_OSX=`cat staging/osx/include/pg_config_ppc.h | grep "#define USE_INTEGER_DATETIMES 1"`
 
     if [ "x$PG_DATETIME_SETTING_OSX" = "x" ]
     then
