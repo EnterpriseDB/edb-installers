@@ -52,8 +52,6 @@ Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of val
 
 pg.blank.error=Values must be entered for all fields.
 
-progress.text.creating.shortcuts=Creating Menu Shortcuts
-
 systempassword.blank.error=Please provide the password to continue. It will be required to setup the pgAgent service.
 
 systemuser.blank.error=User name can not be blank.

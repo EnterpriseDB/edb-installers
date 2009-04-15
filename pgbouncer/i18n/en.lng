@@ -10,8 +10,6 @@ upgrade.existing.installation.description=An existing pgJDBC installation has be
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 
-progress.text.creating.shortcuts=Creating menu shortcuts
-
 Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com

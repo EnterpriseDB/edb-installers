@@ -408,40 +408,6 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- LIN : Remove Menu shortcuts -->
-        <actionGroup>
-            <actionList>
-                <runProgram>
-                    <program>${installdir}/installer/pgbouncer/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${branding}"</programArguments>
-                    <workingDirectory>${installdir}/installer/pgbouncer</workingDirectory>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                </runProgram>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- MAC : Remove Menu shortcuts -->
-        <actionGroup>
-            <actionList>
-                <deleteFile>
-                    <path>/Applications/${branding}/PostgreSQL JDBC Home Page.app</path>
-                </deleteFile>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
     </preUninstallationActionList>
     <!-- Components -->
     <componentList>
