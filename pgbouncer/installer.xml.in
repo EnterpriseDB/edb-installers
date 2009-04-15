@@ -4,7 +4,7 @@
     <fullName>pgbouncer</fullName>
     <version>PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER</version>
     <!-- These options are used on Windows -->
-    <startMenuGroupName>${branding}</startMenuGroupName>
+    <startMenuGroupName/>
     <!-- Product Specific Options -->
     <productComments>pgbouncer: Connection pooler for PostgreSQL, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>

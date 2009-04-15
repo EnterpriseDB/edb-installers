@@ -4,7 +4,7 @@
     <fullName>pgmemcache</fullName>
     <version>PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE</version>
     <!-- These options are used on Windows -->
-    <startMenuGroupName>${branding}</startMenuGroupName>
+    <startMenuGroupName/>
     <!-- Product Specific Options -->
     <productDisplayName>pgmemcache ${productVersion}</productDisplayName>
     <productComments>pgmemcache ${productVersion}, packaged by EnterpriseDB</productComments>
