@@ -149,6 +149,11 @@ _build_server_osx() {
     cp src/sql/install.sql "$WD/server/staging/osx/share/pljava/pljava.sql" || _die "Failed to install the pl/java installation SQL script"
     cp src/sql/uninstall.sql "$WD/server/staging/osx/share/pljava/uninstall_pljava.sql" || _die "Failed to install the pl/java uninstallation SQL script"
 
+    # Install the PostgreSQL docs
+    mkdir -p "$WD/server/staging/osx/doc/postgresql/html" || _die "Failed to create the doc directory"
+    cd "$WD/server/staging/osx/doc/postgresql/html" || _die "Failed to change to the doc directory"
+    tar -zxvf "$WD/server/source/postgres.osx/doc/postgres.tar.gz" || _die "Failed to unpack the PostgreSQL documentation"
+
     mkdir -p "$WD/server/staging/osx/doc/pljava" || _die "Failed to create the pl/java doc directory"
     cp docs/* "$WD/server/staging/osx/doc/pljava/" || _die "Failed to install the pl/java documentation"
      

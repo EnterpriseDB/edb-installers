@@ -245,6 +245,12 @@ _build_server_linux_x64() {
     cp "$WD/server/source/pljava.linux-x64/src/sql/install.sql" "$WD/server/staging/linux-x64/share/pljava/pljava.sql" || _die "Failed to install the pl/java installation SQL script"
     cp "$WD/server/source/pljava.linux-x64/src/sql/uninstall.sql" "$WD/server/staging/linux-x64/share/pljava/uninstall_pljava.sql" || _die "Failed to install the pl/java uninstallation SQL script"
 
+    # Install the PostgreSQL docs
+    mkdir -p "$WD/server/staging/linux-x64/doc/postgresql/html" || _die "Failed to create the doc directory"
+    cd "$WD/server/staging/linux-x64/doc/postgresql/html" || _die "Failed to change to the doc directory"
+    tar -zxvf "$WD/server/source/postgres.linux-x64/doc/postgres.tar.gz" || _die "Failed to unpack the PostgreSQL documentation"
+
+
     mkdir -p "$WD/server/staging/linux-x64/doc/pljava" || _die "Failed to create the pl/java doc directory"
     cp "$WD/server/source/pljava.linux-x64/docs/"* "$WD/server/staging/linux-x64/doc/pljava/" || _die "Failed to install the pl/java documentation"
  
