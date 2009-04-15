@@ -89,14 +89,6 @@ then
 cat <<EOT > "$PGADMIN_CONF"
 PostgreSQLPath=$INSTALLDIR/bin
 PostgreSQLHelpPath=file://$INSTALLDIR/doc/postgresql/html
-[Servers]
-Count=1
-[Servers/1]
-Server=localhost
-Description=PostgreSQL $VERSION
-Port=$PORT
-Database=postgres
-Username=postgres
 EOT
 fi
 
