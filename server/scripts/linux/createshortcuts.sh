@@ -172,16 +172,5 @@ fi
           "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION_STR.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION_STR.desktop" || _warn "Failed to create the documentation menu"
 
-# Not entirely relevant to this script, but pre-cofigure pgAdmin while we're here
-# Pre-register the server with pgAdmin, if the user doesn't already have a pgAdmin preferences file
-PGADMIN_CONF=$HOME/.pgadmin3
-if [ ! -e "$PGADMIN_CONF" ];
-then
-cat <<EOT > "$PGADMIN_CONF"
-PostgreSQLPath=$INSTALLDIR/bin
-PostgreSQLHelpPath=file://$INSTALLDIR/doc/postgresql/html
-EOT
-fi
-
 echo "$0 ran to completion"
 exit 0
