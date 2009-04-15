@@ -76,15 +76,15 @@ _build_server_osx() {
     
     # Configure the source tree
     echo "Configuring the postgres source tree for Intel"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-L/usr/local/lib" ./configure --host=i386-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-includes=/usr/local/include/libxml2|| _die "Failed to configure postgres for i386"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-L/usr/local/lib" ./configure --host=i386-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-includes=/usr/local/include/libxml2 --docdir=$WD/server/staging/osx/doc/postgresql || _die "Failed to configure postgres for i386"
     mv src/include/pg_config.h src/include/pg_config_i386.h
 
     echo "Configuring the postgres source tree for PPC"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" LDFLAGS="-L/usr/local/lib" ./configure --host=powerpc-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-includes=/usr/local/include/libxml2 || _die "Failed to configure postgres for PPC"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" LDFLAGS="-L/usr/local/lib" ./configure --host=powerpc-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-includes=/usr/local/include/libxml2 --docdir=$WD/server/staging/osx/doc/postgresql || _die "Failed to configure postgres for PPC"
     mv src/include/pg_config.h src/include/pg_config_ppc.h
 
     echo "Configuring the postgres source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" LDFLAGS="-L/usr/local/lib" ./configure --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-includes=/usr/local/include/libxml2 || _die "Failed to configure postgres for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" LDFLAGS="-L/usr/local/lib" ./configure --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-includes=/usr/local/include/libxml2 --docdir=$WD/server/staging/osx/doc/postgresql || _die "Failed to configure postgres for Universal"
 
     # Create a replacement pg_config.h that will pull in the appropriate architecture-specific one:
     echo "#ifdef __BIG_ENDIAN__" > src/include/pg_config.h
@@ -137,11 +137,6 @@ _build_server_osx() {
 
     # Copy the app bundle into place
     cp -R pgAdmin3.app $WD/server/staging/osx || _die "Failed to copy pgAdmin into the staging directory"
-
-    # Install the PostgreSQL docs
-    mkdir -p "$WD/server/staging/osx/doc/postgresql/html" || _die "Failed to create the doc directory"
-    cd "$WD/server/staging/osx/doc/postgresql/html" || _die "Failed to change to the doc directory"
-    tar -zxvf "$WD/server/source/postgres.osx/doc/postgres.tar.gz" || _die "Failed to unpack the PostgreSQL documentation"
 
     # And now, pl/java
 
