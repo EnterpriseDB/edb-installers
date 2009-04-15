@@ -1540,37 +1540,6 @@
             </ruleList>
         </showWarning>
 
-        <!-- Add configuration in pgAdmin3 settings.ini -->
-        <addTextToFile>
-            <file>${installdir}/pgAdmin3/share/pgadmin3/settings.ini</file> 
-            <text>
-LogFile=/tmp/pgadmin3.log
-
-[Servers]
-Count=1
-
-[Servers/1]
-Server=localhost
-Description=PostgreSQL ${product_version}
-Port=${serverport}
-Database=postgres
-Username=postgres
-
-            </text>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>1</text>
-                    <value>${IsUpgrade}</value>
-                </compareText>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>windows</text>
-                    <value>${platform_name}</value>
-                </compareText>
-            </ruleList>
-        </addTextToFile>
-
         <!-- Startup -->
         <runProgram>
             <program>${installdir}/installer/server/startserver.sh</program>
