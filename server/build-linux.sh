@@ -156,7 +156,7 @@ _build_server_linux() {
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/; sh ./configure --prefix=$PG_STAGING --with-openssl --with-perl --with-python --with-tcl --with-pam --with-krb5 --enable-thread-safety --with-libxml"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/; sh ./configure --prefix=$PG_STAGING --with-openssl --with-perl --with-python --with-tcl --with-pam --with-krb5 --enable-thread-safety --with-libxml --docdir=$PG_STAGING/doc/postgresql"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; make" || _die "Failed to build postgres" 
@@ -243,11 +243,6 @@ _build_server_linux() {
     mkdir -p "$WD/server/staging/linux/share/pljava" || _die "Failed to create the pl/java share directory"
     cp "$WD/server/source/pljava.linux/src/sql/install.sql" "$WD/server/staging/linux/share/pljava/pljava.sql" || _die "Failed to install the pl/java installation SQL script"
     cp "$WD/server/source/pljava.linux/src/sql/uninstall.sql"	 "$WD/server/staging/linux/share/pljava/uninstall_pljava.sql" || _die "Failed to install the pl/java uninstallation SQL script"
-
-    # Install the PostgreSQL docs
-    mkdir -p "$WD/server/staging/linux/doc/postgresql/html" || _die "Failed to create the doc directory"
-    cd "$WD/server/staging/linux/doc/postgresql/html" || _die "Failed to change to the doc directory"
-    tar -zxvf "$WD/server/source/postgres.linux/doc/postgres.tar.gz" || _die "Failed to unpack the PostgreSQL documentation"
 
     mkdir -p "$WD/server/staging/linux/doc/pljava" || _die "Failed to create the pl/java doc directory"
     cp "$WD/server/source/pljava.linux/docs/"* "$WD/server/staging/linux/doc/pljava/" || _die "Failed to install the pl/java documentation"
