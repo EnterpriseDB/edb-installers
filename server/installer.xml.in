@@ -1549,11 +1549,6 @@ PostgreSQLHelpPath=file://${installdir}/doc/postgresql/html
             </text>   
             <ruleList>
                 <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>1</text>
-                    <value>${IsUpgrade}</value>
-                </compareText>
-                <compareText>
                     <logic>contains</logic>
                     <text>linux</text>
                     <value>${platform_name}</value>
@@ -1570,13 +1565,24 @@ PostgreSQLHelpPath=file://${installdir}/doc/postgresql/html
             </text>   
             <ruleList>
                 <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>1</text>
-                    <value>${IsUpgrade}</value>
-                </compareText>
-                <compareText>
                     <logic>equals</logic>
                     <text>osx</text>
+                    <value>${platform_name}</value>
+                </compareText>
+            </ruleList>
+        </addTextToFile> 
+
+        <!--WIN: Adding configuration to the global config file -->
+        <addTextToFile>
+            <file>${installdir}\pgAdmin III\settings.ini</file>
+            <text>
+PostgreSQLPath=${installdir}\bin
+PostgreSQLHelpPath=file://${installdir}\doc\postgresql\html
+            </text>   
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>windows</text>
                     <value>${platform_name}</value>
                 </compareText>
             </ruleList>

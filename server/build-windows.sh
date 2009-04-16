@@ -353,6 +353,7 @@ EOT
 	do
    	ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\i18n\\\\$LANGCODE\"" || _die "Failed to create a directory on the windows build host"
 	    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\i18n\\\\$LANGCODE\\\\*.mo \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\i18n\\\\$LANGCODE\"" || _die "Failed to copy an i18n file on the windows build host"	
+	 ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\pgadmin\\\\*.ini \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\\"" || _die "Failed to copy ini files on the windows build host"	
 	done
 	
 	#####################
