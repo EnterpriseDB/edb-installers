@@ -2383,7 +2383,7 @@
         </runProgram>
 	
 	<logMessage>
-                    <text>Installing pgJDBC in ${installdir}/../pgJDBC</text>
+                    <text>Installing pgJDBC in ${installdir}/pgJDBC</text>
 		    <ruleList>
                 	<compareText>
                     		<logic>equals</logic>
@@ -2402,7 +2402,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux.bin</program>
-            <programArguments>--mode unattended --installdir ${installdir}/../pgJDBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir}/pgJDBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing pgJDBC ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2424,7 +2424,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux-x64.bin</program>
-            <programArguments>--mode unattended --installdir ${installdir}/../pgJDBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir}/pgJDBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing pgJDBC ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2442,7 +2442,7 @@
         </runProgram>
 
 	<logMessage>
-                    <text>Installing psqlODBC in ${installdir}/../psqlODBC</text>
+                    <text>Installing psqlODBC in ${installdir}/psqlODBC</text>
 		    <ruleList>
                 	<compareText>
                     		<logic>equals</logic>
@@ -2461,7 +2461,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux.bin</program>
-            <programArguments>--mode unattended --installdir ${installdir}/../psqlODBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir}/psqlODBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing psqlODBC ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2483,7 +2483,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux-x64.bin</program>
-            <programArguments>--mode unattended --installdir ${installdir}/../psqlODBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir}/psqlODBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing psqlODBC ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2776,7 +2776,7 @@
         </runProgram>
 	
 	<logMessage>
-                    <text>Installing pgJDBC in ${installdir}\..\pgJDBC</text>
+                    <text>Installing pgJDBC in ${installdir}\pgJDBC</text>
 		    <ruleList>
                 	<compareText>
                     		<logic>equals</logic>
@@ -2795,7 +2795,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}\postgresplus\pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-windows.exe</program>
-            <programArguments>--mode unattended --prefix "${installdir}\..\pgJDBC" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --prefix "${installdir}\pgJDBC" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing pgJDBC ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2813,7 +2813,7 @@
         </runProgram>
 
 	<logMessage>
-                    <text>Installing psqlODBC in ${installdir}\..\psqlODBC</text>
+                    <text>Installing psqlODBC in ${installdir}\psqlODBC</text>
 		    <ruleList>
                 	<compareText>
                     		<logic>equals</logic>
@@ -2832,7 +2832,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}\postgresplus\psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-windows.exe</program>
-            <programArguments>--mode unattended --prefix "${installdir}\..\psqlODBC" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --prefix "${installdir}\psqlODBC" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing psqlODBC ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2852,7 +2852,7 @@
 	<!--NpgSQL -->
 
 	<logMessage>
-                    <text>Installing Npgsql in ${installdir}\..\Npgsql</text>
+                    <text>Installing Npgsql in ${installdir}\Npgsql</text>
 		    <ruleList>
                 	<compareText>
                     		<logic>equals</logic>
@@ -2870,7 +2870,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}\postgresplus\npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-windows.exe</program>
-            <programArguments>--mode unattended --prefix "${installdir}\..\Npgsql" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --prefix "${installdir}\Npgsql" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing NpgSQL ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3109,7 +3109,7 @@
         </runProgram>
 	
 	<logMessage>
-                    <text>Installing pgJDBC in ${installdir}/../pgJDBC</text>
+                    <text>Installing pgJDBC in ${installdir}/pgJDBC</text>
 		    <ruleList>
                 	<compareText>
                     		<logic>equals</logic>
@@ -3128,7 +3128,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-osx.app/Contents/MacOS/installbuilder.sh</program>
-            <programArguments>--mode unattended --installdir ${installdir}/../pgJDBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir}/pgJDBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing pgJDBC ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3146,7 +3146,7 @@
         </runProgram>
 
 	<logMessage>
-                    <text>Installing psqlODBC in ${installdir}/../psqlODBC</text>
+                    <text>Installing psqlODBC in ${installdir}/psqlODBC</text>
 		    <ruleList>
                 	<compareText>
                     		<logic>equals</logic>
@@ -3165,7 +3165,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/installbuilder.sh</program>
-            <programArguments>--mode unattended --installdir ${installdir}/../psqlODBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir}/psqlODBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing psqlODBC ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3951,7 +3951,7 @@
 
 	
 	<deleteFile>
-            <path>${installdir}\..\pgJDBC</path>
+            <path>${installdir}\pgJDBC</path>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -3968,7 +3968,7 @@
 
 	
 	<deleteFile>
-            <path>${installdir}\..\psqlODBC</path>
+            <path>${installdir}\psqlODBC</path>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -3985,7 +3985,7 @@
 
 	
 	<deleteFile>
-            <path>${installdir}\..\Npgsql</path>
+            <path>${installdir}\Npgsql</path>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>

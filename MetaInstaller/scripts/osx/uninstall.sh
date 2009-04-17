@@ -11,7 +11,7 @@ if [ $2 = "true" ]; then
 fi
 
 if [ $3 = "true" ]; then
-  $6/../pgJDBC/uninstall-pgjdbc.app/Contents/MacOS/installbuilder.sh --mode unattended
+  $6/pgJDBC/uninstall-pgjdbc.app/Contents/MacOS/installbuilder.sh --mode unattended
 fi
 
 if [ $4 = "true" ]; then
@@ -19,7 +19,7 @@ if [ $4 = "true" ]; then
 fi
 
 if [ $5 = "true" ]; then
-  $6/../psqlODBC/uninstall-psqlodbc.app/Contents/MacOS/installbuilder.sh --mode unattended
+  $6/psqlODBC/uninstall-psqlodbc.app/Contents/MacOS/installbuilder.sh --mode unattended
 fi
 
 

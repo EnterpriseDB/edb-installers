@@ -28,7 +28,7 @@ goto PGJDBC
 
 :UNINSTALL_PGJDBC
 
-%6\..\pgJDBC\uninstall-pgjdbc.exe --mode unattended
+%6\pgJDBC\uninstall-pgjdbc.exe --mode unattended
 
 goto POSTGIS
 
@@ -40,13 +40,13 @@ goto PSQLODBC
 
 :UNINSTALL_PSQLODBC
 
-%6\..\psqlODBC\uninstall-psqlodbc.exe --mode unattended
+%6\psqlODBC\uninstall-psqlodbc.exe --mode unattended
 
 goto NPGSQL
 
 :UNINSTALL_NPGSQL
 
-%6\..\Npgsql\uninstall-npgsql.exe --mode unattended
+%6\Npgsql\uninstall-npgsql.exe --mode unattended
 
 goto PG
 
