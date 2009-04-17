@@ -535,7 +535,7 @@
                 <setInstallerVariableFromRegEx>
                       <name>pg_version</name>
                       <text>${pg_version_str}</text>
-                      <pattern>^PostgreSQL ([0-9].[0-9]).[0-9]$</pattern>
+                      <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
                       <substitution>\1</substitution>
                       <ruleList>
                          <compareText>
@@ -546,7 +546,7 @@
                       </ruleList>
                 </setInstallerVariableFromRegEx>
                 <showWarning>
-                    <text>${msg(postgis.installdir.pgerror)}</text>
+                    <text>${msg(postgis.incompatible.pg.error)}</text>
                     <ruleList>
                       <compareText>
                           <logic>does_not_equal</logic>
