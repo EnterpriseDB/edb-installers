@@ -96,7 +96,7 @@
         <!-- WIN: Set the pghome default value for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\8.3"/>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\PGMajorVersion"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -115,7 +115,7 @@
         <!-- LIN & LIN64: Set the pghome default value for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/8.3"/>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/PGMajorVersion"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -134,7 +134,7 @@
         <!-- MAC: Set the pghome default value for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/8.3"/>
+                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/PGMajorVersion"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -153,7 +153,7 @@
         <!-- WIN: Set the pghome default value when pghome not set -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\8.3"/>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\PGMajorVersion"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -172,7 +172,7 @@
 	    <!-- LIN & LIN64: Set the pghome default value when pghome not set -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/8.3"/>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/PGMajorVersion"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -191,7 +191,7 @@
         <!-- MAC: Set the pghome default value when pghome not set -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/8.3"/>
+                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/PGMajorVersion"/>
             </actionList>
             <ruleList>
                 <compareText>
