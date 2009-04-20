@@ -2647,7 +2647,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}\postgresplus\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
-            <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus CommunityServer ${product_version}"</programArguments>
+            <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Community Server ${product_version}"</programArguments>
             <progressText>Installing Database Server ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
