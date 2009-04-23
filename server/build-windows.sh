@@ -142,9 +142,9 @@ our \$config = {
     asserts=>0,                         # --enable-cassert
     integer_datetimes=>1,               # --enable-integer-datetimes
     nls=>'C:\pgBuild\gettext',        # --enable-nls=<path>
-    tcl=>'C:\tcl',            # --with-tls=<path>
-    perl=>'C:\perl',             # --with-perl
-    python=>'C:\python25',         # --with-python=<path>
+    tcl=>'C:\tcl85',            # --with-tls=<path>
+    perl=>'C:\perl510',             # --with-perl
+    python=>'C:\python26',         # --with-python=<path>
     krb5=>'C:\pgBuild\krb5',         # --with-krb5=<path>
     ldap=>1,                # --with-ldap
     openssl=>'C:\pgBuild\openssl',     # --with-ssl=<path>
