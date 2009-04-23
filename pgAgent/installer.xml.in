@@ -327,6 +327,7 @@
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             <compareText logic="equals" text="${plpgsql_exist}" value=""/>
+            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
           </ruleList>
         </runProgram>
 
@@ -339,6 +340,7 @@
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
             <compareText logic="equals" text="${plpgsql_exist}" value=""/>
+            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
           </ruleList>
         </runProgram>
 
@@ -353,6 +355,7 @@
           <ruleList>
             <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
           </ruleList>
         </runProgram>
         <runProgram>
@@ -365,6 +368,7 @@
           <ruleList>
             <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
           </ruleList>
         </runProgram>
 
@@ -388,6 +392,7 @@
             <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
             <compareText logic="equals" text="${upgrade_schema}" value="yes"/>
             <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
+            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
           </ruleList>
         </runProgram>
         <runProgram>
@@ -402,6 +407,7 @@
             <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
             <compareText logic="equals" text="${upgrade_schema}" value="yes"/>
             <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
+            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
           </ruleList>
         </runProgram>
 
@@ -412,6 +418,7 @@
             <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
             <compareText logic="does_not_equal" text="${upgrade_schema}" value="yes"/>
             <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
+            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
           </ruleList>
         </showInfo>
         <showInfo text="${msg(info.pgagent.schema.manual.upgrade.windows)}">
@@ -420,6 +427,7 @@
             <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
             <compareText logic="does_not_equal" text="${upgrade_schema}" value="yes"/>
             <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
+            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
           </ruleList>
         </showInfo>
 
@@ -443,6 +451,7 @@
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            <compareText logic="equals" text="${schema_in_unattended}" value="install"/>
             <compareText logic="equals" text="${installer_ui}" value="unattended"/>
           </ruleList>
         </runProgram>
@@ -455,6 +464,7 @@
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <compareText logic="equals" text="${schema_in_unattended}" value="install"/>
             <compareText logic="equals" text="${installer_ui}" value="unattended"/>
           </ruleList>
         </runProgram>
@@ -469,6 +479,7 @@
           <workingDirectory>${installdir}/bin</workingDirectory>
           <ruleList>
             <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            <compareText logic="equals" text="${schema_in_unattended}" value="install"/>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
           </ruleList>
         </runProgram>
@@ -481,7 +492,36 @@
           <workingDirectory>${installdir}/bin</workingDirectory>
           <ruleList>
             <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            <compareText logic="equals" text="${schema_in_unattended}" value="install"/>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- Upgrade schema pgagent -->
+        <runProgram>
+          <program>${installdir}/bin/psql</program>
+          <programArguments>-t -f "${installdir}/share/pgagent_upgrade.sql"</programArguments>
+          <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <workingDirectory>${installdir}/bin</workingDirectory>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            <compareText logic="equals" text="${schema_in_unattended}" value="upgrade"/>
+            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+          </ruleList>
+        </runProgram>
+        <runProgram>
+          <program>${installdir}\installer\pgAgent\configurePgAgent.bat</program>
+          <programArguments>"UPGRADE_PGAGENT_SCHEMA" "${installdir}\bin\psql.exe" "${installdir}\share\pgagent_upgrade.sql"</programArguments>
+          <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <workingDirectory>${installdir}/bin</workingDirectory>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <compareText logic="equals" text="${schema_in_unattended}" value="upgrade"/>
+            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
           </ruleList>
         </runProgram>
       </actionList>
@@ -643,6 +683,7 @@
         <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" value=""/>
         <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" value=""/>
         <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGDATABASE" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="ServiceManager" value=""/>
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -948,6 +989,16 @@
           <distributionFileList>
             <distributionDirectory>
               <origin>staging/osx/bin</origin>
+            </distributionDirectory>
+          </distributionFileList>
+        </folder>
+        <folder>
+          <description>Library Files</description>
+          <destination>${installdir}</destination>
+          <name>libfilesosx</name>
+          <platforms>osx</platforms>
+          <distributionFileList>
+            <distributionDirectory>
               <origin>staging/osx/lib</origin>
             </distributionDirectory>
           </distributionFileList>
@@ -983,7 +1034,7 @@
             <distributionFile>
               <origin>staging/osx/LICENSE</origin>
             </distributionFile>
-	    <distributionFile>
+            <distributionFile>
               <origin>staging/osx/README</origin>
             </distributionFile>
           </distributionFileList>
@@ -1168,6 +1219,20 @@
           <allowEmptyValue>1</allowEmptyValue>
           <width>40</width>
         </stringParameter>
+        
+        <choiceParameter cliOptionName="schema" ask="0" cliOptionShow="1">
+          <name>schema_in_unattended</name>
+          <description/>
+          <explanation/>
+          <value/>
+          <default>install</default>
+          <optionList>
+            <option value="none"/>
+            <option value="exists"/>
+            <option value="upgrade"/>
+            <option value="install"/>
+          </optionList>
+        </choiceParameter>
 
       </parameterList>
 
