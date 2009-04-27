@@ -190,9 +190,9 @@ use warnings;
     'C:\pgBuild\krb5\bin\i386',
     'C:\pgBuild\libxml2\bin',
     'C:\pgBuild\zlib',
-    'C:\Perl\Bin',
-    'C:\Python25\Bin',
-    'C:\Tcl\Bin',
+    'C:\Perl510\Bin',
+    'C:\Python26\Bin',
+    'C:\Tcl85\Bin',
     'C:\msys\1.0\bin',
     \$ENV{PATH}
 );
