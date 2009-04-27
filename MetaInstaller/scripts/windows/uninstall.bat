@@ -15,6 +15,12 @@ if %5==true goto UNINSTALL_PSQLODBC
 :NPGSQL
 if %7==true goto UNINSTALL_NPGSQL
 
+:PGBOUNCER
+if %8==true goto UNINSTALL_PGBOUNCER
+
+:PGAGENT
+if %9==true goto UNINSTALL_PGAGENT
+
 :PG
 if %1==true goto UNINSTALL_PG
 
@@ -47,6 +53,18 @@ goto NPGSQL
 :UNINSTALL_NPGSQL
 
 %6\Npgsql\uninstall-npgsql.exe --mode unattended
+
+goto PGBOUNCER
+
+:UNINSTALL_PGBOUNCER
+
+%6\pgbouncer\uninstall-pgbouncer.exe --mode unattended
+
+goto PGAGENT
+
+:UNINSTALL_PGAGENT
+
+%6\pgagent\uninstall-pgagent.exe --mode unattended
 
 goto PG
 

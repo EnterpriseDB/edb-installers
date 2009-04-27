@@ -6,6 +6,7 @@
 
 _prep_metainstaller_linux_x64() {
 
+
     # Enter the source directory and cleanup if required
     cd $WD/MetaInstaller/source
 
@@ -42,6 +43,17 @@ _prep_metainstaller_linux_x64() {
     cp -R "$WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the psqlodbc installer (staging/linux-x64/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-linux-x64.bin)"
     # Grab a copy of the postgis installer
     cp -R "$WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the postgis installer (staging/linux-x64/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-linux-x64.bin)"
+
+
+    # Grab a copy of the pgbouncer installer
+    cp -R "$WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the pgbouncer installer (staging/linux-x64/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-linux-x64.bin"
+
+    # Grab a copy of the pgmemcache installer
+    cp -R "$WD/output/pgmemcache-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the pgmemcache installer (staging/linux-x64/pgmemcache-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-linux-x64.bin"
+
+    # Grab a copy of the pgagent installer
+    cp -R "$WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the pgagent installer (staging/linux-x64/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-linux-x64.bin"
+
 
     cd $WD/MetaInstaller
     mkdir -p staging/linux-x64/scripts/pgcontrol

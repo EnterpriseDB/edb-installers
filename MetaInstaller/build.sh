@@ -34,6 +34,11 @@ PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
 
 _prep_metainstaller() {
 
+    if [ -ne $WD/MetaInstaller/source ];
+    then
+      mkdir -p $WD/MetaInstaller/source
+    fi
+
     # Per-platform prep
     cd $WD/MetaInstaller
 
@@ -142,6 +147,19 @@ _postprocess_metainstaller() {
    _replace PG_VERSION_NPGSQL $PG_VERSION_NPGSQL postgresplus.xml || _die "Failed to set the npgsql version  in the installer project file (MetaInstaller/postgresplus.xml)"
    _replace PG_BUILDNUM_NPGSQL $PG_BUILDNUM_NPGSQL postgresplus.xml || _die "Failed to set the npgsql buildnum  in the installer project file (MetaInstaller/postgresplus.xml)"
    _replace PG_CATALOG_VERSION $PG_CATALOG_VERSION postgresplus.xml || _die "Failed to set the catalog version number in the installer project file (MetaInstaller/postgresplus.xml)"
+
+   _replace PG_VERSION_PGBOUNCER $PG_VERSION_PGBOUNCER postgresplus.xml || _die "Failed to set the pgbouncer version number in the installer project file (MetaInstaller/postgresplus.xml)"
+
+   _replace PG_BUILDNUM_PGBOUNCER $PG_BUILDNUM_PGBOUNCER postgresplus.xml || _die "Failed to set the pgbouncer build number in the installer project file (MetaInstaller/postgresplus.xml)"
+
+   _replace PG_VERSION_PGMEMCACHE $PG_VERSION_PGMEMCACHE postgresplus.xml || _die "Failed to set the pgmemcache version number in the installer project file (MetaInstaller/postgresplus.xml)"
+
+   _replace PG_BUILDNUM_PGMEMCACHE $PG_BUILDNUM_PGMEMCACHE postgresplus.xml || _die "Failed to set the pgmemcache build number in the installer project file (MetaInstaller/postgresplus.xml)"
+
+   _replace PG_VERSION_PGAGENT $PG_VERSION_PGAGENT postgresplus.xml || _die "Failed to set the pgagent version number in the installer project file (MetaInstaller/postgresplus.xml)"
+
+   _replace PG_BUILDNUM_PGAGENT $PG_BUILDNUM_PGAGENT postgresplus.xml || _die "Failed to set the pgagent build number in the installer project file (MetaInstaller/postgresplus.xml)"
+
  
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

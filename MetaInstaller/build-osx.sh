@@ -46,6 +46,17 @@ _prep_metainstaller_osx() {
     # Grab a copy of the postgis installer
     cp -R "$WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the postgis installer (staging/osx/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.zip)"
 
+
+    # Grab a copy of the pgbouncer installer
+    cp -R "$WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the pgbouncer installer (staging/osx/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.zip"
+
+    # Grab a copy of the pgmemcache installer
+    cp -R "$WD/output/pgmemcache-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the pgmemcache installer (staging/osx/pgmemcache-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.zip"
+
+    # Grab a copy of the pgagent installer
+    cp -R "$WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the pgagent installer (staging/osx/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip"
+
+
     cd $WD/MetaInstaller/staging/osx
    
     hdiutil attach postgresql-$PG_PACKAGE_VERSION-osx.dmg
@@ -74,6 +85,18 @@ _prep_metainstaller_osx() {
     # unzip postgis
     unzip postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.zip
     rm -f postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.zip
+
+    # unzip pgbouncer
+    unzip pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.zip
+    rm -f pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.zip
+
+    # unzip pmemcache
+    unzip pgmemcache-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.zip
+    rm -f pgmemcache-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.zip
+
+    # unzip pgagent
+    unzip pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip
+    rm -f pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip
 
     cd $WD/MetaInstaller
     mkdir -p staging/osx/scripts/pgcontrol
