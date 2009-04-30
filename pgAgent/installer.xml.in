@@ -112,7 +112,12 @@
     </setInstallerVariable>
     <setInstallerVariable name="defaultinstalldir" value="${platform_install_prefix}/pgAgent">
       <ruleList>
-        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="defaultinstalldir" value="/Library/pgAgent">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </setInstallerVariable>
     <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{7299052b-02a4-4627-81f2-1818da5d550d}" name="DisplayVersion" variable="VC_REDIST_2005_VERSION"/>
@@ -634,35 +639,35 @@
         <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
     </startWindowsService>
-    
-    <!-- LIN & LIN-X64 : Start the pgAgent service -->
-    <!-- Disabled pgAgent service startup -->
-    <!-- actionGroup>
+
+    <!-- LIN & MAC : Start pgAgent -->
+    <actionGroup>
       <actionList>
         <runProgram>
-          <program>/bin/sh</program>
-          <programArguments>/etc/init.d/pgagent start</programArguments>
+          <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
+          <program>/etc/init.d/pgagent</program>
+          <programArguments>start &amp;</programArguments>
+          <workingDirectory>/etc/init.d</workingDirectory>
+          <progressText>Starting pgAgent service</progressText>
           <abortOnError>0</abortOnError>
-          <showMessageOnError>1</showMessageOnError>
+          <showMessageOnError>0</showMessageOnError>
         </runProgram>
       </actionList>
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
       </ruleList>
     </actionGroup>
-    -->
 
     <!-- MAC : Start the pgAgent service -->
-    <!-- Disabled pgAgent service startup -->
-    <!-- runProgram>
+    <runProgram>
       <program>${installdir}/installer/pgAgent/pgagentctl.sh</program>
-      <programArguments>start</programArguments>
+      <programArguments>start &amp;</programArguments>
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
-    </runProgram -->
+    </runProgram>
 
     <!-- Delete the temporary pgpass File -->
     <deleteFile>
