@@ -39,7 +39,9 @@ chown $SYSTEM_USER $USER_HOME_DIR/.pgpass
 chmod 0600 $USER_HOME_DIR/.pgpass
 
 # Configure database startup
-mkdir -p /Library/LaunchDaemons || _die "Failed to create directory for root daemons"
+if [ ! -e /Library/LaunchDaemons ]; then
+    mkdir -p /Library/LaunchDaemons || _die "Failed to create directory for root daemons"
+fi
 
 # Write the plist file
 cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pgagent.plist"
