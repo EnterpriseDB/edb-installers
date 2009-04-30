@@ -625,11 +625,28 @@
         </runProgram>
       </actionList>
       <ruleList>
-        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
         <compareText logic="equals" text="${pgAgentVersion}" value=""/>
       </ruleList>
     </actionGroup>
-    
+    <actionGroup>
+      <actionList>
+        <runProgram>
+          <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
+          <program>${installdir}/installer/pgAgent/startupcfg.sh</program>
+          <programArguments>"${pghost}" "${pgport}" "${pguser}" "${systemuser}" "${installdir}"</programArguments>
+          <workingDirectory>${installdir}/installer/pgAgent</workingDirectory>
+          <progressText>Configure pgAgent service</progressText>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
+        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
+      </ruleList>
+    </actionGroup>
+   
     <!-- WIN : Start the pgAgent service -->
     <startWindowsService>
       <serviceName>pgAgent</serviceName>
