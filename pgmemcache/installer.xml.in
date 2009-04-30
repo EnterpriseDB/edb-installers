@@ -1,7 +1,7 @@
 <project>
     <!-- Package details -->
     <shortName>pgmemcache</shortName>
-    <fullName>pgmemcache</fullName>
+    <fullName>pgmemcache-pgPG_CURRENT_VERSION</fullName>
     <version>PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE</version>
     <!-- These options are used on Windows -->
     <startMenuGroupName/>
@@ -19,7 +19,7 @@
     <width>550</width>
     <height>400</height>
     <!-- Misc package options -->
-    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-pgPG_CURRENT_VERSION-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
     <enableRollback>0</enableRollback>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <saveRelativePaths>1</saveRelativePaths>
@@ -89,7 +89,7 @@
         <!-- WIN: Set the pghome default value -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\8.3"/>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\PG_MAJOR_VERSION"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -102,7 +102,7 @@
         <!-- LIN: Set the pghome default value  -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/8.3"/>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -115,7 +115,7 @@
         <!-- MAC: Set the  pghome default value  -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/8.3"/>
+                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/PG_MAJOR_VERSION"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -142,12 +142,7 @@
         <actionGroup>
             <actionList>
                 <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgmemcache</key>
-                    <name>Branding</name>
-                    <variable>iBranding</variable>
-                </registryGet>
-                <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgmemcache</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgmemcache-pgPG_CURRENT_VERSION</key>
                     <name>Version</name>
                     <variable>pgmemcacheVersion</variable>
                 </registryGet>
@@ -165,13 +160,7 @@
             <actionList>
                 <iniFileGet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgmemcache</section>
-                    <key>Branding</key>
-                    <variable>iBranding</variable>
-                </iniFileGet>
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pgmemcache</section>
+                    <section>pgmemcache-pgPG_CURRENT_VERSION</section>
                     <key>Version</key>
                     <variable>pgmemcacheVersion</variable>
                 </iniFileGet>
@@ -184,61 +173,11 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- If there appears to be an existing installation, with no Branding value. -->
-        <!-- force the default value. Otherwise, set the branding to whatever we read, -->
-        <!-- or, set the default -->
-        <!-- Existing, old install (version, but no branding) -->
-        <setInstallerVariable>
-            <name>branding</name>
-            <persist>0</persist>
-            <value>PostgreSQL PG_MAJOR_VERSION</value>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${pgmemcacheVersion}</text>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${iBranding}</text>
-                    <value/>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
-        <!-- Existing install, with branding -->
-        <setInstallerVariable>
-            <name>branding</name>
-            <persist>0</persist>
-            <value>${iBranding}</value>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${iBranding}</text>
-                    <value/>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
-        <!-- New install, nothing set on the command line -->
-        <setInstallerVariable>
-            <name>branding</name>
-            <persist>0</persist>
-            <value>PostgreSQL PG_MAJOR_VERSION</value>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${branding}</text>
-                    <value/>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
-        <logMessage>
-            <text>Using branding: ${branding}</text>
-        </logMessage>
         <!-- WIN: Set Installation Directory in case of re-install/upgrade -->
         <actionGroup>
             <actionList>
                 <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgmemcache</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgmemcache-pgPG_CURRENT_VERSION</key>
                     <name>Location</name>
                     <variable>installdir</variable>
                 </registryGet>
@@ -261,7 +200,7 @@
             <actionList>
                 <iniFileGet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgmemcache</section>
+                    <section>pgmemcache-pgPG_CURRENT_VERSION</section>
                     <key>InstallationDirectory</key>
                     <variable>installdir</variable>
                 </iniFileGet>
@@ -396,27 +335,21 @@
             <actionList>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgmemcache</section>
+                    <section>pgmemcache-pgPG_CURRENT_VERSION</section>
                     <key>Description</key>
                     <value>${msg(install.summary)}</value>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgmemcache</section>
+                    <section>pgmemcache-pgPG_CURRENT_VERSION</section>
                     <key>InstallationDirectory</key>
                     <value>${installdir}</value>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgmemcache</section>
+                    <section>pgmemcache-pgPG_CURRENT_VERSION</section>
                     <key>Version</key>
                     <value>${product_version}</value>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pgmemcache</section>
-                    <key>Branding</key>
-                    <value>${branding}</value>
                 </iniFileSet>
             </actionList>
             <ruleList>
@@ -427,18 +360,6 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <registrySet>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgmemcache</key>
-            <name>Branding</name>
-            <value>${branding}</value>
-            <ruleList>
-                <compareText>
-                    <text>${platform_name}</text>
-                    <logic>equals</logic>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </registrySet>
     </postInstallationActionList>
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
@@ -447,25 +368,25 @@
             <actionList>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgmemcache</section>
+                    <section>pgmemcache-pgPG_CURRENT_VERSION</section>
                     <key>Description</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgmemcache</section>
+                    <section>pgmemcache-pgPG_CURRENT_VERSION</section>
                     <key>InstallationDirectory</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgmemcache</section>
+                    <section>pgmemcache-pgPG_CURRENT_VERSION</section>
                     <key>Version</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgmemcache</section>
+                    <section>pgmemcache-pgPG_CURRENT_VERSION</section>
                     <key>Branding</key>
                     <value/>
                 </iniFileSet>
