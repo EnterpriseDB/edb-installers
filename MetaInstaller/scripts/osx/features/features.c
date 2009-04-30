@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 
 int
 main(int argc, char *argv[])
@@ -7,9 +7,9 @@ main(int argc, char *argv[])
 	int feature_count = 0;
 	char * feature_string[500];
 	
-	memset (feature_string, '\0', sizeof(feature_count));
+	memset (feature_string, '\0', (int)sizeof(feature_count));
 	
-	if(argc != 6)
+	if(argc != 10)
 	{
 		printf("Leaving, in complete arguments\n");
 		return 1;
@@ -21,7 +21,7 @@ main(int argc, char *argv[])
 	// Arg-1
 	if(!strcmp(argv[1], "1"))
 	{
-		strcat(feature_string, "DBServer");
+		strcat((char*)feature_string, "DBServer");
 		feature_count++;
 	}
 	
@@ -29,9 +29,9 @@ main(int argc, char *argv[])
 	if(!strcmp(argv[2], "1"))
 	{
 		if(feature_count > 0)
-			strcat(feature_string, ",Slony");
+			strcat((char*)feature_string, ",Slony");
 		else
-			strcat(feature_string, "Slony");
+			strcat((char*)feature_string, "Slony");
 		
 		feature_count++;
 	}
@@ -40,9 +40,9 @@ main(int argc, char *argv[])
 	if(!strcmp(argv[3], "1"))
 	{
 		if(feature_count > 0)
-			strcat(feature_string, ",pgJdbc");
+			strcat((char*)feature_string, ",pgJdbc");
 		else
-			strcat(feature_string, "pgJdbc");
+			strcat((char*)feature_string, "pgJdbc");
 			
 		feature_count++;
 	
@@ -53,9 +53,9 @@ main(int argc, char *argv[])
 	if(!strcmp(argv[4], "1"))
 	{
 		if(feature_count > 0)
-			strcat(feature_string, ",postGIS");
+			strcat((char*)feature_string, ",postGIS");
 		else
-			strcat(feature_string, "postGIS");	
+			strcat((char*)feature_string, "postGIS");	
 		
 		feature_count++;
 
@@ -65,9 +65,61 @@ main(int argc, char *argv[])
 	if(!strcmp(argv[5], "1"))
 	{
 		if(feature_count > 0)
-			strcat(feature_string, ",psqlODBC");
+			strcat((char*)feature_string, ",psqlODBC");
 		else
-			strcat(feature_string, "psqlODBC");
+			strcat((char*)feature_string, "psqlODBC");
+			
+		
+		feature_count++;
+
+	}
+
+	// Arg-6
+	if(!strcmp(argv[6], "1"))
+	{
+		if(feature_count > 0)
+			strcat((char*)feature_string, ",Npgsql");
+		else
+			strcat((char*)feature_string, "Npgsql");
+			
+		
+		feature_count++;
+
+	}
+
+	// Arg-7
+	if(!strcmp(argv[7], "1"))
+	{
+		if(feature_count > 0)
+			strcat((char*)feature_string, ",pgbouncer");
+		else
+			strcat((char*)feature_string, "pgbouncer");
+			
+		
+		feature_count++;
+
+	}
+
+	// Arg-8
+	if(!strcmp(argv[8], "1"))
+	{
+		if(feature_count > 0)
+			strcat((char*)feature_string, ",pgmemcache");
+		else
+			strcat((char*)feature_string, "pgmemcache");
+			
+		
+		feature_count++;
+
+	}
+
+	// Arg-9
+	if(!strcmp(argv[9], "1"))
+	{
+		if(feature_count > 0)
+			strcat((char*)feature_string, ",pgAgent");
+		else
+			strcat((char*)feature_string, "pgAgent");
 			
 		
 		feature_count++;
