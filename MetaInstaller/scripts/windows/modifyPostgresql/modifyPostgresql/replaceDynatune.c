@@ -1,5 +1,6 @@
 #include <stdio.h>
-
+#include <stdlib.h>
+#include <string.h>
 #ifdef _WIN32
 	#include <windows.h>
 #else
@@ -8,7 +9,7 @@
 
 
 char* parameters[17][500];
-
+//FILE *stream;
 
 // This the order in which 'parameters' array stores values
 // of arguments.
@@ -63,7 +64,7 @@ char* appendString(char* line, char* indicator);
 char * make_str(const char *str)
 {
 	char * res_str = (char *) malloc(strlen(str) + 1);
-	strcpy(res_str, str);
+	strcpy_s(res_str,1000, str);
 	return res_str;
 }
 
@@ -75,8 +76,8 @@ char * make_str(const char *str)
 FILE * openFile (char* src_fileName)
 {
 	FILE * fptr = NULL;
-	
-	if((fptr = fopen(src_fileName, "r+")) == NULL)
+	errno_t err;
+	if((err = fopen_s(&fptr,src_fileName, "r+")) !=0)
 	{
 		printf("File open error\n");
 		return NULL;
@@ -92,8 +93,8 @@ FILE * openFile (char* src_fileName)
 FILE * openFileWrite (char* src_fileName)
 {
 	FILE * fptr = NULL;
-	
-	if((fptr = fopen(src_fileName, "w")) == NULL)
+	errno_t err;
+	if((err = fopen_s(&fptr,src_fileName, "w")) !=0)
 	{
 		printf("File open error\n");
 		return NULL;
@@ -109,8 +110,8 @@ static char *
 cat2_str(char *str1, char *str2)
 {
 	char * res_str = (char*) malloc(strlen(str1) + strlen(str2) + 2);
-	strcpy(res_str, str1);
-	strcat(res_str, str2);
+	strcpy_s(res_str,1000, str1);
+	strcat_s(res_str,1000, str2);
 	
 	if(str1)
 		free(str1);
@@ -151,7 +152,7 @@ cat_str(int count, ...)
 //
 int search_String (FILE* fptr, FILE* fptrWrite)
 {
-	int resultBytes = 0;
+	//int resultBytes = 0;
 	char* character = NULL;
 	char line[1000];
 	int error_num = 0;
@@ -159,8 +160,9 @@ int search_String (FILE* fptr, FILE* fptrWrite)
 
 
 	memset(line, '\0', sizeof(line));
-
-	while((((character = fgets(line, 1000, fptr)) != EOF)) && (character != NULL))
+	
+       
+	while(((character = fgets(line, 1000, fptr)) != NULL))
 	{
 		// max_connections 
 		if((character = strstr(line, "max_connections =")) != NULL)
@@ -429,192 +431,193 @@ char*
 appendString(char* line, char* indicator)
 {
 	char* outputStr = NULL;
+ const char* n="\n";
 
 	if(strstr(indicator, "max_connections") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(max_connections[0]), make_str(parameters[15]), make_str(max_connections[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)max_connections[0]), make_str((const char*)parameters[15]), make_str((const char*)max_connections[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(max_connections[0]), make_str(parameters[15]), make_str(max_connections[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)max_connections[0]), make_str((const char*)parameters[15]), make_str((const char*)max_connections[1]), make_str(n));
 			}
 	}
 	else if(strstr(indicator, "autovacuum_naptime") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(autovacuum_naptime[0]), make_str(parameters[1]), make_str(autovacuum_naptime[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)autovacuum_naptime[0]), make_str((const char*)parameters[1]), make_str((const char*)autovacuum_naptime[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(parameters[1]), make_str(autovacuum_naptime[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)parameters[1]), make_str((const char*)autovacuum_naptime[1]), make_str(n));
 			}
 	}
 	else if(strstr(indicator, "autovacuum_vacuum_threshold") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(autovacuum_vacuum_threshold[0]), make_str(parameters[2]), make_str(autovacuum_vacuum_threshold[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)autovacuum_vacuum_threshold[0]), make_str((const char*)parameters[2]), make_str((const char*)autovacuum_vacuum_threshold[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(autovacuum_vacuum_threshold[0]), make_str(parameters[2]), make_str(autovacuum_vacuum_threshold[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)autovacuum_vacuum_threshold[0]), make_str((const char*)parameters[2]), make_str((const char*)autovacuum_vacuum_threshold[1]), make_str(n));
 			}
 	}
 	else if(strstr(indicator, "autovacuum_analyze_threshold") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(autovacuum_analyze_threshold[0]), make_str(parameters[3]), make_str(autovacuum_analyze_threshold[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)autovacuum_analyze_threshold[0]), make_str((const char*)parameters[3]), make_str((const char*)autovacuum_analyze_threshold[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(autovacuum_analyze_threshold[0]), make_str(parameters[3]), make_str(autovacuum_analyze_threshold[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)autovacuum_analyze_threshold[0]), make_str((const char*)parameters[3]), make_str((const char*)autovacuum_analyze_threshold[1]), make_str(n));
 			}
 	}
 	else if(strstr(indicator, "autovacuum_vacuum_scale_factor") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(autovacuum_vacuum_scale_factor[0]), make_str(parameters[4]), make_str(autovacuum_vacuum_scale_factor[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)autovacuum_vacuum_scale_factor[0]), make_str((const char*)parameters[4]), make_str((const char*)autovacuum_vacuum_scale_factor[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(autovacuum_vacuum_scale_factor[0]), make_str(parameters[4]), make_str(autovacuum_vacuum_scale_factor[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)autovacuum_vacuum_scale_factor[0]), make_str((const char*)parameters[4]), make_str((const char*)autovacuum_vacuum_scale_factor[1]), make_str(n));
 			}
 	}
 	else if(strstr(indicator, "autovacuum_analyze_scale_factor") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(autovacuum_analyze_scale_factor[0]), make_str(parameters[5]), make_str(autovacuum_analyze_scale_factor[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)autovacuum_analyze_scale_factor[0]), make_str((const char*)parameters[5]), make_str((const char*)autovacuum_analyze_scale_factor[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(autovacuum_analyze_scale_factor[0]), make_str(parameters[5]), make_str(autovacuum_analyze_scale_factor[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)autovacuum_analyze_scale_factor[0]), make_str((const char*)parameters[5]), make_str((const char*)autovacuum_analyze_scale_factor[1]), make_str(n));
 			}
 	}
 	else if(strstr(indicator, "autovacuum") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(autovacuum[0]), make_str(parameters[0]), make_str(autovacuum[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)autovacuum[0]), make_str((const char*)parameters[0]), make_str((const char*)autovacuum[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(autovacuum[0]), make_str(parameters[0]), make_str(autovacuum[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)autovacuum[0]), make_str((const char*)parameters[0]), make_str((const char*)autovacuum[1]), make_str(n));
 			}
 	}
 	else if(strstr(indicator, "checkpoint_segments") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(checkpoint_segments[0]), make_str(parameters[6]), make_str(checkpoint_segments[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)checkpoint_segments[0]), make_str((const char*)parameters[6]), make_str((const char*)checkpoint_segments[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(checkpoint_segments[0]), make_str(parameters[6]), make_str(checkpoint_segments[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)checkpoint_segments[0]), make_str((const char*)parameters[6]), make_str((const char*)checkpoint_segments[1]), make_str(n));
 			}
 	}
 	else if(strstr(indicator, "effective_cache_size") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(effective_cache_size[0]), make_str(parameters[7]), make_str(effective_cache_size[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)effective_cache_size[0]), make_str((const char*)parameters[7]), make_str((const char*)effective_cache_size[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(effective_cache_size[0]), make_str(parameters[7]), make_str(effective_cache_size[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)effective_cache_size[0]), make_str((const char*)parameters[7]), make_str((const char*)effective_cache_size[1]), make_str(n));
 			}
 	}
 	else if(strstr(indicator, "maintenance_work_mem") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(maintenance_work_mem[0]), make_str(parameters[8]), make_str(maintenance_work_mem[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)maintenance_work_mem[0]), make_str((const char*)parameters[8]), make_str((const char*)maintenance_work_mem[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(maintenance_work_mem[0]), make_str(parameters[8]), make_str(maintenance_work_mem[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)maintenance_work_mem[0]), make_str((const char*)parameters[8]), make_str((const char*)maintenance_work_mem[1]), make_str(n));
 			}
 	}
 	else if(strstr(indicator, "max_fsm_pages") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(max_fsm_pages[0]), make_str(parameters[9]), make_str(max_fsm_pages[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)max_fsm_pages[0]), make_str((const char*)parameters[9]), make_str((const char*)max_fsm_pages[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(max_fsm_pages[0]), make_str(parameters[9]), make_str(max_fsm_pages[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)max_fsm_pages[0]), make_str((const char*)parameters[9]), make_str((const char*)max_fsm_pages[1]), make_str(n));
 			}
 	}
 	else if(strstr(indicator, "max_fsm_relations") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(max_fsm_relations[0]), make_str(parameters[10]), make_str(max_fsm_relations[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)max_fsm_relations[0]), make_str((const char*)parameters[10]), make_str((const char*)max_fsm_relations[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(max_fsm_relations[0]), make_str(parameters[10]), make_str(max_fsm_relations[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)max_fsm_relations[0]), make_str((const char*)parameters[10]), make_str((const char*)max_fsm_relations[1]), make_str(n));
 			}
 	}
 	else if(strstr(indicator, "random_page_cost") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(random_page_cost[0]), make_str(parameters[11]), make_str(random_page_cost[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)random_page_cost[0]), make_str((const char*)parameters[11]), make_str((const char*)random_page_cost[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(random_page_cost[0]), make_str(parameters[11]), make_str(random_page_cost[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)random_page_cost[0]), make_str((const char*)parameters[11]), make_str((const char*)random_page_cost[1]), make_str(n));
 			}
 	}
 	else if(strstr(indicator, "shared_buffers") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(shared_buffers[0]), make_str(parameters[12]), make_str(shared_buffers[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)shared_buffers[0]), make_str((const char*)parameters[12]), make_str((const char*)shared_buffers[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(shared_buffers[0]), make_str(parameters[12]), make_str(shared_buffers[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)shared_buffers[0]), make_str((const char*)parameters[12]), make_str((const char*)shared_buffers[1]), make_str(n));
 			}
 	}
 	else if(strstr(indicator, "wal_buffers") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(wal_buffers[0]), make_str(parameters[13]), make_str(wal_buffers[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)wal_buffers[0]), make_str((const char*)parameters[13]), make_str((const char*)wal_buffers[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(wal_buffers[0]), make_str(parameters[13]), make_str(wal_buffers[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)wal_buffers[0]), make_str((const char*)parameters[13]), make_str((const char*)wal_buffers[1]), make_str(n));
 			}
 	}
 	else if(strstr(indicator, "work_mem") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(work_mem[0]), make_str(parameters[14]), make_str(work_mem[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)work_mem[0]), make_str((const char*)parameters[14]), make_str((const char*)work_mem[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(work_mem[0]), make_str(parameters[14]), make_str(work_mem[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)work_mem[0]), make_str((const char*)parameters[14]), make_str((const char*)work_mem[1]), make_str(n));
 			}
 	}
 	else if(strstr(indicator, "stats_row_level") != NULL)
 	{
 			if(line[0] == '#')
 			{
-				outputStr = cat_str(5, make_str(line), make_str(stats_row_level[0]), make_str(parameters[16]), make_str(stats_row_level[1]), make_str("\n"));
+				outputStr = cat_str(5, make_str((const char*)line), make_str((const char*)stats_row_level[0]), make_str((const char*)parameters[16]), make_str((const char*)stats_row_level[1]), make_str(n));
 			}
 			else
 			{
-				outputStr = cat_str(6, make_str("#"), make_str(line), make_str(stats_row_level[0]), make_str(parameters[16]), make_str(stats_row_level[1]), make_str("\n"));
+				outputStr = cat_str(6, make_str((const char*)"#"), make_str((const char*)line), make_str((const char*)stats_row_level[0]), make_str((const char*)parameters[16]), make_str((const char*)stats_row_level[1]), make_str(n));
 			}
 	}
 
@@ -628,12 +631,12 @@ int main (int argc, char* argv[])
 {
 	FILE * fptrBackfile = NULL;
 	FILE * fptrOutput = NULL;
-	FILE * temp_fptr  = NULL;
+	//FILE * temp_fptr  = NULL;
 
 	char *backupFileName  = NULL;
 	char *outputFileName  = NULL;
 
-	char* postgres_conf_Path = NULL;
+	//char* postgres_conf_Path = NULL;
 	int i = 0;
 	int error_Number = 0;
 
@@ -652,7 +655,7 @@ int main (int argc, char* argv[])
 	// application-name and postgresql.conf path)
 	while(i < 17)
 	{
-		strcpy(parameters[i], argv[i+2]);
+		strcpy_s((char*)parameters[i],1000, argv[i+2]);
 		i++;
 	}
 

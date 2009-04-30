@@ -85,7 +85,7 @@ char *HexStrToStr(char *str) {
 		return NULL;
 	}
 
-	stringLen=strlen(str);
+	stringLen=(int)strlen(str);
 
 	//check if its not odd and valid characters
 	if(((stringLen & 0x1) != 0) && !IsAllHex(str)) {
@@ -99,7 +99,7 @@ char *HexStrToStr(char *str) {
 	for(i=0,j=0; i<stringLen; i+=2,j++) {
        hex[0] = str[i];
 	   hex[1] = str[i+1];
-	   newstr[j] = strtol(hex, NULL,16);
+	   newstr[j] =(char) strtol(hex, NULL,16);
 	   hex[0]=hex[1]=hex[2]='\0';
 	}
     newstr[stringLen/2] = '\0';
@@ -108,8 +108,8 @@ char *HexStrToStr(char *str) {
 
 char *getTotalMemoryInGB() {
 	MEMORYSTATUSEX statex;
-	float tmInGB;
-	DWORDLONG totalMemory;
+	//float tmInGB;
+	//DWORDLONG totalMemory;
     double DIV = 1073741824.0;
 	double ans;
 	char *cAns = (char *)malloc(sizeof(char)*11);
@@ -123,15 +123,15 @@ char *getTotalMemoryInGB() {
 
 char *getTotalMemoryInMB() {
 	MEMORYSTATUSEX statex;
-	float tmInGB;
-	DWORDLONG totalMemory;
+	//float tmInGB;
+	//DWORDLONG totalMemory;
     double DIV = 1048576;
 	long ans;
 	char *cAns = (char *)malloc(sizeof(char)*11);
 
     statex.dwLength = sizeof (statex);
     GlobalMemoryStatusEx (&statex);
-	ans = statex.ullTotalPhys/DIV;
+	ans = (long)(statex.ullTotalPhys/DIV);
 	_snprintf(cAns,10,"%d",ans);
 	return cAns;
 }

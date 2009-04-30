@@ -117,7 +117,7 @@ char *HexStrToStr(char *str) {
 		return NULL;
 	}
 
-	stringLen=strlen(str);
+	stringLen=(int)strlen(str);
 
 	//check if its not odd and valid characters
 	if(((stringLen & 0x1) != 0) && !IsAllHex(str)) {
@@ -131,7 +131,7 @@ char *HexStrToStr(char *str) {
 	for(i=0,j=0; i<stringLen; i+=2,j++) {
        hex[0] = str[i];
 	   hex[1] = str[i+1];
-	   newstr[j] = strtol(hex, NULL,16);
+	   newstr[j] = (char)strtol(hex, NULL,16);
 	}
     newstr[stringLen/2] = '\0';
     return(newstr);
@@ -161,8 +161,8 @@ RpcStringFreeA(str);
 
 char *getTotalMemoryInGB() {
 	MEMORYSTATUSEX statex;
-	float tmInGB;
-	DWORDLONG totalMemory;
+	//float tmInGB;
+	//DWORDLONG totalMemory;
     double DIV = 1073741824.0;
 	double ans;
 	char *cAns = (char *)malloc(sizeof(char)*11);
@@ -176,15 +176,15 @@ char *getTotalMemoryInGB() {
 
 char *getTotalMemoryInMB() {
 	MEMORYSTATUSEX statex;
-	float tmInGB;
-	DWORDLONG totalMemory;
+	//float tmInGB;
+	//DWORDLONG totalMemory;
     double DIV = 1048576;
 	long ans;
 	char *cAns = (char *)malloc(sizeof(char)*11);
 
     statex.dwLength = sizeof (statex);
     GlobalMemoryStatusEx (&statex);
-	ans = statex.ullTotalPhys/DIV;
+	ans = (long)(statex.ullTotalPhys/DIV);
 	_snprintf(cAns,10,"%d",ans);
 	return cAns;
 }
@@ -210,10 +210,10 @@ char* getLocaleName() {
     sprintf(hexCLID, "%04x",lcid);
 
     //obtain it from registry
-     returnStatus = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Classes\\MIME\\Database\\Rfc1766", 0L,  KEY_ALL_ACCESS, &hKey);
+     returnStatus = RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Classes\\MIME\\Database\\Rfc1766"), 0L,  KEY_ALL_ACCESS, &hKey);
      if (returnStatus == ERROR_SUCCESS)
      {
-          returnStatus = RegQueryValueEx(hKey, hexCLID, NULL, &dwType,(LPBYTE)&lszValue, &dwSize);
+          returnStatus = RegQueryValueEx(hKey, (LPTSTR)hexCLID, NULL, &dwType,(LPBYTE)&lszValue, &dwSize);
           if (returnStatus == ERROR_SUCCESS)
           {
 			   //parse at first ;
@@ -283,7 +283,7 @@ int main(int argcounter, char **args){
 		printf("output=%s\n", args[i]);
 	}
 	*/
-	dwRet = GetEnvironmentVariable ("OS", os, sizeof(os));
+	dwRet = GetEnvironmentVariable (TEXT("OS"), (LPTSTR)os, sizeof(os));
 	if(0 == dwRet)
     {
         dwErr = GetLastError();
@@ -294,9 +294,9 @@ int main(int argcounter, char **args){
         }
     }
 
-	GetEnvironmentVariable ("NUMBER_OF_PROCESSORS", processor_no, sizeof(processor_no));
-	GetEnvironmentVariable ("PROCESSOR_ARCHITECTURE", processor_arch, sizeof(processor_arch));
-	GetEnvironmentVariable ("PROCESSOR_IDENTIFIER", processor_type, sizeof(processor_type));
+	GetEnvironmentVariable (TEXT("NUMBER_OF_PROCESSORS"), (LPTSTR)processor_no, sizeof(processor_no));
+	GetEnvironmentVariable (TEXT("PROCESSOR_ARCHITECTURE"), (LPTSTR)processor_arch, sizeof(processor_arch));
+	GetEnvironmentVariable (TEXT("PROCESSOR_IDENTIFIER"), (LPTSTR)processor_type, sizeof(processor_type));
 	/*
 	printf("os=%s\n", os);
 	printf("processor_no=%s\n", &processor_no);

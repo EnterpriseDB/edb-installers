@@ -7216,7 +7216,7 @@
 		                        </runProgram>-->
 	<setInstallerVariableFromScriptOutput>
                             <exec>${system_temp_directory}/postgresplus/features.o</exec>
-                            <execArgs>${component(dbserver).selected} ${component(slony).selected} ${component(pgJdbc).selected} ${component(postgis).selected} ${component(psqlOdbc).selected}</execArgs>
+                            <execArgs>${component(dbserver).selected} ${component(slony).selected} ${component(pgJdbc).selected} ${component(postgis).selected} ${component(psqlOdbc).selected} ${component(npgsql).selected} ${component(pgbouncer).selected} ${component(pgmemcache).selected} ${component(pgagent).selected}</execArgs>
                             <name>features</name>
                             <workingDirectory>${system_temp_directory}/postgresplus</workingDirectory>
 
@@ -7231,7 +7231,7 @@
                         </setInstallerVariableFromScriptOutput>
                         <setInstallerVariableFromScriptOutput>
                             <exec>${system_temp_directory}\postgresplus\features.exe</exec>
-                            <execArgs>${component(dbserver).selected} ${component(slony).selected} ${component(pgJdbc).selected} ${component(postgis).selected} ${component(psqlOdbc).selected}</execArgs>
+                            <execArgs>${component(dbserver).selected} ${component(slony).selected} ${component(pgJdbc).selected} ${component(postgis).selected} ${component(psqlOdbc).selected} ${component(npgsql).selected} ${component(pgbouncer).selected} ${component(pgmemcache).selected} ${component(pgagent).selected}</execArgs>
                             <name>features</name>
                             <workingDirectory>${system_temp_directory}\postgresplus</workingDirectory>
 

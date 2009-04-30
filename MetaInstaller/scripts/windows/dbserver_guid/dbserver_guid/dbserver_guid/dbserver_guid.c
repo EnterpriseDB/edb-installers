@@ -1,6 +1,8 @@
 #include <windows.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <rpc.h>
+#include <string.h>
 #pragma comment(lib, "rpcrt4.lib")
 
 RPC_CSTR genguid() {
