@@ -43,7 +43,7 @@ _prep_metainstaller_windows() {
     cp -R "$WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-windows.exe"  $WD/MetaInstaller/staging/windows || _die "Failed to copy the pgbouncer installer (staging/windows/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-windows.exe"
 
     # Grab a copy of the pgmemcache installer
-   # cp -R "$WD/output/pgmemcache-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-windows.exe"  $WD/MetaInstaller/staging/windows || _die "Failed to copy the pgmemcache installer (staging/windows/pgmemcache-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-windows.exe"
+   # cp -R "$WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-windows.exe"  $WD/MetaInstaller/staging/windows || _die "Failed to copy the pgmemcache installer (staging/windows/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-windows.exe"
 
     # Grab a copy of the pgagent installer
     cp -R "$WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-windows.exe"  $WD/MetaInstaller/staging/windows || _die "Failed to copy the pgagent installer (staging/windows/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-windows.exe"

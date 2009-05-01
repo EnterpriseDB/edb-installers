@@ -50,7 +50,7 @@ _prep_metainstaller_linux() {
     cp -R "$WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the pgbouncer installer (staging/linux/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-linux.bin"
 
     # Grab a copy of the pgmemcache installer
-    cp -R "$WD/output/pgmemcache-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the pgmemcache installer (staging/linux/pgmemcache-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-linux.bin"
+    cp -R "$WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the pgmemcache installer (staging/linux/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-linux.bin"
 
     # Grab a copy of the pgagent installer
     cp -R "$WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the pgagent installer (staging/linux/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-linux.bin"

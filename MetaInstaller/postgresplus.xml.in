@@ -2891,7 +2891,7 @@
 
         <runProgram>
             <abortOnError>0</abortOnError>
-            <program>${system_temp_directory}/postgresplus/pgmemcache-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux.bin</program>
+            <program>${system_temp_directory}/postgresplus/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux.bin</program>
             <programArguments>--mode unattended --installdir ${installdir}</programArguments>
             <progressText>Installing pgmemcache ... </progressText>
             <showMessageOnError>0</showMessageOnError>
@@ -2919,7 +2919,7 @@
 
 	<runProgram>
             <abortOnError>0</abortOnError>
-            <program>${system_temp_directory}/postgresplus/pgmemcache-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux-x64.bin</program>
+            <program>${system_temp_directory}/postgresplus/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux-x64.bin</program>
             <programArguments>--mode unattended --installdir ${installdir}</programArguments>
             <progressText>Installing pgmemcache ... </progressText>
             <showMessageOnError>0</showMessageOnError>
@@ -3390,7 +3390,7 @@
 <Note::::::::::::::::::::::::::::::::::: place doble dashes before mode and prefix>
         <runProgram> 
             <abortOnError>0</abortOnError>
-            <program>${system_temp_directory}\postgresplus\pgmemcache-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-windows.exe</program>
+            <program>${system_temp_directory}\postgresplus\pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-windows.exe</program>
             <programArguments>mode unattended prefix "${installdir}"</programArguments>
             <progressText>Installing pgmemcache ... </progressText>
             <showMessageOnError>0</showMessageOnError>
@@ -3837,7 +3837,7 @@
 
         <runProgram>
             <abortOnError>0</abortOnError>
-            <program>${system_temp_directory}/postgresplus/pgmemcache-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-osx.app/Contents/MacOS/installbuilder.sh</program>
+            <program>${system_temp_directory}/postgresplus/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-osx.app/Contents/MacOS/installbuilder.sh</program>
             <programArguments>--mode unattended --installdir ${installdir}</programArguments>
             <progressText>Installing pgmemcache ... </progressText>
             <showMessageOnError>0</showMessageOnError>
@@ -6241,7 +6241,7 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/linux/pgmemcache-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux.bin</origin>
+                            <origin>staging/linux/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux.bin</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -6256,7 +6256,7 @@
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/linux-x64/pgmemcache-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux-x64.bin</origin>
+                            <origin>staging/linux-x64/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux-x64.bin</origin>
                         </distributionFile>
                     </distributionFileList>
        		</folder>
@@ -6270,7 +6270,7 @@
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/osx/pgmemcache-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-osx.app</origin>
+                            <origin>staging/osx/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-osx.app</origin>
                         </distributionDirectory>
                        <!-- <distributionFile>
                             <origin>resources/scripts/osx/uninstall.sh</origin>
@@ -6288,7 +6288,7 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/windows/pgmemcache-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-windows.exe</origin>
+                            <origin>staging/windows/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-windows.exe</origin>
                         </distributionFile>
                         
                     </distributionFileList>
