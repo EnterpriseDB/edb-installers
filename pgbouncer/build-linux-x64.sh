@@ -81,7 +81,7 @@ _postprocess_pgbouncer_linux_x64() {
     cd $WD/pgbouncer
 
     mkdir -p staging/linux-x64/installer/pgbouncer || _die "Failed to create directory for installer scripts"
-    cp -R scripts/linux-x64/startupcfg.sh staging/linux-x64/installer/pgbouncer/ || _die "Failed to copy the installer script"
+    cp -R scripts/linux/startupcfg.sh staging/linux-x64/installer/pgbouncer/ || _die "Failed to copy the installer script"
     chmod ugo+x staging/linux-x64/installer/pgbouncer/startupcfg.sh
 
 

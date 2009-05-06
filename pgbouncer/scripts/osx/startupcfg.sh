@@ -52,8 +52,5 @@ EOT
 # Fixup the permissions on the launchDaemon
 chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist" || _warn "Failed to set the ownership of the launchd daemon for pgbouncer (/Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist)"
 
-# Startup pgbouncer
-$INSTALL_DIR/installer/pgbouncer/pgbouncerctl.sh start
-
 echo "$0 ran to completion"
 exit $WARN

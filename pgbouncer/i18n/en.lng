@@ -23,7 +23,8 @@ pgbouncer.installdir.error=The installation directory must be an absolute path, 
 pgbouncer.install.service.error=Failed to install the pgbouncer service.
 pgbouncer.service.description=Connection pooling service for PostgreSQL Server.
 pgbouncer.osx.service.error=Failed to create pgbouncer LaunchDaemons.
-pgbouncer.osx.service.start.error=Failed to start pgbouncer service.
+pgbouncer.service.start.error=Failed to start pgbouncer service.
+pgbouncer.service.stop.error=Failed to stop pgbouncer service.
 pgbouncer.linux.service.error=Failed to install pgbouncer service.
 pgbouncer.uninstall.service.error=Failed to uninstall the pgbouncer service.
 

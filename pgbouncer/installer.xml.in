@@ -218,38 +218,77 @@
             </ruleList>
         </actionGroup>
 
-        <!-- Set the installation directory in case of re-install/upgrade -->
         <actionGroup>
             <actionList>
+                <!-- LIN & MAC: Set the installation directory in case of re-install/upgrade -->
                 <iniFileGet>
                     <file>/etc/postgres-reg.ini</file>
                     <section>pgbouncer</section>
                     <key>InstallationDirectory</key>
                     <variable>installdir</variable>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
                 </iniFileGet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${pgbouncerVersion}</text>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-   
-        <!-- WIN: Set the installation directory in case of re-install/upgrade -->
-        <actionGroup>
-            <actionList>
+                <!-- WIN: Set the installation directory in case of re-install/upgrade -->
                 <registryGet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgbouncer</key>
                     <name>Location</name>
                     <variable>installdir</variable>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
                 </registryGet> 
+                <!-- WIN: Stop the pgbouncer service -->    
+                <stopWindowsService>
+                    <serviceName>pgbouncer</serviceName>
+                    <displayName>pgbouncer</displayName>
+                    <abortOnError>0</abortOnError>
+                    <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </stopWindowsService>  
+                <!-- Mac: Stop the pgbouncer service -->    
+                <runProgram>
+                    <program>${installdir}/installer/pgbouncer/pgbouncerctl.sh</program>
+                    <programArguments>stop</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+                <!-- Linux: Stop the pgbouncer service -->    
+                <runProgram>
+                    <program>/etc/init.d/pgbouncer</program>
+                    <programArguments>stop</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>linux</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
             </actionList>
             <ruleList>
                 <compareText>
@@ -257,14 +296,10 @@
                     <text>${pgbouncerVersion}</text>
                     <value/>
                 </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
             </ruleList>
         </actionGroup>
 
+        <!-- Get a free port for pgbouncer -->
         <getFreePort>
             <variable>def_listen_port</variable>
             <initialPort>6432</initialPort>
@@ -274,6 +309,7 @@
     </preInstallationActionList>
     <postInstallationActionList>
 
+       <!-- Create a log directory -->
        <createDirectory>
            <path>${installdir}/log</path>
            <ruleList>
@@ -283,12 +319,13 @@
                </fileTest>
            </ruleList>
        </createDirectory>
-
+       <!-- Change its permission to world writable & executable -->
        <changePermissions>
            <files>${installdir}/log</files>
            <permissions>777</permissions>
        </changePermissions>
 
+        <!-- Perform substitution in the config and ctl files -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="pghost" value="127.0.0.1">
@@ -374,15 +411,15 @@
                     <substitutionList>
                         <substitution>
                             <pattern>@@LOGFILE@@</pattern>
-                            <value>"${installdir}\log\pgbouncer.log"</value>
+                            <value>${installdir}\log\pgbouncer.log</value>
                         </substitution>
                         <substitution>
                             <pattern>@@PIDFILE@@</pattern>
-                            <value>"${installdir}\log\pgbouncer.pid"</value>
+                            <value>${installdir}\log\pgbouncer.pid</value>
                         </substitution>
                         <substitution>
                             <pattern>@@AUTHFILE@@</pattern>
-                            <value>etc\userlist.txt</value>
+                            <value>${installdir}\etc\userlist.txt</value>
                         </substitution>
                     </substitutionList>
                     <ruleList>
@@ -402,6 +439,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+        <!-- Create etc directory for userlist.txt file -->
         <createDirectory>
             <path>${installdir}/etc</path>
             <ruleList>
@@ -411,6 +449,7 @@
                 </fileTest>
             </ruleList>
         </createDirectory>
+        <!-- Create the userlist.txt file -->
         <writeFile>
             <path>${installdir}/etc/userlist.txt</path>
             <text>"${pguser}" "${pgpassword}"</text>
@@ -422,6 +461,7 @@
                 </compareText>
             </ruleList>
         </writeFile>
+        <!-- Write pgbouncer details to ini file -->
         <actionGroup>
             <actionList>
                 <iniFileSet>
@@ -511,6 +551,51 @@
             </ruleList>
         </runProgram>
 
+        <!-- WIN: Start the pgbouncer service -->    
+        <startWindowsService>
+            <serviceName>pgbouncer</serviceName>
+            <displayName>pgbouncer</displayName>
+            <abortOnError>0</abortOnError>
+            <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </startWindowsService>  
+
+        <!-- Linux: Start the pgbouncer service -->    
+        <runProgram>
+            <program>/etc/init.d/pgbouncer</program>
+            <programArguments>start</programArguments>
+            <abortOnError>0</abortOnError>
+            <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+
+        <!-- MAC: Start the pgbouncer service -->    
+        <runProgram>
+            <program>${installdir}/installer/pgbouncer/pgbouncerctl.sh</program>
+            <programArguments>start</programArguments>
+            <abortOnError>0</abortOnError>
+            <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+
         <deleteFile path="${installdir}/instscripts" />
 
   </postInstallationActionList>
@@ -518,6 +603,7 @@
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
 
+        <!-- MAC: Stop the pgbouncer service -->    
          <runProgram>
             <program>${installdir}/installer/pgbouncer/pgbouncerctl.sh</program>
             <programArguments>stop</programArguments>
@@ -542,6 +628,22 @@
                 </compareText>
             </ruleList>
         </deleteFile>
+
+        <!-- WIN: Stop the pgbouncer service -->    
+        <stopWindowsService>
+            <serviceName>pgbouncer</serviceName>
+            <displayName>pgbouncer</displayName>
+            <abortOnError>0</abortOnError>
+            <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </stopWindowsService>  
+
 
         <runProgram>
             <program>${installdir}\bin\pgbouncer.exe</program>

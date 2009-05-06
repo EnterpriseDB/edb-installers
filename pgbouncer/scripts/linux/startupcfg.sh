@@ -128,8 +128,5 @@ then
     fi
 fi
 
-#start the pgbouncer service
-/etc/init.d/pgbouncer start
-
 echo "$0 ran to completion"
 exit $WARN
