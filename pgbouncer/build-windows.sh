@@ -42,6 +42,9 @@ _prep_pgbouncer_windows() {
 
     # Grab a copy of the source tree
     cp -R pgbouncer-$PG_VERSION_PGBOUNCER/* pgbouncer.windows || _die "Failed to copy the source code (source/pgbouncer-$PG_VERSION_PGBOUNCER)"
+    cd pgbouncer.windows
+    patch -p0 < $WD/tarballs/pgbouncer_windows.patch
+    cd $WD/pgbouncer/source 
     chmod -R ugo+w pgbouncer.windows || _die "Couldn't set the permissions on the source directory"
 
     # Grab a copy of the source tree
