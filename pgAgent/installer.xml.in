@@ -672,6 +672,7 @@
       </actionList>
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
+        <compareText logic="equals" text="${autostart}" value="yes"/>
       </ruleList>
     </actionGroup>
 
@@ -683,6 +684,7 @@
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
+        <compareText logic="equals" text="${autostart}" value="yes"/>
       </ruleList>
     </runProgram>
 
@@ -1256,6 +1258,16 @@
           </optionList>
         </choiceParameter>
 
+        <stringParameter cliOptionName="autostart" ask="0" cliOptionShow="0">
+          <name>autostart</name>
+          <description>AutoStart Service</description>
+          <explanation/>
+          <value/>
+          <default>yes</default>
+          <allowEmptyValue>1</allowEmptyValue>
+          <width>40</width>
+        </stringParameter>
+ 
       </parameterList>
 
       <preShowPageActionList>
