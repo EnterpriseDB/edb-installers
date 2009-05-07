@@ -2966,7 +2966,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux.bin</program>
-            <programArguments>--mode unattended --prefix ${installdir}/pgAgent --pghost ${defaultpghost} --pguser ${supername} --pgpassword ${superpassword} --pgport ${serverport} --systemuser ${supername} --schema ${schema}</programArguments>
+            <programArguments>--mode unattended --prefix ${installdir}/pgAgent --pghost ${defaultpghost} --pguser ${supername} --pgpassword ${superpassword} --pgport ${serverport} --systemuser ${supername} --schema ${schema} --autostart no</programArguments>
             <progressText>Installing pgAgent ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2994,7 +2994,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux-x64.bin</program>
-            <programArguments>--mode unattended --installdir ${installdir}/pgAgent --pghost ${defaultpghost} --pguser ${supername} --pgpassword ${superpassword} --pgport ${serverport} --systemuser ${supername} --schema ${schema}</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir}/pgAgent --pghost ${defaultpghost} --pguser ${supername} --pgpassword ${superpassword} --pgport ${serverport} --systemuser ${supername} --schema ${schema} --autostart no</programArguments>
             <progressText>Installing pgAgent ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3016,8 +3016,25 @@
             </ruleList>
         </runProgram>
 
-
-
+    	<runProgram>
+            <abortOnError>0</abortOnError>
+            <program>/etc/init.d/pgagent</program>
+            <programArguments>start &amp;</programArguments>
+            <progressText>Starting pgAgent ... </progressText>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${component(pgagent).selected}</text>
+                    <value>1</value>
+                </compareText>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
 
 
 	<!-- Run Windows Programs -->
@@ -3882,7 +3899,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-osx.app/Contents/MacOS/installbuilder.sh</program>
-            <programArguments>--mode unattended --installdir ${installdir}/pgAgent --pghost ${defaultpghost} --pguser ${supername} --pgpassword ${superpassword} --pgport ${serverport} --systemuser ${supername} --schema ${schema}</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir}/pgAgent --pghost ${defaultpghost} --pguser ${supername} --pgpassword ${superpassword} --pgport ${serverport} --systemuser ${supername} --schema ${schema} --autostart no</programArguments>
             <progressText>Installing pgAgent ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3905,6 +3922,25 @@
         </runProgram>
 
 
+        <runProgram>
+            <abortOnError>0</abortOnError>
+            <program>${installdir}/pgAgent/installer/pgAgent/pgagentctl.sh</program>
+            <programArguments>start &amp;</programArguments>
+            <progressText>Starting pgAgent ... </progressText>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${component(pgagent).selected}</text>
+                    <value>1</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
 
 	<!-- Message for manual installation of pgagent schema -->
 
