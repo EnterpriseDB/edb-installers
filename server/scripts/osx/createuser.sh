@@ -19,8 +19,15 @@ _die() {
 # Create the user account if required
 if [ "x`dscl . -list /users|cut -f2 -d' '|grep $1`" != "x" ];
 then
-    echo "User account '$1' already exists"
-    exit 0
+    HOME_DIR=`su $1 -c "echo \\\$HOME"`
+    if [ -e $HOME_DIR ]; then     
+        echo "User account '$1' already exists"
+        exit 0
+    else
+        echo "User account '$1' already exists - fixing non-existent home directory to $2"
+        dscl . create /users/$1 home $2
+        exit 0
+    fi
 else
     NEWUID=`dscl . list /users uid | awk -F: '{FS=" "; print $2f}' | sort -n | tail -1`
     NEWUID=`expr $NEWUID + 1`
