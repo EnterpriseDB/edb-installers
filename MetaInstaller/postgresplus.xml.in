@@ -3016,26 +3016,7 @@
             </ruleList>
         </runProgram>
 
-    	<runProgram>
-            <abortOnError>0</abortOnError>
-            <program>/etc/init.d/pgagent</program>
-            <programArguments>start &amp;</programArguments>
-            <progressText>Starting pgAgent ... </progressText>
-            <showMessageOnError>0</showMessageOnError>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${component(pgagent).selected}</text>
-                    <value>1</value>
-                </compareText>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </runProgram>
-
+    	
 
 	<!-- Run Windows Programs -->
 	<logMessage>
@@ -3922,25 +3903,7 @@
         </runProgram>
 
 
-        <runProgram>
-            <abortOnError>0</abortOnError>
-            <program>${installdir}/pgAgent/installer/pgAgent/pgagentctl.sh</program>
-            <programArguments>start &amp;</programArguments>
-            <progressText>Starting pgAgent ... </progressText>
-            <showMessageOnError>0</showMessageOnError>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${component(pgagent).selected}</text>
-                    <value>1</value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </runProgram>
+        
 
 	<!-- Message for manual installation of pgagent schema -->
 
@@ -4272,6 +4235,51 @@
                 </compareText>
             </ruleList>
         </startWindowsService>
+
+
+	<runProgram>
+            <abortOnError>0</abortOnError>
+            <program>/etc/init.d/pgagent</program>
+            <programArguments>start &amp;</programArguments>
+            <progressText>Starting pgAgent ... </progressText>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${component(pgagent).selected}</text>
+                    <value>1</value>
+                </compareText>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+
+
+	<runProgram>
+            <abortOnError>0</abortOnError>
+            <program>${installdir}/pgAgent/installer/pgAgent/pgagentctl.sh</program>
+            <programArguments>start &amp;</programArguments>
+            <progressText>Starting pgAgent ... </progressText>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${component(pgagent).selected}</text>
+                    <value>1</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+
+
+
         <deleteFile>
             <path>${system_temp_directory}/postgresplus/dynaTune.properties</path>
         </deleteFile>
@@ -4279,10 +4287,6 @@
             <path>${system_temp_directory}/postgresplus</path>
         </deleteFile>
 	
-	
-
-
-
     </postInstallationActionList>
 
     <!-- Final page actions -->
