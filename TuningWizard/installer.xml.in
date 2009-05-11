@@ -397,7 +397,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/installer/TuningWizard/createshortcuts.sh</program>
-                    <programArguments>"${installdir}" "{branding}"</programArguments>
+                    <programArguments>"${installdir}" "${branding}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <abortOnError>1</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
