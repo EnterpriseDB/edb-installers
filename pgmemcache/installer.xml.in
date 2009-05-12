@@ -314,6 +314,79 @@
                 </ruleGroup>
             </ruleList>
         </actionGroup>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariableFromScriptOutput>
+                    <name>pg_version_str</name>
+                    <exec>${installdir}/bin/pg_config</exec>
+                    <execArgs>--version</execArgs>
+                    <workingDirectory>${installdir}\bin</workingDirectory>
+                    <ruleList>
+                        <compareText>
+                           <text>${platform_name}</text>
+                           <logic>does_not_equal</logic>
+                           <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                    <name>pg_version_str</name>
+                    <exec>${installdir}\bin\pg_config.exe</exec>
+                    <execArgs>--version</execArgs>
+                    <workingDirectory>${installdir}\bin</workingDirectory>
+                    <ruleList>
+                        <compareText>
+                           <text>${platform_name}</text>
+                           <logic>equals</logic>
+                           <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromRegEx>
+                      <name>pg_version</name>
+                      <text>${pg_version_str}</text>
+                      <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
+                      <substitution>\1</substitution>
+                      <ruleList>
+                         <compareText>
+                             <logic>does_not_equal</logic>
+                             <text>${pg_version_str}</text>
+                             <value/>
+                        </compareText>
+                      </ruleList>
+                </setInstallerVariableFromRegEx>
+           </actionList>
+           <ruleList>
+                <compareText>
+                      <logic>equals</logic>
+                      <text>${installer_ui}</text>
+                      <value>unattended</value>
+                </compareText>
+            </ruleList>
+       </actionGroup>
+       <actionGroup>
+           <actionList>
+                <showWarning>
+                      <text>${msg(pgmemcache.incompatible.pg.error)}</text>
+                </showWarning>
+                <exit>
+                      <exitCode>0</exitCode>
+                </exit>
+           </actionList>
+           <ruleList>
+                <compareText>
+                      <logic>does_not_equal</logic>
+                      <text>${pg_version}</text>
+                      <value>PG_MAJOR_VERSION</value>            
+                </compareText>
+                <compareText>
+                      <logic>equals</logic>
+                      <text>${installer_ui}</text>
+                      <value>unattended</value>
+                </compareText>
+            </ruleList>
+       </actionGroup>
+ 
         <!-- Setting the installation type as upgrade if previous installation found -->
         <actionGroup>
             <actionList>
@@ -650,6 +723,66 @@
                                 </compareText>
                             </ruleList>
                         </ruleGroup>
+                    </ruleList>
+                </actionGroup>
+            </validationActionList>
+            <validationActionList>
+                <setInstallerVariableFromScriptOutput>
+                    <name>pg_version_str</name>
+                    <exec>${installdir}/bin/pg_config</exec>
+                    <execArgs>--version</execArgs>
+                    <workingDirectory>${installdir}\bin</workingDirectory>
+                    <ruleList>
+                        <compareText>
+                           <text>${platform_name}</text>
+                           <logic>does_not_equal</logic>
+                           <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                    <name>pg_version_str</name>
+                    <exec>${installdir}\bin\pg_config.exe</exec>
+                    <execArgs>--version</execArgs>
+                    <workingDirectory>${installdir}\bin</workingDirectory>
+                    <ruleList>
+                        <compareText>
+                           <text>${platform_name}</text>
+                           <logic>equals</logic>
+                           <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromRegEx>
+                      <name>pg_version</name>
+                      <text>${pg_version_str}</text>
+                      <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
+                      <substitution>\1</substitution>
+                      <ruleList>
+                         <compareText>
+                             <logic>does_not_equal</logic>
+                             <text>${pg_version_str}</text>
+                             <value/>
+                        </compareText>
+                      </ruleList>
+                </setInstallerVariableFromRegEx>
+            </validationActionList>
+            <validationActionList>
+                <actionGroup>
+                    <actionList>
+                        <showWarning>
+                            <text>${msg(pgmemcache.incompatible.pg.error)}</text>
+                        </showWarning>
+                        <exit>
+                            <exitCode>0</exitCode>
+                        </exit>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${pg_version}</text>
+                            <value>PG_MAJOR_VERSION</value>            
+                        </compareText>
                     </ruleList>
                 </actionGroup>
             </validationActionList>
