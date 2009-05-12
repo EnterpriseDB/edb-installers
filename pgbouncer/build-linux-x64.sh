@@ -57,6 +57,17 @@ _build_pgbouncer_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; ./configure --prefix=$PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer --with-libevent=$PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer" || _die "Failed to configure pgbouncer"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; make" || _die "Failed to build pgbouncer"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; make install" || _die "Failed to install pgbouncer"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/share/doc/pgbouncer/pgbouncer.ini $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/share/" || _die "Failed to copy pgbouncer ini to share folder"
+
+	mkdir -p $WD/pgbouncer/staging/linux-x64/instscripts || _die "Failed to create the instscripts directory"
+
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/lib/libpq* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy libpq in instscripts"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/bin/psql $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy psql in instscripts"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libssl.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypto.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libtermcap.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
+
+
 }
 
 
@@ -68,6 +79,26 @@ _postprocess_pgbouncer_linux_x64() {
  
 
     cd $WD/pgbouncer
+
+    mkdir -p staging/linux-x64/installer/pgbouncer || _die "Failed to create directory for installer scripts"
+    cp -R scripts/linux/startupcfg.sh staging/linux-x64/installer/pgbouncer/ || _die "Failed to copy the installer script"
+    chmod ugo+x staging/linux-x64/installer/pgbouncer/startupcfg.sh
+
+
+    rm -rf staging/linux-x64/pgbouncer/share/doc || _die "Failed to remove the extra doc directory"
+
+    _replace "bardb = host=127.0.0.1 dbname=bazdb" ";bardb = host=127.0.0.1 dbname=bazdb" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "forcedb = host=127.0.0.1 port=300 user=baz password=foo client_encoding=UNICODE datestyle=ISO connect_query='SELECT 1'" ";forcedb = host=127.0.0.1 port=300 user=baz password=foo client_encoding=UNICODE datestyle=ISO connect_query='SELECT 1'" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "nondefaultdb = pool_size=50 reserve_pool=10" ";nondefaultdb = pool_size=50 reserve_pool=10" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "foodb =" "@@CON@@" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "logfile = pgbouncer.log" "logfile = @@LOGFILE@@" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "pidfile = pgbouncer.pid" "pidfile = @@PIDFILE@@" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "listen_addr = 127.0.0.1" "listen_addr = @@LISTENADDR@@" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "listen_port = 6432" "listen_port = @@LISTENPORT@@" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "auth_file = etc/userlist.txt" "auth_file = @@AUTHFILE@@" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "admin_users = user2, someadmin, otheradmin" "admin_users = @@ADMINUSERS@@" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "stats_users = stats, root" "stats_users = @@STATSUSERS@@" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"

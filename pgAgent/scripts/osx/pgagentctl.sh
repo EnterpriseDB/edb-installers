@@ -4,7 +4,7 @@ function start()
 {
     date
     echo "Starting pgAgent scheduler"
-    PID=`ps -aef | grep 'INSTALL_DIR/bin/pgagent -l1 -s /var/log/pgagent.log host=PG_HOST port=PG_PORT dbname=PG_DATABASE user=PG_USER' | grep -v grep | awk '{print $2}'`
+    PID=`ps aux | grep 'INSTALL_DIR/bin/pgagent -l1 -s /var/log/pgagent.log host=PG_HOST port=PG_PORT dbname=PG_DATABASE user=PG_USER' | grep -v grep | awk '{print $2}'`
 
     if [ "x$PID" = "x" ];
     then
@@ -19,7 +19,7 @@ function stop()
 {
     date 
     echo "Shutting Down pgAgent scheduler"
-    PID=`ps -aef | grep 'INSTALL_DIR/bin/pgagent -l1 -s /var/log/pgagent.log host=PG_HOST port=PG_PORT dbname=PG_DATABASE user=PG_USER' | grep -v grep | awk '{print $2}'`
+    PID=`ps aux | grep 'INSTALL_DIR/bin/pgagent -l1 -s /var/log/pgagent.log host=PG_HOST port=PG_PORT dbname=PG_DATABASE user=PG_USER' | grep -v grep | awk '{print $2}'`
 
     if [ "x$PID" = "x" ];
     then

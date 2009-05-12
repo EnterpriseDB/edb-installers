@@ -6,7 +6,7 @@ Installer.Installing.Title=Installing ${product_fullname}
 
 upgrade.existing.installation.title=Existing installation
 
-upgrade.existing.installation.description=An existing pgJDBC installation has been found at ${installdir}. This installation will be upgraded.
+upgrade.existing.installation.description=An existing pgbouncer installation has been found at ${installdir}. This installation will be upgraded.
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 
@@ -19,4 +19,23 @@ install.summary=pgbouncer: Connection pooler for PostgreSQL Server, packaged by 
 pgbouncer.installdir.empty=The installation directory cannot be empty
 
 pgbouncer.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
+
+pgbouncer.install.service.error=Failed to install the pgbouncer service.
+pgbouncer.service.description=Connection pooling service for PostgreSQL Server.
+pgbouncer.osx.service.error=Failed to create pgbouncer LaunchDaemons.
+pgbouncer.service.start.error=Failed to start pgbouncer service.
+pgbouncer.service.stop.error=Failed to stop pgbouncer service.
+pgbouncer.linux.service.error=Failed to install pgbouncer service.
+pgbouncer.uninstall.service.error=Failed to uninstall the pgbouncer service.
+
+pg.details.title=PostgreSQL Installation Details
+pg.details.explanation=Please verify the PostgreSQL installation details
+pg.details.error=Connection to the PostgreSQL Server failed. Please re-check the details provided.
+pg.blank.error=Values must be entered for all fields.
+
+pgbouncer.details.title=pgbouncer Configurations
+pgbouncer.details.explanation=Please provide following information for pgbouncer configuration.
+pgbouncer.port.error=Unable to bind to the specified port. Please specify another value.
+pgbouncer.blank.error=Values must be entered for all fields.
+
 

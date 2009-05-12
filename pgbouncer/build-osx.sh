@@ -78,6 +78,8 @@ _build_pgbouncer_osx() {
     CFLAGS="$PG_ARCH_OSX_FLAGS -arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 make || _die "Failed to build pgbouncer"
     make install || _die "Failed to install pgbouncer"
 
+    cp -R $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/share/doc/pgbouncer/pgbouncer.ini $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/share || _die "Failed to copy the ini file to share directory"
+
     cd $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/lib
 
     filelist=`ls *.dylib`
@@ -88,6 +90,18 @@ _build_pgbouncer_osx() {
     done
 
     _rewrite_so_refs $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer bin @loader_path/..
+
+    mkdir -p $WD/pgbouncer/staging/osx/instscripts || _die "Failed to create the instscripts directory"
+
+    cp -R $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -R $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy psql in instscripts"
+
+    # Change the referenced libraries
+    OLD_DLL=`otool -L $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/psql | grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' `
+    NEW_DLL=`echo $OLD_DLL | sed -e "s^@loader_path/../lib/^^g"`
+
+    install_name_tool -change "$OLD_DLL" "$NEW_DLL" "$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/psql"
+
   
 }
 
@@ -100,6 +114,27 @@ _postprocess_pgbouncer_osx() {
  
 
     cd $WD/pgbouncer
+
+    mkdir -p staging/osx/installer/pgbouncer || _die "Failed to create directory for installer scripts"
+    cp -R scripts/osx/startupcfg.sh staging/osx/installer/pgbouncer/ || _die "Failed to copy the installer script"
+    chmod ugo+x staging/osx/installer/pgbouncer/startupcfg.sh    
+    cp -R scripts/osx/pgbouncerctl.sh staging/osx/installer/pgbouncer/ || _die "Failed to copy the installer script"
+    chmod ugo+x staging/osx/installer/pgbouncer/pgbouncerctl.sh   
+
+    rm -rf staging/osx/pgbouncer/share/doc || _die "Failed to remove the extra doc directory"
+
+    _replace "bardb = host=127.0.0.1 dbname=bazdb" ";bardb = host=127.0.0.1 dbname=bazdb" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "forcedb = host=127.0.0.1 port=300 user=baz password=foo client_encoding=UNICODE datestyle=ISO connect_query='SELECT 1'" ";forcedb = host=127.0.0.1 port=300 user=baz password=foo client_encoding=UNICODE datestyle=ISO connect_query='SELECT 1'" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "nondefaultdb = pool_size=50 reserve_pool=10" ";nondefaultdb = pool_size=50 reserve_pool=10" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "foodb =" "@@CON@@" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "logfile = pgbouncer.log" "logfile = @@LOGFILE@@" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "pidfile = pgbouncer.pid" "pidfile = @@PIDFILE@@" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "listen_addr = 127.0.0.1" "listen_addr = @@LISTENADDR@@" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "listen_port = 6432" "listen_port = @@LISTENPORT@@" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "auth_file = etc/userlist.txt" "auth_file = @@AUTHFILE@@" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "admin_users = user2, someadmin, otheradmin" "admin_users = @@ADMINUSERS@@" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "stats_users = stats, root" "stats_users = @@STATSUSERS@@" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+ 
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"

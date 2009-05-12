@@ -31,6 +31,7 @@ _prep_pgbouncer_windows() {
     mkdir -p $WD/pgbouncer/source/pgbouncer.windows || _die "Couldn't create the pgbouncer.windows directory"
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c del /S /Q pgbouncer.zip"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c del /S /Q pgbouncer-staging.zip"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c del /S /Q libevent.zip"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c del /S /Q build-pgbouncer.bat"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c del /S /Q build-libevent.bat"
@@ -41,6 +42,9 @@ _prep_pgbouncer_windows() {
 
     # Grab a copy of the source tree
     cp -R pgbouncer-$PG_VERSION_PGBOUNCER/* pgbouncer.windows || _die "Failed to copy the source code (source/pgbouncer-$PG_VERSION_PGBOUNCER)"
+    cd pgbouncer.windows
+    patch -p0 < $WD/tarballs/pgbouncer_windows.patch
+    cd $WD/pgbouncer/source 
     chmod -R ugo+w pgbouncer.windows || _die "Couldn't set the permissions on the source directory"
 
     # Grab a copy of the source tree
@@ -101,6 +105,32 @@ EOT
     # Build the code and install into a temporary directory
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-libevent.bat " || _die "Failed to build libevent on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-pgbouncer.bat " || _die "Failed to build pgbouncer on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\regex\\\\bin\\\\regex2.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\bin" || _die "Failed to build pgbouncer on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\share\\\\doc\\\\pgbouncer\\\\pgbouncer.ini $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\share" || _die "Failed to copy  pgbouncer ini to share dir"
+
+    # Copy psql and dependent libraries
+    # Requirement : server component should be build before this component 
+    mkdir -p $WD/pgbouncer/staging/windows/instscripts || _die "Failed to create the instscripts directory"
+
+    # Copy the various support files into place
+    ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to create the pgbouncer.staging\\\\instscripts directory on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\output\\\\bin\\\\psql.exe  $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy the psql.exe to the pgbouncer.staging\\\\instscripts directory on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\output\\\\bin\\\\libpq.dll  $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy the psql.exe to the pgbouncer.staging\\\\instscripts directory on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\vcredist\\\\vcredist_x86.exe $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy the VC++ runtimes on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\openssl\\\\bin\\\\ssleay32.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\openssl\\\\bin\\\\libeay32.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\iconv\\\\bin\\\\iconv.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\gettext\\\\bin\\\\libintl-8.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\gettext\\\\bin\\\\libiconv-2.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\krb5\\\\bin\\\\i386\\\\comerr32.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\krb5\\\\bin\\\\i386\\\\krb5_32.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\krb5\\\\bin\\\\i386\\\\k5sprt32.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\krb5\\\\bin\\\\i386\\\\gssapi32.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\libxml2\\\\bin\\\\libxml2.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\libxslt\\\\bin\\\\libxslt.dll $PG_PATH_WINDOWS\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\zlib\\\\zlib1.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\Windows\\\\System32\\\\msvcr71.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
+    
 
     # Zip up the installed code, copy it back here, and unpack.
     echo "Copying pgbouncer built tree to Unix host"
@@ -119,6 +149,25 @@ _postprocess_pgbouncer_windows() {
  
 
     cd $WD/pgbouncer
+
+    mkdir -p staging/windows/installer/pgbouncer || _die "Failed to create directory for installer scripts"
+    cp -R scripts/windows/check-connection.bat staging/windows/installer/pgbouncer/ || _die "Failed to copy the installer script"
+    cp -R scripts/windows/startupcfg.bat staging/windows/installer/pgbouncer/ || _die "Failed to copy the installer script"
+
+    rm -rf staging/windows/share/doc || _die "Failed to remove the extra doc directory"
+
+    _replace "bardb = host=127.0.0.1 dbname=bazdb" ";bardb = host=127.0.0.1 dbname=bazdb" staging/windows/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "forcedb = host=127.0.0.1 port=300 user=baz password=foo client_encoding=UNICODE datestyle=ISO connect_query='SELECT 1'" ";forcedb = host=127.0.0.1 port=300 user=baz password=foo client_encoding=UNICODE datestyle=ISO connect_query='SELECT 1'" staging/windows/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "nondefaultdb = pool_size=50 reserve_pool=10" ";nondefaultdb = pool_size=50 reserve_pool=10" staging/windows/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "foodb =" "@@CON@@" staging/windows/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "logfile = pgbouncer.log" "logfile = @@LOGFILE@@" staging/windows/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "pidfile = pgbouncer.pid" "pidfile = @@PIDFILE@@" staging/windows/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "listen_addr = 127.0.0.1" "listen_addr = @@LISTENADDR@@" staging/windows/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "listen_port = 6432" "listen_port = @@LISTENPORT@@" staging/windows/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "auth_file = etc/userlist.txt" "auth_file = @@AUTHFILE@@" staging/windows/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "admin_users = user2, someadmin, otheradmin" "admin_users = @@ADMINUSERS@@" staging/windows/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "stats_users = stats, root" "stats_users = @@STATSUSERS@@" staging/windows/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"

@@ -601,7 +601,23 @@
                     <key>Driver</key>
                     <value>${installdir}/lib/psqlodbcw.so</value>
                 </iniFileSet>
-				
+
+	      	    <!-- LIN & LIN-64: Configure psqlODBC -->
+                <runProgram>
+                    <program>${installdir}/installer/psqlODBC/configpsqlodbc.sh</program>
+                    <programArguments>"${installdir}"</programArguments>
+                    <progressText/>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>linux</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+ 			
         	    <!-- LIN & MAC: Create Menu Shortcuts -->
                 <runProgram>
                     <program>${installdir}/installer/psqlODBC/createshortcuts.sh</program>
