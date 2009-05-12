@@ -1,17 +1,17 @@
 <project>
     <!-- Package details -->
     <shortName>pgbouncer</shortName>
-    <fullName>pgbouncer</fullName>
+    <fullName>PgBouncer</fullName>
     <version>PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER</version>
     <!-- These options are used on Windows -->
     <startMenuGroupName/>
     <!-- Product Specific Options -->
-    <productComments>pgbouncer: Connection pooler for PostgreSQL, packaged by EnterpriseDB</productComments>
+    <productComments>PgBouncer: Connection pooler for PostgreSQL, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <!-- The options are used for RPM registration -->
-    <description>pgbouncer: Connection pooler for PostgreSQL </description>
-    <summary>pgbouncer: Connection pooler for PostgreSQL, packaged by EnterpriseDB</summary>
+    <description>PgBouncer: Connection pooler for PostgreSQL </description>
+    <summary>PgBouncer: Connection pooler for PostgreSQL, packaged by EnterpriseDB</summary>
     <vendor>EnterpriseDB</vendor>
 
     <!-- Installer Size -->
@@ -79,7 +79,7 @@
         <!-- LIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}/pgbouncer"/>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PgBouncer"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -97,7 +97,7 @@
         <!-- WIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}\pgbouncer"/>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}\PgBouncer"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -115,7 +115,7 @@
         <!-- MAC : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="/Library/pgbouncer"/>
+                <setInstallerVariable name="installdir" value="/Library/PgBouncer"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -134,7 +134,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>/Library/pgbouncer</value>
+            <value>/Library/PgBouncer</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -147,7 +147,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}/pgbouncer</value>
+            <value>${platform_install_prefix}/PgBouncer</value>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
@@ -160,7 +160,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}\pgbouncer</value>
+            <value>${platform_install_prefix}\PgBouncer</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -1184,7 +1184,7 @@
                     <value/>
                 </compareText>
             </ruleList>
-	    <!-- Validating whether installdir is empty -->
+            <!-- Validating whether installdir is empty -->
             <validationActionList>
                 <actionGroup>
                     <actionList>
@@ -1224,7 +1224,7 @@
                        </compareText>
                     </ruleList>
 	        </actionGroup>
-                <!-- Validating whether installdir is valid (Windows) -->
+            <!-- Validating whether installdir is valid (Windows) -->
                 <actionGroup>
                    <actionList>
                      <setInstallerVariable name="installdir" value="${default_installdir}" />

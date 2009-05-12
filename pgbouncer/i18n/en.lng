@@ -6,7 +6,7 @@ Installer.Installing.Title=Installing ${product_fullname}
 
 upgrade.existing.installation.title=Existing installation
 
-upgrade.existing.installation.description=An existing pgbouncer installation has been found at ${installdir}. This installation will be upgraded.
+upgrade.existing.installation.description=An existing PgBouncer installation has been found at ${installdir}. This installation will be upgraded.
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 
@@ -33,8 +33,8 @@ pg.details.explanation=Please verify the PostgreSQL installation details
 pg.details.error=Connection to the PostgreSQL Server failed. Please re-check the details provided.
 pg.blank.error=Values must be entered for all fields.
 
-pgbouncer.details.title=pgbouncer Configurations
-pgbouncer.details.explanation=Please provide following information for pgbouncer configuration.
+pgbouncer.details.title=PgBouncer Configurations
+pgbouncer.details.explanation=Please provide following information for PgBouncer configuration.
 pgbouncer.port.error=Unable to bind to the specified port. Please specify another value.
 pgbouncer.blank.error=Values must be entered for all fields.
 
