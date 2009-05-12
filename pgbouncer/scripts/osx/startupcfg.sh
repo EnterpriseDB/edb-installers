@@ -1,13 +1,14 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 1 ]; 
+if [ $# -ne 2 ]; 
 then
-echo "Usage: $0 <Install dir> "
+echo "Usage: $0 <Install dir> <System User>"
     exit 127
 fi
 
 INSTALL_DIR=$1
+SYSTEM_USER=$2
 
 # Error handlers
 _die() {
@@ -48,6 +49,11 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist"
 </dict>
 </plist>
 EOT
+
+mkdir /var/run/pgbouncer
+chown $SYSTEM_USER /var/run/pgbouncer
+mkdir /var/log/pgbouncer
+chown $SYSTEM_USER /var/log/pgbouncer
 
 # Fixup the permissions on the launchDaemon
 chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist" || _warn "Failed to set the ownership of the launchd daemon for pgbouncer (/Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist)"

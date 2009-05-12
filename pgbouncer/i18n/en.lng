@@ -37,5 +37,4 @@ pgbouncer.details.title=PgBouncer Configurations
 pgbouncer.details.explanation=Please provide following information for PgBouncer configuration.
 pgbouncer.port.error=Unable to bind to the specified port. Please specify another value.
 pgbouncer.blank.error=Values must be entered for all fields.
-
-
+pgbouncer.user.error=The user specified does not exist on your system.

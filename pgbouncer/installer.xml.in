@@ -387,11 +387,11 @@
                     <substitutionList>
                         <substitution>
                             <pattern>@@LOGFILE@@</pattern>
-                            <value>/var/log/pgbouncer.log</value>
+                            <value>/var/log/pgbouncer/pgbouncer.log</value>
                         </substitution>
                         <substitution>
                             <pattern>@@PIDFILE@@</pattern>
-                            <value>/var/run/pgbouncer.pid</value>
+                            <value>/var/run/pgbouncer/pgbouncer.pid</value>
                         </substitution>
                         <substitution>
                             <pattern>@@AUTHFILE@@</pattern>
@@ -511,7 +511,7 @@
                 </compareText>
             </ruleList>
         </runProgram>
-        <!-- LINUX : Install pgbouncer service -->
+        <!-- LINUX | MAC: Install pgbouncer service -->
         <runProgram>
             <program>${installdir}/installer/pgbouncer/startupcfg.sh</program>
             <programArguments>${installdir} ${system_user}</programArguments>
@@ -519,29 +519,9 @@
             <customErrorMessage>${msg(pgbouncer.linux.service.error)}</customErrorMessage>
             <ruleList>
                 <compareText>
-                    <logic>contains</logic>
+                    <logic>does_not_equal</logic>
                     <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${pgbouncerVersion}</text>
-                    <value/>
-                </compareText>
-            </ruleList>
-        </runProgram>
-
-        <!-- MAC : Install pgbouncer service -->
-        <runProgram>
-            <program>${installdir}/installer/pgbouncer/startupcfg.sh</program>
-            <programArguments>${installdir}</programArguments>
-            <abortOnError>0</abortOnError>
-            <customErrorMessage>${msg(pgbouncer.osx.service.error)}</customErrorMessage>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
+                    <value>windows</value>
                 </compareText>
                 <compareText>
                     <logic>equals</logic>
@@ -1077,8 +1057,8 @@
         <!-- Waiting for client request from IP(s) -->
         <stringParameter>
           <name>client_ips</name>
-          <description>Client IP addresses (comma-separated list), * for all IPs </description>
-          <explanation/>
+          <description>Listening IP's (',' separated), * for all IPs</description>
+          <explanation></explanation>
           <value/>
           <default>*</default>
           <allowEmptyValue>1</allowEmptyValue>
@@ -1113,7 +1093,7 @@
                </compareText>
           </ruleList>
         </stringParameter>
-      </parameterList>
+     </parameterList>
       <ruleList>
           <compareText>
               <text>${pgbouncerVersion}</text>
