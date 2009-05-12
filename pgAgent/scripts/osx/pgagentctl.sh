@@ -3,12 +3,12 @@
 function start()
 {
     date
-    echo "Starting pgAgent schedular"
-    PID=`ps -aef | grep 'INSTALL_DIR/bin/pgagent -l2 -s INSTALL_DIR/service.log host=PG_HOST port=PG_PORT dbname=PG_DATABASE user=PG_USER' | grep -v grep | awk '{print $2}'`
+    echo "Starting pgAgent scheduler"
+    PID=`ps -aef | grep 'INSTALL_DIR/bin/pgagent -l1 -s /var/log/pgagent.log host=PG_HOST port=PG_PORT dbname=PG_DATABASE user=PG_USER' | grep -v grep | awk '{print $2}'`
 
     if [ "x$PID" = "x" ];
     then
-       su SYSTEM_USER -c "INSTALL_DIR/bin/pgagent -l2 -s INSTALL_DIR/service.log host=PG_HOST port=PG_PORT dbname=PG_DATABASE user=PG_USER"
+       su SYSTEM_USER -c "INSTALL_DIR/bin/pgagent -l1 -s /var/log/pgagent.log host=PG_HOST port=PG_PORT dbname=PG_DATABASE user=PG_USER"
     else
        echo "pgAgent already running"
        exit -1
@@ -18,8 +18,8 @@ function start()
 function stop()
 {
     date 
-    echo "Shuttinh Down pgAgent schedular"
-    PID=`ps -aef | grep 'INSTALL_DIR/bin/pgagent -l2 -s INSTALL_DIR/service.log host=PG_HOST port=PG_PORT dbname=PG_DATABASE user=PG_USER' | grep -v grep | awk '{print $2}'`
+    echo "Shutting Down pgAgent scheduler"
+    PID=`ps -aef | grep 'INSTALL_DIR/bin/pgagent -l1 -s /var/log/pgagent.log host=PG_HOST port=PG_PORT dbname=PG_DATABASE user=PG_USER' | grep -v grep | awk '{print $2}'`
 
     if [ "x$PID" = "x" ];
     then
@@ -36,6 +36,12 @@ if [ $# -ne 1 ];
 then
     echo "Usage: $0 stop|start"
     exit 127
+fi
+
+if [ ! -f /var/log/pgagent.log ];
+then
+  touch /var/log/pgagent.log
+  chown SYSTEM_USER /var/log/pgagent.log
 fi
 
 case $1 in

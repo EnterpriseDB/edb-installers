@@ -32,8 +32,8 @@ _warn() {
     WARN=2
 }
 
-touch $INSTALL_DIR/service.log
-chown $SYSTEM_USER $INSTALL_DIR/service.log
+touch /var/log/pgagent.log
+chown $SYSTEM_USER /var/log/pgagent.log
 cat $INSTALL_DIR/installer/pgAgent/pgpass >> $USER_HOME_DIR/.pgpass
 chown $SYSTEM_USER $USER_HOME_DIR/.pgpass
 chmod 0600 $USER_HOME_DIR/.pgpass
