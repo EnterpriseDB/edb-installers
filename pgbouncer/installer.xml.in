@@ -387,11 +387,11 @@
                     <substitutionList>
                         <substitution>
                             <pattern>@@LOGFILE@@</pattern>
-                            <value>${installdir}/log/pgbouncer.log</value>
+                            <value>/var/log/pgbouncer.log</value>
                         </substitution>
                         <substitution>
                             <pattern>@@PIDFILE@@</pattern>
-                            <value>${installdir}/log/pgbouncer.pid</value>
+                            <value>/var/run/pgbouncer.pid</value>
                         </substitution>
                         <substitution>
                             <pattern>@@AUTHFILE@@</pattern>
