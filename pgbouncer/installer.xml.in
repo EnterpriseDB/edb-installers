@@ -461,6 +461,14 @@
                 </compareText>
             </ruleList>
         </writeFile>
+        <changeOwnerAndGroup>
+            <files>${installdir}/etc/userlist.txt</files>
+            <owner>${system_user}</owner>
+        </changeOwnerAndGroup>
+        <changePermissions>
+            <files>${installdir}/etc/userlist.txt</files>
+            <permissions>700</permissions>
+        </changePermissions>
         <!-- Write pgbouncer details to ini file -->
         <actionGroup>
             <actionList>
