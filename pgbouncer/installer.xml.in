@@ -362,7 +362,7 @@
                     <substitutionList>
                         <substitution>
                             <pattern>@@CON@@</pattern>
-                            <value>postgres = host=${pghost} port=${pgport} user=${pguser} password=${pgpassword}</value>
+                            <value>postgres = host=${pghost} port=${pgport} user=${pguser}</value>
                         </substitution>
                         <substitution>
                             <pattern>@@LISTENADDR@@</pattern>
