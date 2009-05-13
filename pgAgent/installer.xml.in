@@ -543,7 +543,6 @@
       </substitutionList>
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
-        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
       </ruleList>
     </substitute>
     <substitute>
@@ -626,7 +625,6 @@
       </actionList>
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
-        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
       </ruleList>
     </actionGroup>
     <actionGroup>
@@ -643,7 +641,6 @@
       </actionList>
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
-        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
       </ruleList>
     </actionGroup>
    
@@ -681,7 +678,8 @@
       <program>${installdir}/installer/pgAgent/pgagentctl.sh</program>
       <programArguments>start &amp;</programArguments>
       <abortOnError>0</abortOnError>
-      <showMessageOnError>0</showMessageOnError>
+      <showMessageOnError>1</showMessageOnError>
+      <customErrorMessage>${msg(error.start.pgagent)}</customErrorMessage>
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
         <compareText logic="equals" text="${autostart}" value="yes"/>

@@ -34,7 +34,12 @@ _warn() {
 
 touch /var/log/pgagent.log
 chown $SYSTEM_USER /var/log/pgagent.log
-cat $INSTALL_DIR/installer/pgAgent/pgpass >> $USER_HOME_DIR/.pgpass
+pgpassline=`cat $INSTALL_DIR/installer/pgAgent/pgpass`
+chk=`grep $pgpassline $USER_HOME_DIR/.pgpass`
+if [ "x$chk" = "x" ];
+then
+    cat $INSTALL_DIR/installer/pgAgent/pgpass >> $USER_HOME_DIR/.pgpass
+fi
 chown $SYSTEM_USER $USER_HOME_DIR/.pgpass
 chmod 0600 $USER_HOME_DIR/.pgpass
 
