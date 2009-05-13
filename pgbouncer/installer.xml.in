@@ -317,13 +317,13 @@
                    <path>${installdir}/log</path>
                    <condition>not_exists</condition>
                </fileTest>
+               <compareText>
+                   <text>${platform_name}</text>
+                   <logic>equals</logic>
+                   <value>windows</value>
+               </compareText>
            </ruleList>
        </createDirectory>
-       <!-- Change its permission to world writable & executable -->
-       <changePermissions>
-           <files>${installdir}/log</files>
-           <permissions>777</permissions>
-       </changePermissions>
 
         <!-- Perform substitution in the config and ctl files -->
         <actionGroup>
@@ -677,6 +677,33 @@
         </deleteFile>
         <deleteFile>
             <path>${installdir}/log</path>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </deleteFile>
+       <deleteFile>
+            <path>/var/log/pgbouncer</path>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </deleteFile>
+        <deleteFile>
+            <path>/var/run/pgbouncer</path>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
         </deleteFile>
 
         <actionGroup>
