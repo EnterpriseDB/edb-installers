@@ -38,3 +38,4 @@ pgbouncer.details.explanation=Please provide following information for PgBouncer
 pgbouncer.port.error=Unable to bind to the specified port. Please specify another value.
 pgbouncer.blank.error=Values must be entered for all fields.
 pgbouncer.user.error=The user specified does not exist on your system.
+osx.arch.error=This PgBouncer installation is not yet supported on powerpc architecture.

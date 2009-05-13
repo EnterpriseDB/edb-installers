@@ -76,6 +76,36 @@
             <compareText text="${originalplatform}" value="linux-x32"/>
           </ruleList>
         </throwError>
+        <setInstallerVariableFromScriptOutput>
+            <exec>uname</exec>
+            <execArgs>-p</execArgs>
+            <name>osx_arch</name>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariableFromScriptOutput>
+        <throwError>
+            <customErrorMessage>${msg(osx.arch.error)}</customErrorMessage>
+            <text>Unknown Error</text>
+            <ruleList>
+                <compareText>
+                    <text>${osx_arch}</text>
+                    <logic>does_not_equal</logic>
+                    <value>i386</value>
+                </compareText>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </throwError>
         <!-- LIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
