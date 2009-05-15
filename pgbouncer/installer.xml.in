@@ -250,6 +250,20 @@
 
         <actionGroup>
             <actionList>
+                 <!-- LIN & MAC: Set the system_user in case of re-install/upgrade -->
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>pgbouncer</section>
+                    <key>System_User</key>
+                    <variable>system_user</variable>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </iniFileGet>
                 <!-- LIN & MAC: Set the installation directory in case of re-install/upgrade -->
                 <iniFileGet>
                     <file>/etc/postgres-reg.ini</file>
@@ -319,6 +333,10 @@
                         </compareText>
                     </ruleList>
                 </runProgram>
+                <copyFile>
+                    <origin>${installdir}/share/pgbouncer.ini</origin>
+                    <destination>${installdir}/share/pgbouncer.ini.bak1</destination>
+                </copyFile>
             </actionList>
             <ruleList>
                 <compareText>
@@ -355,6 +373,27 @@
            </ruleList>
        </createDirectory>
 
+       <substitute>
+           <files>${installdir}/installer/pgbouncer/pgbouncerctl.sh</files>
+           <substitutionList>
+               <substitution>
+                   <pattern>INSTALL_DIR</pattern>
+                   <value>${installdir}</value>
+               </substitution>
+               <substitution>
+                   <pattern>SYSTEM_USER</pattern>
+                   <value>${system_user}</value>
+               </substitution>
+           </substitutionList>
+           <ruleList>
+               <compareText>
+                   <text>${platform_name}</text>
+                   <logic>equals</logic>
+                   <value>osx</value>
+               </compareText>
+           </ruleList>
+        </substitute>
+
         <!-- Perform substitution in the config and ctl files -->
         <actionGroup>
             <actionList>
@@ -367,26 +406,6 @@
                         </compareText>
                     </ruleList>
                 </setInstallerVariable>
-                <substitute>
-                    <files>${installdir}/installer/pgbouncer/pgbouncerctl.sh</files>
-                    <substitutionList>
-                        <substitution>
-                            <pattern>INSTALL_DIR</pattern>
-                            <value>${installdir}</value>
-                        </substitution>
-                        <substitution>
-                            <pattern>SYSTEM_USER</pattern>
-                            <value>${system_user}</value>
-                        </substitution>
-                    </substitutionList>
-                    <ruleList>
-                        <compareText>
-                            <text>${platform_name}</text>
-                            <logic>equals</logic>
-                            <value>osx</value>
-                        </compareText>
-                    </ruleList>
-                </substitute>
                 <substitute>
                     <files>${installdir}/share/pgbouncer.ini</files>
                     <substitutionList>
@@ -520,6 +539,12 @@
                     <key>Version</key>
                     <value>${product_version}</value>
                 </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>pgbouncer</section>
+                    <key>System_User</key>
+                    <value>${system_user}</value>
+                </iniFileSet>
             </actionList>
             <ruleList>
                 <compareText>
@@ -549,6 +574,23 @@
                 </compareText>
             </ruleList>
         </runProgram>
+        <actionGroup>
+            <actionList>
+                <copyFile>
+                   <origin>${installdir}/share/pgbouncer.ini.bak1</origin>
+                   <destination>${installdir}/share/pgbouncer.ini</destination>
+                </copyFile>
+                <deleteFile>
+                   <path>${installdir}/share/pgbouncer.ini.bak1</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <fileTest>
+                    <path>${installdir}/share/pgbouncer.ini.bak1</path>
+                    <condition>exists</condition>
+                </fileTest>
+            </ruleList>
+        </actionGroup>
         <!-- LINUX | MAC: Install pgbouncer service -->
         <runProgram>
             <program>${installdir}/installer/pgbouncer/startupcfg.sh</program>
@@ -560,11 +602,6 @@
                     <logic>does_not_equal</logic>
                     <text>${platform_name}</text>
                     <value>windows</value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${pgbouncerVersion}</text>
-                    <value/>
                 </compareText>
             </ruleList>
         </runProgram>
