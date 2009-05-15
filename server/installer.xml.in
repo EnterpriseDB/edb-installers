@@ -128,7 +128,7 @@
         <!-- Date/Time Setting -->
         <setInstallerVariable>
             <name>DateTimeSetting</name>
-            <value>PG_DATETIME_SETTING_LINUX</value>
+            <value>@@PG_DATETIME_SETTING_LINUX@@</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -139,7 +139,7 @@
         </setInstallerVariable>
         <setInstallerVariable>
             <name>DateTimeSetting</name>
-            <value>PG_DATETIME_SETTING_LINUX_X64</value>
+            <value>@@PG_DATETIME_SETTING_LINUX_X64@@</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -150,7 +150,7 @@
         </setInstallerVariable>
         <setInstallerVariable>
             <name>DateTimeSetting</name>
-            <value>PG_DATETIME_SETTING_WINDOWS</value>
+            <value>@@PG_DATETIME_SETTING_WINDOWS@@</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -161,7 +161,7 @@
         </setInstallerVariable>
         <setInstallerVariable>
             <name>DateTimeSetting</name>
-            <value>PG_DATETIME_SETTING_OSX</value>
+            <value>@@PG_DATETIME_SETTING_OSX@@</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>

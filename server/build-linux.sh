@@ -361,7 +361,7 @@ _postprocess_server_linux() {
           PG_DATETIME_SETTING_LINUX="64-bit integers"
     fi  
 
-    _replace PG_DATETIME_SETTING_LINUX "$PG_DATETIME_SETTING_LINUX" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"     
+    _replace @@PG_DATETIME_SETTING_LINUX@@ "$PG_DATETIME_SETTING_LINUX" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"     
 
 
     # Build the installer

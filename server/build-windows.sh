@@ -454,7 +454,7 @@ _postprocess_server_windows() {
           PG_DATETIME_SETTING_WINDOWS="64-bit integers"
     fi
 
-    _replace PG_DATETIME_SETTING_WINDOWS "$PG_DATETIME_SETTING_WINDOWS" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"
+    _replace @@PG_DATETIME_SETTING_WINDOWS@@ "$PG_DATETIME_SETTING_WINDOWS" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"
 
 	
     # Build the installer

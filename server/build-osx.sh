@@ -239,7 +239,7 @@ _postprocess_server_osx() {
           PG_DATETIME_SETTING_OSX="64-bit integers"
     fi
 
-    _replace PG_DATETIME_SETTING_OSX "$PG_DATETIME_SETTING_OSX" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"
+    _replace @@PG_DATETIME_SETTING_OSX@@ "$PG_DATETIME_SETTING_OSX" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"
 
 	
     # Build the installer
