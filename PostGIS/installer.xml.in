@@ -841,7 +841,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/PostGIS/installer/PostGIS/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${productVersion}" "${PG_MAJOR_VERSION}" "${branding}"</programArguments>
+                    <programArguments>"${installdir}" "${productVersion}" "PG_MAJOR_VERSION" "${branding}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
