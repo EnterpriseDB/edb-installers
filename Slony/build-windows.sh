@@ -65,11 +65,11 @@ _prep_Slony_windows() {
     scp Slony.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the Slony archieve to windows VM (Slony.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip Slony.zip" || _die "Couldn't extract Slony archieve on windows VM (Slony.zip)"
 
-    PG_PGHOME_WINDOWS=$PG_PATH_WINDOWS/pgsql
+    PG_PGHOME_WINDOWS=$PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION
 
     echo "Removing existing slony files from the PostgreSQL directory"
-    ssh $PG_SSH_WINDOWS "cd $PG_PGHOME_WINDOWS; rm -f bin/slon.exe bin/slonik.exe lib/slony_funcs.dll lib/xxid.dll lib/slevent.dll"  || _die "Failed to remove slony binary files"
-    ssh $PG_SSH_WINDOWS "cd $PG_PGHOME_WINDOWS; rm -f share/slony*.sql && rm -f share/xxid*.sql"  || _die "remove slony share files"
+    ssh $PG_SSH_WINDOWS "if EXIST $PG_PGHOME_WINDOWS cd $PG_PGHOME_WINDOWS; rm -f bin/slon.exe bin/slonik.exe lib/slony_funcs.dll lib/xxid.dll lib/slevent.dll"  || _die "Failed to remove slony binary files"
+    ssh $PG_SSH_WINDOWS "if EXIST $PG_PGHOME_WINDOWS cd $PG_PGHOME_WINDOWS; rm -f share/slony*.sql && rm -f share/xxid*.sql"  || _die "remove slony share files"
 
 
         
@@ -84,8 +84,8 @@ _build_Slony_windows() {
 
     # build Slony    
     PG_STAGING=`echo $PG_PATH_WINDOWS | sed -e 's/://g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/:g'`
-    PG_PGHOME_WINDOWS=$PG_PATH_WINDOWS/pgsql 
-    PG_PGHOME_MINGW_WINDOWS=$PG_STAGING/pgsql 
+    PG_PGHOME_WINDOWS=$PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION 
+    PG_PGHOME_MINGW_WINDOWS=$PG_STAGING/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION 
     PG_PATH_MINGW_WINDOWS=`echo $PG_MINGW_WINDOWS | sed -e 's/://g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/:g'`
     PG_PGBUILD_MINGW_WINDOWS=`echo $PG_PGBUILD_WINDOWS | sed -e 's/://g' -e 's:\\\\:/:g' -e 's:^:/:g'`
 
@@ -102,7 +102,7 @@ _build_Slony_windows() {
 EOT
 
     scp build-postgresql_mingw.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c IF NOT EXIST pgsql build-postgresql_mingw.bat" 
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c IF NOT EXIST pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION build-postgresql_mingw.bat" 
 
     cat <<EOT > "build-Slony.bat"
 

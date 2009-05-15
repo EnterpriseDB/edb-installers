@@ -126,7 +126,7 @@ _build_PostGIS_windows() {
 
     # build postgis    
     PG_STAGING=`echo $PG_PATH_WINDOWS | sed -e 's/://g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/:g'`
-    PG_PGHOME_MINGW_WINDOWS=$PG_STAGING/pgsql
+    PG_PGHOME_MINGW_WINDOWS=$PG_STAGING/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION
     PG_PATH_MINGW_WINDOWS=`echo $PG_MINGW_WINDOWS | sed -e 's/://g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/:g'`
     PG_PGBUILD_MINGW_WINDOWS=`echo $PG_PGBUILD_WINDOWS | sed -e 's/://g' -e 's:\\\\:/:g' -e 's:^:/:g'`
     PG_JAVA_HOME_MINGW_WINDOWS=`echo $PG_JAVA_HOME_WINDOWS | sed -e 's/://g' -e 's:\\\\:/:g' -e 's:^:/:g' -e 's:\\ :\\\\ :g'`
@@ -143,7 +143,7 @@ _build_PostGIS_windows() {
 EOT
 
     scp build-postgresql_mingw.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c IF NOT EXIST pgsql build-postgresql_mingw.bat" 
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c IF NOT EXIST pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION build-postgresql_mingw.bat" 
      
 
     cat <<EOT > "build-postgis.bat"
