@@ -1540,7 +1540,7 @@
             </ruleList>
         </showWarning>
 
-        <!--LINUX | LINUX-X64: Adding configuration to the global config file -->
+        <!--LINUX: Adding configuration to the global config file -->
         <addTextToFile>
             <file>${installdir}/pgAdmin3/share/pgadmin3/settings.ini</file>
             <text>
@@ -1549,12 +1549,29 @@ PostgreSQLHelpPath=file://${installdir}/doc/postgresql/html
             </text>   
             <ruleList>
                 <compareText>
-                    <logic>contains</logic>
+                    <logic>equals</logic>
                     <text>linux</text>
                     <value>${platform_name}</value>
                 </compareText>
             </ruleList>
         </addTextToFile>
+
+        <!-- LINUX-X64: Adding configuration to the global config file -->
+        <addTextToFile>
+            <file>${installdir}/pgAdmin3/share/pgadmin3/settings.ini</file>
+            <text>
+PostgreSQLPath=${installdir}/bin
+PostgreSQLHelpPath=file://${installdir}/doc/postgresql/html
+            </text>   
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>linux-x64</text>
+                    <value>${platform_name}</value>
+                </compareText>
+            </ruleList>
+        </addTextToFile>
+
 
         <!--MAC: Adding configuration to the global config file -->
         <addTextToFile>
@@ -1572,12 +1589,28 @@ PostgreSQLHelpPath=file://${installdir}/doc/postgresql/html
             </ruleList>
         </addTextToFile> 
 
+        <!-- Replace \ with / on windows -->
+        <setInstallerVariableFromRegEx>
+            <text>${installdir}</text>
+            <substitution>\/</substitution>
+            <name>installdir_win</name>
+            <pattern>\\</pattern>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+
+
         <!--WIN: Adding configuration to the global config file -->
         <addTextToFile>
             <file>${installdir}\pgAdmin III\settings.ini</file>
             <text>
-PostgreSQLPath=${installdir}\bin
-PostgreSQLHelpPath=file://${installdir}\doc\postgresql\html
+PostgreSQLPath=${installdir_win}/bin
+PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
             </text>   
             <ruleList>
                 <compareText>
