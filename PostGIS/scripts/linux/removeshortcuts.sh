@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 2 ];
+if [ $# -ne 4 ];
 then
     echo "Usage: $0 <Install dir> <PostGIS_Version> <PG Version> <Branding>" 
     exit 127
