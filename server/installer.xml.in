@@ -1592,7 +1592,7 @@ PostgreSQLHelpPath=file://${installdir}/doc/postgresql/html
         <!-- Replace \ with / on windows -->
         <setInstallerVariableFromRegEx>
             <text>${installdir}</text>
-            <substitution>\/</substitution>
+            <substitution>/</substitution>
             <name>installdir_win</name>
             <pattern>\\</pattern>
             <ruleList>
