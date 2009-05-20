@@ -651,6 +651,20 @@
             </ruleList>
         </runProgram>
 
+        <runProgram>
+            <program>cscript</program>
+            <programArguments>//NoLogo "${installdir}/installer/pgbouncer/securefile.vbs" "${installdir}\etc\userlist.txt" "${system_username}"</programArguments>
+            <abortOnError>0</abortOnError>
+            <customErrorMessage>${msg(error.file.notsecure)}</customErrorMessage>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+
         <deleteFile path="${installdir}/instscripts" />
 
   </postInstallationActionList>
@@ -742,6 +756,7 @@
         <deleteFile>
             <path>${installdir}/etc</path>
         </deleteFile>
+
         <deleteFile>
             <path>${installdir}/log</path>
             <ruleList>
@@ -1137,7 +1152,7 @@
               <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
               <name>connection</name>
               <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
-              <!--<customErrorMessage>${msg(pg.details.error)}</customErrorMessage> -->
+              <customErrorMessage>${msg(pg.details.error)}</customErrorMessage>
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
               </ruleList>

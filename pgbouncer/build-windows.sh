@@ -153,6 +153,7 @@ _postprocess_pgbouncer_windows() {
     mkdir -p staging/windows/installer/pgbouncer || _die "Failed to create directory for installer scripts"
     cp -R scripts/windows/check-connection.bat staging/windows/installer/pgbouncer/ || _die "Failed to copy the installer script"
     cp -R scripts/windows/startupcfg.bat staging/windows/installer/pgbouncer/ || _die "Failed to copy the installer script"
+    cp -R scripts/windows/securefile.vbs staging/windows/installer/pgbouncer/ || _die "Failed to copy the installer script"
 
     rm -rf staging/windows/share/doc || _die "Failed to remove the extra doc directory"
 
