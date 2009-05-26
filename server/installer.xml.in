@@ -51,6 +51,8 @@
               <compareText text="${platform_name}" value="linux"/>
           </ruleList>
       </setInstallerVariable>
+
+
     </preBuildActionList>
     
     <!-- Initialisation actions -->
@@ -65,6 +67,13 @@
             <compareText text="${originalplatform}" value="linux-x32"/>
           </ruleList>
         </throwError>
+
+        <setInstallerVariable name="shortcuts" value="1" persist="1"/>
+        <setInstallerVariable name="branding" value="">
+          <ruleList>
+              <compareText text="${shortcuts}" value="0" />
+          </ruleList>
+        </setInstallerVariable>
         
         <!-- Set the superusername -->
         <!-- TODO: Make this user configurable -->
@@ -252,7 +261,21 @@
                         </fileTest>
                     </ruleList>
                 </setInstallerVariable>
-                
+
+                <!-- Check whether menus were created, if its a re-install/upgrade -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>Shortcuts</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>shortcuts</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+               
                 <!-- Get the branding. -->
                 <iniFileGet>
                     <file>${PostgreSqlIni}</file>
@@ -345,6 +368,13 @@
                     <variable>brandingVer</variable>
                 </registryGet>
                                 
+                <!-- Check whether menus were created, if its a re-install/upgrade -->
+                <registryGet>
+                    <name>shortcuts</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <variable>Shortcuts</variable>
+                </registryGet>
+
             </actionList>
             
             <ruleList>
@@ -355,6 +385,20 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+       <!-- Set shortcuts variable to 1 if it is blank -->
+       <setInstallerVariable>
+           <name>shortcuts</name>
+           <value>1</value>
+           <persist>1</persist>
+           <ruleList>
+               <compareText>
+                   <text>${shortcuts}</text>
+                   <logic>equals</logic>
+                   <value/>
+               </compareText>
+           </ruleList>
+       </setInstallerVariable>
         
         <!-- If there appears to be an existing installation, with no Branding value. --> 
         <!-- force the default value. Otherwise, set the branding to whatever we read, -->
@@ -1190,7 +1234,26 @@
             <name>Version</name>
             <value>${product_version}</value>
         </registrySet>
-
+        <!-- Shortcuts created ? -->
+        <iniFileSet>
+            <file>${PostgreSqlIni}</file>
+            <section>PostgreSQL/${product_version}</section>
+            <key>Shortcuts</key>
+            <value>${shortcuts}</value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </iniFileSet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+            <name>Shortcuts</name>
+            <value>${shortcuts}</value>
+        </registrySet>
+ 
         <!-- Track if any errors occurred so we can hide the Run Stackbuilder option -->
         <setInstallerVariable>
             <name>didError</name>
@@ -1485,6 +1548,11 @@
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
                 <compareText>
+                    <logic>equals</logic>
+                    <text>${shortcuts}</text>
+                    <value>1</value>
+                </compareText>
+                <compareText>
                     <logic>does_not_equal</logic>
                     <text>${platform_name}</text>
                     <value>windows</value>
@@ -1499,6 +1567,11 @@
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${shortcuts}</text>
+                    <value>1</value>
+                </compareText>
                 <compareText>
                     <logic>equals</logic>
                     <text>${platform_name}</text>
@@ -1691,7 +1764,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                 
                 <runProgram>
                     <program>${installdir}/installer/server/loadmodules.sh</program>
-                    <programArguments>"${supername}" "${superpassword}" "${installdir}" ${serverport}</programArguments>
+                    <programArguments>"${supername}" "${superpassword}" "${installdir}" ${serverport} "${install_plpgsql}"</programArguments>
                     <progressText>${msg(progress.text.loading.modules)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -1706,7 +1779,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         
                 <runProgram>
                     <program>cscript</program>
-                    <programArguments>//NoLogo "${installdir}\installer\server\loadmodules.vbs" "${supername}" "${superpassword}" "${installdir}" "${datadir}" ${serverport}</programArguments>
+                    <programArguments>//NoLogo "${installdir}\installer\server\loadmodules.vbs" "${supername}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} "${install_plpgsql}"</programArguments>
                     <progressText>${msg(progress.text.loading.modules)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -2150,6 +2223,11 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
             <program>${installdir}/installer/server/removeshortcuts.sh</program>
             <programArguments>"${installdir}" ${product_version} "${branding}"</programArguments>
             <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${shortcuts}</text>
+                    <value>1</value>
+                </compareText>
                 <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
@@ -2597,6 +2675,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
      
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
+        <stringParameter name="shortcuts" cliOptionName="shortcuts" ask="0" cliOptionShow="1"/>
    
         <!-- Installation directory. Only show if ${iBaseDirectory} is empty -->
         <directoryParameter>
@@ -3358,23 +3437,39 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         </stringParameter>
 
         <!-- Locale -->
-        <choiceParameter>
-            <name>locale</name>
-            <description>${msg(config.locale.description)}</description>
-            <explanation>${msg(config.locale.explanation)}</explanation>
-            <cliOptionName>locale</cliOptionName>
-            <ask>yes</ask>
-            <validationActionList>
-                <throwError>
-                    <text>${msg(config.locale.no.locale)}</text>
-                    <ruleList>
-                        <stringTest>
-                            <text>${locale}</text>
-                            <type>empty</type>
-                        </stringTest>
-                    </ruleList>
-                </throwError>
-            </validationActionList>
+        <parameterGroup>
+            <name>advancedOptions</name>
+            <title>${msg(config.advancedoption.title)}</title>
+            <explanation/>
+            <parameterList>
+                 <choiceParameter>
+                    <name>locale</name>
+                    <description>${msg(config.locale.description)}</description>
+                    <explanation>${msg(config.locale.explanation)}</explanation>
+                    <cliOptionName>locale</cliOptionName>
+                    <ask>yes</ask>
+                    <validationActionList>
+                        <throwError>
+                            <text>${msg(config.locale.no.locale)}</text>
+                            <ruleList>
+                                <stringTest>
+                                    <text>${locale}</text>
+                                    <type>empty</type>
+                                </stringTest>
+                            </ruleList>
+                        </throwError>
+                    </validationActionList>
+                </choiceParameter>
+                <booleanParameter>
+                    <name>install_plpgsql</name>
+                    <description>${msg(plpgsql.install.description)}</description>
+                    <explanation/>
+                    <displayStyle>checkbox-left</displayStyle>
+                    <cliOptionName>install_plpgsql</cliOptionName>
+                    <ask>yes</ask>
+                    <default>1</default>
+                </booleanParameter>
+            </parameterList>
             <ruleList>
                 <compareValues>
                     <value1>${IsUpgrade}</value1>
@@ -3382,8 +3477,8 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <value2>0</value2>
                 </compareValues>
             </ruleList>
-        </choiceParameter>
-
+        </parameterGroup>
+               
     </parameterList>
 </project>
 
