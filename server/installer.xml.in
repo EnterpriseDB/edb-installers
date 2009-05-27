@@ -51,9 +51,81 @@
               <compareText text="${platform_name}" value="linux"/>
           </ruleList>
       </setInstallerVariable>
-
-
     </preBuildActionList>
+    <preShowHelpActionList>
+        <!-- Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/Library/PostgreSQL/${product_version}</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}/PostgreSQL/${product_version}</value>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}/PostgreSQL/${product_version}</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- Get a default port number - ideally 5432 -->
+        <getFreePort>
+            <variable>defaultport</variable>
+            <initialPort>5432</initialPort>
+            <finalPort>65535</finalPort>
+        </getFreePort>
+        <!-- Set the default password, to be used only in unnattended mode -->
+        <setInstallerVariable>
+            <name>defaultpassword</name>
+            <value>postgres</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+            </ruleList>
+             
+        </setInstallerVariable>
+        <setInstallerVariable>
+            <name>defaultpassword</name>
+            <value></value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+       
+    </preShowHelpActionList> 
+
     
     <!-- Initialisation actions -->
     <initializationActionList>
@@ -83,39 +155,7 @@
             <value>postgres</value>
             <persist>1</persist>
         </setInstallerVariable>
-        
-        <!-- Set the default password, to be used only in unnattended mode -->
-        <setInstallerVariable>
-            <name>defaultpassword</name>
-            <value>postgres</value>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
-            </ruleList>
-             
-        </setInstallerVariable>
-        <setInstallerVariable>
-            <name>defaultpassword</name>
-            <value></value>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
-        
-        <!-- Get a default port number - ideally 5432 -->
-        <getFreePort>
-            <variable>defaultport</variable>
-            <initialPort>5432</initialPort>
-            <finalPort>65535</finalPort>
-        </getFreePort>
-        
+       
         <!-- Upgrading? -->
         <setInstallerVariable>
             <name>IsUpgrade</name>
@@ -1051,45 +1091,6 @@
             <pattern>,</pattern>
         </setInstallerVariableFromRegEx>
              
-        <!-- Set the default installation directory -->
-        <setInstallerVariable>
-            <name>default_installdir</name>
-            <persist>1</persist>
-            <value>/Library/PostgreSQL/${product_version}</value>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
-        
-        <setInstallerVariable>
-            <name>default_installdir</name>
-            <persist>1</persist>
-            <value>${platform_install_prefix}/PostgreSQL/${product_version}</value>
-            <ruleList>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
-        
-        <setInstallerVariable>
-            <name>default_installdir</name>
-            <persist>1</persist>
-            <value>${platform_install_prefix}/PostgreSQL/${product_version}</value>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
     </preInstallationActionList>
 
     <readyToInstallActionList>    
@@ -2735,8 +2736,18 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
      
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
-        <stringParameter name="createShortcut" cliOptionName="createShortcut" ask="0" cliOptionShow="1"/>
-   
+
+        <!-- Whether to create shortcut menu -->
+        <stringParameter>
+            <name>createShortcut</name>
+            <description>Create Menu Shortcut?</description>
+            <explanation/>
+            <value/>
+            <default>1</default>
+            <ask>0</ask>
+            <cliOptionName>createShortcut</cliOptionName>
+        </stringParameter> 
+
         <!-- Installation directory. Only show if ${iBaseDirectory} is empty -->
         <directoryParameter>
             <name>installdir</name>
@@ -2808,7 +2819,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                 
             </postShowPageActionList>
         </directoryParameter>
-        
+
         <!-- Explain that we're using an existing installation directory -->
         <labelParameter>
             <name>upgrade</name>
