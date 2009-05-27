@@ -68,10 +68,11 @@
           </ruleList>
         </throwError>
 
-        <setInstallerVariable name="shortcuts" value="1" persist="1"/>
+        <setInstallerVariable name="createShortcut" value="1" persist="1"/>
+        <setInstallerVariable name="iShortcut" value="" />
         <setInstallerVariable name="branding" value="">
           <ruleList>
-              <compareText text="${shortcuts}" value="0" />
+              <compareText text="${createShortcut}" value="0" />
           </ruleList>
         </setInstallerVariable>
         
@@ -267,7 +268,7 @@
                     <file>${PostgreSqlIni}</file>
                     <key>Shortcuts</key>
                     <section>PostgreSQL/${product_version}</section>
-                    <variable>shortcuts</variable>
+                    <variable>iShortcut</variable>
                     <ruleList>
                         <fileTest>
                             <condition>readable</condition>
@@ -370,7 +371,7 @@
                                 
                 <!-- Check whether menus were created, if its a re-install/upgrade -->
                 <registryGet>
-                    <name>shortcuts</name>
+                    <name>iShortcut</name>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
                     <variable>Shortcuts</variable>
                 </registryGet>
@@ -386,15 +387,15 @@
             </ruleList>
         </actionGroup>
 
-       <!-- Set shortcuts variable to 1 if it is blank -->
+       <!-- Set createShortcut variable to 1 if it is blank -->
        <setInstallerVariable>
-           <name>shortcuts</name>
-           <value>1</value>
+           <name>createShortcut</name>
+           <value>${iShortCut}</value>
            <persist>1</persist>
            <ruleList>
                <compareText>
-                   <text>${shortcuts}</text>
-                   <logic>equals</logic>
+                   <text>${iShortcut}</text>
+                   <logic>does_not_equal</logic>
                    <value/>
                </compareText>
            </ruleList>
@@ -410,6 +411,11 @@
             <persist>0</persist>
             <value>PostgreSQL ${product_version}</value>
             <ruleList>
+               <compareText>
+                   <text>${createShortcut}</text>
+                   <logic>does_not_equal</logic>
+                   <value>0</value>
+               </compareText>
                 <compareText>
                     <logic>does_not_equal</logic>
                     <text>${brandingVer}</text>
@@ -429,6 +435,11 @@
             <persist>0</persist>
             <value>${iBranding}</value>
             <ruleList>
+               <compareText>
+                   <text>${createShortcut}</text>
+                   <logic>does_not_equal</logic>
+                   <value>0</value>
+               </compareText>
                 <compareText>
                     <logic>does_not_equal</logic>
                     <text>${iBranding}</text>
@@ -443,6 +454,11 @@
             <persist>0</persist>
             <value>PostgreSQL ${product_version}</value>
             <ruleList>
+               <compareText>
+                   <text>${createShortcut}</text>
+                   <logic>does_not_equal</logic>
+                   <value>0</value>
+               </compareText>
                 <compareText>
                     <logic>equals</logic>
                     <text>${branding}</text>
@@ -1239,7 +1255,7 @@
             <file>${PostgreSqlIni}</file>
             <section>PostgreSQL/${product_version}</section>
             <key>Shortcuts</key>
-            <value>${shortcuts}</value>
+            <value>${createShortcut}</value>
             <ruleList>
                 <compareText>
                     <logic>does_not_equal</logic>
@@ -1251,7 +1267,7 @@
         <registrySet>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
             <name>Shortcuts</name>
-            <value>${shortcuts}</value>
+            <value>${createShortcut}</value>
         </registrySet>
  
         <!-- Track if any errors occurred so we can hide the Run Stackbuilder option -->
@@ -1549,7 +1565,7 @@
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
-                    <text>${shortcuts}</text>
+                    <text>${createShortcut}</text>
                     <value>1</value>
                 </compareText>
                 <compareText>
@@ -1569,7 +1585,7 @@
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
-                    <text>${shortcuts}</text>
+                    <text>${createShortcut}</text>
                     <value>1</value>
                 </compareText>
                 <compareText>
@@ -2212,6 +2228,11 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
+                    <text>${createShortcut}</text>
+                    <value>1</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
                     <text>${platform_name}</text>
                     <value>osx</value>
                 </compareText>
@@ -2225,7 +2246,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
-                    <text>${shortcuts}</text>
+                    <text>${createShortcut}</text>
                     <value>1</value>
                 </compareText>
                 <compareText>
@@ -2560,6 +2581,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                             <runInTerminal>0</runInTerminal>
                             <url>file://${installdir}/doc/installation-notes.html</url>
                             <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                            <ruleList>
+                                <isTrue value="${createShortcut}" />
+                            </ruleList>
                         </startMenuLinkShortcut>
                         
                         <!-- PostgreSQL -->
@@ -2568,6 +2592,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                             <runInTerminal>0</runInTerminal>
                             <url>file://${installdir}/doc/postgresql/html/index.html</url>
                             <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                            <ruleList>
+                                <isTrue value="${createShortcut}" />
+                            </ruleList>
                         </startMenuLinkShortcut>
                         
                         <!-- PostgreSQL release notes -->
@@ -2576,6 +2603,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                             <runInTerminal>0</runInTerminal>
                             <url>file://${installdir}/doc/postgresql/html/release.html</url>
                             <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                            <ruleList>
+                                <isTrue value="${createShortcut}" />
+                            </ruleList>
                         </startMenuLinkShortcut>
                         
                         <!-- pgAdmin -->
@@ -2583,6 +2613,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                             <name>pgAdmin documentation</name>
                             <runInTerminal>0</runInTerminal>
                             <windowsExec>${installdir}/pgAdmin III/docs/en_US/pgadmin3.chm</windowsExec>
+                            <ruleList>
+                                <isTrue value="${createShortcut}" />
+                            </ruleList>
                         </startMenuShortcut>
                         
                         <!-- PL Java users guild -->
@@ -2591,6 +2624,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                             <runInTerminal>0</runInTerminal>
                             <url>file://${installdir}/doc/pljava/userguide.html</url>
                             <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                            <ruleList>
+                                <isTrue value="${createShortcut}" />
+                            </ruleList>
                         </startMenuLinkShortcut>
                         
                         <!-- PL Java README -->
@@ -2599,6 +2635,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                             <runInTerminal>0</runInTerminal>
                             <url>file://${installdir}/doc/pljava/readme.html</url>
                             <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                            <ruleList>
+                                <isTrue value="${createShortcut}" />
+                            </ruleList>
                         </startMenuLinkShortcut>
                         
                         
@@ -2612,6 +2651,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <name>pgAdmin III</name>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}\bin\pgAdmin3.exe</windowsExec>
+                    <ruleList>
+                        <isTrue value="${createShortcut}" />
+                    </ruleList>
                 </startMenuShortcut>
                 
                 <!-- Stackbuilder -->
@@ -2619,6 +2661,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <name>Application Stack Builder</name>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}\bin\stackbuilder.exe</windowsExec>
+                    <ruleList>
+                        <isTrue value="${createShortcut}" />
+                    </ruleList>
                 </startMenuShortcut>
                 
                 <!-- psql -->
@@ -2627,6 +2672,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}\scripts\runpsql.bat</windowsExec>
                     <windowsIcon>${installdir}\scripts\images\pg-psql.ico</windowsIcon>
+                    <ruleList>
+                        <isTrue value="${createShortcut}" />
+                    </ruleList>
                 </startMenuShortcut>
                 
                 <!-- Reload config -->
@@ -2636,6 +2684,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <windowsExec>cscript.exe</windowsExec>
                     <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" reload wait</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pg-reload.ico</windowsIcon>
+                    <ruleList>
+                        <isTrue value="${createShortcut}" />
+                    </ruleList>
                 </startMenuShortcut>
                 
                 <!-- Restart server -->
@@ -2645,6 +2696,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <windowsExec>cscript.exe</windowsExec>
                     <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" restart wait</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pg-restart.ico</windowsIcon>
+                    <ruleList>
+                        <isTrue value="${createShortcut}" />
+                    </ruleList>
                 </startMenuShortcut>
                 
                 <!-- Start server -->
@@ -2654,6 +2708,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <windowsExec>cscript.exe</windowsExec>
                     <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" start wait</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pg-start.ico</windowsIcon>
+                    <ruleList>
+                        <isTrue value="${createShortcut}" />
+                    </ruleList>
                 </startMenuShortcut>
                 
                 <!-- Stop server -->
@@ -2663,6 +2720,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <windowsExec>cscript.exe</windowsExec>
                     <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" stop wait</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pg-stop.ico</windowsIcon>
+                    <ruleList>
+                        <isTrue value="${createShortcut}" />
+                    </ruleList>
                 </startMenuShortcut>
             
             </startMenuShortcutList>
@@ -2675,7 +2735,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
      
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
-        <stringParameter name="shortcuts" cliOptionName="shortcuts" ask="0" cliOptionShow="1"/>
+        <stringParameter name="createShortcut" cliOptionName="createShortcut" ask="0" cliOptionShow="1"/>
    
         <!-- Installation directory. Only show if ${iBaseDirectory} is empty -->
         <directoryParameter>
