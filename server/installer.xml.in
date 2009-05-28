@@ -1096,6 +1096,27 @@
             </ruleList>
         </actionGroup>
 
+       <throwError>
+           <text>${msg(locale.error)}</text>
+           <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${IsUpgrade}</text>
+                    <value>1</value>
+                </compareText>
+               <compareText>
+                   <text>${locale}</text>
+                   <value/>
+                   <logic>does_not_equal</logic>
+               </compareText>
+               <compareText>
+                   <text>${program_stdout}</text>
+                   <value>${locale}</value>
+                   <logic>does_not_contain</logic>
+               </compareText>
+           </ruleList>
+       </throwError> 
+
         <!-- Set the default locale if needed. -->
         <actionGroup>
             <actionList>

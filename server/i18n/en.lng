@@ -75,3 +75,4 @@ config.locale.no.locale=You must select a locale to continue.
 plpgsql.install.description=Install pl/pgsql in template1 database?
 
 info.datadirectory.user.kept=The data directory (${datadir}) and service user account (${supername}) have not been removed.
+locale.error=Locale specified is not supported.
