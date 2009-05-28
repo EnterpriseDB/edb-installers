@@ -70,6 +70,6 @@ PG_ARCH_OSX_CPPFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version
 PG_ARCH_OSX_CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -headerpad_max_install_names"
 
 # The InstallBuilder main binary.
-PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder Enterprise 5.4.13/bin/Builder.app/Contents/MacOS/installbuilder.sh"
+PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder Enterprise 6.0.3/bin/Builder.app/Contents/MacOS/installbuilder.sh"
 
 
