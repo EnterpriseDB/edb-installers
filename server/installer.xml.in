@@ -53,6 +53,7 @@
       </setInstallerVariable>
     </preBuildActionList>
     <preShowHelpActionList>
+        <setInstallerVariable name="createShortcut" value="1" persist="1"/>
         <!-- Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
@@ -129,7 +130,7 @@
     
     <!-- Initialisation actions -->
     <initializationActionList>
-    
+    <setInstallerVariable name="project.parameter(createShortcut).ask" value="0"/>    
     <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -2830,15 +2831,16 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
 
         <!-- Whether to create shortcut menu -->
-        <stringParameter>
-            <name>createShortcut</name>
-            <description>Create Menu Shortcut?</description>
-            <explanation/>
-            <value/>
-            <default>1</default>
-            <ask>0</ask>
-            <cliOptionName>createShortcut</cliOptionName>
-        </stringParameter> 
+        <booleanParameter>
+           <name>createShortcut</name>
+           <description>Create Menu Shortcut?</description>
+           <explanation/>
+           <value/>
+           <default>1</default>
+           <ask>yes</ask>
+           <cliOptionName>createShortcut</cliOptionName>
+           <cliOptionShow>1</cliOptionShow>
+        </booleanParameter> 
 
         <!-- Installation directory. Only show if ${iBaseDirectory} is empty -->
         <directoryParameter>
@@ -3631,7 +3633,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <cliOptionName>install_plpgsql</cliOptionName>
                     <ask>yes</ask>
                     <default>1</default>
-                </booleanParameter>
+                </booleanParameter>  
             </parameterList>
             <ruleList>
                 <compareValues>
