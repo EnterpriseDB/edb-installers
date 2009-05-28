@@ -428,6 +428,18 @@ _postprocess_server_windows() {
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/windows/doc/" || _die "Failed to install the welcome document"
     cp "$WD/server/resources/enterprisedb.gif" "$WD/server/staging/windows/doc/" || _die "Failed to install the welcome logo"
 
+    #Creating a archive of the binaries
+    mkdir -p $WD/server/staging/windows/pgsql || _die "Failed to create the directory for binaries "
+    cd $WD/server/staging/windows
+    cp -R bin doc include lib pgAdmin* share StackBuilder symbols pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
+
+    zip -rq postgresql-$PG_PACKAGE_VERSION-windows-binaries.zip pgsql || _die "Failed to archive the postgresql binaries"
+    mv postgresql-$PG_PACKAGE_VERSION-windows-binaries.zip $WD/output/ || _die "Failed to move the archive to output folder"
+
+    rm -rf pgsql || _die "Failed to remove the binaries directory" 
+
+    cd $WD/server
+
     # Setup the installer scripts. 
     mkdir -p staging/windows/installer/server || _die "Failed to create a directory for the install scripts"
     cp scripts/windows/installruntimes.vbs staging/windows/installer/installruntimes.vbs || _die "Failed to copy the installruntimes script ($WD/scripts/windows/installruntimes.vbs)"

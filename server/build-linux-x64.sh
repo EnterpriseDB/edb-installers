@@ -275,6 +275,18 @@ _postprocess_server_linux_x64() {
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/linux-x64/doc/" || _die "Failed to install the welcome document"
     cp "$WD/server/resources/enterprisedb.gif" "$WD/server/staging/linux-x64/doc/" || _die "Failed to install the welcome logo"
 
+    #Creating a archive of the binaries
+    mkdir -p $WD/server/staging/linux-x64/pgsql || _die "Failed to create the directory for binaries "
+    cd $WD/server/staging/linux-x64
+    cp -R bin doc include lib pgAdmin3 share stackbuilder pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
+
+    tar -czf postgresql-$PG_PACKAGE_VERSION-linux-x64-binaries.tar.gz pgsql || _die "Failed to archive the postgresql binaries"
+    mv postgresql-$PG_PACKAGE_VERSION-linux-x64-binaries.tar.gz $WD/output/ || _die "Failed to move the archive to output folder"
+
+    rm -rf pgsql || _die "Failed to remove the binaries directory" 
+
+    cd $WD/server
+
     # Setup the installer scripts. 
     mkdir -p staging/linux-x64/installer/server || _die "Failed to create a directory for the install scripts"
     cp scripts/linux/getlocales.sh staging/linux-x64/installer/server/getlocales.sh || _die "Failed to copy the getlocales script (scripts/linux/getlocales.sh)"

@@ -187,6 +187,17 @@ _postprocess_server_osx() {
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/osx/doc/" || _die "Failed to install the welcome document"
     cp "$WD/server/resources/enterprisedb.gif" "$WD/server/staging/osx/doc/" || _die "Failed to install the welcome logo"
 
+    #Creating a archive of the binaries
+    mkdir -p $WD/server/staging/osx/pgsql || _die "Failed to create the directory for binaries "
+    cd $WD/server/staging/osx
+    cp -R bin doc include lib pgAdmin3.app share stackbuilder.app pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
+    zip -rq postgresql-$PG_PACKAGE_VERSION-osx-binaries.zip pgsql || _die "Failed to archive the postgresql binaries"
+    mv postgresql-$PG_PACKAGE_VERSION-osx-binaries.zip $WD/output/ || _die "Failed to move the archive to output folder"
+
+    rm -rf pgsql || _die "Failed to remove the binaries directory" 
+
+    cd $WD/server
+
     # Setup the installer scripts. 
     mkdir -p staging/osx/installer/server || _die "Failed to create a directory for the install scripts"
     cp scripts/osx/preinstall.sh staging/osx/installer/server/preinstall.sh || _die "Failed to copy the preinstall script (scripts/osx/preinstall.sh)"
