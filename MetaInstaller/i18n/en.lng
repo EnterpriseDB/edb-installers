@@ -182,3 +182,5 @@ script.command.line.error=The script was called with an invalid command line
 
 config.systempassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the service user account.
 
+locale.error=Locale specified is not supported.
+
