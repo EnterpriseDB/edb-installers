@@ -173,7 +173,7 @@ IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 
 @ECHO Configure PHP
 @REM  --disable-ipv6 --enable-fd-setsize
-@cscript /nologo configure.js --enable-snapshot-build --enable-cli --enable-cgi  --with-openssl=%PGBUILD%\OpenSSL --enable-pdo --with-extra-includes=%PGBUILD%\iconv\include;%PGBUILD%\libxml2\include;%PGBUILD%\libxslt\include;%PGBUILD%\OpenSSL\include;%APACHE_STAGING%\include;%PGBUILD%\zlib\include;%PG_HOME_PATH%\include --with-extra-libs=%PGBUILD%\iconv\lib;%PGBUILD%\libxml2\lib;%PGBUILD%\libxslt\lib;%PGBUILD%\OpenSSL\lib;%APACHE_STAGING%\lib;%PGBUILD%\zlib\lib;%PG_HOME_PATH%\lib --enable-apache=yes --with-apache-includes=%APACHE_STAGING%\include --with-apache-libs=%APACHE_STAGING%\lib --enable-apache2filter --enable-apache2-2filter --enable-apache2handler --enable-apache2-2handler --with-apache-hooks --with-pgsql --with-pdo-pgsql --enable-prefix=%PHP_STAGING% --enable-one-shot --enable-zend-multibyte=yes --enable-cli-win32 --enable-embed --enable-isapi --enable-ftp --without-mysql  --without-msql --without-mysqli --without-pdo-mysql --without-sqlite --without-pdo-sqlite --without-pdo-sqlite-external --with-xsl=SHARED  --enable-zend-multibyte --enable-mbstring --enable-mbregex --enable-shmop  --enable-exif --enable-soap --enable-sockets --with-php-build=%PGBUILD%\phpBuild\win32build
+@cscript /nologo configure.js --enable-snapshot-build --enable-cli --enable-cgi  --with-openssl=%PGBUILD%\OpenSSL --enable-pdo --with-extra-includes=%PGBUILD%\iconv\include;%PGBUILD%\libxml2\include;%PGBUILD%\libxslt\include;%PGBUILD%\OpenSSL\include;%APACHE_STAGING%\include;%PGBUILD%\zlib\include;%PG_HOME_PATH%\include;%PGBUILD%\jpeg\include;%PGBUILD%\libpng\include;%PGBUILD%\freetype\include;%PGBUILD%\gettext\include --with-extra-libs=%PGBUILD%\iconv\lib;%PGBUILD%\libxml2\lib;%PGBUILD%\libxslt\lib;%PGBUILD%\OpenSSL\lib;%APACHE_STAGING%\lib;%PGBUILD%\zlib\lib;%PG_HOME_PATH%\lib;%PGBUILD%\jpeg\lib;%PGBUILD%\libpng\lib;%PGBUILD%\freetype\lib;%PGBUILD%\gettext\lib --enable-apache=yes --with-apache-includes=%APACHE_STAGING%\include --with-apache-libs=%APACHE_STAGING%\lib --enable-apache2filter --enable-apache2-2filter --enable-apache2handler --enable-apache2-2handler --with-apache-hooks --with-pgsql --with-pdo-pgsql --enable-prefix=%PHP_STAGING% --enable-one-shot --enable-zend-multibyte=yes --enable-cli-win32 --enable-embed --enable-isapi --enable-ftp --without-mysql  --without-msql --without-mysqli --without-pdo-mysql --without-sqlite --without-pdo-sqlite --without-pdo-sqlite-external --with-xsl=SHARED  --enable-mbstring --enable-mbregex --enable-shmop  --enable-exif --enable-soap --enable-sockets --with-php-build=%PGBUILD%\phpBuild\win32build --with-gd=SHARED
 
 @IF NOT EXIST "Makefile" @GOTO make-not-created
 @REM Some extension fails with error 'LNK1169: one or more multiply defined symbols'
@@ -190,6 +190,9 @@ move /Y Makefile.tmp Makefile
 cd ..
 IF NOT EXIST php.staging/php.exe @GOTO installation-failed
 
+@COPY "%PGBUILD%\jpeg\bin\jpeg62.dll" php.staging || echo Failed to copy jpeg62.dll && EXIT -1
+@COPY "%PGBUILD%\freetype\bin\freetype6.dll" php.staging || echo Failed to copy freetype6.dll && EXIT -1
+@COPY "%PGBUILD%\libpng\bin\libpng12.dll" php.staging || echo Failed to copy libpng12.dll && EXIT -1
 @COPY "%PGBUILD%\vcredist\vcredist_x86.exe" php.staging || echo Failed to copy VC redist && EXIT -1
 @COPY "%PGBUILD%\OpenSSL\bin\ssleay32.dll" php.staging || echo Failed to copy OpenSSL\bin\ssleay32.dll && EXIT -1
 @COPY "%PGBUILD%\OpenSSL\bin\libeay32.dll" php.staging || echo Failed to copy OpenSSL\bin\libeay32.dll && EXIT -1
@@ -268,8 +271,6 @@ EOT
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/php-staging.zip $WD/ApachePhp/staging/windows/php || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/php-staging.zip)"
     unzip $WD/ApachePhp/staging/windows/php/php-staging.zip -d $WD/ApachePhp/staging/windows/php || _die "Failed to unpack the built source tree ($WD/staging/windows/php-staging.zip)"
     rm $WD/ApachePhp/staging/windows/php/php-staging.zip
-
-    
 
 
 }
