@@ -141,6 +141,26 @@ If objFso.FileExists(strInitdbPass) Then
     objFso.DeleteFile strInitdbPass, True
 End If
 
+' Edit the config files
+' Set the following in postgresql.conf:
+'      listen_addresses = '*'
+'      port = $PORT
+'      log_destination = 'stderr'
+'      logging_collector = on
+Set objConfFile = objFso.OpenTextFile(strDataDir & "\postgresql.conf", ForReading)
+strConfig = objConfFile.ReadAll
+objConfFile.Close
+strConfig = Replace(strConfig, "#listen_addresses = 'localhost'", "listen_addresses = '*'")
+strConfig = Replace(strConfig, "#port = 5432", "port = " & lPort)
+strConfig = Replace(strConfig, "#log_destination = 'stderr'", "log_destination = 'stderr'")
+strConfig = Replace(strConfig, "#logging_collector = off", "logging_collector = on")
+strConfig = Replace(strConfig, "#log_line_prefix = ''", "log_line_prefix = '%%t '")
+Set objConfFile = objFso.OpenTextFile(strDataDir & "\postgresql.conf", ForWriting)
+objConfFile.WriteLine strConfig
+objConfFile.Close
+
+' Secure the data directory
+
 If IsVistaOrNewer() = True Then
     WScript.Echo "Securing data directory (using icacls):"
     iRet = DoCmd("icacls """ & strDataDir & """ /T /grant:r *S-1-5-32-544:M /grant:r """ & strUsername & """:M")
@@ -161,24 +181,6 @@ End If
 if iRet <> 0 Then
     WScript.Echo "Failed to grant 'Domain Admins' access to the data directory (" & strDataDir & ") - probably not on a domain."
 End If
-
-' Edit the config files
-' Set the following in postgresql.conf:
-'      listen_addresses = '*'
-'      port = $PORT
-'      log_destination = 'stderr'
-'      logging_collector = on
-Set objConfFile = objFso.OpenTextFile(strDataDir & "\postgresql.conf", ForReading)
-strConfig = objConfFile.ReadAll
-objConfFile.Close
-strConfig = Replace(strConfig, "#listen_addresses = 'localhost'", "listen_addresses = '*'")
-strConfig = Replace(strConfig, "#port = 5432", "port = " & lPort)
-strConfig = Replace(strConfig, "#log_destination = 'stderr'", "log_destination = 'stderr'")
-strConfig = Replace(strConfig, "#logging_collector = off", "logging_collector = on")
-strConfig = Replace(strConfig, "#log_line_prefix = ''", "log_line_prefix = '%%t '")
-Set objConfFile = objFso.OpenTextFile(strDataDir & "\postgresql.conf", ForWriting)
-objConfFile.WriteLine strConfig
-objConfFile.Close
 
 WScript.Echo "initcluster.vbs ran to completion"
 WScript.Quit iWarn
