@@ -1046,6 +1046,7 @@ include conf\addons\*.conf
           <program>${installdir}/apache/bin/apachectl</program>
           <programArguments>"stop"</programArguments>
           <workingDirectory>${installdir}/apache/bin</workingDirectory>
+          <abortOnError>0</abortOnError>
         </runProgram>
         <!-- Unset values in the ini file -->
         <iniFileSet>

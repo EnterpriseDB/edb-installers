@@ -147,12 +147,12 @@ _build_ApachePhp_osx() {
     for file in $files
     do 
         install_name_tool -change "libpq.5.dylib" "@loader_path/../../php/lib/libpq.5.dylib" $file
-        install_name_tool -change "libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
-        install_name_tool -change "libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" $file
-        install_name_tool -change "libpng12.0.dylib" "@loader_path/../../php/lib/libpng12.0.dylib" $file
-        install_name_tool -change "libjpeg.62.dylib" "@loader_path/../../php/lib/libjpeg.62.dylib" $file
-        install_name_tool -change "libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" $file
-        install_name_tool -change "libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" $file
+        install_name_tool -change "/opt/local/lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
+        install_name_tool -change "/opt/local/lib/libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" $file
+        install_name_tool -change "/opt/local/lib/libpng12.0.dylib" "@loader_path/../../php/lib/libpng12.0.dylib" $file
+        install_name_tool -change "/opt/local/lib/libjpeg.62.dylib" "@loader_path/../../php/lib/libjpeg.62.dylib" $file
+        install_name_tool -change "/usr/lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" $file
+        install_name_tool -change "/usr/local/lib/libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" $file
     done
 
     # Copy in the dependency libraries
