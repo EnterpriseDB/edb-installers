@@ -795,6 +795,13 @@
                     <abortOnError>1</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
                     <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>1</text>
+                            <value>${install_runtimes}</value>
+                        </compareText>
+                    </ruleList>
                 </runProgram>
                 <throwError>
                     <text>${msg(script.command.line.error)}</text>
@@ -2829,6 +2836,17 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
      
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
+
+        <!-- Whether to install runtimes -->
+        <booleanParameter>
+           <name>install_runtimes</name>
+           <description/>
+           <explanation/>
+           <value/>
+           <default>1</default>
+           <ask>0</ask>
+        </booleanParameter> 
+
 
         <!-- Whether to create shortcut menu -->
         <booleanParameter>
