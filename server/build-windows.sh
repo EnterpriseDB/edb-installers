@@ -143,7 +143,7 @@ our \$config = {
     integer_datetimes=>1,               # --enable-integer-datetimes
     nls=>'C:\pgBuild\gettext',        # --enable-nls=<path>
     tcl=>'C:\tcl85',            # --with-tls=<path>
-    perl=>'C:\perl510',             # --with-perl
+    perl=>'C:\perl',             # --with-perl
     python=>'C:\python26',         # --with-python=<path>
     krb5=>'C:\pgBuild\krb5',         # --with-krb5=<path>
     ldap=>1,                # --with-ldap
@@ -190,7 +190,7 @@ use warnings;
     'C:\pgBuild\krb5\bin\i386',
     'C:\pgBuild\libxml2\bin',
     'C:\pgBuild\zlib',
-    'C:\Perl510\Bin',
+    'C:\Perl\Bin',
     'C:\Python26\Bin',
     'C:\Tcl85\Bin',
     'C:\msys\1.0\bin',
