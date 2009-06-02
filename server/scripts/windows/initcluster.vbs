@@ -116,10 +116,10 @@ End If
 Set objNetwork = CreateObject("WScript.Network")
 If IsVistaOrNewer() = True Then
     WScript.Echo "Ensuring we can write to the data directory (using icacls):"
-    iRet = DoCmd("icacls """ & strDataDir & """ /T /C /grant:r """ & objNetwork.Username & """:F /inheritance:r")
+    iRet = DoCmd("icacls """ & strDataDir & """ /T /grant:r """ & objNetwork.Username & """:F")
 Else
     WScript.Echo "Ensuring we can write to the data directory (using cacls):"
-    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /T /G """ & objNetwork.Username & """:F")
+    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /G """ & objNetwork.Username & """:F")
 End If
 if iRet <> 0 Then
     Warn "Failed to ensure the data directory is accessible (" & strDataDir & ")"
@@ -162,24 +162,14 @@ objConfFile.Close
 ' Secure the data directory
 
 If IsVistaOrNewer() = True Then
-    WScript.Echo "Securing data directory (using icacls):"
-    iRet = DoCmd("icacls """ & strDataDir & """ /T /grant:r *S-1-5-32-544:M /grant:r """ & strUsername & """:M")
+    WScript.Echo "Granting service account access to the data directory (using icacls):"
+    iRet = DoCmd("icacls """ & strDataDir & """ /T /C /grant:r """ & strUsername & """:M")
 Else
-    WScript.Echo "Securing data directory (using cacls):"
-    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /T /G Administrators:F """ & strUsername & """:C")
+    WScript.Echo "Granting service account access to the data directory (using cacls):"
+    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /C /G """ & strUsername & """:C")
 End If
 if iRet <> 0 Then
-    Warn "Failed to secure the data directory (" & strDataDir & ")"
-End If
-
-' Attempt to allow Domain Admins access. This may fail if we're not on a domain.
-If IsVistaOrNewer() = True Then
-    iRet = DoCmd("icacls """ & strDataDir & """ /T /grant:r ""Domain Admins"":F")
-Else
-    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /G ""Domain Admins"":F")
-End If
-if iRet <> 0 Then
-    WScript.Echo "Failed to grant 'Domain Admins' access to the data directory (" & strDataDir & ") - probably not on a domain."
+    Warn "Failed to grant service account access to the data directory (" & strDataDir & ")"
 End If
 
 WScript.Echo "initcluster.vbs ran to completion"
