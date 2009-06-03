@@ -39,19 +39,33 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.apache.plist"
         <string>com.edb.launchd.apache</string>
         <key>ProgramArguments</key>
         <array>
-                <string>$INSTALLDIR/apache/bin/apachectl</string>
-                <string>start</string>
+                <string>$INSTALLDIR/apache/bin/httpd</string>
+                <string>-D</string>
+                <string>FOREGROUND</string>
+                <string>-f</string>
+                <string>$INSTALLDIR/apache/conf/httpd.conf</string>
         </array>
         <key>RunAtLoad</key>
         <true/>
-	<key>UserName</key>
+	    <key>UserName</key>
         <string>root</string>
+        <key>KeepAlive</key>
+        <dict>
+             <key>SuccessfulExit</key>
+             <false/>
+        </dict> 
 </dict>
 </plist>
 EOT
 
 # Fixup the permissions on the launchDaemon
 chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.apache.plist" || _warn "Failed to set the ownership of the launchd daemon for apache (/Library/LaunchDaemons/com.edb.launchd.apache.plist)"
+
+# Load the LaunchDaemon
+launchctl load /Library/LaunchDaemons/com.edb.launchd.apache.plist
+
+# Start the apache daemon
+launchctl start com.edb.launchd.apache
 
 echo "$0 ran to completion"
 exit $WARN

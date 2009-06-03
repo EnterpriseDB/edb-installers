@@ -211,7 +211,27 @@
         </compareText>
       </ruleList>
     </actionGroup>
-    <!-- Stopping apache if already started - Linux | MAC  -->
+   <!-- Stopping apache if already started -  MAC  -->
+    <runProgram>
+      <program>launchctl</program>
+      <programArguments>unload /Library/LaunchDaemons/com.edb.launcd.apache.plist</programArguments>
+      <workingDirectory/>
+      <abortOnError>0</abortOnError>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${apache_home}</text>
+          <value/>
+        </compareText>
+      </ruleList>
+    </runProgram>
+   <!-- Stopping apache if already started - Linux  -->
     <runProgram>
       <program>${apache_home}/bin/apachectl</program>
       <programArguments>"stop"</programArguments>
@@ -220,9 +240,9 @@
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
         <compareText>
-          <logic>does_not_equal</logic>
+          <logic>contains</logic>
           <text>${platform_name}</text>
-          <value>windows</value>
+          <value>linux</value>
         </compareText>
         <compareText>
           <logic>does_not_equal</logic>
@@ -840,12 +860,19 @@ include conf\addons\*.conf
           <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
           <workingDirectory>${installdir}/installer/ApachePhp</workingDirectory>
         </runProgram>
-        <!-- Linux | Mac - Starting Apache -->
+        <!-- Linux - Starting Apache -->
         <runProgram>
           <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
           <program>${installdir}/apache/bin/apachectl</program>
           <programArguments>"start"</programArguments>
           <workingDirectory>${installdir}/apache/bin</workingDirectory>
+          <ruleList>
+             <compareText>
+                <logic>contains</logic>
+                <text>${platform_name}</text>
+                <value>linux</value>
+             </compareText>
+          </ruleList>
         </runProgram>
       </actionList>
       <ruleList>
@@ -1037,6 +1064,21 @@ include conf\addons\*.conf
   </postInstallationActionList>
   <!-- preUninstallation actions -->
   <preUninstallationActionList>
+    <!-- Stop Apache | MAC-->
+    <runProgram>
+       <customErrorMessage>${msg(error.uninstall.stop.apache)}</customErrorMessage>
+       <program>launchctl</program>
+       <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.apache.plist</programArguments>
+       <workingDirectory/>
+       <abortOnError>0</abortOnError>
+        <ruleList>
+           <compareText>
+               <logic>equals</logic>
+               <text>${platform_name}</text>
+               <value>osx</value>
+           </compareText>
+        </ruleList> 
+    </runProgram>
     <!-- Linux | Mac actionList -->
     <actionGroup>
       <actionList>
@@ -1047,6 +1089,13 @@ include conf\addons\*.conf
           <programArguments>"stop"</programArguments>
           <workingDirectory>${installdir}/apache/bin</workingDirectory>
           <abortOnError>0</abortOnError>
+          <ruleList>
+              <compareText>
+                  <logic>contains</logic>
+                  <text>${platform_name}</text>
+                  <value>linux</value>
+              </compareText>
+          </ruleList> 
         </runProgram>
         <!-- Unset values in the ini file -->
         <iniFileSet>
