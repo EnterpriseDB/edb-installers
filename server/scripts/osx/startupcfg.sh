@@ -30,67 +30,47 @@ _warn() {
 }
 
 # Configure database startup
-mkdir -p "/Library/StartupItems/postgresql-$VERSION" || _die "Failed to create the startup directory (/Library/StartupItems/postgresql-$VERSION)"
+if [ ! -e /Library/LaunchDaemons ]; then
+    mkdir -p /Library/LaunchDaemons || _die "Failed to create directory for root daemons"
+fi
 
 # Write the plist file
-cat <<EOT > "/Library/StartupItems/postgresql-$VERSION/StartupParameters.plist"
-{
-  Description   = "PostgreSQL $VERSION";
-  Provides      = ("postgresql-$VERSION");
-  Requires      = ("Resolver");
-  Preference    = "Late";
-  Messages =
-  {
-    start = "Starting PostgreSQL $VERSION";
-    stop  = "Stopping PostgreSQL $VERSION";
-  };
-}
+cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.postgresql-$VERSION.plist"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
+        "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Disabled</key>
+    <false/>
+        <key>Label</key>
+        <string>com.edb.launchd.postgresql-$VERSION</string>
+        <key>ProgramArguments</key>
+        <array>
+                <string>$INSTALLDIR/bin/postmaster</string>
+                <string>-D$DATADIR</string>
+        </array>
+        <key>RunAtLoad</key>
+        <true/>
+    <key>UserName</key>
+    <string>$USERNAME</string>
+    <key>KeepAlive</key>
+    <dict>
+         <key>SuccessfulExit</key>
+         <false/>
+    </dict>
+</dict>
+</plist>
 EOT
 
-# Write the startup script
-cat <<EOT > "/Library/StartupItems/postgresql-$VERSION/postgresql-$VERSION"
-#!/bin/sh
+# Fixup the permissions on the launchDaemon
+chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.postgresql-$VERSION.plist" || _warn "Failed to set the ownership of the launchd daemon for pgAgent (/Library/LaunchDaemons/com.edb.launchd.postgresql-$VERSION.plist)"
 
-. /etc/rc.common
+# Load the LaunchAgent
+launchctl load /Library/LaunchDaemons/com.edb.launchd.postgresql-$VERSION.plist
 
-# Postgres Plus Service script for OS/X
-
-StartService ()
-{
-	ConsoleMessage "Starting PostgreSQL $VERSION"
-	su - $USERNAME -c "$INSTALLDIR/bin/pg_ctl -w start -D \"$DATADIR\" -l \"$DATADIR/pg_log/startup.log\""
-	
-	if [ -e "$DATADIR/postmaster.pid" ]
-	then
-		ConsoleMessage "PostgreSQL $VERSION started successfully"
-	else
-		ConsoleMessage "PostgreSQL $VERSION did not start in a timely fashion, please see $DATADIR/pg_log/startup.log for details"
-	fi
-}
-
-StopService()
-{
-	ConsoleMessage "Stopping PostgreSQL $VERSION"
-	su - $USERNAME -c "$INSTALLDIR/bin/pg_ctl stop -m fast -w -D \"$DATADIR\""
-}
-
-
-RestartService ()
-{
-    StopService
-    sleep 2
-    StartService
-}
-
-
-RunService "\$1"
-EOT
-
-# Fixup the permissions on the StartupItems
-chown -R root:wheel "/Library/StartupItems/postgresql-$VERSION/" || _warn "Failed to set the ownership of the startup item (/Library/StartupItems/postgresql-$VERSION/)"
-chmod 0755 "/Library/StartupItems/postgresql-$VERSION/" || _warn "Failed to set the permissions on the startup item (/Library/StartupItems/postgresql-$VERSION/)"
-chmod 0755 "/Library/StartupItems/postgresql-$VERSION/postgresql-$VERSION" || _warn "Failed to set the permissions on the startup item (/Library/StartupItems/postgresql-$VERSION/postgresql-$VERSION)"
-chmod 0644 "/Library/StartupItems/postgresql-$VERSION/StartupParameters.plist" || _warn "Failed to set the permissions on the startup item (/Library/StartupItems/postgresql-$VERSION/StartupParameters.plist)"
+# Start the server
+launchctl start com.edb.launchd.postgresql-$VERSION
 
 echo "$0 ran to completion"
 exit $WARN

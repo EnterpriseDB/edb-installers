@@ -1208,8 +1208,8 @@
 
         <!-- MAC: Stop the server -->
         <runProgram>
-            <program>/sbin/SystemStarter</program>
-            <programArguments>stop postgresql-${product_version}</programArguments>
+            <program>launchctl</program>
+            <programArguments>stop com.edb.launchd.postgresql-${product_version}</programArguments>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -1218,12 +1218,9 @@
                     <text>${platform_name}</text>
                     <value>osx</value>
                 </compareText>
-                <fileExists>
-                    <path>/Library/StartupItems/postgresql-${product_version}/postgresql-${product_version}</path>
-                </fileExists>
             </ruleList>
         </runProgram>
-
+ 
         <!-- LINUX: Stop the server -->
         <runProgram>
             <program>/etc/init.d/postgresql-${product_version}</program>
@@ -1829,9 +1826,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
                 <compareText>
-                    <logic>does_not_equal</logic>
+                    <logic>contains</logic>
                     <text>${platform_name}</text>
-                    <value>windows</value>
+                    <value>linux</value>
                 </compareText>
             </ruleList>
         </runProgram>
@@ -2295,21 +2292,6 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
     <!-- Preuninstallation actions -->
     <preUninstallationActionList>
         
-        <!-- MAC: Stop the server -->
-        <runProgram>
-            <program>/sbin/SystemStarter</program>
-            <programArguments>stop postgresql-${product_version}</programArguments>
-            <abortOnError>0</abortOnError>
-            <showMessageOnError>1</showMessageOnError>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </runProgram>
-        
         <!-- LINUX: Stop the server -->
         <runProgram>
             <program>/etc/init.d/postgresql-${product_version}</program>
@@ -2420,17 +2402,27 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
              </ruleList>
         </actionGroup>
  
-        <!-- MAC: Remove the startup item -->
-        <deleteFile>
-            <path>/Library/StartupItems/postgresql-${product_version}</path>
-            <ruleList>
+        <!-- MAC: Unload/Stop the Server LaunchDaemon --> 
+        <actionGroup>
+           <actionList>
+                <runProgram>
+                    <program>launchctl</program>
+                    <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.postgresql-${product_version}.plist</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+                <deleteFile>
+                    <path>/Library/LaunchDaemons/com.edb.launchd.postgresql-${product_version}.plist</path>
+                </deleteFile>
+           </actionList> 
+           <ruleList>
                 <compareText>
                     <logic>equals</logic>
                     <text>${platform_name}</text>
                     <value>osx</value>
                 </compareText>
             </ruleList>
-        </deleteFile>
+        </actionGroup> 
         
         <!-- LINUX: Remove the startup item -->
         <actionGroup>

@@ -212,8 +212,6 @@ _postprocess_server_osx() {
     chmod ugo+x staging/osx/installer/server/createshortcuts.sh
     cp scripts/osx/startupcfg.sh staging/osx/installer/server/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/osx/startupcfg.sh)"
     chmod ugo+x staging/osx/installer/server/startupcfg.sh
-    cp scripts/osx/startserver.sh staging/osx/installer/server/startserver.sh || _die "Failed to copy the startserver script (scripts/osx/startserver.sh)"
-    chmod ugo+x staging/osx/installer/server/startserver.sh
     cp scripts/osx/loadmodules.sh staging/osx/installer/server/loadmodules.sh || _die "Failed to copy the loadmodules script (scripts/osx/loadmodules.sh)"
     chmod ugo+x staging/osx/installer/server/loadmodules.sh
     
