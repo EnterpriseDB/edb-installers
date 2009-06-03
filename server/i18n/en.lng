@@ -73,6 +73,8 @@ config.locale.explanation=Select the locale to be used by the new database clust
 config.locale.no.locale=You must select a locale to continue.
 
 plpgsql.install.description=Install pl/pgsql in template1 database?
+install.runtimes.description=Specifies whether or not install the Microsoft Visual C++ runtimes before the installation proceeds.
+create.shortcut.description=Specifies whether or not menu shortcuts should be created.
 
 info.datadirectory.user.kept=The data directory (${datadir}) and service user account (${supername}) have not been removed.
 locale.error=Locale specified is not supported.
