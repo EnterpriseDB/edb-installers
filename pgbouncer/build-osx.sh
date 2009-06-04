@@ -45,7 +45,7 @@ _prep_pgbouncer_osx() {
 }
 
 ################################################################################
-# PG Build
+# Build
 ################################################################################
 
 _build_pgbouncer_osx() {
@@ -54,20 +54,20 @@ _build_pgbouncer_osx() {
 
     # There is no change in the config.h for ppc and i386, thus configuring only once.
 
-    CFLAGS="$PG_ARCH_OSX_FLAGS -arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer || _die "Failed to configure libevent"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer || _die "Failed to configure libevent"
 
-    CFLAGS="$PG_ARCH_OSX_FLAGS -arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 make || _die "Failed to build libevent"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 make || _die "Failed to build libevent"
     make install || _die "Failed to install libevent"
 
 
     cd $PG_PATH_OSX/pgbouncer/source/pgbouncer.osx/; 
-    CFLAGS="$PG_ARCH_OSX_FLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer || _die "Failed to configure pgbouncer"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" LDFLAGS="-arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer || _die "Failed to configure pgbouncer"
     mv include/config.h include/config_ppc.h || _die "Failed to rename config.h"
     
-    CFLAGS="$PG_ARCH_OSX_FLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer || _die "Failed to configure pgbouncer"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer || _die "Failed to configure pgbouncer"
     mv include/config.h include/config_i386.h || _die "Failed to rename config.h"
 
-    CFLAGS="$PG_ARCH_OSX_FLAGS -arch i386 -arch ppc"  MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer || _die "Failed to configure pgbouncer"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" LDFLAGS="-arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer || _die "Failed to configure pgbouncer"
 
     echo "#ifdef __BIG_ENDIAN__" > include/config.h
     echo "#include \"config_ppc.h\"" >> include/config.h
@@ -75,7 +75,7 @@ _build_pgbouncer_osx() {
     echo "#include \"config_i386.h\"" >> include/config.h
     echo "#endif" >> include/config.h
     
-    CFLAGS="$PG_ARCH_OSX_FLAGS -arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 make || _die "Failed to build pgbouncer"
+    MACOSX_DEPLOYMENT_TARGET=10.4 make || _die "Failed to build pgbouncer"
     make install || _die "Failed to install pgbouncer"
 
     cp -R $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/share/doc/pgbouncer/pgbouncer.ini $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/share || _die "Failed to copy the ini file to share directory"
