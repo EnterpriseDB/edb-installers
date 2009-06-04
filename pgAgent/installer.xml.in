@@ -232,8 +232,8 @@
     
     <!-- MAC: Stop the pgAgent Service -->
     <runProgram>
-      <program>${installdir}/installer/pgAgent/pgagentctl.sh</program>
-      <programArguments>stop</programArguments>
+      <program>launchctl</program>
+      <programArguments>stop com.edb.launchd.pgagent</programArguments>
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -532,20 +532,6 @@
       </actionList>
     </actionGroup>
     <substitute>
-      <files>${installdir}/installer/pgAgent/pgagentctl.sh</files>
-      <substitutionList>
-        <substitution pattern="INSTALL_DIR" value="${installdir}"/>
-        <substitution pattern="PG_HOST" value="${pghost}"/>
-        <substitution pattern="PG_PORT" value="${pgport}"/>
-        <substitution pattern="PG_USER" value="${pguser}"/>
-        <substitution pattern="SYSTEM_USER" value="${systemuser}"/>
-        <substitution pattern="PG_DATABASE" value="${pgdbname}"/>
-      </substitutionList>
-      <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="osx"/>
-      </ruleList>
-    </substitute>
-    <substitute>
       <files>${installdir}/installer/pgAgent/pgpass</files>
       <substitutionList>
         <substitution pattern="INSTALL_DIR" value="${installdir}"/>
@@ -624,23 +610,7 @@
         </runProgram>
       </actionList>
       <ruleList>
-        <compareText logic="contains" text="${platform_name}" value="linux"/>
-      </ruleList>
-    </actionGroup>
-    <actionGroup>
-      <actionList>
-        <runProgram>
-          <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
-          <program>${installdir}/installer/pgAgent/startupcfg.sh</program>
-          <programArguments>"${pghost}" "${pgport}" "${pguser}" "${systemuser}" "${installdir}"</programArguments>
-          <workingDirectory>${installdir}/installer/pgAgent</workingDirectory>
-          <progressText>Configure pgAgent service</progressText>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-        </runProgram>
-      </actionList>
-      <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="osx"/>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
       </ruleList>
     </actionGroup>
    
@@ -675,8 +645,8 @@
 
     <!-- MAC : Start the pgAgent service -->
     <runProgram>
-      <program>${installdir}/installer/pgAgent/pgagentctl.sh</program>
-      <programArguments>start &amp;</programArguments>
+      <program>launchctl</program>
+      <programArguments>start com.edb.launchd.pgagent</programArguments>
       <abortOnError>0</abortOnError>
       <showMessageOnError>1</showMessageOnError>
       <customErrorMessage>${msg(error.start.pgagent)}</customErrorMessage>
@@ -742,8 +712,8 @@
         <!-- MAC: Stop the pgAgent Service -->
         <runProgram>
           <customErrorMessage>${msg(error.uninstall.pgagent)}</customErrorMessage>
-          <program>${installdir}/installer/pgAgent/pgagentctl.sh</program>
-          <programArguments>stop</programArguments>
+          <program>launchctl</program>
+          <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgagent.plist</programArguments>
           <abortOnError>0</abortOnError>
           <showMessageOnError>1</showMessageOnError>
         </runProgram>

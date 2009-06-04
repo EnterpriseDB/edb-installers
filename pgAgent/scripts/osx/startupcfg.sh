@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 5 ]; 
+if [ $# -ne 6 ]; 
 then
-echo "Usage: $0 <PG_HOST> <PG_PORT> <PG_USER> <SYSTEM_USER> <Install dir> "
+echo "Usage: $0 <PG_HOST> <PG_PORT> <PG_USER> <SYSTEM_USER> <Install dir> <PG_DATABASE>"
     exit 127
 fi
 
@@ -12,6 +12,7 @@ PG_PORT=$2
 PG_USER=$3
 SYSTEM_USER=$4
 INSTALL_DIR=$5
+PG_DATABASE=$6
 USER_HOME_DIR=`su $SYSTEM_USER -c "echo ~"`
 
 if [ ! -f $USER_HOME_DIR ]; then
@@ -61,19 +62,34 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pgagent.plist"
         <string>com.edb.launchd.pgagent</string>
         <key>ProgramArguments</key>
         <array>
-                <string>$INSTALL_DIR/installer/pgAgent/pgagentctl.sh</string>
-                <string>start</string>
+                <string>$INSTALL_DIR/bin/pgagent</string>
+                <string>-f</string>
+                <string>-l1</string>
+                <string>-s</string>
+                <string>/var/log/pgagent.log</string>
+                <string>host=$PG_HOST</string> 
+                <string>port=$PG_PORT</string> 
+                <string>dbname=$PG_DATABASE</string> 
+                <string>user=$PG_USER</string> 
         </array>
         <key>RunAtLoad</key>
         <true/>
 	<key>UserName</key>
-        <string>root</string>
+    <string>$SYSTEM_USER</string>
+    <key>KeepAlive</key>
+    <dict>
+         <key>SuccessfulExit</key>
+         <false/>
+    </dict>
 </dict>
 </plist>
 EOT
 
 # Fixup the permissions on the launchDaemon
 chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.pgagent.plist" || _warn "Failed to set the ownership of the launchd daemon for pgAgent (/Library/LaunchDaemons/com.edb.launchd.pgagent.plist)"
+
+# Load the LaunchDaemon
+launchctl load /Library/LaunchDaemons/com.edb.launchd.pgagent.plist
 
 echo "$0 ran to completion"
 exit $WARN
