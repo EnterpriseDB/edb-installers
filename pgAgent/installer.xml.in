@@ -233,7 +233,7 @@
     <!-- MAC: Stop the pgAgent Service -->
     <runProgram>
       <program>launchctl</program>
-      <programArguments>stop com.edb.launchd.pgagent</programArguments>
+      <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgagent.plist</programArguments>
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
