@@ -307,8 +307,8 @@
                 </stopWindowsService>  
                 <!-- Mac: Stop the pgbouncer service -->    
                 <runProgram>
-                    <program>${installdir}/installer/pgbouncer/pgbouncerctl.sh</program>
-                    <programArguments>stop</programArguments>
+                    <program>launchctl</program>
+                    <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist</programArguments>
                     <abortOnError>0</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
                     <ruleList>
@@ -372,27 +372,6 @@
                </compareText>
            </ruleList>
        </createDirectory>
-
-       <substitute>
-           <files>${installdir}/installer/pgbouncer/pgbouncerctl.sh</files>
-           <substitutionList>
-               <substitution>
-                   <pattern>INSTALL_DIR</pattern>
-                   <value>${installdir}</value>
-               </substitution>
-               <substitution>
-                   <pattern>SYSTEM_USER</pattern>
-                   <value>${system_user}</value>
-               </substitution>
-           </substitutionList>
-           <ruleList>
-               <compareText>
-                   <text>${platform_name}</text>
-                   <logic>equals</logic>
-                   <value>osx</value>
-               </compareText>
-           </ruleList>
-        </substitute>
 
         <!-- Perform substitution in the config and ctl files -->
         <actionGroup>
@@ -638,8 +617,8 @@
 
         <!-- MAC: Start the pgbouncer service -->    
         <runProgram>
-            <program>${installdir}/installer/pgbouncer/pgbouncerctl.sh</program>
-            <programArguments>start</programArguments>
+            <program>launchctl</program>
+            <programArguments>start com.edb.launchd.pgbouncer</programArguments>
             <abortOnError>0</abortOnError>
             <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
             <ruleList>
@@ -674,8 +653,8 @@
 
         <!-- MAC: Stop the pgbouncer service -->    
          <runProgram>
-            <program>${installdir}/installer/pgbouncer/pgbouncerctl.sh</program>
-            <programArguments>stop</programArguments>
+            <program>launchctl</program>
+            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist</programArguments>
             <abortOnError>0</abortOnError>
             <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
             <ruleList>

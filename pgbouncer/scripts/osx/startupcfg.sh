@@ -39,13 +39,18 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist"
         <string>com.edb.launchd.pgbouncer</string>
         <key>ProgramArguments</key>
         <array>
-                <string>$INSTALL_DIR/installer/pgbouncer/pgbouncerctl.sh</string>
-                <string>start</string>
+                <string>$INSTALL_DIR/bin/pgbouncer</string>
+                <string>$INSTALL_DIR/share/pgbouncer.ini</string>
         </array>
         <key>RunAtLoad</key>
         <true/>
-	<key>UserName</key>
-        <string>root</string>
+	    <key>UserName</key>
+        <string>$SYSTEM_USER</string>
+        <key>KeepAlive</key>
+        <dict>
+              <key>SuccessfulExit</key>
+              <false/>
+        </dict>  
 </dict>
 </plist>
 EOT
@@ -57,6 +62,9 @@ chown $SYSTEM_USER /var/log/pgbouncer
 
 # Fixup the permissions on the launchDaemon
 chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist" || _warn "Failed to set the ownership of the launchd daemon for pgbouncer (/Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist)"
+
+# Load the LaunchDaemon
+launchctl load /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist
 
 echo "$0 ran to completion"
 exit $WARN
