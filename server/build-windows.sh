@@ -151,7 +151,8 @@ our \$config = {
     xml=>'C:\pgBuild\libxml2',
     xslt=>'C:\pgBuild\libxslt',
     iconv=>'C:\pgBuild\iconv',
-    zlib=>'C:\pgBuild\zlib'        # --with-zlib=<path>
+    zlib=>'C:\pgBuild\zlib',        # --with-zlib=<path>
+    uuid=>'C:\pgBuild\uuid-ossp'       # --with-uuid-ossp
 };
 
 1;
