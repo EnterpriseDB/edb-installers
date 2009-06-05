@@ -8928,7 +8928,7 @@ Windows scripts -->
                             <actionList>
 	<!-- Running the Script to validate the PostgreSQL Server Details -->
 	<setInstallerVariableFromScriptOutput>
-                                    <customErrorMessage>${msg(pgplus.details.error)}</customErrorMessage>
+                                    <customErrorMessage>${program_stderr}</customErrorMessage>
                                     <exec>${system_temp_directory}/postgresplus/check-connection.sh</exec>
                                     <execArgs>${pghost} ${serverport} ${supername} "${superpassword}" "${installdir}"</execArgs>
                                     <name>connection</name>

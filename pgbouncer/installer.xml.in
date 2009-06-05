@@ -1092,7 +1092,7 @@
               <execArgs>-l ${pgdbname}</execArgs>
               <name>connection</name>
               <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
-              <customErrorMessage>${msg(pg.details.error)}</customErrorMessage>
+              <customErrorMessage>${program_stderr}</customErrorMessage>
               <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
               </ruleList>
@@ -1102,7 +1102,7 @@
               <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
               <name>connection</name>
               <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
-              <customErrorMessage>${msg(pg.details.error)}</customErrorMessage>
+              <customErrorMessage>${program_stderr}</customErrorMessage>
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
               </ruleList>

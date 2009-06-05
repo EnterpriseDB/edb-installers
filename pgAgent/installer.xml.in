@@ -1375,7 +1375,7 @@
               <execArgs>-l ${pgdbname}</execArgs>
               <name>connection</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
-              <customErrorMessage>${msg(pg.details.error)}</customErrorMessage>
+              <customErrorMessage>${program_stderr}</customErrorMessage>
               <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
               </ruleList>
@@ -1385,7 +1385,7 @@
               <execArgs>"CHECK_CONNECTION" "${system_temp_directory}\${product_fullname}\bin\psql.exe" "${pgdbname}"</execArgs>
               <name>connection</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
-              <customErrorMessage>${msg(pg.details.error)}</customErrorMessage>
+              <customErrorMessage>${program_stderr}</customErrorMessage>
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
               </ruleList>

@@ -1705,7 +1705,7 @@
                             <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
-                            <customErrorMessage>${msg(pgplus.details.error)}</customErrorMessage>
+                            <customErrorMessage>${program_stderr}</customErrorMessage>
                         </setInstallerVariableFromScriptOutput>
                     </actionList>
                     <ruleList>
@@ -1725,7 +1725,7 @@
                             <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <customErrorMessage>${msg(pgplus.details.error)}</customErrorMessage>
+                            <customErrorMessage>${program_stderr}</customErrorMessage>
                         </setInstallerVariableFromScriptOutput>
                     </actionList>
                     <ruleList>

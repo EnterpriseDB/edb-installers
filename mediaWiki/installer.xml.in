@@ -1565,7 +1565,7 @@
                     <actionList>
                         <setInstallerVariable name="pgdatabase" value="postgres" /> 
                         <showWarning>
-                             <text>${msg(pgplus.details.error)}</text>
+                             <text>${program_stderr}</text>
                         </showWarning> 
                         <setInstallerVariable>
                              <name>next_page</name>
