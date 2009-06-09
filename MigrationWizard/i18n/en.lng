@@ -22,7 +22,7 @@ launch.migrationwizard.windows=Do you want to launch Migration wizard now?
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 
-Installer.Installation.Finished.Title=Completing the EnterpriseDB Migration Wizard Setup Wizard
+Installer.Installation.Finished.Title=Completing the EnterpriseDB Migration Wizard Setup.
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of enterprise-class products and services based on PostgreSQL, the world's most advanced open source database.
 
