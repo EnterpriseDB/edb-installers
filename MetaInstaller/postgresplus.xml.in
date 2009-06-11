@@ -50,25 +50,97 @@
       </setInstallerVariable>
     </preBuildActionList>
 
+    <preShowHelpActionList>
+       <!-- Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/Library/PostgreSQL/${product_version}</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}/PostgreSQL/${product_version}</value>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}/PostgreSQL/${product_version}</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
 
+        <!-- Get a default port number - ideally 5432 -->
+        <getFreePort>
+            <variable>defaultport</variable>
+            <initialPort>5432</initialPort>
+            <finalPort>65535</finalPort>
+        </getFreePort>
+        <!-- Set the default password, to be used only in unnattended mode -->
+        <setInstallerVariable>
+            <name>defaultpassword</name>
+            <value>postgres</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+            </ruleList>
+
+        </setInstallerVariable>
+        <setInstallerVariable>
+            <name>defaultpassword</name>
+            <value></value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+       
+    </preShowHelpActionList> 
 
     <initializationActionList>
 	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
 	<throwError>
-            <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
-            <text>Unknown Error</text>
-            <ruleList>
-                <platformTest type="linux-x64"/>
+        <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
+        <text>Unknown Error</text>
+        <ruleList>
+            <platformTest type="linux-x64"/>
                 <compareText text="${originalplatform}" value="linux-x32">
-                    <logic>equals</logic>
+                   <logic>equals</logic>
                 </compareText>
-            </ruleList>
-        </throwError>
+        </ruleList>
+    </throwError>
 
 	<!-- Set the pghost varaible to localhost -->
 	<setInstallerVariable name="pghost" value="localhost">
-            <persist>0</persist>
-        </setInstallerVariable>
+        <persist>0</persist>
+    </setInstallerVariable>
 
 	<!-- Set the default values for pgAgent -->
     	<setInstallerVariable name="defaultpghost" value="localhost"/>
@@ -2378,7 +2450,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux.bin</program>
-            <programArguments>--mode unattended --installdir ${installdir} --datadir ${datadir} --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir} --datadir ${datadir} --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing Database Server ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2405,7 +2477,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</program>
-            <programArguments>--mode unattended --installdir ${installdir} --datadir ${datadir} --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir} --datadir ${datadir} --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing Database Server ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2466,7 +2538,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux.bin</program>
-            <programArguments>--mode unattended --prefix "${installdir}" --superpassword ${superpassword} --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --prefix "${installdir}" --superpassword ${superpassword} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing Database Server ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2493,7 +2565,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</program>
-            <programArguments>--mode unattended --prefix "${installdir}" --superpassword ${superpassword} --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --prefix "${installdir}" --superpassword ${superpassword} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing Database Server ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2546,7 +2618,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux.bin</program>
-            <programArguments>--mode unattended --installdir ${installdir} --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing Slony ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2568,7 +2640,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux-x64.bin</program>
-            <programArguments>--mode unattended --installdir ${installdir} --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing Slony ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2605,7 +2677,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux.bin</program>
-            <programArguments>--mode unattended --installdir ${installdir}/pgJDBC --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir}/pgJDBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing pgJDBC ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2627,7 +2699,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux-x64.bin</program>
-            <programArguments>--mode unattended --installdir ${installdir}/pgJDBC --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir}/pgJDBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing pgJDBC ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2664,7 +2736,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux.bin</program>
-            <programArguments>--mode unattended --installdir ${installdir}/psqlODBC --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir}/psqlODBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing psqlODBC ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2686,7 +2758,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux-x64.bin</program>
-            <programArguments>--mode unattended --installdir ${installdir}/psqlODBC --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir}/psqlODBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing psqlODBC ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2723,7 +2795,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux.bin</program>
-            <programArguments>--mode unattended --installdir ${installdir} --pgpassword ${superpassword} --pgport ${serverport} --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir} --pgpassword ${superpassword} --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing PostGIS ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2750,7 +2822,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-x64.bin</program>
-            <programArguments>--mode unattended --installdir ${installdir} --pgpassword ${superpassword} --pgport ${serverport} --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir} --pgpassword ${superpassword} --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing PostGIS ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2776,7 +2848,7 @@
 	<!--<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux.bin</program>
-            <programArguments>mode unattended prefix "${installdir}" pgpassword ${superpassword} branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>mode unattended prefix "${installdir}" pgpassword ${superpassword} branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing PostGIS ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -2803,7 +2875,7 @@
 	<!--<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-x64.bin</program>
-            <programArguments>mode unattended prefix "${installdir}" pgpassword ${superpassword} branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>mode unattended prefix "${installdir}" pgpassword ${superpassword} branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing PostGIS ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3065,7 +3137,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}\postgresplus\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
-            <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing Database Server ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3122,7 +3194,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}\postgresplus\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
-            <programArguments>--mode unattended --prefix "${installdir}" --superpassword ${superpassword} --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --prefix "${installdir}" --superpassword ${superpassword} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing Database Server ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3176,7 +3248,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}\postgresplus\slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-windows.exe</program>
-            <programArguments>--mode unattended --prefix "${installdir}" --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --prefix "${installdir}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing Slony ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3213,7 +3285,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}\postgresplus\pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-windows.exe</program>
-            <programArguments>--mode unattended --prefix "${installdir}\pgJDBC" --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --prefix "${installdir}\pgJDBC" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing pgJDBC ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3250,7 +3322,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}\postgresplus\psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-windows.exe</program>
-            <programArguments>--mode unattended --prefix "${installdir}\psqlODBC" --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --prefix "${installdir}\psqlODBC" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing psqlODBC ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3288,7 +3360,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}\postgresplus\npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-windows.exe</program>
-            <programArguments>--mode unattended --prefix "${installdir}\Npgsql" --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --prefix "${installdir}\Npgsql" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing NpgSQL ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3325,7 +3397,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}\postgresplus\postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-windows.exe</program>
-            <programArguments>--mode unattended --prefix "${installdir}" --pgpassword ${superpassword} --pgport ${serverport} --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --prefix "${installdir}" --pgpassword ${superpassword} --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing PostGIS ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3433,7 +3505,7 @@
 	<!--<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}\postgresplus\postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-windows.exe</program>
-            <programArguments>mode unattended prefix "${installdir}" pgpassword ${superpassword} branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>mode unattended prefix "${installdir}" pgpassword ${superpassword} branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing PostGIS ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3525,7 +3597,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-osx.app/Contents/MacOS/installbuilder.sh</program>
-            <programArguments>--mode unattended --installdir ${installdir} --datadir ${datadir} --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir} --datadir ${datadir} --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing Database Server ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3583,7 +3655,7 @@
 	<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-osx.app/Contents/MacOS/installbuilder.sh</program>
-            <programArguments>--mode unattended --prefix "${installdir}" --superpassword ${superpassword} --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --prefix "${installdir}" --superpassword ${superpassword} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing Database Server ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3637,7 +3709,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-osx.app/Contents/MacOS/installbuilder.sh</program>
-            <programArguments>--mode unattended --installdir ${installdir} --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing Slony ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3674,7 +3746,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-osx.app/Contents/MacOS/installbuilder.sh</program>
-            <programArguments>--mode unattended --installdir ${installdir}/pgJDBC --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir}/pgJDBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing pgJDBC ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3711,7 +3783,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/installbuilder.sh</program>
-            <programArguments>--mode unattended --installdir ${installdir}/psqlODBC --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir}/psqlODBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing psqlODBC ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3748,7 +3820,7 @@
         <runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-osx.app/Contents/MacOS/installbuilder.sh</program>
-            <programArguments>--mode unattended --installdir ${installdir} --pgpassword ${superpassword} --pgport ${serverport} --branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>--mode unattended --installdir ${installdir} --pgpassword ${superpassword} --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing PostGIS ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -3774,7 +3846,7 @@
 	<!--<runProgram>
             <abortOnError>0</abortOnError>
             <program>${system_temp_directory}/postgresplus/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-osx.app/Contents/MacOS/installbuilder.sh</program>
-            <programArguments>mode unattended prefix "${installdir}" pgpassword ${superpassword} branding "Postgres Plus Community Server ${product_version}"</programArguments>
+            <programArguments>mode unattended prefix "${installdir}" pgpassword ${superpassword} branding "Postgres Plus Standard Server ${product_version}"</programArguments>
             <progressText>Installing PostGIS ... </progressText>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -4297,8 +4369,6 @@
             </ruleList>
         </runProgram>
 
-
-
         <deleteFile>
             <path>${system_temp_directory}/postgresplus/dynaTune.properties</path>
         </deleteFile>
@@ -4314,7 +4384,7 @@
          <runProgram>
             <!-- MAC: Run stackbuilder -->
             <program>open</program>
-            <programArguments>"/Applications/Postgres Plus Community Server ${product_version}/Application Stack Builder.app"</programArguments>
+            <programArguments>"/Applications/Postgres Plus Standard Server ${product_version}/Application Stack Builder.app"</programArguments>
             <progressText>${msg(progress.text.run.stackbuilder)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -6583,6 +6653,29 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <showWarning>
+                            <text>${msg(error.install.directory.invalid.linux)}</text>
+                        </showWarning>
+                        <setInstallerVariable name="next_page" value="installdir">
+                            <persist>1</persist>
+                        </setInstallerVariable>
+                    </actionList>
+                    <ruleList>
+                        <regExMatch>
+                            <logic>matches</logic>
+                            <pattern>^/+(usr)?$</pattern>
+                            <text>${installdir}</text>
+                        </regExMatch>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
 
 	<!-- WIN: Always check if the installation directory path looks valid -->
 	<actionGroup>

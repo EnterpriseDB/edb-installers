@@ -18,6 +18,7 @@ pgplus.ws.error=Connection to the WebService failed. Please re-check the interne
 pgplus.modify.error=Error in modifying postgresql.conf
 
 error.install.directory.invalid=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
+error.install.directory.invalid.linux=The installation directory cannot not be '/' or '/usr'.
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 error.data.directory.invalid=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.', and '_', and must be writable.

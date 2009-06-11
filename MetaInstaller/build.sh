@@ -34,7 +34,7 @@ PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
 
 _prep_metainstaller() {
 
-    if [ -ne $WD/MetaInstaller/source ];
+    if [ ! -e $WD/MetaInstaller/source ];
     then
       mkdir -p $WD/MetaInstaller/source
     fi
