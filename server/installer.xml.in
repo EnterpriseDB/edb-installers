@@ -1123,6 +1123,11 @@
                 </compareText>
                <compareText>
                    <text>${locale}</text>
+                   <value>DEFAULT</value>
+                   <logic>does_not_equal</logic>
+               </compareText>
+               <compareText>
+                   <text>${locale}</text>
                    <value/>
                    <logic>does_not_equal</logic>
                </compareText>
