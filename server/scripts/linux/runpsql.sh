@@ -18,15 +18,15 @@ validate_port()
   nodigits=`echo $port | sed 's/[[:digit:]]//g'`
   
   if [ ! -z $nodigits ] ; then
-       echo "Port specified must be an integer." 
+       echo "Invalid port specified." 
        return 1
   fi
   
-  if [ "$port" -lt 0 ] ; then
+  if [ "$port" -le 0 ] ; then
        echo "Port specified must be greater than 0." 
        return 1
   fi
-  if [ "$port" -gt 65535 ] ; then
+  if [ "$port" -ge 65535 ] ; then
        echo "Port specified must be less than 65535." 
        return 1
   fi
