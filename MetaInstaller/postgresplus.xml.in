@@ -10,6 +10,7 @@
   <preUninstallationScriptArguments>${uninstall_dbserver1} ${uninstall_slony1} ${uninstall_pgJdbc1} ${uninstall_postgis1} ${uninstall_psqlOdbc1} ${uninstall_pgbouncer1} ${uninstall_pgmemcache1} ${uninstall_pgagent1} ${installdir}</preUninstallationScriptArguments>
   <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
   <outputDirectory>../output</outputDirectory>
+  <vendor>EnterpriseDB</vendor>
 
 
   <platformOptionsList>
