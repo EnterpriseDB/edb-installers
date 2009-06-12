@@ -150,6 +150,17 @@
 
     <!-- Set the default system password, to be used only in unnattended mode -->
     <setInstallerVariable name="defaultsyspassword" value=""/>
+    <setInstallerVariable name="schema" value="install">
+      <ruleList>
+        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+      </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="showAuthenticateScreen" value="0">
+      <ruleList>
+        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+      </ruleList>
+    </setInstallerVariable>
+
     <setInstallerVariable name="defaultsyspassword" value="postgres">
       <ruleList>
         <compareText logic="equals" text="${installer_ui}" value="unattended"/>
@@ -169,13 +180,6 @@
       </ruleList>
     </throwError>
 
-    <!-- Set the pghost varaible to localhost -->
-    <!--<setInstallerVariable name="pghost" value="localhost">
-            <persist>0</persist>
-        </setInstallerVariable>-->
-
-
-
     <setInstallerVariable>
       <name>noComponentSelected</name>
       <persist>1</persist>
@@ -188,13 +192,11 @@
       <value>0</value>
     </setInstallerVariable>
 
-
     <setInstallerVariable>
       <name>supername</name>
       <persist>1</persist>
       <value>postgres</value>
     </setInstallerVariable>
-
 
     <setInstallerVariable>
       <name>dbserver_guid</name>
@@ -250,7 +252,6 @@
         </compareText>
       </ruleList>
     </setInstallerVariable>
-
 
     <setInstallerVariable>
       <name>defaultpassword</name>
@@ -351,7 +352,6 @@
       <persist>1</persist>
       <value></value>
     </setInstallerVariable>
-
 
     <!-- Get a default port number - ideally 5432 -->
     <getFreePort>
@@ -482,11 +482,6 @@
               <text>${platform_name}</text>
               <value>linux</value>
             </compareText>
-            <!--<compareText>
-                            			<logic>equals</logic>
-                            			<text>${component(psqlOdbc).selected}</text>
-                            			<value>1</value>
-                        		</compareText>-->
           </ruleList>
         </setInstallerVariableFromScriptOutput>
         <setInstallerVariable>
@@ -534,7 +529,6 @@
         </logMessage>
       </actionList>
     </actionGroup>
-
 
     <iniFileGet>
       <file>${PostgreSqlIni}</file>
@@ -772,59 +766,6 @@
         </compareText>
       </ruleList>
     </unpackFile>
-
-    <!--<unpackFile>
-            <component>dbserver</component>
-            <destination>${system_temp_directory}/postgresplus/createNewUserClient.o</destination>
-            <folder>programfileslinux</folder>
-            <origin>createNewUserClient.o</origin>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </unpackFile>-->
-    <!--<unpackFile>
-            <component>dbserver</component>
-            <destination>${system_temp_directory}/postgresplus/createNewUserClient.o</destination>
-            <folder>programfileslinux-x64</folder>
-            <origin>createNewUserClient.o</origin>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux-x64</value>
-                </compareText>
-            </ruleList>
-        </unpackFile>-->
-    <!--<unpackFile>
-            <component>dbserver</component>
-            <destination>${system_temp_directory}/postgresplus/runcreateNewUserClient.sh</destination>
-            <folder>programfileslinux</folder>
-            <origin>runcreateNewUserClient.sh</origin>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </unpackFile>-->
-    <!--<unpackFile>
-            <component>dbserver</component>
-            <destination>${system_temp_directory}/postgresplus/runcreateNewUserClient.sh</destination>
-            <folder>programfileslinux-x64</folder>
-            <origin>runcreateNewUserClient.sh</origin>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux-x64</value>
-                </compareText>
-            </ruleList>
-        </unpackFile>-->
 
     <unpackDirectory>
       <component>dbserver</component>
@@ -1095,20 +1036,6 @@
         </compareText>
       </ruleList>
     </unpackFile>
-
-    <!--<unpackFile>
-            <component>dbserver</component>
-            <destination>${system_temp_directory}/postgresplus/createNewUserClient.o</destination>
-            <folder>programfilesmacosx</folder>
-            <origin>createNewUserClient.o</origin>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </unpackFile>-->
     <unpackFile>
       <component>dbserver</component>
       <destination>${system_temp_directory}/postgresplus/features.o</destination>
@@ -1372,7 +1299,6 @@
           <folder>programfileslinux</folder>
           <origin>runpgcontroldata.sh</origin>
         </unpackFile>
-
       </actionList>
       <ruleList>
         <compareText>
@@ -1397,7 +1323,6 @@
           <folder>programfileslinux-x64</folder>
           <origin>runpgcontroldata.sh</origin>
         </unpackFile>
-
       </actionList>
       <ruleList>
         <compareText>
@@ -1449,7 +1374,6 @@
             </compareText>
           </ruleList>
         </throwError>
-
       </actionList>
       <ruleList>
         <compareText>
@@ -1813,7 +1737,6 @@
       </ruleList>
     </actionGroup>
 
-
     <throwError>
       <text>${msg(locale.error)}</text>
       <ruleList>
@@ -1939,6 +1862,46 @@
         </compareText>
       </ruleList>
     </setInstallerVariable>
+
+    <!-- Check whether pgAgent was installed previously -->
+    <iniFileGet>
+        <file>/etc/postgresplus-reg.ini</file>
+        <key>pgagent</key>
+        <section>PostgreSQL/${product_version}</section>
+        <variable>pgagent_installed</variable>
+        <ruleList>
+            <compareText>
+               <logic>does_not_equal</logic>
+               <text>${platform_name}</text>
+               <value>windows</value>
+            </compareText>
+            <fileExists>
+               <path>/etc/postgresplus-reg.ini</path>
+            </fileExists>
+        </ruleList>
+    </iniFileGet>
+    <registryGet>
+        <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
+        <name>pgagent</name>
+        <variable>pgagent_installed</variable>
+    </registryGet>
+
+    <!-- Set schema to upgrade if pgagent is installed -unattended mode -->
+    <setInstallerVariable name="schema" value="upgrade">
+        <ruleList>
+            <compareText>
+               <logic>equals</logic>
+               <text>${pgagent_installed}</text>
+               <value>true</value>
+            </compareText>
+            <compareText>
+               <logic>equals</logic>
+               <text>${installer_ui}</text>
+               <value>unattended</value>
+            </compareText>
+        </ruleList>
+    </setInstallerVariable>
+
   </preInstallationActionList>
   <postInstallationActionList>
     <actionGroup>
@@ -1972,8 +1935,6 @@
               <text>${platform_name}</text>
               <value>windows</value>
             </compareText>
-
-
           </ruleList>
         </iniFileSet>
         <registrySet>
@@ -2010,8 +1971,6 @@
               <text>${platform_name}</text>
               <value>windows</value>
             </compareText>
-
-
           </ruleList>
         </iniFileSet>
         <registrySet>
@@ -6037,7 +5996,7 @@
           <description>${msg(valueadded.dbInstallTuning.rb1.value)} </description>
           <explanation></explanation>
           <value></value>
-          <default></default>
+          <default>0</default>
           <displayStyle>checkbox-left</displayStyle>
           <ruleList>
             <compareText>
@@ -6065,7 +6024,7 @@
           <description>${msg(valueadded.updateNotification.rb2.value)}</description>
           <explanation></explanation>
           <value></value>
-          <default></default>
+          <default>0</default>
           <displayStyle>checkbox-left</displayStyle>
         </booleanParameter>
         <labelParameter>
@@ -6387,7 +6346,7 @@
         <booleanParameter>
           <name>rbExistingUser</name>
           <ask>yes</ask>
-          <default>1</default>
+          <default>0</default>
           <value>1</value>
           <description>${msg(userAuth.existing.user.lbl.value)}</description>
         </booleanParameter>
@@ -6436,7 +6395,7 @@
           <explanation></explanation>
           <value></value>
           <default></default>
-          <allowEmptyValue>0</allowEmptyValue>
+          <allowEmptyValue>1</allowEmptyValue>
           <width>30</width>
           <validationActionList>
             <throwError>
