@@ -3848,7 +3848,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>launchctl</program>
-      <programArguments>start con.edb.launchd.pgagent</programArguments>
+      <programArguments>start com.edb.launchd.pgagent</programArguments>
       <progressText>Starting pgAgent ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
