@@ -3632,8 +3632,8 @@
     <!--stop Mac service -->
     <runProgram>
       <abortOnError>0</abortOnError>
-      <program>/sbin/SystemStarter</program>
-      <programArguments>stop postgresql-${product_version}</programArguments>
+      <program>launchctl</program>
+      <programArguments>stop com.edb.launchd.postgresql-${product_version}</programArguments>
       <progressText>${msg(progress.text.stoping.server)}</progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3652,9 +3652,6 @@
           <text>${IsUpgrade}</text>
           <value>1</value>
         </compareText>
-        <fileExists>
-          <path>/Library/StartupItems/postgresql-${product_version}/postgresql-${product_version}</path>
-        </fileExists>
       </ruleList>
     </runProgram>
     <setInstallerVariableFromScriptOutput>
@@ -3706,11 +3703,11 @@
       </ruleList>
     </runProgram>
 
-    <!-- start MAC service -->
+    <!--start Mac service -->
     <runProgram>
       <abortOnError>0</abortOnError>
-      <program>${installdir}/installer/server/startserver.sh</program>
-      <programArguments>${product_version}</programArguments>
+      <program>launchctl</program>
+      <programArguments>start com.edb.launchd.postgresql-${product_version}</programArguments>
       <progressText>${msg(progress.text.starting.server)}</progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>

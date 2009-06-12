@@ -103,7 +103,6 @@ _prep_metainstaller_osx() {
     cp -R $WD/server/staging/osx/bin/pg_controldata  staging/osx/scripts/pgcontrol/ || _die "Failed to copy the pg_controldata  (staging/osx/scripts/pgcontrol)"
     cp -R $WD/server/staging/osx/installer/server/getlocales.sh  staging/osx/scripts/ || _die "Failed to copy the getlocales.sh"
     cp -R $WD/server/staging/osx/installer/server/preinstall.sh  staging/osx/scripts/ || _die "Failed to copy the preinstall.sh"
-    cp -R $WD/server/staging/osx/installer/server/startserver.sh  staging/osx/scripts/ || _die "Failed to copy the startserver.sh"
     cp -R $WD/PostGIS/staging/osx/installer/PostGIS/check-connection.sh  staging/osx/scripts/ || _die "Failed to copy the check-connection.sh"
     cp -R $WD/PostGIS/staging/osx/installer/PostGIS/check-db.sh  staging/osx/scripts/ || _die "Failed to copy the check-db.sh"
 
