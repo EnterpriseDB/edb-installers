@@ -10,6 +10,29 @@ then
     exit 127
 fi
 
+validate_port()
+{
+
+  port=$1   
+  
+  nodigits=`echo $port | sed 's/[[:digit:]]//g'`
+  
+  if [ ! -z $nodigits ] ; then
+       echo "Port specified must be an integer." 
+       return 1
+  fi
+  
+  if [ "$port" -lt 0 ] ; then
+       echo "Port specified must be greater than 0." 
+       return 1
+  fi
+  if [ "$port" -gt 65535 ] ; then
+       echo "Port specified must be less than 65535." 
+       return 1
+  fi
+  return 0
+}
+
 echo -n "Server [localhost]: "
 read SERVER
 
@@ -42,8 +65,15 @@ then
     USERNAME="PG_USERNAME"
 fi
 
-"PG_INSTALLDIR/bin/psql" -h $SERVER -p $PORT -U $USERNAME $DATABASE
-RET=$?
+validate_port $PORT 
+
+if [ $? = 0 ];
+then
+    "PG_INSTALLDIR/bin/psql" -h $SERVER -p $PORT -U $USERNAME $DATABASE
+    RET=$?
+else
+    RET=1
+fi
 
 if [ "$RET" != "0" ];
 then
