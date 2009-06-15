@@ -318,6 +318,10 @@ EOT
 	ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\"" || _die "Failed to create a directory on the windows build host"
 
     # There's no particularly clean way to do this as we don't want all the files, and each language may or may not be completely transated :-(
+	ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\\\\cs_CZ\\\\hints\"" || _die "Failed to create a directory on the windows build host"
+	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\docs\\\\cs_CZ\\\\pgAdmin3.chm \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\\\\cs_CZ\"" || _die "Failed to copy a help file on the windows build host"
+	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\docs\\\\cs_CZ\\\\hints\\\\*.html \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\\\\cs_CZ\\\\hints\"" || _die "Failed to copy a help file on the windows build host"
+
 	ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\\\\de_DE\\\\hints\"" || _die "Failed to create a directory on the windows build host"
 	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\docs\\\\de_DE\\\\hints\\\\*.html \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\\\\de_DE\\\\hints\"" || _die "Failed to copy a help file on the windows build host"
 	
@@ -332,9 +336,8 @@ EOT
 	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\docs\\\\fi_FI\\\\hints\\\\*.html \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\\\\fi_FI\\\\hints\"" || _die "Failed to copy a help file on the windows build host"
 	
 	ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\\\\fr_FR\\\\hints\"" || _die "Failed to create a directory on the windows build host"
+	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\docs\\\\fr_FR\\\\pgAdmin3.chm \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\\\\fr_FR\"" || _die "Failed to copy a help file on the windows build host"
 	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\docs\\\\fr_FR\\\\hints\\\\*.html \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\\\\fr_FR\\\\hints\"" || _die "Failed to copy a help file on the windows build host"
-
-	ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\\\\it_IT\\\\hints\"" || _die "Failed to create a directory on the windows build host"
 
 	ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\\\\sl_SI\\\\hints\"" || _die "Failed to create a directory on the windows build host"
 	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\docs\\\\sl_SI\\\\hints\\\\*.html \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\\\\sl_SI\\\\hints\"" || _die "Failed to copy a help file on the windows build host"

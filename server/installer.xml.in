@@ -2788,14 +2788,30 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                         
                         <!-- pgAdmin -->
                         <startMenuShortcut>
-                            <name>pgAdmin documentation</name>
+                            <name>pgAdmin documentation (Czech)</name>
+                            <runInTerminal>0</runInTerminal>
+                            <windowsExec>${installdir}/pgAdmin III/docs/cs_CZ/pgadmin3.chm</windowsExec>
+                            <ruleList>
+                                <isTrue value="${create_shortcuts}" />
+                            </ruleList>
+                        </startMenuShortcut>
+                        <startMenuShortcut>
+                            <name>pgAdmin documentation (English)</name>
                             <runInTerminal>0</runInTerminal>
                             <windowsExec>${installdir}/pgAdmin III/docs/en_US/pgadmin3.chm</windowsExec>
                             <ruleList>
                                 <isTrue value="${create_shortcuts}" />
                             </ruleList>
                         </startMenuShortcut>
-                        
+                        <startMenuShortcut>
+                            <name>pgAdmin documentation (French)</name>
+                            <runInTerminal>0</runInTerminal>
+                            <windowsExec>${installdir}/pgAdmin III/docs/fr_FR/pgadmin3.chm</windowsExec>
+                            <ruleList>
+                                <isTrue value="${create_shortcuts}" />
+                            </ruleList>
+                        </startMenuShortcut>
+                       
                         <!-- PL Java users guild -->
                         <startMenuLinkShortcut>
                             <name>PL Java users guide</name>
