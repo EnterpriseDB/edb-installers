@@ -1882,8 +1882,8 @@
         </ruleList>
     </iniFileGet>
     <registryGet>
-        <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
-        <name>pgagent</name>
+        <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent</key>
+        <name>Version</name>
         <variable>pgagent_installed</variable>
     </registryGet>
 
@@ -1891,9 +1891,9 @@
     <setInstallerVariable name="schema" value="upgrade">
         <ruleList>
             <compareText>
-               <logic>equals</logic>
+               <logic>does_not_equal</logic>
                <text>${pgagent_installed}</text>
-               <value>true</value>
+               <value/>
             </compareText>
             <compareText>
                <logic>equals</logic>
@@ -4318,11 +4318,9 @@
     <!-- WINDOWS: Unregister the event message DLL -->
     <registryDelete>
       <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
-      <name></name>
     </registryDelete>
     <registryDelete>
       <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Installations\postgresplus-${product_version}</key>
-      <name></name>
     </registryDelete>
 
     <deleteFile>
