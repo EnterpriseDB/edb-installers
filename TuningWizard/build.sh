@@ -58,29 +58,25 @@ _prep_TuningWizard() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_prep_TuningWizard_osx || exit 1
-        echo "Under Development! :("
+        _prep_TuningWizard_osx || exit 1
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        #_prep_TuningWizard_linux || exit 1
-        echo "Under Development! :("
+        _prep_TuningWizard_linux || exit 1
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_prep_TuningWizard_linux_x64 || exit 1
-        echo "Under Development! :("
+        _prep_TuningWizard_linux_x64 || exit 1
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_prep_TuningWizard_windows || exit 1
-        echo "Under Development! :("
+        _prep_TuningWizard_windows || exit 1
     fi
     
 }
@@ -94,29 +90,25 @@ _build_TuningWizard() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_build_TuningWizard_osx || exit 1
-        echo "Under Development! :("
+        _build_TuningWizard_osx || exit 1
     fi
 
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        #_build_TuningWizard_linux || exit 1
-        echo "Under Development! :("
+        _build_TuningWizard_linux || exit 1
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_build_TuningWizard_linux_x64 || exit 1
-        echo "Under Development! :("
+        _build_TuningWizard_linux_x64 || exit 1
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_build_TuningWizard_windows || exit 1
-        echo "Under Development! :("
+        _build_TuningWizard_windows || exit 1
     fi
 }
 
@@ -144,28 +136,24 @@ _postprocess_TuningWizard() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        #_postprocess_TuningWizard_osx || exit 1
-        echo "Under Development! :("
+        _postprocess_TuningWizard_osx || exit 1
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        #_postprocess_TuningWizard_linux || exit 1
-        echo "Under Development! :("
+        _postprocess_TuningWizard_linux || exit 1
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_postprocess_TuningWizard_linux_x64 || exit 1
-        echo "Under Development! :("
+        _postprocess_TuningWizard_linux_x64 || exit 1
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_postprocess_TuningWizard_windows || exit 1
-        echo "Under Development! :("
+        _postprocess_TuningWizard_windows || exit 1
     fi
 }
