@@ -552,6 +552,15 @@
     <!--     2. Create/Reinstall the pgAgent service                             -->
     <actionGroup>
       <actionList>
+        <createDirectory>
+          <path>${system_temp_directory}\${product_fullname}\bin</path>
+          <ruleList>
+            <fileTest>
+               <path>${system_temp_directory}\${product_fullname}\bin</path>
+               <condition>not_exists</condition>
+            </fileTest>
+          </ruleList> 
+        </createDirectory>
         <unpackFile>
           <component>configuration</component>
           <destination>${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe</destination>
