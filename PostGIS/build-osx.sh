@@ -23,33 +23,41 @@ _prep_PostGIS_osx() {
     cp -R postgis-$PG_VERSION_POSTGIS/* postgis.osx || _die "Failed to copy the source code (PostGIS/source/postgis-$PG_VERSION_POSTGIS)"
     chmod -R ugo+w postgis.osx || _die "Couldn't set the permissions on the source directory"
 
-    if [ -e geos.osx ];
+    if [ ! -e geos-$PG_TARBALL_GEOS.osx ];
     then
-      echo "Removing existing geos.osx source directory"
-      rm -rf geos.osx  || _die "Couldn't remove the existing geos.osx source directory (PostGIS/source/geos.osx)"
+      echo "Creating geos source directory ($WD/PostGIS/source/geos-$PG_TARBALL_GEOS.osx)"
+      mkdir -p geos-$PG_TARBALL_GEOS.osx || _die "Couldn't create the geos-$PG_TARBALL_GEOS.osx directory"
+      chmod ugo+w geos-$PG_TARBALL_GEOS.osx || _die "Couldn't set the permissions on the source directory"
+
+      # Grab a copy of the geos source tree
+      cp -R geos-$PG_TARBALL_GEOS/* geos-$PG_TARBALL_GEOS.osx || _die "Failed to copy the source code (PostGIS/source/geos-$PG_TARBALL_GEOS)"
+      chmod -R ugo+w geos-$PG_TARBALL_GEOS.osx || _die "Couldn't set the permissions on the source directory"
     fi
     
-    echo "Creating geos source directory ($WD/PostGIS/source/geos.osx)"
-    mkdir -p geos.osx || _die "Couldn't create the geos.osx directory"
-    chmod ugo+w geos.osx || _die "Couldn't set the permissions on the source directory"
 
-    # Grab a copy of the geos source tree
-    cp -R geos-$PG_TARBALL_GEOS/* geos.osx || _die "Failed to copy the source code (PostGIS/source/geos-$PG_TARBALL_GEOS)"
-    chmod -R ugo+w geos.osx || _die "Couldn't set the permissions on the source directory"
-
-    if [ -e proj.osx ];
+    if [ ! -e proj-$PG_TARBALL_PROJ.osx ];
     then
-      echo "Removing existing proj.osx source directory"
-      rm -rf proj.osx  || _die "Couldn't remove the existing proj.osx source directory (PostGIS/source/proj.osx)"
+      echo "Creating proj source directory ($WD/PostGIS/source/proj-$PG_TARBALL_PROJ.osx)"
+      mkdir -p proj-$PG_TARBALL_PROJ.osx || _die "Couldn't create the proj.osx directory"
+      chmod ugo+w proj-$PG_TARBALL_PROJ.osx || _die "Couldn't set the permissions on the source directory"
+
+      # Grab a copy of the proj source tree
+      cp -R proj-$PG_TARBALL_PROJ/* proj-$PG_TARBALL_PROJ.osx || _die "Failed to copy the source code (PostGIS/source/proj-$PG_TARBALL_PROJ)"
+      chmod -R ugo+w proj-$PG_TARBALL_PROJ.osx || _die "Couldn't set the permissions on the source directory"
     fi
 
-    echo "Creating proj source directory ($WD/PostGIS/source/proj.osx)"
-    mkdir -p proj.osx || _die "Couldn't create the proj.osx directory"
-    chmod ugo+w proj.osx || _die "Couldn't set the permissions on the source directory"
+    cd $WD/PostGIS/staging/osx
 
-    # Grab a copy of the proj source tree
-    cp -R proj-$PG_TARBALL_PROJ/* proj.osx || _die "Failed to copy the source code (PostGIS/source/proj-$PG_TARBALL_PROJ)"
-    chmod -R ugo+w proj.osx || _die "Couldn't set the permissions on the source directory"
+    if [ -e geos-$PG_TARBALL_GEOS.osx ];
+    then
+      mv geos-$PG_TARBALL_GEOS.osx ../ || _die "Failed to backup the geos directory"
+    fi
+
+    if [ -e proj-$PG_TARBALL_PROJ.osx ];
+    then
+      mv proj-$PG_TARBALL_PROJ.osx ../ || _die "Failed to backup the proj directory"
+    fi
+    sleep 15
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/PostGIS/staging/osx ];
@@ -62,6 +70,18 @@ _prep_PostGIS_osx() {
     mkdir -p $WD/PostGIS/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/PostGIS/staging/osx || _die "Couldn't set the permissions on the staging directory"
 
+    cd $WD/PostGIS/staging
+
+    if [ -e geos-$PG_TARBALL_GEOS.osx ];
+    then
+      mv geos-$PG_TARBALL_GEOS.osx osx/ || _die "Failed to restore the geos directory"
+    fi
+
+    if [ -e proj-$PG_TARBALL_PROJ.osx ];
+    then
+      mv proj-$PG_TARBALL_PROJ.osx osx/ || _die "Failed to restore the proj directory"
+    fi
+
     cd $WD
 
 }
@@ -73,19 +93,20 @@ _prep_PostGIS_osx() {
 
 _build_geos() {
 
-    cd $WD/PostGIS/source/geos.osx || _die "Failed to change to the geos source directory (PostGIS/source/geos.osx)"
+
+    cd $WD/PostGIS/source/geos-$PG_TARBALL_GEOS.osx || _die "Failed to change to the geos source directory (PostGIS/source/geos-$PG_TARBALL_GEOS.osx)"
 
     # Configure the source tree
     echo "Configuring the Geos source tree for Intel"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/geos --disable-dependency-tracking || _die "Failed to configure Geos for i386"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/geos-$PG_TARBALL_GEOS.osx --disable-dependency-tracking || _die "Failed to configure Geos for i386"
     mv source/headers/config.h source/headers/config_i386.h
 
     echo "Configuring the Geos source tree for PPC"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/geos --disable-dependency-tracking || _die "Failed to configure Geos for PPC"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/geos-$PG_TARBALL_GEOS.osx --disable-dependency-tracking || _die "Failed to configure Geos for PPC"
     mv source/headers/config.h source/headers/config_ppc.h
 
     echo "Configuring the Geos source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS -arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/geos --disable-dependency-tracking || _die "Failed to configure Geos for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS -arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/geos-$PG_TARBALL_GEOS.osx --disable-dependency-tracking || _die "Failed to configure Geos for Universal"
 
     # Create a replacement config.h that will pull in the appropriate architecture-specific one:
     echo "#ifdef __BIG_ENDIAN__" > source/headers/config.h
@@ -96,7 +117,7 @@ _build_geos() {
 
     echo "Building Geos"
     MACOSX_DEPLOYMENT_TARGET=10.4 make LDFLAGS="-arch i386 -arch ppc" -j 2 || _die "Failed to build Geos"
-    make prefix=$PG_STAGING/geos install || _die "Failed to install Geos"
+    make prefix=$PG_STAGING/geos-$PG_TARBALL_GEOS.osx install || _die "Failed to install Geos"
 
     cd $WD
 
@@ -108,19 +129,19 @@ _build_geos() {
 
 _build_proj() {
 
-    cd $PG_PATH_OSX/PostGIS/source/proj.osx || _die "Failed to change to the proj source directory (PostGIS/source/proj.osx)"
+    cd $PG_PATH_OSX/PostGIS/source/proj-$PG_TARBALL_PROJ.osx || _die "Failed to change to the proj source directory (PostGIS/source/proj.osx)"
 
     # Configure the source tree
     echo "Configuring the Proj source tree for Intel"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/proj --disable-dependency-tracking || _die "Failed to configure Proj for i386"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx --disable-dependency-tracking || _die "Failed to configure Proj for i386"
     mv src/proj_config.h src/proj_config_i386.h
 
     echo "Configuring the Proj source tree for PPC"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/proj --disable-dependency-tracking || _die "Failed to configure Proj for PPC"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx --disable-dependency-tracking || _die "Failed to configure Proj for PPC"
     mv src/proj_config.h src/proj_config_ppc.h
 
     echo "Configuring the Proj source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/proj --disable-dependency-tracking || _die "Failed to configure Proj for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx --disable-dependency-tracking || _die "Failed to configure Proj for Universal"
 
     # Create a replacement config.h that will pull in the appropriate architecture-specific one:
     echo "#ifdef __BIG_ENDIAN__" > src/proj_config.h
@@ -131,7 +152,7 @@ _build_proj() {
 
     echo "Building Proj"
     MACOSX_DEPLOYMENT_TARGET=10.4 make -j 2 || _die "Failed to build Proj"
-    make prefix=$PG_STAGING/proj install || _die "Failed to install Proj"
+    make prefix=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx install || _die "Failed to install Proj"
 
     cd $WD
 }
@@ -146,15 +167,15 @@ _build_postgis() {
 
     # Configure the source tree
     echo "Configuring the PostGIS source tree for Intel"
-    PATH=$PG_STAGING/proj/bin:$PG_STAGING/geos/bin:$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj/lib:$PG_STAGING/geos/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_OSX/bin/pg_config --with-geos=$PG_STAGING/geos/bin/geos-config --with-proj=$PG_STAGING/proj --with-proj-libdir=$PG_STAGING/proj/lib --with-xsl=$PG_DOCBOOK_OSX --disable-dependency-tracking || _die "Failed to configure PostGIS for i386"
+    PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_OSX/bin/pg_config --with-geos=$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-proj=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx --with-proj-libdir=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib --with-xsl=$PG_DOCBOOK_OSX --disable-dependency-tracking || _die "Failed to configure PostGIS for i386"
     mv config.h config_i386.h
 
     echo "Configuring the PostGIS source tree for PPC"
-    PATH=$PG_STAGING/proj/bin:$PG_STAGING/geos/bin:$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj/lib:$PG_STAGING/geos/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_OSX/bin/pg_config --with-geos=$PG_STAGING/geos/bin/geos-config --with-proj=$PG_STAGING/proj --with-proj-libdir=$PG_STAGING/proj/lib --with-xsl=$PG_DOCBOOK_OSX --disable-dependency-tracking || _die "Failed to configure PostGIS for i386"
+    PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_OSX/bin/pg_config --with-geos=$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-proj=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx --with-proj-libdir=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib --with-xsl=$PG_DOCBOOK_OSX --disable-dependency-tracking || _die "Failed to configure PostGIS for PPC"
     mv config.h config_ppc.h
 
     echo "Configuring the PostGIS source tree for Universal"
-    PATH=$PG_STAGING/proj/bin:$PG_STAGING/geos/bin:$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj/lib:$PG_STAGING/geos/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_OSX/bin/pg_config --with-geos=$PG_STAGING/geos/bin/geos-config --with-proj=$PG_STAGING/proj --with-proj-libdir=$PG_STAGING/proj/lib --with-xsl=$PG_DOCBOOK_OSX --disable-dependency-tracking || _die "Failed to configure PostGIS for i386"
+    PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_OSX/bin/pg_config --with-geos=$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-proj=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx --with-proj-libdir=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib --with-xsl=$PG_DOCBOOK_OSX --disable-dependency-tracking || _die "Failed to configure PostGIS for universal"
 
     # Create a replacement config.h that will pull in the appropriate architecture-specific one:
     echo "#ifdef __BIG_ENDIAN__" > config.h
@@ -179,11 +200,17 @@ _build_PostGIS_osx() {
 
     PG_STAGING=$PG_PATH_OSX/PostGIS/staging/osx
 
-    # Building proj
-    _build_proj
+    if [ ! -e $WD/PostGIS/staging/osx/proj-$PG_TARBALL_PROJ.osx ];
+    then
+      # Building proj
+      _build_proj
+    fi
 
-    # Building geos
-    _build_geos
+    if [ ! -e $WD/PostGIS/staging/osx/geos-$PG_TARBALL_GEOS.osx ];
+    then
+      # Building geos
+      _build_geos
+    fi
 
     # Building PostGIS
     _build_postgis
@@ -205,8 +232,8 @@ _build_PostGIS_osx() {
     mv staging/osx/PostGIS/share/man staging/osx/PostGIS/
 
     echo "Copying Dependent libraries"
-    cp staging/osx/geos/lib/*dylib staging/osx/PostGIS/lib || _die "Failed to copy dependent libraries"
-    cp staging/osx/proj/lib/*dylib staging/osx/PostGIS/lib || _die "Failed to copy dependent libraries"
+    cp staging/osx/geos-$PG_TARBALL_GEOS.osx/lib/*dylib staging/osx/PostGIS/lib || _die "Failed to copy dependent libraries"
+    cp staging/osx/proj-$PG_TARBALL_PROJ.osx/lib/*dylib staging/osx/PostGIS/lib || _die "Failed to copy dependent libraries"
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     _rewrite_so_refs $WD/PostGIS/staging/osx/PostGIS bin @loader_path/..

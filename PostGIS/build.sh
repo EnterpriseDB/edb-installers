@@ -63,9 +63,6 @@ _prep_PostGIS() {
     echo "Unpacking postgis source..."
     extract_file  ../../tarballs/postgis-$PG_VERSION_POSTGIS || exit 1
   
-    cd postgis-$PG_VERSION_POSTGIS
-    patch -p0 < ../../../tarballs/postgis-postgresql-8.4.patch
-
     cd $WD/PostGIS/source  
 
     # geos

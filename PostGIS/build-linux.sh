@@ -24,33 +24,39 @@ _prep_PostGIS_linux() {
     cp -R postgis-$PG_VERSION_POSTGIS/* postgis.linux || _die "Failed to copy the source code (source/postgis-$PG_VERSION_POSTGIS)"
     chmod -R ugo+w postgis.linux || _die "Couldn't set the permissions on the source directory"
 
-    if [ -e geos.linux ];
+    if [ ! -e geos-$PG_TARBALL_GEOS.linux ];
     then
-      echo "Removing existing geos.linux source directory"
-      rm -rf geos.linux  || _die "Couldn't remove the existing geos.linux source directory (source/geos.linux)"
+      echo "Creating geos source directory ($WD/PostGIS/source/geos-$PG_TARBALL_GEOS.linux)"
+      mkdir -p geos-$PG_TARBALL_GEOS.linux || _die "Couldn't create the geos-$PG_TARBALL_GEOS.linux directory"
+      chmod ugo+w geos-$PG_TARBALL_GEOS.linux || _die "Couldn't set the permissions on the source directory"
+
+      # Grab a copy of the geos source tree
+      cp -R geos-$PG_TARBALL_GEOS/* geos-$PG_TARBALL_GEOS.linux || _die "Failed to copy the source code (source/geos-$PG_TARBALL_GEOS)"
+      chmod -R ugo+w geos-$PG_TARBALL_GEOS.linux || _die "Couldn't set the permissions on the source directory"
     fi
     
-    echo "Creating geos source directory ($WD/PostGIS/source/geos.linux)"
-    mkdir -p geos.linux || _die "Couldn't create the geos.linux directory"
-    chmod ugo+w geos.linux || _die "Couldn't set the permissions on the source directory"
 
-    # Grab a copy of the geos source tree
-    cp -R geos-$PG_TARBALL_GEOS/* geos.linux || _die "Failed to copy the source code (source/geos-$PG_TARBALL_GEOS)"
-    chmod -R ugo+w geos.linux || _die "Couldn't set the permissions on the source directory"
-
-    if [ -e proj.linux ];
+    if [ ! -e proj-$PG_TARBALL_PROJ.linux ];
     then
-      echo "Removing existing proj.linux source directory"
-      rm -rf proj.linux  || _die "Couldn't remove the existing proj.linux source directory (source/proj.linux)"
+      echo "Creating proj source directory ($WD/PostGIS/source/proj-$PG_TARBALL_PROJ.linux)"
+      mkdir -p proj-$PG_TARBALL_PROJ.linux || _die "Couldn't create the proj-$PG_TARBALL_PROJ.linux directory"
+      chmod ugo+w proj-$PG_TARBALL_PROJ.linux || _die "Couldn't set the permissions on the source directory"
+
+      # Grab a copy of the proj source tree
+      cp -R proj-$PG_TARBALL_PROJ/* proj-$PG_TARBALL_PROJ.linux || _die "Failed to copy the source code (source/proj-$PG_TARBALL_PROJ)"
+      chmod -R ugo+w proj-$PG_TARBALL_PROJ.linux || _die "Couldn't set the permissions on the source directory"
     fi
 
-    echo "Creating proj source directory ($WD/PostGIS/source/proj.linux)"
-    mkdir -p proj.linux || _die "Couldn't create the proj.linux directory"
-    chmod ugo+w proj.linux || _die "Couldn't set the permissions on the source directory"
+    cd $WD/PostGIS/staging/linux
 
-    # Grab a copy of the proj source tree
-    cp -R proj-$PG_TARBALL_PROJ/* proj.linux || _die "Failed to copy the source code (source/proj-$PG_TARBALL_PROJ)"
-    chmod -R ugo+w proj.linux || _die "Couldn't set the permissions on the source directory"
+    if [ -e geos-$PG_TARBALL_GEOS.linux ];
+    then
+      mv geos-$PG_TARBALL_GEOS.linux ../ || _die "Failed to backup the geos staging directory"
+    fi
+    if [ -e proj-$PG_TARBALL_PROJ.linux ];
+    then
+      mv proj-$PG_TARBALL_PROJ.linux ../ || _die "Failed to backup the proj staging directory"
+    fi
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/PostGIS/staging/linux ];
@@ -62,6 +68,18 @@ _prep_PostGIS_linux() {
     echo "Creating staging directory ($WD/PostGIS/staging/linux)"
     mkdir -p $WD/PostGIS/staging/linux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/PostGIS/staging/linux || _die "Couldn't set the permissions on the staging directory"
+
+    cd $WD/PostGIS/staging
+    if [ -e geos-$PG_TARBALL_GEOS.linux ];
+    then
+      mv geos-$PG_TARBALL_GEOS.linux linux/ || _die "Failed to restore the geos staging directory"
+    fi
+    if [ -e proj-$PG_TARBALL_PROJ.linux ];
+    then
+      mv proj-$PG_TARBALL_PROJ.linux linux/ || _die "Failed to restore the proj staging directory"
+    fi
+
+   
         
 }
 
@@ -75,23 +93,29 @@ _build_PostGIS_linux() {
     # build postgis    
     PG_STAGING=$PG_PATH_LINUX/PostGIS/staging/linux    
 
-    # Configure the source tree
-    echo "Configuring the proj source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/proj.linux/; sh ./configure --prefix=$PG_STAGING/proj"  || _die "Failed to configure postgis"
+    if [ ! -e $WD/PostGIS/staging/linux/proj-$PG_TARBALL_PROJ.linux ];
+    then 
+      # Configure the source tree
+      echo "Configuring the proj source tree"
+      ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/proj-$PG_TARBALL_PROJ.linux/; sh ./configure --prefix=$PG_STAGING/proj-$PG_TARBALL_PROJ.linux"  || _die "Failed to configure postgis"
+  
+      echo "Building proj"
+      ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/proj-$PG_TARBALL_PROJ.linux; make" || _die "Failed to build proj"
+      ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/proj-$PG_TARBALL_PROJ.linux; make install" || _die "Failed to install proj"
+    fi
+   
+    if [ ! -e $WD/PostGIS/staging/linux/geos-$PG_TARBALL_GEOS.linux ];
+    then
+      echo "Configuring the geos source tree"
+      ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/geos-$PG_TARBALL_GEOS.linux/; sh ./configure --prefix=$PG_STAGING/geos-$PG_TARBALL_GEOS.linux" || _die "Failed to configure geos"
 
-    echo "Building proj"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/proj.linux; make" || _die "Failed to build proj"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/proj.linux; make install" || _die "Failed to install proj"
-
-    echo "Configuring the geos source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/geos.linux/; sh ./configure --prefix=$PG_STAGING/geos" || _die "Failed to configure geos"
-
-    echo "Building geos"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/geos.linux; make" || _die "Failed to build geos"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/geos.linux; make install" || _die "Failed to install geos"
+      echo "Building geos"
+      ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/geos-$PG_TARBALL_GEOS.linux; make" || _die "Failed to build geos"
+      ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/geos-$PG_TARBALL_GEOS.linux; make install" || _die "Failed to install geos"
+    fi
 
     echo "Configuring the postgis source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/; export PATH=$PG_STAGING/proj/bin:$PG_STAGING/geos/bin:\$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj/lib:$PG_STAGING/geos/lib:\$LD_LIBRARY_PATH; ./configure --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_LINUX/bin/pg_config --with-geos=$PG_STAGING/geos/bin/geos-config --with-proj=$PG_STAGING/proj"  || _die "Failed to configure postgis"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/; export PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.linux/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.linux/bin:\$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.linux/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.linux/lib:\$LD_LIBRARY_PATH; ./configure --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_LINUX/bin/pg_config --with-geos=$PG_STAGING/geos-$PG_TARBALL_GEOS.linux/bin/geos-config --with-proj=$PG_STAGING/proj-$PG_TARBALL_PROJ.linux"  || _die "Failed to configure postgis"
 
     echo "Building postgis"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux; make" || _die "Failed to build postgis"
@@ -136,9 +160,9 @@ _postprocess_PostGIS_linux() {
     cd $WD/PostGIS
 
     echo "Copying required dependent libraries from proj and geos packages"
-    cp staging/linux/geos/lib/libgeos_c.so.1 staging/linux/PostGIS/lib/
-    cp staging/linux/geos/lib/libgeos-$PG_TARBALL_GEOS.so staging/linux/PostGIS/lib/
-    cp staging/linux/proj/lib/libproj.so.0 staging/linux/PostGIS/lib/  
+    cp staging/linux/geos-$PG_TARBALL_GEOS.linux/lib/libgeos_c.so.1 staging/linux/PostGIS/lib/
+    cp staging/linux/geos-$PG_TARBALL_GEOS.linux/lib/libgeos-$PG_TARBALL_GEOS.so staging/linux/PostGIS/lib/
+    cp staging/linux/proj-$PG_TARBALL_PROJ.linux/lib/libproj.so.0 staging/linux/PostGIS/lib/  
 
     echo "Copying Readme files"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux; cp README.postgis $PG_STAGING/PostGIS/doc"
