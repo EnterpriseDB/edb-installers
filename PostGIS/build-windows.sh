@@ -40,33 +40,29 @@ _prep_PostGIS_windows() {
     zip -r postgis.zip postgis.windows/ || _die "Couldn't create archieve of the postgis sources (postgis.zip)"
     chmod -R ugo+w postgis.windows || _die "Couldn't set the permissions on the source directory"
 
-    if [ -e geos.windows ];
+    if [ ! -e geos-$PG_TARBALL_GEOS.windows ];
     then
-      echo "Removing existing geos.windows source directory"
-      rm -rf geos.windows  || _die "Couldn't remove the existing geos.windows source directory (source/geos.windows)"
+      echo "Creating geos source directory ($WD/PostGIS/source/geos-$PG_TARBALL_GEOS.windows)"
+      mkdir -p geos-$PG_TARBALL_GEOS.windows || _die "Couldn't create the geos-$PG_TARBALL_GEOS.windows directory"
+      chmod ugo+w geos-$PG_TARBALL_GEOS.windows || _die "Couldn't set the permissions on the source directory"
+      # Grab a copy of the geos source tree
+      cp -R geos-$PG_TARBALL_GEOS/* geos-$PG_TARBALL_GEOS.windows || _die "Failed to copy the source code (source/geos-$PG_TARBALL_GEOS)"
+      chmod -R ugo+w geos-$PG_TARBALL_GEOS.windows || _die "Couldn't set the permissions on the source directory"
+      echo "Archieving geos sources"
+      zip -r geos-$PG_TARBALL_GEOS.zip geos-$PG_TARBALL_GEOS.windows/ || _die "Couldn't create archieve of the geos sources (geos-$PG_TARBALL_GEOS.zip)"
     fi
-    echo "Creating geos source directory ($WD/PostGIS/source/geos.windows)"
-    mkdir -p geos.windows || _die "Couldn't create the geos.windows directory"
-    chmod ugo+w geos.windows || _die "Couldn't set the permissions on the source directory"
-    # Grab a copy of the geos source tree
-    cp -R geos-$PG_TARBALL_GEOS/* geos.windows || _die "Failed to copy the source code (source/geos-$PG_TARBALL_GEOS)"
-    chmod -R ugo+w geos.windows || _die "Couldn't set the permissions on the source directory"
-    echo "Archieving geos sources"
-    zip -r geos.zip geos.windows/ || _die "Couldn't create archieve of the geos sources (geos.zip)"
 
-    if [ -e proj.windows ];
+    if [ ! -e proj-$PG_TARBALL_PROJ.windows ];
     then
-      echo "Removing existing proj.windows source directory"
-      rm -rf proj.windows  || _die "Couldn't remove the existing proj.windows source directory (source/proj.windows)"
+      echo "Creating proj source directory ($WD/PostGIS/source/proj-$PG_TARBALL_PROJ.windows)"
+      mkdir -p proj-$PG_TARBALL_PROJ.windows || _die "Couldn't create the proj-$PG_TARBALL_PROJ.windows directory"
+      chmod ugo+w proj-$PG_TARBALL_PROJ.windows || _die "Couldn't set the permissions on the source directory"
+      # Grab a copy of the proj source tree
+      cp -R proj-$PG_TARBALL_PROJ/* proj-$PG_TARBALL_PROJ.windows || _die "Failed to copy the source code (source/proj-$PG_TARBALL_PROJ)"
+      chmod -R ugo+w proj-$PG_TARBALL_PROJ.windows || _die "Couldn't set the permissions on the source directory"
+      echo "Archieving proj sources"
+      zip -r proj-$PG_TARBALL_PROJ.zip proj-$PG_TARBALL_PROJ.windows/ || _die "Couldn't create archieve of the proj sources (proj.zip)"
     fi
-    echo "Creating proj source directory ($WD/PostGIS/source/proj.windows)"
-    mkdir -p proj.windows || _die "Couldn't create the proj.windows directory"
-    chmod ugo+w proj.windows || _die "Couldn't set the permissions on the source directory"
-    # Grab a copy of the proj source tree
-    cp -R proj-$PG_TARBALL_PROJ/* proj.windows || _die "Failed to copy the source code (source/proj-$PG_TARBALL_PROJ)"
-    chmod -R ugo+w proj.windows || _die "Couldn't set the permissions on the source directory"
-    echo "Archieving proj sources"
-    zip -r proj.zip proj.windows/ || _die "Couldn't create archieve of the proj sources (proj.zip)"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/PostGIS/staging/windows ];
@@ -80,13 +76,9 @@ _prep_PostGIS_windows() {
     chmod ugo+w $WD/PostGIS/staging/windows || _die "Couldn't set the permissions on the staging directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST proj.zip del /S /Q proj.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\proj.zip on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST proj.windows rd /S /Q proj.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\proj.windows directory on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST proj.staging rd /S /Q proj.staging" || _die "Couldn't remove the $PG_PATH_WINDOWS\\proj.staging directory on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST proj-$PG_TARBALL_PROJ.zip del /S /Q proj-$PG_TARBALL_PROJ.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\proj.zip on Windows VM"
 
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST geos.zip del /S /Q geos.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\geos.zip on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST geos.windows rd /S /Q geos.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\geos.windows directory on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST geos.staging rd /S /Q geos.staging" || _die "Couldn't remove the $PG_PATH_WINDOWS\\geos.staging directory on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST geos-$PG_TARBALL_GEOS.zip del /S /Q geos-$PG_TARBALL_GEOS.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\geos.zip on Windows VM"
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST postgis.zip del /S /Q postgis.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\postgis.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST postgis.windows rd /S /Q postgis.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\postgis.windows directory on Windows VM"
@@ -102,13 +94,14 @@ _prep_PostGIS_windows() {
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if NOT EXIST postgresql_mingw-$PG_MAJOR_VERSION.$PG_MINOR_VERSION.windows unzip postgresql_mingw-$PG_MAJOR_VERSION.$PG_MINOR_VERSION.zip" || _die "Couldn't extract postgresql archieve on windows VM (postgresql_mingw-$PG_MAJOR_VERSION.$PG_MINOR_VERSION.zip)"
 
     # Copy sources on windows VM
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST geos.staging rd /S /Q geos.staging" || _die "Couldn't remove the $PG_PATH_WINDOWS\\geos.staging directory on Windows VM"
     echo "Copying proj sources to Windows VM"
-    scp proj.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the proj archieve to windows VM (proj.zip)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip proj.zip" || _die "Couldn't extract proj archieve on windows VM (proj.zip)"
+    scp proj-$PG_TARBALL_PROJ.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the proj archieve to windows VM (proj-$PG_TARBALL_PROJ.zip)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if NOT EXIST proj-$PG_TARBALL_PROJ.windows unzip proj-$PG_TARBALL_PROJ.zip" || _die "Couldn't extract proj archieve on windows VM (proj-$PG_TARBALL_PROJ.zip)"
 
     echo "Copying geos sources to Windows VM"
-    scp geos.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the geos archieve to windows VM (geos.zip)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip geos.zip" || _die "Couldn't extract geos archieve on windows VM (geos.zip)"
+    scp geos-$PG_TARBALL_GEOS.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the geos archieve to windows VM (geos-$PG_TARBALL_GEOS.zip)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if NOT EXIST geos-$PG_TARBALL_GEOS.windows unzip geos-$PG_TARBALL_GEOS.zip" || _die "Couldn't extract geos archieve on windows VM (geos-$PG_TARBALL_GEOS.zip)"
 
     echo "Copying postgis sources to Windows VM"
     scp postgis.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the postgis archieve to windows VM (postgis.zip)"
@@ -150,17 +143,24 @@ EOT
 
 @SET PATH=$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;C:\Perl\bin;C:\Python25;C:\Tcl\bin
 
+
+IF EXIST "$PG_PATH_WINDOWS\\proj-$PG_TARBALL_PROJ.staging" GOTO skip-proj
 REM Configuring, building the proj source tree
-@echo cd $PG_PATH_WINDOWS/proj.windows; ./configure --prefix=$PG_STAGING/proj.staging; make; make install  | $PG_MSYS_WINDOWS\bin\sh --login -i
+@echo cd $PG_PATH_WINDOWS/proj-$PG_TARBALL_PROJ.windows; ./configure --prefix=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging; make; make install  | $PG_MSYS_WINDOWS\bin\sh --login -i
 
 REM Creating libproj.dll
-@echo cd $PG_PATH_WINDOWS/proj.staging/lib; gcc -shared -o libproj.dll -Wl,--out-implib=libproj.dll.a -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--whole-archive libproj.a -Wl,--no-whole-archive $PG_PATH_MINGW_WINDOWS/lib/libmingw32.a | $PG_MSYS_WINDOWS\bin\sh --login -i
+@echo cd $PG_PATH_WINDOWS/proj-$PG_TARBALL_PROJ.staging/lib; gcc -shared -o libproj.dll -Wl,--out-implib=libproj.dll.a -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--whole-archive libproj.a -Wl,--no-whole-archive $PG_PATH_MINGW_WINDOWS/lib/libmingw32.a | $PG_MSYS_WINDOWS\bin\sh --login -i
 
+:skip-proj
+
+IF EXIST $PG_PATH_WINDOWS\\geos-$PG_TARBALL_GEOS.staging GOTO skip-geos
 REM Configuring the geos source tree
-@echo cd $PG_PATH_WINDOWS/geos.windows; ./configure --prefix=$PG_STAGING/geos.staging; make; make install | $PG_MSYS_WINDOWS\bin\sh --login -i
+@echo cd $PG_PATH_WINDOWS/geos-$PG_TARBALL_GEOS.windows; ./configure --prefix=$PG_STAGING/geos-$PG_TARBALL_GEOS.staging; make; make install | $PG_MSYS_WINDOWS\bin\sh --login -i
+
+:skip-geos
 
 REM Configuring the postgis source tree
-@echo cd $PG_PATH_WINDOWS/postgis.windows/; export PATH=$PG_STAGING/proj.staging/bin:$PG_STAGING/geos.staging/bin:\$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj.staging/lib:$PG_STAGING/geos.staging/lib:\$LD_LIBRARY_PATH; ./configure --prefix=$PG_STAGING/postgis.staging --with-pgsql=$PG_PGHOME_MINGW_WINDOWS/bin/pg_config --with-geos=$PG_STAGING/geos.staging/bin/geos-config --with-proj=$PG_STAGING/proj.staging; make; make install | $PG_MSYS_WINDOWS\bin\sh --login -i
+@echo cd $PG_PATH_WINDOWS/postgis.windows/; export PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.staging/bin:\$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.staging/lib:\$LD_LIBRARY_PATH; ./configure --prefix=$PG_STAGING/postgis.staging --with-pgsql=$PG_PGHOME_MINGW_WINDOWS/bin/pg_config --with-geos=$PG_STAGING/geos-$PG_TARBALL_GEOS.staging/bin/geos-config --with-proj=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging; make; make install | $PG_MSYS_WINDOWS\bin\sh --login -i
 
 REM Building postgis-jdbc
 @echo cd $PG_PATH_WINDOWS/postgis.windows/java/jdbc; export CLASSPATH=$PG_STAGING/postgis.windows/postgresql-$PG_JAR_POSTGRESQL.jar; export JAVA_HOME=$PG_JAVA_HOME_MINGW_WINDOWS; $PG_ANT_HOME_MINGW_WINDOWS/bin/ant | $PG_MSYS_WINDOWS\bin\sh --login -i
@@ -171,8 +171,8 @@ EOT
    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-postgis.bat"
 
     echo "Copying required dependent libraries from proj and geos packages"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/geos.staging/bin; cp *.dll $PG_PATH_WINDOWS/postgis.staging/bin" || _die "Failed to copy dependent dll"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/proj.staging/lib; cp *.dll $PG_PATH_WINDOWS/postgis.staging/bin" || _die "Failed to copy dependent dll"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/geos-$PG_TARBALL_GEOS.staging/bin; cp *.dll $PG_PATH_WINDOWS/postgis.staging/bin" || _die "Failed to copy dependent dll"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/proj-$PG_TARBALL_PROJ.staging/lib; cp *.dll $PG_PATH_WINDOWS/postgis.staging/bin" || _die "Failed to copy dependent dll"
 
     echo "Copying Readme files"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.staging; mkdir -p doc" || _die "Failed to create doc directory"
