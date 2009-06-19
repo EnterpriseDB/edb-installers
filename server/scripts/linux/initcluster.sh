@@ -73,6 +73,7 @@ su - $SUPERNAME -c "sed -e \"s@\#listen_addresses = \'localhost\'@listen_address
                         -e \"s@\#port = 5432@port = $PORT@g\" \
                         -e \"s@\#log_destination = \'stderr\'@log_destination = \'stderr\'@g\" \
                         -e \"s@\#logging_collector = off@logging_collector = on@g\" \
+                        -e \"s@\#log_line_prefix = ''@log_line_prefix = '%t'\" \  
                         $DATADIR/postgresql.conf > /tmp/postgresql.conf.$$" || _warn "Failed to modify the postgresql.conf file ($DATADIR/postgresql.conf)"
 su - $SUPERNAME -c "mv /tmp/postgresql.conf.$$ $DATADIR/postgresql.conf" || _warn "Failed to update the postgresql.conf file ($DATADIR/postgresql.conf)"
 
