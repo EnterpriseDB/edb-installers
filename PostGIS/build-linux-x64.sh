@@ -36,7 +36,7 @@ _prep_PostGIS_linux_x64() {
     fi
     
 
-    if [ -e proj-$PG_TARBALL_PROJ.linux-x64 ];
+    if [ ! -e proj-$PG_TARBALL_PROJ.linux-x64 ];
     then
       echo "Creating proj source directory ($WD/PostGIS/source/proj-$PG_TARBALL_PROJ.linux-x64)"
       mkdir -p proj-$PG_TARBALL_PROJ.linux-x64 || _die "Couldn't create the proj-$PG_TARBALL_PROJ.linux-x64 directory"
