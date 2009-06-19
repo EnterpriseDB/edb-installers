@@ -1072,6 +1072,26 @@
                         </option>
                     </optionList>
                 </addChoiceOptions>
+                 <addChoiceOptions>
+                    <name>locale</name>
+                    <optionList>
+                        <option>
+                            <value>C</value>
+                            <text>C</text>
+                        </option>
+                        <option>
+                            <value>POSIX</value>
+                            <text>POSIX</text>
+                        </option>
+                    </optionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </addChoiceOptions>
                 
                 <runProgram>
                     <program>${system_temp_directory}/postgresql_installer/getlocales.sh</program>
@@ -1127,6 +1147,16 @@
                     <text>${IsUpgrade}</text>
                     <value>1</value>
                 </compareText>
+               <compareText>
+                   <text>${locale}</text>
+                   <value>C</value>
+                   <logic>does_not_equal</logic>
+               </compareText>
+               <compareText>
+                   <text>${locale}</text>
+                   <value>POSIX</value>
+                   <logic>does_not_equal</logic>
+               </compareText>
                <compareText>
                    <text>${locale}</text>
                    <value>DEFAULT</value>
