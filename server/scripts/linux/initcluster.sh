@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh 
 
 # PostgreSQL cluster init script for Linux
 # Dave Page, EnterpriseDB
@@ -69,11 +69,12 @@ rm /tmp/initdbpw.$$ || _warn "Failed to remove the initdb password file (/tmp/in
 #      port = $PORT
 #      log_destination = 'stderr'
 #      logging_collector = on
-su - $SUPERNAME -c "sed -e \"s@\#listen_addresses = \'localhost\'@listen_addresses = \'*\'@g\" \
+#      log_line_prefix = '%t'
+su - $SUPERNAME -c "sed -e \"s@\#listen_addresses = 'localhost'@listen_addresses = '*'@g\" \
                         -e \"s@\#port = 5432@port = $PORT@g\" \
-                        -e \"s@\#log_destination = \'stderr\'@log_destination = \'stderr\'@g\" \
+                        -e \"s@\#log_destination = 'stderr'@log_destination = 'stderr'@g\" \
                         -e \"s@\#logging_collector = off@logging_collector = on@g\" \
-                        -e \"s@\#log_line_prefix = ''@log_line_prefix = '%t'\" \  
+                        -e \"s@\#log_line_prefix = ''@log_line_prefix = '%t'@g\" \
                         $DATADIR/postgresql.conf > /tmp/postgresql.conf.$$" || _warn "Failed to modify the postgresql.conf file ($DATADIR/postgresql.conf)"
 su - $SUPERNAME -c "mv /tmp/postgresql.conf.$$ $DATADIR/postgresql.conf" || _warn "Failed to update the postgresql.conf file ($DATADIR/postgresql.conf)"
 
