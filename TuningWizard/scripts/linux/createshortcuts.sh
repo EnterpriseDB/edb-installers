@@ -67,6 +67,7 @@ chmod ugo+x "$INSTALLDIR/scripts/runTuningWizard.sh"
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-launchTuningWizard.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-postgresql.directory"
 
 chmod ugo+x "$INSTALLDIR/scripts/xdg/pg-launchTuningWizard.desktop"
 chmod ugo+x "$INSTALLDIR/scripts/xdg/pg-postgresql.directory"
