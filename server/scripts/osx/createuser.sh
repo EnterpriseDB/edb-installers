@@ -26,6 +26,7 @@ then
     else
         echo "User account '$1' already exists - fixing non-existent home directory to $2"
         dscl . create /users/$1 home $2
+        sleep 5
         exit 0
     fi
 else
