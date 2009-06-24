@@ -25,7 +25,8 @@
     <defaultUnixGroup>daemon</defaultUnixGroup>
     <defaultUnixOwner>root</defaultUnixOwner>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
-    
+    <overrideGtkButtonText>1</overrideGtkButtonText>
+
     <!-- Images -->
     <leftImage>../resources/pg-side.png</leftImage>
     <splashImage>../resources/pg-splash.png</splashImage>
