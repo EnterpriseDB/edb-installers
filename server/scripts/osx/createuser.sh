@@ -26,7 +26,18 @@ then
     else
         echo "User account '$1' already exists - fixing non-existent home directory to $2"
         dscl . create /users/$1 home $2
-        sleep 5
+        # Waiting for home directory to be set.
+        # Assuming it will get done in 30 sec.
+        count=0
+        while [ $count -le 15 ]
+        do
+            HOME_DIR=`su $1 -c "echo \\\$HOME"`
+            if [ -e $HOME_DIR ]; then
+               exit 0
+            fi 
+            sleep 2
+            count=`expr $count + 1` 
+        done
         exit 0
     fi
 else
