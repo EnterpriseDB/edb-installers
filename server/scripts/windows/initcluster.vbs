@@ -122,7 +122,7 @@ Else
     iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /G """ & objNetwork.Username & """:F")
 End If
 if iRet <> 0 Then
-    Warn "Failed to ensure the data directory is accessible (" & strDataDir & ")"
+    WScript.Echo "Failed to ensure the data directory is accessible (" & strDataDir & ")"
 End If
 
 ' Initialise the database cluster, and set the appropriate permissions/ownership
