@@ -758,13 +758,13 @@ int main(int argc, TCHAR * argv[])
 		return 127;
 	}
 	
-	sprintf_s(domain, sizeof(domain), argv[1]);
+	sprintf_s(domain, sizeof(domain), "%s", argv[1]);
 
 	// Check domain of system, either system is domain controller or not.
 	if(CheckDomain(domain, sizeof(domain), &isWin2k))
 	{
 
-		sprintf_s(username, sizeof(username), argv[2]);
+		sprintf_s(username, sizeof(username), "%s", argv[2]);
 		sprintf_s(password, sizeof(password), "%s", argv[3]);
 
 		// Check to see if the user account exists

@@ -372,11 +372,11 @@ int main(int argc, TCHAR * argv[])
 	}
 	else
 	{
-		sprintf_s(domain, sizeof(domain), argv[1]);
+		sprintf_s(domain, sizeof(domain), "%s", argv[1]);
 	}
 
-	sprintf_s(username, sizeof(username), argv[2]);
-	sprintf_s(password, sizeof(password), "%s",argv[3]);
+	sprintf_s(username, sizeof(username), "%s", argv[2]);
+	sprintf_s(password, sizeof(password), "%s", argv[3]);
 
 	// Check to see if the user account exists
 	if (!CheckUserExists(domain, username))
