@@ -18,6 +18,11 @@ strDataDir = WScript.Arguments.Item(3)
 iPort = CInt(WScript.Arguments.Item(4))
 strInstallPlPgsql = WScript.Arguments.Item(5)
 
+'Escape the '%' as '%%', if present in the password
+Set regExp = new regexp
+regExp.Pattern = "[%]"
+strFormattedPassword = regExp.Replace(strPassword, "%%")
+
 iWarn = 0
 
 ' Get a temporary filenames
@@ -32,7 +37,7 @@ strOutputFile = objTempFolder.Path & "\" & objFso.GetTempName
 Function DoCmd(strCmd)
     Set objBatchFile = objTempFolder.CreateTextFile(strBatchFile, True)
     objBatchFile.WriteLine "@ECHO OFF"
-    objBatchFile.WriteLine "SET PGPASSWORD=" & strPassword
+    objBatchFile.WriteLine "SET PGPASSWORD=" & strFormattedPassword
     objBatchFile.WriteLine strCmd & " > """ & strOutputFile & """ 2>&1"
     objBatchFile.WriteLine "SET PGPASSWORD="
 	objBatchFile.WriteLine "EXIT /B %ERRORLEVEL%"

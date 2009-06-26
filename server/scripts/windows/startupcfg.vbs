@@ -15,6 +15,11 @@ strPassword = WScript.Arguments.Item(2)
 strInstallDir = WScript.Arguments.Item(3)
 strDataDir = WScript.Arguments.Item(4)
 
+'Escape the '%' as '%%', if present in the password
+Set regExp = new regexp  
+regExp.Pattern = "[%]"
+strFormattedPassword = regExp.Replace(strPassword, "%%")
+
 iWarn = 0
 
 ' Get temporary filenames
@@ -54,7 +59,7 @@ Sub Warn(msg)
 End Sub
 
 ' We'll let pg_ctl do all the heavy lifting
-iRet = DoCmd("""" & strInstallDir & "\bin\pg_ctl.exe"" register -N postgresql-" & strVersion & " -U " & strUsername & " -P """ & strPassword & """ -D """ & strDataDir & """ -w")
+iRet = DoCmd("""" & strInstallDir & "\bin\pg_ctl.exe"" register -N postgresql-" & strVersion & " -U " & strUsername & " -P """ & strFormattedPassword & """ -D """ & strDataDir & """ -w")
 if iRet <> 0 Then
     Die "Failed to register the service with the service control manager"
 End If
