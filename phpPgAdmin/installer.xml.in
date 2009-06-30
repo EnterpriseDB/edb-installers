@@ -1402,7 +1402,7 @@
                             <text>${msg(pgplus.blank.error)}</text>
                         </throwError>
                     </actionList>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleEvaluationLogic>OR</ruleEvaluationLogic>
                     <ruleList>
                         <compareText>
                             <text>${pghost}</text>
@@ -1526,7 +1526,7 @@
                 <setInstallerVariable>
                     <name>next_page</name>
                     <value>pgdetails</value>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic> 
+                    <ruleEvaluationLogic>OR</ruleEvaluationLogic> 
                     <ruleList>
                         <compareText>
                             <logic>equals</logic>

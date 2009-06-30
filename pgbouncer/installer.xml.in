@@ -999,7 +999,7 @@
               <text>${msg(pg.blank.error)}</text>
             </throwError>
           </actionList>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleEvaluationLogic>OR</ruleEvaluationLogic>
           <ruleList>
             <compareText logic="equals" text="${pgport}" value=""/>
             <compareText logic="equals" text="${pguser}" value=""/>
@@ -1175,7 +1175,7 @@
               <text>${msg(pgbouncer.blank.error)}</text>
             </throwError>
           </actionList>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleEvaluationLogic>OR</ruleEvaluationLogic>
           <ruleList>
             <compareText logic="equals" text="${system_user}" value=""/>
             <compareText logic="equals" text="${pgbouncer_port}" value=""/>

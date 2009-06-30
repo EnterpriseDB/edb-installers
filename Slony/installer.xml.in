@@ -1263,7 +1263,7 @@
             <mustBeWritable>yes</mustBeWritable>
             <mustExist>0</mustExist>
             <width>40</width>
-            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+            <ruleEvaluationLogic>OR</ruleEvaluationLogic>
             <ruleList>
                 <compareText>
                     <text>${SlonyVersion}</text>

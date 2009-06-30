@@ -326,7 +326,7 @@
         <showQuestion>
            <text>${msg(apache.restart.question)}</text>
            <variable>response</variable>
-           <ruleEvaluationLogic>or</ruleEvaluationLogic>
+           <ruleEvaluationLogic>OR</ruleEvaluationLogic>
            <ruleList>
               <compareText>
                  <logic>equals</logic>
@@ -1323,7 +1323,7 @@
                              <text>${msg(pgplus.blank.error)}</text>
                         </throwError>
                    </actionList>
-                   <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                   <ruleEvaluationLogic>OR</ruleEvaluationLogic>
                    <ruleList>
                         <compareText>
                            <text>${pghost}</text>

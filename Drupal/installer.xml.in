@@ -1390,7 +1390,7 @@
                             <text>${msg(pgplus.blank.error)}</text>
                         </throwError>
                     </actionList>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleEvaluationLogic>OR</ruleEvaluationLogic>
                     <ruleList>
                         <compareText>
                             <text>${pghost}</text>
@@ -1714,7 +1714,7 @@
                             <variable>response</variable>
                         </showQuestion>
                     </actionList>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleEvaluationLogic>OR</ruleEvaluationLogic>
                     <ruleList>
                         <compareText>
                             <text>${dbexist}</text>

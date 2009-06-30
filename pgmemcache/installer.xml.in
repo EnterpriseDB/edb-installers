@@ -230,7 +230,7 @@
             </actionList>
             <ruleList>
                 <ruleGroup>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleEvaluationLogic>OR</ruleEvaluationLogic>
                     <ruleList>
                         <fileTest>
                             <path>${installdir}/bin/psql</path>
@@ -278,7 +278,7 @@
             </actionList>
             <ruleList>
                 <ruleGroup>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleEvaluationLogic>OR</ruleEvaluationLogic>
                     <ruleList>
                         <fileTest>
                             <path>${installdir}\bin\psql.exe</path>
@@ -663,7 +663,7 @@
                     </actionList>
                     <ruleList>
                         <ruleGroup>
-                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                            <ruleEvaluationLogic>OR</ruleEvaluationLogic>
                             <ruleList>
                                 <fileTest>
                                     <path>${installdir}/bin/psql</path>
@@ -703,7 +703,7 @@
                     </actionList>
                     <ruleList>
                         <ruleGroup>
-                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                            <ruleEvaluationLogic>OR</ruleEvaluationLogic>
                             <ruleList>
                                 <fileTest>
                                     <path>${installdir}\bin\psql.exe</path>
