@@ -7636,7 +7636,7 @@
             </throwError>
             <throwError>
               <text>${msg(config.superpassword.format.error.windows)}</text>
-              <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+              <ruleEvaluationLogic>or</ruleEvaluationLogic>
               <ruleList>
                 <compareText>
                   <logic>equals</logic>

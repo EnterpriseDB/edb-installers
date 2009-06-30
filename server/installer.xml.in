@@ -1532,7 +1532,7 @@
                 </throwError>
                 <throwError>
                     <text>${msg(config.superpassword.format.error.windows)}</text>
-                    <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                         <compareText>
                             <logic>equals</logic>
@@ -3634,7 +3634,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                         </throwError>
                         <throwError>
                             <text>${msg(config.superpassword.format.error.windows)}</text>
-                            <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
                             <ruleList>
                                 <compareText>
                                     <logic>equals</logic>

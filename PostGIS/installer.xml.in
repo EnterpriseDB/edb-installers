@@ -419,7 +419,7 @@
             </actionList>
             <ruleList>
                <ruleGroup>
-               <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+               <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                        <fileTest>
                           <path>${installdir}/bin/psql</path>
@@ -467,7 +467,7 @@
             </actionList>
             <ruleList>
                <ruleGroup>
-               <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+               <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                        <fileTest>
                           <path>${installdir}\bin\psql.exe</path>
@@ -1570,7 +1570,7 @@
                             <text>${msg(pgplus.blank.error)}</text>
                         </throwError>
                     </actionList>
-                    <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                         <compareText>
                             <text>${pgport}</text>
@@ -1907,7 +1907,7 @@
                     </actionList>
                     <ruleList>
                         <ruleGroup>
-                            <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
                             <ruleList>
                                <fileTest>
                                   <path>${installdir}/bin/psql</path>
@@ -1947,7 +1947,7 @@
                     </actionList>
                     <ruleList>
                         <ruleGroup>
-                            <ruleEvaluationLogic>OR</ruleEvaluationLogic>   
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>   
                             <ruleList>
                                <fileTest>
                                   <path>${installdir}\bin\psql.exe</path>

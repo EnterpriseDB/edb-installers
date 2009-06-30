@@ -1262,7 +1262,7 @@
               <text>${msg(pg.blank.error)}</text>
             </throwError>
           </actionList>
-          <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
             <compareText logic="equals" text="${pgport}" value=""/>
             <compareText logic="equals" text="${pguser}" value=""/>
@@ -1631,7 +1631,7 @@
           </ruleList>
         </passwordParameter>
       </parameterList>
-      <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+      <ruleEvaluationLogic>or</ruleEvaluationLogic>
       <ruleList>
         <compareText logic="equals" text="${pgAgentVersion}" value=""/>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
