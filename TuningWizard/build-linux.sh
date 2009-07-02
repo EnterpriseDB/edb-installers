@@ -69,6 +69,7 @@ _build_TuningWizard_linux() {
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libkrb5.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libk5crypto.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libtiff.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/lib/libuuid.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
 }
     
 

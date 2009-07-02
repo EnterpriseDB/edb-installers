@@ -21,8 +21,6 @@ _prep_mediaWiki_windows() {
     
     # Grab a copy of the source tree
     cp -R mediawiki-$PG_VERSION_MEDIAWIKI/* mediaWiki.windows || _die "Failed to copy the source code (source/mediaWiki-$PG_VERSION_MEDIAWIKI)"
-    cd mediaWiki.windows
-    patch -p0 < $WD/tarballs/mediaWiki_windows.patch
 
     cd $WD/mediaWiki/source
     chmod -R ugo+w mediaWiki.windows || _die "Couldn't set the permissions on the source directory"
