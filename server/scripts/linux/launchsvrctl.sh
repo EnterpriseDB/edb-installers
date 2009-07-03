@@ -8,7 +8,12 @@ do
     which $shell > /dev/null 2>&1
     if [ $? -eq 0 ];
     then
-        `which $shell` -e "PG_INSTALLDIR/scripts/serverctl.sh" $1 wait
+        if [ x"$shell" = x"konsole" ]
+        then
+            `which $shell` -e "PG_INSTALLDIR/scripts/serverctl.sh" $1 wait
+        else
+            `which $shell` -e "PG_INSTALLDIR/scripts/serverctl.sh $1 wait"
+        fi
         exit 0
     fi
 done
