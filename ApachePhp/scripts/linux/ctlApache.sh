@@ -25,10 +25,14 @@ do
         fpath=`which $f`
         if [ x"$fpath" = x"" ]
         then
-                        continue
-                else
-                        $fpath -e @@INSTALL_DIR@@/scripts/runApache.sh $action
-                        exit 0
-                fi
+                continue
+        elif [ x"$fpath" = x"konsole" ]
+        then
+                $fpath -e "@@INSTALL_DIR@@/scripts/runApache.sh" $action
+                exit 0
+        else
+                $fpath -e "@@INSTALL_DIR@@/scripts/runApache.sh $action"
+                exit 0
+        fi
 done
 
