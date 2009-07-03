@@ -10,6 +10,7 @@ PG_ARCH_OSX=1
 PG_ARCH_LINUX=0
 PG_ARCH_LINUX_X64=0
 PG_ARCH_WINDOWS=0
+PG_ARCH_WINDOWS_X64=0
 
 # Packages. Set to 1 to enable a specific packages. Note that many packages will be interdependent
 #           so you must ensure that all the required dependencies are enabled.
@@ -34,6 +35,7 @@ PG_PACKAGE_PGAGENT=1
 PG_PACKAGE_PGMEMCACHE=1
 PG_PACKAGE_PGBOUNCER=1
 PG_PACKAGE_META=1
+PG_PACKAGE_LIBPQ=1
 
 # Path for the build machine (/opt/... must be at the end!)
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/apache-ant-1.7.1/bin:/opt/local/bin
@@ -72,6 +74,11 @@ PG_PSDK_WINDOWS="C:\\\\Program Files\\\\Microsoft Platform SDK"
 PG_MINGW_WINDOWS=C:\\\\MinGW
 PG_MSYS_WINDOWS=C:\\\\msys\\\\1.0
 PG_JAVA_HOME_WINDOWS="C:\\\\Program Files\\\\Java\\\\jdk1.5.0_16"
+
+PG_SSH_WINDOWS_X64=buildfarm@bf-windows-x64.ox.uk.enterprisedb.com
+PG_PATH_WINDOWS_X64=C:\\\\pginstaller-repo
+PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 8"
+PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild"
 
 PG_PATH_OSX=`pwd`
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging/osx
