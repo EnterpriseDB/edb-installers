@@ -39,5 +39,19 @@ then
     fi
 fi
 
+# On newer version of Fedora, neither of gksu/gnomesu/kdesu is available
+if [ x"$CMD" = x"" ];
+then
+    for shell in xterm konsole gnome-terminal
+    do
+        which $shell > /dev/null 2>&1
+        if [ $? -eq 0 ];
+        then
+            CMD="`which $shell` -e "
+            break
+        fi
+    done
+fi
+
 $CMD "INSTALLDIR/scripts/runTuningWizard.sh"
 
