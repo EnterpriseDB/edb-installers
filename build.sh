@@ -97,11 +97,11 @@ _init
 ################################################################################
 
 # Package: Server
-if [ $PG_PACKAGE_SERVER == 1 ];
+if [ $PG_PACKAGE_SERVER = 1 ];
 then
     source ./server/build.sh
 
-    if [ $SKIPBUILD == 0 ]; 
+    if [ $SKIPBUILD = 0 ]; 
     then
         _prep_server || exit 1
         _build_server || exit 1
@@ -111,12 +111,12 @@ then
 fi
 
 # Package: ApachePhp
-if [ $PG_PACKAGE_APACHEPHP == 1 ];
+if [ $PG_PACKAGE_APACHEPHP = 1 ];
 then
     cd $WD
     source ./ApachePhp/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_ApachePhp || exit 1
         _build_ApachePhp || exit 1
@@ -126,12 +126,12 @@ then
 fi
 
 # Package: mediaWiki
-if [ $PG_PACKAGE_MEDIAWIKI == 1 ];
+if [ $PG_PACKAGE_MEDIAWIKI = 1 ];
 then
     cd $WD
     source ./mediaWiki/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_mediaWiki || exit 1
         _build_mediaWiki || exit 1
@@ -141,12 +141,12 @@ then
 fi
 
 # Package: phpWiki
-if [ $PG_PACKAGE_PHPWIKI == 1 ];
+if [ $PG_PACKAGE_PHPWIKI = 1 ];
 then
     cd $WD
     source ./phpWiki/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_phpWiki || exit 1
         _build_phpWiki || exit 1
@@ -156,12 +156,12 @@ then
 fi
 
 # Package: phpBB
-if [ $PG_PACKAGE_PHPBB == 1 ];
+if [ $PG_PACKAGE_PHPBB = 1 ];
 then
     cd $WD
     source ./phpBB/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_phpBB || exit 1
         _build_phpBB || exit 1
@@ -171,12 +171,12 @@ then
 fi
 
 # Package: Drupal
-if [ $PG_PACKAGE_DRUPAL == 1 ];
+if [ $PG_PACKAGE_DRUPAL = 1 ];
 then
     cd $WD
     source ./Drupal/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_Drupal || exit 1
         _build_Drupal || exit 1
@@ -186,12 +186,12 @@ then
 fi
 
 # Package: phppgadmin
-if [ $PG_PACKAGE_PHPPGADMIN == 1 ];
+if [ $PG_PACKAGE_PHPPGADMIN = 1 ];
 then
     cd $WD
     source ./phpPgAdmin/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_phpPgAdmin || exit 1
         _build_phpPgAdmin || exit 1
@@ -201,12 +201,12 @@ then
 fi
 
 # Package: pgJDBC
-if [ $PG_PACKAGE_PGJDBC == 1 ];
+if [ $PG_PACKAGE_PGJDBC = 1 ];
 then
     cd $WD
     source ./pgJDBC/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_pgJDBC || exit 1
         _build_pgJDBC || exit 1
@@ -216,12 +216,12 @@ then
 fi
 
 # Package: psqlODBC
-if [ $PG_PACKAGE_PSQLODBC == 1 ];
+if [ $PG_PACKAGE_PSQLODBC = 1 ];
 then
     cd $WD
     source ./psqlODBC/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_psqlODBC || exit 1
         _build_psqlODBC || exit 1
@@ -231,12 +231,12 @@ then
 fi
 
 # Package: PostGIS
-if [ $PG_PACKAGE_POSTGIS == 1 ];
+if [ $PG_PACKAGE_POSTGIS = 1 ];
 then
     cd $WD
     source ./PostGIS/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_PostGIS || exit 1
         _build_PostGIS || exit 1
@@ -246,12 +246,12 @@ then
 fi
 
 # Package: Slony
-if [ $PG_PACKAGE_SLONY == 1 ];
+if [ $PG_PACKAGE_SLONY = 1 ];
 then
     cd $WD
     source ./Slony/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_Slony || exit 1
         _build_Slony || exit 1
@@ -260,12 +260,12 @@ then
 fi
 
 # Package: TuningWizard
-if [ $PG_PACKAGE_TUNINGWIZARD == 1 ];
+if [ $PG_PACKAGE_TUNINGWIZARD = 1 ];
 then
     cd $WD
     source ./TuningWizard/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_TuningWizard || exit 1
         _build_TuningWizard || exit 1
@@ -274,12 +274,12 @@ then
 fi
 
 # Package: MigrationWizard
-if [ $PG_PACKAGE_MIGRATIONWIZARD == 1 ];
+if [ $PG_PACKAGE_MIGRATIONWIZARD = 1 ];
 then
     cd $WD
     source ./MigrationWizard/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_MigrationWizard || exit 1
         _build_MigrationWizard || exit 1
@@ -288,12 +288,12 @@ then
 fi
 
 # Package: pgphonehome
-if [ $PG_PACKAGE_PGPHONEHOME == 1 ];
+if [ $PG_PACKAGE_PGPHONEHOME = 1 ];
 then
     cd $WD
     source ./pgphonehome/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_pgphonehome || exit 1
         _build_pgphonehome || exit 1
@@ -302,12 +302,12 @@ then
 fi
 
 # Package: Npgsql
-if [ $PG_PACKAGE_NPGSQL == 1 ];
+if [ $PG_PACKAGE_NPGSQL = 1 ];
 then
     cd $WD
     source ./Npgsql/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_Npgsql || exit 1
         _build_Npgsql || exit 1
@@ -316,12 +316,12 @@ then
 fi
 
 # Package: pgAgent
-if [ $PG_PACKAGE_PGAGENT == 1 ];
+if [ $PG_PACKAGE_PGAGENT = 1 ];
 then
     cd $WD
     source ./pgAgent/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_pgAgent || exit 1
         _build_pgAgent || exit 1
@@ -330,12 +330,12 @@ then
 fi
 
 # Package: pgmemcache
-if [ $PG_PACKAGE_PGMEMCACHE == 1 ];
+if [ $PG_PACKAGE_PGMEMCACHE = 1 ];
 then
     cd $WD
     source ./pgmemcache/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_pgmemcache || exit 1
         _build_pgmemcache || exit 1
@@ -344,12 +344,12 @@ then
 fi
 
 # Package: pgbouncer
-if [ $PG_PACKAGE_PGBOUNCER == 1 ];
+if [ $PG_PACKAGE_PGBOUNCER = 1 ];
 then
     cd $WD
     source ./pgbouncer/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_pgbouncer || exit 1
         _build_pgbouncer || exit 1
@@ -358,10 +358,10 @@ then
 fi
 
 #Package: Meta Installer
-if [ $PG_PACKAGE_META == 1 ];
+if [ $PG_PACKAGE_META = 1 ];
 then
     source ./MetaInstaller/build.sh
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_metainstaller || exit 1
         _build_metainstaller || exit 1
@@ -370,10 +370,10 @@ then
 fi
 
 #Package: libpq
-if [ $PG_PACKAGE_LIBPQ == 1 ];
+if [ $PG_PACKAGE_LIBPQ = 1 ];
 then
     source ./libpq/build.sh
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_libpq || exit 1
         _build_libpq || exit 1
@@ -385,11 +385,11 @@ fi
 
 # Package: DevServer
 # ALWAYS BUILD THIS LAST!!
-if [ $PG_PACKAGE_DEVSERVER == 1 ];
+if [ $PG_PACKAGE_DEVSERVER = 1 ];
 then
     source ./DevServer/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_DevServer || exit 1
         _build_DevServer || exit 1
