@@ -76,11 +76,15 @@ _prep_server() {
     # Debugger
     cd $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib
 
-    echo "Unpacking debugger source..."
-    #tar -zxvf ../../../../tarballs/edb-debugger-$PG_TARBALL_DEBUGGER.tgz
-    cp -R ../../../../DevServer/source/pgsql/contrib/pldebugger .
-    cd pldebugger
-    cvs -z3 update -dP   
+    if [ -e pldebugger ]; 
+    then
+    echo "Updating debugger source..."
+        cd pldebugger
+        cvs -z3 update -dP  || _die "Failed to update the pldebugger code" 
+    else
+        echo "Fetching debugger source..."
+        cvs -d:pserver:anonymous@cvs.pgfoundry.org:/cvsroot/edb-debugger co -d pldebugger server || _die "Failed to checkout the pldebugger code"
+    fi  
 	
 	# StackBuilder (CVS Tree)
 	echo "Updating the StackBuilder source tree..."
