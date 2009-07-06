@@ -92,11 +92,11 @@ _init
 ################################################################################
 
 # Package: Server
-if [ $PG_PACKAGE_SERVER == 1 ];
+if [ $PG_PACKAGE_SERVER = 1 ];
 then
     source ./server/build.sh
 
-    if [ $SKIPBUILD == 0 ]; 
+    if [ $SKIPBUILD = 0 ]; 
     then
         _prep_server || exit 1
         _build_server || exit 1
@@ -106,12 +106,12 @@ then
 fi
 
 # Package: PostGIS
-if [ $PG_PACKAGE_POSTGIS == 1 ];
+if [ $PG_PACKAGE_POSTGIS = 1 ];
 then
     cd $WD
     source ./PostGIS/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_PostGIS || exit 1
         _build_PostGIS || exit 1
@@ -121,12 +121,12 @@ then
 fi
 
 # Package: Slony
-if [ $PG_PACKAGE_SLONY == 1 ];
+if [ $PG_PACKAGE_SLONY = 1 ];
 then
     cd $WD
     source ./Slony/build.sh
 
-    if [ $SKIPBUILD == 0 ];
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_Slony || exit 1
         _build_Slony || exit 1
