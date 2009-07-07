@@ -15,7 +15,7 @@ strUsername = WScript.Arguments.Item(0)
 strPassword = WScript.Arguments.Item(1)
 strInstallDir = WScript.Arguments.Item(2)
 strDataDir = WScript.Arguments.Item(3)
-iPort = CInt(WScript.Arguments.Item(4))
+iPort = WScript.Arguments.Item(4)
 strInstallPlPgsql = WScript.Arguments.Item(5)
 
 'Escape the '%' as '%%', if present in the password
