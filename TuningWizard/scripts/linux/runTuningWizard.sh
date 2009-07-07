@@ -8,7 +8,7 @@ LOADINGUSER=`whoami`
 if [ x"$LOADINGUSER" != x"root" ];
 then
 
-    echo "NOTE: Graphical administrator tool for su/sudo could not be located on your system! This window must kept open, while the Tuning-Wizard is running."
+    echo "NOTE: Graphical administrator tool for su/sudo could not be located on your system! This window must be kept open, while the Tuning-Wizard is running."
     USE_SUDO=0
 
     if [ -f /etc/lsb-release ];
@@ -29,38 +29,14 @@ then
         echo "Please enter your password if requested."
     fi
 
-    NOHUP=`which nohup 2>/dev/null`
-    if [ $USE_SUDO = "1" -a x"$NOHUP" = x"" ];
+    if [ $USE_SUDO = "1" ];
     then
         sudo su -c "LD_LIBRARY_PATH="INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALLDIR/TuningWizard""
-        if [ $? -ne 0 ]; then
-            exit -1
-        fi
-    elif [ $USE_SUDO != "1" -a x"$NOHUP" = x"" ];
+    elif [ $USE_SUDO != "1" ];
     then
         su -c "LD_LIBRARY_PATH="INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALLDIR/TuningWizard""
-        if [ $? -ne 0 ]; then
-            exit -1
-        fi
-    elif [ $USE_SUDO = "1" -a x"$NOHUP" != x"" ];
-    then
-        sudo su -c "LD_LIBRARY_PATH="INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc $NOHUP "INSTALLDIR/TuningWizard" > /tmp/TuningWizard.log 2>&1 &"
-        if [ $? -ne 0 ]; then
-            exit -1
-        fi
-    else
-        su -c "LD_LIBRARY_PATH="INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc $NOHUP "INSTALLDIR/TuningWizard" > /tmp/TuningWizard.log 2>&1 &"
-        if [ $? -ne 0 ]; then
-            exit -1
-        fi
     fi
 
-    if [ x"$NOHUP" != x"" ];
-    then
-        echo "Waiting for sometime before closing this window to make sure the TuningWizard initialized completely."
-        sleep 2
-    fi
-    
 else
     LD_LIBRARY_PATH="INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALLDIR/TuningWizard"
 fi
