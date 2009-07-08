@@ -34,6 +34,8 @@ post.install.error=Error Configuring phpBB Application.
 
 pgplus.blank.error=Values must be entered for all fields.
 
+pgplus.port.error=Invalid port specified.
+
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 
 Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
