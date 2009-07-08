@@ -40,6 +40,7 @@
     <leftImage>../resources/edb-side.png</leftImage>
 
     <!-- i18n files for the UI -->
+    <allowedLanguages>en</allowedLanguages>
     <customLanguageFileList>
         <language>
             <code>en</code>

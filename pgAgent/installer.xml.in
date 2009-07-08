@@ -39,6 +39,7 @@
   <leftImage>../resources/pg-side.png</leftImage>
 
   <!-- i18n files for the UI -->
+  <allowedLanguages>en</allowedLanguages>
   <customLanguageFileList>
     <language code="en" encoding="iso8859-1" file="i18n/en.lng"/>
   </customLanguageFileList>

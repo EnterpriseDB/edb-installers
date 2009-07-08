@@ -37,6 +37,7 @@
     <windowsExecutableIcon>resources/logo.ico</windowsExecutableIcon>
 
     <!-- i18n files for the UI -->
+    <allowedLanguages>en</allowedLanguages>
     <customLanguageFileList>
         <language>
             <code>en</code>
