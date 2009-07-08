@@ -28,6 +28,8 @@ post.install.error=Error configuring pgPhonehome.
 
 pgplus.blank.error=Values must be entered for all fields.
 
+pgplus.port.error=Invalid port specified.
+
 htpasswd.fail.error=The password creation utility (APACHE_HOME/bin/htpasswd) failed to create the password file.
 
 pgphonehome.details.title=pgPhoneHome User Account 

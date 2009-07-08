@@ -101,15 +101,15 @@
         <setInstallerVariable name="pgdatabase" value="postgres"/>	
         <setInstallerVariable name="defaultusername" value=""/>
         <setInstallerVariable name="defaultpasswd" value=""/>
-        <setInstallerVariable name="defaultuser" value=""/>
-        <setInstallerVariable name="defaultpassword" value=""/>
+        <setInstallerVariable name="defaultpguser" value="postgres"/>
+        <setInstallerVariable name="defaultpgpassword" value=""/>
 
         <!-- ALL: Set the default values for unattended mode -->
         <actionGroup>
            <actionList>
                 <setInstallerVariable name="defaultpasswd" value=""/>
-                <setInstallerVariable name="defaultuser" value="postgres"/>
-                <setInstallerVariable name="defaultpassword" value="postgres"/>
+                <setInstallerVariable name="defaultpguser" value="postgres"/>
+                <setInstallerVariable name="defaultpgpassword" value="postgres"/>
            </actionList>
            <ruleList>
                 <compareText>
@@ -1242,7 +1242,7 @@
                     <description>Host</description>
                     <explanation></explanation>
                     <value/>
-                    <default/>
+                    <default>localhost</default>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
@@ -1264,7 +1264,7 @@
                     <description>User Name</description>
                     <explanation></explanation>
                     <value/>
-                    <default/>
+                    <default>${defaultpguser}</default>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
@@ -1276,7 +1276,7 @@
                     <description>Password</description>
                     <explanation></explanation>
                     <value/>
-                    <default/>
+                    <default>${defaultpgpassword}</default>
                     <allowEmptyValue>1</allowEmptyValue>
                     <askForConfirmation>0</askForConfirmation>
                     <descriptionRetype></descriptionRetype>
@@ -1342,7 +1342,22 @@
                         </compareText>
                   </ruleList>
              </actionGroup>
-
+               <throwError>
+                    <text>${msg(pgplus.port.error)}</text>
+                    <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareValues>
+                            <value1>${pgport}</value1>
+                            <logic>less_or_equal</logic>
+                            <value2>0</value2>
+                        </compareValues>
+                        <compareValues>
+                            <value1>${pgport}</value1>
+                            <logic>greater_or_equal</logic>
+                            <value2>65535</value2>
+                        </compareValues>
+                    </ruleList>
+               </throwError>
 	       <!-- Creating a temporary directory -->
                 <createDirectory path="${system_temp_directory}/${product_fullname}"/>
                 <!-- WIN: Unpacking the Script file to temporary directory -->
