@@ -100,8 +100,8 @@ _postprocess_Drupal_windows() {
     _replace " '#default_value' => \$db_path," " '#default_value' => drupal," "$WD/Drupal/staging/windows/Drupal/install.php"
     _replace " '#default_value' => \$db_user," " '#default_value' => drupaluser," "$WD/Drupal/staging/windows/Drupal/install.php"
     _replace " '#default_value' => \$db_pass," " '#default_value' => drupaluser," "$WD/Drupal/staging/windows/Drupal/install.php"
-    _replace " '#default_value' => \$db_host," " '#default_value' => localhost," "$WD/Drupal/staging/windows/Drupal/install.php"
-    _replace " '#default_value' => \$db_port," " '#default_value' => 5432," "$WD/Drupal/staging/windows/Drupal/install.php"
+    _replace " '#default_value' => \$db_host," " '#default_value' => @@HOST@@," "$WD/Drupal/staging/windows/Drupal/install.php"
+    _replace " '#default_value' => \$db_port," " '#default_value' => @@PORT@@," "$WD/Drupal/staging/windows/Drupal/install.php"
     _replace " '#default_value' => \$db_prefix," " '#default_value' => drupal_," "$WD/Drupal/staging/windows/Drupal/install.php"
 
     chmod ugo+w staging/windows/Drupal/sites/default || _die "Couldn't set the permissions on the default directory"

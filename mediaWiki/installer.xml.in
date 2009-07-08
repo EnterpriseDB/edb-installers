@@ -88,7 +88,7 @@
         </setInstallerVariable>
         <!-- Set the default values -->
         <setInstallerVariable name="pgdatabase" value="postgres"/>
-        <setInstallerVariable name="defaultuser" value=""/>
+        <setInstallerVariable name="defaultuser" value="postgres"/>
         <setInstallerVariable name="defaultpassword" value=""/>
         <setInstallerVariable name="dbexist" value=""/>
         <setInstallerVariable name="userexist" value=""/>
@@ -597,6 +597,21 @@
     </preInstallationActionList>
     <!-- Post installation actions -->
     <postInstallationActionList>
+
+	    <substitute>
+	        <files>${installdir}/mediaWiki/config/index.php</files>
+	        <substitutionList>
+	            <substitution>
+	                <pattern>@@HOST@@</pattern>
+	                <value>${pghost}</value>
+	            </substitution>
+	            <substitution>
+	                <pattern>@@PORT@@</pattern>
+	                <value>${pgport}</value>
+	            </substitution>
+	        </substitutionList>
+	    </substitute>
+
         <!-- LIN & MAC : Write the mediaWiki Info to INI File -->
         <actionGroup>
             <actionList>

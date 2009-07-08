@@ -92,7 +92,7 @@
         </setInstallerVariable>
         <!-- Set the default values -->
         <setInstallerVariable name="pgdatabase" value="postgres"/>
-        <setInstallerVariable name="defaultuser" value=""/>
+        <setInstallerVariable name="defaultuser" value="postgres"/>
         <setInstallerVariable name="defaultpassword" value=""/>
         <setInstallerVariable name="dbexist" value=""/>
         <setInstallerVariable name="userexist" value=""/>

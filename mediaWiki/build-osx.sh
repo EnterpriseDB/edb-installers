@@ -93,6 +93,8 @@ _postprocess_mediaWiki_osx() {
     cp resources/pg-launchMediaWiki.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchMediaWiki.icns)"
 
     #Configure the config/index.php file
+    _replace "\$conf->DBserver = importPost( \"DBserver\", \"localhost\" );" "\$conf->DBserver = importPost( \"DBserver\", \"@@HOST@@\" );" "$WD/mediaWiki/staging/osx/mediaWiki/config/index.php"
+    _replace "\$conf->DBport      = importPost( \"DBport\",      \"5432\" );" "\$conf->DBport      = importPost( \"DBport\",      \"@@PORT@@\" );" "$WD/mediaWiki/staging/osx/mediaWiki/config/index.php"
     _replace "\$conf->DBname = importPost( \"DBname\", \"wikidb\" );" "\$conf->DBname = importPost( \"DBname\", \"mediawiki\" );" "$WD/mediaWiki/staging/osx/mediaWiki/config/index.php"
     _replace "\$conf->DBuser = importPost( \"DBuser\", \"wikiuser\" );" "\$conf->DBuser = importPost( \"DBuser\", \"mediawikiuser\" );" "$WD/mediaWiki/staging/osx/mediaWiki/config/index.php"
     _replace "\$conf->DBpassword = importPost( \"DBpassword\" );" "\$conf->DBpassword = importPost( \"DBpassword\",\"mediawikiuser\" );" "$WD/mediaWiki/staging/osx/mediaWiki/config/index.php"

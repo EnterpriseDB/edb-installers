@@ -87,7 +87,7 @@
         </setInstallerVariable>
         <!-- Set the default values -->
         <setInstallerVariable name="pgdatabase" value="postgres"/>
-        <setInstallerVariable name="defaultuser" value=""/>
+        <setInstallerVariable name="defaultuser" value="postgres"/>
         <setInstallerVariable name="defaultpassword" value=""/>
         <setInstallerVariable name="dbexist" value=""/>
         <setInstallerVariable name="userexist" value=""/>
@@ -674,6 +674,21 @@
                 </fileExists>
             </ruleList>
         </actionGroup>
+
+        <substitute>
+            <files>${installdir}/Drupal/install.php</files>
+            <substitutionList>
+                <substitution>
+                    <pattern>@@HOST@@</pattern>
+                    <value>${pghost}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@PORT@@</pattern>
+                    <value>${pgport}</value>
+                </substitution>
+            </substitutionList>
+        </substitute>
+
         <!-- LIN & MAC: Write the Drupal Info to INI File -->
         <actionGroup>
             <actionList>
