@@ -296,6 +296,7 @@
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
         <compareText logic="equals" text="${pgAgentVersion}" value=""/>
+        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
       </ruleList>
     </runProgram>
 
@@ -1672,6 +1673,38 @@
             <compareText logic="equals" text="${platform_name}" value="windows"/>
             <compareText logic="equals" text="${systempassword}" value=""/>
           </ruleList>
+        </actionGroup>
+        <!-- WIN : Create user  -->
+        <actionGroup>
+          <actionList>
+              <unpackFile>
+                <component>pgAgent</component>
+                <destination>${system_temp_directory}\${product_fullname}\bin\createuser.exe</destination>
+                <folder>installfileswindows</folder>
+                <origin>installer\pgAgent\createuser.exe</origin>
+              </unpackFile>
+              <runProgram>
+                <program>${system_temp_directory}\${product_fullname}\bin\createuser.exe</program>
+                <programArguments>. "${systemuser}" "${systempassword}"</programArguments>
+                <abortOnError>0</abortOnError>
+                <showMessageOnError>0</showMessageOnError>
+              </runProgram>
+              <throwError>
+                <text>${msg(script.command.line.error)}</text>
+                <ruleList>
+                  <compareText logic="equals" text="${program_exit_code}" value="127"/>
+                </ruleList>
+              </throwError>
+              <throwError>
+                <text>${msg(config.systempassword.incorrect.windows)}</text>
+                <ruleList>
+                  <compareText logic="equals" text="${program_exit_code}" value="1"/>
+                </ruleList>
+              </throwError>
+            </actionList>
+            <ruleList>
+              <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
         </actionGroup>
         <!-- WIN : Validate user name & password -->
         <actionGroup>

@@ -68,7 +68,7 @@ sysuser.details.title=pgAgent service account
 
 sysuser.details.explanation=Please provide the user name of the account under which the pgAgent service will run.\nThe .pgpass file will be created in the account home directory.\nIf the user account does not exist it will be created.
 
-sysuser.details.explanation.windows=Please provide the username and password of the account under which the pgAgent service will run.\nThe pgpass.conf file will be created in its %APPDATA%\postgresql directory.\nIf the user account does not exist, it will be created.
+sysuser.details.explanation.windows=Please provide the username and password of the account under which the pgAgent service will run.\nThe pgpass.conf file will be created in its %APPDATA%\postgresql directory.\nIf the user account does not exist, it will be created when you click 'Next'.
 
 sysuser.details.explanation.withuser.windows=Please provide the password for the '${systemuser}' user.\nThe pgAgent service will be run under this account.
 
