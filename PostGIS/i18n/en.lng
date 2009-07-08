@@ -36,6 +36,8 @@ pgplus.details.error=Connection to the PostgreSQL Server failed. Please re-check
 
 pgplus.blank.error=Values must be entered for all fields.
 
+pgplus.port.error=Invalid port specified.
+
 spatialdb.details.title=PostGIS Database Details
 
 spatialdb.details.explanation=Please enter the name of the PostGIS Database.
