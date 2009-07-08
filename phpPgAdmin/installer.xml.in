@@ -50,6 +50,10 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+    <preShowHelpActionList>
+         <setInstallerVariable name="defaultpghome" value=""/>
+    </preShowHelpActionList>
+
     <!-- Prebuild Actions -->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>

@@ -42,6 +42,54 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+    <preShowHelpActionList>
+        <!-- Set the default values -->
+		<setInstallerVariable name="defaultpghost" value="localhost"/>
+		<setInstallerVariable name="defaultpguser" value="postgres"/>
+		<setInstallerVariable name="defaultpgport" value="5432"/>
+		<!-- Set the default postgres password, to be used only in unnattended mode -->
+		<setInstallerVariable name="defaultpgpassword" value=""/>
+		<setInstallerVariable name="def_listen_port" value="6432"/>
+		<!-- MAC : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/Library/PgBouncer</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- LIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}/PgBouncer</value>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- WIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}\PgBouncer</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+    </preShowHelpActionList>
     <!-- Prebuild Actons-->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>

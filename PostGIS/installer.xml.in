@@ -45,6 +45,51 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+    <preShowHelpActionList>
+        <setInstallerVariable name="defaultuser" value="postgres"/>
+        <setInstallerVariable name="defaultpassword" value=""/>
+        <!-- WIN: Set the    pghome default value when pghome not set -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\${PGMajorVersion}"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+	<!-- LIN: Set the    pghome default value when pghome not set -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/${PGMajorVersion}"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- MAC: Set the    pghome default value when pghome not set -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/${PGMajorVersion}"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </preShowHelpActionList>
+
     <!-- Prebuild Actons-->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>
@@ -86,7 +131,7 @@
             <persist>1</persist>
         </setInstallerVariable>
         <!-- Set the default values -->
-        <setInstallerVariable name="defaultuser" value=""/>
+        <setInstallerVariable name="defaultuser" value="postgres"/>
         <setInstallerVariable name="defaultpassword" value=""/>
         <!-- Set the default values for unattended mode -->
         <actionGroup>

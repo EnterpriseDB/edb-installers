@@ -53,6 +53,35 @@
         </ruleList>
     </setInstallerVariable>
    </preBuildActionList>
+  <preShowHelpActionList>
+    <!-- LIN & WIN: Set the default installation directory -->
+    <setInstallerVariable>
+      <name>default_installdir</name>
+      <persist>1</persist>
+      <value>${platform_install_prefix}/PostgreSQL/EnterpriseDB-${product_fullname}</value>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+      </ruleList>
+    </setInstallerVariable>
+    <!-- MAC : Set the default installation directory -->
+    <setInstallerVariable>
+      <name>default_installdir</name>
+      <persist>1</persist>
+      <value>/Library/PostgreSQL/EnterpriseDB-${product_fullname}</value>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+      </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="defaultport" value="8080"/>
+ </preShowHelpActionList>
   <!-- Initialisation actions -->
   <initializationActionList>
       <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_APACHEPHP" />	

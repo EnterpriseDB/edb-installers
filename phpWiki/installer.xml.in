@@ -50,6 +50,12 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+    <preShowHelpActionList>
+        <setInstallerVariable name="pghost" value="localhost" />
+        <setInstallerVariable name="defaultuser" value="postgres"/>
+        <setInstallerVariable name="defaultpassword" value=""/>
+    </preShowHelpActionList>
+
     <!-- Prebuild Actions -->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>

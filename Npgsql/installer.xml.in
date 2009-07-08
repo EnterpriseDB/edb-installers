@@ -42,6 +42,48 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+
+    <preShowHelpActionList>
+    	<!-- MAC : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/Library/PostgreSQL/Npgsql</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- LIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}/PostgreSQL/Npgsql</value>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- WIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}\PostgreSQL\Npgsql</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+    </preShowHelpActionList>
     <!-- Prebuild Actons-->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>

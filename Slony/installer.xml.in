@@ -48,7 +48,49 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
-	
+    <preShowHelpActionList>
+        <!-- WIN: Set the pghome default value when pghome not set -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\${PGMajorVersion}"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+		
+	    <!-- LIN & LIN64: Set the pghome default value when pghome not set -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/${PGMajorVersion}"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+		
+        <!-- MAC: Set the pghome default value when pghome not set -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/${PGMajorVersion}"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </preShowHelpActionList>	
     <!-- Prebuild Actons-->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>

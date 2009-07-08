@@ -44,6 +44,31 @@
     <language code="en" encoding="iso8859-1" file="i18n/en.lng"/>
   </customLanguageFileList>
 
+  <preShowHelpActionList>
+     <!-- Set the default values -->
+    <setInstallerVariable name="defaultpghost" value="localhost"/>
+    <setInstallerVariable name="defaultpguser" value="postgres"/>
+    <setInstallerVariable name="defaultpgport" value="5432"/>
+    <setInstallerVariable name="defaultpgdbname" value="postgres"/>
+    <!-- Set the installation directory for different platform -->
+    <setInstallerVariable name="defaultinstalldir" value="${platform_install_prefix}\pgAgent">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="defaultinstalldir" value="${platform_install_prefix}/pgAgent">
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="defaultinstalldir" value="/Library/pgAgent">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
+      </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="defaultsyspassword" value=""/>
+ 
+ </preShowHelpActionList>
   <!-- Prebuild Actions -->
   <preBuildActionList>
     <setInstallerVariable name="originalplatform" value="${platform_name}"/>
