@@ -159,6 +159,40 @@
   </initializationActionList>
   <!-- Preinstallation actions -->
   <preInstallationActionList>
+
+    <!-- Check for SELinux -->
+    <actionGroup>
+      <actionList> 
+        <setInstallerVariable name="selinux" value="" />
+        <setInstallerVariableFromScriptOutput>
+          <name>selinux</name>
+          <exec>getenforce</exec>
+          <execArgs/>
+        </setInstallerVariableFromScriptOutput>
+        <showWarning text="${msg(warn.selinux)}" >
+          <ruleList>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${selinux}</text>
+              <value>Disabled</value>
+            </compareText> 
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${selinux}</text>
+              <value/>
+            </compareText>
+          </ruleList>
+        </showWarning> 
+      </actionList> 
+      <ruleList>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>linux</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+     
     <!-- Creates the ini file if not exits -->
     <touchFile path="/etc/postgres-reg.ini">
       <ruleList>
@@ -479,6 +513,10 @@
         </fileExists>
       </ruleList>
     </runProgram>
+
+    <!-- Waiting for the installer to stop Apache service -->
+    <!-- Assuming it can safely stop in 3 sec -->
+    <wait ms="3000"/>
 
     <!-- WIN: Delete the uninstaller (Old) Windows upgrade -->
     <actionGroup>
@@ -881,6 +919,37 @@ include conf\addons\*.conf
       </ruleList>
     </actionGroup>
     <actionGroup>
+     <actionList>
+        <!-- Linux - Starting Apache -->
+        <runProgram>
+          <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
+          <program>${installdir}/apache/bin/apachectl</program>
+          <programArguments>"start"</programArguments>
+          <workingDirectory>${installdir}/apache/bin</workingDirectory>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+             <compareText>
+                <logic>equals</logic>
+                <text>${selinux}</text>
+                <value>Disabled</value>
+             </compareText>
+             <compareText>
+                <logic>equals</logic>
+                <text>${selinux}</text>
+                <value/>
+             </compareText>
+          </ruleList>
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>linux</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+    <actionGroup>
       <actionList>
         <!-- Linux | Mac - Creating Menu Shortcuts -->
         <runProgram>
@@ -889,20 +958,6 @@ include conf\addons\*.conf
           <programArguments>"${installdir}" "${branding}"</programArguments>
           <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
           <workingDirectory>${installdir}/installer/ApachePhp</workingDirectory>
-        </runProgram>
-        <!-- Linux - Starting Apache -->
-        <runProgram>
-          <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
-          <program>${installdir}/apache/bin/apachectl</program>
-          <programArguments>"start"</programArguments>
-          <workingDirectory>${installdir}/apache/bin</workingDirectory>
-          <ruleList>
-             <compareText>
-                <logic>contains</logic>
-                <text>${platform_name}</text>
-                <value>linux</value>
-             </compareText>
-          </ruleList>
         </runProgram>
       </actionList>
       <ruleList>

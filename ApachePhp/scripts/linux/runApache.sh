@@ -6,6 +6,14 @@ then
         exit 1
 fi
 
+selinux=`getenforce 2>/dev/null`
+if [ "x"$selinux != "x" -a $selinux != "Disabled" ];
+then
+    printf "SELinux is enabled on the system, which might cause apache start/stop/restart to fail.\n"
+    printf "Please ensure proper access privileges to apache.\n"
+fi
+
+
 case $1 in
         start) action=start
                 ;;
