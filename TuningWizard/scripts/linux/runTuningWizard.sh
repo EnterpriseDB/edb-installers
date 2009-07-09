@@ -3,7 +3,9 @@
 # PostgreSQL tuning-wizard runner script for Linux
 # Dave Page, EnterpriseDB
 LOADINGUSER=`whoami`
-echo "NOTE: Graphical administrator tool for su/sudo could not be located on your system! This window must be kept open, while the Tuning-Wizard is running."
+echo "No graphical su/sudo program could be found on your system!"
+echo "This window must be kept open while Stack Builder is running."
+echo ""
 
 # You're not running this script as root user
 if [ x"$LOADINGUSER" != x"root" ];
@@ -21,10 +23,7 @@ then
 
     if [ $USE_SUDO != "1" ];
     then
-        if [ x"$LOADINGUSER" != x"root" ];
-        then
-            echo "Please enter the root password when requested."
-        fi
+        echo "Please enter the root password when requested."
     else
         echo "Please enter your password if requested."
     fi
