@@ -78,9 +78,9 @@ _build_ApachePhp_linux_x64() {
     _replace "#ServerName www.example.com:80" "ServerName localhost:@@PORT@@" "$WD/ApachePhp/staging/linux-x64/apache/conf/httpd.conf"
 
     #Configure the apachectl script file
-    _replace "\$HTTPD -k \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux-x64/apache/bin/apachectl"
-    _replace "\$HTTPD -t" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux-x64/apache/bin/apachectl"
-    _replace "\$HTTPD \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux-x64/apache/bin/apachectl"
+    _replace "\$HTTPD -k \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\"@@INSTALL_DIR@@/php/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux-x64/apache/bin/apachectl"
+    _replace "\$HTTPD -t" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\"@@INSTALL_DIR@@/php/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux-x64/apache/bin/apachectl"
+    _replace "\$HTTPD \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\"@@INSTALL_DIR@@/php/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux-x64/apache/bin/apachectl"
     ssh $PG_SSH_LINUX_X64 "chmod ugo+x \"$PG_STAGING/apache/bin/apachectl\""
      
     echo "Configuring the php source tree"
@@ -109,6 +109,16 @@ _build_ApachePhp_linux_x64() {
   
     # Add LD_PRELOAD in envvars scripts
     echo "CWD=\`pwd\`" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "cd @@INSTALL_DIR@@/php/lib" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "files=\`ls *.so*\`" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "cd \$CWD" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "for f in \$files " >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "do" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "    BROKEN=\`file @@INSTALL_DIR@@/php/lib/\$f | grep broken\`" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "    if [ \"x\$BROKEN\" = \"x\" ] ; then " >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "        LD_PRELOAD=@@INSTALL_DIR@@/php/lib/\$f:\$LD_PRELOAD" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "    fi" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    echo "done" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
     echo "cd @@INSTALL_DIR@@/apache/lib" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
     echo "files=\`ls *.so*\`" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
     echo "cd \$CWD" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
