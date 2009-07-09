@@ -48,7 +48,7 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
-    <preShowPageActionList>
+    <preShowHelpActionList>
         <!-- MAC : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
@@ -90,7 +90,7 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
-    </preShowPageActionList>	
+    </preShowHelpActionList>
     <!-- Prebuild Actons-->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>
