@@ -737,7 +737,7 @@
                 <runProgram>
                     <customErrorMessage>${msg(post.install.error)}</customErrorMessage>
                     <program>${installdir}\Drupal\installer\Drupal\install.bat</program>
-                    <programArguments> "${pghost}" "${pgport}" "${pguser}" "${pgpassword}" "${system_temp_directory}\instscripts" "${pgdatabase}"</programArguments>
+                    <programArguments> ${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "${pgdatabase}"</programArguments>
                     <workingDirectory>${installdir}\Drupal</workingDirectory>
                 </runProgram>
                 <!-- Inform user about the database and role creation -->

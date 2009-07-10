@@ -756,7 +756,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}\phpWiki\installer\phpWiki\install.bat</program>
-                    <programArguments> "${pghost}" "${pgport}" "${pguser}" "${pgpassword}" "${system_temp_directory}\instscripts" "${installdir}" "${pgdatabase}"</programArguments>
+                    <programArguments> ${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "${installdir}" "${pgdatabase}"</programArguments>
                     <workingDirectory>${installdir}\phpWiki\installer\phpWiki</workingDirectory>
                 </runProgram>
                 <!-- Inform user about the database and role creation -->

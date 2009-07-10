@@ -776,7 +776,7 @@
                 <runProgram>
                     <customErrorMessage>${msg(post.install.error)}</customErrorMessage>
                     <program>${installdir}\phpBB\installer\phpBB\install.bat</program>
-                    <programArguments> "${pghost}" "${pgport}" "${pguser}" "${pgpassword}" "${system_temp_directory}\instscripts" "${pgdatabase}"</programArguments>
+                    <programArguments> ${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "${pgdatabase}"</programArguments>
                 </runProgram>
                 <!-- Inform user about the database and role creation -->
                 <showInfo>
