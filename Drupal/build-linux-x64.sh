@@ -111,7 +111,7 @@ _postprocess_Drupal_linux_x64() {
     _replace " '#default_value' => \$db_path," " '#default_value' => drupal," "$WD/Drupal/staging/linux-x64/Drupal/install.php"
     _replace " '#default_value' => \$db_user," " '#default_value' => drupaluser," "$WD/Drupal/staging/linux-x64/Drupal/install.php"
     _replace " '#default_value' => \$db_pass," " '#default_value' => drupaluser," "$WD/Drupal/staging/linux-x64/Drupal/install.php"
-    _replace " '#default_value' => \$db_host," " '#default_value' => @@HOST@@," "$WD/Drupal/staging/linux-x64/Drupal/install.php"
+    _replace " '#default_value' => \$db_host," " '#default_value' => '@@HOST@@'," "$WD/Drupal/staging/linux-x64/Drupal/install.php"
     _replace " '#default_value' => \$db_port," " '#default_value' => @@PORT@@," "$WD/Drupal/staging/linux-x64/Drupal/install.php"
     _replace " '#default_value' => \$db_prefix," " '#default_value' => drupal_," "$WD/Drupal/staging/linux-x64/Drupal/install.php"
 
