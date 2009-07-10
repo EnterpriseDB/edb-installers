@@ -754,9 +754,13 @@
         <!-- WIN : Run Script to create Role and database -->
         <actionGroup>
             <actionList>
+                <setEnvironmentVariable name="PGHOST" value="${pghost}" />
+                <setEnvironmentVariable name="PGUSER" value="${pguser}" />
+                <setEnvironmentVariable name="PGPORT" value="${pgport}" />
+                <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
                 <runProgram>
                     <program>${installdir}\phpWiki\installer\phpWiki\install.bat</program>
-                    <programArguments> ${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "${installdir}" "${pgdatabase}"</programArguments>
+                    <programArguments>"${system_temp_directory}\instscripts" "${installdir}" "${pgdatabase}"</programArguments>
                     <workingDirectory>${installdir}\phpWiki\installer\phpWiki</workingDirectory>
                 </runProgram>
                 <!-- Inform user about the database and role creation -->

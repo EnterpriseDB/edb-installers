@@ -671,10 +671,14 @@
         <!-- WIN: Run Script to create Role and database -->
         <actionGroup>
             <actionList>
+                <setEnvironmentVariable name="PGHOST" value="${pghost}" />
+                <setEnvironmentVariable name="PGUSER" value="${pguser}" />
+                <setEnvironmentVariable name="PGPORT" value="${pgport}" />
+                <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
                 <runProgram>
                     <customErrorMessage>${msg(Error configuring mediaWiki Application)}</customErrorMessage>
                     <program>${installdir}\mediaWiki\installer\mediaWiki\install.bat</program>
-                    <programArguments> ${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "${pgdatabase}"</programArguments>
+                    <programArguments>"${system_temp_directory}\instscripts" "${pgdatabase}"</programArguments>
                     <workingDirectory>${installdir}\mediaWiki\installer\mediaWiki</workingDirectory>
                 </runProgram>
                 <!-- Inform user about the database and role creation -->

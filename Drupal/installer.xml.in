@@ -734,10 +734,14 @@
         <!-- WIN: Run the post-installation script -->
         <actionGroup>
             <actionList>
+                <setEnvironmentVariable name="PGHOST" value="${pghost}" />
+                <setEnvironmentVariable name="PGUSER" value="${pguser}" />
+                <setEnvironmentVariable name="PGPORT" value="${pgport}" />
+                <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
                 <runProgram>
                     <customErrorMessage>${msg(post.install.error)}</customErrorMessage>
                     <program>${installdir}\Drupal\installer\Drupal\install.bat</program>
-                    <programArguments> ${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "${pgdatabase}"</programArguments>
+                    <programArguments>"${system_temp_directory}\instscripts" "${pgdatabase}"</programArguments>
                     <workingDirectory>${installdir}\Drupal</workingDirectory>
                 </runProgram>
                 <!-- Inform user about the database and role creation -->
