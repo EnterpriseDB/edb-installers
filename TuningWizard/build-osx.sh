@@ -50,7 +50,7 @@ _build_TuningWizard_osx() {
     cd $PG_PATH_OSX/TuningWizard/source/tuningwizard.osx
 
     echo "Configuring the tuningwizard source tree"
-    cmake -D wxWidgets_CONFIG_EXECUTABLE=/usr/local/bin/wx-config -D OPENSSL_INCLUDE_DIR=/opt/local/include -D OPENSSL_LIBRARIES=/opt/local/lib/libssl.a -D CRYPTO_LIBRARIES=/opt/local/lib/libcrypto.a -D UUID_LIBRARIES=/opt/local/lib/libuuid.a CMakeLists.txt
+    cmake -D CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" -D wxWidgets_CONFIG_EXECUTABLE=/usr/local/bin/wx-config -D OPENSSL_INCLUDE_DIR=/opt/local/include -D OPENSSL_LIBRARIES=/opt/local/lib/libssl.a -D CRYPTO_LIBRARIES=/opt/local/lib/libcrypto.a -D UUID_LIBRARIES=/opt/local/lib/libuuid.a CMakeLists.txt
   
     echo "Building tuningwizard"
     make || _die "Failed to build TuningWizard"
