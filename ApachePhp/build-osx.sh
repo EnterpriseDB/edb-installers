@@ -151,7 +151,13 @@ _build_ApachePhp_osx() {
         install_name_tool -change "/usr/local/lib/libpng12.0.dylib" "@loader_path/../../php/lib/libpng12.0.dylib" $file
         install_name_tool -change "/usr/local/lib/libjpeg.7.dylib" "@loader_path/../../php/lib/libjpeg.7.dylib" $file
         install_name_tool -change "/usr/local/lib/libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" $file
-        install_name_tool -change "/usr/local/lib/libexpat.1.dylib" "@loader_path/../../php/lib/libexpat.1.dylib" $file
+        install_name_tool -change "/usr/local/lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
+    done
+
+    files=`ls $WD/ApachePhp/staging/osx/apache/bin/*`
+    for file in $files
+    do 
+        install_name_tool -change "/usr/local/lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
     done
 
     # Copy in the dependency libraries
@@ -160,6 +166,7 @@ _build_ApachePhp_osx() {
     cp -R /usr/local/lib/libfreetype*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -R /usr/local/lib/libxml*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -R /usr/local/lib/libexpat*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -R /usr/local/lib/libexpat*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
 
     chmod u+w $PG_STAGING/apache/lib/*
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
