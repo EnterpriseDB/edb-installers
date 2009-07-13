@@ -113,15 +113,15 @@ _build_ApachePhp_osx() {
     cd $PG_PATH_OSX/ApachePhp/source/php.osx
 
     echo "Configuring the php source tree for intel"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" ./configure --with-libxml-dir=/usr --with-openssl-dir=/usr --with-zlib-dir=/usr --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/opt/local --with-png-dir=/opt/local --with-freetype-dir=/opt/local --enable-gd-native-ttf || _die "Failed to configure PHP for intel"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf || _die "Failed to configure PHP for intel"
     mv main/php_config.h main/php_config_i386.h
  
     echo "Configuring the php source tree for ppc"
-    CFLAGS="$PG_ARCH_OSX_CFLAG -arch ppc" ./configure --with-libxml-dir=/usr --with-openssl-dir=/usr --with-zlib-dir=/usr --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/opt/local --with-png-dir=/opt/local --with-freetype-dir=/opt/local --enable-gd-native-ttf || _die "Failed to configure PHP for ppc"
+    CFLAGS="$PG_ARCH_OSX_CFLAG -arch ppc" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf || _die "Failed to configure PHP for ppc"
     mv main/php_config.h main/php_config_ppc.h
  
     echo "Configuring the php source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" ./configure --with-libxml-dir=/usr --with-openssl-dir=/usr --with-zlib-dir=/usr --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/opt/local --with-png-dir=/opt/local --with-freetype-dir=/opt/local --enable-gd-native-ttf || _die "Failed to configure PHP for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf || _die "Failed to configure PHP for Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     echo "#ifdef __BIG_ENDIAN__" > main/php_config.h
@@ -147,21 +147,19 @@ _build_ApachePhp_osx() {
     for file in $files
     do 
         install_name_tool -change "libpq.5.dylib" "@loader_path/../../php/lib/libpq.5.dylib" $file
-        install_name_tool -change "/opt/local/lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
-        install_name_tool -change "/opt/local/lib/libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" $file
-        install_name_tool -change "/opt/local/lib/libpng12.0.dylib" "@loader_path/../../php/lib/libpng12.0.dylib" $file
-        install_name_tool -change "/opt/local/lib/libjpeg.62.dylib" "@loader_path/../../php/lib/libjpeg.62.dylib" $file
-        install_name_tool -change "/usr/lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" $file
+        install_name_tool -change "/usr/local/lib/libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" $file
+        install_name_tool -change "/usr/local/lib/libpng12.0.dylib" "@loader_path/../../php/lib/libpng12.0.dylib" $file
+        install_name_tool -change "/usr/local/lib/libjpeg.7.dylib" "@loader_path/../../php/lib/libjpeg.7.dylib" $file
         install_name_tool -change "/usr/local/lib/libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" $file
+        install_name_tool -change "/usr/local/lib/libexpat.1.dylib" "@loader_path/../../php/lib/libexpat.1.dylib" $file
     done
 
     # Copy in the dependency libraries
-    cp -R /opt/local/lib/libexpat*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
-    cp -R /opt/local/lib/libpng*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
-    cp -R /opt/local/lib/libjpeg*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
-    cp -R /opt/local/lib/libfreetype*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
-    cp -R /usr/lib/libz*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -R /usr/local/lib/libpng*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -R /usr/local/lib/libjpeg*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -R /usr/local/lib/libfreetype*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -R /usr/local/lib/libxml*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -R /usr/local/lib/libexpat*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
 
     chmod u+w $PG_STAGING/apache/lib/*
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
@@ -169,6 +167,7 @@ _build_ApachePhp_osx() {
     _rewrite_so_refs $WD/ApachePhp/staging/osx apache/modules @loader_path/../..
     _rewrite_so_refs $WD/ApachePhp/staging/osx apache/bin @loader_path/../..
     _rewrite_so_refs $WD/ApachePhp/staging/osx php/bin @loader_path/..
+    _rewrite_so_refs $WD/ApachePhp/staging/osx php/lib @loader_path/..
 
     cd $WD
 }
