@@ -45,14 +45,16 @@ _build_mediaWiki_osx() {
     cd $WD
     mkdir -p $PG_PATH_OSX/mediaWiki/staging/osx/instscripts || _die "Failed to create the instscripts directory"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/mediaWiki/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -R $PG_PATH_OSX/server/staging/osx/lib/libxml2* $PG_PATH_OSX/mediaWiki/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/mediaWiki/staging/osx/instscripts/ || _die "Failed to copy psql in instscripts"
 
     # Change the referenced libraries
-    OLD_DLL=`otool -L $PG_PATH_OSX/mediaWiki/staging/osx/instscripts/psql | grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' `
-    NEW_DLL=`echo $OLD_DLL | sed -e "s^@loader_path/../lib/^^g"`
-
-    install_name_tool -change "$OLD_DLL" "$NEW_DLL" "$PG_PATH_OSX/mediaWiki/staging/osx/instscripts/psql"
-
+    OLD_DLLS=`otool -L $PG_PATH_OSX/mediaWiki/staging/osx/instscripts/psql | grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' `
+    for DLL in $OLD_DLLS
+    do
+        NEW_DLL=`echo $DLL | sed -e "s^@loader_path/../lib/^^g"`
+        install_name_tool -change "$DLL" "$NEW_DLL" "$PG_PATH_OSX/mediaWiki/staging/osx/instscripts/psql"
+    done
 
 }
 
