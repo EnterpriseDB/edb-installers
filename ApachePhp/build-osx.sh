@@ -168,6 +168,12 @@ _build_ApachePhp_osx() {
     cp -R /usr/local/lib/libexpat*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -R /usr/local/lib/libexpat*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
 
+    files=`ls $WD/ApachePhp/staging/osx/apache/lib/*`
+    for file in $files
+    do 
+        install_name_tool -change "/usr/local/lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
+    done
+
     chmod u+w $PG_STAGING/apache/lib/*
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     _rewrite_so_refs $WD/ApachePhp/staging/osx apache/lib @loader_path/../..
