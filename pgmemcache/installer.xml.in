@@ -479,7 +479,7 @@
             <files>${installdir}/share/pgmemcache.sql</files>
             <substitutionList>
                 <substitution>
-                    <pattern>$libdir</pattern>
+                    <pattern>\$libdir</pattern>
                     <value>${installdir}/lib</value>
                 </substitution>
             </substitutionList>
