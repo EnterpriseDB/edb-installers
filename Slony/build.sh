@@ -61,6 +61,10 @@ _prep_Slony() {
 
     echo "Unpacking SLONY source..."
     extract_file  $WD/tarballs/slony1-$PG_VERSION_SLONY || exit 1
+    cd slony1-$PG_VERSION_SLONY
+    if [ -f $WD/tarballs/slony1-$PG_VERSION_SLONY.patch ]; then
+        patch -p1 < $WD/tarballs/slony1-$PG_VERSION_SLONY.patch
+    fi
 
     # Per-platform prep
     cd $WD
