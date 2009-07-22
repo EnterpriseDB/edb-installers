@@ -4,9 +4,9 @@
 # Dave Page, EnterpriseDB
 
 # Check the command line
-if [ $# -ne 6 ]; 
+if [ $# -ne 7 ]; 
 then
-    echo "Usage: $0 <Major.Minor version> <Username> <Port> <Branding> <Install dir> <Data dir>"
+    echo "Usage: $0 <Major.Minor version> <Username> <Port> <Branding> <Install dir> <Data dir> <DisableStackBuilder>"
     exit 127
 fi
 
@@ -16,6 +16,8 @@ PORT=$3
 BRANDING=$4
 INSTALLDIR=$5
 DATADIR=$6
+DISABLE_STACKBUILDER=$7
+
 
 # Exit code
 WARN=0
@@ -37,6 +39,15 @@ else
     BRANDING_STR=`echo $BRANDING | sed 's/\./_/g' | sed 's/ /_/g'`
     DOC_BRANDING_STR=$BRANDING_STR"_documentation"
     BRANDED=1
+fi
+
+# Make sure correct value is passed for DISABLE_STACKBUILDER
+DISABLE_STACKBUILDER=`echo $DISABLE_STACKBUILDER | tr '[A-Z]' '[a-z]'`
+if [ "x$DISABLE_STACKBUILDER" = "x1" -o "x$DISABLE_STACKBUILDER" = "xtrue" -o "x$DISABLE_STACKBUILDER" = "xon" ];
+then
+    DISABLE_STACKBUILDER=1
+else
+    DISABLE_STACKBUILDER=0
 fi
 
 # Error handlers
@@ -159,8 +170,14 @@ fi
 	  "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION_STR.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-start-$VERSION_STR.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION_STR.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION_STR.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop" || _warn "Failed to create the top level menu"
+	  "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION_STR.desktop" || _warn "Failed to create the top level menu"
+
+# Do not create stack-builder menu, if DISABLE_STACKBUILDER is equal to 1
+if [ $DISABLE_STACKBUILDER -eq 0 ];
+then
+    "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system --noupdate \
+        "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop" || _warn "Failed to create the top level menu for stack-builder"
+fi
 
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system \
       "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory" \

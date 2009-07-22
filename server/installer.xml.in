@@ -145,9 +145,10 @@
     
     <!-- Initialisation actions -->
     <initializationActionList>
-    <setInstallerVariable name="project.parameter(create_shortcuts).ask" value="0"/>    
-    <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>    
-    <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
+        <setInstallerVariable name="project.parameter(create_shortcuts).ask" value="0"/>    
+        <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>    
+        
+        <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
           <text>Unknown Error</text>
@@ -164,6 +165,8 @@
               <compareText text="${create_shortcuts}" value="0" />
           </ruleList>
         </setInstallerVariable>
+
+        <setInstallerVariable name="iDisableStackBuilder" value="0" />
         
         <!-- Set the superusername -->
         <!-- TODO: Make this user configurable -->
@@ -454,7 +457,20 @@
                         </fileTest>
                     </ruleList>
                 </setInstallerVariable>
-                
+
+                <!-- Get the flag for Disabling StackBuilder -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>DisableStackBuilder</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iDisableStackBuilder</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
             </actionList>
             
             <ruleList>
@@ -504,6 +520,12 @@
                     <variable>Shortcuts</variable>
                 </registryGet>
 
+                <registryGet>
+                    <name>DisableStackBuilder</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <variable>iDisableStackBuilder</variable>
+                </registryGet>
+                
             </actionList>
             
             <ruleList>
@@ -514,6 +536,16 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <!-- On older version of Installers, we may not have DisableStackBuilder set in registry or PostgreSqlIni file -->
+        <setInstallerVariable>
+            <name>iDisableStackBuilder</name>
+            <persist>0</persist>
+            <value>0</value>
+            <ruleList>
+                <compareText logic="equals" text="${iDisableStackBuilder}"  value="" />
+            </ruleList>
+        </setInstallerVariable>
 
        <!-- Set create_shortcuts variable to 1 if it is blank -->
        <setInstallerVariable>
@@ -1778,7 +1810,7 @@
         <!-- Shortcuts -->
         <runProgram>
             <program>${installdir}/installer/server/createshortcuts.sh</program>
-            <programArguments>${product_version} "${supername}" ${serverport} "${branding}" "${installdir}" "${datadir}"</programArguments>
+            <programArguments>${product_version} "${supername}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${disable_stackbuilder}"</programArguments>
             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -2321,7 +2353,26 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
             <name>Branding</name>
             <value>${branding}</value>
         </registrySet>
-                
+        
+        <!-- Disable StackBuilder -->
+        <logMessage>
+            <text>Write the 'whether stack-builder is disabled or not' to the ini file...</text>
+        </logMessage>
+        <iniFileSet>
+            <file>${PostgreSqlIni}</file>
+            <section>PostgreSQL/${product_version}</section>
+            <key>DisableStackBuilder</key>
+            <value>${disable_stackbuilder}</value>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </iniFileSet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+            <name>DisableStackBuilder</name>
+            <value>${disable_stackbuilder}</value>
+        </registrySet>
+
         <!-- The Windows product code, used to link to the installation -->
         <registrySet>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
@@ -2347,16 +2398,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${didError}</text>
-                    <value>1</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
+                <compareText logic="does_not_equal" text="${didError}" value="1"/>
+                <isFalse value="${disable_stackbuilder}"/>
             </ruleList>
         </runProgram>
 
@@ -2367,16 +2411,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${didError}</text>
-                    <value>1</value>
-                </compareText>
+                <compareText logic="contains" text="${platform_name}" value="linux"/>
+                <compareText logic="does_not_equal" text="${didError}" value="1"/>
+                <isFalse value="${disable_stackbuilder}"/>
             </ruleList>
         </runProgram>
         
@@ -2387,16 +2424,9 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${didError}</text>
-                    <value>1</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="does_not_equal" text="${didError}" value="1"/>
+                <isFalse value="${disable_stackbuilder}"/>
             </ruleList>
         </runProgram>
 
@@ -2502,6 +2532,14 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <file>${PostgreSqlIni}</file>
                     <section>PostgreSQL/${product_version}</section>
                     <key>Branding</key>
+                    <value></value>
+                </iniFileSet>
+                
+                <!-- Propose StackBuilder at finish page -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>DisableStackBuilder</key>
                     <value></value>
                 </iniFileSet>
              </actionList>
@@ -2894,6 +2932,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <windowsExec>${installdir}\bin\stackbuilder.exe</windowsExec>
                     <ruleList>
                         <isTrue value="${create_shortcuts}" />
+                        <isFalse value="${disable_stackbuilder}" />
                     </ruleList>
                 </startMenuShortcut>
                 
@@ -2966,6 +3005,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
      
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
+        <booleanParameter name="disable_stackbuilder" cliOptionName="disable-stackbuilder" default="${iDisableStackBuilder}" ask="0" cliOptionShow="0" />
 
         <!-- Whether to install runtimes -->
         <booleanParameter>

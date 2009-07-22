@@ -4,9 +4,9 @@
 # Dave Page, EnterpriseDB
 
 # Check the command line
-if [ $# -ne 6 ]; 
+if [ $# -ne 7 ]; 
 then
-    echo "Usage: $0 <Major.Minor version> <Username> <Port> <Branding> <Install dir> <Data dir>"
+echo "Usage: $0 <Major.Minor version> <Username> <Port> <Branding> <Install dir> <Data dir> <DisableStackBuilder"
     exit 127
 fi
 
@@ -16,9 +16,19 @@ PORT=$3
 BRANDING=$4
 INSTALLDIR=$5
 DATADIR=$6
+DISABLE_STACKBUILDER=$7
 
 # Exit code
 WARN=0
+
+# Make sure correct value is passed for DISABLE_STACKBUILDER
+DISABLE_STACKBUILDER=`echo $DISABLE_STACKBUILDER | tr '[A-Z]' '[a-z]'`
+if [ "x$DISABLE_STACKBUILDER" = "x1" -o "x$DISABLE_STACKBUILDER" = "xtrue" -o "x$DISABLE_STACKBUILDER" = "xon" ];
+then
+    DISABLE_STACKBUILDER=1
+else
+    DISABLE_STACKBUILDER=0
+fi
 
 # Error handlers
 _die() {
@@ -79,7 +89,11 @@ _compile_script "$INSTALLDIR/scripts/restart.applescript" "$FOLDER/Restart Serve
 _compile_script "$INSTALLDIR/scripts/start.applescript" "$FOLDER/Start Server.app" "$INSTALLDIR/scripts/images/pg-start.icns"
 _compile_script "$INSTALLDIR/scripts/stop.applescript" "$FOLDER/Stop Server.app" "$INSTALLDIR/scripts/images/pg-stop.icns"
 _compile_script "$INSTALLDIR/scripts/pgadmin.applescript" "$FOLDER/pgAdmin III.app" "$INSTALLDIR/pgAdmin3.app/Contents/Resources/pgAdmin3.icns"
-_compile_script "$INSTALLDIR/scripts/stackbuilder.applescript" "$FOLDER/Application Stack Builder.app" "$INSTALLDIR/scripts/images/pg-stackbuilder.icns"
+
+# Do not create stack-builder shortcut, if DISABLE_STACKBUILDER is equal to 1
+if [ $DISABLE_STACKBUILDER -eq 0 ]; then
+    _compile_script "$INSTALLDIR/scripts/stackbuilder.applescript" "$FOLDER/Application Stack Builder.app" "$INSTALLDIR/scripts/images/pg-stackbuilder.icns"
+fi
 
 echo "$0 ran to completion"
 exit 0
