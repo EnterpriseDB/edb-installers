@@ -127,6 +127,7 @@ _build_server_windows() {
 @SET PGBUILD=C:\pgBuild
 @SET WXWIN=%PGBUILD%\wxWidgets
 @SET PGDIR=$PG_PATH_WINDOWS\output
+@SET M4=%PGBUILD%\bison\bin\m4.exe
 
 vcbuild %1 %2 %3 %4 %5 %6 %7 %8 %9
 EOT
