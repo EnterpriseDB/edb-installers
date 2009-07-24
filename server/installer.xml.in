@@ -1370,6 +1370,28 @@
 
     <!-- Postinstallation actions -->
     <postInstallationActionList>
+
+        <!-- Ignore disable-stackbuilder option in case of re-installation/upgrade -->
+        <!--
+             In re-installation mode,
+             We need to make sure, we use the value of disable-stackbuilder from the registry/postgresql-reg.ini
+             file and ignore the value provided as argument.
+
+             Use the variable 'brandingVer' (VERSION) instead of disableStackBuilder to check the current
+             installation mode, because we may find blank string for DisableStackBuilder in the 
+             registry/postgresql-reg.ini for the earlier released installers for the same PostgreSQL
+             version(8.4), while 'brandingVer' (VERSION) will never be blank in the re-installation mode.
+        -->
+        <actionGroup>
+            <actionList>
+                <logMessage text="Ignoring disable-stackbuilder option in re-installation mode."/>
+                <setInstallerVariable name="disableStackBuilder" value="${iDisableStackBuilder}"/>
+            </actionList>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${brandingVer}" value=""/>
+                <compareText logic="does_not_equal" text="${disableStackBuilder}" value="${iDisableStackBuilder}"/>
+            </ruleList>
+        </actionGroup>
         <logMessage>
             <text>Running the post-installation/upgrade actions:</text>
         </logMessage>
@@ -1810,7 +1832,7 @@
         <!-- Shortcuts -->
         <runProgram>
             <program>${installdir}/installer/server/createshortcuts.sh</program>
-            <programArguments>${product_version} "${supername}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${disable_stackbuilder}"</programArguments>
+            <programArguments>${product_version} "${supername}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${disableStackBuilder}"</programArguments>
             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -2362,7 +2384,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
             <file>${PostgreSqlIni}</file>
             <section>PostgreSQL/${product_version}</section>
             <key>DisableStackBuilder</key>
-            <value>${disable_stackbuilder}</value>
+            <value>${disableStackBuilder}</value>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
@@ -2370,7 +2392,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         <registrySet>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
             <name>DisableStackBuilder</name>
-            <value>${disable_stackbuilder}</value>
+            <value>${disableStackBuilder}</value>
         </registrySet>
 
         <!-- The Windows product code, used to link to the installation -->
@@ -2400,7 +2422,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="osx"/>
                 <compareText logic="does_not_equal" text="${didError}" value="1"/>
-                <isFalse value="${disable_stackbuilder}"/>
+                <isFalse value="${disableStackBuilder}"/>
             </ruleList>
         </runProgram>
 
@@ -2413,7 +2435,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
             <ruleList>
                 <compareText logic="contains" text="${platform_name}" value="linux"/>
                 <compareText logic="does_not_equal" text="${didError}" value="1"/>
-                <isFalse value="${disable_stackbuilder}"/>
+                <isFalse value="${disableStackBuilder}"/>
             </ruleList>
         </runProgram>
         
@@ -2426,7 +2448,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
                 <compareText logic="does_not_equal" text="${didError}" value="1"/>
-                <isFalse value="${disable_stackbuilder}"/>
+                <isFalse value="${disableStackBuilder}"/>
             </ruleList>
         </runProgram>
 
@@ -2932,7 +2954,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <windowsExec>${installdir}\bin\stackbuilder.exe</windowsExec>
                     <ruleList>
                         <isTrue value="${create_shortcuts}" />
-                        <isFalse value="${disable_stackbuilder}" />
+                        <isFalse value="${disableStackBuilder}" />
                     </ruleList>
                 </startMenuShortcut>
                 
@@ -3005,7 +3027,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
      
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
-        <booleanParameter name="disable_stackbuilder" cliOptionName="disable-stackbuilder" default="${iDisableStackBuilder}" ask="0" cliOptionShow="0" />
+        <booleanParameter name="disableStackBuilder" cliOptionName="disable-stackbuilder" default="${iDisableStackBuilder}" ask="0" cliOptionShow="0" />
 
         <!-- Whether to install runtimes -->
         <booleanParameter>

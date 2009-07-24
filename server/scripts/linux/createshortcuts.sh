@@ -176,6 +176,7 @@ fi
 if [ $DISABLE_STACKBUILDER -eq 0 ];
 then
     "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system --noupdate \
+      "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory" \
         "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop" || _warn "Failed to create the top level menu for stack-builder"
 fi
 
