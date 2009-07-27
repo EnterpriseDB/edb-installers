@@ -357,6 +357,18 @@ then
     _postprocess_pgbouncer || exit 1
 fi
 
+#Package: pg_migrator
+if [ $PG_PACKAGE_PGMIGRATOR = 1 ];
+then
+    source ./pg_migrator/build.sh
+    if [ $SKIPBUILD = 0 ];
+    then
+        _prep_pg_migrator || exit 1
+        _build_pg_migrator || exit 1
+    fi
+    _postprocess_pg_migrator || exit 1
+fi
+
 #Package: Meta Installer
 if [ $PG_PACKAGE_META = 1 ];
 then
