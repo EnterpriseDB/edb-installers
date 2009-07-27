@@ -23,7 +23,7 @@ PG_MAJOR_VERSION=8.3
 PG_MINOR_VERSION=7.2
 
 # Other package versions
-PG_VERSION_POSTGIS=1.3.5
+PG_VERSION_POSTGIS=1.3.6
 PG_VERSION_SLONY=1.2.15
 
 # Miscellaneous options
