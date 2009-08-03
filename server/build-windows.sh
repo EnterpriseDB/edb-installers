@@ -127,7 +127,6 @@ _build_server_windows() {
 @SET PGBUILD=C:\pgBuild
 @SET WXWIN=%PGBUILD%\wxWidgets
 @SET PGDIR=$PG_PATH_WINDOWS\output
-@SET M4=%PGBUILD%\bison\bin\m4.exe
 
 vcbuild %1 %2 %3 %4 %5 %6 %7 %8 %9
 EOT
@@ -170,6 +169,7 @@ use warnings;
 \$ENV{FrameworkVersion} = 'v2.0.50727';
 \$ENV{FrameworkSDKDir} = 'C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0';
 \$ENV{DevEnvDir} = 'C:\Program Files\Microsoft Visual Studio 8\Common7\IDE';
+\$ENV{M4} = 'C:\pgBuild\bison\bin\m4.exe';
 
 \$ENV{PATH} = join
 (
