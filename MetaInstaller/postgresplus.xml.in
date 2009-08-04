@@ -6,8 +6,6 @@
   <leftImage>../resources/edb-side.png</leftImage>
   <!--<logoImage>resources/enterprisedb.gif</logoImage>-->
   <splashImage>../resources/splash_screen.png</splashImage>
-  <preUninstallationScript>${installdir}/uninstall.sh</preUninstallationScript>
-  <preUninstallationScriptArguments>${uninstall_dbserver1} ${uninstall_slony1} ${uninstall_pgJdbc1} ${uninstall_postgis1} ${uninstall_psqlOdbc1} ${uninstall_pgbouncer1} ${uninstall_pgmemcache1} ${uninstall_pgagent1} ${installdir}</preUninstallationScriptArguments>
   <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
   <outputDirectory>../output</outputDirectory>
   <vendor>EnterpriseDB</vendor>
@@ -850,32 +848,6 @@
 
     <unpackFile>
       <component>dbserver</component>
-      <destination>${system_temp_directory}/postgresplus/features.o</destination>
-      <folder>programfileslinux</folder>
-      <origin>features.o</origin>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>linux</value>
-        </compareText>
-      </ruleList>
-    </unpackFile>
-    <unpackFile>
-      <component>dbserver</component>
-      <destination>${system_temp_directory}/postgresplus/features.o</destination>
-      <folder>programfileslinux-x64</folder>
-      <origin>features.o</origin>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>linux-x64</value>
-        </compareText>
-      </ruleList>
-    </unpackFile>
-    <unpackFile>
-      <component>dbserver</component>
       <destination>${system_temp_directory}/postgresplus/modifyPostgresql.o</destination>
       <folder>programfileslinux</folder>
       <origin>modifyPostgresql.o</origin>
@@ -1090,19 +1062,6 @@
         </compareText>
       </ruleList>
     </unpackFile>
-    <unpackFile>
-      <component>dbserver</component>
-      <destination>${system_temp_directory}/postgresplus/features.o</destination>
-      <folder>programfilesmacosx</folder>
-      <origin>features.o</origin>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>osx</value>
-        </compareText>
-      </ruleList>
-    </unpackFile>
 
     <!-- generate uuid script -->
     <unpackFile>
@@ -1256,20 +1215,6 @@
       <destination>${system_temp_directory}/postgresplus/isUserValidated.exe</destination>
       <folder>programfileswindows</folder>
       <origin>isUserValidated.exe</origin>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </unpackFile>
-
-    <unpackFile>
-      <component>dbserver</component>
-      <destination>${system_temp_directory}/postgresplus/features.exe</destination>
-      <folder>programfileswindows</folder>
-      <origin>features.exe</origin>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -2228,6 +2173,43 @@
           <type>REG_SZ</type>
           <value>${product_version}</value>
         </registrySet>
+
+        <iniFileSet>
+          <file>/etc/postgresplus-reg.ini</file>
+          <key>pg_migrator</key>
+          <section>PostgreSQL/${product_version}</section>
+          <value>true</value>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${component(pgmigrator).selected}</text>
+              <value>1</value>
+            </compareText>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </iniFileSet>
+        <registrySet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
+          <name>pg_migrator</name>
+          <type>REG_SZ</type>
+          <value>true</value>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${component(pgmigrator).selected}</text>
+              <value>1</value>
+            </compareText>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </registrySet>
       </actionList>
     </actionGroup>
     <setInstallerVariable>
@@ -2513,6 +2495,62 @@
         <compareText>
           <logic>equals</logic>
           <text>${component(pgJdbc).selected}</text>
+          <value>1</value>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>linux-x64</value>
+        </compareText>
+      </ruleList>
+    </runProgram>
+
+    <logMessage>
+      <text>Installing pg_migrator in ${installdir}</text>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${component(pgmigrator).selected}</text>
+          <value>1</value>
+        </compareText>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>linux</value>
+        </compareText>
+      </ruleList>
+    </logMessage>
+
+    <runProgram>
+      <abortOnError>0</abortOnError>
+      <program>${system_temp_directory}/postgresplus/pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-linux.bin</program>
+      <programArguments>--mode unattended --installdir ${installdir} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+      <progressText>Installing pg_migrator ... </progressText>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${component(pgmigrator).selected}</text>
+          <value>1</value>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>linux</value>
+        </compareText>
+      </ruleList>
+    </runProgram>
+
+    <runProgram>
+      <abortOnError>0</abortOnError>
+      <program>${system_temp_directory}/postgresplus/pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-linux-x64.bin</program>
+      <programArguments>--mode unattended --installdir ${installdir}--branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+      <progressText>Installing pg_migrator ... </progressText>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${component(pgmigrator).selected}</text>
           <value>1</value>
         </compareText>
         <compareText>
@@ -3000,6 +3038,42 @@
     </runProgram>
 
     <logMessage>
+      <text>Installing pg_migrator in ${installdir}</text>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${component(pgmigrator).selected}</text>
+          <value>1</value>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </logMessage>
+
+    <runProgram>
+      <abortOnError>0</abortOnError>
+      <program>${system_temp_directory}\postgresplus\pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-windows.exe</program>
+      <programArguments>--mode unattended --prefix "${installdir}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+      <progressText>Installing pg_migrator ... </progressText>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${component(pgmigrator).selected}</text>
+          <value>1</value>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </runProgram>
+
+    <logMessage>
       <text>Installing psqlODBC in ${installdir}\psqlODBC</text>
       <ruleList>
         <compareText>
@@ -3371,6 +3445,43 @@
         </compareText>
       </ruleList>
     </runProgram>
+
+    <logMessage>
+      <text>Installing pg_migrator in ${installdir}</text>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${component(pgmigrator).selected}</text>
+          <value>1</value>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+      </ruleList>
+    </logMessage>
+
+    <runProgram>
+      <abortOnError>0</abortOnError>
+      <program>${system_temp_directory}/postgresplus/pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-osx.app/Contents/MacOS/installbuilder.sh</program>
+      <programArguments>--mode unattended --installdir ${installdir} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+      <progressText>Installing pg_migrator... </progressText>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${component(pgmigrator).selected}</text>
+          <value>1</value>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+      </ruleList>
+    </runProgram>
+
 
     <logMessage>
       <text>Installing psqlODBC in ${installdir}/psqlODBC</text>
@@ -3946,357 +4057,308 @@
   <preUninstallationActionList>
     <actionGroup>
       <actionList>
-        <iniFileGet>
-          <file>/etc/postgresplus-reg.ini</file>
-          <key>databaseServer</key>
-          <section>PostgreSQL/${product_version}</section>
-          <variable>uninstall_dbserver</variable>
-        </iniFileGet>
-        <iniFileGet>
-          <file>/etc/postgresplus-reg.ini</file>
-          <key>slony</key>
-          <section>PostgreSQL/${product_version}</section>
-          <variable>uninstall_slony</variable>
-        </iniFileGet>
-        <iniFileGet>
-          <file>/etc/postgresplus-reg.ini</file>
-          <key>pgJdbc</key>
-          <section>PostgreSQL/${product_version}</section>
-          <variable>uninstall_pgJdbc</variable>
-        </iniFileGet>
-        <iniFileGet>
-          <file>/etc/postgresplus-reg.ini</file>
-          <key>postgis</key>
-          <section>PostgreSQL/${product_version}</section>
-          <variable>uninstall_postgis</variable>
-        </iniFileGet>
-        <iniFileGet>
-          <file>/etc/postgresplus-reg.ini</file>
-          <key>psqlOdbc</key>
-          <section>PostgreSQL/${product_version}</section>
-          <variable>uninstall_psqlOdbc</variable>
-        </iniFileGet>
-        <iniFileGet>
-          <file>/etc/postgresplus-reg.ini</file>
-          <key>pgbouncer</key>
-          <section>PostgreSQL/${product_version}</section>
-          <variable>uninstall_pgbouncer</variable>
-        </iniFileGet>
-        <iniFileGet>
-          <file>/etc/postgresplus-reg.ini</file>
-          <key>pgmemcache</key>
-          <section>PostgreSQL/${product_version}</section>
-          <variable>uninstall_pgmemcache</variable>
-        </iniFileGet>
-        <iniFileGet>
-          <file>/etc/postgresplus-reg.ini</file>
-          <key>pgagent</key>
-          <section>PostgreSQL/${product_version}</section>
-          <variable>uninstall_pgagent</variable>
-        </iniFileGet>
+        <iniFileGet file="/etc/postgresplus-reg.ini"
+                    key="databaseServer"
+                    section="PostgreSQL/${product_version}"
+                    variable="uninstall_dbserver"/>
+        <iniFileGet file="/etc/postgresplus-reg.ini"
+                    key="slony"
+                    section="PostgreSQL/${product_version}"
+                    variable="uninstall_slony"/>
+        <iniFileGet file="/etc/postgresplus-reg.ini"
+                    key="pgJdbc"
+                    section="PostgreSQL/${product_version}"
+                    variable="uninstall_pgjdbc"/>
+        <iniFileGet file="/etc/postgresplus-reg.ini"
+                    key="pg_migrator"
+                    section="PostgreSQL/${product_version}"
+                    variable="uninstall_pgmigrator"/>
+        <iniFileGet file="/etc/postgresplus-reg.ini"
+                    key="postgis"
+                    section="PostgreSQL/${product_version}"
+                    variable="uninstall_postgis"/>
+        <iniFileGet file="/etc/postgresplus-reg.ini"
+                    key="psqlOdbc"
+                    section="PostgreSQL/${product_version}"
+                    variable="uninstall_psqlOdbc"/>
+        <iniFileGet file="/etc/postgresplus-reg.ini"
+                    key="pgbouncer"
+                    section="PostgreSQL/${product_version}"
+                    variable="uninstall_pgbouncer"/>
+        <iniFileGet file="/etc/postgresplus-reg.ini"
+                    key="pgmemcache"
+                    section="PostgreSQL/${product_version}"
+                    variable="uninstall_pgmemcache"/>
+        <iniFileGet file="/etc/postgresplus-reg.ini"
+                    key="pgagent"
+                    section="PostgreSQL/${product_version}"
+                    variable="uninstall_pgagent"/>
+
+        <!-- uninstall Slony1 -->
+        <runProgram abortOnError="0"
+                    program="${installdir}/Slony/uninstall-slony"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_slony}"/>
+            <!-- It is possible that user may have uninstalled slony1 manually -->
+            <fileTest path="${installdir}/Slony/uninstall-slony" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall jdbc -->
+        <runProgram abortOnError="0"
+                    program="${installdir}/pgJDBC/uninstall-pgjdbc"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_pgjdbc}"/>
+            <!-- It is possible that user may have uninstalled pgJDBC manually -->
+            <fileTest path="${installdir}/pgJDBC/uninstall-pgjdbc" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall PostGIS -->
+        <runProgram abortOnError="0"
+                    program="${installdir}/PostGIS/uninstall-postgis"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_postgis}"/>
+            <!-- It is possible that user may have uninstalled PostGIS manually -->
+            <fileTest path="${installdir}/PostGIS/uninstall-postgis" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall psqlODBC -->
+        <runProgram abortOnError="0"
+                    program="${installdir}/psqlODBC/uninstall-psqlodbc"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_psqlOdbc}"/>
+            <!-- It is possible that user may have uninstalled psqlODBC manually -->
+            <fileTest path="${installdir}/psqlODBC/uninstall-psqlodbc" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall NpgSql -->
+        <runProgram abortOnError="0"
+                    program="${installdir}/Npgsql/uninstall-npgsql"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_npgsql}"/>
+            <!-- It is possible that user may have uninstalled NpgSql manually -->
+            <fileTest path="${installdir}/Npgsql/uninstall-npgsql" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall pgmemcache -->
+        <runProgram abortOnError="0"
+                    program="${installdir}/uninstall-pgmemcache"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_pgmemcache}"/>
+            <!-- It is possible that user may have uninstalled pgmemcache manually -->
+            <fileTest path="${installdir}/uninstall-pgmemcache" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall pgBouncer -->
+        <runProgram abortOnError="0"
+                    program="${installdir}/pgbouncer/uninstall-pgbouncer"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_pgbouncer}"/>
+            <!-- It is possible that user may have uninstalled NpgSql manually -->
+            <fileTest path="${installdir}/pgbouncer/uninstall-pgbouncer" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall pgAgent -->
+        <runProgram abortOnError="0"
+                    program="${installdir}/pgagent/uninstall-pgagent"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_pgagent}"/>
+            <!-- It is possible that user may have uninstalled pgAgent manually -->
+            <fileTest path="${installdir}/pgagent/uninstall-pgagent" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall pg_migrator -->
+        <runProgram abortOnError="0"
+                    program="${installdir}/uninstall-pgmigrator"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_pgmigrator}"/>
+            <!-- It is possible that user may have uninstalled pg_migrator manually -->
+            <fileTest path="${installdir}/uninstall-pgmigrator" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall dbserver/PostgreSQL -->
+        <runProgram abortOnError="0"
+                    program="${installdir}/uninstall-postgresql"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_dbserver}"/>
+            <!-- It is possible that user may have uninstalled PostgreSQL server manually -->
+            <fileTest path="${installdir}/uninstall-postgresql" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
       </actionList>
       <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
       </ruleList>
     </actionGroup>
 
     <!-- WIN: Get existing directories -->
     <actionGroup>
       <actionList>
-        <registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
-          <name>databaseServer</name>
-          <variable>uninstall_dbserver</variable>
-        </registryGet>
-        <registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
-          <name>slony</name>
-          <variable>uninstall_slony</variable>
-        </registryGet>
-        <registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
-          <name>pgJdbc</name>
-          <variable>uninstall_pgJdbc</variable>
-        </registryGet>
-        <registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
-          <name>postgis</name>
-          <variable>uninstall_postgis</variable>
-        </registryGet>
-        <registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
-          <name>psqlOdbc</name>
-          <variable>uninstall_psqlOdbc</variable>
-        </registryGet>
-        <registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
-          <name>npgsql</name>
-          <variable>uninstall_npgsql</variable>
-        </registryGet>
-        <registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
-          <name>pgbouncer</name>
-          <variable>uninstall_pgbouncer</variable>
-        </registryGet>
-        <registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
-          <name>pgagent</name>
-          <variable>uninstall_pgagent</variable>
-        </registryGet>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
+                     name="databaseServer"
+                     variable="uninstall_dbserver"/>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
+                     name="slony"
+                     variable="uninstall_slony"/>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
+                     name="pgJdbc"
+                     variable="uninstall_pgjdbc"/>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
+                     name="pg_migrator"
+                     variable="uninstall_pgmigrator"/>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
+                     name="postgis"
+                     variable="uninstall_postgis"/>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
+                     name="psqlOdbc"
+                     variable="uninstall_psqlOdbc"/>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
+                     name="npgsql"
+                     variable="uninstall_npgsql"/>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
+                     name="pgmemcache"
+                     variable="uninstall_pgmemcache"/>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
+                     name="pgbouncer"
+                     variable="uninstall_pgbouncer"/>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
+                     name="pgagent"
+                     variable="uninstall_pgagent"/>
+
+        <!-- uninstall Slony1 -->
+        <runProgram abortOnError="0"
+                    program="${installdir}\Slony\uninstall-slony.exe"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_slony}"/>
+            <!-- It is possible that user may have uninstalled only slony1 manually -->
+            <fileTest path="${installdir}\Slony\uninstall-slony.exe" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall jdbc -->
+        <runProgram abortOnError="0"
+                    program="${installdir}\pgJDBC\uninstall-pgjdbc.exe"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_pgjdbc}"/>
+            <!-- It is possible that user may have uninstalled only pgJDBC manually -->
+            <fileTest path="${installdir}\pgJDBC\uninstall-pgjdbc.exe" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall PostGIS -->
+        <runProgram abortOnError="0"
+                    program="${installdir}\PostGIS\uninstall-postgis.exe"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_postgis}"/>
+            <!-- It is possible that user may have uninstalled only PostGIS manually -->
+            <fileTest path="${installdir}\PostGIS\uninstall-postgis.exe" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall psqlODBC -->
+        <runProgram abortOnError="0"
+                    program="${installdir}\psqlODBC\uninstall-psqlodbc.exe"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_psqlOdbc}"/>
+            <!-- It is possible that user may have uninstalled only psqlODBC manually -->
+            <fileTest path="${installdir}\psqlODBC\uninstall-psqlodbc.exe" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall NpgSql -->
+        <runProgram abortOnError="0"
+                    program="${installdir}\Npgsql\uninstall-npgsql.exe"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_npgsql}"/>
+            <!-- It is possible that user may have uninstalled only NpgSql manually -->
+            <fileTest path="${installdir}\Npgsql\uninstall-npgsql.exe" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall pgmemcache -->
+        <runProgram abortOnError="0"
+                    program="${installdir}\uninstall-pgmemcache.exe"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_pgmemcache}"/>
+            <!-- It is possible that user may have uninstalled pgmemcache manually -->
+            <fileTest path="${installdir}\uninstall-pgmemcache.exe" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall pgBouncer -->
+        <runProgram abortOnError="0"
+                    program="${installdir}\pgbouncer\uninstall-pgbouncer.exe"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_pgbouncer}"/>
+            <!-- It is possible that user may have uninstalled only NpgSql manually -->
+            <fileTest path="${installdir}\pgbouncer\uninstall-pgbouncer.exe" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall pgAgent -->
+        <runProgram abortOnError="0"
+                    program="${installdir}\pgagent\uninstall-pgagent.exe"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_pgagent}"/>
+            <!-- It is possible that user may have uninstalled only pgAgent manually -->
+            <fileTest path="${installdir}\pgagent\uninstall-pgagent.exe" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall pg_migrator -->
+        <runProgram abortOnError="0"
+                    program="${installdir}\uninstall-pgmigrator.exe"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_pgmigrator}"/>
+            <!-- It is possible that user may have uninstalled only pg_migrator manually -->
+            <fileTest path="${installdir}\uninstall-pgmigrator.exe" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall dbserver/PostgreSQL -->
+        <runProgram abortOnError="0"
+                    program="${installdir}\uninstall-postgresql.exe"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_dbserver}"/>
+            <!-- It is possible that user may have uninstalled only PostgreSQL server manually -->
+            <fileTest path="${installdir}\uninstall-postgresql.exe" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
       </actionList>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
     </actionGroup>
-    <setInstallerVariable>
-      <name>uninstall_dbserver1</name>
-      <persist>0</persist>
-      <value>false</value>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_dbserver}</text>
-          <value></value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>uninstall_dbserver1</name>
-      <persist>0</persist>
-      <value>${uninstall_dbserver}</value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${uninstall_dbserver}</text>
-          <value></value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>uninstall_slony1</name>
-      <persist>0</persist>
-      <value>false</value>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_slony}</text>
-          <value></value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>uninstall_slony1</name>
-      <persist>0</persist>
-      <value>${uninstall_slony}</value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${uninstall_slony}</text>
-          <value></value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>uninstall_pgJdbc1</name>
-      <persist>0</persist>
-      <value>false</value>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_pgJdbc}</text>
-          <value></value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>uninstall_pgJdbc1</name>
-      <persist>0</persist>
-      <value>${uninstall_pgJdbc}</value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${uninstall_pgJdbc}</text>
-          <value></value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>uninstall_postgis1</name>
-      <persist>0</persist>
-      <value>false</value>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_postgis}</text>
-          <value></value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>uninstall_postgis1</name>
-      <persist>0</persist>
-      <value>${uninstall_postgis}</value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${uninstall_postgis}</text>
-          <value></value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>uninstall_psqlOdbc1</name>
-      <persist>0</persist>
-      <value>false</value>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_psqlOdbc}</text>
-          <value></value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>uninstall_psqlOdbc1</name>
-      <persist>0</persist>
-      <value>${uninstall_psqlOdbc}</value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${uninstall_psqlOdbc}</text>
-          <value></value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>uninstall_npgsql1</name>
-      <persist>0</persist>
-      <value>false</value>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_npgsql}</text>
-          <value></value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>uninstall_npgsql1</name>
-      <persist>0</persist>
-      <value>${uninstall_npgsql}</value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${uninstall_npgsql}</text>
-          <value></value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>uninstall_pgbouncer1</name>
-      <persist>0</persist>
-      <value>false</value>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_pgbouncer}</text>
-          <value></value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>uninstall_pgbouncer1</name>
-      <persist>0</persist>
-      <value>${uninstall_pgbouncer}</value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${uninstall_pgbouncer}</text>
-          <value></value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>uninstall_pgmemcache1</name>
-      <persist>0</persist>
-      <value>false</value>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_pgmemcache}</text>
-          <value></value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>uninstall_pgmemcache1</name>
-      <persist>0</persist>
-      <value>${uninstall_pgmemcache}</value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${uninstall_pgmemcache}</text>
-          <value></value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-
-    <setInstallerVariable>
-      <name>uninstall_pgagent1</name>
-      <persist>0</persist>
-      <value>false</value>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_pgagent}</text>
-          <value></value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable>
-      <name>uninstall_pgagent1</name>
-      <persist>0</persist>
-      <value>${uninstall_pgagent}</value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${uninstall_pgagent}</text>
-          <value></value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-
-
-    <runProgram>
-      <abortOnError>0</abortOnError>
-      <program>${installdir}\uninstall.bat</program>
-      <programArguments>${uninstall_dbserver1} ${uninstall_slony1} ${uninstall_pgJdbc1} ${uninstall_postgis1} ${uninstall_psqlOdbc1} "${installdir}" ${uninstall_npgsql1} ${uninstall_pgbouncer1} ${uninstall_pgagent1}</programArguments>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </runProgram>
 
   </preUninstallationActionList>
 
@@ -4304,205 +4366,85 @@
   <postUninstallationActionList>
     <actionGroup>
       <actionList>
-        <deleteFile>
-          <path>/etc/postgresplus-reg.ini</path>
-        </deleteFile>
+          <deleteFile path="/etc/postgresplus-reg.ini"/>
       </actionList>
       <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
       </ruleList>
     </actionGroup>
 
-    <!-- WINDOWS: Unregister the event message DLL -->
-    <registryDelete>
-      <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
-    </registryDelete>
-    <registryDelete>
-      <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Installations\postgresplus-${product_version}</key>
-    </registryDelete>
-
-    <deleteFile>
-      <path>${installdir}\Slony</path>
+    <actionGroup>
+      <actionList>
+          
+        <!-- WINDOWS: Unregister the event message DLL -->
+        <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"/>
+        <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Installations\postgresplus-${product_version}"/>
+    
+        <deleteFile path="${installdir}\Slony">
+          <ruleList>
+            <isTrue value="${uninstall_slony}"/>
+          </ruleList>
+        </deleteFile>
+    
+        <deleteFile path="${installdir}\PostGIS">
+          <ruleList>
+            <isTrue value="${uninstall_postgis}"/>
+          </ruleList>
+        </deleteFile>
+    
+        <deleteFile path="${installdir}\pgJDBC">
+          <ruleList>
+            <isTrue value="${uninstall_pgjdbc}"/>
+          </ruleList>
+        </deleteFile>
+    
+        <deleteFile path="${installdir}\psqlODBC">
+          <ruleList>
+            <isTrue value="${uninstall_psqlOdbc}"/>
+          </ruleList>
+        </deleteFile>
+    
+        <deleteFile path="${installdir}\Npgsql">
+          <ruleList>
+            <isTrue value="${uninstall_npgsql}"/>
+          </ruleList>
+        </deleteFile>
+    
+        <deleteFile path="${installdir}\pgbouncer">
+          <ruleList>
+            <isTrue value="${uninstall_pgbouncer}"/>
+          </ruleList>
+        </deleteFile>
+    
+        <deleteFile path="${installdir}\pgAgent">
+          <ruleList>
+            <isTrue value="${uninstall_pgagent}"/>
+          </ruleList>
+        </deleteFile>
+    
+        <showWarning text="${msg(uninstall.restart.message)}">
+          <ruleList>
+            <fileExists path="${installdir}\bin"/>
+            <fileTest path="${installdir}\bin" condition="is_not_empty"/>
+          </ruleList>
+        </showWarning>
+    
+        <deleteFile path="${installdir}\logs">
+          <ruleList>
+            <isTrue value="${uninstall_dbserver}"/>
+          </ruleList>
+        </deleteFile>
+    
+        <deleteFile path="${installdir}\man">
+          <ruleList>
+            <isTrue value="${uninstall_dbserver}"/>
+          </ruleList>
+        </deleteFile>
+      </actionList>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_slony1}</text>
-          <value>true</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
-    </deleteFile>
-
-
-    <deleteFile>
-      <path>${installdir}\PostGIS</path>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_postgis1}</text>
-          <value>true</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </deleteFile>
-
-
-    <deleteFile>
-      <path>${installdir}\pgJDBC</path>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_pgJdbc1}</text>
-          <value>true</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </deleteFile>
-
-
-    <deleteFile>
-      <path>${installdir}\psqlODBC</path>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_psqlOdbc1}</text>
-          <value>true</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </deleteFile>
-
-    <deleteFile>
-      <path>${installdir}\Npgsql</path>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_npgsql1}</text>
-          <value>true</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </deleteFile>
-
-    <deleteFile>
-      <path>${installdir}\pgbouncer</path>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_pgbouncer1}</text>
-          <value>true</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </deleteFile>
-
-    <deleteFile>
-      <path>${installdir}\pgAgent</path>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_pgagent1}</text>
-          <value>true</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </deleteFile>
-    <deleteFile>
-      <path>${installdir}\uninstall-postgresql.exe</path>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_dbserver1}</text>
-          <value>true</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </deleteFile>
-
-    <showWarning>
-      <text>${msg(uninstall.restart.message)}</text>
-      <ruleList>
-        <fileExists>
-          <path>${installdir}\bin</path>
-        </fileExists>
-        <fileTest>
-          <path>${installdir}\bin</path>
-          <condition>is_not_empty</condition>
-        </fileTest>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </showWarning>
-
-    <deleteFile>
-      <path>${installdir}\logs</path>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_dbserver1}</text>
-          <value>true</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </deleteFile>
-    <deleteFile>
-      <path>${installdir}\man</path>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${uninstall_dbserver1}</text>
-          <value>true</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </deleteFile>
+    </actionGroup>
 
   </postUninstallationActionList>
 
@@ -4514,62 +4456,6 @@
 
   <componentList>
 
-    <component>
-      <name>general</name>
-      <description>Uninstaller Script</description>
-      <canBeEdited>0</canBeEdited>
-      <selected>1</selected>
-      <show>0</show>
-      <folderList>
-        <folder>
-          <description>General Uninstaller</description>
-          <destination>${installdir}</destination>
-          <name>generallinux</name>
-          <platforms>linux</platforms>
-          <distributionFileList>
-            <distributionFile>
-              <origin>staging/linux/scripts/uninstall.sh</origin>
-            </distributionFile>
-          </distributionFileList>
-        </folder>
-
-        <folder>
-          <description>General Uninstaller</description>
-          <destination>${installdir}</destination>
-          <name>generallinux-x64</name>
-          <platforms>linux-x64</platforms>
-          <distributionFileList>
-            <distributionFile>
-              <origin>staging/linux-x64/scripts/uninstall.sh</origin>
-            </distributionFile>
-          </distributionFileList>
-        </folder>
-
-        <folder>
-          <description>General Uninstaller</description>
-          <destination>${installdir}</destination>
-          <name>generalwindows</name>
-          <platforms>windows</platforms>
-          <distributionFileList>
-            <distributionFile>
-              <origin>staging/windows/scripts/uninstall.bat</origin>
-            </distributionFile>
-          </distributionFileList>
-        </folder>
-
-        <folder>
-          <description>General Uninstaller</description>
-          <destination>${installdir}</destination>
-          <name>generalosx</name>
-          <platforms>osx</platforms>
-          <distributionFileList>
-            <distributionFile>
-              <origin>staging/osx/scripts/uninstall.sh</origin>
-            </distributionFile>
-          </distributionFileList>
-        </folder>
-      </folderList>
-    </component>
     <component>
       <name>dbserver</name>
       <description>Database Server</description>
@@ -4635,9 +4521,6 @@
             <!-- ends here -->
 
             <distributionFile>
-              <origin>staging/linux/scripts/features.o</origin>
-            </distributionFile>
-            <distributionFile>
               <origin>staging/linux/scripts/modifyPostgresql.o</origin>
             </distributionFile>
           </distributionFileList>
@@ -4687,9 +4570,6 @@
 
             <!-- ends here -->
 
-            <distributionFile>
-              <origin>staging/linux/scripts/features.o</origin>
-            </distributionFile>
             <distributionFile>
               <origin>staging/linux/scripts/modifyPostgresql.o</origin>
             </distributionFile>
@@ -4749,9 +4629,6 @@
             <!-- ends here -->
 
             <distributionFile>
-              <origin>staging/linux-x64/scripts/features.o</origin>
-            </distributionFile>
-            <distributionFile>
               <origin>staging/linux-x64/scripts/modifyPostgresql.o</origin>
             </distributionFile>
           </distributionFileList>
@@ -4802,9 +4679,6 @@
             <!-- ends here -->
 
             <distributionFile>
-              <origin>staging/linux-x64/scripts/features.o</origin>
-            </distributionFile>
-            <distributionFile>
               <origin>staging/linux-x64/scripts/modifyPostgresql.o</origin>
             </distributionFile>
           </distributionFileList>
@@ -4840,9 +4714,6 @@
             </distributionFile>
             <distributionFile>
               <origin>staging/windows/scripts/getDynaTune.exe</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/windows/scripts/features.exe</origin>
             </distributionFile>
             <distributionFile>
               <origin>staging/windows/scripts/modifyPostgresql.exe</origin>
@@ -4907,9 +4778,6 @@
             </distributionFile>
             <distributionFile>
               <origin>staging/osx/scripts/dynaTuneClient.o</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/osx/scripts/features.o</origin>
             </distributionFile>
             <distributionFile>
               <origin>staging/osx/scripts/modifyPostgresql.o</origin>
@@ -5711,9 +5579,6 @@
             <distributionFile>
               <origin>staging/linux/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux.bin</origin>
             </distributionFile>
-            <distributionFile>
-              <origin>staging/linux/scripts/callpsql.sh</origin>
-            </distributionFile>
           </distributionFileList>
         </folder>
 
@@ -5728,9 +5593,6 @@
             <distributionFile>
               <origin>staging/linux-x64/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux-x64.bin</origin>
             </distributionFile>
-            <distributionFile>
-              <origin>staging/linux-x64/scripts/callpsql.sh</origin>
-            </distributionFile>
           </distributionFileList>
         </folder>
 
@@ -5744,9 +5606,6 @@
             <distributionDirectory>
               <origin>staging/osx/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-osx.app</origin>
             </distributionDirectory>
-            <distributionFile>
-              <origin>staging/osx/scripts/callpsql.sh</origin>
-            </distributionFile>
           </distributionFileList>
         </folder>
 
@@ -5762,9 +5621,6 @@
             </distributionFile>
             <distributionFile>
               <origin>staging/windows/scripts/validateuser.exe</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/windows/scripts/callpsql.bat</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -5807,6 +5663,96 @@
               <logic>equals</logic>
               <value>windows</value>
             </compareText>
+          </ruleList>
+        </throwError>
+        <setInstallerVariable>
+          <name>noComponentSelected</name>
+          <persist>1</persist>
+          <value>false</value>
+        </setInstallerVariable>
+      </componentSelectionValidationActionList>
+    </component>
+
+    <!-- pg_migrator -->
+    <component>
+      <name>pgmigrator</name>
+      <description>pg_migrator</description>
+      <detailedDescription>Tool for migration from an old release of PostgreSQL to a new release</detailedDescription>
+      <canBeEdited>1</canBeEdited>
+      <selected>1</selected>
+      <show>1</show>
+      <folderList>
+        <folder>
+          <description>Program Files</description>
+          <destination>${system_temp_directory}/postgresplus</destination>
+          <name>pgmigratorlinux</name>
+          <platforms>linux</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux/pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-linux.bin</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+
+        <!-- linux-x64-->
+
+        <folder>
+          <description>Program Files</description>
+          <destination>${system_temp_directory}/postgresplus</destination>
+          <name>pgmigratorlinux-x64</name>
+          <platforms>linux-x64</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux-x64/pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-linux-x64.bin</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+
+        <!-- MAC: Program files -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${system_temp_directory}/postgresplus</destination>
+          <name>pgmigratorosx</name>
+          <platforms>osx</platforms>
+          <distributionFileList>
+            <distributionDirectory>
+              <origin>staging/osx/pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-osx.app</origin>
+            </distributionDirectory>
+          </distributionFileList>
+        </folder>
+
+        <!-- Windows -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${system_temp_directory}/postgresplus</destination>
+          <name>pgmigratorwindows</name>
+          <platforms>windows</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/windows/pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-windows.exe</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/windows/scripts/validateuser.exe</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+      </folderList>
+      <componentSelectionValidationActionList>
+        <throwError>
+          <text>${msg(dbserver.required.pgerror)}</text>
+          <ruleList>
+            <isFalse value="${component(dbserver).selected}"/>
+            <fileTest path="${installdir}/bin/psql" condition="not_exists"/>
+            <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+          </ruleList>
+        </throwError>
+
+        <throwError>
+          <text>${msg(dbserver.required.pgerror)}</text>
+          <ruleList>
+            <isFalse value="${component(dbserver).selected}"/>
+            <fileTest path="${installdir}\bin\psql.exe" condition="not_exists"/>
+            <compareText text="${platform_name}" logic="equals" value="windows"/>
           </ruleList>
         </throwError>
         <setInstallerVariable>
@@ -6171,8 +6117,8 @@
         <setInstallerVariable>
           <name>showAuthenticateScreen</name>
           <persist>0</persist>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <value>1</value>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
             <compareText>
               <logic>equals</logic>
@@ -6206,8 +6152,8 @@
         <setInstallerVariable>
           <name>showNextPage</name>
           <persist>1</persist>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <value>1</value>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
             <compareText>
               <logic>equals</logic>
@@ -6241,8 +6187,8 @@
         <setInstallerVariable>
           <name>showNextPage2</name>
           <persist>1</persist>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <value>1</value>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
             <compareText>
               <logic>equals</logic>
@@ -6279,8 +6225,8 @@
         <setInstallerVariable>
           <name>authenticateUser</name>
           <persist>1</persist>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <value>1</value>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
             <compareText>
               <logic>equals</logic>
@@ -6422,8 +6368,8 @@
           <width>30</width>
           <validationActionList>
             <throwError>
-              <ruleEvaluationLogic>or</ruleEvaluationLogic>
               <text>${msg(error.invalid.password.value)}</text>
+              <ruleEvaluationLogic>or</ruleEvaluationLogic>
               <ruleList>
                 <stringTest>
                   <text>${existingpassword}</text>
@@ -6442,32 +6388,61 @@
       <postShowPageActionList>
         <actionGroup>
           <actionList>
-            <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}/postgresplus/features.o</exec>
-              <execArgs>${component(dbserver).selected} ${component(slony).selected} ${component(pgJdbc).selected} ${component(postgis).selected} ${component(psqlOdbc).selected} ${component(npgsql).selected} ${component(pgbouncer).selected} ${component(pgmemcache).selected} ${component(pgagent).selected}</execArgs>
-              <name>features</name>
-              <workingDirectory>${system_temp_directory}/postgresplus</workingDirectory>
+            <setInstallerVariable name="features" value="DBServer">
               <ruleList>
-                <compareText>
-                  <logic>does_not_equal</logic>
-                  <text>${platform_name}</text>
-                  <value>windows</value>
-                </compareText>
+                <isTrue value="${component(dbserver).selected}"/>
               </ruleList>
-            </setInstallerVariableFromScriptOutput>
-            <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}\postgresplus\features.exe</exec>
-              <execArgs>${component(dbserver).selected} ${component(slony).selected} ${component(pgJdbc).selected} ${component(postgis).selected} ${component(psqlOdbc).selected} ${component(npgsql).selected} ${component(pgbouncer).selected} ${component(pgmemcache).selected} ${component(pgagent).selected}</execArgs>
-              <name>features</name>
-              <workingDirectory>${system_temp_directory}\postgresplus</workingDirectory>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},Slony">
               <ruleList>
-                <compareText>
-                  <logic>equals</logic>
-                  <text>${platform_name}</text>
-                  <value>windows</value>
-                </compareText>
+                <isTrue value="${component(slony).selected}"/>
               </ruleList>
-            </setInstallerVariableFromScriptOutput>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},pgJdbc">
+              <ruleList>
+                <isTrue value="${component(pgJdbc).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},postGIS">
+              <ruleList>
+                <isTrue value="${component(postgis).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},psqlODBC">
+              <ruleList>
+                <isTrue value="${component(psqlOdbc).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},Npgsql">
+              <ruleList>
+                <isTrue value="${component(npgsql).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},pgbouncer">
+              <ruleList>
+                <isTrue value="${component(pgbouncer).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},pgmemcache">
+              <ruleList>
+                <isTrue value="${component(pgmemcache).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},pgAgent">
+              <ruleList>
+                <isTrue value="${component(pgagent).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},pg_migrator">
+              <ruleList>
+                <isTrue value="${component(pgmigrator).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariableFromRegEx name="features" pattern="^," substitution="" text="${features}">
+              <ruleList>
+                  <regExMatch logic="matches" pattern="^,([0-9a-zA-Z_/\.\-]*)$" text="${features}"/>
+              </ruleList>
+            </setInstallerVariableFromRegEx>
 
             <logMessage>
               <text>Validating Existing User ...</text>
@@ -7254,7 +7229,6 @@
         <actionGroup>
           <!-- We need this because this isn't a validateActionList> -->
           <abortOnError>0</abortOnError>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <actionList>
             <setInstallerVariable name="next_page" value="datadir">
               <persist>0</persist>
@@ -7263,6 +7237,7 @@
               <text>${msg(error.data.directory.matches.install)}</text>
             </throwError>
           </actionList>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
             <compareText>
               <logic>equals</logic>
@@ -7480,7 +7455,6 @@
       <ask>yes</ask>
       <cliOptionName>superpassword</cliOptionName>
       <descriptionRetype>${msg(config.superpassword.confirm)}</descriptionRetype>
-      <ruleEvaluationLogic>or</ruleEvaluationLogic>
       <width>20</width>
       <preShowPageActionList>
         <setInstallerVariable>
@@ -7517,73 +7491,19 @@
             <setInstallerVariable name="pgagent_schema_version_function_exist" value="0"/>
             <setInstallerVariable name="pgagent_current_schema_version" value=""/>
             <setInstallerVariable name="schema" value="install"/>
-            <unpackFile>
-              <component>pgagent</component>
-              <destination>${system_temp_directory}/postgresplus/callpsql.sh</destination>
-              <folder>pgagentlinux</folder>
-              <origin>callpsql.sh</origin>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="linux"/>
-              </ruleList>
-            </unpackFile>
 
-            <unpackFile>
-              <component>pgagent</component>
-              <destination>${system_temp_directory}/postgresplus/callpsql.sh</destination>
-              <folder>pgagentlinux-x64</folder>
-              <origin>callpsql.sh</origin>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
-              </ruleList>
-            </unpackFile>
-
-            <unpackFile>
-              <component>pgagent</component>
-              <destination>${system_temp_directory}/postgresplus/callpsql.sh</destination>
-              <folder>pgagentosx</folder>
-              <origin>callpsql.sh</origin>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="osx"/>
-              </ruleList>
-            </unpackFile>
-
-            <unpackFile>
-              <component>pgagent</component>
-              <destination>${system_temp_directory}/postgresplus/callpsql.bat</destination>
-              <folder>pgagentwindows</folder>
-              <origin>callpsql.bat</origin>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
-              </ruleList>
-            </unpackFile>
           </actionList>
           <ruleList>
-
-            <compareText>
-              <logic>equals</logic>
-              <text>${component(pgagent).selected}</text>
-              <value>1</value>
-            </compareText>
+            <isTrue value="${component(pgagent).selected}"/>
           </ruleList>
         </actionGroup>
         <!-- Ends pgagent group -->
       </preShowPageActionList>
+      <ruleEvaluationLogic>or</ruleEvaluationLogic>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(dbserver).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(postgis).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(pgagent).selected}</text>
-          <value>1</value>
-        </compareText>
+        <isTrue value="${component(dbserver).selected}"/>
+        <isTrue value="${component(postgis).selected}"/>
+        <isTrue value="${component(pgagent).selected}"/>
       </ruleList>
       <validationActionList>
         <throwError>
@@ -8061,144 +7981,112 @@
             <actionGroup>
               <actionList>
 
+                <setEnvironmentVariable name="PGHOST" value="localhost"/>
+                <setEnvironmentVariable name="PGUSER" value="${supername}"/>
+                <setEnvironmentVariable name="PGPASSWORD" value="${superpassword}"/>
+                <setEnvironmentVariable name="PGPORT" value="${serverport}"/>
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
+
                 <!-- Check if plpgsql exists -->
-                <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}/postgresplus/callpsql.sh</exec>
-                  <execArgs>${installdir} ${supername} ${superpassword} "CHECK_PLPGSQL"</execArgs>
-                  <name>plpgsql_exist</name>
-                  <workingDirectory>${system_temp_directory}/postgresplus</workingDirectory>
-                  <showMessageOnError>0</showMessageOnError>
-                  <abortOnError>0</abortOnError>
+                <setInstallerVariableFromScriptOutput exec="${installdir}/bin/psql"
+                                                      execArgs="-t -c &quot;SELECT lanname FROM pg_language WHERE lanname='plpgsql'&quot;"
+                                                      name="plpgsql_exist"
+                                                      showMessageOnError="0"
+                                                      abortOnError="0"
+                                                      workingDirectory="${installdir}/bin">
                   <ruleList>
                     <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                    <fileTest>
-                      <path>${installdir}/bin/psql</path>
-                      <condition>exists</condition>
-                    </fileTest>
+                    <fileTest path="${installdir}/bin/psql" condition="exists"/>
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
 
-                <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}\postgresplus\callpsql.bat</exec>
-                  <execArgs>"${installdir}" ${supername} ${superpassword} "CHECK_PLPGSQL"</execArgs>
-                  <name>plpgsql_exist</name>
-                  <workingDirectory>${system_temp_directory}\postgresplus</workingDirectory>
-                  <showMessageOnError>0</showMessageOnError>
-                  <abortOnError>0</abortOnError>
+                <setInstallerVariableFromScriptOutput exec="${installdir}\bin\psql.exe"
+                                                      execArgs="-t -c &quot;SELECT lanname FROM pg_language WHERE lanname='plpgsql'&quot;"
+                                                      name="plpgsql_exist"
+                                                      showMessageOnError="0"
+                                                      abortOnError="0"
+                                                      workingDirectory="${installdir}\bin">
                   <ruleList>
                     <compareText logic="equals" text="${platform_name}" value="windows"/>
-                    <fileTest>
-                      <path>${installdir}\bin\psql.exe</path>
-                      <condition>exists</condition>
-                    </fileTest>
+                    <fileTest path="${installdir}\bin\psql.exe" condition="exists"/>
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
+
                 <!-- Check for existing pgagent schema -->
-                <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}/postgresplus/callpsql.sh</exec>
-                  <execArgs>${installdir} ${supername} ${superpassword} "CHECK_PGAGENT_SCHEMA"</execArgs>
-                  <name>pgagent_schema_exist</name>
-                  <workingDirectory>${system_temp_directory}/postgresplus</workingDirectory>
-                  <showMessageOnError>0</showMessageOnError>
-                  <abortOnError>0</abortOnError>
+                <setInstallerVariableFromScriptOutput exec="${installdir}/bin/psql"
+                                                      execArgs="-t -c &quot;SELECT has_schema_privilege('pgagent', 'USAGE')&quot;"
+                                                      name="pgagent_schema_exist"
+                                                      showMessageOnError="0"
+                                                      abortOnError="0"
+                                                      workingDirectory="${installdir}/bin">
                   <ruleList>
                     <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                    <fileTest>
-                      <path>${installdir}/bin/psql</path>
-                      <condition>exists</condition>
-                    </fileTest>
+                    <fileTest path="${installdir}/bin/psql" condition="exists"/>
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
-
-                <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}\postgresplus\callpsql.bat</exec>
-                  <execArgs>"${installdir}" ${supername} ${superpassword} "CHECK_PGAGENT_SCHEMA"</execArgs>
-                  <name>pgagent_schema_exist</name>
-                  <workingDirectory>${system_temp_directory}\postgresplus</workingDirectory>
-                  <showMessageOnError>0</showMessageOnError>
-                  <abortOnError>0</abortOnError>
+                <setInstallerVariableFromScriptOutput exec="${installdir}\bin\psql.exe"
+                                                      execArgs="-t -c &quot;SELECT has_schema_privilege('pgagent', 'USAGE')&quot;"
+                                                      name="pgagent_schema_exist"
+                                                      showMessageOnError="0"
+                                                      abortOnError="0"
+                                                      workingDirectory="${installdir}\bin">
                   <ruleList>
                     <compareText logic="equals" text="${platform_name}" value="windows"/>
-                    <fileTest>
-                      <path>${installdir}\bin\psql.exe</path>
-                      <condition>exists</condition>
-                    </fileTest>
-
+                    <fileTest path="${installdir}\bin\psql.exe" condition="exists"/>
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
 
                 <!-- Check for pgagent_schema_version function exist -->
-                <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}/postgresplus/callpsql.sh</exec>
-                  <execArgs>${installdir} ${supername} ${superpassword} "CHECK_PGAGENT_SCHEMA_VERSION_FUNCTION_EXIST"</execArgs>
-                  <name>pgagent_schema_version_function_exist</name>
-                  <workingDirectory>${system_temp_directory}/postgresplus</workingDirectory>
-                  <showMessageOnError>0</showMessageOnError>
-                  <abortOnError>0</abortOnError>
+                <setInstallerVariableFromScriptOutput exec="${installdir}/bin/psql"
+                                                      execArgs="-t -c &quot;SELECT COUNT(*) FROM pg_proc WHERE proname = 'pgagent_schema_version' AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'pgagent') AND prorettype = (SELECT oid FROM pg_type WHERE typname = 'int2') AND proargtypes = ''&quot;"
+                                                      name="pgagent_schema_version_function_exist"
+                                                      showMessageOnError="0"
+                                                      abortOnError="0"
+                                                      workingDirectory="${installdir}/bin">
                   <ruleList>
                     <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    <fileTest path="${installdir}/bin/psql" condition="exists"/>
                     <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
-                    <fileTest>
-                      <path>${installdir}/bin/psql</path>
-                      <condition>exists</condition>
-                    </fileTest>
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
-
-                <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}\postgresplus\callpsql.bat</exec>
-                  <execArgs>"${installdir}" ${supername} ${superpassword} "CHECK_PGAGENT_SCHEMA_VERSION_FUNCTION_EXIST"</execArgs>
-                  <name>pgagent_schema_version_function_exist</name>
-                  <workingDirectory>${system_temp_directory}\postgresplus</workingDirectory>
-                  <showMessageOnError>0</showMessageOnError>
-                  <abortOnError>0</abortOnError>
+                <setInstallerVariableFromScriptOutput exec="${installdir}\bin\psql.exe"
+                                                      execArgs="-t -c &quot;SELECT COUNT(*) FROM pg_proc WHERE proname = 'pgagent_schema_version' AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'pgagent') AND prorettype = (SELECT oid FROM pg_type WHERE typname = 'int2') AND proargtypes = ''&quot;"
+                                                      name="pgagent_schema_version_function_exist"
+                                                      showMessageOnError="0"
+                                                      abortOnError="0"
+                                                      workingDirectory="${installdir}\bin">
                   <ruleList>
                     <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    <fileTest path="${installdir}\bin\psql.exe" condition="exists"/>
                     <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
-                    <fileTest>
-                      <path>${installdir}\bin\psql.exe</path>
-                      <condition>exists</condition>
-                    </fileTest>
-
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
 
                 <!-- Check for the current version of the pgagent schema -->
-                <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}/postgresplus/callpsql.sh</exec>
-                  <execArgs>${installdir} ${supername} ${superpassword} "CHECK_CURRENT_PGAGENT_SCHEMA_VERSION"</execArgs>
-                  <name>pgagent_current_schema_version</name>
-                  <workingDirectory>${system_temp_directory}/postgresplus</workingDirectory>
-                  <showMessageOnError>0</showMessageOnError>
-                  <abortOnError>0</abortOnError>
+                <setInstallerVariableFromScriptOutput exec="${installdir}/bin/psql"
+                                                      execArgs="-t -c &quot;SELECT pgagent.pgagent_schema_version()&quot;"
+                                                      name="pgagent_current_schema_version"
+                                                      showMessageOnError="0"
+                                                      abortOnError="0"
+                                                      workingDirectory="${installdir}/bin">
                   <ruleList>
                     <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    <fileTest path="${installdir}/bin/psql" condition="exists"/>
                     <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
                     <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
-                    <fileTest>
-                      <path>${installdir}/bin/psql</path>
-                      <condition>exists</condition>
-                    </fileTest>
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
-
-
-                <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}\postgresplus\callpsql.bat</exec>
-                  <execArgs>"${installdir}" ${supername} ${superpassword} "CHECK_CURRENT_PGAGENT_SCHEMA_VERSION"</execArgs>
-                  <name>pgagent_current_schema_version</name>
-                  <workingDirectory>${system_temp_directory}\postgresplus</workingDirectory>
-                  <showMessageOnError>0</showMessageOnError>
-                  <abortOnError>0</abortOnError>
+                <setInstallerVariableFromScriptOutput exec="${installdir}\bin\psql.exe"
+                                                      execArgs="-t -c &quot;SELECT pgagent.pgagent_schema_version()&quot;"
+                                                      name="pgagent_current_schema_version"
+                                                      showMessageOnError="0"
+                                                      abortOnError="0"
+                                                      workingDirectory="${installdir}\bin">
                   <ruleList>
                     <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    <fileTest path="${installdir}\bin\psql.exe" condition="exists"/>
                     <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
                     <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
-                    <fileTest>
-                      <path>${installdir}\bin\psql.exe</path>
-                      <condition>exists</condition>
-                    </fileTest>
-
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
 
@@ -8207,7 +8095,6 @@
 
             <!-- For pgagent schema already exists -->
             <actionGroup>
-              <ruleEvaluationLogic>or</ruleEvaluationLogic>
               <actionList>
 
                 <!-- 1. pgagent schema exist and pgagent_schema_version function does not exist -->
@@ -8217,30 +8104,16 @@
                   </ruleList>
                 </showQuestion>
 
-                <setInstallerVariable>
-                  <name>schema</name>
-                  <persist>0</persist>
-                  <value>upgrade</value>
+                <setInstallerVariable name="schema" persist="0" value="upgrade">
                   <ruleList>
-                    <compareText>
-                      <logic>equals</logic>
-                      <text>${upgrade_schema}</text>
-                      <value>yes</value>
-                    </compareText>
+                    <compareText logic="equals" text="${upgrade_schema}" value="yes"/>
                     <compareText logic="does_not_equal" text="${pgagent_schema_version_function_exist}" value="1"/>
                   </ruleList>
                 </setInstallerVariable>
 
-                <setInstallerVariable>
-                  <name>schema</name>
-                  <persist>0</persist>
-                  <value>none</value>
+                <setInstallerVariable name="schema" persist="0" value="none">
                   <ruleList>
-                    <compareText>
-                      <logic>equals</logic>
-                      <text>${upgrade_schema}</text>
-                      <value>no</value>
-                    </compareText>
+                    <compareText logic="equals" text="${upgrade_schema}" value="no"/>
                     <compareText logic="does_not_equal" text="${pgagent_schema_version_function_exist}" value="1"/>
                   </ruleList>
                 </setInstallerVariable>
@@ -8254,32 +8127,17 @@
                   </ruleList>
                 </showQuestion>
 
-                <setInstallerVariable>
-                  <name>schema</name>
-                  <persist>0</persist>
-                  <value>upgrade</value>
+                <setInstallerVariable name="schema" persist="0" value="upgrade">
                   <ruleList>
-                    <compareText>
-                      <logic>equals</logic>
-                      <text>${upgrade_schema}</text>
-                      <value>yes</value>
-                    </compareText>
+                    <compareText logic="equals" text="${upgrade_schema}" value="yes"/>
                     <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
                     <compareValues logic="less" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
-
                   </ruleList>
                 </setInstallerVariable>
 
-                <setInstallerVariable>
-                  <name>schema</name>
-                  <persist>0</persist>
-                  <value>none</value>
+                <setInstallerVariable name="schema" persist="0" value="none">
                   <ruleList>
-                    <compareText>
-                      <logic>equals</logic>
-                      <text>${upgrade_schema}</text>
-                      <value>no</value>
-                    </compareText>
+                    <compareText logic="equals" text="${upgrade_schema}" value="no"/>
                     <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
                     <compareValues logic="less" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
                   </ruleList>
@@ -8294,10 +8152,7 @@
                   </ruleList>
                 </showInfo>
 
-                <setInstallerVariable>
-                  <name>schema</name>
-                  <persist>0</persist>
-                  <value>exists</value>
+                <setInstallerVariable name="schema" persist="0" value="exists">
                   <ruleList>
                     <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
                     <compareValues logic="equals" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
@@ -8318,24 +8173,15 @@
                 </actionGroup>
 
               </actionList>
+              <ruleEvaluationLogic>or</ruleEvaluationLogic>
               <ruleList>
-                <fileTest>
-                  <path>${installdir}/pgAgent/bin/pgagent</path>
-                  <condition>exists</condition>
-                </fileTest>
-                <fileTest>
-                  <path>${installdir}\pgAgent\bin\pgagent.exe</path>
-                  <condition>exists</condition>
-                </fileTest>
+                <fileTest path="${installdir}/pgAgent/bin/pgagent" condition="exists"/>
+                <fileTest path="${installdir}\pgAgent\bin\pgagent.exe" condition="exists"/>
               </ruleList>
             </actionGroup>
           </actionList>
           <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${component(pgagent).selected}</text>
-              <value>1</value>
-            </compareText>
+            <isTrue value="${component(pgagent).selected}"/>
           </ruleList>
         </actionGroup>
         <!-- pgagent Checks ends here -->
@@ -8381,8 +8227,8 @@
               </ruleList>
             </throwError>
             <throwError>
-              <ruleEvaluationLogic>or</ruleEvaluationLogic>
               <text>${msg(config.port.invalid)}</text>
+              <ruleEvaluationLogic>or</ruleEvaluationLogic>
               <ruleList>
                 <compareValues>
                   <logic>less</logic>

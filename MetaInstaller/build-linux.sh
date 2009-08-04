@@ -54,6 +54,9 @@ _prep_metainstaller_linux() {
 
     # Grab a copy of the pgagent installer
     cp -R "$WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the pgagent installer (staging/linux/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-linux.bin"
+    
+    # Grab a copy of the pg_migrator installer
+    cp -R "$WD/output/pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the pg_migrator installer (staging/linux/pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-linux.bin"
 
     cd $WD/MetaInstaller
     mkdir -p staging/linux/scripts/pgcontrol
@@ -88,9 +91,6 @@ _prep_metainstaller_linux() {
 _build_metainstaller_linux() {
 
     cp -R $WD/MetaInstaller/scripts/linux/* $WD/MetaInstaller/source/MetaInstaller.linux/ || _die "Failed to copy the utilities to source folder"
-
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MetaInstaller/source/MetaInstaller.linux/features/; gcc -o features.o features.c" || _die "Failed to build the features utility"
-    cp $WD/MetaInstaller/source/MetaInstaller.linux/features/features.o $WD/MetaInstaller/staging/linux/scripts/ || _die "Failed to copy the features utility to the staging directory"
 
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MetaInstaller/source/MetaInstaller.linux/getDynaTune/; gcc -DWITH_OPENSSL -I. -o dynaTuneClient.o getDynaTuneInfoClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the dynaTuneClient utility"
     cp $WD/MetaInstaller/source/MetaInstaller.linux/getDynaTune/dynaTuneClient.o $WD/MetaInstaller/staging/linux/scripts/ || _die "Failed to copy the dynaTuneClient utility to the staging directory"

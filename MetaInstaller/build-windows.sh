@@ -48,7 +48,8 @@ _prep_metainstaller_windows() {
     # Grab a copy of the pgagent installer
     cp -R "$WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-windows.exe"  $WD/MetaInstaller/staging/windows || _die "Failed to copy the pgagent installer (staging/windows/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-windows.exe"
 
-
+    # Grab a copy of the pg_migrator installer
+    cp -R "$WD/output/pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-windows.exe"  $WD/MetaInstaller/staging/windows || _die "Failed to copy the pg_migrator installer (staging/windows/pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-windows.exe"
 
     # Cleanup the build host
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q meta_output_scripts"
@@ -148,8 +149,6 @@ EOT
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/windowsComponents/windows/dbserver_guid/dbserver_guid/dbserver_guid; cmd /c $PG_PATH_WINDOWS\\\\windowsComponents\\\\metavc-build.bat dbserver_guid.vcproj" || _die "Failed to build dbserver_guid on the windows build host"
 
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/windowsComponents/windows/features/features; cmd /c $PG_PATH_WINDOWS\\\\windowsComponents\\\\metavc-build.bat features.vcproj" || _die "Failed to build features on the windows build host"
-
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/windowsComponents/windows/getDynaTune; cmd /c $PG_PATH_WINDOWS\\\\windowsComponents\\\\metavc-build.bat getDynaTune.vcproj" || _die "Failed to build getDynaTune on the windows build host"
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/windowsComponents/windows/isUserValidated; cmd /c $PG_PATH_WINDOWS\\\\windowsComponents\\\\metavc-build.bat isUserValidated.vcproj" || _die "Failed to build isUserValidated on the windows build host"
@@ -169,8 +168,6 @@ EOT
 	#ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\windowsComponents\\\\windows\\\\createuser\\\\Release\\\\createuser.exe $PG_PATH_WINDOWS\\\\meta_output_scripts\\\\scripts\\\\windows" || _die "Failed to copy the createuser proglet on the windows build host" 
 
 	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\windowsComponents\\\\windows\\\\dbserver_guid\\\\dbserver_guid\\\\dbserver_guid\\\\Release\\\\dbserver_guid.exe $PG_PATH_WINDOWS\\\\meta_output_scripts\\\\scripts\\\\windows" || _die "Failed to copy the dbserver_guid proglet on the windows build host" 
-
-	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\windowsComponents\\\\windows\\\\features\\\\features\\\\Release\\\\features.exe $PG_PATH_WINDOWS\\\\meta_output_scripts\\\\scripts\\\\windows" || _die "Failed to copy the features proglet on the windows build host" 
 
 	ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\windowsComponents\\\\windows\\\\getDynaTune\\\\Release\\\\getDynaTune.exe $PG_PATH_WINDOWS\\\\meta_output_scripts\\\\scripts\\\\windows" || _die "Failed to copy the getDynaTune proglet on the windows build host" 
 

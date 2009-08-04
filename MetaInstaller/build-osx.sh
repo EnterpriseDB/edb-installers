@@ -56,6 +56,8 @@ _prep_metainstaller_osx() {
     # Grab a copy of the pgagent installer
     cp -R "$WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the pgagent installer (staging/osx/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip"
 
+    # Grab a copy of the pg_migrator installer
+    cp -R "$WD/output/pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the pg_migrator installer (staging/osx/pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-osx.zip"
 
     cd $WD/MetaInstaller/staging/osx
    
@@ -98,6 +100,11 @@ _prep_metainstaller_osx() {
     unzip pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip
     rm -f pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip
 
+    # unzip pg_migrator
+    unzip pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-osx.zip
+    rm -f pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-osx.zip
+
+
     cd $WD/MetaInstaller
     mkdir -p staging/osx/scripts/pgcontrol
     cp -R $WD/server/staging/osx/bin/pg_controldata  staging/osx/scripts/pgcontrol/ || _die "Failed to copy the pg_controldata  (staging/osx/scripts/pgcontrol)"
@@ -123,10 +130,6 @@ _build_metainstaller_osx() {
    # Build the utilities.
 
     cp -R $WD/MetaInstaller/scripts/osx/* $WD/MetaInstaller/source/MetaInstaller.osx/ || _die "Failed to copy the utilities to source folder"
-
-    cd $WD/MetaInstaller/source/MetaInstaller.osx/features
-    gcc -o features.o $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 features.c  || _die "Failed to build the features utility"
-    cp features.o $WD/MetaInstaller/staging/osx/scripts/ || _die "Failed to copy the features utility to the staging directory"
 
     cd $WD/MetaInstaller/source/MetaInstaller.osx/getDynaTune
     gcc -DWITH_OPENSSL -I. -O0 -o dynaTuneClient.o $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 getDynaTuneInfoClient.c soapC.c stdsoap2.c soapClient.c -lssl -lcrypto  || _die "Failed to build the getDynaTune utility"

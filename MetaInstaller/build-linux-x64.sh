@@ -44,7 +44,6 @@ _prep_metainstaller_linux_x64() {
     # Grab a copy of the postgis installer
     cp -R "$WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the postgis installer (staging/linux-x64/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-linux-x64.bin)"
 
-
     # Grab a copy of the pgbouncer installer
     cp -R "$WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the pgbouncer installer (staging/linux-x64/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-linux-x64.bin"
 
@@ -54,6 +53,8 @@ _prep_metainstaller_linux_x64() {
     # Grab a copy of the pgagent installer
     cp -R "$WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the pgagent installer (staging/linux-x64/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-linux-x64.bin"
 
+    # Grab a copy of the pg_migrator installer
+    cp -R "$WD/output/pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the pg_migrator installer (staging/linux-x64/pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-linux-x64.bin"
 
     cd $WD/MetaInstaller
     mkdir -p staging/linux-x64/scripts/pgcontrol
@@ -90,9 +91,6 @@ _prep_metainstaller_linux_x64() {
 _build_metainstaller_linux_x64() {
 
   cp -R $WD/MetaInstaller/scripts/linux-x64/* $WD/MetaInstaller/source/MetaInstaller.linux-x64/ || _die "Failed to copy the utilities to source folder"
-
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MetaInstaller/source/MetaInstaller.linux-x64/features/; gcc -o features.o features.c" || _die "Failed to build the features utility"
-    cp $WD/MetaInstaller/source/MetaInstaller.linux-x64/features/features.o $WD/MetaInstaller/staging/linux-x64/scripts/ || _die "Failed to copy the features utility to the staging directory"
 
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MetaInstaller/source/MetaInstaller.linux-x64/getDynaTune/; gcc -DWITH_OPENSSL -I. -o dynaTuneClient.o getDynaTuneInfoClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the dynaTuneClient utility"
     cp $WD/MetaInstaller/source/MetaInstaller.linux-x64/getDynaTune/dynaTuneClient.o $WD/MetaInstaller/staging/linux-x64/scripts/ || _die "Failed to copy the dynaTuneClient utility to the staging directory"

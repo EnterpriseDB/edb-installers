@@ -160,6 +160,9 @@ _postprocess_metainstaller() {
 
    _replace PG_BUILDNUM_PGAGENT $PG_BUILDNUM_PGAGENT postgresplus.xml || _die "Failed to set the pgagent build number in the installer project file (MetaInstaller/postgresplus.xml)"
 
+   _replace PG_VERSION_PGMIGRATOR $PG_VERSION_PGMIGRATOR postgresplus.xml || _die "Failed to set the pg_migrator version number in the installer project file (MetaInstaller/postgresplus.xml)"
+
+   _replace PG_BUILDNUM_PGMIGRATOR $PG_BUILDNUM_PGMIGRATOR postgresplus.xml || _die "Failed to set the pg_migrator build number in the installer project file (MetaInstaller/postgresplus.xml)"
  
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
