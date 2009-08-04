@@ -336,6 +336,17 @@
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgMigrator-PG_MAJOR_VERSION" name="InstallationDirectory" value="${installdir}"/>
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgMigrator-PG_MAJOR_VERSION" name="Version" value="${product_version}"/>
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgMigrator-PG_MAJOR_VERSION" name="Branding" value="${branding}"/>
+
+        <copyFile origin="${installdir}/lib/pg_migrator.so" destination="${pkglibdir}/">
+            <ruleList>
+                <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+            </ruleList>
+        </copyFile>
+        <copyFile origin="${installdir}\lib\pg_migrator.dll" destination="${pkglibdir}\">
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+            </ruleList>
+        </copyFile>
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
@@ -351,6 +362,18 @@
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
+        <deleteFile path="${pkglibdir}/pg_migrator.so">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <fileTest path="${pkglibdir}/pg_migrator.so" condition="exists"/>
+            </ruleList>
+        </deleteFile>
+        <deleteFile path="${pkglibdir}\pg_migrator.dll">
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <fileTest path="${pkglibdir}\pg_migrator.dll" condition="exists"/>
+            </ruleList>
+        </deleteFile>
     </preUninstallationActionList>
     <!-- Components -->
     <componentList>
@@ -564,42 +587,86 @@
                         <isTrue value="${isValidPGPATH}"/>
                     </ruleList>
                 </actionGroup>
-                <setInstallerVariableFromScriptOutput>
-                    <name>pg_version_str</name>
-                    <exec>${installdir}\bin\pg_config.exe</exec>
-                    <execArgs>--version</execArgs>
-                    <workingDirectory>${installdir}\bin</workingDirectory>
+                <setInstallerVariableFromScriptOutput name="pg_version_str"
+                                                      exec="${installdir}\bin\pg_config.exe"
+                                                      execArgs="--version"
+                                                      workingDirectory="${installdir}\bin">
                     <ruleList>
                         <compareText text="${platform_name}" logic="equals" value="windows"/>
                         <isTrue value="${isValidPGPATH}"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
-                <setInstallerVariableFromScriptOutput>
-                    <name>pg_version_str</name>
-                    <exec>${installdir}/bin/pg_config</exec>
-                    <execArgs>--version</execArgs>
-                    <workingDirectory>${installdir}/bin</workingDirectory>
+                <setInstallerVariableFromScriptOutput name="pg_version_str"
+                                                      exec="${installdir}/bin/pg_config"
+                                                      execArgs="--version"
+                                                      workingDirectory="${installdir}/bin">
                     <ruleList>
                         <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
                         <isTrue value="${isValidPGPATH}"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
-                <setInstallerVariableFromRegEx>
-                      <name>pg_version</name>
-                      <text>${pg_version_str}</text>
-                      <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
-                      <substitution>\1</substitution>
+                <setInstallerVariableFromRegEx name="pg_version"
+                                               text="${pg_version_str}"
+                                               pattern="^PostgreSQL ([0-9].[0-9]).?[\w]*$"
+                                               substitution="\1">
                       <ruleList>
                           <compareText logic="does_not_equal" text="${pg_version_str}" value=""/>
                       </ruleList>
                 </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromScriptOutput name="pkglibdir"
+                                                      exec="${installdir}\bin\pg_config.exe"
+                                                      execArgs="--pkglibdir"
+                                                      workingDirectory="${installdir}\bin">
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows"/>
+                        <isTrue value="${isValidPGPATH}"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput name="pkglibdir"
+                                                      exec="${installdir}/bin/pg_config"
+                                                      execArgs="--pkglibdir"
+                                                      workingDirectory="${installdir}/bin">
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+                        <isTrue value="${isValidPGPATH}"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <!-- Make the pkglibdir variable available in the unstaller -->
+                <setInstallerVariable name="pkglibdir"
+                                      value="${pkglibdir}"
+                                      persist="1"/>
                 <actionGroup>
                     <actionList>
                         <showWarning text="${msg(pg_migrator.installdir.pg_version.mismatch)}"/>
+                        <setInstallerVariable name="isValidPGPATH" value="false"/>
                         <setInstallerVariable name="next_page" value="installdir"/>
                     </actionList>
                     <ruleList>
                         <compareText logic="does_not_equal" text="${pg_version}" value="PG_MAJOR_VERSION"/>
+                        <isTrue value="${isValidPGPATH}"/>
+                    </ruleList>
+                </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="isValidPGPATH" value="false"/>
+                        <showWarning text="${msg(pg_migrator.installdir.pg_config.corrupted)}"/>
+                        <setInstallerVariable name="next_page" value="installdir"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${pkglibdir}" value=""/>
+                        <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+                        <isTrue value="${isValidPGPATH}"/>
+                    </ruleList>
+                </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <showWarning text="${msg(pg_migrator.installdir.pg_config.corrupted.win)}"/>
+                        <setInstallerVariable name="isValidPGPATH" value="false"/>
+                        <setInstallerVariable name="next_page" value="installdir"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${pkglibdir}" value=""/>
+                        <compareText text="${platform_name}" logic="equals" value="windows"/>
                         <isTrue value="${isValidPGPATH}"/>
                     </ruleList>
                 </actionGroup>
@@ -609,9 +676,7 @@
             <postShowPageActionList>
                 <actionGroup>
                     <actionList>  
-                        <showWarning>
-                            <text>${msg(pg_migrator.installdir.error)}</text>
-                        </showWarning>
+                        <showWarning text="${msg(pg_migrator.installdir.error)}"/>
                         <setInstallerVariable name="next_page" value="installdir"/>
                     </actionList>
                     <ruleList>

@@ -28,3 +28,6 @@ pg_migrator.installdir.pgerror=The installation directory path is not a valid Po
 
 pg_migrator.installdir.pg_version.mismatch=The PostgreSQL Server is incompatible with this version of pg_migrator.
 
+pg_migrator.installdir.pg_config.corrupted=Found the valid PostgreSQL Server installation directory. But the executable - pg_config, found under {installdir}/bin, is corrupted or not valid.
+
+pg_migrator.installdir.pg_config.corrupted.win=Found the valid PostgreSQL Server installation directory. But the executable - pg_config.exe, found under {installdir}\bin, is corrupted or not valid.
