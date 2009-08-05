@@ -99,9 +99,6 @@ _prep_metainstaller_windows() {
     cd $WD/server/scripts/windows
     cp -R installruntimes.vbs  $WD/MetaInstaller/staging/windows/scripts || _die "Failed to copy the installruntimes.vbs  (MetaInstaller/staging/windows/scripts)"
 
-    cp -R $WD/MetaInstaller/scripts/windows/*.bat  $WD/MetaInstaller/staging/windows/scripts/ || _die "Failed to copy the scripts"
-    
-        
 }
 
 ################################################################################
