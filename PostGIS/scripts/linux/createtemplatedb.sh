@@ -6,6 +6,7 @@ export PGUSER=$3
 export PGPASSWORD=$4
 PGHOME=$5
 INSTALLDIR=$5
+SHAREDIR=$6
 
 # Creating template postgis database
 "$PGHOME/bin/createdb" template_postgis 
@@ -17,8 +18,9 @@ INSTALLDIR=$5
 "$PGHOME/bin/psql" -c "UPDATE pg_database SET datistemplate='t' WHERE datname='template_postgis'" 
 
 # Creating template postgis functions
-"$PGHOME/bin/psql" -f "$INSTALLDIR/share/lwpostgis.sql" -d template_postgis
-"$PGHOME/bin/psql" -f "$INSTALLDIR/share/spatial_ref_sys.sql" -d template_postgis
+"$PGHOME/bin/psql" -f "$SHAREDIR/contrib/postgis.sql" -d template_postgis
+"$PGHOME/bin/psql" -f "$SHAREDIR/contrib/spatial_ref_sys.sql" -d template_postgis
+"$PGHOME/bin/psql" -f "$SHAREDIR/contrib/postgis_comments.sql" -d template_postgis
 
 
 

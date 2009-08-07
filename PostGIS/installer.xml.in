@@ -465,7 +465,7 @@
             </actionList>
             <ruleList>
                <ruleGroup>
-               <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+               <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                        <fileTest>
                           <path>${installdir}/bin/psql</path>
@@ -513,7 +513,7 @@
             </actionList>
             <ruleList>
                <ruleGroup>
-               <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+               <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                        <fileTest>
                           <path>${installdir}\bin\psql.exe</path>
@@ -633,6 +633,33 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+        <setInstallerVariableFromScriptOutput>
+            <name>libdir</name>
+            <exec>${installdir}/bin/pg_config</exec>
+            <execArgs>--libdir</execArgs>
+        </setInstallerVariableFromScriptOutput>
+        <setInstallerVariableFromScriptOutput>
+            <name>sharedir</name>
+            <exec>${installdir}/bin/pg_config</exec>
+            <execArgs>--sharedir</execArgs>
+        </setInstallerVariableFromScriptOutput>
+        <setInstallerVariableFromScriptOutput>
+            <name>docdir</name>
+            <exec>${installdir}/bin/pg_config</exec>
+            <execArgs>--docdir</execArgs>
+        </setInstallerVariableFromScriptOutput>
+        <setInstallerVariableFromScriptOutput>
+            <name>mandir</name>
+            <exec>${installdir}/bin/pg_config</exec>
+            <execArgs>--mandir</execArgs>
+        </setInstallerVariableFromScriptOutput>
+        <setInstallerVariableFromRegEx>
+            <name>parentlibdir</name>
+            <text>${libdir}</text>
+            <pattern>(.*)[/\\]lib</pattern>
+            <substitution>\1</substitution>
+        </setInstallerVariableFromRegEx>
+
     </preInstallationActionList>
     <!-- Post installation actions -->
     <postInstallationActionList>
@@ -704,6 +731,27 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <substitute>
+            <files>
+                   ${sharedir}/contrib/postgis.sql
+                   ${sharedir}/contrib/postgis_upgrade.sql
+            </files>
+            <substitutionList>
+                <substitution>
+                    <pattern>\$libdir</pattern>
+                    <value>${installdir}/lib</value>
+                </substitution>
+            </substitutionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </substitute>
+
         <!-- Configuring Scripts to set the installation path in PostGIS -->
         <runProgram>
             <customErrorMessage>${msg(error.configure.postgis)}</customErrorMessage>
@@ -722,7 +770,7 @@
         <!-- Create Template Spatial Database -->
         <runProgram>
             <program>${installdir}/PostGIS/installer/PostGIS/createtemplatedb.sh</program>
-            <programArguments>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</programArguments>
+            <programArguments>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" ${sharedir}</programArguments>
             <progressText>${msg(progress.text.creating.templatedb)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -765,7 +813,7 @@
         </setInstallerVariableFromRegEx>
 
         <substitute>
-           <files>${installdir}\share\lwpostgis.sql</files>
+           <files>${installdir}\share\contrib\postgis.sql</files>
            <substitutionList>
               <substitution>
                  <pattern>@@INSTALL_DIR@@</pattern>
@@ -782,7 +830,7 @@
         </substitute>
   
         <substitute>
-           <files>${installdir}\share\lwpostgis_upgrade.sql</files>
+           <files>${installdir}\share\contrib\postgis_upgrade.sql</files>
            <substitutionList>
               <substitution>
                  <pattern>@@INSTALL_DIR@@</pattern>
@@ -802,8 +850,8 @@
            <files>${installdir}\PostGIS\installer\PostGIS\createtemplatedb.bat</files>
            <substitutionList>
               <substitution>
-                 <pattern>@@INSTALL_DIR@@</pattern>
-                 <value>${installdir}</value>
+                 <pattern>@@INSTALL_DIR@@/share</pattern>
+                 <value>${sharedir}</value>
               </substitution>
           </substitutionList>
           <ruleList>
@@ -910,36 +958,37 @@
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
+                    <text>${branding}</text>
+                    <value>PostgreSQL ${PGMajorVersion}</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
                     <text>${platform_name}</text>
                     <value>osx</value>
                 </compareText>
             </ruleList>
         </actionGroup>
-        <!-- LIN & MAC: Deleting library files we copied to other place while installation -->
+
         <actionGroup>
             <actionList>
-                <runProgram>
-                    <program>${installdir}/PostGIS/installer/PostGIS/removeFiles.sh</program>
-                    <programArguments/>
-                </runProgram>
-	        <!-- Deleting the file created during installation -->
                 <deleteFile>
-                    <path>${installdir}/PostGIS/installer/PostGIS/removeFiles.sh</path>
-                    <ruleList>
-                        <fileExists>
-                            <path>${installdir}/PostGIS/installer/PostGIS/removeFiles.sh</path>
-                        </fileExists>
-                    </ruleList>
+                    <path>/Applications/${branding}</path>
                 </deleteFile>
             </actionList>
             <ruleList>
                 <compareText>
                     <logic>does_not_equal</logic>
+                    <text>${branding}</text>
+                    <value>PostgreSQL ${PGMajorVersion}</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
                     <text>${platform_name}</text>
-                    <value>windows</value>
+                    <value>osx</value>
                 </compareText>
             </ruleList>
         </actionGroup>
+
     </preUninstallationActionList>
     <!-- Post un-installation actions -->
     <postUninstallationActionList>
@@ -957,461 +1006,21 @@
             <selected>1</selected>
             <show>1</show>
             <folderList>
-                <!-- WIN: Program files -->
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/bin</destination>
-                    <name>programfilesbinwindows</name>
-                    <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/windows/bin/pgsql2shp.exe</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/windows/bin/shp2pgsql.exe</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/windows/bin/libgeos_c-1.dll</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/windows/bin/libproj.dll</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/windows/bin/libgeos-PG_GEOS_DLL_VERSION.dll</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/doc</destination>
-                    <name>programfilesdocwindows</name>
-                    <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/windows/doc/README.pgsql2shp</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/windows/doc/README.shp2pgsql</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/windows/doc/README.postgis</origin>
-                        </distributionFile>
-                        <distributionDirectory>
-                            <origin>staging/windows/doc/postgis</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/doc/contrib</destination>
-                    <name>programfilesdoccontribwindows</name>
-                    <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/windows/doc/contrib/html</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/lib</destination>
-                    <name>programfileslibwindows</name>
-                    <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/windows/lib/liblwgeom.dll</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/man/man1</destination>
-                    <name>programfilesmanwindows</name>
-                    <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/windows/man/man1/pgsql2shp.1</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/windows/man/man1/shp2pgsql.1</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/share</destination>
-                    <name>programfilessharewindows</name>
-                    <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/windows/share/lwpostgis.sql</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/windows/share/lwpostgis_upgrade.sql</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/windows/share/spatial_ref_sys.sql</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/share/contrib</destination>
-                    <name>programfilessharecontribwindows</name>
-                    <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/windows/share/contrib/postgis</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/jdbc</destination>
-                    <name>programfilesjdbcwindows</name>
-                    <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/windows/jdbc/postgis_PG_VERSION_POSTGIS.jar</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Installation Files</description>
-                    <destination>${installdir}/PostGIS</destination>
-                    <name>installfileswindows</name>
-                    <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/windows/installer</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Launch And Menu Scripts</description>
-                    <destination>${installdir}/PostGIS</destination>
-                    <name>menuandlaunchfileswindows</name>
-                    <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/windows/scripts</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-	        
-                <!-- LIN: Program files -->
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/bin</destination>
-                    <name>programfilesbinlinux</name>
-                    <platforms>linux</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/linux/PostGIS/bin/pgsql2shp</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux/PostGIS/bin/shp2pgsql</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/doc</destination>
-                    <name>programfilesdoclinux</name>
-                    <platforms>linux</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/linux/PostGIS/doc/README.pgsql2shp</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux/PostGIS/doc/README.shp2pgsql</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux/PostGIS/doc/README.postgis</origin>
-                        </distributionFile>
-                        <distributionDirectory>
-                            <origin>staging/linux/PostGIS/doc/postgis</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/doc/contrib</destination>
-                    <name>programfilesdoccontriblinux</name>
-                    <platforms>linux</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux/PostGIS/doc/contrib/html</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/PostGIS</destination>
-                    <name>programfilesliblinux</name>
-                    <platforms>linux</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux/PostGIS/lib</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/man/man1</destination>
-                    <name>programfilesmanlinux</name>
-                    <platforms>linux</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/linux/PostGIS/man/man1/pgsql2shp.1</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux/PostGIS/man/man1/shp2pgsql.1</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/share</destination>
-                    <name>programfilessharelinux</name>
-                    <platforms>linux</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/linux/PostGIS/share/lwpostgis.sql</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux/PostGIS/share/lwpostgis_upgrade.sql</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux/PostGIS/share/spatial_ref_sys.sql</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/share/contrib</destination>
-                    <name>programfilessharecontriblinux</name>
-                    <platforms>linux</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux/PostGIS/share/contrib/postgis</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/jdbc</destination>
-                    <name>programfilesjdbclinux</name>
-                    <platforms>linux</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/linux/PostGIS/jdbc/postgis_PG_VERSION_POSTGIS.jar</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Installation Files</description>
-                    <destination>${installdir}/PostGIS</destination>
-                    <name>installfileslinux</name>
-                    <platforms>linux</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux/installer</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Launch And Menu Scripts</description>
-                    <destination>${installdir}/PostGIS</destination>
-                    <name>menuandlaunchfileslinux</name>
-                    <platforms>linux</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux/scripts</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-	            <!-- LIN-X64: Program files -->
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/bin</destination>
-                    <name>programfilesbinlinux-x64</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/linux-x64/PostGIS/bin/pgsql2shp</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux-x64/PostGIS/bin/shp2pgsql</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/doc</destination>
-                    <name>programfilesdoclinux-x64</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/linux-x64/PostGIS/doc/README.pgsql2shp</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux-x64/PostGIS/doc/README.shp2pgsql</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux-x64/PostGIS/doc/README.postgis</origin>
-                        </distributionFile>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/PostGIS/doc/postgis</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/doc/contrib</destination>
-                    <name>programfilesdoccontriblinux-x64</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/PostGIS/doc/contrib/html</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/PostGIS</destination>
-                    <name>programfilesliblinux-x64</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/PostGIS/lib</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/man/man1</destination>
-                    <name>programfilesmanlinux-x64</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/linux-x64/PostGIS/man/man1/pgsql2shp.1</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux-x64/PostGIS/man/man1/shp2pgsql.1</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/share</destination>
-                    <name>programfilessharelinux-x64</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/linux-x64/PostGIS/share/lwpostgis.sql</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux-x64/PostGIS/share/lwpostgis_upgrade.sql</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux-x64/PostGIS/share/spatial_ref_sys.sql</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/share/contrib</destination>
-                    <name>programfilessharecontriblinux-x64</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/PostGIS/share/contrib/postgis</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/jdbc</destination>
-                    <name>programfilesjdbclinux-x64</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/linux-x64/PostGIS/jdbc/postgis_PG_VERSION_POSTGIS.jar</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Installation Files</description>
-                    <destination>${installdir}/PostGIS</destination>
-                    <name>installfileslinux-x64</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/installer</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Launch And Menu Scripts</description>
-                    <destination>${installdir}/PostGIS</destination>
-                    <name>menuandlaunchfileslinux-x64</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/scripts</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
 	        <!-- MAC: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}/bin</destination>
+                    <destination>${installdir}</destination>
                     <name>programfilesbinosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/osx/PostGIS/bin/pgsql2shp</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/osx/PostGIS/bin/shp2pgsql</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/doc</destination>
-                    <name>programfilesdocosx</name>
-                    <platforms>osx</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/osx/PostGIS/doc/README.pgsql2shp</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/osx/PostGIS/doc/README.shp2pgsql</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/osx/PostGIS/doc/README.postgis</origin>
-                        </distributionFile>
                         <distributionDirectory>
-                            <origin>staging/osx/PostGIS/doc/postgis</origin>
+                            <origin>staging/osx/PostGIS/bin</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}/doc/contrib</destination>
-                    <name>programfilesdoccontribosx</name>
-                    <platforms>osx</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/osx/PostGIS/doc/contrib/html</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/PostGIS</destination>
+                    <destination>${parentlibdir}</destination>
                     <name>programfileslibosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
@@ -1422,55 +1031,49 @@
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}/man/man1</destination>
-                    <name>programfilesmanosx</name>
-                    <platforms>osx</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/osx/PostGIS/man/man1/pgsql2shp.1</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/osx/PostGIS/man/man1/shp2pgsql.1</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/share</destination>
+                    <destination>${sharedir}</destination>
                     <name>programfilesshareosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/osx/PostGIS/share/lwpostgis.sql</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/osx/PostGIS/share/lwpostgis_upgrade.sql</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/osx/PostGIS/share/spatial_ref_sys.sql</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/share/contrib</destination>
-                    <name>programfilessharecontribosx</name>
-                    <platforms>osx</platforms>
-                    <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/osx/PostGIS/share/contrib/postgis</origin>
+                            <origin>staging/osx/PostGIS/share/contrib</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}/jdbc</destination>
-                    <name>programfilesjdbcosx</name>
+                    <destination>${mandir}</destination>
+                    <name>programfilesmanosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/osx/PostGIS/jdbc/postgis_PG_VERSION_POSTGIS.jar</origin>
-                        </distributionFile>
+                        <distributionDirectory>
+                            <origin>staging/osx/PostGIS/man/man1</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${docdir}</destination>
+                    <name>programfilesdocosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/PostGIS/doc/postgis</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/PostGIS</destination>
+                    <name>programfilesutilsjavaosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/PostGIS/utils</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/osx/PostGIS/java</origin>
+                        </distributionDirectory>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1495,6 +1098,282 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+                <!-- LINUX: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesbinlinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/PostGIS/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${parentlibdir}</destination>
+                    <name>programfilesliblinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/PostGIS/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}</destination>
+                    <name>programfilessharelinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/PostGIS/share/contrib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${mandir}</destination>
+                    <name>programfilesmanlinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/PostGIS/man/man1</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${docdir}</destination>
+                    <name>programfilesdoclinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/PostGIS/doc/postgis</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/PostGIS</destination>
+                    <name>programfilesutilsjavalinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/PostGIS/utils</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/PostGIS/java</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installation Files</description>
+                    <destination>${installdir}/PostGIS</destination>
+                    <name>installfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch And Menu Scripts</description>
+                    <destination>${installdir}/PostGIS</destination>
+                    <name>menuandlaunchfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+	        <!-- LINUX-X64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesbinlinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/PostGIS/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${parentlibdir}</destination>
+                    <name>programfilesliblinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/PostGIS/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}</destination>
+                    <name>programfilessharelinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/PostGIS/share/contrib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${mandir}</destination>
+                    <name>programfilesmanlinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/PostGIS/man/man1</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${docdir}</destination>
+                    <name>programfilesdoclinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/PostGIS/doc/postgis</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/PostGIS</destination>
+                    <name>programfilesutilsjavalinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/PostGIS/utils</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/PostGIS/java</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installation Files</description>
+                    <destination>${installdir}/PostGIS</destination>
+                    <name>installfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch And Menu Scripts</description>
+                    <destination>${installdir}/PostGIS</destination>
+                    <name>menuandlaunchfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- Windows: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesbinwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/PostGIS/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${parentlibdir}</destination>
+                    <name>programfileslibwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/PostGIS/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}</destination>
+                    <name>programfilessharewindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/PostGIS/share/contrib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${mandir}</destination>
+                    <name>programfilesmanwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/PostGIS/man/man1</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${docdir}</destination>
+                    <name>programfilesdocwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/PostGIS/doc/postgis</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/PostGIS</destination>
+                    <name>programfilesutilsjavawindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/PostGIS/utils</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/windows/PostGIS/java</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installation Files</description>
+                    <destination>${installdir}/PostGIS</destination>
+                    <name>installfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch And Menu Scripts</description>
+                    <destination>${installdir}/PostGIS</destination>
+                    <name>menuandlaunchfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
             </folderList>
             <!-- WIN: Start Menu -->
             <startMenuShortcutList>
@@ -1507,7 +1386,7 @@
                            <comment>PostGIS Documentation</comment>
                            <name>PostGIS Documentation</name>
                            <runInTerminal>0</runInTerminal>
-                           <url>file://${installdir}/doc/contrib/html/postgis/postgis.html</url>
+                           <url>file://${installdir}/doc/postgis/postgis.html</url>
                            <windowsIcon>${installdir}\PostGIS\scripts\images\pg-launchPostGISDocs.ico</windowsIcon>
                         </startMenuLinkShortcut>
                         <startMenuLinkShortcut>
@@ -1616,7 +1495,7 @@
                             <text>${msg(pgplus.blank.error)}</text>
                         </throwError>
                     </actionList>
-                    <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                         <compareText>
                             <text>${pgport}</text>
@@ -1643,7 +1522,7 @@
 
                 <throwError>
                     <text>${msg(pgplus.port.error)}</text>
-                    <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                         <compareValues>
                             <value1>${pgport}</value1>
@@ -1970,7 +1849,7 @@
                     </actionList>
                     <ruleList>
                         <ruleGroup>
-                            <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
                             <ruleList>
                                <fileTest>
                                   <path>${installdir}/bin/psql</path>
@@ -2010,7 +1889,7 @@
                     </actionList>
                     <ruleList>
                         <ruleGroup>
-                            <ruleEvaluationLogic>OR</ruleEvaluationLogic>   
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>   
                             <ruleList>
                                <fileTest>
                                   <path>${installdir}\bin\psql.exe</path>

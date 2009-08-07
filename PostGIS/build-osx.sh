@@ -82,6 +82,17 @@ _prep_PostGIS_osx() {
       mv proj-$PG_TARBALL_PROJ.osx osx/ || _die "Failed to restore the proj directory"
     fi
 
+    POSTGIS_MAJOR_VERSION=`echo $PG_VERSION_POSTGIS | cut -f1,2 -d "."`
+
+    echo "Removing existing PostGIS files from the PostgreSQL directory"
+    cd $PG_PGHOME_OSX
+    rm -f bin/shp2pgsql bin/pgsql2shp  || _die "Failed to remove postgis binary files"
+    rm -f lib/postgresql/postgis-$POSTGIS_MAJOR_VERSION.so  || _die "Failed to remove postgis library files"
+    rm -f share/postgresql/contrib/spatial_ref_sys.sql share/postgresql/contrib/postgis.sql  || _die "Failed to remove postgis share files"
+    rm -f share/postgresql/contrib/uninstall_postgis.sql  share/postgresql/contrib/postgis_upgrade.sql  || _die "Failed to remove postgis share files"
+    rm -f share/postgresql/contrib/postgis_comments.sql  || _die "Failed to remove postgis share files"
+    rm -f doc/postgresql/postgis/postgis.html doc/postgresql/postgis/README.postgis || _die "Failed to remove documentation"
+    rm -f share/man/man1/pgsql2shp.1 share/man/man1/shp2pgsql.1 || _die "Failed to remove man pages"
     cd $WD
 
 }
@@ -167,26 +178,29 @@ _build_postgis() {
 
     # Configure the source tree
     echo "Configuring the PostGIS source tree for Intel"
-    PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_OSX/bin/pg_config --with-geos=$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-proj=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx --with-proj-libdir=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib --with-xsl=$PG_DOCBOOK_OSX --disable-dependency-tracking || _die "Failed to configure PostGIS for i386"
-    mv config.h config_i386.h
+    PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-projdir=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx --with-xsldir=$PG_DOCBOOK_OSX  || _die "Failed to configure PostGIS for i386"
+    mv postgis_config.h postgis_config_i386.h
 
     echo "Configuring the PostGIS source tree for PPC"
-    PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_OSX/bin/pg_config --with-geos=$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-proj=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx --with-proj-libdir=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib --with-xsl=$PG_DOCBOOK_OSX --disable-dependency-tracking || _die "Failed to configure PostGIS for PPC"
-    mv config.h config_ppc.h
+    PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-projdir=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx --with-xsldir=$PG_DOCBOOK_OSX  || _die "Failed to configure PostGIS for PPC"
+    mv postgis_config.h postgis_config_ppc.h
 
     echo "Configuring the PostGIS source tree for Universal"
-    PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_OSX/bin/pg_config --with-geos=$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-proj=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx --with-proj-libdir=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib --with-xsl=$PG_DOCBOOK_OSX --disable-dependency-tracking || _die "Failed to configure PostGIS for universal"
+    PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-projdir=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx  --with-xsldir=$PG_DOCBOOK_OSX  || _die "Failed to configure PostGIS for universal"
 
     # Create a replacement config.h that will pull in the appropriate architecture-specific one:
-    echo "#ifdef __BIG_ENDIAN__" > config.h
-    echo "#include \"config_ppc.h\"" >> config.h
-    echo "#else" >> config.h
-    echo "#include \"config_i386.h\"" >> config.h
-    echo "#endif" >> config.h
+    echo "#ifdef __BIG_ENDIAN__" > postgis_config.h
+    echo "#include \"postgis_config_ppc.h\"" >> postgis_config.h
+    echo "#else" >> postgis_config.h
+    echo "#include \"postgis_config_i386.h\"" >> postgis_config.h
+    echo "#endif" >> postgis_config.h
 
     echo "Building PostGIS"
-    MACOSX_DEPLOYMENT_TARGET=10.4 make CFLAGS="-mmacosx-version-min=10.4 -headerpad_max_install_names -arch i386 -arch ppc" LDFLAGS="-arch i386 -arch ppc" -j 2 || _die "Failed to build PostGIS"
-    make prefix=$PG_STAGING/PostGIS install || _die "Failed to install PostGIS"
+    #MACOSX_DEPLOYMENT_TARGET=10.4 make CFLAGS="-mmacosx-version-min=10.4 -headerpad_max_install_names -arch i386 -arch ppc" LDFLAGS="-arch i386 -arch ppc" -j 2 || _die "Failed to build PostGIS"
+    MACOSX_DEPLOYMENT_TARGET=10.4 make || _die "Failed to build PostGIS"
+    make comments || _die "Failed to build comments"
+    make install || _die "Failed to install PostGIS"
+    make comments-install || _die "Failed to install PostGIS comments"
 
     cd $WD
 }
@@ -199,6 +213,7 @@ _build_postgis() {
 _build_PostGIS_osx() {
 
     PG_STAGING=$PG_PATH_OSX/PostGIS/staging/osx
+    POSTGIS_MAJOR_VERSION=`echo $PG_VERSION_POSTGIS | cut -f1,2 -d "."`
 
     if [ ! -e $WD/PostGIS/staging/osx/proj-$PG_TARBALL_PROJ.osx ];
     then
@@ -222,20 +237,84 @@ _build_PostGIS_osx() {
    
     echo "Building postgis-doc"
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/doc; 
-    make || _die "Failed to build postgis-doc"
+    make html || _die "Failed to build postgis-doc"
     make install || _die "Failed to install postgis-doc"
     
     cd $WD/PostGIS
-    
-    echo "Moving doc folder to proper place"
-    mv staging/osx/PostGIS/share/doc staging/osx/PostGIS/
-    mv staging/osx/PostGIS/share/man staging/osx/PostGIS/
 
+    mkdir -p staging/osx/PostGIS
+    cd staging/osx/PostGIS
+
+    echo "Copying Postgis files from PG directory"
+    mkdir bin
+    cp $PG_PGHOME_OSX/bin/shp2pgsql bin/ || _die "Failed to copy PostGIS binaries" 
+    cp $PG_PGHOME_OSX/bin/pgsql2shp bin/ || _die "Failed to copy PostGIS binaries"
+
+    mkdir lib
+    cp $PG_PGHOME_OSX/lib/postgresql/postgis-$POSTGIS_MAJOR_VERSION.so lib/ || _die "Failed to copy PostGIS library" 
+ 
+    mkdir -p share/contrib
+  
+    cp $PG_PGHOME_OSX/share/postgresql/contrib/postgis.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
+    cp $PG_PGHOME_OSX/share/postgresql/contrib/uninstall_postgis.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
+    cp $PG_PGHOME_OSX/share/postgresql/contrib/postgis_upgrade.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
+    cp $PG_PGHOME_OSX/share/postgresql/contrib/spatial_ref_sys.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
+    cp $PG_PGHOME_OSX/share/postgresql/contrib/postgis_comments.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
+  
+    mkdir -p doc/postgis
+
+    cp $PG_PGHOME_OSX/doc/postgresql/postgis/postgis.html doc/postgis || _die "Failed to copy documentation"
+    cp $PG_PGHOME_OSX/doc/postgresql/postgis/README.postgis doc/postgis || _die "Failed to copy documentation"
+
+    mkdir -p man/man1
+    cp $PG_PGHOME_OSX/share/man/man1/pgsql2shp.1 man/man1/ || _die "Failed to copy the man pages"
+    cp $PG_PGHOME_OSX/share/man/man1/shp2pgsql.1 man/man1/ || _die "Failed to copy the man pages"
+
+    cd $PG_PATH_OSX/PostGIS/source/postgis.osx
+    cp loader/README.shp2pgsql $PG_STAGING/PostGIS/doc/postgis || _die "Failed to copy README.shp2pgsql "
+    cp loader/README.pgsql2shp $PG_STAGING/PostGIS/doc/postgis || _die "Failed to copy README.pgsql2shp "
+
+    mkdir -p $PG_STAGING/PostGIS/doc/postgis/jdbc/
+
+    echo "Copying jdbc docs"
+    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java/jdbc
+    if [ -e postgis-jdbc-javadoc.zip ];
+    then
+        cp postgis-jdbc-javadoc.zip $PG_STAGING/PostGIS/doc/postgis/jdbc || _die "Failed to copy jdbc docs "
+        cd $PG_STAGING/PostGIS/doc/postgis/jdbc
+        extract_file postgis-jdbc-javadoc || exit 1
+        rm postgis-jdbc-javadoc.zip  || echo "Failed to remove jdbc docs zip file"
+    else
+        echo "Couldn't find the jdbc docs zip file"
+    fi
+
+    cd $WD/PostGIS
+
+    mkdir -p staging/osx/PostGIS/utils
+    echo "Copying postgis-utils"
+    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/utils
+    cp *.pl $PG_STAGING/PostGIS/utils || _die "Failed to copy the utilities "
+    
+    cd $WD/PostGIS
+
+    mkdir -p staging/osx/PostGIS/java/jdbc
+ 
+    echo "Copying postgis-jdbc"
+    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java
+    cp jdbc/postgis*.jar $PG_STAGING/PostGIS/java/jdbc/ || _die "Failed to copy postgis jars into postgis-jdbc directory "
+    cp -R ejb2 $PG_STAGING/PostGIS/java/ || _die "Failed to copy ejb2 into postgis-jdbc directory "
+    cp -R ejb3 $PG_STAGING/PostGIS/java/ || _die "Failed to copy ejb3 into postgis-jdbc directory "
+    cp -R pljava $PG_STAGING/PostGIS/java/ || _die "Failed to copy pljava into postgis-jdbc directory "
+
+    # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
+    _rewrite_so_refs $WD/PostGIS/staging/osx/geos-$PG_TARBALL_GEOS.osx lib @loader_path/..
+    _rewrite_so_refs $WD/PostGIS/staging/osx/proj-$PG_TARBALL_PROJ.osx lib @loader_path/..
+
+    cd $WD/PostGIS
     echo "Copying Dependent libraries"
     cp staging/osx/geos-$PG_TARBALL_GEOS.osx/lib/*dylib staging/osx/PostGIS/lib || _die "Failed to copy dependent libraries"
     cp staging/osx/proj-$PG_TARBALL_PROJ.osx/lib/*dylib staging/osx/PostGIS/lib || _die "Failed to copy dependent libraries"
 
-    # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     _rewrite_so_refs $WD/PostGIS/staging/osx/PostGIS bin @loader_path/..
     _rewrite_so_refs $WD/PostGIS/staging/osx/PostGIS lib @loader_path/..
 
@@ -263,49 +342,6 @@ _postprocess_PostGIS_osx() {
         _replace "$PG_STAGING/PostGIS" @@INSTALL_DIR@@ "$file"
         chmod ugo+x "$file"
     done
-
-    cd $WD/PostGIS
-
-    echo "Copying Readme files"
-    cd $PG_PATH_OSX/PostGIS/source/postgis.osx
-    cp README.postgis $PG_STAGING/PostGIS/doc || _die "Failed to copy README.postgis "
-    cp loader/README.shp2pgsql $PG_STAGING/PostGIS/doc || _die "Failed to copy README.shp2pgsql "
-    cp loader/README.pgsql2shp $PG_STAGING/PostGIS/doc || _die "Failed to copy README.pgsql2shp "
-
-    mkdir -p $PG_STAGING/PostGIS/doc/contrib/html/postgis/
-    mkdir -p $PG_STAGING/PostGIS/doc/postgis/jdbc/
-
-    echo "Copying postgis docs"
-    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/doc/
-    cp -R html/ $PG_STAGING/PostGIS/doc/contrib/html/postgis/ || _die "Failed to copy postgis docs "
-
-    echo "Copying jdbc docs"
-    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java/jdbc
-    if [ -e postgis-jdbc-javadoc.zip ];
-    then
-        cp postgis-jdbc-javadoc.zip $PG_STAGING/PostGIS/doc/postgis/jdbc || _die "Failed to copy jdbc docs "
-        cd $PG_STAGING/PostGIS/doc/postgis/jdbc
-        extract_file postgis-jdbc-javadoc || exit 1
-        rm postgis-jdbc-javadoc.zip  || echo "Failed to remove jdbc docs zip file"
-    else
-        echo "Couldn't find the jdbc docs zip file"
-    fi
-
-    cd $WD/PostGIS
-
-    mkdir -p staging/osx/PostGIS/share/contrib/postgis/utils
-    echo "Copying postgis-utils"
-
-    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/utils
-    cp create_undef.pl $PG_STAGING/PostGIS/share/contrib/postgis/utils || _die "Failed to copy create_undef.p1 "
-    cp postgis_restore.pl $PG_STAGING/PostGIS/share/contrib/postgis/utils || _die "Failed to copy postgis_restore.p1 "
-    cp postgis_proc_upgrade.pl $PG_STAGING/PostGIS/share/contrib/postgis/utils || _die "Failed to copy postgres_proc_upgrade.p1 "
-
-    mkdir -p $WD/PostGIS/staging/osx/PostGIS/jdbc
-
-    echo "Copying postgis-jdbc"
-    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java/jdbc
-    cp postgis_$PG_VERSION_POSTGIS.jar $PG_STAGING/PostGIS/jdbc/ || _die "Failed to copy postgis_$PG_VERSION_POSTGIS.jar into postgis-jdbc directory "
 
     mkdir -p $PG_STAGING/installer/PostGIS || _die "Failed to create a directory for the install scripts"
 

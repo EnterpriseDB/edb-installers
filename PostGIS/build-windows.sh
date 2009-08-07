@@ -84,6 +84,7 @@ _prep_PostGIS_windows() {
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST postgis.windows rd /S /Q postgis.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\postgis.windows directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST postgis.staging rd /S /Q postgis.staging" || _die "Couldn't remove the $PG_PATH_WINDOWS\\postgis.staging directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST build-postgis.bat del /S /Q build-postgis.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS\\build-postgis.bat on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST postgis-staging.zip del /S /Q postgis-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\postgis-staging.zip on Windows VM"
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST postgresql_mingw-$PG_MAJOR_VERSION.$PG_MINOR_VERSION.zip del /S /Q postgresql_mingw-$PG_MAJOR_VERSION.$PG_MINOR_VERSION.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\postgresql_mingw-$PG_MAJOR_VERSION.$PG_MINOR_VERSION.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST build-postgresql_mingw.bat del /S /Q build-postgresql_mingw.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS\\build-postgresql_mingw.bat on Windows VM"
@@ -106,8 +107,14 @@ _prep_PostGIS_windows() {
     echo "Copying postgis sources to Windows VM"
     scp postgis.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the postgis archieve to windows VM (postgis.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip postgis.zip" || _die "Couldn't extract postgis archieve on windows VM (postgis.zip)"
+ 
+    POSTGIS_MAJOR_VERSION=`echo $PG_VERSION_POSTGIS | cut -f1,2 -d "."`
 
-        
+    #Clear postgis file in the pgsql folder
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/bin; cmd /c del /S /Q pgsql2shp.exe shp2pgsql.exe" || _die "Failed to clear postgis bin files"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/lib; cmd /c del /S /Q postgis-$POSTGIS_MAJOR_VERSION.dll" || _die "Failed to clear postgis lib files"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/share/contrib; cmd /c del /S /Q spatial_ref_sys.sql postgis.sql postgis_upgrade.sql postgis_comments.sql uninstall_postgis.sql" || _die "Failed to clear postgis lib files"
+         
 }
 
 
@@ -124,6 +131,7 @@ _build_PostGIS_windows() {
     PG_PGBUILD_MINGW_WINDOWS=`echo $PG_PGBUILD_WINDOWS | sed -e 's/://g' -e 's:\\\\:/:g' -e 's:^:/:g'`
     PG_JAVA_HOME_MINGW_WINDOWS=`echo $PG_JAVA_HOME_WINDOWS | sed -e 's/://g' -e 's:\\\\:/:g' -e 's:^:/:g' -e 's:\\ :\\\\ :g'`
     PG_ANT_HOME_MINGW_WINDOWS=`echo $PG_ANT_WINDOWS | sed -e 's/://g' -e 's:\\\\:/:g' -e 's:^:/:g' -e 's:\\ :\\\\ :g'`
+    POSTGIS_MAJOR_VERSION=`echo $PG_VERSION_POSTGIS | cut -f1,2 -d "."`
     cat <<EOT > "build-postgresql_mingw.bat"
 
 @ECHO OFF
@@ -160,7 +168,7 @@ REM Configuring the geos source tree
 :skip-geos
 
 REM Configuring the postgis source tree
-@echo cd $PG_PATH_WINDOWS/postgis.windows/; export PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.staging/bin:\$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.staging/lib:\$LD_LIBRARY_PATH; ./configure --prefix=$PG_STAGING/postgis.staging --with-pgsql=$PG_PGHOME_MINGW_WINDOWS/bin/pg_config --with-geos=$PG_STAGING/geos-$PG_TARBALL_GEOS.staging/bin/geos-config --with-proj=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging; make; make install | $PG_MSYS_WINDOWS\bin\sh --login -i
+@echo cd $PG_PATH_WINDOWS/postgis.windows/; export PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.staging/bin:\$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.staging/lib:\$LD_LIBRARY_PATH; ./configure --with-pgconfig=$PG_PGHOME_MINGW_WINDOWS/bin/pg_config --with-geosconfig=$PG_STAGING/geos-$PG_TARBALL_GEOS.staging/bin/geos-config --with-projdir=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging; make; make comments; make install; make comments-install | $PG_MSYS_WINDOWS\bin\sh --login -i
 
 REM Building postgis-jdbc
 @echo cd $PG_PATH_WINDOWS/postgis.windows/java/jdbc; export CLASSPATH=$PG_STAGING/postgis.windows/postgresql-$PG_JAR_POSTGRESQL.jar; export JAVA_HOME=$PG_JAVA_HOME_MINGW_WINDOWS; $PG_ANT_HOME_MINGW_WINDOWS/bin/ant | $PG_MSYS_WINDOWS\bin\sh --login -i
@@ -170,22 +178,21 @@ EOT
    scp build-postgis.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-postgis.bat"
 
-    echo "Copying required dependent libraries from proj and geos packages"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/geos-$PG_TARBALL_GEOS.staging/bin; cp *.dll $PG_PATH_WINDOWS/postgis.staging/bin" || _die "Failed to copy dependent dll"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/proj-$PG_TARBALL_PROJ.staging/lib; cp *.dll $PG_PATH_WINDOWS/postgis.staging/bin" || _die "Failed to copy dependent dll"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; mkdir -p postgis.staging/bin" || _die "Failed to create doc directory"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/bin; cp pgsql2shp.exe shp2pgsql.exe $PG_PATH_WINDOWS/postgis.staging/bin/" || _die "Failed to create doc directory"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; mkdir -p postgis.staging/lib" || _die "Failed to create doc directory"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/lib; cp postgis-$POSTGIS_MAJOR_VERSION.dll $PG_PATH_WINDOWS/postgis.staging/lib/" || _die "Failed to create doc directory"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; mkdir -p postgis.staging/share/contrib" || _die "Failed to create doc directory"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/share/contrib; cp spatial_ref_sys.sql postgis.sql uninstall_postgis.sql postgis_upgrade.sql postgis_comments.sql $PG_PATH_WINDOWS/postgis.staging/share/contrib" || _die "Failed to create doc directory"
 
-    echo "Copying Readme files"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.staging; mkdir -p doc" || _die "Failed to create doc directory"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.staging; mkdir -p man/man1" || _die "Failed to create man pages directory"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.windows; cp README.postgis $PG_PATH_WINDOWS/postgis.staging/doc" || _die "Failed to copy README.postgis "
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.windows; cp loader/README.shp2pgsql $PG_PATH_WINDOWS/postgis.staging/doc" || _die "Failed to copy README.shp2pgsql "
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.windows; cp loader/README.pgsql2shp $PG_PATH_WINDOWS/postgis.staging/doc" || _die "Failed to copy README.pgsql2shp "
+   echo "Copying Readme files"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.staging; mkdir -p doc/postgis" || _die "Failed to create doc directory"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.staging; mkdir -p man/man1" || _die "Failed to create man pages directory"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.windows; cp README.postgis $PG_PATH_WINDOWS/postgis.staging/doc/postgis/" || _die "Failed to copy README.postgis "
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.windows; cp loader/README.shp2pgsql $PG_PATH_WINDOWS/postgis.staging/doc/postgis/" || _die "Failed to copy README.shp2pgsql "
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.windows; cp loader/README.pgsql2shp $PG_PATH_WINDOWS/postgis.staging/doc/postgis/" || _die "Failed to copy README.pgsql2shp "
 
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.staging; mkdir -p doc/contrib/html/postgis" || _die "Failed to create doc directory"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.staging; mkdir -p doc/postgis/jdbc" || _die "Failed to create doc directory"
-
-    echo "Copying postgis docs"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.windows/doc; cp -R html/* $PG_PATH_WINDOWS/postgis.staging/doc/contrib/html/postgis/" || _die "Failed to copy postgis docs /"
 
     echo "Copying postgis man pages"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.windows/doc; cp -R man/* $PG_PATH_WINDOWS/postgis.staging/man/man1/" || _die "Failed to copy postgis man pages/"
@@ -195,19 +202,26 @@ EOT
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.staging/doc/postgis/jdbc; unzip postgis-jdbc-javadoc.zip; rm -f postgis-jdbc-javadoc.zip "
 
     echo "Copying postgis-utils"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.staging; mkdir -p share/contrib/postgis/utils" || _die "Failed to create doc directory"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.windows; cp utils/*.pl $PG_PATH_WINDOWS/postgis.staging/share/contrib/postgis/utils/" || _die "Failed to copy postgis-utils "
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.staging; mkdir -p utils" || _die "Failed to create doc directory"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.windows; cp utils/*.pl $PG_PATH_WINDOWS/postgis.staging/utils/" || _die "Failed to copy postgis-utils "
 
     mkdir -p $WD/PostGIS/staging/osx/PostGIS/jdbc
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.staging; mkdir -p jdbc" || _die "Failed to create jdbc directory"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.windows/java/jdbc; cp postgis_$PG_VERSION_POSTGIS.jar $PG_PATH_WINDOWS/postgis.staging/jdbc" || _die "Failed to copy postgis-jdbc "
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.staging; mkdir -p java/jdbc" || _die "Failed to create jdbc directory"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.windows/java/jdbc; cp postgis*.jar $PG_PATH_WINDOWS/postgis.staging/java/jdbc/" || _die "Failed to copy postgis-jdbc "
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.windows/java; cp -R ejb2 $PG_PATH_WINDOWS/postgis.staging/java/" || _die "Failed to copy ejb2 "
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.windows/java; cp -R ejb3 $PG_PATH_WINDOWS/postgis.staging/java/" || _die "Failed to copy ejb3 "
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.windows/java; cp -R pljava $PG_PATH_WINDOWS/postgis.staging/java/" || _die "Failed to copy pljava "
 
+   echo "Copying required dependent libraries from proj and geos packages"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/geos-$PG_TARBALL_GEOS.staging/bin; cp *.dll $PG_PATH_WINDOWS/postgis.staging/lib" || _die "Failed to copy dependent dll"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/proj-$PG_TARBALL_PROJ.staging/lib; cp *.dll $PG_PATH_WINDOWS/postgis.staging/lib" || _die "Failed to copy dependent dll"
 
+   mkdir -p $WD/PostGIS/staging/windows/PostGIS/ 
    # Zip up the installed code, copy it back here, and unpack.
     echo "Copying postgis built tree to Unix host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\postgis.staging; cmd /c zip -r ..\\\\postgis-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/postgis.staging)"
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/postgis-staging.zip $WD/PostGIS/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/postgis-staging.zip)"
-    unzip $WD/PostGIS/staging/windows/postgis-staging.zip -d $WD/PostGIS/staging/windows || _die "Failed to unpack the built source tree ($WD/staging/windows/postgis-staging.zip)"
+    unzip $WD/PostGIS/staging/windows/postgis-staging.zip -d $WD/PostGIS/staging/windows/PostGIS || _die "Failed to unpack the built source tree ($WD/staging/windows/postgis-staging.zip)"
     rm $WD/PostGIS/staging/windows/postgis-staging.zip
 
  
@@ -234,7 +248,7 @@ _postprocess_PostGIS_windows() {
     done
 
     #Copy postgis.html from osx build
-    cp $WD/PostGIS/staging/osx/PostGIS/doc/postgis/postgis.html $WD/PostGIS/staging/windows/doc/contrib/html/postgis/ || _die "Failed to copy the postgis.html file"
+    cp $WD/PostGIS/staging/osx/PostGIS/doc/postgis/postgis.html $WD/PostGIS/staging/windows/PostGIS/doc/postgis/ || _die "Failed to copy the postgis.html file"
 
     cd $WD/PostGIS
 

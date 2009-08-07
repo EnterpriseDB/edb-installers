@@ -18,7 +18,8 @@ REM Set the template flag in the pg_database table
 psql -c "UPDATE pg_database SET datistemplate='t' WHERE datname='template_postgis'"
 
 REM Creating template postgis functions
-psql -f "@@INSTALL_DIR@@\share\lwpostgis.sql" -d template_postgis
+psql -f "@@INSTALL_DIR@@\share\postgis.sql" -d template_postgis
 psql -f "@@INSTALL_DIR@@\share\spatial_ref_sys.sql" -d template_postgis
+psql -f "@@INSTALL_DIR@@\share\postgis_comments.sql" -d template_postgis
 
 

@@ -24,7 +24,7 @@ _prep_PostGIS_linux_x64() {
     cp -R postgis-$PG_VERSION_POSTGIS/* postgis.linux-x64 || _die "Failed to copy the source code (source/postgis-$PG_VERSION_POSTGIS)"
     chmod -R ugo+w postgis.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
-    if [ ! -e  geos-$PG_TARBALL_GEOS.linux-x64 ];
+    if [ ! -e geos-$PG_TARBALL_GEOS.linux-x64 ];
     then
       echo "Creating geos source directory ($WD/PostGIS/source/geos-$PG_TARBALL_GEOS.linux-x64)"
       mkdir -p geos-$PG_TARBALL_GEOS.linux-x64 || _die "Couldn't create the geos-$PG_TARBALL_GEOS.linux-x64 directory"
@@ -48,15 +48,14 @@ _prep_PostGIS_linux_x64() {
     fi
 
     cd $WD/PostGIS/staging/linux-x64
-    
-    if [ -e  geos-$PG_TARBALL_GEOS.linux-x64 ];
-    then
-      mv geos-$PG_TARBALL_GEOS.linux-x64 ../ || _die "Failed to back up the geos directory"
-    fi
 
-    if [ -e  proj-$PG_TARBALL_PROJ.linux-x64 ];
+    if [ -e geos-$PG_TARBALL_GEOS.linux-x64 ];
     then
-      mv proj-$PG_TARBALL_PROJ.linux-x64 ../ || _die "Failed to back up the proj directory"
+      mv geos-$PG_TARBALL_GEOS.linux-x64 ../ || _die "Failed to backup the geos staging directory"
+    fi
+    if [ -e proj-$PG_TARBALL_PROJ.linux-x64 ];
+    then
+      mv proj-$PG_TARBALL_PROJ.linux-x64 ../ || _die "Failed to backup the proj staging directory"
     fi
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -71,18 +70,27 @@ _prep_PostGIS_linux_x64() {
     chmod ugo+w $WD/PostGIS/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
 
     cd $WD/PostGIS/staging
-
-    if [ -e  geos-$PG_TARBALL_GEOS.linux-x64 ];
+    if [ -e geos-$PG_TARBALL_GEOS.linux-x64 ];
     then
-      mv geos-$PG_TARBALL_GEOS.linux-x64 linux-x64/ || _die "Failed to restore the geos directory"
+      mv geos-$PG_TARBALL_GEOS.linux-x64 linux-x64/ || _die "Failed to restore the geos staging directory"
+    fi
+    if [ -e proj-$PG_TARBALL_PROJ.linux-x64 ];
+    then
+      mv proj-$PG_TARBALL_PROJ.linux-x64 linux-x64/ || _die "Failed to restore the proj staging directory"
     fi
 
-    if [ -e  proj-$PG_TARBALL_PROJ.linux-x64 ];
-    then
-      mv proj-$PG_TARBALL_PROJ.linux-x64 linux-x64/ || _die "Failed to restore the proj directory"
-    fi
+    POSTGIS_MAJOR_VERSION=`echo $PG_VERSION_POSTGIS | cut -f1,2 -d "."`
 
-        
+    echo "Removing existing PostGIS files from the PostgreSQL directory"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f bin/shp2pgsql bin/pgsql2shp"  || _die "Failed to remove postgis binary files"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f lib/postgresql/postgis-$POSTGIS_MAJOR_VERSION.so"  || _die "Failed to remove postgis library files"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f share/postgresql/contrib/spatial_ref_sys.sql share/postgresql/contrib/postgis.sql"  || _die "Failed to remove postgis share files"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f share/postgresql/contrib/uninstall_postgis.sql  share/postgresql/contrib/postgis_upgrade.sql"  || _die "Failed to remove postgis share files"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f share/postgresql/contrib/postgis_comments.sql"  || _die "Failed to remove postgis share files"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f doc/postgresql/postgis/postgis.html doc/postgresql/postgis/README.postgis" || _die "Failed to remove documentation"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f share/man/man1/pgsql2shp.1 share/man/man1/shp2pgsql.1" || _die "Failed to remove man pages"
+
+         
 }
 
 
@@ -95,18 +103,18 @@ _build_PostGIS_linux_x64() {
     # build postgis    
     PG_STAGING=$PG_PATH_LINUX_X64/PostGIS/staging/linux-x64    
 
-    if [ ! -e  $WD/PostGIS/staging/linux-x64/proj-$PG_TARBALL_PROJ.linux-x64 ];
-    then
+    if [ ! -e $WD/PostGIS/staging/linux-x64/proj-$PG_TARBALL_PROJ.linux-x64 ];
+    then 
       # Configure the source tree
       echo "Configuring the proj source tree"
       ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/proj-$PG_TARBALL_PROJ.linux-x64/; sh ./configure --prefix=$PG_STAGING/proj-$PG_TARBALL_PROJ.linux-x64"  || _die "Failed to configure postgis"
-
+  
       echo "Building proj"
       ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/proj-$PG_TARBALL_PROJ.linux-x64; make" || _die "Failed to build proj"
       ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/proj-$PG_TARBALL_PROJ.linux-x64; make install" || _die "Failed to install proj"
-    fi 
- 
-    if [ ! -e  $WD/PostGIS/staging/linux-x64/geos-$PG_TARBALL_GEOS.linux-x64 ];
+    fi
+   
+    if [ ! -e $WD/PostGIS/staging/linux-x64/geos-$PG_TARBALL_GEOS.linux-x64 ];
     then
       echo "Configuring the geos source tree"
       ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/geos-$PG_TARBALL_GEOS.linux-x64/; sh ./configure --prefix=$PG_STAGING/geos-$PG_TARBALL_GEOS.linux-x64" || _die "Failed to configure geos"
@@ -117,27 +125,77 @@ _build_PostGIS_linux_x64() {
     fi
 
     echo "Configuring the postgis source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/; export PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.linux-x64/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.linux-x64/bin:\$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.linux-x64/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.linux-x64/lib:\$LD_LIBRARY_PATH; ./configure --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_LINUX_X64/bin/pg_config --with-geos=$PG_STAGING/geos-$PG_TARBALL_GEOS.linux-x64/bin/geos-config --with-proj=$PG_STAGING/proj-$PG_TARBALL_PROJ.linux-x64"  || _die "Failed to configure postgis"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/; eX/Port PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.linux-x64/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.linux-x64/bin:\$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.linux-x64/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.linux-x64/lib:\$LD_LIBRARY_PATH; ./configure --prefix=$PG_STAGING/PostGIS --with-pgconfig=$PG_PGHOME_LINUX_X64/bin/pg_config --with-geosconfig=$PG_STAGING/geos-$PG_TARBALL_GEOS.linux-x64/bin/geos-config --with-projdir=$PG_STAGING/proj-$PG_TARBALL_PROJ.linux-x64"  || _die "Failed to configure postgis"
 
     echo "Building postgis"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64; make" || _die "Failed to build postgis"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64; make install" || _die "Failed to install postgis"
-
-
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64; make; make comments" || _die "Failed to build postgis"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64; make install; make comments-install" || _die "Failed to install postgis"
+    
     echo "Building postgis-jdbc"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java/jdbc; export CLASSPATH=$PG_PATH_LINUX_X64/PostGIS/source/postgresql-$PG_JAR_POSTGRESQL.jar:$CLASSPATH; JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 $PG_ANT_HOME_LINUX_X64/bin/ant" || _die "Failed to build postgis-jdbc"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java/jdbc ;CLASSPATH=$PG_PATH_LINUX_X64/PostGIS/source/postgresql-$PG_JAR_POSTGRESQL.jar:$CLASSPATH JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 $PG_ANT_HOME_LINUX_X64/bin/ant" || _die "Failed to build postgis-jdbc"
    
     echo "Building postgis-doc"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/doc; make" || _die "Failed to build postgis-doc"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/doc; make html" || _die "Failed to build postgis-doc"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/doc; make install" || _die "Failed to install postgis-doc"
     
     cd $WD/PostGIS
+
+    mkdir -p staging/linux-x64/PostGIS
+    cd staging/linux-x64/PostGIS
+
+    echo "Copying Postgis files from PG directory"
+    mkdir bin
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/bin/shp2pgsql bin/" || _die "Failed to copy PostGIS binaries" 
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/bin/pgsql2shp bin/" || _die "Failed to copy PostGIS binaries" 
+
+    mkdir lib
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/lib/postgresql/postgis-$POSTGIS_MAJOR_VERSION.so lib/" || _die "Failed to copy PostGIS library" 
+ 
+    mkdir -p share/contrib
+  
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/postgresql/contrib/postgis.sql share/contrib/" || _die "Failed to copy PostGIS share files" 
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/postgresql/contrib/uninstall_postgis.sql share/contrib/" || _die "Failed to copy PostGIS share files" 
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/postgresql/contrib/postgis_upgrade.sql share/contrib/" || _die "Failed to copy PostGIS share files" 
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/postgresql/contrib/spatial_ref_sys.sql share/contrib/" || _die "Failed to copy PostGIS share files" 
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/postgresql/contrib/postgis_comments.sql share/contrib/" || _die "Failed to copy PostGIS share files" 
+  
+    mkdir -p doc/postgis
+
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/doc/postgresql/postgis/postgis.html doc/postgis/" || _die "Failed to copy documentation"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/doc/postgresql/postgis/README.postgis doc/postgis/" || _die "Failed to copy documentation"
+
+    mkdir -p man/man1
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/man/man1/pgsql2shp.1 man/man1/" || _die "Failed to copy the man pages"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/man/man1/shp2pgsql.1 man/man1/" || _die "Failed to copy the man pages"
+
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64; cp loader/README.shp2pgsql $PG_STAGING/PostGIS/doc/postgis" || _die "Failed to copy README.shp2pgsql "
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64; cp loader/README.pgsql2shp $PG_STAGING/PostGIS/doc/postgis" || _die "Failed to copy README.shp2pgsql "
+
+    mkdir -p doc/postgis/jdbc/
+
+    echo "Copying jdbc docs"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java/jdbc; cp postgis-jdbc-javadoc.zip $PG_STAGING/PostGIS/doc/postgis/jdbc" || _die "Failed to copy jdbc docs "
+    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/PostGIS/doc/postgis/jdbc; unzip postgis-jdbc-javadoc.zip; rm postgis-jdbc-javadoc.zip" || _die "Failed to remove jdbc docs zip file"
+
+    cd $WD/PostGIS
+
+    mkdir -p staging/linux-x64/PostGIS/utils
+    echo "Copying postgis-utils"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/utils; cp *.pl $PG_STAGING/PostGIS/utils" || _die "Failed to copy the utilities "
     
-    echo "Moving doc folder to proper place"
-    mv staging/linux-x64/PostGIS/share/doc staging/linux-x64/PostGIS/
-    mv staging/linux-x64/PostGIS/share/man staging/linux-x64/PostGIS/
-}
-    
+    cd $WD/PostGIS
+
+    mkdir -p staging/linux-x64/PostGIS/java/jdbc
+ 
+    echo "Copying postgis-jdbc"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java; cp jdbc/postgis*.jar $PG_STAGING/PostGIS/java/jdbc/" || _die "Failed to copy postgis jars into postgis-jdbc directory "
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java; cp -R ejb2 $PG_STAGING/PostGIS/java/" || _die "Failed to copy ejb2 into postgis-jdbc directory "
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java; cp -R ejb3 $PG_STAGING/PostGIS/java/" || _die "Failed to copy ejb3 into postgis-jdbc directory "
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java; cp -R pljava $PG_STAGING/PostGIS/java/" || _die "Failed to copy pljava into postgis-jdbc directory "
+
+
+    cd $WD/PostGIS
+} 
 
 
 ################################################################################
@@ -146,7 +204,7 @@ _build_PostGIS_linux_x64() {
 
 _postprocess_PostGIS_linux_x64() {
 
-    PG_STAGING=$PG_PATH_LINUX_X64/PostGIS/staging/linux-x64    
+    PG_STAGING=$PG_PATH_LINUX_X64/PostGIS/staging/linux-x64
 
     #Configure the files in PostGIS
     filelist=`grep -rlI "$PG_STAGING" "$WD/PostGIS/staging/linux-x64" | grep -v Binary`
@@ -160,78 +218,38 @@ _postprocess_PostGIS_linux_x64() {
     done
 
     cd $WD/PostGIS
-
-    echo "Copying required dependent libraries from proj and geos packages"
-    cp staging/linux-x64/geos-$PG_TARBALL_GEOS.linux-x64/lib/libgeos_c.so.1 staging/linux-x64/PostGIS/lib/
-    cp staging/linux-x64/geos-$PG_TARBALL_GEOS.linux-x64/lib/libgeos-$PG_TARBALL_GEOS.so staging/linux-x64/PostGIS/lib/
-    cp staging/linux-x64/proj-$PG_TARBALL_PROJ.linux-x64/lib/libproj.so.0 staging/linux-x64/PostGIS/lib/
-
-    echo "Copying Readme files"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64; cp README.postgis $PG_STAGING/PostGIS/doc"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/loader; cp README.shp2pgsql $PG_STAGING/PostGIS/doc"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/loader; cp README.pgsql2shp $PG_STAGING/PostGIS/doc"
-
-    mkdir -p staging/linux-x64/PostGIS/doc/contrib/html/postgis/
-    mkdir -p staging/linux-x64/PostGIS/doc/postgis/jdbc
-
-    echo "Copying postgis docs"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/doc/; cp html/* $PG_STAGING/PostGIS/doc/contrib/html/postgis/"
-
-    echo "Copying jdbc docs"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java/jdbc; cp postgis-jdbc-javadoc.zip $PG_STAGING/PostGIS/doc/postgis/jdbc"
-    cd staging/linux-x64/PostGIS/doc/postgis/jdbc
-    extract_file postgis-jdbc-javadoc || exit 1
-    rm postgis-jdbc-javadoc.zip  || _warn "Failed to remove jdbc docs zip file"
-
-    cd $WD/PostGIS
-
-    mkdir -p staging/linux-x64/PostGIS/share/contrib/postgis/utils
-    echo "Copying postgis-utils"
-
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/utils; cp create_undef.pl $PG_STAGING/PostGIS/share/contrib/postgis/utils"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/utils; cp postgis_restore.pl $PG_STAGING/PostGIS/share/contrib/postgis/utils"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/utils; cp postgis_proc_upgrade.pl $PG_STAGING/PostGIS/share/contrib/postgis/utils"
-
-    mkdir -p staging/linux-x64/PostGIS/jdbc
-
-    echo "Copying postgis-jdbc"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java/jdbc; cp postgis_$PG_VERSION_POSTGIS.jar $PG_STAGING/PostGIS/jdbc" || _die "Failed to copy PostGIS jar file into $PG_STAGING/PostGIS/jdbc directory"
-
-
     mkdir -p staging/linux-x64/installer/PostGIS || _die "Failed to create a directory for the install scripts"
 
-    cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/PostGIS/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
+    cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/PostGIS/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux-x64/createshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/createshortcuts.sh
 
-    cp scripts/linux/createtemplatedb.sh staging/linux-x64/installer/PostGIS/createtemplatedb.sh || _die "Failed to copy the createtemplatedb script (scripts/linux/createtemplatedb.sh)"
+    cp scripts/linux/createtemplatedb.sh staging/linux-x64/installer/PostGIS/createtemplatedb.sh || _die "Failed to copy the createtemplatedb script (scripts/linux-x64/createtemplatedb.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/createtemplatedb.sh
 
-    cp scripts/linux/createpostgisdb.sh staging/linux-x64/installer/PostGIS/createpostgisdb.sh || _die "Failed to copy the createpostgisdb script (scripts/linux/createpostgisdb.sh)"
+    cp scripts/linux/createpostgisdb.sh staging/linux-x64/installer/PostGIS/createpostgisdb.sh || _die "Failed to copy the createpostgisdb script (scripts/linux-x64/createpostgisdb.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/createpostgisdb.sh
 
-    cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/PostGIS/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
+    cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/PostGIS/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux-x64/removeshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/removeshortcuts.sh    
 
-    cp scripts/linux/check-connection.sh staging/linux-x64/installer/PostGIS/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux/check-connection.sh)"
+    cp scripts/linux/check-connection.sh staging/linux-x64/installer/PostGIS/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux-x64/check-connection.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/check-connection.sh
 
-    cp scripts/linux/configurePostGIS.sh staging/linux-x64/installer/PostGIS/configurePostGIS.sh || _die "Failed to copy the configurePostGIS script (scripts/linux/configurePostGIS.sh)"
+    cp scripts/linux/configurePostGIS.sh staging/linux-x64/installer/PostGIS/configurePostGIS.sh || _die "Failed to copy the configurePostGIS script (scripts/linux-x64/configurePostGIS.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/configurePostGIS.sh
 
-    cp scripts/linux/check-pgversion.sh staging/linux-x64/installer/PostGIS/check-pgversion.sh || _die "Failed to copy the check-pgversion script (scripts/linux/check-pgversion.sh)"
+    cp scripts/linux/check-pgversion.sh staging/linux-x64/installer/PostGIS/check-pgversion.sh || _die "Failed to copy the check-pgversion script (scripts/linux-x64/check-pgversion.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/check-pgversion.sh
-
-    cp scripts/linux/check-db.sh staging/linux-x64/installer/PostGIS/check-db.sh || _die "Failed to copy the check-db script (scripts/linux/check-db.sh)"
+ 
+    cp scripts/linux/check-db.sh staging/linux-x64/installer/PostGIS/check-db.sh || _die "Failed to copy the check-db script (scripts/linux-x64/check-db.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/check-db.sh
 
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the launch scripts"
-    cp -R scripts/linux/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launch scripts (scripts/linux)"
-    chmod ugo+x staging/linux-x64/scripts/launchbrowser.sh
-
-    cp -R scripts/linux/launchPostGISDocs.sh staging/linux-x64/scripts/launchPostGISDocs.sh || _die "Failed to copy the launch scripts (scripts/linux)"
-    chmod ugo+x staging/linux-x64/scripts/launchPostGISDocs.sh
-
-    cp -R scripts/linux/launchJDBCDocs.sh staging/linux-x64/scripts/launchJDBCDocs.sh || _die "Failed to copy the launch scripts (scripts/linux)"
+    cp -R scripts/linux/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launch scripts (scripts/linux-x64)"
+	chmod ugo+x staging/linux-x64/scripts/launchbrowser.sh
+    cp -R scripts/linux/launchPostGISDocs.sh staging/linux-x64/scripts/launchPostGISDocs.sh || _die "Failed to copy the launch scripts (scripts/linux-x64)"
+	chmod ugo+x staging/linux-x64/scripts/launchPostGISDocs.sh
+    cp -R scripts/linux/launchJDBCDocs.sh staging/linux-x64/scripts/launchJDBCDocs.sh || _die "Failed to copy the launch scripts (scripts/linux-x64)"
     chmod ugo+x staging/linux-x64/scripts/launchJDBCDocs.sh
 
     # Copy the XDG scripts
