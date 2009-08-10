@@ -76,6 +76,16 @@ such as libxml2 and libxslt, as well as useful utilties such as wget. Setting
 these up correct is essentially to ensuring future Universal binary builds will
 work as expected on all supported OS X versions (10.4/Tiger and above).
 
+The builds use the -isysroot compiler flag to ensure the use of the 10.4u SDK.
+This causes the linker to prefix some library paths with the isysroot path, which
+can cause linker errors with private libraries such as libgeos. To resolve this,
+it is necessary to symlink the build root into the SDK, e.g:
+
+sudo ln -s /Users /Developer/SDKs/MacOSX10.4u.sdk/Users
+
+For additional discussion of this issue, please see:
+http://lists.apple.com/archives/Darwin-dev/2006/Apr/msg00041.html
+
 Utilities (bison and automake 1.9/1.10 is required, others such as wget may be
 useful) should be installed using MacPorts:
 
