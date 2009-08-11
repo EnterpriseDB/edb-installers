@@ -46,18 +46,21 @@ _prep_PostGIS_osx() {
       chmod -R ugo+w proj-$PG_TARBALL_PROJ.osx || _die "Couldn't set the permissions on the source directory"
     fi
 
-    cd $WD/PostGIS/staging/osx
+# Disable caching of Proj and Geos, as the build will fail with 1.4.0 if reusing
+# a Geos build which has had library paths rewritten already.
+#
+#    cd $WD/PostGIS/staging/osx
+#
+#    if [ -e geos-$PG_TARBALL_GEOS.osx ];
+#    then
+#      mv geos-$PG_TARBALL_GEOS.osx ../ || _die "Failed to backup the geos directory"
+#    fi
+#
+#    if [ -e proj-$PG_TARBALL_PROJ.osx ];
+#    then
+#      mv proj-$PG_TARBALL_PROJ.osx ../ || _die "Failed to backup the proj directory"
+#    fi
 
-    if [ -e geos-$PG_TARBALL_GEOS.osx ];
-    then
-      mv geos-$PG_TARBALL_GEOS.osx ../ || _die "Failed to backup the geos directory"
-    fi
-
-    if [ -e proj-$PG_TARBALL_PROJ.osx ];
-    then
-      mv proj-$PG_TARBALL_PROJ.osx ../ || _die "Failed to backup the proj directory"
-    fi
-    sleep 15
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/PostGIS/staging/osx ];
@@ -70,17 +73,20 @@ _prep_PostGIS_osx() {
     mkdir -p $WD/PostGIS/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/PostGIS/staging/osx || _die "Couldn't set the permissions on the staging directory"
 
-    cd $WD/PostGIS/staging
-
-    if [ -e geos-$PG_TARBALL_GEOS.osx ];
-    then
-      mv geos-$PG_TARBALL_GEOS.osx osx/ || _die "Failed to restore the geos directory"
-    fi
-
-    if [ -e proj-$PG_TARBALL_PROJ.osx ];
-    then
-      mv proj-$PG_TARBALL_PROJ.osx osx/ || _die "Failed to restore the proj directory"
-    fi
+# Disable caching of Proj and Geos, as the build will fail with 1.4.0 if reusing
+# a Geos build which has had library paths rewritten already.
+#
+#    cd $WD/PostGIS/staging
+#
+#    if [ -e geos-$PG_TARBALL_GEOS.osx ];
+#    then
+#      mv geos-$PG_TARBALL_GEOS.osx osx/ || _die "Failed to restore the geos directory"
+#    fi
+#
+#    if [ -e proj-$PG_TARBALL_PROJ.osx ];
+#    then
+#      mv proj-$PG_TARBALL_PROJ.osx osx/ || _die "Failed to restore the proj directory"
+#    fi
 
     POSTGIS_MAJOR_VERSION=`echo $PG_VERSION_POSTGIS | cut -f1,2 -d "."`
 
