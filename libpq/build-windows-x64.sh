@@ -78,6 +78,8 @@ EOT
 	
     # Move the resulting binaries into place
 	ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64" || _die "Failed to create the libpq directory on the windows-x64 build host"
+	ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64\\\\installer" || _die "Failed to create the libpq installer directory on the windows-x64 build host"
+	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\vcredist\\\\vcredist_x64.exe $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64\\\\installer" || _die "Failed to copy the VC++ runtimes on the windows build host"
 	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\src\\\\interfaces\\\\libpq\\\\Release\\\\libpq.dll $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64" || _die "Failed to copy the libpq.dll on the windows-x64 build host" 
 	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\OpenSSL\\\\bin\\\\libeay32.dll $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64" || _die "Failed to copy the libeay32.dll on the windows-x64 build host" 
 	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\OpenSSL\\\\bin\\\\ssleay32.dll $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64" || _die "Failed to copy the ssleay32.dll on the windows-x64 build host" 
@@ -100,14 +102,13 @@ EOT
 _postprocess_libpq_windows_x64() {
 
     cd $WD/libpq
+	
+    # Setup the installer scripts. 
+    cp ../server/scripts/windows/installruntimes.vbs staging/windows-x64/libpq/installer/installruntimes.vbs || _die "Failed to copy the installruntimes script (../server/scripts/windows/installruntimes.vbs)"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
-	
-	# Rename the installer
-	mv $WD/output/libpq-$PG_MAJOR_VERSION-windows.exe $WD/output/libpq-$PG_PACKAGE_VERSION-windows-x64.exe || _die "Failed to rename the installer"
-
-    
+	 
     cd $WD
 }
 

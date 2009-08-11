@@ -1,12 +1,14 @@
 <project>
     <!-- Package details -->
-    <shortName>libpq</shortName>
-    <fullName>libpq</fullName>
-    <version>PG_MAJOR_VERSION</version>
+    <shortName>libpq64</shortName>
+    <fullName>libpq64</fullName>
+    <version>PG_VERSION_LIBPQ-PG_BUILDNUM_LIBPQ</version>
+	
     <!-- Product Specific Options -->
-    <productComments>libpq, packaged by EnterpriseDB</productComments>
+    <productComments>libpq for win64, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
+	
     <!-- The options are used for RPM registration -->
     <description>libpq for PostgreSQL</description>
     <summary>libpq for PostgreSQL, packaged by EnterpriseDB</summary>
@@ -17,7 +19,7 @@
     <height>400</height>
 
     <!-- Misc options -->
-    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-PG_VERSION_LIBPQ-PG_BUILDNUM_LIBPQ-${platform_name}.${platform_exec_suffix}</installerFilename>
     <wrapLicenseFileText>0</wrapLicenseFileText>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <unattendedModeUI>minimal</unattendedModeUI>
@@ -26,6 +28,7 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+	<startMenuGroupName></startMenuGroupName>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
@@ -40,11 +43,14 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+	
     <initializationActionList>
+	    <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>  
+	
         <!-- WIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}\PostgreSQL\PG_MAJOR_VERSION\libpq"/>
+                <setInstallerVariable name="installdir" value="${env(ProgramFiles)}\PostgreSQL\libpq64"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -63,7 +69,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}\PostgreSQL\PG_MAJOR_VERSION\libpq</value>
+            <value>${env(ProgramFiles)}\PostgreSQL\libpq64</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -73,6 +79,7 @@
             </ruleList>
         </setInstallerVariable>
     </initializationActionList>
+	
     <preInstallationActionList>
 
         <!-- WIN : Check Previous Installation of libpq-->
@@ -115,6 +122,59 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+		
+        <actionGroup>
+            <actionList>
+			
+			    <!-- Temp directory for preflight scripts -->
+                <createDirectory path="${system_temp_directory}/postgresql_installer"/>
+		
+                <!-- We need to get the VC++ runtimes installed on Windows, before we do anything with binaries -->
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}\postgresql_installer\vcredist_x64.exe</destination>
+                    <folder>programfileswindows</folder>
+                    <origin>installer/vcredist_x64.exe</origin>
+                    <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
+                </unpackFile>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/installruntimes.vbs</destination>
+                    <folder>programfileswindows</folder>
+                    <origin>installer/installruntimes.vbs</origin>
+                    <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
+                </unpackFile>
+                <runProgram>
+                    <program>cscript</program>
+                    <programArguments>//NoLogo "${system_temp_directory}\postgresql_installer\installruntimes.vbs" "${system_temp_directory}\postgresql_installer\vcredist_x64.exe"</programArguments>
+                    <abortOnError>1</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                    <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>1</text>
+                            <value>${install_runtimes}</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+                <throwError>
+                    <text>${msg(script.command.line.error)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>127</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+			
+		    	<deleteFile>
+                    <path>${system_temp_directory}/postgresql_installer</path>
+                </deleteFile>
+			
+			</actionList>
+        </actionGroup>
     </preInstallationActionList>
 
     <!-- Components -->
@@ -133,6 +193,9 @@
                     <name>programfileswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows-x64/libpq/installer</origin>
+                        </distributionDirectory>
                         <distributionFile>
                             <origin>staging/windows-x64/libpq/libpq.dll</origin>
                         </distributionFile>
@@ -147,8 +210,28 @@
             </folderList>
         </component>
     </componentList>
+	
     <!-- Install Directory -->
     <parameterList>
+        <!-- Whether to install runtimes -->
+        <booleanParameter>
+           <name>install_runtimes</name>
+           <description>${msg(install.runtimes.description)}</description>
+           <explanation/>
+           <value/>
+           <default>1</default>
+           <ask>yes</ask>
+           <cliOptionName>install_runtimes</cliOptionName>
+           <cliOptionShow>1</cliOptionShow>
+           <ruleList>
+               <compareText>
+                   <logic>equals</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+               </compareText>
+           </ruleList>
+        </booleanParameter> 
+		
         <directoryParameter>
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
@@ -168,7 +251,8 @@
                     <value/>
                 </compareText>
             </ruleList>
-	    <!-- Validating whether installdir is empty -->
+			
+	        <!-- Validating whether installdir is empty -->
             <validationActionList>
                 <actionGroup>
                     <actionList>
@@ -186,6 +270,7 @@
                     </ruleList>
                 </actionGroup>
             </validationActionList>
+			
             <postShowPageActionList>
                 <!-- Validating whether installdir is valid (Windows) -->
                 <actionGroup>
@@ -211,13 +296,14 @@
                  </actionGroup>
             </postShowPageActionList>
         </directoryParameter>
-	<!-- Explain that we're using an existing installation directory -->
+		
+	    <!-- Explain that we're using an existing installation directory -->
         <labelParameter>
             <name>upgrade</name>
             <title>${msg(upgrade.existing.installation.title)}</title>
             <description>${msg(upgrade.existing.installation.description)}</description>
             <ruleList>
-		<compareText>
+		        <compareText>
                     <text>${libpqVersion}</text>
                     <logic>does_not_equal</logic>
                     <value/>

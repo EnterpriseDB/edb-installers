@@ -1,8 +1,12 @@
-nstaller.Welcome.Title=Setup %1$s
+Installer.Welcome.Title=Setup %1$s
 
 Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
 
 Installer.Installing.Title=Installing ${product_fullname}
+
+error.installing.runtimes=An error occured executing the Microsoft VC++ runtime installer.
+
+script.command.line.error=The script was called with an invalid command line
 
 upgrade.existing.installation.title=Existing installation
 
@@ -12,7 +16,9 @@ Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
-install.summary=libpq for PostgreSQL, packaged by EnterpriseDB.
+install.summary=libpq for win64, packaged by EnterpriseDB.
+
+install.runtimes.description=Specifies whether or not install the Microsoft Visual C++ runtimes before the installation proceeds.
 
 pgjdbc.installdir.empty=The installation directory cannot be empty
 

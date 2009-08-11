@@ -72,8 +72,9 @@ _postprocess_libpq() {
         rm installer.xml
     fi
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (libpq/installer.xml.in)"
-    _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION installer.xml || _die "Failed to set the major version in the installer project file (libpq/installer.xml)"
-   
+    _replace PG_VERSION_LIBPQ $PG_VERSION_LIBPQ installer.xml || _die "Failed to set the major version in the installer project file (libpq/installer.xml)"
+    _replace PG_BUILDNUM_LIBPQ $PG_BUILDNUM_LIBPQ installer.xml || _die "Failed to set the major version in the installer project file (libpq/installer.xml)"
+	   
     # Windows-x64
     if [ $PG_ARCH_WINDOWS_X64 = 1 ];
     then
