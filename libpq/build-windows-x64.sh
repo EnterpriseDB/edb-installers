@@ -62,7 +62,7 @@ _build_libpq_windows_x64() {
     echo "Copying source tree to Windows build VM"
     zip -r postgres.zip postgres.windows-x64 || _die "Failed to pack the source tree (postgres.windows)"
     scp postgres.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows build host (postgres.zip)"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip postgres.zip" || _die "Failed to unpack the source tree on the windows build host (postgres.zip)"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; unzip postgres.zip" || _die "Failed to unpack the source tree on the windows build host (postgres.zip)"
 
 	
     cat <<EOT > "build-libpq.bat"
@@ -84,7 +84,7 @@ EOT
 	
     # Zip up the installed code, copy it back here, and unpack.
     echo "Copying built tree to Unix host"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64; cmd /c zip -r ..\\\\libpq.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/libpq.windows-x64)"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64; zip -r ..\\\\libpq.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/libpq.windows-x64)"
     scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/libpq.zip $WD/libpq/staging/windows-x64 || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/libpq.zip)"
     unzip $WD/libpq/staging/windows-x64/libpq.zip -d $WD/libpq/staging/windows-x64/libpq || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/output.zip)"
     rm $WD/libpq/staging/windows-x64/libpq.zip
