@@ -51,10 +51,10 @@ DATE=`date +'%Y-%m-%d'`
 echo "Creating /mnt/storage/pgInstaller/$DATE on the store server" >> autobuild.log
 ssh dave.page@store.nj.us.enterprisedb.com mkdir -p /mnt/storage/pgInstaller/$DATE >> autobuild.log 2>&1
 
-echo "Uploading output to pub/pgInstaller/$DATE on the sftp server" >> autobuild.log
+echo "Uploading output to pub/pgInstaller/$DATE on the store server" >> autobuild.log
 scp output/* dave.page@store.nj.us.enterprisedb.com:/mnt/storage/pgInstaller/$DATE >> autobuild.log 2>&1
 
-echo "Purging old builds from the sftp server" >> autobuild.log
+echo "Purging old builds from the store server" >> autobuild.log
 ssh dave.page@store.nj.us.enterprisedb.com "bin/culldirs \"/mnt/storage/pgInstaller/*-*-*\" 3" >> autobuild.log 2>&1
 
 echo "#######################################################################" >> autobuild.log
