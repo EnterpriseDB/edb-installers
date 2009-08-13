@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Application Stack Builder Plus
+Exec="INSTALL_DIR/scripts/launchStackBuilderPlus.sh"
+Icon=edb-stackbuilderplus-PG_VERSION_STR.png
+Terminal=false
+Type=Application

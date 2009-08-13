@@ -1,0 +1,530 @@
+<project>
+  <!-- Package details -->
+  <shortName>stackbuilderplus</shortName>
+  <fullName>StackBuilderPlus_PG_PG_VERSION_STR</fullName>
+  <version>PG_VERSION_SBP-PG_BUILDNUM_SBP</version>
+  <!-- These options are used on Windows -->
+  <startMenuGroupName>${branding}</startMenuGroupName>
+  <!-- Product Specific Options -->
+  <productComments>Application Stack Builder Plus for the PostgreSQL</productComments>
+  <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
+  <requireInstallationByRootUser>1</requireInstallationByRootUser>
+  <!-- The options are used for RPM registration -->
+  <description>Advanced Application Stack Builder for the PostgreSQL server</description>
+  <summary>Advnaced Application Stack Builder for the PostgreSQL server, packed by EnterpriseDB</summary>
+  <vendor>EnterpriseDB</vendor>
+
+  <!-- Installer Size -->
+  <width>550</width>
+  <height>400</height>
+
+  <!-- Misc options -->
+  <installerFilename>${product_shortname}-pg_PG_VERSION_STR-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+
+  <wrapLicenseFileText>0</wrapLicenseFileText>
+  <compressionAlgorithm>lzma</compressionAlgorithm>
+  <unattendedModeUI>minimal</unattendedModeUI>
+  <enableRollback>0</enableRollback>
+  <saveRelativePaths>1</saveRelativePaths>
+  <uninstallerName>uninstall-${product_shortname}</uninstallerName>
+  <outputDirectory>../output</outputDirectory>
+  <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+
+  <!-- Images -->
+  <disableSplashScreen>1</disableSplashScreen>
+  <leftImage>../resources/pg-side.png</leftImage>
+
+  <!-- i18n files for the UI -->
+  <allowedLanguages>en</allowedLanguages>
+  <customLanguageFileList>
+    <language code="en" encoding="iso8859-1" file="i18n/en.lng"/>
+  </customLanguageFileList>
+
+  <preShowHelpActionList>
+    <!-- MAC : Set the default installation directory -->
+    <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgreSQL/StackBuilderPlus">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
+      </ruleList>
+    </setInstallerVariable>
+    <!-- LIN : Set the default installation directory -->
+    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgreSQL/StackBuilderPlus">
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </setInstallerVariable>
+    <!-- WIN : Set the default installation directory -->
+    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgreSQL\StackBuilderPlus">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </setInstallerVariable>
+  </preShowHelpActionList>
+  
+  <!-- Prebuild Actons-->
+  <preBuildActionList>
+    <setInstallerVariable name="originalplatform" value="${platform_name}"/>
+    <setInstallerVariable name="originalplatform" value="linux-x32">
+      <ruleList>
+        <compareText text="${platform_name}" value="linux"/>
+      </ruleList>
+    </setInstallerVariable>
+  </preBuildActionList>
+
+  <initializationActionList>
+    <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_SBP"/>
+
+    <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
+    <throwError customErrorMessage="${msg(platform.not.match)}" text="Unknown Error">
+      <ruleList>
+      <platformTest type="linux-x64"/>
+      <compareText text="${originalplatform}" value="linux-x32"/>
+      </ruleList>
+    </throwError>
+
+  </initializationActionList>
+
+  <preInstallationActionList>
+  
+    <!-- Creates the ini file if not exits -->
+    <touchFile path="/etc/postgres-reg.ini">
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </touchFile>
+
+    <!-- LIN & MAC : Get the branding & check Previous Installation of -->
+    <actionGroup>
+      <actionList>
+        <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Branding" variable="iBranding"/>
+        <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Version" variable="iSBPVersion"/>
+        <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="MonitorServer" variable="iMonitorServer">
+            <ruleList>
+               <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
+            </ruleList>
+        </iniFileGet>
+      </actionList>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- WIN : Check Previous Installation of StackBuilderPlus-->
+    <actionGroup>
+      <actionList>
+        <!-- Get the branding -->
+        <registryGet name="Branding" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" variable="iBranding"/>
+        <registryGet name="Version" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" variable="iSBPVersion"/>
+        <registryGet name="MonitorServer" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" variable="iMonitorServer"/>
+      </actionList>
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- If there appears to be an existing installation, with no Branding value. --> 
+    <!-- force the default value. Otherwise, set the branding to whatever we read, -->
+    <!-- or, set the default -->
+    
+    <!-- Existing install, with branding -->
+    <setInstallerVariable name="branding" persist="1" value="${iBranding}">
+      <ruleList>
+        <compareText logic="does_not_equal" text="${iBranding}" value=""/>
+      </ruleList>
+    </setInstallerVariable>
+    
+    <!-- New install, nothing set on the command line -->
+    <setInstallerVariable name="branding" persist="1" value="PostgreSQL PG_MAJOR_VERSION">
+      <ruleList>
+        <compareText logic="equals" text="${branding}" value=""/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <logMessage text="Using branding: ${branding}"/>
+    <!-- Set the installation directory in case of re-install/upgrade -->
+    <actionGroup>
+      <actionList>
+        <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="InstallationDirectory" variable="installdir"/>
+      </actionList>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+ 
+    <!-- MAC : Set the default installation directory -->
+    <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgreSQL/StackBuilderPlus">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
+        <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <!-- LIN : Set the default installation directory -->
+    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgreSQL/StackBuilderPlus">
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+        <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <!-- WIN : Set the default installation directory -->
+    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgreSQL\StackBuilderPlus">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+        <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
+      </ruleList>
+    </setInstallerVariable>
+ 
+  </preInstallationActionList>
+  <postInstallationActionList>
+
+    <!-- Remember it for the uninstaller -->
+    <setInstallerVariable name="monitorServer" persist="1" value="${monitorServer}"/>
+    <setInstallerVariable name="installdir" persist="1" value="${installdir}"/>
+
+    <actionGroup>
+      <actionList>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Description" value="${msg(install.summary)}"/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="InstallationDirectory" value="${installdir}"/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Version" value="${product_version}"/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="MonitorServer" value="${monitorServer}"/>
+      </actionList>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- Branding info -->
+    <logMessage text="Write the branding to the ini file..."/>
+
+    <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Branding" value="${branding}">
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </iniFileSet>
+    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" name="Description" value="${msg(install.summary)}"/>
+    <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" name="InstallationDirectory" value="${installdir}"/>
+    <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" name="Version" value="${product_version}"/>
+    <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" name="Branding" value="${branding}"/>
+    <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" name="MonitorServer" value="${monitorServer}"/>
+
+    <actionGroup>
+      <actionList>
+        <substitute>
+          <files>${installdir}/installer/StackBuilderPlus/createshortcuts.sh</files>
+          <substitutionList>
+            <substitution pattern="@@INSTALL_DIR@@" value="${installdir}"/>
+            <substitution pattern="@@PG_VERSION@@" value="PG_MAJOR_VERSION"/>
+            <substitution pattern="@@BRANDING@@" value="${branding}"/>
+          </substitutionList>
+        </substitute>
+        <substitute>
+          <files>${installdir}/scripts/xdg/edb-stackbuilderplus-pg_PG_VERSION_STR-update-monitor.desktop</files>
+          <substitutionList>
+            <substitution pattern="@@INSTALL_DIR@@" value="${installdir}"/>
+            <substitution pattern="@@PG_VERSION@@" value="PG_MAJOR_VERSION"/>
+          </substitutionList>
+        </substitute>
+         
+        <!-- Create shourtcuts for linux/linux-x64/osx -->
+        <runProgram program="${installdir}/installer/StackBuilderPlus/createshortcuts.sh"
+                    programArguments=""
+                    progressText="${msg(progress.text.creating.shortcuts)}"
+                    abortOnError="0"
+                    showMessageOnError="0"/>
+        
+        <!-- Create shourtcuts for linux/linux-x64/osx -->
+        <runProgram program="${installdir}/installer/StackBuilderPlus/configlibs.sh"
+                    programArguments=""
+                    progressText="${msg(progress.text.fixing.libs)}"
+                    abortOnError="0"
+                    showMessageOnError="0">
+            <ruleList>
+              <compareText logic="contains" text="${platform_name}" value="linux"/>
+            </ruleList>
+        </runProgram>
+
+      </actionList>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+    <actionGroup>
+      <actionList>
+        <!-- WIN: Register launchSBPUpdateMonitor script as a startup script -->
+        <registrySet key="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+                     name="StackBuilderPlusPG_VERSION_STR Update Monitor"
+                     value="${installdir}\scripts\launchSBPUpdateMonitor.vbs"/>
+    
+        <!-- MAC: Register launchSBPUpdateMonitor script as a startup script -->
+        <touchFile path="/private/var/root/Library/Preferences/loginwindow.plist">
+          <ruleList>
+            <compareText text="${platform_name}" logic="equals" value="osx"/>
+          </ruleList>
+        </touchFile>
+        <runProgram program="/usr/bin/defaults"
+                    programArguments="write com.apple.loginwindow LoginHookSBPUpdateMonitor_PG_VERSION_STR &quot;${installdir}/Scritps/launchSBPUpdateMonitor.sh&quot;"
+                    progressText="${msg(progress.text.creating.loginHook.osx)}"
+                    abortOnError="0"
+                    showMessageOnError="0">
+          <ruleList>
+            <compareText text="${platform_name}" logic="equals" value="osx"/>
+            <fileExists  path="/usr/bin/defaults"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- LIN/LIN-X64: Register Stack Builder Plus Update Monitor as a startup script -->
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="xdg_config_dir" value="${env(XDG_CONFIG_DIRS)}"/>
+            <setInstallerVariable name="xdg_config_dir" value="/etc/xdg">
+              <ruleList>
+                <compareText text="${xdg_config_dir}" logic="equals" value=""/>
+              </ruleList>
+            </setInstallerVariable>
+    
+            <createDirectory path="${xdg_config_dir}/autostart">
+              <ruleList>
+                <fileTest condition="not_exists" path="${xdg_config_dir}/autostart"/>
+              </ruleList>
+            </createDirectory>
+            <substitute>
+              <files>${installdir}/scripts/xdg/edb-sbp-update-monitor.desktop</files>
+              <substitutionList>
+                <substitution pattern="@@INSTALL_DIR@@" value="${installdir}"/>
+                <substitution pattern="@@PG_VERSION@@" value="PG_MAJOR_VERSION"/>
+              </substitutionList>
+            </substitute>
+
+            <!-- Make sure, this will start after the gnome/kde system tray get initialized -->
+            <copyFile origin="${installdir}/scripts/xdg/edb-sbp-update-monitor.desktop"
+                      destination="${xdg_config_dir}/autostart/zzz-edb-sbp-pg_PG_VERSION_STR-update-monitor.desktop"/>
+          </actionList>
+          <ruleList>
+            <compareText text="${platform_name}" logic="contains" value="linux"/>
+          </ruleList>
+        </actionGroup>
+
+      </actionList>
+      <ruleList>
+        <compareText text="${monitorServer}" logic="does_not_equal" value=""/>
+      </ruleList>
+    </actionGroup>
+
+  </postInstallationActionList>
+
+  <!-- preUninstallation actions -->
+  <preUninstallationActionList>
+    <actionGroup>
+      <actionList>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Description" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="InstallationDirectory" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Version" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Branding" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="MonitorServer" value=""/>
+      </actionList>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+    <actionGroup>
+      <actionList>
+        <!-- OSX: Remove the scripts from the startup items, if installed -->
+        <runProgram program="/usr/bin/defaults"
+                    programArguments="delete com.apple.loginwindow LoginHookSBPUpdateMonitor_PG_VERSION_STR"
+                    progressText="${msg(progress.text.removing.loginHook.osx)}"
+                    abortOnError="0"
+                    showMessageOnError="0">
+          <ruleList>
+            <compareText text="${platform_name}" logic="equals" value="osx"/>
+            <fileExists  path="/usr/bin/defaults"/>
+          </ruleList>
+        </runProgram>
+    
+        <!-- WIN: Remove the UpdateMonitor Entry from the Registry as the Startup program -->
+        <registryDelete key="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+                        name="StackBuilderPlusPG_VERSION_STR Update Monitor"
+                        showMessageOnError="0"
+                        abortOnError="0"/>
+
+        <!-- LIN/LIN-X64: Remove UpdateMonitor Entry from the startup items, if installed -->
+        <setInstallerVariable name="xdg_config_dir" value="${env(XDG_CONFIG_DIRS)}"/>
+        <setInstallerVariable name="xdg_config_dir" value="/etc/xdg">
+          <ruleList>
+            <compareText text="${xdg_config_dir}" logic="equals" value=""/>
+          </ruleList>
+        </setInstallerVariable>
+        <deleteFile path="${xdg_config_dir}/autostart/zzz-edb-sbp-pg_PG_VERSION_STR-update-monitor.desktop">
+          <ruleList>
+            <fileExists path="${xdg_config_dir}/autostart/zzz-edb-sbp-pg_PG_VERSION_STR-update-monitor.desktop"/>
+          </ruleList>
+        </deleteFile>
+
+      </actionList>
+      <ruleList>
+        <compareText text="${monitorServer}" logic="does_not_equal" value=""/>
+      </ruleList>
+    </actionGroup>
+ 
+    <actionGroup>
+      <actionList>
+        <substitute>
+          <files>${installdir}/installer/StackBuilderPlus/removeshortcuts.sh</files>
+          <substitutionList>
+            <substitution pattern="@@INSTALL_DIR@@" value="${installdir}"/>
+            <substitution pattern="@@PG_VERSION@@" value="PG_MAJOR_VERSION"/>
+            <substitution pattern="@@BRANDING@@" value="${branding}"/>
+          </substitutionList>
+        </substitute>
+        <runProgram program="${installdir}/installer/StackBuilderPlus/removeshortcuts.sh"
+                    programArguments=""
+                    progressText="${msg(progress.text.removing.shortcuts)}"
+                    abortOnError="0"
+                    showMessageOnError="0"/>
+      </actionList>
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- MAC: Remove Stack Builder Plus shortcut -->
+    <deleteFile path="/Applications/${branding}/Application Stack Builder Plus - PG_$PG_VERSION_STR.app">
+      <ruleList>
+        <fileExists path="/Applications/${branding}/Application Stack Builder Plus - PG_$PG_VERSION_STR.app"/>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
+      </ruleList>
+    </deleteFile>
+
+  </preUninstallationActionList>
+
+  <!-- Components -->
+  <componentList>
+    <component>
+      <name>Default</name>
+      <description>StackBuilder Plus</description>
+      <canBeEdited>0</canBeEdited>
+      <selected>1</selected>
+      <show>0</show>
+      <folderList>
+        <!-- LIN- Program files -->
+        <folder description="Program Files" destination="${installdir}" name="programfileslinux" platforms="linux">
+          <distributionFileList>
+            <distributionDirectory origin="staging/linux/bin"/>
+            <distributionDirectory origin="staging/linux/share"/>
+            <distributionDirectory origin="staging/linux/lib"/>
+            <distributionDirectory origin="staging/linux/installer"/>
+            <distributionDirectory origin="staging/linux/scripts"/>
+          </distributionFileList>
+        </folder>
+        <!-- LIN-X64 - Program files -->
+        <folder description="Program Files" destination="${installdir}" name="programfileslinux-x64" platforms="linux-x64">
+          <distributionFileList>
+            <distributionDirectory origin="staging/linux-x64/bin"/>
+            <distributionDirectory origin="staging/linux-x64/share"/>
+            <distributionDirectory origin="staging/linux-x64/lib"/>
+            <distributionDirectory origin="staging/linux-x64/installer"/>
+            <distributionDirectory origin="staging/linux-x64/scripts"/>
+          </distributionFileList>
+        </folder>
+        <!-- MAC Program Files -->
+        <folder description="Program Files" destination="${installdir}" name="programfilesosx" platforms="osx">
+          <distributionFileList>
+            <distributionDirectory origin="staging/osx/StackBuilderPlus.app"/>
+            <distributionDirectory origin="staging/osx/UpdateManager.app"/>
+            <distributionDirectory origin="staging/osx/installer"/>
+            <distributionDirectory origin="staging/osx/scripts"/>
+          </distributionFileList>
+        </folder>
+        <!-- WIN - Program files -->
+        <folder description="Program Files" destination="${installdir}" name="programfileswindows" platforms="windows">
+          <distributionFileList>
+            <distributionDirectory origin="staging/windows/bin"/>
+            <distributionDirectory origin="staging/windows/share"/>
+            <distributionDirectory origin="staging/windows/scripts"/>
+          </distributionFileList>
+        </folder>
+      </folderList>
+      <!-- WIN: Start Menu -->
+      <startMenuShortcutList>
+
+        <!-- Application Stack Builder Plus -->
+        <startMenuShortcut name="Application Stack Builder Plus"
+                           runInTerminal="0"
+                           windowsExec="${installdir}\bin\stackbuilderplus.exe"/>
+      </startMenuShortcutList>
+    </component>
+  </componentList>
+  <!-- Install Directory -->
+  <parameterList>
+    <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+    <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
+    <booleanParameter name="monitorServer" cliOptionName="monitor-server" ask="0" cliOptionShow="0" default="${iMonitorServer}"/>
+    <directoryParameter>
+      <name>installdir</name>
+      <description>Installer.Parameter.installdir.description</description>
+      <explanation>Installer.Parameter.installdir.explanation</explanation>
+      <value>${default_installdir}</value>
+      <default/>
+      <allowEmptyValue>0</allowEmptyValue>
+      <ask>yes</ask>
+      <cliOptionName>prefix</cliOptionName>
+      <mustBeWritable>yes</mustBeWritable>
+      <mustExist>0</mustExist>
+      <width>40</width>
+      <ruleList>
+        <compareText text="${iSBPVersion}" logic="equals" value=""/>
+      </ruleList>
+       
+      <!-- Validating whether installdir is empty -->
+      <validationActionList>
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="installdir" value="${default_installdir}" />
+            <throwError text="${msg(sbp.installdir.empty)}"/>
+          </actionList>
+          <ruleList>
+            <compareText text="${installdir}" logic="equals" value=""/>
+          </ruleList>
+        </actionGroup>
+      </validationActionList>
+      <!-- Validating whether installdir contains whitespaces (Linux) -->
+      <postShowPageActionList>
+        <actionGroup>
+          <actionList>  
+            <showWarning text="${msg(sbp.installdir.error)}"/>
+            <setInstallerVariable name="next_page" value="installdir"/>
+          </actionList>
+          <ruleList>
+             <regExMatch text="${installdir}" logic="does_not_match" pattern="^/([0-9a-zA-Z_/\.\-]*)$"/>
+             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+        <!-- Validating whether installdir is valid (Windows) -->
+        <actionGroup>
+          <actionList>
+          <setInstallerVariable name="installdir" value="${default_installdir}" />
+          <showWarning text="${msg(sbp.installdir.error)}"/>
+          <setInstallerVariable name="next_page" value="installdir"/>
+          </actionList>
+          <ruleList>
+            <regExMatch text="${installdir}" logic="does_not_match" pattern="^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$"/>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+      </postShowPageActionList>
+    </directoryParameter>
+    
+    <!-- Explain that we're using an existing installation directory -->
+    <labelParameter>
+      <name>upgrade</name>
+      <title>${msg(upgrade.existing.installation.title)}</title>
+      <description>${msg(upgrade.existing.installation.description)}</description>
+      <ruleList>
+        <compareText text="${iSBPVersion}" logic="does_not_equal" value=""/>
+      </ruleList>
+    </labelParameter>
+  </parameterList>
+</project>

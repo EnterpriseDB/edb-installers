@@ -369,6 +369,18 @@ then
     _postprocess_pg_migrator || exit 1
 fi
 
+#Package: StackBuilderPlus
+if [ $PG_PACKAGE_SBP = 1 ];
+then
+    source ./StackBuilderPlus/build.sh
+    if [ $SKIPBUILD = 0 ];
+    then
+        _prep_stackbuilderplus || exit 1
+        _build_stackbuilderplus || exit 1
+    fi
+    _postprocess_stackbuilderplus || exit 1
+fi
+
 #Package: Meta Installer
 if [ $PG_PACKAGE_META = 1 ];
 then
