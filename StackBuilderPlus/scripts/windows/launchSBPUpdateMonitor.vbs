@@ -25,7 +25,7 @@ strSBPInstallDir = WSHShell.RegRead( strRegKey & "Location" )
 strUpdateMonitorPath = "INSTALL_DIR\bin\UpdateManager.exe"
 
 If IsEmpty( strServer ) Then
-  strArgs = "--server " & strServer & " --execute ""INSTALL_DIR\bin\stackbuilderplus.exe --server="""
+  strArgs = "--server " & strServer & " --execute ""INSTALL_DIR\bin\stackbuilderplus.exe"""
 Else
   strArgs = "--execute ""INSTALL_DIR\bin\stackbuilderplus.exe """
 EndIf
