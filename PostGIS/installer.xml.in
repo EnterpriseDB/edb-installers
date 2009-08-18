@@ -46,6 +46,10 @@
         </language>
     </customLanguageFileList>
     <preShowHelpActionList>
+	<!-- Set the PG Major Version -->
+        <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION">
+            <persist>1</persist>
+        </setInstallerVariable>
         <setInstallerVariable name="defaultuser" value="postgres"/>
         <setInstallerVariable name="defaultpassword" value=""/>
         <!-- WIN: Set the    pghome default value when pghome not set -->
@@ -126,7 +130,7 @@
         <setInstallerVariable name="PostGISVersionInstalled" value="">
             <persist>0</persist>
         </setInstallerVariable>
-	    <!-- Set the PG Major Version -->
+	<!-- Set the PG Major Version -->
         <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION">
             <persist>1</persist>
         </setInstallerVariable>
@@ -717,7 +721,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/PostGIS/installer/PostGIS/createshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${PGMajorVersion}" "${productVersion}" "${branding}"</programArguments>
+                    <programArguments>"${installdir}" "${PGMajorVersion}" "${productVersion}" "${branding}" "${docdir}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -1386,14 +1390,14 @@
                            <comment>PostGIS Documentation</comment>
                            <name>PostGIS Documentation</name>
                            <runInTerminal>0</runInTerminal>
-                           <url>file://${installdir}/doc/postgis/postgis.html</url>
+                           <url>file://${docdir}/postgis/postgis.html</url>
                            <windowsIcon>${installdir}\PostGIS\scripts\images\pg-launchPostGISDocs.ico</windowsIcon>
                         </startMenuLinkShortcut>
                         <startMenuLinkShortcut>
                            <comment>PostGIS JDBC Documentation</comment>
                            <name>PostGIS JDBC Documentation</name>
                            <runInTerminal>0</runInTerminal>
-                           <url>file://${installdir}/doc/postgis/jdbc/index.html</url>
+                           <url>file://${docdir}/postgis/jdbc/index.html</url>
                            <windowsIcon>${installdir}\PostGIS\scripts\images\pg-launchPostGISDocs.ico</windowsIcon>
                         </startMenuLinkShortcut>
                     </startMenuShortcutList>

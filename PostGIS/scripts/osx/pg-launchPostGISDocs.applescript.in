@@ -1,1 +1,1 @@
-open location "file://INSTALL_DIR/doc/postgis/postgis.html"
+open location "file://DOC_DIR/postgis/postgis.html"

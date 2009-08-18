@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 4 ]; 
+if [ $# -ne 5 ]; 
 then
-    echo "Usage: $0 <Install dir> <PG Version> <PostGIS Version> <Branding>" 
+    echo "Usage: $0 <Install dir> <PG Version> <PostGIS Version> <Branding> <Docdir>" 
     exit 127
 fi
 
@@ -11,6 +11,7 @@ INSTALLDIR=$1
 PG_VERSION=$2
 POSTGIS_VERSION=$3
 BRANDING=$4
+DOCDIR=$5
 
 # Version string, for the xdg filenames
 PG_VERSION_STR=`echo $PG_VERSION | sed 's/\./_/g'`
@@ -53,6 +54,7 @@ _replace() {
 
 # Substitute values into a file ($in)
 _fixup_file() {
+    _replace DOC_DIR "$DOCDIR" "$1"
     _replace INSTALL_DIR "$INSTALLDIR" "$1"
     _replace PG_MAJOR_VERSION "$PG_VERSION" "$1"
     _replace PG_BRANDING "$BRANDING" "$1"

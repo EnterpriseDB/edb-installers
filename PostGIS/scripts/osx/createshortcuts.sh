@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 4 ]; 
+if [ $# -ne 5 ]; 
 then
-    echo "Usage: $0 <Install dir> <PG Version> <Slony Version> <Branding>" 
+    echo "Usage: $0 <Install dir> <PG Version> <Slony Version> <Branding> <Docdir>" 
     exit 127
 fi
 
@@ -11,6 +11,7 @@ INSTALLDIR=$1
 PG_VERSION=$2
 SLONY_VERSION=$3
 BRANDING=$4
+DOCDIR=$5
 
 if [ "x$BRANDING" = "xPostgreSQL $PG_VERSION" ];
 then
@@ -43,7 +44,7 @@ _replace() {
 
 # Compile a script - _compile_script($in.applescript, $out.app, $image)
 _compile_script() {
-    _replace INSTALL_DIR "$INSTALLDIR" "$1"
+    _replace DOC_DIR "$DOCDIR" "$1"
     osacompile -x -o "$2" "$1" 
     cp "$3" "$2/Contents/Resources/applet.icns"
 }
