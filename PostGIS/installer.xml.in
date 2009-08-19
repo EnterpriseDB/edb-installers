@@ -637,32 +637,49 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-        <setInstallerVariableFromScriptOutput>
-            <name>libdir</name>
-            <exec>${installdir}/bin/pg_config</exec>
-            <execArgs>--libdir</execArgs>
-        </setInstallerVariableFromScriptOutput>
-        <setInstallerVariableFromScriptOutput>
-            <name>sharedir</name>
-            <exec>${installdir}/bin/pg_config</exec>
-            <execArgs>--sharedir</execArgs>
-        </setInstallerVariableFromScriptOutput>
-        <setInstallerVariableFromScriptOutput>
-            <name>docdir</name>
-            <exec>${installdir}/bin/pg_config</exec>
-            <execArgs>--docdir</execArgs>
-        </setInstallerVariableFromScriptOutput>
-        <setInstallerVariableFromScriptOutput>
-            <name>mandir</name>
-            <exec>${installdir}/bin/pg_config</exec>
-            <execArgs>--mandir</execArgs>
-        </setInstallerVariableFromScriptOutput>
-        <setInstallerVariableFromRegEx>
-            <name>parentlibdir</name>
-            <text>${libdir}</text>
-            <pattern>(.*)[/\\]lib</pattern>
-            <substitution>\1</substitution>
-        </setInstallerVariableFromRegEx>
+        <actionGroup>
+            <actionList>   
+                <setInstallerVariableFromScriptOutput>
+                    <name>libdir</name>
+                    <exec>${installdir}/bin/pg_config</exec>
+                    <execArgs>--libdir</execArgs>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                    <name>sharedir</name>
+                    <exec>${installdir}/bin/pg_config</exec>
+                    <execArgs>--sharedir</execArgs>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                    <name>docdir</name>
+                    <exec>${installdir}/bin/pg_config</exec>
+                    <execArgs>--docdir</execArgs>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                    <name>mandir</name>
+                    <exec>${installdir}/bin/pg_config</exec>
+                    <execArgs>--mandir</execArgs>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromRegEx>
+                    <name>parentlibdir</name>
+                    <text>${libdir}</text>
+                    <pattern>(.*)[/\\]lib</pattern>
+                    <substitution>\1</substitution>
+                </setInstallerVariableFromRegEx>
+            </actionList>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installationType}</text>
+                    <value>upgrade</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>  
 
     </preInstallationActionList>
     <!-- Post installation actions -->
@@ -744,7 +761,7 @@
             <substitutionList>
                 <substitution>
                     <pattern>\$libdir</pattern>
-                    <value>${installdir}/lib</value>
+                    <value>${libdir}</value>
                 </substitution>
             </substitutionList>
             <ruleList>
@@ -756,7 +773,9 @@
             </ruleList>
         </substitute>
 
+          
         <!-- Configuring Scripts to set the installation path in PostGIS -->
+        <!--
         <runProgram>
             <customErrorMessage>${msg(error.configure.postgis)}</customErrorMessage>
             <program>${installdir}/PostGIS/installer/PostGIS/configurePostGIS.sh</program>
@@ -771,6 +790,7 @@
                 </compareText>
             </ruleList>
         </runProgram>
+        -->
         <!-- Create Template Spatial Database -->
         <runProgram>
             <program>${installdir}/PostGIS/installer/PostGIS/createtemplatedb.sh</program>
@@ -820,8 +840,8 @@
            <files>${installdir}\share\contrib\postgis.sql</files>
            <substitutionList>
               <substitution>
-                 <pattern>@@INSTALL_DIR@@</pattern>
-                 <value>${installdir_str}</value>
+                 <pattern>\$libdir</pattern>
+                 <value>${installdir_str}/bin</value>
               </substitution>
           </substitutionList>
           <ruleList>
@@ -837,8 +857,8 @@
            <files>${installdir}\share\contrib\postgis_upgrade.sql</files>
            <substitutionList>
               <substitution>
-                 <pattern>@@INSTALL_DIR@@</pattern>
-                 <value>${installdir_str}</value>
+                 <pattern>\$libdir</pattern>
+                 <value>${installdir_str}/bin</value>
               </substitution>
           </substitutionList>
           <ruleList>
@@ -854,8 +874,12 @@
            <files>${installdir}\PostGIS\installer\PostGIS\createtemplatedb.bat</files>
            <substitutionList>
               <substitution>
-                 <pattern>@@INSTALL_DIR@@/share</pattern>
+                 <pattern>@@SHARE_DIR@@</pattern>
                  <value>${sharedir}</value>
+              </substitution>
+              <substitution>
+                 <pattern>@@PGHOME@@</pattern>
+                 <value>${pghome}</value>
               </substitution>
           </substitutionList>
           <ruleList>
@@ -870,7 +894,7 @@
         <!-- Create Template Spatial Database -->
         <runProgram>
             <program>${installdir}\PostGIS\installer\PostGIS\createtemplatedb.bat</program>
-            <programArguments>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</programArguments>
+            <programArguments>${pghost} ${pgport} ${pguser} "${pgpassword}"</programArguments>
             <progressText>${msg(progress.text.creating.templatedb)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>1</showMessageOnError>
@@ -1300,17 +1324,6 @@
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${parentlibdir}</destination>
-                    <name>programfileslibwindows</name>
-                    <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/windows/PostGIS/lib</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
                     <destination>${sharedir}</destination>
                     <name>programfilessharewindows</name>
                     <platforms>windows</platforms>
@@ -1689,7 +1702,7 @@
 	                    <!-- WIN - Check whether the database already exists -->
                         <setInstallerVariableFromScriptOutput>
                             <name>dbexist</name>
-                            <exec>${system_temp_directory}\${product_fullname\check-db.bat</exec>
+                            <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
                             <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "template_postgis"</execArgs>
                             <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
@@ -2030,7 +2043,36 @@
                     </ruleList>
                 </actionGroup>
             </validationActionList>
+            <postShowPageActionList>
+                <setInstallerVariableFromScriptOutput>
+                    <name>libdir</name>
+                    <exec>${installdir}/bin/pg_config</exec>
+                    <execArgs>--libdir</execArgs>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                    <name>sharedir</name>
+                    <exec>${installdir}/bin/pg_config</exec>
+                    <execArgs>--sharedir</execArgs>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                    <name>docdir</name>
+                    <exec>${installdir}/bin/pg_config</exec>
+                    <execArgs>--docdir</execArgs>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                    <name>mandir</name>
+                    <exec>${installdir}/bin/pg_config</exec>
+                    <execArgs>--mandir</execArgs>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromRegEx>
+                    <name>parentlibdir</name>
+                    <text>${libdir}</text>
+                    <pattern>(.*)[/\\]lib</pattern>
+                    <substitution>\1</substitution>
+                </setInstallerVariableFromRegEx>
+            </postShowPageActionList>      
         </directoryParameter>
+
 	<!-- Explain that we're using an existing installation directory -->
 	<labelParameter>
             <name>upgrade</name>

@@ -192,19 +192,6 @@ _build_PostGIS_linux() {
 
 _postprocess_PostGIS_linux() {
 
-    PG_STAGING=$PG_PATH_LINUX/PostGIS/staging/linux
-
-    #Configure the files in PostGIS
-    filelist=`grep -rlI "$PG_STAGING" "$WD/PostGIS/staging/linux" | grep -v Binary`
-
-    cd  $WD/PostGIS/staging/linux
-
-    for file in $filelist
-    do
-        _replace "$PG_STAGING/PostGIS" @@INSTALL_DIR@@ "$file"
-        chmod ugo+x "$file"
-    done
-
     cd $WD/PostGIS
     mkdir -p staging/linux/installer/PostGIS || _die "Failed to create a directory for the install scripts"
 
