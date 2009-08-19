@@ -27,6 +27,7 @@ then
 fi
 
 PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
+PG_VERSION_STR=`echo $PG_MAJOR_VERSION | sed 's/\./_/g'`
     
 ################################################################################
 # Build preparation
@@ -122,13 +123,12 @@ _postprocess_metainstaller() {
 
     cd $WD/server
     # Get the catalog version number
-    PG_CATALOG_VERSION=`cat source/postgresql-$PG_TARBALL_POSTGRESQL/src/include/catalog/catversion.h |grep "#define CATALOG_VERSION_NO" | awk '{print $3}'`
+    PG_CATALOG_VERSION=`cat source/postgresql-$PG_TARBALL_POSTGRESQL/src/include/catalog/catversion.h | grep "#define CATALOG_VERSION_NO" | awk '{print $3}'`
 
     cd $WD/MetaInstaller
 
     # Prepare the installer XML file
-    if [ -f postgresplus.xml ];
-    then
+    if [ -f postgresplus.xml ]; then
         rm postgresplus.xml
     fi
 
@@ -136,6 +136,10 @@ _postprocess_metainstaller() {
     _replace PG_VERSION_METAINSTALLER $PG_VERSION_METAINSTALLER postgresplus.xml || _die "Failed to set the major version in the installer project file (MetaInstaller/postgresplus.xml)"
     _replace PG_PACKAGE_VERSION $PG_PACKAGE_VERSION postgresplus.xml || _die "Failed to set the postgresql version in the installer project file (MetaInstaller/postgresplus.xml)"
     _replace PG_CURRENT_VERSION $PG_CURRENT_VERSION postgresplus.xml || _die "Failed to set the pg version in the installer project file (MetaInstaller/postgresplus.xml)"
+    _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION postgresplus.xml || _die "Failed to set the pg version in the installer project file (MetaInstaller/postgresplus.xml)"
+    _replace PG_VERSION_STR $PG_VERSION_STR postgresplus.xml || _die "Failed to set the pg version str in the installer project file (MetaInstaller/postgresplus.xml)"
+    _replace PG_VERSION_SBP $PG_VERSION_SBP postgresplus.xml || _die "Failed to set the stackbuilderplus version in the installer project file (MetaInstaller/postgresplus.xml)"
+    _replace PG_BUILDNUM_SBP $PG_BUILDNUM_SBP postgresplus.xml || _die "Failed to set the stackbuilderplus buildnum in the installer project file (MetaInstaller/postgresplus.xml)"
     _replace PG_VERSION_SLONY $PG_VERSION_SLONY postgresplus.xml || _die "Failed to set the slony version in the installer project file (MetaInstaller/postgresplus.xml)"
     _replace PG_BUILDNUM_SLONY $PG_BUILDNUM_SLONY postgresplus.xml || _die "Failed to set the pg buildnum  in the installer project file (MetaInstaller/postgresplus.xml)"
     _replace PG_VERSION_PGJDBC $PG_VERSION_PGJDBC postgresplus.xml || _die "Failed to set the pgJDBC version  in the installer project file (MetaInstaller/postgresplus.xml)"

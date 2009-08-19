@@ -5,10 +5,10 @@
 #include <string.h>
 #pragma comment(lib, "rpcrt4.lib")
 
-RPC_CSTR genguid() {
+unsigned char* genguid() {
 
 UUID uuid;
-RPC_CSTR str;
+unsigned char* str;
 
 // create UUID
 UuidCreate(&uuid);

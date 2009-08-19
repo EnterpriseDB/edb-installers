@@ -31,10 +31,8 @@ _prep_metainstaller_linux() {
     mkdir -p $WD/MetaInstaller/staging/linux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/MetaInstaller/staging/linux || _die "Couldn't set the permissions on the staging directory"
 
-
-    PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
-    
-       
+    # Grab a copy of the stackbuilderplus installer
+    cp -R "$WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the stackbuilderplus installer (staging/linux/stackbuilderplus-pg_$PG_VERSION_STR-$PG_PACKAGE_SBP-$PG_BUILDNUM_SBP-linux.bin)"
     # Grab a copy of the postgresql installer
     cp -R "$WD/output/postgresql-$PG_PACKAGE_VERSION-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the postgresql installer (staging/linux/postgresql-$PG_PACKAGE_VERSION-linux.bin)"
     # Grab a copy of the slony installer

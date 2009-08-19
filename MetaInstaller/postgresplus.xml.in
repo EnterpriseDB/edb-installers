@@ -1852,6 +1852,16 @@
 
   </preInstallationActionList>
   <postInstallationActionList>
+    <setInstallerVariable name="monitor_server" value="">
+      <ruleList>
+        <isFalse value="${updateNotification"/>
+      </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="monitor_server" value="--monitor-server PG_MAJOR_VERSION">
+      <ruleList>
+        <isTrue value="${updateNotification}"/>
+      </ruleList>
+    </setInstallerVariable>
     <actionGroup>
       <actionList>
         <deleteFile>
@@ -2446,6 +2456,36 @@
         </compareText>
       </ruleList>
     </runProgram>
+    
+    <actionGroup>
+      <actionList>
+        <logMessage text="Installing StackBuilderPlus in ${installdir}/StackBuilderPlus"/>
+        <!-- Linux -->
+        <runProgram abortOnError="0"
+                    progressText="Installing StackBuilderPlus ... "
+                    showMessageOnError="1"
+                    program="${system_temp_directory}/postgresplus/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux.bin"
+                    programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot; ${monitor_server}">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="linux"/>
+          </ruleList>
+        </runProgram>
+        <!-- Linux-x64 -->
+        <runProgram abortOnError="0"
+                    progressText="Installing StackBuilderPlus ... "
+                    showMessageOnError="1"
+                    program="${system_temp_directory}/postgresplus/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-x64.bin"
+                    programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot; ${monitor_server}">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
+          </ruleList>
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <isTrue value="${component(stackbuilderplus).selected}"/>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </actionGroup>
 
     <logMessage>
       <text>Installing pgJDBC in ${installdir}/pgJDBC</text>
@@ -2544,7 +2584,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-linux-x64.bin</program>
-      <programArguments>--mode unattended --installdir ${installdir}--branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+      <programArguments>--mode unattended --installdir ${installdir} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
       <progressText>Installing pg_migrator ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3001,6 +3041,21 @@
       </ruleList>
     </runProgram>
 
+    <actionGroup>
+      <actionList>
+        <logMessage text="Installing StackBuilderPlus in ${installdir}\StackBuilderPlus"/>
+        <runProgram abortOnError="0"
+                    progressText="Installing StackBuilderPlus ... "
+                    showMessageOnError="0"
+                    program="${system_temp_directory}\postgresplus\stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-windows.exe"
+                    programArguments="--mode unattended --prefix &quot;${installdir}\StackBuilderPlus&quot; --branding &quot;Postgres Plus Standard Server ${product_version}&quot; ${monitor_server}"/>
+      </actionList>
+      <ruleList>
+        <isTrue value="${component(stackbuilderplus).selected}"/>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+   </actionGroup>
+
     <logMessage>
       <text>Installing pgJDBC in ${installdir}\pgJDBC</text>
       <ruleList>
@@ -3409,6 +3464,21 @@
         </compareText>
       </ruleList>
     </runProgram>
+
+    <actionGroup>
+      <actionList>
+        <logMessage text="Installing StackBuilderPlus in ${installdir}\StackBuilderPlus"/>
+        <runProgram abortOnError="0"
+                    progressText="Installing StackBuilderPlus ... "
+                    showMessageOnError="0"
+                    program="${system_temp_directory}\postgresplus\stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-osx.app/Contents/MacOS/installbuilder.sh"
+                    programArguments="--mode unattended --prefix &quot;${installdir}\StackBuilderPlus&quot; --branding &quot;Postgres Plus Standard Server ${product_version}&quot; ${monitor_server}"/>
+      </actionList>
+      <ruleList>
+        <isTrue value="${component(stackbuilderplus).selected}"/>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
+      </ruleList>
+   </actionGroup>
 
     <logMessage>
       <text>Installing pgJDBC in ${installdir}/pgJDBC</text>
@@ -4799,6 +4869,70 @@
           <persist>1</persist>
           <value>false</value>
         </setInstallerVariable>
+      </componentSelectionValidationActionList>
+    </component>
+    <component>
+      <name>stackbuilderplus</name>
+      <description>Stack-Builder Plus</description>
+      <detailedDescription>An advanced application stack builder for PostgreSQL server.</detailedDescription>
+      <canBeEdited>0</canBeEdited>
+      <selected>1</selected>
+      <show>1</show>
+      <folderList>
+        <!-- linux -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${system_temp_directory}/postgresplus</destination>
+          <name>stackbuilderpluslinux</name>
+          <platforms>linux</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux.bin</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+
+        <!-- linux-x64 -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${system_temp_directory}/postgresplus</destination>
+          <name>stackbuilderpluslinux-x64</name>
+          <platforms>linux-x64</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux-x64/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-x64.bin</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+
+        <!-- MAC: Program files -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${system_temp_directory}/postgresplus</destination>
+          <name>stackbuilderplusosx</name>
+          <platforms>osx</platforms>
+          <distributionFileList>
+            <distributionDirectory>
+              <origin>staging/osx/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-osx.app</origin>
+            </distributionDirectory>
+          </distributionFileList>
+        </folder>
+
+        <!-- Windows -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${system_temp_directory}/postgresplus</destination>
+          <name>stackbuilderpluswindows</name>
+          <platforms>windows</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/windows/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-windows.exe</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+      </folderList>
+      <componentSelectionValidationActionList>
+        <setInstallerVariable name="noComponentSelected" persist="1" value="false"/>
       </componentSelectionValidationActionList>
     </component>
     <component>
@@ -6391,6 +6525,11 @@
             <setInstallerVariable name="features" value="DBServer">
               <ruleList>
                 <isTrue value="${component(dbserver).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},StackBuilderPlus">
+              <ruleList>
+                <isTrue value="${component(stackbuilderplus).selected}"/>
               </ruleList>
             </setInstallerVariable>
             <setInstallerVariable name="features" value="${features},Slony">

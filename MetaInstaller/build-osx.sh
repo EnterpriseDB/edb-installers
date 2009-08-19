@@ -32,9 +32,8 @@ _prep_metainstaller_osx() {
     mkdir -p $WD/MetaInstaller/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/MetaInstaller/staging/osx || _die "Couldn't set the permissions on the staging directory"
 
-    PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
-    
-       
+    # Grab a copy of the stackbuilderplus installer
+    cp -R "$WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the stackbuilderplus installer (staging/linux/stackbuilderplus-pg_$PG_VERSION_STR-$PG_PACKAGE_SBP-$PG_BUILDNUM_SBP-osx.zip)"
     # Grab a copy of the postgresql installer
     cp -R "$WD/output/postgresql-$PG_PACKAGE_VERSION-osx.dmg"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the postgresql installer (staging/osx/postgresql-$PG_PACKAGE_VERSION-osx.zip)"
     # Grab a copy of the slony installer
@@ -46,7 +45,6 @@ _prep_metainstaller_osx() {
     # Grab a copy of the postgis installer
     cp -R "$WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the postgis installer (staging/osx/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.zip)"
 
-
     # Grab a copy of the pgbouncer installer
     cp -R "$WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the pgbouncer installer (staging/osx/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.zip"
 
@@ -54,7 +52,7 @@ _prep_metainstaller_osx() {
     cp -R "$WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the pgmemcache installer (staging/osx/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.zip"
 
     # Grab a copy of the pgagent installer
-    cp -R "$WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the pgagent installer (staging/osx/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip"
+    cp -R "$WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the pgagent installer (staging/osx/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip)"
 
     # Grab a copy of the pg_migrator installer
     cp -R "$WD/output/pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the pg_migrator installer (staging/osx/pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-osx.zip"
@@ -71,6 +69,10 @@ _prep_metainstaller_osx() {
 
     hdiutil eject "/Volumes/PostgreSQL $PG_PACKAGE_VERSION"
     rm -f postgresql-$PG_PACKAGE_VERSION-osx.dmg
+
+    # unzip stackbuilderplus
+    unzip stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.zip
+    rm -f stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.zip
 
     # unzip slony    
     unzip slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.zip
@@ -114,7 +116,6 @@ _prep_metainstaller_osx() {
     cp -R $WD/PostGIS/staging/osx/installer/PostGIS/check-db.sh  staging/osx/scripts/ || _die "Failed to copy the check-db.sh"
 
     cp -R $WD/MetaInstaller/scripts/osx/*.sh  staging/osx/scripts/ || _die "Failed to copy the scripts"
-
 
 
 }

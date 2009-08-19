@@ -30,12 +30,12 @@ char *HexStrToStr(char *str);
 /*
 Generate GUID as ansi string like "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
 */
-RPC_CSTR genguid();
+unsigned char* genguid();
 
 /*
 *Release the GUID String generated from genguid
 */
-void releaseguid(RPC_CSTR * str);
+void releaseguid(unsigned char* * str);
 
 /*
 * Returns total system memory in GB in String format (floating point)
@@ -137,10 +137,10 @@ char *HexStrToStr(char *str) {
     return(newstr);
 }
 
-RPC_CSTR genguid() {
+unsigned char* genguid() {
 
 UUID uuid;
-RPC_CSTR str;
+unsigned char* str;
 
 // create UUID
 UuidCreate(&uuid);
@@ -154,7 +154,7 @@ return str;
 
 }
 
-void releaseguid(RPC_CSTR * str) {
+void releaseguid(unsigned char* * str) {
 // clean up
 RpcStringFreeA(str);
 }
