@@ -166,4 +166,7 @@ _postprocess_stackbuilderplus() {
     then
        _postprocess_stackbuilderplus_windows || exit 1
     fi
+
+    cd $WD
+
 }

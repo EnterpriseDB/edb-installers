@@ -151,7 +151,13 @@
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
       </ruleList>
     </actionGroup>
- 
+
+    <registryGet name="InstallationDirectory" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" variable="installdir">
+      <ruleList>
+        <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </registryGet>
     <!-- MAC : Set the default installation directory -->
     <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgreSQL/StackBuilderPlus">
       <ruleList>
@@ -164,7 +170,7 @@
     <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgreSQL/StackBuilderPlus">
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
-        <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
+        <compareText logic="does_not_equal" text="${installdir}" value=""/>
       </ruleList>
     </setInstallerVariable>
 
@@ -172,7 +178,7 @@
     <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgreSQL\StackBuilderPlus">
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
-        <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
+        <compareText logic="does_not_equal" text="${installdir}" value=""/>
       </ruleList>
     </setInstallerVariable>
  
@@ -461,7 +467,7 @@
   <parameterList>
     <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
     <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
-    <booleanParameter name="monitorServer" cliOptionName="monitor-server" ask="0" cliOptionShow="0" default="${iMonitorServer}"/>
+    <stringParameter name="monitorServer" cliOptionName="monitor-server" ask="0" cliOptionShow="0" default="${iMonitorServer}"/>
     <directoryParameter>
       <name>installdir</name>
       <description>Installer.Parameter.installdir.description</description>
