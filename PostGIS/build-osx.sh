@@ -320,17 +320,6 @@ _postprocess_PostGIS_osx() {
 
     PG_STAGING=$PG_PATH_OSX/PostGIS/staging/osx    
 
-    #Configure the files in PostGIS
-    filelist=`grep -rlI "$PG_STAGING" "$WD/PostGIS/staging/osx" | grep -v Binary`
-
-    cd  $WD/PostGIS/staging/osx
-
-    for file in $filelist
-    do
-        _replace "$PG_STAGING/PostGIS" @@INSTALL_DIR@@ "$file"
-        chmod ugo+x "$file"
-    done
-
     mkdir -p $PG_STAGING/installer/PostGIS || _die "Failed to create a directory for the install scripts"
 
     cp $PG_PATH_OSX/PostGIS/scripts/osx/createshortcuts.sh $PG_STAGING/installer/PostGIS/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/osx/createshortcuts.sh)"
