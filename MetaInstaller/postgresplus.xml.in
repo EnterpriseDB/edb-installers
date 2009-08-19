@@ -1985,6 +1985,23 @@
             </compareText>
           </ruleList>
         </registrySet>
+        <iniFileSet file="/etc/postgresplus-reg.ini"
+                    key="StackBuilderPlus"
+                    value="true">
+          <ruleList>
+            <isTrue value="${component(stackbuilderplus).selected}"/>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </iniFileSet>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
+                     name="StackBuilderPlus"
+                     type="REG_SZ"
+                     value="true">
+          <ruleList>
+            <isTrue value="${component(stackbuilderplus).selected}"/>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </registrySet>
         <iniFileSet>
           <file>/etc/postgresplus-reg.ini</file>
           <key>postgis</key>
@@ -4140,6 +4157,10 @@
                     section="PostgreSQL/${product_version}"
                     variable="uninstall_pgjdbc"/>
         <iniFileGet file="/etc/postgresplus-reg.ini"
+                    key="StackBuilderPlus"
+                    section="PostgreSQL/${product_version}"
+                    variable="uninstall_sbp"/>
+        <iniFileGet file="/etc/postgresplus-reg.ini"
                     key="pg_migrator"
                     section="PostgreSQL/${product_version}"
                     variable="uninstall_pgmigrator"/>
@@ -4183,6 +4204,17 @@
             <isTrue value="${uninstall_pgjdbc}"/>
             <!-- It is possible that user may have uninstalled pgJDBC manually -->
             <fileTest path="${installdir}/pgJDBC/uninstall-pgjdbc" condition="exists"/>
+          </ruleList>
+        </runProgram>
+
+        <!-- uninstall StackBuilderPlus -->
+        <runProgram abortOnError="0"
+                    program="${installdir}/StackBuilderPlus/uninstall-stackbuilderplus"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_sbp}"/>
+            <!-- It is possible that user may have uninstalled StackBuilderPlus manually -->
+            <fileTest path="${installdir}/StackBuilderPlus/uninstall-stackbuilderplus" condition="exists"/>
           </ruleList>
         </runProgram>
 
@@ -4293,6 +4325,9 @@
                      name="pgJdbc"
                      variable="uninstall_pgjdbc"/>
         <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
+                     name="StackBuilderPlus"
+                     variable="uninstall_sbp"/>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
                      name="pg_migrator"
                      variable="uninstall_pgmigrator"/>
         <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
@@ -4336,6 +4371,16 @@
           </ruleList>
         </runProgram>
 
+        <!-- uninstall StackBuilderPlus -->
+        <runProgram abortOnError="0"
+                    program="${installdir}\StackBuilderPlus\uninstall-stackbuilderplus.exe"
+                    programArguments="--mode unattended">
+          <ruleList>
+            <isTrue value="${uninstall_sbp}"/>
+            <!-- It is possible that user may have uninstalled only StackBuilderPlus manually -->
+            <fileTest path="${installdir}\pgJDBC\uninstall-stackbuilderplus.exe" condition="exists"/>
+          </ruleList>
+        </runProgram>
         <!-- uninstall PostGIS -->
         <runProgram abortOnError="0"
                     program="${installdir}\PostGIS\uninstall-postgis.exe"
@@ -4465,6 +4510,12 @@
         <deleteFile path="${installdir}\pgJDBC">
           <ruleList>
             <isTrue value="${uninstall_pgjdbc}"/>
+          </ruleList>
+        </deleteFile>
+    
+        <deleteFile path="${installdir}\StackBuilderPlus">
+          <ruleList>
+            <isTrue value="${uninstall_sbp}"/>
           </ruleList>
         </deleteFile>
     
