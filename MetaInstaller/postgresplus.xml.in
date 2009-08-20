@@ -1853,7 +1853,7 @@
   <postInstallationActionList>
     <setInstallerVariable name="monitor_server" value="">
       <ruleList>
-        <isFalse value="${updateNotification"/>
+        <isFalse value="${updateNotification}"/>
       </ruleList>
     </setInstallerVariable>
     <setInstallerVariable name="monitor_server" value="--monitor-server PG_MAJOR_VERSION">
