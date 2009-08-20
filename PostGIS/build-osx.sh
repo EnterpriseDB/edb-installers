@@ -334,9 +334,6 @@ _postprocess_PostGIS_osx() {
     cp $PG_PATH_OSX/PostGIS/scripts/osx/check-connection.sh $PG_STAGING/installer/PostGIS/check-connection.sh || _die "Failed to copy the check-connection script (scripts/osx/check-connection.sh)"
     chmod ugo+x $PG_STAGING/installer/PostGIS/check-connection.sh
 
-    cp $PG_PATH_OSX/PostGIS/scripts/osx/configurePostGIS.sh $PG_STAGING/installer/PostGIS/configurePostGIS.sh || _die "Failed to copy the configurePostGIS script (scripts/osx/configurePostGIS.sh)"
-    chmod ugo+x $PG_STAGING/installer/PostGIS/configurePostGIS.sh
-
     cp $PG_PATH_OSX/PostGIS/scripts/osx/check-pgversion.sh $PG_STAGING/installer/PostGIS/check-pgversion.sh || _die "Failed to copy the check-pgversion script (scripts/osx/check-pgversion.sh)"
     chmod ugo+x $PG_STAGING/installer/PostGIS/check-pgversion.sh
 
