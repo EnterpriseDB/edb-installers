@@ -60,8 +60,6 @@ progress.text.loading.modules=Loading additional SQL modules...
 error.could.not.load.modules=Failed to load SQL modules into the database cluster.
 warning.during.module.loading=A non-fatal error occured whilst loading database modules. Please check the installation log in /tmp for details.
 
-progress.text.run.stackbuilder=Launch Stack Builder at exit?
-
 templatedb.found.info=A database called 'template_postgis' already exists on your server. If you continue with this installation, this database will be reused. Selecting 'No' will unselect the PosGIS. \n\nDo you wish to continue?
 
 config.datadir.description=Data Directory
@@ -143,7 +141,7 @@ dbserver.required.pgerror=Database Server is required component. Please select D
 
 uninstall.restart.message=Some files will be removed after system restart.
 
-progress.text.run.stackbuilder=Launch Stack Builder at exit?
+progress.text.run.stackbuilderplus=Launch Stack Builder Plus at exit?
 
 pgagent.schema.older.exist=An older version of the 'pgagent' schema was found.\nDo you want to upgrade the schema to version ${pgagent_installer_schema_version}?
 

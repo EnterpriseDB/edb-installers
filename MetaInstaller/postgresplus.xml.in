@@ -1986,15 +1986,16 @@
           </ruleList>
         </registrySet>
         <iniFileSet file="/etc/postgresplus-reg.ini"
-                    key="StackBuilderPlus"
-                    value="true">
+                    key="sbp"
+                    value="true"
+                    section="PostgreSQL/${product_version}">
           <ruleList>
             <isTrue value="${component(stackbuilderplus).selected}"/>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
           </ruleList>
         </iniFileSet>
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
-                     name="StackBuilderPlus"
+                     name="sbp"
                      type="REG_SZ"
                      value="true">
           <ruleList>
@@ -2246,7 +2247,6 @@
     </setInstallerVariable>
 
     <!-- Run linux programs -->
-
     <logMessage>
       <text>Installing Database Server in ${installdir} having data directory ${datadir} using Port:${serverport} and Locale:${locale}</text>
       <ruleList>
@@ -2270,7 +2270,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux.bin</program>
-      <programArguments>--mode unattended --installdir ${installdir} --datadir ${datadir} --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+      <programArguments>--mode unattended --disable-stackbuilder 1 --installdir "${installdir}" --datadir "${datadir}" --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
       <progressText>Installing Database Server ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -2293,11 +2293,10 @@
     </runProgram>
 
     <!-- linux-x64-->
-
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</program>
-      <programArguments>--mode unattended --installdir ${installdir} --datadir ${datadir} --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+      <programArguments>--mode unattended --disable-stackbuilder 1 --installdir ${installdir} --datadir ${datadir} --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
       <progressText>Installing Database Server ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -2332,7 +2331,6 @@
     </setInstallerVariable>
 
     <!--Run in upgrade mode -->
-
     <logMessage>
       <text>Upgrading Database Server in ${installdir}</text>
       <ruleList>
@@ -2849,7 +2847,6 @@
     </runProgram>
 
     <!-- pgAgent -->
-
     <logMessage>
       <text>Installing pgAgent in ${installdir}/pgAgent</text>
       <ruleList>
@@ -2931,7 +2928,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}\postgresplus\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
-      <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}" --install_runtimes 0</programArguments>
+      <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}" --install_runtimes 0</programArguments>
       <progressText>Installing Database Server ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3353,7 +3350,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-osx.app/Contents/MacOS/installbuilder.sh</program>
-      <programArguments>--mode unattended --installdir ${installdir} --datadir ${datadir} --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+      <programArguments>--mode unattended --disable-stackbuilder 1 --installdir ${installdir} --datadir ${datadir} --superpassword ${superpassword} --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
       <progressText>Installing Database Server ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -4100,8 +4097,8 @@
 
     <runProgram>
       <!-- Linux: Run stackbuilder -->
-      <program>${installdir}/scripts/launchstackbuilder.sh</program>
-      <progressText>${msg(progress.text.run.stackbuilder)}</progressText>
+      <program>${installdir}/StackBuilderPlus/scripts/launchStackBuilderPlus.sh</program>
+      <progressText>${msg(progress.text.run.stackbuilderplus)}</progressText>
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -4120,8 +4117,8 @@
 
     <runProgram>
       <!-- Windows: Run stackbuilder -->
-      <program>${installdir}/bin/stackbuilder.exe</program>
-      <progressText>${msg(progress.text.run.stackbuilder)}</progressText>
+      <program>${installdir}/StackBuilderPlus/bin/stackbuilderplus.exe</program>
+      <progressText>${msg(progress.text.run.stackbuilderplus)}</progressText>
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -4157,7 +4154,7 @@
                     section="PostgreSQL/${product_version}"
                     variable="uninstall_pgjdbc"/>
         <iniFileGet file="/etc/postgresplus-reg.ini"
-                    key="StackBuilderPlus"
+                    key="sbp"
                     section="PostgreSQL/${product_version}"
                     variable="uninstall_sbp"/>
         <iniFileGet file="/etc/postgresplus-reg.ini"
@@ -4275,12 +4272,12 @@
 
         <!-- uninstall pgAgent -->
         <runProgram abortOnError="0"
-                    program="${installdir}/pgagent/uninstall-pgagent"
+                    program="${installdir}/pgAgent/uninstall-pgagent"
                     programArguments="--mode unattended">
           <ruleList>
             <isTrue value="${uninstall_pgagent}"/>
             <!-- It is possible that user may have uninstalled pgAgent manually -->
-            <fileTest path="${installdir}/pgagent/uninstall-pgagent" condition="exists"/>
+            <fileTest path="${installdir}/pgAgent/uninstall-pgagent" condition="exists"/>
           </ruleList>
         </runProgram>
 
@@ -4325,7 +4322,7 @@
                      name="pgJdbc"
                      variable="uninstall_pgjdbc"/>
         <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
-                     name="StackBuilderPlus"
+                     name="sbp"
                      variable="uninstall_sbp"/>
         <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
                      name="pg_migrator"
@@ -4438,12 +4435,12 @@
 
         <!-- uninstall pgAgent -->
         <runProgram abortOnError="0"
-                    program="${installdir}\pgagent\uninstall-pgagent.exe"
+                    program="${installdir}\pgAgent\uninstall-pgagent.exe"
                     programArguments="--mode unattended">
           <ruleList>
             <isTrue value="${uninstall_pgagent}"/>
             <!-- It is possible that user may have uninstalled only pgAgent manually -->
-            <fileTest path="${installdir}\pgagent\uninstall-pgagent.exe" condition="exists"/>
+            <fileTest path="${installdir}\pgAgent\uninstall-pgagent.exe" condition="exists"/>
           </ruleList>
         </runProgram>
 
@@ -4928,7 +4925,7 @@
       <detailedDescription>An advanced application stack builder for PostgreSQL server.</detailedDescription>
       <canBeEdited>0</canBeEdited>
       <selected>1</selected>
-      <show>1</show>
+      <show>0</show>
       <folderList>
         <!-- linux -->
         <folder>
