@@ -210,9 +210,6 @@ _postprocess_PostGIS_linux_x64() {
     cp scripts/linux/check-connection.sh staging/linux-x64/installer/PostGIS/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux-x64/check-connection.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/check-connection.sh
 
-    cp scripts/linux/configurePostGIS.sh staging/linux-x64/installer/PostGIS/configurePostGIS.sh || _die "Failed to copy the configurePostGIS script (scripts/linux-x64/configurePostGIS.sh)"
-    chmod ugo+x staging/linux-x64/installer/PostGIS/configurePostGIS.sh
-
     cp scripts/linux/check-pgversion.sh staging/linux-x64/installer/PostGIS/check-pgversion.sh || _die "Failed to copy the check-pgversion script (scripts/linux-x64/check-pgversion.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/check-pgversion.sh
  
