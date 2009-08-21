@@ -58,6 +58,7 @@ _prep_stackbuilderplus_windows() {
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST updatemanager.windows rd /S /Q updatemanager.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\StackBuilderPlus.windows directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST stackbuilderplus.staging rd /S /Q stackbuilderplus.staging" || _die "Couldn't remove the $PG_PATH_WINDOWS\\StackBuilderPlus.staging directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST build-sbp.bat del /Q build-sbp.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS\\build-sbp.bat on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST sbp_output.zip del /Q sbp_output.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\sbp_output.zipon Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST vc-build.bat del /Q vc-build.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS\\vc-build.bat on Windows VM"
 
     echo "Copying StackBuilderPlus sources to Windows VM"
