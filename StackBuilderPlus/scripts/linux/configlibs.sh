@@ -22,7 +22,7 @@ _process_libs() {
     if [ -d "/lib64" ]; then 
       for stdlibdir in $standard_lib64_path
       do
-        if [ x"$flag" != x"" ]
+        if [ x"$flag" = x"" ]
         then
           flag=`find "$stdlibdir" -maxdepth 1 -iname "$library"`
           found_at_dir=$flag
