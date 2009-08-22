@@ -34,8 +34,21 @@ _prep_TuningWizard_linux() {
 
     echo "Creating staging directory ($WD/TuningWizard/staging/linux)"
     mkdir -p $WD/TuningWizard/staging/linux || _die "Couldn't create the staging directory"
+    mkdir -p $WD/TuningWizard/staging/linux/UserValidation || _die "Couldn't create the staging/UserValidation directory"
+    mkdir -p $WD/TuningWizard/staging/linux/UserValidation/lib || _die "Couldn't create the staging/UserValidation/lib directory"
     chmod ugo+w $WD/TuningWizard/staging/linux || _die "Couldn't set the permissions on the staging directory"
-        
+    chmod ugo+w $WD/TuningWizard/staging/linux/UserValidation || _die "Couldn't set the permissions on the staging/UserValidation directory"
+    chmod ugo+w $WD/TuningWizard/staging/linux/UserValidation/lib || _die "Couldn't set the permissions on the staging/UserValidation/lib directory"
+
+    # Remove any existing staging directory that might exist, and create a clean one
+    if [ -e $WD/TuningWizard/sources/scripts.linux ]; then
+      echo "Removing existing scripts.linux directory"
+      rm -rf $WD/TuningWizard/sources/scripts.linux || _die "Couldn't remove the existing scripts.linux directory"
+    fi
+
+    echo "Copying validateUserClient scripts from MetaInstaller"
+    cp $WD/MetaInstaller/scripts/linux/sysinfo.sh $WD/TuningWizard/staging/linux/UserValidation || _die "Couldn't copy MetaInstaller/scripts/linux/sysinfo.sh scripts"
+
 }
 
 
@@ -45,23 +58,25 @@ _prep_TuningWizard_linux() {
 
 _build_TuningWizard_linux() {
 
-    # build tuningwizard    
+    # build tuningwizard
     PG_STAGING=$PG_PATH_LINUX/TuningWizard/staging/linux    
 
     echo "Configuring the tuningwizard source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/TuningWizard/source/tuningwizard.linux; cmake CMakeLists.txt"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/TuningWizard/source/tuningwizard.linux; cmake CMakeLists.txt" || _die "Failed to configure TuningWizard(cmake)"
   
     echo "Building tuningwizard"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/TuningWizard/source/tuningwizard.linux; make"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/TuningWizard/source/tuningwizard.linux; make" || _die "Failed to build TuningWizard"
 
     # Copying the TuningWizard binary to staging directory
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/TuningWizard/source/tuningwizard.linux; mkdir $PG_STAGING/TuningWizard"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/TuningWizard/source/tuningwizard.linux; cp TuningWizard $PG_STAGING/TuningWizard"
+    ssh $PG_SSH_LINUX "mkdir $PG_STAGING/TuningWizard" || _die "Failed to create TuningWizard staging directory"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/TuningWizard/source/tuningwizard.linux; cp TuningWizard $PG_STAGING/TuningWizard" || _die "Failed to copy TuningWizard binary to staging directory."
 
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/TuningWizard/source/tuningwizard.linux; mkdir $PG_STAGING/TuningWizard/lib" || _die "Failed to create the lib directory"
     # Copy in the dependency libraries
     ssh $PG_SSH_LINUX "cp -R /lib/libssl.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libcrypto.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /lib/libssl.so* $PG_STAGING/UserValidation/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /lib/libcrypto.so* $PG_STAGING/UserValidation/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libcrypt.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libcom_err.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libexpat.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
@@ -70,9 +85,13 @@ _build_TuningWizard_linux() {
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libk5crypto.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libtiff.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libuuid.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library"
+
+    # Build the validateUserClient binary (only if it does not exist)
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MetaInstaller/source/MetaInstaller.linux/validateUser/; if [ -e \"validateUserClient.o\" ]; then gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto; fi" || _die "Failed to build the validateUserClient utility"
+    cp $WD/MetaInstaller/source/MetaInstaller.linux/validateUser/validateUserClient.o $WD/TuningWizard/staging/linux/UserValidation/ || _die "Failed to copy the validateUserClient utility to the staging directory"
+
 }
     
-
 
 ################################################################################
 # PG Build

@@ -10,10 +10,10 @@ _prep_TuningWizard_windows() {
     # Enter the source directory and cleanup if required
     cd $WD/TuningWizard/source
     
-    if [ -e tuningwizard.windows ];
+    if [ -e $WD/TuningWizard/source/tuningwizard.windows ];
     then
         echo "Removing existing tuningwizard.windows source directory"
-        rm -rf tuningwizard.windows  || _die "Couldn't remove the existing tuningwizard.windows source directory (source/tuningwizard.windows)"
+        rm -rf $WD/TuningWizard/source/tuningwizard.windows || _die "Couldn't remove the existing tuningwizard.windows source directory (source/tuningwizard.windows)"
     fi
     
     # Remove any existing zip files
@@ -36,7 +36,10 @@ _prep_TuningWizard_windows() {
     fi
     
     # Grab a copy of the source tree
-    cp -R wizard tuningwizard.windows || _die "Failed to copy the source code (source/tuningwizard.windows)"
+    cp -R $WD/TuningWizard/source/wizard $WD/TuningWizard/source/tuningwizard.windows || _die "Failed to copy the source code (source/tuningwizard.windows)"
+    mkdir $WD/TuningWizard/source/tuningwizard.windows/userValidation || _die "Failed to create userValidation directory"
+    cp -R $WD/MetaInstaller/scripts/windows/dbserver_guid/dbserver_guid/dbserver_guid $WD/TuningWizard/source/tuningwizard.windows/userValidation/dbserver_guid || _die "Failed to copy dbserver_guid scripts"
+    cp -R $WD/MetaInstaller/scripts/windows/validateUser $WD/TuningWizard/source/tuningwizard.windows/userValidation/validateUser || _die "Failed to copy validateUser scripts"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/TuningWizard/staging/windows ];
@@ -47,6 +50,13 @@ _prep_TuningWizard_windows() {
 
     echo "Creating staging directory ($WD/TuningWiard/staging/windows)"
     mkdir -p $WD/TuningWizard/staging/windows || _die "Couldn't create the staging directory"
+
+    cd $WD/MetaInstaller/scripts
+    if [ -f $WD/TuningWizards/scripts/windows/vc-build.bat ];
+    then
+       echo "Removing existing vc-build.bat script"
+       rm -f $WD/TuningWizards/scripts/windows/vc-build.bat || _die "Couldn't remove the vc-build.bat script"
+    fi
 
 }
 
@@ -76,11 +86,12 @@ _build_TuningWizard_windows() {
 
 @set PATH=%WXWIN%;%WXWIN%\include;%WXWIN%\lib\vc_lib;$PG_CMAKE_WINDOWS\bin;%VSINSTALLDIR%\Common7\IDE;%VCINSTALLDIR%\BIN;%VSINSTALLDIR%\Common7\Tools;%VSINSTALLDIR%\Common7\Tools\bin;%VCINSTALLDIR%\PlatformSDK\bin;%FrameworkSDKDir%\bin;$PG_FRAMEWORKDIR_WINDOWS\$PG_FRAMEWORKVERSION_WINDOWS;%VCINSTALLDIR%\VCPackages;%PATH%
 
-cd $PG_PATH_WINDOWS
+cd "$PG_PATH_WINDOWS"
+SET SOURCE_PATH=%CD%
 
 REM Extracting TuningWizard sources
 if NOT EXIST "tuningwizard.zip" GOTO zip-not-found
-if NOT EXIST "tuningwizard.windows" unzip tuningwizard.zip
+unzip tuningwizard.zip
 
 cd tuningwizard.windows
 REM Configure TuningWizard
@@ -88,6 +99,15 @@ cmake -D wxWidgets_CONFIGURATION=mswu CMakeLists.txt
 
 REM Compiling TuningWizard
 devenv TuningWizard.vcproj /build release
+
+cd %SOURCE_PATH%\\tuningwizard.windows\\userValidation\\dbserver_guid
+echo %CD%
+vcbuild dbserver_guid.vcproj release
+
+cd %SOURCE_PATH%\\tuningwizard.windows\\userValidation\\validateUser
+echo %CD%
+vcbuild validateUser.vcproj release
+
 GOTO end
 
 :zip-not-found
@@ -111,10 +131,13 @@ EOT
     # Build the code
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c $PG_PATH_WINDOWS\\\\build-tuningwizard.bat" || _die "Failed to build tuningwizard on the build host"
 
-    mkdir -p $WD/TuningWizard/staging/windows/TuningWizard || _die "Failed to create the TuningWizard Directory"
+    mkdir -p $WD/TuningWizard/staging/windows/TuningWizard || _die "Failed to create the TuningWizard under the staging directory"
+    mkdir -p $WD/TuningWizard/staging/windows/UserValidation || _die "Failed to create the UserValidation under the staging directory"
     
     # Copy the application files into place
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\tuningwizard.windows\\\\release\\\\TuningWizard.exe $WD/TuningWizard/staging/windows/TuningWizard/TuningWizard.exe
+    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\tuningwizard.windows\\\\userValidation\\\\dbserver_guid\\\\release\\\\dbserver_guid.exe $WD/TuningWizard/staging/windows/UserValidation/dbserver_guid.exe || _die "Failed to copy dbserver_guid.exe to staging directory"
+    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\tuningwizard.windows\\\\userValidation\\\\validateUser\\\\release\\\\validateUserClient.exe $WD/TuningWizard/staging/windows/UserValidation/validateUserClient.exe || _die "Failed to copy validateUserClient.exe to staging directory"
 
     cd $WD
 }
