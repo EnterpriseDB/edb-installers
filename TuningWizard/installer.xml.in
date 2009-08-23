@@ -81,12 +81,10 @@
     <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_TUNINGWIZARD" />
   
     <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
-    <throwError>
-      <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
-      <text>Unknown Error</text>
+    <throwError customErrorMessage="${msg(platform.not.match)}" text="Unknown Error">
       <ruleList>
-      <platformTest type="linux-x64"/>
-      <compareText text="${originalplatform}" value="linux-x32"/>
+        <platformTest type="linux-x64"/>
+        <compareText text="${originalplatform}" value="linux-x32"/>
       </ruleList>
     </throwError>
     

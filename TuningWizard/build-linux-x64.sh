@@ -40,12 +40,6 @@ _prep_TuningWizard_linux_x64() {
     chmod ugo+w $WD/TuningWizard/staging/linux-x64/UserValidation || _die "Couldn't set the permissions on the staging/UserValidation directory"
     chmod ugo+w $WD/TuningWizard/staging/linux-x64/UserValidation/lib || _die "Couldn't set the permissions on the staging/UserValidation/lib directory"
 
-    # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/TuningWizard/sources/scripts.linux-x64 ]; then
-      echo "Removing existing scripts.linux-x64 directory"
-      rm -rf $WD/TuningWizard/sources/scripts.linux-x64 || _die "Couldn't remove the existing scripts.linux-x64 directory"
-    fi
-
     echo "Copying validateUserClient scripts from MetaInstaller"
     cp $WD/MetaInstaller/scripts/linux/sysinfo.sh $WD/TuningWizard/staging/linux-x64/UserValidation || _die "Couldn't copy MetaInstaller/scripts/linux/sysinfo.sh scripts"
 
@@ -53,7 +47,7 @@ _prep_TuningWizard_linux_x64() {
 
 
 ################################################################################
-# PG Build
+# TuningWizard Build
 ################################################################################
 
 _build_TuningWizard_linux_x64() {
@@ -86,16 +80,22 @@ _build_TuningWizard_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libtiff.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library (libtiff)"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libuuid.so* $PG_STAGING/TuningWizard/lib" || _die "Failed to copy the dependency library (libuuid)"
 
-    # Build the validateUserClient binary (only if it does not exist)
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MetaInstaller/source/MetaInstaller.linux-x64/validateUser/; if [ -e \"validateUserClient.o\" ]; then gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto; fi" || _die "Failed to build the validateUserClient utility"
-    cp $WD/MetaInstaller/source/MetaInstaller.linux-x64/validateUser/validateUserClient.o $WD/TuningWizard/staging/linux-x64/UserValidation/ || _die "Failed to copy the validateUserClient utility to the staging directory"
+    # Build the validateUserClient binary
+    if [ ! -f $WD/MetaInstaller/source/MetaInstaller.linux-x64/validateUser/validateUserClient.o ];
+    then
+        cp -R $WD/MetaInstaller/scripts/validateUser $WD/TuningWizard/source/tuningwizard.linux-x64/validateUser || _die "Failed to copy validateUser source files"
+        ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/TuningWizard/source/tuningwizard.linux-x64/validateUser; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
+        cp $WD/TuningWizard/source/tuningwizard.linux-x64/validateUser/validateUserClient.o $WD/TuningWizard/staging/linux-x64/UserValidation/validateUserClient.o || _die "Failed to copy validateUserClient.o utility"
+    else
+       cp $WD/MetaInstaller/source/MetaInstaller.linux-x64/validateUser/validateUserClient.o $WD/TuningWizard/staging/linux-x64/UserValidation/validateUserClient.o || _die "Failed to copy validateUserClient.o utility"
+    fi
+    chmod ugo+x $WD/TuningWizard/staging/linux-x64/UserValidation/validateUserClient.o || _die "Failed to give execution permission to validateUserClient.o"
 
 }
     
 
-
 ################################################################################
-# PG Build
+# Tuning-Wizard Post Process
 ################################################################################
 
 _postprocess_TuningWizard_linux_x64() {
