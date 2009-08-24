@@ -160,13 +160,30 @@
   <!-- Preinstallation actions -->
   <preInstallationActionList>
 
+    <setInstallerVariable name="executablePath" value=""/>
+    <foreach variables="path" values="/bin /usr/bin /sbin /usr/sbin">
+      <actionList>
+         <!-- If the executable is found, the findFile action will be skipped -->
+         <findFile baseDirectory="${path}" variable="executablePath" pattern="getenforce">
+           <abortOnError>0</abortOnError>
+           <showMessageOnError>0</showMessageOnError>
+           <ruleList>
+             <compareText text="${executablePath}" logic="equals" value=""/>
+           </ruleList>
+         </findFile>
+      </actionList>
+      <ruleList>
+         <compareText text="${platform_name}" logic="contains" value="linux"/>
+      </ruleList>
+    </foreach>
+
     <!-- Check for SELinux -->
     <actionGroup>
       <actionList> 
         <setInstallerVariable name="selinux" value="" />
         <setInstallerVariableFromScriptOutput>
           <name>selinux</name>
-          <exec>getenforce</exec>
+          <exec>${executablePath}</exec>
           <execArgs/>
         </setInstallerVariableFromScriptOutput>
         <showWarning text="${msg(warn.selinux)}" >
@@ -185,6 +202,11 @@
         </showWarning> 
       </actionList> 
       <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${executablePath}</text>
+          <value/>
+        </compareText>
         <compareText>
           <logic>contains</logic>
           <text>${platform_name}</text>

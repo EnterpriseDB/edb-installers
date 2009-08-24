@@ -6,13 +6,20 @@ then
         exit 1
 fi
 
-selinux=`getenforce 2>/dev/null`
-if [ "x"$selinux != "x" -a $selinux != "Disabled" ];
-then
-    printf "SELinux is enabled on the system, which might cause apache start/stop/restart to fail.\n"
-    printf "Please ensure proper access privileges to apache.\n"
-fi
-
+for f in /bin /usr/bin /sbin /usr/sbin
+do
+    fpath=`ls $f/getenforce 2>/dev/null`
+    if [ "x"$fpath != "x" ];
+    then
+        selinux=`$fpath 2>/dev/null`
+        if [ "x"$selinux != "x" -a $selinux != "Disabled" ];
+        then
+            printf "SELinux is enabled on the system, which might cause apache start/stop/restart to fail.\n"
+            printf "Please ensure proper access privileges to apache.\n"
+        fi
+        break
+    fi
+done
 
 case $1 in
         start) action=start
