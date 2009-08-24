@@ -22,3 +22,13 @@ sbp.installdir.empty=The installation directory cannot be empty
 
 sbp.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
+monitor.server.version.warning=The server specified to monitor is not a valid server installed. Update Monitoring service will be disabled.
+monitor.server.title=PostgreSQL Server Version
+monitor.server.explanation=Please specify postgresql server version to monitor.
+monitor.server.version.invalid=The server specified to monitor is not a valid server installed.\nPlease specify a valid string of the form <Major Version>.<Minor Version>
+
+progress.text.fixing.libs=Fixing libraries
+progress.text.creating.loginHook.osx=Creating login hooks
+progress.text.removing.loginHook.osx=Removing login hooks
+progress.text.removing.shortcuts=Removing menu shortcuts
+

@@ -132,12 +132,13 @@ ECHO ***************************************
 cd "%SOURCE_PATH%\updatemanager.windows"
 "%QMAKE%" UpdateManager.pro || SET ERRMSG=ERROR: Couldn't configure the UpdateManager on Windows && GOTO EXIT_WITH_ERROR
 "%QT_MINGW_MAKE%" release || SET ERRMSG=ERROR: Couldn't build the UpdateManager && GOTO EXIT_WITH_ERROR
-copy release\UpdateManager.exe %SOURCE_PATH%\stackbuilderplus.staging\bin || SET ERRMSG=ERROR: Couldn't copy the UpdateManager binary to staging directory && GOTO EXIT_WITH_ERROR
+mkdir %SOURCE_PATH%\stackbuilderplus.staging\UpdateManager\bin 
+copy release\UpdateManager.exe %SOURCE_PATH%\stackbuilderplus.staging\UpdateManager\bin || SET ERRMSG=ERROR: Couldn't copy the UpdateManager binary to staging directory && GOTO EXIT_WITH_ERROR
 
 ECHO *******************************************************************************************
 ECHO * Collecting dependent libraries and Archieving all binaries in one file (sbp_output.zip) *
 ECHO *******************************************************************************************
-cd "%SOURCE_PATH%\stackbuilderplus.staging\bin"
+cd "%SOURCE_PATH%\stackbuilderplus.staging\UpdateManager\bin"
 copy "%QT_PATH%\qt\bin\mingwm10.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (mingwm10.dll) && GOTO EXIT_WITH_ERROR
 echo Copying QtCore4 dll
 copy "%QT_PATH%\qt\bin\QtCore4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtCore4.dll) && GOTO EXIT_WITH_ERROR

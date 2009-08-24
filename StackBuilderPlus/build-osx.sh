@@ -103,6 +103,9 @@ EOT
         rm -rf $f
     done
 
+    #Copy our custom Info.plist
+    cp $WD/StackBuilderPlus/source/updatemanager.osx/Info.plist $WD/StackBuilderPlus/source/updatemanager.osx/updatemanager.app/Contents/Info.plist || _die "Failed to change the Info.plist"     
+
     cd $WD/StackBuilderPlus/source
     # Copy the StackBuilder app bundle into place
     echo "Copy the StackBuilderPlus app bundle into place"
@@ -131,8 +134,9 @@ _postprocess_stackbuilderplus_osx() {
     chmod ugo+x staging/osx/installer/StackBuilderPlus/createshortcuts.sh
 
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the launch scripts"
+    mkdir -p staging/osx/UpdateManager/scripts || _die "Failed to create a directory for the launch scripts"
     cp scripts/osx/stackbuilderplus.applescript.in staging/osx/scripts/stackbuilderplus.applescript || _die "Failed to copy the launch script (scripts/osx/pg-launchSlonyDocs.applescript.in)"
-    cp scripts/osx/launchSBPUpdateMonitor.sh staging/osx/scripts/launchSBPUpdateMonitor.sh || _die "Failed to copy the launch script (scripts/osx/launchSBPUpdateMonitor.sh)"
+    cp scripts/osx/launchSBPUpdateMonitor.sh staging/osx/UpdateManager/scripts/launchSBPUpdateMonitor.sh || _die "Failed to copy the launch script (scripts/osx/launchSBPUpdateMonitor.sh)"
     cp scripts/osx/launchStackBuilderPlus.sh staging/osx/scripts/launchStackBuilderPlus.sh || _die "Failed to copy the launch script (scripts/osx/launchStackBuilderPlus.sh)"
     chmod ugo+x staging/osx/scripts/*.sh
 

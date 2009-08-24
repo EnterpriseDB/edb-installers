@@ -73,14 +73,18 @@ _build_stackbuilderplus_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/StackBuilderPlus/source/updatemanager.linux; $PG_QMAKE_LINUX UpdateManager.pro" || _die "Failed to configuring UpdateManager on linux"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/StackBuilderPlus/source/updatemanager.linux; make" || _die "Failed to build UpdateManager on linux"
 
-    echo "Copying UpdateManager binary to staging directory"
-    cp $WD/StackBuilderPlus/source/updatemanager.linux/UpdateManager $WD/StackBuilderPlus/staging/linux/bin
+    mkdir -p $WD/StackBuilderPlus/staging/linux/UpdateManager/bin
+    mkdir -p $WD/StackBuilderPlus/staging/linux/UpdateManager/lib
 
+    echo "Copying UpdateManager binary to staging directory"
+    cp $WD/StackBuilderPlus/source/updatemanager.linux/UpdateManager $WD/StackBuilderPlus/staging/linux/UpdateManager/bin
+
+    
     echo "Copying dependent libraries to staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp /usr/lib/libQtXml.so.* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp /usr/lib/libQtNetwork.so.* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp /usr/lib/libQtCore.so.* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp /usr/lib/libQtGui.so.* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libQtGui.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp /usr/lib/libQtXml.so.* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/UpdateManager/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp /usr/lib/libQtNetwork.so.* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/UpdateManager/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp /usr/lib/libQtCore.so.* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/UpdateManager/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp /usr/lib/libQtGui.so.* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/UpdateManager/lib" || _die "Failed to copy dependent library (libQtGui.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp /usr/lib/libpng12.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libpng12.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp /lib/libssl.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libssl.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp /lib/libcrypto.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libcrypto.so) in staging directory (linux)"
@@ -94,10 +98,7 @@ _build_stackbuilderplus_linux() {
     ssh $PG_SSH_LINUX "cp /usr/lib/libz.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libz.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp /usr/lib/libfreetype.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libfreetype.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp /usr/lib/libfontconfig.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libfontconfig.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp /usr/lib/libpangoft2-1.0.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp /usr/lib/libpangoxft-1.0.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libpangoxft-1.0.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp /usr/lib/libpangox-1.0.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libpangox-1.0.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp /usr/lib/libpango-1.0.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libpango-1.0.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp /usr/lib/libpango* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (linux)"
 
     cd $WD
 }
@@ -116,6 +117,7 @@ _postprocess_stackbuilderplus_linux() {
     cd $WD/StackBuilderPlus
 
     mkdir -p staging/linux/installer/StackBuilderPlus || _die "Failed to create a directory for the installer scripts"
+    mkdir -p staging/linux/UpdateManager/scripts || _die "Failed to create a directory for the installer scripts"
     
     cp scripts/linux/createshortcuts.sh staging/linux/installer/StackBuilderPlus/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
     cp scripts/linux/removeshortcuts.sh staging/linux/installer/StackBuilderPlus/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
@@ -123,7 +125,7 @@ _postprocess_stackbuilderplus_linux() {
     chmod ugo+x staging/linux/installer/StackBuilderPlus/*.sh
 
     mkdir -p staging/linux/scripts || _die "Failed to create a directory for the launch scripts"
-    cp scripts/linux/launchSBPUpdateMonitor.sh staging/linux/scripts/launchSBPUpdateMonitor.sh || _die "Failed to copy the launch scripts (scripts/linux/launchSBPUpdateMonitor.sh)"
+    cp scripts/linux/launchSBPUpdateMonitor.sh staging/linux/UpdateManager/scripts/launchSBPUpdateMonitor.sh || _die "Failed to copy the launch scripts (scripts/linux/launchSBPUpdateMonitor.sh)"
     cp scripts/linux/launchStackBuilderPlus.sh staging/linux/scripts/launchStackBuilderPlus.sh || _die "Failed to copy the launch scripts (scripts/linux/launchStackBuilderPlus.sh)"
     cp scripts/linux/runStackBuilderPlus.sh staging/linux/scripts/runStackBuilderPlus.sh || _die "Failed to copy the launch scripts (scripts/linux/runStackBuilderPlus.sh)"
 
@@ -140,9 +142,10 @@ _postprocess_stackbuilderplus_linux() {
     cp resources/pg-postgresql.png staging/linux/scripts/images/pg-postgresql-$PG_VERSION_STR.png  || _die "Failed to copy the menu pick images (pg-postgresql.png)"
 
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the menu pick items"
+    mkdir -p staging/linux/UpdateManager/scripts/xdg || _die "Failed to create a directory for the menu pick items"
     cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/edb-stackbuilderplus.desktop staging/linux/scripts/xdg/edb-stackbuilderplus-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
-    cp resources/xdg/edb-sbp-update-monitor.desktop staging/linux/scripts/xdg/edb-sbp-update-monitor.desktop || _die "Failed to copy the startup pick desktop"
+    cp resources/xdg/edb-sbp-update-monitor.desktop staging/linux/UpdateManager/scripts/xdg/edb-sbp-update-monitor.desktop || _die "Failed to copy the startup pick desktop"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer for linux"
