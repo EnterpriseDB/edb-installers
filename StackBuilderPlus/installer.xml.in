@@ -213,7 +213,6 @@
       <select>updatemanager</select>  
       <ruleList>
         <compareText logic="equals" text="${installMonitoring}" value="1"/>
-        <compareText logic="equals" text="${registeredUser}" value="1"/>
         <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
       </ruleList>
     </componentSelection>
@@ -246,7 +245,6 @@
         <ruleList>
            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
            <compareText logic="equals" text="${installMonitoring}" value="1"/>
-           <compareText logic="equals" text="${registeredUser}" value="1"/>
            <compareText logic="does_not_equal" text="${monitorServer}" value=""/>
         </ruleList>
     </actionGroup>
@@ -256,7 +254,6 @@
       <ruleList>
         <compareText logic="equals" text="${installer_ui}" value="unattended"/>
         <compareText logic="equals" text="${installMonitoring}" value="1"/>
-        <compareText logic="equals" text="${registeredUser}" value="1"/>
         <compareText logic="does_not_equal" text="${monitorServer}" value=""/>
       </ruleList>
     </componentSelection>
@@ -615,7 +612,6 @@
   <parameterList>
     <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
     <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
-    <stringParameter name="registeredUser" cliOptionName="registered-user" ask="0" cliOptionShow="0" default="0"/>
     <stringParameter name="installMonitoring" cliOptionName="install-monitoring" ask="0" cliOptionShow="0" default="0"/>
     <parameterGroup>
        <name>monitorServerSelection</name>
@@ -636,7 +632,7 @@
           </stringParameter>     
        </parameterList> 
        <ruleList>    
-            <compareText logic="equals" text="${registeredUser}" value="1"/>
+            <compareText logic="equals" text="${installMonitoring}" value="1"/>
             <compareText logic="equals" text="${iSBPVersion}" value=""/>
        </ruleList>    
        <validationActionList>
