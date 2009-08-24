@@ -255,7 +255,7 @@
               component="userValidation"
               destination="${system_temp_directory}/tuningwizard/sysinfo.sh"
               folder="scriptslinux-x64"
-              origin="validateUserClient.o"/>
+              origin="sysinfo.sh"/>
             <unpackFile
               component="userValidation"
               destination="${system_temp_directory}/tuningwizard/validateUserClient.o"
@@ -278,17 +278,12 @@
               component="userValidation"
               destination="${system_temp_directory}/tuningwizard/sysinfo.sh"
               folder="scriptsosx"
-              origin="validateUserClient.o"/>
+              origin="sysinfo.sh"/>
             <unpackFile
               component="userValidation"
               destination="${system_temp_directory}/tuningwizard/validateUserClient.o"
               folder="scriptsosx"
               origin="validateUserClient.o"/>
-            <unpackDirectory
-              component="userValidation"
-              destination="${system_temp_directory}/tuningwizard/"
-              folder="scriptsosx"
-              origin="lib"/>
           </actionList>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="osx"/>
@@ -307,6 +302,7 @@
         </setInstallerVariable>
         <!-- run sysinfo.sh -->
         <runProgram program="${system_temp_directory}/tuningwizard/sysinfo.sh"
+                    workingDirectory="${system_temp_directory}/tuningwizard"
                     showMessageOnError="0"
                     abortOnError="0"/>
         <propertiesFileGet
@@ -344,6 +340,7 @@
     </actionGroup>
     <actionGroup>
       <actionList>
+        <createDirectory path="${system_temp_directory}\tuningwizard"/>
         <unpackFile
           component="userValidation"
           destination="${system_temp_directory}\tuningwizard\validateUserClient.exe"
@@ -517,6 +514,7 @@
       programArguments="&quot;${installdir}&quot; &quot;${branding}&quot;"
       progressText="${msg(progress.text.creating.shortcuts)}"
       abortOnError="0"
+      workingDirectory="${installdir}/installer/TuningWizard"
       showMessageOnError="1">
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -544,6 +542,7 @@
     <!-- LIN : Remove Menu shortcuts -->
     <runProgram
       program="${installdir}/installer/TuningWizard/removeshortcuts.sh"
+      workingDirectory="${installdir}/installer/TuningWizard"
       programArguments="&quot;${installdir}&quot; &quot;${branding}&quot;"
       abortOnError="0"
       showMessageOnError="0">
@@ -800,7 +799,8 @@
       </parameterList>
       <!-- Open registration page, if not already registered user -->
       <postShowPageActionList>
-        <launchBrowser url="https://www.enterprisedb.com/create-account.do">
+        <launchBrowser url="https://www.enterprisedb.com/create-account.do"
+                       abortOnError="1">
           <ruleList>
               <isFalse value="${alreadyRegistered}"/>
           </ruleList>
@@ -814,8 +814,7 @@
     </parameterGroup>
     <parameterGroup
       name="userAuthenticationPage"
-      title="${msg(existingemail.authentication.title.value)}"
-      explanation="${msg(existingemail.authentication.explanation.value)}">
+      title="${msg(existingemail.authentication.title.value)}">
       <parameterList>
         <labelParameter
           name="existingemail_authentication_lbl"

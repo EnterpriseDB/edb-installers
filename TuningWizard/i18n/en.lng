@@ -28,7 +28,7 @@ Installer.Ready.Text1=Setup is now ready to begin installing EnterpriseDB Tuning
 
 Installer.Installing.Text=Please wait while Setup installs EnterpriseDB Tuning Wizard on your computer.
 
-error.invalid.email.value =Invalid email address. You must provide a valid email address.  Please try again.
+error.invalid.email.value=Invalid email address. You must provide a valid email address.  Please try again.
 
 error.invalid.password.value=Password is empty or contains invalid characters. Please enter valid password.
 
