@@ -302,6 +302,18 @@
       </ruleList>
     </substitute>
  
+    <substitute>
+      <files>${installdir}/scripts/launchSBPUpdateMonitor.sh</files>
+      <substitutionList>
+         <substitution pattern="INSTALL_DIR" value="${installdir}"/>
+         <substitution pattern="MONITOR_SERVER" value="${monitorServer}"/>
+      </substitutionList>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </substitute>
+
+
     <actionGroup>
       <actionList>
         <substitute>
@@ -358,7 +370,7 @@
           </ruleList>
         </touchFile>
         <runProgram program="/usr/bin/defaults"
-                    programArguments="write com.apple.loginwindow LoginHookSBPUpdateMonitor_PG_VERSION_STR &quot;${installdir}/Scritps/launchSBPUpdateMonitor.sh&quot;"
+                    programArguments="write com.apple.loginwindow LoginHookSBPUpdateMonitor_PG_VERSION_STR &quot;${installdir}/scripts/launchSBPUpdateMonitor.sh&quot;"
                     progressText="${msg(progress.text.creating.loginHook.osx)}"
                     abortOnError="0"
                     showMessageOnError="0">

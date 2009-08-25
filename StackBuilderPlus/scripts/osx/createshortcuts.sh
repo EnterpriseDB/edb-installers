@@ -44,7 +44,7 @@ FOLDER="/Applications/$BRANDING"
 mkdir -p "$FOLDER" || _die "Failed to create the menu directory ($FOLDER)"
 
 # Create the scripts
-_compile_script "$INSTALLDIR/scripts/stackbuilderplus.applescript" "$FOLDER/Application Stack Builder Plus - PG_$PG_VERSION_STR.app" "$INSTALLDIR/scripts/images/edb-stackbuilderplus.icns"
+_compile_script "$INSTALLDIR/scripts/stackbuilderplus.applescript" "$FOLDER/Application Stack Builder Plus.app" "$INSTALLDIR/scripts/images/edb-stackbuilderplus.icns"
 
 echo "$0 ran to completion"
 exit 0
