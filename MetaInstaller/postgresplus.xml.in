@@ -2206,42 +2206,6 @@
           <value>${product_version}</value>
         </registrySet>
 
-        <iniFileSet>
-          <file>/etc/postgresplus-reg.ini</file>
-          <key>pg_migrator</key>
-          <section>PostgreSQL/${product_version}</section>
-          <value>true</value>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${component(pgmigrator).selected}</text>
-              <value>1</value>
-            </compareText>
-            <compareText>
-              <logic>does_not_equal</logic>
-              <text>${platform_name}</text>
-              <value>windows</value>
-            </compareText>
-          </ruleList>
-        </iniFileSet>
-        <registrySet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
-          <name>pg_migrator</name>
-          <type>REG_SZ</type>
-          <value>true</value>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${component(pgmigrator).selected}</text>
-              <value>1</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${platform_name}</text>
-              <value>windows</value>
-            </compareText>
-          </ruleList>
-        </registrySet>
         <!-- Write the EnterpriseDB user-name(email address) in the postgres-reg.ini/registry -->
         <iniFileSet file="/etc/postgres-reg.ini"
                     section="PostgreSQL/PG_MAJOR_VERSION"
@@ -2571,62 +2535,6 @@
         <compareText>
           <logic>equals</logic>
           <text>${component(pgJdbc).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>linux-x64</value>
-        </compareText>
-      </ruleList>
-    </runProgram>
-
-    <logMessage>
-      <text>Installing pg_migrator in ${installdir}</text>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(pgmigrator).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>contains</logic>
-          <text>${platform_name}</text>
-          <value>linux</value>
-        </compareText>
-      </ruleList>
-    </logMessage>
-
-    <runProgram>
-      <abortOnError>0</abortOnError>
-      <program>${system_temp_directory}/postgresplus/pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-linux.bin</program>
-      <programArguments>--mode unattended --installdir ${installdir} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
-      <progressText>Installing pg_migrator ... </progressText>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(pgmigrator).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>linux</value>
-        </compareText>
-      </ruleList>
-    </runProgram>
-
-    <runProgram>
-      <abortOnError>0</abortOnError>
-      <program>${system_temp_directory}/postgresplus/pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-linux-x64.bin</program>
-      <programArguments>--mode unattended --installdir ${installdir} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
-      <progressText>Installing pg_migrator ... </progressText>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(pgmigrator).selected}</text>
           <value>1</value>
         </compareText>
         <compareText>
@@ -3128,42 +3036,6 @@
     </runProgram>
 
     <logMessage>
-      <text>Installing pg_migrator in ${installdir}</text>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(pgmigrator).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </logMessage>
-
-    <runProgram>
-      <abortOnError>0</abortOnError>
-      <program>${system_temp_directory}\postgresplus\pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-windows.exe</program>
-      <programArguments>--mode unattended --prefix "${installdir}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
-      <progressText>Installing pg_migrator ... </progressText>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(pgmigrator).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </runProgram>
-
-    <logMessage>
       <text>Installing psqlODBC in ${installdir}\psqlODBC</text>
       <ruleList>
         <compareText>
@@ -3550,43 +3422,6 @@
         </compareText>
       </ruleList>
     </runProgram>
-
-    <logMessage>
-      <text>Installing pg_migrator in ${installdir}</text>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(pgmigrator).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>osx</value>
-        </compareText>
-      </ruleList>
-    </logMessage>
-
-    <runProgram>
-      <abortOnError>0</abortOnError>
-      <program>${system_temp_directory}/postgresplus/pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-osx.app/Contents/MacOS/installbuilder.sh</program>
-      <programArguments>--mode unattended --installdir ${installdir} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
-      <progressText>Installing pg_migrator... </progressText>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(pgmigrator).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>osx</value>
-        </compareText>
-      </ruleList>
-    </runProgram>
-
 
     <logMessage>
       <text>Installing psqlODBC in ${installdir}/psqlODBC</text>
@@ -4179,10 +4014,6 @@
                     section="PostgreSQL/${product_version}"
                     variable="uninstall_sbp"/>
         <iniFileGet file="/etc/postgresplus-reg.ini"
-                    key="pg_migrator"
-                    section="PostgreSQL/${product_version}"
-                    variable="uninstall_pgmigrator"/>
-        <iniFileGet file="/etc/postgresplus-reg.ini"
                     key="postgis"
                     section="PostgreSQL/${product_version}"
                     variable="uninstall_postgis"/>
@@ -4302,17 +4133,6 @@
           </ruleList>
         </runProgram>
 
-        <!-- uninstall pg_migrator -->
-        <runProgram abortOnError="0"
-                    program="${installdir}/uninstall-pgmigrator"
-                    programArguments="--mode unattended">
-          <ruleList>
-            <isTrue value="${uninstall_pgmigrator}"/>
-            <!-- It is possible that user may have uninstalled pg_migrator manually -->
-            <fileTest path="${installdir}/uninstall-pgmigrator" condition="exists"/>
-          </ruleList>
-        </runProgram>
-
         <!-- uninstall dbserver/PostgreSQL -->
         <runProgram abortOnError="0"
                     program="${installdir}/uninstall-postgresql"
@@ -4345,9 +4165,6 @@
         <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
                      name="sbp"
                      variable="uninstall_sbp"/>
-        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
-                     name="pg_migrator"
-                     variable="uninstall_pgmigrator"/>
         <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}"
                      name="postgis"
                      variable="uninstall_postgis"/>
@@ -4462,17 +4279,6 @@
             <isTrue value="${uninstall_pgagent}"/>
             <!-- It is possible that user may have uninstalled only pgAgent manually -->
             <fileTest path="${installdir}\pgAgent\uninstall-pgagent.exe" condition="exists"/>
-          </ruleList>
-        </runProgram>
-
-        <!-- uninstall pg_migrator -->
-        <runProgram abortOnError="0"
-                    program="${installdir}\uninstall-pgmigrator.exe"
-                    programArguments="--mode unattended">
-          <ruleList>
-            <isTrue value="${uninstall_pgmigrator}"/>
-            <!-- It is possible that user may have uninstalled only pg_migrator manually -->
-            <fileTest path="${installdir}\uninstall-pgmigrator.exe" condition="exists"/>
           </ruleList>
         </runProgram>
 
@@ -5876,96 +5682,6 @@
       </componentSelectionValidationActionList>
     </component>
 
-    <!-- pg_migrator -->
-    <component>
-      <name>pgmigrator</name>
-      <description>pg_migrator</description>
-      <detailedDescription>Tool for migration from an old release of PostgreSQL to a new release</detailedDescription>
-      <canBeEdited>1</canBeEdited>
-      <selected>1</selected>
-      <show>1</show>
-      <folderList>
-        <folder>
-          <description>Program Files</description>
-          <destination>${system_temp_directory}/postgresplus</destination>
-          <name>pgmigratorlinux</name>
-          <platforms>linux</platforms>
-          <distributionFileList>
-            <distributionFile>
-              <origin>staging/linux/pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-linux.bin</origin>
-            </distributionFile>
-          </distributionFileList>
-        </folder>
-
-        <!-- linux-x64-->
-
-        <folder>
-          <description>Program Files</description>
-          <destination>${system_temp_directory}/postgresplus</destination>
-          <name>pgmigratorlinux-x64</name>
-          <platforms>linux-x64</platforms>
-          <distributionFileList>
-            <distributionFile>
-              <origin>staging/linux-x64/pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-linux-x64.bin</origin>
-            </distributionFile>
-          </distributionFileList>
-        </folder>
-
-        <!-- MAC: Program files -->
-        <folder>
-          <description>Program Files</description>
-          <destination>${system_temp_directory}/postgresplus</destination>
-          <name>pgmigratorosx</name>
-          <platforms>osx</platforms>
-          <distributionFileList>
-            <distributionDirectory>
-              <origin>staging/osx/pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-osx.app</origin>
-            </distributionDirectory>
-          </distributionFileList>
-        </folder>
-
-        <!-- Windows -->
-        <folder>
-          <description>Program Files</description>
-          <destination>${system_temp_directory}/postgresplus</destination>
-          <name>pgmigratorwindows</name>
-          <platforms>windows</platforms>
-          <distributionFileList>
-            <distributionFile>
-              <origin>staging/windows/pgmigrator-PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR-windows.exe</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/windows/scripts/validateuser.exe</origin>
-            </distributionFile>
-          </distributionFileList>
-        </folder>
-      </folderList>
-      <componentSelectionValidationActionList>
-        <throwError>
-          <text>${msg(dbserver.required.pgerror)}</text>
-          <ruleList>
-            <isFalse value="${component(dbserver).selected}"/>
-            <fileTest path="${installdir}/bin/psql" condition="not_exists"/>
-            <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
-          </ruleList>
-        </throwError>
-
-        <throwError>
-          <text>${msg(dbserver.required.pgerror)}</text>
-          <ruleList>
-            <isFalse value="${component(dbserver).selected}"/>
-            <fileTest path="${installdir}\bin\psql.exe" condition="not_exists"/>
-            <compareText text="${platform_name}" logic="equals" value="windows"/>
-          </ruleList>
-        </throwError>
-        <setInstallerVariable>
-          <name>noComponentSelected</name>
-          <persist>1</persist>
-          <value>false</value>
-        </setInstallerVariable>
-      </componentSelectionValidationActionList>
-    </component>
-
   </componentList>
 
   <parameterList>
@@ -6639,11 +6355,6 @@
             <setInstallerVariable name="features" value="${features},pgAgent">
               <ruleList>
                 <isTrue value="${component(pgagent).selected}"/>
-              </ruleList>
-            </setInstallerVariable>
-            <setInstallerVariable name="features" value="${features},pg_migrator">
-              <ruleList>
-                <isTrue value="${component(pgmigrator).selected}"/>
               </ruleList>
             </setInstallerVariable>
             <setInstallerVariableFromRegEx name="features" pattern="^," substitution="" text="${features}">

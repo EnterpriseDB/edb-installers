@@ -55,10 +55,6 @@ _prep_metainstaller_windows() {
     echo "Grab pgAgent installer..."
     cp -R "$WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-windows.exe"  $WD/MetaInstaller/staging/windows || _die "Failed to copy the pgagent installer (staging/windows/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-windows.exe"
 
-    # Grab a copy of the pg_migrator installer
-    echo "Grab pg_migrator installer..."
-    cp -R "$WD/output/pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-windows.exe"  $WD/MetaInstaller/staging/windows || _die "Failed to copy the pg_migrator installer (staging/windows/pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-windows.exe"
-
     # Cleanup the build host
     echo "Removing existing meta_output_scripts folder..."
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q meta_output_scripts"

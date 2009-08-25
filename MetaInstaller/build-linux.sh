@@ -53,9 +53,6 @@ _prep_metainstaller_linux() {
     # Grab a copy of the pgagent installer
     cp -R "$WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the pgagent installer (staging/linux/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-linux.bin"
     
-    # Grab a copy of the pg_migrator installer
-    cp -R "$WD/output/pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the pg_migrator installer (staging/linux/pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-linux.bin"
-
     cd $WD/MetaInstaller
     mkdir -p staging/linux/scripts/pgcontrol
   

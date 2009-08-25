@@ -54,9 +54,6 @@ _prep_metainstaller_osx() {
     # Grab a copy of the pgagent installer
     cp -R "$WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the pgagent installer (staging/osx/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip)"
 
-    # Grab a copy of the pg_migrator installer
-    cp -R "$WD/output/pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the pg_migrator installer (staging/osx/pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-osx.zip"
-
     cd $WD/MetaInstaller/staging/osx
    
     hdiutil attach postgresql-$PG_PACKAGE_VERSION-osx.dmg
@@ -101,11 +98,6 @@ _prep_metainstaller_osx() {
     # unzip pgagent
     unzip pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip
     rm -f pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip
-
-    # unzip pg_migrator
-    unzip pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-osx.zip
-    rm -f pgmigrator-$PG_VERSION_PGMIGRATOR-$PG_BUILDNUM_PGMIGRATOR-osx.zip
-
 
     cd $WD/MetaInstaller
     mkdir -p staging/osx/scripts/pgcontrol
