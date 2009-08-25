@@ -60,7 +60,7 @@ NET_API_STATUS CreateUser(LPTSTR domain, LPTSTR username, LPTSTR password, TCHAR
 	NET_API_STATUS nStatus;
 	int nLen;
 	char comment[] = "PostgreSQL service account";
-	WCHAR wUsername[100], wPassword[100], wComment[100];
+	WCHAR wUsername[100], wPassword[100], wComment[100], wDomain[100];
 	
 	nLen = MultiByteToWideChar(CP_ACP, 0, username, -1, NULL, (int)NULL);
 	MultiByteToWideChar(CP_ACP, 0, 	username, -1, wUsername, nLen);
@@ -70,6 +70,9 @@ NET_API_STATUS CreateUser(LPTSTR domain, LPTSTR username, LPTSTR password, TCHAR
 
 	nLen = MultiByteToWideChar(CP_ACP, 0, comment, -1, NULL, (int)NULL);
 	MultiByteToWideChar(CP_ACP, 0, 	comment, -1, wComment, nLen);
+
+	nLen = MultiByteToWideChar(CP_ACP, 0, domain, -1, NULL, (int)NULL);
+	MultiByteToWideChar(CP_ACP, 0, 	domain, -1, wDomain, nLen);
 	
 	ui.usri1_name = wUsername;
 	ui.usri1_password = wPassword;
@@ -79,7 +82,7 @@ NET_API_STATUS CreateUser(LPTSTR domain, LPTSTR username, LPTSTR password, TCHAR
 	ui.usri1_flags = UF_SCRIPT | UF_DONT_EXPIRE_PASSWD | UF_PASSWD_CANT_CHANGE;
 	ui.usri1_script_path = NULL;
 
-	nStatus = NetUserAdd(NULL,
+	nStatus = NetUserAdd(wDomain,
 						 dwLevel,
 						 (LPBYTE)&ui,
 						 &dwError);
@@ -150,7 +153,7 @@ static void InitLsaString(PLSA_UNICODE_STRING LsaString, const char *string)
 static void CheckDefaultPrivileges(LSA_HANDLE PolicyHandle)
 {
 	int i;
-	PSID defaultSids[4];
+	PSID defaultSids[6];
 	SID_IDENTIFIER_AUTHORITY WorldAuthority = { SECURITY_WORLD_SID_AUTHORITY };
 	SID_IDENTIFIER_AUTHORITY NtAuthority = { SECURITY_NT_AUTHORITY };
 
@@ -162,6 +165,10 @@ static void CheckDefaultPrivileges(LSA_HANDLE PolicyHandle)
 		defaultSids[2]=NULL;
 	if (!AllocateAndInitializeSid(&NtAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_USERS, 0,0,0,0,0,0, &defaultSids[3]))
 		defaultSids[3]=NULL;
+	if (!AllocateAndInitializeSid(&NtAuthority, 1, SECURITY_SERVICE_RID, 0,0,0,0,0,0,0,&defaultSids[4]))
+		defaultSids[4]=NULL;
+	if (!AllocateAndInitializeSid(&NtAuthority, 1, SECURITY_INTERACTIVE_RID, 0,0,0,0,0,0,0,&defaultSids[5]))
+		defaultSids[5]=NULL;
 
 
 	for (i=0;i<sizeof(_privileges)/sizeof(_privileges[0]);i++)
@@ -385,6 +392,7 @@ int main(int argc, TCHAR * argv[])
         status = CreateUser(domain, username, password, errmsg, sizeof(errmsg)/sizeof(TCHAR) - 1);
         if (status != NERR_Success)
 		{
+            fprintf(stderr, errmsg);
             return status;
 		}
 	}
@@ -398,6 +406,47 @@ int main(int argc, TCHAR * argv[])
 	{
 		fprintf(stderr, errmsg);
 		return 1;	
+	}
+
+	// Make sure - it is member of BUILTIN\Users group
+	{
+		LOCALGROUP_MEMBERS_INFO_3 grp;
+		NET_API_STATUS nStatus;
+		TCHAR qualifiedUser[200];
+		WCHAR wQualifiedUser[200], wGroupName[20], wDomain[100];
+		int nLen = 0;
+		
+		sprintf_s(qualifiedUser, sizeof(qualifiedUser), "%s\\%s", domain, username);
+		
+		nLen = MultiByteToWideChar(CP_ACP, 0, username, -1, NULL, (int)NULL);
+		MultiByteToWideChar(CP_ACP, 0,  username, -1, wQualifiedUser, nLen);
+		
+		nLen = MultiByteToWideChar(CP_ACP, 0, "Users", -1, NULL, (int)NULL);
+		MultiByteToWideChar(CP_ACP, 0,  "Users", -1, wGroupName, nLen);
+		
+		nLen = MultiByteToWideChar(CP_ACP, 0, domain, -1, NULL, (int)NULL);
+		MultiByteToWideChar(CP_ACP, 0,  domain, -1, wDomain, nLen);
+		
+		grp.lgrmi3_domainandname = wQualifiedUser;
+		nStatus = NetLocalGroupAddMembers(wDomain, wGroupName, 3, (LPBYTE)&grp, 1);
+		switch(nStatus)
+		{
+			case NERR_Success:
+				fprintf(stdout, "User account '%s' added to 'Users' group.", qualifiedUser);
+				break;
+			case ERROR_MEMBER_IN_ALIAS:
+				fprintf(stdout, "User '%s' already member of 'Users' group.", qualifiedUser);
+				break;
+			case ERROR_ACCESS_DENIED:
+				fprintf(stderr, "Access Denied (Adding '%s' to 'Users' group.)", qualifiedUser);
+				return nStatus;
+			case ERROR_NO_SUCH_MEMBER:
+				fprintf(stderr, "No member exists called '%s'. Therefore, no new members were added to 'Users'.", qualifiedUser);
+				return nStatus;
+			case ERROR_INVALID_MEMBER:
+				fprintf(stderr, "User '%s' cannot be added to 'Users' group because its account type is invalid.", qualifiedUser);
+				return nStatus;
+		}
 	}
 
 	fprintf(stdout, "%s ran to completion\n", argv[0]);
