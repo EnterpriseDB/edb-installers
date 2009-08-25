@@ -12,6 +12,10 @@
 
   <platformOptionsList>
     <platformOptions>
+      <platform>linux-x64</platform>
+      <requireInstallationByRootUser>1</requireInstallationByRootUser>
+    </platformOptions>
+    <platformOptions>
       <platform>linux</platform>
       <requireInstallationByRootUser>1</requireInstallationByRootUser>
     </platformOptions>
