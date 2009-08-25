@@ -333,6 +333,31 @@
           file="${system_temp_directory}/tuningwizard/sysinfo.properties"
           key="SHARED_MEMORY_IN_MB"
           variable="shared_memory_in_mb"/>
+
+        <stringModify text="${processor_arch}" variable="processor_arch" logic="trim"/>
+        <stringModify text="${total_mem_in_gb}" variable="total_mem_in_gb" logic="trim"/>
+        <stringModify text="${os}" variable="os" logic="trim"/>
+        <stringModify text="${number_of_processors}" variable="number_of_processors" logic="trim"/>
+        <stringModify text="${processor_type}" variable="processor_type" logic="trim"/>
+        <stringModify text="${language}" variable="language" logic="trim"/>
+        <stringModify text="${shared_memory_in_mb}" variable="shared_memory_in_mb" logic="trim"/>
+
+        <!-- The sysinfo.sh script can not find the shared memory/total memory info -->
+        <!-- Because, bc (The arbitrary precision calculator) could not be found on the system -->
+        <setInstallerVariable name="shared_memory_in_mb" value="0">
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <stringTest text="${shared_memory_in_mb}" type="empty"/>
+            <stringTest text="${shared_memory_in_mb}" type="not_digit"/>
+          </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="total_mem_in_gb" value="0">
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <stringTest text="${total_mem_in_gb}" type="empty"/>
+            <stringTest text="${total_mem_in_gb}" type="not_digit"/>
+          </ruleList>
+        </setInstallerVariable>
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
