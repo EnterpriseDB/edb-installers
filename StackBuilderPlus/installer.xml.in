@@ -356,6 +356,17 @@
       </ruleList>
     </actionGroup>
 
+    <!-- OSX: Hide the dockIcon for shortcut -->
+    <substitute>
+      <files>/Applications/${branding}/Application Stack Builder Plus.app/Contents/Info.plist</files>
+      <substitutionList>
+          <substitution pattern="&lt;/dict&gt;" value="        &lt;key&gt;LSUIElement&lt;/key&gt; &lt;string&gt;1&lt;/string&gt; &lt;/dict&gt;"/>
+      </substitutionList>
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
+      </ruleList>
+    </substitute>
+ 
     <actionGroup>
       <actionList>
         <!-- WIN: Register launchSBPUpdateMonitor script as a startup script -->
