@@ -164,7 +164,7 @@
     <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/PG_MAJOR_VERSION/StackBuilderPlus">
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
-        <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
+        <compareText logic="equals" text="${iSBPVersion}" value=""/>
       </ruleList>
     </setInstallerVariable>
 
@@ -172,7 +172,7 @@
     <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgresPlus/PG_MAJOR_VERSION/StackBuilderPlus">
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
-        <compareText logic="does_not_equal" text="${installdir}" value=""/>
+        <compareText logic="equals" text="${installdir}" value=""/>
       </ruleList>
     </setInstallerVariable>
 
@@ -180,7 +180,7 @@
     <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgresPlus\PG_MAJOR_VERSION\StackBuilderPlus">
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
-        <compareText logic="does_not_equal" text="${installdir}" value=""/>
+        <compareText logic="equals" text="${installdir}" value=""/>
       </ruleList>
     </setInstallerVariable>
 

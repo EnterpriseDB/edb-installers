@@ -5,7 +5,7 @@
 
 # Check the command line
 PG_VERSION=@@PG_VERSION@@
-BRANDING=@@BRANDING@@
+BRANDING="@@BRANDING@@"
 INSTALLDIR=@@INSTALL_DIR@@
 
 PG_VERSION_STR=`echo $PG_VERSION | sed 's/\./_/g'`
