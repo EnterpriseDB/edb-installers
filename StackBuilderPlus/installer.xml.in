@@ -517,9 +517,9 @@
     </actionGroup>
 
     <!-- MAC: Remove Stack Builder Plus shortcut -->
-    <deleteFile path="/Applications/${branding}/Application Stack Builder Plus - PG_$PG_VERSION_STR.app">
+    <deleteFile path="/Applications/${branding}/Application Stack Builder Plus.app">
       <ruleList>
-        <fileExists path="/Applications/${branding}/Application Stack Builder Plus - PG_$PG_VERSION_STR.app"/>
+        <fileExists path="/Applications/${branding}/Application Stack Builder Plus.app"/>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </deleteFile>
