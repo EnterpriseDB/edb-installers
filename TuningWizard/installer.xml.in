@@ -411,7 +411,7 @@
         </logMessage>
         <setInstallerVariableFromScriptOutput
           customErrorMessage="${msg(validatinguser.ws.error)}"
-          exec="${system_temp_directory}\tuningwizard/validateUserClient.exe"
+          exec="${system_temp_directory}\tuningwizard\validateUserClient.exe"
           execArgs="&quot;TuningWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;"
           name="ws_existinguser_result"
           abortOnError="0"
@@ -873,7 +873,7 @@
         </setInstallerVariableFromScriptOutput>
         <setInstallerVariableFromScriptOutput
           customErrorMessage="${msg(validatinguser.ws.error)}"
-          exec="${system_temp_directory}\tuningwizard/validateUserClient.exe"
+          exec="${system_temp_directory}\tuningwizard\validateUserClient.exe"
           execArgs="&quot;TuningWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;"
           name="ws_existinguser_result"
           abortOnError="0"
