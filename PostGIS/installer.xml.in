@@ -2027,12 +2027,10 @@
             <validationActionList>
                 <actionGroup>
                     <actionList>
-                        <showWarning>
+                        <setInstallerVariable name="installdir" value="${defaultpghome}" />
+                        <throwError>
                             <text>${msg(postgis.incompatible.pg.error)}</text>
-                        </showWarning>
-                        <exit>
-                            <exitCode>0</exitCode>
-                        </exit>
+                        </throwError>
                     </actionList>
                     <ruleList>
                         <compareText>
