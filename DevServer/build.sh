@@ -223,8 +223,9 @@ _build_DevServer() {
     cd $WD/DevServer/source/postgres.docs
     echo "configuring postgres for osx to build Documentation"
     ./configure || _die "Failed to configure postgres source to build documentation" 
-    cd doc/src
-    make postgres.tar.gz || _die "Failed to build Postgres Documentation"
+    cd doc/src/sgml
+    make html || _die "Failed to build Postgres Documentation"
+    tar -cvzf ../postgres.tar.gz html/* || _die "Failed to tar the documentation"
     cd $WD
    
     # Mac OSX
