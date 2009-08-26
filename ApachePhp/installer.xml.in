@@ -161,6 +161,7 @@
   <preInstallationActionList>
 
     <setInstallerVariable name="executablePath" value=""/>
+    <setInstallerVariable name="selinux" value="" />
     <foreach variables="path" values="/bin /usr/bin /sbin /usr/sbin">
       <actionList>
          <!-- If the executable is found, the findFile action will be skipped -->
@@ -180,7 +181,6 @@
     <!-- Check for SELinux -->
     <actionGroup>
       <actionList> 
-        <setInstallerVariable name="selinux" value="" />
         <setInstallerVariableFromScriptOutput>
           <name>selinux</name>
           <exec>${executablePath}</exec>
@@ -878,6 +878,7 @@ include conf\addons\*.conf
       <program>${installdir}/installer/ApachePhp/startupcfg.sh</program>
       <programArguments>"${installdir}"</programArguments>
       <workingDirectory>${installdir}/installer/ApachePhp</workingDirectory>
+      <abortOnError>0</abortOnError>
       <ruleList>
         <compareText>
           <logic>contains</logic>
@@ -980,6 +981,7 @@ include conf\addons\*.conf
           <programArguments>"${installdir}" "${branding}"</programArguments>
           <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
           <workingDirectory>${installdir}/installer/ApachePhp</workingDirectory>
+          <abortOnError>0</abortOnError>  
         </runProgram>
       </actionList>
       <ruleList>
