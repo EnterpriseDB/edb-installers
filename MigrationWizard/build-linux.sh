@@ -34,8 +34,15 @@ _prep_MigrationWizard_linux() {
 
     echo "Creating staging directory ($WD/MigrationWizard/staging/linux)"
     mkdir -p $WD/MigrationWizard/staging/linux || _die "Couldn't create the staging directory"
+    mkdir -p $WD/MigrationWizard/staging/linux/UserValidation || _die "Couldn't create the staging/UserValidation directory"
+    mkdir -p $WD/MigrationWizard/staging/linux/UserValidation/lib || _die "Couldn't create the staging/UserValidation/lib directory"
     chmod ugo+w $WD/MigrationWizard/staging/linux || _die "Couldn't set the permissions on the staging directory"
-        
+    chmod ugo+w $WD/MigrationWizard/staging/linux/UserValidation || _die "Couldn't set the permissions on the staging/UserValidation directory"
+    chmod ugo+w $WD/MigrationWizard/staging/linux/UserValidation/lib || _die "Couldn't set the permissions on the staging/UserValidation/lib directory"
+
+    echo "Copying validateUserClient scripts from MetaInstaller"
+    cp $WD/MetaInstaller/scripts/linux/sysinfo.sh $WD/MigrationWizard/staging/linux/UserValidation || _die "Couldn't copy MetaInstaller/scripts/linux/sysinfo.sh scripts"
+
 }
 
 
@@ -57,6 +64,21 @@ _build_MigrationWizard_linux() {
     # Copying the MigrationWizard binary to staging directory
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MigrationWizard/source/migrationwizard.linux; mkdir $PG_STAGING/MigrationWizard" || _die "Couldn't create the migrationwizard staging directory (MigrationWizard/staging/linux/MigrationWizard)"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MigrationWizard/source/migrationwizard.linux; cp -R dist/* $PG_STAGING/MigrationWizard" || _die "Couldn't copy the binaries to the migrationwizard staging directory (MigrationWizard/staging/linux/MigrationWizard)"
+
+    ssh $PG_SSH_LINUX "cp -R /lib/libssl.so* $PG_STAGING/UserValidation/lib" || _die "Failed to copy the dependency library (libssl)"
+    ssh $PG_SSH_LINUX "cp -R /lib/libcrypto.so* $PG_STAGING/UserValidation/lib" || _die "Failed to copy the dependency library (libcrypto)"
+
+    # Build the validateUserClient binary
+    if [ ! -f $WD/TuningWizard/source/tuningwizard.linux/validateUser/validateUserClient.o ];
+    then
+        cp -R $WD/MetaInstaller/scripts/linux/validateUser $WD/MigrationWizard/source/migrationwizard.linux/validateUser || _die "Failed to copy validateUser source files"
+        ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MigrationWizard/source/migrationwizard.linux/validateUser; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
+        cp $WD/MigrationWizard/source/migrationwizard.linux/validateUser/validateUserClient.o $WD/MigrationWizard/staging/linux/UserValidation/validateUserClient.o || _die "Failed to copy validateUserClient.o utility"
+    else
+       cp $WD/TuningWizard/source/tuningwizard.linux/validateUser/validateUserClient.o $WD/MigrationWizard/staging/linux/UserValidation/validateUserClient.o || _die "Failed to copy validateUserClient.o utility"
+    fi
+
+    chmod ugo+x $WD/MigrationWizard/staging/linux/UserValidation/validateUserClient.o || _die "Failed to give execution permission to validateUserClient.o"
 
 }
 

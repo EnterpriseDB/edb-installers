@@ -34,6 +34,7 @@ _prep_MigrationWizard_osx() {
 
     echo "Creating staging directory ($WD/MigrationWizard/staging/osx)"
     mkdir -p $WD/MigrationWizard/staging/osx || _die "Couldn't create the staging directory"
+    mkdir -p $WD/MigrationWizard/staging/osx/UserValidation || _die "Couldn't create the UserValidation directory"
     chmod ugo+w $WD/MigrationWizard/staging/osx || _die "Couldn't set the permissions on the staging directory"
         
 }
@@ -46,9 +47,10 @@ _prep_MigrationWizard_osx() {
 _build_MigrationWizard_osx() {
 
     # build migrationwizard    
-    PG_STAGING=$PG_PATH_OSX/MigrationWizard/staging/osx    
+    PG_STAGING=$PG_PATH_OSX/MigrationWizard/staging/osx
+    PG_MW_SOURCE=$WD/MigrationWizard/source/migrationwizard.osx
 
-    cd $PG_PATH_OSX/MigrationWizard/source/migrationwizard.osx
+    cd $PG_MW_SOURCE
 
     echo "Building migrationwizard"
     $PG_ANT_HOME_OSX/bin/ant || _die "Couldn't build the migrationwizard"
@@ -59,6 +61,22 @@ _build_MigrationWizard_osx() {
     # Copying the MigrationWizard binary to staging directory
     mkdir $PG_STAGING/MigrationWizard || _die "Couldn't create the migrationwizard staging directory (MigrationWizard/staging/osx/MigrationWizard)"
     cp -R dist/* $PG_STAGING/MigrationWizard || _die "Couldn't copy the binaries to the migrationwizard staging directory (MigrationWizard/staging/osx/MigrationWizard)"
+
+    cp $WD/MetaInstaller/scripts/osx/sysinfo.sh $PG_STAGING/UserValidation/sysinfo.sh || _die "Failed copying sysinfo.sh to staging directory"
+    
+    if [ ! -f $WD/TuningWizard/source/tuningwizard.osx/validateUser/validateUserClient.o ];
+    then
+      echo "Building validateUserClient utility"
+      cp -R $WD/MetaInstaller/scripts/osx/validateUser $PG_MW_SOURCE/validateUser || _die "Failed copying validateUser script while building"
+      cd $PG_MW_SOURCE/validateUser
+      gcc -DWITH_OPENSSL -I. -o validateUserClient.o $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto || _die "Failed to build the validateUserClient utility"
+      cp validateUserClient.o $PG_STAGING/UserValidation/validateUserClient.o || _die "Failed to copy validateUserClient utility to staging directory"
+    else
+      echo "Using validateUserClient utility from MetaInstaller package"
+      cp $WD/TuningWizard/source/tuningwizard.osx/validateUser/validateUserClient.o $PG_STAGING/UserValidation/validateUserClient.o || _die "Failed to copy validateUserClient utility from MetaInstaller package"
+    fi
+
+    chmod ugo+x $PG_STAGING/UserValidation/*
 
 }
 

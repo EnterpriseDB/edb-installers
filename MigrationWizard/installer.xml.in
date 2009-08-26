@@ -183,7 +183,7 @@
 	
     <!-- Preinstallation actions -->
     <preInstallationActionList>
-	
+	<setInstallerVariable name="iExistingEmail" value=""/>
         <!-- Creates the ini file if not exits -->
         <touchFile path="/etc/postgres-reg.ini">
             <ruleList>
@@ -229,6 +229,7 @@
                     <key>InstallationDirectory</key>
                     <variable>installdir</variable>
                 </iniFileGet>
+                <iniFileGet file="/etc/postgres-reg.ini" section="MigrationWizard" key="Username" variable="iExistingEmail"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -275,6 +276,7 @@
                     <name>Location</name>
                     <variable>installdir</variable>
                 </registryGet>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationWizard" name="Username" variable="iExistingEmail"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -358,6 +360,301 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <!-- LIN/LIN-X64/MAC: Unpack existing-enterprisedb-mail authentication scripts -->
+        <actionGroup>
+            <actionList>
+                <createDirectory path="${system_temp_directory}/migrationwizard"/>
+                <!-- Lin: Unpack scripts and required libraries -->
+                <actionGroup>
+                    <actionList>
+                        <unpackFile
+                            component="userValidation"
+                            destination="${system_temp_directory}/migrationwizard/sysinfo.sh"
+                            folder="scriptslinux"
+                            origin="sysinfo.sh"/>
+                        <unpackFile
+                            component="userValidation"
+                            destination="${system_temp_directory}/migrationwizard/validateUserClient.o"
+                            folder="scriptslinux"
+                            origin="validateUserClient.o"/>
+                        <unpackDirectory
+                            component="userValidation"
+                            destination="${system_temp_directory}/migrationwizard/"
+                            folder="scriptslinux"
+                            origin="lib"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="linux"/>
+                    </ruleList>
+                </actionGroup>
+                <!-- Lin-x64: Unpack scripts and required libraries -->
+                <actionGroup>
+                    <actionList>
+                        <unpackFile
+                            component="userValidation"
+                            destination="${system_temp_directory}/migrationwizard/sysinfo.sh"
+                            folder="scriptslinux-x64"
+                            origin="sysinfo.sh"/>
+                        <unpackFile
+                            component="userValidation"
+                            destination="${system_temp_directory}/migrationwizard/validateUserClient.o"
+                            folder="scriptslinux-x64"
+                            origin="validateUserClient.o"/>
+                        <unpackDirectory
+                            component="userValidation"
+                            destination="${system_temp_directory}/migrationwizard/"
+                            folder="scriptslinux-x64"
+                            origin="lib"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
+                    </ruleList>
+                </actionGroup>
+                <!-- MAC: Unpack scripts and required libraries -->
+                <actionGroup>
+                    <actionList>
+                        <unpackFile
+                            component="userValidation"
+                            destination="${system_temp_directory}/migrationwizard/sysinfo.sh"
+                            folder="scriptsosx"
+                            origin="sysinfo.sh"/>
+                        <unpackFile
+                            component="userValidation"
+                            destination="${system_temp_directory}/migrationwizard/validateUserClient.o"
+                            folder="scriptsosx"
+                            origin="validateUserClient.o"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="osx"/>
+                    </ruleList>
+                </actionGroup>
+        
+                <!-- Use script to generate the required information, while validating email -->
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/migrationwizard/lib"/>
+                <!-- Generate UUID -->
+                <setInstallerVariableFromScriptOutput name="uuid_val" showMessageOnError="0" exec="uuidgen" abortOnError="0"/>
+                <!-- User predefined value, if uuidgen does not exist -->
+                <setInstallerVariable name="uuid_val" value="16a874e6-241e-44ae-b27e-74aecded209a">
+                    <ruleList>
+                        <compareText value="" logic="equals" text="${uuid_val}"/>
+                    </ruleList>
+                </setInstallerVariable>
+                <!-- run sysinfo.sh -->
+                <runProgram program="${system_temp_directory}/migrationwizard/sysinfo.sh"
+                                        workingDirectory="${system_temp_directory}/migrationwizard"
+                                        showMessageOnError="0"
+                                        abortOnError="0"/>
+                <propertiesFileGet
+                    file="${system_temp_directory}/migrationwizard/sysinfo.properties"
+                    key="PROCESSOR_ARCH"
+                    variable="processor_arch"/>
+                <propertiesFileGet
+                    file="${system_temp_directory}/migrationwizard/sysinfo.properties"
+                    key="TOTAL_MEM_IN_GB"
+                    variable="total_mem_in_gb"/>
+                <propertiesFileGet
+                    file="${system_temp_directory}/migrationwizard/sysinfo.properties"
+                    key="OS"
+                    variable="os"/>
+                <propertiesFileGet
+                    file="${system_temp_directory}/migrationwizard/sysinfo.properties"
+                    key="NUMBER_OF_PROCESSORS"
+                    variable="number_of_processors"/>
+                <propertiesFileGet
+                    file="${system_temp_directory}/migrationwizard/sysinfo.properties"
+                    key="PROCESSOR_TYPE"
+                    variable="processor_type"/>
+                <propertiesFileGet
+                    file="${system_temp_directory}/migrationwizard/sysinfo.properties"
+                    key="LANGUAGE"
+                    variable="language"/>
+                <propertiesFileGet
+                    file="${system_temp_directory}/migrationwizard/sysinfo.properties"
+                    key="SHARED_MEMORY_IN_MB"
+                    variable="shared_memory_in_mb"/>
+        
+                <stringModify text="${processor_arch}" variable="processor_arch" logic="trim"/>
+                <stringModify text="${total_mem_in_gb}" variable="total_mem_in_gb" logic="trim"/>
+                <stringModify text="${os}" variable="os" logic="trim"/>
+                <stringModify text="${number_of_processors}" variable="number_of_processors" logic="trim"/>
+                <stringModify text="${processor_type}" variable="processor_type" logic="trim"/>
+                <stringModify text="${language}" variable="language" logic="trim"/>
+                <stringModify text="${shared_memory_in_mb}" variable="shared_memory_in_mb" logic="trim"/>
+        
+                <!-- The sysinfo.sh script can not find the shared memory/total memory info -->
+                <!-- Because, bc (The arbitrary precision calculator) could not be found on the system -->
+                <setInstallerVariable name="shared_memory_in_mb" value="0">
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <stringTest text="${shared_memory_in_mb}" type="empty"/>
+                        <stringTest text="${shared_memory_in_mb}" type="not_digit"/>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="total_mem_in_gb" value="0">
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <stringTest text="${total_mem_in_gb}" type="empty"/>
+                        <stringTest text="${total_mem_in_gb}" type="not_digit"/>
+                    </ruleList>
+                </setInstallerVariable>
+            </actionList>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+                <createDirectory path="${system_temp_directory}\migrationwizard"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{7299052b-02a4-4627-81f2-1818da5d550d}" name="DisplayVersion" variable="VC_REDIST_2005_VERSION"/>
+                <actionGroup>
+                    <actionList>
+                        <unpackFile component="vcredist"
+                                    destination="${system_temp_directory}\vcredist_x86.exe"
+                                    folder="vcredistwindows"
+                                    origin="vcredist_x86.exe"/>
+                        <runProgram program="${system_temp_directory}\vcredist_x86.exe"
+                                    programArguments="/q"
+                                    workingDirectory="${windir}"
+                                    abortOnError="0"
+                                    showMessageOnError="0"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${VC_REDIST_2005_VERSION}" value=""/>
+                    </ruleList>
+                </actionGroup>
+                <unpackFile
+                    component="userValidation"
+                    destination="${system_temp_directory}\migrationwizard\validateUserClient.exe"
+                    folder="scriptswindows"
+                    origin="validateUserClient.exe"/>
+                <unpackFile
+                    component="userValidation"
+                    destination="${system_temp_directory}\migrationwizard\dbserver_guid.exe"
+                    folder="scriptswindows"
+                    origin="dbserver_guid.exe"/>
+                <setInstallerVariableFromScriptOutput
+                    name="uuid_val"
+                    showMessageOnError="0"
+                    exec="${system_temp_directory}\migrationwizard\dbserver_guid.exe"
+                    abortOnError="0"/>
+                <setInstallerVariableFromRegEx
+                    name="uuid_val"
+                    text="${uuid_val}"
+                    pattern="^dbser_guid=([^\S]*)$"
+                    substitution="\1"
+                    abortOnError="0"
+                    showMessageOnError="0">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${uuid_val}" value=""/>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariable name="uuid_val" value="a4469d63-448f-40e7-932c-c3a046bf2847">
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText text="${uuid_val}" logic="equals" value=""/>
+                        <regExMatch text="${uuid_val}" logic="does_not_match" pattern="^([A-Fa-f0-9\-]*)$"/>
+                    </ruleList>
+                </setInstallerVariable>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+                <throwError text="Please provide the password for the EnterpriseDB." abortOnError="1">
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${existingEmail}" value=""/>
+                        <compareText logic="equals" text="${existingPassword}" value=""/>
+                    </ruleList>
+                </throwError>
+                <setInstallerVariable name="do_not_validate_email" value="true" persist="1">
+                    <ruleList>
+                        <compareText logic="equals" text="${existingEmail}" value=""/>
+                        <compareText logic="equals" text="${existingPassword}" value=""/>
+                    </ruleList>
+                </setInstallerVariable>
+                <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;MigrationWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                        <isFalse value="${do_not_validate_email}"/>
+                    </ruleList>
+                </logMessage>
+                <setInstallerVariableFromScriptOutput
+                    customErrorMessage="${msg(validatinguser.ws.error)}"
+                    exec="${system_temp_directory}/migrationwizard/validateUserClient.o"
+                    execArgs="&quot;${uuid_val}&quot; &quot;MigrationWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;"
+                    name="ws_existinguser_result"
+                    abortOnError="0"
+                    workingDirectory="${system_temp_directory}/migrationwizard">
+                    <ruleList>
+			<isFalse value="${do_not_validate_email}"/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <logMessage text="Sending parameter: &quot;MigrationWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;">
+                    <ruleList>
+                        <isFalse value="${do_not_validate_email}"/>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </logMessage>
+                <setInstallerVariableFromScriptOutput
+                    customErrorMessage="${msg(validatinguser.ws.error)}"
+                    exec="${system_temp_directory}\migrationwizard\validateUserClient.exe"
+                    execArgs="&quot;MigrationWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;"
+                    name="ws_existinguser_result"
+                    abortOnError="0"
+                    workingDirectory="${system_temp_directory}\migrationwizard">
+                    <ruleList>
+                        <isFalse value="${do_not_validate_email}"/>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <stringModify text="${ws_existinguser_result}" variable="ws_existinguser_result" logic="trim"/>
+                <throwError abortOnError="1" text="${msg(ws.email.not.authenticated)}">
+                    <ruleList>
+                        <isFalse value="${do_not_validate_email}"/>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value="1"/>
+                    </ruleList>
+                </throwError>
+                <throwError abortOnError="1" text="${msg(ws.email.not.validated)}">
+                    <ruleList>
+                        <isFalse value="${do_not_validate_email}"/>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value="2"/>
+                    </ruleList>
+                </throwError>
+                <throwError abortOnError="1" text="${msg(ws.email.already.exists)}">
+                    <ruleList>
+                        <isFalse value="${do_not_validate_email}"/>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value="3"/>
+                    </ruleList>
+                </throwError>
+                <throwError abortOnError="1" text="${msg(ws.exception.from.server)}">
+                    <ruleList>
+                        <isFalse value="${do_not_validate_email}"/>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value="4"/>
+                    </ruleList>
+                </throwError>
+                <throwError abortOnError="1" text="${msg(ws.internet.not.connected)}">
+                    <ruleList>
+                        <isFalse value="${do_not_validate_email}"/>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value=""/>
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+                <compareText logic="equals" text="${iExistingEmail}" value=""/>
+            </ruleList>
+        </actionGroup>
+        <!-- Ignore new existingEmail value, if already been validated -->
+        <setInstallerVariable name="${existingEmail}" value="${iExistingEmail}">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${iExistingEmail}" value=""/>
+            </ruleList>
+        </setInstallerVariable>
     </preInstallationActionList>
 	
     <!-- Post installation actions -->
@@ -389,6 +686,15 @@
                     <section>MigrationWizard</section>
                     <key>Branding</key>
                     <value>${branding}</value>
+                </iniFileSet>
+                <iniFileSet
+                    file="/etc/postgres-reg.ini"
+                    section="MigrationWizard"
+                    key="Username"
+                    value="${existingEmail}">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${isRegistered}" value="3"/>
+                    </ruleList>
                 </iniFileSet>
             </actionList>
             <ruleList>
@@ -476,11 +782,16 @@
             <name>Branding</name>
             <value>${branding}</value>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </registrySet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationWizard</key>
+            <name>Username</name>
+            <value>${existingEmail}</value>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${isRegistered}" value="3"/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </registrySet>
     </postInstallationActionList>
@@ -746,98 +1057,343 @@
                 </startMenuShortcut>
             </startMenuShortcutList>
         </component>
+        <component>
+            <name>vcredist</name>
+            <description>Visual Studio Redistribution</description>
+            <canBeEdited>0</canBeEdited>
+            <selected>0</selected>
+            <show>0</show>
+            <folderList>
+                <folder>
+                    <name>vcredistwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile origin="staging/windows/MigrationWizard/vcredist_x86.exe"/>
+                    </distributionFileList>
+                </folder>
+            </folderList>
+        </component>
+        <component>
+            <name>userValidation</name>
+            <description>User Validation Scripts</description>
+            <canBeEdited>0</canBeEdited>
+            <selected>0</selected>
+            <show>0</show>
+            <folderList>
+                <!-- LIN: Program files -->
+                <folder>
+                    <description>Scripts</description>
+                    <destination>${system_temp_directory}/migrationwizard</destination>
+                    <name>scriptslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionFile origin="staging/linux/UserValidation/validateUserClient.o"/>
+                        <distributionFile origin="staging/linux/UserValidation/sysinfo.sh"/>
+                        <distributionDirectory origin="staging/linux/UserValidation/lib"/>
+                    </distributionFileList>
+                </folder>
+                <!-- LIN-X64: Program files -->
+                <folder>
+                    <description>Scripts</description>
+                    <destination>${system_temp_directory}/migrationwizard</destination>
+                    <name>scriptslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionFile origin="staging/linux-x64/UserValidation/validateUserClient.o"/>
+                        <distributionFile origin="staging/linux-x64/UserValidation/sysinfo.sh"/>
+                        <distributionDirectory origin="staging/linux-x64/UserValidation/lib"/>
+                    </distributionFileList>
+                </folder>
+                
+                <!-- MAC: Program files -->
+                <folder>
+                    <description>Scripts</description>
+                    <destination>${system_temp_directory}/migrationwizard</destination>
+                    <name>scriptsosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile origin="staging/osx/UserValidation/validateUserClient.o"/>
+                        <distributionFile origin="staging/osx/UserValidation/sysinfo.sh"/>
+                    </distributionFileList>
+                </folder>
+        
+                <!-- WIN: Program files -->
+                <folder>
+                    <description>Scripts</description>
+                    <destination>${system_temp_directory}/migrationwizard</destination>
+                    <name>scriptswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile origin="staging/windows/MigrationWizard/dbserver_guid.exe"/>
+                        <distributionFile origin="staging/windows/MigrationWizard/validateUserClient.exe"/>
+                    </distributionFileList>
+                </folder>
+            </folderList>
+        </component>
     </componentList>
 	
     <parameterList>
 	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
 	<stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
-        <!-- Install Directory -->
-        <directoryParameter>
-            <name>installdir</name>
-            <description>Installer.Parameter.installdir.description</description>
-            <explanation>Installer.Parameter.installdir.explanation</explanation>
-            <value>${default_installdir}</value>
-            <default/>
-            <allowEmptyValue>0</allowEmptyValue>
-            <ask>yes</ask>
-            <cliOptionName>prefix</cliOptionName>
-            <mustBeWritable>yes</mustBeWritable>
-            <mustExist>0</mustExist>
-            <width>40</width>
+        <parameterGroup
+            name="registration"
+            title="${msg(registration.title.value)}"
+            explanation="${msg(registration.explanation.value)}">
+            <parameterList>
+                <choiceParameter
+                    name="isRegistered"
+                    default="1"
+                    width="30"
+                    allowEmptyValue="0"
+                    displayType="radiobuttons">
+                    <optionList>
+                        <option
+                            text="${msg(registration.existingemail.yes)}"
+                            value="1"/>
+                        <option
+                            text="${msg(registration.existingemail.no)}"
+                            value="2"/>
+                        <option
+                            text="${msg(registration.registration.no)}"
+                            value="3"/>
+                    </optionList>
+                </choiceParameter>
+            </parameterList>
+            <!-- Open registration page, if not already registered user and want to register -->
+            <postShowPageActionList>
+                <launchBrowser url="http://www.enterprisedb.com/create-promo-account.do?type=tuning"
+                                             abortOnError="1">
+                    <ruleList>
+                            <compareText logic="equals" text="${isRegistered}" value="2"/>
+                    </ruleList>
+                </launchBrowser>
+            </postShowPageActionList>
+            <!-- Check if upgradation is done on older version of MigrationWizard,
+                     which does not have this authentication process -->
             <ruleList>
-                <compareText>
-                    <text>${MigrationWizardVersion}</text>
-                    <logic>equals</logic>
-                    <value/>
-                </compareText>
+                 <compareText logic="equals" text="${iExistingEmail}" value=""/>
             </ruleList>
-			
-            <!-- Validating whether installdir is empty -->
-	    <validationActionList>
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="installdir" value="${default_installdir}" />
-                        <throwError>
-                            <text>${msg(migrationwizard.installdir.empty)}</text>
+        </parameterGroup>
+        <parameterGroup
+            name="userAuthenticationPage"
+            title="${msg(existingemail.authentication.title.value)}">
+            <parameterList>
+                <labelParameter
+                    name="existingemail_authentication_lbl"
+                    explanation="${msg(existingemail.authentication.explanation.value)}"/>
+                <stringParameter
+                    name="existingEmail"
+                    cliOptionName="existing-user"
+                    width="30"
+                    ask="1"
+                    description="${msg(userAuth.email.value)}"
+                    allowEmptyValue="1"
+                    cliOptionShow="1">
+                    <validationActionList>
+                        <throwError text="${msg(error.invalid.email.value)}">
+                            <ruleList>
+                                <regExMatch logic="does_not_match" text="${existingEmail}">
+                                    <pattern>^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$</pattern>
+                                </regExMatch>
+                            </ruleList>
                         </throwError>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <text>${installdir}</text>
-                            <logic>equals</logic>
-                            <value />
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-            </validationActionList>
-			
-            <!-- Validating whether installdir contains whitespaces (Linux) -->
-            <validationActionList>
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="installdir" value="${default_installdir}" />
-                        <throwError>
-                            <text>${msg(migrationwizard.installdir.error)}</text>
+                    </validationActionList>
+                </stringParameter>
+                <passwordParameter
+                    name="existingPassword"
+                    width="30"
+                    cliOptionName="existing-password"
+                    ask="1"
+                    description="${msg(userAuth.password.value)}"
+                    allowEmptyValue="0"
+                    askForConfirmation="0"
+                    cliOptionShow="1">
+                    <validationActionList>
+                        <throwError text="${msg(error.invalid.password.value)}">
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                            <ruleList>
+                                <stringTest text="${existingPassword}" type="empty"/>
+                                <regExMatch logic="matches" pattern="\s+" text="${existingPassword}"/>
+                            </ruleList>
                         </throwError>
-                    </actionList>
+                    </validationActionList>
+                </passwordParameter>
+            </parameterList>
+            <!-- Validate entered email & password -->
+            <postShowPageActionList>
+                <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;MigrationWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;">
                     <ruleList>
-                        <regExMatch>
-                            <text>${installdir}</text>
-                            <logic>does_not_match</logic>
-                            <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
-                        </regExMatch>
-                        <compareText>
-                            <text>${platform_name}</text>
-                            <logic>does_not_equal</logic>
-                            <value>windows</value>
-                        </compareText>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
-                </actionGroup>
-				
-                <!-- Validating whether installdir is valid (Windows) -->
-                <actionGroup>
-                    <actionList>
-                         <setInstallerVariable name="installdir" value="${default_installdir}" />
-                         <showWarning>
-                             <text>${msg(migrationwizard.installdir.error)}</text>
-                         </showWarning>
-                         <setInstallerVariable name="next_page" value="installdir"/>
-                   </actionList>
-                   <ruleList>
-                        <regExMatch>
-                             <text>${installdir}</text>
-                             <logic>does_not_match</logic>
-                             <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
-                        </regExMatch>
-                        <compareText>
-                             <text>${platform_name}</text>
-                             <logic>equals</logic>
-                             <value>windows</value>
-                        </compareText>
-                   </ruleList>
-                </actionGroup>
-            </validationActionList>
-        </directoryParameter>
+                </logMessage>
+                <setInstallerVariableFromScriptOutput
+                    customErrorMessage="${msg(validatinguser.ws.error)}"
+                    exec="${system_temp_directory}/migrationwizard/validateUserClient.o"
+                    execArgs="&quot;${uuid_val}&quot; &quot;MigrationWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;"
+                    name="ws_existinguser_result"
+                    abortOnError="0"
+                    workingDirectory="${system_temp_directory}/migrationwizard">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <logMessage text="Sending parameter:&quot;MigrationWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;">
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </logMessage>
+                <setInstallerVariableFromScriptOutput
+                    customErrorMessage="${msg(validatinguser.ws.error)}"
+                    exec="${system_temp_directory}\migrationwizard\validateUserClient.exe"
+                    execArgs="&quot;MigrationWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;"
+                    name="ws_existinguser_result"
+                    abortOnError="0"
+                    workingDirectory="${system_temp_directory}\migrationwizard">
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <throwError abortOnError="0" text="${msg(ws.email.not.authenticated)}">
+                    <ruleList>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value="1"/>
+                    </ruleList>
+                </throwError>
+                <throwError abortOnError="0" text="${msg(ws.email.not.validated)}">
+                    <ruleList>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value="2"/>
+                    </ruleList>
+                </throwError>
+                <throwError abortOnError="0" text="${msg(ws.email.already.exists)}">
+                    <ruleList>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value="3"/>
+                    </ruleList>
+                </throwError>
+                <throwError abortOnError="0" text="${msg(ws.exception.from.server)}">
+                    <ruleList>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value="4"/>
+                    </ruleList>
+                </throwError>
+                <throwError abortOnError="0" text="${msg(ws.internet.not.connected)}">
+                    <ruleList>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value=""/>
+                    </ruleList>
+                </throwError>
+        
+                <setInstallerVariable name="stay_on_this_page" value="true"/>
+                <setInstallerVariable name="stay_on_this_page" value="false">
+                    <ruleList>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value="0"/>
+                    </ruleList>
+                </setInstallerVariable>
+                 <setInstallerVariable name="stay_on_this_page" value="false">
+                    <ruleList>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value="00"/>
+                        <isTrue value="${ws_existinguser_result}"/>
+                    </ruleList>
+                </setInstallerVariable>
+        
+                <setInstallerVariable name="next_page" value="userAuthenticationPage">
+                    <ruleList>
+                        <isTrue value="${stay_on_this_page}"/>
+                    </ruleList>
+                </setInstallerVariable>
+            </postShowPageActionList>
+            <!-- Check if upgradation is done on older version of MigrationWizard,
+                     which does not have this authentication process -->
+            <ruleList>
+                 <compareText logic="does_not_equal" text="${isRegistered}" value="3"/>
+                 <compareText logic="equals" text="${iExistingEmail}" value=""/>
+            </ruleList>
+        </parameterGroup>
+        <parameterGroup
+            name="installationDirectory"
+            description="Installer.Parameter.installdir.description"
+            explanation="Installer.Parameter.installdir.explanation"
+            title="Installation Directory">
+            <parameterList>
+                <!-- Install Directory -->
+                <directoryParameter>
+                    <name>installdir</name>
+                    <value>${default_installdir}</value>
+                    <default/>
+                    <allowEmptyValue>0</allowEmptyValue>
+                    <ask>yes</ask>
+                    <cliOptionName>prefix</cliOptionName>
+                    <mustBeWritable>yes</mustBeWritable>
+                    <mustExist>0</mustExist>
+                    <width>40</width>
+        			
+                    <!-- Validating whether installdir is empty -->
+        	    <validationActionList>
+                        <actionGroup>
+                            <actionList>
+                                <setInstallerVariable name="installdir" value="${default_installdir}" />
+                                <throwError>
+                                    <text>${msg(migrationwizard.installdir.empty)}</text>
+                                </throwError>
+                            </actionList>
+                            <ruleList>
+                                <compareText>
+                                    <text>${installdir}</text>
+                                    <logic>equals</logic>
+                                    <value />
+                                </compareText>
+                            </ruleList>
+                        </actionGroup>
+                    </validationActionList>
+        			
+                    <!-- Validating whether installdir contains whitespaces (Linux) -->
+                    <validationActionList>
+                        <actionGroup>
+                            <actionList>
+                                <setInstallerVariable name="installdir" value="${default_installdir}" />
+                                <throwError>
+                                    <text>${msg(migrationwizard.installdir.error)}</text>
+                                </throwError>
+                            </actionList>
+                            <ruleList>
+                                <regExMatch>
+                                    <text>${installdir}</text>
+                                    <logic>does_not_match</logic>
+                                    <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                                </regExMatch>
+                                <compareText>
+                                    <text>${platform_name}</text>
+                                    <logic>does_not_equal</logic>
+                                    <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </actionGroup>
+        				
+                        <!-- Validating whether installdir is valid (Windows) -->
+                        <actionGroup>
+                            <actionList>
+                                 <setInstallerVariable name="installdir" value="${default_installdir}" />
+                                 <showWarning>
+                                     <text>${msg(migrationwizard.installdir.error)}</text>
+                                 </showWarning>
+                                 <setInstallerVariable name="next_page" value="installdir"/>
+                           </actionList>
+                           <ruleList>
+                                <regExMatch>
+                                     <text>${installdir}</text>
+                                     <logic>does_not_match</logic>
+                                     <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
+                                </regExMatch>
+                                <compareText>
+                                     <text>${platform_name}</text>
+                                     <logic>equals</logic>
+                                     <value>windows</value>
+                                </compareText>
+                           </ruleList>
+                        </actionGroup>
+                    </validationActionList>
+                </directoryParameter>
+            </parameterList>
+            <ruleList>
+                <compareText text="${MigrationWizardVersion}" logic="equals" value=""/>
+            </ruleList>
+        </parameterGroup>
 		
 	    <!-- Explain that we're using an existing installation directory -->
         <labelParameter>
