@@ -185,12 +185,14 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libreadline.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libtermcap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
 
     # Process Dependent libs
     _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl.so"  
     _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libcrypto.so"  
     _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libreadline.so"  
     _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libtermcap.so"  
+    _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libxml2.so"  
 
 	
     # Now build pgAdmin

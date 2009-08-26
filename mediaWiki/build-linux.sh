@@ -50,6 +50,7 @@ _build_mediaWiki_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libssl.so* mediaWiki/staging/linux/instscripts" || _die "Failed to copy libssl.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libreadline.so* mediaWiki/staging/linux/instscripts" || _die "Failed to copy libreadline.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libtermcap.so* mediaWiki/staging/linux/instscripts" || _die "Failed to copy libtermcap.so"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libxml2.so* mediaWiki/staging/linux/instscripts" || _die "Failed to copy libxml2.so"
 
 
 }
