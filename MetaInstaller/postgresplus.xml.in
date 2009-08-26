@@ -1861,7 +1861,7 @@
         <isFalse value="${updateNotification}"/>
       </ruleList>
     </setInstallerVariable>
-    <setInstallerVariable name="monitor_server" value="--monitor-server PG_MAJOR_VERSION">
+    <setInstallerVariable name="monitor_server" value="--server PG_MAJOR_VERSION">
       <ruleList>
         <isTrue value="${updateNotification}"/>
       </ruleList>
@@ -2465,7 +2465,7 @@
                     progressText="Installing StackBuilderPlus ... "
                     showMessageOnError="1"
                     program="${system_temp_directory}/postgresplus/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux.bin"
-                    programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot; --server ${monitor_server} --install-monitoring ${installMonitoring}">
+                    programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot;  ${monitor_server} --install-monitoring ${installMonitoring}">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="linux"/>
           </ruleList>
@@ -2475,7 +2475,7 @@
                     progressText="Installing StackBuilderPlus ... "
                     showMessageOnError="1"
                     program="${system_temp_directory}/postgresplus/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-x64.bin"
-                    programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot; --server ${monitor_server} --install-monitoring ${installMonitoring}">
+                    programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot;  ${monitor_server} --install-monitoring ${installMonitoring}">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
           </ruleList>
@@ -2991,7 +2991,7 @@
                     progressText="Installing StackBuilderPlus ... "
                     showMessageOnError="0"
                     program="${system_temp_directory}\postgresplus\stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-windows.exe"
-                    programArguments="--mode unattended --prefix &quot;${installdir}\StackBuilderPlus&quot; --branding &quot;Postgres Plus Standard Server ${product_version}&quot; --server ${monitor_server} --install-monitoring ${installMonitoring}"/>
+                    programArguments="--mode unattended --prefix &quot;${installdir}\StackBuilderPlus&quot; --branding &quot;Postgres Plus Standard Server ${product_version}&quot; ${monitor_server} --install-monitoring ${installMonitoring}"/>
       </actionList>
       <ruleList>
         <isTrue value="${component(stackbuilderplus).selected}"/>
@@ -3379,7 +3379,7 @@
                     progressText="Installing StackBuilderPlus ... "
                     showMessageOnError="0"
                     program="${system_temp_directory}\postgresplus\stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-osx.app/Contents/MacOS/installbuilder.sh"
-                    programArguments="--mode unattended --prefix &quot;${installdir}\StackBuilderPlus&quot; --branding &quot;Postgres Plus Standard Server ${product_version}&quot; --server ${monitor_server} --install-monitoring ${installMonitoring}"/>
+                    programArguments="--mode unattended --prefix &quot;${installdir}\StackBuilderPlus&quot; --branding &quot;Postgres Plus Standard Server ${product_version}&quot; ${monitor_server} --install-monitoring ${installMonitoring}"/>
       </actionList>
       <ruleList>
         <isTrue value="${component(stackbuilderplus).selected}"/>
