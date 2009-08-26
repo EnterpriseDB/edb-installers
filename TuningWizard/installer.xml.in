@@ -366,6 +366,23 @@
     <actionGroup>
       <actionList>
         <createDirectory path="${system_temp_directory}\tuningwizard"/>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{7299052b-02a4-4627-81f2-1818da5d550d}" name="DisplayVersion" variable="VC_REDIST_2005_VERSION"/>
+        <actionGroup>
+          <actionList>
+            <unpackFile component="vcredist"
+                        destination="${system_temp_directory}\vcredist_x86.exe"
+                        folder="vcredistwindows"
+                        origin="vcredist_x86.exe"/>
+            <runProgram program="${system_temp_directory}\vcredist_x86.exe"
+                        programArguments="/q"
+                        workingDirectory="${windir}"
+                        abortOnError="0"
+                        showMessageOnError="0"/>
+          </actionList>
+          <ruleList>
+            <compareText logic="equals" text="${VC_REDIST_2005_VERSION}" value=""/>
+          </ruleList>
+        </actionGroup>
         <unpackFile
           component="userValidation"
           destination="${system_temp_directory}\tuningwizard\validateUserClient.exe"
@@ -434,6 +451,7 @@
             <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
         </logMessage>
+
         <setInstallerVariableFromScriptOutput
           customErrorMessage="${msg(validatinguser.ws.error)}"
           exec="${system_temp_directory}\tuningwizard\validateUserClient.exe"
@@ -743,6 +761,22 @@
       </startMenuShortcutList>
     </component>
     <component>
+        <name>vcredist</name>
+        <description>Visual Studio Redistribution</description>
+        <canBeEdited>0</canBeEdited>
+        <selected>0</selected>
+        <show>0</show>
+        <folderList>
+            <folder>
+                <name>vcredistwindows</name>
+                <platforms>windows</platforms>
+                <distributionFileList>
+                    <distributionFile origin="staging/windows/vcredist_x86.exe"/>
+                </distributionFileList>
+            </folder>
+        </folderList>
+    </component>
+    <component>
       <name>userValidation</name>
       <description>User Validation Scripts</description>
       <canBeEdited>0</canBeEdited>
@@ -824,7 +858,7 @@
       </parameterList>
       <!-- Open registration page, if not already registered user -->
       <postShowPageActionList>
-        <launchBrowser url="https://www.enterprisedb.com/create-account.do"
+        <launchBrowser url="http://www.enterprisedb.com/create-promo-account.do?type=tuning"
                        abortOnError="1">
           <ruleList>
               <isFalse value="${alreadyRegistered}"/>
@@ -884,7 +918,11 @@
       </parameterList>
       <!-- Validate entered email & password -->
       <postShowPageActionList>
-        <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;TuningWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;"/>
+        <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;TuningWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;">
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </logMessage>
         <setInstallerVariableFromScriptOutput
           customErrorMessage="${msg(validatinguser.ws.error)}"
           exec="${system_temp_directory}/tuningwizard/validateUserClient.o"
@@ -896,6 +934,11 @@
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
           </ruleList>
         </setInstallerVariableFromScriptOutput>
+        <logMessage text="Sending parameter:&quot;TuningWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </logMessage>
         <setInstallerVariableFromScriptOutput
           customErrorMessage="${msg(validatinguser.ws.error)}"
           exec="${system_temp_directory}\tuningwizard\validateUserClient.exe"
@@ -962,12 +1005,13 @@
     <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
     <!-- Install Directory -->
     <parameterGroup
-      name="installationDirectory">
+      name="installationDirectory"
+      description="Installer.Parameter.installdir.description"
+      explanation="Installer.Parameter.installdir.explanation"
+      title="Installation Directory">
       <parameterList>
         <directoryParameter>
           <name>installdir</name>
-          <description>Installer.Parameter.installdir.description</description>
-          <explanation>Installer.Parameter.installdir.explanation</explanation>
           <value>${default_installdir}</value>
           <default/>
           <allowEmptyValue>0</allowEmptyValue>
@@ -976,9 +1020,6 @@
           <mustBeWritable>yes</mustBeWritable>
           <mustExist>0</mustExist>
           <width>40</width>
-          <ruleList>
-            <compareText text="${TuningWizardVersion}" logic="equals" value=""/>
-          </ruleList>
           
           <!-- Validating whether installdir is empty -->
           <validationActionList>
@@ -1025,6 +1066,9 @@
           </validationActionList>
         </directoryParameter>
       </parameterList>
+      <ruleList>
+        <compareText text="${TuningWizardVersion}" logic="equals" value=""/>
+      </ruleList>
    </parameterGroup> 
     <!-- Explain that we're using an existing installation directory -->
     <labelParameter>

@@ -81,10 +81,15 @@ else
 procArch=`uname -p`
 fi
 
+INSTALLED_BC=`which bc`
 # Make sure that ram is a numeric
 totalMemRound=`expr $totalMem`
 
-totalMeminGB=`echo "scale=2;$totalMemRound/1048576"|bc`
+if [ "x"$INSTALLED_BC = "x" ]; then
+  totalMeminGB=`expr $totalMemRound / 1048576`
+else
+  totalMeminGB=`echo "scale=2;$totalMemRound/1048576"|bc`
+fi
 
 # Dynatune's variables
 OS="$os $osVersion"
@@ -100,8 +105,11 @@ PROCESSOR_LEVEL="$procLevel"
 shared_memory=`cat /proc/sys/kernel/shmmax`
 SHARED_MEM="$shared_memory"
 
-SHARED_MEM_IN_MB=`echo "scale=0;$SHARED_MEM/1048576"|bc`
-
+if [ "x"$INSTALLED_BC = "x" ]; then
+  SHARED_MEM_IN_MB=`expr $SHARED_MEM / 1048576`
+else
+  SHARED_MEM_IN_MB=`echo "scale=0;$SHARED_MEM/1048576"|bc`
+fi
 
 echo PROCESSOR_ARCH =$procArch >> ./sysinfo.properties
 echo TOTAL_MEM_IN_GB =$totalMeminGB >> ./sysinfo.properties

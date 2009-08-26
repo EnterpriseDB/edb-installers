@@ -105,8 +105,8 @@ echo %CD%
 vcbuild dbserver_guid.vcproj release
 
 cd %SOURCE_PATH%\\tuningwizard.windows\\userValidation\\validateUser
-echo %CD%
 vcbuild validateUser.vcproj release
+
 
 GOTO end
 
@@ -138,6 +138,7 @@ EOT
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\tuningwizard.windows\\\\release\\\\TuningWizard.exe $WD/TuningWizard/staging/windows/TuningWizard/TuningWizard.exe
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\tuningwizard.windows\\\\userValidation\\\\dbserver_guid\\\\release\\\\dbserver_guid.exe $WD/TuningWizard/staging/windows/UserValidation/dbserver_guid.exe || _die "Failed to copy dbserver_guid.exe to staging directory"
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\tuningwizard.windows\\\\userValidation\\\\validateUser\\\\release\\\\validateUserClient.exe $WD/TuningWizard/staging/windows/UserValidation/validateUserClient.exe || _die "Failed to copy validateUserClient.exe to staging directory"
+    scp $PG_SSH_WINDOWS:C:/pgBuild/vcredist/vcredist_x86.exe $WD/TuningWizard/staging/windows/ || _die "Failed to copy the VC++ runtimes from the windows build host"
 
     cd $WD
 }
