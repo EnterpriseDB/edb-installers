@@ -1142,7 +1142,7 @@
             <parameterList>
                 <labelParameter
                     name="lblRegExp"
-                    text="${msg(registration.explanation.value2)}"/>
+                    explanation="${msg(registration.explanation.value2)}"/>
                 <choiceParameter
                     name="isRegistered"
                     default="1"
