@@ -56,6 +56,7 @@ _build_MigrationWizard_linux_x64() {
     PG_STAGING=$PG_PATH_LINUX_X64/MigrationWizard/staging/linux-x64    
 
     echo "Building migrationwizard"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MigrationWizard/source/migrationwizard.linux-x64; JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 $PG_ANT_HOME_LINUX_X64/bin/ant clean" || _die "Couldn't build the migrationwizard"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MigrationWizard/source/migrationwizard.linux-x64; JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 $PG_ANT_HOME_LINUX_X64/bin/ant" || _die "Couldn't build the migrationwizard"
   
     echo "Building migrationwizard distribution"

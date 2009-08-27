@@ -53,6 +53,7 @@ _build_MigrationWizard_osx() {
     cd $PG_MW_SOURCE
 
     echo "Building migrationwizard"
+    $PG_ANT_HOME_OSX/bin/ant clean || _die "Couldn't clean the migrationwizard"
     $PG_ANT_HOME_OSX/bin/ant || _die "Couldn't build the migrationwizard"
   
     echo "Building migrationwizard distribution"

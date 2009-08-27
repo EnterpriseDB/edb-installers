@@ -89,6 +89,7 @@ unzip migrationwizard.zip
 
 echo Building migrationwizard...
 cd "%SOURCE_PATH%\\migrationwizard.windows"
+cmd /c $PG_ANT_WINDOWS\\bin\\ant clean
 cmd /c $PG_ANT_WINDOWS\\bin\\ant
   
 echo Building migrationwizard distribution...

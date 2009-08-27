@@ -430,7 +430,7 @@
             <compareText logic="equals" text="${existingPassword}" value=""/>
           </ruleList>
         </throwError>
-        <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;TuningWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;">
+        <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;">
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
           </ruleList>
@@ -438,7 +438,7 @@
         <setInstallerVariableFromScriptOutput
           customErrorMessage="${msg(validatinguser.ws.error)}"
           exec="${system_temp_directory}/tuningwizard/validateUserClient.o"
-          execArgs="&quot;${uuid_val}&quot; &quot;TuningWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;"
+          execArgs="&quot;${uuid_val}&quot; &quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;"
           name="ws_existinguser_result"
           abortOnError="0"
           workingDirectory="${system_temp_directory}/tuningwizard">
@@ -446,7 +446,7 @@
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
           </ruleList>
         </setInstallerVariableFromScriptOutput>
-        <logMessage text="Sending parameter: &quot;TuningWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;">
+        <logMessage text="Sending parameter: &quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
@@ -455,7 +455,7 @@
         <setInstallerVariableFromScriptOutput
           customErrorMessage="${msg(validatinguser.ws.error)}"
           exec="${system_temp_directory}\tuningwizard\validateUserClient.exe"
-          execArgs="&quot;TuningWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;"
+          execArgs="&quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;"
           name="ws_existinguser_result"
           abortOnError="0"
           workingDirectory="${system_temp_directory}\tuningwizard">
@@ -919,7 +919,7 @@
       </parameterList>
       <!-- Validate entered email & password -->
       <postShowPageActionList>
-        <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;TuningWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;">
+        <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;">
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
           </ruleList>
@@ -927,7 +927,7 @@
         <setInstallerVariableFromScriptOutput
           customErrorMessage="${msg(validatinguser.ws.error)}"
           exec="${system_temp_directory}/tuningwizard/validateUserClient.o"
-          execArgs="&quot;${uuid_val}&quot; &quot;TuningWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;"
+          execArgs="&quot;${uuid_val}&quot; &quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;"
           name="ws_existinguser_result"
           abortOnError="0"
           workingDirectory="${system_temp_directory}/tuningwizard">
@@ -935,7 +935,7 @@
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
           </ruleList>
         </setInstallerVariableFromScriptOutput>
-        <logMessage text="Sending parameter:&quot;TuningWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;">
+        <logMessage text="Sending parameter:&quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
@@ -943,7 +943,7 @@
         <setInstallerVariableFromScriptOutput
           customErrorMessage="${msg(validatinguser.ws.error)}"
           exec="${system_temp_directory}\tuningwizard\validateUserClient.exe"
-          execArgs="&quot;TuningWizard&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;"
+          execArgs="&quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;"
           name="ws_existinguser_result"
           abortOnError="0"
           workingDirectory="${system_temp_directory}\tuningwizard">
