@@ -18,7 +18,7 @@ Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
-install.summary=JDBC Drivers for PostgreSQL Server, packaged by EnterpriseDB.
+install.summary=Migration tool for an older release of PostgreSQL to a new release, packaged by EnterpriseDB
 
 pg_migrator.installdir.empty=The installation directory cannot be empty.
 
@@ -31,3 +31,36 @@ pg_migrator.installdir.pg_version.mismatch=The PostgreSQL Server is incompatible
 pg_migrator.installdir.pg_config.corrupted=Found the valid PostgreSQL Server installation directory. But the executable - pg_config, found under {installdir}/bin, is corrupted or not valid.
 
 pg_migrator.installdir.pg_config.corrupted.win=Found the valid PostgreSQL Server installation directory. But the executable - pg_config.exe, found under {installdir}\bin, is corrupted or not valid.
+
+error.invalid.email.value=Invalid email address. You must provide a valid email address.  Please try again.
+
+error.invalid.password.value=Password is empty or contains invalid characters. Please enter valid password.
+
+existingemail.authentication.explanation.value=Please enter the email address and password for your enterprisedb.com user account:
+
+existingemail.authentication.title.value=EnterpriseDB User Account Information
+
+registration.existingemail.no=I do not have an enterprisedb.com user account.
+
+registration.existingemail.yes=I already have an enterprisedb.com user account.
+
+registration.explanation.value=You must be a registered enterprisedb.com user to install the Tuning Wizard. If you do not yet have an account, the registration area of the EnterpriseDB website will be opened when you click 'Next':
+
+registration.title.value=Are you registered with EnterpriseDB?
+
+userAuth.email.value=Username :
+
+userAuth.password.value=Password :
+
+validatinguser.ws.error=Connection to the WebService failed. Please re-check the internet connection.
+
+ws.email.already.exists=This email address already exists.  Please use Existing User fields or enter a new email address to continue.
+
+ws.email.not.authenticated=The email and/or password are not valid. Please try again.
+
+ws.email.not.validated=The email address has not been validated. An email has been sent to the email address that you provided. Please follow the steps in the email to validate your email address.
+
+ws.exception.from.server=An error occured. Please try again.
+
+ws.internet.not.connected=Error in calling web service. Please check the internet connection and try again.
+

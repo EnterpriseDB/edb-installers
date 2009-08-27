@@ -38,15 +38,21 @@ _prep_pg_migrator_linux_x64() {
       rm -rf $WD/pg_migrator/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/pg_migrator/staging/linux-x64)"
+    echo "Creating staging directory ($WD/pg_migrator/staging/linux)"
     mkdir -p $WD/pg_migrator/staging/linux-x64 || _die "Couldn't create the staging directory"
+    mkdir -p $WD/pg_migrator/staging/linux-x64/UserValidation || _die "Couldn't create the staging/UserValidation directory"
+    mkdir -p $WD/pg_migrator/staging/linux-x64/UserValidation/lib || _die "Couldn't create the staging/UserValidation/lib directory"
     chmod ugo+w $WD/pg_migrator/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
-    
+    chmod ugo+w $WD/pg_migrator/staging/linux-x64/UserValidation || _die "Couldn't set the permissions on the staging/UserValidation directory"
+    chmod ugo+w $WD/pg_migrator/staging/linux-x64/UserValidation/lib || _die "Couldn't set the permissions on the staging/UserValidation/lib directory"
+ 
+    echo "Copying validateUserClient scripts from MetaInstaller"
+    cp $WD/MetaInstaller/scripts/linux/sysinfo.sh $WD/pg_migrator/staging/linux-x64/UserValidation || _die "Couldn't copy MetaInstaller/scripts/linux/sysinfo.sh scripts"
 
 }
 
 ################################################################################
-# PG Build
+# pg_migrator Build
 ################################################################################
 
 _build_pg_migrator_linux_x64() {
@@ -73,11 +79,24 @@ _build_pg_migrator_linux_x64() {
     cp $WD/pg_migrator/source/pg_migrator.linux-x64/LICENSE $WD/pg_migrator/staging/linux-x64/LICENSE.pg_migrator || _die "Couldn't copy INSTALL to staging directory"
     cp $WD/pg_migrator/source/pg_migrator.linux-x64/README $WD/pg_migrator/staging/linux-x64/README.pg_migrator || _die "Couldn't copy INSTALL to staging directory"
 
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libssl.so* $PG_PATH_LINUX_X64/pg_migrator/staging/linux-x64/UserValidation/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypto.so* $PG_PATH_LINUX_X64/pg_migrator/staging/linux/UserValidation/lib" || _die "Failed to copy the dependency library"
+
+    # Build the validateUserClient binary
+    if [ ! -f $WD/TuningWizard/staging/linux-x64/UserValidation/validateUserClient.o ]; then
+        cp -R $WD/MetaInstaller/scripts/validateUser $WD/pg_migrator/source/pg_migrator.linux-x64/validateUser || _die "Failed to copy validateUser source files"
+        ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pg_migrator/source/pg_migrator.linux-x64/validateUser; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
+        cp $WD/pg_migrator/source/pg_migrator.linux-x64/validateUser/validateUserClient.o $WD/pg_migrator/staging/linux-x64/UserValidation/validateUserClient.o || _die "Failed to copy validateUserClient.o utility"
+    else
+       cp $WD/TuningWizard/staging/linux-x64/UserValidation/validateUserClient.o $WD/pg_migrator/staging/linux-x64/UserValidation/validateUserClient.o || _die "Failed to copy validateUserClient.o utility"
+    fi
+    chmod ugo+x $WD/pg_migrator/staging/linux-x64/UserValidation/validateUserClient.o || _die "Failed to give execution permission to validateUserClient.o"
+
 }
 
 
 ################################################################################
-# PG Build
+# pg_migrator Post Processing
 ################################################################################
 
 _postprocess_pg_migrator_linux_x64() {

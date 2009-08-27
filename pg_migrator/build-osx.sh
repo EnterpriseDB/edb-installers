@@ -39,7 +39,11 @@ _prep_pg_migrator_osx() {
 
     echo "Creating staging directory ($WD/pg_migrator/staging/osx)"
     mkdir -p $WD/pg_migrator/staging/osx || _die "Couldn't create the staging directory"
+    mkdir -p $WD/pg_migrator/staging/osx/UserValidation || _die "Couldn't create the staging/UserValidation directory"
     chmod ugo+w $WD/pg_migrator/staging/osx || _die "Couldn't set the permissions on the staging directory"
+    chmod ugo+w $WD/pg_migrator/staging/osx/UserValidation || _die "Couldn't set the permissions on the staging/UserValidation directory"
+
+    cp $WD/MetaInstaller/scripts/osx/sysinfo.sh $WD/pg_migrator/staging/osx/UserValidation/sysinfo.sh || _die "Couldn't copy the sysinfo.sh script to staging directory"
 
 }
 
@@ -54,25 +58,39 @@ _build_pg_migrator_osx() {
     echo "**********************************"
 
     cd $WD/pg_migrator/source/pg_migrator.osx
+    PG_STAGING=$PG_PATH_OSX/pg_migrator/staging/osx
 
     make top_builddir=$PG_PATH_OSX/server/source/postgres.osx|| _die "Could not build pg_migrator on osx"
 
-    mkdir $WD/pg_migrator/staging/osx/bin || _die "Couldn't create the bin directory under staging directory"
-    mkdir $WD/pg_migrator/staging/osx/lib || _die "Couldn't create the lib directory under staging directory"
+    mkdir $PG_STAGING/bin || _die "Couldn't create the bin directory under staging directory"
+    mkdir $PG_STAGING/lib || _die "Couldn't create the lib directory under staging directory"
 
-    cp $WD/pg_migrator/source/pg_migrator.osx/src/pg_migrator $WD/pg_migrator/staging/osx/bin || _die "Couldn't copy pg_migrator binary to bin (staing directory)"
-    cp $WD/pg_migrator/source/pg_migrator.osx/func/pg_migrator.so $WD/pg_migrator/staging/osx/lib || _die "Couldn't copy pg_migrator.so binary to lib (staing directory)"
-    cp $WD/pg_migrator/source/pg_migrator.osx/CHANGES $WD/pg_migrator/staging/osx/CHANGES.pg_migrator || _die "Couldn't copy CHANGES to staging directory"
-    cp $WD/pg_migrator/source/pg_migrator.osx/DEVELOPERS $WD/pg_migrator/staging/osx/DEVELOPERS.pg_migrator || _die "Couldn't copy DEVELOPERS to staging directory"
-    cp $WD/pg_migrator/source/pg_migrator.osx/IMPLEMENTATION $WD/pg_migrator/staging/osx/IMPLEMENTATION.pg_migrator || _die "Couldn't copy IMPLEMENTATION to staging directory"
-    cp $WD/pg_migrator/source/pg_migrator.osx/IMPLEMENTATION.jp $WD/pg_migrator/staging/osx/IMPLEMENTATION_jp.pg_migrator || _die "Couldn't copy IMPLEMENTATION.jp to staging directory"
-    cp $WD/pg_migrator/source/pg_migrator.osx/INSTALL $WD/pg_migrator/staging/osx/INSTALL.pg_migrator || _die "Couldn't copy INSTALL to staging directory"
-    cp $WD/pg_migrator/source/pg_migrator.osx/INSTALL.jp $WD/pg_migrator/staging/osx/INSTALL_jp.pg_migrator || _die "Couldn't copy INSTALL to staging directory"
-    cp $WD/pg_migrator/source/pg_migrator.osx/LICENSE $WD/pg_migrator/staging/osx/LICENSE.pg_migrator || _die "Couldn't copy INSTALL to staging directory"
-    cp $WD/pg_migrator/source/pg_migrator.osx/README $WD/pg_migrator/staging/osx/README.pg_migrator || _die "Couldn't copy INSTALL to staging directory"
+    cp $WD/pg_migrator/source/pg_migrator.osx/src/pg_migrator $PG_STAGING/bin || _die "Couldn't copy pg_migrator binary to bin (staging directory)"
+    cp $WD/pg_migrator/source/pg_migrator.osx/func/pg_migrator.so $PG_STAGING/lib || _die "Couldn't copy pg_migrator.so binary to lib (staging directory)"
+    cp $WD/pg_migrator/source/pg_migrator.osx/CHANGES $PG_STAGING/CHANGES.pg_migrator || _die "Couldn't copy CHANGES to staging directory"
+    cp $WD/pg_migrator/source/pg_migrator.osx/DEVELOPERS $PG_STAGING/DEVELOPERS.pg_migrator || _die "Couldn't copy DEVELOPERS to staging directory"
+    cp $WD/pg_migrator/source/pg_migrator.osx/IMPLEMENTATION $PG_STAGING/IMPLEMENTATION.pg_migrator || _die "Couldn't copy IMPLEMENTATION to staging directory"
+    cp $WD/pg_migrator/source/pg_migrator.osx/IMPLEMENTATION.jp $PG_STAGING/IMPLEMENTATION_jp.pg_migrator || _die "Couldn't copy IMPLEMENTATION.jp to staging directory"
+    cp $WD/pg_migrator/source/pg_migrator.osx/INSTALL $PG_STAGING/INSTALL.pg_migrator || _die "Couldn't copy INSTALL to staging directory"
+    cp $WD/pg_migrator/source/pg_migrator.osx/INSTALL.jp $PG_STAGING/INSTALL_jp.pg_migrator || _die "Couldn't copy INSTALL to staging directory"
+    cp $WD/pg_migrator/source/pg_migrator.osx/LICENSE $PG_STAGING/LICENSE.pg_migrator || _die "Couldn't copy INSTALL to staging directory"
+    cp $WD/pg_migrator/source/pg_migrator.osx/README $PG_STAGING/README.pg_migrator || _die "Couldn't copy INSTALL to staging directory"
 
-    install_name_tool -change "$PG_PGHOME_OSX/lib/libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$PG_PATH_OSX/pg_migrator/staging/osx/bin/pg_migrator"
-    install_name_tool -change "$PG_PGHOME_OSX/lib/libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$PG_PATH_OSX/pg_migrator/staging/osx/lib/pg_migrator.so"
+    install_name_tool -change "$PG_PGHOME_OSX/lib/libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$PG_STAGING/bin/pg_migrator"
+    install_name_tool -change "$PG_PGHOME_OSX/lib/libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$PG_STAGING/lib/pg_migrator.so"
+
+    if [ ! -f $WD/TuningWizard/staging/osx/UserValidation/validateUserClient.o ];
+    then
+      echo "Building validateUserClient utility"
+      cp -R $PG_PATH_OSX/MetaInstaller/scripts/osx/validateUser $PG_PATH_OSX/pg_migrator/source/pg_migrator.osx/validateUser || _die "Failed copying validateUser script while building"
+      cd $WD/pg_migrator/source/pg_migrator.osx/validateUser
+      gcc -DWITH_OPENSSL -I. -o validateUserClient.o $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto || _die "Failed to build the validateUserClient utility"
+      cp validateUserClient.o $PG_STAGING/UserValidation/validateUserClient.o || _die "Failed to copy validateUserClient utility to staging directory"
+    else
+      echo "Using validateUserClient utility from TuningWizard package"
+      cp $WD/TuningWizard/staging/osx/UserValidation/validateUserClient.o $PG_STAGING/UserValidation/validateUserClient.o || _die "Failed to copy validateUserClient utility from TuningWizard package"
+    fi
+    chmod ugo+x $PG_STAGING/UserValidation/*
 
 }
 

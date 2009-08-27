@@ -35,6 +35,9 @@ _prep_pg_migrator_windows() {
 
     echo "Creating staging directory ($WD/pg_migrator/source/pg_migrator.windows)"
     mkdir -p $WD/pg_migrator/source/pg_migrator.windows || _die "Couldn't create the pg_migrator.windows directory"
+    mkdir $WD/pg_migrator/source/pg_migrator.windows/userValidation || _die "Failed to create userValidation directory"
+    cp -R $WD/MetaInstaller/scripts/windows/dbserver_guid/dbserver_guid/dbserver_guid $WD/pg_migrator/source/pg_migrator.windows/userValidation/dbserver_guid || _die "Failed to copy dbserver_guid scripts"
+    cp -R $WD/MetaInstaller/scripts/windows/validateUser $WD/pg_migrator/source/pg_migrator.windows/userValidation/validateUser || _die "Failed to copy validateUser scripts"
 
     # Grab a copy of the source tree
     cp -R pg_migrator-$PG_VERSION_PGMIGRATOR/* pg_migrator.windows || _die "Failed to copy the source code (source/pg_migrator-$PG_VERSION_PGMIGRATOR)"
@@ -115,12 +118,17 @@ EOT
    cat <<EOT > "build-pgmigrator.bat"
 @ECHO OFF
 
+cd $PG_PATH_WINDOWS
+SET SOURCE_PATH=%CD%
+SET OLD_PATH=%PATH%
+
 SET PATH=$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;C:\Perl\bin;C:\Python25;C:\Tcl\bin
 SET PGICOSTR=IDI_ICON ICON \"$PG_PGICO_PATH\"
 
 ECHO building the pg_migrator source tree
 ECHO cd $PG_PATH_WINDOWS/pg_migrator.windows; make top_builddir=$PG_STAGING/postgresql_mingw-$PG_MAJOR_VERSION.$PG_MINOR_VERSION.windows PGICOSTR="%PGICOSTR%" | $PG_MSYS_WINDOWS\\bin\\sh.exe --login -i
 
+cd %SOURCE_PATH%
 mkdir pg_migrator.staging\bin
 mkdir pg_migrator.staging\lib
 copy pg_migrator.windows\src\pg_migrator.exe pg_migrator.staging\bin || (echo couldn't copy pg_migrator.exe && exit -1)
@@ -134,12 +142,45 @@ copy pg_migrator.windows\INSTALL.jp        pg_migrator.staging\INSTALL_jp.pg_mig
 copy pg_migrator.windows\LICENSE           pg_migrator.staging\LICENSE.pg_migrator || (echo couldn't copy LICENSE && exit -1)
 copy pg_migrator.windows\README            pg_migrator.staging\README.pg_migrator || (echo couldn't copy README && exit -1)
 
+cd %SOURCE_PATH%
+@SET VSINSTALLDIR=$PG_VSINSTALLDIR_WINDOWS
+@SET VCINSTALLDIR=$PG_VSINSTALLDIR_WINDOWS\VC
+@SET FrameworkDir=$PG_FRAMEWORKDIR_WINDOWS
+@SET FrameworkVersion=$PG_FRAMEWORKVERSION_WINDOWS
+@SET FrameworkSDKDir=$PG_FRAMEWORKSDKDIR_WINDOWS
+@set DevEnvDir=$PG_DEVENVDIR_WINDOWS
+@set INCLUDE=%VCINSTALLDIR%\ATLMFC\INCLUDE;%VCINSTALLDIR%\INCLUDE;%VCINSTALLDIR%\PlatformSDK\include;%FrameworkSDKDir%\include;%INCLUDE%
+@set LIB=%VCINSTALLDIR%\ATLMFC\LIB;%VCINSTALLDIR%\LIB;%VCINSTALLDIR%\PlatformSDK\lib;%FrameworkSDKDir%\lib;%LIB%
+@set LIBPATH=$PG_FRAMEWORKDIR_WINDOWS\$PG_FRAMEWORKVERSION_WINDOWS;%VCINSTALLDIR%\ATLMFC\LIB
+
+@SET PGBUILD=C:\pgBuild
+@SET WXWIN=%PGBUILD%\wxWidgets
+
+@set PATH=%WXWIN%;%WXWIN%\include;%WXWIN%\lib\vc_lib;$PG_CMAKE_WINDOWS\bin;%VSINSTALLDIR%\Common7\IDE;%VCINSTALLDIR%\BIN;%VSINSTALLDIR%\Common7\Tools;%VSINSTALLDIR%\Common7\Tools\bin;%VCINSTALLDIR%\PlatformSDK\bin;%FrameworkSDKDir%\bin;$PG_FRAMEWORKDIR_WINDOWS\$PG_FRAMEWORKVERSION_WINDOWS;%VCINSTALLDIR%\VCPackages;%OLD_PATH%
+
+cd %SOURCE_PATH%\\pg_migrator.windows\\userValidation\\dbserver_guid
+vcbuild dbserver_guid.vcproj release
+
+cd %SOURCE_PATH%\\pg_migrator.windows\\userValidation\\validateUser
+vcbuild validateUser.vcproj release
+
+cd %SOURCE_PATH%\\pg_migrator.staging
+mkdir userValidation
+cd %SOURCE_PATH%
+copy pg_migrator.windows\\userValidation\\dbserver_guid\\Release\\dbserver_guid.exe pg_migrator.staging\\userValidation\\dbserver_guid.exe
+copy pg_migrator.windows\\userValidation\\validateUser\\Release\\validateUserClient.exe pg_migrator.staging\\userValidation\\validateUserClient.exe
+copy "%PGBUILD%\\vcredist\\vcredist_x86.exe" pg_migrator.staging\\vcredist_x86.exe
+
+cd %SOURCE_PATH%\\pg_migrator.staging
+zip -r ../pg_migrator-staging.zip *
+
+echo "Successfully built pg_migrator and User-Validation utilities..."
+
 EOT
 
     scp build-pgmigrator.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-pgmigrator.bat" || _die "Couldn't build pg_migrator on Windows"
 
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pg_migrator.staging; cmd /c zip -r ../pg_migrator-staging.zip *" || _die "Couldn't create archieve of pg_migrator staging directory"
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/pg_migrator-staging.zip $WD/pg_migrator/staging/windows/
 
     unzip $WD/pg_migrator/staging/windows/pg_migrator-staging.zip -d $WD/pg_migrator/staging/windows || _die "Failed to unpack the built source tree ($WD/pg_migrator/windows/pg_migrator-staging.zip)"

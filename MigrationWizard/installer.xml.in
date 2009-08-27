@@ -1164,8 +1164,8 @@
             </parameterList>
             <!-- Open registration page, if not already registered user and want to register -->
             <postShowPageActionList>
-                <launchBrowser url="http://www.enterprisedb.com/create-promo-account.do?type=tuning"
-                                             abortOnError="1">
+                <launchBrowser url="http://www.enterprisedb.com/create-promo-account.do?type=migration"
+                               abortOnError="1">
                     <ruleList>
                             <compareText logic="equals" text="${isRegistered}" value="2"/>
                     </ruleList>

@@ -101,7 +101,6 @@ REM Compiling TuningWizard
 devenv TuningWizard.vcproj /build release
 
 cd %SOURCE_PATH%\\tuningwizard.windows\\userValidation\\dbserver_guid
-echo %CD%
 vcbuild dbserver_guid.vcproj release
 
 cd %SOURCE_PATH%\\tuningwizard.windows\\userValidation\\validateUser
