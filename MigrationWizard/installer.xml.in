@@ -1140,6 +1140,9 @@
             title="${msg(registration.title.value)}"
             explanation="${msg(registration.explanation.value)}">
             <parameterList>
+                <labelParameter
+                    name="lblRegExp"
+                    text="${msg(registration.explanation.value2)}"/>
                 <choiceParameter
                     name="isRegistered"
                     default="1"
@@ -1148,11 +1151,11 @@
                     displayType="radiobuttons">
                     <optionList>
                         <option
-                            text="${msg(registration.existingemail.yes)}"
-                            value="1"/>
-                        <option
                             text="${msg(registration.existingemail.no)}"
                             value="2"/>
+                        <option
+                            text="${msg(registration.existingemail.yes)}"
+                            value="1"/>
                         <option
                             text="${msg(registration.registration.no)}"
                             value="3"/>

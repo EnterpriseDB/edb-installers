@@ -32,8 +32,7 @@ error.invalid.email.value=Invalid email address. You must provide a valid email 
 
 error.invalid.password.value=Password is empty or contains invalid characters. Please enter valid password.
 
-existingemail.authentication.explanation.value=Please enter the email address and password for your enterprisedb.com
-user account:
+existingemail.authentication.explanation.value=Please enter the email address and password for your enterprisedb.com user account:
 
 existingemail.authentication.title.value=EnterpriseDB User Account Information
 
