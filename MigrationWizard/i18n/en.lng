@@ -44,7 +44,7 @@ registration.existingemail.no=I do not have an enterprisedb.com user account.
 
 registration.existingemail.yes=I already have an enterprisedb.com user account.
 
-registration.explanation.value=We recommend that you register with EnterpriseDB to gain access to white papers, use the product forums and receive notification of new product releases.
+registration.explanation.value=Register your installation to get the Bruce Momjian "Mastering PostgreSQL Administration" webcasts free!
 registration.explanation.value2=If you do not yet have an account, the registration area of the EnterpriseDB website will be opened when you click 'Next':
 
 registration.registration.no=No thanks, I don't want to register now.
