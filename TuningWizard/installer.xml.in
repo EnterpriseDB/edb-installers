@@ -845,6 +845,7 @@
           default="1"
           width="30"
           allowEmptyValue="0"
+          cliOptionShow="0"
           displayType="radiobuttons">
           <optionList>
             <option
