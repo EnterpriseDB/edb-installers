@@ -68,6 +68,10 @@ _build_pgAgent_osx() {
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     cp -R $PG_PGHOME_OSX/bin/psql $PG_STAGING/bin || _die "Failed to copy psql"
     cp -R $PG_PGHOME_OSX/lib/libpq.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library (libpq.5.dylib)"
+
+    # Copy libxml2 as System's libxml can be old.
+    cp /usr/local/lib/libxml2* $PG_STAGING/lib || _die "Failed to copy the latest libxml2"
+
     _rewrite_so_refs $WD/pgAgent/staging/osx lib @loader_path/..
     install_name_tool -change "libpq.5.dylib" "@loader_path/libpq.5.dylib" "$PG_STAGING/bin/psql"
 
