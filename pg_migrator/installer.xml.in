@@ -901,7 +901,7 @@
             <parameterList>
                 <choiceParameter
                     name="alreadyRegistered"
-                    default="1"
+                    default="0"
                     width="30"
                     allowEmptyValue="0"
                     cliOptionShow="0"
@@ -1067,7 +1067,7 @@
             name="installationDirectory"
             description="Installer.Parameter.installdir.description"
             explanation="Installer.Parameter.installdir.explanation"
-            title="Installation Directory">
+            title="${msg(pm.installation.dir)}">
             <parameterList>
                 <directoryParameter>
                     <name>installdir</name>

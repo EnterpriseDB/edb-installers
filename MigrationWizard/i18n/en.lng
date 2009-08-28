@@ -36,7 +36,7 @@ error.invalid.email.value=Invalid email address. You must provide a valid email 
 
 error.invalid.password.value=Password is empty or contains invalid characters. Please enter valid password.
 
-existingemail.authentication.explanation.value=Please enter the email address and password for your enterprisedb.com user account:
+existingemail.authentication.explanation.value=Please enter the email address and password for your enterprisedb.com user account.
 
 existingemail.authentication.title.value=EnterpriseDB User Account Information
 
@@ -45,7 +45,7 @@ registration.existingemail.no=I do not have an enterprisedb.com user account.
 registration.existingemail.yes=I already have an enterprisedb.com user account.
 
 registration.explanation.value=Register your installation to get the Bruce Momjian "Mastering PostgreSQL Administration" webcasts free!
-registration.explanation.value2=If you do not yet have an account, the registration area of the EnterpriseDB website will be opened when you click 'Next':
+registration.explanation.value2=If you do not yet have an account, the registration area of the EnterpriseDB website will be opened when you click 'Next'.
 
 registration.registration.no=No thanks, I don't want to register now.
 
@@ -67,3 +67,4 @@ ws.exception.from.server=An error occured. Please try again.
 
 ws.internet.not.connected=Error in calling web service. Please check the internet connection and try again.
 
+mw.installation.dir=Installation Directory

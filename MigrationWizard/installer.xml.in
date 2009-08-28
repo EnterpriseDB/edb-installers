@@ -1145,7 +1145,7 @@
                     explanation="${msg(registration.explanation.value2)}"/>
                 <choiceParameter
                     name="isRegistered"
-                    default="1"
+                    default="2"
                     width="30"
                     allowEmptyValue="0"
                     cliOptionShow="0"
@@ -1313,7 +1313,7 @@
             name="installationDirectory"
             description="Installer.Parameter.installdir.description"
             explanation="Installer.Parameter.installdir.explanation"
-            title="Installation Directory">
+            title="${msg(mw.installation.dir)}">
             <parameterList>
                 <!-- Install Directory -->
                 <directoryParameter>
