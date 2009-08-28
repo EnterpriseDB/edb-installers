@@ -51,9 +51,9 @@ registration.registration.no=No thanks, I don't want to register now.
 
 registration.title.value=Are you registered with EnterpriseDB?
 
-userAuth.email.value=Username :
+userAuth.email.value=Email address
 
-userAuth.password.value=Password :
+userAuth.password.value=Password
 
 validatinguser.ws.error=Connection to the WebService failed. Please re-check the internet connection.
 
