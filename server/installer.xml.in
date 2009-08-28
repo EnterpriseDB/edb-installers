@@ -147,7 +147,18 @@
     <initializationActionList>
         <setInstallerVariable name="project.parameter(create_shortcuts).ask" value="0"/>    
         <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>    
-        
+        <setInstallerVariable name="project.parameter(superaccount).ask" value="0" />
+        <setInstallerVariable name="project.parameter(serviceaccount).ask" value="0" />
+        <setInstallerVariable name="project.parameter(servicepassword).ask" value="0">
+	     <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
         <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -169,12 +180,34 @@
         <setInstallerVariable name="iDisableStackBuilder" value="0" />
         
         <!-- Set the superusername -->
-        <!-- TODO: Make this user configurable -->
+        <!-- TODO:{Obselete} Make this user configurable -->
         <setInstallerVariable>
             <name>supername</name>
             <value>postgres</value>
             <persist>1</persist>
         </setInstallerVariable>
+
+         <!-- PostgreSQL superuser account -->
+         <setInstallerVariable>
+            <name>superaccount</name>
+            <value>postgres</value>
+            <persist>1</persist>
+         </setInstallerVariable>
+
+         <!--Operating system account that controls postmaster process -->
+         <setInstallerVariable>
+            <name>serviceaccount</name>
+            <value>postgres</value>
+            <persist>1</persist>
+         </setInstallerVariable>
+
+          <!-- (Windows only) Allows the user to specify service password -->
+          <setInstallerVariable>
+            <name>servicepassword</name>
+            <value></value>
+            <persist>1</persist>
+         </setInstallerVariable>
+
        
         <!-- Upgrading? -->
         <setInstallerVariable>
@@ -1497,7 +1530,7 @@
         <!-- Create the service user account -->
         <runProgram>
             <program>${installdir}/installer/server/createuser.sh</program>
-            <programArguments>"${supername}" "${installdir}"</programArguments>
+            <programArguments>"${serviceaccount}" "${installdir}"</programArguments>
             <progressText>${msg(progress.text.creating.user)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -1546,10 +1579,70 @@
 
         <actionGroup>
             <actionList>
-                <runProgram>
+                <!-- seperate out domain name from ${serviceaccount} and assign it to ${servicedomain}-->
+                 <setInstallerVariable>
+                       <name>servicedomain</name>
+                       <value>.</value>
+                 </setInstallerVariable>
+
+                <setInstallerVariableFromRegEx> 
+            		<name>servicedomain</name> 
+            		<text>${serviceaccount}</text> 
+            		<pattern>\\.*</pattern> 
+            		<substitution></substitution>
+                        <ruleList>
+                           <compareText>
+                            <text>${serviceaccount}</text>
+                            <logic>contains</logic>
+                            <value>\</value>
+                          </compareText>
+                      </ruleList>
+                </setInstallerVariableFromRegEx> 
+
+                <!--we need serviceaccount without domain details -->
+                  <setInstallerVariable>
+                       <name>serviceaccount_wo_domain</name>
+                       <value>${serviceaccount}</value>
+                       <ruleList>
+                           <compareText>
+                            <text>${servieaccount}</text>
+                            <logic>does_not_contain</logic>
+                            <value>\</value>
+                          </compareText>
+                      </ruleList>
+                 </setInstallerVariable>
+ 
+                 <setInstallerVariableFromRegEx> 
+            		<name>serviceaccount_wo_domain</name> 
+            		<text>${serviceaccount}</text> 
+            		<pattern>^.*?\\</pattern> 
+            		<substitution></substitution>
+                        <ruleList>
+                           <compareText>
+                            <text>${serviceaccount}</text>
+                            <logic>contains</logic>
+                            <value>\</value>
+                          </compareText>
+                      </ruleList>
+                </setInstallerVariableFromRegEx> 
+
+                 <!-- if servicepassword is not set, set it to superpassword -->
+                 <setInstallerVariable>
+                       <name>servicepassword</name>
+                       <value>${superpassword}</value>
+                       <ruleList>
+                           <compareText>
+                            <logic>equals</logic>
+                            <text>${servicepassword}</text>
+                            <value></value>
+                          </compareText>
+                      </ruleList>
+                 </setInstallerVariable>
+           
+		<runProgram>
                     <program>${installdir}\installer\server\createuser.exe</program>
                     <!-- The dot at the beginning of the arguments is the domain -->
-                    <programArguments>. "${supername}" "${superpassword}"</programArguments>
+                    <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -1586,7 +1679,7 @@
                 </throwError>
                 <throwError>
                     <text>${msg(config.superpassword.format.error.windows)}</text>
-                    <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                         <compareText>
                             <logic>equals</logic>
@@ -1671,7 +1764,7 @@
                 <!-- Initdb -->
                 <runProgram>
                     <program>${installdir}/installer/server/initcluster.sh</program>
-                    <programArguments>"${supername}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} ${reallocale}</programArguments>
+                    <programArguments>"${serviceaccount}" "${superaccount}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} ${reallocale}</programArguments>
                     <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -1686,7 +1779,7 @@
                 
                 <runProgram>
                     <program>cscript</program>
-                    <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${supername}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} "${reallocale}"</programArguments>
+                    <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} "${reallocale}"</programArguments>
                     <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -1758,7 +1851,7 @@
         <!-- Startup config -->
         <runProgram>
             <program>${installdir}/installer/server/startupcfg.sh</program>
-            <programArguments>${product_version} "${supername}" "${installdir}" "${datadir}"</programArguments>
+            <programArguments>${product_version} "${serviceaccount}" "${installdir}" "${datadir}"</programArguments>
             <progressText>${msg(progress.text.configuring.startup)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -1773,7 +1866,7 @@
         
         <runProgram>
             <program>cscript</program>
-            <programArguments>//NoLogo "${installdir}\installer\server\startupcfg.vbs" ${product_version} "${supername}" "${superpassword}" "${installdir}" "${datadir}"</programArguments>
+            <programArguments>//NoLogo "${installdir}\installer\server\startupcfg.vbs" ${product_version} "${serviceaccount}" "${servicepassword}" "${installdir}" "${datadir}"</programArguments>
             <progressText>${msg(progress.text.configuring.startup)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -1832,7 +1925,7 @@
         <!-- Shortcuts -->
         <runProgram>
             <program>${installdir}/installer/server/createshortcuts.sh</program>
-            <programArguments>${product_version} "${supername}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${disableStackBuilder}"</programArguments>
+            <programArguments>${product_version} "${serviceaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${disableStackBuilder}"</programArguments>
             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -1852,7 +1945,7 @@
        
         <runProgram>
             <program>cscript</program>
-            <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts.vbs" ${product_version} "${supername}" ${serverport} "${branding}" "${installdir}" "${datadir}"</programArguments>
+            <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts.vbs" ${product_version} "${serviceaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}"</programArguments>
             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -2054,7 +2147,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                 
                 <runProgram>
                     <program>${installdir}/installer/server/loadmodules.sh</program>
-                    <programArguments>"${supername}" "${superpassword}" "${installdir}" ${serverport} "${install_plpgsql}"</programArguments>
+                    <programArguments>"${superaccount}" "${superpassword}" "${installdir}" ${serverport} "${install_plpgsql}"</programArguments>
                     <progressText>${msg(progress.text.loading.modules)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -2069,7 +2162,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         
                 <runProgram>
                     <program>cscript</program>
-                    <programArguments>//NoLogo "${installdir}\installer\server\loadmodules.vbs" "${supername}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} "${install_plpgsql}"</programArguments>
+                    <programArguments>//NoLogo "${installdir}\installer\server\loadmodules.vbs" "${superaccount}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} "${install_plpgsql}"</programArguments>
                     <progressText>${msg(progress.text.loading.modules)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -2294,10 +2387,10 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
             <file>${PostgreSqlIni}</file>
             <section>PostgreSQL/${product_version}</section>
             <key>Superuser</key>
-            <value>${supername}</value>
+            <value>${superaccount}</value>
             <ruleList>
                 <stringTest>
-                    <text>${supername}</text>
+                    <text>${superaccount}</text>
                     <type>not_empty</type>
                 </stringTest>
                 <compareText>
@@ -2310,10 +2403,10 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         <registrySet>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
             <name>Database Superuser</name>
-            <value>${supername}</value>
+            <value>${superaccount}</value>
             <ruleList>
                 <stringTest>
-                    <text>${supername}</text>
+                    <text>${superaccount}</text>
                     <type>not_empty</type>
                 </stringTest>
              </ruleList>
@@ -2321,15 +2414,39 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         <registrySet>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
             <name>Service Account</name>
-            <value>.\${supername}</value>
+            <value>${serviceaccount}</value>
+            <ruleEvaluationLogic>and</ruleEvaluationLogic>
             <ruleList>
                 <stringTest>
-                    <text>${supername}</text>
+                    <text>${serviceaccount}</text>
                     <type>not_empty</type>
                 </stringTest>
+                <compareText>
+                    <text>${serviceaccount}</text>
+		    <logic>contains</logic>
+		    <value>\</value>
+  		</compareText>
              </ruleList>
         </registrySet>
-        
+        <!-- if serviceaccount does not contain domain name, then append .\ before writing it to registry -->
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+            <name>Service Account</name>
+            <value>.\${serviceaccount}</value>
+            <ruleEvaluationLogic>and</ruleEvaluationLogic>
+            <ruleList>
+                <stringTest>
+                    <text>${serviceaccount}</text>
+                    <type>not_empty</type>
+                </stringTest>
+                <compareText>
+                    <text>${serviceaccount}</text>
+		    <logic>does_not_contain</logic>
+		    <value>\</value>
+		</compareText>	
+             </ruleList>
+        </registrySet>
+
         <!-- Log server description -->
         <logMessage>
             <text>Write the server description to the ini file...</text>
@@ -3029,6 +3146,18 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <booleanParameter name="disableStackBuilder" cliOptionName="disable-stackbuilder" default="${iDisableStackBuilder}" ask="0" cliOptionShow="0" />
 
+        <stringParameter name="superaccount" ask="0" cliOptionShow="1" cliOptionName="superaccount" default="postgres"/>
+        <stringParameter name="serviceaccount" ask="0" cliOptionShow="1" cliOptionName="serviceaccount" default="postgres"/>
+        <stringParameter name="servicepassword" ask="0" cliOptionShow="1" cliOptionName="servicepassword">
+	   <ruleList>
+               <compareText>
+                   <text>${platform_name}</text>
+                   <logic>equals</logic>
+                   <value>windows</value>
+               </compareText>
+           </ruleList>
+
+        </stringParameter>
         <!-- Whether to install runtimes -->
         <booleanParameter>
            <name>install_runtimes</name>
@@ -3656,10 +3785,70 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                 
                 <actionGroup>
                     <actionList>
+		      <!-- seperate out domain name from ${serviceaccount} and assign it to ${servicedomain}-->
+			 <setInstallerVariable>
+			       <name>servicedomain</name>
+			       <value>.</value>
+			 </setInstallerVariable>
+
+			<setInstallerVariableFromRegEx> 
+				<name>servicedomain</name> 
+				<text>${serviceaccount}</text> 
+				<pattern>\\.*</pattern> 
+				<substitution></substitution>
+				<ruleList>
+				   <compareText>
+				    <text>${serviceaccount}</text>
+				    <logic>contains</logic>
+				    <value>\</value>
+				  </compareText>
+			      </ruleList>
+			</setInstallerVariableFromRegEx> 
+
+			<!--we need serviceaccount without domain details -->
+			  <setInstallerVariable>
+			       <name>serviceaccount_wo_domain</name>
+			       <value>${serviceaccount}</value>
+			       <ruleList>
+				   <compareText>
+				    <text>${servieaccount}</text>
+				    <logic>does_not_contain</logic>
+				    <value>\</value>
+				  </compareText>
+			      </ruleList>
+			 </setInstallerVariable>
+	 
+			 <setInstallerVariableFromRegEx> 
+				<name>serviceaccount_wo_domain</name> 
+				<text>${serviceaccount}</text> 
+				<pattern>^.*?\\</pattern> 
+				<substitution></substitution>
+				<ruleList>
+				   <compareText>
+				    <text>${serviceaccount}</text>
+				    <logic>contains</logic>
+				    <value>\</value>
+				  </compareText>
+			      </ruleList>
+			</setInstallerVariableFromRegEx> 
+
+			 <!-- if servicepassword is not set, set it to superpassword -->
+			 <setInstallerVariable>
+			       <name>servicepassword</name>
+			       <value>${superpassword}</value>
+			       <ruleList>
+				   <compareText>
+				    <logic>equals</logic>
+				    <text>${servicepassword}</text>
+				    <value></value>
+				  </compareText>
+			      </ruleList>
+			 </setInstallerVariable>
+		   
                         <runProgram>
                             <program>${system_temp_directory}\postgresql_installer\createuser.exe</program>
                             <!-- The dot at the beginning of the arguments is the domain -->
-                            <programArguments>. "${supername}" "${superpassword}"</programArguments>
+                            <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
@@ -3696,7 +3885,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                         </throwError>
                         <throwError>
                             <text>${msg(config.superpassword.format.error.windows)}</text>
-                            <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
                             <ruleList>
                                 <compareText>
                                     <logic>equals</logic>
@@ -3723,10 +3912,70 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                 <!-- On Windows we need to validate the password if the user account exists -->
                 <actionGroup>
                     <actionList>
-                        <runProgram>
+                       <!-- seperate out domain name from ${serviceaccount} and assign it to ${servicedomain}-->
+			 <setInstallerVariable>
+			       <name>servicedomain</name>
+			       <value>.</value>
+			 </setInstallerVariable>
+
+			<setInstallerVariableFromRegEx> 
+				<name>servicedomain</name> 
+				<text>${serviceaccount}</text> 
+				<pattern>\\.*</pattern> 
+				<substitution></substitution>
+				<ruleList>
+				   <compareText>
+				    <text>${serviceaccount}</text>
+				    <logic>contains</logic>
+				    <value>\</value>
+				  </compareText>
+			      </ruleList>
+			</setInstallerVariableFromRegEx> 
+
+			<!--we need serviceaccount without domain details -->
+			  <setInstallerVariable>
+			       <name>serviceaccount_wo_domain</name>
+			       <value>${serviceaccount}</value>
+			       <ruleList>
+				   <compareText>
+				    <text>${servieaccount}</text>
+				    <logic>does_not_contain</logic>
+				    <value>\</value>
+				  </compareText>
+			      </ruleList>
+			 </setInstallerVariable>
+	 
+			 <setInstallerVariableFromRegEx> 
+				<name>serviceaccount_wo_domain</name> 
+				<text>${serviceaccount}</text> 
+				<pattern>^.*?\\</pattern> 
+				<substitution></substitution>
+				<ruleList>
+				   <compareText>
+				    <text>${serviceaccount}</text>
+				    <logic>contains</logic>
+				    <value>\</value>
+				  </compareText>
+			      </ruleList>
+			</setInstallerVariableFromRegEx> 
+
+			 <!-- if servicepassword is not set, set it to superpassword -->
+			 <setInstallerVariable>
+			       <name>servicepassword</name>
+			       <value>${superpassword}</value>
+			       <ruleList>
+				   <compareText>
+				    <logic>equals</logic>
+				    <text>${servicepassword}</text>
+				    <value></value>
+				  </compareText>
+			      </ruleList>
+			 </setInstallerVariable>
+		   
+			<runProgram>
                             <program>${system_temp_directory}\postgresql_installer\validateuser.exe</program>
                             <!-- The dot at the beginning of the arguments is the domain -->
-                            <programArguments>. "${supername}" "${superpassword}"</programArguments>
+                            <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
