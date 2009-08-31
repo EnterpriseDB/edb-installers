@@ -2147,7 +2147,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                 
                 <runProgram>
                     <program>${installdir}/installer/server/loadmodules.sh</program>
-                    <programArguments>"${superaccount}" "${superpassword}" "${installdir}" ${serverport} "${install_plpgsql}"</programArguments>
+                    <programArguments>"${serviceaccount}" "${superaccount}" "${superpassword}" "${installdir}" ${serverport} "${install_plpgsql}"</programArguments>
                     <progressText>${msg(progress.text.loading.modules)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
