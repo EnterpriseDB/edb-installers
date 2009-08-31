@@ -1945,7 +1945,7 @@
        
         <runProgram>
             <program>cscript</program>
-            <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts.vbs" ${product_version} "${serviceaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}"</programArguments>
+            <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts.vbs" ${product_version} "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}"</programArguments>
             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
