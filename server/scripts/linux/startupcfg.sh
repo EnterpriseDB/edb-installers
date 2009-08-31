@@ -49,7 +49,7 @@ start()
 	echo \$"Starting PostgreSQL $VERSION: "
 	su - $USERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib $INSTALLDIR/bin/pg_ctl -w start -D \"$DATADIR\" -l \"$DATADIR/pg_log/startup.log\""
 	
-	if [ $? -eq 0 ];
+	if [ \$? -eq 0 ];
 	then
 		echo "PostgreSQL $VERSION started successfully"
                 exit 0
