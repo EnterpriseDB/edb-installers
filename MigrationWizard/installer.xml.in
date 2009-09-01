@@ -799,7 +799,7 @@
 	<!-- final page actions -->
     <finalPageActionList>
         <launchBrowser>
-            <url>http://www.enterprisedb.com/installer/migration.do</url>
+            <url>http://www.enterprisedb.com/products/postgres_plus_as/overview.do</url>
             <progressText>${msg(Installer.Installation.Finished.Visit.Us)}</progressText>
         </launchBrowser>
     </finalPageActionList>
@@ -1140,9 +1140,6 @@
             title="${msg(registration.title.value)}"
             explanation="${msg(registration.explanation.value)}">
             <parameterList>
-                <labelParameter
-                    name="lblRegExp"
-                    explanation="${msg(registration.explanation.value2)}"/>
                 <choiceParameter
                     name="isRegistered"
                     default="2"

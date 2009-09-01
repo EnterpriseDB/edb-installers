@@ -40,9 +40,9 @@ registration.existingemail.no=I do not have an enterprisedb.com user account.
 
 registration.existingemail.yes=I already have an enterprisedb.com user account.
 
-registration.explanation.value=You must be a registered enterprisedb.com user to install the Tuning Wizard. If you do not yet have an account, the registration area of the EnterpriseDB website will be opened when you click 'Next'.
+registration.explanation.value=If you do not have an account, click 'Next' to register at the EnterpriseDB website.  Registration will also give you access to many free assets at\nEnterpriseDB including:\n\n- PostgreSQL Performance Tuning (Bruce Momjian On-Demand Webcasts)\n- Top 5 Ways to Supercharge your Database (On-Demand Webcast)\n- Data Processing Inside PostgreSQL (Bruce Momjian On-Demand Webcasts)
 
-registration.title.value=Are you registered with EnterpriseDB?
+registration.title.value=Registration required at www.enterprisedb.com
 
 userAuth.email.value=Email address
 

@@ -918,7 +918,7 @@
             </parameterList>
             <!-- Open registration page, if not already registered user -->
             <postShowPageActionList>
-                <launchBrowser url="http://www.enterprisedb.com/create-promo-account.do?type=tuning"
+                <launchBrowser url="http://www.enterprisedb.com/create-promo-account.do?type=pg_migrator"
                                abortOnError="1">
                     <ruleList>
                             <isFalse value="${alreadyRegistered}"/>
