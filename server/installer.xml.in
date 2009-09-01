@@ -3148,11 +3148,11 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         <booleanParameter name="disableStackBuilder" cliOptionName="disable-stackbuilder" default="${iDisableStackBuilder}" ask="0" cliOptionShow="0" />
 
         <stringParameter name="superaccount" ask="1" cliOptionShow="1" cliOptionName="superaccount" default="postgres" 
-            description="${msg(superaccount.description)}>" />
+            description="${msg(superaccount.description)}" />
         <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default="postgres" 
-            description="${msg(serviceaccount.description)}>"/>
+            description="${msg(serviceaccount.description)}"/>
         <stringParameter name="servicepassword" ask="1" cliOptionShow="1" cliOptionName="servicepassword" 
-            description="${msg(servicepassword.description)}>">
+            description="${msg(servicepassword.description)}">
 	   <ruleList>
                <compareText>
                    <text>${platform_name}</text>
