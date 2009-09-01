@@ -80,6 +80,6 @@ create.shortcut.description=Specifies whether or not menu shortcuts should be cr
 info.datadirectory.user.kept=The data directory (${datadir}) and service user account (${superaccount}) have not been removed.
 locale.error=Locale specified is not supported.
 
-superaccount.description=Selects the user name of the database superuser. Defaults to postgres.
-serviceaccount.description=Selects the operating system user account that owns the server process. Defaults to postgres.
-servicepassword.description=Operating system user password that controls server process.
+superaccount.description=Sets the user name of the database superuser. Defaults to 'postgres'.
+serviceaccount.description=Sets the operating system user account that owns the server process. Defaults to 'postgres'.
+servicepassword.description=Sets the password for the operating system user account that owns server process. Defaults to superuser password.
