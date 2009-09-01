@@ -55,7 +55,7 @@ then
     then
         su - -c 'su - PG_OSUSERNAME -c """PG_INSTALLDIR/bin/pg_ctl"" -D ""PG_DATADIR"" reload"'
     else
-        sudo su - PS_OSUSERNAME -c """PG_INSTALLDIR/bin/pg_ctl"" -D ""PG_DATADIR"" reload"
+        sudo su - PG_OSUSERNAME -c """PG_INSTALLDIR/bin/pg_ctl"" -D ""PG_DATADIR"" reload"
     fi
 else
     if [ $USE_SUDO != "1" ];
