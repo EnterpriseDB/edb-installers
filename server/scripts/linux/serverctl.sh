@@ -53,9 +53,9 @@ if  [ "$action" = "reload" ];
 then
     if [ $USE_SUDO != "1" ];
     then
-        su - -c 'su - postgres -c """PG_INSTALLDIR/bin/pg_ctl"" -D ""PG_DATADIR"" reload"'
+        su - -c 'su - PG_OSUSERNAME -c """PG_INSTALLDIR/bin/pg_ctl"" -D ""PG_DATADIR"" reload"'
     else
-        sudo su - postgres -c """PG_INSTALLDIR/bin/pg_ctl"" -D ""PG_DATADIR"" reload"
+        sudo su - PS_OSUSERNAME -c """PG_INSTALLDIR/bin/pg_ctl"" -D ""PG_DATADIR"" reload"
     fi
 else
     if [ $USE_SUDO != "1" ];

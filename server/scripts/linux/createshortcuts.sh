@@ -4,19 +4,20 @@
 # Dave Page, EnterpriseDB
 
 # Check the command line
-if [ $# -ne 7 ]; 
+if [ $# -ne 8 ]; 
 then
-    echo "Usage: $0 <Major.Minor version> <Username> <Port> <Branding> <Install dir> <Data dir> <DisableStackBuilder>"
+    echo "Usage: $0 <Major.Minor version> <OSUsername> <SuperUsername> <Port> <Branding> <Install dir> <Data dir> <DisableStackBuilder>"
     exit 127
 fi
 
 VERSION=$1
-USERNAME=$2
-PORT=$3
-BRANDING=$4
-INSTALLDIR=$5
-DATADIR=$6
-DISABLE_STACKBUILDER=$7
+OSUSERNAME=$2
+SUPERUSERNAME=$3
+PORT=$4
+BRANDING=$5
+INSTALLDIR=$6
+DATADIR=$7
+DISABLE_STACKBUILDER=$8
 
 
 # Exit code
@@ -71,11 +72,12 @@ _replace() {
 _fixup_file() {
     _replace PG_VERSION_STR $VERSION_STR $1
     _replace PG_MAJOR_VERSION $VERSION $1
-    _replace PG_USERNAME $USERNAME $1
+    _replace PG_OSUSERNAME $OSUSERNAME $1
+    _replace PG_USERNAME $SUPERUSERNAME $1
     _replace PG_PORT $PORT $1
     _replace PG_INSTALLDIR "$INSTALLDIR" $1
     _replace PG_DATADIR "$DATADIR" $1
-	_replace PG_BRANDING "$BRANDING" $1
+    _replace PG_BRANDING "$BRANDING" $1
 }
 
 # We need to remove any old shortcuts created by the Beta/RC installers, as they 
