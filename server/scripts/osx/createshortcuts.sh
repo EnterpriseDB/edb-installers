@@ -6,7 +6,7 @@
 # Check the command line
 if [ $# -ne 7 ]; 
 then
-echo "Usage: $0 <Major.Minor version> <Username> <Port> <Branding> <Install dir> <Data dir> <DisableStackBuilder"
+echo "Usage: $0 <Major.Minor version> <Username> <Port> <Branding> <Install dir> <Data dir> <DisableStackBuilder>"
     exit 127
 fi
 
