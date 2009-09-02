@@ -55,7 +55,7 @@ config.locale.no.locale=Debe seleccionar una configuración regional para continu
 plpgsql.install.description=¿Instalar pl/pgsql en la base de datos template1?
 install.runtimes.description=Especifica si instala o no el runtime de Microsoft Visual C++ antes de que la instalación proceda.
 create.shortcut.description=Especifica si crea o no los accesos directos en el menú.
-info.datadirectory.user.kept=El directorio de datos (${datadir}) y la cuenta de usuario del servicio (${superaccount}) no han sido eliminados.
+info.datadirectory.user.kept=El directorio de datos (${datadir}) y la cuenta de usuario del servicio (${serviceaccount}) no han sido eliminados.
 locale.error=La configuración regional especificada no está soportada.
 
 superaccount.description=Selecciona el nombre de usuario de la base de datos de superusuario. Por defecto es postgres.
