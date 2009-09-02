@@ -180,36 +180,12 @@
 
         <setInstallerVariable name="iDisableStackBuilder" value="0" />
         
-        <!-- Set the superusername -->
-        <!-- TODO:{Obselete} Make this user configurable -->
-        <setInstallerVariable>
-            <name>supername</name>
-            <value>postgres</value>
-            <persist>1</persist>
-        </setInstallerVariable>
+        <!-- PostgreSQL superuser account -->
+        <setInstallerVariable name ="superaccount" value="" />
+        <!-- OS Account to own postgres process -->
+        <setInstallerVariable name ="serviceaccount" value="" />
+        <setInstallerVariable name ="servicepassword" value="" />
 
-         <!-- PostgreSQL superuser account -->
-         <setInstallerVariable>
-            <name>superaccount</name>
-            <value>postgres</value>
-            <persist>1</persist>
-         </setInstallerVariable>
-
-         <!--Operating system account that controls postmaster process -->
-         <setInstallerVariable>
-            <name>serviceaccount</name>
-            <value>postgres</value>
-            <persist>1</persist>
-         </setInstallerVariable>
-
-          <!-- (Windows only) Allows the user to specify service password -->
-          <setInstallerVariable>
-            <name>servicepassword</name>
-            <value></value>
-            <persist>1</persist>
-         </setInstallerVariable>
-
-       
         <!-- Upgrading? -->
         <setInstallerVariable>
             <name>IsUpgrade</name>
@@ -466,7 +442,57 @@
                         </fileTest>
                     </ruleList>
                 </setInstallerVariable>
-                
+
+                <!-- Get the serviceaccount (OS User) -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>Serviceaccount</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iServiceAccount</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>iServiceAccount</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <!-- Get the superuser -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>Superuser</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iSuperuser</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>iSuperuser</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
+
                 <!-- Get the version installed. We use this to figure out if we have a pre-branding installation -->
                 <iniFileGet>
                     <file>${PostgreSqlIni}</file>
@@ -533,6 +559,20 @@
                     <variable>iBaseDirectory</variable>
                 </registryGet>
                 
+		<!-- Get the Serviceaccount (OS User) -->
+                <registryGet>
+                    <name>Service Account</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <variable>iServiceAccount</variable>
+                </registryGet>
+		
+		<!-- Get the Superuser -->
+                <registryGet>
+                    <name>Super User</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <variable>iSuperuser</variable>
+                </registryGet>
+
                 <!-- Get the branding -->
                 <registryGet>
                     <name>Branding</name>
@@ -661,6 +701,48 @@
             </ruleList>
         </setInstallerVariable>
         
+        <!-- Set values for superaccount and seriveaccount based on previous installations if any -->
+       
+        <!-- Existing install, with superaccount. Ignore command line. -->
+        <setInstallerVariable>
+            <name>superaccount</name>
+            <persist>0</persist>
+            <value>${iSuperuser}</value>
+            <ruleList>
+               <compareText text="${iSuperuser}" logic="does_not_equal" value="" />
+            </ruleList>
+        </setInstallerVariable>
+        
+        <!-- new install, with nothing set on command line -->
+        <setInstallerVariable>
+            <name>superaccount</name>
+            <persist>0</persist>
+            <value>postgres</value>
+            <ruleList>
+               <compareText text="${superaccount}" logic="equals" value="" />
+            </ruleList>
+        </setInstallerVariable>
+        
+	<!-- Existing install, with serviceaccount. Ignore command line. -->
+        <setInstallerVariable>
+            <name>serviceaccount</name>
+            <persist>0</persist>
+            <value>${iServiceAccount}</value>
+            <ruleList>
+               <compareText text="${iServiceAccount}" logic="does_not_equal" value="" />
+            </ruleList>
+        </setInstallerVariable>
+        
+        <!-- new install, with nothing set on command line -->
+        <setInstallerVariable>
+            <name>serviceaccount</name>
+            <persist>0</persist>
+            <value>postgres</value>
+            <ruleList>
+               <compareText text="${serviceaccount}" logic="equals" value="" />
+            </ruleList>
+        </setInstallerVariable>
+        
         <!-- Debugging -->
         <logMessage>
             <text>Existing base directory: ${iBaseDirectory}</text>
@@ -671,6 +753,7 @@
         <logMessage>
             <text>Using branding: ${branding}</text>
         </logMessage>
+        <logMessage text="Using Super User: ${superaccount} and Service Account: ${serviceaccount}" />
         
         <!-- Temp directory for preflight scripts -->
         <createDirectory path="${system_temp_directory}/postgresql_installer"/>
@@ -2385,6 +2468,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         </registrySet>
         
         <!-- Superuser -->
+        <logMessage text="Write Superuser to ini file and windows registry..." />
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
             <section>PostgreSQL/${product_version}</section>
@@ -2413,6 +2497,25 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                 </stringTest>
              </ruleList>
         </registrySet>
+
+        <logMessage text="Write Service Account to ini file and windows registry..." />
+        <iniFileSet>
+            <file>${PostgreSqlIni}</file>
+            <section>PostgreSQL/${product_version}</section>
+            <key>Serviceaccount</key>
+            <value>${serviceaccount}</value>
+            <ruleList>
+                <stringTest>
+                    <text>${serviceaccount}</text>
+                    <type>not_empty</type>
+                </stringTest>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </iniFileSet>
         <registrySet>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
             <name>Service Account</name>
@@ -2448,6 +2551,19 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
 		</compareText>	
              </ruleList>
         </registrySet>
+
+        <!-- the following enteries are required for update mode -->
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+            <name>Service Account</name>
+            <value>${serviceaccount}</value>
+        </registrySet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+            <name>Super User</name>
+            <value>${superaccount}</value>
+        </registrySet>
+        
 
         <!-- Log server description -->
         <logMessage>
@@ -2681,6 +2797,22 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <file>${PostgreSqlIni}</file>
                     <section>PostgreSQL/${product_version}</section>
                     <key>DisableStackBuilder</key>
+                    <value></value>
+                </iniFileSet>
+
+                <!-- Superuser -->
+		 <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Superuser</key>
+                    <value></value>
+                </iniFileSet>
+               
+                <!--Serviceaccount -->
+		<iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Serviceaccount</key>
                     <value></value>
                 </iniFileSet>
              </actionList>
@@ -3152,7 +3284,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
             description="${msg(superaccount.description)}" />
         <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default="postgres" 
             description="${msg(serviceaccount.description)}"/>
-        <stringParameter name="servicepassword" ask="1" cliOptionShow="1" cliOptionName="servicepassword" 
+        <passwordParameter name="servicepassword" ask="1" cliOptionShow="1" cliOptionName="servicepassword" 
             description="${msg(servicepassword.description)}">
 	   <ruleList>
                <compareText>
@@ -3162,7 +3294,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                </compareText>
            </ruleList>
 
-        </stringParameter>
+        </passwordParameter>
         <!-- Whether to install runtimes -->
         <booleanParameter>
            <name>install_runtimes</name>
