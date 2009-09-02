@@ -44,7 +44,7 @@ registration.existingemail.no=I do not have an enterprisedb.com user account.
 
 registration.existingemail.yes=I already have an enterprisedb.com user account.
 
-registration.explanation.value=If you do not have an account, click Next to register at the EnterpriseDB website. Registration will also give you access to many free assets at EnterpriseDB including:\n\n- The Great Debate: PostgreSQL vs MySQL® (On-Demand Webcast)\n- PostgreSQL vs MySQL A Comparison in Enterprise Suitability (EnterpriseDB White Paper)\n- Postgres vs MySQL (EnterpriseDB Podcast).
+registration.explanation.value=If you do not have an account, click Next to register at the EnterpriseDB website. Registration will also give you access to many free assets at EnterpriseDB including:\n\n- The Great Debate: PostgreSQL vs MySQL(R) (On-Demand Webcast)\n- PostgreSQL vs MySQL A Comparison in Enterprise Suitability (EnterpriseDB White Paper)\n- Postgres vs MySQL (EnterpriseDB Podcast).
 
 registration.registration.no=No thanks, I don't want to register now.
 
