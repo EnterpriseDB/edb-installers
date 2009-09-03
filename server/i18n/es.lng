@@ -40,6 +40,7 @@ config.datadir.explanation=Por favor, seleccionar un directorio dentro del cual 
 config.superpassword.description=Contraseña
 config.superpassword.explanation=Por favor proporcione una contraseña para el super-usuario de la base de datos (${superaccount}).
 config.superpassword.explanation.windows=Por favor proporcione una contraseña para el super-usuario (${superaccount}) y cuenta del servicio (${serviceaccount}). Si la cuenta del servicio ya existe en Windows, debe ingresar la contraseña actual para dicha cuenta. Si la cuenta no existe, será creada cuando presione 'Siguiente'.
+config.superpassword.explanation.upgrade.windows=Por favor proporcione una contraseña para el cuenta del servicio (${serviceaccount}).
 config.superpassword.confirm=Reingresar la contraseña
 config.superpassword.no.password=Debe ingresar una contraseña para continuar.
 config.superpassword.incorrect.windows=La contraseña especificada es incorrecta. Por favor ingrese la contraseña correcta para la cuenta de usuario de windows ${serviceaccount}.
@@ -58,6 +59,6 @@ create.shortcut.description=Especifica si crea o no los accesos directos en el m
 info.datadirectory.user.kept=El directorio de datos (${datadir}) y la cuenta de usuario del servicio (${serviceaccount}) no han sido eliminados.
 locale.error=La configuración regional especificada no está soportada.
 
-superaccount.description=Selecciona el nombre de usuario de la base de datos de superusuario. Por defecto es postgres.
-serviceaccount.description=Selecciona la cuenta de usuario del sistema operativo que posee el proceso de servidor. Por defecto es postgres.
-servicepassword.description=ContraseÃ±a de usuario del sistema operativo que controla el proceso de servidor
+superaccount.description=Establece el nombre de usuario de la base de datos de superusuario. Por defecto es 'postgres'.
+serviceaccount.description=Establece la cuenta de usuario del sistema operativo que posee el proceso de servidor. Por defecto es 'postgres'.
+servicepassword.description=Establece la contraseÃ±a de la cuenta de usuario del sistema operativo que posee proceso de servidor. Por defecto es la contraseÃ±a de superusuario

@@ -3285,7 +3285,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default="postgres" 
             description="${msg(serviceaccount.description)}"/>
         <passwordParameter name="servicepassword" ask="1" cliOptionShow="1" cliOptionName="servicepassword" 
-            description="${msg(servicepassword.description)}">
+            description="${msg(servicepassword.description)}" default="${defaultpassword}">
 	   <ruleList>
                <compareText>
                    <text>${platform_name}</text>
@@ -3907,6 +3907,29 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                         </compareText>
                     </ruleList>
                 </setInstallerVariable>
+ 
+                <!-- On Windows, we need a different explanation if upgrade mode -->
+                <setInstallerVariable>
+                    <name>_explanation</name>
+                    <value>${msg(config.superpassword.explanation.upgrade.windows)}</value>
+
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows" />
+                        <compareValues value1="${IsUpgrade}" logic="equals" value2="1" />
+                    </ruleList>
+                </setInstallerVariable>
+                
+                <!-- On Windows, in update mode, superpassword should be equal to servicepassword if set on cli -->
+                <setInstallerVariable>
+                    <name>superpassword</name>
+                    <value>${servicepassword}</value>
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows" />
+                        <compareValues value1="${IsUpgrade}" logic="equals" value2="1" />
+                        <stringTest text="${servicepassword}" type="not_empty" />
+                    </ruleList>
+                </setInstallerVariable>
+ 
             </preShowPageActionList>
             
             <validationActionList>
@@ -3969,19 +3992,12 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
 			      </ruleList>
 			</setInstallerVariableFromRegEx> 
 
-			 <!-- if servicepassword is not set, set it to superpassword -->
+                         <!--set the servicepassword to password which user has entered on this page-->
 			 <setInstallerVariable>
 			       <name>servicepassword</name>
 			       <value>${superpassword}</value>
-			       <ruleList>
-				   <compareText>
-				    <logic>equals</logic>
-				    <text>${servicepassword}</text>
-				    <value></value>
-				  </compareText>
-			      </ruleList>
 			 </setInstallerVariable>
-		   
+
                         <runProgram>
                             <program>${system_temp_directory}\postgresql_installer\createuser.exe</program>
                             <!-- The dot at the beginning of the arguments is the domain -->
@@ -4096,17 +4112,10 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
 			      </ruleList>
 			</setInstallerVariableFromRegEx> 
 
-			 <!-- if servicepassword is not set, set it to superpassword -->
+                         <!--set the servicepassword to password which user has entered on this page-->
 			 <setInstallerVariable>
 			       <name>servicepassword</name>
 			       <value>${superpassword}</value>
-			       <ruleList>
-				   <compareText>
-				    <logic>equals</logic>
-				    <text>${servicepassword}</text>
-				    <value></value>
-				  </compareText>
-			      </ruleList>
 			 </setInstallerVariable>
 		   
 			<runProgram>
