@@ -757,6 +757,19 @@
         
         <!-- Temp directory for preflight scripts -->
         <createDirectory path="${system_temp_directory}/postgresql_installer"/>
+        <actionGroup>
+            <actionList>
+                <createDirectory path="${system_temp_directory}/postgresql_installer/bin" />
+                <createDirectory path="${system_temp_directory}/postgresql_installer/lib"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
         
         <!-- Preinstall script -->
         <unpackFile>
@@ -828,11 +841,21 @@
         </unpackFile>
                 
         <!-- pg_controldata (used to check existing clusters) -->
-        <unpackFile>
-            <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer/pg_controldata</destination>
-            <folder>programfilesmacosx</folder>
-            <origin>bin/pg_controldata</origin>
+        <actionGroup>
+            <actionList> 
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/bin/pg_controldata</destination>
+                    <folder>programfilesmacosx</folder>
+                    <origin>bin/pg_controldata</origin>
+                </unpackFile>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/lib/libxml2.2.dylib</destination>
+                    <folder>programfilesmacosx</folder>
+                    <origin>lib/libxml2.2.dylib</origin>
+                </unpackFile>
+            </actionList> 
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -840,7 +863,7 @@
                     <value>osx</value>
                 </compareText>
             </ruleList>
-        </unpackFile>
+        </actionGroup>
         
         <actionGroup>
             <actionList>
@@ -1006,7 +1029,7 @@
                 
                 <!-- Do we have a valid catalog version? -->
                 <runProgram>
-                    <program>${system_temp_directory}/postgresql_installer/pg_controldata</program>
+                    <program>${system_temp_directory}/postgresql_installer/bin/pg_controldata</program>
                     <programArguments>"${iDataDirectory}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
