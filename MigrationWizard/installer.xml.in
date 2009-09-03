@@ -44,7 +44,7 @@
     <customLanguageFileList>
         <language>
             <code>en</code>
-            <encoding>iso8859-1</encoding>
+            <encoding>utf-8</encoding>
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
