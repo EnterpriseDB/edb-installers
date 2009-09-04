@@ -2,7 +2,7 @@
 
 # Source tarball versions
 
-PG_TARBALL_POSTGRESQL=8.4.0
+PG_TARBALL_POSTGRESQL=8.4.1
 PG_TARBALL_PGADMIN=1.10.0
 PG_TARBALL_DEBUGGER=0.93
 PG_TARBALL_PLJAVA=1.4.0
@@ -40,7 +40,7 @@ PG_BUILDNUM_SBP=1
 #                     Minor version is revision.build. 
 
 PG_MAJOR_VERSION=8.4
-PG_MINOR_VERSION=0.1
+PG_MINOR_VERSION=1.1
 
 # Other package versions
 PG_VERSION_APACHE=2.2.11
