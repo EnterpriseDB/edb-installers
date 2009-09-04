@@ -1737,7 +1737,13 @@
                  <setInstallerVariable>
                        <name>servicepassword</name>
                        <value>${superpassword}</value>
+                       <ruleEvaluationLogic>or</ruleEvaluationLogic>
                        <ruleList>
+                           <compareText>
+                            <logic>equals</logic>
+                            <text>${IsUpgrade}</text>
+                            <value>1</value>
+                          </compareText>
                            <compareText>
                             <logic>equals</logic>
                             <text>${servicepassword}</text>
@@ -4015,10 +4021,17 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
 			      </ruleList>
 			</setInstallerVariableFromRegEx> 
 
-                         <!--set the servicepassword to password which user has entered on this page-->
+                         <!--set the servicepassword to password which user has entered on this page, if servicepassword not set through CLI-->
 			 <setInstallerVariable>
 			       <name>servicepassword</name>
 			       <value>${superpassword}</value>
+			       <ruleList>
+				   <compareText>
+				    <text>${servicepassword}</text>
+				    <logic>equals</logic>
+				    <value/>
+				  </compareText>
+			      </ruleList>
 			 </setInstallerVariable>
 
                         <runProgram>
@@ -4139,6 +4152,19 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
 			 <setInstallerVariable>
 			       <name>servicepassword</name>
 			       <value>${superpassword}</value>
+                               <ruleEvaluationLogic>or</ruleEvaluationLogic>
+			       <ruleList>
+                                   <compareText>
+                                     <logic>equals</logic>
+                                     <text>${IsUpgrade}</text>
+                                     <value>1</value>
+                                   </compareText>
+				   <compareText>
+				    <text>${servicepassword}</text>
+				    <logic>equals</logic>
+				    <value/>
+				  </compareText>
+			      </ruleList>
 			 </setInstallerVariable>
 		   
 			<runProgram>
