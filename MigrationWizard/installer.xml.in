@@ -563,13 +563,6 @@
         </actionGroup>
         <actionGroup>
             <actionList>
-                <throwError text="Please provide the password for the EnterpriseDB." abortOnError="1">
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                    <ruleList>
-                        <compareText logic="does_not_equal" text="${existingEmail}" value=""/>
-                        <compareText logic="equals" text="${existingPassword}" value=""/>
-                    </ruleList>
-                </throwError>
                 <setInstallerVariable name="do_not_validate_email" value="true" persist="1">
                     <ruleList>
                         <compareText logic="equals" text="${existingEmail}" value=""/>
@@ -659,7 +652,14 @@
 	
     <!-- Post installation actions -->
     <postInstallationActionList>
-	
+
+        <!-- Make sure, we register the same existingEmail registered earlier -->
+        <setInstallerVariable name="existingEmail" value="${iExistingEmail}">
+            <ruleList>
+                <stringTest text="${iExistingEmail}" type="not_empty"/>
+            </ruleList>
+        </setInstallerVariable>
+
         <!-- LIN & MAC: Write the MigrationWizard Version to INI File -->
         <actionGroup>
             <actionList>
@@ -1206,7 +1206,7 @@
                     cliOptionName="existing-password"
                     ask="1"
                     description="${msg(userAuth.password.value)}"
-                    allowEmptyValue="0"
+                    allowEmptyValue="1"
                     askForConfirmation="0"
                     cliOptionShow="1">
                     <validationActionList>

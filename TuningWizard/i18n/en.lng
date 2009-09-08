@@ -61,4 +61,4 @@ ws.exception.from.server=An error occured. Please try again.
 ws.internet.not.connected=Error in calling web service. Please check the internet connection and try again.
 
 tw.installation.dir=Installation Directory
-
+emailpassword.not.provided=Please provide the email and password for the EnterpriseDB.
