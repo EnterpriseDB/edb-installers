@@ -373,7 +373,7 @@ age"
           PG_DATETIME_SETTING_LINUX_X64="64-bit integers"
     fi
 
-    _replace PG_DATETIME_SETTING_LINUX_X64 "$PG_DATETIME_SETTING_LINUX_X64" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"
+    _replace @@PG_DATETIME_SETTING_LINUX_X64@@ "$PG_DATETIME_SETTING_LINUX_X64" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"
 
 		
     # Build the installer
