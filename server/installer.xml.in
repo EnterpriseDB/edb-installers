@@ -350,7 +350,6 @@
     
     <!-- Preinstallation actions -->
     <preInstallationActionList>
-        
         <!-- !WIN: Get existing directories & branding -->
         <actionGroup>
             <actionList>
@@ -545,6 +544,9 @@
         <!-- WIN: Get existing directories & branding -->
         <actionGroup>
             <actionList>
+                <!-- save the service-password in cliServicePassword variable to make sure -
+                     we'll use this password, while verifying/creating the user on windows -->
+                <setInstallerVariable name="cliServicePassword" value="${servicepassword}"/>
                 <!-- Get the existing data directory. -->
                 <registryGet>
                     <name>Data Directory</name>
@@ -4027,7 +4029,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
 			       <value>${superpassword}</value>
 			       <ruleList>
 				   <compareText>
-				    <text>${servicepassword}</text>
+				    <text>${cliServicePassword}</text>
 				    <logic>equals</logic>
 				    <value/>
 				  </compareText>
@@ -4148,24 +4150,21 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
 			      </ruleList>
 			</setInstallerVariableFromRegEx> 
 
-                         <!--set the servicepassword to password which user has entered on this page-->
-			 <setInstallerVariable>
-			       <name>servicepassword</name>
-			       <value>${superpassword}</value>
-                               <ruleEvaluationLogic>or</ruleEvaluationLogic>
-			       <ruleList>
-                                   <compareText>
-                                     <logic>equals</logic>
-                                     <text>${IsUpgrade}</text>
-                                     <value>1</value>
-                                   </compareText>
-				   <compareText>
-				    <text>${servicepassword}</text>
-				    <logic>equals</logic>
-				    <value/>
-				  </compareText>
-			      </ruleList>
-			 </setInstallerVariable>
+                        <!-- If upgrading, set the servicepassword to password which user has entered on this page -->
+                        <setInstallerVariable name="servicepassword" value="${superpassword}">
+                            <ruleList>
+                                <isTrue value="${IsUpgrade}"/>
+                            </ruleList>
+                        </setInstallerVariable>
+
+                        <!-- If not upgrading and servicepassword is not provided through command-line, set the servicepassword
+                        to password, which user has entered on this page -->
+                        <setInstallerVariable name="servicepassword" value="${superpassword}">
+                            <ruleList>
+                                <compareText logic="equals" text="${cliServicePassword}" value=""/>
+                                <isFalse value="${IsUpgrade}"/>
+                            </ruleList>
+                        </setInstallerVariable>
 		   
 			<runProgram>
                             <program>${system_temp_directory}\postgresql_installer\validateuser.exe</program>
