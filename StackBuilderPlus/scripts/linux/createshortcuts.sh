@@ -64,7 +64,6 @@ do
   chmod ugo+x $SCRIPT
 done
 _fixup_file "$INSTALLDIR/installer/StackBuilderPlus/configlibs.sh"
-_fixup_file "$INSTALLDIR/scripts/launchSBPUpdateMonitor.sh"
 _fixup_file "$INSTALLDIR/scripts/launchStackBuilderPlus.sh"
 _fixup_file "$INSTALLDIR/scripts/runStackBuilderPlus.sh"
 
