@@ -652,7 +652,14 @@
 	
     <!-- Post installation actions -->
     <postInstallationActionList>
-	
+
+        <!-- Make sure, we register the same existingEmail registered earlier -->
+        <setInstallerVariable name="existingEmail" value="${iExistingEmail}">
+            <ruleList>
+                <stringTest text="${iExistingEmail}" type="not_empty"/>
+            </ruleList>
+        </setInstallerVariable>
+
         <!-- LIN & MAC: Write the MigrationWizard Version to INI File -->
         <actionGroup>
             <actionList>
