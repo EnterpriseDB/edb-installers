@@ -183,3 +183,5 @@ config.systempassword.incorrect.windows=The password specified was incorrect. Pl
 
 locale.error=Locale specified is not supported.
 
+error.installing.runtimes=An error occured executing the Microsoft VC++ runtime installer.
+
