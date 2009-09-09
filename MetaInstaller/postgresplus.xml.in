@@ -3378,8 +3378,8 @@
         <runProgram abortOnError="0"
                     progressText="Installing StackBuilderPlus ... "
                     showMessageOnError="0"
-                    program="${system_temp_directory}\postgresplus\stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-osx.app/Contents/MacOS/installbuilder.sh"
-                    programArguments="--mode unattended --prefix &quot;${installdir}\StackBuilderPlus&quot; --branding &quot;Postgres Plus Standard Server ${product_version}&quot; ${monitor_server} --install-monitoring ${installMonitoring}"/>
+                    program="${system_temp_directory}/postgresplus/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-osx.app/Contents/MacOS/installbuilder.sh"
+                    programArguments="--mode unattended --prefix &quot;${installdir}/StackBuilderPlus&quot; --branding &quot;Postgres Plus Standard Server ${product_version}&quot; ${monitor_server} --install-monitoring ${installMonitoring}"/>
       </actionList>
       <ruleList>
         <isTrue value="${component(stackbuilderplus).selected}"/>
