@@ -629,12 +629,19 @@
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgMigrator-PG_MAJOR_VERSION" name="Branding" value="${branding}"/>
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgMigrator-PG_MAJOR_VERSION" name="Username" value="${existingEmail}"/>
 
-        <copyFile origin="${installdir}/lib/pg_migrator.so" destination="${pkglibdir}/">
+        <copyFile origin="${installdir}/lib/pg_migrator.so"
+                  destination="${pkglibdir}/"
+                  abortOnError="0"
+                  showMessageOnError="0">
             <ruleList>
                 <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+                <compareText text="${installdir}/lib" logic="does_not_equal" value="${pkglibdir}"/>
             </ruleList>
         </copyFile>
-        <copyFile origin="${installdir}\lib\pg_migrator.dll" destination="${pkglibdir}\">
+        <copyFile origin="${installdir}\lib\pg_migrator.dll"
+                  destination="${pkglibdir}\"
+                  abortOnError="0"
+                  showMessageOnError="0">
             <ruleList>
                 <compareText text="${platform_name}" logic="equals" value="windows"/>
             </ruleList>
@@ -1200,6 +1207,18 @@
                                 <isTrue value="${isValidPGPATH}"/>
                             </ruleList>
                         </actionGroup>
+                        <setInstallerVariableFromRegEx text="${pkglibdir}"
+                                                       name="pkglibdir"
+                                                       substitution="\/"
+                                                       pattern="\\">
+                            <ruleList>
+                                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                                <isTrue value="${isValidPGPATH}"/>
+                            </ruleList>
+                        </setInstallerVariableFromRegEx>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+
                     </validationActionList>
         
                     <!-- Validating whether installdir contains whitespaces (Linux) -->
