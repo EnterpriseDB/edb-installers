@@ -18,6 +18,10 @@ Installer.Uninstallation.ConfirmationQuestion=Do you want to uninstall pgmemcach
 
 Installer.Uninstallation.Title=Uninstalling pgmemcache
 
+pgmemcache.description=A PostgreSQL API based on libmemcached to interface with memcached, packaged by EnterpriseDB
+
+pgmemcache.product.comments=A PostgreSQL API based on libmemcached to interface with memcached
+
 upgrade.existing.installation.title=Existing installation
 
 upgrade.existing.installation.description=An existing pgmemcache installation has been found at ${installdir}. This installation will be upgraded.
