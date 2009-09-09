@@ -3,8 +3,6 @@
     <shortName>pgmigrator</shortName>
     <fullName>pgMigrator</fullName>
     <version>PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR</version>
-    <!-- These options are used on Windows -->
-    <startMenuGroupName>${branding}</startMenuGroupName>
     <!-- Product Specific Options -->
     <productComments>pg_migrator, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
