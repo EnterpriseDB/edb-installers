@@ -3662,7 +3662,7 @@
       <abortOnError>0</abortOnError>
       <program>/etc/init.d/postgresql-${product_version}</program>
       <programArguments>stop</programArguments>
-      <progressText>${msg(progress.text.stoping.server)}</progressText>
+      <progressText>${msg(progress.text.stopping.server)}</progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
         <compareText>
@@ -3688,7 +3688,7 @@
       <abortOnError>0</abortOnError>
       <program>launchctl</program>
       <programArguments>stop com.edb.launchd.postgresql-${product_version}</programArguments>
-      <progressText>${msg(progress.text.stoping.server)}</progressText>
+      <progressText>${msg(progress.text.stopping.server)}</progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
         <compareText>
