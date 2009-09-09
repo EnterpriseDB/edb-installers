@@ -4213,7 +4213,7 @@
           <ruleList>
             <isTrue value="${uninstall_sbp}"/>
             <!-- It is possible that user may have uninstalled only StackBuilderPlus manually -->
-            <fileTest path="${installdir}\pgJDBC\uninstall-stackbuilderplus.exe" condition="exists"/>
+            <fileTest path="${installdir}\StackBuilderPlus\uninstall-stackbuilderplus.exe" condition="exists"/>
           </ruleList>
         </runProgram>
         <!-- uninstall PostGIS -->

@@ -358,7 +358,7 @@
 
     <!-- OSX: Hide the dockIcon for shortcut -->
     <substitute>
-      <files>/Applications/${branding}/Application Stack Builder Plus.app/Contents/Info.plist</files>
+      <files>/Applications/${branding}/StackBuilder Plus.app/Contents/Info.plist</files>
       <substitutionList>
           <substitution pattern="&lt;/dict&gt;" value="        &lt;key&gt;LSUIElement&lt;/key&gt; &lt;string&gt;1&lt;/string&gt; &lt;/dict&gt;"/>
       </substitutionList>
@@ -528,9 +528,9 @@
     </actionGroup>
 
     <!-- MAC: Remove Stack Builder Plus shortcut -->
-    <deleteFile path="/Applications/${branding}/Application Stack Builder Plus.app">
+    <deleteFile path="/Applications/${branding}/StackBuilder Plus.app">
       <ruleList>
-        <fileExists path="/Applications/${branding}/Application Stack Builder Plus.app"/>
+        <fileExists path="/Applications/${branding}/StackBuilder Plus.app"/>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </deleteFile>
@@ -586,7 +586,7 @@
       <startMenuShortcutList>
 
         <!-- Application Stack Builder Plus -->
-        <startMenuShortcut name="Application Stack Builder Plus"
+        <startMenuShortcut name="StackBuilder Plus"
                            runInTerminal="0"
                            windowsExec="${installdir}\bin\stackbuilderplus.exe"/>
       </startMenuShortcutList>

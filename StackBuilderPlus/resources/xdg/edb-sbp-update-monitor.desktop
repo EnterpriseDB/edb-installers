@@ -1,7 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=Application Stack Builder Update Monitor (PG @@PG_VERSION@@)
-Comment=Stack Builder Plus (PG @@PG_VERSION@@) - Update Monitor daemon
+Name=StackBuilder Plus Update Monitor (PG @@PG_VERSION@@)
+Comment=StackBuilder Plus (PG @@PG_VERSION@@) - Update Monitor daemon
 Exec=@@INSTALL_DIR@@/scripts/launchSBPUpdateMonitor.sh
 Terminal=false
 Type=Application
