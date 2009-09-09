@@ -534,7 +534,7 @@
         </actionGroup>
         <actionGroup>
             <actionList>
-                <throwError text="Please provide the email and password for the EnterpriseDB." abortOnError="1">
+                <throwError text="${msg(emailpassword.not.provided)}" abortOnError="1">
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                         <compareText logic="equals" text="${existingEmail}" value=""/>
@@ -546,6 +546,7 @@
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </logMessage>
+
                 <setInstallerVariableFromScriptOutput
                     customErrorMessage="${msg(validatinguser.ws.error)}"
                     exec="${system_temp_directory}/tuningwizard/validateUserClient.o"
@@ -962,7 +963,7 @@
                     cliOptionName="existing-password"
                     ask="1"
                     description="${msg(userAuth.password.value)}"
-                    allowEmptyValue="0"
+                    allowEmptyValue="1"
                     askForConfirmation="0"
                     cliOptionShow="1">
                     <validationActionList>

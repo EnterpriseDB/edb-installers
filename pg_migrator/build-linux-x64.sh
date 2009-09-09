@@ -80,7 +80,7 @@ _build_pg_migrator_linux_x64() {
     cp $WD/pg_migrator/source/pg_migrator.linux-x64/README $WD/pg_migrator/staging/linux-x64/README.pg_migrator || _die "Couldn't copy INSTALL to staging directory"
 
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libssl.so* $PG_PATH_LINUX_X64/pg_migrator/staging/linux-x64/UserValidation/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypto.so* $PG_PATH_LINUX_X64/pg_migrator/staging/linux/UserValidation/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypto.so* $PG_PATH_LINUX_X64/pg_migrator/staging/linux-x64/UserValidation/lib" || _die "Failed to copy the dependency library"
 
     # Build the validateUserClient binary
     if [ ! -f $WD/TuningWizard/staging/linux-x64/UserValidation/validateUserClient.o ]; then
