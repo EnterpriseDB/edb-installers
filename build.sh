@@ -99,6 +99,7 @@ _init
 # Package: Server
 if [ $PG_PACKAGE_SERVER = 1 ];
 then
+    cd $WD
     source ./server/build.sh
 
     if [ $SKIPBUILD = 0 ]; 
@@ -360,6 +361,7 @@ fi
 #Package: pg_migrator
 if [ $PG_PACKAGE_PGMIGRATOR = 1 ];
 then
+    cd $WD
     source ./pg_migrator/build.sh
     if [ $SKIPBUILD = 0 ];
     then
@@ -372,6 +374,7 @@ fi
 #Package: StackBuilderPlus
 if [ $PG_PACKAGE_SBP = 1 ];
 then
+    cd $WD
     source ./StackBuilderPlus/build.sh
     if [ $SKIPBUILD = 0 ];
     then
@@ -384,6 +387,7 @@ fi
 #Package: Meta Installer
 if [ $PG_PACKAGE_META = 1 ];
 then
+    cd $WD
     source ./MetaInstaller/build.sh
     if [ $SKIPBUILD = 0 ];
     then
@@ -396,6 +400,7 @@ fi
 #Package: libpq
 if [ $PG_PACKAGE_LIBPQ = 1 ];
 then
+    cd $WD
     source ./libpq/build.sh
     if [ $SKIPBUILD = 0 ];
     then
@@ -405,12 +410,11 @@ then
         _postprocess_libpq || exit 1
 fi
 
-
-
 # Package: DevServer
 # ALWAYS BUILD THIS LAST!!
 if [ $PG_PACKAGE_DEVSERVER = 1 ];
 then
+    cd $WD
     source ./DevServer/build.sh
 
     if [ $SKIPBUILD = 0 ];
