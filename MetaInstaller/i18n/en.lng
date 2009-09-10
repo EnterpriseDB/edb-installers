@@ -109,7 +109,7 @@ server_utilization.mixed.lbl.value= Several applications will be running on this
 
 server_utilization.dedicated.title.value= Dedicated (a server running only Postgres Plus)
 server_utilization.dedicated.lbl.value= This machine is dedicated to run Postgres Plus and will use available memory to optimize performance. System shared memory setting will be updated automatically, if required.
-server_utilization.explaination.lbl.value= Please select the type of server, to determine the amount of system resources that may be utilised:
+server_utilization.explaination.lbl.value= Please select the type of server, to determine the amount of system resources that may be utilized:
 
 workload_profile.title.value= Workload Profile
 workload_profile.transaction.title.value= Transaction Processing (OLTP systems)

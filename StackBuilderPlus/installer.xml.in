@@ -7,7 +7,7 @@
   <startMenuGroupName>${branding}</startMenuGroupName>
   <!-- Product Specific Options -->
   <productComments>Application Stack Builder Plus for the PostgreSQL</productComments>
-  <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
+  <productDisplayName>StackBuilder Plus (PG PG_MAJOR_VERSION) ${productVersion}</productDisplayName>
   <requireInstallationByRootUser>1</requireInstallationByRootUser>
   <!-- The options are used for RPM registration -->
   <description>Advanced Application Stack Builder for the PostgreSQL server</description>
