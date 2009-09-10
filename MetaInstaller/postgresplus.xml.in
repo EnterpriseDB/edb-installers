@@ -4034,116 +4034,241 @@
                     section="PostgreSQL/${product_version}"
                     variable="uninstall_pgagent"/>
 
-        <!-- uninstall Slony1 -->
-        <runProgram abortOnError="0"
-                    program="${installdir}/Slony/uninstall-slony"
-                    programArguments="--mode unattended">
+        <actionGroup>
+          <actionList>
+            <!-- uninstall Slony1 -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/Slony/uninstall-slony"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_slony}"/>
+                <!-- It is possible that user may have uninstalled slony1 manually -->
+                <fileTest path="${installdir}/Slony/uninstall-slony" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall jdbc -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/pgJDBC/uninstall-pgjdbc"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_pgjdbc}"/>
+                <!-- It is possible that user may have uninstalled pgJDBC manually -->
+                <fileTest path="${installdir}/pgJDBC/uninstall-pgjdbc" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall StackBuilderPlus -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/StackBuilderPlus/uninstall-stackbuilderplus"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_sbp}"/>
+                <!-- It is possible that user may have uninstalled StackBuilderPlus manually -->
+                <fileTest path="${installdir}/StackBuilderPlus/uninstall-stackbuilderplus" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall PostGIS -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/PostGIS/uninstall-postgis"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_postgis}"/>
+                <!-- It is possible that user may have uninstalled PostGIS manually -->
+                <fileTest path="${installdir}/PostGIS/uninstall-postgis" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall psqlODBC -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/psqlODBC/uninstall-psqlodbc"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_psqlOdbc}"/>
+                <!-- It is possible that user may have uninstalled psqlODBC manually -->
+                <fileTest path="${installdir}/psqlODBC/uninstall-psqlodbc" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall NpgSql -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/Npgsql/uninstall-npgsql"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_npgsql}"/>
+                <!-- It is possible that user may have uninstalled NpgSql manually -->
+                <fileTest path="${installdir}/Npgsql/uninstall-npgsql" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall pgmemcache -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/uninstall-pgmemcache"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_pgmemcache}"/>
+                <!-- It is possible that user may have uninstalled pgmemcache manually -->
+                <fileTest path="${installdir}/uninstall-pgmemcache" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall pgBouncer -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/pgbouncer/uninstall-pgbouncer"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_pgbouncer}"/>
+                <!-- It is possible that user may have uninstalled NpgSql manually -->
+                <fileTest path="${installdir}/pgbouncer/uninstall-pgbouncer" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall pgAgent -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/pgAgent/uninstall-pgagent"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_pgagent}"/>
+                <!-- It is possible that user may have uninstalled pgAgent manually -->
+                <fileTest path="${installdir}/pgAgent/uninstall-pgagent" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall dbserver/PostgreSQL -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/uninstall-postgresql"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_dbserver}"/>
+                <!-- It is possible that user may have uninstalled PostgreSQL server manually -->
+                <fileTest path="${installdir}/uninstall-postgresql" condition="exists"/>
+              </ruleList>
+            </runProgram>
+          </actionList>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
-            <isTrue value="${uninstall_slony}"/>
-            <!-- It is possible that user may have uninstalled slony1 manually -->
-            <fileTest path="${installdir}/Slony/uninstall-slony" condition="exists"/>
+            <compareText logic="equals" text="${platform_name}" value="linux"/>
+            <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
           </ruleList>
-        </runProgram>
+        </actionGroup>
 
-        <!-- uninstall jdbc -->
-        <runProgram abortOnError="0"
-                    program="${installdir}/pgJDBC/uninstall-pgjdbc"
-                    programArguments="--mode unattended">
+        <actionGroup>
+          <actionList>
+            <!-- uninstall Slony1 -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/Slony/uninstall-slony.app/Contents/MacOS/installbuilder.sh"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_slony}"/>
+                <!-- It is possible that user may have uninstalled slony1 manually -->
+                <fileTest path="${installdir}/Slony/uninstall-slony.app/Contents/MacOS/installbuilder.sh" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall jdbc -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/pgJDBC/uninstall-pgjdbc.app/Contents/MacOS/installbuilder.sh"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_pgjdbc}"/>
+                <!-- It is possible that user may have uninstalled pgJDBC manually -->
+                <fileTest path="${installdir}/pgJDBC/uninstall-pgjdbc.app/Contents/MacOS/installbuilder.sh" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall StackBuilderPlus -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/StackBuilderPlus/uninstall-stackbuilderplus.app/Contents/MacOS/installbuilder.sh"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_sbp}"/>
+                <!-- It is possible that user may have uninstalled StackBuilderPlus manually -->
+                <fileTest path="${installdir}/StackBuilderPlus/uninstall-stackbuilderplus.app/Contents/MacOS/installbuilder.sh" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall PostGIS -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/PostGIS/uninstall-postgis.app/Contents/MacOS/installbuilder.sh"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_postgis}"/>
+                <!-- It is possible that user may have uninstalled PostGIS manually -->
+                <fileTest path="${installdir}/PostGIS/uninstall-postgis.app/Contents/MacOS/installbuilder.sh" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall psqlODBC -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/psqlODBC/uninstall-psqlodbc.app/Contents/MacOS/installbuilder.sh"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_psqlOdbc}"/>
+                <!-- It is possible that user may have uninstalled psqlODBC manually -->
+                <fileTest path="${installdir}/psqlODBC/uninstall-psqlodbc.app/Contents/MacOS/installbuilder.sh" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall NpgSql -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/Npgsql/uninstall-npgsql.app/Contents/MacOS/installbuilder.sh"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_npgsql}"/>
+                <!-- It is possible that user may have uninstalled NpgSql manually -->
+                <fileTest path="${installdir}/Npgsql/uninstall-npgsql.app/Contents/MacOS/installbuilder.sh" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall pgmemcache -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/uninstall-pgmemcache.app/Contents/MacOS/installbuilder.sh"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_pgmemcache}"/>
+                <!-- It is possible that user may have uninstalled pgmemcache manually -->
+                <fileTest path="${installdir}/uninstall-pgmemcache.app/Contents/MacOS/installbuilder.sh" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall pgBouncer -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/pgbouncer/uninstall-pgbouncer.app/Contents/MacOS/installbuilder.sh"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_pgbouncer}"/>
+                <!-- It is possible that user may have uninstalled NpgSql manually -->
+                <fileTest path="${installdir}/pgbouncer/uninstall-pgbouncer.app/Contents/MacOS/installbuilder.sh" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall pgAgent -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/pgAgent/uninstall-pgagent.app/Contents/MacOS/installbuilder.sh"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_pgagent}"/>
+                <!-- It is possible that user may have uninstalled pgAgent manually -->
+                <fileTest path="${installdir}/pgAgent/uninstall-pgagent.app/Contents/MacOS/installbuilder.sh" condition="exists"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- uninstall dbserver/PostgreSQL -->
+            <runProgram abortOnError="0"
+                        program="${installdir}/uninstall-postgresql.app/Contents/MacOS/installbuilder.sh"
+                        programArguments="--mode unattended">
+              <ruleList>
+                <isTrue value="${uninstall_dbserver}"/>
+                <!-- It is possible that user may have uninstalled PostgreSQL server manually -->
+                <fileTest path="${installdir}/uninstall-postgresql.app/Contents/MacOS/installbuilder.sh" condition="exists"/>
+              </ruleList>
+            </runProgram>
+          </actionList>
           <ruleList>
-            <isTrue value="${uninstall_pgjdbc}"/>
-            <!-- It is possible that user may have uninstalled pgJDBC manually -->
-            <fileTest path="${installdir}/pgJDBC/uninstall-pgjdbc" condition="exists"/>
+            <compareText logic="equals" text="${platform_name}" value="osx"/>
           </ruleList>
-        </runProgram>
-
-        <!-- uninstall StackBuilderPlus -->
-        <runProgram abortOnError="0"
-                    program="${installdir}/StackBuilderPlus/uninstall-stackbuilderplus"
-                    programArguments="--mode unattended">
-          <ruleList>
-            <isTrue value="${uninstall_sbp}"/>
-            <!-- It is possible that user may have uninstalled StackBuilderPlus manually -->
-            <fileTest path="${installdir}/StackBuilderPlus/uninstall-stackbuilderplus" condition="exists"/>
-          </ruleList>
-        </runProgram>
-
-        <!-- uninstall PostGIS -->
-        <runProgram abortOnError="0"
-                    program="${installdir}/PostGIS/uninstall-postgis"
-                    programArguments="--mode unattended">
-          <ruleList>
-            <isTrue value="${uninstall_postgis}"/>
-            <!-- It is possible that user may have uninstalled PostGIS manually -->
-            <fileTest path="${installdir}/PostGIS/uninstall-postgis" condition="exists"/>
-          </ruleList>
-        </runProgram>
-
-        <!-- uninstall psqlODBC -->
-        <runProgram abortOnError="0"
-                    program="${installdir}/psqlODBC/uninstall-psqlodbc"
-                    programArguments="--mode unattended">
-          <ruleList>
-            <isTrue value="${uninstall_psqlOdbc}"/>
-            <!-- It is possible that user may have uninstalled psqlODBC manually -->
-            <fileTest path="${installdir}/psqlODBC/uninstall-psqlodbc" condition="exists"/>
-          </ruleList>
-        </runProgram>
-
-        <!-- uninstall NpgSql -->
-        <runProgram abortOnError="0"
-                    program="${installdir}/Npgsql/uninstall-npgsql"
-                    programArguments="--mode unattended">
-          <ruleList>
-            <isTrue value="${uninstall_npgsql}"/>
-            <!-- It is possible that user may have uninstalled NpgSql manually -->
-            <fileTest path="${installdir}/Npgsql/uninstall-npgsql" condition="exists"/>
-          </ruleList>
-        </runProgram>
-
-        <!-- uninstall pgmemcache -->
-        <runProgram abortOnError="0"
-                    program="${installdir}/uninstall-pgmemcache"
-                    programArguments="--mode unattended">
-          <ruleList>
-            <isTrue value="${uninstall_pgmemcache}"/>
-            <!-- It is possible that user may have uninstalled pgmemcache manually -->
-            <fileTest path="${installdir}/uninstall-pgmemcache" condition="exists"/>
-          </ruleList>
-        </runProgram>
-
-        <!-- uninstall pgBouncer -->
-        <runProgram abortOnError="0"
-                    program="${installdir}/pgbouncer/uninstall-pgbouncer"
-                    programArguments="--mode unattended">
-          <ruleList>
-            <isTrue value="${uninstall_pgbouncer}"/>
-            <!-- It is possible that user may have uninstalled NpgSql manually -->
-            <fileTest path="${installdir}/pgbouncer/uninstall-pgbouncer" condition="exists"/>
-          </ruleList>
-        </runProgram>
-
-        <!-- uninstall pgAgent -->
-        <runProgram abortOnError="0"
-                    program="${installdir}/pgAgent/uninstall-pgagent"
-                    programArguments="--mode unattended">
-          <ruleList>
-            <isTrue value="${uninstall_pgagent}"/>
-            <!-- It is possible that user may have uninstalled pgAgent manually -->
-            <fileTest path="${installdir}/pgAgent/uninstall-pgagent" condition="exists"/>
-          </ruleList>
-        </runProgram>
-
-        <!-- uninstall dbserver/PostgreSQL -->
-        <runProgram abortOnError="0"
-                    program="${installdir}/uninstall-postgresql"
-                    programArguments="--mode unattended">
-          <ruleList>
-            <isTrue value="${uninstall_dbserver}"/>
-            <!-- It is possible that user may have uninstalled PostgreSQL server manually -->
-            <fileTest path="${installdir}/uninstall-postgresql" condition="exists"/>
-          </ruleList>
-        </runProgram>
-
+        </actionGroup>
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
