@@ -40,7 +40,7 @@ PG_BUILDNUM_SBP=1
 #                     Minor version is revision.build. 
 
 PG_MAJOR_VERSION=8.4
-PG_MINOR_VERSION=1.1
+PG_MINOR_VERSION=1.2
 
 # Other package versions
 PG_VERSION_APACHE=2.2.11
