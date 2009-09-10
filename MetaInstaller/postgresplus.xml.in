@@ -2206,23 +2206,6 @@
           <value>${product_version}</value>
         </registrySet>
 
-        <!-- Write the EnterpriseDB user-name(email address) in the postgres-reg.ini/registry -->
-        <iniFileSet file="/etc/postgres-reg.ini"
-                    section="PostgreSQL/PG_MAJOR_VERSION"
-                    key="Username"
-                    value="${existingEmail}">
-          <ruleList>
-            <stringTest text="${existingEmail}" type="not_empty"/>
-            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-          </ruleList>
-        </iniFileSet>
-        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-PG_MAJOR_VERSION"
-                     name="Username"
-                     value="${existingEmail}">
-          <ruleList>
-            <stringTest text="${existingEmail}" type="not_empty"/>
-          </ruleList>
-        </registrySet>
       </actionList>
     </actionGroup>
     <setInstallerVariable>
