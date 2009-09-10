@@ -1214,9 +1214,6 @@
                                 <isTrue value="${isValidPGPATH}"/>
                             </ruleList>
                         </setInstallerVariableFromRegEx>
-                    </ruleList>
-                </setInstallerVariableFromRegEx>
-
                     </validationActionList>
         
                     <!-- Validating whether installdir contains whitespaces (Linux) -->
