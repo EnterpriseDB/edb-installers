@@ -2206,6 +2206,23 @@
           <value>${product_version}</value>
         </registrySet>
 
+        <!-- Write the EnterpriseDB user-name(email address) in the postgres-reg.ini/registry -->
+        <iniFileSet file="/etc/postgres-reg.ini"
+                    section="PostgresPlus/PG_MAJOR_VERSION"
+                    key="Username"
+                    value="${existingEmail}">
+          <ruleList>
+            <stringTest text="${existingEmail}" type="not_empty"/>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </iniFileSet>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Installations\postgresplus-${product_version}"
+                     name="Username"
+                     value="${existingEmail}">
+          <ruleList>
+            <stringTest text="${existingEmail}" type="not_empty"/>
+          </ruleList>
+        </registrySet>
       </actionList>
     </actionGroup>
     <setInstallerVariable>
@@ -4289,6 +4306,16 @@
     <actionGroup>
       <actionList>
           <deleteFile path="/etc/postgresplus-reg.ini"/>
+          <!-- Delete the Username from the PostgreSqlIni -->
+          <iniFileSet file="${PostgreSqlIni}"
+                      section="PostgresPlus/PG_MAJOR_VERSION"
+                      key="Username"
+                      value="">
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            <fileTest path="${PostgreSqlIni}" condition="exists"/>
+          </ruleList>
+        </iniFileSet>
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
