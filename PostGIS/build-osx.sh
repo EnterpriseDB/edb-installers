@@ -79,6 +79,106 @@ _prep_PostGIS_osx() {
 }
 
 
+#########################################################################################
+#Change so reference --Copy of common.sh's _rewrite_so_reference modified to suit postgis
+#########################################################################################
+
+_change_so_refs() {
+
+    BASE_PATH=$1
+    FILE_PATH=$BASE_PATH/$2
+    LOADER_PATH=$3
+
+    FLIST=`ls $FILE_PATH`
+
+    for FILE in $FLIST; do
+
+            IS_EXECUTABLE=`file $FILE_PATH/$FILE | grep "Mach-O executable" | wc -l`
+            IS_SHAREDLIB=`file $FILE_PATH/$FILE | grep -E "(Mach-O\ dynamically\ linked\ shared\ library|Mach-O\ bundle)" | wc -l`
+
+               if [ $IS_EXECUTABLE -ne 0 -o $IS_SHAREDLIB -ne 0 ]; then
+
+                    # We need to ignore symlinks
+                    IS_SYMLINK=`file $FILE_PATH/$FILE | grep "symbolic link" | wc -l`
+
+                    if [ $IS_SYMLINK -eq 0 ]; then
+
+                            if [ $IS_EXECUTABLE -ne 0 ]; then
+                                    echo "Post-processing executable: $FILE_PATH/$FILE"
+                            else
+                                    echo "Post-processing shared library: $FILE_PATH/$FILE"
+                            fi
+
+                            if [ $IS_SHAREDLIB -ne 0 ]; then
+                                    # Change the library ID
+                                    ID=`otool -D $FILE_PATH/$FILE | grep $BASE_PATH | grep -v ":"`
+                                    ID1=`otool -D $FILE_PATH/$FILE | grep "$PG_CACHING/proj-$PG_TARBALL_PROJ.osx" | grep -v ":"`
+                                    ID2=`otool -D $FILE_PATH/$FILE | grep "$PG_CACHING/geos-$PG_TARBALL_GEOS.osx" | grep -v ":"`
+                                   
+                                    for DLL in $ID; do
+                                            echo "    - rewriting ID: $DLL"
+
+                                            NEW_DLL=`echo $DLL | sed -e "s^$FILE_PATH/^^g"`
+                                            echo "                to: $NEW_DLL"
+
+                                            install_name_tool -id "$NEW_DLL" "$FILE_PATH/$FILE" 
+                                    done
+
+                                    for DLL in $ID1; do
+                                            echo "    - rewriting ID: $DLL"
+                                            NEW_DLL=`echo $DLL | sed -e "s^$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/lib/^^g"`
+                                            echo "                to: $NEW_DLL"
+
+                                            install_name_tool -id "$NEW_DLL" "$FILE_PATH/$FILE"
+                                    done
+                                    
+                                    for DLL in $ID2; do
+                                            echo "    - rewriting ID: $DLL"
+                                            NEW_DLL=`echo $DLL | sed -e "s^$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/lib/^^g"`
+                                            echo "                to: $NEW_DLL"
+
+                                            install_name_tool -id "$NEW_DLL" "$FILE_PATH/$FILE"
+                                    done
+                                    
+                            fi
+
+                            # Now change the referenced libraries
+                            DLIST=`otool -L $FILE_PATH/$FILE | grep $BASE_PATH | grep -v ":" | awk '{ print $1 }'`
+                            DLIST1=`otool -L $FILE_PATH/$FILE | grep "$PG_CACHING/proj-$PG_TARBALL_PROJ.osx" | grep -v ":" | awk '{ print $1 }'`
+                            DLIST2=`otool -L $FILE_PATH/$FILE | grep "$PG_CACHING/geos-$PG_TARBALL_GEOS.osx" | grep -v ":" | awk '{ print $1 }'`
+
+                            for DLL in $DLIST; do
+                                    echo "    - rewriting ref: $DLL"
+
+                                    NEW_DLL=`echo $DLL | sed -e "s^$BASE_PATH/^^g"`
+                                    echo "                 to: $LOADER_PATH/$NEW_DLL"
+
+                                    install_name_tool -change "$DLL" "$LOADER_PATH/$NEW_DLL" "$FILE_PATH/$FILE" 
+                            done
+
+                            for DLL in $DLIST1; do
+                                    echo "    - rewriting ref: $DLL"
+
+                                    NEW_DLL=`echo $DLL | sed -e "s^$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/^^g"`
+                                    echo "                 to: $LOADER_PATH/$NEW_DLL"
+
+                                    install_name_tool -change "$DLL" "$LOADER_PATH/$NEW_DLL" "$FILE_PATH/$FILE" 
+                            done
+
+                            for DLL in $DLIST2; do
+                                    echo "    - rewriting ref: $DLL"
+
+                                    NEW_DLL=`echo $DLL | sed -e "s^$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/^^g"`
+                                    echo "                 to: $LOADER_PATH/$NEW_DLL"
+
+                                    install_name_tool -change "$DLL" "$LOADER_PATH/$NEW_DLL" "$FILE_PATH/$FILE" 
+                            done
+                    fi
+            fi
+    done
+}
+
+
 ################################################################################
 # Geos build
 ################################################################################
@@ -292,8 +392,8 @@ _build_PostGIS_osx() {
     cp -R $PG_CACHING/proj-$PG_TARBALL_PROJ.osx $PG_STAGING/proj || _die "Failed to copy the cached proj"
     cp -R $PG_CACHING/geos-$PG_TARBALL_GEOS.osx $PG_STAGING/geos || _die "Failed to copy the cached geos"
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
-    _rewrite_so_refs $WD/PostGIS/staging/osx/geos lib @loader_path/..
-    _rewrite_so_refs $WD/PostGIS/staging/osx/proj lib @loader_path/..
+    _change_so_refs $WD/PostGIS/staging/osx/geos lib @loader_path/..
+    _change_so_refs $WD/PostGIS/staging/osx/proj lib @loader_path/..
 
     cd $WD/PostGIS
     echo "Copying Dependent libraries"
@@ -305,6 +405,8 @@ _build_PostGIS_osx() {
 
     _rewrite_so_refs $WD/PostGIS/staging/osx/PostGIS bin @loader_path/..
     _rewrite_so_refs $WD/PostGIS/staging/osx/PostGIS lib @loader_path/..
+    _change_so_refs $WD/PostGIS/staging/osx/PostGIS bin @loader_path/..
+    _change_so_refs $WD/PostGIS/staging/osx/PostGIS lib @loader_path/..
 
     cd $WD
  
