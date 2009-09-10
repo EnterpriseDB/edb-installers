@@ -3316,7 +3316,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default="postgres" 
             description="${msg(serviceaccount.description)}"/>
         <passwordParameter name="servicepassword" ask="1" cliOptionShow="1" cliOptionName="servicepassword" 
-            description="${msg(servicepassword.description)}" default="${defaultpassword}">
+            description="${msg(servicepassword.description)}" default="" >
 	   <ruleList>
                <compareText>
                    <text>${platform_name}</text>
