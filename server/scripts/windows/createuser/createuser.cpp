@@ -2,9 +2,17 @@
 // Dave Page, EnterpriseDB
 
 #define WIN32_LEAN_AND_MEAN
+// #define _WIN32_WINNT 0x0502   // Windows Server 2003 family
+// #define _WIN32_WINNT 0x0501      // Windows XP
+#define _WIN32_WINNT 0x0500   // Windows 2000
+// #define _WIN32_WINNT 0x0400   // Windows NT 4.0
+// #define _WIN32_WINDOWS 0x0500 // Windows ME
+// #define _WIN32_WINDOWS 0x0410 // Windows 98
+// #define _WIN32_WINDOWS 0x0400 // Windows 95
 #include "windows.h"
 #include "ntsecapi.h"
 #include "lm.h"
+#include "aclapi.h"
 #include "stdio.h"
 #include "stdlib.h"
 
@@ -24,6 +32,31 @@ TCHAR *lasterror_string()
         sprintf_s(newstr, 128, "Unknown error %i", e);
     }
     return newstr;
+}
+
+void HideUserFromLogon(LPTSTR pszUserName)
+{
+    HKEY    hkey;
+    DWORD   dwData;
+    TCHAR   szBuf[MAX_PATH];
+
+    wsprintf(szBuf, "Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\SpecialAccounts\\UserList");
+
+    if (RegCreateKey(HKEY_LOCAL_MACHINE, szBuf, &hkey) != STATUS_SUCCESS)
+    {
+        fprintf(stdout, "User may not be hidden on logon screen. Reason:\nCouldn't open the registry key 'Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\SpecialAccounts\\UserList'\n");
+        return;
+    }
+
+    dwData=0;
+    if(RegSetValueEx( hkey, pszUserName, 0, REG_DWORD, (LPBYTE) &dwData, sizeof(DWORD)) != STATUS_SUCCESS)
+    {
+        fprintf(stdout, "User may not be hidden on logon screen. Reason:\nCouldn't set value for the user '%s' to 0 in UserList (SpecialAccounts)'\n");
+        RegCloseKey(hkey);
+        return;
+    }
+    fprintf(stdout, "Successfully Hide the user '%s' on the logon screen.\n", pszUserName);
+    RegCloseKey(hkey);
 }
 
 // Check whether or not a user account exists
@@ -117,6 +150,11 @@ NET_API_STATUS CreateUser(LPTSTR domain, LPTSTR username, LPTSTR password, TCHAR
 
 		sprintf_s(errbuf, errsize, "The service user account '%s\\%s' could not be created: %s\n", domain, username, accterr);
 
+	}
+	else
+	{
+		// Hide this user on Logon Screen
+		HideUserFromLogon(username);
 	}
 
     return nStatus;
@@ -432,19 +470,19 @@ int main(int argc, TCHAR * argv[])
 		switch(nStatus)
 		{
 			case NERR_Success:
-				fprintf(stdout, "User account '%s' added to 'Users' group.", qualifiedUser);
+				fprintf(stdout, "User account '%s' added to 'Users' group.\n", qualifiedUser);
 				break;
 			case ERROR_MEMBER_IN_ALIAS:
-				fprintf(stdout, "User '%s' already member of 'Users' group.", qualifiedUser);
+				fprintf(stdout, "User '%s' already member of 'Users' group.\n", qualifiedUser);
 				break;
 			case ERROR_ACCESS_DENIED:
-				fprintf(stderr, "Access Denied (Adding '%s' to 'Users' group.)", qualifiedUser);
+				fprintf(stderr, "Access Denied (Adding '%s' to 'Users' group.)\n", qualifiedUser);
 				return nStatus;
 			case ERROR_NO_SUCH_MEMBER:
-				fprintf(stderr, "No member exists called '%s'. Therefore, no new members were added to 'Users'.", qualifiedUser);
+				fprintf(stderr, "No member exists called '%s'. Therefore, no new members were added to 'Users'.\n", qualifiedUser);
 				return nStatus;
 			case ERROR_INVALID_MEMBER:
-				fprintf(stderr, "User '%s' cannot be added to 'Users' group because its account type is invalid.", qualifiedUser);
+				fprintf(stderr, "User '%s' cannot be added to 'Users' group because its account type is invalid.\n", qualifiedUser);
 				return nStatus;
 		}
 	}
