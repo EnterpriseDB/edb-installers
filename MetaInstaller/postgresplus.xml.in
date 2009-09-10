@@ -3918,6 +3918,26 @@
       </ruleList>
     </runProgram>
 
+    <startWindowsService>
+      <abortOnError>0</abortOnError>
+      <delay>20000</delay>
+      <displayName></displayName>
+      <serviceName>pgAgent</serviceName>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${component(pgagent).selected}</text>
+          <value>1</value>
+        </compareText>
+      </ruleList>
+    </startWindowsService>
+
     <deleteFile>
       <path>${system_temp_directory}/postgresplus/dynaTune.properties</path>
     </deleteFile>
