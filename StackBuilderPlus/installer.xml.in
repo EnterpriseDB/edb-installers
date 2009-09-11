@@ -358,7 +358,7 @@
 
     <!-- OSX: Hide the dockIcon for shortcut -->
     <substitute>
-      <files>/Applications/${branding}/Application Stack Builder Plus.app/Contents/Info.plist</files>
+      <files>/Applications/${branding}/StackBuilder Plus.app/Contents/Info.plist</files>
       <substitutionList>
           <substitution pattern="&lt;/dict&gt;" value="        &lt;key&gt;LSUIElement&lt;/key&gt; &lt;string&gt;1&lt;/string&gt; &lt;/dict&gt;"/>
       </substitutionList>
