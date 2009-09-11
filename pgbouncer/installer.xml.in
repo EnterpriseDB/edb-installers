@@ -617,6 +617,11 @@
                     <text>${platform_name}</text>
                     <value>windows</value>
                 </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${autostart}</text>
+                    <value>yes</value>
+                </compareText>
             </ruleList>
         </startWindowsService>  
 
@@ -632,13 +637,18 @@
                     <text>${platform_name}</text>
                     <value>linux</value>
                 </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${autostart}</text>
+                    <value>yes</value>
+                </compareText>
             </ruleList>
         </runProgram>
 
         <!-- MAC: Start the pgbouncer service -->    
         <runProgram>
             <program>launchctl</program>
-            <programArguments>start com.edb.launchd.pgbouncer</programArguments>
+            <programArguments>load /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist</programArguments>
             <abortOnError>0</abortOnError>
             <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
             <ruleList>
@@ -646,6 +656,11 @@
                     <logic>equals</logic>
                     <text>${platform_name}</text>
                     <value>osx</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${autostart}</text>
+                    <value>yes</value>
                 </compareText>
             </ruleList>
         </runProgram>
@@ -965,6 +980,17 @@
         </component>
     </componentList>
     <parameterList>
+
+    <stringParameter cliOptionName="autostart" ask="0" cliOptionShow="0">
+          <name>autostart</name>
+          <description>AutoStart Service</description>
+          <explanation/>
+          <value/>
+          <default>yes</default>
+          <allowEmptyValue>1</allowEmptyValue>
+          <width>40</width>
+        </stringParameter>
+
     <parameterGroup>
       <name>pgdetails</name>
       <title>${msg(pg.details.title)}</title>

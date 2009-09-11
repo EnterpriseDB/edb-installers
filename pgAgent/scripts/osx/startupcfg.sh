@@ -88,8 +88,5 @@ EOT
 # Fixup the permissions on the launchDaemon
 chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.pgagent.plist" || _warn "Failed to set the ownership of the launchd daemon for pgAgent (/Library/LaunchDaemons/com.edb.launchd.pgagent.plist)"
 
-# Load the LaunchDaemon
-launchctl load /Library/LaunchDaemons/com.edb.launchd.pgagent.plist
-
 echo "$0 ran to completion"
 exit $WARN

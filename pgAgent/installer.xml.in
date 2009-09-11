@@ -660,7 +660,7 @@
       </ruleList>
     </startWindowsService>
 
-    <!-- LIN & MAC : Start pgAgent -->
+    <!-- LIN  : Start pgAgent -->
     <actionGroup>
       <actionList>
         <runProgram>
@@ -682,7 +682,7 @@
     <!-- MAC : Start the pgAgent service -->
     <runProgram>
       <program>launchctl</program>
-      <programArguments>start com.edb.launchd.pgagent</programArguments>
+      <programArguments>load /Library/LaunchDaemons/com.edb.launchd.pgagent.plist</programArguments>
       <abortOnError>0</abortOnError>
       <showMessageOnError>1</showMessageOnError>
       <customErrorMessage>${msg(error.start.pgagent)}</customErrorMessage>

@@ -2675,7 +2675,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux.bin</program>
-      <programArguments>--mode unattended --installdir ${installdir}/pgbouncer</programArguments>
+      <programArguments>--mode unattended --installdir ${installdir}/pgbouncer --autostart no</programArguments>
       <progressText>Installing pgbouncer ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -2697,7 +2697,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux-x64.bin</program>
-      <programArguments>--mode unattended --installdir ${installdir}/pgbouncer</programArguments>
+      <programArguments>--mode unattended --installdir ${installdir}/pgbouncer --autostart no</programArguments>
       <progressText>Installing pgbouncer ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3159,7 +3159,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}\postgresplus\pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-windows.exe</program>
-      <programArguments>--mode unattended --prefix "${installdir}\pgbouncer"</programArguments>
+      <programArguments>--mode unattended --prefix "${installdir}\pgbouncer" --autostart no</programArguments>
       <progressText>Installing pgbouncer ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3197,7 +3197,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}\postgresplus\pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-windows.exe</program>
-      <programArguments>--mode unattended --prefix "${installdir}\pgAgent" --pghost ${defaultpghost} --pguser ${supername} --pgpassword ${superpassword} --pgport ${serverport} --systemuser ${supername} --systempassword ${superpassword} --schema ${schema}</programArguments>
+      <programArguments>--mode unattended --prefix "${installdir}\pgAgent" --pghost ${defaultpghost} --pguser ${supername} --pgpassword ${superpassword} --pgport ${serverport} --systemuser ${supername} --systempassword ${superpassword} --schema ${schema} --autostart no</programArguments>
       <progressText>Installing pgAgent ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3509,7 +3509,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/installbuilder.sh</program>
-      <programArguments>--mode unattended --installdir ${installdir}/pgbouncer</programArguments>
+      <programArguments>--mode unattended --installdir ${installdir}/pgbouncer --autostart no</programArguments>
       <progressText>Installing pgbouncer ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3896,7 +3896,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>launchctl</program>
-      <programArguments>start com.edb.launchd.pgagent</programArguments>
+      <programArguments>load /Library/LaunchDaemons/com.edb.launchd.pgagent.plist</programArguments>
       <progressText>Starting pgAgent ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3932,6 +3932,68 @@
         </compareText>
       </ruleList>
     </startWindowsService>
+
+    <runProgram>
+      <abortOnError>0</abortOnError>
+      <program>/etc/init.d/pgbouncer</program>
+      <programArguments>start</programArguments>
+      <progressText>Starting pgBouncer ... </progressText>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${component(pgbouncer).selected}</text>
+          <value>1</value>
+        </compareText>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>linux</value>
+        </compareText>
+      </ruleList>
+    </runProgram>
+
+    <runProgram>
+      <abortOnError>0</abortOnError>
+      <program>launchctl</program>
+      <programArguments>load /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist</programArguments>
+      <progressText>Starting pgBouncer ... </progressText>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${component(pgbouncer).selected}</text>
+          <value>1</value>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+      </ruleList>
+    </runProgram>
+
+
+    <startWindowsService>
+      <abortOnError>0</abortOnError>
+      <delay>20000</delay>
+      <displayName></displayName>
+      <serviceName>pgBouncer</serviceName>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${component(pgbouncer).selected}</text>
+          <value>1</value>
+        </compareText>
+      </ruleList>
+    </startWindowsService>
+
 
     <deleteFile>
       <path>${system_temp_directory}/postgresplus/dynaTune.properties</path>
