@@ -98,7 +98,7 @@ _build_pgmemcache_osx() {
         install_name_tool -id $new_id $file
     done
     
-    install_name_tool -change $PG_PGHOME_OSX/lib/libmemcached.2.dylib libmemcached.2.dylib pgmemcache.so
+    install_name_tool -change $PG_PGHOME_OSX/lib/libmemcached.2.dylib @loader_path/../lib/libmemcached.2.dylib pgmemcache.so
 }
 
 

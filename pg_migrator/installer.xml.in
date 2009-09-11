@@ -935,6 +935,7 @@
                      which does not have this authentication process -->
             <ruleList>
                  <compareText logic="equals" text="${iExistingEmail}" value=""/>
+                 <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
             </ruleList>
         </parameterGroup>
         <parameterGroup
