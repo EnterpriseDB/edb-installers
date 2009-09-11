@@ -195,7 +195,7 @@
     <actionGroup>
       <actionList>
         <runProgram program="ps"> 
-           <programArguments>axco pid,command | awk "/UpdateManager/ {print \$1}"</programArguments>
+           <programArguments>ax | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | cut -f1 -d " " | head -1</programArguments>
         </runProgram>
         <runProgram program="kill" programArguments="-9 ${program_stdout}">
            <ruleList>
@@ -454,6 +454,31 @@
 
   <!-- preUninstallation actions -->
   <preUninstallationActionList>
+
+    <!-- Stop the montioring if installed -->
+    <kill path="${installdir}\bin\UpdateManager.exe" name="UpdateManager.exe" >
+      <ruleList>
+        <processTest name="UpdateManager.exe" logic="is_running"/>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </kill>
+
+    <actionGroup>
+      <actionList>
+        <runProgram program="ps"> 
+           <programArguments>ax | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | cut -f1 -d " " | head -1</programArguments>
+        </runProgram>
+        <runProgram program="kill" programArguments="-9 ${program_stdout}">
+           <ruleList>
+             <compareText logic="does_not_equal" text="${program_stdout}" value=""/>
+           </ruleList>
+        </runProgram>  
+      </actionList>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
     <actionGroup>
       <actionList>
         <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Description" value=""/>

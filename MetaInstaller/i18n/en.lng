@@ -89,55 +89,55 @@ valueadded.dbInstallTuning.lbl.value=Database Installation Tuning is a Web servi
 valueadded.updateNotification.rb2.value=Update Notification Service
 valueadded.updateNotification.lbl.value=The Update Notification Service automatically informs you, via email, when security patches and other updates are available for your Postgres Plus database server.  It also provides you with information on how to download and apply the updates.
 
-existingUser.title.value= Registered user?
-existingUser.lbl.text.value=If you already have an account at EnterpriseDB, please enter your logon details on the following screen. If you are not registered, your web browser will display the EnterpriseDB website where you can register and then continue with the installation process.
-userAuth.existing.user.lbl.value= Are you existing Postgres Plus user?
+existingUser.title.value=Registered user?
+existingUser.lbl.text.value=The options you have selected require an enterprisedb.com user account. If you do not have one, your web browser will display the EnterpriseDB website where you can register and then continue with the installation process.
+userAuth.existing.user.lbl.value=Do you have an enterprisedb.com user account?
 
-userAuth.title.value= User Authentication
-userAuth.email.value= Email
-error.invalid.email.value= Invalid email address. You must provide a valid email address.  Please try again.
-error.invalid.password.value= Password is empty or contains invalid characters. Please enter valid password.
-userAuth.existing.password.value= Password
-userAuth.new.user.lbl.value= New User
+userAuth.title.value=User Authentication
+userAuth.email.value=Email
+error.invalid.email.value=Invalid email address. You must provide a valid email address.  Please try again.
+error.invalid.password.value=Password is empty or contains invalid characters. Please enter valid password.
+userAuth.existing.password.value=Password
+userAuth.new.user.lbl.value=New User
 
-server_utilization.title.value= Server Utilization
-server_utilization.development.title.value= Development (e.g. a developer's laptop)
-server_utilization.development.lbl.value= This is a development machine and many other applications will be running on it. Stress testing should not be performed with this configuration. Postgres Plus will use a minimal amount of memory.
+server_utilization.title.value=Server Utilization
+server_utilization.development.title.value=Development (e.g. a developer's laptop)
+server_utilization.development.lbl.value=This is a development machine and many other applications will be running on it. Stress testing should not be performed with this configuration. Postgres Plus will use a minimal amount of memory.
 
-server_utilization.mixed.title.value= General Purpose (e.g. a web or application server)
-server_utilization.mixed.lbl.value= Several applications will be running on this machine. Choose this option for web/application servers. System shared memory setting will be updated automatically, if required.
+server_utilization.mixed.title.value=General Purpose (e.g. a web or application server)
+server_utilization.mixed.lbl.value=Several applications will be running on this machine. Choose this option for web/application servers. System shared memory setting will be updated automatically, if required.
 
-server_utilization.dedicated.title.value= Dedicated (a server running only Postgres Plus)
+server_utilization.dedicated.title.value=Dedicated (a server running only Postgres Plus)
 server_utilization.dedicated.lbl.value= This machine is dedicated to run Postgres Plus and will use available memory to optimize performance. System shared memory setting will be updated automatically, if required.
-server_utilization.explaination.lbl.value= Please select the type of server, to determine the amount of system resources that may be utilized:
+server_utilization.explaination.lbl.value=Please select the type of server, to determine the amount of system resources that may be utilized:
 
-workload_profile.title.value= Workload Profile
-workload_profile.transaction.title.value= Transaction Processing (OLTP systems)
-workload_profile.transaction.lbl.value= The running application is a transaction-intensive application.
+workload_profile.title.value=Workload Profile
+workload_profile.transaction.title.value=Transaction Processing (OLTP systems)
+workload_profile.transaction.lbl.value=The running application is a transaction-intensive application.
 
-workload_profile.general.title.value= General Purpose (OLTP and reporting workloads)
-workload_profile.general.lbl.value= The database will be used for both transaction process as well as complex queries and reporting.
+workload_profile.general.title.value=General Purpose (OLTP and reporting workloads)
+workload_profile.general.lbl.value=The database will be used for both transaction process as well as complex queries and reporting.
 
-workload_profile.reporting.title.value= Reporting (Complex queries or OLAP workloads)
-workload_profile.reporting.lbl.value= The database will be used for reporting applications.
-workload_profile.explaination.lbl.value= Please select the type of workload this server will be used for:
+workload_profile.reporting.title.value=Reporting (Complex queries or OLAP workloads)
+workload_profile.reporting.lbl.value=The database will be used for reporting applications.
+workload_profile.explaination.lbl.value=Please select the type of workload this server will be used for:
 
-ws.email.notification.value= An email has been sent to the provided email address.
-ws.email.not.authenticated= The email and/or password are not valid. Please try again.
-ws.email.not.valid= The email address has not been validated. An email has been sent to the email address that you provided. Please follow the directions in the email to validate your email address.
-ws.email.already.exists= This email address already exists.  Please use Existing User fields or enter a new email address to continue.
-ws.exception.from.server= An error occured. Please try again.
-ws.internet.not.connected= Error in calling web service. Please try again.
+ws.email.notification.value=An email has been sent to the provided email address.
+ws.email.not.authenticated=The email and/or password are not valid. Please try again.
+ws.email.not.valid=The email address has not been validated. An email has been sent to the email address that you provided. Please follow the directions in the email to validate your email address.
+ws.email.already.exists=This email address already exists.  Please use Existing User fields or enter a new email address to continue.
+ws.exception.from.server=An error occured. Please try again.
+ws.internet.not.connected=Error calling the web service. Please try again.
 
-ws.email.not.valid.dynatune= Email is not validated, please register your email.
+ws.email.not.valid.dynatune=Email is not validated, please register your email.
 
-lbl.email.value=Please enter your enterprisedb.com login and password here. If you do not have one please go to www.enterprisedb.com and register.
+lbl.email.value=Please enter your enterprisedb.com login and password. If you do not have an account, please visit www.enterprisedb.com to register.
 
-portlocale.title.value= Port
+portlocale.title.value=Port
 
-unixodbc.not.exists= UnixODBC is required to install psqlODBC.
+unixodbc.not.exists=UnixODBC is required to install psqlODBC.
 
-dbserver.required.pgerror=Database Server is required component. Please select Database Server and try again.
+dbserver.required.pgerror=The 'Database Server' component is required by one or more of the options selected. Please update your selection and try again.
 
 uninstall.restart.message=Some files will be removed after system restart.
 
