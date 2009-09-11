@@ -436,6 +436,16 @@
                 abortOnError="0">
       <ruleList>
         <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+        <compareText text="${platform_name}" logic="does_not_equal" value="osx"/>
+        <compareText text="${monitorServer}" logic="does_not_equal" value=""/>
+      </ruleList>
+    </runProgram>
+    <runProgram program="${installdir}/scripts/launchSBPUpdateMonitor.sh"
+                programArguments="&amp;"
+                showMessageOnError="0"
+                abortOnError="0">
+      <ruleList>
+        <compareText text="${platform_name}" logic="equals" value="osx"/>
         <compareText text="${monitorServer}" logic="does_not_equal" value=""/>
       </ruleList>
     </runProgram>

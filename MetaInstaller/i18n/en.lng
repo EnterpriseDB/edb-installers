@@ -135,7 +135,7 @@ lbl.email.value=Please enter your enterprisedb.com login and password. If you do
 
 portlocale.title.value=Port
 
-unixodbc.not.exists=UnixODBC is required to install psqlODBC.
+unixodbc.not.exists=unixODBC cannot be found on this system. If you wish to install the ODBC components of this package please cancel the installation, install unixODBC and then re-run the installer.
 
 dbserver.required.pgerror=The 'Database Server' component is required by one or more of the options selected. Please update your selection and try again.
 

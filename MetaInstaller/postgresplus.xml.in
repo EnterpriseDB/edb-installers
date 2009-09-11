@@ -474,12 +474,12 @@
         <!-- Check for unixodbc -->
 
         <setInstallerVariableFromScriptOutput>
-          <customErrorMessage>${msg(unixodbc.not.exists)}</customErrorMessage>
           <exec>which</exec>
           <execArgs>odbcinst</execArgs>
           <name>unixodbccheck</name>
           <workingDirectory>.</workingDirectory>
           <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
           <ruleList>
             <compareText>
               <logic>contains</logic>
@@ -488,10 +488,21 @@
             </compareText>
           </ruleList>
         </setInstallerVariableFromScriptOutput>
-        <setInstallerVariable>
-          <name>component(psqlOdbc).canBeEdited</name>
-          <persist>0</persist>
-          <value>0</value>
+        <actionGroup>
+          <actionList>
+            <showInfo>
+              <text>${msg(unixodbc.not.exists)}</text>
+            </showInfo>
+            <setInstallerVariable>
+              <name>component(psqlOdbc).canBeEdited</name>
+              <persist>0</persist>
+              <value>0</value>
+            </setInstallerVariable>
+            <componentSelection>
+              <deselect>psqlOdbc</deselect>
+              <select></select>
+            </componentSelection>
+          </actionList>
           <ruleList>
             <compareText>
               <logic>contains</logic>
@@ -504,23 +515,7 @@
               <value></value>
             </compareText>
           </ruleList>
-        </setInstallerVariable>
-        <componentSelection>
-          <deselect>psqlOdbc</deselect>
-          <select></select>
-          <ruleList>
-            <compareText>
-              <logic>contains</logic>
-              <text>${platform_name}</text>
-              <value>linux</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${unixodbccheck}</text>
-              <value></value>
-            </compareText>
-          </ruleList>
-        </componentSelection>
+        </actionGroup>
         <logMessage>
           <text>unixOdbc found at: ${unixodbccheck}</text>
           <ruleList>
