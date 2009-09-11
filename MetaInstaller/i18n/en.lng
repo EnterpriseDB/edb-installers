@@ -131,7 +131,7 @@ ws.internet.not.connected=Error calling the web service. Please try again.
 
 ws.email.not.valid.dynatune=Email is not validated, please register your email.
 
-lbl.email.value=Please enter your enterprisedb.com login and password here. If you do not have one please go to www.enterprisedb.com and register.
+lbl.email.value=Please enter your enterprisedb.com login and password. If you do not have an account, please visit www.enterprisedb.com to register.
 
 portlocale.title.value=Port
 
