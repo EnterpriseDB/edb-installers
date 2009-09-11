@@ -137,7 +137,7 @@ portlocale.title.value=Port
 
 unixodbc.not.exists=UnixODBC is required to install psqlODBC.
 
-dbserver.required.pgerror=Database Server is required component. Please select Database Server and try again.
+dbserver.required.pgerror=The 'Database Server' component is required by one or more of the options selected. Please update your selection and try again.
 
 uninstall.restart.message=Some files will be removed after system restart.
 
