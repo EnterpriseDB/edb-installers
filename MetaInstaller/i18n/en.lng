@@ -91,7 +91,7 @@ valueadded.updateNotification.lbl.value=The Update Notification Service automati
 
 existingUser.title.value= Registered user?
 existingUser.lbl.text.value=If you already have an account at EnterpriseDB, please enter your logon details on the following screen. If you are not registered, your web browser will display the EnterpriseDB website where you can register and then continue with the installation process.
-userAuth.existing.user.lbl.value= Are you existing Postgres Plus user?
+userAuth.existing.user.lbl.value= Are you an existing Postgres Plus user?
 
 userAuth.title.value= User Authentication
 userAuth.email.value= Email
