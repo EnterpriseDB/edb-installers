@@ -3953,7 +3953,7 @@
     <runProgram>
       <!-- MAC: Run stackbuilder plus-->
       <program>open</program>
-      <programArguments>"/Applications/Postgres Plus Standard Server ${product_version}/Application Stack Builder Plus.app"</programArguments>
+      <programArguments>"/Applications/Postgres Plus Standard Server ${product_version}/StackBuilder Plus.app"</programArguments>
       <progressText>${msg(progress.text.run.stackbuilderplus)}</progressText>
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
