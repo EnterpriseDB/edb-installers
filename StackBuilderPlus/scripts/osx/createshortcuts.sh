@@ -37,6 +37,14 @@ _compile_script() {
 	cp "$3" "$2/Contents/Resources/applet.icns"
 }
 
+# Substitute values into a file ($in)
+_fixup_file() {
+    _replace INSTALL_DIR "$INSTALLDIR" "$1"
+    chmod ugo+x "$1"
+}
+
+_fixup_file "$INSTALLDIR/scripts/launchStackBuilderPlus.sh"
+
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Create the menu 
