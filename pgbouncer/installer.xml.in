@@ -270,7 +270,9 @@
 
         <actionGroup>
             <actionList>
-                 <!-- LIN & MAC: Set the system_user in case of re-install/upgrade -->
+                <!-- LIN & MAC: Set the system_user in case of re-install/upgrade -->
+                <!-- On Beta version, we have used System_User variable.
+                     For consistency, we renamed System_User to SystemUser -->
                 <iniFileGet>
                     <file>/etc/postgres-reg.ini</file>
                     <section>pgbouncer</section>
@@ -281,6 +283,24 @@
                             <logic>does_not_equal</logic>
                             <text>${platform_name}</text>
                             <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </iniFileGet>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>pgbouncer</section>
+                    <key>SystemUser</key>
+                    <variable>system_user</variable>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${system_user}</text>
+                            <value/>
                         </compareText>
                     </ruleList>
                 </iniFileGet>
@@ -541,7 +561,7 @@
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
                     <section>pgbouncer</section>
-                    <key>System_User</key>
+                    <key>SystemUser</key>
                     <value>${system_user}</value>
                 </iniFileSet>
             </actionList>
@@ -820,6 +840,12 @@
                     <file>/etc/postgres-reg.ini</file>
                     <section>pgbouncer</section>
                     <key>Version</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>pgbouncer</section>
+                    <key>SystemUser</key>
                     <value/>
                 </iniFileSet>
             </actionList>
