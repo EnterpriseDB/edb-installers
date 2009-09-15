@@ -245,7 +245,7 @@
         <!-- Existing, old install (version found, but no Username and not provided on the command-line) -->
         <setInstallerVariable name="existingEmail" persist="0" value="">
             <ruleList>
-                <compareText logic="does_not_equal" text="${TuningWizardVersion}" value=""/>
+                <compareText logic="does_not_equal" text="${pgMigratorVersion}" value=""/>
                 <compareText logic="equals" text="${iExistingEmail}" value=""/>
                 <compareText logic="does_not_equal" text="${existingEmail}" value=""/>
             </ruleList>
@@ -254,7 +254,7 @@
         <!-- Existing install with Username (ignore command-line) -->
         <setInstallerVariable name="existingEmail" persist="0" value="${iExistingEmail}">
             <ruleList>
-                <compareText logic="does_not_equal" text="${TuningWizardVersion}" value=""/>
+                <compareText logic="does_not_equal" text="${pgMigratorVersion}" value=""/>
                 <compareText logic="does_not_equal" text="${iExistingEmail}" value=""/>
             </ruleList>
         </setInstallerVariable>
@@ -539,24 +539,116 @@
                         <compareText logic="equals" text="${existingPassword}" value=""/>
                     </ruleList>
                 </throwError>
-                <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;">
+                <!-- Check if given path is a valid PostgreSQL path -->
+                <stringModify text="${installdir}" logic="trim"/>
+                <throwError text="${msg(pg_migrator.installdir.empty)}">
+                    <ruleList>
+                        <compareText text="${installdir}" logic="equals" value=""/>
+                    </ruleList>
+                </throwError>
+                <throwError  text="${msg(pg_migrator.installdir.pgerror)}">
+                    <ruleList>
+                        <fileTest path="${installdir}/bin/pg_config" condition="not_exists"/>
+                        <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+                    </ruleList>
+                </throwError>
+                <throwError text="${msg(pg_migrator.installdir.pgerror)}">
+                    <ruleList>
+                        <fileTest path="${installdir}\bin\pg_config.exe" condition="not_exists"/>
+                        <compareText text="${platform_name}" logic="equals" value="windows"/>
+                    </ruleList>
+                </throwError>
+                <setInstallerVariableFromScriptOutput name="pg_version_str"
+                                                      exec="${installdir}\bin\pg_config.exe"
+                                                      execArgs="--version"
+                                                      workingDirectory="${installdir}\bin"
+                                                      abortOnError="1"
+                                                      customErrorMessage="${msg(pg_migrator.installdir.pg_config.corrupted)}">
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput name="pg_version_str"
+                                                      exec="${installdir}/bin/pg_config"
+                                                      execArgs="--version"
+                                                      workingDirectory="${installdir}/bin"
+                                                      abortOnError="1"
+                                                      customErrorMessage="${msg(pg_migrator.installdir.pg_config.corrupted)}">
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromRegEx name="pg_version"
+                                               text="${pg_version_str}"
+                                               pattern="^PostgreSQL ([0-9].[0-9]).?[\w]*$"
+                                               substitution="\1">
+                      <ruleList>
+                          <compareText logic="does_not_equal" text="${pg_version_str}" value=""/>
+                      </ruleList>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromScriptOutput name="pkglibdir"
+                                                      exec="${installdir}\bin\pg_config.exe"
+                                                      execArgs="--pkglibdir"
+                                                      workingDirectory="${installdir}\bin"
+                                                      abortOnError="1"
+                                                      customErrorMessage="${msg(pg_migrator.installdir.pg_config.corrupted)}">
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput name="pkglibdir"
+                                                      exec="${installdir}/bin/pg_config"
+                                                      execArgs="--pkglibdir"
+                                                      workingDirectory="${installdir}/bin"
+                                                      abortOnError="1"
+                                                      customErrorMessage="${msg(pg_migrator.installdir.pg_config.corrupted)}">
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+
+                <throwError text="${msg(pg_migrator.installdir.pg_version.mismatch)}">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${pg_version}" value="PG_MAJOR_VERSION"/>
+                    </ruleList>
+                </throwError>
+                <throwError text="${msg(pg_migrator.installdir.pg_config.corrupted)}">
+                    <ruleList>
+                        <compareText logic="equals" text="${pkglibdir}" value=""/>
+                    </ruleList>
+                </throwError>
+                <setInstallerVariableFromRegEx text="${pkglibdir}"
+                                               name="pkglibdir"
+                                               substitution="\/"
+                                               pattern="\\">
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+
+                <!-- Make the pkglibdir variable available in the uninstaller -->
+                <setInstallerVariable name="pkglibdir"
+                                      value="${pkglibdir}"
+                                      persist="1"/>
+                <!-- Validate email and password registered with EnterpriseDB -->
+                <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;pg_migrator&quot; &quot;false&quot; &quot;true&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </logMessage>
 
                 <setInstallerVariableFromScriptOutput
-                    customErrorMessage="${msg(validatinguser.ws.error)}"
-                    exec="${system_temp_directory}/tuningwizard/validateUserClient.o"
-                    execArgs="&quot;${uuid_val}&quot; &quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;"
+                    exec="${system_temp_directory}/pgmigrator/validateUserClient.o"
+                    execArgs="&quot;${uuid_val}&quot; &quot;pg_migrator&quot; &quot;false&quot; &quot;true&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot;"
                     name="ws_existinguser_result"
+                    customErrorMessage="${msg(validatinguser.ws.error)}"
                     abortOnError="0"
-                    workingDirectory="${system_temp_directory}/tuningwizard">
+                    workingDirectory="${system_temp_directory}/pgmigrator">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
-                <logMessage text="Sending parameter: &quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;">
+                <logMessage text="Sending parameter: &quot;pg_migrator&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
@@ -564,11 +656,11 @@
         
                 <setInstallerVariableFromScriptOutput
                     customErrorMessage="${msg(validatinguser.ws.error)}"
-                    exec="${system_temp_directory}\tuningwizard\validateUserClient.exe"
-                    execArgs="&quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;"
+                    exec="${system_temp_directory}\pgmigrator\validateUserClient.exe"
+                    execArgs="&quot;pg_migrator&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;"
                     name="ws_existinguser_result"
                     abortOnError="0"
-                    workingDirectory="${system_temp_directory}\tuningwizard">
+                    workingDirectory="${system_temp_directory}\pgmigrator">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
@@ -633,7 +725,6 @@
                   showMessageOnError="0">
             <ruleList>
                 <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
-                <compareText text="${installdir}/lib" logic="does_not_equal" value="${pkglibdir}"/>
             </ruleList>
         </copyFile>
         <copyFile origin="${installdir}\lib\pg_migrator.dll"
