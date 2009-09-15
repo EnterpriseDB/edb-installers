@@ -372,7 +372,7 @@
         <!-- WIN: Register launchSBPUpdateMonitor script as a startup script -->
         <registrySet key="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
                      name="StackBuilderPlusPG_VERSION_STR Update Monitor"
-                     value="${installdir}\scripts\launchSBPUpdateMonitor.vbs"/>
+                     value="&quot;${installdir}\bin\UpdateManager.exe&quot; --server ${monitorServer} --execute  &quot;${installdir}\bin\stackbuilderplus.exe&quot;"/>
     
         <!-- MAC: Register launchSBPUpdateMonitor script as a startup script -->
         <touchFile path="/private/var/root/Library/Preferences/loginwindow.plist">
