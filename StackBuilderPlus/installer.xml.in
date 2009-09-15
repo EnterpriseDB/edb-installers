@@ -195,7 +195,7 @@
     <actionGroup>
       <actionList>
         <runProgram program="ps"> 
-           <programArguments>ax | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | cut -f1 -d " " | head -1</programArguments>
+           <programArguments>ax | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $1}' | head -1</programArguments>
         </runProgram>
         <runProgram program="kill" programArguments="-9 ${program_stdout}">
            <ruleList>
@@ -476,7 +476,7 @@
     <actionGroup>
       <actionList>
         <runProgram program="ps"> 
-           <programArguments>ax | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | cut -f1 -d " " | head -1</programArguments>
+           <programArguments>ax | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $1}' | head -1</programArguments>
         </runProgram>
         <runProgram program="kill" programArguments="-9 ${program_stdout}">
            <ruleList>
