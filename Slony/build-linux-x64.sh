@@ -36,8 +36,8 @@ _prep_Slony_linux_x64() {
     chmod ugo+w $WD/Slony/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
 
     echo "Removing existing slony files from the PostgreSQL directory"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f bin/slon bin/slonik bin/slony_logshipper lib/postgresql/slony_funcs.so lib/postgresql/xxid.so"  || _die "Failed to remove slony binary files"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f share/postgresql/slony*.sql && rm -f share/postgresql/xxid*.sql"  || _die "remove slony share files"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f bin/slon bin/slonik bin/slony_logshipper lib/postgresql/slony_funcs.so"  || _die "Failed to remove slony binary files"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f share/postgresql/slony*.sql"  || _die "remove slony share files"
 }
 
 

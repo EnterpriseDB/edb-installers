@@ -68,8 +68,8 @@ _prep_Slony_windows() {
     PG_PGHOME_WINDOWS=$PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION
 
     echo "Removing existing slony files from the PostgreSQL directory"
-    ssh $PG_SSH_WINDOWS "cd $PG_PGHOME_WINDOWS; rm -f bin/slon.exe bin/slonik.exe lib/slony_funcs.dll lib/xxid.dll lib/slevent.dll"  || _die "Failed to remove slony binary files"
-    ssh $PG_SSH_WINDOWS "cd $PG_PGHOME_WINDOWS; rm -f share/slony*.sql && rm -f share/xxid*.sql"  || _die "remove slony share files"
+    ssh $PG_SSH_WINDOWS "cd $PG_PGHOME_WINDOWS; rm -f bin/slon.exe bin/slonik.exe lib/slony_funcs.dll lib/slevent.dll"  || _die "Failed to remove slony binary files"
+    ssh $PG_SSH_WINDOWS "cd $PG_PGHOME_WINDOWS; rm -f share/slony*.sql"  || _die "remove slony share files"
 
 
         

@@ -37,8 +37,8 @@ _prep_Slony_osx() {
 
     echo "Removing existing slony files from the PostgreSQL directory"
     cd $PG_PGHOME_OSX
-    rm -f bin/slon bin/slonik bin/slony_logshipper lib/postgresql/slony_funcs.so lib/postgresql/xxid.so"  || _die "Failed to remove slony binary files"
-    rm -f share/postgresql/slony*.sql && rm -f share/postgresql/xxid*.sql"  || _die "remove slony share files"
+    rm -f bin/slon bin/slonik bin/slony_logshipper lib/postgresql/slony_funcs.so"  || _die "Failed to remove slony binary files"
+    rm -f share/postgresql/slony*.sql"  || _die "remove slony share files"
 }
 
 
