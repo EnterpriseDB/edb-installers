@@ -100,8 +100,10 @@ _prep_metainstaller_osx() {
     rm -f pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.zip
 
     cd $WD/MetaInstaller
-    mkdir -p staging/osx/scripts/pgcontrol
-    cp -R $WD/server/staging/osx/bin/pg_controldata  staging/osx/scripts/pgcontrol/ || _die "Failed to copy the pg_controldata  (staging/osx/scripts/pgcontrol)"
+    mkdir -p staging/osx/scripts/pgcontrol/bin
+    mkdir -p staging/osx/scripts/pgcontrol/lib
+    cp -R $WD/server/staging/osx/bin/pg_controldata  staging/osx/scripts/pgcontrol/bin || _die "Failed to copy the pg_controldata  (staging/osx/scripts/pgcontrol/bin)"
+    cp -R $WD/server/staging/osx/lib/libxml2.2.dylib  staging/osx/scripts/pgcontrol/lib || _die "Failed to copy the libxml2  (staging/osx/scripts/pgcontrol/lib)"
     cp -R $WD/server/staging/osx/installer/server/getlocales.sh  staging/osx/scripts/ || _die "Failed to copy the getlocales.sh"
     cp -R $WD/server/staging/osx/installer/server/preinstall.sh  staging/osx/scripts/ || _die "Failed to copy the preinstall.sh"
     cp -R $WD/PostGIS/staging/osx/installer/PostGIS/check-connection.sh  staging/osx/scripts/ || _die "Failed to copy the check-connection.sh"
