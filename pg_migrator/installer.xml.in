@@ -1,7 +1,7 @@
 <project>
     <!-- Package details -->
     <shortName>pgmigrator</shortName>
-    <fullName>pgMigrator</fullName>
+    <fullName>pgMigrator-PG_MAJOR_VERSION</fullName>
     <version>PG_VERSION_PGMIGRATOR-PG_BUILDNUM_PGMIGRATOR</version>
     <!-- Product Specific Options -->
     <productComments>pg_migrator, packaged by EnterpriseDB</productComments>
@@ -719,18 +719,29 @@
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgMigrator-PG_MAJOR_VERSION" name="Branding" value="${branding}"/>
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgMigrator-PG_MAJOR_VERSION" name="Username" value="${existingEmail}"/>
 
+        <!-- Copy the pg_migrator.so/dll to temporary directory and then to the pkglibdir
+             There are some occassions, when the value for the pkglibdir is same as the
+             installdir/lib directory -->
         <copyFile origin="${installdir}/lib/pg_migrator.so"
-                  destination="${pkglibdir}/"
-                  abortOnError="0"
-                  showMessageOnError="0">
+                  destination="${system_temp_directory}/pgmigrator/">
             <ruleList>
                 <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
             </ruleList>
         </copyFile>
         <copyFile origin="${installdir}\lib\pg_migrator.dll"
-                  destination="${pkglibdir}\"
-                  abortOnError="0"
-                  showMessageOnError="0">
+                  destination="${system_temp_directory}\pgmigrator\">
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+            </ruleList>
+        </copyFile>
+        <copyFile origin="${system_temp_directory}/pgmigrator/pg_migrator.so"
+                  destination="${pkglibdir}/">
+            <ruleList>
+                <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+            </ruleList>
+        </copyFile>
+        <copyFile origin="${system_temp_directory}\pgmigrator\pg_migrator.dll"
+                  destination="${pkglibdir}\">
             <ruleList>
                 <compareText text="${platform_name}" logic="equals" value="windows"/>
             </ruleList>
