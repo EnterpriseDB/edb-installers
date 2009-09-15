@@ -6783,18 +6783,23 @@
             <!--User is authenticated so we will install SBP with monitoring -->
             <setInstallerVariable name="installMonitoring" value="1">
               <persist>0</persist>
-              <ruleEvaluationLogic>or</ruleEvaluationLogic>
               <ruleList>
-                <compareText>
-                  <logic>equals</logic>
-                  <text>${ws_existing_result}</text>
-                  <value>0</value>
-                </compareText>
-                <compareText>
-                  <logic>equals</logic>
-                  <text>${ws_existing_result}</text>
-                  <value>00</value>
-                </compareText>
+                <ruleGroup>
+                  <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                  <ruleList>
+                    <compareText>
+                      <logic>equals</logic>
+                      <text>${ws_existing_result}</text>
+                      <value>0</value>
+                    </compareText>
+                    <compareText>
+                      <logic>equals</logic>
+                      <text>${ws_existing_result}</text>
+                      <value>00</value>
+                    </compareText>
+                  </ruleList>
+                </ruleGroup>
+                <isTrue value="${updateNotification}"/>
               </ruleList>
             </setInstallerVariable>
 
