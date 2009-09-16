@@ -307,6 +307,7 @@
       <substitutionList>
          <substitution pattern="INSTALL_DIR" value="${installdir}"/>
          <substitution pattern="MONITOR_SERVER" value="${monitorServer}"/>
+         <substitution pattern="BRANDING" value="${branding}"/>
       </substitutionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
