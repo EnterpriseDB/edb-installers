@@ -30,6 +30,11 @@ echo "Switching to master branch" >> autobuild.log
 echo "Updating build system" >> autobuild.log
 /opt/local/bin/git pull >> autobuild.log 2>&1
 
+# Make sure, we always do a full build
+if [ -f settings.sh.full ]; then
+   cp -f setttings.sh.full settings.sh
+fi
+
 # Run the build, and dump the output to a log file
 echo "Running the build" >> autobuild.log
 ./build.sh > output/build.log 2>&1
