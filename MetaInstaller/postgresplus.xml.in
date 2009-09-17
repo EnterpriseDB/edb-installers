@@ -58,7 +58,7 @@
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>/Library/PostgreSQL/${product_version}</value>
+      <value>/Library/PostgresPlus/${product_version}SS</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -71,7 +71,7 @@
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>${platform_install_prefix}/PostgreSQL/${product_version}</value>
+      <value>${platform_install_prefix}/PostgresPlus/${product_version}SS</value>
       <ruleList>
         <compareText>
           <logic>contains</logic>
@@ -84,7 +84,7 @@
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>${platform_install_prefix}/PostgreSQL/${product_version}</value>
+      <value>${platform_install_prefix}/PostgresPlus/${product_version}SS</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -1776,7 +1776,7 @@
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>/Library/PostgresPlus/${product_version}</value>
+      <value>/Library/PostgresPlus/${product_version}SS</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -1788,7 +1788,7 @@
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>/opt/PostgresPlus/${product_version}</value>
+      <value>${platform_install_prefix}/PostgresPlus/${product_version}SS</value>
       <ruleList>
         <compareText>
           <logic>contains</logic>
@@ -1800,7 +1800,7 @@
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>C:/Program Files/PostgresPlus/${product_version}</value>
+      <value>${platform_install_prefix}/PostgresPlus/${product_version}SS</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
