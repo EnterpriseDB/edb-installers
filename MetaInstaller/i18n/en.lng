@@ -87,7 +87,7 @@ valueadded.title.value=Value Added Services
 valueadded.dbInstallTuning.rb1.value=Database Installation Tuning
 valueadded.dbInstallTuning.lbl.value=Database Installation Tuning is a Web service that communicates with your server environment during installation of Postgres Plus.  The Web service will automatically optimize your Postgres Plus database for your chosen server configuration.
 valueadded.updateNotification.rb2.value=Update Notification Service
-valueadded.updateNotification.lbl.value=The Update Notification Service automatically informs you, via email, when security patches and other updates are available for your Postgres Plus database server.  It also provides you with information on how to download and apply the updates.
+valueadded.updateNotification.lbl.value=The Update Notification Service automatically informs you when security patches and other updates are available for your Postgres Plus Standard Server installation, and allows you to easily download and install them.
 
 existingUser.title.value=Registered user?
 existingUser.lbl.text.value=The options you have selected require an enterprisedb.com user account. If you do not have one, your web browser will display the EnterpriseDB website where you can register and then continue with the installation process.
