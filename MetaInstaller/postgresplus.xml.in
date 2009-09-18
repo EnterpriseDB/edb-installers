@@ -1,6 +1,7 @@
 <project>
   <shortName>postgresplus</shortName>
   <fullName>Postgres Plus</fullName>
+  <windowsSoftwareRegistryPrefix>EnterpriseDB\PostgresPlus\Installations\postgresplus-${product_version}</windowsSoftwareRegistryPrefix>
   <version>PG_VERSION_METAINSTALLER</version>
   <productDisplayName>${product_fullname} ${product_version}</productDisplayName>
   <leftImage>../resources/edb-side.png</leftImage>
@@ -412,6 +413,11 @@
         </compareText>
       </ruleList>
     </actionGroup>
+
+    <setInstallerVariable>
+      <name>pg_full_version</name>
+      <value>PG_FULL_VERSION</value>
+    </setInstallerVariable>
   </initializationActionList>
 
   <!-- Test code Preinstallation actions -->

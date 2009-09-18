@@ -4,7 +4,7 @@
 # Dave Page, EnterpriseDB
 LOADINGUSER=`whoami`
 echo "No graphical su/sudo program could be found on your system!"
-echo "This window must be kept open while Stack Builder is running."
+echo "This window must be kept open while StackBuilder Plus is running."
 echo ""
 
 # You're not running this script as root user

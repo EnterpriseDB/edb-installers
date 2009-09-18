@@ -28,6 +28,7 @@ fi
 
 PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
 PG_VERSION_STR=`echo $PG_MAJOR_VERSION | sed 's/\./_/g'`
+PG_FULL_VERSION=$PG_MAJOR_VERSION.`echo $PG_MINOR_VERSION | cut -f1,1 -d "."`
     
 ################################################################################
 # Build preparation
@@ -135,6 +136,7 @@ _postprocess_metainstaller() {
     cp postgresplus.xml.in postgresplus.xml || _die "Failed to copy the installer project file (MetaInstaller/postgresplus.xml.in)"
     _replace PG_VERSION_METAINSTALLER $PG_VERSION_METAINSTALLER postgresplus.xml || _die "Failed to set the major version in the installer project file (MetaInstaller/postgresplus.xml)"
     _replace PG_PACKAGE_VERSION $PG_PACKAGE_VERSION postgresplus.xml || _die "Failed to set the postgresql version in the installer project file (MetaInstaller/postgresplus.xml)"
+    _replace PG_FULL_VERSION $PG_FULL_VERSION postgresplus.xml || _die "Failed to set the postgresql version in the installer project file (MetaInstaller/postgresplus.xml)"
     _replace PG_CURRENT_VERSION $PG_CURRENT_VERSION postgresplus.xml || _die "Failed to set the pg version in the installer project file (MetaInstaller/postgresplus.xml)"
     _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION postgresplus.xml || _die "Failed to set the pg version in the installer project file (MetaInstaller/postgresplus.xml)"
     _replace PG_VERSION_STR $PG_VERSION_STR postgresplus.xml || _die "Failed to set the pg version str in the installer project file (MetaInstaller/postgresplus.xml)"

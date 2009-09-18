@@ -11,6 +11,7 @@
     <productComments>ODBC drivers for PostgreSQL, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
+    <windows64bitMode>1</windows64bitMode>
 
     <!-- Installer Size -->
     <width>550</width>

@@ -1,5 +1,8 @@
 Installer.Setup.Title=Postgres Plus Setup
 Installer.Welcome.Title=Postgres Plus Setup
+Installer.Welcome.Text=Welcome to the Postgres Plus Setup Wizard.\n\nThis program will install Postgres Plus Standard Server version ${pg_full_version}.
+Installer.Ready.Text1=Setup is ready to begin installating Postgres Plus Standard Server on your computer.
+Installer.Installation.Finished.Text=Setup has finished installing Postgres Plus Standard Server on your computer.
 
 default.locale=Default locale
 
@@ -100,7 +103,7 @@ error.invalid.password.value=Password is empty or contains invalid characters. P
 userAuth.existing.password.value=Password
 userAuth.new.user.lbl.value=New User
 
-server_utilization.title.value=Server Utilization
+server_utilization.title.value=Installation Tuning: Server Utilization
 server_utilization.development.title.value=Development (e.g. a developer's laptop)
 server_utilization.development.lbl.value=This is a development machine and many other applications will be running on it. Stress testing should not be performed with this configuration. Postgres Plus will use a minimal amount of memory.
 
@@ -111,7 +114,7 @@ server_utilization.dedicated.title.value=Dedicated (a server running only Postgr
 server_utilization.dedicated.lbl.value= This machine is dedicated to run Postgres Plus and will use available memory to optimize performance. System shared memory setting will be updated automatically, if required.
 server_utilization.explaination.lbl.value=Please select the type of server, to determine the amount of system resources that may be utilized:
 
-workload_profile.title.value=Workload Profile
+workload_profile.title.value=Installation Tuning: Workload Profile
 workload_profile.transaction.title.value=Transaction Processing (OLTP systems)
 workload_profile.transaction.lbl.value=The running application is a transaction-intensive application.
 
