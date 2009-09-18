@@ -1800,7 +1800,7 @@
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>${platform_install_prefix}/PostgresPlus/${product_version}SS</value>
+      <value>${platform_install_prefix}\PostgresPlus\${product_version}SS</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -2675,7 +2675,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux.bin</program>
-      <programArguments>--mode unattended --installdir ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser ${supername} --pgpassword ${superpassword} --pgport ${serverport} --system_user ${supername} --autostart no</programArguments>
+      <programArguments>--mode unattended --prefix ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser ${supername} --pgpassword ${superpassword} --pgport ${serverport} --system_user ${supername} --autostart no</programArguments>
       <progressText>Installing pgbouncer ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -2697,7 +2697,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux-x64.bin</program>
-      <programArguments>--mode unattended --installdir ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser ${supername} --pgpassword ${superpassword} --pgport ${serverport} --system_user ${supername} --autostart no</programArguments>
+      <programArguments>--mode unattended --prefix ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser ${supername} --pgpassword ${superpassword} --pgport ${serverport} --system_user ${supername} --autostart no</programArguments>
       <progressText>Installing pgbouncer ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
