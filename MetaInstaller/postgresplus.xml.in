@@ -498,6 +498,13 @@
           <actionList>
             <showInfo>
               <text>${msg(unixodbc.not.exists)}</text>
+              <ruleList>
+                <compareText>
+                   <logic>does_not_equal</logic>
+                   <text>${installer_ui}</text>
+                   <value>unattended</value>
+                </compareText>
+              </ruleList>
             </showInfo>
             <setInstallerVariable>
               <name>component(psqlOdbc).canBeEdited</name>
