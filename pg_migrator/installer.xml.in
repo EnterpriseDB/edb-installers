@@ -805,7 +805,7 @@
                 </folder>
                 <folder>
                     <description>Doc Files</description>
-                    <destination>${installdir}/doc</destination>
+                    <destination>${installdir}/doc/pg_migrator</destination>
                     <name>docfileslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
@@ -840,7 +840,7 @@
                 </folder>
                 <folder>
                     <description>Doc Files</description>
-                    <destination>${installdir}/doc</destination>
+                    <destination>${installdir}/doc/pg_migrator</destination>
                     <name>docfileslinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
@@ -875,7 +875,7 @@
                 </folder>
                 <folder>
                     <description>Doc Files</description>
-                    <destination>${installdir}/doc</destination>
+                    <destination>${installdir}/doc/pg_migrator</destination>
                     <name>docfilesosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
@@ -910,7 +910,7 @@
                 </folder>
                 <folder>
                     <description>Doc Files</description>
-                    <destination>${installdir}/doc</destination>
+                    <destination>${installdir}/doc/pg_migrator</destination>
                     <name>docfileswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
