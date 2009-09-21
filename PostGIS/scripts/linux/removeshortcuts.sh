@@ -81,8 +81,8 @@ done
 xdg_global_dir="$xdg_global_dir/applications-merged"
 
 # Hack up the XDG menu files to make sure everything really does go.
-_replace "<Filename>pg-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-postgis-$POSTGIS_VERSION_STR.menu"
-_replace "<Filename>pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-postgis-$POSTGIS_VERSION_STR.menu"
+_replace "<Filename>pg-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR-pg-postgis-$POSTGIS_VERSION_STR.menu"
+_replace "<Filename>pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR-pg-postgis-$POSTGIS_VERSION_STR.menu"
 
 echo "$0 ran to completion"
 exit 0
