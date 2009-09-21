@@ -395,12 +395,18 @@
         <!-- LIN/LIN-X64: Register Stack Builder Plus Update Monitor as a startup script -->
         <actionGroup>
           <actionList>
-            <setInstallerVariable name="xdg_config_dir" value="${env(XDG_CONFIG_DIRS)}"/>
-            <setInstallerVariable name="xdg_config_dir" value="/etc/xdg">
+            <setInstallerVariable name="xdg_config_dir_str" value="${env(XDG_CONFIG_DIRS)}"/>
+            <setInstallerVariable name="xdg_config_dir_str" value="/etc/xdg">
               <ruleList>
-                <compareText text="${xdg_config_dir}" logic="equals" value=""/>
+                <compareText text="${xdg_config_dir_str}" logic="equals" value=""/>
               </ruleList>
             </setInstallerVariable>
+            <setInstallerVariableFromRegEx>
+              <name>xdg_config_dir</name>
+              <text>${xdg_config_dir_str}</text>
+              <pattern>^[:]*(.*)[:]*$</pattern>
+              <substitution>\1</substitution>
+            </setInstallerVariableFromRegEx>    
     
             <createDirectory path="${xdg_config_dir}/autostart">
               <ruleList>
