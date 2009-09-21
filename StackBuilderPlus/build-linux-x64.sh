@@ -95,6 +95,9 @@ _build_stackbuilderplus_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libjpeg.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib" || _die "Failed to copy dependent library (libjpeg.so) in staging directory (linux-x64)"
     ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libtiff.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib" || _die "Failed to copy dependent library (libtiff.so) in staging directory (linux-x64)"
     ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libz.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib" || _die "Failed to copy dependent library (libz.so) in staging directory (linux-x64)"
+    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libfreetype.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib" || _die "Failed to copy dependent library (libfreetype.so) in staging directory (linux-x64)"
+    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libfontconfig.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib" || _die "Failed to copy dependent library (libfontconfig.so) in staging directory (linux-x64)"
+    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libpango* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (linux-x64)"
 
     cd $WD
 }

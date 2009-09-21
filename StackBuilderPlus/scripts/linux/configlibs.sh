@@ -24,7 +24,7 @@ _process_libs() {
       do
         if [ x"$flag" = x"" ]
         then
-          flag=`find "$stdlibdir" -maxdepth 1 -iname "$library"`
+          flag=`ls $stdlibdir/$library`
           found_at_dir=$flag
         else
           break
@@ -35,7 +35,7 @@ _process_libs() {
       do
         if [ "x$flag" = "x" ]
         then
-          flag=`find "$stdlibdir" -maxdepth 1 -iname "$library"`
+          flag=`ls $stdlibdir/$library`
           found_at_dir=$stdlibdir
         else
           break
