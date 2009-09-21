@@ -48,7 +48,7 @@ cat <<EOT > "/etc/init.d/pgagent"
 # description: pgAgent Service script for Linux
 
 ### BEGIN INIT INFO
-# Provides:          EnterpriseDB
+# Provides:          edb-pgAgent
 # Required-Start:    $syslog
 # Required-Stop:     $syslog
 # Should-Start:  

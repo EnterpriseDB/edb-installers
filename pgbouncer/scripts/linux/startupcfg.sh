@@ -32,7 +32,7 @@ cat <<EOT > "/etc/init.d/pgbouncer"
 # description: pgbouncer Service script for Linux
 
 ### BEGIN INIT INFO
-# Provides:          EnterpriseDB
+# Provides:          edb-pgbouncer
 # Required-Start:    $syslog
 # Required-Stop:     $syslog
 # Should-Start:  
