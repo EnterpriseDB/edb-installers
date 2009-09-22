@@ -7,6 +7,7 @@
     <productComments>pg_migrator, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
+    <startMenuGroupName/>
     <!-- The options are used for RPM registration -->
     <description>Tool for migration from an old release of PostgreSQL to a new release.</description>
     <summary>Migration tool for an older release of PostgreSQL to a new release, packaged by EnterpriseDB</summary>
