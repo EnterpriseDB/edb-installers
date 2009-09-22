@@ -2201,7 +2201,7 @@
           <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
             <fileTest path="${installdir}/pgAgent/uninstall-pgagent" condition="exists"/>
-            <fileTest path="${installdir}/pgAgent/uninstall-pgagent" condition="exists"/>
+            <fileTest path="${installdir}/pgAgent/uninstall-pgagent.app" condition="exists"/>
             <fileTest path="${installdir}\pgAgent\uninstall-pgagent" condition="exists"/>
           </ruleList>
         </actionGroup>
