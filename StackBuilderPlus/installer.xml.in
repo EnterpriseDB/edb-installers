@@ -195,7 +195,7 @@
     <actionGroup>
       <actionList>
         <runProgram program="ps"> 
-           <programArguments>ax | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $1}' | head -1</programArguments>
+           <programArguments>ax | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $1}'</programArguments>
         </runProgram>
         <runProgram program="kill" programArguments="-9 ${program_stdout}">
            <ruleList>
@@ -204,7 +204,23 @@
         </runProgram>  
       </actionList>
       <ruleList>
-        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+        <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
+      </ruleList>
+    </actionGroup>
+    <actionGroup>
+      <actionList>
+        <runProgram program="ps"> 
+           <programArguments>ax | grep "${installdir}/UpdateManager.app" | grep -v "grep" | awk '{print $1}'</programArguments>
+        </runProgram>
+        <runProgram program="kill" programArguments="-9 ${program_stdout}">
+           <ruleList>
+             <compareText logic="does_not_equal" text="${program_stdout}" value=""/>
+           </ruleList>
+        </runProgram>  
+      </actionList>
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
         <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
       </ruleList>
     </actionGroup>
@@ -483,7 +499,7 @@
     <actionGroup>
       <actionList>
         <runProgram program="ps"> 
-           <programArguments>ax | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $1}' | head -1</programArguments>
+           <programArguments>ax | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $1}'</programArguments>
         </runProgram>
         <runProgram program="kill" programArguments="-9 ${program_stdout}">
            <ruleList>
@@ -492,7 +508,23 @@
         </runProgram>  
       </actionList>
       <ruleList>
-        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </actionGroup>
+
+  <actionGroup>
+      <actionList>
+        <runProgram program="ps"> 
+           <programArguments>ax | grep "${installdir}/UpdateManager.app" | grep -v "grep" | awk '{print $1}'</programArguments>
+        </runProgram>
+        <runProgram program="kill" programArguments="-9 ${program_stdout}">
+           <ruleList>
+             <compareText logic="does_not_equal" text="${program_stdout}" value=""/>
+           </ruleList>
+        </runProgram>  
+      </actionList>
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </actionGroup>
 
