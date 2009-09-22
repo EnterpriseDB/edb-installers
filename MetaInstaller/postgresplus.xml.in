@@ -1862,6 +1862,357 @@
         </ruleList>
     </setInstallerVariable>
 
+    <!-- In upgrade Mode:
+         * Deselect all the components.
+         * Check for the components, which were installed previously.
+         * Select the previously installed components and mark them as not editable, if user has not uninstall them manually
+    -->
+    <actionGroup>
+      <actionList>
+        <actionGroup>
+          <actionList>
+            <iniFileGet>
+              <file>/etc/postgresplus-reg.ini</file>
+              <key>databaseServer</key>
+              <section>PostgreSQL/${product_version}</section>
+              <variable>upgrade_dbserver</variable>
+            </iniFileGet>
+            <iniFileGet>
+              <file>/etc/postgresplus-reg.ini</file>
+              <key>slony</key>
+              <section>PostgreSQL/${product_version}</section>
+              <variable>upgrade_slony</variable>
+            </iniFileGet>
+            <iniFileGet>
+              <file>/etc/postgresplus-reg.ini</file>
+              <key>pgJdbc</key>
+              <section>PostgreSQL/${product_version}</section>
+              <variable>upgrade_pgjdbc</variable>
+            </iniFileGet>
+            <iniFileGet>
+              <file>/etc/postgresplus-reg.ini</file>
+              <key>sbp</key>
+              <section>PostgreSQL/${product_version}</section>
+              <variable>upgrade_sbp</variable>
+            </iniFileGet>
+            <iniFileGet>
+              <file>/etc/postgresplus-reg.ini</file>
+              <key>postgis</key>
+              <section>PostgreSQL/${product_version}</section>
+              <variable>upgrade_postgis</variable>
+            </iniFileGet>
+            <iniFileGet>
+              <file>/etc/postgresplus-reg.ini</file>
+              <key>psqlOdbc</key>
+              <section>PostgreSQL/${product_version}</section>
+              <variable>upgrade_psqlOdbc</variable>
+            </iniFileGet>
+            <iniFileGet>
+              <file>/etc/postgresplus-reg.ini</file>
+              <key>pgbouncer</key>
+              <section>PostgreSQL/${product_version}</section>
+              <variable>upgrade_pgbouncer</variable>
+            </iniFileGet>
+            <iniFileGet>
+              <file>/etc/postgresplus-reg.ini</file>
+              <key>pgmemcache</key>
+              <section>PostgreSQL/${product_version}</section>
+              <variable>upgrade_pgmemcache</variable>
+            </iniFileGet>
+            <iniFileGet>
+              <file>/etc/postgresplus-reg.ini</file>
+              <key>pgagent</key>
+              <section>PostgreSQL/${product_version}</section>
+              <variable>upgrade_pgagent</variable>
+            </iniFileGet>
+          </actionList>
+          <ruleList>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <registryGet>
+              <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
+              <name>databaseServer</name>
+              <variable>upgrade_dbserver</variable>
+            </registryGet>
+            <registryGet>
+              <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
+              <name>slony</name>
+              <variable>upgrade_slony</variable>
+            </registryGet>
+            <registryGet>
+              <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
+              <name>pgJdbc</name>
+              <variable>upgrade_pgjdbc</variable>
+            </registryGet>
+            <registryGet>
+              <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
+              <name>sbp</name>
+              <variable>upgrade_sbp</variable>
+            </registryGet>
+            <registryGet>
+              <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
+              <name>postgis</name>
+              <variable>upgrade_postgis</variable>
+            </registryGet>
+            <registryGet>
+              <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
+              <name>psqlOdbc</name>
+              <variable>upgrade_psqlOdbc</variable>
+            </registryGet>
+            <registryGet>
+              <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
+              <name>npgsql</name>
+              <variable>upgrade_npgsql</variable>
+            </registryGet>
+            <registryGet>
+              <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
+              <name>pgmemcache</name>
+              <variable>upgrade_pgmemcache</variable>
+            </registryGet>
+            <registryGet>
+              <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
+              <name>pgbouncer</name>
+              <variable>upgrade_pgbouncer</variable>
+            </registryGet>
+            <registryGet>
+              <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
+              <name>pgagent</name>
+              <variable>upgrade_pgagent</variable>
+            </registryGet>
+          </actionList>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </actionGroup>
+        <componentSelection>
+          <deselect>dbserver,slony,pgJdbc,postgis,psqlOdbc,npgsql,pgbouncer,pgmemcache,pgagent</deselect>
+        </componentSelection>
+        <actionGroup>
+          <actionList>
+            <componentSelection>
+              <select>dbserver</select>
+              <ruleList>
+                <isTrue value="${upgrade_dbserver}"/>
+              </ruleList>
+            </componentSelection>
+            <setInstallerVariable>
+              <name>component(dbserver).canBeEdited</name>
+              <value>0</value>
+              <ruleList>
+                <isTrue value="${upgrade_dbserver}"/>
+              </ruleList>
+            </setInstallerVariable>
+          </actionList>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <fileTest path="${installdir}/uninstall-postgresql" condition="exists"/>
+            <fileTest path="${installdir}\uninstall-postgresql.exe" condition="exists"/>
+            <fileTest path="${installdir}/uninstall-postgresql.app" condition="exists"/>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <componentSelection>
+              <select>slony</select>
+              <ruleList>
+                <isTrue value="${upgrade_slony}"/>
+              </ruleList>
+            </componentSelection>
+            <setInstallerVariable>
+              <name>component(slony).canBeEdited</name>
+              <value>0</value>
+              <ruleList>
+                <isTrue value="${upgrade_slony}"/>
+              </ruleList>
+            </setInstallerVariable>
+          </actionList>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <fileTest path="${installdir}/Slony/uninstall-slony" condition="exists"/>
+            <fileTest path="${installdir}/Slony/uninstall-slony.app" condition="exists"/>
+            <fileTest path="${installdir}\Slony\uninstall-slony.exe" condition="exists"/>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <componentSelection>
+              <select>pgJdbc</select>
+              <ruleList>
+                <isTrue value="${upgrade_pgjdbc}"/>
+              </ruleList>
+            </componentSelection>
+            <setInstallerVariable>
+              <name>component(pgJdbc).canBeEdited</name>
+              <value>0</value>
+              <ruleList>
+                <isTrue value="${upgrade_pgjdbc}"/>
+              </ruleList>
+            </setInstallerVariable>
+          </actionList>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <fileTest path="${installdir}/pgJDBC/uninstall-pgjdbc" condition="exists"/>
+            <fileTest path="${installdir}/pgJDBC/uninstall-pgjdbc.app" condition="exists"/>
+            <fileTest path="${installdir}\pgJDBC\uninstall-pgjdbc.exe" condition="exists"/>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <componentSelection>
+              <select>postgis</select>
+              <ruleList>
+                <isTrue value="${upgrade_postgis}"/>
+              </ruleList>
+            </componentSelection>
+            <setInstallerVariable>
+              <name>component(postgis).canBeEdited</name>
+              <value>0</value>
+              <ruleList>
+                <isTrue value="${upgrade_postgis}"/>
+              </ruleList>
+            </setInstallerVariable>
+          </actionList>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <fileTest path="${installdir}/PostGIS/uninstall-postgis" condition="exists"/>
+            <fileTest path="${installdir}/PostGIS/uninstall-postgis.app" condition="exists"/>
+            <fileTest path="${installdir}\PostGIS\uninstall-postgis.exe" condition="exists"/>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <componentSelection>
+              <select>psqlOdbc</select>
+              <ruleList>
+                <isTrue value="${upgrade_psqlOdbc}"/>
+              </ruleList>
+            </componentSelection>
+            <setInstallerVariable>
+              <name>component(psqlOdbc).canBeEdited</name>
+              <value>0</value>
+              <ruleList>
+                <isTrue value="${upgrade_psqlOdbc}"/>
+              </ruleList>
+            </setInstallerVariable>
+          </actionList>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <fileTest path="${installdir}/psqlODBC/uninstall-psqlodbc" condition="exists"/>
+            <fileTest path="${installdir}/psqlODBC/uninstall-psqlodbc.app" condition="exists"/>
+            <fileTest path="${installdir}\psqlODBC\uninstall-psqlodbc.exe" condition="exists"/>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <componentSelection>
+              <select>npgsql</select>
+              <ruleList>
+                <isTrue value="${upgrade_npgsql}"/>
+              </ruleList>
+            </componentSelection>
+            <setInstallerVariable>
+              <name>component(npgsql).canBeEdited</name>
+              <value>0</value>
+              <ruleList>
+                <isTrue value="${upgrade_npgsql}"/>
+              </ruleList>
+            </setInstallerVariable>
+          </actionList>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <fileTest path="${installdir}/Npgsql/uninstall-npgsql" condition="exists"/>
+            <fileTest path="${installdir}/Npgsql/uninstall-npgsql.app" condition="exists"/>
+            <fileTest path="${installdir}\Npgsql\uninstall-npgsql.exe" condition="exists"/>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <componentSelection>
+              <select>pgbouncer</select>
+              <ruleList>
+                <isTrue value="${upgrade_pgbouncer}"/>
+              </ruleList>
+            </componentSelection>
+            <setInstallerVariable>
+              <name>component(pgbouncer).canBeEdited</name>
+              <value>0</value>
+              <ruleList>
+                <isTrue value="${upgrade_pgbouncer}"/>
+              </ruleList>
+            </setInstallerVariable>
+          </actionList>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <fileTest path="${installdir}/pgbouncer/uninstall-pgbouncer" condition="exists"/>
+            <fileTest path="${installdir}/pgbouncer/uninstall-pgbouncer.app" condition="exists"/>
+            <fileTest path="${installdir}\pgbouncer\uninstall-pgbouncer.exe" condition="exists"/>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <componentSelection>
+              <select>pgmemcache</select>
+              <ruleList>
+                <isTrue value="${upgrade_pgmemcache}"/>
+              </ruleList>
+            </componentSelection>
+            <setInstallerVariable>
+              <name>component(pgmemcache).canBeEdited</name>
+              <value>0</value>
+              <ruleList>
+                <isTrue value="${upgrade_pgmemcache}"/>
+              </ruleList>
+            </setInstallerVariable>
+          </actionList>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <fileTest path="${installdir}/uninstall-pgmemcache" condition="exists"/>
+            <fileTest path="${installdir}/uninstall-pgmemcache.app" condition="exists"/>
+            <fileTest path="${installdir}\uninstall-pgmemcache.exe" condition="exists"/>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <componentSelection>
+              <select>pgagent</select>
+              <ruleList>
+                <isTrue value="${upgrade_pgagent}"/>
+              </ruleList>
+            </componentSelection>
+            <setInstallerVariable>
+              <name>component(pgagent).canBeEdited</name>
+              <value>0</value>
+              <ruleList>
+                <isTrue value="${upgrade_pgagent}"/>
+              </ruleList>
+            </setInstallerVariable>
+          </actionList>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <fileTest path="${installdir}/pgAgent/uninstall-pgagent" condition="exists"/>
+            <fileTest path="${installdir}/pgAgent/uninstall-pgagent" condition="exists"/>
+            <fileTest path="${installdir}\pgAgent\uninstall-pgagent" condition="exists"/>
+          </ruleList>
+        </actionGroup>
+      </actionList>
+      <ruleList>
+        <isTrue>
+          <value>${IsUpgrade}</value>
+        </isTrue>
+      </ruleList>
+    </actionGroup>
+
   </preInstallationActionList>
   <postInstallationActionList>
     <setInstallerVariable name="monitor_server" value="">
