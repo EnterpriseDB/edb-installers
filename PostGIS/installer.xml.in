@@ -894,7 +894,7 @@
         <!-- Create Template Spatial Database -->
         <runProgram>
             <program>${installdir}\PostGIS\installer\PostGIS\createtemplatedb.bat</program>
-            <programArguments>${pghost} ${pgport} ${pguser} "${pgpassword}"</programArguments>
+            <programArguments>${pghost} ${pgport} ${pguser} ${pgpassword}</programArguments>
             <progressText>${msg(progress.text.creating.templatedb)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>1</showMessageOnError>
