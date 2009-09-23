@@ -1849,11 +1849,9 @@
     <!-- Set schema to upgrade if pgagent is installed -unattended mode -->
     <setInstallerVariable name="schema" value="upgrade">
         <ruleList>
-            <compareText>
-               <logic>does_not_equal</logic>
-               <text>${pgagent_installed}</text>
-               <value/>
-            </compareText>
+            <isTrue>
+               <value>${pgagent_installed}</value>
+            </isTrue>
             <compareText>
                <logic>equals</logic>
                <text>${installer_ui}</text>
@@ -2000,6 +1998,18 @@
         </actionGroup>
         <componentSelection>
           <deselect>dbserver,slony,pgJdbc,postgis,psqlOdbc,npgsql,pgbouncer,pgmemcache,pgagent</deselect>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <isTrue value="${upgrade_dbserver}"/>
+            <isTrue value="${upgrade_slony}"/>
+            <isTrue value="${upgrade_pgjdbc}"/>
+            <isTrue value="${upgrade_postgis}"/>
+            <isTrue value="${upgrade_pgagent}"/>
+            <isTrue value="${upgrade_pgmemcache}"/>
+            <isTrue value="${upgrade_pgbouncer}"/>
+            <isTrue value="${upgrade_npgsql}"/>
+            <isTrue value="${upgrade_psqlOdbc}"/>
+          </ruleList>
         </componentSelection>
         <actionGroup>
           <actionList>
