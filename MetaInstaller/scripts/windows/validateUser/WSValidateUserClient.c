@@ -259,7 +259,7 @@ int main(int argcounter, char **args){
 	char disk_gb[2]="0"; //defaults to 0
 	char *shared_mem_mb=getTotalMemoryInMB();
 	char *server_utilization = convertToHexString("0");
-	char *dbserver_ver ="8.3";
+	char *dbserver_ver ="8.4";
 	char *userEmail =args[4];
 	char *password =args[5];
 	char *dbserver_guid =args[6];
