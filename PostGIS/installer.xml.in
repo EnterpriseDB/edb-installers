@@ -870,35 +870,71 @@
            </ruleList>
         </substitute>
 
-        <substitute>
-           <files>${installdir}\PostGIS\installer\PostGIS\createtemplatedb.bat</files>
-           <substitutionList>
-              <substitution>
-                 <pattern>@@SHARE_DIR@@</pattern>
-                 <value>${sharedir}</value>
-              </substitution>
-              <substitution>
-                 <pattern>@@PGHOME@@</pattern>
-                 <value>${pghome}</value>
-              </substitution>
-          </substitutionList>
-          <ruleList>
-              <compareText>
-                 <logic>equals</logic>
-                 <text>${platform_name}</text>
-                 <value>windows</value>
-              </compareText>
-           </ruleList>
-        </substitute>
-
         <!-- Create Template Spatial Database -->
-        <runProgram>
-            <program>${installdir}\PostGIS\installer\PostGIS\createtemplatedb.bat</program>
-            <programArguments>${pghost} ${pgport} ${pguser} ${pgpassword}</programArguments>
-            <progressText>${msg(progress.text.creating.templatedb)}</progressText>
-            <abortOnError>0</abortOnError>
-            <showMessageOnError>1</showMessageOnError>
-            <workingDirectory>${installdir}\PostGIS\installer\PostGIS</workingDirectory>
+        <actionGroup>
+            <actionList>
+                <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+                <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+                <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+                <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
+                <runProgram>
+                    <program>${pghome}\bin\createdb.exe</program>
+                    <programArguments>template_postgis</programArguments>
+                    <progressText>${msg(progress.text.creating.templatedb)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                    <workingDirectory>${installdir}\bin</workingDirectory>
+                </runProgram>
+                <runProgram>
+                    <program>${pghome}\bin\createlang.exe</program>
+                    <programArguments>plpgsql template_postgis</programArguments>
+                    <progressText>${msg(progress.text.creating.templatedb)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <workingDirectory>${installdir}\bin</workingDirectory>
+                </runProgram>
+                <runProgram>
+                    <program>${pghome}\bin\psql.exe</program>
+                    <programArguments>-c "UPDATE pg_database SET datistemplate='t' WHERE datname='template_postgis'"</programArguments>
+                    <progressText>${msg(progress.text.creating.templatedb)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                    <workingDirectory>${installdir}\bin</workingDirectory>
+                </runProgram>
+                <runProgram>
+                    <program>${pghome}\bin\psql.exe</program>
+                    <programArguments>-f "${sharedir}\contrib\postgis.sql" -d template_postgis</programArguments>
+                    <progressText>${msg(progress.text.creating.templatedb)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                    <workingDirectory>${installdir}\bin</workingDirectory>
+                </runProgram>
+                <runProgram>
+                    <program>${pghome}\bin\psql.exe</program>
+                    <programArguments>-f "${sharedir}\contrib\postgis.sql" -d template_postgis</programArguments>
+                    <progressText>${msg(progress.text.creating.templatedb)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                    <workingDirectory>${installdir}\bin</workingDirectory>
+                </runProgram>
+                <runProgram>
+                    <program>${pghome}\bin\psql.exe</program>
+                    <programArguments>-f "${sharedir}\contrib\spatial_ref_sys.sql" -d template_postgis</programArguments>
+                    <progressText>${msg(progress.text.creating.templatedb)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                    <workingDirectory>${installdir}\bin</workingDirectory>
+                </runProgram>
+                <runProgram>
+                    <program>${pghome}\bin\psql.exe</program>
+                    <programArguments>-f "${sharedir}\contrib\postgis_comments.sql" -d template_postgis</programArguments>
+                    <progressText>${msg(progress.text.creating.templatedb)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                    <workingDirectory>${installdir}\bin</workingDirectory>
+                </runProgram>
+            </actionList>
             <ruleList>
                 <compareText>
                     <text>${templatedbexists}</text>
@@ -916,7 +952,7 @@
                     <value>windows</value>
                 </compareText>
             </ruleList>
-        </runProgram>
+        </actionGroup>
 
     </postInstallationActionList>
 
