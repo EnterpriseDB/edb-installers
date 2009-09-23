@@ -512,7 +512,7 @@
       </ruleList>
     </actionGroup>
 
-  <actionGroup>
+  <actionGroup>
       <actionList>
         <runProgram program="ps"> 
            <programArguments>ax | grep "${installdir}/UpdateManager.app" | grep -v "grep" | awk '{print $1}'</programArguments>
