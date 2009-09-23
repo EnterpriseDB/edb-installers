@@ -1932,6 +1932,9 @@
               <text>${platform_name}</text>
               <value>windows</value>
             </compareText>
+            <fileExists>
+               <path>/etc/postgresplus-reg.ini</path>
+            </fileExists>
           </ruleList>
         </actionGroup>
         <actionGroup>
