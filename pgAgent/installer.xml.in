@@ -597,7 +597,7 @@
         <runProgram>
           <customErrorMessage>${msg(error.create.pgpass)}</customErrorMessage>
           <program>${installdir}\installer\pgAgent\configurePgAgent.bat</program>
-          <programArguments>CREATE_PGPASS_CONF "${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe" ${systemuser} ${systempassword} ${pghost} ${pgport} ${pgdbname} ${pguser} ${pgpassword}</programArguments>
+          <programArguments>CREATE_PGPASS_CONF "${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe" ${systemuser} ${systempassword} ${pghost} ${pgport} ${pgdbname} ${pguser} "${pgpassword}"</programArguments>
           <workingDirectory>${windir}</workingDirectory>
           <abortOnError>0</abortOnError>
           <showMessageOnError>1</showMessageOnError>
