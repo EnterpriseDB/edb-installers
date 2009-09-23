@@ -8142,339 +8142,151 @@
           </ruleList>
         </actionGroup>
 
-        <!-- Starts here -->
-
         <actionGroup>
           <actionList>
-            <!-- Unpacking the Script file to temporary directory -->
-            <unpackFile>
-              <component>postgis</component>
-              <destination>${system_temp_directory}/postgresplus/check-connection.sh</destination>
-              <folder>programfileslinux</folder>
-              <origin>check-connection.sh</origin>
-            </unpackFile>
-            <unpackFile>
-              <component>postgis</component>
-              <destination>${system_temp_directory}/postgresplus/check-db.sh</destination>
-              <folder>programfileslinux</folder>
-              <origin>check-db.sh</origin>
-            </unpackFile>
-          </actionList>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${platform_name}</text>
-              <value>linux</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${component(postgis).selected}</text>
-              <value>1</value>
-            </compareText>
-            <fileTest>
-              <path>${installdir}/bin/psql</path>
-              <condition>exists</condition>
-            </fileTest>
-            <compareText>
-              <logic>equals</logic>
-              <text>${IsUpgrade}</text>
-              <value>1</value>
-            </compareText>
-          </ruleList>
-        </actionGroup>
 
-        <!-- linux-x64 -->
+            <!-- Set variable psql_path -->
+            <setInstallerVariable name="psql_path" value="${installdir}/bin/psql">
+              <ruleList>
+                <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+                </compareText>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="psql_path" value="${installdir}\bin\psql.exe">
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+                </compareText>
+              </ruleList>
+            </setInstallerVariable>
 
-        <actionGroup>
-          <actionList>
-            <!-- Unpacking the Script file to temporary directory -->
-            <unpackFile>
-              <component>postgis</component>
-              <destination>${system_temp_directory}/postgresplus/check-connection.sh</destination>
-              <folder>programfileslinux-x64</folder>
-              <origin>check-connection.sh</origin>
-            </unpackFile>
-            <unpackFile>
-              <component>postgis</component>
-              <destination>${system_temp_directory}/postgresplus/check-db.sh</destination>
-              <folder>programfileslinux-x64</folder>
-              <origin>check-db.sh</origin>
-            </unpackFile>
-          </actionList>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${platform_name}</text>
-              <value>linux-x64</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${component(postgis).selected}</text>
-              <value>1</value>
-            </compareText>
-            <fileTest>
-              <path>${installdir}/bin/psql</path>
-              <condition>exists</condition>
-            </fileTest>
-            <compareText>
-              <logic>equals</logic>
-              <text>${IsUpgrade}</text>
-              <value>1</value>
-            </compareText>
-          </ruleList>
-        </actionGroup>
+            <!-- Set Environment variable PGHOST, PGUSER, PGPASSWORD, PGPORT
+                 on all the platform & LD_LIBRARY_PATH on linux/linux-x64 -->
+            <setEnvironmentVariable>
+              <name>PGHOST</name>
+              <value>localhost</value>
+            </setEnvironmentVariable>
+            <setEnvironmentVariable>
+              <name>PGUSER</name>
+              <value>${supername}</value>
+            </setEnvironmentVariable>
+            <setEnvironmentVariable>
+              <name>PGPASSWORD</name>
+              <value>${superpassword}</value>
+            </setEnvironmentVariable>
+            <setEnvironmentVariable>
+              <name>PGPORT</name>
+              <value>${serverport}</value>
+            </setEnvironmentVariable>
+            <setEnvironmentVariable>
+              <name>LD_LIBRARY_PATH</name>
+              <value>${installdir}/lib</value>
+              <ruleList>
+                <compareText>
+                  <logic>contains</logic>
+                  <text>${platform_name}</text>
+                  <value>linux</value>
+                </compareText>
+              </ruleList>
+            </setEnvironmentVariable>
 
-        <!-- For MAC -->
-        <actionGroup>
-          <actionList>
-            <!-- Unpacking the Script file to temporary directory -->
-            <unpackFile>
-              <component>postgis</component>
-              <destination>${system_temp_directory}/postgresplus/check-connection.sh</destination>
-              <folder>postgisosx</folder>
-              <origin>check-connection.sh</origin>
-            </unpackFile>
-            <unpackFile>
-              <component>postgis</component>
-              <destination>${system_temp_directory}/postgresplus/check-db.sh</destination>
-              <folder>postgisosx</folder>
-              <origin>check-db.sh</origin>
-            </unpackFile>
-          </actionList>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${platform_name}</text>
-              <value>osx</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${component(postgis).selected}</text>
-              <value>1</value>
-            </compareText>
-            <fileTest>
-              <path>${installdir}/bin/psql</path>
-              <condition>exists</condition>
-            </fileTest>
-            <compareText>
-              <logic>equals</logic>
-              <text>${IsUpgrade}</text>
-              <value>1</value>
-            </compareText>
-          </ruleList>
-        </actionGroup>
-
-        <!--For Windows -->
-        <actionGroup>
-          <actionList>
-            <unpackFile>
-              <component>postgis</component>
-              <destination>${system_temp_directory}/postgresplus/check-connection.bat</destination>
-              <folder>postgiswindows</folder>
-              <origin>check-connection.bat</origin>
-            </unpackFile>
-            <unpackFile>
-              <component>postgis</component>
-              <destination>${system_temp_directory}/postgresplus/check-db.bat</destination>
-              <folder>postgiswindows</folder>
-              <origin>check-db.bat</origin>
-            </unpackFile>
-          </actionList>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${platform_name}</text>
-              <value>windows</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${component(postgis).selected}</text>
-              <value>1</value>
-            </compareText>
-            <fileTest>
-              <path>${installdir}\bin\psql.exe</path>
-              <condition>exists</condition>
-            </fileTest>
-            <compareText>
-              <logic>equals</logic>
-              <text>${IsUpgrade}</text>
-              <value>1</value>
-            </compareText>
-          </ruleList>
-        </actionGroup>
-
-        <!-- LIN & MAC: validate the PostgreSQL Server Details -->
-        <actionGroup>
-          <actionList>
-            <!-- Running the Script to validate the PostgreSQL Server Details -->
-            <setInstallerVariableFromScriptOutput>
-              <customErrorMessage>${program_stderr}</customErrorMessage>
-              <exec>${system_temp_directory}/postgresplus/check-connection.sh</exec>
-              <execArgs>${pghost} ${serverport} ${supername} "${superpassword}" "${installdir}"</execArgs>
+            <!-- Check for connection -->
+            <setInstallerVariable>
               <name>connection</name>
-              <workingDirectory>${system_temp_directory}/postgresplus</workingDirectory>
-            </setInstallerVariableFromScriptOutput>
-          </actionList>
-          <ruleList>
-            <compareText>
-              <logic>does_not_equal</logic>
-              <text>${platform_name}</text>
-              <value>windows</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${component(postgis).selected}</text>
-              <value>1</value>
-            </compareText>
-            <fileTest>
-              <path>${installdir}/bin/psql</path>
-              <condition>exists</condition>
-            </fileTest>
-            <compareText>
-              <logic>equals</logic>
-              <text>${IsUpgrade}</text>
-              <value>1</value>
-            </compareText>
-          </ruleList>
-        </actionGroup>
-
-        <!-- LIN & MAC: Check whether the database and user already exists -->
-        <actionGroup>
-          <actionList>
-
-            <!-- LIN & MAC: Check whether the database already exists -->
-            <setInstallerVariableFromScriptOutput>
-              <abortOnError>0</abortOnError>
-              <exec>${system_temp_directory}/postgresplus/check-db.sh</exec>
-              <execArgs>${pghost} ${serverport} ${supername} "${superpassword}" "${installdir}" "template_postgis"</execArgs>
-              <name>dbexist</name>
-              <showMessageOnError>0</showMessageOnError>
-              <workingDirectory>${system_temp_directory}/postgresplus</workingDirectory>
-            </setInstallerVariableFromScriptOutput>
-          </actionList>
-          <ruleList>
-            <compareText>
-              <logic>does_not_equal</logic>
-              <text>${platform_name}</text>
-              <value>windows</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${component(postgis).selected}</text>
-              <value>1</value>
-            </compareText>
-            <fileTest>
-              <path>${installdir}/bin/psql</path>
-              <condition>exists</condition>
-            </fileTest>
-            <compareText>
-              <logic>equals</logic>
-              <text>${IsUpgrade}</text>
-              <value>1</value>
-            </compareText>
-          </ruleList>
-        </actionGroup>
-
-        <!--For windows -->
-        <actionGroup>
-          <actionList>
-            <!-- Windows: Check whether the database already exists -->
-            <setInstallerVariableFromScriptOutput>
-              <abortOnError>0</abortOnError>
-              <exec>${system_temp_directory}\postgresplus\check-db.bat</exec>
-              <execArgs>${pghost} ${serverport} ${supername} "${superpassword}" "${installdir}" "template_postgis"</execArgs>
-              <name>dbexist</name>
-              <showMessageOnError>0</showMessageOnError>
-              <workingDirectory>${system_temp_directory}\postgresplus</workingDirectory>
-            </setInstallerVariableFromScriptOutput>
-          </actionList>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${platform_name}</text>
-              <value>windows</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${component(postgis).selected}</text>
-              <value>1</value>
-            </compareText>
-            <fileTest>
-              <path>${installdir}\bin\psql.exe</path>
-              <condition>exists</condition>
-            </fileTest>
-            <compareText>
-              <logic>equals</logic>
-              <text>${IsUpgrade}</text>
-              <value>1</value>
-            </compareText>
-          </ruleList>
-        </actionGroup>
-
-        <!-- Inform the user about the existing database and user -->
-        <actionGroup>
-          <actionList>
-            <showQuestion>
-              <default>yes</default>
-              <text>${msg(templatedb.found.info)}</text>
-              <variable>response</variable>
-            </showQuestion>
-            <setInstallerVariable name="templatedbexists" value="yes">
-              <persist>0</persist>
+              <value/>
             </setInstallerVariable>
+
+            <setInstallerVariableFromScriptOutput>
+              <exec>${psql_path}</exec>
+              <execArgs>-l</execArgs>
+              <name>connection</name>
+              <workingDirectory>${installdir}/bin</workingDirectory>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <ruleList>
+                <fileTest>
+                  <condition>exists</condition>
+                  <path>${psql_path}</path>
+                </fileTest>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+            <throwError>
+              <text>${msg(config.superpassword.incorrect)}</text>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text></text>
+                  <value>${connection}</value>
+                </compareText>
+                <fileTest>
+                  <condition>exists</condition>
+                  <path>${psql_path}</path>
+                </fileTest>
+              </ruleList>
+            </throwError>
+
+            <!-- Check for the template_posgis database exist -->
+            <actionGroup>
+              <actionList>
+                <setInstallerVariable>
+                  <name>template_postgis_exists</name>
+                  <value/>
+                </setInstallerVariable>
+                <setInstallerVariableFromScriptOutput>
+                  <exec>${psql_path}</exec>
+                  <execArgs>-t -c "SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='template_postgis'"</execArgs>
+                  <name>template_postgis_exists</name>
+                  <workingDirectory>${installdir}/bin</workingDirectory>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError>
+                  <ruleList>
+                    <fileTest>
+                      <condition>exists</condition>
+                      <path>${psql_path}</path>
+                    </fileTest>
+                  </ruleList>
+                </setInstallerVariableFromScriptOutput>
+
+                <actionGroup>
+                  <actionList>
+                    <showQuestion>
+                      <default>yes</default>
+                      <text>${msg(templatedb.found.info)}</text>
+                      <variable>response</variable>
+                    </showQuestion>
+                    <setInstallerVariable name="templatedbexists" value="yes">
+                      <persist>0</persist>
+                    </setInstallerVariable>
+                  </actionList>
+                  <ruleList>
+                    <compareText>
+                      <logic>does_not_equal</logic>
+                      <text>${template_postgis_exists}</text>
+                      <value/>
+                    </compareText>
+                  </ruleList>
+                </actionGroup>
+
+              </actionList>
+              <ruleList>
+                  <compareText>
+                    <logic>equals</logic>
+                    <text>${component(postgis).selected}</text>
+                    <value>1</value>
+                  </compareText>
+              </ruleList>
+            </actionGroup>
           </actionList>
           <ruleList>
             <compareText>
-              <logic>does_not_equal</logic>
-              <text>${dbexist}</text>
-              <value></value>
-            </compareText>
-            <compareText>
               <logic>equals</logic>
-              <text>${component(postgis).selected}</text>
+              <text>${IsUpgrade}</text>
               <value>1</value>
-            </compareText>
-            <fileTest>
-              <path>${installdir}/bin/psql</path>
-              <condition>exists</condition>
-            </fileTest>
-            <compareText>
-              <logic>does_not_equal</logic>
-              <text>${platform_name}</text>
-              <value>windows</value>
-            </compareText>
-          </ruleList>
-        </actionGroup>
-        <actionGroup>
-          <actionList>
-            <showQuestion>
-              <default>yes</default>
-              <text>${msg(templatedb.found.info)}</text>
-              <variable>response</variable>
-            </showQuestion>
-            <setInstallerVariable name="templatedbexists" value="yes">
-              <persist>0</persist>
-            </setInstallerVariable>
-          </actionList>
-          <ruleList>
-            <compareText>
-              <logic>does_not_equal</logic>
-              <text>${dbexist}</text>
-              <value></value>
-            </compareText>
-            <fileTest>
-              <path>${installdir}\bin\psql.exe</path>
-              <condition>exists</condition>
-            </fileTest>
-            <compareText>
-              <logic>equals</logic>
-              <text>${component(postgis).selected}</text>
-              <value>1</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${platform_name}</text>
-              <value>windows</value>
             </compareText>
           </ruleList>
         </actionGroup>
@@ -8495,7 +8307,6 @@
             </compareText>
           </ruleList>
         </actionGroup>
-        <!--Ends here -->
 
         <!-- pgAgent Checks starts here-->
         <actionGroup>

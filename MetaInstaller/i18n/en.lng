@@ -74,6 +74,7 @@ config.superpassword.explanation.windows=Please provide a password for the datab
 config.superpassword.confirm=Retype password
 config.superpassword.no.password=You must enter a password to continue.
 config.superpassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the ${supername} windows user account.
+config.superpassword.incorrect=The password specified was incorrect.
 
 config.port.description=Port
 config.port.explanation=Please select the port number the server should listen on.
