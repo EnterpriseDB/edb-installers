@@ -912,14 +912,6 @@
                 </runProgram>
                 <runProgram>
                     <program>${pghome}\bin\psql.exe</program>
-                    <programArguments>-f "${sharedir}\contrib\postgis.sql" -d template_postgis</programArguments>
-                    <progressText>${msg(progress.text.creating.templatedb)}</progressText>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>1</showMessageOnError>
-                    <workingDirectory>${installdir}\bin</workingDirectory>
-                </runProgram>
-                <runProgram>
-                    <program>${pghome}\bin\psql.exe</program>
                     <programArguments>-f "${sharedir}\contrib\spatial_ref_sys.sql" -d template_postgis</programArguments>
                     <progressText>${msg(progress.text.creating.templatedb)}</progressText>
                     <abortOnError>0</abortOnError>
