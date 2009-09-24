@@ -4083,7 +4083,7 @@
     <setInstallerVariableFromScriptOutput>
       <customErrorMessage>${msg(pgplus.modify.error)}</customErrorMessage>
       <exec>${system_temp_directory}/postgresplus/modifyPostgresql.o</exec>
-      <execArgs>"${installdir}/data/postgresql.conf" "${autovacuum_var}" "${autovacuum_naptime_var}" "${autovacuum_vacuum_threshold_var}" "${autovacuum_analyze_threshold_var}" "${autovacuum_vacuum_scale_factor_var}" "${autovacuum_analyze_scale_factor_var}" "${checkpoint_segments_var}" "${effective_cache_size_var}" "${maintenance_work_mem_var}" "${max_fsm_pages_var}" "${max_fsm_relations_var}" "${random_page_cost_var}" "${shared_buffers_var}" "${wal_buffers_var}" "${work_mem_var}" "${max_connections_var}" "${stats_row_level_var}"</execArgs>
+      <execArgs>"${datadir}/postgresql.conf" "${autovacuum_var}" "${autovacuum_naptime_var}" "${autovacuum_vacuum_threshold_var}" "${autovacuum_analyze_threshold_var}" "${autovacuum_vacuum_scale_factor_var}" "${autovacuum_analyze_scale_factor_var}" "${checkpoint_segments_var}" "${effective_cache_size_var}" "${maintenance_work_mem_var}" "${max_fsm_pages_var}" "${max_fsm_relations_var}" "${random_page_cost_var}" "${shared_buffers_var}" "${wal_buffers_var}" "${work_mem_var}" "${max_connections_var}" "${stats_row_level_var}"</execArgs>
       <name>postgresql_conf_updated_result</name>
       <workingDirectory>${system_temp_directory}/postgresplus</workingDirectory>
       <ruleList>
@@ -4204,7 +4204,7 @@
     <setInstallerVariableFromScriptOutput>
       <customErrorMessage>${msg(pgplus.modify.error)}</customErrorMessage>
       <exec>${system_temp_directory}\postgresplus\modifyPostgresql.exe</exec>
-      <execArgs>"${installdir}/data/postgresql.conf" "${autovacuum_var}" "${autovacuum_naptime_var}" "${autovacuum_vacuum_threshold_var}" "${autovacuum_analyze_threshold_var}" "${autovacuum_vacuum_scale_factor_var}" "${autovacuum_analyze_scale_factor_var}" "${checkpoint_segments_var}" "${effective_cache_size_var}" "${maintenance_work_mem_var}" "${max_fsm_pages_var}" "${max_fsm_relations_var}" "${random_page_cost_var}" "${shared_buffers_var}" "${wal_buffers_var}" "${work_mem_var}" "${max_connections_var}" "${stats_row_level_var}"</execArgs>
+      <execArgs>"${datadir}/postgresql.conf" "${autovacuum_var}" "${autovacuum_naptime_var}" "${autovacuum_vacuum_threshold_var}" "${autovacuum_analyze_threshold_var}" "${autovacuum_vacuum_scale_factor_var}" "${autovacuum_analyze_scale_factor_var}" "${checkpoint_segments_var}" "${effective_cache_size_var}" "${maintenance_work_mem_var}" "${max_fsm_pages_var}" "${max_fsm_relations_var}" "${random_page_cost_var}" "${shared_buffers_var}" "${wal_buffers_var}" "${work_mem_var}" "${max_connections_var}" "${stats_row_level_var}"</execArgs>
       <name>postgresql_conf_updated_result</name>
       <workingDirectory>${system_temp_directory}\postgresplus</workingDirectory>
       <ruleList>
