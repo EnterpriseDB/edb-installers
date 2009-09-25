@@ -364,8 +364,8 @@
         </runProgram>
 
         <runProgram>
-          <program>${installdir}\installer\pgAgent\configurePgAgent.bat</program>
-          <programArguments>"CREATE_PLPGSQL" "${installdir}\bin\psql.exe"</programArguments>
+          <program>${installdir}\bin\psql.exe</program>
+          <programArguments>-t -c "CREATE LANGUAGE plpgsql"</programArguments>
           <progressText>${msg(progress.text.creating.plpgsql)}</progressText>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
@@ -391,12 +391,12 @@
           </ruleList>
         </runProgram>
         <runProgram>
-          <program>${installdir}\installer\pgAgent\configurePgAgent.bat</program>
-          <programArguments>"CREATE_PGAGENT_SCHEMA" "${installdir}\bin\psql.exe" "${installdir}\share\pgagent.sql"</programArguments>
+          <program>${installdir}\bin\psql.exe</program>
+          <programArguments>-t -f "${installdir}\share\pgagent.sql"</programArguments>
           <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
-          <workingDirectory>${installdir}/bin</workingDirectory>
+          <workingDirectory>${installdir}\bin</workingDirectory>
           <ruleList>
             <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -428,8 +428,8 @@
           </ruleList>
         </runProgram>
         <runProgram>
-          <program>${installdir}\installer\pgAgent\configurePgAgent.bat</program>
-          <programArguments>"UPGRADE_PGAGENT_SCHEMA" "${installdir}\bin\psql.exe" "${installdir}\share\pgagent_upgrade.sql"</programArguments>
+          <program>${installdir}\bin\psql.exe</program>
+          <programArguments>-t -f "${installdir}\share\pgagent_upgrade.sql"</programArguments>
           <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
@@ -489,8 +489,8 @@
         </runProgram>
 
         <runProgram>
-          <program>${installdir}\installer\pgAgent\configurePgAgent.bat</program>
-          <programArguments>"CREATE_PLPGSQL" "${installdir}\bin\psql.exe"</programArguments>
+          <program>${installdir}\bin\psql.exe</program>
+          <programArguments>-t -c "CREATE LANGUAGE plpgsql"</programArguments>
           <progressText>${msg(progress.text.creating.plpgsql)}</progressText>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
@@ -516,8 +516,8 @@
           </ruleList>
         </runProgram>
         <runProgram>
-          <program>${installdir}\installer\pgAgent\configurePgAgent.bat</program>
-          <programArguments>"CREATE_PGAGENT_SCHEMA" "${installdir}\bin\psql.exe" "${installdir}\share\pgagent.sql"</programArguments>
+          <program>${installdir}\bin\psql.exe</program>
+          <programArguments>-t -f "${installdir}\share\pgagent.sql"</programArguments>
           <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
@@ -544,8 +544,8 @@
           </ruleList>
         </runProgram>
         <runProgram>
-          <program>${installdir}\installer\pgAgent\configurePgAgent.bat</program>
-          <programArguments>"UPGRADE_PGAGENT_SCHEMA" "${installdir}\bin\psql.exe" "${installdir}\share\pgagent_upgrade.sql"</programArguments>
+          <program>${installdir}\bin\psql.exe</program>
+          <programArguments>-t -f "${installdir}\share\pgagent_upgrade.sql"</programArguments>
           <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
@@ -596,8 +596,8 @@
         </unpackFile>
         <runProgram>
           <customErrorMessage>${msg(error.create.pgpass)}</customErrorMessage>
-          <program>${installdir}\installer\pgAgent\configurePgAgent.bat</program>
-          <programArguments>CREATE_PGPASS_CONF "${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe" ${systemuser} "${systempassword}" ${pghost} ${pgport} ${pgdbname} ${pguser} "${pgpassword}"</programArguments>
+          <program>${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe</program>
+          <programArguments>${systemuser} "${systempassword}" ${pghost} ${pgport} ${pgdbname} ${pguser} "${pgpassword}"</programArguments>
           <workingDirectory>${windir}</workingDirectory>
           <abortOnError>0</abortOnError>
           <showMessageOnError>1</showMessageOnError>
@@ -1393,15 +1393,6 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
               </ruleList>
             </unpackFile>
-            <unpackFile>
-              <component>pgAgent</component>
-              <destination>${system_temp_directory}\${product_fullname}\bin\checkPG.bat</destination>
-              <folder>installfileswindows</folder>
-              <origin>installer/pgAgent/configurePgAgent.bat</origin>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
-              </ruleList>
-            </unpackFile>
 
             <unpackDirectory>
               <component>pgAgent</component>
@@ -1432,8 +1423,8 @@
               </ruleList>
             </setInstallerVariableFromScriptOutput>
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}\${product_fullname}\bin\checkPG.bat</exec>
-              <execArgs>"CHECK_CONNECTION" "${system_temp_directory}\${product_fullname}\bin\psql.exe" "${pgdbname}"</execArgs>
+              <exec>${system_temp_directory}\${product_fullname}\bin\psql.exe</exec>
+              <execArgs>-t -c "SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${pgdbname}'"</execArgs>
               <name>connection</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
               <customErrorMessage>${program_stderr}</customErrorMessage>
@@ -1456,8 +1447,8 @@
               </ruleList>
             </setInstallerVariableFromScriptOutput>
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}\${product_fullname}\bin\checkPG.bat</exec>
-              <execArgs>"CHECK_PLPGSQL" "${system_temp_directory}\${product_fullname}\bin\psql.exe"</execArgs>
+              <exec>${system_temp_directory}\${product_fullname}\bin\psql.exe</exec>
+              <execArgs>-t -A -c "SELECT lanname FROM pg_language WHERE lanname='plpgsql'"</execArgs>
               <name>plpgsql_exist</name>
               <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
@@ -1481,8 +1472,8 @@
               </ruleList>
             </setInstallerVariableFromScriptOutput>
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}\${product_fullname}\bin\checkPG.bat</exec>
-              <execArgs>"CHECK_PGAGENT_SCHEMA" "${system_temp_directory}\${product_fullname}\bin\psql.exe"</execArgs>
+              <exec>${system_temp_directory}\${product_fullname}\bin\psql.exe</exec>
+              <execArgs>-t -A -c "SELECT has_schema_privilege('pgagent', 'USAGE')"</execArgs>
               <name>pgagent_schema_exist</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
@@ -1507,8 +1498,8 @@
               </ruleList>
             </setInstallerVariableFromScriptOutput>
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}\${product_fullname}\bin\checkPG.bat</exec>
-              <execArgs>"CHECK_PGAGENT_SCHEMA_VERSION_FUNCTION_EXIST" "${system_temp_directory}\${product_fullname}\bin\psql.exe"</execArgs>
+              <exec>${system_temp_directory}\${product_fullname}\bin\psql.exe</exec>
+              <execArgs>-t -A -c "SELECT COUNT(*) FROM pg_proc WHERE proname = 'pgagent_schema_version' AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'pgagent') AND prorettype = (SELECT oid FROM pg_type WHERE typname = 'int2') AND proargtypes = ''"</execArgs>
               <name>pgagent_schema_version_function_exist</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
@@ -1535,8 +1526,8 @@
               </ruleList>
             </setInstallerVariableFromScriptOutput>
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}\${product_fullname}\bin\checkPG.bat</exec>
-              <execArgs>"CHECK_CURRENT_PGAGENT_SCHEMA_VERSION" "${system_temp_directory}\${product_fullname}\bin\psql.exe"</execArgs>
+              <exec>${system_temp_directory}\${product_fullname}\bin\psql.exe</exec>
+              <execArgs>-t -A -c "SELECT pgagent.pgagent_schema_version()"</execArgs>
               <name>pgagent_current_schema_version</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
