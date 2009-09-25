@@ -1562,6 +1562,9 @@
           <text>${iDataDirectory}</text>
           <type>not_empty</type>
         </stringTest>
+        <fileExists>
+          <path>${iDataDirectory}</path>
+        </fileExists>
         <fileTest>
           <condition>is_not_empty</condition>
           <path>${iDataDirectory}</path>
