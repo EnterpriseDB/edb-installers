@@ -47,7 +47,7 @@ then
     _replace "\/server\/" "\/DevServer\/" "$WD/DevServer/build-osx.sh"
     _replace "\/installer\/server" "\/installer\/DevServer" "$WD/DevServer/build-osx.sh"
     _replace "_server_" "_DevServer_" "$WD/DevServer/build-osx.sh"
-    _replace "postgresql-\$PG_TARBALL_POSTGRESQL" "pgsql" "$WD/DevServer/build-osx.sh"
+    _replace "postgresql-\$PG_TARBALL_POSTGRESQL" "postgresql-\$PG_VERSION_DEVSERVER" "$WD/DevServer/build-osx.sh"
     _replace "pgadmin3-\$PG_TARBALL_PGADMIN" "pgadmin3" "$WD/DevServer/build-osx.sh"
     _replace "\$PG_MAJOR_VERSION" "\$PG_VERSION_DEVSERVER" "$WD/DevServer/build-osx.sh"
     _replace "\$PG_PACKAGE_VERSION" "\$PG_VERSION_DEVSERVER" "$WD/DevServer/build-osx.sh"
@@ -67,7 +67,7 @@ then
     _replace "\/server\/" "\/DevServer\/" "$WD/DevServer/build-linux.sh"
     _replace "\/installer\/server" "\/installer\/DevServer" "$WD/DevServer/build-linux.sh"
     _replace "_server_" "_DevServer_" "$WD/DevServer/build-linux.sh"
-    _replace "postgresql-\$PG_TARBALL_POSTGRESQL" "pgsql" "$WD/DevServer/build-linux.sh"
+    _replace "postgresql-\$PG_TARBALL_POSTGRESQL" "postgresql-\$PG_VERSION_DEVSERVER" "$WD/DevServer/build-linux.sh"
     _replace "pgadmin3-\$PG_TARBALL_PGADMIN" "pgadmin3" "$WD/DevServer/build-linux.sh"
     _replace "\$PG_MAJOR_VERSION" "\$PG_VERSION_DEVSERVER" "$WD/DevServer/build-linux.sh"
     _replace "\$PG_PACKAGE_VERSION" "\$PG_VERSION_DEVSERVER" "$WD/DevServer/build-linux.sh"
@@ -88,7 +88,7 @@ then
     _replace "\/server\/" "\/DevServer\/" "$WD/DevServer/build-linux-x64.sh"
     _replace "\/installer\/server" "\/installer\/DevServer" "$WD/DevServer/build-linux-x64.sh"
     _replace "_server_" "_DevServer_" "$WD/DevServer/build-linux-x64.sh"
-    _replace "postgresql-\$PG_TARBALL_POSTGRESQL" "pgsql" "$WD/DevServer/build-linux-x64.sh"
+    _replace "postgresql-\$PG_TARBALL_POSTGRESQL" "postgresql-\$PG_VERSION_DEVSERVER" "$WD/DevServer/build-linux-x64.sh"
     _replace "pgadmin3-\$PG_TARBALL_PGADMIN" "pgadmin3" "$WD/DevServer/build-linux-x64.sh"
     _replace "\$PG_MAJOR_VERSION" "\$PG_VERSION_DEVSERVER" "$WD/DevServer/build-linux-x64.sh"
     _replace "\$PG_PACKAGE_VERSION" "\$PG_VERSION_DEVSERVER" "$WD/DevServer/build-linux-x64.sh"
@@ -109,7 +109,7 @@ then
     _replace "\\\\server" "\\\\DevServer" "$WD/DevServer/build-windows.sh"
     _replace "\/installer\/server" "\/installer\/DevServer" "$WD/DevServer/build-windows.sh"
     _replace "_server_" "_DevServer_" "$WD/DevServer/build-windows.sh"
-    _replace "postgresql-\$PG_TARBALL_POSTGRESQL" "pgsql" "$WD/DevServer/build-windows.sh"
+    _replace "postgresql-\$PG_TARBALL_POSTGRESQL" "postgresql-\$PG_VERSION_DEVSERVER" "$WD/DevServer/build-windows.sh"
     _replace "pgadmin3-\$PG_TARBALL_PGADMIN" "pgadmin3" "$WD/DevServer/build-windows.sh"
     _replace "\$PG_MAJOR_VERSION" "\$PG_VERSION_DEVSERVER" "$WD/DevServer/build-windows.sh"
     _replace "\$PG_PACKAGE_VERSION" "\$PG_VERSION_DEVSERVER" "$WD/DevServer/build-windows.sh"
@@ -140,19 +140,27 @@ _prep_DevServer() {
     cd $WD/DevServer/source
 
     # PostgreSQL
-    echo "Updating the DevServer source tree..."
-    cd $WD/DevServer/source/pgsql
-    cvs -z3 update -dP  
-    
+    if [ -e postgresql-$PG_VERSION_DEVSERVER ];
+    then
+      echo "Removing existing postgresql-$PG_VERSION_DEVSERVER source directory"
+      rm -rf postgresql-$PG_VERSION_DEVSERVER  || _die "Couldn't remove the existing postgresql-$PG_VERSION_DEVSERVER source directory (source/postgresql-$PG_VERSION_DEVSERVER)"
+    fi
+        
+    echo "Unpacking PostgreSQL source..."
+    extract_file ../../tarballs/postgresql-$PG_VERSION_DEVSERVER
+
+    # Work round an issue seen in alpha1
+    touch postgresql-$PG_VERSION_DEVSERVER/doc/src/sgml/man1/dblink.foo
+
     # pgadmin
     echo "Updating the pgadmin source tree..."
     cd $WD/DevServer/source/pgadmin3
     svn update
 
     # Debugger
-    echo "Updating the Debugger source tree..."
-    cd $WD/DevServer/source/pgsql/contrib/pldebugger
-    cvs -z3 update -dP
+    echo "Checkout the Debugger source tree..."
+    cd $WD/DevServer/source/postgresql-$PG_VERSION_DEVSERVER/contrib/
+    cvs -d :pserver:anonymous@cvs.pgfoundry.org:/cvsroot/edb-debugger checkout -d pldebugger server
 	
     # StackBuilder (CVS Tree)
     echo "Updating the StackBuilder source tree..."
@@ -173,6 +181,7 @@ _prep_DevServer() {
     echo "Patching pl/java source..."
     cd pljava-1.4.0
     patch -p0 < ../../../tarballs/pljava-fix.patch
+    patch -p1 < ../../../tarballs/pljava-fix2.patch
 
     echo "making another source tree for building postgres Docs"
     cd $WD/DevServer/source
@@ -183,7 +192,7 @@ _prep_DevServer() {
     fi
 
     # Grab a copy of the source tree
-    cp -R pgsql postgres.docs || _die "Failed to copy the source code (source/pgsql)"
+    cp -R postgresql-$PG_VERSION_DEVSERVER postgres.docs || _die "Failed to copy the source code (source/postgresql-$PG_VERSION_DEVSERVER)"
     chmod -R ugo+w postgres.docs || _die "Couldn't set the permissions on the source directory"
 
     # Per-platform prep
@@ -276,7 +285,7 @@ _postprocess_DevServer() {
     cd $WD/DevServer
 
     # Get the catalog version number
-    PG_CATALOG_VERSION=`cat source/pgsql/src/include/catalog/catversion.h |grep "#define CATALOG_VERSION_NO" | awk '{print $3}'`
+    PG_CATALOG_VERSION=`cat source/postgresql-$PG_VERSION_DEVSERVER/src/include/catalog/catversion.h |grep "#define CATALOG_VERSION_NO" | awk '{print $3}'`
 
     # Prepare the installer XML file
     if [ -f installer.xml ];
