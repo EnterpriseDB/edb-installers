@@ -2018,207 +2018,127 @@
           <actionList>
             <componentSelection>
               <select>dbserver</select>
-              <ruleList>
-                <isTrue value="${upgrade_dbserver}"/>
-              </ruleList>
             </componentSelection>
             <setInstallerVariable>
               <name>component(dbserver).canBeEdited</name>
               <value>0</value>
-              <ruleList>
-                <isTrue value="${upgrade_dbserver}"/>
-              </ruleList>
             </setInstallerVariable>
           </actionList>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
-            <fileTest path="${installdir}/uninstall-postgresql" condition="exists"/>
-            <fileTest path="${installdir}\uninstall-postgresql.exe" condition="exists"/>
-            <fileTest path="${installdir}/uninstall-postgresql.app" condition="exists"/>
+            <isTrue value="${upgrade_dbserver}"/>
           </ruleList>
         </actionGroup>
         <actionGroup>
           <actionList>
             <componentSelection>
               <select>slony</select>
-              <ruleList>
-                <isTrue value="${upgrade_slony}"/>
-              </ruleList>
             </componentSelection>
             <setInstallerVariable>
               <name>component(slony).canBeEdited</name>
               <value>0</value>
-              <ruleList>
-                <isTrue value="${upgrade_slony}"/>
-              </ruleList>
+              <ruleEvaluationLogic>or</ruleEvaluationLogic>
             </setInstallerVariable>
           </actionList>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
-            <fileTest path="${installdir}/Slony/uninstall-slony" condition="exists"/>
-            <fileTest path="${installdir}/Slony/uninstall-slony.app" condition="exists"/>
-            <fileTest path="${installdir}\Slony\uninstall-slony.exe" condition="exists"/>
+            <isTrue value="${upgrade_slony}"/>
           </ruleList>
         </actionGroup>
         <actionGroup>
           <actionList>
             <componentSelection>
               <select>pgJdbc</select>
-              <ruleList>
-                <isTrue value="${upgrade_pgjdbc}"/>
-              </ruleList>
             </componentSelection>
             <setInstallerVariable>
               <name>component(pgJdbc).canBeEdited</name>
               <value>0</value>
-              <ruleList>
-                <isTrue value="${upgrade_pgjdbc}"/>
-              </ruleList>
             </setInstallerVariable>
           </actionList>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
-            <fileTest path="${installdir}/pgJDBC/uninstall-pgjdbc" condition="exists"/>
-            <fileTest path="${installdir}/pgJDBC/uninstall-pgjdbc.app" condition="exists"/>
-            <fileTest path="${installdir}\pgJDBC\uninstall-pgjdbc.exe" condition="exists"/>
+            <isTrue value="${upgrade_pgjdbc}"/>
           </ruleList>
         </actionGroup>
         <actionGroup>
           <actionList>
             <componentSelection>
               <select>postgis</select>
-              <ruleList>
-                <isTrue value="${upgrade_postgis}"/>
-              </ruleList>
             </componentSelection>
             <setInstallerVariable>
               <name>component(postgis).canBeEdited</name>
               <value>0</value>
-              <ruleList>
-                <isTrue value="${upgrade_postgis}"/>
-              </ruleList>
             </setInstallerVariable>
           </actionList>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
-            <fileTest path="${installdir}/PostGIS/uninstall-postgis" condition="exists"/>
-            <fileTest path="${installdir}/PostGIS/uninstall-postgis.app" condition="exists"/>
-            <fileTest path="${installdir}\PostGIS\uninstall-postgis.exe" condition="exists"/>
+            <isTrue value="${upgrade_postgis}"/>
           </ruleList>
         </actionGroup>
         <actionGroup>
           <actionList>
             <componentSelection>
               <select>psqlOdbc</select>
-              <ruleList>
-                <isTrue value="${upgrade_psqlOdbc}"/>
-              </ruleList>
             </componentSelection>
             <setInstallerVariable>
               <name>component(psqlOdbc).canBeEdited</name>
               <value>0</value>
-              <ruleList>
-                <isTrue value="${upgrade_psqlOdbc}"/>
-              </ruleList>
             </setInstallerVariable>
           </actionList>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
-            <fileTest path="${installdir}/psqlODBC/uninstall-psqlodbc" condition="exists"/>
-            <fileTest path="${installdir}/psqlODBC/uninstall-psqlodbc.app" condition="exists"/>
-            <fileTest path="${installdir}\psqlODBC\uninstall-psqlodbc.exe" condition="exists"/>
+            <isTrue value="${upgrade_psqlOdbc}"/>
           </ruleList>
         </actionGroup>
         <actionGroup>
           <actionList>
             <componentSelection>
               <select>npgsql</select>
-              <ruleList>
-                <isTrue value="${upgrade_npgsql}"/>
-              </ruleList>
             </componentSelection>
             <setInstallerVariable>
               <name>component(npgsql).canBeEdited</name>
               <value>0</value>
-              <ruleList>
-                <isTrue value="${upgrade_npgsql}"/>
-              </ruleList>
             </setInstallerVariable>
           </actionList>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
-            <fileTest path="${installdir}/Npgsql/uninstall-npgsql" condition="exists"/>
-            <fileTest path="${installdir}/Npgsql/uninstall-npgsql.app" condition="exists"/>
-            <fileTest path="${installdir}\Npgsql\uninstall-npgsql.exe" condition="exists"/>
+            <isTrue value="${upgrade_npgsql}"/>
           </ruleList>
         </actionGroup>
         <actionGroup>
           <actionList>
             <componentSelection>
               <select>pgbouncer</select>
-              <ruleList>
-                <isTrue value="${upgrade_pgbouncer}"/>
-              </ruleList>
             </componentSelection>
             <setInstallerVariable>
               <name>component(pgbouncer).canBeEdited</name>
               <value>0</value>
-              <ruleList>
-                <isTrue value="${upgrade_pgbouncer}"/>
-              </ruleList>
             </setInstallerVariable>
           </actionList>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
-            <fileTest path="${installdir}/pgbouncer/uninstall-pgbouncer" condition="exists"/>
-            <fileTest path="${installdir}/pgbouncer/uninstall-pgbouncer.app" condition="exists"/>
-            <fileTest path="${installdir}\pgbouncer\uninstall-pgbouncer.exe" condition="exists"/>
+            <isTrue value="${upgrade_pgbouncer}"/>
           </ruleList>
         </actionGroup>
         <actionGroup>
           <actionList>
             <componentSelection>
               <select>pgmemcache</select>
-              <ruleList>
-                <isTrue value="${upgrade_pgmemcache}"/>
-              </ruleList>
             </componentSelection>
             <setInstallerVariable>
               <name>component(pgmemcache).canBeEdited</name>
               <value>0</value>
-              <ruleList>
-                <isTrue value="${upgrade_pgmemcache}"/>
-              </ruleList>
             </setInstallerVariable>
           </actionList>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
-            <fileTest path="${installdir}/uninstall-pgmemcache" condition="exists"/>
-            <fileTest path="${installdir}/uninstall-pgmemcache.app" condition="exists"/>
-            <fileTest path="${installdir}\uninstall-pgmemcache.exe" condition="exists"/>
+            <isTrue value="${upgrade_pgmemcache}"/>
           </ruleList>
         </actionGroup>
         <actionGroup>
           <actionList>
             <componentSelection>
               <select>pgagent</select>
-              <ruleList>
-                <isTrue value="${upgrade_pgagent}"/>
-              </ruleList>
             </componentSelection>
             <setInstallerVariable>
               <name>component(pgagent).canBeEdited</name>
               <value>0</value>
-              <ruleList>
-                <isTrue value="${upgrade_pgagent}"/>
-              </ruleList>
             </setInstallerVariable>
           </actionList>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
-            <fileTest path="${installdir}/pgAgent/uninstall-pgagent" condition="exists"/>
-            <fileTest path="${installdir}/pgAgent/uninstall-pgagent.app" condition="exists"/>
-            <fileTest path="${installdir}\pgAgent\uninstall-pgagent.exe" condition="exists"/>
+            <isTrue value="${upgrade_pgagent}"/>
           </ruleList>
         </actionGroup>
       </actionList>
