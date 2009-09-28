@@ -1425,7 +1425,7 @@
         <!-- MAC: Stop the server -->
         <runProgram>
             <program>launchctl</program>
-            <programArguments>stop com.edb.launchd.postgresql-${product_version}</programArguments>
+            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.postgresql-${product_version}.plist</programArguments>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>

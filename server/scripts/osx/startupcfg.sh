@@ -69,8 +69,5 @@ chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.postgresql-$VERSION.
 # Load the LaunchAgent
 launchctl load /Library/LaunchDaemons/com.edb.launchd.postgresql-$VERSION.plist
 
-# Start the server
-launchctl start com.edb.launchd.postgresql-$VERSION
-
 echo "$0 ran to completion"
 exit $WARN
