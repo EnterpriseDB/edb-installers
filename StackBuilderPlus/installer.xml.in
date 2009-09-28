@@ -92,6 +92,13 @@
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
       </ruleList>
     </touchFile>
+
+    <setInstallerVariable name="system_user" value="${env(SUDO_USER)}" />
+    <setInstallerVariable name="system_user" value="${env(USER)}" >
+        <ruleList>
+            <compareText logic="equals" text="${system_user}" value=""/>
+        </ruleList>
+    </setInstallerVariable>
   
     <setInstallerVariable name="iMonitorServer" value="" />
 
@@ -208,8 +215,8 @@
     </actionGroup>
     <actionGroup>
       <actionList>
-        <runProgram program="kill"> 
-           <programArguments>-9 `ps awx | grep "${installdir}/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+        <runProgram program="launchctl"> 
+           <programArguments>unload /Library/LaunchAgents/com.edb.launchd.stackbuilderplus.plist</programArguments>
            <abortOnError>0</abortOnError>
            <showMessageOnError>0</showMessageOnError>
         </runProgram>
@@ -217,6 +224,7 @@
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
         <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
+        <fileExists path="/Library/LaunchAgents/com.edb.launchd.stackbuilderplus.plist" />
       </ruleList>
     </actionGroup>
  
@@ -387,20 +395,12 @@
                      name="StackBuilderPlusPG_VERSION_STR Update Monitor"
                      value="&quot;${installdir}\bin\UpdateManager.exe&quot; --server ${monitorServer} --execute  &quot;${installdir}\bin\stackbuilderplus.exe&quot;"/>
     
-        <!-- MAC: Register launchSBPUpdateMonitor script as a startup script -->
-        <touchFile path="/private/var/root/Library/Preferences/loginwindow.plist">
-          <ruleList>
-            <compareText text="${platform_name}" logic="equals" value="osx"/>
-          </ruleList>
-        </touchFile>
-        <runProgram program="/usr/bin/defaults"
-                    programArguments="write com.apple.loginwindow LoginHookSBPUpdateMonitor_PG_VERSION_STR &quot;${installdir}/scripts/launchSBPUpdateMonitor.sh&quot;"
-                    progressText="${msg(progress.text.creating.loginHook.osx)}"
+        <runProgram program="${installdir}/installer/StackBuilderPlus/startupcfg.sh"
+                    programArguments="${installdir} ${system_user} ${monitorServer} &quot;${branding}&quot;"
                     abortOnError="0"
                     showMessageOnError="0">
           <ruleList>
             <compareText text="${platform_name}" logic="equals" value="osx"/>
-            <fileExists  path="/usr/bin/defaults"/>
           </ruleList>
         </runProgram>
 
@@ -454,17 +454,7 @@
                 showMessageOnError="0"
                 abortOnError="0">
       <ruleList>
-        <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
-        <compareText text="${platform_name}" logic="does_not_equal" value="osx"/>
-        <compareText text="${monitorServer}" logic="does_not_equal" value=""/>
-      </ruleList>
-    </runProgram>
-    <runProgram program="${installdir}/scripts/launchSBPUpdateMonitor.sh"
-                programArguments="&amp;"
-                showMessageOnError="0"
-                abortOnError="0">
-      <ruleList>
-        <compareText text="${platform_name}" logic="equals" value="osx"/>
+        <compareText text="${platform_name}" logic="contains" value="linux"/>
         <compareText text="${monitorServer}" logic="does_not_equal" value=""/>
       </ruleList>
     </runProgram>
@@ -485,7 +475,6 @@
   <preUninstallationActionList>
 
     <!-- Stop the montioring if installed -->
-    <showInfo text="${installdir}\bin\UpdateManager.exe" />
     <kill path="${installdir}\bin\UpdateManager.exe" >
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
@@ -509,14 +498,15 @@
 
   <actionGroup>
       <actionList>
-        <runProgram program="kill"> 
-           <programArguments>-9 `ps awx | grep "${installdir}/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+        <runProgram program="launchctl"> 
+           <programArguments>unload /Library/LaunchAgents/com.edb.launchd.stackbuilderplus.plist</programArguments>
            <abortOnError>0</abortOnError>
            <showMessageOnError>0</showMessageOnError>
         </runProgram>
       </actionList>
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
+        <fileExists path="/Library/LaunchAgents/com.edb.launchd.stackbuilderplus.plist" />
       </ruleList>
     </actionGroup>
 
@@ -536,16 +526,13 @@
     <actionGroup>
       <actionList>
         <!-- OSX: Remove the scripts from the startup items, if installed -->
-        <runProgram program="/usr/bin/defaults"
-                    programArguments="delete com.apple.loginwindow LoginHookSBPUpdateMonitor_PG_VERSION_STR"
-                    progressText="${msg(progress.text.removing.loginHook.osx)}"
-                    abortOnError="0"
-                    showMessageOnError="0">
+        <deleteFile path="/Library/LaunchAgents/com.edb.launchd.stackbuilderplus.plist" 
+                showMessageOnError="0"
+                abortOnError="0">
           <ruleList>
             <compareText text="${platform_name}" logic="equals" value="osx"/>
-            <fileExists  path="/usr/bin/defaults"/>
           </ruleList>
-        </runProgram>
+        </deleteFile>
     
         <!-- WIN: Remove the UpdateMonitor Entry from the Registry as the Startup program -->
         <registryDelete key="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
@@ -685,6 +672,7 @@
           <distributionFileList>
             <distributionDirectory origin="staging/osx/UpdateManager.app"/>
             <distributionDirectory origin="staging/osx/UpdateManager/scripts"/>
+            <distributionDirectory origin="staging/osx/UpdateManager/installer"/>
           </distributionFileList>
         </folder>
         <!-- WIN - Program files -->

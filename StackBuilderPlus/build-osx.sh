@@ -130,6 +130,7 @@ _postprocess_stackbuilderplus_osx() {
     cd $WD/StackBuilderPlus
 
     mkdir -p staging/osx/installer/StackBuilderPlus || _die "Failed to create a directory for the install scripts"
+    mkdir -p staging/osx/UpdateManager/installer/StackBuilderPlus || _die "Failed to create a directory for the install scripts"
     cp scripts/osx/createshortcuts.sh staging/osx/installer/StackBuilderPlus/createshortcuts.sh || _die "Failed to copy the script (scripts/osx/createshortcuts.sh)"
     chmod ugo+x staging/osx/installer/StackBuilderPlus/createshortcuts.sh
 
@@ -137,6 +138,7 @@ _postprocess_stackbuilderplus_osx() {
     mkdir -p staging/osx/UpdateManager/scripts || _die "Failed to create a directory for the launch scripts"
     cp scripts/osx/stackbuilderplus.applescript.in staging/osx/scripts/stackbuilderplus.applescript || _die "Failed to copy the launch script (scripts/osx/pg-launchSlonyDocs.applescript.in)"
     cp scripts/osx/launchSBPUpdateMonitor.sh staging/osx/UpdateManager/scripts/launchSBPUpdateMonitor.sh || _die "Failed to copy the launch script (scripts/osx/launchSBPUpdateMonitor.sh)"
+    cp scripts/osx/startupcfg.sh staging/osx/UpdateManager/installer/StackBuilderPlus/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/osx/startupcfg.sh)"
     cp scripts/osx/launchStackBuilderPlus.sh staging/osx/scripts/launchStackBuilderPlus.sh || _die "Failed to copy the launch script (scripts/osx/launchStackBuilderPlus.sh)"
     chmod ugo+x staging/osx/scripts/*.sh
 
