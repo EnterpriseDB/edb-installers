@@ -54,11 +54,6 @@ cat <<EOT > "/Library/LaunchAgents/com.edb.launchd.stackbuilderplus.plist"
         <true/>
         <key>UserName</key>
         <string>$SYSTEM_USER</string>
-        <key>KeepAlive</key>
-        <dict>
-           <key>SuccessfulExit</key>
-           <true/>
-        </dict>
 </dict>
 </plist>
 EOT
