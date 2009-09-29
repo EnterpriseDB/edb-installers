@@ -1191,48 +1191,47 @@
                     <width>40</width>
                     <!-- Validating whether installdir is empty -->
                     <validationActionList>
-                        <setInstallerVariable name="isValidPGPATH" value="true"/>
                         <actionGroup>
                             <actionList>
                                 <setInstallerVariable name="installdir" value="${default_installdir}" />
                                 <throwError text="${msg(pg_migrator.installdir.empty)}"/>
-                                <setInstallerVariable name="isValidPGPATH" value="false"/>
                             </actionList>
                             <ruleList>
                                 <compareText text="${installdir}" logic="equals" value=""/>
                             </ruleList>
                         </actionGroup>
+                    </validationActionList>
+                    <!-- Validating whether installdir is proper pg_home -->
+                    <validationActionList>
                         <actionGroup>
                             <actionList>
-                                <showWarning text="${msg(pg_migrator.installdir.pgerror)}"/>
-                                <setInstallerVariable name="next_page" value="installdir"/>
-                                <setInstallerVariable name="isValidPGPATH" value="false"/>
+                                <setInstallerVariable name="installdir" value="${default_installdir}" />
+                                <throwError text="${msg(pg_migrator.installdir.pgerror)}"/>
                             </actionList>
                             <ruleList>
                                 <fileTest path="${installdir}/bin/pg_config" condition="not_exists"/>
                                 <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
-                                <isTrue value="${isValidPGPATH}"/>
                             </ruleList>
                         </actionGroup>
                         <actionGroup>
                             <actionList>
-                                <showWarning text="${msg(pg_migrator.installdir.pgerror)}"/>
-                                <setInstallerVariable name="next_page" value="installdir"/>
-                                <setInstallerVariable name="isValidPGPATH" value="false"/>
+                                <setInstallerVariable name="installdir" value="${default_installdir}" />
+                                <throwError text="${msg(pg_migrator.installdir.pgerror)}"/>
                             </actionList>
                             <ruleList>
                                 <fileTest path="${installdir}\bin\pg_config.exe" condition="not_exists"/>
                                 <compareText text="${platform_name}" logic="equals" value="windows"/>
-                                <isTrue value="${isValidPGPATH}"/>
                             </ruleList>
                         </actionGroup>
+                    </validationActionList>
+                    <!-- Validating the pg_home is of compatible version --> 
+                    <validationActionList>
                         <setInstallerVariableFromScriptOutput name="pg_version_str"
                                                               exec="${installdir}\bin\pg_config.exe"
                                                               execArgs="--version"
                                                               workingDirectory="${installdir}\bin">
                             <ruleList>
                                 <compareText text="${platform_name}" logic="equals" value="windows"/>
-                                <isTrue value="${isValidPGPATH}"/>
                             </ruleList>
                         </setInstallerVariableFromScriptOutput>
                         <setInstallerVariableFromScriptOutput name="pg_version_str"
@@ -1241,7 +1240,6 @@
                                                               workingDirectory="${installdir}/bin">
                             <ruleList>
                                 <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
-                                <isTrue value="${isValidPGPATH}"/>
                             </ruleList>
                         </setInstallerVariableFromScriptOutput>
                         <setInstallerVariableFromRegEx name="pg_version"
@@ -1252,13 +1250,24 @@
                                   <compareText logic="does_not_equal" text="${pg_version_str}" value=""/>
                               </ruleList>
                         </setInstallerVariableFromRegEx>
+                        <actionGroup>
+                            <actionList>
+                                <setInstallerVariable name="installdir" value="${default_installdir}" />
+                                <throwError text="${msg(pg_migrator.installdir.pg_version.mismatch)}"/>
+                            </actionList>
+                            <ruleList>
+                                <compareText logic="does_not_equal" text="${pg_version}" value="PG_MAJOR_VERSION"/>
+                            </ruleList>
+                        </actionGroup>
+                    </validationActionList>
+                    <!-- Validating we have a working pkglibdir -->
+                    <validationActionList>
                         <setInstallerVariableFromScriptOutput name="pkglibdir"
                                                               exec="${installdir}\bin\pg_config.exe"
                                                               execArgs="--pkglibdir"
                                                               workingDirectory="${installdir}\bin">
                             <ruleList>
                                 <compareText text="${platform_name}" logic="equals" value="windows"/>
-                                <isTrue value="${isValidPGPATH}"/>
                             </ruleList>
                         </setInstallerVariableFromScriptOutput>
                         <setInstallerVariableFromScriptOutput name="pkglibdir"
@@ -1267,46 +1276,27 @@
                                                               workingDirectory="${installdir}/bin">
                             <ruleList>
                                 <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
-                                <isTrue value="${isValidPGPATH}"/>
                             </ruleList>
                         </setInstallerVariableFromScriptOutput>
-                        <!-- Make the pkglibdir variable available in the unstaller -->
-                        <setInstallerVariable name="pkglibdir"
-                                              value="${pkglibdir}"
-                                              persist="1"/>
+
                         <actionGroup>
                             <actionList>
-                                <showWarning text="${msg(pg_migrator.installdir.pg_version.mismatch)}"/>
-                                <setInstallerVariable name="isValidPGPATH" value="false"/>
-                                <setInstallerVariable name="next_page" value="installdir"/>
-                            </actionList>
-                            <ruleList>
-                                <compareText logic="does_not_equal" text="${pg_version}" value="PG_MAJOR_VERSION"/>
-                                <isTrue value="${isValidPGPATH}"/>
-                            </ruleList>
-                        </actionGroup>
-                        <actionGroup>
-                            <actionList>
-                                <setInstallerVariable name="isValidPGPATH" value="false"/>
-                                <showWarning text="${msg(pg_migrator.installdir.pg_config.corrupted)}"/>
-                                <setInstallerVariable name="next_page" value="installdir"/>
+                                <setInstallerVariable name="installdir" value="${default_installdir}" />
+                                <throwError text="${msg(pg_migrator.installdir.pg_config.corrupted)}"/>
                             </actionList>
                             <ruleList>
                                 <compareText logic="equals" text="${pkglibdir}" value=""/>
                                 <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
-                                <isTrue value="${isValidPGPATH}"/>
                             </ruleList>
                         </actionGroup>
                         <actionGroup>
                             <actionList>
-                                <showWarning text="${msg(pg_migrator.installdir.pg_config.corrupted.win)}"/>
-                                <setInstallerVariable name="isValidPGPATH" value="false"/>
-                                <setInstallerVariable name="next_page" value="installdir"/>
+                                <setInstallerVariable name="installdir" value="${default_installdir}" />
+                                <throwError text="${msg(pg_migrator.installdir.pg_config.corrupted.win)}"/>
                             </actionList>
                             <ruleList>
                                 <compareText logic="equals" text="${pkglibdir}" value=""/>
                                 <compareText text="${platform_name}" logic="equals" value="windows"/>
-                                <isTrue value="${isValidPGPATH}"/>
                             </ruleList>
                         </actionGroup>
                         <setInstallerVariableFromRegEx text="${pkglibdir}"
@@ -1315,13 +1305,12 @@
                                                        pattern="\\">
                             <ruleList>
                                 <compareText text="${platform_name}" logic="equals" value="windows"/>
-                                <isTrue value="${isValidPGPATH}"/>
                             </ruleList>
                         </setInstallerVariableFromRegEx>
                     </validationActionList>
         
-                    <!-- Validating whether installdir contains whitespaces (Linux) -->
-                    <postShowPageActionList>
+                    <validationActionList>
+                        <!-- Validating whether installdir contains whitespaces (Linux) -->
                         <actionGroup>
                             <actionList>  
                                 <showWarning text="${msg(pg_migrator.installdir.error)}"/>
@@ -1363,6 +1352,12 @@
                                </compareText>
                            </ruleList>
                          </actionGroup>
+                    </validationActionList>
+		    <postShowPageActionList>
+                        <!-- Make the pkglibdir variable available in the uninstaller -->
+                        <setInstallerVariable name="pkglibdir"
+                                              value="${pkglibdir}"
+                                              persist="1"/>
                     </postShowPageActionList>
                 </directoryParameter>
             </parameterList>
