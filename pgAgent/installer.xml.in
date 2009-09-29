@@ -621,7 +621,7 @@
         <runProgram>
           <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
           <program>${installdir}\bin\pgagent.exe</program>
-          <programArguments>INSTALL pgAgent -u ${systemuser} -p ${systempassword} host=${pghost} port=${pgport} user=${pguser} dbname=${pgdbname}</programArguments>
+          <programArguments>INSTALL pgAgent -u ${systemuser} -p "${systempassword}" host=${pghost} port=${pgport} user=${pguser} dbname=${pgdbname}</programArguments>
           <workingDirectory>${installdir}\bin</workingDirectory>
           <abortOnError>0</abortOnError>
           <showMessageOnError>1</showMessageOnError>
