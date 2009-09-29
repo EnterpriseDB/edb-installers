@@ -570,7 +570,6 @@
       </substitutionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
       </ruleList>
     </substitute>
 
