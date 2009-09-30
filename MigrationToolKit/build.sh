@@ -44,13 +44,14 @@ _prep_MigrationToolKit() {
 
     if [ ! -e EDB-MTK ];
     then
-      echo "Please fetch the MigrationToolKit sources from the cvs."
-      echo "Repository for the MigrationToolKit is: /cvs/EDB-MTK"
-      _die "Please correct above message"
+      echo "Fetching MigrationToolKit sources from the cvs..."
+      mkdir -p EDB-MTK
+      cd EDB-MTK
+      cvs -d:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK . 
     fi
 
     cd $WD/MigrationToolKit/source/EDB-MTK
-    echo "Fetching MigrationToolKit sources from the cvs..."
+    echo "Updating MigrationToolKit sources from the cvs..."
     cvs update -dP
     
     # Per-platform prep
