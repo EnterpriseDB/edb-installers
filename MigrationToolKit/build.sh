@@ -47,7 +47,7 @@ _prep_MigrationToolKit() {
       echo "Fetching MigrationToolKit sources from the cvs..."
       mkdir -p EDB-MTK
       cd EDB-MTK
-      cvs -d:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK . 
+      cvs -d:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK co . 
     fi
 
     cd $WD/MigrationToolKit/source/EDB-MTK
