@@ -38,6 +38,7 @@ PG_PACKAGE_META=1
 PG_PACKAGE_LIBPQ=1
 PG_PACKAGE_PGMIGRATOR=1
 PG_PACKAGE_SBP=1
+PG_PACKAGE_MIGRATIONTOOLKIT=1
 
 # Path for the build machine (/opt/... must be at the end!)
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/apache-ant-1.7.1/bin:/opt/local/bin

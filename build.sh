@@ -410,6 +410,20 @@ then
         _postprocess_libpq || exit 1
 fi
 
+#Package: MigrationToolKit
+if [ $PG_PACKAGE_MIGRATIONTOOLKIT = 1 ];
+then
+    cd $WD
+    source ./MigrationToolKit/build.sh
+    if [ $SKIPBUILD = 0 ];
+    then
+        _prep_MigrationToolKit || exit 1
+        _build_MigrationToolKit || exit 1
+    fi
+        _postprocess_MigrationToolKit || exit 1
+fi
+
+
 # Package: DevServer
 # ALWAYS BUILD THIS LAST!!
 if [ $PG_PACKAGE_DEVSERVER = 1 ];
