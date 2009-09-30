@@ -48,11 +48,11 @@ _prep_MigrationToolKit() {
       mkdir -p EDB-MTK
       cd EDB-MTK
       cvs -d:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK co . 
+    else  
+      cd $WD/MigrationToolKit/source/EDB-MTK
+      echo "Updating MigrationToolKit sources from the cvs..."
+      cvs update -dP
     fi
-
-    cd $WD/MigrationToolKit/source/EDB-MTK
-    echo "Updating MigrationToolKit sources from the cvs..."
-    cvs update -dP
     
     # Per-platform prep
     cd $WD
