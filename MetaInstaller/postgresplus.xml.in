@@ -2526,9 +2526,54 @@
       <value>0</value>
     </setInstallerVariable>
 
-    <!-- Run linux programs -->
-    <logMessage>
-      <text>Installing Database Server in ${installdir} having data directory ${datadir} using Port:${serverport} and Locale:${locale}</text>
+    <!-- LIN/LIN-X64: Install dbserver, if selected -->
+    <actionGroup>
+      <actionList>
+        <logMessage>
+          <text>Installing Database Server in ${installdir} having data directory ${datadir} using Port:${serverport} and Locale:${locale}</text>
+        </logMessage>
+        <!-- linux -->
+        <runProgram>
+          <abortOnError>0</abortOnError>
+          <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux.bin</program>
+          <programArguments>--mode unattended --disable-stackbuilder 1 --installdir "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <progressText>Installing Database Server ... </progressText>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux</value>
+            </compareText>
+          </ruleList>
+        </runProgram>
+        <!-- linux-x64 -->
+        <runProgram>
+          <abortOnError>0</abortOnError>
+          <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</program>
+          <programArguments>--mode unattended --disable-stackbuilder 1 --installdir ${installdir} --datadir ${datadir} --superpassword "${superpassword}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <progressText>Installing Database Server ... </progressText>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-x64</value>
+            </compareText>
+          </ruleList>
+        </runProgram>
+        <setInstallerVariable>
+          <name>didError</name>
+          <value>1</value>
+          <ruleList>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>0</text>
+              <value>${program_exit_code}</value>
+            </compareText>
+          </ruleList>
+        </setInstallerVariable>
+      </actionList>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -2545,14 +2590,58 @@
           <text>${IsUpgrade}</text>
           <value>0</value>
         </compareText>
+        </compareText>
       </ruleList>
-    </logMessage>
-    <runProgram>
-      <abortOnError>0</abortOnError>
-      <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux.bin</program>
-      <programArguments>--mode unattended --disable-stackbuilder 1 --installdir "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
-      <progressText>Installing Database Server ... </progressText>
-      <showMessageOnError>0</showMessageOnError>
+    </actionGroup>
+
+    <!-- LIN/LIN-X64: Upgrade dbserver, if selected -->
+    <actionGroup>
+      <actionList>
+        <logMessage>
+          <text>Upgrading Database Server in ${installdir} and data directory: ${datadir}</text>
+        </logMessage>
+        <!-- linux -->
+        <runProgram>
+          <abortOnError>0</abortOnError>
+          <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux.bin</program>
+          <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <progressText>Installing Database Server ... </progressText>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux</value>
+            </compareText>
+          </ruleList>
+        </runProgram>
+        <!-- linux-x64 -->
+        <runProgram>
+          <abortOnError>0</abortOnError>
+          <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</program>
+          <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <progressText>Installing Database Server ... </progressText>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-x64</value>
+            </compareText>
+          </ruleList>
+        </runProgram>
+        <setInstallerVariable>
+          <name>didError</name>
+          <value>1</value>
+          <ruleList>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>0</text>
+              <value>${program_exit_code}</value>
+            </compareText>
+          </ruleList>
+        </setInstallerVariable>
+      </actionList>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -2561,62 +2650,7 @@
         </compareText>
         <compareText>
           <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>linux</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
           <text>${IsUpgrade}</text>
-          <value>0</value>
-        </compareText>
-      </ruleList>
-    </runProgram>
-
-    <!-- linux-x64-->
-    <runProgram>
-      <abortOnError>0</abortOnError>
-      <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</program>
-      <programArguments>--mode unattended --disable-stackbuilder 1 --installdir ${installdir} --datadir ${datadir} --superpassword "${superpassword}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
-      <progressText>Installing Database Server ... </progressText>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(dbserver).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>linux-x64</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${IsUpgrade}</text>
-          <value>0</value>
-        </compareText>
-      </ruleList>
-    </runProgram>
-
-    <setInstallerVariable>
-      <name>didError</name>
-      <value>1</value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>0</text>
-          <value>${program_exit_code}</value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-
-    <!--Run in upgrade mode -->
-    <logMessage>
-      <text>Upgrading Database Server in ${installdir}</text>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(dbserver).selected}</text>
           <value>1</value>
         </compareText>
         <compareText>
@@ -2624,76 +2658,9 @@
           <text>${platform_name}</text>
           <value>linux</value>
         </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${IsUpgrade}</text>
-          <value>1</value>
-        </compareText>
       </ruleList>
-    </logMessage>
-    <runProgram>
-      <abortOnError>0</abortOnError>
-      <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux.bin</program>
-      <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
-      <progressText>Installing Database Server ... </progressText>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(dbserver).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>linux</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${IsUpgrade}</text>
-          <value>1</value>
-        </compareText>
-      </ruleList>
-    </runProgram>
+    </actionGroup>
 
-    <!-- linux-x64-->
-
-    <runProgram>
-      <abortOnError>0</abortOnError>
-      <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</program>
-      <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
-      <progressText>Installing Database Server ... </progressText>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(dbserver).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>linux-x64</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${IsUpgrade}</text>
-          <value>1</value>
-        </compareText>
-      </ruleList>
-    </runProgram>
-
-    <setInstallerVariable>
-      <name>didError</name>
-      <value>1</value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>0</text>
-          <value>${program_exit_code}</value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
     <logMessage>
       <text>Installing Slony in ${installdir}</text>
       <ruleList>
@@ -3128,8 +3095,61 @@
     </runProgram>
 
     <!-- Run Windows Programs -->
-    <logMessage>
-      <text>Installing Database Server in ${installdir} having data directory ${datadir} using Port:${serverport} and Locale:${locale}</text>
+    <!-- dbserver installation/upgradation -->
+    <actionGroup>
+      <actionList>
+        <!-- Run in install mode -->
+        <actionGroup>
+          <actionList>
+            <logMessage>
+              <text>Installing Database Server in ${installdir} having data directory ${datadir} using Port:${serverport} and Locale:${locale}</text>
+            </logMessage>
+            <runProgram>
+              <abortOnError>0</abortOnError>
+              <program>${system_temp_directory}\postgresplus\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
+              <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}" --install_runtimes 0</programArguments>
+              <progressText>Installing Database Server ... </progressText>
+              <showMessageOnError>0</showMessageOnError>
+            </runProgram>
+          </actionList>
+          <ruleList>
+            <isFalse>
+              <value>${IsUpgrade}</value>
+            </isFalse>
+          </ruleList>
+        </actionGroup>
+        <!-- Run in upgrade mode -->
+        <actionGroup>
+          <actionList>
+            <logMessage>
+              <text>Upgrading Database Server in ${installdir} and data directory:${datadir}</text>
+            </logMessage>
+            <runProgram>
+              <abortOnError>0</abortOnError>
+              <program>${system_temp_directory}\postgresplus\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
+              <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+              <progressText>Installing Database Server ... </progressText>
+              <showMessageOnError>0</showMessageOnError>
+            </runProgram>
+          </actionList>
+          <ruleList>
+            <isTrue>
+              <value>${IsUpgrade}</value>
+            </isTrue>
+          </ruleList>
+        </actionGroup>
+        <setInstallerVariable>
+          <name>didError</name>
+          <value>1</value>
+          <ruleList>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>0</text>
+              <value>${program_exit_code}</value>
+            </compareText>
+          </ruleList>
+        </setInstallerVariable>
+      </actionList>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -3141,107 +3161,8 @@
           <text>${platform_name}</text>
           <value>windows</value>
         </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${IsUpgrade}</text>
-          <value>0</value>
-        </compareText>
       </ruleList>
-    </logMessage>
-
-    <runProgram>
-      <abortOnError>0</abortOnError>
-      <program>${system_temp_directory}\postgresplus\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
-      <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}" --install_runtimes 0</programArguments>
-      <progressText>Installing Database Server ... </progressText>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(dbserver).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${IsUpgrade}</text>
-          <value>0</value>
-        </compareText>
-      </ruleList>
-    </runProgram>
-
-    <setInstallerVariable>
-      <name>didError</name>
-      <value>1</value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>0</text>
-          <value>${program_exit_code}</value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-    <!--Run in upgrade mode -->
-    <logMessage>
-      <text>Upgrading Database Server in ${installdir}</text>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(dbserver).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${IsUpgrade}</text>
-          <value>1</value>
-        </compareText>
-      </ruleList>
-    </logMessage>
-    <runProgram>
-      <abortOnError>0</abortOnError>
-      <program>${system_temp_directory}\postgresplus\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
-      <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
-      <progressText>Installing Database Server ... </progressText>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(dbserver).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${IsUpgrade}</text>
-          <value>1</value>
-        </compareText>
-      </ruleList>
-    </runProgram>
-
-    <setInstallerVariable>
-      <name>didError</name>
-      <value>1</value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>0</text>
-          <value>${program_exit_code}</value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
+    </actionGroup>
 
     <logMessage>
       <text>Installing Slony in ${installdir}</text>
@@ -3292,7 +3213,7 @@
         <isTrue value="${component(stackbuilderplus).selected}"/>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
-   </actionGroup>
+    </actionGroup>
 
     <logMessage>
       <text>Installing pgJDBC in ${installdir}\pgJDBC</text>
@@ -3515,8 +3436,59 @@
     </runProgram>
 
     <!-- Run mac programs -->
-    <logMessage>
-      <text>Installing Database Server in ${installdir} having data directory ${datadir} using Port:${serverport} and Locale:${locale}</text>
+    <actionGroup>
+      <actionList>
+        <!-- Install dbserver, if selected -->
+        <actionGroup>
+          <actionList>
+            <logMessage>
+              <text>Installing Database Server in ${installdir} having data directory ${datadir} using Port:${serverport} and Locale:${locale}</text>
+            </logMessage>
+            <runProgram>
+              <abortOnError>0</abortOnError>
+              <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-osx.app/Contents/MacOS/installbuilder.sh</program>
+              <programArguments>--mode unattended --disable-stackbuilder 1 --installdir ${installdir} --datadir ${datadir} --superpassword "${superpassword}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+              <progressText>Installing Database Server ... </progressText>
+              <showMessageOnError>0</showMessageOnError>
+            </runProgram>
+          </actionList>
+          <ruleList>
+            <isFalse>
+              <value>${IsUpgrade}</value>
+            </isFalse>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <logMessage>
+              <text>Upgrading Database Server in ${installdir} and data directory:${datadir}</text>
+            </logMessage>
+            <runProgram>
+              <abortOnError>0</abortOnError>
+              <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-osx.app/Contents/MacOS/installbuilder.sh</program>
+              <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+              <progressText>Installing Database Server ... </progressText>
+              <showMessageOnError>0</showMessageOnError>
+            </runProgram>
+          </actionList>
+          <ruleList>
+            <isTrue>
+              <value>${IsUpgrade}</value>
+            </isTrue>
+          </ruleList>
+        </actionGroup>
+        <setInstallerVariable>
+          <name>didError</name>
+          <value>1</value>
+          <ruleList>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>0</text>
+              <value>${program_exit_code}</value>
+            </compareText>
+          </ruleList>
+        </setInstallerVariable>
+      </actionList>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -3528,107 +3500,9 @@
           <text>${platform_name}</text>
           <value>osx</value>
         </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${IsUpgrade}</text>
-          <value>0</value>
-        </compareText>
       </ruleList>
-    </logMessage>
-    <runProgram>
-      <abortOnError>0</abortOnError>
-      <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-osx.app/Contents/MacOS/installbuilder.sh</program>
-      <programArguments>--mode unattended --disable-stackbuilder 1 --installdir ${installdir} --datadir ${datadir} --superpassword "${superpassword}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
-      <progressText>Installing Database Server ... </progressText>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(dbserver).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>osx</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${IsUpgrade}</text>
-          <value>0</value>
-        </compareText>
-      </ruleList>
-    </runProgram>
+    </actionGroup>
 
-    <setInstallerVariable>
-      <name>didError</name>
-      <value>1</value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>0</text>
-          <value>${program_exit_code}</value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
-
-    <!-- Run in upgrade mode-->
-    <logMessage>
-      <text>Installing Database Server in ${installdir}</text>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(dbserver).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>osx</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${IsUpgrade}</text>
-          <value>1</value>
-        </compareText>
-      </ruleList>
-    </logMessage>
-    <runProgram>
-      <abortOnError>0</abortOnError>
-      <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-osx.app/Contents/MacOS/installbuilder.sh</program>
-      <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
-      <progressText>Installing Database Server ... </progressText>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${component(dbserver).selected}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>osx</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${IsUpgrade}</text>
-          <value>1</value>
-        </compareText>
-      </ruleList>
-    </runProgram>
-
-    <setInstallerVariable>
-      <name>didError</name>
-      <value>1</value>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>0</text>
-          <value>${program_exit_code}</value>
-        </compareText>
-      </ruleList>
-    </setInstallerVariable>
 
     <logMessage>
       <text>Installing Slony in ${installdir}</text>

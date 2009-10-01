@@ -63,7 +63,7 @@ progress.text.loading.modules=Loading additional SQL modules...
 error.could.not.load.modules=Failed to load SQL modules into the database cluster.
 warning.during.module.loading=A non-fatal error occured whilst loading database modules. Please check the installation log in /tmp for details.
 
-templatedb.found.info=A database called 'template_postgis' already exists on your server. If you continue with this installation, this database will be reused. Selecting 'No' will unselect the PosGIS. \n\nDo you wish to continue?
+templatedb.found.info=A database called 'template_postgis' already exists on your server. If you continue with this installation, this database will be reused. Selecting 'No' will unselect the PostGIS. \n\nDo you wish to continue?
 
 config.datadir.description=Data Directory
 config.datadir.explanation=Please select a directory under which to store your data.
