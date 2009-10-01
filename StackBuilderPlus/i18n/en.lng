@@ -1,12 +1,26 @@
-installer.Welcome.Title=Setup %1$s
+Installer.Welcome.Title=Setup StackBuilder Plus
 
-Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
+Installer.Welcome.Text=Welcome to the StackBuilder Plus Setup.
 
-Installer.Installing.Title=Installing ${product_fullname}
+Installer.Installing.Title=Installing StackBuilder Plus ${product_version}
+
+Installer.Parameter.installdir.explanation=Please specify the directory where StackBuilder Plus will be installed.
+
+Installer.Ready.Text1=Setup is now ready to begin installing StackBuilder Plus on your computer.
+
+Installer.Installing.Text=Please wait while Setup installs StackBuilder Plus on your computer.
+
+Installer.Installation.Finished.Title=Completing the StackBuilder Plus Setup Wizard.
+
+Installer.Installation.Finished.Text=Setup has finished installing StackBuilder Plus on your computer.
+
+Installer.Uninstallation.ConfirmationQuestion=Do you want to uninstall StackBuilder Plus and all of its modules?
+
+Installer.Uninstallation.Title=Uninstalling StackBuilder Plus
 
 upgrade.existing.installation.title=Existing installation
 
-upgrade.existing.installation.description=An existing StackBuilderPlus installation has been found at ${installdir}. This installation will be upgraded.
+upgrade.existing.installation.description=An existing StackBuilder Plus installation has been found at ${installdir}. This installation will be upgraded.
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 
@@ -16,7 +30,7 @@ Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
-install.summary=Stack Builder Plus (An advanced application stack builder)
+install.summary=StackBuilder Plus (An advanced application stack builder)
 
 sbp.installdir.empty=The installation directory cannot be empty
 
