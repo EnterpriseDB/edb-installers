@@ -215,8 +215,8 @@
     </actionGroup>
     <actionGroup>
       <actionList>
-        <runProgram program="launchctl"> 
-           <programArguments>unload /Library/LaunchAgents/com.edb.launchd.stackbuilderplus.plist</programArguments>
+        <runProgram program="kill"> 
+           <programArguments>-9 `ps awx | grep "${installdir}/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
            <abortOnError>0</abortOnError>
            <showMessageOnError>0</showMessageOnError>
         </runProgram>
@@ -224,7 +224,6 @@
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
         <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
-        <fileExists path="/Library/LaunchAgents/com.edb.launchd.stackbuilderplus.plist" />
       </ruleList>
     </actionGroup>
  
@@ -394,16 +393,40 @@
         <registrySet key="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
                      name="StackBuilderPlusPG_VERSION_STR Update Monitor"
                      value="&quot;${installdir}\bin\UpdateManager.exe&quot; --server ${monitorServer} --execute  &quot;${installdir}\bin\stackbuilderplus.exe&quot;"/>
-    
-        <runProgram program="${installdir}/installer/StackBuilderPlus/startupcfg.sh"
-                    programArguments="${installdir} ${system_user} ${monitorServer} &quot;${branding}&quot;"
-                    abortOnError="0"
-                    showMessageOnError="0">
-          <ruleList>
-            <compareText text="${platform_name}" logic="equals" value="osx"/>
-          </ruleList>
-        </runProgram>
 
+        <actionGroup>
+           <actionList>
+               <runProgram program="${installdir}/installer/StackBuilderPlus/startupcfg.sh"
+                           programArguments="${installdir} ${monitorServer} &quot;${branding}&quot;"
+                           abortOnError="0"
+                           showMessageOnError="0"/>
+               <substitute>
+                  <files>${installdir}/scripts/LaunchUpdateManager.app/Contents/Info.plist</files>
+                  <substitutionList>
+                      <substitution pattern="&lt;/dict&gt;" value="        &lt;key&gt;LSUIElement&lt;/key&gt; &lt;string&gt;1&lt;/string&gt; &lt;/dict&gt;"/>
+                  </substitutionList>
+               </substitute>
+ 
+               <runProgram program="/usr/bin/defaults"
+                           programArguments="read loginwindow AutoLaunchedApplicationDictionary"
+                           runAs="${system_user}"
+                           abortOnError="0"
+                           showMessageOnError="0"/>
+               <runProgram program="/usr/bin/defaults"
+                           programArguments="write loginwindow AutoLaunchedApplicationDictionary -array-add &quot;&lt;dict&gt;&lt;key&gt;Hide&lt;/key&gt;&lt;true/&gt;&lt;key&gt;Path&lt;/key&gt;&lt;string&gt;${installdir}/scripts/LaunchUpdateManager.app&lt;/string&gt;&lt;/dict&gt;&quot;"
+                           runAs="${system_user}"
+                           abortOnError="0"
+                           showMessageOnError="0">
+                           <ruleList>
+                                <regExMatch text="${program_stdout}" logic="does_not_match" pattern="^.*${installdir}/scripts/LaunchUpdateManager.*$"/>
+                           </ruleList>
+               </runProgram>
+           </actionList>
+           <ruleList>
+               <compareText logic="equals" text="${platform_name}" value="osx"/>
+           </ruleList>
+        </actionGroup>
+ 
         <!-- LIN/LIN-X64: Register Stack Builder Plus Update Monitor as a startup script -->
         <actionGroup>
           <actionList>
@@ -458,6 +481,17 @@
         <compareText text="${monitorServer}" logic="does_not_equal" value=""/>
       </ruleList>
     </runProgram>
+    <runProgram program="${installdir}/scripts/LaunchUpdateManager.app/Contents/MacOS/applet"
+                programArguments=""
+                runAs="${system_user}"
+                showMessageOnError="0"
+                abortOnError="0">
+      <ruleList>
+        <compareText text="${platform_name}" logic="equals" value="osx"/>
+        <compareText text="${monitorServer}" logic="does_not_equal" value=""/>
+      </ruleList>
+    </runProgram>
+ 
     <runProgram>
         <program>wscript</program>
         <programArguments>//NOLOGO "${installdir}\scripts\launchSBPUpdateMonitor.vbs"</programArguments>
@@ -498,15 +532,14 @@
 
   <actionGroup>
       <actionList>
-        <runProgram program="launchctl"> 
-           <programArguments>unload /Library/LaunchAgents/com.edb.launchd.stackbuilderplus.plist</programArguments>
+        <runProgram program="kill"> 
+           <programArguments>-9 `ps awx | grep "${installdir}/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
            <abortOnError>0</abortOnError>
            <showMessageOnError>0</showMessageOnError>
         </runProgram>
       </actionList>
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
-        <fileExists path="/Library/LaunchAgents/com.edb.launchd.stackbuilderplus.plist" />
       </ruleList>
     </actionGroup>
 
@@ -587,6 +620,15 @@
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </deleteFile>
+
+    <!-- MAC: Remove LaunchUpdateManager  -->
+    <deleteFile path="${installdir}/scripts/LaunchUpdateManager.app">
+      <ruleList>
+        <fileExists path="${installdir}/scripts/LaunchUpdateManager.app"/>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
+      </ruleList>
+    </deleteFile>
+
 
   </preUninstallationActionList>
 
