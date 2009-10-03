@@ -1,0 +1,4 @@
+set exec_command to "/Applications/BRANDING/StackBuilder Plus.app/Contents/MacOS/applet"
+set ret to do shell script "bash -c \"cd INSTALL_DIR/UpdateManager.app/Contents/MacOS && INSTALL_DIR/UpdateManager.app/Contents/MacOS/UpdateManager --server MONITOR_VERSION --execute " & quoted form of exec_command & " \" > /dev/null 2>&1 &"
+
+
