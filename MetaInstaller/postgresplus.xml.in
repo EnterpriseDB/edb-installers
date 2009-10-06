@@ -1539,6 +1539,26 @@
       </ruleList>
     </actionGroup>
 
+    <!-- Set the installdir in case of an Upgrade -->
+    <setInstallerVariable>
+      <name>installdir</name>
+      <persist>0</persist>
+      <value>${iBaseDirectory}</value>
+      <ruleList>
+        <stringTest>
+          <text>${iBaseDirectory}</text>
+          <type>not_empty</type>
+        </stringTest>
+        <fileExists>
+          <path>${iBaseDirectory}</path>
+        </fileExists>
+        <fileTest>
+          <condition>is_not_empty</condition>
+          <path>${iBaseDirectory}</path>
+        </fileTest>
+      </ruleList>
+    </setInstallerVariable>
+ 
     <!-- So, is this an upgrade of an existing cluster? 
          At this point, if we have an existing data directory it either looks valid, or is empty -->
     <actionGroup>
@@ -6085,7 +6105,7 @@
       <name>installdir</name>
       <description>Installer.Parameter.installdir.description</description>
       <explanation>Installer.Parameter.installdir.explanation</explanation>
-      <value>${default_installdir}</value>
+      <value></value>
       <default>${default_installdir}</default>
       <allowEmptyValue>0</allowEmptyValue>
       <ask>yes</ask>
