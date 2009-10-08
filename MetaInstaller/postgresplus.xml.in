@@ -127,6 +127,10 @@
       </ruleList>
     </throwError>
 
+   <setInstallerVariable name="showInstallationTuning" value="1" /> 
+   <setInstallerVariable name="showUpdateNotification" value="1" /> 
+   <setInstallerVariable name="showValueAddedServicePage" value="1" /> 
+
     <!-- Set the pghost varaible to localhost -->
     <setInstallerVariable name="pghost" value="localhost">
       <persist>0</persist>
@@ -2154,6 +2158,52 @@
         </isTrue>
       </ruleList>
     </actionGroup>
+
+    <!-- We need to figure out whether we are using an existing cluster / upgrading from only postgresql -->
+
+    <setInstallerVariable name="showInstallationTuning" value="0">
+       <ruleList>
+          <stringTest>
+            <text>${iDataDirectory}</text>
+            <type>not_empty</type>
+          </stringTest>
+          <fileExists>
+            <path>${iDataDirectory}</path>
+          </fileExists>
+          <fileTest>
+            <condition>is_not_empty</condition>
+            <path>${iDataDirectory}</path>
+          </fileTest>
+      </ruleList>
+    </setInstallerVariable>
+
+    <!-- Check whether UpdateMonitoring is installed -->
+    <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="MonitorServer" variable="iMonitorServer">
+       <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+       </ruleList>
+    </iniFileGet>
+    <registryGet name="MonitorServer" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" variable="iMonitorServer">
+       <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+       </ruleList>
+    </registryGet>
+
+    <setInstallerVariable  name="showUpdateNotification" value="0" > 
+       <ruleList>
+            <compareText logic="does_not_equal" text="${iMonitorServer}" value=""/>
+       </ruleList>
+    </setInstallerVariable>
+
+    <setInstallerVariable  name="showValueAddedServicePage" value="0" > 
+       <ruleList>
+            <compareText logic="equals" text="${showInstallationTuning}" value="0"/>
+            <compareText logic="equals" text="${showUpdateNotification}" value="0"/>
+       </ruleList>
+    </setInstallerVariable>
+
+
+    
 
   </preInstallationActionList>
   <postInstallationActionList>
@@ -6255,6 +6305,11 @@
           <ruleList>
             <compareText>
               <logic>equals</logic>
+              <text>${showInstallationTuning}</text>
+              <value>1</value>
+            </compareText>
+            <compareText>
+              <logic>equals</logic>
               <text>${component(dbserver).selected}</text>
               <value>1</value>
             </compareText>
@@ -6266,6 +6321,11 @@
           <explanation>${msg(valueadded.dbInstallTuning.lbl.value)}</explanation>
           <image></image>
           <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${showInstallationTuning}</text>
+              <value>1</value>
+            </compareText>
             <compareText>
               <logic>equals</logic>
               <text>${component(dbserver).selected}</text>
@@ -6280,12 +6340,26 @@
           <value></value>
           <default>0</default>
           <displayStyle>checkbox-left</displayStyle>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${showUpdateNotification}</text>
+              <value>1</value>
+            </compareText>
+          </ruleList>
         </booleanParameter>
         <labelParameter>
           <name>lblUpdateNotification</name>
           <description></description>
           <explanation>${msg(valueadded.updateNotification.lbl.value)}</explanation>
           <image></image>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${showUpdateNotification}</text>
+              <value>1</value>
+            </compareText>
+          </ruleList>
         </labelParameter>
       </parameterList>
       <postShowPageActionList>
@@ -6570,8 +6644,8 @@
       </postShowPageActionList>
       <ruleList>
         <compareText>
-          <logic>does_not_equal</logic>
-          <text>${IsUpgrade}</text>
+          <logic>equals</logic>
+          <text>${showValueAddedServicePage}</text>
           <value>1</value>
         </compareText>
         <compareText>
@@ -6621,11 +6695,6 @@
         <compareText>
           <logic>equals</logic>
           <text>${showAuthenticateScreen}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${IsUpgrade}</text>
           <value>1</value>
         </compareText>
       </ruleList>
@@ -6989,11 +7058,6 @@
         <compareText>
           <logic>equals</logic>
           <text>${showAuthenticateScreen}</text>
-          <value>1</value>
-        </compareText>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${IsUpgrade}</text>
           <value>1</value>
         </compareText>
       </ruleList>
