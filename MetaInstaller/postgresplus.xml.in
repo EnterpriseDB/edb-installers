@@ -2623,7 +2623,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux.bin</program>
-          <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing Database Server ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -2638,7 +2638,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</program>
-          <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing Database Server ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -3146,7 +3146,7 @@
             <runProgram>
               <abortOnError>0</abortOnError>
               <program>${system_temp_directory}\postgresplus\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
-              <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+              <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
               <progressText>Installing Database Server ... </progressText>
               <showMessageOnError>0</showMessageOnError>
             </runProgram>
@@ -3485,7 +3485,7 @@
             <runProgram>
               <abortOnError>0</abortOnError>
               <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-osx.app/Contents/MacOS/installbuilder.sh</program>
-              <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+              <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
               <progressText>Installing Database Server ... </progressText>
               <showMessageOnError>0</showMessageOnError>
             </runProgram>
