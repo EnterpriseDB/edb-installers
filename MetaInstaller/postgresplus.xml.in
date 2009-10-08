@@ -10,21 +10,7 @@
   <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
   <outputDirectory>../output</outputDirectory>
   <vendor>EnterpriseDB</vendor>
-
-  <platformOptionsList>
-    <platformOptions>
-      <platform>linux-x64</platform>
-      <requireInstallationByRootUser>1</requireInstallationByRootUser>
-    </platformOptions>
-    <platformOptions>
-      <platform>linux</platform>
-      <requireInstallationByRootUser>1</requireInstallationByRootUser>
-    </platformOptions>
-    <platformOptions>
-      <platform>osx</platform>
-      <requireInstallationByRootUser>1</requireInstallationByRootUser>
-    </platformOptions>
-  </platformOptionsList>
+  <requireInstallationByRootUser>1</requireInstallationByRootUser>
 
   <!-- i18n files for the UI -->
   <allowedLanguages>en</allowedLanguages>
