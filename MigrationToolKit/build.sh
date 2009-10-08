@@ -53,6 +53,14 @@ _prep_MigrationToolKit() {
       echo "Updating MigrationToolKit sources from the cvs..."
       cvs update -dP
     fi
+
+    if [ -e $WD/MigrationToolKit/source/pgJDBC-$PG_VERSION_PGJDBC ];
+    then
+       rm -rf $WD/MigrationToolKit/source/pgJDBC-$PG_VERSION_PGJDBC
+    fi
+
+    cd $WD/MigrationToolKit/source 
+    extract_file $WD/tarballs/pgJDBC-$PG_VERSION_PGJDBC
     
     # Per-platform prep
     cd $WD

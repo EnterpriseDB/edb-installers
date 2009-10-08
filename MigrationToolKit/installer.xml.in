@@ -125,61 +125,11 @@
         <!-- Detecting Java, Abort if not found -->
         <autodetectJava>
             <promptUser>0</promptUser>
-            <validVersionList>
-                <validVersion>
-		    <vendor>sun</vendor>
-                    <maxVersion/>
-                    <minVersion>1.5.0</minVersion>
-                    <requireJDK>0</requireJDK>
-                </validVersion>
-            </validVersionList>
             <abortOnError>1</abortOnError>
             <showMessageOnError>1</showMessageOnError>
             <customErrorMessage>${msg(java.error)}</customErrorMessage>
         </autodetectJava>
 
-        <!-- Check for PostgreSQL JDBC drivers -->
-        <iniFileGet>
-            <file>/etc/postgres-reg.ini</file>
-            <section>pgJDBC</section>
-            <key>InstallationDirectory</key>
-            <variable>jdbc_path</variable>
-            <ruleList>
-                 <compareText>
-                      <text>${platform_name}</text>
-                      <logic>does_not_equal</logic>
-                      <value>windows</value>
-                 </compareText>
-            </ruleList>
-        </iniFileGet>
-        <registryGet>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgJDBC</key>
-            <name>Location</name>
-            <variable>jdbc_path</variable>
-            <ruleList>
-                 <compareText>
-                      <text>${platform_name}</text>
-                      <logic>equals</logic>
-                      <value>windows</value>
-                 </compareText>
-            </ruleList>
-        </registryGet>
-        <throwError>
-            <text>${msg(jdbc.driver.not.found)}</text>
-            <ruleEvaluationLogic>or</ruleEvaluationLogic>
-            <ruleList>
-                 <compareText>
-                      <text>${jdbc_path}</text>
-                      <logic>equals</logic>
-                      <value/>
-                 </compareText>
-                 <fileTest>
-                       <condition>is_not_directory</condition>
-                       <path>${jdbc_path}</path> 
-                 </fileTest>
-            </ruleList>
-        </throwError>
-		
         <!-- MAC : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
@@ -411,7 +361,7 @@
             </files>
             <substitutionList>
                 <substitution>
-                   <pattern>..\jre\bin\java</pattern>
+                   <pattern>..\\jre\\bin\\java</pattern>
                    <value>${java_executable}</value>
                 </substitution>
                 <substitution>

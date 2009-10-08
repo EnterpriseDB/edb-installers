@@ -16,7 +16,7 @@ migrationtoolkit.installdir.empty=The installation directory cannot be empty
 
 migrationtoolkit.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
-java.error=Sun Java 1.5 or later is not installed on your system.\nPlease ensure it is installed and in the system PATH before re-running the installer.
+java.error=Java is not installed on your system.\nPlease ensure it is installed and in the system PATH before re-running the installer.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 

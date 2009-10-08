@@ -24,6 +24,7 @@ _prep_MigrationToolKit_linux_x64() {
     cp -R EDB-MTK/* migrationtoolkit.linux-x64 || _die "Failed to copy the source code (source/migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT)"
     chmod -R ugo+w migrationtoolkit.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
+    cp pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_VERSION_PGJDBC.jdbc3.jar migrationtoolkit.linux-x64/lib/ || _die "Failed to copy the pg-jdbc driver"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/MigrationToolKit/staging/linux-x64 ];
@@ -50,7 +51,7 @@ _build_MigrationToolKit_linux_x64() {
 
     echo "Building migrationtoolkit"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MigrationToolKit/source/migrationtoolkit.linux-x64; JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 $PG_ANT_HOME_LINUX_X64/bin/ant clean" || _die "Couldn't build the migrationtoolkit"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MigrationToolKit/source/migrationtoolkit.linux-x64; JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 $PG_ANT_HOME_LINUX_X64/bin/ant install" || _die "Couldn't build the migrationtoolkit"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MigrationToolKit/source/migrationtoolkit.linux-x64; JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 $PG_ANT_HOME_LINUX_X64/bin/ant install-pg" || _die "Couldn't build the migrationtoolkit"
   
     # Copying the MigrationToolKit binary to staging directory
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MigrationToolKit/source/migrationtoolkit.linux-x64; mkdir $PG_STAGING/MigrationToolKit" || _die "Couldn't create the migrationtoolkit staging directory (MigrationToolKit/staging/linux-x64/MigrationToolKit)"

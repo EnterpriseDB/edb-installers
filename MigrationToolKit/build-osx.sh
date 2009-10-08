@@ -24,6 +24,7 @@ _prep_MigrationToolKit_osx() {
     cp -R EDB-MTK/* migrationtoolkit.osx || _die "Failed to copy the source code (source/migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT)"
     chmod -R ugo+w migrationtoolkit.osx || _die "Couldn't set the permissions on the source directory"
 
+    cp pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_VERSION_PGJDBC.jdbc3.jar migrationtoolkit.osx/lib/ || _die "Failed to copy the pg-jdbc driver"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/MigrationToolKit/staging/osx ];
@@ -53,7 +54,7 @@ _build_MigrationToolKit_osx() {
 
     echo "Building migrationtoolkit"
     $PG_ANT_HOME_OSX/bin/ant clean || _die "Couldn't clean the migrationtoolkit"
-    $PG_ANT_HOME_OSX/bin/ant install || _die "Couldn't build the migrationtoolkit"
+    $PG_ANT_HOME_OSX/bin/ant install-pg || _die "Couldn't build the migrationtoolkit"
   
     # Copying the MigrationToolKit binary to staging directory
     mkdir $PG_STAGING/MigrationToolKit || _die "Couldn't create the migrationtoolkit staging directory (MigrationToolKit/staging/osx/MigrationToolKit)"

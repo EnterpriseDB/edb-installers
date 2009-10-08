@@ -26,7 +26,10 @@ _prep_MigrationToolKit_windows() {
 
     echo "Creating migrationtoolkit source directory ($WD/MigrationToolKit/source/migrationtoolkit.windows)"
     mkdir -p migrationtoolkit.windows || _die "Couldn't create the migrationtoolkit.windows directory"
+    cp -R EDB-MTK/* migrationtoolkit.windows || _die "Failed to copy the mtk source code"
     chmod ugo+w migrationtoolkit.windows || _die "Couldn't set the permissions on the source directory"
+ 
+    cp pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_VERSION_PGJDBC.jdbc3.jar migrationtoolkit.windows/lib/ || _die "Failed to copy the pg-jdbc driver"
 
     # Grab a copy of the migrationtoolkit source tree
     cp -R EDB-MTK/* migrationtoolkit.windows || _die "Failed to copy the source code (source/migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT)"
@@ -87,7 +90,7 @@ unzip migrationtoolkit.zip
 echo Building migrationtoolkit...
 cd "%SOURCE_PATH%\\migrationtoolkit.windows"
 cmd /c $PG_ANT_WINDOWS\\bin\\ant clean
-cmd /c $PG_ANT_WINDOWS\\bin\\ant install
+cmd /c $PG_ANT_WINDOWS\\bin\\ant install-pg
   
 cd %SOURCE_PATH%\\migrationtoolkit.windows
 zip -r dist.zip install 
