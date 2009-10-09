@@ -532,6 +532,17 @@
       </actionList>
     </actionGroup>
 
+    <!-- Creates the ini file if not exists -->
+    <touchFile path="/etc/postgres-reg.ini">
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </touchFile>
+
     <iniFileGet>
       <file>${PostgreSqlIni}</file>
       <key>InstallationDirectory</key>
@@ -583,17 +594,6 @@
       </ruleList>
     </setInstallerVariable>
     <createDirectory path="${system_temp_directory}/postgresplus"/>
-
-    <!-- Creates the ini file if not exists -->
-    <touchFile path="/etc/postgres-reg.ini">
-      <ruleList>
-        <compareText>
-          <logic>contains</logic>
-          <text>${platform_name}</text>
-          <value>linux</value>
-        </compareText>
-      </ruleList>
-    </touchFile>
 
     <actionGroup>
       <actionList>
