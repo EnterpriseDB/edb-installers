@@ -85,7 +85,7 @@ bool CheckUserExists(LPTSTR domain, LPTSTR username)
 	return false;
 }
 
-NET_API_STATUS CreateUser(LPTSTR domain, LPTSTR username, LPTSTR password, TCHAR *errbuf, DWORD errsize)
+NET_API_STATUS CreateUser(LPTSTR servername, LPTSTR username, LPTSTR password, TCHAR *errbuf, DWORD errsize)
 {
 	USER_INFO_1 ui;
 	DWORD dwLevel = 1;
@@ -93,7 +93,7 @@ NET_API_STATUS CreateUser(LPTSTR domain, LPTSTR username, LPTSTR password, TCHAR
 	NET_API_STATUS nStatus;
 	int nLen;
 	char comment[] = "PostgreSQL service account";
-	WCHAR wUsername[100], wPassword[100], wComment[100], wDomain[100];
+	WCHAR wServerName[100], wUsername[100], wPassword[100], wComment[100];
 	
 	nLen = MultiByteToWideChar(CP_ACP, 0, username, -1, NULL, (int)NULL);
 	MultiByteToWideChar(CP_ACP, 0, 	username, -1, wUsername, nLen);
@@ -103,9 +103,9 @@ NET_API_STATUS CreateUser(LPTSTR domain, LPTSTR username, LPTSTR password, TCHAR
 
 	nLen = MultiByteToWideChar(CP_ACP, 0, comment, -1, NULL, (int)NULL);
 	MultiByteToWideChar(CP_ACP, 0, 	comment, -1, wComment, nLen);
-
-	nLen = MultiByteToWideChar(CP_ACP, 0, domain, -1, NULL, (int)NULL);
-	MultiByteToWideChar(CP_ACP, 0, 	domain, -1, wDomain, nLen);
+    
+	nLen = MultiByteToWideChar(CP_ACP, 0, servername, -1, NULL, (int)NULL);
+	MultiByteToWideChar(CP_ACP, 0, 	servername, -1, wServerName, nLen);
 	
 	ui.usri1_name = wUsername;
 	ui.usri1_password = wPassword;
@@ -115,10 +115,10 @@ NET_API_STATUS CreateUser(LPTSTR domain, LPTSTR username, LPTSTR password, TCHAR
 	ui.usri1_flags = UF_SCRIPT | UF_DONT_EXPIRE_PASSWD | UF_PASSWD_CANT_CHANGE;
 	ui.usri1_script_path = NULL;
 
-	nStatus = NetUserAdd(wDomain,
-						 dwLevel,
-						 (LPBYTE)&ui,
-						 &dwError);
+	nStatus = NetUserAdd(wServerName, 
+				dwLevel, 
+				(LPBYTE)&ui, 
+				&dwError);
 	
 	if (nStatus != NERR_Success)
 	{
@@ -148,7 +148,7 @@ NET_API_STATUS CreateUser(LPTSTR domain, LPTSTR username, LPTSTR password, TCHAR
 				break;
 		}
 
-		sprintf_s(errbuf, errsize, "The service user account '%s\\%s' could not be created: %s\n", domain, username, accterr);
+		sprintf_s(errbuf, errsize, "The service user account '%s' could not be created: %s\n",  username, accterr);
 
 	}
 	else
@@ -366,8 +366,8 @@ bool CheckUserPrivileges(LPTSTR domain, LPTSTR username, TCHAR *errbuf, DWORD er
 
 int main(int argc, TCHAR * argv[])
 {
-	TCHAR domain[256], username[256], password[256], errmsg[1024];
-    OSVERSIONINFOEX verinfo;
+	TCHAR domain[256], username[256], password[256], errmsg[1024], servername[256];
+        OSVERSIONINFOEX verinfo;
 
 	// Check the command line
 	if (argc != 4)
@@ -381,10 +381,10 @@ int main(int argc, TCHAR * argv[])
 	{
 		// If this is a domain controller, we need to use the domain
 		// name, otherwise, we use the computer name.
-        ZeroMemory(&verinfo,sizeof(verinfo));
-        verinfo.dwOSVersionInfoSize = sizeof(verinfo);
+		ZeroMemory(&verinfo,sizeof(verinfo));
+		verinfo.dwOSVersionInfoSize = sizeof(verinfo);
 
-	    if (!GetVersionEx((OSVERSIONINFO*)&verinfo))
+		if (!GetVersionEx((OSVERSIONINFO*)&verinfo))
 		{
 			fprintf(stderr, "Failed to retrieve the operating system version information.\n");
 			return 1;	
@@ -395,6 +395,7 @@ int main(int argc, TCHAR * argv[])
 			// It's a DC
 			WKSTA_INFO_100 *wkinfo = NULL;
 			NET_API_STATUS status;
+			LPWSTR buffer;
 
 			status = NetWkstaGetInfo(NULL, 100, (LPBYTE*)&wkinfo);
 			if (status != NERR_Success)
@@ -402,21 +403,34 @@ int main(int argc, TCHAR * argv[])
 			    fprintf(stderr, "Failed to retrieve workstation information.\n");
 			    return 1;	
 			}
-
+			status = NetGetDCName( NULL, NULL, (LPBYTE *)&buffer);
+			if (status != NERR_Success)
+			{
+			    fprintf(stderr, "Failed to retrieve Primary Domain Controller name.\n");
+			    return 1;	
+			}
 			sprintf_s(domain, sizeof(domain), "%S", wkinfo->wki100_langroup);
+			sprintf_s(servername, sizeof(servername), "%S", buffer);
 
 			if (wkinfo != NULL)
 				NetApiBufferFree(wkinfo);
+
+			if (buffer != NULL)
+				NetApiBufferFree(buffer);
 		}
 		else
 		{
 			// It's a workstation or server
-		    DWORD size=sizeof(domain);
-		    GetComputerName(domain, &size);
+			DWORD size=sizeof(servername);
+			GetComputerName(servername, &size);
+			sprintf_s(domain, sizeof(domain), "%s", servername);
+			
 		}
 	}
 	else
 	{
+		DWORD size=sizeof(servername);
+		GetComputerName(servername, &size);
 		sprintf_s(domain, sizeof(domain), "%s", argv[1]);
 	}
 
@@ -424,18 +438,18 @@ int main(int argc, TCHAR * argv[])
 	sprintf_s(password, sizeof(password), "%s", argv[3]);
 
 	// Check to see if the user account exists
-	if (!CheckUserExists(domain, username))
+	if (!CheckUserExists(servername, username))
 	{
-        NET_API_STATUS status;
-        status = CreateUser(domain, username, password, errmsg, sizeof(errmsg)/sizeof(TCHAR) - 1);
-        if (status != NERR_Success)
+		NET_API_STATUS status;
+		status = CreateUser(servername, username, password, errmsg, sizeof(errmsg)/sizeof(TCHAR) - 1);
+		if (status != NERR_Success)
 		{
-            fprintf(stderr, errmsg);
-            return status;
+		    fprintf(stderr, errmsg);
+		    return status;
 		}
 	}
-    else
-    {
+	else
+	{
 		fprintf(stdout, "User account '%s\\%s' already exists.\n", domain, username);
 	}
 
@@ -451,7 +465,7 @@ int main(int argc, TCHAR * argv[])
 		LOCALGROUP_MEMBERS_INFO_3 grp;
 		NET_API_STATUS nStatus;
 		TCHAR qualifiedUser[200];
-		WCHAR wQualifiedUser[200], wGroupName[20], wDomain[100];
+		WCHAR wQualifiedUser[200], wGroupName[20], wServerName[100];
 		int nLen = 0;
 		
 		sprintf_s(qualifiedUser, sizeof(qualifiedUser), "%s\\%s", domain, username);
@@ -462,11 +476,14 @@ int main(int argc, TCHAR * argv[])
 		nLen = MultiByteToWideChar(CP_ACP, 0, "Users", -1, NULL, (int)NULL);
 		MultiByteToWideChar(CP_ACP, 0,  "Users", -1, wGroupName, nLen);
 		
-		nLen = MultiByteToWideChar(CP_ACP, 0, domain, -1, NULL, (int)NULL);
-		MultiByteToWideChar(CP_ACP, 0,  domain, -1, wDomain, nLen);
+		nLen = MultiByteToWideChar(CP_ACP, 0, servername, -1, NULL, (int)NULL);
+		MultiByteToWideChar(CP_ACP, 0,  servername, -1, wServerName, nLen);
 		
 		grp.lgrmi3_domainandname = wQualifiedUser;
-		nStatus = NetLocalGroupAddMembers(wDomain, wGroupName, 3, (LPBYTE)&grp, 1);
+
+		nStatus = NetLocalGroupAddMembers(wServerName, wGroupName, 3, (LPBYTE)&grp, 1);
+		
+
 		switch(nStatus)
 		{
 			case NERR_Success:
