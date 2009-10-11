@@ -2858,6 +2858,22 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <value></value>
                 </iniFileSet>
                
+                <!-- DataDirectory -->
+		 <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>DataDirectory</key>
+                    <value></value>
+                </iniFileSet>
+               
+                <!-- Port -->
+		 <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Port</key>
+                    <value></value>
+                </iniFileSet>
+               
                 <!--Serviceaccount -->
 		<iniFileSet>
                     <file>${PostgreSqlIni}</file>
