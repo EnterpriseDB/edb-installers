@@ -7938,6 +7938,11 @@
               <ruleList>
                 <compareText>
                   <logic>does_not_equal</logic>
+                  <text>2224</text>
+                  <value>${program_exit_code}</value>
+                </compareText>
+                <compareText>
+                  <logic>does_not_equal</logic>
                   <text>2203</text>
                   <value>${program_exit_code}</value>
                 </compareText>
