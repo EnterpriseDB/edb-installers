@@ -7699,7 +7699,7 @@
 
             <!-- Do we have a valid catalog version? -->
             <runProgram>
-              <program>${system_temp_directory}/postgresplus/pgcontrol/pg_controldata</program>
+              <program>${system_temp_directory}/postgresplus/pgcontrol/bin/pg_controldata</program>
               <programArguments>"${datadir}"</programArguments>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
