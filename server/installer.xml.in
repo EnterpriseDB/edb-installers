@@ -355,6 +355,26 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <!-- Set the iDataDirectory value to CLI datadir if no registry/ini value of dataDirectory is found --> 
+        <setInstallerVariable>
+            <name>iDataDirectory</name>
+            <persist>0</persist>
+            <value>${datadir}</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${iDataDirectory}</text>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${datadir}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
         
         <!-- If there appears to be an existing installation, with no Branding value. --> 
         <!-- force the default value. Otherwise, set the branding to whatever we read, -->
