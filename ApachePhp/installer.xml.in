@@ -164,17 +164,15 @@
     <setInstallerVariable name="selinux" value="" />
     <foreach variables="path" values="/bin /usr/bin /sbin /usr/sbin">
       <actionList>
-         <!-- If the executable is found, the findFile action will be skipped -->
-         <findFile baseDirectory="${path}" variable="executablePath" pattern="getenforce">
-           <abortOnError>0</abortOnError>
-           <showMessageOnError>0</showMessageOnError>
-           <ruleList>
-             <compareText text="${executablePath}" logic="equals" value=""/>
-           </ruleList>
-         </findFile>
+        <setInstallerVariable name="executablePath" value="${path}/getenforce">
+          <ruleList>
+            <fileTest condition="executable"/>
+            <compareText text="${executablePath}" logic="equals" value=""/>
+          </ruleList>
+        </setInstallerVariable>
       </actionList>
       <ruleList>
-         <compareText text="${platform_name}" logic="contains" value="linux"/>
+        <platformTest type="linux"/>
       </ruleList>
     </foreach>
 
