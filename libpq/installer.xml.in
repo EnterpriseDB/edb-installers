@@ -6,7 +6,7 @@
 	
     <!-- Product Specific Options -->
     <productComments>libpq for win64, packaged by EnterpriseDB</productComments>
-    <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
+    <productDisplayName>${product_fullname} ${product_version}</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
 	
     <!-- The options are used for RPM registration -->
@@ -28,7 +28,10 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
-	<startMenuGroupName></startMenuGroupName>
+    <startMenuGroupName></startMenuGroupName>
+
+    <!-- Make the installer behave like a native 64bit installer -->
+    <windows64bitMode>1</windows64bitMode>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
