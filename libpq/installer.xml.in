@@ -197,7 +197,13 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
+                            <origin>staging/windows-x64/libpq/include</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
                             <origin>staging/windows-x64/libpq/installer</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/windows-x64/libpq/lib</origin>
                         </distributionDirectory>
                         <distributionFile>
                             <origin>staging/windows-x64/libpq/libpq.dll</origin>

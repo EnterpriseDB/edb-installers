@@ -78,11 +78,20 @@ EOT
 	
     # Move the resulting binaries into place
 	ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64" || _die "Failed to create the libpq directory on the windows-x64 build host"
+	ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64\\\\include" || _die "Failed to create the libpq include directory on the windows-x64 build host"
 	ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64\\\\installer" || _die "Failed to create the libpq installer directory on the windows-x64 build host"
+	ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64\\\\lib" || _die "Failed to create the libpq lib directory on the windows-x64 build host"
 	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\vcredist\\\\vcredist_x64.exe $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64\\\\installer" || _die "Failed to copy the VC++ runtimes on the windows build host"
-	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\src\\\\interfaces\\\\libpq\\\\Release\\\\libpq.dll $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64" || _die "Failed to copy the libpq.dll on the windows-x64 build host" 
-	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\OpenSSL\\\\bin\\\\libeay32.dll $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64" || _die "Failed to copy the libeay32.dll on the windows-x64 build host" 
-	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\OpenSSL\\\\bin\\\\ssleay32.dll $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64" || _die "Failed to copy the ssleay32.dll on the windows-x64 build host" 
+	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\src\\\\interfaces\\\\libpq\\\\Release\\\\libpq.dll $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64" || _die "Failed to copy libpq.dll on the windows-x64 build host" 
+	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\src\\\\interfaces\\\\libpq\\\\Release\\\\libpq.dll.manifest $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64" || _die "Failed to copy libpq.dll.manifest on the windows-x64 build host" 
+	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\src\\\\interfaces\\\\libpq\\\\Release\\\\libpq.lib $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64\\\\lib" || _die "Failed to copy libpq.lib on the windows-x64 build host" 
+	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\src\\\\interfaces\\\\libpq\\\\Release\\\\libpqdll.lib $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64\\\\lib" || _die "Failed to copy libpqdll.lib on the windows-x64 build host" 
+	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\OpenSSL\\\\bin\\\\libeay32.dll $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64" || _die "Failed to copy libeay32.dll on the windows-x64 build host" 
+	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\OpenSSL\\\\bin\\\\ssleay32.dll $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64" || _die "Failed to copy ssleay32.dll on the windows-x64 build host" 
+	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\src\\\\interfaces\\\\libpq\\\\libpq-events.h $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64\\\\include" || _die "Failed to copy the libpq-events.h header on the windows-x64 build host" 
+	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\src\\\\interfaces\\\\libpq\\\\libpq-fe.h $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64\\\\include" || _die "Failed to copy the libpq-fe.h header on the windows-x64 build host" 
+	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\src\\\\interfaces\\\\libpq\\\\pqexpbuffer.h $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64\\\\include" || _die "Failed to copy the pqexpbuffer.h header on the windows-x64 build host" 
+	ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\src\\\\include\\\\postgres_ext.h $PG_PATH_WINDOWS_X64\\\\libpq.windows-x64\\\\include" || _die "Failed to copy the postgres_ext.h header on the windows-x64 build host" 
 	
     # Zip up the installed code, copy it back here, and unpack.
     echo "Copying built tree to Unix host"
