@@ -10,8 +10,8 @@ Const ForReading = 1
 Const ForWriting = 2
 
 ' Check the command line
-If WScript.Arguments.Count <> 6 Then
- Wscript.Echo "Usage: createshortcuts.vbs <Major.Minor version> <Username> <Port> <Branding> <Install dir> <Data dir>"
+If WScript.Arguments.Count <> 7 Then
+ Wscript.Echo "Usage: createshortcuts.vbs <Major.Minor version> <Username> <Port> <Branding> <Install dir> <Data dir> <ServiceName>"
  Wscript.Quit 127
 End If
 
@@ -21,6 +21,7 @@ iPort = CInt(WScript.Arguments.Item(2))
 strBranding = WScript.Arguments.Item(3)
 strInstallDir = WScript.Arguments.Item(4)
 strDataDir = WScript.Arguments.Item(5)
+strServiceName = WScript.Arguments.Item(6)
 
 Set objShell = WScript.CreateObject("WScript.Shell")
 Set objFso = WScript.CreateObject("Scripting.FileSystemObject")
@@ -36,6 +37,7 @@ Sub FixupFile(strFile)
     strData = Replace(strData, "PG_PORT", iPort)
     strData = Replace(strData, "PG_INSTALLDIR", strInstallDir)
     strData = Replace(strData, "PG_DATADIR", strDataDir)
+    strData = Replace(strData, "PG_SERVICENAME", strServiceName)
 
     Set objFile = objFso.OpenTextFile(strFile, ForWriting)
     objFile.WriteLine strData

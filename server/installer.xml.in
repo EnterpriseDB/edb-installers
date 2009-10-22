@@ -185,6 +185,7 @@
         <!-- OS Account to own postgres process -->
         <setInstallerVariable name ="serviceaccount" value="" />
         <setInstallerVariable name ="servicepassword" value="" />
+        <setInstallerVariable name="servicename" value="" />
 
         <!-- Upgrading? -->
         <setInstallerVariable>
@@ -442,6 +443,31 @@
                     </ruleList>
                 </setInstallerVariable>
 
+                <!-- Get the servicename -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>ServiceID</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iServiceName</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>iServiceName</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
+
                 <!-- Get the serviceaccount (OS User) -->
                 <iniFileGet>
                     <file>${PostgreSqlIni}</file>
@@ -561,13 +587,20 @@
                     <variable>iBaseDirectory</variable>
                 </registryGet>
                 
+                <!-- Get the ServiceName -->
+                <registryGet>
+                    <name>Service ID</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <variable>iServiceName</variable>
+                </registryGet>
+
 		<!-- Get the Serviceaccount (OS User) -->
                 <registryGet>
                     <name>Service Account</name>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
                     <variable>iServiceAccount</variable>
                 </registryGet>
-		
+
 		<!-- Get the Superuser -->
                 <registryGet>
                     <name>Super User</name>
@@ -743,6 +776,116 @@
                <compareText text="${superaccount}" logic="equals" value="" />
             </ruleList>
         </setInstallerVariable>
+
+        <!-- SECTION: START: ServiceName -->
+        <actionGroup>
+            <actionList>
+                <!--
+                  1. Validate the service name
+
+                  Service name must match the following criteria:
+                  * Starts with any alphabet
+                  * Ends with alphanumeric character
+                  * atleast 6 characters long
+                  * Maximum length 50 characters
+                  * - (hyphen), . (dot), _ (underscore) are allowed characters
+                  i.e. postgresql-8.4, pg_8_4, pgsql-8.3.8_1
+                  -->
+                <throwError>
+                  <customErrorMessage>${msg(servicename.not.valid)}</customErrorMessage>
+                  <text>Unknown Error</text>
+                  <ruleList>
+                      <regExMatch>
+                          <text>${servicename}</text>
+                          <logic>does_not_match</logic>
+                          <pattern>^([a-zA-Z]{1})([0-9a-zA-Z_\.\-]{4,48})([0-9a-zA-Z]{1})$</pattern>
+                      </regExMatch>
+                  </ruleList>
+                </throwError>
+
+                <!--
+                  2. Check if service already exists with the same name
+                  -->
+                <!-- WIN -->
+                <actionGroup>
+                    <actionList>
+                        <getUniqueWindowsServiceName>
+                            <selectedServiceNameVariable>temp_service_name</selectedServiceNameVariable>
+                            <serviceName>${servicename}</serviceName>
+                        </getUniqueWindowsServiceName>
+                        <throwError>
+                            <customErrorMessage>${msg(servicename.already.exists.windows)}</customErrorMessage>
+                            <text>Duplicate Service Exists</text>
+                            <ruleList>
+                                <compareText text="${servicename}" logic="does_not_equal" value="${temp_service_name}" />
+                            </ruleList>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </actionGroup>
+
+                <!-- LIN/LIN-X64 -->
+                <throwError>
+                    <customErrorMessage>${msg(servicename.already.exists.linux)}</customErrorMessage>
+                    <text>Duplicate Service Exists</text>
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="linux"/>
+                        <fileExists path="/etc/init.d/${servicename}"/>
+                    </ruleList>
+                </throwError>
+
+                <!-- OSX -->
+                <throwError>
+                    <customErrorMessage>${msg(servicename.already.exists.osx)}</customErrorMessage>
+                    <text>Duplicate Service Exists</text>
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="osx"/>
+                        <fileExists path="/Library/LaunchDaemons/com.edb.launchd.${servicename}.plist"/>
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <!-- New installation and got the service-name through the command-line -->
+            <ruleList>
+               <compareText text="${servicename}" logic="does_not_equal" value="" />
+               <compareText text="${iServiceName}" logic="equals" value="" />
+               <compareText text="${brandingVer}" logic="equals" value="" />
+            </ruleList>
+        </actionGroup>
+
+        <!-- Existing install, with servicename. Ignore command line. -->
+        <setInstallerVariable>
+            <name>servicename</name>
+            <persist>1</persist>
+            <value>${iServiceName}</value>
+            <ruleList>
+               <compareText text="${iServiceName}" logic="does_not_equal" value="" />
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- Existing install, without servicename. Ignore command line. -->
+        <setInstallerVariable>
+            <name>servicename</name>
+            <persist>1</persist>
+            <value>postgresql-PG_MAJOR_VERSION</value>
+            <ruleList>
+               <compareText text="${iServiceName}" logic="equals" value="" />
+               <compareText text="${brandingVer}" logic="does_not_equal" value="" />
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- New install, with nothing set on command line -->
+        <setInstallerVariable>
+            <name>servicename</name>
+            <persist>1</persist>
+            <value>postgresql-PG_MAJOR_VERSION</value>
+            <ruleList>
+               <compareText text="${servicename}" logic="equals" value="" />
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- SECTION: END: ServiceName -->
         
 	<!-- Existing install, with serviceaccount. Ignore command line. -->
         <setInstallerVariable>
@@ -775,6 +918,7 @@
             <text>Using branding: ${branding}</text>
         </logMessage>
         <logMessage text="Using Super User: ${superaccount} and Service Account: ${serviceaccount}" />
+        <logMessage text="Using Service Name: ${servicename}"/>
         
         <!-- Temp directory for preflight scripts -->
         <createDirectory path="${system_temp_directory}/postgresql_installer"/>
@@ -1437,14 +1581,14 @@
              
     </preInstallationActionList>
 
-    <readyToInstallActionList>    
+    <readyToInstallActionList>
         <!-- Attempt to stop any existing server. We *always* do this, just in case  -->
         <!-- the existing installation is broken and it doesn't look like an upgrade -->
 
         <!-- MAC: Stop the server -->
         <runProgram>
             <program>launchctl</program>
-            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.postgresql-${product_version}.plist</programArguments>
+            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.${servicename}.plist</programArguments>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -1458,7 +1602,7 @@
  
         <!-- LINUX: Stop the server -->
         <runProgram>
-            <program>/etc/init.d/postgresql-${product_version}</program>
+            <program>/etc/init.d/${servicename}</program>
             <programArguments>stop</programArguments>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -1469,14 +1613,14 @@
                     <value>linux</value>
                 </compareText>
                 <fileExists>
-                    <path>/etc/init.d/postgresql-${product_version}</path>
+                    <path>/etc/init.d/${servicename}</path>
                 </fileExists>
             </ruleList>
         </runProgram>
         
         <!-- WINDOWS: Stop the server -->
         <stopWindowsService>
-            <serviceName>postgresql-${product_version}</serviceName>
+            <serviceName>${servicename}</serviceName>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
         </stopWindowsService>
@@ -1531,6 +1675,13 @@
 
     <!-- Postinstallation actions -->
     <postInstallationActionList>
+
+        <!-- Make the service-name persistent to make it available during uninstallation -->
+        <setInstallerVariable>
+            <name>servicename</name>
+            <value>${servicename}</value>
+            <persist>1</persist>
+        </setInstallerVariable>
 
         <!-- Ignore disable-stackbuilder option in case of re-installation/upgrade -->
         <!--
@@ -1846,7 +1997,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
- 
+
         <!-- Initialise the cluster if this is an installation -->
         <actionGroup>
             <actionList>
@@ -1990,7 +2141,7 @@
         <!-- Startup config -->
         <runProgram>
             <program>${installdir}/installer/server/startupcfg.sh</program>
-            <programArguments>${product_version} "${serviceaccount}" "${installdir}" "${datadir}"</programArguments>
+            <programArguments>${product_version} "${serviceaccount}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
             <progressText>${msg(progress.text.configuring.startup)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -2005,7 +2156,7 @@
         
         <runProgram>
             <program>cscript</program>
-            <programArguments>//NoLogo "${installdir}\installer\server\startupcfg.vbs" ${product_version} "${serviceaccount}" "${servicepassword}" "${installdir}" "${datadir}"</programArguments>
+            <programArguments>//NoLogo "${installdir}\installer\server\startupcfg.vbs" ${product_version} "${serviceaccount}" "${servicepassword}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
             <progressText>${msg(progress.text.configuring.startup)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -2064,7 +2215,7 @@
         <!-- Shortcuts -->
         <runProgram>
             <program>${installdir}/installer/server/createshortcuts.sh</program>
-            <programArguments>${product_version} "${serviceaccount}" "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${disableStackBuilder}"</programArguments>
+            <programArguments>${product_version} "${serviceaccount}" "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${disableStackBuilder}" "${servicename}"</programArguments>
             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -2085,7 +2236,7 @@
         <!-- we aren't require to pass ${serviceaccount} to createshortcuts in windows -->
         <runProgram>
             <program>cscript</program>
-            <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts.vbs" ${product_version} "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}"</programArguments>
+            <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts.vbs" ${product_version} "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -2220,7 +2371,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         <!-- Startup -->
         <runProgram>
             <program>${installdir}/installer/server/startserver.sh</program>
-            <programArguments>${product_version}</programArguments>
+            <programArguments>${servicename}</programArguments>
             <progressText>${msg(progress.text.starting.server)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -2235,7 +2386,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
        
         <runProgram>
             <program>cscript</program>
-            <programArguments>//NoLogo "${installdir}\installer\server\startserver.vbs" ${product_version}</programArguments>
+            <programArguments>//NoLogo "${installdir}\installer\server\startserver.vbs" ${servicename}</programArguments>
             <progressText>${msg(progress.text.starting.server)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -2466,12 +2617,13 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
              </ruleList>
         </registrySet>
         
+        <logMessage text="Write ServiceID(${servicename}) to registry/ini..." />
         <!-- ServiceID -->
         <iniFileSet>
             <file>${PostgreSqlIni}</file>
             <section>PostgreSQL/${product_version}</section>
             <key>ServiceID</key>
-            <value>postgresql-${product_version}</value>
+            <value>${servicename}</value>
             <ruleList>
                 <stringTest>
                     <text>${serverport}</text> <!-- This is correct - only set the ServiceID if we know the port -->
@@ -2487,7 +2639,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         <registrySet>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
             <name>Service ID</name>
-            <value>postgresql-${product_version}</value>
+            <value>${servicename}</value>
         </registrySet>
         
         
@@ -2749,7 +2901,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         
         <!-- LINUX: Stop the server -->
         <runProgram>
-            <program>/etc/init.d/postgresql-${product_version}</program>
+            <program>/etc/init.d/${servicename}</program>
             <programArguments>stop</programArguments>
             <abortOnError>0</abortOnError>
             <showMessageOnError>1</showMessageOnError>
@@ -2764,7 +2916,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         
         <!-- WINDOWS: Stop the server -->
         <stopWindowsService>
-            <serviceName>postgresql-${product_version}</serviceName>
+            <serviceName>${servicename}</serviceName>
             <abortOnError>0</abortOnError>
             <showMessageOnError>1</showMessageOnError>
         </stopWindowsService>
@@ -2856,15 +3008,15 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                 </iniFileSet>
 
                 <!-- Superuser -->
-		 <iniFileSet>
+                <iniFileSet>
                     <file>${PostgreSqlIni}</file>
                     <section>PostgreSQL/${product_version}</section>
                     <key>Superuser</key>
                     <value></value>
                 </iniFileSet>
-               
+
                 <!-- DataDirectory -->
-		 <iniFileSet>
+                <iniFileSet>
                     <file>${PostgreSqlIni}</file>
                     <section>PostgreSQL/${product_version}</section>
                     <key>DataDirectory</key>
@@ -2872,7 +3024,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                 </iniFileSet>
                
                 <!-- Port -->
-		 <iniFileSet>
+                <iniFileSet>
                     <file>${PostgreSqlIni}</file>
                     <section>PostgreSQL/${product_version}</section>
                     <key>Port</key>
@@ -2880,7 +3032,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                 </iniFileSet>
                
                 <!--Serviceaccount -->
-		<iniFileSet>
+                <iniFileSet>
                     <file>${PostgreSqlIni}</file>
                     <section>PostgreSQL/${product_version}</section>
                     <key>Serviceaccount</key>
@@ -2902,12 +3054,12 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
            <actionList>
                 <runProgram>
                     <program>launchctl</program>
-                    <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.postgresql-${product_version}.plist</programArguments>
+                    <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.${servicename}.plist</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
                 <deleteFile>
-                    <path>/Library/LaunchDaemons/com.edb.launchd.postgresql-${product_version}.plist</path>
+                    <path>/Library/LaunchDaemons/com.edb.launchd.${servicename}.plist</path>
                 </deleteFile>
            </actionList> 
            <ruleList>
@@ -2925,20 +3077,20 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                 <!-- Attempt to remove any runlevel config with chkconfig -->
                 <runProgram>
                     <program>/sbin/chkconfig</program>
-                    <programArguments>--del postgresql-${product_version}</programArguments>
+                    <programArguments>--del ${servicename}</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
                 
                 <!-- Remove the startup script -->
                 <deleteFile>
-                    <path>/etc/init.d/postgresql-${product_version}</path>
+                    <path>/etc/init.d/${servicename}</path>
                 </deleteFile>
                 
                 <!-- Attempt to remove any runlevel config with update-rc.d -->
                 <runProgram>
                     <program>/usr/sbin/update-rc.d</program>
-                    <programArguments>-f postgresql-${product_version} remove</programArguments>
+                    <programArguments>-f ${servicename} remove</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -2970,7 +3122,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
         
         <!-- WINDOWS: Remove the service -->
         <deleteWindowsService>
-            <serviceName>postgresql-${product_version}</serviceName>
+            <serviceName>${servicename}</serviceName>
             <abortOnError>0</abortOnError>
         </deleteWindowsService>
         
@@ -3353,6 +3505,8 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
 
         <stringParameter name="superaccount" ask="1" cliOptionShow="1" cliOptionName="superaccount" default="postgres" 
             description="${msg(superaccount.description)}" />
+        <stringParameter name="servicename" ask="0" cliOptionShow="1" cliOptionName="servicename" default="postgresql-PG_MAJOR_VERSION"
+            description="${msg(servicename.description)}" />
         <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default="postgres" 
             description="${msg(serviceaccount.description)}"/>
         <passwordParameter name="servicepassword" ask="1" cliOptionShow="1" cliOptionName="servicepassword" 

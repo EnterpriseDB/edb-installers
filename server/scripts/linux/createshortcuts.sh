@@ -4,9 +4,9 @@
 # Dave Page, EnterpriseDB
 
 # Check the command line
-if [ $# -ne 8 ]; 
+if [ $# -ne 9 ];
 then
-    echo "Usage: $0 <Major.Minor version> <OSUsername> <SuperUsername> <Port> <Branding> <Install dir> <Data dir> <DisableStackBuilder>"
+    echo "Usage: $0 <Major.Minor version> <OSUsername> <SuperUsername> <Port> <Branding> <Install dir> <Data dir> <DisableStackBuilder> <ServiceName>"
     exit 127
 fi
 
@@ -18,7 +18,7 @@ BRANDING=$5
 INSTALLDIR=$6
 DATADIR=$7
 DISABLE_STACKBUILDER=$8
-
+SERVICENAME=$9
 
 # Exit code
 WARN=0
@@ -78,6 +78,7 @@ _fixup_file() {
     _replace PG_INSTALLDIR "$INSTALLDIR" $1
     _replace PG_DATADIR "$DATADIR" $1
     _replace PG_BRANDING "$BRANDING" $1
+    _replace PG_SERVICENAME "$SERVICENAME" $1
 }
 
 # We need to remove any old shortcuts created by the Beta/RC installers, as they 

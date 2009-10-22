@@ -22,15 +22,15 @@ iRet = 0
 
 Select Case strAction
     Case "start"
-         iRet = DoCmd("net start postgresql-PG_MAJOR_VERSION")
+         iRet = DoCmd("net start PG_SERVICENAME")
     Case "stop"
-         iRet = DoCmd("net stop postgresql-PG_MAJOR_VERSION")
+         iRet = DoCmd("net stop PG_SERVICENAME")
     Case "reload"
          iRet = DoCmd("""PG_INSTALLDIR\bin\pg_ctl.exe"" -D ""PG_DATADIR"" reload")
     Case "restart"
-	     iRet = DoCmd("net stop postgresql-PG_MAJOR_VERSION")
+	     iRet = DoCmd("net stop PR_SERVICENAME")
 		 If iRet = 0 Then
-		     iRet = DoCmd("net start postgresql-PG_MAJOR_VERSION")
+		     iRet = DoCmd("net start PG_SERVICENAME")
 		 End If
     Case Else
         usage

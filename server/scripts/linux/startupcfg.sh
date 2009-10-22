@@ -4,9 +4,9 @@
 # Dave Page, EnterpriseDB
 
 # Check the command line
-if [ $# -ne 4 ]; 
+if [ $# -ne 5 ]; 
 then
-    echo "Usage: $0 <Major.Minor version> <Username> <Install dir> <Data dir>"
+    echo "Usage: $0 <Major.Minor version> <Username> <Install dir> <Data dir> <ServiceName>"
     exit 127
 fi
 
@@ -14,6 +14,7 @@ VERSION=$1
 USERNAME=$2
 INSTALLDIR=$3
 DATADIR=$4
+SERVICENAME=$5
 
 # Exit code
 WARN=0
@@ -30,7 +31,7 @@ _warn() {
 }
 
 # Write the startup script
-cat <<EOT > "/etc/init.d/postgresql-$VERSION"
+cat <<EOT > "/etc/init.d/$SERVICENAME"
 #!/bin/bash
 #
 # chkconfig: 2345 85 15
@@ -96,7 +97,7 @@ esac
 EOT
 
 # Fixup the permissions on the StartupItems
-chmod 0755 "/etc/init.d/postgresql-$VERSION" || _warn "Failed to set the permissions on the startup script (/etc/init.d/postgresql-$VERSION/)"
+chmod 0755 "/etc/init.d/$SERVICENAME" || _warn "Failed to set the permissions on the startup script (/etc/init.d/$SERVICENAME)"
 
 _process_libs() {
 
@@ -144,7 +145,7 @@ _process_libs "$INSTALLDIR/lib" "libuuid.so"
 RET=`type /sbin/chkconfig > /dev/null 2>&1 || echo fail`
 if [ ! $RET ];
 then
-    /sbin/chkconfig --add postgresql-$VERSION
+    /sbin/chkconfig --add $SERVICENAME
 	if [ $? -ne 0 ]; then
 	    _warn "Failed to configure the service startup with chkconfig"
 	fi
@@ -153,7 +154,7 @@ fi
 RET=`type /usr/sbin/update-rc.d > /dev/null 2>&1 || echo fail`
 if [ ! $RET ];
 then
-    /usr/sbin/update-rc.d postgresql-$VERSION defaults
+    /usr/sbin/update-rc.d $SERVICENAME defaults
 	if [ $? -ne 0 ]; then
 	    _warn "Failed to configure the service startup with update-rc.d"
 	fi

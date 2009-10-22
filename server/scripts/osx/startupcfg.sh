@@ -4,9 +4,9 @@
 # Dave Page, EnterpriseDB
 
 # Check the command line
-if [ $# -ne 4 ]; 
+if [ $# -ne 5 ]; 
 then
-    echo "Usage: $0 <Major.Minor version> <Username> <Install dir> <Data dir>"
+    echo "Usage: $0 <Major.Minor version> <Username> <Install dir> <Data dir> <ServiceName>"
     exit 127
 fi
 
@@ -14,6 +14,7 @@ VERSION=$1
 USERNAME=$2
 INSTALLDIR=$3
 DATADIR=$4
+SERVICENAME=$5
 
 # Exit code
 WARN=0
@@ -35,7 +36,7 @@ if [ ! -e /Library/LaunchDaemons ]; then
 fi
 
 # Write the plist file
-cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.postgresql-$VERSION.plist"
+cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.$SERVICENAME.plist"
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
         "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -44,7 +45,7 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.postgresql-$VERSION.plist"
     <key>Disabled</key>
     <false/>
         <key>Label</key>
-        <string>com.edb.launchd.postgresql-$VERSION</string>
+        <string>com.edb.launchd.$SERVICENAME</string>
         <key>ProgramArguments</key>
         <array>
                 <string>$INSTALLDIR/bin/postmaster</string>
@@ -64,10 +65,10 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.postgresql-$VERSION.plist"
 EOT
 
 # Fixup the permissions on the launchDaemon
-chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.postgresql-$VERSION.plist" || _warn "Failed to set the ownership of the launchd daemon for pgAgent (/Library/LaunchDaemons/com.edb.launchd.postgresql-$VERSION.plist)"
+chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.$SERVICENAME.plist" || _warn "Failed to set the ownership of the launchd daemon for pgAgent (/Library/LaunchDaemons/com.edb.launchd.$SERVICENAME.plist)"
 
 # Load the LaunchAgent
-launchctl load /Library/LaunchDaemons/com.edb.launchd.postgresql-$VERSION.plist
+launchctl load /Library/LaunchDaemons/com.edb.launchd.$SERVICENAME.plist
 
 echo "$0 ran to completion"
 exit $WARN

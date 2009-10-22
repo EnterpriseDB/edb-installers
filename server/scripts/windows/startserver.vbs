@@ -5,18 +5,18 @@ On Error Resume Next
 
 ' Check the command line
 If WScript.Arguments.Count <> 1 Then
- Wscript.Echo "Usage: startserver.vbs <Major.Minor version>"
+ Wscript.Echo "Usage: startserver.vbs <ServiceName>"
  Wscript.Quit 127
 End If
 
-strVersion = WScript.Arguments.Item(0)
+strServiceName = WScript.Arguments.Item(0)
 
 lServices = 0
 
 Set objWMIService = GetObject("winmgmts:{impersonationLevel=impersonate}!\\.\root\cimv2")
 
 ' Find any service we require
-Set colServiceList = objWMIService.ExecQuery("Associators of {Win32_Service.Name='postgresql-" & strVersion & "'} Where AssocClass=Win32_DependentService Role=Dependent")
+Set colServiceList = objWMIService.ExecQuery("Associators of {Win32_Service.Name='" & strServiceName & "'} Where AssocClass=Win32_DependentService Role=Dependent")
 
 ' Start the dependencies
 For Each objService in colServiceList
@@ -32,7 +32,7 @@ For Each objService in colServiceList
 Next
 
 ' Find the service
-Set objService = objWMIService.Get("Win32_Service.Name='postgresql-" & strVersion & "'")
+Set objService = objWMIService.Get("Win32_Service.Name='" & strServiceName & "'")
 
 ' Start it (them)
 If objService.State <> "Running" Then

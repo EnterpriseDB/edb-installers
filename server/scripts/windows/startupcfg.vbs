@@ -4,8 +4,8 @@ On Error Resume Next
 ' Dave Page, EnterpriseDB
 
 ' Check the command line
-If WScript.Arguments.Count <> 5 Then
- Wscript.Echo "Usage: startupcfg.vbs <Major.Minor version> <Username> <Password> <Install dir> <Data dir>"
+If WScript.Arguments.Count <> 6 Then
+ Wscript.Echo "Usage: startupcfg.vbs <Major.Minor version> <Username> <Password> <Install dir> <Data dir> <ServerName>"
  Wscript.Quit 127
 End If
 
@@ -14,6 +14,7 @@ strUsername = WScript.Arguments.Item(1)
 strPassword = WScript.Arguments.Item(2)
 strInstallDir = WScript.Arguments.Item(3)
 strDataDir = WScript.Arguments.Item(4)
+strServiceName = WScript.Arguments.Item(5)
 
 'Escape the '%' as '%%', if present in the password
 Set regExp = new regexp  
@@ -59,13 +60,13 @@ Sub Warn(msg)
 End Sub
 
 ' We'll let pg_ctl do all the heavy lifting
-iRet = DoCmd("""" & strInstallDir & "\bin\pg_ctl.exe"" register -N postgresql-" & strVersion & " -U " & strUsername & " -P """ & strFormattedPassword & """ -D """ & strDataDir & """ -w")
+iRet = DoCmd("""" & strInstallDir & "\bin\pg_ctl.exe"" register -N " & strServiceName & " -U " & strUsername & " -P """ & strFormattedPassword & """ -D """ & strDataDir & """ -w")
 if iRet <> 0 Then
     Die "Failed to register the service with the service control manager"
 End If
 
 ' Write the DisplayName manually
-objShell.RegWrite "HKLM\SYSTEM\CurrentControlSet\Services\postgresql-" & strVersion & "\DisplayName", "PostgreSQL Server " & strVersion, "REG_SZ"
+objShell.RegWrite "HKLM\SYSTEM\CurrentControlSet\Services\" & strServiceName & "\DisplayName", strServiceName & " - PostgreSQL Server " & strVersion, "REG_SZ"
 
 WScript.Echo "startupcfg.vbs ran to completion"
 WScript.Quit 0

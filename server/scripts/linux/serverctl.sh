@@ -60,9 +60,9 @@ then
 else
     if [ $USE_SUDO != "1" ];
     then
-        su - -c "/etc/init.d/postgresql-PG_MAJOR_VERSION $action"
+        su - -c "/etc/init.d/PG_SERVICENAME $action"
     else
-        sudo /etc/init.d/postgresql-PG_MAJOR_VERSION $action
+        sudo /etc/init.d/PG_SERVICENAME $action
     fi
 fi
 
