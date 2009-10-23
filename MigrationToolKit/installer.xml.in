@@ -486,6 +486,9 @@
                         <distributionFile>
                             <origin>staging/linux/MigrationToolKit/mtk-readme.txt</origin>
                         </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux/MigrationToolKit/MigrationToolkit_PPSS_README.txt</origin>
+                        </distributionFile>
                         <distributionDirectory>
                             <origin>staging/linux/MigrationToolKit/lib</origin>
                         </distributionDirectory>
@@ -506,6 +509,9 @@
                         </distributionFile>
                         <distributionFile>
                             <origin>staging/linux-x64/MigrationToolKit/mtk-readme.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux-x64/MigrationToolKit/MigrationToolkit_PPSS_README.txt</origin>
                         </distributionFile>
                         <distributionDirectory>
                             <origin>staging/linux-x64/MigrationToolKit/lib</origin>
@@ -528,6 +534,9 @@
                         <distributionFile>
                             <origin>staging/windows/MigrationToolKit/mtk-readme.txt</origin>
                         </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/MigrationToolKit/MigrationToolkit_PPSS_README.txt</origin>
+                        </distributionFile>
                         <distributionDirectory>
                             <origin>staging/windows/MigrationToolKit/lib</origin>
                         </distributionDirectory>
@@ -548,6 +557,9 @@
                         </distributionFile>
                         <distributionFile>
                             <origin>staging/osx/MigrationToolKit/mtk-readme.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/osx/MigrationToolKit/MigrationToolkit_PPSS_README.txt</origin>
                         </distributionFile>
                         <distributionDirectory>
                             <origin>staging/osx/MigrationToolKit/lib</origin>
