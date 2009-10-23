@@ -45,6 +45,10 @@ _prep_metainstaller_linux_x64() {
     # Grab a copy of the postgis installer
     cp -R "$WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the postgis installer (staging/linux-x64/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-linux-x64.bin)"
 
+    # Grab a copy of the npgsql installer
+    echo "Grab NpgSQL installer..."
+    cp -R "$WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the npgsql installer (staging/windows/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-linux-x64.bin)"
+
     # Grab a copy of the pgbouncer installer
     cp -R "$WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the pgbouncer installer (staging/linux-x64/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-linux-x64.bin"
 
