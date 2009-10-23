@@ -54,7 +54,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>/Library/PostgreSQL/EnterpriseDB-MigrationToolKit</value>
+            <value>/Library/PostgresPlus/EnterpriseDB-MigrationToolKit</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -68,7 +68,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}/PostgreSQL/EnterpriseDB-MigrationToolKit</value>
+            <value>${platform_install_prefix}/PostgresPlus/EnterpriseDB-MigrationToolKit</value>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
@@ -82,7 +82,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}\PostgreSQL\EnterpriseDB-MigrationToolKit</value>
+            <value>${platform_install_prefix}\PostgresPlus\EnterpriseDB-MigrationToolKit</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -134,7 +134,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>/Library/PostgreSQL/EnterpriseDB-MigrationToolKit</value>
+            <value>/Library/PostgresPlus/EnterpriseDB-MigrationToolKit</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -148,7 +148,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}/PostgreSQL/EnterpriseDB-MigrationToolKit</value>
+            <value>${platform_install_prefix}/PostgresPlus/EnterpriseDB-MigrationToolKit</value>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
@@ -162,7 +162,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}\PostgreSQL\EnterpriseDB-MigrationToolKit</value>
+            <value>${platform_install_prefix}\PostgresPlus\EnterpriseDB-MigrationToolKit</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
