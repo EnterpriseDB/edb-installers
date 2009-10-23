@@ -412,33 +412,6 @@
 
   <!-- Test code Preinstallation actions -->
   <preInstallationActionList>
-    <!-- Hide Npgsql in Linux and Mac -->
-    <actionGroup>
-      <actionList>
-        <setInstallerVariable>
-          <name>component(npgsql).canBeEdited</name>
-          <persist>0</persist>
-          <value>0</value>
-        </setInstallerVariable>
-        <componentSelection>
-          <deselect>npgsql</deselect>
-          <select></select>
-        </componentSelection>
-        <setInstallerVariable>
-          <name>component(npgsql).show</name>
-          <persist>0</persist>
-          <value>0</value>
-        </setInstallerVariable>
-      </actionList>
-      <ruleList>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-      </ruleList>
-    </actionGroup>
-
     <actionGroup>
       <actionList>
         <setInstallerVariable>
@@ -2921,6 +2894,62 @@
     </runProgram>
 
     <logMessage>
+      <text>Installing Npgsql in ${installdir}/Npgsql</text>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${component(npgsql).selected}</text>
+          <value>1</value>
+        </compareText>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>linux</value>
+        </compareText>
+      </ruleList>
+    </logMessage>
+
+    <runProgram>
+      <abortOnError>0</abortOnError>
+      <program>${system_temp_directory}/postgresplus/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux.bin</program>
+      <programArguments>--mode unattended --prefix "${installdir}/Npgsql" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+      <progressText>Installing NpgSQL ... </progressText>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${component(npgsql).selected}</text>
+          <value>1</value>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>linux</value>
+        </compareText>
+      </ruleList>
+    </runProgram>
+
+    <runProgram>
+      <abortOnError>0</abortOnError>
+      <program>${system_temp_directory}/postgresplus/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux-x64.bin</program>
+      <programArguments>--mode unattended --prefix "${installdir}/Npgsql" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+      <progressText>Installing NpgSQL ... </progressText>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${component(npgsql).selected}</text>
+          <value>1</value>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>linux-x64</value>
+        </compareText>
+      </ruleList>
+    </runProgram>
+
+    <logMessage>
       <text>Installing PostGIS in ${installdir}</text>
       <ruleList>
         <compareText>
@@ -3683,6 +3712,41 @@
       </ruleList>
     </runProgram>
 
+    <logMessage>
+      <text>Installing Npgsql in ${installdir}/Npgsql</text>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${component(npgsql).selected}</text>
+          <value>1</value>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+      </ruleList>
+    </logMessage>
+
+    <runProgram>
+      <abortOnError>0</abortOnError>
+      <program>${system_temp_directory}/postgresplus/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-osx.app/Contents/MacOS/installbuilder.sh</program>
+      <programArguments>--mode unattended --prefix "${installdir}/Npgsql" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+      <progressText>Installing NpgSQL ... </progressText>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${component(npgsql).selected}</text>
+          <value>1</value>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+      </ruleList>
+    </runProgram>
     <logMessage>
       <text>Installing PostGIS in ${installdir}</text>
       <ruleList>
@@ -5756,6 +5820,42 @@
           <distributionFileList>
             <distributionFile>
               <origin>staging/windows/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-windows.exe</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+        <!-- linux -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${system_temp_directory}/postgresplus</destination>
+          <name>npgsqllinux</name>
+          <platforms>linux</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux.bin</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+        <!-- linux-x64 -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${system_temp_directory}/postgresplus</destination>
+          <name>npgsqllinux-x64</name>
+          <platforms>linux-x64</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux-x64/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux-x64.bin</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+        <!-- osx -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${system_temp_directory}/postgresplus</destination>
+          <name>npgsqlosx</name>
+          <platforms>osx</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/osx/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-osx.app</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
