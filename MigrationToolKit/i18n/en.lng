@@ -31,3 +31,5 @@ Installer.Ready.Text1=Setup is now ready to begin installing EnterpriseDB Migrat
 Installer.Installing.Text=Please wait while Setup installs EnterpriseDB Migration ToolKit on your computer.
 
 jdbc.driver.not.found=PostgreSQL JDBC Drivers not found on your system.\nPlease ensure they are instlled before re-running the installer.
+
+mw.installation.dir=Installation Directory
