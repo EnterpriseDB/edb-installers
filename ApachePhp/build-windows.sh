@@ -314,6 +314,9 @@ _postprocess_ApachePhp_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
+	# Sign the installer
+	win32_sign "apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-windows.exe"
+	
      cd $WD
 }
 

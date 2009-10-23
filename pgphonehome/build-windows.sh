@@ -92,6 +92,9 @@ _postprocess_pgphonehome_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
+	# Sign the installer
+	win32_sign "pgphonehome-$PG_VERSION_PGPHONEHOME-$PG_BUILDNUM_PGPHONEHOME-windows.exe"
+	
     cd $WD
 
 }

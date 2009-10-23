@@ -131,6 +131,9 @@ _postprocess_psqlODBC_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
+	# Sign the installer
+	win32_sign "psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-windows.exe"
+	
     cd $WD
 
 }

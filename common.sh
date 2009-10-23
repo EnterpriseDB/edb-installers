@@ -138,3 +138,18 @@ extract_file()
        exit 1
     fi
 }
+
+# Sign a Win32 package
+win32_sign()
+{
+	FILENAME=$1
+	
+	if [ "$PG_SIGNTOOL_WINDOWS" != "" ];
+	then
+	    echo "Signing $FILENAME..."
+        scp $WD/output/$FILENAME $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the installer to the windows host for signing ($FILENAME)"
+		ssh $PG_SSH_WINDOWS "cmd /c \"$PG_SIGNTOOL_WINDOWS\" sign /t http://tsa.starfieldtech.com $PG_PATH_WINDOWS/$FILENAME" || _die "Failed to sign the installer ($FILENAME)"
+        scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/$FILENAME $WD/output/$FILENAME || _die "Failed to copy the installer from the windows host after signing ($FILENAME)"		
+    fi
+}
+

@@ -159,7 +159,10 @@ _postprocess_Slony_windows() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
-    
+
+	# Sign the installer
+	win32_sign "slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-windows.exe"
+	    
     cd $WD
 }
 

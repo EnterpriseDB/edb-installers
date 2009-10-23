@@ -160,8 +160,11 @@ _postprocess_MigrationWizard_windows() {
     cp resources/*.ico staging/windows/scripts/images || _die "Failed to copy the icon images (resourcedds/*.ico)"
 
     # Build the installer
-        "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
+	"$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
     
+	# Sign the installer
+	win32_sign "migrationwizard-$PG_VERSION_MIGRATIONWIZARD-$PG_BUILDNUM_MIGRATIONWIZARD-windows.exe"
+	
     cd $WD
 }
 

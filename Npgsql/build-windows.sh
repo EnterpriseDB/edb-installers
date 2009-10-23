@@ -63,6 +63,9 @@ _postprocess_Npgsql_windows() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
+	
+	# Sign the installer
+	win32_sign "npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-windows.exe"
 
     cd $WD
 }

@@ -138,6 +138,9 @@ _postprocess_MigrationToolKit_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
     
+	# Sign the installer
+	win32_sign "migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT-$PG_BUILDNUM_MIGRATIONTOOLKIT-windows.exe"
+	
     cd $WD
 }
 

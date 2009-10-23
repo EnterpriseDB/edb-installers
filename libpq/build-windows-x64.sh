@@ -118,6 +118,9 @@ _postprocess_libpq_windows_x64() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 	 
+	# Sign the installer
+	win32_sign "libpq64-$PG_VERSION_LIBPQ-$PG_BUILDNUM_LIBPQ-windows.exe"
+	
     cd $WD
 }
 

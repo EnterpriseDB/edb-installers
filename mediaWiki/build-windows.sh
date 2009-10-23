@@ -115,6 +115,9 @@ _postprocess_mediaWiki_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
+	# Sign the installer
+	win32_sign "mediawiki-$PG_VERSION_MEDIAWIKI-$PG_BUILDNUM_MEDIAWIKI-windows.exe"
+	
     cd $WD
 
 }

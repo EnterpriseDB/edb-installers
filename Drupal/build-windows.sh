@@ -114,6 +114,9 @@ _postprocess_Drupal_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
+	# Sign the installer
+	win32_sign "drupal-$PG_VERSION_DRUPAL-$PG_BUILDNUM_DRUPAL-windows.exe"
+	
     cd $WD
 
 }

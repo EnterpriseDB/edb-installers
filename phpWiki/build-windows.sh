@@ -119,6 +119,9 @@ _postprocess_phpWiki_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
+	# Sign the installer
+	win32_sign "phpwiki-$PG_VERSION_PHPWIKI-$PG_BUILDNUM_PHPWIKI-windows.exe"
+	
     cd $WD
 
 }

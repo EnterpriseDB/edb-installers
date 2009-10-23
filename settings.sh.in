@@ -80,6 +80,7 @@ PG_MINGW_WINDOWS=C:\\\\MinGW
 PG_MSYS_WINDOWS=C:\\\\msys\\\\1.0
 PG_JAVA_HOME_WINDOWS="C:\\\\Program Files\\\\Java\\\\jdk1.5.0_16"
 PG_QTPATH_WINDOWS=C:\\Qt\\2009.03
+PG_SIGNTOOL_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 8\\\\Common7\\\\Tools\\\\Bin\\\\signtool.exe"
 
 PG_SSH_WINDOWS_X64=buildfarm@bf-windows-x64.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS_X64=C:\\\\pginstaller-repo

@@ -154,6 +154,9 @@ _postprocess_TuningWizard_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
     
+	# Sign the installer
+	win32_sign "tuningwizard-$PG_VERSION_TUNINGWIZARD-$PG_BUILDNUM_TUNINGWIZARD-windows.exe"
+	
     cd $WD
 }
 

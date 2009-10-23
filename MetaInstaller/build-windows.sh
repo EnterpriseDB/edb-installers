@@ -231,6 +231,8 @@ _postprocess_metainstaller_windows() {
     # Rename the installer
     mv $WD/output/postgresplus-$PG_MAJOR_VERSION-windows-installer.exe $WD/output/postgresplus-$PG_PACKAGE_VERSION-windows.exe || _die "Failed to rename the installer"    
 
+	# Sign the installer
+	win32_sign "postgresplus-$PG_PACKAGE_VERSION-windows.exe"
 
     cd $WD
 	    

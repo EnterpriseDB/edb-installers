@@ -109,6 +109,9 @@ _postprocess_phpBB_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
+	# Sign the installer
+	win32_sign "phpbb-$PG_VERSION_PHPBB-$PG_BUILDNUM_PHPBB-windows.exe"
+	
     cd $WD
 
 }
