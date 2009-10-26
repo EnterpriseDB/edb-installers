@@ -254,7 +254,7 @@ _postprocess_PostGIS_windows() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
 	# Sign the installer
-	win32_sign " postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-windows.exe"
+	win32_sign "postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-windows.exe"
 	
     cd $WD
 }
