@@ -2843,6 +2843,68 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
             <name>Product Code</name>
             <value>postgresql-${product_version}</value>
         </registrySet>
+
+        <!-- Write a environment variable scripts -->
+
+        <actionGroup>
+            <actionList>
+                <deleteFile path="${installdir}/pg_env.sh" >
+                   <ruleList>
+                       <fileTest path="${installdir}/pg_env.sh" condition="exists" />
+                   </ruleList>
+                </deleteFile>  
+                             
+                <writeFile>
+                   <path>${installdir}/pg_env.sh</path>
+                   <text>#!/bin/sh
+# The script sets environment variables helpful for PostgreSQL
+
+export PATH=$PATH:${installdir}/bin
+export PGDATA=${datadir}
+export PGDATABASE=postgres
+export PGUSER=${superaccount}
+export PGPORT=${serverport} 
+export PGLOCALEDIR=${installdir}/share/locale
+
+                  </text>
+               </writeFile>
+               <changePermissions>
+                  <files>${installdir}/pg_env.sh</files>
+                  <permissions>755</permissions>
+               </changePermissions>
+            </actionList>
+            <ruleList>
+               <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+            </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+            <actionList>
+                <deleteFile path="${installdir}\pg_env.bat" >
+                   <ruleList>
+                       <fileTest path="${installdir}\pg_env.bat" condition="exists" />
+                   </ruleList>
+                </deleteFile>  
+                             
+                <writeFile>
+                   <path>${installdir}\pg_env.bat</path>
+                   <text>@ECHO OFF
+REM The script sets environment variables helpful for PostgreSQL
+
+@SET PATH=%PATH%;${installdir}\bin
+@SET PGDATA=${datadir}
+@SET PGDATABASE=postgres
+@SET PGUSER=${superaccount}
+@SET PGPORT=${serverport} 
+@SET PGLOCALEDIR=${installdir}\share\locale
+
+                  </text>
+               </writeFile>
+            </actionList>
+            <ruleList>
+               <compareText text="${platform_name}" logic="equals" value="windows" />
+            </ruleList>
+        </actionGroup>
         
         <!-- All done!! -->
         <logMessage>
