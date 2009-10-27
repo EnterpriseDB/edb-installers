@@ -1,7 +1,7 @@
 <project>
     <!-- Package details -->
     <shortName>migrationtoolkit</shortName>
-    <fullName>MigrationToolKit</fullName>
+    <fullName>MigrationToolkit</fullName>
     <version>PG_VERSION_MIGRATIONTOOLKIT-PG_BUILDNUM_MIGRATIONTOOLKIT</version>
 	
     <!-- These options are used on Windows -->
@@ -54,7 +54,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>/Library/PostgresPlus/EnterpriseDB-MigrationToolKit</value>
+            <value>/Library/PostgresPlus/EnterpriseDB-MigrationToolkit</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -68,7 +68,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}/PostgresPlus/EnterpriseDB-MigrationToolKit</value>
+            <value>${platform_install_prefix}/PostgresPlus/EnterpriseDB-MigrationToolkit</value>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
@@ -82,7 +82,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}\PostgresPlus\EnterpriseDB-MigrationToolKit</value>
+            <value>${platform_install_prefix}\PostgresPlus\EnterpriseDB-MigrationToolkit</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -117,8 +117,8 @@
           </ruleList>
         </throwError>
 		
-        <!-- Set the MigrationToolKit version(if exists) -->
-        <setInstallerVariable name="MigrationToolKitVersion" value="">
+        <!-- Set the MigrationToolkit version(if exists) -->
+        <setInstallerVariable name="MigrationToolkitVersion" value="">
             <persist>0</persist>
         </setInstallerVariable>
 		
@@ -134,7 +134,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>/Library/PostgresPlus/EnterpriseDB-MigrationToolKit</value>
+            <value>/Library/PostgresPlus/EnterpriseDB-MigrationToolkit</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -148,7 +148,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}/PostgresPlus/EnterpriseDB-MigrationToolKit</value>
+            <value>${platform_install_prefix}/PostgresPlus/EnterpriseDB-MigrationToolkit</value>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
@@ -162,7 +162,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}\PostgresPlus\EnterpriseDB-MigrationToolKit</value>
+            <value>${platform_install_prefix}\PostgresPlus\EnterpriseDB-MigrationToolkit</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -186,20 +186,20 @@
             </ruleList>
         </touchFile>
 		
-        <!-- LIN & MAC: Check Previous Installation of MigrationToolKit -->
+        <!-- LIN & MAC: Check Previous Installation of MigrationToolkit -->
         <actionGroup>
             <actionList>
                 <iniFileGet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>MigrationToolKit</section>
+                    <section>MigrationToolkit</section>
                     <key>Branding</key>
                     <variable>iBranding</variable>
                 </iniFileGet>
                 <iniFileGet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>MigrationToolKit</section>
+                    <section>MigrationToolkit</section>
                     <key>Version</key>
-                    <variable>MigrationToolKitVersion</variable>
+                    <variable>MigrationToolkitVersion</variable>
                 </iniFileGet>
             </actionList>
             <ruleList>
@@ -216,7 +216,7 @@
             <actionList>
                 <iniFileGet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>MigrationToolKit</section>
+                    <section>MigrationToolkit</section>
                     <key>InstallationDirectory</key>
                     <variable>installdir</variable>
                 </iniFileGet>
@@ -224,7 +224,7 @@
             <ruleList>
                 <compareText>
                     <logic>does_not_equal</logic>
-                    <text>${MigrationToolKitVersion}</text>
+                    <text>${MigrationToolkitVersion}</text>
                     <value/>
                 </compareText>
                 <compareText>
@@ -235,18 +235,18 @@
             </ruleList>
         </actionGroup>
 		
-        <!-- WIN: Check Previous Installation of MigrationToolKit -->
+        <!-- WIN: Check Previous Installation of MigrationToolkit -->
         <actionGroup>
             <actionList>
                 <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationToolKit</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationToolkit</key>
                     <name>Branding</name>
                     <variable>iBranding</variable>
                 </registryGet>
                 <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationToolKit</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationToolkit</key>
                     <name>Version</name>
-                    <variable>MigrationToolKitVersion</variable>
+                    <variable>MigrationToolkitVersion</variable>
                 </registryGet>
             </actionList>
             <ruleList>
@@ -262,7 +262,7 @@
         <actionGroup>
             <actionList>
                 <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationToolKit</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationToolkit</key>
                     <name>Location</name>
                     <variable>installdir</variable>
                 </registryGet>
@@ -270,7 +270,7 @@
             <ruleList>
                 <compareText>
                     <logic>does_not_equal</logic>
-                    <text>${MigrationToolKitVersion}</text>
+                    <text>${MigrationToolkitVersion}</text>
                     <value/>
                 </compareText>
                 <compareText>
@@ -293,7 +293,7 @@
 		<ruleList>
 			<compareText>
 				<logic>does_not_equal</logic>
-				<text>${MigrationToolKitVersion}</text>
+				<text>${MigrationToolkitVersion}</text>
 				<value></value>
 			</compareText>
 			<compareText>
@@ -344,7 +344,7 @@
             <ruleList>
                 <compareText>
                     <logic>does_not_equal</logic>
-                    <text>${MigrationToolKitVersion}</text>
+                    <text>${MigrationToolkitVersion}</text>
                     <value/>
                 </compareText>
             </ruleList>
@@ -372,30 +372,30 @@
        </substitute>
  
 
-        <!-- LIN & MAC: Write the MigrationToolKit Version to INI File -->
+        <!-- LIN & MAC: Write the MigrationToolkit Version to INI File -->
         <actionGroup>
             <actionList>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>MigrationToolKit</section>
+                    <section>MigrationToolkit</section>
                     <key>Description</key>
                     <value>${msg(install.summary)}</value>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>MigrationToolKit</section>
+                    <section>MigrationToolkit</section>
                     <key>InstallationDirectory</key>
                     <value>${installdir}</value>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>MigrationToolKit</section>
+                    <section>MigrationToolkit</section>
                     <key>Version</key>
                     <value>${product_version}</value>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>MigrationToolKit</section>
+                    <section>MigrationToolkit</section>
                     <key>Branding</key>
                     <value>${branding}</value>
                 </iniFileSet>
@@ -410,7 +410,7 @@
         </actionGroup>
 		
         <registrySet>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationToolKit</key>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationToolkit</key>
             <name>Branding</name>
             <value>${branding}</value>
             <ruleList>
@@ -422,30 +422,30 @@
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
 	
-        <!-- LIN & MAC: Unsetting the MigrationToolKit values in the ini file -->
+        <!-- LIN & MAC: Unsetting the MigrationToolkit values in the ini file -->
         <actionGroup>
             <actionList>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>MigrationToolKit</section>
+                    <section>MigrationToolkit</section>
                     <key>Description</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>MigrationToolKit</section>
+                    <section>MigrationToolkit</section>
                     <key>InstallationDirectory</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>MigrationToolKit</section>
+                    <section>MigrationToolkit</section>
                     <key>Version</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>MigrationToolKit</section>
+                    <section>MigrationToolkit</section>
                     <key>Branding</key>
                     <value/>
                 </iniFileSet>
@@ -463,8 +463,8 @@
     <!-- Components -->
     <componentList>
         <component>
-            <name>MigrationToolKit</name>
-            <description>MigrationToolKit</description>
+            <name>MigrationToolkit</name>
+            <description>MigrationToolkit</description>
             <canBeEdited>0</canBeEdited>
             <selected>1</selected>
             <show>1</show>
@@ -478,19 +478,16 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/linux/MigrationToolKit/toolkit.properties</origin>
+                            <origin>staging/linux/MigrationToolkit/toolkit.properties</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/linux/MigrationToolKit/runMTK.sh</origin>
+                            <origin>staging/linux/MigrationToolkit/runMTK.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/linux/MigrationToolKit/mtk-readme.txt</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux/MigrationToolKit/MigrationToolkit_PPSS_README.txt</origin>
+                            <origin>staging/linux/MigrationToolkit/MigrationToolKit_PPSS_README.txt</origin>
                         </distributionFile>
                         <distributionDirectory>
-                            <origin>staging/linux/MigrationToolKit/lib</origin>
+                            <origin>staging/linux/MigrationToolkit/lib</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -502,19 +499,16 @@
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/linux-x64/MigrationToolKit/toolkit.properties</origin>
+                            <origin>staging/linux-x64/MigrationToolkit/toolkit.properties</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/linux-x64/MigrationToolKit/runMTK.sh</origin>
+                            <origin>staging/linux-x64/MigrationToolkit/runMTK.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/linux-x64/MigrationToolKit/mtk-readme.txt</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux-x64/MigrationToolKit/MigrationToolkit_PPSS_README.txt</origin>
+                            <origin>staging/linux-x64/MigrationToolkit/MigrationToolKit_PPSS_README.txt</origin>
                         </distributionFile>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/MigrationToolKit/lib</origin>
+                            <origin>staging/linux-x64/MigrationToolkit/lib</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -526,19 +520,16 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/windows/MigrationToolKit/toolkit.properties</origin>
+                            <origin>staging/windows/MigrationToolkit/toolkit.properties</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/windows/MigrationToolKit/runMTK.bat</origin>
+                            <origin>staging/windows/MigrationToolkit/runMTK.bat</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/windows/MigrationToolKit/mtk-readme.txt</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/windows/MigrationToolKit/MigrationToolkit_PPSS_README.txt</origin>
+                            <origin>staging/windows/MigrationToolkit/MigrationToolKit_PPSS_README.txt</origin>
                         </distributionFile>
                         <distributionDirectory>
-                            <origin>staging/windows/MigrationToolKit/lib</origin>
+                            <origin>staging/windows/MigrationToolkit/lib</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -550,19 +541,16 @@
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/osx/MigrationToolKit/toolkit.properties</origin>
+                            <origin>staging/osx/MigrationToolkit/toolkit.properties</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/osx/MigrationToolKit/runMTK.sh</origin>
+                            <origin>staging/osx/MigrationToolkit/runMTK.sh</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/osx/MigrationToolKit/mtk-readme.txt</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/osx/MigrationToolKit/MigrationToolkit_PPSS_README.txt</origin>
+                            <origin>staging/osx/MigrationToolkit/MigrationToolKit_PPSS_README.txt</origin>
                         </distributionFile>
                         <distributionDirectory>
-                            <origin>staging/osx/MigrationToolKit/lib</origin>
+                            <origin>staging/osx/MigrationToolkit/lib</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -659,7 +647,7 @@
                 </directoryParameter>
             </parameterList>
             <ruleList>
-                <compareText text="${MigrationToolKitVersion}" logic="equals" value=""/>
+                <compareText text="${MigrationToolkitVersion}" logic="equals" value=""/>
             </ruleList>
         </parameterGroup>
 		
@@ -670,7 +658,7 @@
             <description>${msg(upgrade.existing.installation.description)}</description>
             <ruleList>
 		 <compareText>
-                    <text>${MigrationToolKitVersion}</text>
+                    <text>${MigrationToolkitVersion}</text>
                     <logic>does_not_equal</logic>
                     <value/>
                 </compareText>

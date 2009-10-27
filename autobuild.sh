@@ -37,7 +37,7 @@ fi
 
 # Run the build, and dump the output to a log file
 echo "Running the build" >> autobuild.log
-./build.sh > output/build.log 2>&1
+./build.sh > output/build-84.log 2>&1
 
 # Switch to REL-8_3 branch
 echo "Switching to REL-8_3 branch" >> autobuild.log
@@ -49,7 +49,7 @@ echo "Updating REL-8_3 branch build system" >> autobuild.log
 
 # Run the build, and dump the output to a log file
 echo "Running the build (REL-8_3) " >> autobuild.log
-./build.sh >> output/build.log 2>&1
+./build.sh > output/build-83.log 2>&1
 
 # Create a remote directory and upload the output.
 DATE=`date +'%Y-%m-%d'`
