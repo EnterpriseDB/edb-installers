@@ -1,14 +1,14 @@
-Installer.Welcome.Title=Setup EnterpriseDB Migration ToolKit
+Installer.Welcome.Title=Setup EnterpriseDB Migration Toolkit
 
-Installer.Welcome.Text=Welcome to the EnterpriseDB Migration ToolKit Setup.
+Installer.Welcome.Text=Welcome to the EnterpriseDB Migration Toolkit Setup.
 
 Installer.Installing.Title=Installing ${product_fullname}
 
 upgrade.existing.installation.title=Existing installation
 
-upgrade.existing.installation.description=An existing MigrationToolKit installation has been found at ${installdir}. This installation will be upgraded.
+upgrade.existing.installation.description=An existing MigrationToolkit installation has been found at ${installdir}. This installation will be upgraded.
 
-install.summary=EnterpriseDB's Migration ToolKit. 
+install.summary=EnterpriseDB's Migration Toolkit. 
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 
@@ -20,15 +20,15 @@ java.error=Java is not installed on your system.\nPlease ensure it is installed 
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 
-Installer.Installation.Finished.Title=Completing the EnterpriseDB Migration ToolKit Setup.
+Installer.Installation.Finished.Title=Completing the EnterpriseDB Migration Toolkit Setup.
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of enterprise-class products and services based on PostgreSQL, the world's most advanced open source database.
 
 Installer.Installation.Finished.Visit.Us=Visit our website to learn more about database migration solutions for Oracle, MySQL, Microsoft SQL Server and Sybase Adaptive Server.
 
-Installer.Ready.Text1=Setup is now ready to begin installing EnterpriseDB Migration ToolKit on your computer.
+Installer.Ready.Text1=Setup is now ready to begin installing EnterpriseDB Migration Toolkit on your computer.
 
-Installer.Installing.Text=Please wait while Setup installs EnterpriseDB Migration ToolKit on your computer.
+Installer.Installing.Text=Please wait while Setup installs EnterpriseDB Migration Toolkit on your computer.
 
 jdbc.driver.not.found=PostgreSQL JDBC Drivers not found on your system.\nPlease ensure they are instlled before re-running the installer.
 
