@@ -4,9 +4,9 @@
 # Dave Page, EnterpriseDB
 
 # Check the command line
-if [ $# -ne 8 ]; 
+if [ $# -ne 9 ]; 
 then
-echo "Usage: $0 <Major.Minor version> <OSUsername> <SuperUsername> <Port> <Branding> <Install dir> <Data dir> <DisableStackBuilder>"
+echo "Usage: $0 <Major.Minor version> <OSUsername> <SuperUsername> <Port> <Branding> <Install dir> <Data dir> <DisableStackBuilder> <ServiceName>"
     exit 127
 fi
 
@@ -18,6 +18,7 @@ BRANDING=$5
 INSTALLDIR=$6
 DATADIR=$7
 DISABLE_STACKBUILDER=$8
+SERVICENAME=$9
 
 # Exit code
 WARN=0
