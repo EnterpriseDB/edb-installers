@@ -1909,6 +1909,13 @@
               <section>PostgreSQL/${product_version}</section>
               <variable>upgrade_pgagent</variable>
             </iniFileGet>
+            <iniFileGet>
+              <file>/etc/postgresplus-reg.ini</file>
+              <key>npgsql</key>
+              <section>PostgreSQL/${product_version}</section>
+              <variable>upgrade_npgsql</variable>
+            </iniFileGet>
+          </actionList>
           </actionList>
           <ruleList>
             <compareText>
@@ -2499,6 +2506,24 @@
         </registrySet>
 
         <!-- Npgsql registry entry-->
+        <iniFileSet>
+          <file>/etc/postgresplus-reg.ini</file>
+          <key>npgsql</key>
+          <section>PostgreSQL/${product_version}</section>
+          <value>true</value>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${component(npgsql).selected}</text>
+              <value>1</value>
+            </compareText>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </iniFileSet>
         <registrySet>
           <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgresPlus\Uninstallations\postgresplus-${product_version}</key>
           <name>npgsql</name>
