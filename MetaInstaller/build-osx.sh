@@ -181,6 +181,7 @@ echo "Building osx Meta Installer"
     mkdir metainstaller.img || _die "Failed to create DMG staging directory"
 
     mv $WD/output/postgresplus-$PG_PACKAGE_VERSION-osx.app metainstaller.img || _die "Failed to copy the installer bundle into the DMG staging directory"
+    cp $WD/MetaInstaller/resources/README.osx metainstaller.img/README || _die "Failed to copy the installer README file into the DMG staging directory"
 
     hdiutil create -quiet -srcfolder metainstaller.img -format UDZO -volname "PostgresPlus $PG_PACKAGE_VERSION" -ov "postgresplus-$PG_PACKAGE_VERSION-osx.dmg" || _die "Failed to create the disk image (staging/postgresplus-$PG_PACKAGE_VERSION-osx.dmg)"
 
