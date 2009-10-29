@@ -280,6 +280,9 @@
   </preInstallationActionList>
   <postInstallationActionList>
 
+    <!-- Set the installation date --> 
+    <createTimeStamp format="%Y-%m-%d" variable="installDate"></createTimeStamp>
+
     <!-- Remember it for the uninstaller -->
     <setInstallerVariable name="monitorServer" persist="1" value="${monitorServer}"/>
     <setInstallerVariable name="installdir" persist="1" value="${installdir}"/>
@@ -290,6 +293,7 @@
         <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="InstallationDirectory" value="${installdir}"/>
         <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Version" value="${product_version}"/>
         <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="MonitorServer" value="${monitorServer}"/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="InstallationDate" value="${installDate}"/>
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -309,6 +313,7 @@
     <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" name="Version" value="${product_version}"/>
     <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" name="Branding" value="${branding}"/>
     <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" name="MonitorServer" value="${monitorServer}"/>
+    <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" name="InstallationDate" value="${installDate}"/>
 
     <substitute>
       <files>${installdir}/scripts/launchSBPUpdateMonitor.vbs</files>
@@ -550,6 +555,7 @@
         <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Version" value=""/>
         <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Branding" value=""/>
         <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="MonitorServer" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="InstallationDate" value=""/>
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
