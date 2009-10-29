@@ -1916,7 +1916,6 @@
               <variable>upgrade_npgsql</variable>
             </iniFileGet>
           </actionList>
-          </actionList>
           <ruleList>
             <compareText>
               <logic>does_not_equal</logic>
@@ -4428,6 +4427,10 @@
                     key="pgagent"
                     section="PostgreSQL/${product_version}"
                     variable="uninstall_pgagent"/>
+        <iniFileGet file="/etc/postgresplus-reg.ini"
+                    key="npgsql"
+                    section="PostgreSQL/${product_version}"
+                    variable="uninstall_npgsql"/>
 
         <actionGroup>
           <actionList>
