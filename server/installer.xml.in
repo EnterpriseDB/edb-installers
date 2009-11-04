@@ -2073,7 +2073,18 @@
             <name>Product Code</name>
             <value>postgresql-${product_version}</value>
         </registrySet>
-        
+      
+        <!-- OSX: Hide the dockIcon for shortcut -->
+        <substitute>
+            <files>/Applications/${branding}/Application Stack Builder.app/Contents/Info.plist</files>
+            <substitutionList>
+                <substitution pattern="&lt;/dict&gt;" value="        &lt;key&gt;LSUIElement&lt;/key&gt; &lt;string&gt;1&lt;/string&gt; &lt;/dict&gt;"/>
+            </substitutionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
+            </ruleList>
+        </substitute>
+
         <!-- All done!! -->
         <logMessage>
             <text>Finished running post-installation/upgrade tasks.</text>
