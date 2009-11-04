@@ -3200,6 +3200,21 @@ REM The script sets environment variables helpful for PostgreSQL
         <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
         </registryDelete>
+        
+        <!-- Removing the environment variable script -->
+        <deleteFile>
+            <path>${installdir}/pg_env.sh</path>
+            <ruleList>
+                 <fileExists path="${installdir}/pg_env.sh" />
+            </ruleList> 
+        </deleteFile>
+
+        <deleteFile>
+            <path>${installdir}\pg_env.bat</path>
+            <ruleList>
+                 <fileExists path="${installdir}\pg_env.bat" />
+            </ruleList> 
+        </deleteFile>
     </preUninstallationActionList>
 
     <!-- Post-uninstall actions -->
