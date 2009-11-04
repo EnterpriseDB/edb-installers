@@ -73,5 +73,6 @@ End Function
 Sub usage()
     Wscript.Echo "Usage: serverctl.vbs start|stop|reload|restart [wait]"
     iRet = 127
+    WScript.Quit iRet
 End Sub
 
