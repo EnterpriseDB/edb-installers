@@ -39,3 +39,9 @@ else
     LD_LIBRARY_PATH="PG_INSTALLDIR/pgAdmin3/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder"
 fi
 
+# Wait a while to display su or sudo invalid password error if any
+if [ $? -eq 1 ];
+then
+    sleep 2
+fi
+

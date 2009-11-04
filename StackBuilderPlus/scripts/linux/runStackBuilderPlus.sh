@@ -39,3 +39,9 @@ else
     LD_LIBRARY_PATH="INSTALL_DIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALL_DIR/bin/stackbuilderplus" $*
 fi
 
+# Wait a while to display su or sudo invalid password error if any
+if [ $? -eq 1 ];
+then
+    sleep 2
+fi
+
