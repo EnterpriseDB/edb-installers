@@ -2905,6 +2905,17 @@ REM The script sets environment variables helpful for PostgreSQL
                <compareText text="${platform_name}" logic="equals" value="windows" />
             </ruleList>
         </actionGroup>
+
+        <!-- OSX: Hide the dockIcon for shortcut -->
+        <substitute>
+            <files>/Applications/${branding}/Application Stack Builder.app/Contents/Info.plist</files>
+            <substitutionList>
+                <substitution pattern="&lt;/dict&gt;" value="        &lt;key&gt;LSUIElement&lt;/key&gt; &lt;string&gt;1&lt;/string&gt; &lt;/dict&gt;"/>
+            </substitutionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
+            </ruleList>
+        </substitute>
         
         <!-- All done!! -->
         <logMessage>
