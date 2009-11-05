@@ -462,13 +462,13 @@
          <!-- Unpacking the Script file to temporary directory -->
          <unpackFile>
            <component>ApachePhp</component>
-           <destination>${system_temp_directory}/vcredist_x86.exe</destination>
+           <destination>${system_temp_directory}\vcredist_x86.exe</destination>
            <folder>programfileswindows</folder>
            <origin>php/vcredist_x86.exe</origin>
          </unpackFile>
          <!-- Running VC Dist file | WIN  -->
          <runProgram>
-            <program>${system_temp_directory}/vcredist_x86.exe</program>
+            <program>${system_temp_directory}\vcredist_x86.exe</program>
             <programArguments>"/Q"</programArguments>
             <workingDirectory>${system_temp_directory}</workingDirectory>
          </runProgram>
