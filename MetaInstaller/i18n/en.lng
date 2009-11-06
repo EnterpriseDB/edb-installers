@@ -40,7 +40,7 @@ warning.could.not.stop.server=The installed server could not be stopped.
 script.command.line.error=The script was called with an invalid command line
 
 progress.text.creating.user=Creating service user account...
-error.could.not.create.user=The service user account '${supername}' could not be created.
+error.could.not.create.user=The service user account '${serviceaccount}' could not be created.
 config.superpassword.format.error.windows=The password specified does not meet the local or domain policy. Check the minimum password length, password complexity and password history requirements.
 
 
@@ -69,12 +69,16 @@ config.datadir.description=Data Directory
 config.datadir.explanation=Please select a directory under which to store your data.
 
 config.superpassword.description=Password
-config.superpassword.explanation=Please provide a password for the database superuser (${supername}).
-config.superpassword.explanation.windows=Please provide a password for the database superuser and service account (${supername}). If the service account already exists in Windows, you must enter the current password for the account.
+config.superpassword.explanation=Please provide a password for the database superuser (${superaccount}). A locked Unix user account (${serviceaccount}) will be created if not present.
+config.servicepassword.description=Password (Service Account)
+config.servicepassword.explanation=Please provide the password for the service account (${serviceaccount}). The password provided for the service account could not be authenticated.
+config.superpassword.servicepassword.explanation.windows=Please provide a password for the database superuser (${superaccount}) and service account (${serviceaccount}). If the service account already exists, you must enter the current password for the account. If the account does not exist, it will be created when you click 'Next'.
+config.superpassword.cliservicepassword.explanation.windows=Please provide a password for the database superuser (${superaccount}). The password specified on the command line will be used for the service account (${serviceaccount}). If the service account does not exist, it will be created when you click 'Next'.
+config.superpassword.servicepassword.upgrade.explanation.windows=Please provide the password for the database superuser (${superaccount}) and service account (${serviceaccount}).
 config.superpassword.confirm=Retype password
 config.superpassword.no.password=You must enter a password to continue.
-config.superpassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the ${supername} windows user account.
-config.superpassword.incorrect=The password specified was incorrect.
+config.superpassword.incorrect=The password specified was incorrect. Please enter the password for the ${superaccount} database super user.
+config.servicepassword.incorrect=The password specified was incorrect. Please enter the correct password for the ${serviceaccount} windows user account.
 
 config.port.description=Port
 config.port.explanation=Please select the port number the server should listen on.
@@ -189,3 +193,7 @@ locale.error=Locale specified is not supported.
 
 error.installing.runtimes=An error occured executing the Microsoft VC++ runtime installer.
 
+servicename.not.valid='${servicename}' is not a valid service name.\n\nIt must match the following criteria:\n* Starts with an alphabet\n* Ends with alphanumeric\n* Allowed special characters are _(underscore), .(dot) and -(hyphen)\n* Minimum length: 6 characters & Maximum length: 50 characters
+servicename.already.exists.linux=A service (${servicename}) already exists in the '/etc/init.d' directory.\nPlease specify another name.
+servicename.already.exists.windows=A service (${servicename}) already exists.\nPlease specify another name.
+servicename.already.exists.osx=A service (com.edb.launchd.${servicename}.plist) already exists in the '/Library/LaunchDaemons' directory.\nPlease specify another name.

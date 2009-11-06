@@ -159,6 +159,7 @@
         <setInstallerVariable name="project.parameter(superaccount).ask" value="0" />
         <setInstallerVariable name="project.parameter(serviceaccount).ask" value="0" />
         <setInstallerVariable name="project.parameter(servicepassword).ask" value="0" />
+        <setInstallerVariable name="project.parameter(servicename).ask" value="0" />
 
         <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>

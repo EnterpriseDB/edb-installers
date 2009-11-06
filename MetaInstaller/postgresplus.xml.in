@@ -38,6 +38,11 @@
         <compareText text="${platform_name}" value="linux"/>
       </ruleList>
     </setInstallerVariable>
+    <setInstallerVariable name="project.parameter(servicepassword).ask" value="0">
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </setInstallerVariable>
   </preBuildActionList>
 
   <preShowHelpActionList>
@@ -127,9 +132,13 @@
       </ruleList>
     </throwError>
 
-   <setInstallerVariable name="showInstallationTuning" value="1" /> 
-   <setInstallerVariable name="showUpdateNotification" value="1" /> 
-   <setInstallerVariable name="showValueAddedServicePage" value="1" /> 
+    <setInstallerVariable name="showInstallationTuning" value="1"/>
+    <setInstallerVariable name="showUpdateNotification" value="1"/>
+    <setInstallerVariable name="showValueAddedServicePage" value="1"/>
+    <setInstallerVariable name="project.parameter(superaccount).ask" value="0"/>
+    <setInstallerVariable name="project.parameter(serviceaccount).ask" value="0"/>
+    <setInstallerVariable name="project.parameter(servicepassword).ask" value="0"/>
+    <setInstallerVariable name="project.parameter(servicename).ask" value="0"/>
 
     <!-- Set the pghost varaible to localhost -->
     <setInstallerVariable name="pghost" value="localhost">
@@ -161,6 +170,14 @@
       </ruleList>
     </setInstallerVariable>
 
+    <setInstallerVariable name="cliServicePassword" value=""/>
+    <setInstallerVariable name="servicename" value=""/>
+    <setInstallerVariable name="iServiceName" value=""/>
+    <setInstallerVariable name="serviceaccount" value=""/>
+    <setInstallerVariable name="iServiceAccount" value=""/>
+    <setInstallerVariable name="superaccount" value=""/>
+    <setInstallerVariable name="iSuperAccount" value=""/>
+
     <setInstallerVariable name="installMonitoring" value="0"/>
 
     <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
@@ -187,10 +204,11 @@
       <value>0</value>
     </setInstallerVariable>
 
+    <!-- Set supername to empty -->
     <setInstallerVariable>
       <name>supername</name>
       <persist>1</persist>
-      <value>postgres</value>
+      <value></value>
     </setInstallerVariable>
 
     <setInstallerVariable>
@@ -1396,14 +1414,6 @@
       </ruleList>
     </actionGroup>
 
-    <!-- Debugging -->
-    <logMessage>
-      <text>Existing base directory: ${iBaseDirectory}</text>
-    </logMessage>
-    <logMessage>
-      <text>Existing data directory: ${iDataDirectory}</text>
-    </logMessage>
-
     <!-- If we have an existing data directory location and it's not empty, check it looks sane -->
     <actionGroup>
       <!-- Starts here -->
@@ -1502,25 +1512,88 @@
       </ruleList>
     </actionGroup>
 
-    <!-- Set the installdir in case of an Upgrade -->
-    <setInstallerVariable>
-      <name>installdir</name>
-      <persist>0</persist>
-      <value>${iBaseDirectory}</value>
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="iVersion" value=""/>
+        <setInstallerVariable name="iServiceName" value=""/>
+        <setInstallerVariable name="iServiceAccount" value=""/>
+        <setInstallerVariable name="iSuperAccount" value=""/>
+      </actionList>
+    </actionGroup>
+
+    <actionGroup>
+      <actionList>
+        <!-- Set the installdir in case of an Upgrade -->
+        <setInstallerVariable>
+          <name>installdir</name>
+          <persist>0</persist>
+          <value>${iBaseDirectory}</value>
+        </setInstallerVariable>
+
+        <!-- Read servicename, serviceaccount & superaccount from windows registry -->
+        <actionGroup>
+          <actionList>
+
+            <!-- Get the currently installed version -->
+            <registryGet name="Version" variable="iVersion"
+              key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}"/>
+
+            <!-- Get the ServiceName -->
+            <registryGet name="Service ID" variable="iServiceName"
+              key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}"/>
+
+            <!-- Get the Serviceaccount (OS User) -->
+            <registryGet name="Service Account" variable="iServiceAccount"
+              key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}"/>
+
+            <!-- Get the Superuser -->
+            <registryGet name="Super User" variable="iSuperAccount"
+              key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}"/>
+          </actionList>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+
+        <!-- Read servicename, serviceaccount & superaccount from /etc/postgres-reg.ini -->
+        <actionGroup>
+          <actionList>
+            <!-- Get the currently installed version -->
+            <iniFileGet file="${PostgreSqlIni}" section="PostgreSQL/${product_version}"
+              key="Version" variable="iVersion"/>
+
+            <!-- Get the ServiceName -->
+            <iniFileGet file="${PostgreSqlIni}" section="PostgreSQL/${product_version}"
+              key="ServiceID" variable="iServiceName"/>
+
+            <!-- Get the Serviceaccount (OS User) -->
+            <iniFileGet file="${PostgreSqlIni}" section="PostgreSQL/${product_version}"
+              key="Serviceaccount" variable="iServiceAccount"/>
+
+            <!-- Get the Superuser -->
+            <iniFileGet file="${PostgreSqlIni}" section="PostgreSQL/${product_version}"
+              key="Superuser" variable="iSuperAccount"/>
+          </actionList>
+          <ruleList>
+            <fileTest condition="readable" path="${PostgreSqlIni}"/>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+      </actionList>
       <ruleList>
-        <stringTest>
-          <text>${iBaseDirectory}</text>
-          <type>not_empty</type>
-        </stringTest>
-        <fileExists>
-          <path>${iBaseDirectory}</path>
-        </fileExists>
-        <fileTest>
-          <condition>is_not_empty</condition>
-          <path>${iBaseDirectory}</path>
-        </fileTest>
+        <stringTest text="${iBaseDirectory}" type="not_empty"/>
+        <fileExists path="${iBaseDirectory}"/>
+        <fileTest condition="is_not_empty" path="${iBaseDirectory}"/>
       </ruleList>
-    </setInstallerVariable>
+    </actionGroup>
+
+    <!-- Debugging -->
+    <logMessage>
+      <text>Existing base directory: ${iBaseDirectory}</text>
+    </logMessage>
+    <logMessage>
+      <text>Existing data directory: ${iDataDirectory}</text>
+    </logMessage>
  
     <!-- So, is this an upgrade of an existing cluster? 
          At this point, if we have an existing data directory it either looks valid, or is empty -->
@@ -1622,6 +1695,180 @@
         </compareText>
       </ruleList>
     </actionGroup>
+
+    <stringModify text="${superaccount}" variable="superaccount" logic="trim"/>
+    <stringModify text="${serviceaccount}" variable="serviceaccount" logic="trim"/>
+    <!-- Save the service-password provided through the command-line into a
+         variable called cliServicePassword -->
+    <setInstallerVariable name="cliServicePassword" value="${servicepassword}"/>
+
+    <!-- SECTION: START: ServiceName -->
+    <!-- New installation and got the service-name through the command-line -->
+    <actionGroup>
+      <actionList>
+        <!--
+          1. Validate the service name
+
+          Service name must match the following criteria:
+          * Starts with any alphabet
+          * Ends with alphanumeric character
+          * atleast 6 characters long
+          * Maximum length 50 characters
+          * - (hyphen), . (dot), _ (underscore) are allowed characters
+          i.e. postgresql-8.4, pg_8_4, pgsql-8.3.8_1
+          -->
+        <throwError>
+          <customErrorMessage>${msg(servicename.not.valid)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+            <regExMatch>
+              <text>${servicename}</text>
+              <logic>does_not_match</logic>
+              <pattern>^([a-zA-Z]{1})([0-9a-zA-Z_\.\-]{4,48})([0-9a-zA-Z]{1})$</pattern>
+            </regExMatch>
+          </ruleList>
+        </throwError>
+
+        <!--
+          2. Check if service already exists with the same name
+          -->
+        <!-- WIN -->
+        <actionGroup>
+          <actionList>
+            <getUniqueWindowsServiceName>
+              <selectedServiceNameVariable>temp_service_name</selectedServiceNameVariable>
+              <serviceName>${servicename}</serviceName>
+            </getUniqueWindowsServiceName>
+            <throwError>
+              <customErrorMessage>${msg(servicename.already.exists.windows)}</customErrorMessage>
+              <text>Duplicate Service Exists</text>
+              <ruleList>
+                <compareText text="${servicename}" logic="does_not_equal" value="${temp_service_name}" />
+              </ruleList>
+            </throwError>
+          </actionList>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+
+        <!-- LIN/LIN-X64 -->
+        <throwError>
+          <customErrorMessage>${msg(servicename.already.exists.linux)}</customErrorMessage>
+          <text>Duplicate Service Exists</text>
+          <ruleList>
+            <compareText logic="contains" text="${platform_name}" value="linux"/>
+            <fileExists path="/etc/init.d/${servicename}"/>
+          </ruleList>
+        </throwError>
+
+        <!-- OSX -->
+        <throwError>
+          <customErrorMessage>${msg(servicename.already.exists.osx)}</customErrorMessage>
+          <text>Duplicate Service Exists</text>
+          <ruleList>
+            <compareText logic="contains" text="${platform_name}" value="osx"/>
+            <fileExists path="/Library/LaunchDaemons/com.edb.launchd.${servicename}.plist"/>
+          </ruleList>
+        </throwError>
+      </actionList>
+      <ruleList>
+        <stringTest text="${servicename}" type="not_empty"/>
+        <stringTest text="${iServiceName}" type="empty"/>
+        <stringTest text="${iVersion}" type="empty"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- Existing install, with servicename. Ignore command line. -->
+    <setInstallerVariable name="servicename" persist="1" value="${iServiceName}">
+      <ruleList>
+        <stringTest text="${iServiceName}" type="not_empty"/>
+        <stringTest text="${iVersion}" type="not_empty"/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <!-- Existing install, without servicename. Ignore command line. -->
+    <setInstallerVariable name="servicename" persist="1" value="postgresql-PG_MAJOR_VERSION">
+      <ruleList>
+        <stringTest text="${iServiceName}" type="empty"/>
+        <stringTest text="${iVersion}" type="not_empty"/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <!-- New install, with nothing set on command line -->
+    <setInstallerVariable name="servicename" persist="1" value="postgresql-PG_MAJOR_VERSION">
+      <ruleList>
+        <stringTest text="${servicename}" type="empty"/>
+      </ruleList>
+    </setInstallerVariable>
+    <!-- SECTION: END: ServiceName -->
+
+    <!-- SECTION: START: ServiceAccount -->
+
+    <!-- Existing install, with serviceaccount. Ignore command line. -->
+    <setInstallerVariable name="serviceaccount" value="${iServiceAccount}">
+      <ruleList>
+         <stringTest text="${iServiceAccount}" type="not_empty"/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <!-- New install, with nothing set on command line -->
+    <setInstallerVariable name="serviceaccount"  value="postgres">
+      <ruleList>
+         <stringTest text="${serviceaccount}" type="empty"/>
+      </ruleList>
+    </setInstallerVariable>
+    <!-- SECTION: END: ServiceAccount -->
+
+    <!-- SECTION: START: SuperAccount -->
+    <!-- Existing install, with serviceaccount. Ignore command-line. -->
+    <setInstallerVariable name="superaccount" value="${iSuperAccount}">
+      <ruleList>
+         <stringTest text="${iSuperAccount}" type="not_empty"/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <!-- New install, with nothing set on command line -->
+    <setInstallerVariable name="superaccount"  value="postgres">
+      <ruleList>
+         <stringTest text="${superaccount}" type="empty"/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <!-- Used supername at all the places, copying superaccount to supername variable -->
+    <setInstallerVariable name="supername" value="${superaccount}"/>
+
+    <actionGroup>
+      <actionList>
+        <!-- seperate out domain name from ${serviceaccount} and assign it to ${servicedomain} -->
+        <setInstallerVariable name="servicedomain" value="."/>
+        <setInstallerVariableFromRegEx name="servicedomain"
+            text="${serviceaccount}" pattern="\\.*" substitution="">
+          <ruleList>
+             <compareText text="${serviceaccount}" logic="contains" value="\"/>
+          </ruleList>
+        </setInstallerVariableFromRegEx>
+
+        <!-- we need serviceaccount without domain details -->
+        <setInstallerVariable name="serviceaccount_wo_domain"
+            value="${serviceaccount}">
+          <ruleList>
+            <compareText text="${serviceaccount}" logic="does_not_contain" value="\"/>
+          </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariableFromRegEx name="serviceaccount_wo_domain"
+            text="${serviceaccount}" pattern="^.*?\\" substitution="">
+          <ruleList>
+            <compareText text="${serviceaccount}" logic="contains" value="\"/>
+          </ruleList>
+        </setInstallerVariableFromRegEx>
+      </actionList>
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- SECTION: END: SuperAccount -->
 
     <!-- Get the locales available -->
     <actionGroup>
@@ -1811,20 +2058,20 @@
 
     <!-- Check whether pgAgent was installed previously -->
     <iniFileGet>
-        <file>/etc/postgresplus-reg.ini</file>
-        <key>pgagent</key>
-        <section>PostgreSQL/${product_version}</section>
-        <variable>pgagent_installed</variable>
-        <ruleList>
-            <compareText>
-               <logic>does_not_equal</logic>
-               <text>${platform_name}</text>
-               <value>windows</value>
-            </compareText>
-            <fileExists>
-               <path>/etc/postgresplus-reg.ini</path>
-            </fileExists>
-        </ruleList>
+      <file>/etc/postgresplus-reg.ini</file>
+      <key>pgagent</key>
+      <section>PostgreSQL/${product_version}</section>
+      <variable>pgagent_installed</variable>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+        <fileExists>
+          <path>/etc/postgresplus-reg.ini</path>
+        </fileExists>
+      </ruleList>
     </iniFileGet>
     <registryGet>
         <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent</key>
@@ -2196,6 +2443,15 @@
         <isTrue value="${updateNotification}"/>
       </ruleList>
     </setInstallerVariable>
+
+    <!-- Make sure: we set the servicepassword to superpassword, if not provided through the command-line -->
+    <setInstallerVariable name="servicepassword" value="superpassword">
+      <ruleList>
+        <stringTest type="empty" text="${cliServicePassword}"/>
+        <stringTest text="${servicepassword}" type="empty"/>
+      </ruleList>
+    </setInstallerVariable>
+
     <actionGroup>
       <actionList>
         <deleteFile>
@@ -2589,7 +2845,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux.bin</program>
-          <programArguments>--mode unattended --disable-stackbuilder 1 --installdir "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <programArguments>--mode unattended --disable-stackbuilder 1 --installdir "${installdir}" --datadir "${datadir}" --serviceaccount "${serviceaccount}" --superaccount "${supername}" --superpassword "${superpassword}" --serverport ${serverport} --locale "${locale}" --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
           <progressText>Installing Database Server ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -2604,7 +2860,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</program>
-          <programArguments>--mode unattended --disable-stackbuilder 1 --installdir ${installdir} --datadir ${datadir} --superpassword "${superpassword}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <programArguments>--mode unattended --disable-stackbuilder 1 --installdir "${installdir}" --datadir "${datadir}" --serviceaccount "${serviceaccount}" --servicepassword "${servicepassword}" --superpassword "${superpassword}" --serverport ${serverport} --locale "${locale}" --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
           <progressText>Installing Database Server ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -2992,7 +3248,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux.bin</program>
-      <programArguments>--mode unattended --installdir ${installdir} --pgpassword "${superpassword}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+      <programArguments>--mode unattended --installdir ${installdir} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
       <progressText>Installing PostGIS ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3014,7 +3270,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-x64.bin</program>
-      <programArguments>--mode unattended --installdir ${installdir} --pgpassword "${superpassword}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+      <programArguments>--mode unattended --installdir ${installdir} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
       <progressText>Installing PostGIS ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3050,7 +3306,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux.bin</program>
-      <programArguments>--mode unattended --prefix ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser ${supername} --pgpassword "${superpassword}" --pgport ${serverport} --system_user ${supername} --autostart no</programArguments>
+      <programArguments>--mode unattended --prefix ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
       <progressText>Installing pgbouncer ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3072,7 +3328,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux-x64.bin</program>
-      <programArguments>--mode unattended --prefix ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser ${supername} --pgpassword "${superpassword}" --pgport ${serverport} --system_user ${supername} --autostart no</programArguments>
+      <programArguments>--mode unattended --prefix ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
       <progressText>Installing pgbouncer ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3165,7 +3421,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux.bin</program>
-      <programArguments>--mode unattended --prefix ${installdir}/pgAgent --pghost ${defaultpghost} --pguser ${supername} --pgpassword "${superpassword}" --pgport ${serverport} --systemuser ${supername} --schema ${schema} --autostart no</programArguments>
+      <programArguments>--mode unattended --prefix ${installdir}/pgAgent --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --systemuser "${serviceaccount}" --schema ${schema} --autostart no</programArguments>
       <progressText>Installing pgAgent ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3185,7 +3441,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux-x64.bin</program>
-      <programArguments>--mode unattended --installdir ${installdir}/pgAgent --pghost ${defaultpghost} --pguser ${supername} --pgpassword "${superpassword}" --pgport ${serverport} --systemuser ${supername} --schema ${schema} --autostart no</programArguments>
+      <programArguments>--mode unattended --installdir ${installdir}/pgAgent --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --systemuser "${serviceaccount}" --schema ${schema} --autostart no</programArguments>
       <progressText>Installing pgAgent ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3215,7 +3471,7 @@
             <runProgram>
               <abortOnError>0</abortOnError>
               <program>${system_temp_directory}\postgresplus\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
-              <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}" --install_runtimes 0</programArguments>
+              <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --serviceaccount "${serviceaccount}" --servicepassword "${servicepassword}" --superaccount "${supername}" --superpassword "${superpassword}" --serverport "${serverport}" --locale "${locale}" --branding "Postgres Plus Standard Server ${product_version}" --install_runtimes 0 --servicename "${servicename}"</programArguments>
               <progressText>Installing Database Server ... </progressText>
               <showMessageOnError>0</showMessageOnError>
             </runProgram>
@@ -3235,7 +3491,7 @@
             <runProgram>
               <abortOnError>0</abortOnError>
               <program>${system_temp_directory}\postgresplus\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
-              <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+              <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --servicepassword "${servicepassword}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
               <progressText>Installing Database Server ... </progressText>
               <showMessageOnError>0</showMessageOnError>
             </runProgram>
@@ -3452,7 +3708,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}\postgresplus\postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-windows.exe</program>
-      <programArguments>--mode unattended --prefix "${installdir}" --pgpassword "${superpassword}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+      <programArguments>--mode unattended --prefix "${installdir}" --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
       <progressText>Installing PostGIS ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3488,7 +3744,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}\postgresplus\pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-windows.exe</program>
-      <programArguments>--mode unattended --prefix "${installdir}\pgbouncer" --pghost ${defaultpghost} --pguser ${supername} --pgpassword "${superpassword}" --pgport ${serverport} --system_user ${supername} --autostart no</programArguments>
+      <programArguments>--mode unattended --prefix "${installdir}\pgbouncer" --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
       <progressText>Installing pgbouncer ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3526,7 +3782,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}\postgresplus\pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-windows.exe</program>
-      <programArguments>--mode unattended --prefix "${installdir}\pgAgent" --pghost ${defaultpghost} --pguser ${supername} --pgpassword "${superpassword}" --pgport ${serverport} --systemuser ${supername} --systempassword "${superpassword}" --schema ${schema} --autostart no</programArguments>
+      <programArguments>--mode unattended --prefix "${installdir}\pgAgent" --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --systemuser "${serviceaccount}" --systempassword "${servicepassword}" --schema ${schema} --autostart no</programArguments>
       <progressText>Installing pgAgent ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3555,7 +3811,7 @@
             <runProgram>
               <abortOnError>0</abortOnError>
               <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-osx.app/Contents/MacOS/installbuilder.sh</program>
-              <programArguments>--mode unattended --disable-stackbuilder 1 --installdir ${installdir} --datadir ${datadir} --superpassword "${superpassword}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+              <programArguments>--mode unattended --disable-stackbuilder 1 --installdir ${installdir} --datadir ${datadir} --serviceaccount "${serviceaccount}" --servicepassword "${servicepassword}" --superaccount "${supername}" --superpassword "${superpassword}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
               <progressText>Installing Database Server ... </progressText>
               <showMessageOnError>0</showMessageOnError>
             </runProgram>
@@ -3790,7 +4046,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-osx.app/Contents/MacOS/installbuilder.sh</program>
-      <programArguments>--mode unattended --installdir ${installdir} --pgpassword "${superpassword}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+      <programArguments>--mode unattended --installdir ${installdir} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
       <progressText>Installing PostGIS ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3826,7 +4082,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/installbuilder.sh</program>
-      <programArguments>--mode unattended --installdir ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser ${supername} --pgpassword "${superpassword}" --pgport ${serverport} --system_user ${supername} --autostart no</programArguments>
+      <programArguments>--mode unattended --installdir ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
       <progressText>Installing pgbouncer ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -3900,7 +4156,7 @@
     <runProgram>
       <abortOnError>0</abortOnError>
       <program>${system_temp_directory}/postgresplus/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-osx.app/Contents/MacOS/installbuilder.sh</program>
-      <programArguments>--mode unattended --installdir ${installdir}/pgAgent --pghost ${defaultpghost} --pguser ${supername} --pgpassword "${superpassword}" --pgport ${serverport} --systemuser ${supername} --schema ${schema} --autostart no</programArguments>
+      <programArguments>--mode unattended --installdir ${installdir}/pgAgent --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --systemuser "${serviceaccount}" --schema ${schema} --autostart no</programArguments>
       <progressText>Installing pgAgent ... </progressText>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -6264,6 +6520,13 @@
       <width>30</width>
     </stringParameter>
 
+    <stringParameter name="superaccount" ask="1" cliOptionShow="1" cliOptionName="superaccount" default="postgres"
+        description="${msg(superaccount.description)}"/>
+    <stringParameter name="servicename" ask="1" cliOptionShow="1" cliOptionName="servicename" default="postgresql-PG_MAJOR_VERSION"
+        description="${msg(servicename.description)}"/>
+    <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default="postgres"
+        description="${msg(serviceaccount.description)}"/>
+
     <!-- Installation directory. Only show if ${iBaseDirectory} is empty -->
     <directoryParameter>
       <name>installdir</name>
@@ -7990,18 +8253,40 @@
         </setInstallerVariable>
 
         <!-- On Windows, we need a different explanation -->
-        <setInstallerVariable>
-          <name>_explanation</name>
-          <persist>0</persist>
-          <value>${msg(config.superpassword.explanation.windows)}</value>
+        <actionGroup>
+          <actionList>
+
+            <!-- servicepassword is not provided through the command-line, superpassword and servicepassword will be same -->
+            <setInstallerVariable>
+              <name>_explanation</name>
+              <persist>0</persist>
+              <value>${msg(config.superpassword.servicepassword.explanation.windows)}</value>
+            </setInstallerVariable>
+
+            <!-- servicepassword is provided through the command-line, this input will be only for superpassword -->
+            <setInstallerVariable>
+              <name>_explanation</name>
+              <value>${msg(config.superpassword.cliservicepassword.explanation.windows)}</value>
+              <ruleList>
+                <stringTest text="${cliServicePassword}" type="not_empty"/>
+              </ruleList>
+            </setInstallerVariable>
+
+            <!-- upgrade mode & servicepassword is provided through the command-line. -->
+            <setInstallerVariable>
+              <name>_explanation</name>
+              <value>${msg(config.superpassword.servicepassword.upgrade.explanation.windows)}</value>
+              <ruleList>
+                <stringTest text="${cliServicePassword}" type="empty"/>
+                <isTrue value="${IsUpgrade}"/>
+              </ruleList>
+            </setInstallerVariable>
+
+          </actionList>
           <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${platform_name}</text>
-              <value>windows</value>
-            </compareText>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
-        </setInstallerVariable>
+        </actionGroup>
         <!-- pgagent group -->
         <actionGroup>
           <actionList>
@@ -8027,11 +8312,13 @@
       </preShowPageActionList>
       <ruleEvaluationLogic>or</ruleEvaluationLogic>
       <ruleList>
-        <isTrue value="${component(dbserver).selected}"/>
         <isTrue value="${component(postgis).selected}"/>
         <isTrue value="${component(pgagent).selected}"/>
       </ruleList>
+
       <validationActionList>
+
+        <!-- Do not allow empty password -->
         <throwError>
           <text>${msg(config.superpassword.no.password)}</text>
           <ruleList>
@@ -8042,67 +8329,19 @@
           </ruleList>
         </throwError>
 
-        <actionGroup>
-          <actionList>
-            <runProgram>
-              <program>${system_temp_directory}\postgresplus\createuser.exe</program>
-              <!-- The dot at the beginning of the arguments is the domain -->
-              <programArguments>. "${supername}" "${superpassword}"</programArguments>
-              <abortOnError>0</abortOnError>
-              <showMessageOnError>0</showMessageOnError>
-            </runProgram>
-            <throwError>
-              <text>${msg(script.command.line.error)}</text>
-              <ruleList>
-                <compareText>
-                  <logic>equals</logic>
-                  <text>127</text>
-                  <value>${program_exit_code}</value>
-                </compareText>
-              </ruleList>
-            </throwError>
-            <throwError>
-              <text>${msg(error.could.not.create.user)}</text>
-              <ruleList>
-                <compareText>
-                  <logic>does_not_equal</logic>
-                  <text>2224</text>
-                  <value>${program_exit_code}</value>
-                </compareText>
-                <compareText>
-                  <logic>does_not_equal</logic>
-                  <text>2203</text>
-                  <value>${program_exit_code}</value>
-                </compareText>
-                <compareText>
-                  <logic>does_not_equal</logic>
-                  <text>2245</text>
-                  <value>${program_exit_code}</value>
-                </compareText>
-                <compareText>
-                  <logic>does_not_equal</logic>
-                  <text>0</text>
-                  <value>${program_exit_code}</value>
-                </compareText>
-              </ruleList>
-            </throwError>
-            <throwError>
-              <text>${msg(config.superpassword.format.error.windows)}</text>
-              <ruleEvaluationLogic>OR</ruleEvaluationLogic>
-              <ruleList>
-                <compareText>
-                  <logic>equals</logic>
-                  <text>2203</text>
-                  <value>${program_exit_code}</value>
-                </compareText>
-                <compareText>
-                  <logic>equals</logic>
-                  <text>2245</text>
-                  <value>${program_exit_code}</value>
-                </compareText>
-              </ruleList>
-            </throwError>
-          </actionList>
+        <!-- START: Authentication for the super-password -->
+        <!-- Set variable psql_path -->
+        <!-- Set variable psql_path -->
+        <setInstallerVariable name="psql_path" value="${installdir}/bin/psql">
+          <ruleList>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="psql_path" value="${installdir}\bin\psql.exe">
           <ruleList>
             <compareText>
               <logic>equals</logic>
@@ -8110,425 +8349,420 @@
               <value>windows</value>
             </compareText>
           </ruleList>
-        </actionGroup>
+        </setInstallerVariable>
 
-        <!-- On Windows we need to validate the password if the user account exists -->
-        <actionGroup>
-          <actionList>
-            <runProgram>
-              <abortOnError>0</abortOnError>
-              <program>${system_temp_directory}\postgresplus\validateuser.exe</program>
-              <programArguments>. "${supername}" "${superpassword}"</programArguments>
-              <showMessageOnError>0</showMessageOnError>
-            </runProgram>
-            <throwError>
-              <text>${msg(script.command.line.error)}</text>
-              <ruleList>
-                <compareText>
-                  <logic>equals</logic>
-                  <text>127</text>
-                  <value>${program_exit_code}</value>
-                </compareText>
-              </ruleList>
-            </throwError>
-            <throwError>
-              <text>${msg(config.superpassword.incorrect.windows)}</text>
-              <ruleList>
-                <compareText>
-                  <logic>equals</logic>
-                  <text>1</text>
-                  <value>${program_exit_code}</value>
-                </compareText>
-              </ruleList>
-            </throwError>
-          </actionList>
+        <!-- Set Environment variable PGHOST, PGUSER, PGPASSWORD, PGPORT
+             on all the platform & LD_LIBRARY_PATH on linux/linux-x64 -->
+        <setEnvironmentVariable name="PGHOST" value="localhost"/>
+        <setEnvironmentVariable name="PGUSER" value="${supername}"/>
+        <setEnvironmentVariable name="PGPASSWORD" value="${superpassword}"/>
+        <setEnvironmentVariable name="PGPORT" value="${serverport}"/>
+        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib">
           <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${platform_name}</text>
-              <value>windows</value>
-            </compareText>
+            <compareText logic="contains" text="${platform_name}" value="linux"/>
           </ruleList>
-        </actionGroup>
+        </setEnvironmentVariable>
 
+        <setInstallerVariable>
+          <name>connection</name>
+          <value/>
+        </setInstallerVariable>
+
+        <setInstallerVariableFromScriptOutput>
+          <exec>${psql_path}</exec>
+          <execArgs>-l</execArgs>
+          <name>connection</name>
+          <workingDirectory>${installdir}/bin</workingDirectory>
+          <abortOnError>1</abortOnError>
+          <showMessageOnError>1</showMessageOnError>
+          <customErrorMessage>${program_stderr}</customErrorMessage>
+          <ruleList>
+            <fileExists path="${psql_path}"/>
+            <isTrue value="${IsUpgrade}"/>
+          </ruleList>
+        </setInstallerVariableFromScriptOutput>
+        <!-- END: Authentication for the super-password -->
+
+        <!-- Check for the template_postgis database exist -->
         <actionGroup>
           <actionList>
-
-            <!-- Set variable psql_path -->
-            <setInstallerVariable name="psql_path" value="${installdir}/bin/psql">
-              <ruleList>
-                <compareText>
-                  <logic>does_not_equal</logic>
-                  <text>${platform_name}</text>
-                  <value>windows</value>
-                </compareText>
-              </ruleList>
-            </setInstallerVariable>
-            <setInstallerVariable name="psql_path" value="${installdir}\bin\psql.exe">
-              <ruleList>
-                <compareText>
-                  <logic>equals</logic>
-                  <text>${platform_name}</text>
-                  <value>windows</value>
-                </compareText>
-              </ruleList>
-            </setInstallerVariable>
-
-            <!-- Set Environment variable PGHOST, PGUSER, PGPASSWORD, PGPORT
-                 on all the platform & LD_LIBRARY_PATH on linux/linux-x64 -->
-            <setEnvironmentVariable>
-              <name>PGHOST</name>
-              <value>localhost</value>
-            </setEnvironmentVariable>
-            <setEnvironmentVariable>
-              <name>PGUSER</name>
-              <value>${supername}</value>
-            </setEnvironmentVariable>
-            <setEnvironmentVariable>
-              <name>PGPASSWORD</name>
-              <value>${superpassword}</value>
-            </setEnvironmentVariable>
-            <setEnvironmentVariable>
-              <name>PGPORT</name>
-              <value>${serverport}</value>
-            </setEnvironmentVariable>
-            <setEnvironmentVariable>
-              <name>LD_LIBRARY_PATH</name>
-              <value>${installdir}/lib</value>
-              <ruleList>
-                <compareText>
-                  <logic>contains</logic>
-                  <text>${platform_name}</text>
-                  <value>linux</value>
-                </compareText>
-              </ruleList>
-            </setEnvironmentVariable>
-
-            <!-- Check for connection -->
             <setInstallerVariable>
-              <name>connection</name>
+              <name>template_postgis_exists</name>
               <value/>
             </setInstallerVariable>
-
             <setInstallerVariableFromScriptOutput>
               <exec>${psql_path}</exec>
-              <execArgs>-l</execArgs>
-              <name>connection</name>
+              <execArgs>-t -c "SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='template_postgis'"</execArgs>
+              <name>template_postgis_exists</name>
               <workingDirectory>${installdir}/bin</workingDirectory>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
-              <ruleList>
-                <fileTest>
-                  <condition>exists</condition>
-                  <path>${psql_path}</path>
-                </fileTest>
-              </ruleList>
             </setInstallerVariableFromScriptOutput>
-            <throwError>
-              <text>${msg(config.superpassword.incorrect)}</text>
+
+            <actionGroup>
+              <actionList>
+                <showQuestion>
+                  <default>yes</default>
+                  <text>${msg(templatedb.found.info)}</text>
+                  <variable>response</variable>
+                </showQuestion>
+                <setInstallerVariable name="templatedbexists" value="yes"/>
+              </actionList>
+              <ruleList>
+                <stringTest>
+                  <type>not_empty</type>
+                  <text>${template_postgis_exists}</text>
+                </stringTest>
+              </ruleList>
+            </actionGroup>
+            <componentSelection>
+              <deselect>postgis</deselect>
               <ruleList>
                 <compareText>
                   <logic>equals</logic>
-                  <text></text>
-                  <value>${connection}</value>
+                  <text>${response}</text>
+                  <value>no</value>
                 </compareText>
-                <fileTest>
-                  <condition>exists</condition>
-                  <path>${psql_path}</path>
-                </fileTest>
               </ruleList>
-            </throwError>
-
-            <!-- Check for the template_posgis database exist -->
-            <actionGroup>
-              <actionList>
-                <setInstallerVariable>
-                  <name>template_postgis_exists</name>
-                  <value/>
-                </setInstallerVariable>
-                <setInstallerVariableFromScriptOutput>
-                  <exec>${psql_path}</exec>
-                  <execArgs>-t -c "SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='template_postgis'"</execArgs>
-                  <name>template_postgis_exists</name>
-                  <workingDirectory>${installdir}/bin</workingDirectory>
-                  <abortOnError>0</abortOnError>
-                  <showMessageOnError>0</showMessageOnError>
-                  <ruleList>
-                    <fileTest>
-                      <condition>exists</condition>
-                      <path>${psql_path}</path>
-                    </fileTest>
-                  </ruleList>
-                </setInstallerVariableFromScriptOutput>
-
-                <actionGroup>
-                  <actionList>
-                    <showQuestion>
-                      <default>yes</default>
-                      <text>${msg(templatedb.found.info)}</text>
-                      <variable>response</variable>
-                    </showQuestion>
-                    <setInstallerVariable name="templatedbexists" value="yes">
-                      <persist>0</persist>
-                    </setInstallerVariable>
-                  </actionList>
-                  <ruleList>
-                    <compareText>
-                      <logic>does_not_equal</logic>
-                      <text>${template_postgis_exists}</text>
-                      <value/>
-                    </compareText>
-                  </ruleList>
-                </actionGroup>
-
-              </actionList>
-              <ruleList>
-                  <compareText>
-                    <logic>equals</logic>
-                    <text>${component(postgis).selected}</text>
-                    <value>1</value>
-                  </compareText>
-              </ruleList>
-            </actionGroup>
-          </actionList>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${IsUpgrade}</text>
-              <value>1</value>
-            </compareText>
-          </ruleList>
-        </actionGroup>
-
-        <!-- Exit the installation if the user wants to quit -->
-        <actionGroup>
-          <actionList>
-            <componentSelection>
-              <deselect>postgis</deselect>
-              <select></select>
             </componentSelection>
           </actionList>
           <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${response}</text>
-              <value>no</value>
-            </compareText>
+              <isTrue value="${component(postgis).selected}"/>
+              <stringTest type="not_empty" text="${connection}"/>
+              <fileExists path="${psql_path}"/>
           </ruleList>
         </actionGroup>
 
         <!-- pgAgent Checks starts here-->
         <actionGroup>
           <actionList>
-            <actionGroup>
-              <actionList>
+            <!-- Check for existing pgagent schema -->
+            <setInstallerVariableFromScriptOutput exec="${psql_path}"
+                                                  execArgs="-t -c &quot;SELECT has_schema_privilege('pgagent', 'USAGE')&quot;"
+                                                  name="pgagent_schema_exist"
+                                                  showMessageOnError="0"
+                                                  abortOnError="0"
+                                                  workingDirectory="${installdir}/bin"/>
 
-                <setEnvironmentVariable name="PGHOST" value="localhost"/>
-                <setEnvironmentVariable name="PGUSER" value="${supername}"/>
-                <setEnvironmentVariable name="PGPASSWORD" value="${superpassword}"/>
-                <setEnvironmentVariable name="PGPORT" value="${serverport}"/>
-                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
-
-                <!-- Check if plpgsql exists -->
-                <setInstallerVariableFromScriptOutput exec="${installdir}/bin/psql"
-                                                      execArgs="-t -c &quot;SELECT lanname FROM pg_language WHERE lanname='plpgsql'&quot;"
-                                                      name="plpgsql_exist"
-                                                      showMessageOnError="0"
-                                                      abortOnError="0"
-                                                      workingDirectory="${installdir}/bin">
-                  <ruleList>
-                    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                    <fileTest path="${installdir}/bin/psql" condition="exists"/>
-                  </ruleList>
-                </setInstallerVariableFromScriptOutput>
-
-                <setInstallerVariableFromScriptOutput exec="${installdir}\bin\psql.exe"
-                                                      execArgs="-t -c &quot;SELECT lanname FROM pg_language WHERE lanname='plpgsql'&quot;"
-                                                      name="plpgsql_exist"
-                                                      showMessageOnError="0"
-                                                      abortOnError="0"
-                                                      workingDirectory="${installdir}\bin">
-                  <ruleList>
-                    <compareText logic="equals" text="${platform_name}" value="windows"/>
-                    <fileTest path="${installdir}\bin\psql.exe" condition="exists"/>
-                  </ruleList>
-                </setInstallerVariableFromScriptOutput>
-
-                <!-- Check for existing pgagent schema -->
-                <setInstallerVariableFromScriptOutput exec="${installdir}/bin/psql"
-                                                      execArgs="-t -c &quot;SELECT has_schema_privilege('pgagent', 'USAGE')&quot;"
-                                                      name="pgagent_schema_exist"
-                                                      showMessageOnError="0"
-                                                      abortOnError="0"
-                                                      workingDirectory="${installdir}/bin">
-                  <ruleList>
-                    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                    <fileTest path="${installdir}/bin/psql" condition="exists"/>
-                  </ruleList>
-                </setInstallerVariableFromScriptOutput>
-                <setInstallerVariableFromScriptOutput exec="${installdir}\bin\psql.exe"
-                                                      execArgs="-t -c &quot;SELECT has_schema_privilege('pgagent', 'USAGE')&quot;"
-                                                      name="pgagent_schema_exist"
-                                                      showMessageOnError="0"
-                                                      abortOnError="0"
-                                                      workingDirectory="${installdir}\bin">
-                  <ruleList>
-                    <compareText logic="equals" text="${platform_name}" value="windows"/>
-                    <fileTest path="${installdir}\bin\psql.exe" condition="exists"/>
-                  </ruleList>
-                </setInstallerVariableFromScriptOutput>
-
-                <!-- Check for pgagent_schema_version function exist -->
-                <setInstallerVariableFromScriptOutput exec="${installdir}/bin/psql"
-                                                      execArgs="-t -c &quot;SELECT COUNT(*) FROM pg_proc WHERE proname = 'pgagent_schema_version' AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'pgagent') AND prorettype = (SELECT oid FROM pg_type WHERE typname = 'int2') AND proargtypes = ''&quot;"
-                                                      name="pgagent_schema_version_function_exist"
-                                                      showMessageOnError="0"
-                                                      abortOnError="0"
-                                                      workingDirectory="${installdir}/bin">
-                  <ruleList>
-                    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                    <fileTest path="${installdir}/bin/psql" condition="exists"/>
-                    <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
-                  </ruleList>
-                </setInstallerVariableFromScriptOutput>
-                <setInstallerVariableFromScriptOutput exec="${installdir}\bin\psql.exe"
-                                                      execArgs="-t -c &quot;SELECT COUNT(*) FROM pg_proc WHERE proname = 'pgagent_schema_version' AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'pgagent') AND prorettype = (SELECT oid FROM pg_type WHERE typname = 'int2') AND proargtypes = ''&quot;"
-                                                      name="pgagent_schema_version_function_exist"
-                                                      showMessageOnError="0"
-                                                      abortOnError="0"
-                                                      workingDirectory="${installdir}\bin">
-                  <ruleList>
-                    <compareText logic="equals" text="${platform_name}" value="windows"/>
-                    <fileTest path="${installdir}\bin\psql.exe" condition="exists"/>
-                    <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
-                  </ruleList>
-                </setInstallerVariableFromScriptOutput>
-
-                <!-- Check for the current version of the pgagent schema -->
-                <setInstallerVariableFromScriptOutput exec="${installdir}/bin/psql"
-                                                      execArgs="-t -c &quot;SELECT pgagent.pgagent_schema_version()&quot;"
-                                                      name="pgagent_current_schema_version"
-                                                      showMessageOnError="0"
-                                                      abortOnError="0"
-                                                      workingDirectory="${installdir}/bin">
-                  <ruleList>
-                    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                    <fileTest path="${installdir}/bin/psql" condition="exists"/>
-                    <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
-                    <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
-                  </ruleList>
-                </setInstallerVariableFromScriptOutput>
-                <setInstallerVariableFromScriptOutput exec="${installdir}\bin\psql.exe"
-                                                      execArgs="-t -c &quot;SELECT pgagent.pgagent_schema_version()&quot;"
-                                                      name="pgagent_current_schema_version"
-                                                      showMessageOnError="0"
-                                                      abortOnError="0"
-                                                      workingDirectory="${installdir}\bin">
-                  <ruleList>
-                    <compareText logic="equals" text="${platform_name}" value="windows"/>
-                    <fileTest path="${installdir}\bin\psql.exe" condition="exists"/>
-                    <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
-                    <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
-                  </ruleList>
-                </setInstallerVariableFromScriptOutput>
-
-              </actionList>
-            </actionGroup>
-
-            <!-- For pgagent schema already exists -->
-            <actionGroup>
-              <actionList>
-
-                <!-- 1. pgagent schema exist and pgagent_schema_version function does not exist -->
-                <showQuestion text="${msg(pgagent.schema.older.exist)}" variable="upgrade_schema">
-                  <ruleList>
-                    <compareText logic="does_not_equal" text="${pgagent_schema_version_function_exist}" value="1"/>
-                  </ruleList>
-                </showQuestion>
-
-                <setInstallerVariable name="schema" persist="0" value="upgrade">
-                  <ruleList>
-                    <compareText logic="equals" text="${upgrade_schema}" value="yes"/>
-                    <compareText logic="does_not_equal" text="${pgagent_schema_version_function_exist}" value="1"/>
-                  </ruleList>
-                </setInstallerVariable>
-
-                <setInstallerVariable name="schema" persist="0" value="none">
-                  <ruleList>
-                    <compareText logic="equals" text="${upgrade_schema}" value="no"/>
-                    <compareText logic="does_not_equal" text="${pgagent_schema_version_function_exist}" value="1"/>
-                  </ruleList>
-                </setInstallerVariable>
-
-                <!-- 2. pgagnet schema exist and pgagent_schema_version function exists,
-                    but current_schema_version less than the installer_schema_version -->
-                <showQuestion text="${msg(pgagent.schema.older.version.exist)}" variable="upgrade_schema">
-                  <ruleList>
-                    <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
-                    <compareValues logic="less" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
-                  </ruleList>
-                </showQuestion>
-
-                <setInstallerVariable name="schema" persist="0" value="upgrade">
-                  <ruleList>
-                    <compareText logic="equals" text="${upgrade_schema}" value="yes"/>
-                    <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
-                    <compareValues logic="less" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
-                  </ruleList>
-                </setInstallerVariable>
-
-                <setInstallerVariable name="schema" persist="0" value="none">
-                  <ruleList>
-                    <compareText logic="equals" text="${upgrade_schema}" value="no"/>
-                    <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
-                    <compareValues logic="less" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
-                  </ruleList>
-                </setInstallerVariable>
-
-                <!-- 3. pgagnet schema exist and pgagent_schema_version function exists,
-                    and current_schema_version matches the installer_schema_version -->
-                <showInfo text="${msg(pgagent.schema.found)}">
-                  <ruleList>
-                    <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
-                    <compareValues logic="equals" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
-                  </ruleList>
-                </showInfo>
-
-                <setInstallerVariable name="schema" persist="0" value="exists">
-                  <ruleList>
-                    <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
-                    <compareValues logic="equals" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
-                  </ruleList>
-                </setInstallerVariable>
-
-                <!-- 4. pgagnet schema exist and pgagent_schema_version function exists,
-                    but current_schema_version greater than the installer_schema_version -->
-                <actionGroup>
-                  <actionList>
-                    <throwError text="${msg(pgagent.schema.newer.version.exist)}"/>
-                    <setInstallerVariable name="next_page" value="sysuserdetails"/>
-                  </actionList>
-                  <ruleList>
-                    <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
-                    <compareValues logic="greater" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
-                  </ruleList>
-                </actionGroup>
-
-              </actionList>
-              <ruleEvaluationLogic>or</ruleEvaluationLogic>
+            <!-- Check for pgagent_schema_version function exist -->
+            <setInstallerVariableFromScriptOutput exec="${psql_path}"
+                                                  execArgs="-t -c &quot;SELECT COUNT(*) FROM pg_proc WHERE proname = 'pgagent_schema_version' AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'pgagent') AND prorettype = (SELECT oid FROM pg_type WHERE typname = 'int2') AND proargtypes = ''&quot;"
+                                                  name="pgagent_schema_version_function_exist"
+                                                  showMessageOnError="0"
+                                                  abortOnError="0"
+                                                  workingDirectory="${installdir}/bin">
               <ruleList>
-                <fileTest path="${installdir}/pgAgent/bin/pgagent" condition="exists"/>
-                <fileTest path="${installdir}\pgAgent\bin\pgagent.exe" condition="exists"/>
+                <stringTest type="not_empty" text="${pgagent_schema_exist}"/>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+
+            <!-- Check for the current version of the pgagent schema -->
+            <setInstallerVariableFromScriptOutput exec="${psql_path}"
+                                                  execArgs="-t -c &quot;SELECT pgagent.pgagent_schema_version()&quot;"
+                                                  name="pgagent_current_schema_version"
+                                                  showMessageOnError="0"
+                                                  abortOnError="0"
+                                                  workingDirectory="${installdir}/bin">
+              <ruleList>
+                <stringTest type="not_empty" text="${pgagent_schema_exist}"/>
+                <isTrue value="${pgagent_schema_version_function_exist}"/>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+
+
+            <!-- 1. pgagent schema exist and pgagent_schema_version function does not exist -->
+            <showQuestion text="${msg(pgagent.schema.older.exist)}" variable="upgrade_schema">
+              <ruleList>
+                <compareText logic="does_not_equal" text="${pgagent_schema_version_function_exist}" value="1"/>
+                <stringTest type="not_empty" text="${pgagent_schema_exist}"/>
+              </ruleList>
+            </showQuestion>
+
+            <setInstallerVariable name="schema" persist="0" value="upgrade">
+              <ruleList>
+                <compareText logic="equals" text="${upgrade_schema}" value="yes"/>
+                <compareText logic="does_not_equal" text="${pgagent_schema_version_function_exist}" value="1"/>
+                <stringTest type="not_empty" text="${pgagent_schema_exist}"/>
+              </ruleList>
+            </setInstallerVariable>
+
+            <setInstallerVariable name="schema" persist="0" value="none">
+              <ruleList>
+                <compareText logic="equals" text="${upgrade_schema}" value="no"/>
+                <compareText logic="does_not_equal" text="${pgagent_schema_version_function_exist}" value="1"/>
+                <stringTest type="not_empty" text="${pgagent_schema_exist}"/>
+              </ruleList>
+            </setInstallerVariable>
+
+            <!-- 2. pgagnet schema exist and pgagent_schema_version function exists,
+                but current_schema_version less than the installer_schema_version -->
+            <showQuestion text="${msg(pgagent.schema.older.version.exist)}" variable="upgrade_schema">
+              <ruleList>
+                <isTrue value="${pgagent_schema_version_function_exist}"/>
+                <compareValues logic="less" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
+              </ruleList>
+            </showQuestion>
+
+            <setInstallerVariable name="schema" persist="0" value="upgrade">
+              <ruleList>
+                <compareText logic="equals" text="${upgrade_schema}" value="yes"/>
+                <isTrue value="${pgagent_schema_version_function_exist}"/>
+                <compareValues logic="less" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
+              </ruleList>
+            </setInstallerVariable>
+
+            <setInstallerVariable name="schema" persist="0" value="none">
+              <ruleList>
+                <compareText logic="equals" text="${upgrade_schema}" value="no"/>
+                <isTrue value="${pgagent_schema_version_function_exist}"/>
+                <compareValues logic="less" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
+              </ruleList>
+            </setInstallerVariable>
+
+            <!-- 3. pgagnet schema exist and pgagent_schema_version function exists,
+                and current_schema_version matches the installer_schema_version -->
+            <actionGroup>
+              <actionList>
+                <showInfo text="${msg(pgagent.schema.found)}"/>
+                <setInstallerVariable name="schema" persist="0" value="exists"/>
+              </actionList>
+              <ruleList>
+                <isTrue value="${pgagent_schema_version_function_exist}"/>
+                <compareValues logic="equals" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
               </ruleList>
             </actionGroup>
+
+            <!-- 4. pgagnet schema exist and pgagent_schema_version function exists,
+                but current_schema_version greater than the installer_schema_version -->
+            <actionGroup>
+              <actionList>
+                <throwError text="${msg(pgagent.schema.newer.version.exist)}"/>
+                <setInstallerVariable name="next_page" value="sysuserdetails"/>
+              </actionList>
+              <ruleList>
+                <isTrue value="${pgagent_schema_version_function_exist}"/>
+                <compareValues logic="greater" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
+              </ruleList>
+            </actionGroup>
+
           </actionList>
           <ruleList>
+            <fileExists path="${psql_path}"/>
             <isTrue value="${component(pgagent).selected}"/>
+            <isTrue value="${IsUpgrade}"/>
           </ruleList>
         </actionGroup>
         <!-- pgagent Checks ends here -->
 
+        <!-- START: System user authention -->
+        <setInstallerVariable name="user_authentication_error" value=""/>
+
+        <actionGroup>
+          <actionList>
+            <!-- servicepassword and superpassword will same, if servicepassword is not provided as the command-line argument. -->
+            <setInstallerVariable name="servicepassword" value="superpassword">
+              <ruleList>
+                <stringTest text="${cliServicePassword}" type="empty"/>
+              </ruleList>
+            </setInstallerVariable>
+    
+            <actionGroup>
+              <actionList>
+                <setInstallerVariable name="project.parameter(servicepassword).ask" value="1"/>
+                <runProgram>
+                  <program>${system_temp_directory}\postgresplus\createuser.exe</program>
+                  <!-- The dot at the beginning of the arguments is the domain -->
+                  <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+                <setInstallerVariable name="createuser_exist_code" value="${program_exit_code}"/>
+                <setInstallerVariable>
+                  <name>user_authentication_error</name>
+                  <value>${msg(script.command.line.error)}</value>
+                  <ruleList>
+                    <compareText logic="equals" text="127" value="${createuser_exist_code}"/>
+                  </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable>
+                  <name>user_authentication_error</name>
+                  <value>${msg(error.could.not.create.user)}</value>
+                  <ruleList>
+                    <compareText logic="does_not_equal" text="2224" value="${createuser_exist_code}"/>
+                    <compareText logic="does_not_equal" text="2203" value="${createuser_exist_code}"/>
+                    <compareText logic="does_not_equal" text="2245" value="${createuser_exist_code}"/>
+                    <compareText logic="does_not_equal" text="0" value="${createuser_exist_code}"/>
+                    <stringTest type="empty" text="${user_authentication_error}"/>
+                  </ruleList>
+                </setInstallerVariable>
+                <actionGroup>
+                  <actionList>
+                    <setInstallerVariable>
+                      <name>user_authentication_error</name>
+                      <value>${msg(config.superpassword.format.error.windows)}</value>
+                      <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                      <ruleList>
+                        <compareText logic="equals" text="2203" value="${createuser_exist_code}"/>
+                        <compareText logic="equals" text="2245" value="${createuser_exist_code}"/>
+                      </ruleList>
+                    </setInstallerVariable>
+                  </actionList>
+                  <ruleList>
+                    <stringTest type="empty" text="${user_authentication_error}"/>
+                  </ruleList>
+                </actionGroup>
+              </actionList>
+            </actionGroup>
+    
+            <!-- On Windows we need to validate the password if the user account exists -->
+            <actionGroup>
+              <actionList>
+                <runProgram>
+                  <abortOnError>0</abortOnError>
+                  <program>${system_temp_directory}\postgresplus\validateuser.exe</program>
+                  <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+                  <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+                <setInstallerVariable name="validateuser_exit_code" value="${program_exit_code}"/>
+                <setInstallerVariable>
+                  <name>user_authentication_error</name>
+                  <value>${msg(script.command.line.error)}</value>
+                  <ruleList>
+                    <compareText logic="equals" text="127" value="${validateuser_exit_code}"/>
+                  </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable>
+                  <name>user_authentication_error</name>
+                  <value>${msg(config.servicepassword.incorrect)}</value>
+                  <ruleList>
+                    <stringTest type="empty" text="${user_authentication_error}"/>
+                    <compareText logic="does_not_equal" text="0" value="${validateuser_exit_code}"/>
+                  </ruleList>
+                </setInstallerVariable>
+              </actionList>
+              <ruleList>
+                <stringTest type="empty" text="${user_authentication_error}"/>
+              </ruleList>
+            </actionGroup>
+    
+            <actionGroup>
+              <actionList>
+                <!-- INSTALLATIOIN MODE: Use the same page in user authenticaion for both super-password/service-password -->
+                <throwError>
+                  <text>${user_authentication_error}</text>
+                  <ruleList>
+                    <isFalse value="${IsUpgrade}"/>
+                    <stringTest type="empty" text="${cliServicePassword}"/>
+                  </ruleList>
+                </throwError>
+                <!-- UPGRADE MODE, But only data directory exists -->
+                <throwError>
+                  <text>${user_authentication_error}</text>
+                  <ruleList>
+                    <isTrue value="${IsUpgrade}"/>
+            	    <fileTest condition="not_exists" path="${psql_path}"/>
+            	    <fileTest condition="not_exists" path="${installdir}\bin\postgres.exe"/>
+                    <stringTest type="empty" text="${cliServicePassword}"/>
+                  </ruleList>
+                </throwError>
+                <!-- Show different pages for the service-password, when service-password could be different from the super-password in upgrade mode -->
+                <setInstallerVariable name="project.parameter(servicepassword).ask" value="1"/>
+              </actionList>
+              <ruleList>
+                <stringTest type="not_empty" text="${user_authentication_error}"/>
+              </ruleList>
+            </actionGroup>
+            <setInstallerVariable name="project.parameter(servicepassword).ask" value="0">
+              <ruleList>
+                <stringTest type="empty" text="${user_authentication_error}"/>
+              </ruleList>
+            </setInstallerVariable>
+          </actionList>
+          <ruleList>
+            <compareText text="${platform_name}" logic="equals" value="windows"/>
+          </ruleList>
+        </actionGroup>
+        <!-- START: System user authention -->
+
       </validationActionList>
+    </passwordParameter>
+
+    <passwordParameter name="servicepassword" ask="1" cliOptionShow="1" cliOptionName="servicepassword">
+      <description>${msg(config.servicepassword.description)}</description>
+      <explanation>${msg(config.servicepassword.explanation)}</explanation>
+      <descriptionRetype>${msg(config.superpassword.confirm)}</descriptionRetype>
+      <ruleList>
+        <compareText text="${platform_name}" logic="equals" value="windows"/>
+      </ruleList>
+      <validationActionList>
+
+        <!-- START: System user authention -->
+        <actionGroup>
+          <actionList>
+            <runProgram>
+              <program>${system_temp_directory}\postgresplus\createuser.exe</program>
+              <!-- The dot at the beginning of the arguments is the domain -->
+              <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+            </runProgram>
+            <setInstallerVariable name="createuser_exit_code" value="${program_exit_code}"/>
+    
+            <throwError>
+              <text>${msg(script.command.line.error)}</text>
+              <ruleList>
+                <compareText logic="equals" text="127" value="${createuser_exit_code}"/>
+              </ruleList>
+            </throwError>
+    
+            <throwError>
+              <text>${msg(error.could.not.create.user)}</text>
+              <ruleList>
+                <compareText logic="does_not_equal" text="2224" value="${createuser_exit_code}"/>
+                <compareText logic="does_not_equal" text="2203" value="${createuser_exit_code}"/>
+                <compareText logic="does_not_equal" text="2245" value="${createuser_exit_code}"/>
+                <compareText logic="does_not_equal" text="0" value="${createuser_exit_code}"/>
+              </ruleList>
+            </throwError>
+    
+            <throwError>
+              <text>${msg(config.superpassword.format.error.windows)}</text>
+              <ruleEvaluationLogic>or</ruleEvaluationLogic>
+              <ruleList>
+                <compareText logic="equals" text="2203" value="${createuser_exit_code}"/>
+                <compareText logic="equals" text="2245" value="${createuser_exit_code}"/>
+              </ruleList>
+            </throwError>
+    
+            <!-- On Windows we need to validate the password if the user account exists -->
+            <runProgram>
+              <abortOnError>0</abortOnError>
+              <program>${system_temp_directory}\postgresplus\validateuser.exe</program>
+              <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+              <showMessageOnError>0</showMessageOnError>
+            </runProgram>
+            <setInstallerVariable name="validateuser_exit_code" value="${program_exit_code}"/>
+            <throwError>
+              <text>${msg(script.command.line.error)}</text>
+              <ruleList>
+                <compareText logic="equals" text="127" value="${validateuser_exit_code}"/>
+              </ruleList>
+            </throwError>
+            <throwError>
+              <text>${msg(config.servicepassword.incorrect)}</text>
+              <ruleList>
+                <isTrue value="${validateuser_exit_code}"/>
+              </ruleList>
+            </throwError>
+          </actionList>
+          <ruleList>
+            <compareText text="${platform_name}" logic="equals" value="windows"/>
+          </ruleList>
+        </actionGroup>
+        <!-- START: System user authention -->
+
+      </validationActionList>
+
     </passwordParameter>
 
     <!-- Port number. Only show if there is no data directory -->
