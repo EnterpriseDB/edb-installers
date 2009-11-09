@@ -80,8 +80,8 @@ done
 xdg_global_dir="$xdg_global_dir/applications-merged"
 
 # Hack up the XDG menu files to make sure everything really does go.
-_replace "<Filename>pg-launchDocsAPI.desktop</Filename>" "" "$xdg_global_dir/pg-npgsql.menu"
-_replace "<Filename>pg-launchUserManual.desktop</Filename>" "" "$xdg_global_dir/pg-npgsql.menu"
+_replace "<Filename>pg-launchDocsAPI.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR-pg-npgsql.menu"
+_replace "<Filename>pg-launchUserManual.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR-pg-npgsql.menu"
 
 echo "$0 ran to completion"
 exit 0
