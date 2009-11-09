@@ -55,8 +55,6 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist"
 </plist>
 EOT
 
-mkdir /var/run/pgbouncer
-chown $SYSTEM_USER /var/run/pgbouncer
 mkdir /var/log/pgbouncer
 chown $SYSTEM_USER /var/log/pgbouncer
 

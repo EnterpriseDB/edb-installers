@@ -459,7 +459,7 @@
                         </substitution>
                         <substitution>
                             <pattern>@@PIDFILE@@</pattern>
-                            <value>/var/run/pgbouncer/pgbouncer.pid</value>
+                            <value>${system_temp_directory}/pgbouncer.pid</value>
                         </substitution>
                         <substitution>
                             <pattern>@@AUTHFILE@@</pattern>
