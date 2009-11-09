@@ -8314,6 +8314,7 @@
       <ruleList>
         <isTrue value="${component(postgis).selected}"/>
         <isTrue value="${component(pgagent).selected}"/>
+        <isTrue value="${component(dbserver).selected}"/>
       </ruleList>
 
       <validationActionList>
