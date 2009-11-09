@@ -3594,7 +3594,7 @@ REM The script sets environment variables helpful for PostgreSQL
 
         <stringParameter name="superaccount" ask="1" cliOptionShow="1" cliOptionName="superaccount" default="postgres" 
             description="${msg(superaccount.description)}" />
-        <stringParameter name="servicename" ask="0" cliOptionShow="1" cliOptionName="servicename" default="postgresql-PG_MAJOR_VERSION"
+        <stringParameter name="servicename" ask="1" cliOptionShow="1" cliOptionName="servicename" default="postgresql-PG_MAJOR_VERSION"
             description="${msg(servicename.description)}" />
         <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default="postgres" 
             description="${msg(serviceaccount.description)}"/>
