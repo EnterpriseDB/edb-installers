@@ -486,6 +486,7 @@
     <!-- Start Monitoring Service if installed -->
     <runProgram program="${installdir}/scripts/launchSBPUpdateMonitor.sh"
                 programArguments=""
+                runAs="${system_user}"
                 showMessageOnError="0"
                 abortOnError="0">
       <ruleList>
