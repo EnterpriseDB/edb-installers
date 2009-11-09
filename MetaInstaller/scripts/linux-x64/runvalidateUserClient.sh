@@ -14,7 +14,9 @@ j=$2
 k=$3
 l=$4
 m=$5
+p=$6
+q=$7
 
-LD_LIBRARY_PATH="$spath/lib" "$spath/validateUserClient.o" "$a" "$b" "$c" "$d" "$e" "$f" "$g" "$h" "$i" "$j" "$k" "$l" "$m"
+LD_LIBRARY_PATH="$spath/lib" "$spath/validateUserClient.o" "$a" "$b" "$c" "$d" "$e" "$f" "$g" "$h" "$i" "$j" "$k" "$l" "$m" "$p" "$q"
 
 exit $?

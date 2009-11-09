@@ -142,6 +142,9 @@ int main(int argcounter, char **args){
 	char *dbserver_ver ="8.3";
 	char *userEmail =args[12];
 	char *password =args[13];
+
+    char *proxyHost=args[14];
+    char *proxyPort=args[15];
 	
 
 	
@@ -173,6 +176,15 @@ int main(int argcounter, char **args){
 	
 
    soap_init(&soap); // initialize runtime environment (only once)
+
+   if (strcmp(proxyHost, "") && strcmp(proxyPort, ""))
+   {
+       soap.proxy_host = proxyHost;
+       soap.proxy_port = strtol(proxyPort, NULL, 10);
+       soap.proxy_userid = "anonymous";
+       soap.proxy_passwd = "";
+   }
+ 
    soap_ssl_init(); /* init OpenSSL (just once) */
 
    if (soap_ssl_client_context(&soap,

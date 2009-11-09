@@ -17,7 +17,8 @@ pgplus.details.title=PostgreSQL Installation Details
 pgplus.details.explanation=Please verify the PostgreSQL installation details
 
 pgplus.details.error=Connection to the PostgreSQL Server failed. Please re-check the details provided.
-pgplus.ws.error=Connection to the WebService failed. Please re-check the internet connection.
+pgplus.ws.error=Connection to the WebService failed. Please check your internet configurations.\nIf you are using a proxy server, please set the PROXY_HOST and PROXY_PORT environment variables and re-run the installer.
+
 pgplus.modify.error=Error in modifying postgresql.conf
 
 error.install.directory.invalid=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
@@ -135,7 +136,7 @@ ws.email.not.authenticated=The email and/or password are not valid. Please try a
 ws.email.not.valid=The email address has not been validated. An email has been sent to the email address that you provided. Please follow the directions in the email to validate your email address.
 ws.email.already.exists=This email address already exists.  Please use Existing User fields or enter a new email address to continue.
 ws.exception.from.server=An error occured. Please try again.
-ws.internet.not.connected=Error calling the web service. Please try again.
+ws.internet.not.connected=There has been an error in calling the webservice. Please check your internet configurations.\nIf you are using a proxy server, please set the PROXY_HOST and PROXY_PORT environment variables and re-run the installer.
 
 ws.email.not.valid.dynatune=Email is not validated, please register your email.
 

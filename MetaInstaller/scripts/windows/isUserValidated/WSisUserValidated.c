@@ -42,8 +42,19 @@ int main(int argcounter, char **args){
    const char *soap_endpoint = "https://services.enterprisedb.com/authws/services/AuthenticationService";
    int result = 0;
    char *hexedEmail = convertToHexString(args[1]);
+   char *proxyHost=args[2];
+   char *proxyPort=args[3];
    enum xsd__boolean validUserResponse;
    soap_init(&soap); // initialize runtime environment (only once)
+
+   if (strcmp(proxyHost, "") && strcmp(proxyPort, ""))
+   {
+       soap.proxy_host = proxyHost;
+       soap.proxy_port = strtol(proxyPort, NULL, 10);
+       soap.proxy_userid = "anonymous";
+       soap.proxy_passwd = "";
+   }
+
    soap_register_plugin( &soap, wininet_plugin );//SSL support plugin
 
    if (soap_call_ns2__isUserValidated(&soap, soap_endpoint, NULL,hexedEmail, &validUserResponse)== SOAP_OK){

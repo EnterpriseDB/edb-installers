@@ -109,6 +109,8 @@ int main(int argcounter, char **args){
 	char *ram_mb=args[5];
 	char *hexedRAMGB=convertToHexString(ram_gb);
 	char *hexedRAMMB=convertToHexString(ram_mb);
+	char *proxyHost=args[6];
+	char *proxyPort=args[7];
 	
 	char *dynatuneParams[] = {hexedUUID,hexedSU,hexedRAMMB,hexedRAMGB,hexedWP};
 	
@@ -129,6 +131,15 @@ int main(int argcounter, char **args){
      
     
     soap_init(&soap); // initialize runtime environment (only once)
+
+    if (strcmp(proxyHost, "") && strcmp(proxyPort, ""))
+    {
+        soap.proxy_host = proxyHost;
+        soap.proxy_port = strtol(proxyPort, NULL, 10);
+        soap.proxy_userid = "anonymous";
+        soap.proxy_passwd = "";
+    }
+
     soap_ssl_init(); /* init OpenSSL (just once) */
 
    if (soap_ssl_client_context(&soap,

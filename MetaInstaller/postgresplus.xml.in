@@ -140,6 +140,10 @@
     <setInstallerVariable name="project.parameter(servicepassword).ask" value="0"/>
     <setInstallerVariable name="project.parameter(servicename).ask" value="0"/>
 
+    <!-- Set Proxy values from environement variables if any -->
+    <setInstallerVariable name="proxyHost" value="${env(PROXY_HOST)}" />
+    <setInstallerVariable name="proxyPort" value="${env(PROXY_PORT)}" />
+
     <!-- Set the pghost varaible to localhost -->
     <setInstallerVariable name="pghost" value="localhost">
       <persist>0</persist>
@@ -7249,7 +7253,7 @@
             <setInstallerVariableFromScriptOutput>
               <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
               <exec>${system_temp_directory}/postgresplus/validateUserClient.o</exec>
-              <execArgs>"${dbserver_guid}" "${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${language}" "${os}" "${number_of_processors}" "${processor_arch}" "${processor_type}" "${total_mem_in_gb}" "${shared_memory_in_mb}" "${existingEmail}" "${existingpassword}"</execArgs>
+              <execArgs>"${dbserver_guid}" "${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${language}" "${os}" "${number_of_processors}" "${processor_arch}" "${processor_type}" "${total_mem_in_gb}" "${shared_memory_in_mb}" "${existingEmail}" "${existingpassword}" "${proxyHost}" "${proxyPort}"</execArgs>
               <name>ws_existing_result</name>
               <workingDirectory>${system_temp_directory}/postgresplus</workingDirectory>
               <ruleList>
@@ -7269,7 +7273,7 @@
             <setInstallerVariableFromScriptOutput>
               <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
               <exec>${system_temp_directory}/postgresplus/runvalidateUserClient.sh</exec>
-              <execArgs>"${system_temp_directory}/postgresplus" "${dbserver_guid}" "${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${language}" "${os}" "${number_of_processors}" "${processor_arch}" "${processor_type}" "${total_mem_in_gb}" "${shared_memory_in_mb}" "${existingEmail}" "${existingpassword}"</execArgs>
+              <execArgs>"${system_temp_directory}/postgresplus" "${dbserver_guid}" "${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${language}" "${os}" "${number_of_processors}" "${processor_arch}" "${processor_type}" "${total_mem_in_gb}" "${shared_memory_in_mb}" "${existingEmail}" "${existingpassword}" "${proxyHost}" "${proxyPort}"</execArgs>
               <name>ws_existing_result</name>
               <workingDirectory>${system_temp_directory}/postgresplus</workingDirectory>
               <ruleList>
@@ -7321,7 +7325,7 @@
             <setInstallerVariableFromScriptOutput>
               <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
               <exec>${system_temp_directory}\postgresplus\validateUserClient.exe</exec>
-              <execArgs>"${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${existingEmail}" "${existingpassword}" "${dbserver_guid}"</execArgs>
+              <execArgs>"${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${existingEmail}" "${existingpassword}" "${dbserver_guid}" "${proxyHost}" "${proxyPort}"</execArgs>
               <name>ws_existing_result</name>
               <workingDirectory>${system_temp_directory}\postgresplus</workingDirectory>
               <ruleList>
@@ -7569,7 +7573,7 @@
             <setInstallerVariableFromScriptOutput>
               <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
               <exec>${system_temp_directory}/postgresplus/isUserValidated.o</exec>
-              <execArgs>"${existingEmail}"</execArgs>
+              <execArgs>"${existingEmail}" "${proxyHost}" "${proxyPort}"</execArgs>
               <name>ws_validated_result</name>
               <workingDirectory>${system_temp_directory}/postgresplus</workingDirectory>
               <ruleList>
@@ -7583,7 +7587,7 @@
             <setInstallerVariableFromScriptOutput>
               <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
               <exec>${system_temp_directory}/postgresplus/runisUserValidated.sh</exec>
-              <execArgs>"${system_temp_directory}/postgresplus" "${existingEmail}"</execArgs>
+              <execArgs>"${system_temp_directory}/postgresplus" "${existingEmail}" "${proxyHost}" "${proxyPort}"</execArgs>
               <name>ws_validated_result</name>
               <workingDirectory>${system_temp_directory}/postgresplus</workingDirectory>
               <ruleList>
@@ -7599,7 +7603,7 @@
             <setInstallerVariableFromScriptOutput>
               <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
               <exec>${system_temp_directory}\postgresplus\isUserValidated.exe</exec>
-              <execArgs>"${existingEmail}"</execArgs>
+              <execArgs>"${existingEmail}" "${proxyHost}" "${proxyPort}"</execArgs>
               <name>ws_validated_result</name>
               <workingDirectory>${system_temp_directory}\postgresplus</workingDirectory>
               <ruleList>
@@ -7667,7 +7671,7 @@
             <setInstallerVariableFromScriptOutput>
               <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
               <exec>${system_temp_directory}/postgresplus/dynaTuneClient.o</exec>
-              <execArgs>"${dbserver_guid}" "${rbServerUtil}" "${rbWorkload}" "${total_mem_in_gb}" "${shared_memory_in_mb}"</execArgs>
+              <execArgs>"${dbserver_guid}" "${rbServerUtil}" "${rbWorkload}" "${total_mem_in_gb}" "${shared_memory_in_mb}" "${proxyHost}" "${proxyPort}"</execArgs>
               <name>ws_dynatune_result</name>
               <workingDirectory>${system_temp_directory}/postgresplus</workingDirectory>
               <ruleList>
@@ -7682,7 +7686,7 @@
             <setInstallerVariableFromScriptOutput>
               <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
               <exec>${system_temp_directory}/postgresplus/rundynaTuneClient.sh</exec>
-              <execArgs>"${system_temp_directory}/postgresplus" "${dbserver_guid}" "${rbServerUtil}" "${rbWorkload}" "${total_mem_in_gb}" "${shared_memory_in_mb}"</execArgs>
+              <execArgs>"${system_temp_directory}/postgresplus" "${dbserver_guid}" "${rbServerUtil}" "${rbWorkload}" "${total_mem_in_gb}" "${shared_memory_in_mb}" "${proxyHost}" "${proxyPort}"</execArgs>
               <name>ws_dynatune_result</name>
               <workingDirectory>${system_temp_directory}/postgresplus</workingDirectory>
               <ruleList>
@@ -7719,7 +7723,7 @@
             <setInstallerVariableFromScriptOutput>
               <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
               <exec>${system_temp_directory}\postgresplus\getDynaTune.exe</exec>
-              <execArgs>"${dbserver_guid}" "${rbServerUtil}" "${rbWorkload}"</execArgs>
+              <execArgs>"${dbserver_guid}" "${rbServerUtil}" "${rbWorkload}" "${proxyHost}" "${proxyPort}"</execArgs>
               <name>ws_dynatune_result</name>
               <workingDirectory>${system_temp_directory}\postgresplus</workingDirectory>
               <ruleList>
