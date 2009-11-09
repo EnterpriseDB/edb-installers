@@ -18,13 +18,13 @@ _die() {
 
 
 # Create the group if required
-if [ "x`cat /etc/group|cut -f1 -d':'|grep $1`" = "x" ];
+if ! getent group $1 > /dev/null
 then
     groupadd $1 || _die $1
 fi
 
 # Create the user account if required
-if [ "x`cat /etc/passwd|cut -f1 -d':'|grep $1`" != "x" ];
+if getent passwd $1 > /dev/null
 then
 
     HOME_DIR=`su $1 -c "echo \\\$HOME"`
