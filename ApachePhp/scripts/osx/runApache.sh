@@ -32,7 +32,7 @@ else
 	for i in $(seq 15)
 	do
 		apache_status=`ps ax | grep @@APACHE_HOME@@/bin/httpd | grep -v "grep"`
-		if [ "x$apache_status" != "x" ]
+		if [ "x$apache_status" != "x" ];
 		then
 			#httpd Started - we are done
 			done="true"
