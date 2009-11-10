@@ -19,7 +19,6 @@ case $1 in
 esac
 
 response=`sudo "@@APACHE_HOME@@/bin/apachectl" $action`
-
 if [ "x$response" == "x" ]; then
     if [ $action == "stop" ]; then
          echo "Apache stopped Sucessfully"
@@ -28,9 +27,23 @@ if [ "x$response" == "x" ]; then
     fi
 else
     if [ $action == "restart" ]; then
-        apache_status=`ps ax | grep @@APACHE_HOME@@/bin/httpd | grep -v "grep"`
-        if [ "x$apache_status" == "x" ]; then
-                echo "Error Starting Apache."
+        #Wait for process to start - give up after 15 attempts
+        done="false"
+	for i in $(seq 15)
+	do
+		apache_status=`ps ax | grep @@APACHE_HOME@@/bin/httpd | grep -v "grep"`
+		if [ "x$apache_status" != "x" ]
+		then
+			#httpd Started - we are done
+			done="true"
+			break
+		else
+			sleep 2;
+		fi
+	done
+
+        if [ "done" == "false" ]; then
+                echo "Error Restarting Apache."
         else
                 echo "Apache restarted successfully."
         fi
