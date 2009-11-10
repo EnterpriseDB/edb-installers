@@ -105,10 +105,18 @@ _build_ApachePhp_osx() {
     _replace "htdocs" "www" "$WD/ApachePhp/staging/osx/apache/conf/httpd.conf"
     _replace "#ServerName www.example.com:80" "ServerName localhost:@@PORT@@" "$WD/ApachePhp/staging/osx/apache/conf/httpd.conf"
 
+    #Apply patch to apachectl before continuing
+    echo "Applying apachectl patch to comment ulimit check"
+    cd $PG_STAGING/apache/bin
+    patch ./apachectl $WD/tarballs/apache_fb13276.diff
+    cd $PG_PATH_OSX/ApachePhp/source/apache.osx
+    _die "Temporary Dieing"
     #Configure the apachectl script file
     _replace "\$HTTPD -k \$ARGV" "\"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/osx/apache/bin/apachectl"
     _replace "\$HTTPD -t" "\"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/osx/apache/bin/apachectl"
     _replace "\$HTTPD \$ARGV" "\"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/osx/apache/bin/apachectl"   chmod ugo+x "$PG_STAGING/apache/bin/apachectl" 
+   
+
      
     cd $PG_PATH_OSX/ApachePhp/source/php.osx
 
