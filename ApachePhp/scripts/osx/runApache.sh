@@ -42,7 +42,7 @@ else
 		fi
 	done
 
-        if [ "done" == "false" ]; then
+        if [ $done == "false" ]; then
                 echo "Error Restarting Apache."
         else
                 echo "Apache restarted successfully."
