@@ -30,7 +30,7 @@ else
         #Wait for process to start - give up after 15 attempts
         done="false"
 	i=1
-        while [ $i -le 15]
+        while [ $i -le 15 ]
 	do
 		apache_status=`ps axww | grep @@APACHE_HOME@@/bin/httpd | grep -v "grep"`
 		if [ "x$apache_status" == "x" ];
