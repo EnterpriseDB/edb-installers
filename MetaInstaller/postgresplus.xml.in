@@ -2864,7 +2864,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</program>
-          <programArguments>--mode unattended --disable-stackbuilder 1 --installdir "${installdir}" --datadir "${datadir}" --serviceaccount "${serviceaccount}" --servicepassword "${servicepassword}" --superpassword "${superpassword}" --serverport ${serverport} --locale "${locale}" --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
+          <programArguments>--mode unattended --disable-stackbuilder 1 --installdir "${installdir}" --datadir "${datadir}" --serviceaccount "${serviceaccount}" --superaccount "${supername}" --superpassword "${superpassword}" --serverport ${serverport} --locale "${locale}" --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
           <progressText>Installing Database Server ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -3815,7 +3815,7 @@
             <runProgram>
               <abortOnError>0</abortOnError>
               <program>${system_temp_directory}/postgresplus/postgresql-PG_PACKAGE_VERSION-osx.app/Contents/MacOS/installbuilder.sh</program>
-              <programArguments>--mode unattended --disable-stackbuilder 1 --installdir ${installdir} --datadir ${datadir} --serviceaccount "${serviceaccount}" --servicepassword "${servicepassword}" --superaccount "${supername}" --superpassword "${superpassword}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
+              <programArguments>--mode unattended --disable-stackbuilder 1 --installdir ${installdir} --datadir ${datadir} --serviceaccount "${serviceaccount}" --superaccount "${supername}" --superpassword "${superpassword}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
               <progressText>Installing Database Server ... </progressText>
               <showMessageOnError>0</showMessageOnError>
             </runProgram>
