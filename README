@@ -336,10 +336,26 @@ Additional configuration in the VM's :
 * Adding gd module to php in osx
 
    * Prequisites:
+       1) Install jpeg libraries
+       Download and extract jpeg from http://www.ijg.org/
+       Compile and install: 
+       >env CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -arch i386 -arch ppc" LDFLAGS="-arch i386 -arch ppc" ./configure --prefix=/usr/local --disable-dependency-tracking
+       >make
+       >sudo make install
+      
+      2) Install libpng
+      Download and extract libpng from http://www.libpng.org/pub/png/pngcode.html
+      Compile and install:
+      >env CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -arch i386 -arch ppc" LDFLAGS="-arch i386 -arch ppc" ./configure --prefix=/usr/local --disable-dependency-tracking
+      >make
+      >sudo make install
 
-       1) sudo port install jpeg +universal
-       2) sudo port install libpng +universal
-       3) sudo port install freetype +universal
+      3) Install freetype
+      Download and extract freetype from http://freetype.org/download.html
+      >env CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -arch i386 -arch ppc" LDFLAGS="-arch i386 -arch ppc" ./configure --prefix=/usr/local --disable-dependency-tracking
+      >make
+      >sudo make install
+
 
 * Adding gd module to php in linux
 
