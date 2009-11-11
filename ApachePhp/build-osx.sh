@@ -110,7 +110,7 @@ _build_ApachePhp_osx() {
     cd $PG_STAGING/apache/bin
     patch ./apachectl $WD/tarballs/apache_fb13276.diff
     cd $PG_PATH_OSX/ApachePhp/source/apache.osx
-    _die "Temporary Dieing"
+    
     #Configure the apachectl script file
     _replace "\$HTTPD -k \$ARGV" "\"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/osx/apache/bin/apachectl"
     _replace "\$HTTPD -t" "\"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/osx/apache/bin/apachectl"
