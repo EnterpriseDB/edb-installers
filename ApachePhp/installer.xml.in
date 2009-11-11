@@ -315,7 +315,7 @@
         </compareText>
       </ruleList>
     </runProgram>
-   <!-- Stopping apache if already started - Linux  -->
+   <!-- Stopping apache if already started - Linux and Mac  -->
     <runProgram>
       <program>${apache_home}/bin/apachectl</program>
       <programArguments>"stop"</programArguments>
@@ -324,9 +324,9 @@
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
         <compareText>
-          <logic>contains</logic>
+          <logic>does_not_equal</logic>
           <text>${platform_name}</text>
-          <value>linux</value>
+          <value>windows</value>
         </compareText>
         <compareText>
           <logic>does_not_equal</logic>
@@ -1198,9 +1198,9 @@ include conf\addons\*.conf
           <abortOnError>0</abortOnError>
           <ruleList>
               <compareText>
-                  <logic>contains</logic>
+                  <logic>does_not_equal</logic>
                   <text>${platform_name}</text>
-                  <value>linux</value>
+                  <value>windows</value>
               </compareText>
           </ruleList> 
         </runProgram>
