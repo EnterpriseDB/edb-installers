@@ -29,17 +29,19 @@ else
     if [ $action == "restart" ]; then
         #Wait for process to start - give up after 15 attempts
         done="false"
-	for i in $(seq 15)
+	i=1
+        while [ $i -le 15]
 	do
-		apache_status=`ps ax | grep @@APACHE_HOME@@/bin/httpd | grep -v "grep"`
-		if [ "x$apache_status" != "x" ];
+		apache_status=`ps axww | grep @@APACHE_HOME@@/bin/httpd | grep -v "grep"`
+		if [ "x$apache_status" == "x" ];
 		then
+			sleep 2
+		else
 			#httpd Started - we are done
 			done="true"
 			break
-		else
-			sleep 2;
 		fi
+                i=$(( $i + 1 ))
 	done
 
         if [ $done == "false" ]; then
