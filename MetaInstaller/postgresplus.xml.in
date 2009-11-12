@@ -8356,12 +8356,13 @@
           </ruleList>
         </setInstallerVariable>
 
-        <!-- Set Environment variable PGHOST, PGUSER, PGPASSWORD, PGPORT
+        <!-- Set Environment variable PGHOST, PGUSER, PGPASSWORD, PGPORT, PGDATABASE
              on all the platform & LD_LIBRARY_PATH on linux/linux-x64 -->
         <setEnvironmentVariable name="PGHOST" value="localhost"/>
         <setEnvironmentVariable name="PGUSER" value="${supername}"/>
         <setEnvironmentVariable name="PGPASSWORD" value="${superpassword}"/>
         <setEnvironmentVariable name="PGPORT" value="${serverport}"/>
+        <setEnvironmentVariable name="PGDATABASE" value="postgres"/>
         <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib">
           <ruleList>
             <compareText logic="contains" text="${platform_name}" value="linux"/>

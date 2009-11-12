@@ -7,6 +7,7 @@ export PGPASSWORD=$4
 PGHOME=$5
 INSTALLDIR=$5
 SHAREDIR=$6
+export LD_LIBRARY_PATH=$PGHOME/lib:$LD_LIBRARY_PATH
 
 # Creating template postgis database
 "$PGHOME/bin/createdb" template_postgis 

@@ -348,6 +348,7 @@
         <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
         <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
         <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+        <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
         <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
         <!-- Create plpgsql, if not exists -->
         <runProgram>
@@ -473,6 +474,7 @@
         <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
         <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
         <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+        <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
         <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
         <!-- Create plpgsql, if not exists -->
         <runProgram>

@@ -639,6 +639,7 @@
         </actionGroup>
         <actionGroup>
             <actionList>   
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
                 <setInstallerVariableFromScriptOutput>
                     <name>libdir</name>
                     <exec>${installdir}/bin/pg_config</exec>
@@ -1491,7 +1492,7 @@
                     <width>40</width>
                 </stringParameter>
                 <!-- Postgres Home Directory -->
-                 <directoryParameter>
+                <directoryParameter>
                     <name>pghome</name>
                     <description>PostgreSQL Home Directory</description>
                     <explanation/>
@@ -1503,7 +1504,15 @@
                     <ask>0</ask>
                     <width>40</width>
                 </directoryParameter>
-	            <!-- PostgreSQL Server Installed? -->
+                <directoryParameter>
+                    <name>pgdatabase</name>
+                    <description>PostgreSQL Database</description>
+                    <explanation/>
+                    <value/>
+                    <default>postgres</default>
+                    <ask>0</ask>
+                </directoryParameter>
+	        <!-- PostgreSQL Server Installed? -->
                 <booleanParameter>
                     <name>pginstalled</name>
                     <description>PostgreSQL Installed</description>
@@ -1583,189 +1592,48 @@
                 </throwError>
 	            <!-- Creating a temporary directory -->
                 <createDirectory path="${system_temp_directory}/${product_fullname}"/>
-	            <!-- WIN - Unpack Script Files -->
-                <actionGroup>
-                    <actionList>
-	                    <!-- Unpacking the Script file to temporary directory -->
-                        <unpackFile>
-                            <component>PostGIS</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-connection.bat</destination>
-                            <folder>installfileswindows</folder>
-                            <origin>installer/PostGIS/check-connection.bat</origin>
-                        </unpackFile>
-                        <unpackFile>
-                            <component>PostGIS</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-db.bat</destination>
-                            <folder>installfileswindows</folder>
-                            <origin>installer/PostGIS/check-db.bat</origin>
-                        </unpackFile>
-                    </actionList>
+                <!-- Set variable psql_path -->
+                <setInstallerVariable name="psql_path" value="${pghome}/bin/psql">
                     <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
-                </actionGroup>
-	            <!-- LIN: Unpack Script Files -->
-                <actionGroup>
-                    <actionList>
-	                    <!-- Unpacking the Script file to temporary directory -->
-                        <unpackFile>
-                            <component>PostGIS</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
-                            <folder>installfileslinux</folder>
-                            <origin>installer/PostGIS/check-connection.sh</origin>
-                        </unpackFile>
-                        <unpackFile>
-                            <component>PostGIS</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-db.sh</destination>
-                            <folder>installfileslinux</folder>
-                            <origin>installer/PostGIS/check-db.sh</origin>
-                        </unpackFile>
-                    </actionList>
+                </setInstallerVariable>
+                <setInstallerVariable name="psql_path" value="${pghome}\bin\psql.exe">
                     <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>linux</value>
-                        </compareText>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
-                </actionGroup>
-            	<!-- LIN-X64: Unpack Script Files -->
-                <actionGroup>
-                    <actionList>
-	                    <!-- Unpacking the Script file to temporary directory -->
-                        <unpackFile>
-                            <component>PostGIS</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
-                            <folder>installfileslinux-x64</folder>
-                            <origin>installer/PostGIS/check-connection.sh</origin>
-                        </unpackFile>
-                        <unpackFile>
-                            <component>PostGIS</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-db.sh</destination>
-                            <folder>installfileslinux-x64</folder>
-                            <origin>installer/PostGIS/check-db.sh</origin>
-                        </unpackFile>
-                    </actionList>
+                </setInstallerVariable>
+
+                <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+                <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+                <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+                <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+                <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${pghome}/lib">
                     <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>linux-x64</value>
-                        </compareText>
+                        <compareText logic="contains" text="${platform_name}" value="linux"/>
                     </ruleList>
-                </actionGroup>
-	            <!-- MAC: Unpack Script Files -->
-                <actionGroup>
-                    <actionList>
-	                    <!-- Unpacking the Script file to temporary directory -->
-                        <unpackFile>
-                            <component>PostGIS</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
-                            <folder>installfilesosx</folder>
-                            <origin>installer/PostGIS/check-connection.sh</origin>
-                        </unpackFile>
-                        <unpackFile>
-                            <component>PostGIS</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-db.sh</destination>
-                            <folder>installfilesosx</folder>
-                            <origin>installer/PostGIS/check-db.sh</origin>
-                        </unpackFile>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>osx</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-	            <!-- WIN: validate the PostgreSQL Server Details -->
-                <actionGroup>
-                    <actionList>
-	                    <!-- Running the Script to validate the PostgreSQL Server Details -->
-                        <setInstallerVariableFromScriptOutput>
-                            <exec>${system_temp_directory}\${product_fullname}\check-connection.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
-                            <name>connection</name>
-                            <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
-                            <customErrorMessage>${program_stderr}</customErrorMessage>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-	            <!-- LIN & MAC: validate the PostgreSQL Server Details -->
-                <actionGroup>
-                    <actionList>
-	                    <!-- Running the Script to validate the PostgreSQL Server Details -->
-                        <setInstallerVariableFromScriptOutput>
-                            <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
-                            <name>connection</name>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <customErrorMessage>${program_stderr}</customErrorMessage>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
+                </setEnvironmentVariable>
+
+	        <!-- START: validate the PostgreSQL Server Details -->
+                <setInstallerVariable name="connection" value=""/>
                 <setInstallerVariable name="dbexist" value=""/>
-	            <!-- WIN - Check whether the database and user already exists -->
-                <actionGroup>
-                    <actionList>
-	                    <!-- WIN - Check whether the database already exists -->
-                        <setInstallerVariableFromScriptOutput>
-                            <name>dbexist</name>
-                            <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "template_postgis"</execArgs>
-                            <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <!-- LIN & MAC: Check whether the database and user already exists -->
-                <actionGroup>
-                    <actionList>
-	                    <!-- LIN & MAC: Check whether the database already exists -->
-                        <setInstallerVariableFromScriptOutput>
-                            <name>dbexist</name>
-                            <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "template_postgis"</execArgs>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
+
+                <!-- Check connection -->
+                <setInstallerVariableFromScriptOutput name="connection"
+                                                      exec="${psql_path}"
+                                                      execArgs="-l"
+                                                      workingDirectory="${pghome}/bin"
+                                                      customErrorMessage="${program_stderr}"/>
+
+                <!-- Check the database 'template_postgis' exits -->
+                <setInstallerVariableFromScriptOutput name="dbexist"
+                                                      exec="${psql_path}"
+                                                      execArgs="-t -c &quot;SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='template_postgis'&quot;"
+                                                      workingDirectory="${pghome}/bin"
+                                                      abortOnError="0"
+                                                      showMessageOnError="0"/>
+
                 <!-- Inform the user about the existing database and user -->
                 <actionGroup>
                     <actionList>
@@ -2070,6 +1938,7 @@
                 </actionGroup>
             </validationActionList>
             <postShowPageActionList>
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
                 <setInstallerVariableFromScriptOutput>
                     <name>libdir</name>
                     <exec>${installdir}/bin/pg_config</exec>
