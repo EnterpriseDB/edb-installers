@@ -1816,6 +1816,16 @@
       </ruleList>
     </setInstallerVariable>
 
+    <!-- Older version of installer for this version of PostgreSQL installed, but service-account not given -->
+    <setInstallerVariable name="serviceaccount" value="postgres">
+      <ruleList>
+        <stringTest text="${iBaseDirectory}" type="not_empty"/>
+        <fileExists path="${iBaseDirectory}"/>
+        <fileTest condition="is_not_empty" path="${iBaseDirectory}"/>
+         <stringTest text="${iServiceAccount}" type="empty"/>
+      </ruleList>
+    </setInstallerVariable>
+
     <!-- New install, with nothing set on command line -->
     <setInstallerVariable name="serviceaccount"  value="postgres">
       <ruleList>
