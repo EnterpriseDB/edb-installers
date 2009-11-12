@@ -191,15 +191,34 @@
       </ruleList>
     </setInstallerVariable>
 
-    <!-- Stop the montioring if installed -->
+    <!-- Stop the montioring if installed, before UM exe name change -->
     <kill path="${installdir}\bin\UpdateManager.exe" >
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
         <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
+        <fileExists path="${installdir}\bin\UpdateManager.exe" />
       </ruleList>
     </kill>
+    <!-- Delete the UpdateManager.exe as the new name is UpdManager.exe -->
+    <deleteFile path="${installdir}\bin\UpdateManager.exe">
+      <ruleList>
+        <fileExists path="${installdir}\bin\UpdateManager.exe" />
+      </ruleList>
+    </deleteFile>
+
+    <!-- Stop the montioring if installed, after UM exe name change -->
+    <kill path="${installdir}\bin\UpdManager.exe" >
+      <abortOnError>0</abortOnError>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+        <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
+        <fileExists path="${installdir}\bin\UpdManager.exe" />
+      </ruleList>
+    </kill>
+ 
     <actionGroup>
       <actionList>
         <runProgram program="kill"> 
@@ -404,7 +423,7 @@
         <!-- WIN: Register launchSBPUpdateMonitor script as a startup script -->
         <registrySet key="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
                      name="StackBuilderPlusPG_VERSION_STR Update Monitor"
-                     value="&quot;${installdir}\bin\UpdateManager.exe&quot; --server ${monitorServer} --execute  &quot;${installdir}\bin\stackbuilderplus.exe&quot;"/>
+                     value="&quot;${installdir}\bin\UpdManager.exe&quot; --server ${monitorServer} --execute  &quot;${installdir}\bin\stackbuilderplus.exe&quot;"/>
 
         <actionGroup>
            <actionList>
@@ -522,7 +541,7 @@
   <preUninstallationActionList>
 
     <!-- Stop the montioring if installed -->
-    <kill path="${installdir}\bin\UpdateManager.exe" >
+    <kill path="${installdir}\bin\UpdManager.exe" >
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
