@@ -2449,7 +2449,7 @@
     </setInstallerVariable>
 
     <!-- Make sure: we set the servicepassword to superpassword, if not provided through the command-line -->
-    <setInstallerVariable name="servicepassword" value="superpassword">
+    <setInstallerVariable name="servicepassword" value="${superpassword}">
       <ruleList>
         <stringTest type="empty" text="${cliServicePassword}"/>
         <stringTest text="${servicepassword}" type="empty"/>
@@ -8565,7 +8565,7 @@
         <actionGroup>
           <actionList>
             <!-- servicepassword and superpassword will same, if servicepassword is not provided as the command-line argument. -->
-            <setInstallerVariable name="servicepassword" value="superpassword">
+            <setInstallerVariable name="servicepassword" value="${superpassword}">
               <ruleList>
                 <stringTest text="${cliServicePassword}" type="empty"/>
               </ruleList>
