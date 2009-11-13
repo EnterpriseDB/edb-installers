@@ -3041,36 +3041,6 @@
       </ruleList>
     </runProgram>
     
-    <actionGroup>
-      <actionList>
-        <logMessage text="Installing StackBuilderPlus in ${installdir}/StackBuilderPlus"/>
-        <!-- Linux -->
-        <runProgram abortOnError="0"
-                    progressText="Installing StackBuilderPlus ... "
-                    showMessageOnError="1"
-                    program="${system_temp_directory}/postgresplus/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux.bin"
-                    programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot;  ${monitor_server} --install-monitoring ${installMonitoring}">
-          <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="linux"/>
-          </ruleList>
-        </runProgram>
-        <!-- Linux-x64 -->
-        <runProgram abortOnError="0"
-                    progressText="Installing StackBuilderPlus ... "
-                    showMessageOnError="1"
-                    program="${system_temp_directory}/postgresplus/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-x64.bin"
-                    programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot;  ${monitor_server} --install-monitoring ${installMonitoring}">
-          <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
-          </ruleList>
-        </runProgram>
-      </actionList>
-      <ruleList>
-        <isTrue value="${component(stackbuilderplus).selected}"/>
-        <compareText logic="contains" text="${platform_name}" value="linux"/>
-      </ruleList>
-    </actionGroup>
-
     <logMessage>
       <text>Installing pgJDBC in ${installdir}/pgJDBC</text>
       <ruleList>
@@ -3471,6 +3441,38 @@
         </compareText>
       </ruleList>
     </runProgram>
+    
+    <!-- Always install StackBuilderPlus as the last component -->
+    <actionGroup>
+      <actionList>
+        <logMessage text="Installing StackBuilderPlus in ${installdir}/StackBuilderPlus"/>
+        <!-- Linux -->
+        <runProgram abortOnError="0"
+                    progressText="Installing StackBuilderPlus ... "
+                    showMessageOnError="1"
+                    program="${system_temp_directory}/postgresplus/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux.bin"
+                    programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot;  ${monitor_server} --install-monitoring ${installMonitoring}">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="linux"/>
+          </ruleList>
+        </runProgram>
+        <!-- Linux-x64 -->
+        <runProgram abortOnError="0"
+                    progressText="Installing StackBuilderPlus ... "
+                    showMessageOnError="1"
+                    program="${system_temp_directory}/postgresplus/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-x64.bin"
+                    programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot;  ${monitor_server} --install-monitoring ${installMonitoring}">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
+          </ruleList>
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <isTrue value="${component(stackbuilderplus).selected}"/>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </actionGroup>
+
 
     <!-- Run Windows Programs -->
     <!-- dbserver installation/upgradation -->
@@ -3577,21 +3579,6 @@
         </compareText>
       </ruleList>
     </runProgram>
-
-    <actionGroup>
-      <actionList>
-        <logMessage text="Installing StackBuilderPlus in ${installdir}\StackBuilderPlus"/>
-        <runProgram abortOnError="0"
-                    progressText="Installing StackBuilderPlus ... "
-                    showMessageOnError="0"
-                    program="${system_temp_directory}\postgresplus\stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-windows.exe"
-                    programArguments="--mode unattended --prefix &quot;${installdir}\StackBuilderPlus&quot; --branding &quot;Postgres Plus Standard Server ${product_version}&quot; ${monitor_server} --install-monitoring ${installMonitoring}"/>
-      </actionList>
-      <ruleList>
-        <isTrue value="${component(stackbuilderplus).selected}"/>
-        <compareText logic="equals" text="${platform_name}" value="windows"/>
-      </ruleList>
-    </actionGroup>
 
     <logMessage>
       <text>Installing pgJDBC in ${installdir}\pgJDBC</text>
@@ -3812,6 +3799,23 @@
         </compareText>
       </ruleList>
     </runProgram>
+  
+    <!-- Always install StackBuilderPlus as the last component -->
+    <actionGroup>
+      <actionList>
+        <logMessage text="Installing StackBuilderPlus in ${installdir}\StackBuilderPlus"/>
+        <runProgram abortOnError="0"
+                    progressText="Installing StackBuilderPlus ... "
+                    showMessageOnError="0"
+                    program="${system_temp_directory}\postgresplus\stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-windows.exe"
+                    programArguments="--mode unattended --prefix &quot;${installdir}\StackBuilderPlus&quot; --branding &quot;Postgres Plus Standard Server ${product_version}&quot; ${monitor_server} --install-monitoring ${installMonitoring}"/>
+      </actionList>
+      <ruleList>
+        <isTrue value="${component(stackbuilderplus).selected}"/>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
 
     <!-- Run mac programs -->
     <actionGroup>
@@ -3918,21 +3922,6 @@
         </compareText>
       </ruleList>
     </runProgram>
-
-    <actionGroup>
-      <actionList>
-        <logMessage text="Installing StackBuilderPlus in ${installdir}\StackBuilderPlus"/>
-        <runProgram abortOnError="0"
-                    progressText="Installing StackBuilderPlus ... "
-                    showMessageOnError="0"
-                    program="${system_temp_directory}/postgresplus/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-osx.app/Contents/MacOS/installbuilder.sh"
-                    programArguments="--mode unattended --prefix &quot;${installdir}/StackBuilderPlus&quot; --branding &quot;Postgres Plus Standard Server ${product_version}&quot; ${monitor_server} --install-monitoring ${installMonitoring}"/>
-      </actionList>
-      <ruleList>
-        <isTrue value="${component(stackbuilderplus).selected}"/>
-        <compareText logic="equals" text="${platform_name}" value="osx"/>
-      </ruleList>
-   </actionGroup>
 
     <logMessage>
       <text>Installing pgJDBC in ${installdir}/pgJDBC</text>
@@ -4216,6 +4205,23 @@
         </compareText>
       </ruleList>
     </showInfo>
+
+    <!-- Always install StackBuilderPlus as the last component -->
+    <actionGroup>
+      <actionList>
+        <logMessage text="Installing StackBuilderPlus in ${installdir}\StackBuilderPlus"/>
+        <runProgram abortOnError="0"
+                    progressText="Installing StackBuilderPlus ... "
+                    showMessageOnError="0"
+                    program="${system_temp_directory}/postgresplus/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-osx.app/Contents/MacOS/installbuilder.sh"
+                    programArguments="--mode unattended --prefix &quot;${installdir}/StackBuilderPlus&quot; --branding &quot;Postgres Plus Standard Server ${product_version}&quot; ${monitor_server} --install-monitoring ${installMonitoring}"/>
+      </actionList>
+      <ruleList>
+        <isTrue value="${component(stackbuilderplus).selected}"/>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
+      </ruleList>
+   </actionGroup>
+
 
     <!--Modify Postgresql.conf -->
 
