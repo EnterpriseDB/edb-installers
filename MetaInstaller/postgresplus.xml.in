@@ -2468,6 +2468,61 @@
 
     <actionGroup>
       <actionList>
+        <!-- FB#13072: Installation on Windows 2008 fails in unattended mode: password complexity requirement not met -->
+        <!-- Unattended mode: Stop installation, if user creation/validation fails on windows -->
+        <actionGroup>
+          <actionList>
+            <runProgram>
+              <program>${system_temp_directory}\postgresplus\createuser.exe</program>
+              <!-- The dot at the beginning of the arguments is the domain -->
+              <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+            </runProgram>
+            <setInstallerVariable name="createuser_exist_code" value="${program_exit_code}"/>
+            <throwError text="${msg(script.command.line.error)}">
+              <ruleList>
+                <compareText logic="equals" text="127" value="${createuser_exist_code}"/>
+              </ruleList>
+            </throwError>
+            <throwError text="${msg(error.could.not.create.user)}">
+              <ruleList>
+                <compareText logic="does_not_equal" text="2224" value="${createuser_exist_code}"/>
+                <compareText logic="does_not_equal" text="2203" value="${createuser_exist_code}"/>
+                <compareText logic="does_not_equal" text="2245" value="${createuser_exist_code}"/>
+                <compareText logic="does_not_equal" text="0" value="${createuser_exist_code}"/>
+              </ruleList>
+            </throwError>
+            <throwError text="${msg(config.superpassword.format.error.windows)}">
+              <ruleEvaluationLogic>or</ruleEvaluationLogic>
+              <ruleList>
+                <compareText logic="equals" text="2203" value="${createuser_exist_code}"/>
+                <compareText logic="equals" text="2245" value="${createuser_exist_code}"/>
+              </ruleList>
+            </throwError>
+            <runProgram>
+              <abortOnError>0</abortOnError>
+              <program>${system_temp_directory}\postgresplus\validateuser.exe</program>
+              <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+              <showMessageOnError>0</showMessageOnError>
+            </runProgram>
+            <setInstallerVariable name="validateuser_exit_code" value="${program_exit_code}"/>
+            <throwError text="${msg(script.command.line.error)}">
+              <ruleList>
+                <compareText logic="equals" text="127" value="${validateuser_exit_code}"/>
+              </ruleList>
+            </throwError>
+            <throwError text="${msg(config.servicepassword.incorrect)}">
+              <ruleList>
+                <compareText logic="does_not_equal" text="0" value="${validateuser_exit_code}"/>
+              </ruleList>
+            </throwError>
+          </actionList>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+          </ruleList>
+        </actionGroup>
         <deleteFile>
           <path>${system_temp_directory}/postgresplus/a.properties</path>
         </deleteFile>
@@ -5194,6 +5249,10 @@
             <isTrue value="${uninstall_dbserver}"/>
           </ruleList>
         </deleteFile>
+
+        <!-- Wait for 5 seconds and wait for all the uninstallers to finish execution -->
+        <wait ms="5000"/>
+
       </actionList>
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
