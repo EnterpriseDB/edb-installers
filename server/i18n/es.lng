@@ -8,6 +8,7 @@ error.install.directory.invalid=El directorio de instalación debe ser una ruta a
 error.install.directory.invalid.linux=El directorio de instalación no puede ser '/' o '/usr'.
 platform.not.match=Está intentando ejecutar un instalador de 32bits en una maquina de 64bits. El instalador terminará ahora.
 error.data.directory.invalid=El directorio de instalación debe ser una ruta absoluta, conteniendo solo letras, números y los caracteres '-', '/', '.', y '_', y debe tener permisos de escritura.
+error.install.directory.not.writable=Permiso denegado para leer/escribir en el directorio de instalación.
 error.data.directory.matches.install=El directorio de datos no debe ser padre o el mismo que el directorio de instalación.
 error.data.directory.registered.broken=Un directorio de datos está registrado en ${PostgreSqlIni} pero no está vacío o no es reconocible como un directorio de datos.
 error.data.directory.existing.broken=Un directorio de datos existente ha sido seleccionado pero no está vacío o no es un directorio de datos reconocible. 
