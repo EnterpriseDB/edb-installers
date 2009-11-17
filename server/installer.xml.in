@@ -380,6 +380,12 @@
           </ruleList>
         </throwError>
 
+        <setInstallerVariable name="createUninstaller" value="0" persist="1">
+          <ruleList>
+            <isTrue value="${extract_mode}"/>
+          </ruleList>
+        </setInstallerVariable>
+
         <setInstallerVariable name="iDataDirectory" value=""/>
         <setInstallerVariable name="iBaseDirectory" value=""/>
 
@@ -817,6 +823,118 @@
                <compareText text="${superaccount}" logic="equals" value="" />
             </ruleList>
         </setInstallerVariable>
+
+        <!-- Validate installdird & datadir in unattended mode -->
+        <actionGroup>
+            <actionList>
+                <throwError text="${msg(error.install.directory.invalid)}">
+                    <ruleList>
+                        <regExMatch>
+                            <text>${installdir}</text>
+                            <logic>does_not_match</logic>
+                            <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                        </regExMatch>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <throwError text="${msg(error.install.directory.invalid.linux)}">
+                    <ruleList>
+                        <regExMatch>
+                            <text>${installdir}</text>
+                            <logic>matches</logic>
+                            <pattern>^/+(usr)?$</pattern>
+                        </regExMatch>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+
+                <throwError text="${msg(error.data.directory.invalid)}">
+                    <ruleList>
+                        <regExMatch>
+                            <text>${datadir}</text>
+                            <logic>does_not_match</logic>
+                            <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                        </regExMatch>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <isFalse value="${extract_mode}"/>
+                    </ruleList>
+                </throwError>
+
+                <!-- WIN: Always check if the installation/data directory path looks valid -->
+                <throwError text="${msg(error.install.directory.invalid)}">
+                    <ruleList>
+                        <regExMatch>
+                            <text>${installdir}</text>
+                            <logic>does_not_match</logic>
+                            <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
+                        </regExMatch>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <throwError text="${msg(error.data.directory.invalid)}">
+                    <ruleList>
+                        <regExMatch>
+                            <text>${datadir}</text>
+                            <logic>does_not_match</logic>
+                            <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
+                        </regExMatch>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <isFalse value="${extract_mode}"/>
+                    </ruleList>
+                </throwError>
+
+                <actionGroup>
+                    <actionList>
+                        <throwError text="${msg(error.install.directory.not.writable)}">
+                            <ruleList>
+                                <ruleGroup>
+                                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                                    <ruleList>
+                                        <fileTest path="${installdir}" condition="not_writable"/>
+                                        <fileTest path="${installdir}" condition="is_not_directory"/>
+                                    </ruleList>
+                                </ruleGroup>
+                                <fileTest path="${installdir}" condition="exists"/>
+                            </ruleList>
+                        </throwError>
+                        <createDirectory path="${installdir}"
+                                         abortOnError="1"
+                                         showMessageOnError="1"
+                                         customErrorMessage="${msg(error.install.directory.not.writable)}">
+                            <ruleList>
+                                <fileTest path="${installdir}" condition="not_exists"/>
+                            </ruleList>
+                        </createDirectory>
+                    </actionList>
+                    <ruleList>
+                        <isTrue value="${extract_mode}"/>
+                    </ruleList>
+                </actionGroup>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            </ruleList>
+        </actionGroup>
 
         <!-- SECTION: START: ServiceName -->
         <actionGroup>
@@ -3824,7 +3942,6 @@ REM The script sets environment variables helpful for PostgreSQL
                                                showMessageOnError="1"
                                                customErrorMessage="${msg(error.install.directory.not.writable)}">
                                 <onErrorActionList>
-                                    <showWarning text="${msg(error.install.directory.not.writable)}"/>
                                     <setInstallerVariable name="next_page" value="installdir"/>
                                 </onErrorActionList>
                               </createDirectory>
