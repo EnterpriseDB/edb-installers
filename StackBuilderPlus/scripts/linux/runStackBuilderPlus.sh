@@ -2,6 +2,10 @@
 
 # PostgreSQL stackbuilder runner script for Linux
 # Dave Page, EnterpriseDB
+
+# Record the calling shell pid in the pid file.
+echo $$ > /tmp/runsbp.pid
+
 LOADINGUSER=`whoami`
 echo "No graphical su/sudo program could be found on your system!"
 echo "This window must be kept open while StackBuilder Plus is running."
@@ -44,4 +48,7 @@ if [ $? -eq 1 ];
 then
     sleep 2
 fi
+
+# Remove the pid file now.
+rm -f /tmp/runsbp.pid
 
