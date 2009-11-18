@@ -16,7 +16,7 @@
     <width>550</width>
     <height>400</height>
 
-    <!-- Misc paackage options -->
+    <!-- Misc package options -->
     <enableRollback>0</enableRollback>
     <outputDirectory>../output</outputDirectory>
     <requireInstallationByRootUser>0</requireInstallationByRootUser>
@@ -26,6 +26,7 @@
     <defaultUnixOwner>root</defaultUnixOwner>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
     <overrideGtkButtonText>1</overrideGtkButtonText>
+    <windowsSoftwareRegistryPrefix></windowsSoftwareRegistryPrefix>
 
     <!-- Images -->
     <leftImage>../resources/pg-side.png</leftImage>
@@ -372,14 +373,23 @@
     <!-- Preinstallation actions -->
     <preInstallationActionList>
 
-        <!-- Abort installation if not super-user and not running in extract-only mode-->
-        <throwError text="${msg(superuser.required.error)}">
-          <ruleList>
-             <isFalse value="${installer_is_root_install}"/>
-             <isFalse value="${extract_mode}"/>
-          </ruleList>
-        </throwError>
+        <actionGroup>
+            <actionList>
+                <!-- Abort installation if not super-user and not running in extract-only mode-->
+                <throwError text="${msg(superuser.required.error)}">
+                  <ruleList>
+                     <isFalse value="${installer_is_root_install}"/>
+                  </ruleList>
+                </throwError>
 
+                <setInstallerVariable name="windowsSoftwareRegistryPrefix" value="${vendor}\${fullName}" persist="1"/>
+            </actionList>
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- Do not create uninstaller in case of extract-only mode -->
         <setInstallerVariable name="createUninstaller" value="0" persist="1">
           <ruleList>
             <isTrue value="${extract_mode}"/>
