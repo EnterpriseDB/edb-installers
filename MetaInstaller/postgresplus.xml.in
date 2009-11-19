@@ -8524,6 +8524,7 @@
                                                   showMessageOnError="0"
                                                   abortOnError="0"
                                                   workingDirectory="${installdir}/bin"/>
+            <stringModify text="${pgagent_schema_exist}" variable="pgagent_schema_exist" logic="trim"/>
 
             <!-- Check for pgagent_schema_version function exist -->
             <setInstallerVariableFromScriptOutput exec="${psql_path}"
@@ -8536,6 +8537,7 @@
                 <stringTest type="not_empty" text="${pgagent_schema_exist}"/>
               </ruleList>
             </setInstallerVariableFromScriptOutput>
+            <stringModify text="${pgagent_schema_version_function_exist}" variable="pgagent_schema_version_function_exist" logic="trim"/>
 
             <!-- Check for the current version of the pgagent schema -->
             <setInstallerVariableFromScriptOutput exec="${psql_path}"
@@ -8546,9 +8548,10 @@
                                                   workingDirectory="${installdir}/bin">
               <ruleList>
                 <stringTest type="not_empty" text="${pgagent_schema_exist}"/>
-                <isTrue value="${pgagent_schema_version_function_exist}"/>
+                <stringTest type="not_empty" text="${pgagent_schema_version_function_exist}"/>
               </ruleList>
             </setInstallerVariableFromScriptOutput>
+            <stringModify text="${pgagent_current_schema_version}" variable="pgagent_current_schema_version" logic="trim"/>
 
 
             <!-- 1. pgagent schema exist and pgagent_schema_version function does not exist -->
@@ -8628,6 +8631,7 @@
 
           </actionList>
           <ruleList>
+            <stringTest type="not_empty" text="${connection}"/>
             <fileExists path="${psql_path}"/>
             <isTrue value="${component(pgagent).selected}"/>
             <isTrue value="${IsUpgrade}"/>
