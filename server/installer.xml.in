@@ -350,26 +350,6 @@
 
     </initializationActionList>
 
-    <postBuildActionList>
-        <actionGroup>
-            <actionList>
-                <copyFile origin="../resources/extract_installbuilder.osx"
-                          destination="../output/postgresql-PG_MAJOR_VERSION-osx-installer.app/Contents/MacOS/installbuilder.sh"/>
-                <substitute files="yourapp.app/Contents/MacOS/installbuilder.sh"
-                            type="exact">
-                    <substitutionList>
-                        <substitution pattern="@@PROJECT_FULLNAME@@" value="${project.fullName}"/>
-                    </substitutionList>
-                </substitute>
-                <changePermissions files="../output/postgresql-PG_MAJOR_VERSION-osx-installer.app/Contents/MacOS/installbuilder.sh"
-                                   permissions="755"/>
-            </actionList>
-            <ruleList>
-                <compareText logic="contains" text="${platform_name}" value="osx"/>
-            </ruleList>
-        </actionGroup>
-    </postBuildActionList>
-
     <!-- Preinstallation actions -->
     <preInstallationActionList>
 
