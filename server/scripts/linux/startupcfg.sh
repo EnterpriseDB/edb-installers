@@ -137,6 +137,7 @@ _process_libs "$INSTALLDIR/lib" "libcrypto.so"
 _process_libs "$INSTALLDIR/lib" "libreadline.so"
 _process_libs "$INSTALLDIR/lib" "libtermcap.so"
 _process_libs "$INSTALLDIR/lib" "libuuid.so"
+_process_libs "$INSTALLDIR/lib" "libxml2.so"
 
 
 # Configure the startup. On Redhat and friends we use chkconfig. On Debian, update-rc.d
