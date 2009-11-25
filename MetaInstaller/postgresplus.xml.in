@@ -6770,7 +6770,7 @@
           <description>${msg(valueadded.dbInstallTuning.rb1.value)} </description>
           <explanation></explanation>
           <value></value>
-          <default>0</default>
+          <default>1</default>
           <displayStyle>checkbox-left</displayStyle>
           <ruleList>
             <compareText>
@@ -6808,7 +6808,7 @@
           <description>${msg(valueadded.updateNotification.rb2.value)}</description>
           <explanation></explanation>
           <value></value>
-          <default>0</default>
+          <default>1</default>
           <displayStyle>checkbox-left</displayStyle>
           <ruleList>
             <compareText>
