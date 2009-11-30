@@ -1835,6 +1835,17 @@
                <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
+        <setInstallerVariable name="branding" value="">
+            <ruleList>
+                <compareText logic="equals" value="windows" text="${platform_name}"/>
+                <isFalse value="$[extract_mode}"/>
+            </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="create_shortcuts" value="0">
+            <ruleList>
+                <isTrue value="$[extract_mode}"/>
+            </ruleList>
+        </setInstallerVariable>
 
     </readyToInstallActionList>
 
