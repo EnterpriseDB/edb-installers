@@ -37,6 +37,12 @@ _check_unix_vm() {
     then
         _die "The build VM $1 is inaccessible or does not have access to the buildfarm repository at $2"
     fi
+
+    # Check if chrpath exists on the given VM
+    HAS_CHRPATH=`ssh $1 which chrpath 2>/dev/null`
+    if [ x$HAS_CHRPATH == x ]; then
+        _die "Need to install chrpath utility in order to build the installer on the build VM $1"
+    fi
 }
 
 ################################################################################
