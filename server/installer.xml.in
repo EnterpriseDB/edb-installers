@@ -356,7 +356,7 @@
         <actionGroup>
             <actionList>
                 <!-- Abort installation if not super-user and not running in extract-only mode-->
-                <throwError text="${msg(superuser.required.error)}">
+                <throwError text="${msg(Installer.Warning.RootPrivileges)}">
                   <ruleList>
                      <isFalse value="${installer_is_root_install}"/>
                   </ruleList>
