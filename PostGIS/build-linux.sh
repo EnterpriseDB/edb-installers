@@ -110,7 +110,7 @@ _build_PostGIS_linux() {
     fi
 
     echo "Configuring the postgis source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/; eX/Port PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.linux/bin:$PG_CACHING/geos-$PG_TARBALL_GEOS.linux/bin:\$PATH; LD_LIBRARY_PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.linux/lib:$PG_CACHING/geos-$PG_TARBALL_GEOS.linux/lib:\$LD_LIBRARY_PATH; ./configure --with-pgconfig=$PG_PGHOME_LINUX/bin/pg_config --with-geosconfig=$PG_CACHING/geos-$PG_TARBALL_GEOS.linux/bin/geos-config --with-projdir=$PG_CACHING/proj-$PG_TARBALL_PROJ.linux"  || _die "Failed to configure postgis"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/; export PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.linux/bin:$PG_CACHING/geos-$PG_TARBALL_GEOS.linux/bin:\$PATH; LD_LIBRARY_PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.linux/lib:$PG_CACHING/geos-$PG_TARBALL_GEOS.linux/lib:\$LD_LIBRARY_PATH; LDFLAGS=\"-Wl,--rpath,'\\\$ORIGIN/../lib'\"; ./configure --with-pgconfig=$PG_PGHOME_LINUX/bin/pg_config --with-geosconfig=$PG_CACHING/geos-$PG_TARBALL_GEOS.linux/bin/geos-config --with-projdir=$PG_CACHING/proj-$PG_TARBALL_PROJ.linux"  || _die "Failed to configure postgis"
 
     echo "Building postgis"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux; make; make comments" || _die "Failed to build postgis"
@@ -178,9 +178,42 @@ _build_PostGIS_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/java; cp -R ejb3 $PG_STAGING/PostGIS/java/" || _die "Failed to copy ejb3 into postgis-jdbc directory "
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/java; cp -R pljava $PG_STAGING/PostGIS/java/" || _die "Failed to copy pljava into postgis-jdbc directory "
 
-    #Copy dependent libraries
+    # Copy dependent libraries
     ssh $PG_SSH_LINUX "cp $PG_CACHING/proj-$PG_TARBALL_PROJ.linux/lib/libproj* $PG_STAGING/PostGIS/lib" || _die "Failed to copy the proj libraries"
     ssh $PG_SSH_LINUX "cp $PG_CACHING/geos-$PG_TARBALL_GEOS.linux/lib/libgeos* $PG_STAGING/PostGIS/lib" || _die "Failed to copy the geos libraries"
+
+    echo "Changing the rpath for the PostGIS executables and libraries"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/PostGIS/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/PostGIS/lib; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}\" \$f; done"
+
+    echo "Creating wrapper script for pgsql2shp and shp2pgsql"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/PostGIS/bin; for f in pgsql2shp shp2pgsql ; do mv \$f \$f.bin; done"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/PostGIS/bin; cat <<EOT > pgsql2shp
+#!/bin/sh
+
+CURRENTWD=\\\$PWD
+WD=\\\`dirname \\\$0\\\`
+cd \\\$WD/../lib
+
+LD_LIBRARY_PATH=\\\$PWD:\\\$LD_LIBRARY_PATH \\\$WD/pgsql2shp.bin $*
+
+cd \\\$CURRENTWD
+EOT
+"
+
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/PostGIS/bin; cat <<EOT > shp2pgsql
+#!/bin/sh
+
+CURRENTWD=\\\$PWD
+WD=\\\`dirname \\\$0\\\`
+cd \\\$WD/../lib
+
+LD_LIBRARY_PATH=\\\$PWD:\\\$LD_LIBRARY_PATH \\\$WD/shp2pgsql.bin $*
+
+cd \\\$CURRENTWD
+EOT
+"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/PostGIS/bin; chmod +x *"
 
     cd $WD/PostGIS
 } 

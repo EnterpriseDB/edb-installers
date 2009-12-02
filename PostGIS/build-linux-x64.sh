@@ -179,9 +179,43 @@ _build_PostGIS_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java; cp -R ejb3 $PG_STAGING/PostGIS/java/" || _die "Failed to copy ejb3 into postgis-jdbc directory "
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java; cp -R pljava $PG_STAGING/PostGIS/java/" || _die "Failed to copy pljava into postgis-jdbc directory "
 
-    #Copy dependent libraries
+    # Copy dependent libraries
     ssh $PG_SSH_LINUX_X64 "cp $PG_CACHING/proj-$PG_TARBALL_PROJ.linux-x64/lib/libproj* $PG_STAGING/PostGIS/lib" || _die "Failed to copy the proj libraries"
     ssh $PG_SSH_LINUX_X64 "cp $PG_CACHING/geos-$PG_TARBALL_GEOS.linux-x64/lib/libgeos* $PG_STAGING/PostGIS/lib" || _die "Failed to copy the geos libraries"
+
+    echo "Changing the rpath for the PostGIS executables and libraries"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/PostGIS/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/PostGIS/lib; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}\" \$f; done"
+
+    echo "Creating wrapper script for pgsql2shp and shp2pgsql"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/PostGIS/bin; for f in pgsql2shp shp2pgsql ; do mv \$f \$f.bin; done"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/PostGIS/bin; cat <<EOT > pgsql2shp
+#!/bin/sh
+
+CURRENTWD=\\\$PWD
+WD=\\\`dirname \\\$0\\\`
+cd \\\$WD/../lib
+
+LD_LIBRARY_PATH=\\\$PWD:\\\$LD_LIBRARY_PATH \\\$WD/pgsql2shp.bin $*
+
+cd \\\$CURRENTWD
+EOT
+"
+
+    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/PostGIS/bin; cat <<EOT > shp2pgsql
+#!/bin/sh
+
+CURRENTWD=\\\$PWD
+WD=\\\`dirname \\\$0\\\`
+cd \\\$WD/../lib
+
+LD_LIBRARY_PATH=\\\$PWD:\\\$LD_LIBRARY_PATH \\\$WD/shp2pgsql.bin $*
+
+cd \\\$CURRENTWD
+EOT
+"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/PostGIS/bin; chmod +x *"
+
     cd $WD/PostGIS
 } 
 
