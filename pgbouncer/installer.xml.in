@@ -392,6 +392,9 @@
             <variable>def_listen_port</variable>
             <initialPort>6432</initialPort>
             <finalPort>65535</finalPort>
+            <ruleList>
+               <isTrue value="${installer_is_root_install}"/>
+            </ruleList>
         </getFreePort>
   
     </preInstallationActionList>

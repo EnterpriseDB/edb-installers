@@ -647,6 +647,9 @@
         <variable>defaultport</variable>
         <initialPort>8080</initialPort>
         <finalPort>65535</finalPort>
+        <ruleList>
+           <isTrue value="${installer_is_root_install}"/>
+        </ruleList>
     </getFreePort>
     <!-- Set the default port to the previously installed apache port if exists -->
     <actionGroup>
