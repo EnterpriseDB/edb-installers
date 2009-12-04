@@ -61,14 +61,6 @@ _prep_server() {
     echo "Unpacking pgAdmin source..."
     tar -zxvf ../../tarballs/pgadmin3-$PG_TARBALL_PGADMIN.tar.gz
 
-    # Fix an issue present in 1.10.0
-    if [ $PG_TARBALL_PGADMIN = "1.10.0" ];
-    then
-      cd pgadmin3-$PG_TARBALL_PGADMIN
-      patch -p1 < ../../../tarballs/pgadmin-1_10_0-slony.diff
-      cd ..
-    fi
-
     # pl/Java
     if [ -e pljava-$PG_TARBALL_PLJAVA ];
     then
