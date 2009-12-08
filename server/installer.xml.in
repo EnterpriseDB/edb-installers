@@ -176,11 +176,6 @@
 
         <setInstallerVariable name="create_shortcuts" value="1" persist="1"/>
         <setInstallerVariable name="iShortcut" value="" />
-        <setInstallerVariable name="branding" value="">
-          <ruleList>
-              <compareText text="${create_shortcuts}" value="0" />
-          </ruleList>
-        </setInstallerVariable>
 
         <setInstallerVariable name="iDisableStackBuilder" value="0" />
 
@@ -361,6 +356,24 @@
 
         <actionGroup>
             <actionList>
+                <!-- Do not create shortcuts, if extract mode is enabled -->
+                <setInstallerVariable name="create_shortcuts" value="0"/>
+                <!-- Do not create uninstaller in case of extract-only mode -->
+                <setInstallerVariable name="createUninstaller" value="0"/>
+                <setInstallerVariable name="iBranding" value=""/>
+            </actionList>
+            <ruleList>
+                <isTrue value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+        <setInstallerVariable name="branding" value="">
+          <ruleList>
+              <isFalse value="${create_shortcuts}"/>
+          </ruleList>
+        </setInstallerVariable>
+
+        <actionGroup>
+            <actionList>
                 <!-- Abort installation if not super-user and not running in extract-only mode-->
                 <throwError text="${msg(Installer.Warning.RootPrivileges)}">
                   <ruleList>
@@ -375,22 +388,8 @@
             </ruleList>
         </actionGroup>
 
-        <!-- Do not create uninstaller in case of extract-only mode -->
-        <setInstallerVariable name="createUninstaller" value="0" persist="1">
-          <ruleList>
-            <isTrue value="${extract_mode}"/>
-          </ruleList>
-        </setInstallerVariable>
-
         <setInstallerVariable name="iDataDirectory" value=""/>
         <setInstallerVariable name="iBaseDirectory" value=""/>
-
-        <!-- Do not create shortcuts, if extract mode is enabled -->
-        <setInstallerVariable name="create_shortcuts" value="false">
-            <ruleList>
-                <isTrue value="${extract_mode}"/>
-            </ruleList>
-        </setInstallerVariable>
 
         <!-- !WIN: Get existing directories & branding -->
         <actionGroup>
@@ -742,11 +741,8 @@
             <persist>0</persist>
             <value>PostgreSQL ${product_version}</value>
             <ruleList>
-               <compareText>
-                   <text>${create_shortcuts}</text>
-                   <logic>does_not_equal</logic>
-                   <value>0</value>
-               </compareText>
+                <isFalse value="${create_shortcuts}"/>
+                <isFalse value="${extract_mode}"/>
                 <compareText>
                     <logic>does_not_equal</logic>
                     <text>${brandingVer}</text>
@@ -766,11 +762,8 @@
             <persist>0</persist>
             <value>${iBranding}</value>
             <ruleList>
-               <compareText>
-                   <text>${create_shortcuts}</text>
-                   <logic>does_not_equal</logic>
-                   <value>0</value>
-               </compareText>
+                <isFalse value="${create_shortcuts}"/>
+                <isFalse value="${extract_mode}"/>
                 <compareText>
                     <logic>does_not_equal</logic>
                     <text>${iBranding}</text>
@@ -785,11 +778,8 @@
             <persist>0</persist>
             <value>PostgreSQL ${product_version}</value>
             <ruleList>
-               <compareText>
-                   <text>${create_shortcuts}</text>
-                   <logic>does_not_equal</logic>
-                   <value>0</value>
-               </compareText>
+                <isFalse value="${create_shortcuts}"/>
+                <isFalse value="${extract_mode}"/>
                 <compareText>
                     <logic>equals</logic>
                     <text>${branding}</text>
@@ -1843,7 +1833,6 @@
         </actionGroup>
         <setInstallerVariable name="branding" value="" persist="1">
             <ruleList>
-                <compareText logic="equals" value="windows" text="${platform_name}"/>
                 <isTrue value="$[extract_mode}"/>
             </ruleList>
         </setInstallerVariable>

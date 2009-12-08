@@ -30,5 +30,5 @@ fi
 if [ "${1}" == --help -o $EXTRACT_MODE -eq 1 ];then
     "`dirname \"${0}\"`/$executable" "$@"
 else
-    "`dirname \"${0}\"`/@@PROJECTNAME@@" $executable "$@"
+    "`dirname \"${0}\"`/@@PROJECTNAME@@" "`dirname \"${0}\"`/InstallerHelper" "`dirname \"${0}\"`/$executable" "$@"
 fi
