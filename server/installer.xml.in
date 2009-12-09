@@ -741,7 +741,7 @@
             <persist>0</persist>
             <value>PostgreSQL ${product_version}</value>
             <ruleList>
-                <isFalse value="${create_shortcuts}"/>
+                <isTrue value="${create_shortcuts}"/>
                 <isFalse value="${extract_mode}"/>
                 <compareText>
                     <logic>does_not_equal</logic>
@@ -762,7 +762,7 @@
             <persist>0</persist>
             <value>${iBranding}</value>
             <ruleList>
-                <isFalse value="${create_shortcuts}"/>
+                <isTrue value="${create_shortcuts}"/>
                 <isFalse value="${extract_mode}"/>
                 <compareText>
                     <logic>does_not_equal</logic>
@@ -778,7 +778,7 @@
             <persist>0</persist>
             <value>PostgreSQL ${product_version}</value>
             <ruleList>
-                <isFalse value="${create_shortcuts}"/>
+                <isTrue value="${create_shortcuts}"/>
                 <isFalse value="${extract_mode}"/>
                 <compareText>
                     <logic>equals</logic>
