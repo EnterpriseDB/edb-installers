@@ -704,6 +704,7 @@
                     <text>${datadir}</text>
                     <value/>
                 </compareText>
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </setInstallerVariable>
 
@@ -1436,18 +1437,18 @@
             </actionList>
 
             <ruleList>
+                <isFalse value="${extract_mode}"/>
+                <fileExists>
+                    <path>${iDataDirectory}</path>
+                </fileExists>
                 <stringTest>
                     <text>${iDataDirectory}</text>
                     <type>not_empty</type>
                 </stringTest>
-                <fileExists>
-                    <path>${iDataDirectory}</path>
-                </fileExists>
                 <fileTest>
                     <path>${iDataDirectory}</path>
                     <condition>is_not_empty</condition>
                 </fileTest>
-                <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
 
@@ -1481,6 +1482,7 @@
             </actionList>
 
             <ruleList>
+                <isFalse value="${extract_mode}"/>
                 <stringTest>
                     <text>${iDataDirectory}</text>
                     <type>not_empty</type>
@@ -1489,7 +1491,6 @@
                     <path>${iDataDirectory}</path>
                     <condition>is_not_empty</condition>
                 </fileTest>
-                <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
 
