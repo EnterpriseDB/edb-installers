@@ -41,8 +41,8 @@ int main(int argc, char** argv) {
 
     if (argc < 2)
     {
-        fprintf(stderr, "Pleave provide the command to execute");
-        fprintf(stderr, "Usage: %s <absolute_path_to_executable> <arguments_to_the_executable>", argv[0]);
+        fprintf(stderr, "\nPleave provide the command to execute\n");
+        fprintf(stderr, "\nUsage: %s <absolute_path_to_executable> <arguments_to_the_executable>\n\n", argv[0]);
         return -1;
     }
  
@@ -74,8 +74,6 @@ int main(int argc, char** argv) {
                 cmdArguments[index] = (char*)calloc(256, sizeof(char));
                 strncpy(cmdArguments[index], argv[index+2], 255);
             }
-
-            fgetc(stdin);
 
             flags = kAuthorizationFlagDefaults;                          // 8
             status = AuthorizationExecuteWithPrivileges                  // 9
