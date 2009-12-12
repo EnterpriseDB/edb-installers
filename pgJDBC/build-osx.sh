@@ -7,6 +7,10 @@
 
 _prep_pgJDBC_osx() {
 
+    echo "*******************************"
+    echo "*  Pre Process: pgJDBC (OSX)  *"
+    echo "*******************************"
+
     # Enter the source directory and cleanup if required
     cd $WD/pgJDBC/source
 
@@ -43,6 +47,10 @@ _prep_pgJDBC_osx() {
 
 _build_pgJDBC_osx() {
 
+    echo "**************************"
+    echo "*  Build : pgJDBC (OSX)  *"
+    echo "**************************"
+
     cd $WD
 }
 
@@ -52,6 +60,10 @@ _build_pgJDBC_osx() {
 ################################################################################
 
 _postprocess_pgJDBC_osx() {
+
+    echo "********************************"
+    echo "*  Post Process: pgJDBC (OSX)  *"
+    echo "********************************"
  
     cp -R $WD/pgJDBC/source/pgJDBC.osx/* $WD/pgJDBC/staging/osx || _die "Failed to copy the pgJDBC Source into the staging directory"
 
@@ -71,8 +83,31 @@ _postprocess_pgJDBC_osx() {
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/*.icns)"
 
+    if [ -f installer_1.xml ]; then
+        rm -f installer_1.xml
+    fi
+
+    if [ ! -f $WD/scripts/risePrivileges ]; then
+        cp installer.xml installer_1.xml
+        _replace "<requireInstallationByRootUser>\${admin_rights}</requireInstallationByRootUser>" "<requireInstallationByRootUser>1</requireInstallationByRootUser>" installer_1.xml
+
+        # Build the installer (for the root privileges required)
+        echo Building the installer with the root privileges required
+        "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
+        cp $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app/Contents/MacOS/pgJDBC $WD/scripts/risePrivileges || _die "Failed to copy the privileges escalation applet"
+
+        rm -rf $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app
+    fi
+
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
+
+    # Using own scripts for extract-only mode
+    cp -f $WD/scripts/risePrivileges $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app/Contents/MacOS/pgJDBC
+    chmod a+x $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app/Contents/MacOS/pgJDBC
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ pgJDBC $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
+    chmod a+x $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app/Contents/MacOS/installbuilder.sh
 
     # Zip up the output
     cd $WD/output

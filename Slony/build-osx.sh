@@ -7,6 +7,10 @@
 
 _prep_Slony_osx() {
       
+    echo "*******************************"
+    echo "*  Pre Process: Slony (OSX)  *"
+    echo "*******************************"
+
     # Enter the source directory and cleanup if required
     cd $WD/Slony/source
 
@@ -48,6 +52,9 @@ _prep_Slony_osx() {
 
 _build_Slony_osx() {
 
+    echo "************************"
+    echo "*  Build: Slony (OSX)  *"
+    echo "************************"
     # build slony
     PG_STAGING=$PG_PATH_OSX/Slony/staging/osx
 
@@ -123,6 +130,10 @@ _build_Slony_osx() {
 ################################################################################
 
 _postprocess_Slony_osx() {
+    
+    echo "*******************************"
+    echo "*  Post Process: Slony (OSX)  *"
+    echo "*******************************"
 
     PG_STAGING=$PG_PATH_OSX/Slony/staging/osx
 
@@ -145,16 +156,38 @@ _postprocess_Slony_osx() {
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/pg-launchSlonyDocs.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/pg-launchSlonyDocs.icns)"
 
+    if [ -f installer_1.xml ]; then
+        rm -f installer_1.xml
+    fi
+
+    if [ ! -f $WD/scripts/risePrivileges ]; then
+        cp installer.xml installer_1.xml
+        _replace "<requireInstallationByRootUser>\${admin_rights}</requireInstallationByRootUser>" "<requireInstallationByRootUser>1</requireInstallationByRootUser>" installer_1.xml
+
+        # Build the installer (for the root privileges required)
+        echo Building the installer with the root privileges required
+        "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
+        cp $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/Contents/MacOS/Slony_I_PG$PG_CURRENT_VERSION $WD/scripts/risePrivileges || _die "Failed to copy the privileges escalation applet"
+
+        rm -rf $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app
+    fi
+
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
+
+    # Using own scripts for extract-only mode
+    cp -f $WD/scripts/risePrivileges $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/Contents/MacOS/Slony_I_PG$PG_CURRENT_VERSION
+    chmod a+x $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/Contents/MacOS/Slony_I_PG$PG_CURRENT_VERSION
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ Slony_I_PG$PG_CURRENT_VERSION $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
+    chmod a+x $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/Contents/MacOS/installbuilder.sh
 
     # Zip up the output
     cd $WD/output
 	PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
     zip -r slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.zip slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/ || _die "Failed to zip the installer bundle"
     rm -rf slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/ || _die "Failed to remove the unpacked installer bundle"
- 
-    
+
     cd $WD
 }
 

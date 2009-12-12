@@ -6,6 +6,10 @@
 
 _prep_PostGIS_osx() {
       
+    echo "********************************"
+    echo "*  Pre Process: PostGIS (OSX)  *"
+    echo "********************************"
+
     # Enter the source directory and cleanup if required
     cd $WD/PostGIS/source
 
@@ -293,6 +297,10 @@ _build_postgis() {
 
 _build_PostGIS_osx() {
 
+    echo "**************************"
+    echo "*  Build: PostGIS (OSX)  *"
+    echo "**************************"
+
     PG_STAGING=$PG_PATH_OSX/PostGIS/staging/osx
     PG_CACHING=$PG_PATH_OSX/PostGIS/caching/osx
     POSTGIS_MAJOR_VERSION=`echo $PG_VERSION_POSTGIS | cut -f1,2 -d "."`
@@ -413,12 +421,15 @@ _build_PostGIS_osx() {
 }
     
 
-
 ################################################################################
 # PostGIS Post-Process
 ################################################################################
 
 _postprocess_PostGIS_osx() {
+
+    echo "*********************************"
+    echo "*  Post Process: PostGIS (OSX)  *"
+    echo "*********************************"
 
     PG_STAGING=$PG_PATH_OSX/PostGIS/staging/osx    
 
@@ -452,8 +463,33 @@ _postprocess_PostGIS_osx() {
     cp $PG_PATH_OSX/PostGIS/resources/pg-launchPostGISJDBCDocs.icns $PG_PATH_OSX/PostGIS/staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchJdbcDocs.icns)"
 
     cd $PG_PATH_OSX/PostGIS/
+
+    if [ -f installer_1.xml ]; then
+        rm -f installer_1.xml
+    fi
+
+    if [ ! -f $WD/scripts/risePrivileges ]; then
+        cp installer.xml installer_1.xml
+        _replace "<requireInstallationByRootUser>\${admin_rights}</requireInstallationByRootUser>" "<requireInstallationByRootUser>1</requireInstallationByRootUser>" installer_1.xml
+
+        # Build the installer (for the root privileges required)
+        echo Building the installer with the root privileges required
+        "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
+        cp $WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app/Contents/MacOS/PostGIS_PG$PG_CURRENT_VERSION $WD/scripts/risePrivileges || _die "Failed to copy the privileges escalation applet"
+
+        rm -rf $WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app
+    fi
+
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
+
+    # Using own scripts for extract-only mode
+    cp -f $WD/scripts/risePrivileges $WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app/Contents/MacOS/PostGIS_PG$PG_CURRENT_VERSION
+    chmod a+x $WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app/Contents/MacOS/PostGIS_PG$PG_CURRENT_VERSION
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ PostGIS_PG$PG_CURRENT_VERSION $WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
+    chmod a+x $WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app/Contents/MacOS/installbuilder.sh
+
 
     # Zip up the output
     cd $WD/output

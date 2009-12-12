@@ -8,7 +8,7 @@
     <!-- Product Specific Options -->
     <productComments>JDBC drivers for PostgreSQL, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
-    <requireInstallationByRootUser>1</requireInstallationByRootUser>
+    <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
     <!-- The options are used for RPM registration -->
     <description>JDBC Drivers for PostgreSQL </description>
     <summary>JDBC drivers for PostgreSQL, packaged by EnterpriseDB</summary>
@@ -28,6 +28,7 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+    <windowsSoftwareRegistryPrefix/>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
@@ -43,7 +44,7 @@
         </language>
     </customLanguageFileList>
     <preShowHelpActionList>
-    	<!-- MAC : Set the default installation directory -->
+        <!-- MAC : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
@@ -83,7 +84,7 @@
             </ruleList>
         </setInstallerVariable>
     </preShowHelpActionList>
-  
+
     <!-- Prebuild Actons-->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>
@@ -94,8 +95,10 @@
       </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
+        <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PGJDBC" />
-	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
+        <setInstallerVariable name="pgJdbcVersion"  persist="1" value=""/>
+        <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
           <text>Unknown Error</text>
@@ -158,7 +161,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-	<!-- MAC : Set the default installation directory -->
+        <!-- MAC : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
@@ -199,227 +202,262 @@
         </setInstallerVariable>
     </initializationActionList>
     <preInstallationActionList>
-        <!-- Creates the ini file if not exits -->
-        <touchFile path="/etc/postgres-reg.ini">
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </touchFile>
-        <!-- LIN & MAC : Get the branding & check Previous Installation of pgJDBC-->
         <actionGroup>
             <actionList>
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pgJDBC</section>
-                    <key>Branding</key>
-                    <variable>iBranding</variable>
-                </iniFileGet>
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pgJDBC</section>
-                    <key>Version</key>
-                    <variable>pgJdbcVersion</variable>
-                </iniFileGet>
+                <setInstallerVariable name="branding" value=""/>
+                <!-- Do not create uninstaller in case of extract-only mode -->
+                <setInstallerVariable name="createUninstaller" value="0" persist="1"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <isTrue value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
 
-        <!-- WIN : Check Previous Installation of pgJDBC-->
+        <!-- Do not perform the below actions in case of extract-only mode -->
         <actionGroup>
             <actionList>
-                <!-- Get the branding -->
-                <registryGet>
-                    <name>Branding</name>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgJDBC</key>
-                    <variable>iBranding</variable>
-                </registryGet> 
-                <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgJDBC</key>
-                    <name>Version</name>
-                    <variable>pgJdbcVersion</variable>
-                </registryGet>
+
+                <!-- Abort installation if not super-user and not running in extract-only mode-->
+                <throwError text="${msg(Installer.Warning.RootPrivileges)}">
+                    <ruleList>
+                       <isFalse value="${installer_is_root_install}"/>
+                    </ruleList>
+                </throwError>
+                <setInstallerVariable name="windowsSoftwareRegistryPrefix" value="${vendor}\${fullName}" persist="1"/>
+
+                <!-- Creates the ini file if not exits -->
+                <touchFile path="/etc/postgres-reg.ini">
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </touchFile>
+                <!-- LIN & MAC : Get the branding & check Previous Installation of pgJDBC-->
+                <actionGroup>
+                    <actionList>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>pgJDBC</section>
+                            <key>Branding</key>
+                            <variable>iBranding</variable>
+                        </iniFileGet>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>pgJDBC</section>
+                            <key>Version</key>
+                            <variable>pgJdbcVersion</variable>
+                        </iniFileGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <!-- WIN : Check Previous Installation of pgJDBC-->
+                <actionGroup>
+                    <actionList>
+                        <!-- Get the branding -->
+                        <registryGet>
+                            <name>Branding</name>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgJDBC</key>
+                            <variable>iBranding</variable>
+                        </registryGet>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgJDBC</key>
+                            <name>Version</name>
+                            <variable>pgJdbcVersion</variable>
+                        </registryGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <!-- If there appears to be an existing installation, with no Branding value. -->
+                <!-- force the default value. Otherwise, set the branding to whatever we read, -->
+                <!-- or, set the default -->
+
+                <!-- Existing, old install (version, but no branding) -->
+                <setInstallerVariable>
+                    <name>branding</name>
+                    <persist>0</persist>
+                    <value>PostgreSQL</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${pgJdbcVersion}</text>
+                            <value></value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${iBranding}</text>
+                            <value></value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <!-- Existing install, with branding -->
+                <setInstallerVariable>
+                    <name>branding</name>
+                    <persist>0</persist>
+                    <value>${iBranding}</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${iBranding}</text>
+                            <value></value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <!-- New install, nothing set on the command line -->
+                <setInstallerVariable>
+                    <name>branding</name>
+                    <persist>0</persist>
+                    <value>PostgreSQL</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${branding}</text>
+                            <value></value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <logMessage>
+                    <text>Using branding: ${branding}</text>
+                </logMessage>
+                <!-- Set the installation directory in case of re-install/upgrade -->
+                <actionGroup>
+                    <actionList>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>pgJDBC</section>
+                            <key>InstallationDirectory</key>
+                            <variable>installdir</variable>
+                        </iniFileGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${pgJdbcVersion}</text>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <!-- WIN: Set the installation directory in case of re-install/upgrade -->
+                <actionGroup>
+                    <actionList>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgJDBC</key>
+                            <name>Location</name>
+                            <variable>installdir</variable>
+                        </registryGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${pgJdbcVersion}</text>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
 
-	<!-- If there appears to be an existing installation, with no Branding value. --> 
-	<!-- force the default value. Otherwise, set the branding to whatever we read, -->
-	<!-- or, set the default -->
-	
-	<!-- Existing, old install (version, but no branding) -->
-	<setInstallerVariable>
-		<name>branding</name>
-		<persist>0</persist>
-		<value>PostgreSQL</value>
-		<ruleList>
-			<compareText>
-				<logic>does_not_equal</logic>
-				<text>${pgJdbcVersion}</text>
-				<value></value>
-			</compareText>
-			<compareText>
-				<logic>equals</logic>
-				<text>${iBranding}</text>
-				<value></value>
-			</compareText>
-		</ruleList>
-	</setInstallerVariable>
-	
-	<!-- Existing install, with branding -->
-	<setInstallerVariable>
-		<name>branding</name>
-		<persist>0</persist>
-		<value>${iBranding}</value>
-		<ruleList>
-			<compareText>
-				<logic>does_not_equal</logic>
-				<text>${iBranding}</text>
-				<value></value>
-			</compareText>
-		</ruleList>
-	</setInstallerVariable>
-	
-	<!-- New install, nothing set on the command line -->
-	<setInstallerVariable>
-		<name>branding</name>
-		<persist>0</persist>
-		<value>PostgreSQL</value>
-		<ruleList>
-			<compareText>
-				<logic>equals</logic>
-				<text>${branding}</text>
-				<value></value>
-			</compareText>
-		</ruleList>
-	</setInstallerVariable>
-	
-        <logMessage>
-            <text>Using branding: ${branding}</text>
-        </logMessage>
-        <!-- Set the installation directory in case of re-install/upgrade -->
-        <actionGroup>
-            <actionList>
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pgJDBC</section>
-                    <key>InstallationDirectory</key>
-                    <variable>installdir</variable>
-                </iniFileGet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${pgJdbcVersion}</text>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-   
-        <!-- WIN: Set the installation directory in case of re-install/upgrade -->
-        <actionGroup>
-            <actionList>
-                <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgJDBC</key>
-                    <name>Location</name>
-                    <variable>installdir</variable>
-                </registryGet> 
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${pgJdbcVersion}</text>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-  
     </preInstallationActionList>
     <postInstallationActionList>
         <actionGroup>
             <actionList>
+                <actionGroup>
+                    <actionList>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>pgJDBC</section>
+                            <key>Description</key>
+                            <value>${msg(install.summary)}</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>pgJDBC</section>
+                            <key>InstallationDirectory</key>
+                            <value>${installdir}</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>pgJDBC</section>
+                            <key>Version</key>
+                            <value>${product_version}</value>
+                        </iniFileSet>
+                        <runProgram>
+                            <program>${installdir}/installer/pgjdbc/createshortcuts.sh</program>
+                            <programArguments>"${installdir}" "${branding}"</programArguments>
+                            <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                            <workingDirectory>${installdir}/installer/pgjdbc</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- Branding info -->
+                <logMessage>
+                    <text>Write the branding to the ini file...</text>
+                </logMessage>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
                     <section>pgJDBC</section>
-                    <key>Description</key>
-                    <value>${msg(install.summary)}</value>
+                    <key>Branding</key>
+                    <value>${branding}</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
                 </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pgJDBC</section>
-                    <key>InstallationDirectory</key>
-                    <value>${installdir}</value>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pgJDBC</section>
-                    <key>Version</key>
-                    <value>${product_version}</value>
-                </iniFileSet>
-                <runProgram>
-                    <program>${installdir}/installer/pgjdbc/createshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${branding}"</programArguments>
-                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
-                    <workingDirectory>${installdir}/installer/pgjdbc</workingDirectory>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                </runProgram>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgJDBC</key>
+                    <name>Branding</name>
+                    <value>${branding}</value>
+                </registrySet>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-        <!-- Branding info -->
-        <logMessage>
-            <text>Write the branding to the ini file...</text>
-        </logMessage>
-        <iniFileSet>
-            <file>/etc/postgres-reg.ini</file>
-            <section>pgJDBC</section>
-            <key>Branding</key>
-            <value>${branding}</value>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </iniFileSet>
-        <registrySet>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgJDBC</key>
-            <name>Branding</name>
-            <value>${branding}</value>
-        </registrySet>
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
@@ -650,13 +688,18 @@
                     <runInTerminal>0</runInTerminal>
                     <url>http://jdbc.postgresql.org/</url>
                     <windowsIcon>${installdir}\scripts\images\pg-launchPgJDBC.ico</windowsIcon>
+                    <ruleList>
+                        <isTrue value="${admin_rights}"/>
+                    </ruleList>
                  </startMenuLinkShortcut>  
             </startMenuShortcutList>
         </component>
     </componentList>
     <!-- Install Directory -->
     <parameterList>
-	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+        <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
+        <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
+        <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <directoryParameter>
             <name>installdir</name>
@@ -677,7 +720,7 @@
                     <value/>
                 </compareText>
             </ruleList>
-	    <!-- Validating whether installdir is empty -->
+            <!-- Validating whether installdir is empty -->
             <validationActionList>
                 <actionGroup>
                     <actionList>
@@ -716,7 +759,7 @@
                            <value>windows</value>
                        </compareText>
                     </ruleList>
-	        </actionGroup>
+                </actionGroup>
                 <!-- Validating whether installdir is valid (Windows) -->
                 <actionGroup>
                    <actionList>
@@ -741,17 +784,18 @@
                  </actionGroup>
             </postShowPageActionList>
         </directoryParameter>
-	<!-- Explain that we're using an existing installation directory -->
+        <!-- Explain that we're using an existing installation directory -->
         <labelParameter>
             <name>upgrade</name>
             <title>${msg(upgrade.existing.installation.title)}</title>
             <description>${msg(upgrade.existing.installation.description)}</description>
             <ruleList>
-		<compareText>
+                <compareText>
                     <text>${pgJdbcVersion}</text>
                     <logic>does_not_equal</logic>
                     <value/>
                 </compareText>
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </labelParameter>
     </parameterList>
