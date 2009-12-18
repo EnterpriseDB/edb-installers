@@ -29,6 +29,7 @@
   <uninstallerName>uninstall-${product_shortname}</uninstallerName>
   <outputDirectory>../output</outputDirectory>
   <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+  <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
 
   <!-- Images -->
   <disableSplashScreen>1</disableSplashScreen>
