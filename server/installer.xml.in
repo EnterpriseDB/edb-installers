@@ -1969,7 +1969,7 @@
                 <registrySet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
                     <name>Version</name>
-                    <value>${product_version}</value>
+                    <value>PG_MAJOR_VERSION.PG_MINOR_VERSION</value>
                 </registrySet>
                 <!-- Shortcuts created ? -->
                 <iniFileSet>
