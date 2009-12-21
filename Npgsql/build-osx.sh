@@ -7,6 +7,10 @@
 
 _prep_Npgsql_osx() {
 
+    echo "*******************************"
+    echo "*  Pre Process: Npgsql (OSX)  *"
+    echo "*******************************"
+
     # Enter the source directory and cleanup if required
     cd $WD/Npgsql/source
 
@@ -52,6 +56,10 @@ _build_Npgsql_osx() {
 ################################################################################
 
 _postprocess_Npgsql_osx() {
+
+    echo "********************************"
+    echo "*  Post Process: Npgsql (OSX)  *"
+    echo "********************************"
  
     cp -R $WD/Npgsql/source/Npgsql.osx/* $WD/Npgsql/staging/osx || _die "Failed to copy the Npgsql Source into the staging directory"
     chmod -R ugo+rx $WD/Npgsql/staging/osx/docs
@@ -73,8 +81,31 @@ _postprocess_Npgsql_osx() {
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/*.icns)"
 
+    if [ -f installer_1.xml ]; then
+        rm -f installer_1.xml
+    fi
+
+    if [ ! -f $WD/scripts/risePrivileges ]; then
+        cp installer.xml installer_1.xml
+        _replace "<requireInstallationByRootUser>\${admin_rights}</requireInstallationByRootUser>" "<requireInstallationByRootUser>1</requireInstallationByR
+
+        # Build the installer (for the root privileges required)
+        echo Building the installer with the root privileges required
+        "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
+        cp $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/Contents/MacOS/Npgsql $WD/scripts/risePrivileges || _die "Failed to copy the pri
+
+        rm -rf $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app
+    fi
+
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
+
+    # Using own scripts for extract-only mode
+    cp -f $WD/scripts/risePrivileges $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/Contents/MacOS/Npgsql
+    chmod a+x $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/Contents/MacOS/Npgsql
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ Npgsql $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace @@PROJECTNAME@@ with Npgsql ($WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/Contents/MacOS/installbuilder.sh)"
+    chmod a+x $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/Contents/MacOS/installbuilder.sh
 
     # Zip up the output
     cd $WD/output

@@ -8,7 +8,7 @@
     <!-- Product Specific Options -->
     <productComments>PgBouncer: Connection pooler for PostgreSQL, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
-    <requireInstallationByRootUser>1</requireInstallationByRootUser>
+    <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
     <!-- The options are used for RPM registration -->
     <description>PgBouncer: Connection pooler for PostgreSQL </description>
     <summary>PgBouncer: Connection pooler for PostgreSQL, packaged by EnterpriseDB</summary>
@@ -28,6 +28,7 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+    <windowsSoftwareRegistryPrefix/>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
@@ -100,6 +101,7 @@
       </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
+        <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PGBOUNCER" />
 		<!-- Set the default values -->
 		<setInstallerVariable name="defaultpghost" value="localhost"/>
@@ -221,63 +223,30 @@
         </setInstallerVariable>
     </initializationActionList>
     <preInstallationActionList>
-        <!-- Creates the ini file if not exits -->
-        <touchFile path="/etc/postgres-reg.ini">
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </touchFile>
-        <!-- LIN & MAC : Get the check Previous Installation of pgbouncer-->
         <actionGroup>
-            <actionList>
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pgbouncer</section>
-                    <key>Version</key>
-                    <variable>pgbouncerVersion</variable>
-                </iniFileGet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
+             <actionList>
+                 <setInstallerVariable name="branding" value=""/>
+                 <!-- Do not create uninstaller in case of extract-only mode -->
+                 <setInstallerVariable name="createUninstaller" value="0" persist="1"/>
+             </actionList>
+             <ruleList>
+                 <isTrue value="${extract_mode}"/>
+             </ruleList>
         </actionGroup>
 
-        <!-- WIN : Check Previous Installation of pgbouncer-->
+        <!-- Do not perform the below actions in case of extract-only mode -->
         <actionGroup>
             <actionList>
-                <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgbouncer</key>
-                    <name>Version</name>
-                    <variable>pgbouncerVersion</variable>
-                </registryGet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
+                <!-- Abort installation if not super-user and not running in extract-only mode-->
+                <throwError text="${msg(Installer.Warning.RootPrivileges)}">
+                    <ruleList>
+                       <isFalse value="${installer_is_root_install}"/>
+                    </ruleList>
+                </throwError>
+                <setInstallerVariable name="windowsSoftwareRegistryPrefix" value="${vendor}\${fullName}" persist="1"/>
 
-        <actionGroup>
-            <actionList>
-                <!-- LIN & MAC: Set the system_user in case of re-install/upgrade -->
-                <!-- On Beta version, we have used System_User variable.
-                     For consistency, we renamed System_User to SystemUser -->
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pgbouncer</section>
-                    <key>System_User</key>
-                    <variable>system_user</variable>
+                <!-- Creates the ini file if not exits -->
+                <touchFile path="/etc/postgres-reg.ini">
                     <ruleList>
                         <compareText>
                             <logic>does_not_equal</logic>
@@ -285,31 +254,352 @@
                             <value>windows</value>
                         </compareText>
                     </ruleList>
-                </iniFileGet>
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pgbouncer</section>
-                    <key>SystemUser</key>
-                    <variable>system_user</variable>
+                </touchFile>
+                <!-- LIN & MAC : Get the check Previous Installation of pgbouncer-->
+                <actionGroup>
+                    <actionList>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>pgbouncer</section>
+                            <key>Version</key>
+                            <variable>pgbouncerVersion</variable>
+                        </iniFileGet>
+                    </actionList>
                     <ruleList>
                         <compareText>
                             <logic>does_not_equal</logic>
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+                    </ruleList>
+                </actionGroup>
+        
+                <!-- WIN : Check Previous Installation of pgbouncer-->
+                <actionGroup>
+                    <actionList>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgbouncer</key>
+                            <name>Version</name>
+                            <variable>pgbouncerVersion</variable>
+                        </registryGet>
+                    </actionList>
+                    <ruleList>
                         <compareText>
                             <logic>equals</logic>
-                            <text>${system_user}</text>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+        
+                <actionGroup>
+                    <actionList>
+                        <!-- LIN & MAC: Set the system_user in case of re-install/upgrade -->
+                        <!-- On Beta version, we have used System_User variable.
+                             For consistency, we renamed System_User to SystemUser -->
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>pgbouncer</section>
+                            <key>System_User</key>
+                            <variable>system_user</variable>
+                            <ruleList>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>${platform_name}</text>
+                                    <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </iniFileGet>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>pgbouncer</section>
+                            <key>SystemUser</key>
+                            <variable>system_user</variable>
+                            <ruleList>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>${platform_name}</text>
+                                    <value>windows</value>
+                                </compareText>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>${system_user}</text>
+                                    <value/>
+                                </compareText>
+                            </ruleList>
+                        </iniFileGet>
+                        <!-- LIN & MAC: Set the installation directory in case of re-install/upgrade -->
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>pgbouncer</section>
+                            <key>InstallationDirectory</key>
+                            <variable>installdir</variable>
+                            <ruleList>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>${platform_name}</text>
+                                    <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </iniFileGet>
+                        <!-- WIN: Set the installation directory in case of re-install/upgrade -->
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgbouncer</key>
+                            <name>Location</name>
+                            <variable>installdir</variable>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>${platform_name}</text>
+                                    <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </registryGet> 
+                        <!-- WIN: Stop the pgbouncer service -->    
+                        <stopWindowsService>
+                            <serviceName>pgbouncer</serviceName>
+                            <displayName>pgbouncer</displayName>
+                            <abortOnError>0</abortOnError>
+                            <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>${platform_name}</text>
+                                    <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </stopWindowsService>  
+                        <!-- Mac: Stop the pgbouncer service -->    
+                        <runProgram>
+                            <program>launchctl</program>
+                            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist</programArguments>
+                            <abortOnError>0</abortOnError>
+                            <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>${platform_name}</text>
+                                    <value>osx</value>
+                                </compareText>
+                            </ruleList>
+                        </runProgram>
+                        <!-- Linux: Stop the pgbouncer service -->    
+                        <runProgram>
+                            <program>/etc/init.d/pgbouncer</program>
+                            <programArguments>stop</programArguments>
+                            <abortOnError>0</abortOnError>
+                            <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+                            <ruleList>
+                                <compareText>
+                                    <logic>contains</logic>
+                                    <text>${platform_name}</text>
+                                    <value>linux</value>
+                                </compareText>
+                            </ruleList>
+                        </runProgram>
+                        <copyFile>
+                            <origin>${installdir}/share/pgbouncer.ini</origin>
+                            <destination>${installdir}/share/pgbouncer.ini.bak1</destination>
+                        </copyFile>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${pgbouncerVersion}</text>
                             <value/>
                         </compareText>
                     </ruleList>
-                </iniFileGet>
-                <!-- LIN & MAC: Set the installation directory in case of re-install/upgrade -->
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pgbouncer</section>
-                    <key>InstallationDirectory</key>
-                    <variable>installdir</variable>
+                </actionGroup>
+        
+                <!-- Get a free port for pgbouncer -->
+                <getFreePort>
+                    <variable>def_listen_port</variable>
+                    <initialPort>6432</initialPort>
+                    <finalPort>65535</finalPort>
+                    <ruleList>
+                       <isTrue value="${installer_is_root_install}"/>
+                    </ruleList>
+                </getFreePort>
+            </actionList>
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+  
+    </preInstallationActionList>
+    <postInstallationActionList>
+
+        <!-- Do not perform the below actions in case of extract-only mode -->
+        <actionGroup>
+            <actionList>
+                <!-- Create a log directory -->
+                <createDirectory>
+                    <path>${installdir}/log</path>
+                    <ruleList>
+                        <fileTest>
+                            <path>${installdir}/log</path>
+                            <condition>not_exists</condition>
+                        </fileTest>
+                        <compareText>
+                            <text>${platform_name}</text>
+                            <logic>equals</logic>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </createDirectory>
+
+                <!-- Perform substitution in the config and ctl files -->
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="pghost" value="127.0.0.1">
+                            <ruleList>
+                                <compareText>
+                                    <text>${pghost}</text>
+                                    <logic>equals</logic>
+                                    <value>localhost</value>
+                                </compareText>
+                            </ruleList>
+                        </setInstallerVariable>
+                        <substitute>
+                            <files>${installdir}/share/pgbouncer.ini</files>
+                            <substitutionList>
+                                <substitution>
+                                    <pattern>@@CON@@</pattern>
+                                    <value>postgres = host=${pghost} port=${pgport}</value>
+                                </substitution>
+                                <substitution>
+                                    <pattern>@@LISTENADDR@@</pattern>
+                                    <value>${client_ips}</value>
+                                </substitution>
+                                <substitution>
+                                    <pattern>@@LISTENPORT@@</pattern>
+                                    <value>${pgbouncer_port}</value>
+                                </substitution>
+                                <substitution>
+                                    <pattern>@@ADMINUSERS@@</pattern>
+                                    <value>${pguser}</value>
+                                </substitution>
+                                <substitution>
+                                    <pattern>@@STATSUSERS@@</pattern>
+                                    <value>${pguser}</value>
+                                </substitution>
+                            </substitutionList>
+                        </substitute>
+                        <substitute>
+                            <files>${installdir}/share/pgbouncer.ini</files>
+                            <substitutionList>
+                                <substitution>
+                                    <pattern>@@LOGFILE@@</pattern>
+                                    <value>/var/log/pgbouncer/pgbouncer.log</value>
+                                </substitution>
+                                <substitution>
+                                    <pattern>@@PIDFILE@@</pattern>
+                                    <value>${system_temp_directory}/pgbouncer.pid</value>
+                                </substitution>
+                                <substitution>
+                                    <pattern>@@AUTHFILE@@</pattern>
+                                    <value>${installdir}/etc/userlist.txt</value>
+                                </substitution>
+                            </substitutionList>
+                            <ruleList>
+                                <compareText>
+                                    <text>${platform_name}</text>
+                                    <logic>does_not_equal</logic>
+                                    <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </substitute>
+                        <substitute>
+                            <files>${installdir}\share\pgbouncer.ini</files>
+                            <substitutionList>
+                                <substitution>
+                                    <pattern>@@LOGFILE@@</pattern>
+                                    <value>${installdir}\log\pgbouncer.log</value>
+                                </substitution>
+                                <substitution>
+                                    <pattern>@@PIDFILE@@</pattern>
+                                    <value>${installdir}\log\pgbouncer.pid</value>
+                                </substitution>
+                                <substitution>
+                                    <pattern>@@AUTHFILE@@</pattern>
+                                    <value>${installdir}\etc\userlist.txt</value>
+                                </substitution>
+                            </substitutionList>
+                            <ruleList>
+                                <compareText>
+                                    <text>${platform_name}</text>
+                                    <logic>equals</logic>
+                                    <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </substitute>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${pgbouncerVersion}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- Create etc directory for userlist.txt file -->
+                <createDirectory>
+                    <path>${installdir}/etc</path>
+                    <ruleList>
+                        <fileTest>
+                            <path>${installdir}/etc</path>
+                            <condition>not_exists</condition>
+                        </fileTest>
+                    </ruleList>
+                </createDirectory>
+                <!-- Create the userlist.txt file -->
+                <writeFile>
+                    <path>${installdir}/etc/userlist.txt</path>
+                    <text>"${pguser}" "${pgpassword}"</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${pgbouncerVersion}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </writeFile>
+                <changeOwnerAndGroup>
+                    <files>${installdir}/etc/userlist.txt</files>
+                    <owner>${system_user}</owner>
+                </changeOwnerAndGroup>
+                <changePermissions>
+                    <files>${installdir}/etc/userlist.txt</files>
+                    <permissions>700</permissions>
+                </changePermissions>
+                <!-- Write pgbouncer details to ini file -->
+                <actionGroup>
+                    <actionList>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>pgbouncer</section>
+                            <key>Description</key>
+                            <value>${msg(install.summary)}</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>pgbouncer</section>
+                            <key>InstallationDirectory</key>
+                            <value>${installdir}</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>pgbouncer</section>
+                            <key>Version</key>
+                            <value>${product_version}</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>pgbouncer</section>
+                            <key>SystemUser</key>
+                            <value>${system_user}</value>
+                        </iniFileSet>
+                    </actionList>
                     <ruleList>
                         <compareText>
                             <logic>does_not_equal</logic>
@@ -317,394 +607,215 @@
                             <value>windows</value>
                         </compareText>
                     </ruleList>
-                </iniFileGet>
-                <!-- WIN: Set the installation directory in case of re-install/upgrade -->
-                <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgbouncer</key>
-                    <name>Location</name>
-                    <variable>installdir</variable>
+                </actionGroup>
+        
+                <!-- Register pgbouncer service -->
+                 <runProgram>
+                    <program>${installdir}\installer\pgbouncer\startupcfg.bat</program>
+                    <programArguments>"${installdir}"</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
                     <ruleList>
                         <compareText>
                             <logic>equals</logic>
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
-                    </ruleList>
-                </registryGet> 
-                <!-- WIN: Stop the pgbouncer service -->    
-                <stopWindowsService>
-                    <serviceName>pgbouncer</serviceName>
-                    <displayName>pgbouncer</displayName>
-                    <abortOnError>0</abortOnError>
-                    <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
-                    <ruleList>
                         <compareText>
                             <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </stopWindowsService>  
-                <!-- Mac: Stop the pgbouncer service -->    
-                <runProgram>
-                    <program>launchctl</program>
-                    <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist</programArguments>
-                    <abortOnError>0</abortOnError>
-                    <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>osx</value>
+                            <text>${pgbouncerVersion}</text>
+                            <value/>
                         </compareText>
                     </ruleList>
                 </runProgram>
-                <!-- Linux: Stop the pgbouncer service -->    
+                <actionGroup>
+                    <actionList>
+                        <copyFile>
+                           <origin>${installdir}/share/pgbouncer.ini.bak1</origin>
+                           <destination>${installdir}/share/pgbouncer.ini</destination>
+                        </copyFile>
+                        <deleteFile>
+                           <path>${installdir}/share/pgbouncer.ini.bak1</path>
+                        </deleteFile>
+                    </actionList>
+                    <ruleList>
+                        <fileTest>
+                            <path>${installdir}/share/pgbouncer.ini.bak1</path>
+                            <condition>exists</condition>
+                        </fileTest>
+                    </ruleList>
+                </actionGroup>
+                <!-- LINUX | MAC: Install pgbouncer service -->
+                <runProgram>
+                    <program>${installdir}/installer/pgbouncer/startupcfg.sh</program>
+                    <programArguments>${installdir} ${system_user}</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <customErrorMessage>${msg(pgbouncer.linux.service.error)}</customErrorMessage>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+        
+                <!-- WIN: Start the pgbouncer service -->    
+                <startWindowsService>
+                    <serviceName>pgbouncer</serviceName>
+                    <displayName>pgbouncer</displayName>
+                    <abortOnError>0</abortOnError>
+                    <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${autostart}</text>
+                            <value>yes</value>
+                        </compareText>
+                    </ruleList>
+                </startWindowsService>  
+        
+                <!-- Linux: Start the pgbouncer service -->    
                 <runProgram>
                     <program>/etc/init.d/pgbouncer</program>
-                    <programArguments>stop</programArguments>
+                    <programArguments>start</programArguments>
                     <abortOnError>0</abortOnError>
-                    <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+                    <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
                     <ruleList>
                         <compareText>
                             <logic>contains</logic>
                             <text>${platform_name}</text>
                             <value>linux</value>
                         </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${autostart}</text>
+                            <value>yes</value>
+                        </compareText>
                     </ruleList>
                 </runProgram>
-                <copyFile>
-                    <origin>${installdir}/share/pgbouncer.ini</origin>
-                    <destination>${installdir}/share/pgbouncer.ini.bak1</destination>
-                </copyFile>
+        
+                <!-- MAC: Start the pgbouncer service -->    
+                <runProgram>
+                    <program>launchctl</program>
+                    <programArguments>load /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${autostart}</text>
+                            <value>yes</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+        
+                <runProgram>
+                    <program>cscript</program>
+                    <programArguments>//NoLogo "${installdir}/installer/pgbouncer/securefile.vbs" "${installdir}\etc\userlist.txt" "${system_username}"</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <customErrorMessage>${msg(error.file.notsecure)}</customErrorMessage>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+        
+                <deleteFile path="${installdir}/instscripts" />
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${pgbouncerVersion}</text>
-                    <value/>
-                </compareText>
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
 
-        <!-- Get a free port for pgbouncer -->
-        <getFreePort>
-            <variable>def_listen_port</variable>
-            <initialPort>6432</initialPort>
-            <finalPort>65535</finalPort>
-            <ruleList>
-               <isTrue value="${installer_is_root_install}"/>
-            </ruleList>
-        </getFreePort>
-  
-    </preInstallationActionList>
-    <postInstallationActionList>
-
-       <!-- Create a log directory -->
-       <createDirectory>
-           <path>${installdir}/log</path>
-           <ruleList>
-               <fileTest>
-                   <path>${installdir}/log</path>
-                   <condition>not_exists</condition>
-               </fileTest>
-               <compareText>
-                   <text>${platform_name}</text>
-                   <logic>equals</logic>
-                   <value>windows</value>
-               </compareText>
-           </ruleList>
-       </createDirectory>
-
-        <!-- Perform substitution in the config and ctl files -->
         <actionGroup>
             <actionList>
+                <!-- Perform substitution in the config and ctl files -->
                 <setInstallerVariable name="pghost" value="127.0.0.1">
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
-                        <compareText>
-                            <text>${pghost}</text>
-                            <logic>equals</logic>
-                            <value>localhost</value>
-                        </compareText>
+                        <compareText text="${pghost}" logic="equals" value="localhost"/>
+                        <compareText text="${pghost}" logic="equals" value=""/>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="pgport" value="5432">
+                    <ruleList>
+                        <compareText text="${pgport}" logic="equals" value=""/>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="client_ips" value="*">
+                    <ruleList>
+                        <compareText text="${client_ips}" logic="equals" value=""/>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="pguser" value="postgres">
+                    <ruleList>
+                        <compareText text="${pguser}" logic="equals" value=""/>
                     </ruleList>
                 </setInstallerVariable>
                 <substitute>
                     <files>${installdir}/share/pgbouncer.ini</files>
                     <substitutionList>
-                        <substitution>
-                            <pattern>@@CON@@</pattern>
-                            <value>postgres = host=${pghost} port=${pgport}</value>
-                        </substitution>
-                        <substitution>
-                            <pattern>@@LISTENADDR@@</pattern>
-                            <value>${client_ips}</value>
-                        </substitution>
-                        <substitution>
-                            <pattern>@@LISTENPORT@@</pattern>
-                            <value>${pgbouncer_port}</value>
-                        </substitution>
-                        <substitution>
-                            <pattern>@@ADMINUSERS@@</pattern>
-                            <value>${pguser}</value>
-                        </substitution>
-                        <substitution>
-                            <pattern>@@STATSUSERS@@</pattern>
-                            <value>${pguser}</value>
-                        </substitution>
+                        <substitution pattern="@@CON@@" value="postgres = host=${pghost} port=${pgport}"/>
+                        <substitution pattern="@@LISTENADDR@@" value="${client_ips}"/>
+                        <substitution pattern="@@LISTENPORT@@" value="${pgbouncer_port}"/>
+                        <substitution pattern="@@ADMINUSERS@@" value="${pguser}"/>
+                        <substitution pattern="@@STATSUSERS@@" value="${pguser}"/>
+                        <substitution pattern="@@LOGFILE@@" value="${installdir}/log/pgbouncer.log"/>
                     </substitutionList>
                 </substitute>
                 <substitute>
                     <files>${installdir}/share/pgbouncer.ini</files>
                     <substitutionList>
-                        <substitution>
-                            <pattern>@@LOGFILE@@</pattern>
-                            <value>/var/log/pgbouncer/pgbouncer.log</value>
-                        </substitution>
-                        <substitution>
-                            <pattern>@@PIDFILE@@</pattern>
-                            <value>${system_temp_directory}/pgbouncer.pid</value>
-                        </substitution>
-                        <substitution>
-                            <pattern>@@AUTHFILE@@</pattern>
-                            <value>${installdir}/etc/userlist.txt</value>
-                        </substitution>
+                        <substitution pattern="@@PIDFILE@@" value="${installdir}/etc/pgbouncer.pid"/>
+                        <substitution pattern="@@AUTHFILE@@" value="${installdir}/etc/userlist.txt"/>
                     </substitutionList>
                     <ruleList>
-                        <compareText>
-                            <text>${platform_name}</text>
-                            <logic>does_not_equal</logic>
-                            <value>windows</value>
-                        </compareText>
+                        <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
                     </ruleList>
                 </substitute>
                 <substitute>
                     <files>${installdir}\share\pgbouncer.ini</files>
                     <substitutionList>
-                        <substitution>
-                            <pattern>@@LOGFILE@@</pattern>
-                            <value>${installdir}\log\pgbouncer.log</value>
-                        </substitution>
-                        <substitution>
-                            <pattern>@@PIDFILE@@</pattern>
-                            <value>${installdir}\log\pgbouncer.pid</value>
-                        </substitution>
-                        <substitution>
-                            <pattern>@@AUTHFILE@@</pattern>
-                            <value>${installdir}\etc\userlist.txt</value>
-                        </substitution>
+                        <substitution pattern="@@PIDFILE@@" value="${installdir}\etc\pgbouncer.pid"/>
+                        <substitution pattern="@@AUTHFILE@@" value="${installdir}\etc\userlist.txt"/>
                     </substitutionList>
                     <ruleList>
-                        <compareText>
-                            <text>${platform_name}</text>
-                            <logic>equals</logic>
-                            <value>windows</value>
-                        </compareText>
+                        <compareText text="${platform_name}" logic="equals" value="windows"/>
                     </ruleList>
                 </substitute>
+                <!-- Create etc directory for userlist.txt file -->
+                <createDirectory path="${installdir}/etc">
+                    <ruleList>
+                        <fileTest path="${installdir}/etc" condition="not_exists"/>
+                    </ruleList>
+                </createDirectory>
+
+                <touchFile path="${installdir}/etc/userlist.txt"/>
+                <changePermissions>
+                    <files>${installdir}/etc/userlist.txt</files>
+                    <permissions>700</permissions>
+                </changePermissions>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${pgbouncerVersion}</text>
-                    <value/>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- Create etc directory for userlist.txt file -->
-        <createDirectory>
-            <path>${installdir}/etc</path>
-            <ruleList>
-                <fileTest>
-                    <path>${installdir}/etc</path>
-                    <condition>not_exists</condition>
-                </fileTest>
-            </ruleList>
-        </createDirectory>
-        <!-- Create the userlist.txt file -->
-        <writeFile>
-            <path>${installdir}/etc/userlist.txt</path>
-            <text>"${pguser}" "${pgpassword}"</text>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${pgbouncerVersion}</text>
-                    <value/>
-                </compareText>
-            </ruleList>
-        </writeFile>
-        <changeOwnerAndGroup>
-            <files>${installdir}/etc/userlist.txt</files>
-            <owner>${system_user}</owner>
-        </changeOwnerAndGroup>
-        <changePermissions>
-            <files>${installdir}/etc/userlist.txt</files>
-            <permissions>700</permissions>
-        </changePermissions>
-        <!-- Write pgbouncer details to ini file -->
-        <actionGroup>
-            <actionList>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pgbouncer</section>
-                    <key>Description</key>
-                    <value>${msg(install.summary)}</value>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pgbouncer</section>
-                    <key>InstallationDirectory</key>
-                    <value>${installdir}</value>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pgbouncer</section>
-                    <key>Version</key>
-                    <value>${product_version}</value>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pgbouncer</section>
-                    <key>SystemUser</key>
-                    <value>${system_user}</value>
-                </iniFileSet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <isTrue value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
 
-        <!-- Register pgbouncer service -->
-         <runProgram>
-            <program>${installdir}\installer\pgbouncer\startupcfg.bat</program>
-            <programArguments>"${installdir}"</programArguments>
-            <abortOnError>0</abortOnError>
-            <showMessageOnError>0</showMessageOnError>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${pgbouncerVersion}</text>
-                    <value/>
-                </compareText>
-            </ruleList>
-        </runProgram>
-        <actionGroup>
-            <actionList>
-                <copyFile>
-                   <origin>${installdir}/share/pgbouncer.ini.bak1</origin>
-                   <destination>${installdir}/share/pgbouncer.ini</destination>
-                </copyFile>
-                <deleteFile>
-                   <path>${installdir}/share/pgbouncer.ini.bak1</path>
-                </deleteFile>
-            </actionList>
-            <ruleList>
-                <fileTest>
-                    <path>${installdir}/share/pgbouncer.ini.bak1</path>
-                    <condition>exists</condition>
-                </fileTest>
-            </ruleList>
-        </actionGroup>
-        <!-- LINUX | MAC: Install pgbouncer service -->
-        <runProgram>
-            <program>${installdir}/installer/pgbouncer/startupcfg.sh</program>
-            <programArguments>${installdir} ${system_user}</programArguments>
-            <abortOnError>0</abortOnError>
-            <customErrorMessage>${msg(pgbouncer.linux.service.error)}</customErrorMessage>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </runProgram>
-
-        <!-- WIN: Start the pgbouncer service -->    
-        <startWindowsService>
-            <serviceName>pgbouncer</serviceName>
-            <displayName>pgbouncer</displayName>
-            <abortOnError>0</abortOnError>
-            <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${autostart}</text>
-                    <value>yes</value>
-                </compareText>
-            </ruleList>
-        </startWindowsService>  
-
-        <!-- Linux: Start the pgbouncer service -->    
-        <runProgram>
-            <program>/etc/init.d/pgbouncer</program>
-            <programArguments>start</programArguments>
-            <abortOnError>0</abortOnError>
-            <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
-            <ruleList>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${autostart}</text>
-                    <value>yes</value>
-                </compareText>
-            </ruleList>
-        </runProgram>
-
-        <!-- MAC: Start the pgbouncer service -->    
-        <runProgram>
-            <program>launchctl</program>
-            <programArguments>load /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist</programArguments>
-            <abortOnError>0</abortOnError>
-            <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${autostart}</text>
-                    <value>yes</value>
-                </compareText>
-            </ruleList>
-        </runProgram>
-
-        <runProgram>
-            <program>cscript</program>
-            <programArguments>//NoLogo "${installdir}/installer/pgbouncer/securefile.vbs" "${installdir}\etc\userlist.txt" "${system_username}"</programArguments>
-            <abortOnError>0</abortOnError>
-            <customErrorMessage>${msg(error.file.notsecure)}</customErrorMessage>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </runProgram>
-
-        <deleteFile path="${installdir}/instscripts" />
-
-  </postInstallationActionList>
+    </postInstallationActionList>
 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
@@ -1010,307 +1121,311 @@
     </componentList>
     <parameterList>
 
-    <stringParameter cliOptionName="autostart" ask="0" cliOptionShow="0">
-          <name>autostart</name>
-          <description>AutoStart Service</description>
-          <explanation/>
-          <value/>
-          <default>yes</default>
-          <allowEmptyValue>1</allowEmptyValue>
-          <width>40</width>
-        </stringParameter>
-
-    <parameterGroup>
-      <name>pgdetails</name>
-      <title>${msg(pg.details.title)}</title>
-      <explanation>${msg(pg.details.explanation)}</explanation>
-      <value/>
-      <default/>
-      <parameterList>
-
-        <!-- Postgres Host -->
-        <stringParameter>
-          <name>pghost</name>
-          <description>Host</description>
-          <explanation/>
-          <value/>
-          <default>${defaultpghost}</default>
-          <allowEmptyValue>1</allowEmptyValue>
-          <width>40</width>
-        </stringParameter>
-  
-        <!-- Postgres User -->
-        <stringParameter>
-          <name>pguser</name>
-          <description>User Name</description>
-          <explanation/>
-          <value/>
-          <default>${defaultpguser}</default>
-          <allowEmptyValue>1</allowEmptyValue>
-          <width>40</width>
-        </stringParameter>
-
-        <!-- Postgres User Password -->
-        <passwordParameter>
-          <name>pgpassword</name>
-          <title>Password</title>
-          <description>Password</description>
-          <explanation/>
-          <value/>
-          <default>${defaultpgpassword}</default>
-          <allowEmptyValue>1</allowEmptyValue>
-          <askForConfirmation>0</askForConfirmation>
-          <descriptionRetype/>
-          <width>40</width>
-        </passwordParameter>
-
-        <!-- Postgres Port(Default 5432) -->
-        <stringParameter>
-          <name>pgport</name>
-          <description>Port</description>
-          <explanation/>
-          <value/>
-          <default>${defaultpgport}</default>
-          <allowEmptyValue>1</allowEmptyValue>
-          <width>40</width>
-        </stringParameter>
-
-        <stringParameter cliOptionName="dbname" ask="0" cliOptionShow="0">
-          <name>pgdbname</name>
-          <description>Database</description>
-          <explanation/>
-          <value/>
-          <default>${defaultpgdbname}</default>
-          <allowEmptyValue>1</allowEmptyValue>
-          <width>40</width>
-        </stringParameter>
-        
-      </parameterList>
-      <ruleList>
-          <compareText>
-              <text>${pgbouncerVersion}</text>
-              <logic>equals</logic>
+        <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
+        <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
+        <stringParameter cliOptionName="autostart" ask="0" cliOptionShow="0">
+              <name>autostart</name>
+              <description>AutoStart Service</description>
+              <explanation/>
               <value/>
-          </compareText>
-      </ruleList>
-   
-
-      <!-- Checking the validity of PostgreSQL Server Details -->
-      <validationActionList>
-        <actionGroup>
-          <actionList>
-            <throwError>
-              <text>${msg(pg.blank.error)}</text>
-            </throwError>
-          </actionList>
-          <ruleEvaluationLogic>OR</ruleEvaluationLogic>
-          <ruleList>
-            <compareText logic="equals" text="${pgport}" value=""/>
-            <compareText logic="equals" text="${pguser}" value=""/>
-            <compareText logic="equals" text="${pgpassword}" value=""/>
-            <compareText logic="equals" text="${pgdbname}" value=""/>
-          </ruleList>
-        </actionGroup>
-
-        <!-- Validate the PostgreSQL Server Details -->
-        <actionGroup>
-          <actionList>
-
-              <!-- Extract file --> 
-              <unpackDirectory>
-                  <origin>instscripts</origin>
-                  <destination>${system_temp_directory}</destination>
-                  <component>default</component>
-                  <folder>installfileslinux</folder>
-                  <ruleList>
-                      <compareText>
-                          <logic>equals</logic>
-                          <text>${platform_name}</text>
-                          <value>linux</value>
-                      </compareText>
-                  </ruleList>
-              </unpackDirectory>
-              <unpackDirectory>
-                  <origin>instscripts</origin>
-                  <destination>${system_temp_directory}</destination>
-                  <component>default</component>
-                  <folder>installfileslinux-x64</folder>
-                  <ruleList>
-                      <compareText>
-                          <logic>equals</logic>
-                          <text>${platform_name}</text>
-                          <value>linux-x64</value>
-                      </compareText>
-                  </ruleList>
-              </unpackDirectory>
-              <unpackDirectory>
-                  <origin>instscripts</origin>
-                  <destination>${system_temp_directory}</destination>
-                  <component>default</component>
-                  <folder>installfileswindows</folder>
-                  <ruleList>
-                      <compareText>
-                          <logic>equals</logic>
-                          <text>${platform_name}</text>
-                          <value>windows</value>
-                      </compareText>
-                  </ruleList>
-              </unpackDirectory>
-              <unpackFile>
-                  <origin>installer/pgbouncer/check-connection.bat</origin>
-                  <destination>${system_temp_directory}/instscripts/check-connection.bat</destination>
-                  <component>default</component>
-                  <folder>installfileswindows</folder>
-                  <ruleList>
-                      <compareText>
-                          <logic>equals</logic>
-                          <text>${platform_name}</text>
-                          <value>windows</value>
-                      </compareText>
-                  </ruleList>
-              </unpackFile>
-              <unpackDirectory>
-                  <origin>instscripts</origin>
-                  <destination>${system_temp_directory}</destination>
-                  <component>default</component>
-                  <folder>installfilesosx</folder>
-                  <ruleList>
-                      <compareText>
-                          <logic>equals</logic>
-                          <text>${platform_name}</text>
-                          <value>osx</value>
-                      </compareText>
-                  </ruleList>
-              </unpackDirectory>
-            
-            <!-- Running the Script to validate the PostgreSQL Server Details -->
-            <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
-            <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
-            <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
-            <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-            <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
-            <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts"/>
-
-            <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}/instscripts/psql</exec>
-              <execArgs>-l ${pgdbname}</execArgs>
-              <name>connection</name>
-              <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
-              <customErrorMessage>${program_stderr}</customErrorMessage>
-              <ruleList>
-                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-              </ruleList>
-            </setInstallerVariableFromScriptOutput>
-            <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}\instscripts\check-connection.bat</exec>
-              <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
-              <name>connection</name>
-              <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
-              <customErrorMessage>${program_stderr}</customErrorMessage>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
-              </ruleList>
-            </setInstallerVariableFromScriptOutput>
-            <stringModify text="${connection}" variable="connection" logic="trim"/>
-          </actionList>
-         </actionGroup> 
-      </validationActionList>   
-    </parameterGroup>
+              <default>yes</default>
+              <allowEmptyValue>1</allowEmptyValue>
+              <width>40</width>
+            </stringParameter>
     
-    <parameterGroup>
-      <name>pgbouncerdetails</name>
-      <title>${msg(pgbouncer.details.title)}</title>
-      <explanation>${msg(pgbouncer.details.explanation)}</explanation>
-      <value/>
-      <default/>
-      <parameterList>
-
-        <!-- Waiting for client request from IP(s) -->
-        <stringParameter>
-          <name>client_ips</name>
-          <description>Listening IP's (',' separated), * for all IPs</description>
-          <explanation></explanation>
+        <parameterGroup>
+          <name>pgdetails</name>
+          <title>${msg(pg.details.title)}</title>
+          <explanation>${msg(pg.details.explanation)}</explanation>
           <value/>
-          <default>*</default>
-          <allowEmptyValue>1</allowEmptyValue>
-          <width>40</width>
-        </stringParameter>
-  
-        <!-- Listening Port(Default 6432) -->
-        <stringParameter>
-          <name>pgbouncer_port</name>
-          <description>Listening Port</description>
-          <explanation/>
-          <value/>
-          <default>${def_listen_port}</default>
-          <allowEmptyValue>1</allowEmptyValue>
-          <width>40</width>
-        </stringParameter>
-
-        <!-- System User (Default postgres) -->
-        <stringParameter>
-          <name>system_user</name>
-          <description>Operating System User</description>
-          <explanation/>
-          <value/>
-          <default>postgres</default>
-          <allowEmptyValue>1</allowEmptyValue>
-          <width>40</width>
-          <ruleList>
-               <compareText>
-                    <text>${platform_name}</text>
-                    <logic>does_not_equal</logic>
-                    <value>windows</value>
-               </compareText>
-          </ruleList>
-        </stringParameter>
-     </parameterList>
-      <ruleList>
-          <compareText>
-              <text>${pgbouncerVersion}</text>
-              <logic>equals</logic>
+          <default/>
+          <parameterList>
+    
+            <!-- Postgres Host -->
+            <stringParameter>
+              <name>pghost</name>
+              <description>Host</description>
+              <explanation/>
               <value/>
-          </compareText>
-      </ruleList>
-      <validationActionList>
-        <actionGroup>
-          <actionList>
-            <throwError>
-              <text>${msg(pgbouncer.blank.error)}</text>
-            </throwError>
-          </actionList>
-          <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+              <default>${defaultpghost}</default>
+              <allowEmptyValue>1</allowEmptyValue>
+              <width>40</width>
+            </stringParameter>
+      
+            <!-- Postgres User -->
+            <stringParameter>
+              <name>pguser</name>
+              <description>User Name</description>
+              <explanation/>
+              <value/>
+              <default>${defaultpguser}</default>
+              <allowEmptyValue>1</allowEmptyValue>
+              <width>40</width>
+            </stringParameter>
+    
+            <!-- Postgres User Password -->
+            <passwordParameter>
+              <name>pgpassword</name>
+              <title>Password</title>
+              <description>Password</description>
+              <explanation/>
+              <value/>
+              <default>${defaultpgpassword}</default>
+              <allowEmptyValue>1</allowEmptyValue>
+              <askForConfirmation>0</askForConfirmation>
+              <descriptionRetype/>
+              <width>40</width>
+            </passwordParameter>
+    
+            <!-- Postgres Port(Default 5432) -->
+            <stringParameter>
+              <name>pgport</name>
+              <description>Port</description>
+              <explanation/>
+              <value/>
+              <default>${defaultpgport}</default>
+              <allowEmptyValue>1</allowEmptyValue>
+              <width>40</width>
+            </stringParameter>
+    
+            <stringParameter cliOptionName="dbname" ask="0" cliOptionShow="0">
+              <name>pgdbname</name>
+              <description>Database</description>
+              <explanation/>
+              <value/>
+              <default>${defaultpgdbname}</default>
+              <allowEmptyValue>1</allowEmptyValue>
+              <width>40</width>
+            </stringParameter>
+            
+          </parameterList>
           <ruleList>
-            <compareText logic="equals" text="${system_user}" value=""/>
-            <compareText logic="equals" text="${pgbouncer_port}" value=""/>
-            <compareText logic="equals" text="${client_ips}" value=""/>
+              <compareText>
+                  <text>${pgbouncerVersion}</text>
+                  <logic>equals</logic>
+                  <value/>
+              </compareText>
+              <isFalse value="${extract_mode}"/>
           </ruleList>
-        </actionGroup>
-        <throwError>
-            <text>${msg(pgbouncer.port.error)}</text>
-            <ruleList>
-                <portTest>
-                    <port>${pgbouncer_port}</port>
-                    <condition>cannot_bind</condition>
-                </portTest>
-            </ruleList>
-        </throwError>
-        <throwError>
-            <text>${msg(pgbouncer.user.error)}</text>
-            <ruleList>
-                <userTest>
-                    <username>${system_user}</username>
-                    <logic>not_exists</logic>
-                </userTest>
-                <compareText>
-                    <text>${platform_name}</text>
-                    <logic>does_not_equal</logic>
-                    <value>windows</value>
-               </compareText>
-            </ruleList>
-        </throwError>  
-      </validationActionList>
-    </parameterGroup>
+       
+    
+          <!-- Checking the validity of PostgreSQL Server Details -->
+          <validationActionList>
+            <actionGroup>
+              <actionList>
+                <throwError>
+                  <text>${msg(pg.blank.error)}</text>
+                </throwError>
+              </actionList>
+              <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+              <ruleList>
+                <compareText logic="equals" text="${pgport}" value=""/>
+                <compareText logic="equals" text="${pguser}" value=""/>
+                <compareText logic="equals" text="${pgpassword}" value=""/>
+                <compareText logic="equals" text="${pgdbname}" value=""/>
+              </ruleList>
+            </actionGroup>
+    
+            <!-- Validate the PostgreSQL Server Details -->
+            <actionGroup>
+              <actionList>
+    
+                  <!-- Extract file --> 
+                  <unpackDirectory>
+                      <origin>instscripts</origin>
+                      <destination>${system_temp_directory}</destination>
+                      <component>default</component>
+                      <folder>installfileslinux</folder>
+                      <ruleList>
+                          <compareText>
+                              <logic>equals</logic>
+                              <text>${platform_name}</text>
+                              <value>linux</value>
+                          </compareText>
+                      </ruleList>
+                  </unpackDirectory>
+                  <unpackDirectory>
+                      <origin>instscripts</origin>
+                      <destination>${system_temp_directory}</destination>
+                      <component>default</component>
+                      <folder>installfileslinux-x64</folder>
+                      <ruleList>
+                          <compareText>
+                              <logic>equals</logic>
+                              <text>${platform_name}</text>
+                              <value>linux-x64</value>
+                          </compareText>
+                      </ruleList>
+                  </unpackDirectory>
+                  <unpackDirectory>
+                      <origin>instscripts</origin>
+                      <destination>${system_temp_directory}</destination>
+                      <component>default</component>
+                      <folder>installfileswindows</folder>
+                      <ruleList>
+                          <compareText>
+                              <logic>equals</logic>
+                              <text>${platform_name}</text>
+                              <value>windows</value>
+                          </compareText>
+                      </ruleList>
+                  </unpackDirectory>
+                  <unpackFile>
+                      <origin>installer/pgbouncer/check-connection.bat</origin>
+                      <destination>${system_temp_directory}/instscripts/check-connection.bat</destination>
+                      <component>default</component>
+                      <folder>installfileswindows</folder>
+                      <ruleList>
+                          <compareText>
+                              <logic>equals</logic>
+                              <text>${platform_name}</text>
+                              <value>windows</value>
+                          </compareText>
+                      </ruleList>
+                  </unpackFile>
+                  <unpackDirectory>
+                      <origin>instscripts</origin>
+                      <destination>${system_temp_directory}</destination>
+                      <component>default</component>
+                      <folder>installfilesosx</folder>
+                      <ruleList>
+                          <compareText>
+                              <logic>equals</logic>
+                              <text>${platform_name}</text>
+                              <value>osx</value>
+                          </compareText>
+                      </ruleList>
+                  </unpackDirectory>
+                
+                <!-- Running the Script to validate the PostgreSQL Server Details -->
+                <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+                <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+                <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+                <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+                <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts"/>
+    
+                <setInstallerVariableFromScriptOutput>
+                  <exec>${system_temp_directory}/instscripts/psql</exec>
+                  <execArgs>-l ${pgdbname}</execArgs>
+                  <name>connection</name>
+                  <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
+                  <customErrorMessage>${program_stderr}</customErrorMessage>
+                  <ruleList>
+                    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                  </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                  <exec>${system_temp_directory}\instscripts\check-connection.bat</exec>
+                  <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
+                  <name>connection</name>
+                  <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
+                  <customErrorMessage>${program_stderr}</customErrorMessage>
+                  <ruleList>
+                    <compareText logic="equals" text="${platform_name}" value="windows"/>
+                  </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <stringModify text="${connection}" variable="connection" logic="trim"/>
+              </actionList>
+             </actionGroup> 
+          </validationActionList>   
+        </parameterGroup>
+        
+        <parameterGroup>
+          <name>pgbouncerdetails</name>
+          <title>${msg(pgbouncer.details.title)}</title>
+          <explanation>${msg(pgbouncer.details.explanation)}</explanation>
+          <value/>
+          <default/>
+          <parameterList>
+    
+            <!-- Waiting for client request from IP(s) -->
+            <stringParameter>
+              <name>client_ips</name>
+              <description>Listening IP's (',' separated), * for all IPs</description>
+              <explanation></explanation>
+              <value/>
+              <default>*</default>
+              <allowEmptyValue>1</allowEmptyValue>
+              <width>40</width>
+            </stringParameter>
+      
+            <!-- Listening Port(Default 6432) -->
+            <stringParameter>
+              <name>pgbouncer_port</name>
+              <description>Listening Port</description>
+              <explanation/>
+              <value/>
+              <default>${def_listen_port}</default>
+              <allowEmptyValue>1</allowEmptyValue>
+              <width>40</width>
+            </stringParameter>
+    
+            <!-- System User (Default postgres) -->
+            <stringParameter>
+              <name>system_user</name>
+              <description>Operating System User</description>
+              <explanation/>
+              <value/>
+              <default>postgres</default>
+              <allowEmptyValue>1</allowEmptyValue>
+              <width>40</width>
+              <ruleList>
+                   <compareText>
+                        <text>${platform_name}</text>
+                        <logic>does_not_equal</logic>
+                        <value>windows</value>
+                   </compareText>
+              </ruleList>
+            </stringParameter>
+         </parameterList>
+          <ruleList>
+              <compareText>
+                  <text>${pgbouncerVersion}</text>
+                  <logic>equals</logic>
+                  <value/>
+              </compareText>
+              <isFalse value="${extract_mode}"/>
+          </ruleList>
+          <validationActionList>
+            <actionGroup>
+              <actionList>
+                <throwError>
+                  <text>${msg(pgbouncer.blank.error)}</text>
+                </throwError>
+              </actionList>
+              <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+              <ruleList>
+                <compareText logic="equals" text="${system_user}" value=""/>
+                <compareText logic="equals" text="${pgbouncer_port}" value=""/>
+                <compareText logic="equals" text="${client_ips}" value=""/>
+              </ruleList>
+            </actionGroup>
+            <throwError>
+                <text>${msg(pgbouncer.port.error)}</text>
+                <ruleList>
+                    <portTest>
+                        <port>${pgbouncer_port}</port>
+                        <condition>cannot_bind</condition>
+                    </portTest>
+                </ruleList>
+            </throwError>
+            <throwError>
+                <text>${msg(pgbouncer.user.error)}</text>
+                <ruleList>
+                    <userTest>
+                        <username>${system_user}</username>
+                        <logic>not_exists</logic>
+                    </userTest>
+                    <compareText>
+                        <text>${platform_name}</text>
+                        <logic>does_not_equal</logic>
+                        <value>windows</value>
+                   </compareText>
+                </ruleList>
+            </throwError>  
+          </validationActionList>
+        </parameterGroup>
     </parameterList>
 
     <!-- Install Directory -->
@@ -1375,7 +1490,7 @@
                        </compareText>
                     </ruleList>
 	        </actionGroup>
-            <!-- Validating whether installdir is valid (Windows) -->
+                <!-- Validating whether installdir is valid (Windows) -->
                 <actionGroup>
                    <actionList>
                      <setInstallerVariable name="installdir" value="${default_installdir}" />

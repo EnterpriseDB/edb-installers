@@ -7,6 +7,10 @@
 
 _prep_pgbouncer_osx() {
 
+    echo "**********************************"
+    echo "*  Pre Process: pgsqlODBC (OSX)  *"
+    echo "**********************************"
+
     # Enter the source directory and cleanup if required
     cd $WD/pgbouncer/source
 
@@ -49,6 +53,10 @@ _prep_pgbouncer_osx() {
 ################################################################################
 
 _build_pgbouncer_osx() {
+
+    echo "****************************"
+    echo "*  Build: pgsqlODBC (OSX)  *"
+    echo "****************************"
 
     cd $PG_PATH_OSX/pgbouncer/source/libevent.osx/; 
 
@@ -114,8 +122,11 @@ _build_pgbouncer_osx() {
 ################################################################################
 
 _postprocess_pgbouncer_osx() {
- 
 
+    echo "***********************************"
+    echo "*  Post Process: pgsqlODBC (OSX)  *"
+    echo "***********************************"
+ 
     cd $WD/pgbouncer
 
     mkdir -p staging/osx/installer/pgbouncer || _die "Failed to create directory for installer scripts"
@@ -137,8 +148,31 @@ _postprocess_pgbouncer_osx() {
     _replace "stats_users = stats, root" "stats_users = @@STATSUSERS@@" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "auth_type = trust" "auth_type = md5" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to change the auth type" 
 
+    if [ -f installer_1.xml ]; then
+        rm -f installer_1.xml
+    fi
+
+    if [ ! -f $WD/scripts/risePrivileges ]; then
+        cp installer.xml installer_1.xml
+        _replace "<requireInstallationByRootUser>\${admin_rights}</requireInstallationByRootUser>" "<requireInstallationByRootUser>1</requireInstallationByRootUser>"
+
+        # Build the installer (for the root privileges required)
+        echo Building the installer with the root privileges required
+        "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
+        cp $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/PgBouncer $WD/scripts/risePrivileges || _die "Failed to copy the privileges escalation applet"
+
+        rm -rf $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app
+    fi
+
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
+
+    # Using own scripts for extract-only mode
+    cp -f $WD/scripts/risePrivileges $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/PgBouncer
+    chmod a+x $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/PgBouncer
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ PgBouncer $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace @@PROJECTNAME@@ with PgBouncer ($WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/installbuilder.sh)"
+    chmod a+x $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/installbuilder.sh
 
     # Zip up the output
     cd $WD/output

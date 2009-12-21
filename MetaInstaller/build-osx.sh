@@ -158,11 +158,33 @@ _build_metainstaller_osx() {
 ################################################################################
 
 _postprocess_metainstaller_osx() {
-echo "Building osx Meta Installer"
+     echo "Building osx Meta Installer"
      cd  $WD/MetaInstaller
-    # Build the installer
 
+    if [ -f installer_1.xml ]; then
+        rm -f installer_1.xml
+    fi
+
+    if [ ! -f $WD/scripts/risePrivileges ]; then
+        cp installer.xml installer_1.xml
+        _replace "<requireInstallationByRootUser>\${admin_rights}</requireInstallationByRootUser>" "<requireInstallationByRootUser>1</requireInstallationByRootUser>"
+        # Build the installer (for the root privileges required)
+        echo Building the installer with the root privileges required
+        "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
+        cp "$WD/output/postgresplus-$PG_MAJOR_VERSION-osx.app/Contents/MacOS/Postgres Plus" $WD/scripts/risePrivileges || _die "Failed to copy the privileges escalation applet"
+
+        rm -rf $WD/output/postgresplus-$PG_MAJOR_VERSION-osx.app
+    fi
+
+    # Build the installer
     "$PG_INSTALLBUILDER_BIN" build postgresplus.xml osx || _die "Failed to build the installer"
+
+    # Using own scripts for extract-only mode
+    cp -f $WD/scripts/risePrivileges "$WD/output/postgresplus-$PG_MAJOR_VERSION-osx-installer.app/Contents/MacOS/Postgres Plus"
+    chmod a+x "$WD/output/postgresplus-$PG_MAJOR_VERSION-osx-installer.app/Contents/MacOS/Postgres Plus"
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/postgresplus-$PG_MAJOR_VERSION-osx-installer.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ "Postgres Plus" $WD/output/postgresplus-$PG_MAJOR_VERSION-osx-installer.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace @@PROJECTNAME@@ with pgAgent ($WD/output/postgresplus-$PG_MAJOR_VERSION-osx-installer.app/Contents/MacOS/installbuilder.sh)"
+    chmod a+x $WD/output/postgresplus-$PG_MAJOR_VERSION-osx-installer.app/Contents/MacOS/installbuilder.sh
 
     # Rename the installer
     mv $WD/output/postgresplus-$PG_MAJOR_VERSION-osx-installer.app $WD/output/postgresplus-$PG_PACKAGE_VERSION-osx.app || _die "Failed to rename the installer"

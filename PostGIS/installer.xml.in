@@ -272,6 +272,61 @@
                 <!-- Do not create uninstaller in case of extract-only mode -->
                 <setInstallerVariable name="createUninstaller" value="0" persist="1"/>
                 <setInstallerVariable name="branding" value="" persist="1"/>
+                <setInstallerVariable name="pg_config" value="${installdir}/bin/pg_config"/>
+                <setInstallerVariable name="pg_config" value="${installdir}\bin\pg_config.exe">
+                  <ruleList>
+                    <compareText logic="equals" text="${platform_name}" value="windows"/>
+                  </ruleList>
+                </setInstallerVariable>
+
+                <setInstallerVariable name="parentlibdir" value="${installdir}"/>
+                <setInstallerVariable name="libdir" value="${installdir}/lib"/>
+                <setInstallerVariable name="sharedir" value="${installdir}/share"/>
+                <setInstallerVariable name="mandir" value="${installdir}/man"/>
+                <setInstallerVariable name="docdir" value="${installdir}/doc"/>
+
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariableFromScriptOutput>
+                            <name>libdir</name>
+                            <exec>${pg_config}</exec>
+                            <execArgs>--libdir</execArgs>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                        <setInstallerVariableFromScriptOutput>
+                            <name>sharedir</name>
+                            <exec>${pg_config}</exec>
+                            <execArgs>--sharedir</execArgs>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                        <setInstallerVariableFromScriptOutput>
+                            <name>docdir</name>
+                            <exec>${pg_config}</exec>
+                            <execArgs>--docdir</execArgs>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                        <setInstallerVariableFromScriptOutput>
+                            <name>mandir</name>
+                            <exec>${pg_config}</exec>
+                            <execArgs>--mandir</execArgs>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                        <setInstallerVariableFromRegEx>
+                            <name>parentlibdir</name>
+                            <text>${libdir}</text>
+                            <pattern>(.*)[/\\]lib</pattern>
+                            <substitution>\1</substitution>
+                        </setInstallerVariableFromRegEx>
+                    </actionList>
+                    <ruleList>
+                        <fileExists path="${pg_config}"/>
+                        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+                    </ruleList>
+                </actionGroup>
             </actionList>
             <ruleList>
                 <isTrue value="${extract_mode}"/>
@@ -360,11 +415,11 @@
                        </compareText>
                     </ruleList>
                  </setInstallerVariableFromRegEx>
-        	<!-- If there appears to be an existing installation, with no Branding value. --> 
-        	<!-- force the default value. Otherwise, set the branding to whatever we read, -->
-        	<!-- or, set the default -->
-        	
-        	<!-- Existing, old install (version, but no branding) -->
+                 <!-- If there appears to be an existing installation, with no Branding value. -->
+                 <!-- force the default value. Otherwise, set the branding to whatever we read, -->
+                 <!-- or, set the default -->
+
+                 <!-- Existing, old install (version, but no branding) -->
         	<setInstallerVariable>
         		<name>branding</name>
         		<persist>0</persist>
@@ -382,7 +437,7 @@
         			</compareText>
         		</ruleList>
         	</setInstallerVariable>
-        	
+
         	<!-- Existing install, with branding -->
         	<setInstallerVariable>
         		<name>branding</name>
@@ -396,7 +451,7 @@
         			</compareText>
         		</ruleList>
         	</setInstallerVariable>
-        	
+
         	<!-- New install, nothing set on the command line -->
         	<setInstallerVariable>
         		<name>branding</name>
@@ -410,10 +465,10 @@
         			</compareText>
         		</ruleList>
         	</setInstallerVariable>
-        	
-               <logMessage>
+
+                <logMessage>
                     <text>Using branding: ${branding}</text>
-                </logMessage>      
+                </logMessage>
                 <!-- WIN: Set Installation Directory in case of re-install/upgrade -->
                 <actionGroup>
                     <actionList>
@@ -463,7 +518,7 @@
                 <actionGroup>
                     <actionList>
                         <showWarning>
-                            <text>${msg(postgis.incompatible.install.error)}</text> 
+                            <text>${msg(postgis.incompatible.install.error)}</text>
                         </showWarning>
                         <exit>
                            <exitCode>0</exitCode>
@@ -515,7 +570,7 @@
                             </ruleList>
                         </ruleGroup>
                         <ruleGroup>
-                            <ruleList>  
+                            <ruleList>
                                <compareText>
                                   <text>${platform_name}</text>
                                   <logic>does_not_equal</logic>
@@ -563,7 +618,7 @@
                             </ruleList>
                         </ruleGroup>
                         <ruleGroup>
-                            <ruleList>  
+                            <ruleList>
                                <compareText>
                                   <text>${platform_name}</text>
                                   <logic>equals</logic>
@@ -638,7 +693,7 @@
                                   <text>${pg_version}</text>
                                    <value>PG_MAJOR_VERSION</value>
                               </compareText>
-                           </ruleList> 
+                           </ruleList>
                         </exit>
                     </actionList>
                     <ruleList>
@@ -646,9 +701,9 @@
                             <logic>equals</logic>
                             <text>${installer_ui}</text>
                             <value>unattended</value>
-                        </compareText>    
+                        </compareText>
                     </ruleList>
-                </actionGroup> 
+                </actionGroup>
                 <!-- Setting the installation type as upgrade if previous installation found -->
                 <actionGroup>
                     <actionList>
@@ -663,7 +718,7 @@
                     </ruleList>
                 </actionGroup>
                 <actionGroup>
-                    <actionList>   
+                    <actionList>
                         <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
                         <setInstallerVariableFromScriptOutput>
                             <name>libdir</name>
@@ -766,7 +821,7 @@
                         </compareText>
                     </ruleList>
                 </registrySet>
-        
+
                 <!-- LIN & MAC: Create Menu Shortcuts -->
                 <actionGroup>
                     <actionList>
@@ -786,7 +841,7 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
-        
+
                 <substitute>
                     <files>
                            ${sharedir}/contrib/postgis.sql
@@ -806,8 +861,7 @@
                         </compareText>
                     </ruleList>
                 </substitute>
-        
-                  
+
                 <!-- Configuring Scripts to set the installation path in PostGIS -->
                 <!--
                 <runProgram>
@@ -850,7 +904,7 @@
                         </compareText>
                     </ruleList>
                 </runProgram>
-        
+
                 <setInstallerVariableFromRegEx>
                     <name>installdir_str</name>
                     <text>${installdir}</text>
@@ -869,7 +923,7 @@
                       </compareText>
                     </ruleList>
                 </setInstallerVariableFromRegEx>
-        
+
                 <substitute>
                    <files>${installdir}\share\contrib\postgis.sql</files>
                    <substitutionList>
@@ -886,7 +940,7 @@
                       </compareText>
                    </ruleList>
                 </substitute>
-          
+
                 <substitute>
                    <files>${installdir}\share\contrib\postgis_upgrade.sql</files>
                    <substitutionList>
@@ -903,7 +957,7 @@
                       </compareText>
                    </ruleList>
                 </substitute>
-        
+
                 <!-- Create Template Spatial Database -->
                 <actionGroup>
                     <actionList>
@@ -1487,7 +1541,7 @@
                            </ruleList>
                         </startMenuLinkShortcut>
                     </startMenuShortcutList>
-                 </startMenuFolder> 
+                 </startMenuFolder>
             </startMenuShortcutList>
         </component>
     </componentList>
@@ -1527,7 +1581,7 @@
                     <descriptionRetype/>
                     <width>40</width>
                 </passwordParameter>
-	            <!-- Postgres Port(Default 5432) -->
+                <!-- Postgres Port(Default 5432) -->
                 <stringParameter>
                     <name>pgport</name>
                     <description>Port</description>
@@ -1586,6 +1640,7 @@
                     <value1>${PostGISVersionInstalled}</value1>
                     <value2>${productVersion}</value2>
                 </compareValues>
+                <isFalse value="${extract_mode}"/>
             </ruleList>
             <!-- Checking the validity of PostgreSQL Server Details -->
             <validationActionList>
@@ -1829,12 +1884,13 @@
                             </ruleList>
                         </ruleGroup>
                         <ruleGroup>
-                            <ruleList>  
+                            <ruleList>
                                <compareText>
                                   <text>${platform_name}</text>
                                   <logic>does_not_equal</logic>
                                   <value>windows</value>
                                </compareText>
+                               <isFalse value="${extract_mode}"/>
                             </ruleList>
                         </ruleGroup>
                     </ruleList>
@@ -1848,7 +1904,7 @@
                     </actionList>
                     <ruleList>
                         <ruleGroup>
-                            <ruleEvaluationLogic>or</ruleEvaluationLogic>   
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
                             <ruleList>
                                <fileTest>
                                   <path>${installdir}\bin\psql.exe</path>
@@ -1869,102 +1925,110 @@
                             </ruleList>
                         </ruleGroup>
                         <ruleGroup>
-                            <ruleList>   
+                            <ruleList>
                                <compareText>
                                   <text>${platform_name}</text>
                                   <logic>equals</logic>
                                   <value>windows</value>
                                </compareText>
+                               <isFalse value="${extract_mode}"/>
                             </ruleList>
                         </ruleGroup>
                     </ruleList>
                 </actionGroup>
             </validationActionList>
             <validationActionList>
-                <createDirectory path="${system_temp_directory}/${product_fullname}" />
-                <unpackFile>
-                    <component>PostGIS</component>
-                    <destination>${system_temp_directory}/${product_fullname}/check-pgversion.sh</destination>
-                    <folder>installfilesosx</folder>
-                    <origin>installer/PostGIS/check-pgversion.sh</origin>
+                <actionGroup>
+                    <actionList>
+                        <createDirectory path="${system_temp_directory}/${product_fullname}" />
+                        <unpackFile>
+                            <component>PostGIS</component>
+                            <destination>${system_temp_directory}/${product_fullname}/check-pgversion.sh</destination>
+                            <folder>installfilesosx</folder>
+                            <origin>installer/PostGIS/check-pgversion.sh</origin>
+                            <ruleList>
+                                <compareText>
+                                   <text>${platform_name}</text>
+                                   <logic>equals</logic>
+                                   <value>osx</value>
+                                </compareText>
+                            </ruleList>
+                        </unpackFile>
+                        <unpackFile>
+                            <component>PostGIS</component>
+                            <destination>${system_temp_directory}/${product_fullname}/check-pgversion.sh</destination>
+                            <folder>installfileslinux</folder>
+                            <origin>installer/PostGIS/check-pgversion.sh</origin>
+                            <ruleList>
+                                <compareText>
+                                   <text>${platform_name}</text>
+                                   <logic>equals</logic>
+                                   <value>linux</value>
+                                </compareText>
+                            </ruleList>
+                        </unpackFile>
+                        <unpackFile>
+                            <component>PostGIS</component>
+                            <destination>${system_temp_directory}/${product_fullname}/check-pgversion.sh</destination>
+                            <folder>installfileslinux-x64</folder>
+                            <origin>installer/PostGIS/check-pgversion.sh</origin>
+                            <ruleList>
+                                <compareText>
+                                   <text>${platform_name}</text>
+                                   <logic>equals</logic>
+                                   <value>linux-x64</value>
+                                </compareText>
+                            </ruleList>
+                        </unpackFile>
+                        <setInstallerVariableFromScriptOutput>
+                            <name>pg_version</name>
+                            <exec>${system_temp_directory}/${product_fullname}/check-pgversion.sh</exec>
+                            <execArgs>"${installdir}"</execArgs>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <ruleList>
+                                <compareText>
+                                   <text>${platform_name}</text>
+                                   <logic>does_not_equal</logic>
+                                   <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </setInstallerVariableFromScriptOutput>
+                        <setInstallerVariableFromScriptOutput>
+                            <name>pg_version_str</name>
+                            <exec>${installdir}\bin\pg_config.exe</exec>
+                            <execArgs>--version</execArgs>
+                            <workingDirectory>${installdir}\bin</workingDirectory>
+                            <ruleList>
+                                <compareText>
+                                   <text>${platform_name}</text>
+                                   <logic>equals</logic>
+                                   <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </setInstallerVariableFromScriptOutput>
+                        <setInstallerVariableFromRegEx>
+                            <name>pg_version</name>
+                            <text>${pg_version_str}</text>
+                            <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
+                            <substitution>\1</substitution>
+                            <ruleList>
+                               <compareText>
+                                   <logic>does_not_equal</logic>
+                                   <text>${pg_version_str}</text>
+                                   <value/>
+                              </compareText>
+                              <compareText>
+                                 <text>${platform_name}</text>
+                                 <logic>equals</logic>
+                                 <value>windows</value>
+                              </compareText>
+                            </ruleList>
+                        </setInstallerVariableFromRegEx>
+                    </actionList>
                     <ruleList>
-                        <compareText>
-                           <text>${platform_name}</text>
-                           <logic>equals</logic>
-                           <value>osx</value>
-                        </compareText>
+                        <isFalse value="${extract_mode}"/>
                     </ruleList>
-                </unpackFile>
-                <unpackFile>
-                    <component>PostGIS</component>
-                    <destination>${system_temp_directory}/${product_fullname}/check-pgversion.sh</destination>
-                    <folder>installfileslinux</folder>
-                    <origin>installer/PostGIS/check-pgversion.sh</origin>
-                    <ruleList>
-                        <compareText>
-                           <text>${platform_name}</text>
-                           <logic>equals</logic>
-                           <value>linux</value>
-                        </compareText>
-                    </ruleList>
-                </unpackFile>
-                <unpackFile>
-                    <component>PostGIS</component>
-                    <destination>${system_temp_directory}/${product_fullname}/check-pgversion.sh</destination>
-                    <folder>installfileslinux-x64</folder>
-                    <origin>installer/PostGIS/check-pgversion.sh</origin>
-                    <ruleList>
-                        <compareText>
-                           <text>${platform_name}</text>
-                           <logic>equals</logic>
-                           <value>linux-x64</value>
-                        </compareText>
-                    </ruleList>
-                </unpackFile>
-                <setInstallerVariableFromScriptOutput>
-                    <name>pg_version</name>
-                    <exec>${system_temp_directory}/${product_fullname}/check-pgversion.sh</exec>
-                    <execArgs>"${installdir}"</execArgs>
-                    <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                    <ruleList>
-                        <compareText>
-                           <text>${platform_name}</text>
-                           <logic>does_not_equal</logic>
-                           <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </setInstallerVariableFromScriptOutput>
-                <setInstallerVariableFromScriptOutput>
-                    <name>pg_version_str</name>
-                    <exec>${installdir}\bin\pg_config.exe</exec>
-                    <execArgs>--version</execArgs>
-                    <workingDirectory>${installdir}\bin</workingDirectory>
-                    <ruleList>
-                        <compareText>
-                           <text>${platform_name}</text>
-                           <logic>equals</logic>
-                           <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </setInstallerVariableFromScriptOutput>
-                <setInstallerVariableFromRegEx>
-                      <name>pg_version</name>
-                      <text>${pg_version_str}</text>
-                      <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
-                      <substitution>\1</substitution>
-                      <ruleList>
-                         <compareText>
-                             <logic>does_not_equal</logic>
-                             <text>${pg_version_str}</text>
-                             <value/>
-                        </compareText>
-                        <compareText>
-                           <text>${platform_name}</text>
-                           <logic>equals</logic>
-                           <value>windows</value>
-                        </compareText>
-                      </ruleList>
-                </setInstallerVariableFromRegEx>
+                </actionGroup>
             </validationActionList>
             <validationActionList>
                 <actionGroup>
@@ -1978,8 +2042,9 @@
                         <compareText>
                             <logic>does_not_equal</logic>
                             <text>${pg_version}</text>
-                            <value>PG_MAJOR_VERSION</value>            
+                            <value>PG_MAJOR_VERSION</value>
                         </compareText>
+                        <isFalse value="${extract_mode}"/>
                     </ruleList>
                 </actionGroup>
             </validationActionList>
@@ -1989,21 +2054,41 @@
                     <name>libdir</name>
                     <exec>${installdir}/bin/pg_config</exec>
                     <execArgs>--libdir</execArgs>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <onErrorActionList>
+                        <setInstallerVariable name="libdir" value="${installdir}/lib"/>
+                    </onErrorActionList>
                 </setInstallerVariableFromScriptOutput>
                 <setInstallerVariableFromScriptOutput>
                     <name>sharedir</name>
                     <exec>${installdir}/bin/pg_config</exec>
                     <execArgs>--sharedir</execArgs>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <onErrorActionList>
+                        <setInstallerVariable name="sharedir" value="${installdir}/share"/>
+                    </onErrorActionList>
                 </setInstallerVariableFromScriptOutput>
                 <setInstallerVariableFromScriptOutput>
                     <name>docdir</name>
                     <exec>${installdir}/bin/pg_config</exec>
                     <execArgs>--docdir</execArgs>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <onErrorActionList>
+                        <setInstallerVariable name="docdir" value="${installdir}/doc"/>
+                    </onErrorActionList>
                 </setInstallerVariableFromScriptOutput>
                 <setInstallerVariableFromScriptOutput>
                     <name>mandir</name>
                     <exec>${installdir}/bin/pg_config</exec>
                     <execArgs>--mandir</execArgs>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <onErrorActionList>
+                        <setInstallerVariable name="mandir" value="${installdir}/man"/>
+                    </onErrorActionList>
                 </setInstallerVariableFromScriptOutput>
                 <setInstallerVariableFromRegEx>
                     <name>parentlibdir</name>
@@ -2011,7 +2096,7 @@
                     <pattern>(.*)[/\\]lib</pattern>
                     <substitution>\1</substitution>
                 </setInstallerVariableFromRegEx>
-            </postShowPageActionList>      
+            </postShowPageActionList>
         </directoryParameter>
 
 	<!-- Explain that we're using an existing installation directory -->

@@ -10,7 +10,7 @@
     <!-- Product Specific Options -->
     <productComments>ODBC drivers for PostgreSQL, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
-    <requireInstallationByRootUser>1</requireInstallationByRootUser>
+    <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
 
     <!-- Installer Size -->
     <width>550</width>
@@ -29,6 +29,7 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <uninstallerDirectory>${installdir}</uninstallerDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+    <windowsSoftwareRegistryPrefix/>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
@@ -96,6 +97,7 @@
       </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
+        <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PSQLODBC" />
 		
 	    <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
@@ -211,392 +213,420 @@
     </initializationActionList>
 	
     <preInstallationActionList>
-		<!-- Creates the ini file if not exits -->
-        <touchFile path="/etc/postgres-reg.ini">
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </touchFile>
-		
-        <!-- LIN & MAC: Get the branding & check Previous Installation of psqlODBC -->
         <actionGroup>
             <actionList>
-                <!-- Get the branding. -->
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <key>Branding</key>
-                    <section>psqlODBC</section>
-                    <variable>iBranding</variable>
-                </iniFileGet>
-				
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>psqlODBC</section>
-                    <key>Version</key>
-                    <variable>psqlODBCVersion</variable>
-                </iniFileGet>
+                <setInstallerVariable name="branding" value=""/>
+                <!-- Do not create uninstaller in case of extract-only mode -->
+                <setInstallerVariable name="createUninstaller" value="0" persist="1"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <isTrue value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-		
-        <!-- WIN: Get the branding & check Previous Installation of psqlODBC-->
+
+        <!-- Do not perform the below actions in case of extract-only mode -->
         <actionGroup>
             <actionList>
-			
-				<!-- Get the branding -->
-                <registryGet>
-                    <name>Branding</name>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\psqlODBC</key>
-                    <variable>iBranding</variable>
-                </registryGet>
-				
-                <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\psqlODBC</key>
-                    <name>Version</name>
-                    <variable>psqlODBCVersion</variable>
-                </registryGet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-		
-		<!-- If there appears to be an existing installation, with no Branding value. --> 
-		<!-- force the default value. Otherwise, set the branding to whatever we read, -->
-		<!-- or, set the default -->
-		
-		<!-- Existing, old install (version, but no branding) -->
-		<setInstallerVariable>
-			<name>branding</name>
-			<persist>0</persist>
-			<value>PostgreSQL</value>
-			<ruleList>
-				<compareText>
-					<logic>does_not_equal</logic>
-					<text>${psqlODBCVersion}</text>
-					<value></value>
-				</compareText>
-				<compareText>
-					<logic>equals</logic>
-					<text>${iBranding}</text>
-					<value></value>
-				</compareText>
-			</ruleList>
-		</setInstallerVariable>
-		
-		<!-- Existing install, with branding -->
-		<setInstallerVariable>
-			<name>branding</name>
-			<persist>0</persist>
-			<value>${iBranding}</value>
-			<ruleList>
-				<compareText>
-					<logic>does_not_equal</logic>
-					<text>${iBranding}</text>
-					<value></value>
-				</compareText>
-			</ruleList>
-		</setInstallerVariable>
-		
-		<!-- New install, nothing set on the command line -->
-		<setInstallerVariable>
-			<name>branding</name>
-			<persist>0</persist>
-			<value>PostgreSQL</value>
-			<ruleList>
-				<compareText>
-					<logic>equals</logic>
-					<text>${branding}</text>
-					<value></value>
-				</compareText>
-			</ruleList>
-		</setInstallerVariable>
-		
-        <logMessage>
-            <text>Using branding: ${branding}</text>
-        </logMessage>
-		
-        <!-- LIN & MAC: Set the installation directory in case of re-install/upgrade -->
-        <actionGroup>
-            <actionList>
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>psqlODBC</section>
-                    <key>InstallationDirectory</key>
-                    <variable>installdir</variable>
-                </iniFileGet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${psqlODBCVersion}</text>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- WIN: Set the installation directory in case of re-install/upgrade -->
-        <actionGroup>
-            <actionList>
-                <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\psqlODBC</key>
-                    <name>Location</name>
-                    <variable>installdir</variable>
-                </registryGet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${psqlODBCVersion}</text>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- Create a temporary directory -->
-        <createDirectory>
-            <path>${system_temp_directory}/${product_shortname}</path>
-        </createDirectory>
-        <changePermissions>
-            <permissions>777</permissions>
-            <files>${system_temp_directory}/${product_fullname}</files>
-        </changePermissions>
-        <!-- LIN: Set the unixODBC Path -->
-        <actionGroup>
-            <actionList>
-                <unpackFile>
-                    <component>psqlODBC</component>
-                    <destination>${system_temp_directory}/${product_shortname}/getodbcinstpath.sh</destination>
-                    <folder>programfileslinux</folder>
-                    <origin>installer/psqlODBC/getodbcinstpath.sh</origin>
-                </unpackFile>
-                <runProgram>
-                    <program>${system_temp_directory}/${product_shortname}/getodbcinstpath.sh</program>
-                    <workingDirectory>${system_temp_directory}/${product_shortname}</workingDirectory>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                </runProgram>
-                <setInstallerVariableFromScriptOutput>
-                    <name>odbcinstpath</name>
-                    <exec>cat</exec>
-                    <execArgs>odbcinstfilepath</execArgs>
-                    <workingDirectory>${system_temp_directory}/${product_shortname}</workingDirectory>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                </setInstallerVariableFromScriptOutput>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- LIN-X64: Set the unixODBC Path -->
-        <actionGroup>
-            <actionList>
-                <unpackFile>
-                    <component>psqlODBC</component>
-                    <destination>${system_temp_directory}/${product_shortname}/getodbcinstpath.sh</destination>
-                    <folder>programfileslinux-x64</folder>
-                    <origin>installer/psqlODBC/getodbcinstpath.sh</origin>
-                </unpackFile>
-                <runProgram>
-                    <program>${system_temp_directory}/${product_shortname}/getodbcinstpath.sh</program>
-                    <workingDirectory>${system_temp_directory}/${product_shortname}</workingDirectory>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                </runProgram>
-                <setInstallerVariableFromScriptOutput>
-                    <name>odbcinstpath</name>
-                    <exec>cat</exec>
-                    <execArgs>odbcinstfilepath</execArgs>
-                    <workingDirectory>${system_temp_directory}/${product_shortname}</workingDirectory>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                </setInstallerVariableFromScriptOutput>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux-x64</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- MAC: Set the unixODBC Path -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="odbcinstpath" value="/Library/ODBC/odbcinst.ini"/>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- Create a Directory for installation -->
-        <actionGroup>
-            <actionList>
-                <createDirectory path="/Library/ODBC"/>
-            </actionList>
-            <ruleList>
-                <fileTest>
-                    <path>/Library/ODBC</path>
-                    <condition>not_exists</condition>
-                </fileTest>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- MAC: Creates the ini file if not exits -->
-        <touchFile path="/Library/ODBC/odbc.ini">
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </touchFile>
-        <!-- MAC: Creates the ini file if not exits -->
-        <touchFile path="/Library/ODBC/odbcinst.ini">
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </touchFile>
-		
-        <!-- Linux : Checking for libodbc.so -->
-        <setInstallerVariable name="odbcinstpath" value="/etc/odbcinst.ini" >
-            <ruleList>
-                <fileExists>
-                   <path>/usr/lib/libodbc.so</path>
-                </fileExists>
-                <compareTextLength>
-                    <length>0</length>
-                    <logic>equals</logic>
-                    <text>${odbcinstpath}</text>
-                </compareTextLength>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
-        <setInstallerVariable name="odbcinstpath" value="/etc/odbcinst.ini" >
-            <ruleList>
-                <fileExists>
-                   <path>/usr/lib/libodbc.so.1</path>
-                </fileExists>
-                <compareTextLength>
-                    <length>0</length>
-                    <logic>equals</logic>
-                    <text>${odbcinstpath}</text>
-                </compareTextLength>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable> 
-		 
-        <!-- Linux-X64 : Checking for libodbc.so -->
-        <setInstallerVariable name="odbcinstpath" value="/etc/odbcinst.ini" >
-            <ruleList>
-                <fileExists>
-                   <path>/usr/lib64/libodbc.so</path>
-                </fileExists>
-                <compareTextLength>
-                    <length>0</length>
-                    <logic>equals</logic>
-                    <text>${odbcinstpath}</text>
-                </compareTextLength>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux-x64</value>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
-        <setInstallerVariable name="odbcinstpath" value="/etc/odbcinst.ini" >
-            <ruleList>
-                <fileExists>
-                   <path>/usr/lib64/libodbc.so.1</path>
-                </fileExists>
-                <compareTextLength>
-                    <length>0</length>
-                    <logic>equals</logic>
-                    <text>${odbcinstpath}</text>
-                </compareTextLength>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux-x64</value>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
-				
-        <!-- Exit if unixODBC not found -->
-        <actionGroup>
-            <actionList>
-                <throwError>
-                    <customErrorMessage>${msg(error.unixodbc.notfound)}</customErrorMessage>
-                    <text>Unknown Error</text>
+                <!-- Abort installation if not super-user and not running in extract-only mode-->
+                <throwError text="${msg(Installer.Warning.RootPrivileges)}">
+                    <ruleList>
+                       <isFalse value="${installer_is_root_install}"/>
+                    </ruleList>
                 </throwError>
+                <setInstallerVariable name="windowsSoftwareRegistryPrefix" value="${vendor}\${fullName}" persist="1"/>
+
+                <!-- Creates the ini file if not exits -->
+                <touchFile path="/etc/postgres-reg.ini">
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </touchFile>
+            	
+                <!-- LIN & MAC: Get the branding & check Previous Installation of psqlODBC -->
+                <actionGroup>
+                    <actionList>
+                        <!-- Get the branding. -->
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <key>Branding</key>
+                            <section>psqlODBC</section>
+                            <variable>iBranding</variable>
+                        </iniFileGet>
+            			
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>psqlODBC</section>
+                            <key>Version</key>
+                            <variable>psqlODBCVersion</variable>
+                        </iniFileGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+            	
+                <!-- WIN: Get the branding & check Previous Installation of psqlODBC-->
+                <actionGroup>
+                    <actionList>
+            		
+            			<!-- Get the branding -->
+                        <registryGet>
+                            <name>Branding</name>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\psqlODBC</key>
+                            <variable>iBranding</variable>
+                        </registryGet>
+            			
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\psqlODBC</key>
+                            <name>Version</name>
+                            <variable>psqlODBCVersion</variable>
+                        </registryGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+            	
+            	<!-- If there appears to be an existing installation, with no Branding value. --> 
+            	<!-- force the default value. Otherwise, set the branding to whatever we read, -->
+            	<!-- or, set the default -->
+            	
+            	<!-- Existing, old install (version, but no branding) -->
+            	<setInstallerVariable>
+            		<name>branding</name>
+            		<persist>0</persist>
+            		<value>PostgreSQL</value>
+            		<ruleList>
+            			<compareText>
+            				<logic>does_not_equal</logic>
+            				<text>${psqlODBCVersion}</text>
+            				<value></value>
+            			</compareText>
+            			<compareText>
+            				<logic>equals</logic>
+            				<text>${iBranding}</text>
+            				<value></value>
+            			</compareText>
+            		</ruleList>
+            	</setInstallerVariable>
+            	
+            	<!-- Existing install, with branding -->
+            	<setInstallerVariable>
+            		<name>branding</name>
+            		<persist>0</persist>
+            		<value>${iBranding}</value>
+            		<ruleList>
+            			<compareText>
+            				<logic>does_not_equal</logic>
+            				<text>${iBranding}</text>
+            				<value></value>
+            			</compareText>
+            		</ruleList>
+            	</setInstallerVariable>
+            	
+            	<!-- New install, nothing set on the command line -->
+            	<setInstallerVariable>
+            		<name>branding</name>
+            		<persist>0</persist>
+            		<value>PostgreSQL</value>
+            		<ruleList>
+            			<compareText>
+            				<logic>equals</logic>
+            				<text>${branding}</text>
+            				<value></value>
+            			</compareText>
+            		</ruleList>
+            	</setInstallerVariable>
+            	
+                <logMessage>
+                    <text>Using branding: ${branding}</text>
+                </logMessage>
+            	
+                <!-- LIN & MAC: Set the installation directory in case of re-install/upgrade -->
+                <actionGroup>
+                    <actionList>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>psqlODBC</section>
+                            <key>InstallationDirectory</key>
+                            <variable>installdir</variable>
+                        </iniFileGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${psqlODBCVersion}</text>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- WIN: Set the installation directory in case of re-install/upgrade -->
+                <actionGroup>
+                    <actionList>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\psqlODBC</key>
+                            <name>Location</name>
+                            <variable>installdir</variable>
+                        </registryGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${psqlODBCVersion}</text>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- Create a temporary directory -->
+                <createDirectory>
+                    <path>${system_temp_directory}/${product_shortname}</path>
+                </createDirectory>
+                <changePermissions>
+                    <permissions>777</permissions>
+                    <files>${system_temp_directory}/${product_fullname}</files>
+                </changePermissions>
+                <!-- LIN: Set the unixODBC Path -->
+                <actionGroup>
+                    <actionList>
+                        <unpackFile>
+                            <component>psqlODBC</component>
+                            <destination>${system_temp_directory}/${product_shortname}/getodbcinstpath.sh</destination>
+                            <folder>programfileslinux</folder>
+                            <origin>installer/psqlODBC/getodbcinstpath.sh</origin>
+                        </unpackFile>
+                        <runProgram>
+                            <program>${system_temp_directory}/${product_shortname}/getodbcinstpath.sh</program>
+                            <workingDirectory>${system_temp_directory}/${product_shortname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+                        <setInstallerVariableFromScriptOutput>
+                            <name>odbcinstpath</name>
+                            <exec>cat</exec>
+                            <execArgs>odbcinstfilepath</execArgs>
+                            <workingDirectory>${system_temp_directory}/${product_shortname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>linux</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- LIN-X64: Set the unixODBC Path -->
+                <actionGroup>
+                    <actionList>
+                        <unpackFile>
+                            <component>psqlODBC</component>
+                            <destination>${system_temp_directory}/${product_shortname}/getodbcinstpath.sh</destination>
+                            <folder>programfileslinux-x64</folder>
+                            <origin>installer/psqlODBC/getodbcinstpath.sh</origin>
+                        </unpackFile>
+                        <runProgram>
+                            <program>${system_temp_directory}/${product_shortname}/getodbcinstpath.sh</program>
+                            <workingDirectory>${system_temp_directory}/${product_shortname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+                        <setInstallerVariableFromScriptOutput>
+                            <name>odbcinstpath</name>
+                            <exec>cat</exec>
+                            <execArgs>odbcinstfilepath</execArgs>
+                            <workingDirectory>${system_temp_directory}/${product_shortname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- MAC: Set the unixODBC Path -->
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="odbcinstpath" value="/Library/ODBC/odbcinst.ini"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- Create a Directory for installation -->
+                <actionGroup>
+                    <actionList>
+                        <createDirectory path="/Library/ODBC"/>
+                    </actionList>
+                    <ruleList>
+                        <fileTest>
+                            <path>/Library/ODBC</path>
+                            <condition>not_exists</condition>
+                        </fileTest>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- MAC: Creates the ini file if not exits -->
+                <touchFile path="/Library/ODBC/odbc.ini">
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                </touchFile>
+                <!-- MAC: Creates the ini file if not exits -->
+                <touchFile path="/Library/ODBC/odbcinst.ini">
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                </touchFile>
+            	
+                <!-- Linux : Checking for libodbc.so -->
+                <setInstallerVariable name="odbcinstpath" value="/etc/odbcinst.ini" >
+                    <ruleList>
+                        <fileExists>
+                           <path>/usr/lib/libodbc.so</path>
+                        </fileExists>
+                        <compareTextLength>
+                            <length>0</length>
+                            <logic>equals</logic>
+                            <text>${odbcinstpath}</text>
+                        </compareTextLength>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>linux</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="odbcinstpath" value="/etc/odbcinst.ini" >
+                    <ruleList>
+                        <fileExists>
+                           <path>/usr/lib/libodbc.so.1</path>
+                        </fileExists>
+                        <compareTextLength>
+                            <length>0</length>
+                            <logic>equals</logic>
+                            <text>${odbcinstpath}</text>
+                        </compareTextLength>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>linux</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable> 
+            	 
+                <!-- Linux-X64 : Checking for libodbc.so -->
+                <setInstallerVariable name="odbcinstpath" value="/etc/odbcinst.ini" >
+                    <ruleList>
+                        <fileExists>
+                           <path>/usr/lib64/libodbc.so</path>
+                        </fileExists>
+                        <compareTextLength>
+                            <length>0</length>
+                            <logic>equals</logic>
+                            <text>${odbcinstpath}</text>
+                        </compareTextLength>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="odbcinstpath" value="/etc/odbcinst.ini" >
+                    <ruleList>
+                        <fileExists>
+                           <path>/usr/lib64/libodbc.so.1</path>
+                        </fileExists>
+                        <compareTextLength>
+                            <length>0</length>
+                            <logic>equals</logic>
+                            <text>${odbcinstpath}</text>
+                        </compareTextLength>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+        
+                <!-- Exit if unixODBC not found -->
+                <actionGroup>
+                    <actionList>
+                        <throwError>
+                            <customErrorMessage>${msg(error.unixodbc.notfound)}</customErrorMessage>
+                            <text>Unknown Error</text>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <compareTextLength>
+                            <length>0</length>
+                            <logic>equals</logic>
+                            <text>${odbcinstpath}</text>
+                        </compareTextLength>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <setInstallerVariable name="odbcuninstallfile" value="${odbcinstpath}">
+                    <persist>1</persist>
+                </setInstallerVariable>
             </actionList>
             <ruleList>
-                <compareTextLength>
-                    <length>0</length>
-                    <logic>equals</logic>
-                    <text>${odbcinstpath}</text>
-                </compareTextLength>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-        <setInstallerVariable name="odbcuninstallfile" value="${odbcinstpath}">
-            <persist>1</persist>
-        </setInstallerVariable>
     </preInstallationActionList>
     <postInstallationActionList>
-    <!-- Setting the installation directory in the PostgreSQL.ini file -->
+
+        <!-- Setting the installation directory in the PostgreSQL.ini file -->
         <actionGroup>
             <actionList>
                 <substitute>
@@ -610,266 +640,274 @@
                 </substitute>
             </actionList>
         </actionGroup>
+
+        <!-- Do not perform the below actions in case of extract-only mode -->
         <actionGroup>
             <actionList>
-            <!-- LIN & MAC: Write InstallDir and Version to postgres-reg.ini File -->
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>psqlODBC</section>
-                    <key>Description</key>
-                    <value>${msg(install.summary)}</value>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>psqlODBC</section>
-                    <key>InstallationDirectory</key>
-                    <value>${installdir}</value>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>psqlODBC</section>
-                    <key>Version</key>
-                    <value>${product_version}</value>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>${odbcinstpath}</file>
-                    <section>psqlODBC</section>
-                    <key>Description</key>
-                    <value>PostgreSQL ODBC driver</value>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>${odbcinstpath}</file>
-                    <section>psqlODBC</section>
-                    <key>Driver</key>
-                    <value>${installdir}/lib/psqlodbcw.so</value>
-                </iniFileSet>
-
-	      	    <!-- LIN & LIN-64: Configure psqlODBC -->
-                <runProgram>
-                    <program>${installdir}/installer/psqlODBC/configpsqlodbc.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
-                    <progressText/>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
+                <actionGroup>
+                    <actionList>
+                    <!-- LIN & MAC: Write InstallDir and Version to postgres-reg.ini File -->
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>psqlODBC</section>
+                            <key>Description</key>
+                            <value>${msg(install.summary)}</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>psqlODBC</section>
+                            <key>InstallationDirectory</key>
+                            <value>${installdir}</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>psqlODBC</section>
+                            <key>Version</key>
+                            <value>${product_version}</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>${odbcinstpath}</file>
+                            <section>psqlODBC</section>
+                            <key>Description</key>
+                            <value>PostgreSQL ODBC driver</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>${odbcinstpath}</file>
+                            <section>psqlODBC</section>
+                            <key>Driver</key>
+                            <value>${installdir}/lib/psqlodbcw.so</value>
+                        </iniFileSet>
+        
+        	      	    <!-- LIN & LIN-64: Configure psqlODBC -->
+                        <runProgram>
+                            <program>${installdir}/installer/psqlODBC/configpsqlodbc.sh</program>
+                            <programArguments>"${installdir}"</programArguments>
+                            <progressText/>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                            <ruleList>
+                                <compareText>
+                                    <logic>contains</logic>
+                                    <text>${platform_name}</text>
+                                    <value>linux</value>
+                                </compareText>
+                            </ruleList>
+                        </runProgram>
+         			
+                	    <!-- LIN & MAC: Create Menu Shortcuts -->
+                        <runProgram>
+                            <program>${installdir}/installer/psqlODBC/createshortcuts.sh</program>
+                            <programArguments>"${installdir}" "${branding}"</programArguments>
+                            <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+                    </actionList>
                     <ruleList>
                         <compareText>
-                            <logic>contains</logic>
+                            <logic>does_not_equal</logic>
                             <text>${platform_name}</text>
-                            <value>linux</value>
+                            <value>windows</value>
                         </compareText>
                     </ruleList>
-                </runProgram>
- 			
-        	    <!-- LIN & MAC: Create Menu Shortcuts -->
-                <runProgram>
-                    <program>${installdir}/installer/psqlODBC/createshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${branding}"</programArguments>
-                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                </runProgram>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-		
-        <!-- MAC: register with Driver manager -->
-        <actionGroup>
-            <actionList>
+                </actionGroup>
+        		
+                <!-- MAC: register with Driver manager -->
+                <actionGroup>
+                    <actionList>
+                        <iniFileSet>
+                            <file>${odbcinstpath}</file>
+                            <section>ODBC Drivers</section>
+                            <key>psqlODBC</key>
+                            <value>Installed</value>
+                        </iniFileSet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+        		
+                <!-- Deleting the conf file if exists -->
+                <actionGroup>
+                    <actionList>
+                        <deleteFile>
+                            <path>/etc/ld.so.conf.d/psqlODBC.conf</path>
+                        </deleteFile>
+                    </actionList>
+                    <ruleList>
+                        <fileExists>
+                            <path>/etc/ld.so.conf.d/psqlODBC.conf</path>
+                        </fileExists>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+        		
+                <!-- Adding the driver installation conf file -->
+                <actionGroup>
+                    <actionList>
+                        <addTextToFile>
+                            <file>/etc/ld.so.conf.d/psqlODBC.conf</file>
+                            <text>${installdir}/lib</text>
+                        </addTextToFile>
+                    </actionList>
+                    <ruleList>
+                        <fileExists>
+                            <path>/etc/ld.so.conf.d</path>
+                        </fileExists>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+        
+                <!--WIN: Register ODBC Drivers -->
+                <actionGroup>
+                    <actionList>
+                         <!-- ANSI -->
+                         <registrySet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
+                            <name>APILevel</name>
+                            <value>1</value>
+                            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                         </registrySet>
+                         <registrySet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
+                            <name>ConnectFunctions</name>
+                            <value>YYN</value>
+                            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                         </registrySet>
+                         <registrySet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
+                            <name>Driver</name>
+                            <value>${installdir}\PSQLODBC_MAJOR_VERSION\bin\psqlodbc30a.dll</value>
+                            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                         </registrySet>
+                         <registrySet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
+                            <name>DriverODBCVer</name>
+                            <value>${productVersion}</value>
+                            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                         </registrySet>
+                         <registrySet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
+                            <name>FileUsage</name>
+                            <value>0</value>
+                            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                         </registrySet>
+                         <registrySet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
+                            <name>Setup</name>
+                            <value>${installdir}\PSQLODBC_MAJOR_VERSION\bin\psqlodbc30a.dll</value>
+                            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                         </registrySet>
+                         <registrySet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
+                            <name>SQLLevel</name>
+                            <value>1</value>
+                            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                         </registrySet>
+                         <registrySet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers</key>
+                            <name>PostgreSQL ODBC Driver(ANSI)</name>
+                            <value>Installed</value>
+                            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                         </registrySet>
+                         <!-- UNICODE -->
+                         <registrySet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
+                            <name>APILevel</name>
+                            <value>1</value>
+                            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                         </registrySet>
+                         <registrySet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
+                            <name>ConnectFunctions</name>
+                            <value>YYN</value>
+                            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                         </registrySet>
+                         <registrySet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
+                            <name>Driver</name>
+                            <value>${installdir}\PSQLODBC_MAJOR_VERSION\bin\psqlodbc35w.dll</value>
+                            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                         </registrySet>
+                         <registrySet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
+                            <name>DriverODBCVer</name>
+                            <value>${productVersion}</value>
+                            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                         </registrySet>
+                         <registrySet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
+                            <name>FileUsage</name>
+                            <value>0</value>
+                            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                         </registrySet>
+                         <registrySet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
+                            <name>Setup</name>
+                            <value>${installdir}\PSQLODBC_MAJOR_VERSION\bin\psqlodbc35w.dll</value>
+                            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                         </registrySet>
+                         <registrySet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
+                            <name>SQLLevel</name>
+                            <value>1</value>
+                            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                         </registrySet>
+                         <registrySet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers</key>
+                            <name>PostgreSQL ODBC Driver(UNICODE)</name>
+                            <value>Installed</value>
+                            <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
+                         </registrySet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+        
+                <!-- Branding info -->
+                <logMessage>
+                    <text>Write the branding to the ini file...</text>
+                </logMessage>
                 <iniFileSet>
-                    <file>${odbcinstpath}</file>
-                    <section>ODBC Drivers</section>
-                    <key>psqlODBC</key>
-                    <value>Installed</value>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>psqlODBC</section>
+                    <key>Branding</key>
+                    <value>${branding}</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
                 </iniFileSet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\psqlODBC</key>
+                    <name>Branding</name>
+                    <value>${branding}</value>
+                </registrySet>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-		
-        <!-- Deleting the conf file if exists -->
-        <actionGroup>
-            <actionList>
-                <deleteFile>
-                    <path>/etc/ld.so.conf.d/psqlODBC.conf</path>
-                </deleteFile>
-            </actionList>
-            <ruleList>
-                <fileExists>
-                    <path>/etc/ld.so.conf.d/psqlODBC.conf</path>
-                </fileExists>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-		
-        <!-- Adding the driver installation conf file -->
-        <actionGroup>
-            <actionList>
-                <addTextToFile>
-                    <file>/etc/ld.so.conf.d/psqlODBC.conf</file>
-                    <text>${installdir}/lib</text>
-                </addTextToFile>
-            </actionList>
-            <ruleList>
-                <fileExists>
-                    <path>/etc/ld.so.conf.d</path>
-                </fileExists>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-
-        <!--WIN: Register ODBC Drivers -->
-        <actionGroup>
-            <actionList>
-                 <!-- ANSI -->
-                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
-                    <name>APILevel</name>
-                    <value>1</value>
-                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-                 </registrySet>
-                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
-                    <name>ConnectFunctions</name>
-                    <value>YYN</value>
-                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-                 </registrySet>
-                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
-                    <name>Driver</name>
-                    <value>${installdir}\PSQLODBC_MAJOR_VERSION\bin\psqlodbc30a.dll</value>
-                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-                 </registrySet>
-                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
-                    <name>DriverODBCVer</name>
-                    <value>${productVersion}</value>
-                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-                 </registrySet>
-                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
-                    <name>FileUsage</name>
-                    <value>0</value>
-                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-                 </registrySet>
-                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
-                    <name>Setup</name>
-                    <value>${installdir}\PSQLODBC_MAJOR_VERSION\bin\psqlodbc30a.dll</value>
-                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-                 </registrySet>
-                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
-                    <name>SQLLevel</name>
-                    <value>1</value>
-                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-                 </registrySet>
-                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers</key>
-                    <name>PostgreSQL ODBC Driver(ANSI)</name>
-                    <value>Installed</value>
-                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-                 </registrySet>
-                 <!-- UNICODE -->
-                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
-                    <name>APILevel</name>
-                    <value>1</value>
-                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-                 </registrySet>
-                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
-                    <name>ConnectFunctions</name>
-                    <value>YYN</value>
-                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-                 </registrySet>
-                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
-                    <name>Driver</name>
-                    <value>${installdir}\PSQLODBC_MAJOR_VERSION\bin\psqlodbc35w.dll</value>
-                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-                 </registrySet>
-                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
-                    <name>DriverODBCVer</name>
-                    <value>${productVersion}</value>
-                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-                 </registrySet>
-                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
-                    <name>FileUsage</name>
-                    <value>0</value>
-                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-                 </registrySet>
-                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
-                    <name>Setup</name>
-                    <value>${installdir}\PSQLODBC_MAJOR_VERSION\bin\psqlodbc35w.dll</value>
-                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-                 </registrySet>
-                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
-                    <name>SQLLevel</name>
-                    <value>1</value>
-                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-                 </registrySet>
-                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers</key>
-                    <name>PostgreSQL ODBC Driver(UNICODE)</name>
-                    <value>Installed</value>
-                    <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
-                 </registrySet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-
-		<!-- Branding info -->
-        <logMessage>
-            <text>Write the branding to the ini file...</text>
-        </logMessage>
-        <iniFileSet>
-            <file>/etc/postgres-reg.ini</file>
-            <section>psqlODBC</section>
-            <key>Branding</key>
-            <value>${branding}</value>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </iniFileSet>
-        <registrySet>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\psqlODBC</key>
-            <name>Branding</name>
-            <value>${branding}</value>
-        </registrySet>
-		
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
@@ -1155,22 +1193,26 @@
             <!-- WIN: Start Menu -->
             <startMenuShortcutList>
 			
-            <!-- Launch psqlODBC -->
+                 <!-- Launch psqlODBC -->
                  <startMenuLinkShortcut>
                     <comment>psqlODBC Documentation</comment>
                     <name>psqlODBC Documentation</name>
                     <runInTerminal>0</runInTerminal>
                     <url>http://psqlodbc.projects.postgresql.org/</url>
                     <windowsIcon>${installdir}\PSQLODBC_MAJOR_VERSION\scripts\images\pg-launchOdbcDocs.ico</windowsIcon>
+                    <ruleList>
+                        <isFalse value="${extract_mode}"/>
+                    </ruleList>
                  </startMenuLinkShortcut>
             </startMenuShortcutList>
         </component>
     </componentList>
 	
     <parameterList>
-	    <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
-		<stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
-		
+        <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
+        <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
+        <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+        <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>	
         <directoryParameter>
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>

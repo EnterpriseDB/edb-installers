@@ -8,7 +8,7 @@
     <!-- Product Specific Options -->
     <productComments>Npgsql - .Net Data Provider for Postgresql packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
-    <requireInstallationByRootUser>1</requireInstallationByRootUser>
+    <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
     <!-- The options are used for RPM registration -->
     <description>Npgsql - .Net Data Provider for Postgresql</description>
     <summary>Npgsql - .Net Data Provider for Postgresql distributed by EnterpriseDB</summary>
@@ -28,6 +28,7 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+    <windowsSoftwareRegistryPrefix/>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
@@ -94,6 +95,7 @@
       </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
+        <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
 	<setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_NPGSQL" />
 	<setInstallerVariable name="productFullName" persist="1" value="Npgsql for Mono 2.0">
           <ruleList>
@@ -217,223 +219,255 @@
         </setInstallerVariable>
     </initializationActionList>
     <preInstallationActionList>
-        <!-- Creates the ini file if not exits -->
-        <touchFile path="/etc/postgres-reg.ini">
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </touchFile>
-        <!-- LIN & MAC : Check Previous Installation of npgsql-->
         <actionGroup>
             <actionList>
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>Npgsql</section>
-                    <key>Branding</key>
-                    <variable>iBranding</variable>
-                </iniFileGet>
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>Npgsql</section>
-                    <key>Version</key>
-                    <variable>npgsqlVersion</variable>
-                </iniFileGet>
+                <setInstallerVariable name="branding" value=""/>
+                <!-- Do not create uninstaller in case of extract-only mode -->
+                <setInstallerVariable name="createUninstaller" value="0" persist="1"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <isTrue value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-
-        <!-- WIN : Check Previous Installation of npgsql-->
+        <!-- Do not perform the below actions in case of extract-only mode -->
         <actionGroup>
             <actionList>
-                <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Npgsql</key>
-                    <name>Branding</name>
-                    <variable>iBranding</variable>
-                </registryGet>
-                <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Npgsql</key>
-                    <name>Version</name>
-                    <variable>npgsqlVersion</variable>
-                </registryGet>
+                <!-- Abort installation if not super-user and not running in extract-only mode-->
+                <throwError text="${msg(Installer.Warning.RootPrivileges)}">
+                    <ruleList>
+                        <isFalse value="${installer_is_root_install}"/>
+                    </ruleList>
+                </throwError>
+                <setInstallerVariable name="windowsSoftwareRegistryPrefix" value="${vendor}\${fullName}" persist="1"/>
+                <!-- Creates the ini file if not exits -->
+                <touchFile path="/etc/postgres-reg.ini">
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </touchFile>
+                <!-- LIN & MAC : Check Previous Installation of npgsql-->
+                <actionGroup>
+                    <actionList>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>Npgsql</section>
+                            <key>Branding</key>
+                            <variable>iBranding</variable>
+                        </iniFileGet>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>Npgsql</section>
+                            <key>Version</key>
+                            <variable>npgsqlVersion</variable>
+                        </iniFileGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+        
+                <!-- WIN : Check Previous Installation of npgsql-->
+                <actionGroup>
+                    <actionList>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Npgsql</key>
+                            <name>Branding</name>
+                            <variable>iBranding</variable>
+                        </registryGet>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Npgsql</key>
+                            <name>Version</name>
+                            <variable>npgsqlVersion</variable>
+                        </registryGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+        
+        	<!-- If there appears to be an existing installation, with no Branding value. --> 
+        	<!-- force the default value. Otherwise, set the branding to whatever we read, -->
+        	<!-- or, set the default -->
+        	
+        	<!-- Existing, old install (version, but no branding) -->
+        	<setInstallerVariable>
+        		<name>branding</name>
+        		<persist>0</persist>
+        		<value>PostgreSQL</value>
+        		<ruleList>
+        			<compareText>
+        				<logic>does_not_equal</logic>
+        				<text>${npgsqlVersion}</text>
+        				<value></value>
+        			</compareText>
+        			<compareText>
+        				<logic>equals</logic>
+        				<text>${iBranding}</text>
+        				<value></value>
+        			</compareText>
+        		</ruleList>
+        	</setInstallerVariable>
+        	
+        	<!-- Existing install, with branding -->
+        	<setInstallerVariable>
+        		<name>branding</name>
+        		<persist>0</persist>
+        		<value>${iBranding}</value>
+        		<ruleList>
+        			<compareText>
+        				<logic>does_not_equal</logic>
+        				<text>${iBranding}</text>
+        				<value></value>
+        			</compareText>
+        		</ruleList>
+        	</setInstallerVariable>
+        	
+        	<!-- New install, nothing set on the command line -->
+        	<setInstallerVariable>
+        		<name>branding</name>
+        		<persist>0</persist>
+        		<value>PostgreSQL</value>
+        		<ruleList>
+        			<compareText>
+        				<logic>equals</logic>
+        				<text>${branding}</text>
+        				<value></value>
+        			</compareText>
+        		</ruleList>
+        	</setInstallerVariable>
+        	
+                <logMessage>
+                    <text>Using branding: ${branding}</text>
+                </logMessage>        
+        
+                <!-- Set the installation directory in case of re-install/upgrade -->
+                <actionGroup>
+                    <actionList>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>Npgsql</section>
+                            <key>InstallationDirectory</key>
+                            <variable>installdir</variable>
+                        </iniFileGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${npgsqlVersion}</text>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+        
+        	<!-- Set the installation directory in case of re-install/upgrade -->
+                <actionGroup>
+                    <actionList>
+        	        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Npgsql</key>
+                            <name>Location</name>
+                            <variable>installdir</variable>
+                        </registryGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${npgsqlVersion}</text>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-
-	<!-- If there appears to be an existing installation, with no Branding value. --> 
-	<!-- force the default value. Otherwise, set the branding to whatever we read, -->
-	<!-- or, set the default -->
-	
-	<!-- Existing, old install (version, but no branding) -->
-	<setInstallerVariable>
-		<name>branding</name>
-		<persist>0</persist>
-		<value>PostgreSQL</value>
-		<ruleList>
-			<compareText>
-				<logic>does_not_equal</logic>
-				<text>${npgsqlVersion}</text>
-				<value></value>
-			</compareText>
-			<compareText>
-				<logic>equals</logic>
-				<text>${iBranding}</text>
-				<value></value>
-			</compareText>
-		</ruleList>
-	</setInstallerVariable>
-	
-	<!-- Existing install, with branding -->
-	<setInstallerVariable>
-		<name>branding</name>
-		<persist>0</persist>
-		<value>${iBranding}</value>
-		<ruleList>
-			<compareText>
-				<logic>does_not_equal</logic>
-				<text>${iBranding}</text>
-				<value></value>
-			</compareText>
-		</ruleList>
-	</setInstallerVariable>
-	
-	<!-- New install, nothing set on the command line -->
-	<setInstallerVariable>
-		<name>branding</name>
-		<persist>0</persist>
-		<value>PostgreSQL</value>
-		<ruleList>
-			<compareText>
-				<logic>equals</logic>
-				<text>${branding}</text>
-				<value></value>
-			</compareText>
-		</ruleList>
-	</setInstallerVariable>
-	
-        <logMessage>
-            <text>Using branding: ${branding}</text>
-        </logMessage>        
-
-        <!-- Set the installation directory in case of re-install/upgrade -->
-        <actionGroup>
-            <actionList>
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>Npgsql</section>
-                    <key>InstallationDirectory</key>
-                    <variable>installdir</variable>
-                </iniFileGet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${npgsqlVersion}</text>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-
-	<!-- Set the installation directory in case of re-install/upgrade -->
-        <actionGroup>
-            <actionList>
-	        <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Npgsql</key>
-                    <name>Location</name>
-                    <variable>installdir</variable>
-                </registryGet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${npgsqlVersion}</text>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-
     </preInstallationActionList>
     <postInstallationActionList>
-        <actionGroup>
-            <actionList>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>Npgsql</section>
-                    <key>Description</key>
-                    <value>${product_fullname}</value>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>Npgsql</section>
-                    <key>InstallationDirectory</key>
-                    <value>${installdir}</value>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>Npgsql</section>
-                    <key>Version</key>
-                    <value>${product_version}</value>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>Npgsql</section>
-                    <key>Branding</key>
+        <!-- Do not perform the below actions in case of extract-only mode -->
+         <actionGroup>
+             <actionList>
+                <actionGroup>
+                    <actionList>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>Npgsql</section>
+                            <key>Description</key>
+                            <value>${product_fullname}</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>Npgsql</section>
+                            <key>InstallationDirectory</key>
+                            <value>${installdir}</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>Npgsql</section>
+                            <key>Version</key>
+                            <value>${product_version}</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>Npgsql</section>
+                            <key>Branding</key>
+                            <value>${branding}</value>
+                        </iniFileSet>
+                        <runProgram>
+                            <program>${installdir}/installer/npgsql/createshortcuts.sh</program>
+                            <programArguments>"${installdir}" "${branding}"</programArguments>
+                            <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                            <workingDirectory>${installdir}/installer/npgsql</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+        	    <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Npgsql</key>
+                    <name>Branding</name>
                     <value>${branding}</value>
-                </iniFileSet>
-                <runProgram>
-                    <program>${installdir}/installer/npgsql/createshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${branding}"</programArguments>
-                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
-                    <workingDirectory>${installdir}/installer/npgsql</workingDirectory>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                </runProgram>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </registrySet>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-	    <registrySet>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Npgsql</key>
-            <name>Branding</name>
-            <value>${branding}</value>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </registrySet>
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
@@ -668,6 +702,9 @@
 	                <runInTerminal>0</runInTerminal>
 	                <url>http://npgsql.projects.postgresql.org/docs/api</url>
 		        <windowsIcon>${installdir}\scripts\images\pg-launchDocsAPI.ico</windowsIcon>
+                        <ruleList>
+                            <stringTest text="${branding}" type="not_empty"/>
+                        </ruleList>
 		     </startMenuLinkShortcut>  
 		     <!-- Launch npgsql User Manual -->
                      <startMenuLinkShortcut>
@@ -676,6 +713,9 @@
 		        <runInTerminal>0</runInTerminal>
 		        <url>http://npgsql.projects.postgresql.org/docs/manual/UserManual.html</url>
 			<windowsIcon>${installdir}\scripts\images\pg-launchUserManual.ico</windowsIcon>
+                        <ruleList>
+                            <stringTest text="${branding}" type="not_empty"/>
+                        </ruleList>
                      </startMenuLinkShortcut>  
 	        </startMenuShortcutList>
 	      </startMenuFolder>
@@ -685,6 +725,8 @@
     <!-- Install Directory -->
     <parameterList>
 	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+        <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
+        <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
 	<stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <directoryParameter>
             <name>installdir</name>

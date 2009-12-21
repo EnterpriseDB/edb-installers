@@ -7,6 +7,10 @@
 
 _prep_psqlODBC_osx() {
 
+    echo "**********************************"
+    echo "*  Pre Process: pgsqlODBC (OSX)  *"
+    echo "**********************************"
+
     # Enter the source directory and cleanup if required
     cd $WD/psqlODBC/source
 
@@ -43,6 +47,9 @@ _prep_psqlODBC_osx() {
 
 _build_psqlODBC_osx() {
 
+    echo "****************************"
+    echo "*  Build: pgsqlODBC (OSX)  *"
+    echo "****************************"
 
     PG_STAGING=$PG_PATH_OSX/psqlODBC/staging/osx
     SOURCE_DIR=$PG_PATH_OSX/psqlODBC/source/psqlODBC.osx
@@ -89,6 +96,10 @@ _build_psqlODBC_osx() {
 
 _postprocess_psqlODBC_osx() {
 
+    echo "***********************************"
+    echo "*  Post Process: pgsqlODBC (OSX)  *"
+    echo "***********************************"
+
     cd $WD/psqlODBC
 
     # Setup the installer scripts.
@@ -108,8 +119,30 @@ _postprocess_psqlODBC_osx() {
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/pg-launchOdbcDocs.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/pg-launchOdbcDocs.icns)"
 
+    if [ -f installer_1.xml ]; then
+        rm -f installer_1.xml
+    fi
+
+    if [ ! -f $WD/scripts/risePrivileges ]; then
+        cp installer.xml installer_1.xml
+        _replace "<requireInstallationByRootUser>\${admin_rights}</requireInstallationByRootUser>" "<requireInstallationByRootUser>1</requireInstallationByRootUser>"
+        # Build the installer (for the root privileges required)
+        echo Building the installer with the root privileges required
+        "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
+        cp $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/psqlODBC $WD/scripts/risePrivileges || _die "Failed to copy the privileges escalation applet"
+
+        rm -rf $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app
+    fi
+
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
+
+    # Using own scripts for extract-only mode
+    cp -f $WD/scripts/risePrivileges $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/psqlODBC
+    chmod a+x $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/psqlODBC
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ psqlODBC $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace @@PROJECTNAME@@ with psqlODBC ($WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/installbuilder.sh)"
+    chmod a+x $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/installbuilder.sh
  
     # Zip up the output
     cd $WD/output

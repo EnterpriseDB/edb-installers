@@ -26,13 +26,14 @@
   <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
   <compressionAlgorithm>lzma</compressionAlgorithm>
   <enableRollback>0</enableRollback>
-  <requireInstallationByRootUser>1</requireInstallationByRootUser>
+  <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
   <saveRelativePaths>1</saveRelativePaths>
   <outputDirectory>../output</outputDirectory>
   <unattendedModeUI>minimal</unattendedModeUI>
   <uninstallerName>uninstall-${product_shortname}</uninstallerName>
   <uninstallerDirectory>${installdir}</uninstallerDirectory>
   <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+  <windowsSoftwareRegistryPrefix/>
 
   <!-- Images -->
   <disableSplashScreen>1</disableSplashScreen>
@@ -67,7 +68,7 @@
       </ruleList>
     </setInstallerVariable>
     <setInstallerVariable name="defaultsyspassword" value=""/>
- 
+
  </preShowHelpActionList>
   <!-- Prebuild Actions -->
   <preBuildActionList>
@@ -78,11 +79,12 @@
       </ruleList>
     </setInstallerVariable>
   </preBuildActionList>
-  
+
   <!-- Initialisation actions -->
   <initializationActionList>
+    <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
     <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PGAGENT"/>
-    
+
     <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
     <throwError>
       <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -92,7 +94,7 @@
         <compareText text="${originalplatform}" value="linux-x32"/>
       </ruleList>
     </throwError>
-    
+
     <!-- Set the default values -->
     <setInstallerVariable name="defaultpghost" value="localhost"/>
     <setInstallerVariable name="defaultpguser" value="postgres"/>
@@ -161,7 +163,7 @@
           <workingDirectory>${windir}</workingDirectory>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
-        </runProgram> 
+        </runProgram>
       </actionList>
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -169,539 +171,575 @@
       </ruleList>
     </actionGroup>
   </initializationActionList>
-  
+
   <!-- Preinstallation actions -->
   <preInstallationActionList>
 
-    <!-- Creates the ini file if not exits -->
-    <touchFile path="/etc/postgres-reg.ini">
-      <ruleList>
-        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-      </ruleList>
-    </touchFile>
-    <setInstallerVariable name="defaultinstalldir" value="${installdir}"/>
-    
-    <!-- LIN & MAC : Check Previous Installation of pgAgent -->
     <actionGroup>
       <actionList>
-        <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="Version" variable="pgAgentVersion"/>
+        <setInstallerVariable name="branding" value=""/>
+        <!-- Do not create uninstaller in case of extract-only mode -->
+        <setInstallerVariable name="createUninstaller" value="0" persist="1"/>
+        <componentSelection select="configuration"/>
       </actionList>
       <ruleList>
-        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-      </ruleList>
-    </actionGroup>
-    
-    <!-- LIN & MAC : Set the installation directory in case of re-install/upgrade -->
-    <actionGroup>
-      <actionList>
-        <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="InstallationDirectory" variable="installdir"/>
-        <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="ServiceManager" variable="systemuser"/>
-        <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGUSER" variable="pguser"/>
-        <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" variable="pgport"/>
-        <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" variable="pghost"/>
-        <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGDATABASE" variable="pgdbname"/>
-      </actionList>
-      <ruleList>
-        <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
-        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/> 
-      </ruleList>
-    </actionGroup>
-    
-    <!-- WIN : Check Previous Installation of pgAgent -->
-    <actionGroup>
-      <actionList>
-        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Version" variable="pgAgentVersion"/>
-      </actionList>
-      <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="windows"/> 
-      </ruleList>
-    </actionGroup>
-    
-    <!-- WIN : Set the installation directory in case of re-install/upgrade -->
-    <actionGroup>
-      <actionList>
-        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Location" variable="installdir"/>
-        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="ServiceManager" variable="systemuser"/>
-        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGUSER" variable="pguser"/>
-        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGHOST" variable="pghost"/>
-        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGPORT" variable="pgport"/>
-      </actionList>
-      <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="windows"/> 
-        <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/> 
-      </ruleList>
-    </actionGroup>
-    
-    <!-- LIN : Stop the pgAgent Service -->
-    <runProgram>
-      <program>/etc/init.d/pgagent</program>
-      <programArguments>stop</programArguments>
-      <abortOnError>0</abortOnError>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText logic="contains" text="${platform_name}" value="linux"/>
-        <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
-      </ruleList>
-    </runProgram>
-    
-    <!-- WIN : Stop the pgAgent Service -->
-    <stopWindowsService>
-      <serviceName>pgagent</serviceName>
-      <abortOnError>0</abortOnError>
-      <showMessageOnError>0</showMessageOnError>
-      <customErrorMessage>${msg(error.stop.pgagent)}</customErrorMessage>
-      <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="windows"/> 
-        <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/> 
-      </ruleList>
-    </stopWindowsService>
-    
-    <!-- MAC: Stop the pgAgent Service -->
-    <runProgram>
-      <program>launchctl</program>
-      <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgagent.plist</programArguments>
-      <abortOnError>0</abortOnError>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="osx"/> 
-        <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/> 
-      </ruleList>
-    </runProgram>
-  </preInstallationActionList>
-  
-  <!-- Postinstallation actions -->
-  <postInstallationActionList>
-
-    <!-- LIN & MAC : Write the pgAgent Info to INI File -->
-    <actionGroup>
-      <actionList>
-        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="Description" value="${msg(install.summary)}"/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="InstallationDirectory" value="${installdir}"/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="Version" value="${product_version}"/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="ServiceManager" value="${systemuser}"/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGUSER" value="${pguser}"/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" value="${pghost}"/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" value="${pgport}"/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGDATABASE" value="${pgdbname}"/>
-      </actionList>
-      <ruleList>
-        <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+        <isTrue value="${extract_mode}"/>
       </ruleList>
     </actionGroup>
 
-    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Description" value="${msg(install.summary)}"/>
-    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Location" value="${installdir}"/>
-    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Version" value="${product_version}"/>
-    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="ServiceManager" value="${systemuser}"/>
-    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGUSER" value="${pguser}"/>
-    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGHOST" value="${pghost}"/>
-    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGPORT" value="${pgport}"/>
-    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGDATABASE" value="${pgdbname}"/>
-
-    <!-- Create the user account with which pgAgent will run-->
-    <runProgram>
-      <program>${installdir}/installer/pgAgent/createuser.sh</program>
-      <programArguments>"${systemuser}" "${installdir}"</programArguments>
-      <progressText>${msg(progress.text.creating.user)}</progressText>
-      <abortOnError>0</abortOnError>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
-        <compareText text="${pgAgentVersion}" logic="equals" value=""/>
-      </ruleList>
-    </runProgram>
-
-    <!-- WIN : Create user, if not exists -->
-    <runProgram>
-      <program>${installdir}\installer\pgAgent\createuser.exe</program>
-      <!-- The dot at the beginning of the arguments is the domain -->
-      <programArguments>. "${systemuser}" "${systempassword}"</programArguments>
-      <progressText>${msg(progress.text.creating.user)}</progressText>
-      <abortOnError>0</abortOnError>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="windows"/>
-        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
-        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-      </ruleList>
-    </runProgram>
-
-    <throwError>
-      <text>${msg(script.command.line.error)}</text>
-      <ruleList>
-        <compareText logic="equals" text="127" value="${program_exit_code}"/>
-        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
-      </ruleList>
-    </throwError>
-    <throwError>
-      <text>${msg(error.could.not.create.user)}</text>
-      <ruleList>
-        <compareText logic="equals" text="1" value="${program_exit_code}"/>
-        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
-      </ruleList>
-    </throwError>
-
-    <!-- Create pgagent schema if not exists -->
+    <!-- Do not perform the below actions in case of extract-only mode -->
     <actionGroup>
       <actionList>
-        <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
-        <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
-        <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
-        <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-        <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
-        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
-        <!-- Create plpgsql, if not exists -->
-        <runProgram>
-          <program>${installdir}/bin/psql</program>
-          <programArguments>-t -c "CREATE LANGUAGE plpgsql"</programArguments>
-          <progressText>${msg(progress.text.creating.plpgsql)}</progressText>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
+        <!-- Abort installation if not super-user and not running in extract-only mode-->
+        <throwError text="${msg(Installer.Warning.RootPrivileges)}">
+          <ruleList>
+            <isFalse value="${installer_is_root_install}"/>
+          </ruleList>
+        </throwError>
+        <setInstallerVariable name="windowsSoftwareRegistryPrefix" value="${vendor}\${fullName}" persist="1"/>
+
+        <!-- Creates the ini file if not exits -->
+        <touchFile path="/etc/postgres-reg.ini">
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-            <compareText logic="equals" text="${plpgsql_exist}" value=""/>
-            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
           </ruleList>
-        </runProgram>
+        </touchFile>
+        <setInstallerVariable name="defaultinstalldir" value="${installdir}"/>
 
-        <runProgram>
-          <program>${installdir}\bin\psql.exe</program>
-          <programArguments>-t -c "CREATE LANGUAGE plpgsql"</programArguments>
-          <progressText>${msg(progress.text.creating.plpgsql)}</progressText>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-          <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="windows"/>
-            <compareText logic="equals" text="${plpgsql_exist}" value=""/>
-            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
-          </ruleList>
-        </runProgram>
-
-        <!-- Create pgagent schema -->
-        <runProgram>
-          <program>${installdir}/bin/psql</program>
-          <programArguments>-t -f "${installdir}/share/pgagent.sql"</programArguments>
-          <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-          <workingDirectory>${installdir}/bin</workingDirectory>
-          <ruleList>
-            <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
-            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
-          </ruleList>
-        </runProgram>
-        <runProgram>
-          <program>${installdir}\bin\psql.exe</program>
-          <programArguments>-t -f "${installdir}\share\pgagent.sql"</programArguments>
-          <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-          <workingDirectory>${installdir}\bin</workingDirectory>
-          <ruleList>
-            <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
-            <compareText logic="equals" text="${platform_name}" value="windows"/>
-            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
-          </ruleList>
-        </runProgram>
-
-        <!-- Inform user about configuring pgagent Schema -->
-        <showInfo text="${msg(configure.pgagent.schema)}">
-          <ruleList>
-            <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
-          </ruleList>
-        </showInfo>
-
-        <!-- Upgrade schema pgagent -->
-        <runProgram>
-          <program>${installdir}/bin/psql</program>
-          <programArguments>-t -f "${installdir}/share/pgagent_upgrade.sql"</programArguments>
-          <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-          <workingDirectory>${installdir}/bin</workingDirectory>
+        <!-- LIN & MAC : Check Previous Installation of pgAgent -->
+        <actionGroup>
+          <actionList>
+            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="Version" variable="pgAgentVersion"/>
+          </actionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-            <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
-            <compareText logic="equals" text="${upgrade_schema}" value="yes"/>
-            <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
-            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
           </ruleList>
-        </runProgram>
-        <runProgram>
-          <program>${installdir}\bin\psql.exe</program>
-          <programArguments>-t -f "${installdir}\share\pgagent_upgrade.sql"</programArguments>
-          <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-          <workingDirectory>${installdir}/bin</workingDirectory>
-          <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="windows"/>
-            <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
-            <compareText logic="equals" text="${upgrade_schema}" value="yes"/>
-            <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
-            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
-          </ruleList>
-        </runProgram>
+        </actionGroup>
 
-        <!-- Inform user about configuring pgagent schema manually -->
-        <showInfo text="${msg(info.pgagent.schema.manual.upgrade)}">
+        <!-- LIN & MAC : Set the installation directory in case of re-install/upgrade -->
+        <actionGroup>
+          <actionList>
+            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="InstallationDirectory" variable="installdir"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="ServiceManager" variable="systemuser"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGUSER" variable="pguser"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" variable="pgport"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" variable="pghost"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGDATABASE" variable="pgdbname"/>
+          </actionList>
           <ruleList>
-            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-            <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
-            <compareText logic="does_not_equal" text="${upgrade_schema}" value="yes"/>
-            <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
-            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
-          </ruleList>
-        </showInfo>
-        <showInfo text="${msg(info.pgagent.schema.manual.upgrade.windows)}">
-          <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="windows"/>
-            <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
-            <compareText logic="does_not_equal" text="${upgrade_schema}" value="yes"/>
-            <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
-            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
-          </ruleList>
-        </showInfo>
-
-      </actionList>
-    </actionGroup>
-
-    <!-- Create pgagent schema in unattended mode -->
-    <actionGroup>
-      <actionList>
-        <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
-        <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
-        <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
-        <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-        <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
-        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
-        <!-- Create plpgsql, if not exists -->
-        <runProgram>
-          <program>${installdir}/bin/psql</program>
-          <programArguments>-t -c "CREATE LANGUAGE plpgsql"</programArguments>
-          <progressText>${msg(progress.text.creating.plpgsql)}</progressText>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-          <ruleList>
-            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-            <compareText logic="equals" text="${schema_in_unattended}" value="install"/>
-            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-          </ruleList>
-        </runProgram>
-
-        <runProgram>
-          <program>${installdir}\bin\psql.exe</program>
-          <programArguments>-t -c "CREATE LANGUAGE plpgsql"</programArguments>
-          <progressText>${msg(progress.text.creating.plpgsql)}</progressText>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-          <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="windows"/>
-            <compareText logic="equals" text="${schema_in_unattended}" value="install"/>
-            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-          </ruleList>
-        </runProgram>
-
-        <!-- Create pgagent schema -->
-        <runProgram>
-          <program>${installdir}/bin/psql</program>
-          <programArguments>-t -f "${installdir}/share/pgagent.sql"</programArguments>
-          <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-          <workingDirectory>${installdir}/bin</workingDirectory>
-          <ruleList>
-            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-            <compareText logic="equals" text="${schema_in_unattended}" value="install"/>
+            <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
           </ruleList>
-        </runProgram>
-        <runProgram>
-          <program>${installdir}\bin\psql.exe</program>
-          <programArguments>-t -f "${installdir}\share\pgagent.sql"</programArguments>
-          <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-          <workingDirectory>${installdir}/bin</workingDirectory>
+        </actionGroup>
+
+        <!-- WIN : Check Previous Installation of pgAgent -->
+        <actionGroup>
+          <actionList>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Version" variable="pgAgentVersion"/>
+          </actionList>
           <ruleList>
-            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-            <compareText logic="equals" text="${schema_in_unattended}" value="install"/>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
-        </runProgram>
+        </actionGroup>
 
-        <!-- Upgrade schema pgagent -->
-        <runProgram>
-          <program>${installdir}/bin/psql</program>
-          <programArguments>-t -f "${installdir}/share/pgagent_upgrade.sql"</programArguments>
-          <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-          <workingDirectory>${installdir}/bin</workingDirectory>
-          <ruleList>
-            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-            <compareText logic="equals" text="${schema_in_unattended}" value="upgrade"/>
-            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-          </ruleList>
-        </runProgram>
-        <runProgram>
-          <program>${installdir}\bin\psql.exe</program>
-          <programArguments>-t -f "${installdir}\share\pgagent_upgrade.sql"</programArguments>
-          <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-          <workingDirectory>${installdir}/bin</workingDirectory>
+        <!-- WIN : Set the installation directory in case of re-install/upgrade -->
+        <actionGroup>
+          <actionList>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Location" variable="installdir"/>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="ServiceManager" variable="systemuser"/>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGUSER" variable="pguser"/>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGHOST" variable="pghost"/>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGPORT" variable="pgport"/>
+          </actionList>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
-            <compareText logic="equals" text="${schema_in_unattended}" value="upgrade"/>
-            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
           </ruleList>
-        </runProgram>
-      </actionList>
-    </actionGroup>
-    <substitute>
-      <files>${installdir}/installer/pgAgent/pgpass</files>
-      <substitutionList>
-        <substitution pattern="INSTALL_DIR" value="${installdir}"/>
-        <substitution pattern="PG_HOST" value="${pghost}"/>
-        <substitution pattern="PG_PORT" value="${pgport}"/>
-        <substitution pattern="PG_USER" value="${pguser}"/>
-        <substitution pattern="PG_PASSWORD" value="${pgpassword}"/>
-        <substitution pattern="PG_DATABASE" value="${pgdbname}"/>
-      </substitutionList>
-      <ruleList>
-        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-      </ruleList>
-    </substitute>
+        </actionGroup>
 
-    <!-- WIN :                                                                   -->
-    <!--     1. Create/Append pgpass.conf file in systemuser's appdata directory -->
-    <!--     2. Create/Reinstall the pgAgent service                             -->
-    <actionGroup>
-      <actionList>
-        <createDirectory>
-          <path>${system_temp_directory}\${product_fullname}\bin</path>
-          <ruleList>
-            <fileTest>
-               <path>${system_temp_directory}\${product_fullname}\bin</path>
-               <condition>not_exists</condition>
-            </fileTest>
-          </ruleList> 
-        </createDirectory>
-        <unpackFile>
-          <component>configuration</component>
-          <destination>${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe</destination>
-          <folder>createpgpassconfforuser</folder>
-          <origin>CreatePGPassconfForUser.exe</origin>
-        </unpackFile>
+        <!-- LIN : Stop the pgAgent Service -->
         <runProgram>
-          <customErrorMessage>${msg(error.create.pgpass)}</customErrorMessage>
-          <program>${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe</program>
-          <programArguments>${systemuser} "${systempassword}" ${pghost} ${pgport} ${pgdbname} ${pguser} "${pgpassword}"</programArguments>
-          <workingDirectory>${windir}</workingDirectory>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>1</showMessageOnError>
-        </runProgram>
-        <deleteFile>
-          <path>${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe</path>
-        </deleteFile>
-
-        <!-- WIN : Install pgAgent as Service -->
-        <!-- WIN : Remove the existing service, if any exist, when upgrading/reinstalling -->
-        <runProgram>
-          <program>${installdir}\bin\pgagent.exe</program>
-          <programArguments>REMOVE pgAgent</programArguments>
-          <workingDirectory>${installdir}\bin</workingDirectory>
+          <program>/etc/init.d/pgagent</program>
+          <programArguments>stop</programArguments>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
+            <compareText logic="contains" text="${platform_name}" value="linux"/>
             <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
           </ruleList>
         </runProgram>
+
+        <!-- WIN : Stop the pgAgent Service -->
+        <stopWindowsService>
+          <serviceName>pgagent</serviceName>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <customErrorMessage>${msg(error.stop.pgagent)}</customErrorMessage>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
+          </ruleList>
+        </stopWindowsService>
+
+        <!-- MAC: Stop the pgAgent Service -->
         <runProgram>
-          <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
-          <program>${installdir}\bin\pgagent.exe</program>
-          <programArguments>INSTALL pgAgent -u ${systemuser} -p "${systempassword}" host=${pghost} port=${pgport} user=${pguser} dbname=${pgdbname}</programArguments>
-          <workingDirectory>${installdir}\bin</workingDirectory>
+          <program>launchctl</program>
+          <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgagent.plist</programArguments>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="osx"/>
+            <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
+          </ruleList>
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
+    </actionGroup>
+  </preInstallationActionList>
+
+  <!-- Postinstallation actions -->
+  <postInstallationActionList>
+
+    <!-- Do not perform the below actions in case of extract-only mode -->
+    <actionGroup>
+      <actionList>
+        <!-- LIN & MAC : Write the pgAgent Info to INI File -->
+        <actionGroup>
+          <actionList>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="Description" value="${msg(install.summary)}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="InstallationDirectory" value="${installdir}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="Version" value="${product_version}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="ServiceManager" value="${systemuser}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGUSER" value="${pguser}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" value="${pghost}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" value="${pgport}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGDATABASE" value="${pgdbname}"/>
+          </actionList>
+          <ruleList>
+            <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+          </ruleList>
+        </actionGroup>
+    
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Description" value="${msg(install.summary)}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Location" value="${installdir}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Version" value="${product_version}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="ServiceManager" value="${systemuser}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGUSER" value="${pguser}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGHOST" value="${pghost}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGPORT" value="${pgport}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGDATABASE" value="${pgdbname}"/>
+    
+        <!-- Create the user account with which pgAgent will run-->
+        <runProgram>
+          <program>${installdir}/installer/pgAgent/createuser.sh</program>
+          <programArguments>"${systemuser}" "${installdir}"</programArguments>
+          <progressText>${msg(progress.text.creating.user)}</progressText>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+            <compareText text="${pgAgentVersion}" logic="equals" value=""/>
+          </ruleList>
+        </runProgram>
+    
+        <!-- WIN : Create user, if not exists -->
+        <runProgram>
+          <program>${installdir}\installer\pgAgent\createuser.exe</program>
+          <!-- The dot at the beginning of the arguments is the domain -->
+          <programArguments>. "${systemuser}" "${systempassword}"</programArguments>
+          <progressText>${msg(progress.text.creating.user)}</progressText>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <compareText logic="equals" text="${pgAgentVersion}" value=""/>
+            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+          </ruleList>
+        </runProgram>
+    
+        <throwError>
+          <text>${msg(script.command.line.error)}</text>
+          <ruleList>
+            <compareText logic="equals" text="127" value="${program_exit_code}"/>
+            <compareText logic="equals" text="${pgAgentVersion}" value=""/>
+          </ruleList>
+        </throwError>
+        <throwError>
+          <text>${msg(error.could.not.create.user)}</text>
+          <ruleList>
+            <compareText logic="equals" text="1" value="${program_exit_code}"/>
+            <compareText logic="equals" text="${pgAgentVersion}" value=""/>
+          </ruleList>
+        </throwError>
+    
+        <!-- Create pgagent schema if not exists -->
+        <actionGroup>
+          <actionList>
+            <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+            <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+            <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+            <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+            <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
+            <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
+            <!-- Create plpgsql, if not exists -->
+            <runProgram>
+              <program>${installdir}/bin/psql</program>
+              <programArguments>-t -c "CREATE LANGUAGE plpgsql"</programArguments>
+              <progressText>${msg(progress.text.creating.plpgsql)}</progressText>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${plpgsql_exist}" value=""/>
+                <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
+              </ruleList>
+            </runProgram>
+    
+            <runProgram>
+              <program>${installdir}\bin\psql.exe</program>
+              <programArguments>-t -c "CREATE LANGUAGE plpgsql"</programArguments>
+              <progressText>${msg(progress.text.creating.plpgsql)}</progressText>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${plpgsql_exist}" value=""/>
+                <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- Create pgagent schema -->
+            <runProgram>
+              <program>${installdir}/bin/psql</program>
+              <programArguments>-t -f "${installdir}/share/pgagent.sql"</programArguments>
+              <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <workingDirectory>${installdir}/bin</workingDirectory>
+              <ruleList>
+                <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
+              </ruleList>
+            </runProgram>
+            <runProgram>
+              <program>${installdir}\bin\psql.exe</program>
+              <programArguments>-t -f "${installdir}\share\pgagent.sql"</programArguments>
+              <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <workingDirectory>${installdir}\bin</workingDirectory>
+              <ruleList>
+                <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- Inform user about configuring pgagent Schema -->
+            <showInfo text="${msg(configure.pgagent.schema)}">
+              <ruleList>
+                <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
+              </ruleList>
+            </showInfo>
+    
+            <!-- Upgrade schema pgagent -->
+            <runProgram>
+              <program>${installdir}/bin/psql</program>
+              <programArguments>-t -f "${installdir}/share/pgagent_upgrade.sql"</programArguments>
+              <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <workingDirectory>${installdir}/bin</workingDirectory>
+              <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+                <compareText logic="equals" text="${upgrade_schema}" value="yes"/>
+                <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
+                <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
+              </ruleList>
+            </runProgram>
+            <runProgram>
+              <program>${installdir}\bin\psql.exe</program>
+              <programArguments>-t -f "${installdir}\share\pgagent_upgrade.sql"</programArguments>
+              <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <workingDirectory>${installdir}/bin</workingDirectory>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+                <compareText logic="equals" text="${upgrade_schema}" value="yes"/>
+                <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
+                <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- Inform user about configuring pgagent schema manually -->
+            <showInfo text="${msg(info.pgagent.schema.manual.upgrade)}">
+              <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+                <compareText logic="does_not_equal" text="${upgrade_schema}" value="yes"/>
+                <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
+                <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
+              </ruleList>
+            </showInfo>
+            <showInfo text="${msg(info.pgagent.schema.manual.upgrade.windows)}">
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+                <compareText logic="does_not_equal" text="${upgrade_schema}" value="yes"/>
+                <compareText logic="does_not_equal" text="${pgagent_installer_schema_version}" value="${pgagent_current_schema_version}"/>
+                <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
+              </ruleList>
+            </showInfo>
+    
+          </actionList>
+        </actionGroup>
+    
+        <!-- Create pgagent schema in unattended mode -->
+        <actionGroup>
+          <actionList>
+            <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+            <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+            <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+            <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+            <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
+            <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
+            <!-- Create plpgsql, if not exists -->
+            <runProgram>
+              <program>${installdir}/bin/psql</program>
+              <programArguments>-t -c "CREATE LANGUAGE plpgsql"</programArguments>
+              <progressText>${msg(progress.text.creating.plpgsql)}</progressText>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${schema_in_unattended}" value="install"/>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+              </ruleList>
+            </runProgram>
+    
+            <runProgram>
+              <program>${installdir}\bin\psql.exe</program>
+              <programArguments>-t -c "CREATE LANGUAGE plpgsql"</programArguments>
+              <progressText>${msg(progress.text.creating.plpgsql)}</progressText>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${schema_in_unattended}" value="install"/>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- Create pgagent schema -->
+            <runProgram>
+              <program>${installdir}/bin/psql</program>
+              <programArguments>-t -f "${installdir}/share/pgagent.sql"</programArguments>
+              <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <workingDirectory>${installdir}/bin</workingDirectory>
+              <ruleList>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+                <compareText logic="equals" text="${schema_in_unattended}" value="install"/>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+              </ruleList>
+            </runProgram>
+            <runProgram>
+              <program>${installdir}\bin\psql.exe</program>
+              <programArguments>-t -f "${installdir}\share\pgagent.sql"</programArguments>
+              <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <workingDirectory>${installdir}/bin</workingDirectory>
+              <ruleList>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+                <compareText logic="equals" text="${schema_in_unattended}" value="install"/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+              </ruleList>
+            </runProgram>
+    
+            <!-- Upgrade schema pgagent -->
+            <runProgram>
+              <program>${installdir}/bin/psql</program>
+              <programArguments>-t -f "${installdir}/share/pgagent_upgrade.sql"</programArguments>
+              <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <workingDirectory>${installdir}/bin</workingDirectory>
+              <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${schema_in_unattended}" value="upgrade"/>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+              </ruleList>
+            </runProgram>
+            <runProgram>
+              <program>${installdir}\bin\psql.exe</program>
+              <programArguments>-t -f "${installdir}\share\pgagent_upgrade.sql"</programArguments>
+              <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <workingDirectory>${installdir}/bin</workingDirectory>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${schema_in_unattended}" value="upgrade"/>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+              </ruleList>
+            </runProgram>
+          </actionList>
+        </actionGroup>
+        <substitute>
+          <files>${installdir}/installer/pgAgent/pgpass</files>
+          <substitutionList>
+            <substitution pattern="INSTALL_DIR" value="${installdir}"/>
+            <substitution pattern="PG_HOST" value="${pghost}"/>
+            <substitution pattern="PG_PORT" value="${pgport}"/>
+            <substitution pattern="PG_USER" value="${pguser}"/>
+            <substitution pattern="PG_PASSWORD" value="${pgpassword}"/>
+            <substitution pattern="PG_DATABASE" value="${pgdbname}"/>
+          </substitutionList>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </substitute>
+    
+        <!-- WIN :                                                                   -->
+        <!--     1. Create/Append pgpass.conf file in systemuser's appdata directory -->
+        <!--     2. Create/Reinstall the pgAgent service                             -->
+        <actionGroup>
+          <actionList>
+            <createDirectory>
+              <path>${system_temp_directory}\${product_fullname}\bin</path>
+              <ruleList>
+                <fileTest>
+                   <path>${system_temp_directory}\${product_fullname}\bin</path>
+                   <condition>not_exists</condition>
+                </fileTest>
+              </ruleList>
+            </createDirectory>
+            <unpackFile>
+              <component>configuration</component>
+              <destination>${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe</destination>
+              <folder>createpgpassconfforuser</folder>
+              <origin>CreatePGPassconfForUser.exe</origin>
+            </unpackFile>
+            <runProgram>
+              <customErrorMessage>${msg(error.create.pgpass)}</customErrorMessage>
+              <program>${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe</program>
+              <programArguments>${systemuser} "${systempassword}" ${pghost} ${pgport} ${pgdbname} ${pguser} "${pgpassword}"</programArguments>
+              <workingDirectory>${windir}</workingDirectory>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>1</showMessageOnError>
+            </runProgram>
+            <deleteFile>
+              <path>${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe</path>
+            </deleteFile>
+    
+            <!-- WIN : Install pgAgent as Service -->
+            <!-- WIN : Remove the existing service, if any exist, when upgrading/reinstalling -->
+            <runProgram>
+              <program>${installdir}\bin\pgagent.exe</program>
+              <programArguments>REMOVE pgAgent</programArguments>
+              <workingDirectory>${installdir}\bin</workingDirectory>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <ruleList>
+                <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
+              </ruleList>
+            </runProgram>
+            <runProgram>
+              <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
+              <program>${installdir}\bin\pgagent.exe</program>
+              <programArguments>INSTALL pgAgent -u ${systemuser} -p "${systempassword}" host=${pghost} port=${pgport} user=${pguser} dbname=${pgdbname}</programArguments>
+              <workingDirectory>${installdir}\bin</workingDirectory>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>1</showMessageOnError>
+            </runProgram>
+          </actionList>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+    
+        <!-- LIN & MAC : Install pgAgent as Service -->
+        <actionGroup>
+          <actionList>
+            <runProgram>
+              <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
+              <program>${installdir}/installer/pgAgent/startupcfg.sh</program>
+              <programArguments>"${pghost}" "${pgport}" "${pguser}" "${systemuser}" "${installdir}" "${pgdbname}"</programArguments>
+              <workingDirectory>${installdir}/installer/pgAgent</workingDirectory>
+              <progressText>Configure pgAgent service</progressText>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+            </runProgram>
+          </actionList>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+    
+        <!-- WIN : Start the pgAgent service -->
+        <startWindowsService>
+          <serviceName>pgAgent</serviceName>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </startWindowsService>
+    
+        <!-- LIN  : Start pgAgent -->
+        <actionGroup>
+          <actionList>
+            <runProgram>
+              <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
+              <program>/etc/init.d/pgagent</program>
+              <programArguments>start &amp;</programArguments>
+              <workingDirectory>/etc/init.d</workingDirectory>
+              <progressText>Starting pgAgent service</progressText>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+            </runProgram>
+          </actionList>
+          <ruleList>
+            <compareText logic="contains" text="${platform_name}" value="linux"/>
+            <compareText logic="equals" text="${autostart}" value="yes"/>
+          </ruleList>
+        </actionGroup>
+    
+        <!-- MAC : Start the pgAgent service -->
+        <runProgram>
+          <program>launchctl</program>
+          <programArguments>load /Library/LaunchDaemons/com.edb.launchd.pgagent.plist</programArguments>
           <abortOnError>0</abortOnError>
           <showMessageOnError>1</showMessageOnError>
+          <customErrorMessage>${msg(error.start.pgagent)}</customErrorMessage>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="osx"/>
+            <compareText logic="equals" text="${autostart}" value="yes"/>
+          </ruleList>
         </runProgram>
-      </actionList>
-      <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="windows"/>
-      </ruleList>
-    </actionGroup>
     
-    <!-- LIN & MAC : Install pgAgent as Service -->
-    <actionGroup>
-      <actionList>
-        <runProgram>
-          <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
-          <program>${installdir}/installer/pgAgent/startupcfg.sh</program>
-          <programArguments>"${pghost}" "${pgport}" "${pguser}" "${systemuser}" "${installdir}" "${pgdbname}"</programArguments>
-          <workingDirectory>${installdir}/installer/pgAgent</workingDirectory>
-          <progressText>Configure pgAgent service</progressText>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-        </runProgram>
+        <!-- Delete the temporary pgpass File -->
+        <deleteFile>
+          <path>${installdir}/installer/pgAgent/pgpass</path>
+        </deleteFile>
       </actionList>
       <ruleList>
-        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+        <isFalse value="${extract_mode}"/>
       </ruleList>
     </actionGroup>
-   
-    <!-- WIN : Start the pgAgent service -->
-    <startWindowsService>
-      <serviceName>pgAgent</serviceName>
-      <abortOnError>0</abortOnError>
-      <showMessageOnError>0</showMessageOnError>
-      <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="windows"/>
-      </ruleList>
-    </startWindowsService>
-
-    <!-- LIN  : Start pgAgent -->
-    <actionGroup>
-      <actionList>
-        <runProgram>
-          <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
-          <program>/etc/init.d/pgagent</program>
-          <programArguments>start &amp;</programArguments>
-          <workingDirectory>/etc/init.d</workingDirectory>
-          <progressText>Starting pgAgent service</progressText>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-        </runProgram>
-      </actionList>
-      <ruleList>
-        <compareText logic="contains" text="${platform_name}" value="linux"/>
-        <compareText logic="equals" text="${autostart}" value="yes"/>
-      </ruleList>
-    </actionGroup>
-
-    <!-- MAC : Start the pgAgent service -->
-    <runProgram>
-      <program>launchctl</program>
-      <programArguments>load /Library/LaunchDaemons/com.edb.launchd.pgagent.plist</programArguments>
-      <abortOnError>0</abortOnError>
-      <showMessageOnError>1</showMessageOnError>
-      <customErrorMessage>${msg(error.start.pgagent)}</customErrorMessage>
-      <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="osx"/>
-        <compareText logic="equals" text="${autostart}" value="yes"/>
-      </ruleList>
-    </runProgram>
-
-    <!-- Delete the temporary pgpass File -->
-    <deleteFile>
-      <path>${installdir}/installer/pgAgent/pgpass</path>
-    </deleteFile>
   </postInstallationActionList>
 
   <!-- preUninstallation actions -->
   <preUninstallationActionList>
-  
+
     <!-- LIN & MAC : Unset the pgAgent Info from the ini file -->
     <actionGroup>
       <actionList>
@@ -766,7 +804,7 @@
     <!-- LIN : Stop and Uninstall pgAgent Service -->
     <actionGroup>
       <actionList>
-  
+
         <!-- Stop the pgAgent service -->
         <runProgram>
           <program>/etc/init.d/pgagent</program>
@@ -806,7 +844,7 @@
 
   <!-- postUninstallation actions -->
   <postUninstallationActionList>
-  
+
     <!-- Prompt user about pgAgent Schema Deletion/Drop -->
     <showInfo>
       <text>${msg(schema.drop.info)}</text>
@@ -822,7 +860,7 @@
       <selected>1</selected>
       <show>1</show>
       <folderList>
-  
+
         <!-- LIN : Program files -->
         <folder>
           <description>Program Files</description>
@@ -1106,6 +1144,8 @@
 
   <!-- PostgreSQL Details Verification Page -->
   <parameterList>
+    <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
+    <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
     <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
 
     <!-- Install Directory -->
@@ -1142,7 +1182,7 @@
 
       <!-- Validating whether installdir is valid -->
       <validationActionList>
-  
+
         <!-- Validating whether installdir contains whitespaces (Linux) -->
         <actionGroup>
           <actionList>
@@ -1202,7 +1242,7 @@
           <allowEmptyValue>1</allowEmptyValue>
           <width>40</width>
         </stringParameter>
-  
+
         <!-- Postgres User -->
         <stringParameter>
           <name>pguser</name>
@@ -1248,7 +1288,7 @@
           <allowEmptyValue>1</allowEmptyValue>
           <width>40</width>
         </stringParameter>
-        
+
         <choiceParameter cliOptionName="schema" ask="0" cliOptionShow="1">
           <name>schema_in_unattended</name>
           <description/>
@@ -1272,7 +1312,7 @@
           <allowEmptyValue>1</allowEmptyValue>
           <width>40</width>
         </stringParameter>
- 
+
       </parameterList>
 
       <preShowPageActionList>
@@ -1343,7 +1383,7 @@
                 <compareText logic="equals" text="${platform_name}" value="linux"/>
               </ruleList>
             </unpackDirectory>
-            
+
             <!-- LIN-x64: Unpack psql and its shared libraries -->
             <unpackFile>
               <component>pgAgent</component>
