@@ -41,7 +41,7 @@ PG_BUILDNUM_MIGRATIONTOOLKIT=2
 #                     Minor version is revision.build. 
 
 PG_MAJOR_VERSION=8.4
-PG_MINOR_VERSION=2.1
+PG_MINOR_VERSION=2.2
 
 # Other package versions
 PG_VERSION_APACHE=2.2.14
