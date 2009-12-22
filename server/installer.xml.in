@@ -109,13 +109,24 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}/PostgreSQL/${product_version}</value>
+            <value>${platform_install_prefix}\PostgreSQL\${product_version}</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
                     <text>${platform_name}</text>
                     <value>windows</value>
                 </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
+        <setInstallerVariable name="default_datadir" value="${default_installdir}/data" >
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="default_datadir" value="${default_installdir}\data" >
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </setInstallerVariable>
 
@@ -229,13 +240,28 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}/PostgreSQL/${product_version}</value>
+            <value>${platform_install_prefix}\PostgreSQL\${product_version}</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
                     <text>${platform_name}</text>
                     <value>windows</value>
                 </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
+        <setInstallerVariable name="default_datadir" value="" />
+
+        <setInstallerVariable name="default_datadir" value="${default_installdir}/data" >
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="default_datadir" value="${default_installdir}\data" >
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
             </ruleList>
         </setInstallerVariable>
 
@@ -811,7 +837,7 @@
             </ruleList>
         </setInstallerVariable>
 
-        <!-- Validate installdird & datadir in unattended mode -->
+        <!-- Validate installdir & datadir in unattended mode -->
         <actionGroup>
             <actionList>
                 <throwError text="${msg(error.install.directory.invalid)}">
@@ -4024,7 +4050,7 @@ REM The script sets environment variables helpful for PostgreSQL
             <description>${msg(config.datadir.description)}</description>
             <explanation>${msg(config.datadir.explanation)}</explanation>
             <value></value>
-            <default></default>
+            <default>${default_datadir}</default>
             <ask>yes</ask>
             <cliOptionName>datadir</cliOptionName>
             <width>30</width>
