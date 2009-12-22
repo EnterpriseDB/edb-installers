@@ -743,60 +743,6 @@
 
         <actionGroup>
             <actionList>
-                <!-- Perform substitution in the config and ctl files -->
-                <setInstallerVariable name="pghost" value="127.0.0.1">
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                    <ruleList>
-                        <compareText text="${pghost}" logic="equals" value="localhost"/>
-                        <compareText text="${pghost}" logic="equals" value=""/>
-                    </ruleList>
-                </setInstallerVariable>
-                <setInstallerVariable name="pgport" value="5432">
-                    <ruleList>
-                        <compareText text="${pgport}" logic="equals" value=""/>
-                    </ruleList>
-                </setInstallerVariable>
-                <setInstallerVariable name="client_ips" value="*">
-                    <ruleList>
-                        <compareText text="${client_ips}" logic="equals" value=""/>
-                    </ruleList>
-                </setInstallerVariable>
-                <setInstallerVariable name="pguser" value="postgres">
-                    <ruleList>
-                        <compareText text="${pguser}" logic="equals" value=""/>
-                    </ruleList>
-                </setInstallerVariable>
-                <substitute>
-                    <files>${installdir}/share/pgbouncer.ini</files>
-                    <substitutionList>
-                        <substitution pattern="@@CON@@" value="postgres = host=${pghost} port=${pgport}"/>
-                        <substitution pattern="@@LISTENADDR@@" value="${client_ips}"/>
-                        <substitution pattern="@@LISTENPORT@@" value="${pgbouncer_port}"/>
-                        <substitution pattern="@@ADMINUSERS@@" value="${pguser}"/>
-                        <substitution pattern="@@STATSUSERS@@" value="${pguser}"/>
-                        <substitution pattern="@@LOGFILE@@" value="${installdir}/log/pgbouncer.log"/>
-                    </substitutionList>
-                </substitute>
-                <substitute>
-                    <files>${installdir}/share/pgbouncer.ini</files>
-                    <substitutionList>
-                        <substitution pattern="@@PIDFILE@@" value="${installdir}/etc/pgbouncer.pid"/>
-                        <substitution pattern="@@AUTHFILE@@" value="${installdir}/etc/userlist.txt"/>
-                    </substitutionList>
-                    <ruleList>
-                        <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
-                    </ruleList>
-                </substitute>
-                <substitute>
-                    <files>${installdir}\share\pgbouncer.ini</files>
-                    <substitutionList>
-                        <substitution pattern="@@PIDFILE@@" value="${installdir}\etc\pgbouncer.pid"/>
-                        <substitution pattern="@@AUTHFILE@@" value="${installdir}\etc\userlist.txt"/>
-                    </substitutionList>
-                    <ruleList>
-                        <compareText text="${platform_name}" logic="equals" value="windows"/>
-                    </ruleList>
-                </substitute>
                 <!-- Create etc directory for userlist.txt file -->
                 <createDirectory path="${installdir}/etc">
                     <ruleList>
