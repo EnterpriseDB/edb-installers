@@ -9,6 +9,12 @@ _die() {
     exit 1
 }
 
+_warn() {
+    echo ""
+    echo "WARNING: $*"
+    echo ""
+}
+
 # Search & replace in a file - _replace($find, $replace, $file) 
 _replace() {
         sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
@@ -142,13 +148,26 @@ extract_file()
 # Sign a Win32 package
 win32_sign()
 {
-	FILENAME=$1
-	
-	if [ "$PG_SIGNTOOL_WINDOWS" != "" ];
-	then
-	    echo "Signing $FILENAME..."
+    FILENAME=$1
+    NOT_SIGNED=1
+    COUNT=0
+
+    if [ "$PG_SIGNTOOL_WINDOWS" != "" ];
+    then
+        echo "Signing $FILENAME..."
         scp $WD/output/$FILENAME $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the installer to the windows host for signing ($FILENAME)"
-		ssh $PG_SSH_WINDOWS "cmd /c \"$PG_SIGNTOOL_WINDOWS\" sign /t http://tsa.starfieldtech.com $PG_PATH_WINDOWS/$FILENAME" || _die "Failed to sign the installer ($FILENAME)"
+
+        while [ $NOT_SIGNED == 1 ]; do
+            # We will stop trying, if the count is more than 3
+            if [ $COUNT -gt 2 ];
+            then
+               _warn "Failed to sign the installer ($FILENAME)"
+               return
+            fi
+            NOT_SIGNED=0
+            ssh $PG_SSH_WINDOWS "cmd /c \"$PG_SIGNTOOL_WINDOWS\" sign /t http://tsa.starfieldtech.com $PG_PATH_WINDOWS/$FILENAME" || NOT_SIGNED=1
+            COUNT=`expr $COUNT + 1`
+        done
         scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/$FILENAME $WD/output/$FILENAME || _die "Failed to copy the installer from the windows host after signing ($FILENAME)"		
     fi
 }
