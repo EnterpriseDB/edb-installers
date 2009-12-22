@@ -1769,6 +1769,20 @@
 
         <!-- MAC: Stop the server -->
         <runProgram>
+            <program>"${installdir}/bin/pg_ctl"</program>
+            <programArguments>stop -m fast -w -D "${datadir}"</programArguments>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+               <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </runProgram>
+        <runProgram>
             <program>launchctl</program>
             <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.${servicename}.plist</programArguments>
             <abortOnError>0</abortOnError>
