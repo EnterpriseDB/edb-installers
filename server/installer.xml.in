@@ -1490,6 +1490,10 @@
                     <name>datadir</name>
                     <value>${iDataDirectory}</value>
                 </setInstallerVariable>
+                <setInstallerVariable>
+                    <name>installdir</name>
+                    <value>${iBaseDirectory}</value>
+                </setInstallerVariable>
                 <logMessage>
                     <text>Switching to upgrade mode with cluster: ${datadir}</text>
                 </logMessage>
