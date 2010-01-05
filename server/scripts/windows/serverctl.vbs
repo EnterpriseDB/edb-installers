@@ -28,7 +28,7 @@ Select Case strAction
     Case "reload"
          iRet = DoCmd("""PG_INSTALLDIR\bin\pg_ctl.exe"" -D ""PG_DATADIR"" reload")
     Case "restart"
-	     iRet = DoCmd("net stop PR_SERVICENAME")
+	     iRet = DoCmd("net stop PG_SERVICENAME")
 		 If iRet = 0 Then
 		     iRet = DoCmd("net start PG_SERVICENAME")
 		 End If
