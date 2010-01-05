@@ -1092,6 +1092,23 @@
         <logMessage text="Using Super User: ${superaccount} and Service Account: ${serviceaccount}" />
         <logMessage text="Using Service Name: ${servicename}"/>
 
+        <setInstallerVariable>
+            <name>installdir</name>
+            <value>${iBaseDirectory}</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic> 
+                    <text>${installer_ui}</text>
+                    <value>unattended</value> 
+                </compareText>
+                <stringTest>
+                    <text>${iBaseDirectory}</text>
+                    <type>not_empty</type>
+                </stringTest>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </setInstallerVariable> 
+
         <!-- Temp directory for preflight scripts -->
         <createDirectory path="${system_temp_directory}/postgresql_installer"/>
         <actionGroup>
@@ -1489,10 +1506,6 @@
                 <setInstallerVariable>
                     <name>datadir</name>
                     <value>${iDataDirectory}</value>
-                </setInstallerVariable>
-                <setInstallerVariable>
-                    <name>installdir</name>
-                    <value>${iBaseDirectory}</value>
                 </setInstallerVariable>
                 <logMessage>
                     <text>Switching to upgrade mode with cluster: ${datadir}</text>
