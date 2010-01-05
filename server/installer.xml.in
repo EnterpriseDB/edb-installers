@@ -1092,6 +1092,9 @@
         <logMessage text="Using Super User: ${superaccount} and Service Account: ${serviceaccount}" />
         <logMessage text="Using Service Name: ${servicename}"/>
 
+        <!-- In unattended mode, set installdir to iBaseDirectory,
+             if an already existing base directory value is found in the ini/registry. 
+        -->
         <setInstallerVariable>
             <name>installdir</name>
             <value>${iBaseDirectory}</value>
