@@ -581,7 +581,7 @@
           <files>${installdir}/scripts/launchSBPUpdateMonitor.vbs</files>
           <substitutionList>
              <substitution pattern="INSTALL_DIR" value="${installdir}"/>
-             <substitution pattern="MONITOR_SERVER" value="PG_VERSION_STR"/>
+             <substitution pattern="MONITOR_SERVER" value="PG_MAJOR_VERSION"/>
           </substitutionList>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -592,7 +592,7 @@
           <files>${installdir}/scripts/launchSBPUpdateMonitor.sh</files>
           <substitutionList>
              <substitution pattern="INSTALL_DIR" value="${installdir}"/>
-             <substitution pattern="MONITOR_SERVER" value="PG_VERSION_STR"/>
+             <substitution pattern="MONITOR_SERVER" value="PG_MAJOR_VERSION"/>
           </substitutionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
