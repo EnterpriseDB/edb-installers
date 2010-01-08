@@ -429,6 +429,20 @@ then
         _postprocess_MigrationToolKit || exit 1
 fi
 
+# Package: JBOSS
+if [ $PG_PACKAGE_JBOSS = 1 ];
+then
+    cd $WD
+    source ./jboss/build.sh
+
+    if [ $SKIPBUILD = 0 ];
+    then
+        _prep_jboss || exit 1
+        _build_jboss || exit 1
+    fi
+
+    _postprocess_jboss || exit 1
+fi
 
 # Package: DevServer
 # ALWAYS BUILD THIS LAST!!
