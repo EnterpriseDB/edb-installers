@@ -5,7 +5,8 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-    source $WD/jboss/build-osx.sh
+    #source $WD/jboss/build-osx.sh
+    echo "Not yet implemented"
 fi
 
 # Linux
@@ -17,13 +18,15 @@ fi
 # Linux x64
 if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
-    source $WD/jboss/build-linux-x64.sh
+     #source $WD/jboss/build-linux-x64.sh
+     echo "Not yet implemented"
 fi
 
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
-    source $WD/jboss/build-windows.sh
+     #source $WD/jboss/build-windows.sh
+     echo "Not yet implemented"
 fi
     
 ################################################################################
@@ -57,7 +60,8 @@ _prep_jboss() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _prep_jboss_osx || exit 1
+        #_prep_jboss_osx || exit 1
+        echo "Not yet implemented"
     fi
 
     # Linux
@@ -69,13 +73,15 @@ _prep_jboss() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _prep_jboss_linux_x64 || exit 1
+        #_prep_jboss_linux_x64 || exit 1
+        echo "Not yet implemented"
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _prep_jboss_windows || exit 1
+        #_prep_jboss_windows || exit 1
+        echo "Not yet implemented"
     fi
     
 }
@@ -89,7 +95,8 @@ _build_jboss() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _build_jboss_osx || exit 1
+        #_build_jboss_osx || exit 1
+        echo "Not yet implemented"
     fi
 
     # Linux 
@@ -101,13 +108,15 @@ _build_jboss() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-       _build_jboss_linux_x64 || exit 1
+       #_build_jboss_linux_x64 || exit 1
+        echo "Not yet implemented"
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _build_jboss_windows || exit 1
+        #_build_jboss_windows || exit 1
+        echo "Not yet implemented"
     fi
 }
 
@@ -136,7 +145,8 @@ _postprocess_jboss() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _postprocess_jboss_osx || exit 1
+        #_postprocess_jboss_osx || exit 1
+        echo "Not yet implemented"
     fi
 
     # Linux
@@ -148,12 +158,14 @@ _postprocess_jboss() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _postprocess_jboss_linux_x64 || exit 1
+        #_postprocess_jboss_linux_x64 || exit 1
+        echo "Not yet implemented"
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-       _postprocess_jboss_windows || exit 1
+       #_postprocess_jboss_windows || exit 1
+        echo "Not yet implemented"
     fi
 }
