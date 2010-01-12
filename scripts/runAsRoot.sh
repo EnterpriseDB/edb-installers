@@ -1145,15 +1145,16 @@ configurepgBouncer ()
   _replace @@PIDFILE@@ "${LRAR_INSTALLDIR}/log/pgbouncer.pid" "${LRAR_INSTALLDIR}/share/pgbouncer.ini"
   _replace @@AUTHFILE@@ "${LRAR_INSTALLDIR}/etc/userlist.txt" "${LRAR_INSTALLDIR}/share/pgbouncer.ini"
 
-  if [ ! -f "${LRAR_INSTALLDIR}/etc/userlist.txt" ]
-  then
-    mkdir "${LRAR_INSTALLDIR}/etc"
-    echo "\"${PG_RAR_SUPERUSER}\" \"${PG_RAR_SUPERPASSWORD}\"" > "${LRAR_INSTALLDIR}/etc/userlist.txt"
-    chown ${PG_RAR_SERVICEACCOUNT} "${LRAR_INSTALLDIR}/etc/userlist.txt"
-    chmod 700 "${LRAR_INSTALLDIR}/etc/userlist.txt"
-  fi
-
+  mkdir "${LRAR_INSTALLDIR}/etc"
+  mkdir "${LRAR_INSTALLDIR}/log"
+  echo "\"${PG_RAR_SUPERUSER}\" \"${PG_RAR_SUPERPASSWORD}\"" > "${LRAR_INSTALLDIR}/etc/userlist.txt"
+  backupFile "${LRAR_INSTALLDIR}/etc/userlist.txt"
+  chown ${PG_RAR_SERVICEACCOUNT} "${LRAR_INSTALLDIR}/etc/userlist.txt"
+  chmod 700 "${LRAR_INSTALLDIR}/etc"
+  chmod 700 "${LRAR_INSTALLDIR}/etc/userlist.txt"
+  chmod 700 "${LRAR_INSTALLDIR}/log"
   sh "${LRAR_INSTALLDIR}/installer/pgbouncer/startupcfg.sh" "${LRAR_INSTALLDIR}" ${PG_RAR_SERVICEACCOUNT} 2>/dev/null
+
   _title 1 "Starting pgboucer service..."
   if [ $RAR_PLATFORM = Linux ]
   then
