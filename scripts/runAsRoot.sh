@@ -869,7 +869,10 @@ configurepgAgent()
     _note 1 "Service (/Library/LaunchDaemons/com.edb.launchd.pgagent.plist) already exists..."
   else
     _title "Creating pgagent service..."
+    echo "localhost:${PG_RAR_DEV_PORT}:*:${PG_RAR_SUPERUSER}:${PG_RAR_SUPERPASSWORD}" > "${PG_RAR_DEV_INSTALL_DIR}/pgAgent/installer/pgAgent/pgpass"
     sh ${PG_RAR_DEV_INSTALL_DIR}/pgAgent/installer/pgAgent/startupcfg.sh localhost ${PG_RAR_DEV_PORT} ${PG_RAR_SUPERUSER} ${PG_RAR_SERVICEACCOUNT} "${PG_RAR_DEV_INSTALL_DIR}/pgAgent" ${PGDATABASE}
+    # Remove the temporary pgpass file
+    rm -f "${PG_RAR_DEV_INSTALL_DIR}/pgAgent/installer/pgAgent/pgpass"
   fi
 
   ### TODO: Create Shortcuts
