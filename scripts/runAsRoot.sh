@@ -1396,8 +1396,6 @@ fi
 
 validatepsqlodbc "${PG_RAR_DEV_INSTALL_DIR}/psqlODBC"
 
-configurepsqlodbc$RAR_PLATFORM "${PG_RAR_DEV_INSTALL_DIR}/psqlODBC"
-
 if [ $? -eq 1 ]
 then
   configurepsqlodbc$RAR_PLATFORM "${PG_RAR_DEV_INSTALL_DIR}/psqlODBC"
