@@ -567,16 +567,16 @@
         </actionGroup>
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="do_not_validate_email" value="true" persist="1">
+                <throwError text="${msg(emailpassword.not.provided)}" abortOnError="1">
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                         <compareText logic="equals" text="${existingEmail}" value=""/>
                         <compareText logic="equals" text="${existingPassword}" value=""/>
                     </ruleList>
-                </setInstallerVariable>
+                </throwError>
                 <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;MigrationWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                        <isFalse value="${do_not_validate_email}"/>
                     </ruleList>
                 </logMessage>
                 <setInstallerVariableFromScriptOutput
@@ -587,13 +587,11 @@
                     abortOnError="0"
                     workingDirectory="${system_temp_directory}/migrationwizard">
                     <ruleList>
-			<isFalse value="${do_not_validate_email}"/>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
                 <logMessage text="Sending parameter: &quot;MigrationWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword}&quot; &quot;${uuid_val}&quot;">
                     <ruleList>
-                        <isFalse value="${do_not_validate_email}"/>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </logMessage>
@@ -605,38 +603,32 @@
                     abortOnError="0"
                     workingDirectory="${system_temp_directory}\migrationwizard">
                     <ruleList>
-                        <isFalse value="${do_not_validate_email}"/>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
                 <stringModify text="${ws_existinguser_result}" variable="ws_existinguser_result" logic="trim"/>
                 <throwError abortOnError="1" text="${msg(ws.email.not.authenticated)}">
                     <ruleList>
-                        <isFalse value="${do_not_validate_email}"/>
                         <compareText logic="equals" text="${ws_existinguser_result}" value="1"/>
                     </ruleList>
                 </throwError>
                 <throwError abortOnError="1" text="${msg(ws.email.not.validated)}">
                     <ruleList>
-                        <isFalse value="${do_not_validate_email}"/>
                         <compareText logic="equals" text="${ws_existinguser_result}" value="2"/>
                     </ruleList>
                 </throwError>
                 <throwError abortOnError="1" text="${msg(ws.email.already.exists)}">
                     <ruleList>
-                        <isFalse value="${do_not_validate_email}"/>
                         <compareText logic="equals" text="${ws_existinguser_result}" value="3"/>
                     </ruleList>
                 </throwError>
                 <throwError abortOnError="1" text="${msg(ws.exception.from.server)}">
                     <ruleList>
-                        <isFalse value="${do_not_validate_email}"/>
                         <compareText logic="equals" text="${ws_existinguser_result}" value="4"/>
                     </ruleList>
                 </throwError>
                 <throwError abortOnError="1" text="${msg(ws.internet.not.connected)}">
                     <ruleList>
-                        <isFalse value="${do_not_validate_email}"/>
                         <compareText logic="equals" text="${ws_existinguser_result}" value=""/>
                     </ruleList>
                 </throwError>
@@ -1158,9 +1150,6 @@
                         <option
                             text="${msg(registration.existingemail.yes)}"
                             value="1"/>
-                        <option
-                            text="${msg(registration.registration.no)}"
-                            value="3"/>
                     </optionList>
                 </choiceParameter>
             </parameterList>
