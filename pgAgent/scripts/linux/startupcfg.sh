@@ -59,7 +59,7 @@ cat <<EOT > "/etc/init.d/pgagent"
 # Description:       pgAgent
 ### END INIT INFO
 
-export LD_LIBRARY_PATH=$INSTALL_DIR/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH
 
 start()
 {
@@ -103,7 +103,7 @@ status()
 if [ ! -f /var/log/pgagent.log ];
 then
     touch /var/log/pgagent.log
-    chown SYSTEM_USER:SYSTEM_USER /var/log/pgagent.log
+    chown $SYSTEM_USER:$SYSTEM_USER /var/log/pgagent.log
 fi
 
 # See how we were called.
