@@ -22,6 +22,8 @@ if [ x"${RAR_SHELL}" = x"/bin/bash" -o x"${RAR_SHELL}" = x"bash" -o x"${RAR_SHEL
 then
   RAR_SHELL_BASH=1
 fi
+RAR_DEBUG=0
+RAR_LOG_FILE=/tmp/rar_$$.log
 
 ## Check presence of tput utility on the system
 RAR_TPUT_PRESENT=0
@@ -79,6 +81,7 @@ _die()
   fi
   echo ""
   cd ${RAR_WD}
+  echo FATAL ERROR: $* >> ${RAR_LOG_FILE}
   exit 1
 }
 
@@ -98,7 +101,7 @@ _title()
   else
     echo $*
   fi
-
+  echo TITLE: $* >> ${RAR_LOG_FILE}
 }
 
 _que()
@@ -112,6 +115,7 @@ _que()
   else
     echo $*
   fi
+  echo QUE: $* >> ${RAR_LOG_FILE}
 }
 
 _info()
@@ -130,6 +134,7 @@ _info()
   else
     echo $*
   fi
+  echo INFO: $* >> ${RAR_LOG_FILE}
 }
 
 _note()
@@ -148,6 +153,7 @@ _note()
   else
     echo NOTE: $*
   fi
+  echo NOTE: $* >> ${RAR_LOG_FILE}
 }
 
 _warn()
@@ -158,6 +164,54 @@ _warn()
   else
     echo "WARNING: $*"
   fi
+  echo WARNING: $* >> ${RAR_LOG_FILE}
+}
+
+_save_options_file ()
+{
+  locale LRAR_COMPS=
+
+  if [ ${RAR_INSTALL_POSTGIS} = y -o ${RAR_INSTALL_POSTGIS} = Y ]
+  then
+    LRAR_COMPS="${LRAR_COMPS},postgis"
+  fi
+  if [ ${RAR_INSTALL_SLONY} = y -o ${RAR_INSTALL_SLONY} = Y ]
+  then
+    LRAR_COMPS="${LRAR_COMPS},slony"
+  fi
+  if [ ${RAR_INSTALL_PGAGENT} = y -o ${RAR_INSTALL_PGAGENT} = Y ]
+  then
+    LRAR_COMPS="${LRAR_COMPS},pgagent"
+  fi
+  if [ ${RAR_INSTALL_PSQLODBC} = y -o ${RAR_INSTALL_PSQLODBC} = Y ]
+  then
+    LRAR_COMPS="${LRAR_COMPS},psqlodbc"
+  fi
+  if [ ${RAR_INSTALL_PGBOUNCER} = y -o ${RAR_INSTALL_PGBOUNCER} = Y ]
+  then
+    LRAR_COMPS="${LRAR_COMPS},pgbouncer"
+  fi
+  if [ ${RAR_INSTALL_NPGSQL} = y -o ${RAR_INSTALL_NPGSQL} = Y ]
+  then
+    LRAR_COMPS="${LRAR_COMPS},npgsql"
+  fi
+  if [ ${RAR_INSTALL_PGMEMCACHE} = y -o ${RAR_INSTALL_PGMEMCACHE} = Y ]
+  then
+    LRAR_COMPS="${LRAR_COMPS},pgmemcache"
+  fi
+  LRAR_COMPS=`echo ${LRAR_COMPS} | sed -e 's/^,\+//g'`
+
+  cat <<EOT > $PWD/.rar_options_$$
+superuser=${PG_RAR_SUPERUSER}
+superpassword=${PG_RAR_SUPERPASSWORD}
+servicename=${PG_RAR_SERVICENAME}
+datadir=${PG_RAR_DEV_DATA_DIR}
+installdir=${PG_RAR_DEV_INSTALL_DIR}
+locale=${PG_RAR_DEV_LOCALE}
+port=${PG_RAR_DEV_PORT}
+components=${LRAR_COMPS}
+EOT
+  _info "Options saved in '$PWD/.rar_options_$$' file."
 }
 
 usage()
@@ -166,12 +220,20 @@ usage()
    _title 1 "USAGE: ${RAR_WD}/${LRAR_SCRIPTNAME} <options>"
    _info  1 "options:"
    _info  1 "   -i  | --installdir       <Installation Directory> - Directory, where PostgreSQL one click installer binaries has been extracted."
+   _info  1 "                                                       (Default: Current Working Directory. i.e. $PWD)"
    _info  1 "   -su | --superuser        <super-user>             - Database Super User"
    _info  1 "   -sp | --superpassword    <super-password>         - Database Password for the Super User"
+   _info  1 "                                                       (Default: postgres)"
    _info  1 "   -sn | --servicename      <service-name>           - Database Service name"
+   _info  1 "                                                       (Default: pgsql-\${PG_MAJOR_VERSION}"
    _info  1 "   -d  | --datadir          <data directory>         - Data Directory"
    _info  1 "   -p  | --port             <port>                   - Port"
+   _info  1 "                                                       (Default: 5432)"
    _info  1 "   -l  | --locale           <locale>                 - Locale"
+   _info  1 "   -pb | --pgbouncer-port   <port>                   - Port for pgBouncer"
+   _info  1 "                                                       (Default: 6453)"
+   _info  1 "   -c  | --components       <component_list>         - comma seperated component list"
+   _info  1 "                                                       (Default: postgis,slony,pgagent,psqlodbc,pgbouncer,npgsql,pgmemcache)"
    _info  1 "   -f  | --options-file     <options-file>           - Options File"
    _info  1 "   -u  | --unattended                                - Non-interactive mode"
    _info  1 "   -h  | --help             <help>                   - Shows this help."
@@ -191,7 +253,45 @@ _reset_component_selection ()
   RAR_INSTALL_PGBOUNCER=N
   RAR_INSTALL_NPGSQL=N
   RAR_INSTALL_PGMEMCACHE=N
-  RAR_INSTALL_SBP=N
+}
+
+_component_selection ()
+{
+  local LRAR_COMPONENTS=${1}
+  local LRAR_NO_COMPONENTS=`echo ${LRAR_COMPONENTS} | awk -F, '{print NF}'`
+  local LRAR_INDEX=1
+  _reset_component_selection
+  while ((LRAR_INDEX <= ${LRAR_NO_COMPONENTS}))
+  do
+    local LRAR_COMPONENT=`echo ${LRAR_COMPONENTS} | cut -d, -f${LRAR_INDEX}`
+    (( LRAR_INDEX = LRAR_INDEX + 1));
+    case ${LRAR_COMPONENT} in
+    postgis)
+      RAR_INSTALL_POSTGIS=Y
+      ;;
+    slony)
+      RAR_INSTALL_SLONY=Y
+      ;;
+    pgagent)
+      RAR_INSTALL_PGAGENT=Y
+      ;;
+    psqlodbc)
+      RAR_INSTALL_PSQLODBC=Y
+      ;;
+    pgbouncer)
+      RAR_INSTALL_PGBOUNCER=Y
+      ;;
+    npgsql)
+      RAR_INSTALL_NPGSQL=Y
+      ;;
+    pgmemcache)
+      RAR_INSTALL_PGMEMCACHE=Y
+      ;;
+    *)
+      _die "'${LRAR_COMPONENT}' is not a valid component."
+      ;;
+    esac
+  done
 }
 
 readIniSection ()
@@ -230,7 +330,7 @@ loadOptionFile ()
   ### options are saved as a pair option-name & option-handler
   for LRAR_OPT in installdir PG_RAR_DEV_INSTALL_DIR datadir PG_RAR_DEV_DATA_DIR superuser PG_RAR_SUPERUSER \
              superpassword PG_RAR_SUPERPASSWORD servicename PG_RAR_SERVICENAME datadir PG_RAR_DEV_DATA_DIR \
-             port PG_RAR_DEV_PORT locale PG_RAR_DEV_LOCALE
+             port PG_RAR_DEV_PORT locale PG_RAR_DEV_LOCALE components LRAR_COMPONENTS
   do
     LRAR_OPTIONS[${LRAR_INDEX}]=${LRAR_OPT}
     let "LRAR_INDEX += 1"
@@ -246,7 +346,14 @@ loadOptionFile ()
     let "LRAR_INDEX += 1"
     readIniSection ${1} ${LRAR_OPT} ${LRAR_VAR_HANDLER}
   done
+
+  if [ x"${LRAR_COMPONENTS}" != x"" ]
+  then
+    _component_selection ${LRAR_COMPONENTS}
+  fi
 }
+
+
 
 _process_command_line()
 {
@@ -293,6 +400,10 @@ _process_command_line()
      PG_RAR_DEV_PORT=$2
      RAR_NO_PROCD_CMD=2
      ;;
+  -pb|--pgbouncer-port)
+     PG_RAR_PGBOUNCER_PORT=$2
+     RAR_NO_PROCD_CMD=2
+     ;;
   -l|--locale)
      if [ $# -lt 2 ]
      then
@@ -325,9 +436,20 @@ _process_command_line()
      fi
      RAR_NO_PROCD_CMD=2
      ;;
+  -c|--components)
+     if [ ${#} -lt 2 ]
+     then
+       usage 2
+     fi
+     _component_selection ${2}
+     RAR_NO_PROCD_CMD=2
+     ;;
   -u|--unattended)
      RAR_UNATTNDED_MODE=1
      RAR_NO_PROCD_CMD=1
+     ;;
+  --debug)
+     RAR_DEBUG=1
      ;;
   *)
      RAR_NO_PROCD_CMD=0
@@ -337,10 +459,12 @@ _process_command_line()
   esac
 }
 
-# Search & replace in a file - _replace($find, $replace, $file) 
+# Search & replace in a file - _replace($find, $replace, $file)
 _replace() {
     sed -e "s^$1^$2^g" "$3" > "/tmp/$$.tmp" || return 0
-    mv /tmp/$$.tmp $3
+    # mv /tmp/$$.tmp $3
+    cat /tmp/$$.tmp > ${3}
+    rm -f /tmp/$$.tmp
     return 1
 }
 
@@ -353,7 +477,7 @@ backupFile ()
   then
     return 1
   fi
-  
+
   if [ ! -f "${LRAR_FILE}.bak" ]
   then
     cp ${LRAR_FILE} ${LRAR_FILE}.bak
@@ -464,7 +588,9 @@ stopinstallation ()
      stty ${RAR_STTY_OUTPUT}
   fi
   _note "Installation was interrupted."
+
   # TODO: Save the option in temp file and notify
+  _save_options_file
   exit 1
 }
 trap 'stopinstallation' INT HUP TERM
@@ -576,10 +702,10 @@ validateDevInstallDir () {
      then
        RAR_USER_OF_FILE=${PG_RAR_DEV_DATA_DIR}/postgresql.conf
      fi
-  
+
      for LRAR_USR in $RAR_OSUSERLIST
      do
-       PG_RAR_SERVICEACCOUNT=`find "${RAR_USER_OF_FILE}" -user $LRAR_USR 2>/dev/null`
+       PG_RAR_SERVICEACCOUNT=`find "${RAR_USER_OF_FILE}" -user ${LRAR_USR} 2>/dev/null`
        if [ x"${PG_RAR_SERVICEACCOUNT}" != x"" ]
        then
          PG_RAR_SERVICEACCOUNT=${LRAR_USR}
@@ -706,18 +832,15 @@ validatePostGIS ()
 
 configurePostGIS()
 {
-  _title 1 "Configuring PostGIS..."
   LRAR_PGIS_INSTALLDIR=${PG_RAR_DEV_INSTALL_DIR}
 
+  readValue "Found PostGIS. Do you want to configure PostGIS? (Y/n)" RAR_INSTALL_POSTGIS "${RAR_INSTALL_POSTGIS}" " "
+  if [ x"${RAR_INSTALL_POSTGIS}" != x"Y" -a x"${RAR_INSTALL_POSTGIS}" != x"y" ]
+  then
+    return
+  fi
+
   ## TODO: Create shortcuts
- 
-  ## Create back of the configuration files
-  backupFile "${PG_RAR_SHARE_PATH}/contrib/postgis.sql"
-  _replace \$libdir ${PG_RAR_LIB_PATH} "${PG_RAR_SHARE_PATH}/contrib/postgis.sql"
-
-  backupFile "${PG_RAR_SHARE_PATH}/contrib/postgis.sql"
-  _replace \$libdir ${PG_RAR_LIB_PATH} "${PG_RAR_SHARE_PATH}/contrib/postgis_upgrade.sql"
-
   PGHOST=localhost
   PGUSER=${PG_RAR_SUPERUSER}
   PGPASSWORD=${PG_RAR_SUPERPASSWORD}
@@ -730,36 +853,85 @@ configurePostGIS()
 
   if [ x"$HAS_TEMPLATE_DATABASE" = x"" -a $? -eq 0 ];
   then
+    _title 1 "Configuring PostGIS..."
+    ## Create back of the configuration files
+    backupFile "${PG_RAR_SHARE_PATH}/contrib/postgis.sql"
+    _replace \$libdir ${PG_RAR_LIB_PATH} "${PG_RAR_SHARE_PATH}/contrib/postgis.sql"
+
+    backupFile "${PG_RAR_SHARE_PATH}/contrib/postgis.sql"
+    _replace \$libdir ${PG_RAR_LIB_PATH} "${PG_RAR_SHARE_PATH}/contrib/postgis_upgrade.sql"
 
     ### CREATE TEMPLATE DATABASE
     _title 1 "\tCreating template_postgis database..."
-    "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "CREATE DATABASE template_postgis" >/dev/null 2>&1
+    if [ ${RAR_DEBUG} -eq 1 ]
+    then
+      echo "Executing: "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "CREATE DATABASE template_postgis"" | tee -a ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "CREATE DATABASE template_postgis" 2>&1 | tee -a ${RAR_LOG_FILE}
+    else
+      echo "Executing: "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "CREATE DATABASE template_postgis"" >> ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "CREATE DATABASE template_postgis" >> ${RAR_LOG_FILE} 2>&1
+    fi
     if [ $? -eq 0 ];
     then
       _note 1 "\tSuccessfully created 'template_postgis' database..."
     fi
 
-    "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "UPDATE pg_database SET datistemplate='t' WHERE datname='template_postgis'" >/dev/null 2>&1
+    if [ ${RAR_DEBUG} -eq 1 ]
+    then
+      echo "Executing: "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "UPDATE pg_database SET datistemplate='t' WHERE datname='template_postgis'"" | tee -a ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "UPDATE pg_database SET datistemplate='t' WHERE datname='template_postgis'" 2>&1 | tee -a ${RAR_LOG_FILE}
+    else
+      echo "Executing: "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "UPDATE pg_database SET datistemplate='t' WHERE datname='template_postgis'"" >> ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "UPDATE pg_database SET datistemplate='t' WHERE datname='template_postgis'" >> ${RAR_LOG_FILE} 2>&1
+    fi
 
     ## CREATE plpgsql LANGUAGE
     PGDATABASE=template_postgis
     export PGDATABASE
     _title 1 "Create language 'plpgsql'"
-    "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "CREATE LANGUAGE 'plpgsql'" >/dev/null 2>&1
+    if [ ${RAR_DEBUG} -eq 1 ]
+    then
+      echo ""${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "CREATE LANGUAGE 'plpgsql'"" | tee -a ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "CREATE LANGUAGE 'plpgsql'" 2>&1 | tee -a ${RAR_LOG_FILE}
+    else
+      echo ""${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "CREATE LANGUAGE 'plpgsql'"" >> ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "CREATE LANGUAGE 'plpgsql'" >> ${RAR_LOG_FILE} 2>&1
+    fi
     if [ $? -eq 0 ];
     then
       _note 1 "\tSuccessfully created 'plpgsql' language..."
     fi
-    
+
     ### INSTALL postgis.sql script
     _title 1 "\tRunning postgis.sql in template_postgis database..."
-    "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${PG_RAR_SHARE_PATH}/contrib/postgis.sql" >/dev/null 2>&1
+    if [ ${RAR_DEBUG} -eq 1 ]
+    then
+      echo ""${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${PG_RAR_SHARE_PATH}/contrib/postgis.sql"" | tee -a ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${PG_RAR_SHARE_PATH}/contrib/postgis.sql" 2>&1 | tee -a ${RAR_LOG_FILE}
+    else
+      echo ""${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${PG_RAR_SHARE_PATH}/contrib/postgis.sql"" >> ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${PG_RAR_SHARE_PATH}/contrib/postgis.sql" 1>> ${RAR_LOG_FILE} 2>&1
+    fi
 
     _title 1 "\tRunning spatial_ref_sys.sql in template_postgis database..."
-    "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${PG_RAR_SHARE_PATH}/contrib/spatial_ref_sys.sql" >/dev/null 2>&1
+    if [ ${RAR_DEBUG} -eq 1 ]
+    then
+      echo ""${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${PG_RAR_SHARE_PATH}/contrib/spatial_ref_sys.sql"" | tee -a ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${PG_RAR_SHARE_PATH}/contrib/spatial_ref_sys.sql" 2>&1 | tee -a ${RAR_LOG_FILE}
+    else
+      echo ""${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${PG_RAR_SHARE_PATH}/contrib/spatial_ref_sys.sql"" >> ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${PG_RAR_SHARE_PATH}/contrib/spatial_ref_sys.sql" >> ${RAR_LOG_FILE} 2>&1
+    fi
 
     _title 1 "\tRunning postgis_comments.sql in template_postgis database..."
-    "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${PG_RAR_SHARE_PATH}/contrib/postgis_comments.sql" >/dev/null 2>&1
+    if [ ${RAR_DEBUG} -eq 1 ]
+    then
+      echo ""${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${PG_RAR_SHARE_PATH}/contrib/postgis_comments.sql"" | tee -a ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${PG_RAR_SHARE_PATH}/contrib/postgis_comments.sql" 2>&1 | tee -a ${RAR_LOG_FILE}
+    else
+      echo ""${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${PG_RAR_SHARE_PATH}/contrib/postgis_comments.sql"" >> ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${PG_RAR_SHARE_PATH}/contrib/postgis_comments.sql" >> ${RAR_LOG_FILE} 2>&1
+    fi
 
   fi
 
@@ -814,9 +986,17 @@ validateSlony ()
 
 configureSlony ()
 {
-  _title "Configuring Slony ..."
+  _title 1 "Configuring Slony ..."
+  if [ ${RAR_DEBUG} -eq 1 ]
+  then
+    echo "${PG_RAR_DEV_INSTALL_DIR}/Slony/installer/Slony/configureslony.sh "${PG_RAR_DEV_INSTALL_DIR}"" | tee -a ${RAR_LOG_FILE}
+    ${PG_RAR_DEV_INSTALL_DIR}/Slony/installer/Slony/configureslony.sh "${PG_RAR_DEV_INSTALL_DIR}" 2>&1 | tee -a ${RAR_LOG_FILE}
+  else
+    echo "${PG_RAR_DEV_INSTALL_DIR}/Slony/installer/Slony/configureslony.sh "${PG_RAR_DEV_INSTALL_DIR}"" >> ${RAR_LOG_FILE}
+    ${PG_RAR_DEV_INSTALL_DIR}/Slony/installer/Slony/configureslony.sh "${PG_RAR_DEV_INSTALL_DIR}" >> ${RAR_LOG_FILE} 2>&1
+  fi
+
   ### TODO: Create shortcuts
-  ${PG_RAR_DEV_INSTALL_DIR}/Slony/installer/Slony/configureslony.sh "${PG_RAR_DEV_INSTALL_DIR}" >/dev/null 2>&1
 }
 
 validatepgAgent ()
@@ -842,7 +1022,7 @@ validatepgAgent ()
 configurepgAgent()
 {
   LRAR_INSTALLDIR=${1}
-  
+
   PGHOST=localhost
   PGUSER=${PG_RAR_SUPERUSER}
   PGPASSWORD=${PG_RAR_SUPERPASSWORD}
@@ -854,25 +1034,65 @@ configurepgAgent()
 
   if [ x"$HAS_SCHEMA" = x"" ]
   then
+    _title 1 "\tCreating plpgsql.."
+    if [ ${RAR_DEBUG} -eq 1 ]
+    then
+      echo ""${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "CREATE LANGUAGE 'plpgsql'"" | tee -a ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "CREATE LANGUAGE 'plpgsql'" 2>&1 | tee -a ${RAR_LOG_FILE}
+    else
+      echo ""${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "CREATE LANGUAGE 'plpgsql'"" >> ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -c "CREATE LANGUAGE 'plpgsql'" >> ${RAR_LOG_FILE} 2>&1
+    fi
     _title 1 "\tRunning pgagent script.."
-    "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${LRAR_INSTALLDIR}/share/pgagent.sql" >/dev/null 2>&1
+    if [ ${RAR_DEBUG} -eq 1 ]
+    then
+      echo ""${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${LRAR_INSTALLDIR}/share/pgagent.sql"" | tee -a ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${LRAR_INSTALLDIR}/share/pgagent.sql" 2>&1 | tee -a ${RAR_LOG_FILE}
+    else
+      echo ""${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${LRAR_INSTALLDIR}/share/pgagent.sql"" >> ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${LRAR_INSTALLDIR}/share/pgagent.sql" >> ${RAR_LOG_FILE} 2>&1
+    fi
   else
     _title 1 "\tRunning pgagent upgrade script..."
-    "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${LRAR_INSTALLDIR}/share/pgagent_upgrade.sql" >/dev/null 2>&1
+    if [ ${RAR_DEBUG} -eq 1 ]
+    then
+      echo ""${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${LRAR_INSTALLDIR}/share/pgagent_upgrade.sql"" | tee -a ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${LRAR_INSTALLDIR}/share/pgagent_upgrade.sql" 2>&1 | tee -a ${RAR_LOG_FILE}
+    else
+      echo ""${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${LRAR_INSTALLDIR}/share/pgagent_upgrade.sql"" >> ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/bin/psql" -t -f "${LRAR_INSTALLDIR}/share/pgagent_upgrade.sql" >> ${RAR_LOG_FILE} 2>&1
+    fi
   fi
 
   if [ -f /etc/init.d/pgagent -a ${RAR_PLATFORM} = Linux ]
   then
     _note 1 "Service (/etc/init.d/pgagent) already exists..."
+    return 1
   elif [ -f /Library/LaunchDaemons/com.edb.launchd.pgagent.plist -a ${RAR_PLATFORM} = Darwin ]
   then
     _note 1 "Service (/Library/LaunchDaemons/com.edb.launchd.pgagent.plist) already exists..."
-  else
-    _title "Creating pgagent service..."
-    echo "localhost:${PG_RAR_DEV_PORT}:*:${PG_RAR_SUPERUSER}:${PG_RAR_SUPERPASSWORD}" > "${PG_RAR_DEV_INSTALL_DIR}/pgAgent/installer/pgAgent/pgpass"
-    sh ${PG_RAR_DEV_INSTALL_DIR}/pgAgent/installer/pgAgent/startupcfg.sh localhost ${PG_RAR_DEV_PORT} ${PG_RAR_SUPERUSER} ${PG_RAR_SERVICEACCOUNT} "${PG_RAR_DEV_INSTALL_DIR}/pgAgent" ${PGDATABASE}
-    # Remove the temporary pgpass file
-    rm -f "${PG_RAR_DEV_INSTALL_DIR}/pgAgent/installer/pgAgent/pgpass"
+    return 1
+  fi
+
+  _title "Creating pgagent service..."
+  echo "localhost:${PG_RAR_DEV_PORT}:*:${PG_RAR_SUPERUSER}:${PG_RAR_SUPERPASSWORD}" > "${PG_RAR_DEV_INSTALL_DIR}/pgAgent/installer/pgAgent/pgpass"
+  if [ ${RAR_DEBUG} -eq 1 ]
+    then
+      echo ""${PG_RAR_DEV_INSTALL_DIR}/pgAgent/installer/pgAgent/startupcfg.sh" localhost ${PG_RAR_DEV_PORT} ${PG_RAR_SUPERUSER} ${PG_RAR_SERVICEACCOUNT} "${PG_RAR_DEV_INSTALL_DIR}/pgAgent" ${PGDATABASE}" | tee -a ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/pgAgent/installer/pgAgent/startupcfg.sh" localhost ${PG_RAR_DEV_PORT} ${PG_RAR_SUPERUSER} ${PG_RAR_SERVICEACCOUNT} "${PG_RAR_DEV_INSTALL_DIR}/pgAgent" ${PGDATABASE} 2>&1 | tee -a ${RAR_LOG_FILE}
+    else
+      echo ""${PG_RAR_DEV_INSTALL_DIR}/pgAgent/installer/pgAgent/startupcfg.sh" localhost ${PG_RAR_DEV_PORT} ${PG_RAR_SUPERUSER} ${PG_RAR_SERVICEACCOUNT} "${PG_RAR_DEV_INSTALL_DIR}/pgAgent" ${PGDATABASE}" >> ${RAR_LOG_FILE}
+      "${PG_RAR_DEV_INSTALL_DIR}/pgAgent/installer/pgAgent/startupcfg.sh" localhost ${PG_RAR_DEV_PORT} ${PG_RAR_SUPERUSER} ${PG_RAR_SERVICEACCOUNT} "${PG_RAR_DEV_INSTALL_DIR}/pgAgent" ${PGDATABASE} >> ${RAR_LOG_FILE} 2>&1
+    fi
+  # Remove the temporary pgpass file
+  rm -f "${PG_RAR_DEV_INSTALL_DIR}/pgAgent/installer/pgAgent/pgpass"
+
+  _title "Starting pgagent service..."
+  if [ ${RAR_PLATFORM} = Linux ]; then
+    _replace SYSTEM_USER ${PG_RAR_SERVICEACCOUNT} /etc/init.d/pgagent
+    /etc/init.d/pgagent start
+  elif [ ${RAR_PLATFORM} = Darwin ]; then
+    launchctl load /Library/LaunchDaemons/com.edb.launchd.pgagent.plist
   fi
 
   ### TODO: Create Shortcuts
@@ -917,11 +1137,11 @@ configurepsqlodbcLinux ()
     return
   fi
 
-  RAR_ODBCDRIVER_INSTALLED=`odbcinst -q -d 2>/dev/null | grep "[[psqlodbc-${PG_RAR_MAJOR_VERSION}]]"`
+  RAR_ODBCDRIVER_INSTALLED=`su - ${PG_RAR_SERVICEACCOUNT} -c "odbcinst -q -d 2>/dev/null | grep \"[[psqlodbc-${PG_RAR_MAJOR_VERSION}]]\""`
   if [ x"$RAR_ODBCDRIVER_INSTALLED" = x"[psqlodbc-${PG_RAR_MAJOR_VERSION}]" ]
   then
     _note 1 "psqlodbc driver (psqlodbc-${PG_RAR_MAJOR_VERSION}) is already been registered."
-    return 
+    return
   fi
 
   readValue "Found psqlODBC. Do you want to configure psqlODBC? (Y/n)" RAR_INSTALL_PSQLODBC "${RAR_INSTALL_PSQLODBC}" " "
@@ -930,24 +1150,21 @@ configurepsqlodbcLinux ()
   then
     _title 1 "Configuring psqlodbc-${PG_RAR_MAJOR_VERSION}.."
   else
-    return 
+    return
   fi
 
   cat <<EOT > /tmp/rar_psqlodbc_${PG_RAR_MAJOR_VERSION}.$$
 [psqlodbc-${PG_RAR_MAJOR_VERSION}]
 Description=PostgreSQL 8.4 ODBC Driver
-Driver=/home/asheshvashi/pgsql/psqlODBC/lib/psqlodbcw.so
+Driver=${LRAR_INSTALLDIR}/lib/psqlodbcw.so
 
 EOT
 
-  LD_LIBRARY_PATH="${LRAR_INSTALLDIR}/lib":$LD_LIBRARY_PATH
-  export LD_LIBRARY_PATH
-  
   _title 1 "Installing psqlODBC driver..."
   odbcinst -i -d -f /tmp/rar_psqlodbc_${PG_RAR_MAJOR_VERSION}.$$
 
   rm -f /tmp/rar_psqlodbc_${PG_RAR_MAJOR_VERSION}.$$
-  
+
 }
 
 validateNpgsql ()
@@ -1060,7 +1277,7 @@ validatesbp ()
   return ${LRAR_RET_VAL}
 }
 
-configuresbp () 
+configuresbp ()
 {
   LRAR_INSTALLDIR=${1}
 
@@ -1073,14 +1290,15 @@ configuresbp ()
 
   _replace INSTALL_DIR "${LRAR_INSTALLDIR}" "${LRAR_INSTALLDIR}/scripts/launchStackBuilderPlus.sh"
   _replace INSTALL_DIR "${LRAR_INSTALLDIR}" "${LRAR_INSTALLDIR}/scripts/runStackBuilderPlus.sh"
-  
+
 ####################################################################
 ## NOTE: We do not write the information in /etc/postgres-reg.ini ##
 ##       Hence, StackBuilderPlus won't work                       ##
 ####################################################################
-  
+   _note "We is not updated or created  for the PostgresPlus details in '/etc/postgres-reg.ini'. Hence, StackBuilderPlus will not work."
+
 #  LRAR_SERVICEACCOUNT_HOME=`su ${PG_RAR_SERVICEACCOUNT} -c "echo $HOME"`
-#  
+#
 #  if [ ! -d ${LRAR_SERVICEACCOUNT_HOME}/.config/autostart -a ${RAR_PLATFORM} = Linux ]
 #  then
 #    mkdir ${LRAR_SERVICEACCOUNT_HOME}/.config/autostart
@@ -1093,7 +1311,14 @@ configuresbp ()
 #  fi
 
 #  _note 1 "Starting StackBuilder Plus Update Monitor..."
-#  sh "${LRAR_INSTALLDIR}/scritps/launchSBPUpdateMonitor.sh" > /dev/null 2>&1 &
+#  if [ ${RAR_DEBUG} -eq 1 ]
+#  then
+#    echo ""${LRAR_INSTALLDIR}/scritps/launchSBPUpdateMonitor.sh"" | tee -a ${RAR_LOG_FILE}
+#    "${LRAR_INSTALLDIR}/scritps/launchSBPUpdateMonitor.sh" 2>&1 | tee -a ${RAR_LOG_FILE}
+#  else
+#    echo ""${LRAR_INSTALLDIR}/scritps/launchSBPUpdateMonitor.sh"" >> ${RAR_LOG_FILE}
+#    "${LRAR_INSTALLDIR}/scritps/launchSBPUpdateMonitor.sh" >> ${RAR_LOG_FILE} 2>&1
+#  fi
 
 }
 
@@ -1145,20 +1370,36 @@ configurepgBouncer ()
   _replace @@PIDFILE@@ "${LRAR_INSTALLDIR}/log/pgbouncer.pid" "${LRAR_INSTALLDIR}/share/pgbouncer.ini"
   _replace @@AUTHFILE@@ "${LRAR_INSTALLDIR}/etc/userlist.txt" "${LRAR_INSTALLDIR}/share/pgbouncer.ini"
 
-  mkdir "${LRAR_INSTALLDIR}/etc"
-  mkdir "${LRAR_INSTALLDIR}/log"
+  mkdir -p "${LRAR_INSTALLDIR}/etc"
+  chown ${PG_RAR_SERVICEACCOUNT} "${LRAR_INSTALLDIR}/etc"
+  mkdir -p "${LRAR_INSTALLDIR}/log"
+  chown ${PG_RAR_SERVICEACCOUNT} "${LRAR_INSTALLDIR}/log"
   echo "\"${PG_RAR_SUPERUSER}\" \"${PG_RAR_SUPERPASSWORD}\"" > "${LRAR_INSTALLDIR}/etc/userlist.txt"
   backupFile "${LRAR_INSTALLDIR}/etc/userlist.txt"
   chown ${PG_RAR_SERVICEACCOUNT} "${LRAR_INSTALLDIR}/etc/userlist.txt"
   chmod 700 "${LRAR_INSTALLDIR}/etc"
   chmod 700 "${LRAR_INSTALLDIR}/etc/userlist.txt"
   chmod 700 "${LRAR_INSTALLDIR}/log"
-  sh "${LRAR_INSTALLDIR}/installer/pgbouncer/startupcfg.sh" "${LRAR_INSTALLDIR}" ${PG_RAR_SERVICEACCOUNT} 2>/dev/null
+  if [ ${RAR_DEBUG} -eq 1 ]
+  then
+    echo ""${LRAR_INSTALLDIR}/installer/pgbouncer/startupcfg.sh" "${LRAR_INSTALLDIR}" ${PG_RAR_SERVICEACCOUNT}" | tee -a ${RAR_LOG_FILE}
+    "${LRAR_INSTALLDIR}/installer/pgbouncer/startupcfg.sh" "${LRAR_INSTALLDIR}" ${PG_RAR_SERVICEACCOUNT} 2>&1 | tee -a ${RAR_LOG_FILE}
+  else
+    echo ""${LRAR_INSTALLDIR}/installer/pgbouncer/startupcfg.sh" "${LRAR_INSTALLDIR}" ${PG_RAR_SERVICEACCOUNT}" >> ${RAR_LOG_FILE}
+    "${LRAR_INSTALLDIR}/installer/pgbouncer/startupcfg.sh" "${LRAR_INSTALLDIR}" ${PG_RAR_SERVICEACCOUNT} >> ${RAR_LOG_FILE} 2>&1
+  fi
 
-  _title 1 "Starting pgboucer service..."
+  _title 1 "Starting pgbouncer service..."
   if [ $RAR_PLATFORM = Linux ]
   then
-    /etc/init.d/pgbouncer start
+    if [ ${RAR_DEBUG} -eq 1 ]
+    then
+      echo "/etc/init.d/pgbouncer start" | tee -a ${RAR_LOG_FILE}
+      /etc/init.d/pgbouncer start 2>&1 | tee -a ${RAR_LOG_FILE}
+    else
+      echo "/etc/init.d/pgbouncer start" >> ${RAR_LOG_FILE}
+      /etc/init.d/pgbouncer start >> ${RAR_LOG_FILE} 2>&1
+    fi
   elif [ $RAR_PLATFORM = Darwin ]
   then
     launchctl load /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist
@@ -1191,7 +1432,7 @@ readValue "Please enter the data directory path:" PG_RAR_DEV_DATA_DIR "${PG_RAR_
 _info 1 "Data Directory: ${PG_RAR_DEV_DATA_DIR}"
 
 _title =====
-_title PORT 
+_title PORT
 _title =====
 _note "We will not be able to examine, if port is currently used by other application."
 
@@ -1219,7 +1460,7 @@ _info 1 "Service Account: ${PG_RAR_SERVICEACCOUNT}"
 _info 1 "Super User: ${PG_RAR_SUPERUSER}"
 
 _title ============================
-_title DATABASE SUPERUSER PASSWORD 
+_title DATABASE SUPERUSER PASSWORD
 _title ============================
 
 readPassword "Please provide password for the super-user(${PG_RAR_SUPERUSER}):" PG_RAR_SUPERPASSWORD "${PG_RAR_SUPERPASSWORD}" " " "Database super-user's password"
@@ -1232,7 +1473,14 @@ _info 1 "Super Password: ${PG_RAR_SUPERPASSWORD}"
 
 ## Create User, if does not exist
 _title 1 "Create User (if not exist): ${PG_RAR_SERVICEACCOUNT}"
-sh ${PG_RAR_DEV_INSTALL_DIR}/installer/server/createuser.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" >/dev/null 2>&1
+if [ ${RAR_DEBUG} -eq 1 ]
+then
+  echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/createuser.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}"" | tee -a ${RAR_LOG_FILE}
+  ${PG_RAR_DEV_INSTALL_DIR}/installer/server/createuser.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" 2>&1 | tee -a ${RAR_LOG_FILE}
+else
+  echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/createuser.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}"" >> ${RAR_LOG_FILE}
+  ${PG_RAR_DEV_INSTALL_DIR}/installer/server/createuser.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" >> ${RAR_LOG_FILE} 2>&1
+fi
 RAR_OUTPUT=$?
 if [ ${RAR_OUTPUT} -eq 127 ]
 then
@@ -1249,7 +1497,14 @@ fi
 if [ ! -f "${PG_RAR_DEV_DATA_DIR}/postgresql.conf" ]
 then
   _title 1 "Initialize Cluster : ${PG_RAR_DEV_DATA_DIR}"
-  sh ${PG_RAR_DEV_INSTALL_DIR}/installer/server/initcluster.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_SUPERUSER}" "${PG_RAR_SUPERPASSWORD}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" ${PG_RAR_DEV_PORT} ${PG_RAR_DEV_LOCALE}
+  if [ ${RAR_DEBUG} -eq 1 ]
+  then
+    echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/initcluster.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_SUPERUSER}" "${PG_RAR_SUPERPASSWORD}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" ${PG_RAR_DEV_PORT} ${PG_RAR_DEV_LOCALE}" | tee -a ${RAR_LOG_FILE}
+    ${PG_RAR_DEV_INSTALL_DIR}/installer/server/initcluster.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_SUPERUSER}" "${PG_RAR_SUPERPASSWORD}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" ${PG_RAR_DEV_PORT} ${PG_RAR_DEV_LOCALE} 2>&1 | tee -a ${RAR_LOG_FILE}
+  else
+    echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/initcluster.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_SUPERUSER}" "${PG_RAR_SUPERPASSWORD}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" ${PG_RAR_DEV_PORT} ${PG_RAR_DEV_LOCALE}" >> ${RAR_LOG_FILE}
+    ${PG_RAR_DEV_INSTALL_DIR}/installer/server/initcluster.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_SUPERUSER}" "${PG_RAR_SUPERPASSWORD}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" ${PG_RAR_DEV_PORT} ${PG_RAR_DEV_LOCALE} >> ${RAR_LOG_FILE} 2>&1
+  fi
   RAR_OUTPUT=$?
   if [ ${RAR_OUTPUT} -eq 127 ]
   then
@@ -1274,7 +1529,14 @@ then
   if [ ! -f "/etc/init.d/${PG_RAR_SERVICENAME}" ]
   then
     _title 1 "Creating Service: ${PG_RAR_SERVICENAME}"
-    sh ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}"
+    if [ ${RAR_DEBUG} -eq 1 ]
+    then
+      echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}"" | tee -a ${RAR_LOG_FILE}
+      ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}" 2>&1 | tee -a ${RAR_LOG_FILE}
+    else
+      echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}"" >> ${RAR_LOG_FILE}
+      ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}" >> ${RAR_LOG_FILE} 2>&1
+    fi
     RAR_OUTPUT=$?
     if [ ${RAR_OUTPUT} -eq 127 ]
     then
@@ -1293,10 +1555,17 @@ then
   else
     _note 1 "Service (${PG_RAR_SERVICENAME}) already exists."
   fi
-  
+
   ## Start Server
   _title 1 "Starting server (Service:${PG_RAR_SERVICENAME})"
-  sh ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startserver.sh "${PG_RAR_SERVICENAME}"
+  if [ ${RAR_DEBUG} -eq 1 ]
+  then
+    echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/startserver.sh "${PG_RAR_SERVICENAME}"" | tee -a ${RAR_LOG_FILE}
+    ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startserver.sh "${PG_RAR_SERVICENAME}" 2>&1 | tee -a ${RAR_LOG_FILE}
+  else
+    echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/startserver.sh "${PG_RAR_SERVICENAME}"" >> ${RAR_LOG_FILE}
+    ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startserver.sh "${PG_RAR_SERVICENAME}" >> ${RAR_LOG_FILE} 2>&1
+  fi
   RAR_OUTPUT=$?
   if [ ${RAR_OUTPUT} -eq 127 ]
   then
@@ -1311,7 +1580,14 @@ then
   if [ ! -f "/Library/LaunchDaemons/com.edb.launchd.${PG_RAR_SERVICENAME}.plist" ]
   then
     _title 1 "Creating Service: ${PG_RAR_SERVICENAME}"
-    sh ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}"
+    if [ ${RAR_DEBUG} -eq 1 ]
+    then
+      echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}"" | tee -a ${RAR_LOG_FILE}
+      ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}" 2>&1 | tee -a ${RAR_LOG_FILE}
+    else
+      echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}"" >> ${RAR_LOG_FILE}
+      ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}" >> ${RAR_LOG_FILE} 2>&1
+    fi
     RAR_OUTPUT=$?
     if [ ${RAR_OUTPUT} -eq 127 ]
     then
@@ -1343,7 +1619,14 @@ sleep 8
 
 ## Load Modules
 _title 1 "Loading Modules..."
-sh ${PG_RAR_DEV_INSTALL_DIR}/installer/server/loadmodules.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_SUPERUSER}" "${PG_RAR_SUPERPASSWORD}" "${PG_RAR_DEV_INSTALL_DIR}" ${PG_RAR_DEV_PORT} 1
+  if [ ${RAR_DEBUG} -eq 1 ]
+  then
+    echo "Executing: ${PG_RAR_DEV_INSTALL_DIR}/installer/server/loadmodules.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_SUPERUSER}" "${PG_RAR_SUPERPASSWORD}" "${PG_RAR_DEV_INSTALL_DIR}" ${PG_RAR_DEV_PORT} 1" | tee -a ${RAR_LOG_FILE}
+    ${PG_RAR_DEV_INSTALL_DIR}/installer/server/loadmodules.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_SUPERUSER}" "${PG_RAR_SUPERPASSWORD}" "${PG_RAR_DEV_INSTALL_DIR}" ${PG_RAR_DEV_PORT} 1 2>&1 | tee -a ${RAR_LOG_FILE}
+  else
+    echo "Executing: ${PG_RAR_DEV_INSTALL_DIR}/installer/server/loadmodules.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_SUPERUSER}" "${PG_RAR_SUPERPASSWORD}" "${PG_RAR_DEV_INSTALL_DIR}" ${PG_RAR_DEV_PORT} 1" >> ${RAR_LOG_FILE}
+    ${PG_RAR_DEV_INSTALL_DIR}/installer/server/loadmodules.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_SUPERUSER}" "${PG_RAR_SUPERPASSWORD}" "${PG_RAR_DEV_INSTALL_DIR}" ${PG_RAR_DEV_PORT} 1 >> ${RAR_LOG_FILE} 2>&1
+  fi
 
 ## TODO: Write to ini files
 
@@ -1367,11 +1650,7 @@ chmod a+x pg_env.sh
 validatePostGIS "${PG_RAR_DEV_INSTALL_DIR}"
 if [ $? -eq 1 ]
 then
-  readValue "Found PostGIS. Do you want to configure PostGIS? (Y/n)" RAR_INSTALL_POSTGIS "${RAR_INSTALL_POSTGIS}" " "
-  if [ x"${RAR_INSTALL_POSTGIS}" = x"Y" -o x"${RAR_INSTALL_POSTGIS}" = x"y" ]
-  then
-    configurePostGIS
-  fi
+  configurePostGIS
 fi
 
 validateSlony "${PG_RAR_DEV_INSTALL_DIR}"
@@ -1428,7 +1707,7 @@ fi
 validatesbp "${PG_RAR_DEV_INSTALL_DIR}/StackBuilderPlus"
 if [ $? -eq 1 ]
 then
-  _title 1 "Found StackBuilderPlus. Do you want to configure StackBuilder Plus? (Y/n)" RAR_INSTALL_SBP "${RAR_INSTALL_SBP}" " "
+  readValue "Found StackBuilderPlus. Do you want to configure StackBuilder Plus? (Y/n)" RAR_INSTALL_SBP "${RAR_INSTALL_SBP}" " "
   if [ x"${RAR_INSTALL_SBP}" = x"Y" -o x"${RAR_INSTALL_SBP}" = x"y" ]
   then
     configuresbp ${PG_RAR_DEV_INSTALL_DIR}/StackBuilderPlus
@@ -1438,4 +1717,5 @@ then
   _title 1 "Found StackBuilderPlus.. But, configuration is not required"
 fi
 
+_save_options_file
 
