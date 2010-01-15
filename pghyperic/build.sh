@@ -60,7 +60,8 @@ _prep_pghyperic() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _prep_pghyperic_osx || exit 1
+	echo "Not yet implemented"
+        #_prep_pghyperic_osx || exit 1
     fi
 
     # Linux
@@ -72,13 +73,15 @@ _prep_pghyperic() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _prep_pghyperic_linux_x64 || exit 1
+	echo "Not yet implemented"
+        #_prep_pghyperic_linux_x64 || exit 1
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _prep_pghyperic_windows || exit 1
+	echo "Not yet implemented"
+        #_prep_pghyperic_windows || exit 1
     fi
     
 }
@@ -92,7 +95,8 @@ _build_pghyperic() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _build_pghyperic_osx || exit 1
+	echo "Not yet implemented"
+        #_build_pghyperic_osx || exit 1
     fi
 
     # Linux 
@@ -104,13 +108,15 @@ _build_pghyperic() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-       _build_pghyperic_linux_x64 || exit 1
+	echo "Not yet implemented"
+       #_build_pghyperic_linux_x64 || exit 1
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _build_pghyperic_windows || exit 1
+	echo "Not yet implemented"
+        #_build_pghyperic_windows || exit 1
     fi
 }
 
@@ -138,7 +144,8 @@ _postprocess_pghyperic() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _postprocess_pghyperic_osx || exit 1
+	echo "Not yet implemented"
+        #_postprocess_pghyperic_osx || exit 1
     fi
 
     # Linux
@@ -150,12 +157,14 @@ _postprocess_pghyperic() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _postprocess_pghyperic_linux_x64 || exit 1
+	echo "Not yet implemented"
+        #_postprocess_pghyperic_linux_x64 || exit 1
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-       _postprocess_pghyperic_windows || exit 1
+	echo "Not yet implemented"
+       #_postprocess_pghyperic_windows || exit 1
     fi
 }
