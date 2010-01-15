@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Start pghyperic agent
+Exec=PGHYPERIC_INSTALLDIR/scripts/launchagentctl.sh start
+Icon=pghyperic-agent-start-PGHYPERIC_VERSION_STR.png
+Terminal=false
+Type=Application

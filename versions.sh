@@ -36,7 +36,7 @@ PG_BUILDNUM_PGMIGRATOR=1
 PG_BUILDNUM_SBP=1
 PG_BUILDNUM_MIGRATIONTOOLKIT=2
 PG_BUILDNUM_JBOSS=1
-
+PG_BUILDNUM_PGHYPERIC=1
 
 # PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
 #                     Minor version is revision.build. 
@@ -70,6 +70,7 @@ PG_VERSION_PGMIGRATOR=8.4.1
 PG_VERSION_SBP=1.1.0
 PG_VERSION_MIGRATIONTOOLKIT=1.0
 PG_VERSION_JBOSS=4.2.3
+PG_VERSION_PGHYPERIC=4.2.0
 
 # Miscellaneous options
 

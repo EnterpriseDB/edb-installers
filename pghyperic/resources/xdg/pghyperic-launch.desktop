@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=PostgreSQL hyperic Monitoring Home Page
+Exec="PGHYPERIC_INSTALLDIR/scripts/launchbrowser.sh" http://127.0.0.1:7080
+Icon=pghyperic-launch-PGHYPERIC_VERSION_STR.png
+Terminal=false
+Type=Application
+

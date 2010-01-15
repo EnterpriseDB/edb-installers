@@ -1,0 +1,57 @@
+installer.Welcome.Title=Setup %1$s
+
+Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
+
+Installer.Installing.Title=Installing ${product_fullname}
+
+upgrade.existing.installation.title=Existing installation
+
+upgrade.existing.installation.description=An existing hyperic installation has been found at ${installdir}. This installation will be upgraded.
+
+platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
+
+progress.text.creating.shortcuts=Creating menu shortcuts
+
+progress.text.creating.hqdbschema=Creating HQ database for Hyperic
+
+configure.hqdbschema=Creating HQ database
+
+Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
+
+Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
+
+install.summary=Hyperic for PostgreSQL Server monitoring, packaged by EnterpriseDB.
+
+pghyperic.installdir.empty=The installation directory cannot be empty
+
+pghyperic.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
+
+pgplus.details.title=Postgres Installation Details
+
+pgplus.details.explanation=Please verify the Postgres installation details
+
+pgplus.details.error=Connection to the Postgres failed. Please re-check the details provided.
+
+pgplus.blank.error=Values must be entered for all fields.
+
+smtp.server.title=Enter smtp server details.
+
+smtp.server.details=Enter the fully qualified domain name of the SMTP server that HQ will use to send email messages for alerts.
+
+smtp.server.blank.error=Value must be entered for the field.
+
+Installer.Installation.Finished.Visit.Us=Visit monitoring interface (http://127.0.0.1:7080) using username:hqadmin and password:hqadmin to start postgres database monitoring.
+
+progress.text.initialising.server=Starting Hyperic server (this may take a few minutes)...
+
+progress.text.initialising.agent=Starting Hyperic agent (this may take a few minutes)...
+
+error.could.not.initialise.server=Hyperic server start failed.
+
+error.could.not.initialise.agent=Hyperic agent start failed.
+
+warning.during.server.initialisation=A non-fatal error occured during server start. Please check the installation error log in ${system_temp_directory} for details.
+
+warning.during.agent.initialisation=A non-fatal error occured during agent start. Please check the installation error log in ${system_temp_directory} for details.
+
+script.command.line.error=The script was called with an invalid command line

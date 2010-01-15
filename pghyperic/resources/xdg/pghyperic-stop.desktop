@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Stop Hyperic HQ server
+Exec=PGHYPERIC_INSTALLDIR/scripts/launchsvrctl.sh stop
+Icon=pghyperic-stop-PGHYPERIC_VERSION_STR.png
+Terminal=false
+Type=Application

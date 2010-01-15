@@ -444,6 +444,21 @@ then
     _postprocess_jboss || exit 1
 fi
 
+# Package: PGHYPERIC
+if [ $PG_PACKAGE_PGHYPERIC = 1 ];
+then
+    cd $WD
+    source ./pghyperic/build.sh
+
+    if [ $SKIPBUILD = 0 ];
+    then
+        _prep_pghyperic || exit 1
+        _build_pghyperic || exit 1
+    fi
+
+    _postprocess_pghyperic || exit 1
+fi
+
 # Package: DevServer
 # ALWAYS BUILD THIS LAST!!
 if [ $PG_PACKAGE_DEVSERVER = 1 ];

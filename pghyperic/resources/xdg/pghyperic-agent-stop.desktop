@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Stop Hyperic HQ agent
+Exec=PGHYPERIC_INSTALLDIR/scripts/launchagentctl.sh stop
+Icon=pghyperic-agent-stop-PGHYPERIC_VERSION_STR.png
+Terminal=false
+Type=Application

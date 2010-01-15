@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Start pghyperic server
+Exec=PGHYPERIC_INSTALLDIR/scripts/launchsvrctl.sh start
+Icon=pghyperic-start-PGHYPERIC_VERSION_STR.png
+Terminal=false
+Type=Application
