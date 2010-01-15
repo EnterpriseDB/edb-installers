@@ -1296,7 +1296,7 @@ configuresbp ()
 ## NOTE: We do not write the information in /etc/postgres-reg.ini ##
 ##       Hence, StackBuilderPlus won't work                       ##
 ####################################################################
-   _note "We is not updated or created  for the PostgresPlus details in '/etc/postgres-reg.ini'. Hence, StackBuilderPlus will not work."
+   _note "We have not updated or created  for the PostgresPlus details in '/etc/postgres-reg.ini'. Hence, StackBuilderPlus will not work."
 
 #  LRAR_SERVICEACCOUNT_HOME=`su ${PG_RAR_SERVICEACCOUNT} -c "echo $HOME"`
 #
