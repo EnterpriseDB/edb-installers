@@ -209,6 +209,7 @@ datadir=${PG_RAR_DEV_DATA_DIR}
 installdir=${PG_RAR_DEV_INSTALL_DIR}
 locale=${PG_RAR_DEV_LOCALE}
 port=${PG_RAR_DEV_PORT}
+pgbouncer-port=${PG_RAR_PGBOUNCER_PORT}
 components=${LRAR_COMPS}
 EOT
   _info "Options saved in '$PWD/.rar_options_$$' file."
