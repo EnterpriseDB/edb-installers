@@ -1347,7 +1347,10 @@ validatepgBouncerPort ()
 configurepgBouncer ()
 {
   LRAR_INSTALLDIR="${PG_RAR_DEV_INSTALL_DIR}/pgbouncer"
-  PG_RAR_PGBOUNCER_PORT=6543
+  if [ x"${PG_RAR_PGBOUNCER_PORT}" = x"" ]
+  then
+    PG_RAR_PGBOUNCER_PORT=6543
+  fi
 
   if [ -f /etc/init.d/pgbouncer -a $RAR_PLATFORM = Linux ]
   then
@@ -1358,7 +1361,7 @@ configurepgBouncer ()
     _note 1 "Another vesion of pgbouncer service is installed."
     return
   fi
-  readValue "Please enter the port on which pgbouncer will listen (6543):" PG_RAR_PGBOUNCER_PORT "${PG_RAR_PGBOUNCER_PORT}" validatepgBouncerPort "pgBouncer Port"
+  readValue "Please enter the port on which pgbouncer will listen :" PG_RAR_PGBOUNCER_PORT "${PG_RAR_PGBOUNCER_PORT}" validatepgBouncerPort "pgBouncer Port"
 
   backupFile "${LRAR_INSTALLDIR}/share/pgbouncer.ini"
   _replace @@CON@@ "postgres = host=localhost port=${PG_RAR_DEV_PORT}" "${LRAR_INSTALLDIR}/share/pgbouncer.ini"
