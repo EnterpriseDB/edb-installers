@@ -1,0 +1,37 @@
+installer.Welcome.Title=Setup %1$s
+
+Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
+
+Installer.Installing.Title=Installing ${product_fullname}
+
+upgrade.existing.installation.title=Existing installation
+
+upgrade.existing.installation.description=An existing hyperic agent installation has been found at ${installdir}. This installation will be upgraded.
+
+platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
+
+progress.text.creating.shortcuts=Creating menu shortcuts
+
+Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
+
+Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
+
+install.summary=Hyperic Agent, packaged by EnterpriseDB.
+
+hqagent.installdir.empty=The installation directory cannot be empty
+
+hqagent.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
+
+hyperic.server.title=Enter hyperic server details.
+
+hyperic.server.details=Enter the fully qualified domain name of the Hyperic Server
+
+hyperic.server.blank.error=Value must be entered for the field.
+
+progress.text.initialising.agent=Starting Hyperic agent (this may take a few minutes)...
+
+error.could.not.initialise.agent=Hyperic agent start failed.
+
+warning.during.agent.initialisation=A non-fatal error occured during agent start. Please check the installation error log in ${system_temp_directory} for details.
+
+script.command.line.error=The script was called with an invalid command line

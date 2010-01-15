@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Start Hyperic agent
+Exec=HQAGENT_INSTALLDIR/scripts/launchagentctl.sh start
+Icon=hqagent-start-HQAGENT_VERSION_STR.png
+Terminal=false
+Type=Application

@@ -1,0 +1,997 @@
+<project>
+    <!-- Package details -->
+    <shortName>hqagent</shortName>
+    <fullName>Hyperic Agent</fullName>
+    <version>PG_VERSION_HQAGENT</version>
+    <!-- These options are used on Windows -->
+    <startMenuGroupName>${branding}</startMenuGroupName>
+    <!-- Product Specific Options -->
+    <productComments>Hyperic Agent, packaged by EnterpriseDB</productComments>
+    <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
+    <requireInstallationByRootUser>1</requireInstallationByRootUser>
+    <!-- The options are used for RPM registration -->
+    <description>Hyperic Agent</description>
+    <summary>Hyperic Agent, packaged by EnterpriseDB</summary>
+    <vendor>EnterpriseDB</vendor>
+
+    <!-- Installer Size -->
+    <width>550</width>
+    <height>400</height>
+
+    <!-- Misc options -->
+    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <wrapLicenseFileText>0</wrapLicenseFileText>
+    <compressionAlgorithm>lzma</compressionAlgorithm>
+    <unattendedModeUI>minimal</unattendedModeUI>
+    <enableRollback>0</enableRollback>
+    <saveRelativePaths>1</saveRelativePaths>
+    <uninstallerName>uninstall-${product_shortname}</uninstallerName>
+    <outputDirectory>../output</outputDirectory>
+    <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+
+    <!-- Images -->
+    <disableSplashScreen>1</disableSplashScreen>
+    <leftImage>../resources/pg-side.png</leftImage>
+
+    <!-- i18n files for the UI -->
+    <allowedLanguages>en</allowedLanguages>
+    <customLanguageFileList>
+        <language>
+            <code>en</code>
+            <encoding>iso8859-1</encoding>
+            <file>i18n/en.lng</file>
+        </language>
+    </customLanguageFileList>
+    <preShowHelpActionList>
+    	<!-- MAC : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/Library/hqagent</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- LIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}/hqagent</value>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- WIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}\hqagent</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+    </preShowHelpActionList>
+  
+    <!-- Prebuild Actons-->
+    <preBuildActionList>
+      <setInstallerVariable name="originalplatform" value="${platform_name}"/>
+      <setInstallerVariable name="originalplatform" value="linux-x32">
+          <ruleList>
+              <compareText text="${platform_name}" value="linux"/>
+          </ruleList>
+      </setInstallerVariable>
+    </preBuildActionList>
+    <initializationActionList>
+        <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_HQAGENT" />
+	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
+        <throwError>
+          <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+            <platformTest type="linux-x64"/>
+            <compareText text="${originalplatform}" value="linux-x32"/>
+          </ruleList>
+        </throwError>
+        <!-- LIN : Set the default values for unattended mode -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}/hqagent"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- WIN : Set the default values for unattended mode -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}\hqagent"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- MAC : Set the default values for unattended mode -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installdir" value="/Library/hqagent"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+	<!-- MAC : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/Library/hqagent</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- LIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}/hqagent</value>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- WIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}\hqagent</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+    </initializationActionList>
+    <preInstallationActionList>
+        <!-- Creates the ini file if not exits -->
+        <touchFile path="/etc/postgres-reg.ini">
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </touchFile>
+        <!-- LIN & MAC : Get the branding & check Previous Installation of hqagent-->
+        <actionGroup>
+            <actionList>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>hqagent</section>
+                    <key>Branding</key>
+                    <variable>iBranding</variable>
+                </iniFileGet>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>hqagent</section>
+                    <key>Version</key>
+                    <variable>hqagentVersion</variable>
+                </iniFileGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+        <!-- WIN : Check Previous Installation of hqagent-->
+        <actionGroup>
+            <actionList>
+                <!-- Get the branding -->
+                <registryGet>
+                    <name>Branding</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\hqagent</key>
+                    <variable>iBranding</variable>
+                </registryGet> 
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\hqagent</key>
+                    <name>Version</name>
+                    <variable>hqagentVersion</variable>
+                </registryGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+	<!-- If there appears to be an existing installation, with no Branding value. --> 
+	<!-- force the default value. Otherwise, set the branding to whatever we read, -->
+	<!-- or, set the default -->
+	
+	<!-- Existing, old install (version, but no branding) -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>hqagent</value>
+		<ruleList>
+			<compareText>
+				<logic>does_not_equal</logic>
+				<text>${hqagentVersion}</text>
+				<value></value>
+			</compareText>
+			<compareText>
+				<logic>equals</logic>
+				<text>${iBranding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+	
+	<!-- Existing install, with branding -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>${iBranding}</value>
+		<ruleList>
+			<compareText>
+				<logic>does_not_equal</logic>
+				<text>${iBranding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+	
+	<!-- New install, nothing set on the command line -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>hqagent</value>
+		<ruleList>
+			<compareText>
+				<logic>equals</logic>
+				<text>${branding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+	
+        <logMessage>
+            <text>Using branding: ${branding}</text>
+        </logMessage>
+        <!-- Set the installation directory in case of re-install/upgrade -->
+        <actionGroup>
+            <actionList>
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>hqagent</section>
+                    <key>InstallationDirectory</key>
+                    <variable>installdir</variable>
+                </iniFileGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${hqagentVersion}</text>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+   
+        <!-- WIN: Set the installation directory in case of re-install/upgrade -->
+        <actionGroup>
+            <actionList>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\hqagent</key>
+                    <name>Location</name>
+                    <variable>installdir</variable>
+                </registryGet> 
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${hqagentVersion}</text>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+    </preInstallationActionList>
+    <postInstallationActionList>
+        <actionGroup>
+            <actionList>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>hqagent</section>
+                    <key>Description</key>
+                    <value>${msg(install.summary)}</value>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>hqagent</section>
+                    <key>InstallationDirectory</key>
+                    <value>${installdir}</value>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>hqagent</section>
+                    <key>Version</key>
+                    <value>${product_version}</value>
+                </iniFileSet>
+                <runProgram>
+                    <program>${installdir}/installer/hqagent/createshortcuts.sh</program>
+                    <programArguments>"${product_version}" "${branding}" "${installdir}"</programArguments>
+                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                    <workingDirectory>${installdir}/installer/hqagent</workingDirectory>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- Branding info -->
+        <logMessage>
+            <text>Write the branding to the ini file...</text>
+        </logMessage>
+        <iniFileSet>
+            <file>/etc/postgres-reg.ini</file>
+            <section>hqagent</section>
+            <key>Branding</key>
+            <value>${branding}</value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </iniFileSet>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\hqagent</key>
+            <name>Branding</name>
+            <value>${branding}</value>
+        </registrySet>
+
+    	<!-- substitue server settings in agent-4.2.0/conf/agent.properties -->
+        <substitute>
+            <files>${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties</files>
+            <substitutionList>
+                <substitution>
+                    <pattern>agent.setup.camIP=.*\n</pattern>
+                    <value>agent.setup.camIP=${hyperichost}</value>
+                </substitution>
+                <substitution>
+                    <pattern>agent.setup.camPort=.*\n</pattern>
+                    <value>agent.setup.camPort=${hypericport}</value>
+                </substitution>
+                <substitution>
+                    <pattern>agent.setup.camLogin=.*\n</pattern>
+                    <value>agent.setup.camLogin=${hypericuser}</value>
+                </substitution>
+                <substitution>
+                    <pattern>agent.setup.camPword=.*\n</pattern>
+                    <value>agent.setup.camPword=${hypericpassword}</value>
+                </substitution>
+            </substitutionList>
+        </substitute>
+
+	<!-- Initialise the hyperic agent if this is an installation -->
+        <actionGroup>
+	    <actionList>
+		<runProgram>
+		    <program>${installdir}/agent-PG_VERSION_HQAGENT/bin/hq-agent.sh</program>
+		    <programArguments> > ${system_temp_directory}/hyperic-agent-start.log 2> ${system_temp_directory}/hyperic-agent-start-error.log start</programArguments>
+		    <progressText>${msg(progress.text.initialising.agent)}</progressText>
+		    <abortOnError>0</abortOnError>
+		    <showMessageOnError>0</showMessageOnError>
+		    <ruleList>
+			<compareText>
+			    <logic>does_not_equal</logic>
+			    <text>${platform_name}</text>
+			    <value>windows</value>
+			</compareText>
+		    </ruleList>
+		</runProgram>
+		<wait>5000</wait>
+		<runProgram>
+                    <program>${installdir}\agent-PG_VERSION_HQAGENT\bin\hq-agent.bat</program>
+                    <programArguments>start</programArguments>
+		    <!--
+		    <program>cscript</program>
+		    <program>${installdir}\server-PG_VERSION_HQAGENT\bin\hq-server.exe</programArguments>
+		    <programArguments>start</programArguments>
+		    -->
+		    <progressText>${msg(progress.text.initialising.agent)}</progressText>
+		    <abortOnError>0</abortOnError>
+		    <showMessageOnError>0</showMessageOnError>
+		    <ruleList>
+			<compareText>
+			    <logic>equals</logic>
+			    <text>${platform_name}</text>
+			    <value>windows</value>
+			</compareText>
+		    </ruleList>
+		</runProgram>
+
+		<setInstallerVariable>
+		    <name>didError</name>
+		    <value>1</value>
+		    <ruleList>
+			<compareText>
+			    <logic>does_not_equal</logic>
+			    <text>0</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+		    </ruleList>
+		</setInstallerVariable>
+
+		<throwError>
+		    <text>${msg(script.command.line.error)}</text>
+		    <ruleList>
+			<compareText>
+			    <logic>equals</logic>
+			    <text>127</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+		    </ruleList>
+		</throwError>
+		<throwError>
+		    <text>${msg(error.could.not.initialise.agent)}</text>
+		    <ruleList>
+			<compareText>
+			    <logic>equals</logic>
+			    <text>1</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+		    </ruleList>
+		</throwError>
+		<showWarning>
+		    <text>${msg(warning.during.agent.initialisation)}</text>
+		    <ruleList>
+			<compareText>
+			    <logic>equals</logic>
+			    <text>2</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+		    </ruleList>
+		</showWarning>
+	    </actionList>
+	    <!-- Only appropriate for installs -->
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${hqagentVersion}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+	</actionGroup>
+
+	<!-- Shortcuts in case when platform is not windows -->
+	<runProgram>
+	    <program>${installdir}/installer/hqagent/createshortcuts.sh</program>
+	    <programArguments>"${product_version}" "${branding}" "${installdir}" </programArguments>
+	    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+	    <abortOnError>0</abortOnError>
+	    <showMessageOnError>0</showMessageOnError>
+	    <ruleList>
+		<compareText>
+		    <logic>equals</logic>
+		    <text>${create_shortcuts}</text>
+		    <value>1</value>
+		</compareText>
+		<compareText>
+		    <logic>does_not_equal</logic>
+		    <text>${platform_name}</text>
+		    <value>windows</value>
+		</compareText>
+	    </ruleList>
+	</runProgram>
+
+    </postInstallationActionList>
+
+    <!-- preUninstallation actions -->
+    <preUninstallationActionList>
+        <actionGroup>
+            <actionList>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>hqagent</section>
+                    <key>Description</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>hqagent</section>
+                    <key>InstallationDirectory</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>hqagent</section>
+                    <key>Version</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>hqagent</section>
+                    <key>Branding</key>
+                    <value/>
+                </iniFileSet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- LIN : Remove Menu shortcuts -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${installdir}/installer/hqagent/removeshortcuts.sh</program>
+                    <programArguments>"${installdir}" "${product_version}" "${branding}"</programArguments>
+                    <workingDirectory>${installdir}/installer/hqagent</workingDirectory>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+                <deleteFile>
+                    <path>/Applications/${branding}/PostgreSQL Hyperic Home Page.app</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+    </preUninstallationActionList>
+  
+    <!-- Components -->
+    <componentList>
+        <component>
+            <name>default</name>
+            <description>Default Component</description>
+            <canBeEdited>1</canBeEdited>
+            <selected>1</selected>
+            <show>1</show>
+            <folderList>
+                <!-- LIN- Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/agent-PG_VERSION_HQAGENT</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>installscriptslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuscriptslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- LIN-X64 - Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/agent-PG_VERSION_HQAGENT</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>installscriptslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuscriptslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- MAC Program Files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/agent-PG_VERSION_HQAGENT</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>installscriptsosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuscriptsosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- WIN - Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/agent-PG_VERSION_HQAGENT</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuscriptswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+            </folderList>
+            <!-- WIN: Start Menu -->
+            <startMenuShortcutList>
+                <!-- Start agent -->
+                <startMenuShortcut>
+                    <name>Start Agent</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\hq-agent.bat</windowsExec>
+                    <windowsExecArgs>start</windowsExecArgs>
+                    <windowsIcon>${installdir}\scripts\images\hqagent-start.ico</windowsIcon>
+                    <ruleList>
+                        <isTrue value="${create_shortcuts}" />
+                    </ruleList>
+                </startMenuShortcut>
+                <!-- Stop server -->
+                <startMenuShortcut>
+                    <name>Stop Server</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\hq-agent.bat</windowsExec>
+                    <windowsExecArgs>stop</windowsExecArgs>
+                    <windowsIcon>${installdir}\scripts\images\hqagent-stop.ico</windowsIcon>
+                    <ruleList>
+                        <isTrue value="${create_shortcuts}" />
+                    </ruleList>
+		</startMenuShortcut>
+
+            </startMenuShortcutList>
+
+        </component>
+    </componentList>
+    <parameterList>
+	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+        <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
+
+        <parameterGroup>
+            <name>hypericserverdetails</name>
+            <title>${msg(hyperic.server.title)}</title>
+            <explanation>${msg(hyperic.server.details)}</explanation>
+            <value/>
+            <default/>
+            <parameterList>
+                <!-- Hyperic server Host -->
+                <stringParameter>
+                    <name>hyperichost</name>
+                    <description>Hyperic Server Host</description>
+                    <explanation/>
+                    <value/>
+                    <default>localhost</default>
+		    <cliOptionName>hyperichost</cliOptionName>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <width>40</width>
+                </stringParameter>
+                <!-- Hyperic server port -->
+                <stringParameter>
+                    <name>hypericport</name>
+                    <description>Hyperic Server Port</description>
+                    <explanation/>
+                    <value/>
+                    <default>7080</default>
+		    <cliOptionName>hypericport</cliOptionName>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <width>40</width>
+                </stringParameter>
+                <!-- Hyperic monitoring Interface User -->
+                <stringParameter>
+                    <name>hypericuser</name>
+                    <description>Hyperic Interface User</description>
+                    <explanation/>
+                    <value/>
+                    <default>hqadmin</default>
+		    <cliOptionName>hypericuser</cliOptionName>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <width>40</width>
+                </stringParameter>
+	        <!-- Hyperic monitoring Interface User Password -->
+                <passwordParameter>
+                    <name>hypericpassword</name>
+                    <title>Password</title>
+                    <description>User Password</description>
+                    <explanation/>
+                    <value/>
+                    <default>hqadmin</default>
+		    <cliOptionName>hypericpassword</cliOptionName>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <askForConfirmation>0</askForConfirmation>
+                    <descriptionRetype/>
+                    <width>40</width>
+                </passwordParameter>
+            </parameterList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${hqagentVersion}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+            <!-- Checking the validity of Hyperic Server Details -->
+            <validationActionList>
+                <actionGroup>
+                    <actionList>
+                        <throwError>
+                            <text>${msg(hyperic.server.blank.error)}</text>
+                        </throwError>
+                    </actionList>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText>
+                            <text>${hyperichost}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <text>${hypericport}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <text>${hypericuser}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <text>${hypericpassword}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+            </validationActionList>
+        </parameterGroup>
+
+	<!-- Install Directory -->
+        <directoryParameter>
+            <name>installdir</name>
+            <description>Installer.Parameter.installdir.description</description>
+            <explanation>Installer.Parameter.installdir.explanation</explanation>
+            <value>${default_installdir}</value>
+            <default/>
+            <allowEmptyValue>0</allowEmptyValue>
+            <ask>yes</ask>
+            <cliOptionName>prefix</cliOptionName>
+            <mustBeWritable>yes</mustBeWritable>
+            <mustExist>0</mustExist>
+            <width>40</width>
+            <ruleList>
+                <compareText>
+                    <text>${hqagentVersion}</text>
+                    <logic>equals</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+	    <!-- Validating whether installdir is empty -->
+            <validationActionList>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="installdir" value="${default_installdir}" />
+                        <throwError>
+                            <text>${msg(hqagent.installdir.empty)}</text>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <text>${installdir}</text>
+                            <logic>equals</logic>
+                            <value />
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+            </validationActionList>
+            <!-- Validating whether installdir contains whitespaces (Linux) -->
+            <postShowPageActionList>
+                <actionGroup>
+                    <actionList>  
+                        <showWarning>
+                            <text>${msg(hqagent.installdir.error)}</text>
+                        </showWarning>
+                        <setInstallerVariable name="next_page" value="installdir"/>
+                    </actionList>
+                    <ruleList>
+                       <regExMatch>
+                           <text>${installdir}</text>
+                           <logic>does_not_match</logic>
+                           <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                       </regExMatch>
+                       <compareText>
+                           <logic>does_not_equal</logic>
+                           <text>${platform_name}</text>
+                           <value>windows</value>
+                       </compareText>
+                    </ruleList>
+	        </actionGroup>
+                <!-- Validating whether installdir is valid (Windows) -->
+                <actionGroup>
+                   <actionList>
+                     <setInstallerVariable name="installdir" value="${default_installdir}" />
+                     <showWarning>
+                        <text>${msg(hqagent.installdir.error)}</text>
+                     </showWarning>
+                     <setInstallerVariable name="next_page" value="installdir"/>
+                   </actionList>
+                   <ruleList>
+                       <regExMatch>
+                         <text>${installdir}</text>
+                         <logic>does_not_match</logic>
+                         <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
+                       </regExMatch>
+                       <compareText>
+                         <text>${platform_name}</text>
+                         <logic>equals</logic>
+                         <value>windows</value>
+                       </compareText>
+                   </ruleList>
+                 </actionGroup>
+            </postShowPageActionList>
+        </directoryParameter>
+	<!-- Explain that we're using an existing installation directory -->
+        <labelParameter>
+            <name>upgrade</name>
+            <title>${msg(upgrade.existing.installation.title)}</title>
+            <description>${msg(upgrade.existing.installation.description)}</description>
+            <ruleList>
+		<compareText>
+                    <text>${hqagentVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </labelParameter>
+    </parameterList>
+</project>
