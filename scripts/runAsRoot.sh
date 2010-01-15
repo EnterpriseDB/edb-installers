@@ -328,9 +328,9 @@ loadOptionFile ()
   local LRAR_INDEX=0
   local LRAR_NO_OPTIONS=0
   ### options are saved as a pair option-name & option-handler
-  for LRAR_OPT in installdir PG_RAR_DEV_INSTALL_DIR datadir PG_RAR_DEV_DATA_DIR superuser PG_RAR_SUPERUSER \
-             superpassword PG_RAR_SUPERPASSWORD servicename PG_RAR_SERVICENAME datadir PG_RAR_DEV_DATA_DIR \
-             port PG_RAR_DEV_PORT locale PG_RAR_DEV_LOCALE components LRAR_COMPONENTS
+  for LRAR_OPT in installdir PG_RAR_DEV_INSTALL_DIR datadir PG_RAR_DEV_DATA_DIR superuser PG_RAR_SUPERUSER superpassword PG_RAR_SUPERPASSWORD \
+                  servicename PG_RAR_SERVICENAME datadir PG_RAR_DEV_DATA_DIR port PG_RAR_DEV_PORT locale PG_RAR_DEV_LOCALE \
+                  components LRAR_COMPONENTS pgbouncer-port PG_RAR_PGBOUNCER_PORT
   do
     LRAR_OPTIONS[${LRAR_INDEX}]=${LRAR_OPT}
     let "LRAR_INDEX += 1"
