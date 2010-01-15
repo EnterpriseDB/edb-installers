@@ -5,34 +5,34 @@
 # Build preparation
 ################################################################################
 
-_prep_pgJDBC_osx() {
+_prep_pghyperic_osx() {
 
     # Enter the source directory and cleanup if required
-    cd $WD/pgJDBC/source
+    cd $WD/pghyperic/source
 
-    if [ -e pgJDBC.osx ];
+    if [ -e pghyperic.osx ];
     then
-      echo "Removing existing pgJDBC.osx source directory"
-      rm -rf pgJDBC.osx  || _die "Couldn't remove the existing pgJDBC.osx source directory (source/pgJDBC.osx)"
+      echo "Removing existing pghyperic.osx source directory"
+      rm -rf pghyperic.osx  || _die "Couldn't remove the existing pghyperic.osx source directory (source/pghyperic.osx)"
     fi
    
-    echo "Creating source directory ($WD/pgJDBC/source/pgJDBC.osx)"
-    mkdir -p $WD/pgJDBC/source/pgJDBC.osx || _die "Couldn't create the pgJDBC.osx directory"
+    echo "Creating source directory ($WD/pghyperic/source/pghyperic.osx)"
+    mkdir -p $WD/pghyperic/source/pghyperic.osx || _die "Couldn't create the pghyperic.osx directory"
 
     # Grab a copy of the source tree
-    cp -R pgJDBC-$PG_VERSION_PGJDBC/* pgJDBC.osx || _die "Failed to copy the source code (source/pgJDBC-$PG_VERSION_PGJDBC)"
-    chmod -R ugo+w pgJDBC.osx || _die "Couldn't set the permissions on the source directory"
+    cp -R pghyperic-$PG_VERSION_PGJDBC/* pghyperic.osx || _die "Failed to copy the source code (source/pghyperic-$PG_VERSION_PGJDBC)"
+    chmod -R ugo+w pghyperic.osx || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/pgJDBC/staging/osx ];
+    if [ -e $WD/pghyperic/staging/osx ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/pgJDBC/staging/osx || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/pghyperic/staging/osx || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/pgJDBC/staging/osx)"
-    mkdir -p $WD/pgJDBC/staging/osx || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/pgJDBC/staging/osx || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/pghyperic/staging/osx)"
+    mkdir -p $WD/pghyperic/staging/osx || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/pghyperic/staging/osx || _die "Couldn't set the permissions on the staging directory"
     
 
 }
@@ -41,7 +41,7 @@ _prep_pgJDBC_osx() {
 # PG Build
 ################################################################################
 
-_build_pgJDBC_osx() {
+_build_pghyperic_osx() {
 
     cd $WD
 }
@@ -51,11 +51,11 @@ _build_pgJDBC_osx() {
 # PG Build
 ################################################################################
 
-_postprocess_pgJDBC_osx() {
+_postprocess_pghyperic_osx() {
  
-    cp -R $WD/pgJDBC/source/pgJDBC.osx/* $WD/pgJDBC/staging/osx || _die "Failed to copy the pgJDBC Source into the staging directory"
+    cp -R $WD/pghyperic/source/pghyperic.osx/* $WD/pghyperic/staging/osx || _die "Failed to copy the pghyperic Source into the staging directory"
 
-    cd $WD/pgJDBC
+    cd $WD/pghyperic
 
     # Setup the installer scripts.
     mkdir -p staging/osx/installer/pgjdbc || _die "Failed to create a directory for the install scripts"

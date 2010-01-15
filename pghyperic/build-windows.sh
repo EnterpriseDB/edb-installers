@@ -5,34 +5,34 @@
 # Build preparation
 ################################################################################
 
-_prep_pgJDBC_windows() {
+_prep_pghyperic_windows() {
 
     # Enter the source directory and cleanup if required
-    cd $WD/pgJDBC/source
+    cd $WD/pghyperic/source
 
-    if [ -e pgJDBC.windows ];
+    if [ -e pghyperic.windows ];
     then
-      echo "Removing existing pgJDBC.windows source directory"
-      rm -rf pgJDBC.windows  || _die "Couldn't remove the existing pgJDBC.windows source directory (source/pgJDBC.windows)"
+      echo "Removing existing pghyperic.windows source directory"
+      rm -rf pghyperic.windows  || _die "Couldn't remove the existing pghyperic.windows source directory (source/pghyperic.windows)"
     fi
    
-    echo "Creating staging directory ($WD/pgJDBC/source/pgJDBC.windows)"
-    mkdir -p $WD/pgJDBC/source/pgJDBC.windows || _die "Couldn't create the pgJDBC.windows directory"
+    echo "Creating staging directory ($WD/pghyperic/source/pghyperic.windows)"
+    mkdir -p $WD/pghyperic/source/pghyperic.windows || _die "Couldn't create the pghyperic.windows directory"
 
     # Grab a copy of the source tree
-    cp -R pgJDBC-$PG_VERSION_PGJDBC/* pgJDBC.windows || _die "Failed to copy the source code (source/pgJDBC-$PG_VERSION_PGJDBC)"
-    chmod -R ugo+w pgJDBC.windows || _die "Couldn't set the permissions on the source directory"
+    cp -R pghyperic-$PG_VERSION_PGJDBC/* pghyperic.windows || _die "Failed to copy the source code (source/pghyperic-$PG_VERSION_PGJDBC)"
+    chmod -R ugo+w pghyperic.windows || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/pgJDBC/staging/windows ];
+    if [ -e $WD/pghyperic/staging/windows ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/pgJDBC/staging/windows || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/pghyperic/staging/windows || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/pgJDBC/staging/windows)"
-    mkdir -p $WD/pgJDBC/staging/windows || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/pgJDBC/staging/windows || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/pghyperic/staging/windows)"
+    mkdir -p $WD/pghyperic/staging/windows || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/pghyperic/staging/windows || _die "Couldn't set the permissions on the staging directory"
     
 
 }
@@ -41,7 +41,7 @@ _prep_pgJDBC_windows() {
 # PG Build
 ################################################################################
 
-_build_pgJDBC_windows() {
+_build_pghyperic_windows() {
 
     cd $WD
 }
@@ -51,11 +51,11 @@ _build_pgJDBC_windows() {
 # PG Build
 ################################################################################
 
-_postprocess_pgJDBC_windows() {
+_postprocess_pghyperic_windows() {
  
-    cp -R $WD/pgJDBC/source/pgJDBC.windows/* $WD/pgJDBC/staging/windows || _die "Failed to copy the pgJDBC Source into the staging directory"
+    cp -R $WD/pghyperic/source/pghyperic.windows/* $WD/pghyperic/staging/windows || _die "Failed to copy the pghyperic Source into the staging directory"
 
-    cd $WD/pgJDBC
+    cd $WD/pghyperic
 
     # Copy in the menu pick images
     mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the menu pick images"
