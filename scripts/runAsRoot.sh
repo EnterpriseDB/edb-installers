@@ -167,6 +167,26 @@ _warn()
   echo WARNING: $* >> ${RAR_LOG_FILE}
 }
 
+_log()
+{
+  if [ ${RAR_DEBUG} -eq 1 ]
+  then
+    echo $* | tee -a ${RAR_LOG_FILE}
+  else
+    echo $* >> ${RAR_LOG_FILE}
+  fi
+}
+
+_logfile()
+{
+ if [ ${RAR_DEBUG} -eq 1 ]
+ then
+   cat ${*} | tee -a "${RAR_LOG_FILE}"
+ else
+   cat ${*} >> "${RAR_LOG_FILE}"
+ fi
+}
+
 _save_options_file ()
 {
   locale LRAR_COMPS=
@@ -462,10 +482,9 @@ _process_command_line()
 
 # Search & replace in a file - _replace($find, $replace, $file)
 _replace() {
-    sed -e "s^$1^$2^g" "$3" > "/tmp/$$.tmp" || return 0
-    # mv /tmp/$$.tmp $3
-    cat /tmp/$$.tmp > ${3}
-    rm -f /tmp/$$.tmp
+    sed -e "s^$1^$2^g" "$3" > "/tmp/$$.tmp" 2>/dev/null || return 0
+    cat "/tmp/$$.tmp" > "${3}"
+    rm -f "/tmp/$$.tmp"
     return 1
 }
 
@@ -1162,9 +1181,14 @@ Driver=${LRAR_INSTALLDIR}/lib/psqlodbcw.so
 EOT
 
   _title 1 "Installing psqlODBC driver..."
-  odbcinst -i -d -f /tmp/rar_psqlodbc_${PG_RAR_MAJOR_VERSION}.$$
-
-  rm -f /tmp/rar_psqlodbc_${PG_RAR_MAJOR_VERSION}.$$
+  _log CONTENTS (/tmp/rar_psqlodbc_${PG_RAR_MAJOR_VERSION}.$$)
+  _log --------------------------------------------------------------------------------------------------
+  _logfile /tmp/rar_psqlodbc_${PG_RAR_MAJOR_VERSION}.$$
+  _log --------------------------------------------------------------------------------------------------
+  _log EXECUTING: odbcinst -i -d -f /tmp/rar_psqlodbc_${PG_RAR_MAJOR_VERSION}.$$
+  odbcinst -i -d -f /tmp/rar_psqlodbc_${PG_RAR_MAJOR_VERSION}.$$ > /tmp/rar_psqlodbc_log_$$ 2>&1
+  _logfile /tmp/rar_psqlodbc_log_$$
+  rm -f /tmp/rar_psqlodbc_log_$$ /tmp/rar_psqlodbc_${PG_RAR_MAJOR_VERSION}.$$
 
 }
 
@@ -1477,15 +1501,13 @@ _info 1 "Super Password: ${PG_RAR_SUPERPASSWORD}"
 
 ## Create User, if does not exist
 _title 1 "Create User (if not exist): ${PG_RAR_SERVICEACCOUNT}"
-if [ ${RAR_DEBUG} -eq 1 ]
-then
-  echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/createuser.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}"" | tee -a ${RAR_LOG_FILE}
-  ${PG_RAR_DEV_INSTALL_DIR}/installer/server/createuser.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" 2>&1 | tee -a ${RAR_LOG_FILE}
-else
-  echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/createuser.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}"" >> ${RAR_LOG_FILE}
-  ${PG_RAR_DEV_INSTALL_DIR}/installer/server/createuser.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" >> ${RAR_LOG_FILE} 2>&1
-fi
+
+_log EXECUTING: "${PG_RAR_DEV_INSTALL_DIR}/installer/server/createuser.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}""
+${PG_RAR_DEV_INSTALL_DIR}/installer/server/createuser.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" > /tmp/rar_createuser_$$ 2>&1
 RAR_OUTPUT=$?
+_logfile /tmp/rar_createuser_$$
+rm -f /tmp/rar_createuser_$$ 2>/dev/null
+
 if [ ${RAR_OUTPUT} -eq 127 ]
 then
   _die "The script was called with an invalid command line."
@@ -1501,15 +1523,12 @@ fi
 if [ ! -f "${PG_RAR_DEV_DATA_DIR}/postgresql.conf" ]
 then
   _title 1 "Initialize Cluster : ${PG_RAR_DEV_DATA_DIR}"
-  if [ ${RAR_DEBUG} -eq 1 ]
-  then
-    echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/initcluster.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_SUPERUSER}" "${PG_RAR_SUPERPASSWORD}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" ${PG_RAR_DEV_PORT} ${PG_RAR_DEV_LOCALE}" | tee -a ${RAR_LOG_FILE}
-    ${PG_RAR_DEV_INSTALL_DIR}/installer/server/initcluster.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_SUPERUSER}" "${PG_RAR_SUPERPASSWORD}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" ${PG_RAR_DEV_PORT} ${PG_RAR_DEV_LOCALE} 2>&1 | tee -a ${RAR_LOG_FILE}
-  else
-    echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/initcluster.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_SUPERUSER}" "${PG_RAR_SUPERPASSWORD}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" ${PG_RAR_DEV_PORT} ${PG_RAR_DEV_LOCALE}" >> ${RAR_LOG_FILE}
-    ${PG_RAR_DEV_INSTALL_DIR}/installer/server/initcluster.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_SUPERUSER}" "${PG_RAR_SUPERPASSWORD}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" ${PG_RAR_DEV_PORT} ${PG_RAR_DEV_LOCALE} >> ${RAR_LOG_FILE} 2>&1
-  fi
+  _log EXECUTING: "${PG_RAR_DEV_INSTALL_DIR}/installer/server/initcluster.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_SUPERUSER}" "${PG_RAR_SUPERPASSWORD}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" ${PG_RAR_DEV_PORT} ${PG_RAR_DEV_LOCALE}"
+   ${PG_RAR_DEV_INSTALL_DIR}/installer/server/initcluster.sh "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_SUPERUSER}" "${PG_RAR_SUPERPASSWORD}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" ${PG_RAR_DEV_PORT} ${PG_RAR_DEV_LOCALE} > /tmp/rar_initclust_$$ 2>&1
   RAR_OUTPUT=$?
+  _logfile /tmp/rar_initclust_$$
+  rm -f /tmp/rar_initclust_$$ 2>/dev/null
+
   if [ ${RAR_OUTPUT} -eq 127 ]
   then
     _die "The script was called with an invalid command line."
@@ -1533,15 +1552,13 @@ then
   if [ ! -f "/etc/init.d/${PG_RAR_SERVICENAME}" ]
   then
     _title 1 "Creating Service: ${PG_RAR_SERVICENAME}"
-    if [ ${RAR_DEBUG} -eq 1 ]
-    then
-      echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}"" | tee -a ${RAR_LOG_FILE}
-      ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}" 2>&1 | tee -a ${RAR_LOG_FILE}
-    else
-      echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}"" >> ${RAR_LOG_FILE}
-      ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}" >> ${RAR_LOG_FILE} 2>&1
-    fi
+    _log EXECUTING: "${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}""
+    ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}" > /tmp/rar_startupcfg_$$ 2>&1 
     RAR_OUTPUT=$?
+
+    _logfile /tmp/rar_startupcfg_$$
+    rm -f /tmp/rar_startupcfg_$$ 2>/dev/null
+
     if [ ${RAR_OUTPUT} -eq 127 ]
     then
       _die "The script was called with an invalid command line."
@@ -1562,15 +1579,13 @@ then
 
   ## Start Server
   _title 1 "Starting server (Service:${PG_RAR_SERVICENAME})"
-  if [ ${RAR_DEBUG} -eq 1 ]
-  then
-    echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/startserver.sh "${PG_RAR_SERVICENAME}"" | tee -a ${RAR_LOG_FILE}
-    ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startserver.sh "${PG_RAR_SERVICENAME}" 2>&1 | tee -a ${RAR_LOG_FILE}
-  else
-    echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/startserver.sh "${PG_RAR_SERVICENAME}"" >> ${RAR_LOG_FILE}
-    ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startserver.sh "${PG_RAR_SERVICENAME}" >> ${RAR_LOG_FILE} 2>&1
-  fi
+  _log EXECUTING: "${PG_RAR_DEV_INSTALL_DIR}/installer/server/startserver.sh "${PG_RAR_SERVICENAME}""
+
+  ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startserver.sh "${PG_RAR_SERVICENAME}" > /tmp/rar_startpgserver_$$ 2>&1
   RAR_OUTPUT=$?
+  _logfile /tmp/rar_startpgserver_$$
+  rm -f /tmp/rar_startpgserver_$$ 2>/dev/null
+
   if [ ${RAR_OUTPUT} -eq 127 ]
   then
     _die "The script was called with an invalid command line."
@@ -1584,15 +1599,12 @@ then
   if [ ! -f "/Library/LaunchDaemons/com.edb.launchd.${PG_RAR_SERVICENAME}.plist" ]
   then
     _title 1 "Creating Service: ${PG_RAR_SERVICENAME}"
-    if [ ${RAR_DEBUG} -eq 1 ]
-    then
-      echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}"" | tee -a ${RAR_LOG_FILE}
-      ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}" 2>&1 | tee -a ${RAR_LOG_FILE}
-    else
-      echo "${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}"" >> ${RAR_LOG_FILE}
-      ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}" >> ${RAR_LOG_FILE} 2>&1
-    fi
+    _log EXECUTING: "${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}""
+    ${PG_RAR_DEV_INSTALL_DIR}/installer/server/startupcfg.sh "${PG_RAR_MAJOR_VERSION}" "${PG_RAR_SERVICEACCOUNT}" "${PG_RAR_DEV_INSTALL_DIR}" "${PG_RAR_DEV_DATA_DIR}" "${PG_RAR_SERVICENAME}" > /tmp/rar_startupcfg_$$ 2>&1
     RAR_OUTPUT=$?
+    _logfile /tmp/rar_startupcfg_$$
+    rm -f /tmp/rar_startupcfg_$$ 2>/dev/null
+
     if [ ${RAR_OUTPUT} -eq 127 ]
     then
       _die "The script was called with an invalid command line."
