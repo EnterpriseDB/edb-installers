@@ -1181,7 +1181,7 @@ Driver=${LRAR_INSTALLDIR}/lib/psqlodbcw.so
 EOT
 
   _title 1 "Installing psqlODBC driver..."
-  _log CONTENTS (/tmp/rar_psqlodbc_${PG_RAR_MAJOR_VERSION}.$$)
+  _log CONTENTS "(/tmp/rar_psqlodbc_${PG_RAR_MAJOR_VERSION}.$$)"
   _log --------------------------------------------------------------------------------------------------
   _logfile /tmp/rar_psqlodbc_${PG_RAR_MAJOR_VERSION}.$$
   _log --------------------------------------------------------------------------------------------------
