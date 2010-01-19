@@ -1,0 +1,2662 @@
+<project>
+    <!-- Package details -->
+    <shortName>replicationserver</shortName>
+    <fullName>ReplicationServer</fullName>
+    <version>PG_VERSION_REPLICATIONSERVER-PG_BUILDNUM_REPLICATIONSERVER</version>
+    <!-- These options are used on Windows -->
+    <startMenuGroupName>${branding}</startMenuGroupName>
+    <!-- Product Specific Options -->
+    <productComments>EnterpriseDB xDB Replication Server for Postgres Plus, by EnterpriseDB</productComments>
+    <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
+    <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
+    <!-- The options are used for RPM registration -->
+    <description>EnterpriseDB xDB Replication Server for Postgres Plus</description>
+    <summary>EnterpriseDB xDB Replication Server for Postgres Plus, by EnterpriseDB</summary>
+    <vendor>EnterpriseDB</vendor>
+
+    <!-- Installer Size -->
+    <width>550</width>
+    <height>400</height>
+
+    <!-- Misc options -->
+    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <wrapLicenseFileText>0</wrapLicenseFileText>
+    <compressionAlgorithm>lzma</compressionAlgorithm>
+    <unattendedModeUI>minimal</unattendedModeUI>
+    <enableRollback>0</enableRollback>
+    <saveRelativePaths>1</saveRelativePaths>
+    <uninstallerName>uninstall-${product_shortname}</uninstallerName>
+    <outputDirectory>../output</outputDirectory>
+    <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+    <windowsSoftwareRegistryPrefix/>
+
+    <!-- Images -->
+    <disableSplashScreen>1</disableSplashScreen>
+    <leftImage>../resources/pg-side.png</leftImage>
+
+    <!-- i18n files for the UI -->
+    <allowedLanguages>en</allowedLanguages>
+    <customLanguageFileList>
+        <language>
+            <code>en</code>
+            <encoding>iso8859-1</encoding>
+            <file>i18n/en.lng</file>
+        </language>
+    </customLanguageFileList>
+    <preShowHelpActionList>
+        <!-- MAC : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/Library/PostgresPlus/ReplicationServer</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- LIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}/PostgresPlus/ReplicationServer</value>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- WIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}\PostgresPlus\ReplicationServer</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+    </preShowHelpActionList>
+
+    <!-- Prebuild Actons-->
+    <preBuildActionList>
+      <setInstallerVariable name="originalplatform" value="${platform_name}"/>
+      <setInstallerVariable name="originalplatform" value="linux-x32">
+          <ruleList>
+              <compareText text="${platform_name}" value="linux"/>
+          </ruleList>
+      </setInstallerVariable>
+    </preBuildActionList>
+    <initializationActionList>
+        <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
+        <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_REPLICATIONSERVER" />
+        <setInstallerVariable name="ReplicationServerVersion"  persist="1" value=""/>
+        <setInstallerVariable name="defaultuser" value="postgres" />
+        <setInstallerVariable name="defaultpubport" value="9011" />
+        <setInstallerVariable name="defaultsubport" value="9012" />
+        <setInstallerVariable name="defaultsyspassword" value="postgres" />
+        <setInstallerVariable name="defaultdbtype" value="postgresql" />
+        
+ 
+        <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
+        <throwError>
+          <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+            <platformTest type="linux-x64"/>
+            <compareText text="${originalplatform}" value="linux-x32"/>
+          </ruleList>
+        </throwError>
+
+        <!-- Detecting Java, Abort if not found -->
+        <autodetectJava>
+            <promptUser>0</promptUser>
+            <validVersionList>
+                <validVersion>
+                    <vendor>sun</vendor>
+                    <maxVersion/>
+                    <minVersion>1.5.0</minVersion>
+                    <requireJDK>0</requireJDK>
+                </validVersion>
+            </validVersionList>
+            <abortOnError>1</abortOnError>
+            <showMessageOnError>1</showMessageOnError>
+            <customErrorMessage>${msg(java.error)}</customErrorMessage>
+        </autodetectJava>
+
+        <!-- LIN : Set the default values for unattended mode -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/ReplicationServer"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- WIN : Set the default values for unattended mode -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}\PostgresPlus\ReplicationServer"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- MAC : Set the default values for unattended mode -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installdir" value="/Library/PostgresPlus/ReplicationServer"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- MAC : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/Library/PostgresPlus/ReplicationServer</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- LIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}/PostgresPlus/ReplicationServer</value>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- WIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}\PostgresPlus\ReplicationServer</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{7299052b-02a4-4627-81f2-1818da5d550d}" name="DisplayVersion" variable="VC_REDIST_2005_VERSION"/>
+        <actionGroup>
+            <actionList>
+                <unpackFile>
+                    <component>pubserver</component>
+                    <destination>${system_temp_directory}\vcredist_x86.exe</destination>
+                    <folder>pubserverinstallscriptswindows</folder>
+                    <origin>installer/ReplicationServer/vcredist_x86.exe</origin>
+                </unpackFile>
+                <runProgram>
+                    <program>${system_temp_directory}\vcredist_x86.exe</program>
+                    <programArguments>/q</programArguments>
+                    <workingDirectory>${windir}</workingDirectory>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+           </actionList>
+           <ruleList>
+               <compareText logic="equals" text="${platform_name}" value="windows"/>
+               <compareText logic="equals" text="${VC_REDIST_2005_VERSION}" value=""/>
+           </ruleList>
+       </actionGroup>
+
+    </initializationActionList>
+    <preInstallationActionList>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="branding" value=""/>
+                <!-- Do not create uninstaller in case of extract-only mode -->
+                <setInstallerVariable name="createUninstaller" value="0" persist="1"/>
+            </actionList>
+            <ruleList>
+                <isTrue value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- Do not perform the below actions in case of extract-only mode -->
+        <actionGroup>
+            <actionList>
+
+                <!-- Abort installation if not super-user and not running in extract-only mode-->
+                <throwError text="${msg(Installer.Warning.RootPrivileges)}">
+                    <ruleList>
+                       <isFalse value="${installer_is_root_install}"/>
+                    </ruleList>
+                </throwError>
+                <setInstallerVariable name="windowsSoftwareRegistryPrefix" value="${vendor}\${fullName}" persist="1"/>
+
+                <!-- Creates the ini file if not exits -->
+                <touchFile path="/etc/postgres-reg.ini">
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </touchFile>
+                <!-- LIN & MAC : Get the branding & check Previous Installation of ReplicationServer-->
+                <actionGroup>
+                    <actionList>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>Branding</key>
+                            <variable>iBranding</variable>
+                        </iniFileGet>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>Version</key>
+                            <variable>ReplicationServerVersion</variable>
+                        </iniFileGet>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>RepServer</key>
+                            <variable>IsRepConsoleUpgrade</variable>
+                        </iniFileGet>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>PubServer</key>
+                            <variable>IsPubServerUpgrade</variable>
+                        </iniFileGet>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>SubServer</key>
+                            <variable>IsSubServerUpgrade</variable>
+                        </iniFileGet>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>ServiceAccount</key>
+                            <variable>serviceaccount</variable>
+                        </iniFileGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <!-- WIN : Check Previous Installation of ReplicationServer-->
+                <actionGroup>
+                    <actionList>
+                        <!-- Get the branding -->
+                        <registryGet>
+                            <name>Branding</name>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                            <variable>iBranding</variable>
+                        </registryGet>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                            <name>Version</name>
+                            <variable>ReplicationServerVersion</variable>
+                        </registryGet>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                            <name>RepServer</name>
+                            <variable>IsRepConsoleUpgrade</variable>
+                        </registryGet>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                            <name>PubServer</name>
+                            <variable>IsPubServerUpgrade</variable>
+                        </registryGet>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                            <name>SubServer</name>
+                            <variable>IsSubServerUpgrade</variable>
+                        </registryGet>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                            <name>ServiceAccount</name>
+                            <variable>serviceaccount</variable>
+                        </registryGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <!-- If there appears to be an existing installation, with no Branding value. -->
+                <!-- force the default value. Otherwise, set the branding to whatever we read, -->
+                <!-- or, set the default -->
+
+                <!-- Existing, old install (version, but no branding) -->
+                <setInstallerVariable>
+                    <name>branding</name>
+                    <persist>0</persist>
+                    <value>PostgresPlus</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${ReplicationServerVersion}</text>
+                            <value></value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${iBranding}</text>
+                            <value></value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <!-- Existing install, with branding -->
+                <setInstallerVariable>
+                    <name>branding</name>
+                    <persist>0</persist>
+                    <value>${iBranding}</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${iBranding}</text>
+                            <value></value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <!-- New install, nothing set on the command line -->
+                <setInstallerVariable>
+                    <name>branding</name>
+                    <persist>0</persist>
+                    <value>PostgresPlus</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${branding}</text>
+                            <value></value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <logMessage>
+                    <text>Using branding: ${branding}</text>
+                </logMessage>
+                <!-- Set the installation directory in case of re-install/upgrade -->
+                <actionGroup>
+                    <actionList>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>InstallationDirectory</key>
+                            <variable>installdir</variable>
+                        </iniFileGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${ReplicationServerVersion}</text>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <!-- WIN: Set the installation directory in case of re-install/upgrade -->
+                <actionGroup>
+                    <actionList>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                            <name>Location</name>
+                            <variable>installdir</variable>
+                        </registryGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${ReplicationServerVersion}</text>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+            </actionList>
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- Stop the publication service, if installed -->
+        <actionGroup>
+            <actionList> 
+                 <runProgram>
+                     <program>/etc/init.d/edb-pubserver</program>
+                     <programArguments>stop &amp;</programArguments> 
+                     <workingDirectory>/etc/initd.d</workingDirectory>
+                     <abortOnError>0</abortOnError>
+                     <showMessageOnError>0</showMessageOnError>
+                     <ruleList>
+                         <compareText text="${platform_name}" logic="contains" value="linux" />
+                     </ruleList>
+                 </runProgram>  
+                 <runProgram>
+                     <program>launchctl</program>
+                     <programArguments>unload /Library/LaunchDaemons/com.edb.launch.pubserver.plist</programArguments> 
+                     <workingDirectory/>
+                     <abortOnError>0</abortOnError>
+                     <showMessageOnError>0</showMessageOnError>
+                     <ruleList>
+                         <compareText text="${platform_name}" logic="equals" value="osx" />
+                     </ruleList>
+                 </runProgram>  
+                 <stopWindowsService>
+                     <serviceName>PublicationServer</serviceName>
+                     <displayName>Publication Server</displayName>
+                     <abortOnError>0</abortOnError>
+                     <showMessageOnError>0</showMessageOnError>
+                 </stopWindowsService>
+           </actionList>
+           <ruleList>
+                <isTrue value="${IsPubServerUpgrade}" />
+           </ruleList>
+        </actionGroup> 
+
+        <!-- Stop the subscription service, if installed -->
+        <actionGroup>
+            <actionList> 
+                 <runProgram>
+                     <program>/etc/init.d/edb-subserver</program>
+                     <programArguments>stop &amp;</programArguments> 
+                     <workingDirectory>/etc/initd.d</workingDirectory>
+                     <abortOnError>0</abortOnError>
+                     <showMessageOnError>0</showMessageOnError>
+                     <ruleList>
+                         <compareText text="${platform_name}" logic="contains" value="linux" />
+                     </ruleList>
+                 </runProgram>  
+                 <runProgram>
+                     <program>launchctl</program>
+                     <programArguments>unload /Library/LaunchDaemons/com.edb.launch.subserver.plist</programArguments> 
+                     <workingDirectory/>
+                     <abortOnError>0</abortOnError>
+                     <showMessageOnError>0</showMessageOnError>
+                     <ruleList>
+                         <compareText text="${platform_name}" logic="equals" value="osx" />
+                     </ruleList>
+                 </runProgram>  
+                 <stopWindowsService>
+                     <serviceName>SubscriptionServer</serviceName>
+                     <displayName>Subscription Server</displayName>
+                     <abortOnError>0</abortOnError>
+                     <showMessageOnError>0</showMessageOnError>
+                 </stopWindowsService>
+           </actionList>
+           <ruleList>
+                <isTrue value="${IsSubServerUpgrade}" />
+           </ruleList>
+        </actionGroup> 
+
+
+    </preInstallationActionList>
+    <postInstallationActionList>
+
+        <!-- Create the user account with which publication/subscription service will run-->
+        <runProgram>
+          <program>${installdir}/installer/ReplicationServer/createuser.sh</program>
+          <programArguments>"${serviceaccount}" "${installdir}"</programArguments>
+          <progressText>${msg(progress.text.creating.user)}</progressText>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>            
+            <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+            <ruleGroup>
+                 <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                 <ruleList>
+                     <ruleGroup> 
+                         <ruleList>
+                             <isFalse value="${IsPubServerUpgrade}"/>
+                             <isTrue value="${component(pubserver).selected}" />
+                         </ruleList>
+                     </ruleGroup>  
+                     <ruleGroup> 
+                         <ruleList>
+                             <isFalse value="${IsSubServerUpgrade}"/>
+                             <isTrue value="${component(subserver).selected}" />
+                         </ruleList>                  
+                     </ruleGroup>
+                </ruleList>
+            </ruleGroup> 
+          </ruleList>
+        </runProgram>
+
+        <!-- WIN : Create user, if not exists -->
+        <runProgram>
+          <program>${installdir}\installer\ReplicationServer\createuser.exe</program>
+          <!-- The dot at the beginning of the arguments is the domain -->
+          <programArguments>. "${serviceaccount}" "${servicepassword}"</programArguments>
+          <progressText>${msg(progress.text.creating.user)}</progressText>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>            
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+             <compareText text="${installer_ui}" logic="equals" value="unattended" />
+             <ruleGroup>
+                 <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                 <ruleList>
+                     <ruleGroup> 
+                         <ruleList>
+                             <isFalse value="${IsPubServerUpgrade}"/>
+                             <isTrue value="${component(pubserver).selected}" />
+                         </ruleList>
+                     </ruleGroup>  
+                     <ruleGroup> 
+                         <ruleList>
+                             <isFalse value="${IsSubServerUpgrade}"/>
+                             <isTrue value="${component(subserver).selected}" />
+                         </ruleList>                  
+                     </ruleGroup>
+                 </ruleList>
+            </ruleGroup> 
+          </ruleList>
+        </runProgram>
+
+        <actionGroup>
+            <actionList>
+                <actionGroup>
+                    <actionList>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>Description</key>
+                            <value>${msg(install.summary)}</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>InstallationDirectory</key>
+                            <value>${installdir}</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>Version</key>
+                            <value>${product_version}</value>
+                        </iniFileSet>
+                         <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>RepServer</key>
+                            <value>${component(repconsole).selected}</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>PubServer</key>
+                            <value>${component(pubserver).selected}</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>SubServer</key>
+                            <value>${component(subserver).selected}</value>
+                        </iniFileSet>
+                         <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>ServiceAccount</key>
+                            <value>${serviceaccount}</value>
+                        </iniFileSet>
+                        <runProgram>
+                            <program>${installdir}/installer/ReplicationServer/createshortcuts.sh</program>
+                            <programArguments>"${installdir}" "${branding}"</programArguments>
+                            <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                            <workingDirectory>${installdir}/installer/ReplicationServer</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                            <ruleList>
+                                <isTrue value="${component(repconsole).selected}" />
+                            </ruleList>  
+                        </runProgram>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <!-- Branding info -->
+                <logMessage>
+                    <text>Write the branding to the ini file...</text>
+                </logMessage>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ReplicationServer</section>
+                    <key>Branding</key>
+                    <value>${branding}</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </iniFileSet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                    <name>Branding</name>
+                    <value>${branding}</value>
+                </registrySet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                    <name>RepServer</name>
+                    <value>${component(repconsole).selected}</value>
+                </registrySet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                    <name>PubServer</name>
+                    <value>${component(pubserver).selected}</value>
+                </registrySet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                    <name>SubServer</name>
+                    <value>${component(subserver).selected}</value>
+                </registrySet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                    <name>ServiceAccount</name>
+                    <value>${serviceaccount}</value>
+                </registrySet>
+
+            </actionList>
+
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+
+        </actionGroup>
+   
+        <!-- Encrypt the password -->
+        <setInstallerVariableFromScriptOutput>
+            <name>enc_password</name>
+            <exec>${java_executable}</exec>
+            <execArgs>-jar ${installdir}/installer/ReplicationServer/edb-repencrypter.jar "${pgpassword}"</execArgs>
+            <workingDirectory>${installdir}/installer/ReplicationServer</workingDirectory>
+            <ruleList>
+                <ruleGroup>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <isTrue value="${component(pubserver).selected}" />
+                        <isTrue value="${component(subserver).selected}" />
+                    </ruleList>
+                </ruleGroup> 
+                <compareText text="${platform_name}" logic="does_not_equal" value="windows" /> 
+            </ruleList>
+        </setInstallerVariableFromScriptOutput>  
+ 
+        <setInstallerVariableFromScriptOutput>
+            <name>enc_password</name>
+            <exec>${java_executable}</exec>
+            <execArgs>-jar "${installdir}\installer\ReplicationServer\edb-repencrypter.jar" "${pgpassword}"</execArgs>
+            <workingDirectory>${installdir}/installer/ReplicationServer</workingDirectory>
+            <ruleList>
+                <ruleGroup>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <isTrue value="${component(pubserver).selected}" />
+                        <isTrue value="${component(subserver).selected}" />
+                    </ruleList>
+                </ruleGroup> 
+                <compareText text="${platform_name}" logic="equals" value="windows" /> 
+            </ruleList>
+        </setInstallerVariableFromScriptOutput>   
+
+       <deleteFile path="${installdir}/installer/ReplicationServer/edb-repencrypter.jar" />
+
+       <!-- Escape the = sign -->
+       <setInstallerVariableFromRegEx>
+           <name>esc_enc_password</name>
+           <text>${enc_password}</text>
+           <pattern>=</pattern>
+           <substitution>\=</substitution>    
+           <ruleEvaluationLogic>or</ruleEvaluationLogic>
+           <ruleList>
+               <isTrue value="${component(pubserver).selected}" />
+               <isTrue value="${component(subserver).selected}" />
+           </ruleList>
+        </setInstallerVariableFromRegEx>
+
+        <createDirectory path="${env(APPDATA)}\EnterpriseDB" >
+            <ruleList> 
+                <compareText text="${platform_name}" logic="equals" value="windows" /> 
+            </ruleList>
+        </createDirectory> 
+
+        <actionGroup>
+           <actionList>
+               <writeFile>
+                   <path>/etc/edb-repl.conf</path>
+                       <text>
+user=${pguser}
+port=${pgport}
+password=${esc_enc_password}
+type=${dbtype}
+host=${pghost}
+database=${control_db}
+                       </text>
+                       <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                       <ruleList>
+                           <isTrue value="${component(pubserver).selected}" />
+                           <isTrue value="${component(subserver).selected}" />
+                       </ruleList>
+                </writeFile>
+           </actionList>  
+            <ruleList>
+                <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+            </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+           <actionList>
+               <writeFile>
+                   <path>${env(APPDATA)}\EnterpriseDB\edb-repl.conf</path>
+                       <text>
+user=${pguser}
+port=${pgport}
+password=${esc_enc_password}
+type=${dbtype}
+host=${pghost}
+database=${control_db}
+                       </text>
+                       <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                       <ruleList>
+                           <isTrue value="${component(pubserver).selected}" />
+                           <isTrue value="${component(subserver).selected}" />
+                       </ruleList>
+                </writeFile>
+           </actionList>  
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows" />
+            </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+            <actionList> 
+                 <!-- Creating a temporary directory -->
+                <createDirectory path="${system_temp_directory}/${product_fullname}"/>
+
+                <actionGroup>
+                    <actionList>  
+                        <unpackDirectory>
+                            <origin>instscripts/bin</origin>
+                            <destination>${system_temp_directory}/${product_fullname}</destination>
+                            <folder>psqlscriptslinux</folder> 
+                            <component>psql</component>
+                        </unpackDirectory>  
+                        <unpackDirectory>
+                            <origin>instscripts/lib</origin>
+                            <destination>${system_temp_directory}/${product_fullname}</destination>
+                            <folder>psqlscriptslinux</folder> 
+                            <component>psql</component>
+                        </unpackDirectory>  
+                     </actionList>
+                     <ruleList>
+                         <compareText logic="equals" text="${platform_name}" value="linux" />
+                     </ruleList>
+                </actionGroup> 
+ 
+                <actionGroup>
+                    <actionList>  
+                        <unpackDirectory>
+                            <origin>instscripts/bin</origin>
+                            <destination>${system_temp_directory}/${product_fullname}</destination>
+                            <folder>psqlscriptslinux-x64</folder> 
+                            <component>psql</component>
+                        </unpackDirectory>  
+                        <unpackDirectory>
+                            <origin>instscripts/lib</origin>
+                            <destination>${system_temp_directory}/${product_fullname}</destination>
+                            <folder>psqlscriptslinux-x64</folder> 
+                            <component>psql</component>
+                        </unpackDirectory>  
+                     </actionList>
+                     <ruleList>
+                         <compareText logic="equals" text="${platform_name}" value="linux-x64" />
+                     </ruleList>
+                </actionGroup> 
+
+                <actionGroup>
+                    <actionList>  
+                        <unpackDirectory>
+                            <origin>instscripts/bin</origin>
+                            <destination>${system_temp_directory}/${product_fullname}</destination>
+                            <folder>psqlscriptsosx</folder> 
+                            <component>psql</component>
+                        </unpackDirectory>  
+                        <unpackDirectory>
+                            <origin>instscripts/lib</origin>
+                            <destination>${system_temp_directory}/${product_fullname}</destination>
+                            <folder>psqlscriptsosx</folder> 
+                            <component>psql</component>
+                        </unpackDirectory>  
+                     </actionList>
+                     <ruleList>
+                         <compareText logic="equals" text="${platform_name}" value="osx" />
+                     </ruleList>
+                </actionGroup> 
+ 
+                <actionGroup>
+                    <actionList>  
+                        <unpackDirectory>
+                            <origin>instscripts\bin</origin>
+                            <destination>${system_temp_directory}\${product_fullname}</destination>
+                            <folder>psqlscriptswindows</folder> 
+                            <component>psql</component>
+                        </unpackDirectory>  
+                     </actionList>
+                     <ruleList>
+                         <compareText logic="equals" text="${platform_name}" value="windows" />
+                     </ruleList>
+                </actionGroup> 
+ 
+                <!-- Set variable psql_path -->
+                <setInstallerVariable name="psql_path" value="${system_temp_directory}/${product_fullname}/bin/psql">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="psql_path" value="${system_temp_directory}\${product_fullname}\bin\psql.exe">
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+                <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+                <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+                <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+                <setEnvironmentVariable name="PGDATABASE" value="postgres"/>
+  
+                <!-- START: validate the PostgreSQL Server Details -->
+                <setInstallerVariable name="connection" value=""/>
+                <setInstallerVariable name="dbexist" value=""/>
+
+                <!-- Check connection -->
+                <setInstallerVariableFromScriptOutput name="connection"
+                                                      exec="${psql_path}"
+                                                      execArgs="-l"
+                                                      workingDirectory="${system_temp_directory}/${product_fullname}/bin"
+                                                      showMessageOnError="0"
+                                                      abortOnError="0" />
+
+                <!-- If it fails for postgres database, fall back to template1 --> 
+                <actionGroup>     
+                    <actionList>     
+                         <setInstallerVariable name="PGDATABASE" value="template1" />
+                         <!-- Check connection -->
+                         <setInstallerVariableFromScriptOutput name="connection"
+                                                       exec="${psql_path}"
+                                                       execArgs="-l"
+                                                       workingDirectory="${system_temp_directory}/${product_fullname}/bin"
+                                                       customErrorMessage="${program_stderr}" />
+                    </actionList>
+                    <ruleList>
+                         <compareText text="${program_stderr}" logic="does_not_equal" value="" />
+                    </ruleList>
+                </actionGroup>  
+
+
+                <!-- Check the control database exits -->
+                <setInstallerVariableFromScriptOutput name="dbexist"
+                                                      exec="${psql_path}"
+                                                      execArgs="-t -c &quot;SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${control_db}'&quot;"
+                                                      workingDirectory="${system_temp_directory}/${product_fullname}/bin"
+                                                      abortOnError="0"
+                                                      showMessageOnError="0"/>
+
+                <runProgram>
+                    <program>${psql_path}</program>
+                    <programArguments>-t -c "CREATE DATABASE ${control_db}"</programArguments>
+                    <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
+                    <progressText>${msg(progress.text.creating.controldb)}</progressText>
+                    <ruleList>
+                        <compareText>
+                            <text>${dbexist}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </runProgram> 
+           </actionList>
+           <ruleEvaluationLogic>or</ruleEvaluationLogic>
+           <ruleList>
+               <isTrue value="${component(pubserver).selected}" />
+               <isTrue value="${component(subserver).selected}" />
+           </ruleList>
+        </actionGroup>        
+ 
+        <substitute>
+            <files>${installdir}/bin/runRepConsole.sh</files>
+            <substitutionList>
+                <substitution>
+                    <pattern>@@INSTALL_DIR@@</pattern>
+                    <value>${installdir}</value>
+                </substitution>
+            </substitutionList>
+            <ruleList>
+                <isTrue value="${component(repconsole).selected}" />
+            </ruleList>
+        </substitute> 
+
+
+        <substitute>
+            <files>${installdir}/bin/runPubServer.sh</files>
+            <substitutionList>
+                <substitution>
+                    <pattern>@@PUBPORT@@</pattern>
+                    <value>${pubport}</value>
+                </substitution>
+            </substitutionList>
+            <ruleList>
+                <isTrue value="${component(pubserver).selected}" />
+            </ruleList>
+        </substitute> 
+
+        <substitute>
+            <files>${installdir}/bin/runSubServer.sh</files>
+            <substitutionList>
+                <substitution>
+                    <pattern>@@SUBPORT@@</pattern>
+                    <value>${subport}</value>
+                </substitution>
+            </substitutionList>
+            <ruleList>
+                <isTrue value="${component(subserver).selected}" />
+            </ruleList>
+        </substitute> 
+
+        <changePermissions>
+            <files>${installdir}/bin/runPubServer.sh</files>
+            <permissions>755</permissions>
+            <ruleList>
+                <isTrue value="${component(pubserver).selected}" />
+            </ruleList>
+        </changePermissions> 
+
+        <changePermissions>
+            <files>${installdir}/bin/runSubServer.sh</files>
+            <permissions>755</permissions>
+            <ruleList>
+                <isTrue value="${component(subserver).selected}" />
+            </ruleList>
+        </changePermissions> 
+
+         <changePermissions>
+            <files>${installdir}/bin/runRepConsole.sh</files>
+            <permissions>755</permissions>
+            <ruleList>
+                <isTrue value="${component(repconsole).selected}" />
+            </ruleList>
+        </changePermissions> 
+
+ 
+         <!-- Install Pub/Sub servers as service -->
+         <runProgram>
+            <program>${installdir}/scripts/startupcfg_publication.sh</program>
+            <programArguments>"${installdir}" "${serviceaccount}" "${pubport}"</programArguments>
+            <workingDirectory>${installdir}/scripts</workingDirectory>
+            <progressText>${msg(progress.text.installing.pubservice)}</progressText>  
+            <abortOnError>0</abortOnError>            
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows" />
+                <isTrue value="${component(pubserver).selected}" />
+            </ruleList>
+        </runProgram>
+        <runProgram>
+            <program>${installdir}/scripts/startupcfg_subscription.sh</program>
+            <programArguments>"${installdir}" "${serviceaccount}" "${subport}"</programArguments>
+            <workingDirectory>${installdir}/scripts</workingDirectory>
+            <progressText>${msg(progress.text.installing.subservice)}</progressText>  
+            <abortOnError>0</abortOnError>            
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows" />
+                <isTrue value="${component(subserver).selected}" />
+            </ruleList>
+        </runProgram>
+
+
+        <createWindowsService>
+            <program>"${java_executable}"</program>
+            <description>${msg(pubserver.service.description)}</description>
+            <account>${serviceaccount}</account>
+            <serviceName>PublicationServer</serviceName>
+            <programArguments>-jar "${installdir}\bin\edb-repserver.jar" pubserver ${pubport}</programArguments>
+            <password>${servicepassword}</password>
+            <displayName>Publication Server</displayName>
+            <abortOnError>0</abortOnError>    
+            <ruleList>
+                <isTrue value="${component(pubserver).selected}" />                  
+                <isFalse value="${IsPubServerUpgrade}" /> 
+            </ruleList>
+         </createWindowsService> 
+         <createWindowsService>
+            <program>"${java_executable}"</program>
+            <description>${msg(subserver.service.description)}</description>
+            <account>${serviceaccount}</account>
+            <serviceName>SubscriptionServer</serviceName>
+            <programArguments>-jar "${installdir}\bin\edb-repserver.jar" subserver ${subport}</programArguments>
+            <password>${servicepassword}</password>
+            <displayName>Subscription Server</displayName>
+            <abortOnError>0</abortOnError>    
+            <ruleList>
+                <isTrue value="${component(subserver).selected}" />                  
+                <isFalse value="${IsSubServerUpgrade}" /> 
+            </ruleList>
+         </createWindowsService>
+
+         <startWindowsService>
+            <serviceName>PublicationServer</serviceName>
+            <displayName>Publication Server</displayName>
+            <ruleList>
+                <isTrue value="${component(pubserver).selected}" />                  
+            </ruleList>
+         </startWindowsService>
+ 
+         <startWindowsService>
+            <serviceName>SubscriptionServer</serviceName>
+            <displayName>Subscription Server</displayName>
+            <ruleList>
+                <isTrue value="${component(subserver).selected}" />                  
+            </ruleList>
+         </startWindowsService>
+   
+        <runProgram>
+            <program>/etc/init.d/edb-pubserver</program>
+            <programArguments>start &amp;</programArguments> 
+            <workingDirectory>/etc/init.d</workingDirectory>
+            <progressText>${msg(progress.text.starting.pubservice)}</progressText>
+            <ruleList>
+                <isTrue value="${component(pubserver).selected}" />
+                <compareText logic="contains" text="${platform_name}" value="linux" />
+            </ruleList>
+        </runProgram> 
+        <runProgram>
+            <program>/etc/init.d/edb-subserver</program>
+            <programArguments>start &amp;</programArguments> 
+            <workingDirectory>${installdir}/bin</workingDirectory>
+            <progressText>${msg(progress.text.starting.subservice)}</progressText>
+            <ruleList>
+                <isTrue value="${component(subserver).selected}" />
+                <compareText logic="contains" text="${platform_name}" value="linux" />
+            </ruleList>
+        </runProgram> 
+
+    </postInstallationActionList>
+
+    <!-- preUninstallation actions -->
+    <preUninstallationActionList>
+        <actionGroup>
+            <actionList>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ReplicationServer</section>
+                    <key>Description</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ReplicationServer</section>
+                    <key>InstallationDirectory</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ReplicationServer</section>
+                    <key>Version</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ReplicationServer</section>
+                    <key>Branding</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ReplicationServer</section>
+                    <key>RepServer</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ReplicationServer</section>
+                    <key>PubServer</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ReplicationServer</section>
+                    <key>SubServer</key>
+                    <value/>
+                </iniFileSet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+        <registryDelete>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+        </registryDelete> 
+
+        <stopWindowsService>
+            <serviceName>PublicationServer</serviceName>
+            <displayName>Publication Server</displayName>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+        </stopWindowsService>
+        <stopWindowsService>
+            <serviceName>SubscriptionServer</serviceName>
+            <displayName>Subscription Server</displayName>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+        </stopWindowsService>
+
+        <runProgram>
+            <program>/etc/init.d/edb-pubserver</program>
+            <programArguments>stop</programArguments>
+            <workingDirectory>/etc/init.d</workingDirectory>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <fileExists path="/etc/init.d/edb-pubserver" />
+                <compareText text="${platform_name}" logic="contains" value="linux" />
+            </ruleList>
+        </runProgram>
+        <runProgram>
+            <program>/etc/init.d/edb-subserver</program>
+            <programArguments>stop</programArguments>
+            <workingDirectory>/etc/init.d</workingDirectory>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <fileExists path="/etc/init.d/edb-subserver" />
+                <compareText text="${platform_name}" logic="contains" value="linux" />
+            </ruleList>
+        </runProgram>
+
+        <runProgram>
+            <program>launchctl</program>
+            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pubserver.plist</programArguments>
+            <workingDirectory/>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.pubserver.plist" />
+                <compareText text="${platform_name}" logic="equals" value="osx" />
+            </ruleList>
+        </runProgram>
+        <runProgram>
+            <program>launchctl</program>
+            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.subserver.plist</programArguments>
+            <workingDirectory/>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.subserver.plist" />
+                <compareText text="${platform_name}" logic="equals" value="osx" />
+            </ruleList>
+        </runProgram>
+
+        <deleteWindowsService>
+            <serviceName>PublicationServer</serviceName>
+            <displayName>Publication Server</displayName>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+        </deleteWindowsService>
+        <deleteWindowsService>
+            <serviceName>SubscriptionServer</serviceName>
+            <displayName>Subscription Server</displayName>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+        </deleteWindowsService>
+
+        <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.pubserver.plist" >
+            <ruleList>
+                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.pubserver.plist" />
+                <compareText text="${platform_name}" logic="equals" value="osx" />
+            </ruleList>
+        </deleteFile>    
+         <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.subserver.plist" >
+            <ruleList>
+                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.subserver.plist" />
+                <compareText text="${platform_name}" logic="equals" value="osx" />
+            </ruleList>
+        </deleteFile>    
+ 
+        <deleteFile path="/etc/init.d/edb-pubserver" >
+            <ruleList>
+                <fileExists path="/etc/init.d/edb-pubserver" />
+                <compareText text="${platform_name}" logic="contains" value="linux" />
+            </ruleList>
+        </deleteFile>    
+ 
+        <deleteFile path="/etc/init.d/edb-subserver" >
+            <ruleList>
+                <fileExists path="/etc/init.d/edb-subserver" />
+                <compareText text="${platform_name}" logic="contains" value="linux" />
+            </ruleList>
+        </deleteFile>    
+
+        <deleteFile path="/etc/edb-repl.conf" >
+            <ruleList>
+                <fileExists path="/etc/edb-repl.conf" />
+                <compareText text="${platform_name}" logic="contains" value="linux" />
+            </ruleList>
+        </deleteFile>    
+ 
+        <!-- LIN : Remove Menu shortcuts -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${installdir}/installer/ReplicationServer/removeshortcuts.sh</program>
+                    <programArguments>"${installdir}" "${branding}"</programArguments>
+                    <workingDirectory>${installdir}/installer/ReplicationServer</workingDirectory>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- MAC : Remove Menu shortcuts -->
+        <actionGroup>
+            <actionList>
+                <deleteFile>
+                    <path>/Applications/${branding}/Replication Console.app</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </preUninstallationActionList>
+    <allowComponentSelection>1</allowComponentSelection>
+    <!-- Components -->
+    <componentList>
+        <component>
+            <name>repconsole</name>
+            <description>Replication Console</description>
+            <canBeEdited>1</canBeEdited>
+            <selected>1</selected>
+            <show>1</show>
+            <folderList>
+                <!-- LIN- Program files -->
+                <folder>
+                    <description>RepServer GUI Files</description>
+                    <destination>${installdir}</destination>
+                    <name>repconsoleguifileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/repconsole/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>RepServer lib Files</description>
+                    <destination>${installdir}</destination>
+                    <name>repconsolelibfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/repconsole/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>installscriptslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuscriptslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- LIN-X64- Program files -->
+                <folder>
+                    <description>RepServer GUI Files</description>
+                    <destination>${installdir}</destination>
+                    <name>repconsoleguifileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/repconsole/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>RepServer lib Files</description>
+                    <destination>${installdir}</destination>
+                    <name>repconsolelibfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/repconsole/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>installscriptslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuscriptslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- OSX- Program files -->
+                <folder>
+                    <description>RepServer GUI Files</description>
+                    <destination>${installdir}</destination>
+                    <name>repconsoleguifilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/repconsole/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>RepServer lib Files</description>
+                    <destination>${installdir}</destination>
+                    <name>repconsolelibfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/repconsole/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>installscriptsosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuscriptsosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- Windows- Program files -->
+                <folder>
+                    <description>RepServer GUI Files</description>
+                    <destination>${installdir}</destination>
+                    <name>repconsoleguifileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/repconsole/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>RepServer lib Files</description>
+                    <destination>${installdir}</destination>
+                    <name>repconsolelibfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/repconsole/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>installscriptswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuscriptswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+            </folderList>
+            <!-- WIN: Start Menu -->
+            <startMenuShortcutList>
+            <!-- Launch ReplicationServer -->
+                 <startMenuShortcut>
+                    <comment>Replication Console</comment>
+                    <name>Replication Console</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${java_executable}</windowsExec>
+                    <windowsExecArgs>-jar "${installdir}\bin\edb-repconsole.jar"</windowsExecArgs>
+                    <windowsIcon>${installdir}\scripts\images\pg-launchReplicationConsole.ico</windowsIcon>
+                 </startMenuShortcut>  
+            </startMenuShortcutList>
+        </component>
+        <component>
+            <name>pubserver</name>
+            <description>Publication Server</description>
+            <canBeEdited>1</canBeEdited>
+            <selected>1</selected>
+            <show>1</show>
+            <folderList>
+                <!-- LIN- Program files -->
+                <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/repserver/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverlibfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/repserver/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverinstallscriptslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>pubservermenuscriptslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- LIN-X64- Program files -->
+                <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/repserver/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverlibfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/repserver/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverinstallscriptslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>pubservermenuscriptslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- OSX- Program files -->
+                <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/repserver/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>PubServer lib Files</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverlibfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/repserver/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverinstallscriptsosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>pubservermenuscriptsosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- Windows- Program files -->
+                <folder>
+                    <description>PubServerFiles</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/repserver/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>PubServer lib Files</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverlibfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/repserver/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverinstallscriptswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>pubservermenuscriptswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+            </folderList>
+        </component>
+        <component>
+            <name>subserver</name>
+            <description>Subscription Server</description>
+            <canBeEdited>1</canBeEdited>
+            <selected>1</selected>
+            <show>1</show>
+            <folderList>
+                <!-- LIN- Program files -->
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/repserver/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverlibfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/repserver/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverinstallscriptslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>subservermenuscriptslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- LIN-X64- Program files -->
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/repserver/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverlibfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/repserver/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverinstallscriptslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>subservermenuscriptslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- OSX- Program files -->
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/osx/repserver/bin</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>SubServer lib Files</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverlibfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/repserver/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverinstallscriptsosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>subservermenuscriptsosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- Windows- Program files -->
+                <folder>
+                    <description>SubServerFiles</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/windows/repserver/bin</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>SubServer lib Files</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverlibfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/repserver/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverinstallscriptswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>subservermenuscriptswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+            </folderList>
+        </component>
+        <component>
+            <name>psql</name>
+            <description>psql</description>
+            <canBeEdited>0</canBeEdited>
+            <selected>0</selected>
+            <show>0</show>
+            <folderList>
+                <!-- LIN- Program files -->
+                <folder>
+                    <description>psql files</description>
+                    <destination>${system_temp_directory}</destination>
+                    <name>psqlscriptslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/instscripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- LIN-X64- Program files -->
+                <folder>
+                    <description>psql files</description>
+                    <destination>${system_temp_directory}</destination>
+                    <name>psqlscriptslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/instscripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- OSX- Program files -->
+                <folder>
+                    <description>psql files</description>
+                    <destination>${system_temp_directory}</destination>
+                    <name>psqlscriptsosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/instscripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                 <!-- Windows- Program files -->
+                <folder>
+                    <description>psql files</description>
+                    <destination>${system_temp_directory}</destination>
+                    <name>psqlscriptswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/instscripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+            </folderList>
+        </component> 
+ 
+   </componentList>
+    <!-- Install Directory -->
+    <parameterList>
+        <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
+        <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
+        <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+        <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
+        <stringParameter name="dbtype" cliOptionName="db-type" default="${defaultdbtype}" ask="0" cliOptionShow="0"/>
+
+        <!-- PostgreSQL Server Details Verification Page -->
+        <parameterGroup>
+            <name>pgdetails</name>
+            <title>${msg(pgplus.details.title)}</title>
+            <explanation>${msg(pgplus.details.explanation)}</explanation>
+            <value/>
+            <default/>
+            <parameterList>
+                <!-- Postgres Host -->
+                <stringParameter>
+                    <name>pghost</name>
+                    <description>Host</description>
+                    <explanation/>
+                    <value/>
+                    <default>localhost</default>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <width>40</width>
+                </stringParameter>
+                <!-- Postgres Port(Default 5432) -->
+                <stringParameter>
+                    <name>pgport</name>
+                    <description>Port</description>
+                    <explanation/>
+                    <value/>
+                    <default>5432</default>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <width>40</width>
+                </stringParameter>
+                <!-- Postgres User -->
+                <stringParameter>
+                    <name>pguser</name>
+                    <description>User Name</description>
+                    <explanation/>
+                    <value/>
+                    <default>${defaultuser}</default>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <width>40</width>
+                </stringParameter>
+                <!-- Postgres User Password -->
+                <passwordParameter>
+                    <name>pgpassword</name>
+                    <title>Password</title>
+                    <description>Password</description>
+                    <askForConfirmation>0</askForConfirmation>
+                    <explanation/>
+                    <value/>
+                </passwordParameter>
+                <!-- Control Database -->
+                <stringParameter>
+                    <name>control_db</name>
+                    <description>Control Database</description>
+                    <explanation/>
+                    <value/>
+                    <default></default>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <width>40</width>
+                </stringParameter>
+            </parameterList>
+            <!-- Checking the validity of PostgreSQL Server Details -->
+            <validationActionList>
+                <actionGroup>
+                    <actionList>
+                        <throwError>
+                            <text>${msg(pgplus.blank.error)}</text>
+                        </throwError>
+                    </actionList>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText>
+                            <text>${pghost}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <text>${pgport}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <text>${pguser}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <text>${pgpassword}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <text>${control_db}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <throwError>
+                    <text>${msg(pgplus.port.error)}</text>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareValues>
+                            <value1>${pgport}</value1>
+                            <logic>less_or_equal</logic>
+                            <value2>0</value2>
+                        </compareValues>
+                        <compareValues>
+                            <value1>${pgport}</value1>
+                            <logic>greater_or_equal</logic>
+                            <value2>65535</value2>
+                        </compareValues>
+                    </ruleList>
+                </throwError>
+                <actionGroup>
+                    <actionList> 
+                         <!-- Creating a temporary directory -->
+                        <createDirectory path="${system_temp_directory}/${product_fullname}"/>
+        
+                        <actionGroup>
+                            <actionList>  
+                                <unpackDirectory>
+                                    <origin>instscripts/bin</origin>
+                                    <destination>${system_temp_directory}/${product_fullname}</destination>
+                                    <folder>psqlscriptslinux</folder> 
+                                    <component>psql</component>
+                                </unpackDirectory>  
+                                <unpackDirectory>
+                                    <origin>instscripts/lib</origin>
+                                    <destination>${system_temp_directory}/${product_fullname}</destination>
+                                    <folder>psqlscriptslinux</folder> 
+                                    <component>psql</component>
+                                </unpackDirectory>  
+                             </actionList>
+                             <ruleList>
+                                 <compareText logic="equals" text="${platform_name}" value="linux" />
+                             </ruleList>
+                        </actionGroup> 
+         
+                        <actionGroup>
+                            <actionList>  
+                                <unpackDirectory>
+                                    <origin>instscripts/bin</origin>
+                                    <destination>${system_temp_directory}/${product_fullname}</destination>
+                                    <folder>psqlscriptslinux-x64</folder> 
+                                    <component>psql</component>
+                                </unpackDirectory>  
+                                <unpackDirectory>
+                                    <origin>instscripts/lib</origin>
+                                    <destination>${system_temp_directory}/${product_fullname}</destination>
+                                    <folder>psqlscriptslinux-x64</folder> 
+                                    <component>psql</component>
+                                </unpackDirectory>  
+                             </actionList>
+                             <ruleList>
+                                 <compareText logic="equals" text="${platform_name}" value="linux-x64" />
+                             </ruleList>
+                        </actionGroup> 
+        
+                        <actionGroup>
+                            <actionList>  
+                                <unpackDirectory>
+                                    <origin>instscripts/bin</origin>
+                                    <destination>${system_temp_directory}/${product_fullname}</destination>
+                                    <folder>psqlscriptsosx</folder> 
+                                    <component>psql</component>
+                                </unpackDirectory>  
+                                <unpackDirectory>
+                                    <origin>instscripts/lib</origin>
+                                    <destination>${system_temp_directory}/${product_fullname}</destination>
+                                    <folder>psqlscriptsosx</folder> 
+                                    <component>psql</component>
+                                </unpackDirectory>  
+                             </actionList>
+                             <ruleList>
+                                 <compareText logic="equals" text="${platform_name}" value="osx" />
+                             </ruleList>
+                        </actionGroup> 
+         
+                        <actionGroup>
+                            <actionList>  
+                                <unpackDirectory>
+                                    <origin>instscripts\bin</origin>
+                                    <destination>${system_temp_directory}\${product_fullname}</destination>
+                                    <folder>psqlscriptswindows</folder> 
+                                    <component>psql</component>
+                                </unpackDirectory>  
+                             </actionList>
+                             <ruleList>
+                                 <compareText logic="equals" text="${platform_name}" value="windows" />
+                             </ruleList>
+                        </actionGroup> 
+         
+                        <!-- Set variable psql_path -->
+                        <setInstallerVariable name="psql_path" value="${system_temp_directory}/${product_fullname}/bin/psql">
+                            <ruleList>
+                                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                            </ruleList>
+                        </setInstallerVariable>
+                        <setInstallerVariable name="psql_path" value="${system_temp_directory}\${product_fullname}\bin\psql.exe">
+                            <ruleList>
+                                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                            </ruleList>
+                        </setInstallerVariable>
+        
+                        <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+                        <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+                        <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+                        <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+                        <setEnvironmentVariable name="PGDATABASE" value="postgres"/>
+          
+                        <!-- START: validate the PostgreSQL Server Details -->
+                        <setInstallerVariable name="connection" value=""/>
+                        <setInstallerVariable name="dbexist" value=""/>
+        
+                        <!-- Check connection -->
+                        <setInstallerVariableFromScriptOutput name="connection"
+                                                              exec="${psql_path}"
+                                                              execArgs="-l"
+                                                              workingDirectory="${system_temp_directory}/${product_fullname}/bin"
+                                                              showMessageOnError="0"
+                                                              abortOnError="0" />  
+
+                        <!-- If it fails for postgres database, fall back to template1 --> 
+                        <actionGroup>
+                             <actionList>
+                                   <setInstallerVariable name="PGDATABASE" value="template1" />
+                                   <!-- Check connection -->
+                                   <setInstallerVariableFromScriptOutput name="connection"
+                                                              exec="${psql_path}"
+                                                              execArgs="-l"
+                                                              workingDirectory="${system_temp_directory}/${product_fullname}/bin"
+                                                              customErrorMessage="${program_stderr}" />
+                            </actionList>
+                            <ruleList>
+                                  <compareText text="${program_stderr}" logic="does_not_equal" value="" />
+                            </ruleList>
+                       </actionGroup>  
+
+                    </actionList>
+                </actionGroup>
+
+           </validationActionList>
+           <ruleList>
+              <ruleGroup>
+                  <ruleEvaluationLogic>or</ruleEvaluationLogic> 
+                  <ruleList>
+                     <isTrue value="${component(pubserver).selected}" />
+                     <isFalse value="${IsPubServerUpgrade}" />
+                  </ruleList>
+                  <ruleList>
+                     <isTrue value="${component(subserver).selected}" />
+                     <isFalse value="${IsSubServerUpgrade}" />
+                  </ruleList>
+              </ruleGroup>
+            </ruleList> 
+        </parameterGroup>
+
+        <parameterGroup>
+            <name>pubportdetails</name>
+            <title>${msg(pubport.details.title)}</title>
+            <explanation>${msg(pubport.details.explanation)}</explanation>
+            <value/>
+            <default/>
+            <parameterList>
+                <!-- PubServer Port -->
+                <stringParameter>
+                    <name>pubport</name>
+                    <description>Port</description>
+                    <explanation/>
+                    <value/>
+                    <default>${defaultpubport}</default>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <width>40</width>
+                </stringParameter>
+            </parameterList>
+            <ruleList>
+                <isTrue value="${component(pubserver).selected}" />
+                <isFalse value="${IsPubServerUpgrade}" />
+            </ruleList>
+            <!-- Checking the validity of Pubserver port -->
+            <validationActionList>
+                <actionGroup>
+                    <actionList>
+                        <throwError>
+                            <text>${msg(pubport.blank.error)}</text>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <text>${pubport}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <throwError>
+                    <text>${msg(pubport.port.error)}</text>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareValues>
+                            <value1>${pubport}</value1>
+                            <logic>less_or_equal</logic>
+                            <value2>0</value2>
+                        </compareValues>
+                        <compareValues>
+                            <value1>${pubport}</value1>
+                            <logic>greater_or_equal</logic>
+                            <value2>65535</value2>
+                        </compareValues>
+                    </ruleList>
+                </throwError>
+           </validationActionList>
+        </parameterGroup>
+
+        <parameterGroup>
+            <name>subportdetails</name>
+            <title>${msg(subport.details.title)}</title>
+            <explanation>${msg(subport.details.explanation)}</explanation>
+            <value/>
+            <default/>
+            <parameterList>
+                <!-- SubServer Port -->
+                <stringParameter>
+                    <name>subport</name>
+                    <description>Port</description>
+                    <explanation/>
+                    <value/>
+                    <default>${defaultsubport}</default>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <width>40</width>
+                </stringParameter>
+            </parameterList>
+            <ruleList>
+                <isTrue value="${component(subserver).selected}" />
+                <isFalse value="${IsSubServerUpgrade}" />
+            </ruleList>
+            <!-- Checking the validity of SubServer port -->
+            <validationActionList>
+                <actionGroup>
+                    <actionList>
+                        <throwError>
+                            <text>${msg(subport.blank.error)}</text>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <text>${subport}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <throwError>
+                    <text>${msg(subport.port.error)}</text>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareValues>
+                            <value1>${subport}</value1>
+                            <logic>less_or_equal</logic>
+                            <value2>0</value2>
+                        </compareValues>
+                        <compareValues>
+                            <value1>${subport}</value1>
+                            <logic>greater_or_equal</logic>
+                            <value2>65535</value2>
+                        </compareValues>
+                    </ruleList>
+                </throwError>
+           </validationActionList>
+        </parameterGroup>
+        <parameterGroup>
+           <name>sysuserdetails</name>
+           <title>${msg(sysuser.details.title)}</title>
+           <explanation>${_explanation}</explanation>
+           <!-- Do not show this page if reinstallation other than windows -->
+           <preShowPageActionList>
+               <setInstallerVariable>
+                   <name>_explanation</name>
+                   <value>${msg(sysuser.details.explanation)}</value>
+               </setInstallerVariable>
+
+               <!-- On Windows, we need a different explanation -->
+               <setInstallerVariable>
+                  <name>_explanation</name>
+                  <value>${msg(sysuser.details.explanation.windows)}</value>
+                  <ruleList>
+                      <compareText logic="equals" text="${platform_name}" value="windows"/>
+                  </ruleList>
+               </setInstallerVariable>
+
+               <!-- On Windows, we need a different explanation -->
+               <setInstallerVariable>
+                  <name>_explanation</name>
+                  <value>${msg(sysuser.details.explanation.withuser.windows)}</value>
+                  <ruleList>
+                      <compareText logic="equals" text="${platform_name}" value="windows"/>
+                      <ruleGroup>
+                           <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                           <ruleList>
+                                 <isTrue value="${IsPubServerUpgrade}" />
+                                 <isTrue value="${IsSubServerUpgrade}" />
+                           </ruleList>
+                      </ruleGroup> 
+                  </ruleList>
+               </setInstallerVariable>
+           </preShowPageActionList>
+           <parameterList>
+               <stringParameter>
+                   <name>serviceaccount</name>
+                   <description>${msg(config.serviceaccount.description)}</description>
+                   <explanation/>
+                   <value/>
+                   <default/>
+                   <allowEmptyValue>1</allowEmptyValue>
+                   <width>40</width>
+                   <cliOptionName>serviceaccount</cliOptionName>
+                   <cliOptionShow>yes</cliOptionShow>
+                   <ruleList>
+                       <isFalse value="${IsPubServerUpgrade}"/>
+                       <isFalse value="${IsSubServerUpgrade}"/>
+                   </ruleList>
+               </stringParameter>
+               <passwordParameter>
+                   <name>servicepassword</name>
+                   <description>${msg(config.syspassword.description)}</description>
+                   <explanation/>
+                   <value/>
+                   <default>${defaultsyspassword}</default>
+                   <allowEmptyValue>1</allowEmptyValue>
+                   <cliOptionName>servicepassword</cliOptionName>
+                   <cliOptionShow>yes</cliOptionShow>
+                   <descriptionRetype>${msg(config.syspassword.confirm)}</descriptionRetype>
+                   <width>40</width>
+                   <askForConfirmation>0</askForConfirmation>  
+                   <ruleList>
+                       <compareText logic="equals" text="${platform_name}" value="windows"/>
+                   </ruleList>
+               </passwordParameter>
+           </parameterList>
+           <ruleEvaluationLogic>or</ruleEvaluationLogic>
+           <ruleList>
+               <ruleGroup>
+                    <ruleList>
+                         <ruleGroup>
+                             <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                             <ruleList>                 
+                                 <isTrue value="${component(pubserver).selected}"/>
+                                 <isTrue value="${component(subserver).selected}"/>
+                             </ruleList>
+                         </ruleGroup>
+                         <ruleGroup>
+                             <ruleList>                 
+                                 <isFalse value="${IsPubServerUpgrade}"/>
+                                 <isFalse value="${IsSubServerUpgrade}"/>
+                             </ruleList>
+                         </ruleGroup>                
+                   </ruleList> 
+               </ruleGroup>       
+               <ruleGroup>
+                   <ruleList>
+                        <ruleGroup>
+                             <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                             <ruleList>
+                                 <isTrue value="${IsPubServerUpgrade}"/>
+                                 <isTrue value="${IsSubServerUpgrade}"/>
+                             </ruleList>
+                        </ruleGroup>
+                        <compareText logic="equals" text="${platform_name}" value="windows" />
+                   </ruleList>
+              </ruleGroup>  
+           </ruleList>
+           <validationActionList>
+              <actionGroup>
+                 <actionList>
+                     <throwError>
+                         <text>${msg(serviceaccount.blank.error)}</text>
+                     </throwError>
+                 </actionList>
+                 <ruleList>
+                     <compareText logic="equals" text="${serviceaccount}" value=""/>
+                 </ruleList>
+              </actionGroup>
+              <actionGroup>
+                 <actionList>
+                     <throwError>
+                          <text>${msg(servicepassword.blank.error)}</text>
+                     </throwError>
+                 </actionList>
+                 <ruleList>
+                     <compareText logic="equals" text="${platform_name}" value="windows"/>
+                     <compareText logic="equals" text="${servicepassword}" value=""/>
+                 </ruleList>
+              </actionGroup>
+              <!-- WIN : Create user  -->
+              <actionGroup>
+                <actionList>
+                    <unpackFile>
+                      <component>pubserver</component>
+                      <destination>${system_temp_directory}\${product_fullname}\createuser.exe</destination>
+                      <folder>pubserverinstallscriptswindows</folder>
+                      <origin>installer\ReplicationServer\createuser.exe</origin>
+                    </unpackFile>
+                    <runProgram>
+                      <program>${system_temp_directory}\${product_fullname}\createuser.exe</program>
+                      <programArguments>. "${serviceaccount}" "${servicepassword}"</programArguments>
+                      <abortOnError>0</abortOnError>
+                      <showMessageOnError>0</showMessageOnError>
+                    </runProgram>
+                    <throwError>
+                      <text>${msg(script.command.line.error)}</text>
+                      <ruleList>
+                        <compareText logic="equals" text="${program_exit_code}" value="127"/>
+                      </ruleList>
+                    </throwError>
+                    <throwError>
+                      <text>${msg(config.servicepassword.incorrect.windows)}</text>
+                      <ruleList>
+                        <compareText logic="equals" text="${program_exit_code}" value="1"/>
+                      </ruleList>
+                    </throwError>
+                  </actionList>
+                  <ruleList>
+                    <compareText logic="equals" text="${platform_name}" value="windows"/>
+                  </ruleList>
+              </actionGroup>
+              <!-- WIN : Validate user name & password -->
+              <actionGroup>
+                <actionList>
+                  <unpackFile>
+                    <component>pubserver</component>
+                    <destination>${system_temp_directory}\${product_fullname}\validateuser.exe</destination>
+                    <folder>pubserverinstallscriptswindows</folder>
+                    <origin>installer\ReplicationServer\validateuser.exe</origin>
+                  </unpackFile>
+                  <runProgram>
+                    <program>${system_temp_directory}\${product_fullname}\validateuser.exe</program>
+                    <programArguments>. "${serviceaccount}" "${servicepassword}"</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                  </runProgram>
+                  <throwError>
+                    <text>${msg(script.command.line.error)}</text>
+                    <ruleList>
+                      <compareText logic="equals" text="${program_exit_code}" value="127"/>
+                    </ruleList>
+                  </throwError>
+                  <throwError>
+                    <text>${msg(config.servicepassword.incorrect.windows)}</text>
+                    <ruleList>
+                      <compareText logic="equals" text="${program_exit_code}" value="1"/>
+                    </ruleList>
+                  </throwError>
+                </actionList>
+                <ruleList>
+                  <compareText logic="equals" text="${platform_name}" value="windows"/>
+                </ruleList>
+              </actionGroup>
+           </validationActionList>
+        </parameterGroup>
+        <directoryParameter>
+            <name>installdir</name>
+            <description>Installer.Parameter.installdir.description</description>
+            <explanation>Installer.Parameter.installdir.explanation</explanation>
+            <value>${default_installdir}</value>
+            <default/>
+            <allowEmptyValue>0</allowEmptyValue>
+            <ask>yes</ask>
+            <cliOptionName>prefix</cliOptionName>
+            <mustBeWritable>yes</mustBeWritable>
+            <mustExist>0</mustExist>
+            <width>40</width>
+            <ruleList>
+                <compareText>
+                    <text>${ReplicationServerVersion}</text>
+                    <logic>equals</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+            <!-- Validating whether installdir is empty -->
+            <validationActionList>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="installdir" value="${default_installdir}" />
+                        <throwError>
+                            <text>${msg(replicationserver.installdir.empty)}</text>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <text>${installdir}</text>
+                            <logic>equals</logic>
+                            <value />
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+            </validationActionList>
+            <!-- Validating whether installdir contains whitespaces (Linux) -->
+            <postShowPageActionList>
+                <actionGroup>
+                    <actionList>  
+                        <showWarning>
+                            <text>${msg(replicationserver.installdir.error)}</text>
+                        </showWarning>
+                        <setInstallerVariable name="next_page" value="installdir"/>
+                    </actionList>
+                    <ruleList>
+                       <regExMatch>
+                           <text>${installdir}</text>
+                           <logic>does_not_match</logic>
+                           <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                       </regExMatch>
+                       <compareText>
+                           <logic>does_not_equal</logic>
+                           <text>${platform_name}</text>
+                           <value>windows</value>
+                       </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- Validating whether installdir is valid (Windows) -->
+                <actionGroup>
+                   <actionList>
+                     <setInstallerVariable name="installdir" value="${default_installdir}" />
+                     <showWarning>
+                        <text>${msg(replicationserver.installdir.error)}</text>
+                     </showWarning>
+                     <setInstallerVariable name="next_page" value="installdir"/>
+                   </actionList>
+                   <ruleList>
+                       <regExMatch>
+                         <text>${installdir}</text>
+                         <logic>does_not_match</logic>
+                         <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
+                       </regExMatch>
+                       <compareText>
+                         <text>${platform_name}</text>
+                         <logic>equals</logic>
+                         <value>windows</value>
+                       </compareText>
+                   </ruleList>
+                 </actionGroup>
+            </postShowPageActionList>
+        </directoryParameter>
+        <!-- Explain that we're using an existing installation directory -->
+        <labelParameter>
+            <name>upgrade</name>
+            <title>${msg(upgrade.existing.installation.title)}</title>
+            <description>${msg(upgrade.existing.installation.description)}</description>
+            <ruleList>
+                <compareText>
+                    <text>${ReplicationServerVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </labelParameter>
+    </parameterList>
+</project>

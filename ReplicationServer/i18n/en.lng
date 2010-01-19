@@ -1,0 +1,73 @@
+Installer.Welcome.Title=Setup - xDB Replication Server
+
+Installer.Welcome.Text=Welcome to the EnterpriseDB xDB Replication Server Setup Wizard.
+
+Installer.Installing.Title=Installing ${product_fullname}
+
+upgrade.existing.installation.title=Existing installation
+
+upgrade.existing.installation.description=An existing xDB Replication Server installation has been found at ${installdir}. This installation will be upgraded.
+
+platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
+
+progress.text.creating.shortcuts=Creating menu shortcuts
+progress.text.creating.user=Creating user account
+
+Installer.Installation.Finished.Title=Completed the EnterpriseDB xDB Replication Server Setup Wizard
+
+Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
+
+install.summary=EnterpriseDB xDB Replication Server, by EnterpriseDB.
+
+replicationserver.installdir.empty=The installation directory cannot be empty
+
+replicationserver.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
+
+java.error=Sun Java 1.5 or later is not installed on your system.\nPlease ensure it is installed and in the system PATH before re-running the installer.
+
+pubserver.service.description=Publication Service.
+subserver.service.description=Subscription Service.
+pgplus.details.title=PostgresPlus Standard Server Installation Details
+pgplus.details.explanation=Please verify the PostgresPlus Standard installation details
+
+config.systempassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the service user account.
+config.serviceaccount.description=Operating system username
+pgplus.details.error=Connection to the PostgresPlus Standard Server failed. Please re-check the details provided.
+
+pgplus.port.error=Invalid port specified.
+
+pgplus.blank.error=Values must be entered for all fields.
+
+systempassword.blank.error=Please provide the password to continue. It will be required to setup the publication/subscription service.
+
+systemuser.blank.error=User name can not be blank.
+
+config.syspassword.confirm=Retype password
+
+config.syspassword.description=System user password
+
+config.systemuser.description=Operating system username
+
+sysuser.details.title=Publication/Subscription service account
+
+sysuser.details.explanation=Please provide the user name of the account under which the publication/subscription service will run.
+
+sysuser.details.explanation.windows=Please provide the username and password of the account under which the publication/subscription service will run.\nIf the user account does not exist, it will be created when you click 'Next'.
+
+script.command.line.error=The script was called with an invalid command line.
+
+pubport.details.title=Publication server details
+pubport.details.explanation=Please specify a port on which publication server will run.
+pubport.blank.error=Values must be entered for port field.
+pubport.port.error=Invalid port specified.
+
+subport.details.title=Subscription server details
+subport.details.explanation=Please specify a port on which subscription server will run.
+subport.blank.error=Values must be entered for port field.
+subport.port.error=Invalid port specified.
+
+progress.text.creating.controldb=Creating Control Database
+progress.text.installing.pubservice=Installing Publication Service
+progress.text.installing.subservice=Installing Subscription Service
+progress.text.starting.pubservice=Starting Publication Service
+progress.text.starting.subservice=Starting Subscription Service

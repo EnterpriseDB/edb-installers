@@ -1,0 +1,127 @@
+#!/bin/sh
+
+# Check the command line
+if [ $# -ne 3 ]; 
+then
+echo "Usage: $0 <Installdir> <SystemUser> <SubPort>"
+    exit 127
+fi
+
+INSTALL_DIR=$1
+SYSTEM_USER=$2
+SUBPORT=$3
+
+# Exit code
+WARN=0
+
+# Error handlers
+_die() {
+    echo $1
+    exit 1
+}
+
+_warn() {
+    echo $1
+    WARN=2
+}
+
+# Write the startup script
+cat <<EOT > "/etc/init.d/edb-subserver"
+#!/bin/bash
+#
+# chkconfig: 2345 85 15
+# description: Subscription Server Service script for Linux
+
+### BEGIN INIT INFO
+# Provides:          edb-subserver
+# Required-Start:    $syslog
+# Required-Stop:     $syslog
+# Should-Start:  
+# Should-Stop:  
+# Default-Start:     2 3 4 5
+# Default-Stop:      1 6
+# Short-Description: edb-subserver 
+# Description:       edb-subserver
+### END INIT INFO
+
+start()
+{
+    PID=\`ps -aef | grep 'java -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
+
+    if [ "x\$PID" = "x" ];
+    then
+       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; java -jar edb-repserver.jar subserver $SUBPORT &"
+       exit 0
+    else
+       echo "Subscription Service already running"
+       exit 1
+    fi
+}
+
+stop()
+{
+    PID=\`ps -aef | grep 'java -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
+
+    if [ "x\$PID" = "x" ];
+    then
+        echo "Subscription Service not running"
+        exit 2
+    else
+        kill -9 \$PID
+    fi
+}
+
+# See how we were called.
+case "\$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  restart)
+        stop
+        sleep 3
+        start
+        ;;
+  *)
+        echo \$"Usage: \$0 {start|stop|restart}"
+        exit 1
+esac
+
+EOT
+
+# Fixup the permissions on the StartupItems
+chmod 0755 "/etc/init.d/edb-subserver" || _warn "Failed to set the permissions on the startup script (/etc/init.d/edb-subserver)"
+
+#Create directory for logs
+if [ ! -e $INSTALL_DIR/bin/logs ];
+then
+    mkdir -p $INSTALL_DIR/bin/logs
+    chown $SYSTEM_USER $INSTALL_DIR/bin/logs
+fi
+
+
+# Configure the startup. On Redhat and friends we use chkconfig. On Debian, update-rc.d
+# These utilities aren't entirely standard, so use both from their standard locations on
+# each distro family. 
+CHKCONFIG=`type /sbin/chkconfig > /dev/null 2>&1 || echo fail`
+if [ ! $CHKCONFIG ];
+then
+    /sbin/chkconfig --add edb-subserver
+    if [ $? -ne 0 ]; then
+        _warn "Failed to configure the service startup with chkconfig"
+    fi
+fi
+
+UPDATECONFIG=`type /usr/sbin/update-rc.d > /dev/null 2>&1 || echo fail`
+if [ ! $UPDATECONFIG ];
+then
+    /usr/sbin/update-rc.d edb-subserver defaults
+    if [ $? -ne 0 ]; then
+        _warn "Failed to configure the service startup with update-rc.d"
+    fi
+fi
+
+echo "$0 ran to completion"
+exit $WARN
