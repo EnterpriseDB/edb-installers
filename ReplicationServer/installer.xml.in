@@ -763,112 +763,75 @@
 
         </actionGroup>
    
-        <!-- Encrypt the password -->
-        <setInstallerVariableFromScriptOutput>
-            <name>enc_password</name>
-            <exec>${java_executable}</exec>
-            <execArgs>-jar ${installdir}/installer/ReplicationServer/edb-repencrypter.jar "${pgpassword}"</execArgs>
-            <workingDirectory>${installdir}/installer/ReplicationServer</workingDirectory>
-            <ruleList>
-                <ruleGroup>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                    <ruleList>
-                        <isTrue value="${component(pubserver).selected}" />
-                        <isTrue value="${component(subserver).selected}" />
-                    </ruleList>
-                </ruleGroup> 
-                <compareText text="${platform_name}" logic="does_not_equal" value="windows" /> 
-            </ruleList>
-        </setInstallerVariableFromScriptOutput>  
- 
-        <setInstallerVariableFromScriptOutput>
-            <name>enc_password</name>
-            <exec>${java_executable}</exec>
-            <execArgs>-jar "${installdir}\installer\ReplicationServer\edb-repencrypter.jar" "${pgpassword}"</execArgs>
-            <workingDirectory>${installdir}/installer/ReplicationServer</workingDirectory>
-            <ruleList>
-                <ruleGroup>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                    <ruleList>
-                        <isTrue value="${component(pubserver).selected}" />
-                        <isTrue value="${component(subserver).selected}" />
-                    </ruleList>
-                </ruleGroup> 
-                <compareText text="${platform_name}" logic="equals" value="windows" /> 
-            </ruleList>
-        </setInstallerVariableFromScriptOutput>   
-
-       <deleteFile path="${installdir}/installer/ReplicationServer/edb-repencrypter.jar" />
-
-       <!-- Escape the = sign -->
-       <setInstallerVariableFromRegEx>
-           <name>esc_enc_password</name>
-           <text>${enc_password}</text>
-           <pattern>=</pattern>
-           <substitution>\=</substitution>    
-           <ruleEvaluationLogic>or</ruleEvaluationLogic>
-           <ruleList>
-               <isTrue value="${component(pubserver).selected}" />
-               <isTrue value="${component(subserver).selected}" />
-           </ruleList>
-        </setInstallerVariableFromRegEx>
-
-        <createDirectory path="${env(APPDATA)}\EnterpriseDB" >
-            <ruleList> 
-                <compareText text="${platform_name}" logic="equals" value="windows" /> 
-            </ruleList>
-        </createDirectory> 
-
         <actionGroup>
-           <actionList>
+            <actionList>
+                <!-- Encrypt the password -->
+                <setInstallerVariableFromScriptOutput>
+                    <name>enc_password</name>
+                    <exec>${java_executable}</exec>
+                    <execArgs>-jar ${installdir}/installer/ReplicationServer/edb-repencrypter.jar "${pgpassword}"</execArgs>
+                    <workingDirectory>${installdir}/installer/ReplicationServer</workingDirectory>
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="does_not_equal" value="windows" /> 
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>  
+ 
+                <setInstallerVariableFromScriptOutput>
+                    <name>enc_password</name>
+                    <exec>${java_executable}</exec>
+                    <execArgs>-jar "${installdir}\installer\ReplicationServer\edb-repencrypter.jar" "${pgpassword}"</execArgs>
+                    <workingDirectory>${installdir}/installer/ReplicationServer</workingDirectory>
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows" /> 
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>   
+
+                <deleteFile path="${installdir}/installer/ReplicationServer/edb-repencrypter.jar" />
+
+                <!-- Escape the = sign -->
+                <setInstallerVariableFromRegEx>
+                    <name>esc_enc_password</name>
+                    <text>${enc_password}</text>
+                    <pattern>=</pattern>
+                    <substitution>\=</substitution>    
+                </setInstallerVariableFromRegEx>
+
+                <createDirectory path="${env(APPDATA)}\EnterpriseDB" >
+                    <ruleList> 
+                       <compareText text="${platform_name}" logic="equals" value="windows" /> 
+                    </ruleList>
+                </createDirectory> 
+
                <writeFile>
                    <path>/etc/edb-repl.conf</path>
-                       <text>
+                   <text>
 user=${pguser}
 port=${pgport}
 password=${esc_enc_password}
 type=${dbtype}
 host=${pghost}
 database=${control_db}
-                       </text>
-                       <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                       <ruleList>
-                           <isTrue value="${component(pubserver).selected}" />
-                           <isTrue value="${component(subserver).selected}" />
-                       </ruleList>
+                    </text>
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+                    </ruleList>
                 </writeFile>
-           </actionList>  
-            <ruleList>
-                <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
-            </ruleList>
-        </actionGroup>
 
-        <actionGroup>
-           <actionList>
-               <writeFile>
+                <writeFile>
                    <path>${env(APPDATA)}\EnterpriseDB\edb-repl.conf</path>
-                       <text>
+                   <text>
 user=${pguser}
 port=${pgport}
 password=${esc_enc_password}
 type=${dbtype}
 host=${pghost}
 database=${control_db}
-                       </text>
-                       <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                       <ruleList>
-                           <isTrue value="${component(pubserver).selected}" />
-                           <isTrue value="${component(subserver).selected}" />
-                       </ruleList>
+                   </text>
+                   <ruleList>
+                      <compareText text="${platform_name}" logic="equals" value="windows" />
+                   </ruleList>
                 </writeFile>
-           </actionList>  
-            <ruleList>
-                <compareText text="${platform_name}" logic="equals" value="windows" />
-            </ruleList>
-        </actionGroup>
 
-        <actionGroup>
-            <actionList> 
                  <!-- Creating a temporary directory -->
                 <createDirectory path="${system_temp_directory}/${product_fullname}"/>
 
@@ -1015,10 +978,20 @@ database=${control_db}
                     </ruleList>
                 </runProgram> 
            </actionList>
-           <ruleEvaluationLogic>or</ruleEvaluationLogic>
            <ruleList>
-               <isTrue value="${component(pubserver).selected}" />
-               <isTrue value="${component(subserver).selected}" />
+               <ruleGroup>
+                   <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                   <ruleList>
+                       <isTrue value="${component(pubserver).selected}" />
+                       <isTrue value="${component(subserver).selected}" />
+                   </ruleList>
+               </ruleGroup>
+               <ruleGroup>
+                   <ruleList>
+                       <isFalse value="${IsPubServerUpgrade}" />  
+                       <isFalse value="${IsSubServerUpgrade}" />  
+                   </ruleList>
+               </ruleGroup> 
            </ruleList>
         </actionGroup>        
  
@@ -2272,17 +2245,19 @@ database=${control_db}
 
            </validationActionList>
            <ruleList>
-              <ruleGroup>
-                  <ruleEvaluationLogic>or</ruleEvaluationLogic> 
-                  <ruleList>
-                     <isTrue value="${component(pubserver).selected}" />
-                     <isFalse value="${IsPubServerUpgrade}" />
-                  </ruleList>
-                  <ruleList>
-                     <isTrue value="${component(subserver).selected}" />
-                     <isFalse value="${IsSubServerUpgrade}" />
-                  </ruleList>
-              </ruleGroup>
+                <ruleGroup>
+                   <ruleEvaluationLogic>or</ruleEvaluationLogic> 
+                   <ruleList>
+                       <isTrue value="${component(pubserver).selected}" />
+                       <isTrue value="${component(subserver).selected}" />
+                   </ruleList>
+                </ruleGroup> 
+                <ruleGroup>
+                   <ruleList>
+                       <isFalse value="${IsPubServerUpgrade}" />
+                       <isFalse value="${IsSubServerUpgrade}" />
+                   </ruleList>
+                </ruleGroup>
             </ruleList> 
         </parameterGroup>
 
