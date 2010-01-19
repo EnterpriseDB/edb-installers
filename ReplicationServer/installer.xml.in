@@ -376,6 +376,35 @@
                     </ruleList>
                 </actionGroup>
 
+                <!-- Disable the components which are being upgraded -->
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="component(repconsole).selected" value="1" />
+                        <setInstallerVariable name="component(repconsole).canBeEdited" value="0" />
+                    </actionList>
+                    <ruleList>
+                        <isTrue value="${IsRepConsoleUpgrade}" />
+                    </ruleList>
+                </actionGroup>  
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="component(pubserver).selected" value="1" />
+                        <setInstallerVariable name="component(pubserver).canBeEdited" value="0" />
+                    </actionList>
+                    <ruleList>
+                        <isTrue value="${IsPubServerUpgrade}" />
+                    </ruleList>
+                </actionGroup>  
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="component(subserver).selected" value="1" />
+                        <setInstallerVariable name="component(subserver).canBeEdited" value="0" />
+                    </actionList>
+                    <ruleList>
+                        <isTrue value="${IsSubServerUpgrade}" />
+                    </ruleList>
+                </actionGroup>  
+
                 <!-- If there appears to be an existing installation, with no Branding value. -->
                 <!-- force the default value. Otherwise, set the branding to whatever we read, -->
                 <!-- or, set the default -->
