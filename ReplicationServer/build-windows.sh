@@ -29,6 +29,9 @@ _prep_ReplicationServer_windows() {
     # Copy createuser to ReplicationServer directory
     cp -R $WD/ReplicationServer/scripts/windows/createuser $WD/ReplicationServer/source/ReplicationServer.windows/createuser || _die "Failed to copy scripts(createuser)"
 
+    # Copy createuser to ReplicationServer directory
+    cp -R $WD/ReplicationServer/scripts/windows/CreateEDBReplConfForUser $WD/ReplicationServer/source/ReplicationServer.windows/CreateEDBReplConfForUser || _die "Failed to copy scripts(CreateEDBReplConfForUser)"
+
     #Copy the required jdbc drivers
     cp $WD/tarballs/edb-jdbc14.jar $WD/ReplicationServer/source/ReplicationServer.windows/lib || _die "Failed to copy the edb-jdbc-14.jar"
     cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/*.jar $WD/ReplicationServer/source/ReplicationServer.windows/lib || _die "Failed to copy pg jdbc drivers" 
@@ -76,10 +79,12 @@ _build_ReplicationServer_windows() {
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR ; cmd /c $PG_ANT_WINDOWS\\\\bin\\\\ant -f custom_build.xml dist" || _die "Failed to build replication server on the build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/validateuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/createuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/CreateEDBReplConfForUser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat CreateEDBReplConfForUser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
 
     echo "copying application files into the output directory"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy validateuser\\\\release\\\\validateuser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy createuser\\\\release\\\\createuser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy CreateEDBReplConfForUser\\\\release\\\\CreateEDBReplConfForUser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy /Y C:\\\\pgBuild\\\\vcredist\\\\vcredist_x86.exe  $OUTPUT_DIR" || _die "Failed to copy the VC++ runtimes on the windows build host"
 
     # Zip up the installed code, copy it back here, and unpack.
@@ -101,6 +106,7 @@ _build_ReplicationServer_windows() {
     mv $WD/ReplicationServer/staging/windows/validateuser.exe $WD/ReplicationServer/staging/windows/installer/ReplicationServer || _die "Failed to copy the utilities"
     mv $WD/ReplicationServer/staging/windows/vcredist_x86.exe $WD/ReplicationServer/staging/windows/installer/ReplicationServer || _die "Failed to copy the utilities"
     mv $WD/ReplicationServer/staging/windows/createuser.exe $WD/ReplicationServer/staging/windows/installer/ReplicationServer || _die "Failed to copy the utilities"
+    mv $WD/ReplicationServer/staging/windows/CreateEDBReplConfForUser.exe $WD/ReplicationServer/staging/windows/installer/ReplicationServer || _die "Failed to copy the utilities"
     mv $WD/ReplicationServer/staging/windows/edb-repencrypter.jar $WD/ReplicationServer/staging/windows/installer/ReplicationServer || _die "Failed to copy the utilities"
     
     cd $WD

@@ -842,11 +842,24 @@
                     <substitution>\=</substitution>    
                 </setInstallerVariableFromRegEx>
 
-                <createDirectory path="${env(APPDATA)}\EnterpriseDB" >
-                    <ruleList> 
-                       <compareText text="${platform_name}" logic="equals" value="windows" /> 
+                <runProgram>
+                   <customErrorMessage>${msg(error.create.edbrepl)}</customErrorMessage>
+                   <program>${installdir}\installer\ReplicationServer\CreateEDBReplConfForUser.exe</program>
+                   <programArguments>${serviceaccount} "${servicepassword}" ${pghost} ${pgport} ${control_db} ${pguser} "${esc_enc_password}" ${dbtype}</programArguments>
+                   <workingDirectory>${installdir}\installer\ReplicationServer</workingDirectory>
+                   <abortOnError>0</abortOnError>
+                   <showMessageOnError>1</showMessageOnError>
+                   <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows" />
+                   </ruleList>
+                </runProgram>
+
+                <deleteFile>
+                   <path>${installdir}\installer\ReplicationServer\CreatePGPassconfForUser.exe</path>
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows" />
                     </ruleList>
-                </createDirectory> 
+                </deleteFile>
 
                <writeFile>
                    <path>/etc/edb-repl.conf</path>
@@ -861,21 +874,6 @@ database=${control_db}
                     <ruleList>
                         <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
                     </ruleList>
-                </writeFile>
-
-                <writeFile>
-                   <path>${env(APPDATA)}\EnterpriseDB\edb-repl.conf</path>
-                   <text>
-user=${pguser}
-port=${pgport}
-password=${esc_enc_password}
-type=${dbtype}
-host=${pghost}
-database=${control_db}
-                   </text>
-                   <ruleList>
-                      <compareText text="${platform_name}" logic="equals" value="windows" />
-                   </ruleList>
                 </writeFile>
 
                  <!-- Creating a temporary directory -->
@@ -1130,7 +1128,7 @@ database=${control_db}
             </ruleList>
         </runProgram>
 
-
+        <!-- Disable Service Creation on Windows 
         <createWindowsService>
             <program>"${java_executable}"</program>
             <description>${msg(pubserver.service.description)}</description>
@@ -1175,7 +1173,7 @@ database=${control_db}
                 <isTrue value="${component(subserver).selected}" />                  
             </ruleList>
          </startWindowsService>
-   
+         -->
         <runProgram>
             <program>/etc/init.d/edb-pubserver</program>
             <programArguments>start &amp;</programArguments> 
@@ -2412,6 +2410,17 @@ database=${control_db}
                         </compareValues>
                     </ruleList>
                 </throwError>
+
+                <throwError>
+                    <text>${msg(port.bind.error)}</text>
+                    <ruleList>
+                        <portTest>
+                            <port>${pubport}</port>
+                            <condition>cannot_bind</condition>
+                        </portTest> 
+                    </ruleList>
+                </throwError>
+ 
            </validationActionList>
         </parameterGroup>
 
@@ -2468,6 +2477,16 @@ database=${control_db}
                             <logic>greater_or_equal</logic>
                             <value2>65535</value2>
                         </compareValues>
+                    </ruleList>
+                </throwError>
+
+                <throwError>
+                    <text>${msg(port.bind.error)}</text>
+                    <ruleList>
+                        <portTest>
+                            <port>${subport}</port>
+                            <condition>cannot_bind</condition>
+                        </portTest> 
                     </ruleList>
                 </throwError>
            </validationActionList>

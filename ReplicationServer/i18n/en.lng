@@ -66,8 +66,12 @@ subport.details.explanation=Please specify a port on which subscription server w
 subport.blank.error=Values must be entered for port field.
 subport.port.error=Invalid port specified.
 
+port.bind.error=The specified port number is not available. Please enter a different port.
+
 progress.text.creating.controldb=Creating Control Database
 progress.text.installing.pubservice=Installing Publication Service
 progress.text.installing.subservice=Installing Subscription Service
 progress.text.starting.pubservice=Starting Publication Service
 progress.text.starting.subservice=Starting Subscription Service
+
+error.create.edbrepl=Could not create edb-repl.conf file in the ${systemuser}'s %APPDATA%\EnterpriseDB directory.
