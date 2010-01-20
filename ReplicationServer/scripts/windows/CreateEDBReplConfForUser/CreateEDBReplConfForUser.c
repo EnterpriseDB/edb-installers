@@ -105,7 +105,6 @@ int _tmain(int argc, _TCHAR **argv, _TCHAR **envp)
 
     _chdir(szProfilePath);
 
-	fprintf_s(stdout, "%s\n", szProfilePath);
     if (_chdir("Application Data") == -1)
     {
         if (_chdir("AppData") == -1)
