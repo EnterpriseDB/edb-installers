@@ -538,7 +538,7 @@
                  </runProgram>  
                  <runProgram>
                      <program>launchctl</program>
-                     <programArguments>unload /Library/LaunchDaemons/com.edb.launch.pubserver.plist</programArguments> 
+                     <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pubserver.plist</programArguments> 
                      <workingDirectory/>
                      <abortOnError>0</abortOnError>
                      <showMessageOnError>0</showMessageOnError>
@@ -573,7 +573,7 @@
                  </runProgram>  
                  <runProgram>
                      <program>launchctl</program>
-                     <programArguments>unload /Library/LaunchDaemons/com.edb.launch.subserver.plist</programArguments> 
+                     <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.subserver.plist</programArguments> 
                      <workingDirectory/>
                      <abortOnError>0</abortOnError>
                      <showMessageOnError>0</showMessageOnError>

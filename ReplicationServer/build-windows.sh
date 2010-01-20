@@ -34,7 +34,7 @@ _prep_ReplicationServer_windows() {
 
     #Copy the required jdbc drivers
     cp $WD/tarballs/edb-jdbc14.jar $WD/ReplicationServer/source/ReplicationServer.windows/lib || _die "Failed to copy the edb-jdbc-14.jar"
-    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/*.jar $WD/ReplicationServer/source/ReplicationServer.windows/lib || _die "Failed to copy pg jdbc drivers" 
+    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/source/ReplicationServer.windows/lib || _die "Failed to copy pg jdbc drivers" 
 
     echo "Archieving ReplicationServer sources"
     zip -r ReplicationServer.zip ReplicationServer.windows/ || _die "Couldn't create archieve of the ReplicationServer sources (ReplicationServer.zip)"

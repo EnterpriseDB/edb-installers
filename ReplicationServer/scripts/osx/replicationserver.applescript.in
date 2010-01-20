@@ -1,2 +1,2 @@
-set ret to do shell script "INSTALL_DIR/bin/runRepConsole.sh  2>&1" with administrator privileges
+set ret to do shell script "cd INSTALL_DIR/bin; ./runRepConsole.sh &" 
 

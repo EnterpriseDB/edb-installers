@@ -25,7 +25,7 @@ _prep_ReplicationServer_osx() {
 
     #Copy the required jdbc drivers
     cp $WD/tarballs/edb-jdbc14.jar $WD/ReplicationServer/source/ReplicationServer.osx/lib || _die "Failed to copy the edb-jdbc-14.jar"
-    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/*.jar $WD/ReplicationServer/source/ReplicationServer.osx/lib || _die "Failed to copy pg jdbc drivers" 
+    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/source/ReplicationServer.osx/lib || _die "Failed to copy pg jdbc drivers" 
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/ReplicationServer/staging/osx ];
@@ -92,6 +92,8 @@ _postprocess_ReplicationServer_osx() {
     chmod ugo+x staging/osx/scripts/startupcfg_publication.sh
     cp scripts/osx/startupcfg_subscription.sh staging/osx/scripts/startupcfg_subscription.sh || _die "Failed to copy the startupcfg_subscription.sh script (scripts/osx/startupcfg_subscription.sh)"
     chmod ugo+x staging/osx/scripts/startupcfg_subscription.sh
+    cp scripts/osx/replicationserver.applescript.in staging/osx/scripts/replicationserver.applescript || _die "Failed to copy the replicationserver.applescript script (scripts/osx/replicationserver.applescript)"
+    chmod ugo+x staging/osx/scripts/replicationserver.applescript
 
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"

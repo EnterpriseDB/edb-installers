@@ -25,7 +25,7 @@ _prep_ReplicationServer_linux() {
 
     #Copy the required jdbc drivers
     cp $WD/tarballs/edb-jdbc14.jar $WD/ReplicationServer/source/ReplicationServer.linux/lib || _die "Failed to copy the edb-jdbc-14.jar"
-    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/*.jar $WD/ReplicationServer/source/ReplicationServer.linux/lib || _die "Failed to copy pg jdbc drivers" 
+    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/source/ReplicationServer.linux/lib || _die "Failed to copy pg jdbc drivers" 
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/ReplicationServer/staging/linux ];
