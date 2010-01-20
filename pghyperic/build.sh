@@ -5,8 +5,7 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-    echo "Not yet implemented"
-    #source $WD/pghyperic/build-osx.sh
+    source $WD/pghyperic/build-osx.sh
 fi
 
 # Linux
@@ -18,15 +17,13 @@ fi
 # Linux x64
 if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
-    echo "Not yet implemented"
-    #source $WD/pghyperic/build-linux-x64.sh
+    source $WD/pghyperic/build-linux-x64.sh
 fi
 
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
-    echo "Not yet implemented"
-    #source $WD/pghyperic/build-windows.sh
+    source $WD/pghyperic/build-windows.sh
 fi
     
 ################################################################################
@@ -51,8 +48,57 @@ _prep_pghyperic() {
       rm -rf pghyperic-$PG_VERSION_PGHYPERIC  || _die "Couldn't remove the existing pghyperic-$PG_VERSION_PGHYPERIC source directory (source/pghyperic-$PG_VERSION_PGHYPERIC)"
     fi
 
-    echo "Unpacking pghyperic source..."
-    extract_file ../../tarballs/pghyperic-$PG_VERSION_PGHYPERIC || exit 1
+    # Linux
+    if [ $PG_ARCH_LINUX = 1 ];
+    then
+        if [ -e pghyperic-"$PG_VERSION_PGHYPERIC" ];
+        then
+          echo "Removing existing pghyperic-"$PG_VERSION_PGHYPERIC" source directory"
+          rm -rf pghyperic-"$PG_VERSION_PGHYPERIC"  || _die "Couldn't remove the existing pghyperic-"$PG_VERSION_PGHYPERIC" source directory (source/pghyperic-"$PG_VERSION_PGHYPERIC")"
+        fi
+   
+	echo "Unpacking pghyperic source..."
+	 extract_file ../../tarballs/pghyperic-$PG_VERSION_PGHYPERIC || exit 1
+    fi
+
+    # Linux-x64
+    if [ $PG_ARCH_LINUX_X64 = 1 ];
+    then
+        if [ -e pghyperic-"$PG_VERSION_PGHYPERIC"-x64 ];
+        then
+          echo "Removing existing pghyperic-"$PG_VERSION_PGHYPERIC"-x64 source directory"
+          rm -rf pghyperic-"$PG_VERSION_PGHYPERIC"-x64  || _die "Couldn't remove the existing pghyperic-"$PG_VERSION_PGHYPERIC"-x64 source directory (source/pghyperic-"$PG_VERSION_PGHYPERIC"-x64)"
+        fi
+   
+	echo "Unpacking pghyperic source..."
+	 extract_file ../../tarballs/pghyperic-$PG_VERSION_PGHYPERIC-x64 || exit 1
+    fi
+
+    # osx
+    if [ $PG_ARCH_OSX = 1 ];
+    then
+        if [ -e pghyperic-"$PG_VERSION_PGHYPERIC"-osx ];
+        then
+          echo "Removing existing pghyperic-"$PG_VERSION_PGHYPERIC"-osx source directory"
+          rm -rf pghyperic-"$PG_VERSION_PGHYPERIC"-osx || _die "Couldn't remove the existing pghyperic-"$PG_VERSION_PGHYPERIC"-osx source directory (source/pghyperic-"$PG_VERSION_PGHYPERIC"-osx)"
+        fi
+   
+	echo "Unpacking pghyperic source..."
+	 extract_file ../../tarballs/pghyperic-$PG_VERSION_PGHYPERIC-osx || exit 1
+    fi
+
+    # osx
+    if [ $PG_ARCH_WINDOWS = 1 ];
+    then
+        if [ -e pghyperic-"$PG_VERSION_PGHYPERIC"-windows ];
+        then
+          echo "Removing existing pghyperic-"$PG_VERSION_PGHYPERIC"-windows source directory"
+          rm -rf pghyperic-"$PG_VERSION_PGHYPERIC"-windows || _die "Couldn't remove the existing pghyperic-"$PG_VERSION_PGHYPERIC"-windows source directory (source/pghyperic-"$PG_VERSION_PGHYPERIC"-windows)"
+        fi
+   
+	echo "Unpacking pghyperic source..."
+	 extract_file ../../tarballs/pghyperic-$PG_VERSION_PGHYPERIC-windows || exit 1
+    fi
 
     # Per-platform prep
     cd $WD
@@ -60,8 +106,7 @@ _prep_pghyperic() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-	echo "Not yet implemented"
-        #_prep_pghyperic_osx || exit 1
+        _prep_pghyperic_osx || exit 1
     fi
 
     # Linux
@@ -73,15 +118,13 @@ _prep_pghyperic() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-	echo "Not yet implemented"
-        #_prep_pghyperic_linux_x64 || exit 1
+        _prep_pghyperic_linux_x64 || exit 1
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-	echo "Not yet implemented"
-        #_prep_pghyperic_windows || exit 1
+        _prep_pghyperic_windows || exit 1
     fi
     
 }
@@ -95,8 +138,7 @@ _build_pghyperic() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-	echo "Not yet implemented"
-        #_build_pghyperic_osx || exit 1
+        _build_pghyperic_osx || exit 1
     fi
 
     # Linux 
@@ -108,15 +150,13 @@ _build_pghyperic() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-	echo "Not yet implemented"
-       #_build_pghyperic_linux_x64 || exit 1
+       _build_pghyperic_linux_x64 || exit 1
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-	echo "Not yet implemented"
-        #_build_pghyperic_windows || exit 1
+        _build_pghyperic_windows || exit 1
     fi
 }
 
@@ -144,8 +184,7 @@ _postprocess_pghyperic() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-	echo "Not yet implemented"
-        #_postprocess_pghyperic_osx || exit 1
+        _postprocess_pghyperic_osx || exit 1
     fi
 
     # Linux
@@ -157,14 +196,12 @@ _postprocess_pghyperic() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-	echo "Not yet implemented"
-        #_postprocess_pghyperic_linux_x64 || exit 1
+        _postprocess_pghyperic_linux_x64 || exit 1
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-	echo "Not yet implemented"
-       #_postprocess_pghyperic_windows || exit 1
+       _postprocess_pghyperic_windows || exit 1
     fi
 }

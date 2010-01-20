@@ -8,7 +8,7 @@
     <!-- Product Specific Options -->
     <productComments>PostgreSQL Monitoring Tool, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
-    <requireInstallationByRootUser>1</requireInstallationByRootUser>
+    <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
     <!-- The options are used for RPM registration -->
     <description>PostgreSQL Monitoring Tool</description>
     <summary>PostgreSQL Monitoring Tool, packaged by EnterpriseDB</summary>
@@ -829,7 +829,7 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>/Applications/${branding}/PostgreSQL Hyperic Home Page.app</path>
+                    <path>/Applications/${branding}</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -1103,7 +1103,8 @@
     <parameterList>
 	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
-
+        <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
+ 
 	<parameterGroup>
 	    <name>smtp_server_details</name>
 	    <title>${msg(smtp.server.title)}</title>
@@ -1332,19 +1333,6 @@
 				  </compareText>
 			    </ruleList>
 			</unpackDirectory>
-			<unpackFile>
-			     <origin>installer/pghyperic/check-connection.bat</origin>
-			     <destination>${system_temp_directory}/instscripts/check-connection.bat</destination>
-			     <component>default</component>
-			     <folder>installfileswindows</folder>
-			     <ruleList>
-			      <compareText>
-			          <logic>equals</logic>
-			          <text>${platform_name}</text>
-			          <value>windows</value>
-			      </compareText>
-			     </ruleList>
-			</unpackFile>
 			<unpackDirectory>
 			     <origin>instscripts</origin>
 			     <destination>${system_temp_directory}</destination>
@@ -1375,8 +1363,8 @@
 			  </ruleList>
 			</setInstallerVariableFromScriptOutput>
 			<setInstallerVariableFromScriptOutput>
-			  <exec>${system_temp_directory}\instscripts\check-connection.bat</exec>
-			  <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdatabase}</execArgs>
+			  <exec>${system_temp_directory}\instscripts\psql.exe</exec>
+			  <execArgs>-l ${pgdatabase}</execArgs>
 			  <name>connection</name>
 			  <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
 			  <customErrorMessage>${program_stderr}</customErrorMessage>

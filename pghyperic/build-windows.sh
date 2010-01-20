@@ -20,7 +20,7 @@ _prep_pghyperic_windows() {
     mkdir -p $WD/pghyperic/source/pghyperic.windows || _die "Couldn't create the pghyperic.windows directory"
 
     # Grab a copy of the source tree
-    cp -R pghyperic-$PG_VERSION_PGJDBC/* pghyperic.windows || _die "Failed to copy the source code (source/pghyperic-$PG_VERSION_PGJDBC)"
+    cp -R pghyperic-$PG_VERSION_PGHYPERIC-windows/* pghyperic.windows || _die "Failed to copy the source code (source/pghyperic-$PG_VERSION_PGHYPERIC-windows)"
     chmod -R ugo+w pghyperic.windows || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -33,6 +33,7 @@ _prep_pghyperic_windows() {
     echo "Creating staging directory ($WD/pghyperic/staging/windows)"
     mkdir -p $WD/pghyperic/staging/windows || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/pghyperic/staging/windows || _die "Couldn't set the permissions on the staging directory"
+    cp -R $WD/pghyperic/source/pghyperic.windows/* $WD/pghyperic/staging/windows || _die "Failed to copy the pghyperic Source into the staging directory"
     
 
 }
@@ -44,6 +45,25 @@ _prep_pghyperic_windows() {
 _build_pghyperic_windows() {
 
     cd $WD
+    # Copy the various support files into place
+    mkdir -p pghyperic/staging/windows/instscripts || _die "Failed to create the instscripts directory"
+    cp -R server/staging/windows/lib/libpq* pghyperic/staging/windows/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -R server/staging/windows/bin/psql.exe pghyperic/staging/windows/instscripts/ || _die "Failed to copy psql in instscripts"
+    cp -R server/staging/windows/bin/gssapi32.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/ssleay32.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libeay32.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/iconv.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libintl-8.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libiconv-2.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libiconv-2.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/comerr32.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/krb5_32.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/k5sprt32.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libxml2.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libxslt.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/zlib1.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/msvcr71.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+
 }
 
 
@@ -53,8 +73,6 @@ _build_pghyperic_windows() {
 
 _postprocess_pghyperic_windows() {
  
-    cp -R $WD/pghyperic/source/pghyperic.windows/* $WD/pghyperic/staging/windows || _die "Failed to copy the pghyperic Source into the staging directory"
-
     cd $WD/pghyperic
 
     # Copy in the menu pick images
@@ -64,8 +82,8 @@ _postprocess_pghyperic_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
-	# Sign the installer
-	win32_sign "pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-windows.exe"
+    # Sign the installer
+    win32_sign "pghyperic-$PG_VERSION_PGHYPERIC-windows.exe"
 	
     cd $WD
 }
