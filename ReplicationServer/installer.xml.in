@@ -322,6 +322,18 @@
                             <key>ServiceAccount</key>
                             <variable>serviceaccount</variable>
                         </iniFileGet>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>SubPort</key>
+                            <variable>subport</variable>
+                        </iniFileGet>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>PubPort</key>
+                            <variable>pubport</variable>
+                        </iniFileGet>
                     </actionList>
                     <ruleList>
                         <compareText>
@@ -685,11 +697,29 @@
                             <key>SubServer</key>
                             <value>${component(subserver).selected}</value>
                         </iniFileSet>
-                         <iniFileSet>
+                        <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
                             <section>ReplicationServer</section>
                             <key>ServiceAccount</key>
                             <value>${serviceaccount}</value>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>SubPort</key>
+                            <value>${subport}</value>
+                            <ruleList>
+                               <isTrue value="${component(subserver).selected}"/>
+                            </ruleList>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>ReplicationServer</section>
+                            <key>PubPort</key>
+                            <value>${pubport}</value>
+                            <ruleList>
+                               <isTrue value="${component(pubserver).selected}"/>
+                            </ruleList>
                         </iniFileSet>
                         <runProgram>
                             <program>${installdir}/installer/ReplicationServer/createshortcuts.sh</program>
@@ -753,6 +783,22 @@
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
                     <name>ServiceAccount</name>
                     <value>${serviceaccount}</value>
+                </registrySet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                    <name>SubPort</name>
+                    <value>${subport}</value>
+                    <ruleList>
+                        <isTrue value="${component(subserver).selected}"/>
+                    </ruleList>
+                </registrySet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                    <name>PubPort</name>
+                    <value>${pubport}</value>
+                    <ruleList>
+                        <isTrue value="${component(pubserver).selected}"/>
+                    </ruleList>
                 </registrySet>
 
             </actionList>
@@ -1151,6 +1197,20 @@ database=${control_db}
             </ruleList>
         </runProgram> 
 
+        <!-- Remove different platform specific launch file runRepConsole.sh or runRepConsole.bat -->
+        <deleteFile path="${installdir}/bin/runRepConsole.bat" >
+            <ruleList>
+                <fileExists path="${installdir}/bin/runRepConsole.bat" />
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows" />
+            </ruleList>
+        </deleteFile> 
+        <deleteFile path="${installdir}/bin/runRepConsole.sh" >
+            <ruleList>
+                <fileExists path="${installdir}/bin/runRepConsole.sh" />
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+            </ruleList>
+        </deleteFile> 
+
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
@@ -1197,6 +1257,18 @@ database=${control_db}
                     <file>/etc/postgres-reg.ini</file>
                     <section>ReplicationServer</section>
                     <key>SubServer</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ReplicationServer</section>
+                    <key>SubPort</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ReplicationServer</section>
+                    <key>PubPort</key>
                     <value/>
                 </iniFileSet>
             </actionList>
@@ -1568,13 +1640,16 @@ database=${control_db}
                 <!-- LIN- Program files -->
                 <folder>
                     <description>PubServer Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${installdir}/bin</destination>
                     <name>pubserverfileslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux/repserver/bin</origin>
-                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>staging/linux/repserver/bin/edb-repserver.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux/repserver/bin/runPubServer.sh</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1613,13 +1688,16 @@ database=${control_db}
                 <!-- LIN-X64- Program files -->
                 <folder>
                     <description>PubServer Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${installdir}/bin</destination>
                     <name>pubserverfileslinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/repserver/bin</origin>
-                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>staging/linux-x64/repserver/bin/edb-repserver.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux-x64/repserver/bin/runPubServer.sh</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1658,13 +1736,16 @@ database=${control_db}
                 <!-- OSX- Program files -->
                 <folder>
                     <description>PubServer Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${installdir}/bin</destination>
                     <name>pubserverfilesosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/osx/repserver/bin</origin>
-                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>staging/osx/repserver/bin/edb-repserver.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/osx/repserver/bin/runPubServer.sh</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1703,13 +1784,16 @@ database=${control_db}
                 <!-- Windows- Program files -->
                 <folder>
                     <description>PubServerFiles</description>
-                    <destination>${installdir}</destination>
+                    <destination>${installdir}/bin</destination>
                     <name>pubserverfileswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/windows/repserver/bin</origin>
-                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>staging/windows/repserver/bin/edb-repserver.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/repserver/bin/runPubServer.bat</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1757,13 +1841,16 @@ database=${control_db}
                 <!-- LIN- Program files -->
                 <folder>
                     <description>SubServer Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${installdir}/bin</destination>
                     <name>subserverfileslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux/repserver/bin</origin>
-                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>staging/linux/repserver/bin/edb-repserver.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux/repserver/bin/runSubServer.sh</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1802,13 +1889,16 @@ database=${control_db}
                 <!-- LIN-X64- Program files -->
                 <folder>
                     <description>SubServer Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${installdir}/bin</destination>
                     <name>subserverfileslinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/repserver/bin</origin>
-                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>staging/linux-x64/repserver/bin/edb-repserver.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux-x64/repserver/bin/runSubServer.sh</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1847,12 +1937,15 @@ database=${control_db}
                 <!-- OSX- Program files -->
                 <folder>
                     <description>SubServer Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${installdir}/bin</destination>
                     <name>subserverfilesosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/osx/repserver/bin</origin>
+                            <origin>staging/osx/repserver/bin/edb-repserver.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/osx/repserver/bin/runSubServer.sh</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -1892,12 +1985,15 @@ database=${control_db}
                 <!-- Windows- Program files -->
                 <folder>
                     <description>SubServerFiles</description>
-                    <destination>${installdir}</destination>
+                    <destination>${installdir}/bin</destination>
                     <name>subserverfileswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/windows/repserver/bin</origin>
+                            <origin>staging/windows/repserver/bin/edb-repserver.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/repserver/bin/runSubServer.bat</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
