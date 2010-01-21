@@ -301,7 +301,7 @@
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
                             <section>ReplicationServer</section>
-                            <key>RepServer</key>
+                            <key>RepConsole</key>
                             <variable>IsRepConsoleUpgrade</variable>
                         </iniFileGet>
                         <iniFileGet>
@@ -360,7 +360,7 @@
                         </registryGet>
                         <registryGet>
                             <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
-                            <name>RepServer</name>
+                            <name>RepConsole</name>
                             <variable>IsRepConsoleUpgrade</variable>
                         </registryGet>
                         <registryGet>
@@ -682,7 +682,7 @@
                          <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
                             <section>ReplicationServer</section>
-                            <key>RepServer</key>
+                            <key>RepConsole</key>
                             <value>${component(repconsole).selected}</value>
                         </iniFileSet>
                         <iniFileSet>
@@ -766,7 +766,7 @@
                 </registrySet>
                 <registrySet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
-                    <name>RepServer</name>
+                    <name>RepConsole</name>
                     <value>${component(repconsole).selected}</value>
                 </registrySet>
                 <registrySet>
@@ -1242,7 +1242,7 @@ database=${control_db}
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
                     <section>ReplicationServer</section>
-                    <key>RepServer</key>
+                    <key>RepConsole</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
@@ -1255,6 +1255,12 @@ database=${control_db}
                     <file>/etc/postgres-reg.ini</file>
                     <section>ReplicationServer</section>
                     <key>SubServer</key>
+                    <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>ReplicationServer</section>
+                    <key>ServiceAccount</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
@@ -1282,7 +1288,7 @@ database=${control_db}
         <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
         </registryDelete> 
-
+        <!--
         <stopWindowsService>
             <serviceName>PublicationServer</serviceName>
             <displayName>Publication Server</displayName>
@@ -1295,7 +1301,7 @@ database=${control_db}
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
         </stopWindowsService>
-
+        -->
         <runProgram>
             <program>/etc/init.d/edb-pubserver</program>
             <programArguments>stop</programArguments>
@@ -1341,7 +1347,7 @@ database=${control_db}
                 <compareText text="${platform_name}" logic="equals" value="osx" />
             </ruleList>
         </runProgram>
-
+        <!--
         <deleteWindowsService>
             <serviceName>PublicationServer</serviceName>
             <displayName>Publication Server</displayName>
@@ -1354,7 +1360,7 @@ database=${control_db}
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
         </deleteWindowsService>
-
+        --> 
         <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.pubserver.plist" >
             <ruleList>
                 <fileExists path="/Library/LaunchDaemons/com.edb.launchd.pubserver.plist" />
@@ -1436,7 +1442,7 @@ database=${control_db}
             <folderList>
                 <!-- LIN- Program files -->
                 <folder>
-                    <description>RepServer GUI Files</description>
+                    <description>RepConsole GUI Files</description>
                     <destination>${installdir}</destination>
                     <name>repconsoleguifileslinux</name>
                     <platforms>linux</platforms>
@@ -1447,7 +1453,7 @@ database=${control_db}
                     </distributionFileList>
                 </folder>
                 <folder>
-                    <description>RepServer lib Files</description>
+                    <description>RepConsole lib Files</description>
                     <destination>${installdir}</destination>
                     <name>repconsolelibfileslinux</name>
                     <platforms>linux</platforms>
@@ -1481,7 +1487,7 @@ database=${control_db}
                 </folder>
                 <!-- LIN-X64- Program files -->
                 <folder>
-                    <description>RepServer GUI Files</description>
+                    <description>RepConsole GUI Files</description>
                     <destination>${installdir}</destination>
                     <name>repconsoleguifileslinux-x64</name>
                     <platforms>linux-x64</platforms>
@@ -1492,7 +1498,7 @@ database=${control_db}
                     </distributionFileList>
                 </folder>
                 <folder>
-                    <description>RepServer lib Files</description>
+                    <description>RepConsole lib Files</description>
                     <destination>${installdir}</destination>
                     <name>repconsolelibfileslinux-x64</name>
                     <platforms>linux-x64</platforms>
@@ -1526,7 +1532,7 @@ database=${control_db}
                 </folder>
                 <!-- OSX- Program files -->
                 <folder>
-                    <description>RepServer GUI Files</description>
+                    <description>RepConsole GUI Files</description>
                     <destination>${installdir}</destination>
                     <name>repconsoleguifilesosx</name>
                     <platforms>osx</platforms>
@@ -1537,7 +1543,7 @@ database=${control_db}
                     </distributionFileList>
                 </folder>
                 <folder>
-                    <description>RepServer lib Files</description>
+                    <description>RepConsole lib Files</description>
                     <destination>${installdir}</destination>
                     <name>repconsolelibfilesosx</name>
                     <platforms>osx</platforms>
@@ -1571,7 +1577,7 @@ database=${control_db}
                 </folder>
                 <!-- Windows- Program files -->
                 <folder>
-                    <description>RepServer GUI Files</description>
+                    <description>RepConsole GUI Files</description>
                     <destination>${installdir}</destination>
                     <name>repconsoleguifileswindows</name>
                     <platforms>windows</platforms>
@@ -1582,7 +1588,7 @@ database=${control_db}
                     </distributionFileList>
                 </folder>
                 <folder>
-                    <description>RepServer lib Files</description>
+                    <description>RepConsole lib Files</description>
                     <destination>${installdir}</destination>
                     <name>repconsolelibfileswindows</name>
                     <platforms>windows</platforms>
