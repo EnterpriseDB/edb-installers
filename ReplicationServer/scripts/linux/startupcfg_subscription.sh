@@ -29,7 +29,7 @@ _warn() {
 cat <<EOT > "/etc/init.d/edb-subserver"
 #!/bin/bash
 #
-# chkconfig: 2345 85 15
+# chkconfig: 2345 90 10
 # description: Subscription Server Service script for Linux
 
 ### BEGIN INIT INFO
