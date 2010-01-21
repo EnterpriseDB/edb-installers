@@ -2,18 +2,23 @@
 ' Ashesh Vashi, EnterpriseDB
 
 'Initialization
-Dim WSO, WSI, FSO, WshShell, WshApp
+Dim WSO, WSI, FSO, WshShell, WshApp, TempFolder, LogFile
 Dim strSuperUser, strSuperPassword, strServiceAccount, strServicePassword, strDataDir, strInstallDir, strLocale, strPort, strServiceName
 Dim bUnattended, bWScript, bInstallRuntimes, bDebug
-Dim strExitMsg, strVCRedistFile
+Dim strExitMsg, strVCRedistFile, strLogFile
 
 Dim iStatus, strScriptOutput, strScriptError
+Dim objDevServer
 
+LogFile = NULL
 SET WSO = WScript.StdOut
 SET WSI = WScript.StdIn
 SET FSO = CreateObject("Scripting.FileSystemObject")
 Set WshShell = CreateObject("WScript.Shell")
 Set WshApp   = CreateObject("Shell.Application")
+Set TempFolder = FSO.GetSpecialFolder(2)
+strTempName = FSO.GetTempName
+strLogFile = TempFolder.Path & "\" & Left(strTempName, Len(strTempName) - 4) & "_rar.log"
 
 ' TODO: We need to take care about 64 bit windows too in future.
 strVCRedistFile = "\installer\vcredist_x86.exe"
@@ -27,54 +32,91 @@ strServiceName     = "PgSQL"
 iPort              = 5432
 bUnattended        = false
 bInstallRuntimes   = true
-bDebug             = true
+bDebug             = false
+bWScript           = false
 
-Function FileExistsInFolder(ByVal pStrPath, ByVal pStrFileName, ByRef pStrMsg)
-  FileExistsInFolder = true
+Sub Init()
+  ' Open Log File
+  SET LogFile = FSO.CreateTextFile(strLogFile, True) 
+End Sub
 
-  If NOT FSO.FileExists(pStrPath & "\" & pStrFileName) Then
-    pStrMsg = "File (" & pStrFileName & ") couldn't find in the given path (" & pStrPath & ")."
-    FileExistsInFolder = false
+Sub Finish(p_iRetCode)
+  WScript.Echo "Logs is saved in: " & strLogFile
+  LogFile.Close
+  WScript.Quit p_iRetCode
+End Sub
+
+Function IsFileExists(ByVal p_strPath, ByVal p_strFileName, ByRef p_strErrMsg)
+  Dim l_bFolderVal
+  l_bFolderVal = true
+  IsFileExists = true
+  If p_strPath = NULL OR Trim(p_strPath) = "" Then
+    l_bFolderVal = false
+    l_strFilePath = p_strFileName
+  Else
+    l_strFilePath = p_strPath & "\" & p_strFileName
+  End If
+
+  If NOT FSO.FileExists(l_strFilePath) Then
+    If l_bFolderVal Then
+      p_strErrMsg = "File (" & p_strFileName & ") couldn't be found."
+    Else
+      p_strErrMsg = "File (" & p_strFileName & ") couldn't find in the given path (" & p_strPath & ")."
+    End If
+    IsFileExists = false
   End If
 End Function
+
+Sub BackupNUseOriginalFile(ByVal p_strFilePath)
+  If IsFileExists(NULL, p_strFilePath & ".orig", l_strDummy) Then
+    ' If Backup file Exists, we will use that while configuration
+    FSO.CopyFile p_strFilePath & ".orig", p_strFilePath, true
+  Else
+    ' And If Backup File Does not exists, we will make a backup of it
+    FSO.CopyFile p_strFilePath, p_strFilePath & ".orig", true
+  End If
+End Sub
 
 Sub ShowMessage(p_strMsg)
   If NOT bWScript Then
     WScript.Echo p_strMsg
   End If
-  ' TODO: Please log the messages in the log file.
+  LogFile.WriteLine p_strMsg
 End Sub
 
 Sub LogMessage(p_strMsg)
-  If NOT bDebug And bWScript Then
+  If bDebug And NOT bWScript Then
     WScript.Echo p_strMsg
   End If
-  ' TODO: Please log the messages in the log file
+  LogFile.WriteLine p_strMsg
 End Sub
 
 Sub LogError(p_strErrMsg)
   WScript.Echo vbCRLF & "FATAL ERROR: " & p_strErrMsg & vbCRLF
-  ' TODO: Please log the messages in the log file
-  WScript.Quit(-1)
+  LogFile.WriteLine vbCRLF & "FATAL ERROR: " & p_strErrMsg & vbCRLF
+  Call Finish(-1)
 End Sub
 
 Sub LogWarn(p_strMsg)
-  WScript.Echo vbCRLF & "WARNING: " & p_strMsg & vbCRLF
-  ' TODO: Please log the messages in the log file
+  If NOT bWScript Then
+    WScript.Echo vbCRLF & "WARNING: " & p_strMsg & vbCRLF
+  End If
+  LogFile.WriteLine vbCRLF & "WARNING: " & p_strMsg & vbCRLF
 End Sub
 
 Sub LogNote(p_strNote)
-  WScript.Echo vbCRLF & "NOTE: " & p_strNote
-  ' TODO: Please log the messages in the log file
+  If NOT bWScript AND bDebug Then
+    WScript.Echo vbCRLF & "NOTE: " & p_strNote & vbCRLF
+  End If
+  LogFile.WriteLine vbCRLF & "NOTE: " & p_strNote & vbCRLF
 End Sub
 
-Sub SetVariableFromScriptOutput(ByVal p_strCmd, ByVal p_aCmdArgs, ByRef pl_strVariable, ByRef pl_iStatus)
+Sub SetVariableFromScriptOutput(ByVal p_strCmd, ByVal p_aCmdArgs, ByRef pl_strVariable, ByRef pl_strErr, ByRef pl_iStatus)
   Dim l_iLArgs, l_iUArgs, lExec, l_strCmdArgs, l_strStdOut, l_strStdErr
   pl_strVariable = ""
   pl_iStatusCode = 127
 
   If p_strCmd = NULL OR Trim(p_strCmd) = "" Then
-    pl_iStatusCode = 127
     LogError "SetVariableFromScriptOutput: Provide command to execute."
   End If
 
@@ -89,10 +131,10 @@ Sub SetVariableFromScriptOutput(ByVal p_strCmd, ByVal p_aCmdArgs, ByRef pl_strVa
       l_strCmdArgs = l_strCmdArgs & " """ & p_aCmdArgs(l_index) & """"
     Next
   End If
-  p_strCmd = Trim("""" & p_strCmd & """ " & Trim(l_strCmdArgs))
+  p_strCmd = Trim("""" & Trim(p_strCmd) & """ " & Trim(l_strCmdArgs))
 
   'The tool is launched
-  LogMessage "SetVariableFromScriptOutput: " & pStrCmd
+  LogMessage "SetVariableFromScriptOutput: " & vbCRLF & p_strCmd
   set lExec = WshShell.Exec(p_strCmd)
 
   If lExec.Status = 0 Then
@@ -101,11 +143,11 @@ Sub SetVariableFromScriptOutput(ByVal p_strCmd, ByVal p_aCmdArgs, ByRef pl_strVa
 
   pl_iStatusCode = lExec.ExitCode
   Do While lExec.StdOut.AtEndOfStream <> True
-    l_strStdOut = l_strStdOut & vbCRLF & lExec.StdOut.ReadLine
+    pl_strVariable = pl_strVariable & vbCRLF & lExec.StdOut.ReadLine
   Loop
   LogMessage vbCRLF & "Script Output: " & _
              vbCRLF & "---------------" & _
-             vbCRLF & l_strStdOut
+             vbCRLF & pl_strVariable
 
   Do While lExec.StdErr.AtEndOfStream <> True
     l_strStdErr = l_strStdErr & vbCRLF & lExec.StdErr.ReadLine
@@ -119,12 +161,13 @@ End Sub
 Sub RunProgram(ByVal p_strCmd, ByRef p_aCmdArgs, ByRef pl_strStdOut, ByRef pl_strStdErr, ByRef pl_iStatusCode)
   Dim lExec
   Dim l_iLArgs, l_iUArgs, l_strCmdArgs
+  L_CONST_TIMEOUT = 5000
   pl_strStdOut   = ""
   pl_strStdErr   = ""
   pl_iStatusCode = 0
 
   If p_strCmd = NULL OR Trim(p_strCmd) = "" Then
-    pl_iStatusCode = -1 : pl_strStdErr   = "RunProgram : Provide command to execute." : Exit Sub
+    LogError "RunProgram : Provide command to execute."
   End If
 
   If NOT IsArray(p_aCmdArgs) Then
@@ -138,7 +181,7 @@ Sub RunProgram(ByVal p_strCmd, ByRef p_aCmdArgs, ByRef pl_strStdOut, ByRef pl_st
       l_strCmdArgs = l_strCmdArgs & " """ & p_aCmdArgs(l_index) & """"
     Next
   End If
-  p_strCmd = Trim(p_strCmd & " " & Trim(l_strCmdArgs))
+  p_strCmd = Trim( """" & p_strCmd & """ " & Trim(l_strCmdArgs))
 
   LogMessage "RunProgram: " & p_strCmd
 
@@ -148,11 +191,15 @@ Sub RunProgram(ByVal p_strCmd, ByRef p_aCmdArgs, ByRef pl_strStdOut, ByRef pl_st
   Do
     WScript.Sleep 100
     l_iWaitCount = l_iWaitCount + 1
-  Loop Until lExec.Status <> 0 OR l_iWaitCount >= 1000
+    If lExec.StdOut.AtEndOfStream <> True Then
+      pl_strStdOut = pl_strStdOut & vbCRLF & lExec.StdOut.ReadLine
+    End If
+  Loop Until lExec.Status <> 0 OR l_iWaitCount >= L_CONST_TIMEOUT
 
-  If l_iWaitCount >= 1000 AND lExec.Status = 0 Then
+  l_bTerminateAbnormally = false
+  If l_iWaitCount >= L_CONST_TIMEOUT AND lExec.Status = 0 Then
     lExec.Terminate()
-    LogError "Couldn't complete execution of the command (" & p_strCmd & ")"
+    l_bTerminateAbnormally = true
   End If
 
   pl_iStatusCode = lExec.ExitCode
@@ -170,6 +217,9 @@ Sub RunProgram(ByVal p_strCmd, ByRef p_aCmdArgs, ByRef pl_strStdOut, ByRef pl_st
   LogMessage vbCRLF & "Script Error : " & _
              vbCRLF & "---------------" & _
              vbCRLF & pl_strStdErr
+  If l_bTerminateAbnormally Then
+    LogError "Couldn't complete execution of the command (" & p_strCmd & ")"
+  End If
 End Sub
 
 Function Usage(exitcode)
@@ -405,6 +455,8 @@ Do While argIndex<argCount
   ' Unattended Mode
   ElseIf cmdArguments(argIndex) = "-u" OR cmdArguments(argIndex) = "--unattended" Then
     bUnattended = true
+  ElseIf cmdArguments(argIndex) = "--debug" Then
+    bDebug = true
   ElseIf cmdArguments(argIndex) = "-h" OR cmdArguments(argIndex) = "--help" Then
     Usage 0
   Else
@@ -427,7 +479,7 @@ Sub Question(ByVal que, ByVal validator, ByVal defVal, ByVal actualVal, ByVal st
   End If
   Do
     If NOT bUnattended Then
-      WSO.Write que & " [" & defVal & "] : "
+      ShowMessage que & " [" & defVal & "] : "
       strAnswer = Trim(WSI.ReadLine())
     End If
     If strAnswer = "" Then
@@ -443,7 +495,7 @@ Sub Question(ByVal que, ByVal validator, ByVal defVal, ByVal actualVal, ByVal st
     If NOT bRes AND bUnattended AND stopInstallOnError Then
       LogError strErrMsg
     End If
-    If NOT bRes AND loopUntilRes Then
+    If NOT bRes AND loopUntilRes AND stopInstallOnError Then
       LogNote strErrMsg
     End If
   Loop Until bRes AND loopUntilRes
@@ -488,6 +540,8 @@ Class DevServer
   Private m_strServiceName
   Private m_iPort
   Private m_strVersion
+  Private m_iMajoVersion
+  Private m_iMinorVersion
   Private m_arrayLocales()
 
   Private Sub Class_Initialize
@@ -582,32 +636,43 @@ Class DevServer
   End Property
 
   Public Property Get Version
-    Version = m_strVersion
+    Version = m_iMajoVersion & "." & m_iMinorVersion
   End Property
 
+  Public Property Get MajorVersion
+    MajorVersion = m_iMajoVersion
+  End Property
+
+  Public Property Get MinorVersion
+    MinorVersion = m_iMinorVersion
+  End Property
+
+  Public Property Get FullVerion
+    FullVerion = m_strVersion
+  End Property
   Public Function validateServerPath(pStrInstallDir, ByRef pStrErrMsg)
     validateServerPath = false
 
-    If FileExistsInFolder(pStrInstallDir, "bin\psql.exe", pStrErrMsg) AND _
-       FileExistsInFolder(pStrInstallDir, "bin\postgres.exe", pStrErrMsg) AND _
-       FileExistsInFolder(pStrInstallDir, "bin\pg_config.exe", pStrErrMsg) AND _
-       FileExistsInFolder(pStrInstallDir, "bin\pg_ctl.exe", pStrErrMsg) AND _
-       FileExistsInFolder(pStrInstallDir, "bin\pg_controldata.exe", pStrErrMsg) AND _
-       FileExistsInFolder(pStrInstallDir, "bin\initdb.exe", pStrErrMsg) AND _
-       FileExistsInFolder(pStrInstallDir, "installer\server\createuser.exe", pStrErrMsg) AND _
-       FileExistsInFolder(pStrInstallDir, "installer\server\validateuser.exe", pStrErrMsg) AND _
-       FileExistsInFolder(pStrInstallDir, "installer\server\getlocales.exe", pStrErrMsg) AND _
-       FileExistsInFolder(pStrInstallDir, "installer\server\startupcfg.vbs", pStrErrMsg) AND _
-       FileExistsInFolder(pStrInstallDir, "installer\server\createshortcuts.vbs", pStrErrMsg) AND _
-       FileExistsInFolder(pStrInstallDir, "installer\server\startserver.vbs", pStrErrMsg) AND _
-       FileExistsInFolder(pStrInstallDir, "installer\server\loadmodules.vbs", pStrErrMsg) AND _
-       FileExistsInFolder(pStrInstallDir, "installer\server\initcluster.vbs", pStrErrMsg) AND _
-       FileExistsInFolder(pStrInstallDir, "installer\vcredist_x86.exe", pStrErrMsg) AND _
-       FileExistsInFolder(pStrInstallDir, "scripts\serverctl.vbs", pStrErrMsg) Then
+    If IsFileExists(pStrInstallDir, "bin\psql.exe", pStrErrMsg) AND _
+       IsFileExists(pStrInstallDir, "bin\postgres.exe", pStrErrMsg) AND _
+       IsFileExists(pStrInstallDir, "bin\pg_config.exe", pStrErrMsg) AND _
+       IsFileExists(pStrInstallDir, "bin\pg_ctl.exe", pStrErrMsg) AND _
+       IsFileExists(pStrInstallDir, "bin\pg_controldata.exe", pStrErrMsg) AND _
+       IsFileExists(pStrInstallDir, "bin\initdb.exe", pStrErrMsg) AND _
+       IsFileExists(pStrInstallDir, "installer\server\createuser.exe", pStrErrMsg) AND _
+       IsFileExists(pStrInstallDir, "installer\server\validateuser.exe", pStrErrMsg) AND _
+       IsFileExists(pStrInstallDir, "installer\server\getlocales.exe", pStrErrMsg) AND _
+       IsFileExists(pStrInstallDir, "installer\server\startupcfg.vbs", pStrErrMsg) AND _
+       IsFileExists(pStrInstallDir, "installer\server\createshortcuts.vbs", pStrErrMsg) AND _
+       IsFileExists(pStrInstallDir, "installer\server\startserver.vbs", pStrErrMsg) AND _
+       IsFileExists(pStrInstallDir, "installer\server\loadmodules.vbs", pStrErrMsg) AND _
+       IsFileExists(pStrInstallDir, "installer\server\initcluster.vbs", pStrErrMsg) AND _
+       IsFileExists(pStrInstallDir, "installer\vcredist_x86.exe", pStrErrMsg) AND _
+       IsFileExists(pStrInstallDir, "scripts\serverctl.vbs", pStrErrMsg) Then
       validateServerPath = true
       m_strInstallDir = pStrInstallDir
-      SetVariableFromScriptOutput pStrInstallDir & "\installer\server\getlocales.exe", "", lStrLocales, l_iStatus
-      SetVariableFromScriptOutput pStrInstallDir & "\bin\pg_config.exe", "--version", l_strVersion, l_iStatus
+      ' Find out PostgreSQL Version
+      SetVariableFromScriptOutput pStrInstallDir & "\bin\pg_config.exe", "--version", l_strVersion, l_strErrMsg, l_iStatus
 
       If l_iStatus <> 0 Then
         LogError "PostgreSQL version could not be determined. Please check the log files for details."
@@ -615,8 +680,22 @@ Class DevServer
 
       l_strVersion = Trim(l_strVersion)
       l_iPos = InStr(l_strVersion, " ")
-      m_strVersion = Right(l_strVersion, Len(l_strVersion)-l_iPos)
+      m_strVersion = Trim(Right(l_strVersion, Len(l_strVersion)-l_iPos))
+      l_arrayVersion = split(m_strVersion, ".")
 
+      l_iUBound = -1
+      If IsArray(l_arrayVersion) Then
+        l_iUBound = UBound(l_arrayVersion)
+      End If
+      If l_iUBound >= 0 Then
+        m_iMajoVersion = l_arrayVersion(0)
+        If l_iUBound >= 1 Then
+          m_iMinorVersion = l_arrayVersion(1)
+        End If
+      End If
+      
+      ' Fetch locale array
+      SetVariableFromScriptOutput pStrInstallDir & "\installer\server\getlocales.exe", "", lStrLocales, l_strErrMsg, l_iStatus
       lArrayLocale = split(lStrLocales, vbCRLF)
 
       iLBound = LBound(lArrayLocale)
@@ -638,7 +717,7 @@ Class DevServer
     validateDataDir = false
     
     If NOT FSO.FolderExists(pStrDataDir) Then
-      If FileExistsInFolder(pStrDataDir, "", lStrErrMsg) Then
+      If IsFileExists(pStrDataDir, "", lStrErrMsg) Then
         pStrErrMsg = "'" & pStrDataDir & "' is a file, could not be a valid data directory."
         Exit Function
       End If
@@ -664,10 +743,10 @@ Class DevServer
       Exit Function
     End If
 
-    If NOT FileExistsInFolder(pStrDataDir, "postgresql.conf", lStrErrMsg) OR _
-       NOT FileExistsInFolder(pStrDataDir, "PG_VERSION", lStrErrMsg) OR _
-       NOT FileExistsInFolder(pStrDataDir, "global\pg_database", lStrErrMsg) OR _
-       NOT FileExistsInFolder(pStrDataDir, "global\pg_auth", lStrErrMsg) Then
+    If NOT IsFileExists(pStrDataDir, "postgresql.conf", lStrErrMsg) OR _
+       NOT IsFileExists(pStrDataDir, "PG_VERSION", lStrErrMsg) OR _
+       NOT IsFileExists(pStrDataDir, "global\pg_database", lStrErrMsg) OR _
+       NOT IsFileExists(pStrDataDir, "global\pg_auth", lStrErrMsg) Then
       pStrErrMsg = vbCRLF & "Not a Valid Data Directory." & lStrErrMsg
       Exit Function
     End If
@@ -748,12 +827,12 @@ Class DevServer
                     array(m_strServiceDomain, m_strServiceAccount, p_strServicePassword), _
                     l_strScriptOutput, l_strScriptError, l_iRes)
    Select Case l_iRes
-     Case 1
-       LogNote "The password specified was incorrect. Please enter the correct password for the '" & ServiceAccount & "' windows user account."
-       Exit Function
      Case 0
        ' Do Nothing
        ' Successfully validated
+     Case 1
+       p_lpStrErrMsg = "The password specified was incorrect. Please enter the correct password for the '" & ServiceAccount & "' windows user account."
+       Exit Function
      Case Else
        LogError l_strScriptError
    End Select
@@ -761,6 +840,9 @@ Class DevServer
    validateServicePassword = true
   End Function
 End Class
+
+' Initialize
+Call Init
 
 Set objDevServer            = new DevServer
 objDevServer.SuperUser      = Trim(strSuperUser)
@@ -784,21 +866,23 @@ Question "Please enter the data directory", "objDevServer.validateDataDir", strI
 Question "Please enter the port", "objDevServer.validatePort", iPort, "", bUnattended, true
 Question "Please enter the locale", "objDevServer.validateLocale", "DEFAULT", strLocale, bUnattended, true
 
-WScript.Echo "INSTALL DIR     : " & objDevServer.InstallDir
-WScript.Echo "DATA DIR        : " & objDevServer.DataDir
-WScript.Echo "PORT            : " & objDevServer.Port
-WScript.Echo "LOCALE          : " & objDevServer.Locale
-WScript.Echo "Super User      : " & objDevServer.SuperUser
-WScript.Echo "Serivce Account : " & objDevServer.ServiceAccount
+ShowMessage "INSTALL DIR     : " & objDevServer.InstallDir
+ShowMessage "DATA DIR        : " & objDevServer.DataDir
+ShowMessage "PORT            : " & objDevServer.Port
+ShowMessage "LOCALE          : " & objDevServer.Locale
+ShowMessage "Super User      : " & objDevServer.SuperUser
+ShowMessage "Serivce Account : " & objDevServer.ServiceAccount
 
+LogNote "We won't be able to check the current password. Hence, there will no be validation done."
 Question "Please enter the Password for the SuperUser (" & objDevServer.SuperUser & ")", "", strSuperPassword, strSuperPassword, bUnattended, true
 LogNote "Service Account (" & objDevServer.ServiceAccount & ") will be created with the provided password immediatedly"
 Question "Please enter the Password for the ServiceAccount (" & objDevServer.ServiceAccount & ")", "objDevServer.validateServicePassword", strServicePassword, strServicePassword, bUnattended, true
 
 If NOT FSO.FolderExists(objDevServer.DataDir) AND _
-   NOT FileExistsInFolder(pStrDataDir, "postgresql.conf", lStrErrMsg) Then
+   NOT IsFileExists(objDevServer.DataDir, "postgresql.conf", lStrErrMsg) Then
   ShowMessage "Initializing Cluster..."
   FSO.CreateFolder objDevServer.DataDir
+  LogNote "This can take some time..."
   RunProgram WScript.FullName, _
              array("//nologo", objDevServer.InstallDir & "\installer\server\initcluster.vbs", _
                    objDevServer.ServiceAccount, objDevServer.SuperUser, objDevServer.SuperPassword, _
@@ -835,12 +919,14 @@ Select Case iStatus
     LogWarn "A non-fatal error occured during startup configuration. Please check the installation log for details."
 End Select
 
+BackupNUseOriginalFile objDevServer.InstallDir & "\scripts\serverctl.vbs"
+BackupNUseOriginalFile objDevServer.InstallDir & "\scripts\runpsql.bat"
+
 RunProgram WScript.FullName, _
            array("//nologo", objDevServer.InstallDir & "\installer\server\createshortcuts.vbs", _
                  objDevServer.Version, objDevServer.SuperUser, objDevServer.Port, g_strBranding, _
                  objDevServer.InstallDir, objDevServer.DataDir, objDevServer.ServiceName), _
            strScriptOutput, strScriptError, iStatus
-
 Select Case iStatus
   Case 0
     ' Do nothing. Successfully done
@@ -851,8 +937,13 @@ Select Case iStatus
   Case Else
     LogError "Unknown Error calling createshortcuts.vbs script. Please check the installation log for details."
 End Select
+FSO.CopyFile objDevServer.InstallDir & "\scripts\serverctl.vbs", objDevServer.InstallDir & "\scripts\serverctl_" & objDevServer.ServiceName & ".vbs", true
+FSO.CopyFile objDevServer.InstallDir & "\scripts\runpsql.bat", objDevServer.InstallDir & "\scripts\runpsql_" & objDevServer.ServiceName & ".bat", true
 
 ShowMessage "Starting server..."
 RunProgram WScript.FullName, _
            array("//nologo", objDevServer.InstallDir & "\scripts\serverctl.vbs", "start"), _
            strScriptOutput, strScriptError, iStatus
+
+' Always call this file at the end
+Call Finish(1)
