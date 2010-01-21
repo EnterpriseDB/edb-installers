@@ -426,20 +426,20 @@
             <files>${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties</files>
             <substitutionList>
                 <substitution>
-                    <pattern>agent.setup.camIP=.*\n</pattern>
-                    <value>agent.setup.camIP=${hyperichost}</value>
+                    <pattern>@@PPHQHOST@@</pattern>
+                    <value>${hyperichost}</value>
                 </substitution>
                 <substitution>
-                    <pattern>agent.setup.camPort=.*\n</pattern>
-                    <value>agent.setup.camPort=${hypericport}</value>
+                    <pattern>@@PPHQPORT@@</pattern>
+                    <value>${hypericport}</value>
                 </substitution>
                 <substitution>
-                    <pattern>agent.setup.camLogin=.*\n</pattern>
-                    <value>agent.setup.camLogin=${hypericuser}</value>
+                    <pattern>@@PPHQUSER@@</pattern>
+                    <value>${hypericuser}</value>
                 </substitution>
                 <substitution>
-                    <pattern>agent.setup.camPword=.*\n</pattern>
-                    <value>agent.setup.camPword=${hypericpassword}</value>
+                    <pattern>@@PPHQPASSWORD@@</pattern>
+                    <value>${hypericpassword}</value>
                 </substitution>
             </substitutionList>
         </substitute>

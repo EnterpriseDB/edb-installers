@@ -16,7 +16,7 @@ _prep_hqagent_linux() {
       rm -rf hqagent.linux  || _die "Couldn't remove the existing hqagent.linux source directory (source/hqagent.linux)"
     fi
    
-    echo "Creating staging directory ($WD/hqagent/source/hqagent.linux)"
+    echo "Creating source directory ($WD/hqagent/source/hqagent.linux)"
     mkdir -p $WD/hqagent/source/hqagent.linux || _die "Couldn't create the hqagent.linux directory"
 
     # Grab a copy of the source tree

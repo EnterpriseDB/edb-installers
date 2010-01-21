@@ -5,8 +5,7 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-    echo "Not yet implemented"
-    #source $WD/hqagent/build-osx.sh
+    source $WD/hqagent/build-osx.sh
 fi
 
 # Linux
@@ -18,15 +17,13 @@ fi
 # Linux x64
 if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
-    echo "Not yet implemented"
-    #source $WD/hqagent/build-linux-x64.sh
+    source $WD/hqagent/build-linux-x64.sh
 fi
 
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
-    echo "Not yet implemented"
-    #source $WD/hqagent/build-windows.sh
+    source $WD/hqagent/build-windows.sh
 fi
     
 ################################################################################
@@ -51,8 +48,58 @@ _prep_hqagent() {
       rm -rf hqagent-$PG_VERSION_HQAGENT  || _die "Couldn't remove the existing hqagent-$PG_VERSION_HQAGENT source directory (source/hqagent-$PG_VERSION_HQAGENT)"
     fi
 
-    echo "Unpacking hqagent source..."
-    extract_file ../../tarballs/hqagent-$PG_VERSION_HQAGENT || exit 1
+    # Linux
+    if [ $PG_ARCH_LINUX = 1 ];
+    then
+        if [ -e hqagent-"$PG_VERSION_PGAGENT" ];
+        then
+          echo "Removing existing hqagent-"$PG_VERSION_HQAGENT" source directory"
+          rm -rf hqagent-"$PG_VERSION_HQAGENT"  || _die "Couldn't remove the existing hqagent-"$PG_VERSION_HQAGENT" source directory (source/hqagent-"$PG_VERSION_HQAGENT")"
+        fi
+
+        echo "Unpacking hqagent source..."
+         extract_file ../../tarballs/hqagent-$PG_VERSION_HQAGENT || exit 1
+    fi
+
+    # Linux-x64
+    if [ $PG_ARCH_LINUX_X64 = 1 ];
+    then
+        if [ -e hqagent-"$PG_VERSION_HQAGENT"-x64 ];
+        then
+          echo "Removing existing hqagent-"$PG_VERSION_HQAGENT"-x64 source directory"
+          rm -rf hqagent-"$PG_VERSION_HQAGENT"-x64  || _die "Couldn't remove the existing hqagent-"$PG_VERSION_HQAGENT"-x64 source directory (source/hqagent-"$PG_VERSION_HQAGENT"-x64)"
+        fi
+
+        echo "Unpacking hqagent source..."
+         extract_file ../../tarballs/hqagent-$PG_VERSION_HQAGENT-x64 || exit 1
+    fi
+
+    # osx
+    if [ $PG_ARCH_OSX = 1 ];
+    then
+        if [ -e hqagent-"$PG_VERSION_HQAGENT"-osx ];
+        then
+          echo "Removing existing hqagent-"$PG_VERSION_HQAGENT"-osx source directory"
+          rm -rf hqagent-"$PG_VERSION_HQAGENT"-osx || _die "Couldn't remove the existing hqagent-"$PG_VERSION_HQAGENT"-osx source directory (source/hqagent-"$PG_VERSION_HQAGENT"-osx)"
+        fi
+
+        echo "Unpacking hqagent source..."
+         extract_file ../../tarballs/hqagent-$PG_VERSION_HQAGENT-osx || exit 1
+    fi
+
+    # windows
+    if [ $PG_ARCH_WINDOWS = 1 ];
+    then
+        if [ -e hqagent-"$PG_VERSION_HQAGENT"-windows ];
+        then
+          echo "Removing existing hqagent-"$PG_VERSION_HQAGENT"-windows source directory"
+          rm -rf hqagent-"$PG_VERSION_HQAGENT"-windows || _die "Couldn't remove the existing hqagent-"$PG_VERSION_HQAGENT"-windows source directory (source/hqagent-"$PG_VERSION_HQAGENT"-windows)"
+        fi
+  
+        echo "Unpacking hqagent source..."
+         extract_file ../../tarballs/hqagent-$PG_VERSION_HQAGENT-windows || exit 1
+    fi
+
 
     # Per-platform prep
     cd $WD
@@ -60,8 +107,7 @@ _prep_hqagent() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-	echo "Not yet implemented"
-        #_prep_hqagent_osx || exit 1
+        _prep_hqagent_osx || exit 1
     fi
 
     # Linux
@@ -73,15 +119,13 @@ _prep_hqagent() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-	echo "Not yet implemented"
-        #_prep_hqagent_linux_x64 || exit 1
+        _prep_hqagent_linux_x64 || exit 1
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-	echo "Not yet implemented"
-        #_prep_hqagent_windows || exit 1
+        _prep_hqagent_windows || exit 1
     fi
     
 }
@@ -95,8 +139,7 @@ _build_hqagent() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-	echo "Not yet implemented"
-        #_build_hqagent_osx || exit 1
+        _build_hqagent_osx || exit 1
     fi
 
     # Linux 
@@ -108,15 +151,13 @@ _build_hqagent() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-	echo "Not yet implemented"
-       #_build_hqagent_linux_x64 || exit 1
+       _build_hqagent_linux_x64 || exit 1
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-	echo "Not yet implemented"
-        #_build_hqagent_windows || exit 1
+        _build_hqagent_windows || exit 1
     fi
 }
 
@@ -144,8 +185,7 @@ _postprocess_hqagent() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-	echo "Not yet implemented"
-        #_postprocess_hqagent_osx || exit 1
+        _postprocess_hqagent_osx || exit 1
     fi
 
     # Linux
@@ -157,14 +197,12 @@ _postprocess_hqagent() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-	echo "Not yet implemented"
-        #_postprocess_hqagent_linux_x64 || exit 1
+        _postprocess_hqagent_linux_x64 || exit 1
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-	echo "Not yet implemented"
-       #_postprocess_hqagent_windows || exit 1
+       _postprocess_hqagent_windows || exit 1
     fi
 }

@@ -1,5 +1,7 @@
 installer.Welcome.Title=Setup %1$s
 
+error.installing.runtimes=An error occured executing the Microsoft VC++ runtime installer.
+
 Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
 
 Installer.Installing.Title=Installing ${product_fullname}
@@ -55,3 +57,5 @@ warning.during.server.initialisation=A non-fatal error occured during server sta
 warning.during.agent.initialisation=A non-fatal error occured during agent start. Please check the installation error log in ${system_temp_directory} for details.
 
 script.command.line.error=The script was called with an invalid command line
+
+install.runtimes.description=Specifies whether or not install the Microsoft Visual C++ runtimes before the installation proceeds.

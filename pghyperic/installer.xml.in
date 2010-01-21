@@ -92,10 +92,21 @@
               <compareText text="${platform_name}" value="linux"/>
           </ruleList>
       </setInstallerVariable>
+      <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0">
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+      </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PGHYPERIC" />
 	<setInstallerVariable name="hq_db_exist" value="0"/>
+	<setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>
+	<setInstallerVariable name="project.parameter(extract_mode).ask" value="0" />
 	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -360,6 +371,56 @@
             </ruleList>
         </actionGroup>
 
+        <actionGroup>
+            <actionList>
+                <!-- We will also need to get the VC++ runtimes installed on Windows, before we do anything with binaries -->
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}\instscripts\vcredist_x86.exe</destination>
+                    <folder>installfileswindows</folder>
+                    <origin>instscripts/vcredist_x86.exe</origin>
+                </unpackFile>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/instscripts/installruntimes.vbs</destination>
+                    <folder>installfileswindows</folder>
+                    <origin>instscripts/installruntimes.vbs</origin>
+                </unpackFile>
+                <runProgram>
+                    <program>cscript</program>
+                    <programArguments>//NoLogo "${system_temp_directory}\instscripts\installruntimes.vbs" "${system_temp_directory}\instscripts\vcredist_x86.exe"</programArguments>
+                    <abortOnError>1</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                    <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>1</text>
+                            <value>${install_runtimes}</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+                <throwError>
+                    <text>${msg(script.command.line.error)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>127</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+            </actionList>
+
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
     </preInstallationActionList>
     <postInstallationActionList>
 
@@ -399,8 +460,8 @@
 	  </ruleList>
 	</runProgram>
 	<runProgram>
-	  <program>${system_temp_directory}/instscripts/psql.exe</program>
-	  <programArguments>-f "${installdir}/installer/pghyperic/hqdb.sql"</programArguments>
+	  <program>${system_temp_directory}\instscripts\psql.exe</program>
+	  <programArguments>-f "${installdir}\installer\pghyperic\hqdb.sql"</programArguments>
 	  <progressText>${msg(progress.text.creating.hqdbschema)}</progressText>
 	  <abortOnError>0</abortOnError>
 	  <showMessageOnError>0</showMessageOnError>
@@ -993,16 +1054,28 @@
                     </distributionFileList>
                 </folder>
                 <folder>
-                    <description>Installer Files</description>
+                    <description>Binary Files</description>
                     <destination>${installdir}</destination>
-                    <name>installfilesosx</name>
+                    <name>binfilesosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/osx/instscripts</origin>
+                            <origin>staging/osx/bin</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+                <folder>
+                    <description>Library Files</description>
+                    <destination>${installdir}</destination>
+                    <name>libfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+ 
                 <!-- WIN - Program files -->
                 <folder>
                     <description>Program Files</description>
@@ -1049,7 +1122,7 @@
                     <name>PostgreSQL Hyperic Monitoring Home Page</name>
                     <runInTerminal>0</runInTerminal>
                     <url>http://127.0.0.1:7080/</url>
-                    <windowsIcon>${installdir}\scripts\images\hyperic-launch.ico</windowsIcon>
+                    <windowsIcon>${installdir}\scripts\images\pghyperic-launch.ico</windowsIcon>
                 </startMenuLinkShortcut>  
                 <!-- Start server -->
                 <startMenuShortcut>
@@ -1057,7 +1130,7 @@
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}\server-PG_VERSION_PGHYPERIC\bin\hq-server.exe</windowsExec>
                     <windowsExecArgs>start</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\hyperic-start.ico</windowsIcon>
+                    <windowsIcon>${installdir}\scripts\images\pghyperic-start.ico</windowsIcon>
                     <ruleList>
                         <isTrue value="${create_shortcuts}" />
                     </ruleList>
@@ -1101,9 +1174,29 @@
         </component>
     </componentList>
     <parameterList>
+        <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
 	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
+        <!-- Whether to install runtimes -->
+        <booleanParameter>
+           <name>install_runtimes</name>
+           <description>${msg(install.runtimes.description)}</description>
+           <explanation/>
+           <value/>
+           <default>1</default>
+           <ask>yes</ask>
+           <cliOptionName>install_runtimes</cliOptionName>
+           <cliOptionShow>1</cliOptionShow>
+           <ruleList>
+               <compareText>
+                   <logic>equals</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+               </compareText>
+               <isFalse value="${extract_mode}"/>
+           </ruleList>
+        </booleanParameter>
  
 	<parameterGroup>
 	    <name>smtp_server_details</name>
@@ -1333,18 +1426,24 @@
 				  </compareText>
 			    </ruleList>
 			</unpackDirectory>
+		        <!-- MAC: Unpack psql and its shared libraries -->
+			<unpackFile>
+			  <component>pghyperic</component>
+			  <destination>${system_temp_directory}/${product_fullname}/bin/psql</destination>
+			  <folder>binfilesosx</folder>
+			  <origin>bin/psql</origin>
+			  <ruleList>
+			    <compareText logic="equals" text="${platform_name}" value="osx"/>
+			  </ruleList>
+			</unpackFile>
 			<unpackDirectory>
-			     <origin>instscripts</origin>
-			     <destination>${system_temp_directory}</destination>
-			     <component>default</component>
-			     <folder>installfilesosx</folder>
-			     <ruleList>
-				 <compareText>
-				     <logic>equals</logic>
-				     <text>${platform_name}</text>
-				     <value>osx</value>
-				 </compareText>
-			     </ruleList>
+			  <component>pghyperic</component>
+			  <destination>${system_temp_directory}/${product_fullname}/lib</destination>
+			  <folder>libfilesosx</folder>
+			  <origin>lib</origin>
+			  <ruleList>
+			    <compareText logic="equals" text="${platform_name}" value="osx"/>
+			  </ruleList>
 			</unpackDirectory>
                         <setEnvironmentVariable name="PGHOST" value="${pghost}" />
                         <setEnvironmentVariable name="PGUSER" value="${pguser}" />
@@ -1357,7 +1456,6 @@
 			  <execArgs>-l ${pgdatabase}</execArgs>
 			  <name>connection</name>
 			  <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
-			  <customErrorMessage>${program_stderr}</customErrorMessage>
 			  <ruleList>
 			    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
 			  </ruleList>
@@ -1367,7 +1465,6 @@
 			  <execArgs>-l ${pgdatabase}</execArgs>
 			  <name>connection</name>
 			  <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
-			  <customErrorMessage>${program_stderr}</customErrorMessage>
 			  <ruleList>
 			    <compareText logic="equals" text="${platform_name}" value="windows"/>
 			  </ruleList>

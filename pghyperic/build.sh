@@ -87,7 +87,7 @@ _prep_pghyperic() {
 	 extract_file ../../tarballs/pghyperic-$PG_VERSION_PGHYPERIC-osx || exit 1
     fi
 
-    # osx
+    # windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
         if [ -e pghyperic-"$PG_VERSION_PGHYPERIC"-windows ];

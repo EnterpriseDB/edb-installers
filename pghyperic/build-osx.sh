@@ -42,15 +42,19 @@ _prep_pghyperic_osx() {
 
 _build_pghyperic_osx() {
 
-	#Copy psql for postgres validation
-	mkdir -p $WD/pghyperic/staging/osx/instscripts || _die "Failed to create the instscripts directory"
-	cp -R $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/pghyperic/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
-	cp -R $PG_PATH_OSX/server/staging/osx/bin/psql	$PG_PATH_OSX/pghyperic/staging/osx/instscripts/ || _die "Failed to copy psql in instscripts"
-	cp -R $PG_PATH_OSX/server/staging/linux/lib/libssl.so* $PG_PATH_OSX/pghyperic/staging/osx/instscripts/ || _die "Failed to copy the dependency library"
-	cp -R $PG_PATH_OSX/server/staging/linux/lib/libcrypto.so* $PG_PATH_OSX/pghyperic/staging/osx/instscripts/ || _die "Failed to copy the dependency library"
-	cp -R $PG_PATH_OSX/server/staging/linux/lib/libtermcap.so* $PG_PATH_OSX/pghyperic/staging/osx/instscripts/ || _die "Failed to copy the dependency library"
-	cp -R $PG_PATH_OSX/server/staging/linux/lib/libxml2.so* $PG_PATH_OSX/pghyperic/staging/osx/instscripts/ || _die "Failed to copy the dependency library"
-	cp -R $PG_PATH_OSX/server/staging/linux/lib/libreadline.so* $PG_PATH_OSX/pghyperic/staging/osx/instscripts/ || _die "Failed to copy the dependency library"
+    PG_STAGING=$WD/pghyperic/staging/osx
+    mkdir -p $PG_STAGING/lib
+    mkdir -p $PG_STAGING/bin
+
+    # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
+    cp -R $PG_PGHOME_OSX/bin/psql $PG_STAGING/bin || _die "Failed to copy psql"
+    cp -R $PG_PGHOME_OSX/lib/libpq.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library (libpq.5.dylib)"
+
+    # Copy libxml2 as System's libxml can be old.
+    cp /usr/local/lib/libxml2* $PG_STAGING/lib || _die "Failed to copy the latest libxml2"
+
+    _rewrite_so_refs $WD/pghyperic/staging/osx lib @loader_path/..
+    install_name_tool -change "libpq.5.dylib" "@loader_path/libpq.5.dylib" "$PG_STAGING/bin/psql"
 }
 
 
@@ -97,7 +101,7 @@ _postprocess_pghyperic_osx() {
         "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
         cp $WD/output/pghyperic-$PG_VERSION_PGHYPERIC-osx.app/Contents/MacOS/pghyperic $WD/scripts/risePrivileges || _die "Failed to copy the privileges escalation applet"
 
-        rm -rf $WD/output/pghyperic-$PG_VERSION_PGHYPERIC-$PG_BUILDNUM_PGHYPERIC-osx.app
+        rm -rf $WD/output/pghyperic-$PG_VERSION_PGHYPERIC-osx.app
     fi
 
     # Build the installer

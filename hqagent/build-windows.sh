@@ -20,7 +20,7 @@ _prep_hqagent_windows() {
     mkdir -p $WD/hqagent/source/hqagent.windows || _die "Couldn't create the hqagent.windows directory"
 
     # Grab a copy of the source tree
-    cp -R hqagent-$PG_VERSION_PGJDBC/* hqagent.windows || _die "Failed to copy the source code (source/hqagent-$PG_VERSION_PGJDBC)"
+    cp -R hqagent-$PG_VERSION_HQAGENT-windows/* hqagent.windows || _die "Failed to copy the source code (source/hqagent-$PG_VERSION_HQAGENT-windows)"
     chmod -R ugo+w hqagent.windows || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -33,7 +33,7 @@ _prep_hqagent_windows() {
     echo "Creating staging directory ($WD/hqagent/staging/windows)"
     mkdir -p $WD/hqagent/staging/windows || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/hqagent/staging/windows || _die "Couldn't set the permissions on the staging directory"
-    
+   cp -R $WD/hqagent/source/hqagent.windows/* $WD/hqagent/staging/windows || _die "Failed to copy the hqagent Source into the staging directory" 
 
 }
 
@@ -48,13 +48,11 @@ _build_hqagent_windows() {
 
 
 ################################################################################
-# PG Build
+# HQAGENT Build
 ################################################################################
 
 _postprocess_hqagent_windows() {
  
-    cp -R $WD/hqagent/source/hqagent.windows/* $WD/hqagent/staging/windows || _die "Failed to copy the hqagent Source into the staging directory"
-
     cd $WD/hqagent
 
     # Copy in the menu pick images
@@ -64,8 +62,8 @@ _postprocess_hqagent_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
-	# Sign the installer
-	win32_sign "pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-windows.exe"
+    # Sign the installer
+    win32_sign "hqagent-$PG_VERSION_HQAGENT-windows.exe"
 	
     cd $WD
 }

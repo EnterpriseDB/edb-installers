@@ -63,6 +63,9 @@ _build_pghyperic_windows() {
     cp -R server/staging/windows/bin/libxslt.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/zlib1.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/msvcr71.dll pghyperic/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    # Setup the installer scripts. 
+    scp $PG_SSH_WINDOWS:C:\\\\pgBuild\\\\vcredist\\\\vcredist_x86.exe pghyperic/staging/windows/instscripts/vcredist_x86.exe || _die "Failed to copy the VC++ runtimes on the windows build host"
+    cp pghyperic/scripts/windows/installruntimes.vbs pghyperic/staging/windows/instscripts/installruntimes.vbs || _die "Failed to copy the installruntimes script ($WD/scripts/windows/instscripts/installruntimes.vbs)"
 
 }
 
@@ -74,6 +77,7 @@ _build_pghyperic_windows() {
 _postprocess_pghyperic_windows() {
  
     cd $WD/pghyperic
+
 
     # Copy in the menu pick images
     mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the menu pick images"
