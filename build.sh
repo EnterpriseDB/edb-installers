@@ -429,6 +429,21 @@ then
         _postprocess_MigrationToolKit || exit 1
 fi
 
+# Package: ReplicationServer
+if [ $PG_PACKAGE_REPLICATIONSERVER = 1 ];
+then
+    cd $WD
+    source ./ReplicationServer/build.sh
+
+    if [ $SKIPBUILD = 0 ];
+    then
+        _prep_ReplicationServer || exit 1
+        _build_ReplicationServer || exit 1
+    fi
+
+    _postprocess_ReplicationServer || exit 1
+fi
+
 # Package: JBOSS
 if [ $PG_PACKAGE_JBOSS = 1 ];
 then
@@ -473,22 +488,6 @@ then
 
     _postprocess_hqagent || exit 1
 fi
-
-# Package: ReplicationServer
-if [ $PG_PACKAGE_REPLICATIONSERVER = 1 ];
-then
-    cd $WD
-    source ./ReplicationServer/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_ReplicationServer || exit 1
-        _build_ReplicationServer || exit 1
-    fi
-
-    _postprocess_ReplicationServer || exit 1
-fi
-
 
 # Package: DevServer
 # ALWAYS BUILD THIS LAST!!
