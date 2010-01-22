@@ -77,15 +77,15 @@ _postprocess_ReplicationServer_osx() {
     cd $WD/ReplicationServer
 
     # Setup the installer scripts.
-    mkdir -p staging/osx/installer/ReplicationServer || _die "Failed to create a directory for the install scripts"
+    mkdir -p staging/osx/installer/xDBReplicationServer || _die "Failed to create a directory for the install scripts"
 
-    cp scripts/osx/createshortcuts.sh staging/osx/installer/ReplicationServer/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/osx/createshortcuts.sh)"
-    chmod ugo+x staging/osx/installer/ReplicationServer/createshortcuts.sh
+    cp scripts/osx/createshortcuts.sh staging/osx/installer/xDBReplicationServer/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/osx/createshortcuts.sh)"
+    chmod ugo+x staging/osx/installer/xDBReplicationServer/createshortcuts.sh
 
-    cp scripts/osx/createuser.sh staging/osx/installer/ReplicationServer/createuser.sh || _die "Failed to copy the createuser.sh script (scripts/osx/createuser.sh)"
-    chmod ugo+x staging/osx/installer/ReplicationServer/createuser.sh
+    cp scripts/osx/createuser.sh staging/osx/installer/xDBReplicationServer/createuser.sh || _die "Failed to copy the createuser.sh script (scripts/osx/createuser.sh)"
+    chmod ugo+x staging/osx/installer/xDBReplicationServer/createuser.sh
 
-    cp staging/osx/edb-repencrypter.jar staging/osx/installer/ReplicationServer/ || _die "Failed to copy the DESEncrypter utility (staging/osx/edb-repencrypter.jar)"
+    cp staging/osx/edb-repencrypter.jar staging/osx/installer/xDBReplicationServer/ || _die "Failed to copy the DESEncrypter utility (staging/osx/edb-repencrypter.jar)"
     # Setup Launch Scripts
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the launch scripts"
     cp scripts/osx/startupcfg_publication.sh staging/osx/scripts/startupcfg_publication.sh || _die "Failed to copy the startupcfg_publication.sh script (scripts/osx/startupcfg_publication.sh)"
@@ -110,26 +110,26 @@ _postprocess_ReplicationServer_osx() {
         # Build the installer (for the root privileges required)
         echo Building the installer with the root privileges required
         "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
-        cp $WD/output/replicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/ReplicationServer $WD/scripts/risePrivileges || _die "Failed to copy the privileges escalation applet"
+        cp $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/xDBReplicationServer $WD/scripts/risePrivileges || _die "Failed to copy the privileges escalation applet"
 
-        rm -rf $WD/output/replicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app
+        rm -rf $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app
     fi
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
     # Using own scripts for extract-only mode
-    cp -f $WD/scripts/risePrivileges $WD/output/replicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/ReplicationServer
-    chmod a+x $WD/output/replicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/ReplicationServer
-    cp -f $WD/resources/extract_installbuilder.osx $WD/output/replicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/installbuilder.sh
-    _replace @@PROJECTNAME@@ ReplicationServer $WD/output/replicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
-    chmod a+x $WD/output/replicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/installbuilder.sh
+    cp -f $WD/scripts/risePrivileges $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/xDBReplicationServer
+    chmod a+x $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/xDBReplicationServer
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ xDBReplicationServer $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
+    chmod a+x $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/installbuilder.sh
 
 
     # Zip up the output
     cd $WD/output
-    zip -r replicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.zip replicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/ || _die "Failed to zip the installer bundle"
-    rm -rf replicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/ || _die "Failed to remove the unpacked installer bundle"
+    zip -r xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.zip xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
 }

@@ -1,17 +1,17 @@
 <project>
     <!-- Package details -->
-    <shortName>replicationserver</shortName>
-    <fullName>ReplicationServer</fullName>
+    <shortName>xdbreplicationserver</shortName>
+    <fullName>xDBReplicationServer</fullName>
     <version>PG_VERSION_REPLICATIONSERVER-PG_BUILDNUM_REPLICATIONSERVER</version>
     <!-- These options are used on Windows -->
     <startMenuGroupName>${branding}</startMenuGroupName>
     <!-- Product Specific Options -->
-    <productComments>EnterpriseDB xDB Replication Server for Postgres Plus, by EnterpriseDB</productComments>
+    <productComments>Postgres Plus xDB Replication Server, by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
     <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
     <!-- The options are used for RPM registration -->
-    <description>EnterpriseDB xDB Replication Server for Postgres Plus</description>
-    <summary>EnterpriseDB xDB Replication Server for Postgres Plus, by EnterpriseDB</summary>
+    <description>Postgres Plus xDB Replication Server</description>
+    <summary>Postgres Plus xDB Replication Server, by EnterpriseDB</summary>
     <vendor>EnterpriseDB</vendor>
 
     <!-- Installer Size -->
@@ -48,7 +48,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>/Library/PostgresPlus/ReplicationServer</value>
+            <value>/Library/PostgresPlus/EnterpriseDB-xDBReplicationServer</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -61,7 +61,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}/PostgresPlus/ReplicationServer</value>
+            <value>${platform_install_prefix}/PostgresPlus/EnterpriseDB-xDBReplicationServer</value>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
@@ -74,7 +74,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}\PostgresPlus\ReplicationServer</value>
+            <value>${platform_install_prefix}\PostgresPlus\EnterpriseDB-xDBReplicationServer</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -97,7 +97,7 @@
     <initializationActionList>
         <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_REPLICATIONSERVER" />
-        <setInstallerVariable name="ReplicationServerVersion"  persist="1" value=""/>
+        <setInstallerVariable name="xDBReplicationServerVersion"  persist="1" value=""/>
         <setInstallerVariable name="defaultuser" value="postgres" />
         <setInstallerVariable name="defaultpubport" value="9011" />
         <setInstallerVariable name="defaultsubport" value="9012" />
@@ -134,7 +134,7 @@
         <!-- LIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/ReplicationServer"/>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/EnterpriseDB-xDBReplicationServer"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -152,7 +152,7 @@
         <!-- WIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}\PostgresPlus\ReplicationServer"/>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}\PostgresPlus\EnterpriseDB-xDBReplicationServer"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -170,7 +170,7 @@
         <!-- MAC : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="/Library/PostgresPlus/ReplicationServer"/>
+                <setInstallerVariable name="installdir" value="/Library/PostgresPlus/EnterpriseDB-xDBReplicationServer"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -189,7 +189,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>/Library/PostgresPlus/ReplicationServer</value>
+            <value>/Library/PostgresPlus/EnterpriseDB-xDBReplicationServer</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -202,7 +202,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}/PostgresPlus/ReplicationServer</value>
+            <value>${platform_install_prefix}/PostgresPlus/EnterpriseDB-xDBReplicationServer</value>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
@@ -215,7 +215,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}\PostgresPlus\ReplicationServer</value>
+            <value>${platform_install_prefix}\PostgresPlus\EnterpriseDB-xDBReplicationServer</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -232,7 +232,7 @@
                     <component>pubserver</component>
                     <destination>${system_temp_directory}\vcredist_x86.exe</destination>
                     <folder>pubserverinstallscriptswindows</folder>
-                    <origin>installer/ReplicationServer/vcredist_x86.exe</origin>
+                    <origin>installer/xDBReplicationServer/vcredist_x86.exe</origin>
                 </unpackFile>
                 <runProgram>
                     <program>${system_temp_directory}\vcredist_x86.exe</program>
@@ -283,54 +283,54 @@
                         </compareText>
                     </ruleList>
                 </touchFile>
-                <!-- LIN & MAC : Get the branding & check Previous Installation of ReplicationServer-->
+                <!-- LIN & MAC : Get the branding & check Previous Installation of xDBReplicationServer-->
                 <actionGroup>
                     <actionList>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>Branding</key>
                             <variable>iBranding</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>Version</key>
-                            <variable>ReplicationServerVersion</variable>
+                            <variable>xDBReplicationServerVersion</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>RepConsole</key>
                             <variable>IsRepConsoleUpgrade</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>PubServer</key>
                             <variable>IsPubServerUpgrade</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>SubServer</key>
                             <variable>IsSubServerUpgrade</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>ServiceAccount</key>
                             <variable>serviceaccount</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>SubPort</key>
                             <variable>subport</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>PubPort</key>
                             <variable>pubport</variable>
                         </iniFileGet>
@@ -344,37 +344,37 @@
                     </ruleList>
                 </actionGroup>
 
-                <!-- WIN : Check Previous Installation of ReplicationServer-->
+                <!-- WIN : Check Previous Installation of xDBReplicationServer-->
                 <actionGroup>
                     <actionList>
                         <!-- Get the branding -->
                         <registryGet>
                             <name>Branding</name>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                             <variable>iBranding</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                             <name>Version</name>
-                            <variable>ReplicationServerVersion</variable>
+                            <variable>xDBReplicationServerVersion</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                             <name>RepConsole</name>
                             <variable>IsRepConsoleUpgrade</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                             <name>PubServer</name>
                             <variable>IsPubServerUpgrade</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                             <name>SubServer</name>
                             <variable>IsSubServerUpgrade</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                             <name>ServiceAccount</name>
                             <variable>serviceaccount</variable>
                         </registryGet>
@@ -429,7 +429,7 @@
                     <ruleList>
                         <compareText>
                             <logic>does_not_equal</logic>
-                            <text>${ReplicationServerVersion}</text>
+                            <text>${xDBReplicationServerVersion}</text>
                             <value></value>
                         </compareText>
                         <compareText>
@@ -476,7 +476,7 @@
                     <actionList>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>InstallationDirectory</key>
                             <variable>installdir</variable>
                         </iniFileGet>
@@ -484,7 +484,7 @@
                     <ruleList>
                         <compareText>
                             <logic>does_not_equal</logic>
-                            <text>${ReplicationServerVersion}</text>
+                            <text>${xDBReplicationServerVersion}</text>
                             <value/>
                         </compareText>
                         <compareText>
@@ -499,7 +499,7 @@
                 <actionGroup>
                     <actionList>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                             <name>Location</name>
                             <variable>installdir</variable>
                         </registryGet>
@@ -507,7 +507,7 @@
                     <ruleList>
                         <compareText>
                             <logic>does_not_equal</logic>
-                            <text>${ReplicationServerVersion}</text>
+                            <text>${xDBReplicationServerVersion}</text>
                             <value/>
                         </compareText>
                         <compareText>
@@ -527,7 +527,7 @@
         <actionGroup>
             <actionList> 
                  <runProgram>
-                     <program>/etc/init.d/edb-pubserver</program>
+                     <program>/etc/init.d/edb-xdbpubserver</program>
                      <programArguments>stop &amp;</programArguments> 
                      <workingDirectory>/etc/initd.d</workingDirectory>
                      <abortOnError>0</abortOnError>
@@ -538,7 +538,7 @@
                  </runProgram>  
                  <runProgram>
                      <program>launchctl</program>
-                     <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pubserver.plist</programArguments> 
+                     <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist</programArguments> 
                      <workingDirectory/>
                      <abortOnError>0</abortOnError>
                      <showMessageOnError>0</showMessageOnError>
@@ -562,7 +562,7 @@
         <actionGroup>
             <actionList> 
                  <runProgram>
-                     <program>/etc/init.d/edb-subserver</program>
+                     <program>/etc/init.d/edb-xdbsubserver</program>
                      <programArguments>stop &amp;</programArguments> 
                      <workingDirectory>/etc/initd.d</workingDirectory>
                      <abortOnError>0</abortOnError>
@@ -573,7 +573,7 @@
                  </runProgram>  
                  <runProgram>
                      <program>launchctl</program>
-                     <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.subserver.plist</programArguments> 
+                     <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.xdbsubserver.plist</programArguments> 
                      <workingDirectory/>
                      <abortOnError>0</abortOnError>
                      <showMessageOnError>0</showMessageOnError>
@@ -599,7 +599,7 @@
 
         <!-- Create the user account with which publication/subscription service will run-->
         <runProgram>
-          <program>${installdir}/installer/ReplicationServer/createuser.sh</program>
+          <program>${installdir}/installer/xDBReplicationServer/createuser.sh</program>
           <programArguments>"${serviceaccount}" "${installdir}"</programArguments>
           <progressText>${msg(progress.text.creating.user)}</progressText>
           <abortOnError>0</abortOnError>
@@ -628,7 +628,7 @@
 
         <!-- WIN : Create user, if not exists -->
         <runProgram>
-          <program>${installdir}\installer\ReplicationServer\createuser.exe</program>
+          <program>${installdir}\installer\xDBReplicationServer\createuser.exe</program>
           <!-- The dot at the beginning of the arguments is the domain -->
           <programArguments>. "${serviceaccount}" "${servicepassword}"</programArguments>
           <progressText>${msg(progress.text.creating.user)}</progressText>
@@ -663,49 +663,49 @@
                     <actionList>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>Description</key>
                             <value>${msg(install.summary)}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>InstallationDirectory</key>
                             <value>${installdir}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>Version</key>
                             <value>${product_version}</value>
                         </iniFileSet>
                          <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>RepConsole</key>
                             <value>${component(repconsole).selected}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>PubServer</key>
                             <value>${component(pubserver).selected}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>SubServer</key>
                             <value>${component(subserver).selected}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>ServiceAccount</key>
                             <value>${serviceaccount}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>SubPort</key>
                             <value>${subport}</value>
                             <ruleList>
@@ -714,7 +714,7 @@
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>ReplicationServer</section>
+                            <section>xDBReplicationServer</section>
                             <key>PubPort</key>
                             <value>${pubport}</value>
                             <ruleList>
@@ -722,10 +722,10 @@
                             </ruleList>
                         </iniFileSet>
                         <runProgram>
-                            <program>${installdir}/installer/ReplicationServer/createshortcuts.sh</program>
+                            <program>${installdir}/installer/xDBReplicationServer/createshortcuts.sh</program>
                             <programArguments>"${installdir}" "${branding}"</programArguments>
                             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
-                            <workingDirectory>${installdir}/installer/ReplicationServer</workingDirectory>
+                            <workingDirectory>${installdir}/installer/xDBReplicationServer</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                             <ruleList>
@@ -748,7 +748,7 @@
                 </logMessage>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>ReplicationServer</section>
+                    <section>xDBReplicationServer</section>
                     <key>Branding</key>
                     <value>${branding}</value>
                     <ruleList>
@@ -760,32 +760,32 @@
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                     <name>Branding</name>
                     <value>${branding}</value>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                     <name>RepConsole</name>
                     <value>${component(repconsole).selected}</value>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                     <name>PubServer</name>
                     <value>${component(pubserver).selected}</value>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                     <name>SubServer</name>
                     <value>${component(subserver).selected}</value>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                     <name>ServiceAccount</name>
                     <value>${serviceaccount}</value>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                     <name>SubPort</name>
                     <value>${subport}</value>
                     <ruleList>
@@ -793,7 +793,7 @@
                     </ruleList>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                     <name>PubPort</name>
                     <value>${pubport}</value>
                     <ruleList>
@@ -815,8 +815,8 @@
                 <setInstallerVariableFromScriptOutput>
                     <name>enc_password</name>
                     <exec>${java_executable}</exec>
-                    <execArgs>-jar ${installdir}/installer/ReplicationServer/edb-repencrypter.jar "${pgpassword}"</execArgs>
-                    <workingDirectory>${installdir}/installer/ReplicationServer</workingDirectory>
+                    <execArgs>-jar ${installdir}/installer/xDBReplicationServer/edb-repencrypter.jar "${pgpassword}"</execArgs>
+                    <workingDirectory>${installdir}/installer/xDBReplicationServer</workingDirectory>
                     <ruleList>
                         <compareText text="${platform_name}" logic="does_not_equal" value="windows" /> 
                     </ruleList>
@@ -825,14 +825,14 @@
                 <setInstallerVariableFromScriptOutput>
                     <name>enc_password</name>
                     <exec>${java_executable}</exec>
-                    <execArgs>-jar "${installdir}\installer\ReplicationServer\edb-repencrypter.jar" "${pgpassword}"</execArgs>
-                    <workingDirectory>${installdir}/installer/ReplicationServer</workingDirectory>
+                    <execArgs>-jar "${installdir}\installer\xDBReplicationServer\edb-repencrypter.jar" "${pgpassword}"</execArgs>
+                    <workingDirectory>${installdir}/installer/xDBReplicationServer</workingDirectory>
                     <ruleList>
                         <compareText text="${platform_name}" logic="equals" value="windows" /> 
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>   
 
-                <deleteFile path="${installdir}/installer/ReplicationServer/edb-repencrypter.jar" />
+                <deleteFile path="${installdir}/installer/xDBReplicationServer/edb-repencrypter.jar" />
 
                 <!-- Escape the = sign -->
                 <setInstallerVariableFromRegEx>
@@ -844,9 +844,9 @@
 
                 <runProgram>
                    <customErrorMessage>${msg(error.create.edbrepl)}</customErrorMessage>
-                   <program>${installdir}\installer\ReplicationServer\CreateEDBReplConfForUser.exe</program>
+                   <program>${installdir}\installer\xDBReplicationServer\CreateEDBReplConfForUser.exe</program>
                    <programArguments>${serviceaccount} "${servicepassword}" ${pghost} ${pgport} ${control_db} ${pguser} "${esc_enc_password}" ${dbtype}</programArguments>
-                   <workingDirectory>${installdir}\installer\ReplicationServer</workingDirectory>
+                   <workingDirectory>${installdir}\installer\xDBReplicationServer</workingDirectory>
                    <abortOnError>0</abortOnError>
                    <showMessageOnError>1</showMessageOnError>
                    <ruleList>
@@ -855,7 +855,7 @@
                 </runProgram>
 
                 <deleteFile>
-                   <path>${installdir}\installer\ReplicationServer\CreatePGPassconfForUser.exe</path>
+                   <path>${installdir}\installer\xDBReplicationServer\CreatePGPassconfForUser.exe</path>
                     <ruleList>
                         <compareText text="${platform_name}" logic="equals" value="windows" />
                     </ruleList>
@@ -1175,7 +1175,7 @@ database=${control_db}
          </startWindowsService>
          -->
         <runProgram>
-            <program>/etc/init.d/edb-pubserver</program>
+            <program>/etc/init.d/edb-xdbpubserver</program>
             <programArguments>start &amp;</programArguments> 
             <workingDirectory>/etc/init.d</workingDirectory>
             <progressText>${msg(progress.text.starting.pubservice)}</progressText>
@@ -1185,7 +1185,7 @@ database=${control_db}
             </ruleList>
         </runProgram> 
         <runProgram>
-            <program>/etc/init.d/edb-subserver</program>
+            <program>/etc/init.d/edb-xdbsubserver</program>
             <programArguments>start &amp;</programArguments> 
             <workingDirectory>${installdir}/bin</workingDirectory>
             <progressText>${msg(progress.text.starting.subservice)}</progressText>
@@ -1217,61 +1217,61 @@ database=${control_db}
             <actionList>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>ReplicationServer</section>
+                    <section>xDBReplicationServer</section>
                     <key>Description</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>ReplicationServer</section>
+                    <section>xDBReplicationServer</section>
                     <key>InstallationDirectory</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>ReplicationServer</section>
+                    <section>xDBReplicationServer</section>
                     <key>Version</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>ReplicationServer</section>
+                    <section>xDBReplicationServer</section>
                     <key>Branding</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>ReplicationServer</section>
+                    <section>xDBReplicationServer</section>
                     <key>RepConsole</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>ReplicationServer</section>
+                    <section>xDBReplicationServer</section>
                     <key>PubServer</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>ReplicationServer</section>
+                    <section>xDBReplicationServer</section>
                     <key>SubServer</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>ReplicationServer</section>
+                    <section>xDBReplicationServer</section>
                     <key>ServiceAccount</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>ReplicationServer</section>
+                    <section>xDBReplicationServer</section>
                     <key>SubPort</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>ReplicationServer</section>
+                    <section>xDBReplicationServer</section>
                     <key>PubPort</key>
                     <value/>
                 </iniFileSet>
@@ -1286,7 +1286,7 @@ database=${control_db}
         </actionGroup>
 
         <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ReplicationServer</key>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
         </registryDelete> 
         <!--
         <stopWindowsService>
@@ -1303,47 +1303,47 @@ database=${control_db}
         </stopWindowsService>
         -->
         <runProgram>
-            <program>/etc/init.d/edb-pubserver</program>
+            <program>/etc/init.d/edb-xdbpubserver</program>
             <programArguments>stop</programArguments>
             <workingDirectory>/etc/init.d</workingDirectory>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
-                <fileExists path="/etc/init.d/edb-pubserver" />
+                <fileExists path="/etc/init.d/edb-xdbpubserver" />
                 <compareText text="${platform_name}" logic="contains" value="linux" />
             </ruleList>
         </runProgram>
         <runProgram>
-            <program>/etc/init.d/edb-subserver</program>
+            <program>/etc/init.d/edb-xdbsubserver</program>
             <programArguments>stop</programArguments>
             <workingDirectory>/etc/init.d</workingDirectory>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
-                <fileExists path="/etc/init.d/edb-subserver" />
+                <fileExists path="/etc/init.d/edb-xdbsubserver" />
                 <compareText text="${platform_name}" logic="contains" value="linux" />
             </ruleList>
         </runProgram>
 
         <runProgram>
             <program>launchctl</program>
-            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pubserver.plist</programArguments>
+            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist</programArguments>
             <workingDirectory/>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
-                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.pubserver.plist" />
+                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist" />
                 <compareText text="${platform_name}" logic="equals" value="osx" />
             </ruleList>
         </runProgram>
         <runProgram>
             <program>launchctl</program>
-            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.subserver.plist</programArguments>
+            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.xdbsubserver.plist</programArguments>
             <workingDirectory/>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
-                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.subserver.plist" />
+                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.xdbsubserver.plist" />
                 <compareText text="${platform_name}" logic="equals" value="osx" />
             </ruleList>
         </runProgram>
@@ -1361,29 +1361,29 @@ database=${control_db}
             <showMessageOnError>0</showMessageOnError>
         </deleteWindowsService>
         --> 
-        <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.pubserver.plist" >
+        <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist" >
             <ruleList>
-                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.pubserver.plist" />
+                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist" />
                 <compareText text="${platform_name}" logic="equals" value="osx" />
             </ruleList>
         </deleteFile>    
-         <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.subserver.plist" >
+         <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.xdbsubserver.plist" >
             <ruleList>
-                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.subserver.plist" />
+                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.xdbsubserver.plist" />
                 <compareText text="${platform_name}" logic="equals" value="osx" />
             </ruleList>
         </deleteFile>    
  
-        <deleteFile path="/etc/init.d/edb-pubserver" >
+        <deleteFile path="/etc/init.d/edb-xdbpubserver" >
             <ruleList>
-                <fileExists path="/etc/init.d/edb-pubserver" />
+                <fileExists path="/etc/init.d/edb-xdbpubserver" />
                 <compareText text="${platform_name}" logic="contains" value="linux" />
             </ruleList>
         </deleteFile>    
  
-        <deleteFile path="/etc/init.d/edb-subserver" >
+        <deleteFile path="/etc/init.d/edb-xdbsubserver" >
             <ruleList>
-                <fileExists path="/etc/init.d/edb-subserver" />
+                <fileExists path="/etc/init.d/edb-xdbsubserver" />
                 <compareText text="${platform_name}" logic="contains" value="linux" />
             </ruleList>
         </deleteFile>    
@@ -1399,9 +1399,9 @@ database=${control_db}
         <actionGroup>
             <actionList>
                 <runProgram>
-                    <program>${installdir}/installer/ReplicationServer/removeshortcuts.sh</program>
+                    <program>${installdir}/installer/xDBReplicationServer/removeshortcuts.sh</program>
                     <programArguments>"${installdir}" "${branding}"</programArguments>
-                    <workingDirectory>${installdir}/installer/ReplicationServer</workingDirectory>
+                    <workingDirectory>${installdir}/installer/xDBReplicationServer</workingDirectory>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -1623,10 +1623,10 @@ database=${control_db}
             </folderList>
             <!-- WIN: Start Menu -->
             <startMenuShortcutList>
-            <!-- Launch ReplicationServer -->
+            <!-- Launch xDBReplicationServer -->
                  <startMenuShortcut>
-                    <comment>Replication Console</comment>
-                    <name>Replication Console</name>
+                    <comment>xDB Replication Console</comment>
+                    <name>xDB Replication Console</name>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${java_executable}</windowsExec>
                     <windowsExecArgs>-jar "${installdir}\bin\edb-repconsole.jar"</windowsExecArgs>
@@ -2093,7 +2093,23 @@ database=${control_db}
                 </folder>
             </folderList>
         </component> 
- 
+        <component>
+           <name>validatorComponent</name>
+           <description>Component to validate user input</description>
+           <show>0</show>
+           <selected>1</selected>
+           <canBeEdited>0</canBeEdited>
+           <componentSelectionValidationActionList>
+               <throwError>
+                   <text>${msg(error.select.component)}</text>
+                   <ruleList>
+                       <compareText text="${component(repconsole).selected}" value="0" logic="equals"/>
+                       <compareText text="${component(pubserver).selected}" value="0" logic="equals"/>
+                       <compareText text="${component(subserver).selected}" value="0" logic="equals"/>
+                   </ruleList>
+              </throwError>
+           </componentSelectionValidationActionList>
+        </component>
    </componentList>
     <!-- Install Directory -->
     <parameterList>
@@ -2627,7 +2643,7 @@ database=${control_db}
                       <component>pubserver</component>
                       <destination>${system_temp_directory}\${product_fullname}\createuser.exe</destination>
                       <folder>pubserverinstallscriptswindows</folder>
-                      <origin>installer\ReplicationServer\createuser.exe</origin>
+                      <origin>installer\xDBReplicationServer\createuser.exe</origin>
                     </unpackFile>
                     <runProgram>
                       <program>${system_temp_directory}\${product_fullname}\createuser.exe</program>
@@ -2659,7 +2675,7 @@ database=${control_db}
                     <component>pubserver</component>
                     <destination>${system_temp_directory}\${product_fullname}\validateuser.exe</destination>
                     <folder>pubserverinstallscriptswindows</folder>
-                    <origin>installer\ReplicationServer\validateuser.exe</origin>
+                    <origin>installer\xDBReplicationServer\validateuser.exe</origin>
                   </unpackFile>
                   <runProgram>
                     <program>${system_temp_directory}\${product_fullname}\validateuser.exe</program>
@@ -2700,7 +2716,7 @@ database=${control_db}
             <width>40</width>
             <ruleList>
                 <compareText>
-                    <text>${ReplicationServerVersion}</text>
+                    <text>${xDBReplicationServerVersion}</text>
                     <logic>equals</logic>
                     <value/>
                 </compareText>
@@ -2776,7 +2792,7 @@ database=${control_db}
             <description>${msg(upgrade.existing.installation.description)}</description>
             <ruleList>
                 <compareText>
-                    <text>${ReplicationServerVersion}</text>
+                    <text>${xDBReplicationServerVersion}</text>
                     <logic>does_not_equal</logic>
                     <value/>
                 </compareText>

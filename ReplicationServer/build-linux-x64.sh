@@ -79,17 +79,17 @@ _postprocess_ReplicationServer_linux_x64() {
     cd $WD/ReplicationServer
 
     # Setup the installer scripts.
-    mkdir -p staging/linux-x64/installer/ReplicationServer || _die "Failed to create a directory for the install scripts"
-    cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/ReplicationServer/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux-x64/removeshortcuts.sh)"
-    chmod ugo+x staging/linux-x64/installer/ReplicationServer/removeshortcuts.sh
+    mkdir -p staging/linux-x64/installer/xDBReplicationServer || _die "Failed to create a directory for the install scripts"
+    cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/xDBReplicationServer/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux-x64/removeshortcuts.sh)"
+    chmod ugo+x staging/linux-x64/installer/xDBReplicationServer/removeshortcuts.sh
 
-    cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/ReplicationServer/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux-x64/createshortcuts.sh)"
-    chmod ugo+x staging/linux-x64/installer/ReplicationServer/createshortcuts.sh
+    cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/xDBReplicationServer/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux-x64/createshortcuts.sh)"
+    chmod ugo+x staging/linux-x64/installer/xDBReplicationServer/createshortcuts.sh
 
-    cp scripts/linux/createuser.sh staging/linux-x64/installer/ReplicationServer/createuser.sh || _die "Failed to copy the createuser.sh script (scripts/linux-x64/createuser.sh)"
-    chmod ugo+x staging/linux-x64/installer/ReplicationServer/createuser.sh
+    cp scripts/linux/createuser.sh staging/linux-x64/installer/xDBReplicationServer/createuser.sh || _die "Failed to copy the createuser.sh script (scripts/linux-x64/createuser.sh)"
+    chmod ugo+x staging/linux-x64/installer/xDBReplicationServer/createuser.sh
 
-    cp staging/linux-x64/edb-repencrypter.jar staging/linux-x64/installer/ReplicationServer/ || _die "Failed to copy the DESEncrypter utility (staging/linux-x64/edb-repencrypter.jar)"
+    cp staging/linux-x64/edb-repencrypter.jar staging/linux-x64/installer/xDBReplicationServer/ || _die "Failed to copy the DESEncrypter utility (staging/linux-x64/edb-repencrypter.jar)"
 
     # Setup Launch Scripts
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the launch scripts"

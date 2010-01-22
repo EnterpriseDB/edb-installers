@@ -1,6 +1,6 @@
 Installer.Welcome.Title=Setup - xDB Replication Server
 
-Installer.Welcome.Text=Welcome to the EnterpriseDB xDB Replication Server Setup Wizard.
+Installer.Welcome.Text=Welcome to the Postgres Plus xDB Replication Server Setup Wizard.
 
 Installer.Installing.Title=Installing ${product_fullname}
 
@@ -13,11 +13,11 @@ platform.not.match=You are trying to run a 32bit installer in a 64bit machine. T
 progress.text.creating.shortcuts=Creating menu shortcuts
 progress.text.creating.user=Creating user account
 
-Installer.Installation.Finished.Title=Completed the EnterpriseDB xDB Replication Server Setup Wizard
+Installer.Installation.Finished.Title=Completed the Postgres Plus xDB Replication Server Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
-install.summary=EnterpriseDB xDB Replication Server, by EnterpriseDB.
+install.summary=Postgres Plus xDB Replication Server, by EnterpriseDB.
 
 replicationserver.installdir.empty=The installation directory cannot be empty
 
@@ -30,29 +30,27 @@ subserver.service.description=Subscription Service.
 pgplus.details.title=PostgresPlus Standard Server Installation Details
 pgplus.details.explanation=Please verify the PostgresPlus Standard installation details
 
-config.systempassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the service user account.
+config.servicepassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the service user account.
 config.serviceaccount.description=Operating system username
-pgplus.details.error=Connection to the PostgresPlus Standard Server failed. Please re-check the details provided.
 
 pgplus.port.error=Invalid port specified.
 
 pgplus.blank.error=Values must be entered for all fields.
 
-systempassword.blank.error=Please provide the password to continue. It will be required to setup the publication/subscription service.
+servicepassword.blank.error=Please provide the password to continue. It will be required to setup the publication/subscription service.
 
-systemuser.blank.error=User name can not be blank.
+serviceaccount.blank.error=User name can not be blank.
 
 config.syspassword.confirm=Retype password
 
 config.syspassword.description=System user password
-
-config.systemuser.description=Operating system username
 
 sysuser.details.title=Publication/Subscription service account
 
 sysuser.details.explanation=Please provide the user name of the account under which the publication/subscription service will run.
 
 sysuser.details.explanation.windows=Please provide the username and password of the account under which the publication/subscription service will run.\nIf the user account does not exist, it will be created when you click 'Next'.
+sysuser.details.explanation.withuser.windows=Please provide the password for the '${serviceaccount}' user.\nThe publication/subscription service will be run under this account.
 
 script.command.line.error=The script was called with an invalid command line.
 
@@ -75,3 +73,4 @@ progress.text.starting.pubservice=Starting Publication Service
 progress.text.starting.subservice=Starting Subscription Service
 
 error.create.edbrepl=Could not create edb-repl.conf file in the ${systemuser}'s %APPDATA%\EnterpriseDB directory.
+error.select.component=Please select atleast one component to continue.

@@ -26,22 +26,22 @@ _warn() {
 }
 
 # Write the startup script
-cat <<EOT > "/etc/init.d/edb-pubserver"
+cat <<EOT > "/etc/init.d/edb-xdbpubserver"
 #!/bin/bash
 #
 # chkconfig: 2345 90 10
 # description: Publication Server Service script for Linux
 
 ### BEGIN INIT INFO
-# Provides:          edb-pubserver
+# Provides:          edb-xdbpubserver
 # Required-Start:    $syslog
 # Required-Stop:     $syslog
 # Should-Start:  
 # Should-Stop:  
 # Default-Start:     2 3 4 5
 # Default-Stop:      1 6
-# Short-Description: edb-pubserver 
-# Description:       edb-pubserver
+# Short-Description: edb-xdbpubserver 
+# Description:       edb-xdbpubserver
 ### END INIT INFO
 
 start()
@@ -92,7 +92,7 @@ esac
 EOT
 
 # Fixup the permissions on the StartupItems
-chmod 0755 "/etc/init.d/edb-pubserver" || _warn "Failed to set the permissions on the startup script (/etc/init.d/pubserver)"
+chmod 0755 "/etc/init.d/edb-xdbpubserver" || _warn "Failed to set the permissions on the startup script (/etc/init.d/xdbpubserver)"
 
 #Create directory for logs
 if [ ! -e $INSTALL_DIR/bin/logs ]; 
@@ -107,7 +107,7 @@ fi
 CHKCONFIG=`type /sbin/chkconfig > /dev/null 2>&1 || echo fail`
 if [ ! $CHKCONFIG ];
 then
-    /sbin/chkconfig --add edb-pubserver
+    /sbin/chkconfig --add edb-xdbpubserver
     if [ $? -ne 0 ]; then
         _warn "Failed to configure the service startup with chkconfig"
     fi
@@ -116,7 +116,7 @@ fi
 UPDATECONFIG=`type /usr/sbin/update-rc.d > /dev/null 2>&1 || echo fail`
 if [ ! $UPDATECONFIG ];
 then
-    /usr/sbin/update-rc.d edb-pubserver defaults
+    /usr/sbin/update-rc.d edb-xdbpubserver defaults
     if [ $? -ne 0 ]; then
         _warn "Failed to configure the service startup with update-rc.d"
     fi

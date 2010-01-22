@@ -56,7 +56,7 @@ _fixup_file() {
 
 # Fixup the scripts
 
-chmod ugo+x "$INSTALLDIR/installer/replicationserver/"*.sh
+chmod ugo+x "$INSTALLDIR/installer/xDBReplicationServer/"*.sh
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)

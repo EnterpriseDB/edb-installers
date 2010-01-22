@@ -143,7 +143,7 @@ _postprocess_ReplicationServer_windows() {
     cd $WD/ReplicationServer
 
     # Setup the installer scripts.
-    mkdir -p staging/windows/installer/ReplicationServer || _die "Failed to create a directory for the install scripts"
+    mkdir -p staging/windows/installer/xDBReplicationServer || _die "Failed to create a directory for the install scripts"
 
     # Setup Launch Scripts
     mkdir -p staging/windows/scripts || _die "Failed to create a directory for the launch scripts"
