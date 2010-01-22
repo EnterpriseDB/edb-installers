@@ -28,7 +28,7 @@ if [ ! -e /Library/LaunchDaemons ]; then
 fi
 
 # Write the plist file
-cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pubserver.plist"
+cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist"
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
         "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -37,7 +37,7 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pubserver.plist"
 	<key>Disabled</key>
 	<false/>
         <key>Label</key>
-        <string>com.edb.launchd.pubserver</string>
+        <string>com.edb.launchd.xdbpubserver</string>
         <key>ProgramArguments</key>
         <array>
                 <string>java</string>
@@ -60,7 +60,7 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pubserver.plist"
 EOT
 
 # Fixup the permissions on the launchDaemon
-chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.pubserver.plist" || _warn "Failed to set the ownership of the launchd daemon for pubserver (/Library/LaunchDaemons/com.edb.launchd.pubserver.plist)"
+chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist" || _warn "Failed to set the ownership of the launchd daemon for xdbpubserver (/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist)"
 
 #Create directory for logs
 if [ ! -e $INSTALL_DIR/bin/logs ];
@@ -70,7 +70,7 @@ then
 fi
 
 # Load the plist.
-launchctl load /Library/LaunchDaemons/com.edb.launchd.pubserver.plist || _warn "Failed to load the pubserver launchd plist"
+launchctl load /Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist || _warn "Failed to load the xdbpubserver launchd plist"
 
 echo "$0 ran to completion"
 exit $WARN
