@@ -78,6 +78,13 @@ _postprocess_pghyperic_windows() {
  
     cd $WD/pghyperic
 
+    # Setup the installer scripts.
+    mkdir -p staging/windows/installer/pghyperic || _die "Failed to create a directory for the install scripts"
+
+    cp scripts/tune-os.sh staging/windows/installer/pghyperic/tune-os.sh || _die "Failed to copy the tuneos.sh script (scripts/tuneos.sh)"
+    chmod ugo+x staging/windows/installer/pghyperic/tune-os.sh
+
+    cp scripts/hqdb.sql staging/windows/installer/pghyperic/hqdb.sql || _die "Failed to copy the hqdb.sql script (scripts/hqdb.sql)"
 
     # Copy in the menu pick images
     mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the menu pick images"

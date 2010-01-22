@@ -376,19 +376,19 @@
                 <!-- We will also need to get the VC++ runtimes installed on Windows, before we do anything with binaries -->
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\instscripts\vcredist_x86.exe</destination>
+                    <destination>${system_temp_directory}\vcredist_x86.exe</destination>
                     <folder>installfileswindows</folder>
                     <origin>instscripts/vcredist_x86.exe</origin>
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}/instscripts/installruntimes.vbs</destination>
+                    <destination>${system_temp_directory}/installruntimes.vbs</destination>
                     <folder>installfileswindows</folder>
                     <origin>instscripts/installruntimes.vbs</origin>
                 </unpackFile>
                 <runProgram>
                     <program>cscript</program>
-                    <programArguments>//NoLogo "${system_temp_directory}\instscripts\installruntimes.vbs" "${system_temp_directory}\instscripts\vcredist_x86.exe"</programArguments>
+                    <programArguments>//NoLogo "${system_temp_directory}\installruntimes.vbs" "${system_temp_directory}\vcredist_x86.exe"</programArguments>
                     <abortOnError>1</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
                     <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
@@ -411,7 +411,6 @@
                     </ruleList>
                 </throwError>
             </actionList>
-
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -447,7 +446,7 @@
 	</setInstallerVariableFromScriptOutput>
 	<stringModify text="${hq_db_exist}" variable="hq_db_exist" logic="trim"/>
 
-	<!-- create HQ database and related objects for hyperic -->
+	<!-- create HQ database and related objects for hypericif they do not exist -->
 	<runProgram>
 	  <program>${system_temp_directory}/instscripts/psql</program>
 	  <programArguments>-f "${installdir}/installer/pghyperic/hqdb.sql"</programArguments>
@@ -816,11 +815,6 @@
 	    <showMessageOnError>0</showMessageOnError>
 	    <ruleList>
 		<compareText>
-		    <logic>equals</logic>
-		    <text>${create_shortcuts}</text>
-		    <value>1</value>
-		</compareText>
-		<compareText>
 		    <logic>does_not_equal</logic>
 		    <text>${platform_name}</text>
 		    <value>windows</value>
@@ -1091,6 +1085,18 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+	       <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>installscriptswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+
                 <folder>
                     <description>Menu Scripts</description>
                     <destination>${installdir}</destination>
@@ -1131,9 +1137,6 @@
                     <windowsExec>${installdir}\server-PG_VERSION_PGHYPERIC\bin\hq-server.exe</windowsExec>
                     <windowsExecArgs>start</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pghyperic-start.ico</windowsIcon>
-                    <ruleList>
-                        <isTrue value="${create_shortcuts}" />
-                    </ruleList>
                 </startMenuShortcut>
                 <!-- Stop server -->
                 <startMenuShortcut>
@@ -1141,10 +1144,7 @@
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}\server-PG_VERSION_PGHYPERIC\bin\hq-server.exe</windowsExec>
                     <windowsExecArgs>stop</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\hyperic-stop.ico</windowsIcon>
-                    <ruleList>
-                        <isTrue value="${create_shortcuts}" />
-                    </ruleList>
+                    <windowsIcon>${installdir}\scripts\images\pghyperic-stop.ico</windowsIcon>
 		</startMenuShortcut>
                 <!-- Start agent -->
                 <startMenuShortcut>
@@ -1152,23 +1152,16 @@
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}\agent-PG_VERSION_PGHYPERIC\bin\hq-agent.bat</windowsExec>
                     <windowsExecArgs>start</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\hyperic-agent-start.ico</windowsIcon>
-                    <ruleList>
-                        <isTrue value="${create_shortcuts}" />
-                    </ruleList>
+                    <windowsIcon>${installdir}\scripts\images\pghyperic-agent-start.ico</windowsIcon>
                 </startMenuShortcut>
                 <!-- Stop server -->
                 <startMenuShortcut>
-                    <name>Stop Server</name>
+                    <name>Stop Agent</name>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}\agent-PG_VERSION_PGHYPERIC\bin\hq-agent.bat</windowsExec>
                     <windowsExecArgs>stop</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\hyperic-agent-stop.ico</windowsIcon>
-                    <ruleList>
-                        <isTrue value="${create_shortcuts}" />
-                    </ruleList>
+                    <windowsIcon>${installdir}\scripts\images\pghyperic-agent-stop.ico</windowsIcon>
 		</startMenuShortcut>
-
             </startMenuShortcutList>
 
         </component>
