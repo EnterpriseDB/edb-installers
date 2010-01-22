@@ -986,11 +986,11 @@ database=${control_db}
                 <!-- If it fails for postgres database, fall back to template1 --> 
                 <actionGroup>     
                     <actionList>     
-                         <setInstallerVariable name="PGDATABASE" value="template1" />
+                         <setEnvironmentVariable name="PGDATABASE" value="template1" />
                          <!-- Check connection -->
                          <setInstallerVariableFromScriptOutput name="connection"
                                                        exec="${psql_path}"
-                                                       execArgs="-l"
+                                                       execArgs="-l ${env(PGDATABASE)}"
                                                        workingDirectory="${system_temp_directory}/${product_fullname}/bin"
                                                        customErrorMessage="${program_stderr}" />
                     </actionList>
@@ -2338,16 +2338,16 @@ database=${control_db}
                                                               execArgs="-l"
                                                               workingDirectory="${system_temp_directory}/${product_fullname}/bin"
                                                               showMessageOnError="0"
-                                                              abortOnError="0" />  
+                                                              abortOnError="0" /> 
 
                         <!-- If it fails for postgres database, fall back to template1 --> 
                         <actionGroup>
                              <actionList>
-                                   <setInstallerVariable name="PGDATABASE" value="template1" />
+                                   <setEnvironmentVariable name="PGDATABASE" value="template1" />
                                    <!-- Check connection -->
                                    <setInstallerVariableFromScriptOutput name="connection"
                                                               exec="${psql_path}"
-                                                              execArgs="-l"
+                                                              execArgs="-l ${env(PGDATABASE)}"
                                                               workingDirectory="${system_temp_directory}/${product_fullname}/bin"
                                                               customErrorMessage="${program_stderr}" />
                             </actionList>
