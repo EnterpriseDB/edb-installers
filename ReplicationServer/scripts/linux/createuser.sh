@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# PostgreSQL server service user creation script for Linux
+# xDB Replication service user creation script for Linux
 # Dave Page, EnterpriseDB
 
 # Check the command line
@@ -30,7 +30,7 @@ else
         groupadd $1 || _die $1
     fi
  
-    useradd -m -c "PostgreSQL" -d "$2" -g $1 $1 || _die $1
+    useradd -m -c "xDBReplication" -d "$2" -g $1 $1 || _die $1
 
 fi
 

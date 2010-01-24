@@ -2389,8 +2389,8 @@ database=${control_db}
                     <name>pubport</name>
                     <description>Port</description>
                     <explanation/>
-                    <value/>
-                    <default>${defaultpubport}</default>
+                    <value>${defaultpubport}</value>
+                    <default/>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
@@ -2458,8 +2458,8 @@ database=${control_db}
                     <name>subport</name>
                     <description>Port</description>
                     <explanation/>
-                    <value/>
-                    <default>${defaultsubport}</default>
+                    <value>${defaultsubport}</value>
+                    <default/>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
@@ -2636,6 +2636,7 @@ database=${control_db}
                      <compareText logic="equals" text="${servicepassword}" value=""/>
                  </ruleList>
               </actionGroup>
+              
               <!-- WIN : Create user  -->
               <actionGroup>
                 <actionList>
