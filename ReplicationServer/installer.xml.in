@@ -1116,6 +1116,15 @@ database=${control_db}
                 <isTrue value="${component(pubserver).selected}" />
             </ruleList>
         </runProgram>
+        <!-- Pause for 10 sec between publication/subscription startup.
+             On Mac we load the service from startupcfg scripts.
+             So introducing wait here -->
+        <wait ms="10000" >
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="osx" />
+                <isTrue value="${component(subserver).selected}" />
+            </ruleList>
+        </wait>
         <runProgram>
             <program>${installdir}/scripts/startupcfg_subscription.sh</program>
             <programArguments>"${installdir}" "${serviceaccount}" "${subport}"</programArguments>
@@ -1184,6 +1193,13 @@ database=${control_db}
                 <compareText logic="contains" text="${platform_name}" value="linux" />
             </ruleList>
         </runProgram> 
+        <!-- Pause for 10 sec between publication/subscription startup. -->
+        <wait ms="10000" >
+            <ruleList>
+                <compareText logic="contains" text="${platform_name}" value="linux" />
+                <isTrue value="${component(subserver).selected}" />
+            </ruleList>
+        </wait>
         <runProgram>
             <program>/etc/init.d/edb-xdbsubserver</program>
             <programArguments>start &amp;</programArguments> 
