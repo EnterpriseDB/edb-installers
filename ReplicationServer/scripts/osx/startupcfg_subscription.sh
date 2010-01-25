@@ -54,7 +54,9 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.xdbsubserver.plist"
         <dict>
               <key>SuccessfulExit</key>
               <false/>
-        </dict>  
+        </dict> 
+        <key>WorkingDirectory</key> 
+        <string>$INSTALL_DIR/bin</string>
 </dict>
 </plist>
 EOT
