@@ -36,13 +36,14 @@ strSuperUser       = "postgres"
 strSuperPassword   = "postgres"
 strServicePassword = "postgres"
 strLocale          = "DEFAULT"
-strServiceName     = "PgSQL"
+strServiceName     = ""
 iPort              = 5432
 bUnattended        = false
 bInstallRuntimes   = true
 bDebug             = false
 bWScript           = false
 iPbPort            = 6543
+strCompList        = "postgis,slony,pgagent,psqlodbc,pgbouncer,sbp"
 
 bInstallPostGIS    = "Y"
 bInstallSlony      = "Y"
@@ -51,7 +52,53 @@ bInstallPsqlODBC   = "Y"
 bInstallPgBouncer  = "Y"
 bInstallSBP        = "Y"
 
+Sub ResetComponentSelection()
+  bInstallPostGIS    = "N"
+  bInstallSlony      = "N"
+  bInstallPgAgent    = "N"
+  bInstallPsqlODBC   = "N"
+  bInstallPgBouncer  = "N"
+  bInstallSBP        = "N"
+End Sub
+
+Sub SelectComponents(p_strComponentList)
+  Dim l_iIndex, l_iLBound, l_iUBound, l_arrayComponents
+  Call ResetComponentSelection
+  If TRIM(p_strComponentList) = "" Then
+    Usage 1
+  End If
+  l_arrayComponents = split(p_strComponentList, ",")
+  l_iLBound = LBound(l_arrayComponents)
+  l_iUBound = UBound(l_arrayComponents)
+
+  For l_iIndex = iLBound To iUBound Step 1
+    Select Case l_arrayComponents(l_iIndex)
+      Case "postgis"
+        bInstallPostGIS = "Y"
+      Case "slony"
+        bInstallSlony = "Y"
+      Case "pgagent"
+        bInstallPgAgent = "Y"
+      Case "psqlodbc"
+        bInstallPsqlODBC = "Y"
+      Case "pgbouncer"
+        bInstallPgBouncer = "Y"
+      Case "sbp"
+        bInstallSBP = "Y"
+      Case Else
+        strExitMsg = "Unknow component : " & l_arrayComponents(l_iIndex)
+        Usage 1
+    End Select
+  Next
+End Sub
+
 Sub Init()
+  If NOT bUnattended Then
+    WScript.Echo "NOTE: " & VBCRLF & _
+                 "This script should be running with the administrator rights." & VBCRLF & _
+                 "Please press enter to continue or press Ctrl+C to exit and rerun the script appropriately."
+    WSI.ReadLine
+  End If
   ' Open Log File
   SET LogFile = FSO.CreateTextFile(strLogFile, True)
   Err.Clear
@@ -196,13 +243,13 @@ Sub LogWarn(p_strMsg)
 End Sub
 
 Sub LogNote(p_strNote)
-  If NOT bWScript AND bDebug Then
+  If NOT bWScript AND NOT bUnattended Then
     WScript.Echo vbCRLF & "NOTE: " & p_strNote & vbCRLF
   End If
   If IsObject(LogFile) Then
     LogFile.WriteLine vbCRLF & "NOTE: " & p_strNote & vbCRLF
   Else
-    If NOT bDebug And NOT bWScript Then
+    If NOT bUnattended And NOT bWScript Then
       WScript.Echo vbCRLF & "NOTE: " & p_strNote & vbCRLF
     End If
   End If
@@ -329,17 +376,29 @@ Function Usage(exitcode)
     "  " & WScript.FullName & " //nologo " & WScript.ScriptFullName & " <options> " & VBCRLF & _
     "options:" & VBCRLF &  _
     "-su  | --superuser <superuser> # Database Super User" & VBCRLF & _
+    "         Default: postgres" & VBCRLF & _
     "-sp  | --superpassword <superpassword> # Database Super Password" & VBCRLF & _
+    "         Default: postgres" & VBCRLF & _
     "-sa  | --serviceaccount <username> # Service Account (OS User)" & VBCRLF & _
     "-sn  | --servicename <service-name> # Name of PostgreSQL Service" & VBCRLF & _
+    "         Default: pgsql-<PG_VERSION>" & VBCRLF & _
     "-sap | --servicepassword <password> # Password for the service account" & VBCRLF & _
+    "         Default: postgres" & VBCRLF & _
     "-d   | --datadir <directory> # Data Directory" & VBCRLF & _
+    "         Defalut: <Installation-Directory>\data" & VBCRLF & _
     "-i   | --installdir <directory> # Installation Directory" & VBCRLF & _
+    "         Default: <curernt working directory>" & VBCRLF & _
     "-l   | --locale <locale> # Locale" & VBCRLF & _
+    "         Defualt: DEFAULT" & VBCRLF & _
     "-p   | --port <port> # Port" & VBCRLF & _
+    "         Default: 5432" & VBCRLF & _
     "-pb  | --pgbouncer-port # Port for pgbouncer" & VBCRLF & _
+    "         Default: 6543" & VBCRLF & _
+    "-c   | --components-list # Comma seperated comma list" & VBCRLF & _
+    "         Default: " & strCompList & VBCRLF & _
     "-u   | --unattended # Unattended Mode" & VBCRLF & _
     "-r   | --install-runtimes <1|0> # Install Runtimes" & VBCRLF & _
+    "         Default: 1" & VBCRLF & _
     "-h   | --help # Show usage"
   If exitcode <> 0 Then
     LogError strExitMsg & VBCRLF & VBCRLF & strUsage
@@ -544,6 +603,12 @@ Do While argIndex<argCount
         Usage 1
     End If
     iPbPort = cmdArguments(argIndex)
+  ElseIf cmdArguments(argIndex) = "-c" OR cmdArguments(argIndex) = "--components-list"  Then
+    argIndex = argIndex + 1
+    If argIndex >= argCount Then
+        Usage 1
+    End If
+    Call SelectComponents(cmdArguments(argIndex))
   ' Locale
   ElseIf cmdArguments(argIndex) = "-l" OR cmdArguments(argIndex) = "--locale" Then
     argIndex = argIndex + 1
@@ -1434,6 +1499,10 @@ Class DevServer
           m_iMinorVersion = l_arrayVersion(1)
         End If
       End If
+
+      If strServiceName = "" Then
+        strServiceName = "pgsql-" & Version
+      End If
       If CONSTPGAGENTSERVICE = "" Then
         CONSTPGAGENTSERVICE = "pgagent_" & CONSTADMINDATABASE & "_" & m_iMajoVersion & "_" & m_iMinorVersion
       End If
@@ -2050,11 +2119,11 @@ End Sub
 Call Init
 
 Set objDevServer            = new DevServer
+Question "Please enter the installation directory", "objDevServer.validateServerPath", strInstallDir, "", bUnattended, true
+
 objDevServer.SuperUser      = Trim(strSuperUser)
 objDevServer.ServiceAccount = Trim(strServiceAccount)
-objDevServer.ServiceName    = Trim(strServiceName)
-
-Question "Please enter the installation directory", "objDevServer.validateServerPath", strInstallDir, "", bUnattended, true
+objDevServer.ServiceName  = Trim(strServiceName)
 
 If bInstallRuntimes Then
   ShowMessage "Installing VC Runtimes..."
@@ -2197,31 +2266,36 @@ Set objpgEnvFile = Nothing
 WshSystemEnv("PGDATABASE") = "template1"
 WshSystemEnv("PGPASSWORD") = objDevServer.SuperPassword
 
-If IsPostGISPresent AND _
-   AskYesNo("PostGIS Found. Do you want to configure? (Y/N) ", bInstallPostGIS) Then
-  ConfigurePostGIS
+If IsPostGISPresent Then
+  If AskYesNo("PostGIS Found. Do you want to configure? (Y/N) ", bInstallPostGIS) Then
+    ConfigurePostGIS
+  End If
 End If
 
-If IsSlonyPresent AND _
-   AskYesNo("Slony Found. Do you want to configure? (Y/N) ", bInstallSlony) Then
-  ConfigureSlony
+If IsSlonyPresent Then
+  If AskYesNo("Slony Found. Do you want to configure? (Y/N) ", bInstallSlony) Then
+    ConfigureSlony
+  End If
 End If
 
-If IsPgAgentPresent AND _
-   AskYesNo("pgAgent Found. Do you want to configure? (Y/N) ", bInstallPgAgent) Then
-  ConfigurepgAgent
+If IsPgAgentPresent Then
+  If AskYesNo("pgAgent Found. Do you want to configure? (Y/N) ", bInstallPgAgent) Then
+    ConfigurepgAgent
+  End If
 End If
 
 SET objODBC = new PsqlODBC
-If IsPsqlODBCPresent AND _
-   AskYesNo("psqlodbc Found. Do you want to configure? (Y/N) ", bInstallPsqlODBC) Then
-   ConfigurepgsqlODBC
+If IsPsqlODBCPresent Then
+   If AskYesNo("psqlodbc Found. Do you want to configure? (Y/N) ", bInstallPsqlODBC) Then
+     ConfigurepgsqlODBC
+   End If
 End If
 
 SET objPGBouncer = new PGBouncer
-If IsPgBouncerPresent AND _
-   AskYesNo("pgbouncer Found. Do you want to configure? (Y/N) ", bInstallPgBouncer) Then
-   ConfigurePgBouncer
+If IsPgBouncerPresent Then
+   If AskYesNo("pgbouncer Found. Do you want to configure? (Y/N) ", bInstallPgBouncer) Then
+     ConfigurePgBouncer
+   End If
 End If
 
 ' Always call this file at the end
