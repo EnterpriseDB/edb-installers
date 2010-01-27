@@ -4934,7 +4934,7 @@
           </ruleList>
         </runProgram>
 
-        <logMessage text="Installer:$'{pgagent_installer}' could not be found.">
+        <logMessage text="Installer:'${pgagent_installer}' could not be found.">
           <ruleList>
             <fileTest condition="not_exists" path="${pgagent_installer}"/>
           </ruleList>
@@ -4945,6 +4945,9 @@
         <isTrue value="${extract_mode}"/>
       </ruleList>
     </actionGroup>
+
+    <!-- Make sure temporary directory gets deleted after the installation -->
+    <deleteFile path="${ppss_temp_directory}"/>
 
   </postInstallationActionList>
 
