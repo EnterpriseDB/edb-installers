@@ -540,6 +540,7 @@
 
 	<substitute>
 	    <files>
+		${installdir}/installer/pghyperic/hqdb.sql
 		${installdir}/server-PG_VERSION_PGHYPERIC/conf/hq-server.conf
 		${installdir}/server-PG_VERSION_PGHYPERIC/data/hq-server-install.conf	
 		${installdir}/server-PG_VERSION_PGHYPERIC/hq-engine/server/default/deploy/hq.ear/META-INF/hibernate.cfg.xml	
@@ -549,11 +550,11 @@
 	    <substitutionList>
 		<substitution>
 		    <pattern>@@PGUSER@@</pattern>
-		    <value>${pguser}</value>
+		    <value>hqadmin</value>
 		</substitution>
 		<substitution>
 		    <pattern>@@PGPASSWORD@@</pattern>
-		    <value>${pgpassword}</value>
+		    <value>hqadmin</value>
 		</substitution>
 		<substitution>
 		    <pattern>@@PGPORT@@</pattern>
@@ -583,6 +584,7 @@
 
 	<substitute>
 	    <files>
+		${installdir}\installer\pghyperic\hqdb.sql
 		${installdir}\server-PG_VERSION_PGHYPERIC\conf\hq-server.conf
 		${installdir}\server-PG_VERSION_PGHYPERIC\data\hq-server-install.conf	
 		${installdir}\server-PG_VERSION_PGHYPERIC\hq-engine\server\default\deploy\hq.ear\META-INF\hibernate.cfg.xml	
@@ -592,11 +594,11 @@
 	    <substitutionList>
 		<substitution>
 		    <pattern>@@PGUSER@@</pattern>
-		    <value>${pguser}</value>
+		    <value>hqadmin</value>
 		</substitution>
 		<substitution>
 		    <pattern>@@PGPASSWORD@@</pattern>
-		    <value>${pgpassword}</value>
+		    <value>hqadmin</value>
 		</substitution>
 		<substitution>
 		    <pattern>@@PGPORT@@</pattern>
