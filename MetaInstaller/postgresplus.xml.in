@@ -441,7 +441,16 @@
       <value>PG_FULL_VERSION</value>
     </setInstallerVariable>
 
-    <setInstallerVariable name="ppss_temp_directory" value="${system_temp_directory}/postgresplus_${system_username}"/>
+    <setInstallerVariable name="ppss_temp_directory" value="${system_temp_directory}\postgresplus_${system_username}">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    <setInstallerVariable>
+    <setInstallerVariable name="ppss_temp_directory" value="${system_temp_directory}/postgresplus_${system_username}">
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    <setInstallerVariable>
   </initializationActionList>
 
   <!-- Test code Preinstallation actions -->
@@ -676,7 +685,7 @@
           <actionList>
             <unpackDirectory>
               <component>dbserver</component>
-              <destination>${system_temp_directory}\postgresplus\</destination>
+              <destination>${ppss_temp_directory}\</destination>
               <folder>programfileswindows</folder>
               <origin>pgcontrol</origin>
             </unpackDirectory>
@@ -684,21 +693,21 @@
             <!-- We will also need to get the VC++ runtimes installed on Windows, before we do anything with binaries -->
             <unpackFile>
               <component>dbserver</component>
-              <destination>${system_temp_directory}\postgresplus\vcredist_x86.exe</destination>
+              <destination>${ppss_temp_directory}\vcredist_x86.exe</destination>
               <folder>programfileswindows</folder>
               <origin>vcredist_x86.exe</origin>
               <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
             </unpackFile>
             <unpackFile>
               <component>dbserver</component>
-              <destination>${system_temp_directory}\postgresplus\installruntimes.vbs</destination>
+              <destination>${ppss_temp_directory}\installruntimes.vbs</destination>
               <folder>programfileswindows</folder>
               <origin>installruntimes.vbs</origin>
               <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
             </unpackFile>
             <runProgram>
               <program>cscript</program>
-              <programArguments>//NoLogo "${system_temp_directory}\postgresplus\installruntimes.vbs" "${system_temp_directory}\postgresplus\vcredist_x86.exe"</programArguments>
+              <programArguments>//NoLogo "${ppss_temp_directory}\installruntimes.vbs" "${ppss_temp_directory}\vcredist_x86.exe"</programArguments>
               <abortOnError>1</abortOnError>
               <showMessageOnError>1</showMessageOnError>
               <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
@@ -1306,7 +1315,7 @@
         <!-- generate uuid script -->
         <unpackFile>
           <component>dbserver</component>
-          <destination>${system_temp_directory}\postgresplus\dbserver_guid.exe</destination>
+          <destination>${ppss_temp_directory}\dbserver_guid.exe</destination>
           <folder>programfileswindows</folder>
           <origin>dbserver_guid.exe</origin>
           <ruleList>
@@ -1320,10 +1329,10 @@
     
         <setInstallerVariableFromScriptOutput>
           <customErrorMessage>${msg(ws.exception.from.server)}</customErrorMessage>
-          <exec>${system_temp_directory}\postgresplus\dbserver_guid.exe</exec>
+          <exec>${ppss_temp_directory}\dbserver_guid.exe</exec>
           <execArgs></execArgs>
           <name>dbserver_guid_result</name>
-          <workingDirectory>${system_temp_directory}\postgresplus</workingDirectory>
+          <workingDirectory>${ppss_temp_directory}</workingDirectory>
           <ruleList>
             <compareText>
               <logic>equals</logic>
@@ -1546,7 +1555,7 @@
             </runProgram>
     
             <runProgram>
-              <program>${system_temp_directory}\postgresplus\pgcontrol\pg_controldata.exe</program>
+              <program>${ppss_temp_directory}\pgcontrol\pg_controldata.exe</program>
               <programArguments>"${iDataDirectory}"</programArguments>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
@@ -1983,7 +1992,7 @@
               </ruleList>
             </runProgram>
             <runProgram>
-              <program>${system_temp_directory}\postgresplus\getlocales.exe</program>
+              <program>${ppss_temp_directory}\getlocales.exe</program>
               <programArguments></programArguments>
               <ruleList>
                 <compareText>
@@ -2516,7 +2525,7 @@
             <actionGroup>
               <actionList>
                 <runProgram>
-                  <program>${system_temp_directory}\postgresplus\createuser.exe</program>
+                  <program>${ppss_temp_directory}\createuser.exe</program>
                   <!-- The dot at the beginning of the arguments is the domain -->
                   <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
                   <abortOnError>0</abortOnError>
@@ -2545,7 +2554,7 @@
                 </throwError>
                 <runProgram>
                   <abortOnError>0</abortOnError>
-                  <program>${system_temp_directory}\postgresplus\validateuser.exe</program>
+                  <program>${ppss_temp_directory}\validateuser.exe</program>
                   <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
                   <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -3584,7 +3593,7 @@
                 </logMessage>
                 <runProgram>
                   <abortOnError>0</abortOnError>
-                  <program>${system_temp_directory}\postgresplus\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
+                  <program>${ppss_temp_directory}\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
                   <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --serviceaccount "${serviceaccount}" --servicepassword "${servicepassword}" --superaccount "${supername}" --superpassword "${superpassword}" --serverport "${serverport}" --locale "${locale}" --branding "Postgres Plus Standard Server ${product_version}" --install_runtimes 0 --servicename "${servicename}"</programArguments>
                   <progressText>Installing Database Server ... </progressText>
                   <showMessageOnError>0</showMessageOnError>
@@ -3604,7 +3613,7 @@
                 </logMessage>
                 <runProgram>
                   <abortOnError>0</abortOnError>
-                  <program>${system_temp_directory}\postgresplus\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
+                  <program>${ppss_temp_directory}\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
                   <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --servicepassword "${servicepassword}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
                   <progressText>Installing Database Server ... </progressText>
                   <showMessageOnError>0</showMessageOnError>
@@ -3660,7 +3669,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${system_temp_directory}\postgresplus\slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-windows.exe</program>
+          <program>${ppss_temp_directory}\slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-windows.exe</program>
           <programArguments>--mode unattended --prefix "${installdir}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing Slony ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -3696,7 +3705,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${system_temp_directory}\postgresplus\pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-windows.exe</program>
+          <program>${ppss_temp_directory}\pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-windows.exe</program>
           <programArguments>--mode unattended --prefix "${installdir}\pgJDBC" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing pgJDBC ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -3732,7 +3741,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${system_temp_directory}\postgresplus\psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-windows.exe</program>
+          <program>${ppss_temp_directory}\psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-windows.exe</program>
           <programArguments>--mode unattended --prefix "${installdir}\psqlODBC" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing psqlODBC ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -3770,7 +3779,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${system_temp_directory}\postgresplus\npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-windows.exe</program>
+          <program>${ppss_temp_directory}\npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-windows.exe</program>
           <programArguments>--mode unattended --prefix "${installdir}\Npgsql" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing NpgSQL ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -3806,7 +3815,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${system_temp_directory}\postgresplus\postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-windows.exe</program>
+          <program>${ppss_temp_directory}\postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-windows.exe</program>
           <programArguments>--mode unattended --prefix "${installdir}" --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing PostGIS ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -3842,7 +3851,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${system_temp_directory}\postgresplus\pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-windows.exe</program>
+          <program>${ppss_temp_directory}\pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-windows.exe</program>
           <programArguments>--mode unattended --prefix "${installdir}\pgbouncer" --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
           <progressText>Installing pgbouncer ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -3880,7 +3889,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${system_temp_directory}\postgresplus\pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-windows.exe</program>
+          <program>${ppss_temp_directory}\pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-windows.exe</program>
           <programArguments>--mode unattended --prefix "${installdir}\pgAgent" --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --systemuser "${serviceaccount}" --systempassword "${servicepassword}" --schema ${schema} --autostart no</programArguments>
           <progressText>Installing pgAgent ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -3905,7 +3914,7 @@
             <runProgram abortOnError="0"
                         progressText="Installing StackBuilderPlus ... "
                         showMessageOnError="0"
-                        program="${system_temp_directory}\postgresplus\stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-windows.exe"
+                        program="${ppss_temp_directory}\stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-windows.exe"
                         programArguments="--mode unattended --prefix &quot;${installdir}\StackBuilderPlus&quot; --branding &quot;Postgres Plus Standard Server ${product_version}&quot; ${monitor_server} --install-monitoring ${installMonitoring}"/>
           </actionList>
           <ruleList>
@@ -4517,10 +4526,10 @@
         </stopWindowsService>
         <setInstallerVariableFromScriptOutput>
           <customErrorMessage>${msg(pgplus.modify.error)}</customErrorMessage>
-          <exec>${system_temp_directory}\postgresplus\modifyPostgresql.exe</exec>
+          <exec>${ppss_temp_directory}\modifyPostgresql.exe</exec>
           <execArgs>"${datadir}/postgresql.conf" "${autovacuum_var}" "${autovacuum_naptime_var}" "${autovacuum_vacuum_threshold_var}" "${autovacuum_analyze_threshold_var}" "${autovacuum_vacuum_scale_factor_var}" "${autovacuum_analyze_scale_factor_var}" "${checkpoint_segments_var}" "${effective_cache_size_var}" "${maintenance_work_mem_var}" "${max_fsm_pages_var}" "${max_fsm_relations_var}" "${random_page_cost_var}" "${shared_buffers_var}" "${wal_buffers_var}" "${work_mem_var}" "${max_connections_var}" "${stats_row_level_var}"</execArgs>
           <name>postgresql_conf_updated_result</name>
-          <workingDirectory>${system_temp_directory}\postgresplus</workingDirectory>
+          <workingDirectory>${ppss_temp_directory}</workingDirectory>
           <ruleList>
             <compareText>
               <logic>equals</logic>
@@ -7692,10 +7701,10 @@
 
             <setInstallerVariableFromScriptOutput>
               <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
-              <exec>${system_temp_directory}\postgresplus\validateUserClient.exe</exec>
+              <exec>${ppss_temp_directory}\validateUserClient.exe</exec>
               <execArgs>"${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${existingEmail}" "${existingpassword}" "${dbserver_guid}" "${proxyHost}" "${proxyPort}"</execArgs>
               <name>ws_existing_result</name>
-              <workingDirectory>${system_temp_directory}\postgresplus</workingDirectory>
+              <workingDirectory>${ppss_temp_directory}</workingDirectory>
               <ruleList>
                 <compareText>
                   <logic>equals</logic>
@@ -7972,10 +7981,10 @@
             <!--Windows scripts -->
             <setInstallerVariableFromScriptOutput>
               <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
-              <exec>${system_temp_directory}\postgresplus\isUserValidated.exe</exec>
+              <exec>${ppss_temp_directory}\isUserValidated.exe</exec>
               <execArgs>"${existingEmail}" "${proxyHost}" "${proxyPort}"</execArgs>
               <name>ws_validated_result</name>
-              <workingDirectory>${system_temp_directory}\postgresplus</workingDirectory>
+              <workingDirectory>${ppss_temp_directory}</workingDirectory>
               <ruleList>
                 <compareText>
                   <logic>equals</logic>
@@ -8092,10 +8101,10 @@
 
             <setInstallerVariableFromScriptOutput>
               <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
-              <exec>${system_temp_directory}\postgresplus\getDynaTune.exe</exec>
+              <exec>${ppss_temp_directory}\getDynaTune.exe</exec>
               <execArgs>"${dbserver_guid}" "${rbServerUtil}" "${rbWorkload}" "${proxyHost}" "${proxyPort}"</execArgs>
               <name>ws_dynatune_result</name>
-              <workingDirectory>${system_temp_directory}\postgresplus</workingDirectory>
+              <workingDirectory>${ppss_temp_directory}</workingDirectory>
               <ruleList>
                 <compareText>
                   <logic>equals</logic>
@@ -8493,7 +8502,7 @@
             </runProgram>
 
             <runProgram>
-              <program>${system_temp_directory}\postgresplus\pgcontrol\pg_controldata.exe</program>
+              <program>${ppss_temp_directory}\pgcontrol\pg_controldata.exe</program>
               <programArguments>"${datadir}"</programArguments>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
@@ -8957,7 +8966,7 @@
               <actionList>
                 <setInstallerVariable name="project.parameter(servicepassword).ask" value="1"/>
                 <runProgram>
-                  <program>${system_temp_directory}\postgresplus\createuser.exe</program>
+                  <program>${ppss_temp_directory}\createuser.exe</program>
                   <!-- The dot at the beginning of the arguments is the domain -->
                   <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
                   <abortOnError>0</abortOnError>
@@ -9006,7 +9015,7 @@
               <actionList>
                 <runProgram>
                   <abortOnError>0</abortOnError>
-                  <program>${system_temp_directory}\postgresplus\validateuser.exe</program>
+                  <program>${ppss_temp_directory}\validateuser.exe</program>
                   <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
                   <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -9088,7 +9097,7 @@
         <actionGroup>
           <actionList>
             <runProgram>
-              <program>${system_temp_directory}\postgresplus\createuser.exe</program>
+              <program>${ppss_temp_directory}\createuser.exe</program>
               <!-- The dot at the beginning of the arguments is the domain -->
               <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
               <abortOnError>0</abortOnError>
@@ -9125,7 +9134,7 @@
             <!-- On Windows we need to validate the password if the user account exists -->
             <runProgram>
               <abortOnError>0</abortOnError>
-              <program>${system_temp_directory}\postgresplus\validateuser.exe</program>
+              <program>${ppss_temp_directory}\validateuser.exe</program>
               <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
               <showMessageOnError>0</showMessageOnError>
             </runProgram>
