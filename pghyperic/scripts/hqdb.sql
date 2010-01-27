@@ -12,15 +12,15 @@ ALTER ROLE hqadmin WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN;
 ALTER ROLE hqadmin PASSWORD 'hqadmin';
 
 --
--- Name: HQ; Type: DATABASE; Schema: -; Owner: hqadmin
+-- Name: "HQ"; Type: DATABASE; Schema: -; Owner: hqadmin
 --
 
-CREATE DATABASE HQ WITH TEMPLATE = template0;
+CREATE DATABASE "HQ" WITH TEMPLATE = template0;
 
 
-ALTER DATABASE HQ OWNER TO hqadmin;
+ALTER DATABASE "HQ" OWNER TO hqadmin;
 
-\connect HQ
+\connect "HQ"
 
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
@@ -4225,7 +4225,7 @@ COPY eam_error_code (id, version_col, code, description) FROM stdin;
 --
 
 COPY eam_escalation (id, version_col, name, description, allow_pause, max_wait_time, notify_all, ctime, mtime, frepeat) FROM stdin;
-100	0	Default Escalation	This is an Escalation Scheme created by HQ that performs no actions	f	300000	f	0	0	f
+100	0	Default Escalation	This is an Escalation Scheme created by "HQ" that performs no actions	f	300000	f	0	0	f
 \.
 
 
@@ -4877,7 +4877,7 @@ COPY eam_stat_errors (id, version_col, count, error_id, reqstat_id) FROM stdin;
 
 COPY eam_subject (id, version_col, name, dsn, sort_name, first_name, last_name, email_address, sms_address, phone_number, department, factive, fsystem, html_email, resource_id, pref_crispo_id) FROM stdin;
 0	0	admin	covalentAuthzInternalDsn	\N	System	User	\N	\N	\N	Administration	t	t	f	4	\N
-1	0	hqadmin	CAM	\N	HQ	Administrator	hqadmin@168.23.107	\N	\N	\N	t	t	f	6	\N
+1	0	hqadmin	CAM	\N	"HQ"	Administrator	hqadmin@168.23.107	\N	\N	\N	t	t	f	6	\N
 2	0	guest	CAM	\N	Guest	User	hqadmin@168.23.107	\N	\N	\N	f	f	f	10	3
 \.
 
