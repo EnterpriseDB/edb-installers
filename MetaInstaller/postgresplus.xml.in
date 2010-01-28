@@ -445,12 +445,12 @@
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
-    <setInstallerVariable>
+    </setInstallerVariable>
     <setInstallerVariable name="ppss_temp_directory" value="${system_temp_directory}/postgresplus_${system_username}">
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
       </ruleList>
-    <setInstallerVariable>
+    </setInstallerVariable>
   </initializationActionList>
 
   <!-- Test code Preinstallation actions -->
