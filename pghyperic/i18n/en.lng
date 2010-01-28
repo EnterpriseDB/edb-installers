@@ -30,11 +30,17 @@ pghyperic.installdir.error=The installation directory must be an absolute path, 
 
 pgplus.details.title=Postgres Installation Details
 
+pphq.monitoring.console.details.title=Postgres Plus HQ Monitoring Console details
+
 pgplus.details.explanation=Please verify the Postgres installation details
+
+pphq.monitoring.console.details.explanation=Please provide Postgres Plus HQ Monitoring Console details
 
 pgplus.details.error=Connection to the Postgres failed. Please re-check the details provided.
 
 pgplus.blank.error=Values must be entered for all fields.
+
+pphq.monitoring.console.blank.error=Values must be entered for all fields.
 
 smtp.server.title=Enter smtp server details.
 
@@ -42,7 +48,7 @@ smtp.server.details=Enter the fully qualified domain name of the SMTP server tha
 
 smtp.server.blank.error=Value must be entered for the field.
 
-Installer.Installation.Finished.Visit.Us=Visit monitoring interface (http://127.0.0.1:7080) using username:hqadmin and password:hqadmin to start postgres database monitoring.
+Installer.Installation.Finished.Visit.Us=Visit monitoring interface (http://127.0.0.1:@@PPHQPORT@@) using username:@@PPHQUSER@@ and password:@@PPHQPASSWORD@@ to start postgres database monitoring.
 
 progress.text.initialising.server=Starting Hyperic server (this may take a few minutes)...
 

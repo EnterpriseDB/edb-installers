@@ -43,6 +43,13 @@
         </language>
     </customLanguageFileList>
     <preShowHelpActionList>
+        <!-- Get a default port number - ideally 7080 -->
+        <getFreePort>
+            <variable>defaultpphqport</variable>
+            <initialPort>7080</initialPort>
+            <finalPort>65535</finalPort>
+        </getFreePort>
+
     	<!-- MAC : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
@@ -116,6 +123,13 @@
             <compareText text="${originalplatform}" value="linux-x32"/>
           </ruleList>
         </throwError>
+        <!-- Get a default port number - ideally 7080 -->
+        <getFreePort>
+            <variable>defaultpphqport</variable>
+            <initialPort>7080</initialPort>
+            <finalPort>65535</finalPort>
+        </getFreePort>
+
         <!-- LIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
@@ -422,6 +436,124 @@
         </actionGroup>
     </preInstallationActionList>
     <postInstallationActionList>
+	<substitute>
+	    <files>
+		${installdir}/installer/pghyperic/hqdb.sql
+		${installdir}/server-PG_VERSION_PGHYPERIC/conf/hq-server.conf
+		${installdir}/server-PG_VERSION_PGHYPERIC/data/hq-server-install.conf	
+		${installdir}/server-PG_VERSION_PGHYPERIC/hq-engine/server/default/deploy/hq.ear/META-INF/hibernate.cfg.xml
+		${installdir}/server-PG_VERSION_PGHYPERIC/hq-engine/server/default/deploy/hq-ds.xml
+		${installdir}/server-PG_VERSION_PGHYPERIC/tmp/hibernate/hibernate.properties.xml
+		${installdir}/server-PG_VERSION_PGHYPERIC/tmp/hibernate/hibernate.properties
+		${installdir}/agent-PG_VERSION_PGHYPERIC/conf/agent.properties
+	    </files>
+	    <substitutionList>
+		<substitution>
+		    <pattern>@@PPHQUSER@@</pattern>
+		    <value>${pphquser}</value>
+		</substitution>
+		<substitution>
+		    <pattern>@@PPHQPASSWORD@@</pattern>
+		    <value>${pphqpassword}</value>
+		</substitution>
+		<substitution>
+		    <pattern>@@PPHQPORT@@</pattern>
+		    <value>${pphqport}</value>
+		</substitution>
+		<!-- For consistency postgres user is same as pphq console user -->
+		<substitution>
+		    <pattern>@@PGUSER@@</pattern>
+		    <value>${pphquser}</value>
+		</substitution>
+		<!-- For consistency postgres password is same as pphq console password -->
+		<substitution>
+		    <pattern>@@PGPASSWORD@@</pattern>
+		    <value>${pphqpassword}</value>
+		</substitution>
+		<substitution>
+		    <pattern>@@PGPORT@@</pattern>
+		    <value>${pgport}</value>
+		</substitution>
+		<substitution>
+		    <pattern>@@PGHOST@@</pattern>
+		    <value>${pghost}</value>
+		</substitution>
+		<substitution>
+		    <pattern>@@SMTPHOST@@</pattern>
+		    <value>${smtphost}</value>
+		</substitution>
+		<substitution>
+		    <pattern>@@INSTALLDIR@@</pattern>
+		    <value>${installdir}</value>
+		</substitution>
+	    </substitutionList>
+	    <ruleList>
+		<compareText>
+		    <logic>does_not_equal</logic>
+		    <text>${platform_name}</text>
+		    <value>windows</value>
+		</compareText>
+	    </ruleList>
+	</substitute>
+
+	<substitute>
+	    <files>
+		${installdir}/installer/pghyperic/hqdb.sql
+		${installdir}/server-PG_VERSION_PGHYPERIC/conf/hq-server.conf
+		${installdir}/server-PG_VERSION_PGHYPERIC/data/hq-server-install.conf	
+		${installdir}/server-PG_VERSION_PGHYPERIC/hq-engine/server/default/deploy/hq.ear/META-INF/hibernate.cfg.xml
+		${installdir}/server-PG_VERSION_PGHYPERIC/hq-engine/server/default/deploy/hq-ds.xml
+		${installdir}/server-PG_VERSION_PGHYPERIC/tmp/hibernate/hibernate.properties.xml
+		${installdir}/server-PG_VERSION_PGHYPERIC/tmp/hibernate/hibernate.properties
+		${installdir}/agent-PG_VERSION_PGHYPERIC/conf/agent.properties
+	    </files>
+	    <substitutionList>
+		<substitution>
+		    <pattern>@@PPHQUSER@@</pattern>
+		    <value>${pphquser}</value>
+		</substitution>
+		<substitution>
+		    <pattern>@@PPHQPASSWORD@@</pattern>
+		    <value>${pphqpassword}</value>
+		</substitution>
+		<substitution>
+		    <pattern>@@PPHQPORT@@</pattern>
+		    <value>${pphqport}</value>
+		</substitution>
+		<substitution>
+		    <pattern>@@PGUSER@@</pattern>
+		    <value>${pphquser}</value>
+		</substitution>
+		<substitution>
+		    <pattern>@@PGPASSWORD@@</pattern>
+		    <value>${pphqpassword}</value>
+		</substitution>
+		<substitution>
+		    <pattern>@@PGPORT@@</pattern>
+		    <value>${pgport}</value>
+		</substitution>
+		<substitution>
+		    <pattern>@@PGHOST@@</pattern>
+		    <value>${pghost}</value>
+		</substitution>
+		<substitution>
+		    <pattern>@@SMTPHOST@@</pattern>
+		    <value>${smtphost}</value>
+		</substitution>
+		<substitution>
+		    <pattern>@@INSTALLDIR@@</pattern>
+		    <value>${installdir}</value>
+		</substitution>
+	    </substitutionList>
+	    <ruleList>
+		<compareText>
+		    <logic>equals</logic>
+		    <text>${platform_name}</text>
+		    <value>windows</value>
+		</compareText>
+	    </ruleList>
+	</substitute>
+
 
 	<!-- Check for existing HQ database -->
 	<setInstallerVariableFromScriptOutput>
@@ -538,93 +670,6 @@
             <value>${branding}</value>
         </registrySet>
 
-	<substitute>
-	    <files>
-		${installdir}/installer/pghyperic/hqdb.sql
-		${installdir}/server-PG_VERSION_PGHYPERIC/conf/hq-server.conf
-		${installdir}/server-PG_VERSION_PGHYPERIC/data/hq-server-install.conf	
-		${installdir}/server-PG_VERSION_PGHYPERIC/hq-engine/server/default/deploy/hq.ear/META-INF/hibernate.cfg.xml	
-		${installdir}/server-PG_VERSION_PGHYPERIC/tmp/hibernate/hibernate.properties.xml
-		${installdir}/server-PG_VERSION_PGHYPERIC/tmp/hibernate/hibernate.properties
-	    </files>
-	    <substitutionList>
-		<substitution>
-		    <pattern>@@PGUSER@@</pattern>
-		    <value>hqadmin</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@PGPASSWORD@@</pattern>
-		    <value>hqadmin</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@PGPORT@@</pattern>
-		    <value>${pgport}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@PGHOST@@</pattern>
-		    <value>${pghost}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@SMTPHOST@@</pattern>
-		    <value>${smtphost}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@INSTALLDIR@@</pattern>
-		    <value>${installdir}</value>
-		</substitution>
-	    </substitutionList>
-	    <ruleList>
-		<compareText>
-		    <logic>does_not_equal</logic>
-		    <text>${platform_name}</text>
-		    <value>windows</value>
-		</compareText>
-	    </ruleList>
-	</substitute>
-
-	<substitute>
-	    <files>
-		${installdir}\installer\pghyperic\hqdb.sql
-		${installdir}\server-PG_VERSION_PGHYPERIC\conf\hq-server.conf
-		${installdir}\server-PG_VERSION_PGHYPERIC\data\hq-server-install.conf	
-		${installdir}\server-PG_VERSION_PGHYPERIC\hq-engine\server\default\deploy\hq.ear\META-INF\hibernate.cfg.xml	
-		${installdir}\server-PG_VERSION_PGHYPERIC\tmp\hibernate\hibernate.properties.xml
-		${installdir}\server-PG_VERSION_PGHYPERIC\tmp\hibernate\hibernate.properties
-	    </files>
-	    <substitutionList>
-		<substitution>
-		    <pattern>@@PGUSER@@</pattern>
-		    <value>hqadmin</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@PGPASSWORD@@</pattern>
-		    <value>hqadmin</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@PGPORT@@</pattern>
-		    <value>${pgport}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@PGHOST@@</pattern>
-		    <value>${pghost}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@SMTPHOST@@</pattern>
-		    <value>${smtphost}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@INSTALLDIR@@</pattern>
-		    <value>${installdir}</value>
-		</substitution>
-	    </substitutionList>
-	    <ruleList>
-		<compareText>
-		    <logic>does_not_equal</logic>
-		    <text>${platform_name}</text>
-		    <value>windows</value>
-		</compareText>
-	    </ruleList>
-	</substitute>
 
 	<!-- Initialise the hyperic server if this is an installation -->
         <actionGroup>
@@ -902,7 +947,7 @@
   
     <!-- finalPage actions -->
     <finalPageActionList>
-      <launchBrowser url="http://127.0.0.1:7080/"
+      <launchBrowser url="http://127.0.0.1:${pphqport}/"
                      progressText="${msg(Installer.Installation.Finished.Visit.Us)}"/>
     </finalPageActionList>
 
@@ -1129,7 +1174,7 @@
                     <comment>PostgreSQL Hyperic Monitoring Home Page</comment>
                     <name>PostgreSQL Hyperic Monitoring Home Page</name>
                     <runInTerminal>0</runInTerminal>
-                    <url>http://127.0.0.1:7080/</url>
+                    <url>http://127.0.0.1:${pphqport}/</url>
                     <windowsIcon>${installdir}\scripts\images\pghyperic-launch.ico</windowsIcon>
                 </startMenuLinkShortcut>  
                 <!-- Start server -->
@@ -1468,6 +1513,87 @@
                     </actionList>
                  </actionGroup> 
             </validationActionList>
+        </parameterGroup>
+
+	<parameterGroup>
+            <name>pphqmonitoringconsoledetails</name>
+            <title>${msg(pphq.monitoring.console.details.title)}</title>
+            <explanation>${msg(pphq.monitoring.console.details.explanation)}</explanation>
+            <value/>
+            <default/>
+            <parameterList>
+                <!-- PPHQ User -->
+                <stringParameter>
+                    <name>pphquser</name>
+                    <description>User Name</description>
+                    <explanation/>
+                    <value/>
+                    <default>hqadmin</default>
+		    <cliOptionName>pphquser</cliOptionName>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <width>40</width>
+                </stringParameter>
+	        <!-- PPHQ User Password -->
+                <passwordParameter>
+                    <name>pphqpassword</name>
+                    <title>Password</title>
+                    <description>Password</description>
+                    <explanation/>
+                    <value/>
+                    <default>hqadmin</default>
+		    <cliOptionName>pphqpassword</cliOptionName>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <askForConfirmation>0</askForConfirmation>
+                    <descriptionRetype/>
+                    <width>40</width>
+                </passwordParameter>
+	        <!-- PPHQ Port(Default 7080) -->
+                <stringParameter>
+                    <name>pphqport</name>
+                    <description>Port</description>
+                    <explanation/>
+                    <value/>
+                    <default>${defaultpphqport}</default>
+		    <cliOptionName>pphqport</cliOptionName>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <width>40</width>
+                </stringParameter>
+            </parameterList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${pghypericVersion}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+            <!-- Checking the validity of PPHQ Monitoring Console Details -->
+            <validationActionList>
+                <actionGroup>
+                    <actionList>
+                        <throwError>
+                            <text>${msg(pphq.monitoring.console.blank.error)}</text>
+                        </throwError>
+                    </actionList>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText>
+                            <text>${pphqport}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <text>${pphquser}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                        <compareText>
+                            <text>${pphqpassword}</text>
+                            <logic>equals</logic>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+	    </validationActionList>
         </parameterGroup>
 
 	<!-- Install Directory -->
