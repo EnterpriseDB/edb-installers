@@ -48,7 +48,7 @@ smtp.server.details=Enter the fully qualified domain name of the SMTP server tha
 
 smtp.server.blank.error=Value must be entered for the field.
 
-Installer.Installation.Finished.Visit.Us=Visit monitoring interface (http://127.0.0.1:@@PPHQPORT@@) using username:@@PPHQUSER@@ and password:@@PPHQPASSWORD@@ to start postgres database monitoring.
+Installer.Installation.Finished.Visit.Us=Visit monitoring interface (http://127.0.0.1:${pphqport}) using username:${pphquser} and password:${pphqpassword} to start postgres database monitoring.
 
 progress.text.initialising.server=Starting Hyperic server (this may take a few minutes)...
 
