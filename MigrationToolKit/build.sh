@@ -51,7 +51,7 @@ _prep_MigrationToolKit() {
     else  
       cd $WD/MigrationToolKit/source/EDB-MTK
       echo "Updating MigrationToolKit sources from the cvs..."
-      cvs update -dP
+      CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK cvs update -dPC
     fi
 
     if [ -e $WD/MigrationToolKit/source/pgJDBC-$PG_VERSION_PGJDBC ];

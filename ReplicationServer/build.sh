@@ -57,7 +57,7 @@ _prep_ReplicationServer() {
     then
       cd replicator 
       echo "Updating xDB Replication Server source directory"
-      cvs update
+      CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -PdC
     else
       echo "Fetching xDB Replication Server source directory"
       cvs -d:ext:pginstaller@cvs.enterprisedb.com/cvs/EDB-RREP co replicator
