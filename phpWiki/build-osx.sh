@@ -1,15 +1,19 @@
 #!/bin/bash
 
-    
+
 ################################################################################
 # Build preparation
 ################################################################################
 
 _prep_phpWiki_osx() {
 
+    echo "*******************************************************"
+    echo " Pre Process : phpWiki (OSX)"
+    echo "*******************************************************"
+
     # Enter the source directory and cleanup if required
     cd $WD/phpWiki/source
-	
+
     if [ -e phpWiki.osx ];
     then
       echo "Removing existing phpWiki.osx source directory"
@@ -18,7 +22,7 @@ _prep_phpWiki_osx() {
 
     echo "Creating staging directory ($WD/phpWiki/source/phpWiki.osx)"
     mkdir -p $WD/phpWiki/source/phpWiki.osx || _die "Couldn't create the phpWiki.osx directory"
-	
+
     # Grab a copy of the source tree
     cp -R phpwiki-$PG_VERSION_PHPWIKI/* phpWiki.osx || _die "Failed to copy the source code (source/phpwiki-$PG_VERSION_PHPWIKI)"
     chmod -R ugo+w phpWiki.osx || _die "Couldn't set the permissions on the source directory"
@@ -37,12 +41,16 @@ _prep_phpWiki_osx() {
 }
 
 ################################################################################
-# PG Build
+# phpWiki Build
 ################################################################################
 
 _build_phpWiki_osx() {
 
-	cd $WD    
+    echo "*******************************************************"
+    echo " Build : phpWiki (OSX)"
+    echo "*******************************************************"
+
+    cd $WD
     mkdir -p $PG_PATH_OSX/phpWiki/staging/osx/instscripts || _die "Failed to create the instscripts directory"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/phpWiki/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libxml2* $PG_PATH_OSX/phpWiki/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
@@ -60,15 +68,18 @@ _build_phpWiki_osx() {
 
 
 ################################################################################
-# PG Build
+# phpWiki PostProcess
 ################################################################################
 
 _postprocess_phpWiki_osx() {
 
+    echo "*******************************************************"
+    echo " Post Process : phpWiki (OSX)"
+    echo "*******************************************************"
 
     cp -R $WD/phpWiki/source/phpWiki.osx/* $WD/phpWiki/staging/osx/phpWiki || _die "Failed to copy the phpWiki Source into the staging directory"
     cp $WD/phpWiki/resources/wiki.sql $WD/phpWiki/staging/osx/phpWiki || _die "Failed to copy the Wiki.sql to Source "
-    
+
     cd $WD/phpWiki
 
     # Setup the installer scripts.
@@ -99,7 +110,7 @@ _postprocess_phpWiki_osx() {
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/pg-launchPhpWiki.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchPhpWiki.icns)"
-     
+
     #Configure the conf.php file
     _replace "\$WhichDatabase = 'default';" "\$WhichDatabase = 'pgsql';" "$WD/phpWiki/staging/osx/phpWiki/lib/config.php"
     _replace "localhost" "@@PGHOST@@" "$WD/phpWiki/staging/osx/phpWiki/lib/config.php"

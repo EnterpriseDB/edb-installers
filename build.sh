@@ -6,7 +6,7 @@
 # Common utilties
 source ./common.sh
 
-# Package Versions 
+# Package Versions
 source ./versions.sh
 
 # Get the build settings
@@ -23,7 +23,13 @@ _init() {
 
     # Grab the working directory
     WD=`pwd`
-    
+
+    # Ensure we have an output directory
+    if [ ! -d output ];
+    then
+        mkdir output || _die "Failed to create the output directory"
+    fi
+
     # Set the package versions string
     PG_PACKAGE_VERSION=$PG_MAJOR_VERSION.`echo $PG_MINOR_VERSION | sed -e 's/\./-/'`
 }
@@ -64,7 +70,7 @@ _check_windows_vm() {
 if [ $# -ge 1 ];
 then
   if [ $1 = "-skipbuild" ];
-  then 
+  then
     SKIPBUILD=1
   else
     SKIPBUILD=0
@@ -108,7 +114,7 @@ then
     cd $WD
     source ./server/build.sh
 
-    if [ $SKIPBUILD = 0 ]; 
+    if [ $SKIPBUILD = 0 ];
     then
         _prep_server || exit 1
         _build_server || exit 1

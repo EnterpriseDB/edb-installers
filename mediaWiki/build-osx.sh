@@ -1,4 +1,4 @@
-		#!/bin/bash
+#!/bin/bash
 
 
 ################################################################################
@@ -6,6 +6,10 @@
 ################################################################################
 
 _prep_mediaWiki_osx() {
+
+    echo "*******************************************************"
+    echo " Pre Process : MediaWiki (OSX)"
+    echo "*******************************************************"
 
     # Enter the source directory and cleanup if required
     cd $WD/mediaWiki/source
@@ -37,10 +41,14 @@ _prep_mediaWiki_osx() {
 }
 
 ################################################################################
-# PG Build
+# MediaWiki Build
 ################################################################################
 
 _build_mediaWiki_osx() {
+
+    echo "*******************************************************"
+    echo " Build : MediaWiki (OSX)"
+    echo "*******************************************************"
 
     cd $WD
     mkdir -p $PG_PATH_OSX/mediaWiki/staging/osx/instscripts || _die "Failed to create the instscripts directory"
@@ -60,10 +68,14 @@ _build_mediaWiki_osx() {
 
 
 ################################################################################
-# PG Build
+# MediaWiki Build
 ################################################################################
 
 _postprocess_mediaWiki_osx() {
+
+    echo "*******************************************************"
+    echo " Post Process : MediaWiki (OSX)"
+    echo "*******************************************************"
 
     cp -R $WD/mediaWiki/source/mediaWiki.osx/* $WD/mediaWiki/staging/osx/mediaWiki || _die "Failed to copy the mediaWiki Source into the staging directory"
 
@@ -72,7 +84,7 @@ _postprocess_mediaWiki_osx() {
     mkdir -p staging/osx/installer/mediaWiki || _die "Failed to create a directory for the install scripts"
     cp scripts/osx/check-connection.sh staging/osx/installer/mediaWiki/check-connection.sh || _die "Failed to copy the check-connection script (scripts/osx/check-connection.sh)"
     chmod ugo+x staging/osx/installer/mediaWiki/check-connection.sh
-   
+
     cp scripts/osx/check-db.sh staging/osx/installer/mediaWiki/check-db.sh || _die "Failed to copy the check-db.sh script (scripts/osx/check-db.sh)"
     chmod ugo+x staging/osx/installer/mediaWiki/check-db.sh
 

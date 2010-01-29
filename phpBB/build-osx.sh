@@ -1,15 +1,19 @@
 #!/bin/bash
 
-    
+
 ################################################################################
 # Build preparation
 ################################################################################
 
 _prep_phpBB_osx() {
 
+    echo "*******************************************************"
+    echo " Pre Process : phpBB (OSX)"
+    echo "*******************************************************"
+
     # Enter the source directory and cleanup if required
     cd $WD/phpBB/source
-	
+
     if [ -e phpBB.osx ];
     then
       echo "Removing existing phpBB.osx source directory"
@@ -18,7 +22,7 @@ _prep_phpBB_osx() {
 
     echo "Creating staging directory ($WD/phpBB/source/phpBB.osx)"
     mkdir -p $WD/phpBB/source/phpBB.osx || _die "Couldn't create the phpBB.osx directory"
-	
+
     # Grab a copy of the source tree
     cp -R phpBB-$PG_VERSION_PHPBB/* phpBB.osx || _die "Failed to copy the source code (source/phpBB-$PG_VERSION_PHPBB)"
     chmod -R ugo+w phpBB.osx || _die "Couldn't set the permissions on the source directory"
@@ -37,11 +41,15 @@ _prep_phpBB_osx() {
 }
 
 ################################################################################
-# PG Build
+# phpBB Build
 ################################################################################
 
 _build_phpBB_osx() {
-	
+
+    echo "*******************************************************"
+    echo " Build : phpBB (OSX)"
+    echo "*******************************************************"
+
     cd $WD
     mkdir -p $PG_PATH_OSX/phpBB/staging/osx/instscripts || _die "Failed to create the instscripts directory"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/phpBB/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
@@ -51,7 +59,7 @@ _build_phpBB_osx() {
     # Change the referenced libraries
     OLD_DLLS=`otool -L $PG_PATH_OSX/phpBB/staging/osx/instscripts/psql | grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' `
     for DLL in $OLD_DLLS
-    do 
+    do
         NEW_DLL=`echo $DLL | sed -e "s^@loader_path/../lib/^^g"`
         install_name_tool -change "$DLL" "$NEW_DLL" "$PG_PATH_OSX/phpBB/staging/osx/instscripts/psql"
     done
@@ -59,11 +67,14 @@ _build_phpBB_osx() {
 }
 
 ################################################################################
-# PG Build
+# phpBB Post-Process
 ################################################################################
 
 _postprocess_phpBB_osx() {
 
+    echo "*******************************************************"
+    echo " Post Process : phpBB (OSX)"
+    echo "*******************************************************"
 
     cp -R $WD/phpBB/source/phpBB.osx/* $WD/phpBB/staging/osx/phpBB || _die "Failed to copy the phpBB Source into the staging directory"
 
@@ -98,9 +109,9 @@ _postprocess_phpBB_osx() {
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/pg-launchPhpBB.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchPhpBB.icns)"
-	
-    #configuring the install/install_install.php file  
-    _replace "\$url = (\!in_array(false, \$passed)) ? \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=database\&amp;language=\$language\" : \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=requirements\&amp;language=\$language" "\$url = (\!in_array(false, \$passed)) ? \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=database\&amp;language=\$language\&amp;dbname=phpbb\&amp;dbuser=phpbbuser\&amp;dbpasswd=phpbbuser\&amp;dbms=postgres\&amp;dbhost=@@HOST@@\&amp;dbport=@@PORT@@\" : \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=requirements\&amp;language=\$language\&amp;dbname=phpbb\&amp;dbuser=phpbbuser\&amp;dbpasswd=phpbbuser\&amp;dbms=postgres\&amp;dbhost=@@HOST@@\&amp;dbport=@@PORT@@" "$WD/phpBB/staging/osx/phpBB/install/install_install.php" 
+
+    #configuring the install/install_install.php file
+    _replace "\$url = (\!in_array(false, \$passed)) ? \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=database\&amp;language=\$language\" : \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=requirements\&amp;language=\$language" "\$url = (\!in_array(false, \$passed)) ? \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=database\&amp;language=\$language\&amp;dbname=phpbb\&amp;dbuser=phpbbuser\&amp;dbpasswd=phpbbuser\&amp;dbms=postgres\&amp;dbhost=@@HOST@@\&amp;dbport=@@PORT@@\" : \$this->p_master->module_url . \"?mode=\$mode\&amp;sub=requirements\&amp;language=\$language\&amp;dbname=phpbb\&amp;dbuser=phpbbuser\&amp;dbpasswd=phpbbuser\&amp;dbms=postgres\&amp;dbhost=@@HOST@@\&amp;dbport=@@PORT@@" "$WD/phpBB/staging/osx/phpBB/install/install_install.php"
 
     chmod ugo+w staging/osx/phpBB/cache || _die "Couldn't set the permissions on the cache directory"
     chmod ugo+w staging/osx/phpBB/files || _die "Couldn't set the permissions on the files directory"

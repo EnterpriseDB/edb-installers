@@ -6,6 +6,10 @@
 ################################################################################
 
 _prep_ApachePhp_osx() {
+
+    echo "*******************************************************"
+    echo " Pre Process : ApachePHP (OSX)"
+    echo "*******************************************************"
       
     # Enter the source directory and cleanup if required
     cd $WD/ApachePhp/source
@@ -37,7 +41,13 @@ _prep_ApachePhp_osx() {
     # Grab a copy of the php source tree
     cp -R php-$PG_VERSION_PHP/* php.osx || _die "Failed to copy the source code (source/php-$PG_VERSION_PHP)"
     chmod -R ugo+w php.osx || _die "Couldn't set the permissions on the source directory"
-
+    cd php.osx
+    if [ -f $WD/tarballs/php-${PG_VERSION_PHP}_osx.patch ]; then
+      echo "Applying php patch on osx..."
+      patch -p1 < $WD/tarballs/php-${PG_VERSION_PHP}_osx.patch
+    fi
+    ln -s $PG_PGHOME_OSX/lib/libpq.5.dylib sapi/cli/libpq.5.dylib
+    ln -s $PG_PGHOME_OSX/lib/libpq.5.dylib
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/ApachePhp/staging/osx ];
@@ -54,49 +64,76 @@ _prep_ApachePhp_osx() {
 
 
 ################################################################################
-# PG Build
+# ApachePHP Build
 ################################################################################
 
 _build_ApachePhp_osx() {
+
+    echo "*******************************************************"
+    echo " Build : ApachePHP (OSX)"
+    echo "*******************************************************"
 
     # build apache
     PG_PATH_OSX=$WD
     PG_STAGING=$PG_PATH_OSX/ApachePhp/staging/osx
 
     cd $PG_PATH_OSX/ApachePhp/source/apache.osx
-    # Configure the source tree
 
-    echo "Configuring the apache source tree for Intel"
-    CFLAGS="-mmacosx-version-min=10.4 -headerpad_max_install_names -arch i386" ./configure --prefix=$PG_STAGING/apache --with-included-apr --with-ssl=/usr --with-z=/usr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for i386"
-    mv srclib/apr-util/xml/expat/acconfig.h srclib/apr-util/xml/expat/acconfig_i386.h
-    mv srclib/pcre/config.h srclib/pcre/config_i386.h
-  
-    echo "Configuring the apache source tree for ppc"
-    CFLAGS="-mmacosx-version-min=10.4 -headerpad_max_install_names -arch ppc" ./configure --prefix=$PG_STAGING/apache --with-included-apr --with-ssl=/usr --with-z=/usr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for ppc"
-    mv srclib/apr-util/xml/expat/acconfig.h srclib/apr-util/xml/expat/acconfig_ppc.h
-    mv srclib/pcre/config.h srclib/pcre/config_ppc.h
+    # Configure the source tree
+    CONFIG_FILES="include/ap_config_auto include/ap_config_layout \
+                 srclib/apr/include/apr srclib/apr/include/arch/unix/apr_private \
+                 srclib/apr-util/include/apr_ldap srclib/apr-util/include/apu \
+                 srclib/apr-util/include/apu_want srclib/apr-util/include/private/apu_config \
+                 srclib/apr-util/include/private/apu_select_dbm srclib/apr-util/xml/expat/config \
+                 srclib/apr-util/xml/expat/lib/expat"
+    ARCHS="i386 ppc x86_64"
+    ARCH_FLAGS=""
+    for ARCH in ${ARCHS}
+    do
+      echo "Configuring the apache source tree for ${ARCH}"
+      CFLAGS="-mmacosx-version-min=10.5 -headerpad_max_install_names -arch ${ARCH}" ./configure --prefix=$PG_STAGING/apache --with-included-apr --with-ssl=/usr --with-z=/usr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for ${ARCH}"
+      ARCH_FLAGS="${ARCH_FLAGS} -arch ${ARCH}"
+      for configFile in ${CONFIG_FILES}
+      do
+           if [ -f "${configFile}.h" ]; then
+              cp "${configFile}.h" "${configFile}_${ARCH}.h"
+           fi
+      done
+    done
 
     echo "Configuring the apache source tree for Universal"
-    CFLAGS="-mmacosx-version-min=10.4 -headerpad_max_install_names -arch ppc -arch i386 " ./configure --prefix=$PG_STAGING/apache --with-included-apr --with-ssl=/usr --with-z=/usr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache  || _die "Failed to configure apache for Universal"
+    CFLAGS="-mmacosx-version-min=10.5 -headerpad_max_install_names ${ARCH_FLAGS}" ./configure --prefix=$PG_STAGING/apache --with-included-apr --with-ssl=/usr --with-z=/usr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache  || _die "Failed to configure apache for 32 bit Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
-    echo "#ifdef __BIG_ENDIAN__" > srclib/apr-util/xml/expat/acconfig.h
-    echo "#include \"acconfig_ppc.h\"" >> srclib/apr-util/xml/expat/acconfig.h
-    echo "#else" >> srclib/apr-util/xml/expat/acconfig.h
-    echo "#include \"acconfig_i386.h\"" >> srclib/apr-util/xml/expat/acconfig.h
-    echo "#endif" >> srclib/apr-util/xml/expat/acconfig.h
-
-    echo "#ifdef __BIG_ENDIAN__" > srclib/pcre/config.h
-    echo "#include \"config_ppc.h\"" >> srclib/pcre/config.h
-    echo "#else" >> srclib/pcre/config.h
-    echo "#include \"config_i386.h\"" >> srclib/pcre/config.h
-    echo "#endif" >> srclib/pcre/config.h
+    for configFile in ${CONFIG_FILES}
+    do
+      HEADER_FILE=${configFile}.h
+      if [ -f "${HEADER_FILE}" ]; then
+        CONFIG_BASENAME=`basename ${configFile}`
+        rm -f "${HEADER_FILE}"
+        cat <<EOT > "${HEADER_FILE}"
+#ifdef __BIG_ENDIAN__
+ #ifdef __LP64__
+  #error "${CONFIG_BASENAME}: Does not have support for ppc64 architecture"
+ #else
+  #include "${CONFIG_BASENAME}_ppc.h"
+ #endif
+#else
+ #ifdef __LP64__
+  #include "${CONFIG_BASENAME}_x86_64.h"
+ #else
+  #include "${CONFIG_BASENAME}_i386.h"
+ #endif
+#endif
+EOT
+      fi
+    done
 
     # Hackup the httpd config to get suitable paths in the binary
     _replace "#define HTTPD_ROOT \"$PG_STAGING/apache\"" "#define HTTPD_ROOT \"/Library/EnterpriseDB-ApachePhp/apache\"" include/ap_config_auto.h
 
     echo "Building apache"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" make || _die "Failed to build apache"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" make || _die "Failed to build apache"
     make install || _die "Failed to install apache"
 
     #Configure the httpd.conf file
@@ -115,37 +152,62 @@ _build_ApachePhp_osx() {
     _replace "\$HTTPD -k \$ARGV" "\"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/osx/apache/bin/apachectl"
     _replace "\$HTTPD -t" "\"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/osx/apache/bin/apachectl"
     _replace "\$HTTPD \$ARGV" "\"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/osx/apache/bin/apachectl"   chmod ugo+x "$PG_STAGING/apache/bin/apachectl" 
-   
 
-     
+    CONFIG_FILES="acconfig main/build-defs main/php_config"
     cd $PG_PATH_OSX/ApachePhp/source/php.osx
 
-    echo "Configuring the php source tree for intel"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf || _die "Failed to configure PHP for intel"
-    mv main/php_config.h main/php_config_i386.h
- 
-    echo "Configuring the php source tree for ppc"
-    CFLAGS="$PG_ARCH_OSX_CFLAG -arch ppc" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf || _die "Failed to configure PHP for ppc"
-    mv main/php_config.h main/php_config_ppc.h
+    for ARCH in ${ARCHS}
+    do
+      echo "Configuring the php source tree for ${ARCH}"
+      CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ${ARCH}" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf || _die "Failed to configure PHP for ${ARCH}"
+      for configFile in ${CONFIG_FILES}
+      do
+           if [ -f "${configFile}.h" ]; then
+              cp ${configFile}.h ${configFile}_${ARCH}.h
+           fi
+      done
+    done
  
     echo "Configuring the php source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf || _die "Failed to configure PHP for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf || _die "Failed to configure PHP for Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
-    echo "#ifdef __BIG_ENDIAN__" > main/php_config.h
-    echo "#include \"php_config_ppc.h\"" >> main/php_config.h
-    echo "#else" >> main/php_config.h
-    echo "#include \"php_config_i386.h\"" >> main/php_config.h
-    echo "#endif" >> main/php_config.h
+    for configFile in ${CONFIG_FILES}
+    do
+      HEADER_FILE=${configFile}.h
+      if [ -f "${HEADER_FILE}" ]; then
+        CONFIG_BASENAME=`basename ${configFile}`
+        rm -f "${HEADER_FILE}"
+        cat <<EOT > "${HEADER_FILE}"
+#ifdef __BIG_ENDIAN__
+ #ifdef __LP64__
+  #error "${CONFIG_BASENAME}: Does not have support for ppc64 architecture"
+ #else
+  #include "${CONFIG_BASENAME}_ppc.h"
+ #endif
+#else
+ #ifdef __LP64__
+  #include "${CONFIG_BASENAME}_x86_64.h"
+ #else
+  #include "${CONFIG_BASENAME}_i386.h"
+ #endif
+#endif
+EOT
+      fi
+    done
 
     echo "Building php"
     cd $PG_PATH_OSX/ApachePhp/source/php.osx
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 " make || _die "Failed to build php"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" LDFLAGS="-lresolv" make -j2 || _die "Failed to build php"
     install_name_tool -change "libpq.5.dylib" "$PG_PGHOME_OSX/lib/libpq.5.dylib" "$PG_PATH_OSX/ApachePhp/source/php.osx/sapi/cli/php"
 
     make install || _die "Failed to install php"
     cd $PG_PATH_OSX/ApachePhp/source/php.osx
-    cp php.ini-recommended $PG_STAGING/php/php.ini || _die "Failed to copy php.ini file"
+    if [ -f php.ini-production ]; then
+      cp php.ini-production $PG_STAGING/php/php.ini || _die "Failed to copy php.ini file"
+    else
+      cp php.ini-recommended $PG_STAGING/php/php.ini || _die "Failed to copy php.ini file"
+    fi
     
     install_name_tool -change "$PG_PGHOME_OSX/lib/libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$WD/ApachePhp/staging/osx/php/bin/php"
 
@@ -156,7 +218,7 @@ _build_ApachePhp_osx() {
     do 
         install_name_tool -change "libpq.5.dylib" "@loader_path/../../php/lib/libpq.5.dylib" $file
         install_name_tool -change "/usr/local/lib/libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" $file
-        install_name_tool -change "/usr/local/lib/libpng12.0.dylib" "@loader_path/../../php/lib/libpng12.0.dylib" $file
+        install_name_tool -change "/usr/local/lib/libpng14.0.dylib" "@loader_path/../../php/lib/libpng12.0.dylib" $file
         install_name_tool -change "/usr/local/lib/libjpeg.7.dylib" "@loader_path/../../php/lib/libjpeg.7.dylib" $file
         install_name_tool -change "/usr/local/lib/libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" $file
         install_name_tool -change "/usr/local/lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
@@ -194,12 +256,15 @@ _build_ApachePhp_osx() {
 }
 
 
-
 ################################################################################
-# PG Build
+# PostProcess ApachePHP
 ################################################################################
 
 _postprocess_ApachePhp_osx() {
+
+    echo "*******************************************************"
+    echo " Post Process : ApachePHP (OSX)"
+    echo "*******************************************************"
 
     PG_PATH_OSX=$WD
 
@@ -212,8 +277,8 @@ _postprocess_ApachePhp_osx() {
 
     for file in $filelist
     do
-	_replace "$PG_STAGING" @@INSTALL_DIR@@ "$file"
-	chmod ugo+x "$file"
+        _replace "$PG_STAGING" @@INSTALL_DIR@@ "$file"
+        chmod ugo+x "$file"
     done  
 
     cd $WD/ApachePhp

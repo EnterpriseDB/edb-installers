@@ -1,15 +1,19 @@
 #!/bin/bash
 
-    
+
 ################################################################################
 # Build preparation
 ################################################################################
 
 _prep_Drupal_osx() {
 
+    echo "*******************************************************"
+    echo " Pre Process : Drupal (OSX)"
+    echo "*******************************************************"
+
     # Enter the source directory and cleanup if required
     cd $WD/Drupal/source
-	
+
     if [ -e Drupal.osx ];
     then
       echo "Removing existing Drupal.osx source directory"
@@ -18,7 +22,7 @@ _prep_Drupal_osx() {
 
     echo "Creating staging directory ($WD/Drupal/source/Drupal.osx)"
     mkdir -p $WD/Drupal/source/Drupal.osx || _die "Couldn't create the Drupal.osx directory"
-	
+
     # Grab a copy of the source tree
     cp -R drupal-$PG_VERSION_DRUPAL/* Drupal.osx || _die "Failed to copy the source code (source/drupal-$PG_VERSION_DRUPAL)"
     chmod -R ugo+w Drupal.osx || _die "Couldn't set the permissions on the source directory"
@@ -32,18 +36,21 @@ _prep_Drupal_osx() {
 
     echo "Creating staging directory ($WD/Drupal/staging/osx)"
     mkdir -p $WD/Drupal/staging/osx/Drupal || _die "Couldn't create the staging directory"
-    
+
 
 }
 
 ################################################################################
-# PG Build
+# Drupal Build
 ################################################################################
 
 _build_Drupal_osx() {
 
-	cd $WD
-    mkdir -p $PG_PATH_OSX/Drupal/staging/osx/instscripts || _die "Failed to create the instscripts directory"
+    echo "*******************************************************"
+    echo " Build : Drupal (OSX)"
+    echo "*******************************************************"
+
+    cd $WD
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libxml2* $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy psql in instscripts"
@@ -54,17 +61,20 @@ _build_Drupal_osx() {
     do
         NEW_DLL=`echo $DLL | sed -e "s^@loader_path/../lib/^^g"`
         install_name_tool -change "$DLL" "$NEW_DLL" "$PG_PATH_OSX/Drupal/staging/osx/instscripts/psql"
-    done 
+    done
 
 }
 
 
 ################################################################################
-# PG Build
+# Drupal Build
 ################################################################################
 
 _postprocess_Drupal_osx() {
 
+    echo "*******************************************************"
+    echo " Post Process : Drupal (OSX)"
+    echo "*******************************************************"
 
     cp -R $WD/Drupal/source/Drupal.osx/* $WD/Drupal/staging/osx/Drupal || _die "Failed to copy the Drupal Source into the staging directory"
 
@@ -89,14 +99,14 @@ _postprocess_Drupal_osx() {
 
     cp scripts/osx/getapacheport.sh staging/osx/scripts/getapacheport.sh || _die "Failed to copy the getapacheport.sh script (scripts/osx/getapacheport.sh)"
     chmod ugo+x staging/osx/scripts/getapacheport.sh
- 
+
     cp scripts/osx/pg-launchDrupal.applescript.in staging/osx/scripts/pg-launchDrupal.applescript || _die "Failed to copy the pg-launchDrupal.applescript.in  script (scripts/osx/pg-launchDrupal.applescript)"
     chmod ugo+x staging/osx/scripts/pg-launchDrupal.applescript
 
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/pg-launchDrupal.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchDrupal.icns)"
-	
+
     #Configure the install.php file
     _replace " '#default_value' => \$db_path," " '#default_value' => drupal," "$WD/Drupal/staging/osx/Drupal/install.php"
     _replace " '#default_value' => \$db_user," " '#default_value' => drupaluser," "$WD/Drupal/staging/osx/Drupal/install.php"
@@ -119,7 +129,6 @@ _postprocess_Drupal_osx() {
     cd $WD/output
     zip -r drupal-$PG_VERSION_DRUPAL-$PG_BUILDNUM_DRUPAL-osx.zip drupal-$PG_VERSION_DRUPAL-$PG_BUILDNUM_DRUPAL-osx.app/ || _die "Failed to zip the installer bundle"
     rm -rf drupal-$PG_VERSION_DRUPAL-$PG_BUILDNUM_DRUPAL-osx.app/ || _die "Failed to remove the unpacked installer bundle"
-
 
     cd $WD
 

@@ -3,7 +3,7 @@
 # Read the various build scripts
 
 # Mac OS X
-if [ $PG_ARCH_OSX = 1 ]; 
+if [ $PG_ARCH_OSX = 1 ];
 then
     source $WD/TuningWizard/build-osx.sh
 fi
@@ -25,7 +25,7 @@ if [ $PG_ARCH_WINDOWS = 1 ];
 then
     source $WD/TuningWizard/build-windows.sh
 fi
-    
+
 ################################################################################
 # Build preparation
 ################################################################################
@@ -44,19 +44,17 @@ _prep_TuningWizard() {
 
     if [ ! -e wizard ];
     then
-      echo "Please fetch the tuningwizard sources from the cvs."
-      echo "Repository for the tuningwizard is: /cvs/TUNINGTOOL"
+      echo "Fetching the tuningwizard sources from the cvs."
+      CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/TUNINGTOOL cvs co wizard
+    else
+      CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/TUNINGTOOL cvs update -PdC
     fi
 
-    cd $WD/TuningWizard/source/wizard
-    echo "Fetching tuningwizard sources from the cvs..."
-    cvs update
-    
     # Per-platform prep
     cd $WD
-    
+
     # Mac OS X
-    if [ $PG_ARCH_OSX = 1 ]; 
+    if [ $PG_ARCH_OSX = 1 ];
     then
         _prep_TuningWizard_osx || exit 1
     fi
@@ -78,7 +76,7 @@ _prep_TuningWizard() {
     then
         _prep_TuningWizard_windows || exit 1
     fi
-    
+
 }
 
 ################################################################################
@@ -88,12 +86,12 @@ _prep_TuningWizard() {
 _build_TuningWizard() {
 
     # Mac OSX
-    if [ $PG_ARCH_OSX = 1 ]; 
+    if [ $PG_ARCH_OSX = 1 ];
     then
         _build_TuningWizard_osx || exit 1
     fi
 
-    # Linux 
+    # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
         _build_TuningWizard_linux || exit 1
@@ -134,7 +132,7 @@ _postprocess_TuningWizard() {
     _replace PG_BUILDNUM_TUNINGWIZARD $PG_BUILDNUM_TUNINGWIZARD installer.xml || _die "Failed to set the major version in the installer project file (TuningWizard/installer.xml)"
 
     # Mac OSX
-    if [ $PG_ARCH_OSX = 1 ]; 
+    if [ $PG_ARCH_OSX = 1 ];
     then
         _postprocess_TuningWizard_osx || exit 1
     fi
@@ -150,7 +148,7 @@ _postprocess_TuningWizard() {
     then
         _postprocess_TuningWizard_linux_x64 || exit 1
     fi
-    
+
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then

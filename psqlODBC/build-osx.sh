@@ -1,15 +1,15 @@
 #!/bin/bash
 
-    
+
 ################################################################################
 # Build preparation
 ################################################################################
 
 _prep_psqlODBC_osx() {
 
-    echo "**********************************"
-    echo "*  Pre Process: pgsqlODBC (OSX)  *"
-    echo "**********************************"
+    echo "*******************************************************"
+    echo " Pre Process : psqlODBC(OSX)"
+    echo "*******************************************************"
 
     # Enter the source directory and cleanup if required
     cd $WD/psqlODBC/source
@@ -19,7 +19,7 @@ _prep_psqlODBC_osx() {
       echo "Removing existing psqlODBC.osx source directory"
       rm -rf psqlODBC.osx  || _die "Couldn't remove the existing psqlODBC.osx source directory (source/psqlODBC.osx)"
     fi
-   
+
     echo "Creating source directory ($WD/psqlODBC/source/psqlODBC.osx)"
     mkdir -p $WD/psqlODBC/source/psqlODBC.osx || _die "Couldn't create the psqlODBC.osx directory"
 
@@ -38,46 +38,69 @@ _prep_psqlODBC_osx() {
     echo "Creating staging directory ($WD/psqlODBC/staging/osx)"
     mkdir -p $WD/psqlODBC/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/psqlODBC/staging/osx || _die "Couldn't set the permissions on the staging directory"
-    
+
 }
 
 ################################################################################
-# PG Build
+# psqlODBC Build
 ################################################################################
 
 _build_psqlODBC_osx() {
 
-    echo "****************************"
-    echo "*  Build: pgsqlODBC (OSX)  *"
-    echo "****************************"
+    echo "*******************************************************"
+    echo " Build : psqlODBC(OSX)"
+    echo "*******************************************************"
 
     PG_STAGING=$PG_PATH_OSX/psqlODBC/staging/osx
     SOURCE_DIR=$PG_PATH_OSX/psqlODBC/source/psqlODBC.osx
     cd $SOURCE_DIR
 
-    echo "Configuring psqlODBC sources for intel"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --with-iodbc --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for intel"
-
-    mv config.h config_i386.h
-
-    echo "Configuring psqlODBC sources for ppc"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --with-iodbc --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for ppc"
-
-    mv config.h config_ppc.h
+    CONFIG_FILES="config"
+    ARCHS="i386 ppc x86_64"
+    ARCH_FLAGS=""
+    for ARCH in ${ARCHS}
+    do
+      echo "Configuring psqlODBC sources for ${ARCH}"
+      CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ${ARCH}" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --with-iodbc --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for intel"
+      ARCH_FLAGS="${ARCH_FLAGS} -arch ${ARCH}"
+      for configFile in ${CONFIG_FILES}
+      do
+           if [ -f "${configFile}.h" ]; then
+              cp "${configFile}.h" "${configFile}_${ARCH}.h"
+           fi
+      done
+    done
 
     echo "Configuring psqlODBC sources for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --with-iodbc --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --with-iodbc --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
-    echo "#ifdef __BIG_ENDIAN__" > config.h
-    echo "#include \"config_ppc.h\"" >> config.h
-    echo "#else" >> config.h
-    echo "#include \"config_i386.h\"" >> config.h
-    echo "#endif" >> config.h
+    for configFile in ${CONFIG_FILES}
+    do
+      HEADER_FILE=${configFile}.h
+      if [ -f "${HEADER_FILE}" ]; then
+        CONFIG_BASENAME=`basename ${configFile}`
+        rm -f "${HEADER_FILE}"
+        cat <<EOT > "${HEADER_FILE}"
+#ifdef __BIG_ENDIAN__
+ #ifdef __LP64__
+  #error "${CONFIG_BASENAME}: Does not have support for ppc64 architecture"
+ #else
+  #include "${CONFIG_BASENAME}_ppc.h"
+ #endif
+#else
+ #ifdef __LP64__
+  #include "${CONFIG_BASENAME}_x86_64.h"
+ #else
+  #include "${CONFIG_BASENAME}_i386.h"
+ #endif
+#endif
+EOT
+      fi
+    done
 
-    
     echo "Compiling psqlODBC"
-    make || _die "Couldn't compile sources"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" make || _die "Couldn't compile sources"
 
     echo "Installing psqlODBC into the sources"
     make install || _die "Couldn't install psqlODBC"
@@ -91,20 +114,20 @@ _build_psqlODBC_osx() {
 
 
 ################################################################################
-# PG Build
+# psqlODBC Post-Process
 ################################################################################
 
 _postprocess_psqlODBC_osx() {
 
-    echo "***********************************"
-    echo "*  Post Process: pgsqlODBC (OSX)  *"
-    echo "***********************************"
+    echo "*******************************************************"
+    echo " Post Process : psqlODBC(OSX)"
+    echo "*******************************************************"
 
     cd $WD/psqlODBC
 
     # Setup the installer scripts.
     mkdir -p staging/osx/installer/psqlODBC || _die "Failed to create a directory for the install scripts"
-    
+
     cp scripts/osx/createshortcuts.sh staging/osx/installer/psqlODBC/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/osx/createshortcuts.sh)"
     chmod ugo+x staging/osx/installer/psqlODBC/createshortcuts.sh
 
@@ -143,12 +166,12 @@ _postprocess_psqlODBC_osx() {
     cp -f $WD/resources/extract_installbuilder.osx $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/installbuilder.sh
     _replace @@PROJECTNAME@@ psqlODBC $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace @@PROJECTNAME@@ with psqlODBC ($WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/installbuilder.sh)"
     chmod a+x $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/installbuilder.sh
- 
+
     # Zip up the output
     cd $WD/output
     zip -r psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.zip psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/ || _die "Failed to zip the installer bundle"
     rm -rf psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/ || _die "Failed to remove the unpacked installer bundle"
-  
+
     cd $WD
 }
 

@@ -1,15 +1,18 @@
 #!/bin/bash
 
-    
 ################################################################################
 # Build preparation
 ################################################################################
 
 _prep_phpPgAdmin_osx() {
 
+    echo "*******************************************************"
+    echo " Pre Process : phpPGAdmin (OSX)"
+    echo "*******************************************************"
+
     # Enter the source directory and cleanup if required
     cd $WD/phpPgAdmin/source
-	
+
     if [ -e phpPgAdmin.osx ];
     then
       echo "Removing existing phpPgAdmin.osx source directory"
@@ -18,7 +21,7 @@ _prep_phpPgAdmin_osx() {
 
     echo "Creating staging directory ($WD/phpPgAdmin/source/phpPgAdmin.osx)"
     mkdir -p $WD/phpPgAdmin/source/phpPgAdmin.osx || _die "Couldn't create the phpPgAdmin.osx directory"
-	
+
     # Grab a copy of the source tree
     cp -R phpPgAdmin-$PG_VERSION_PHPPGADMIN/* phpPgAdmin.osx || _die "Failed to copy the source code (source/phpPgAdmin-$PG_VERSION_PHPPGADMIN)"
     chmod -R ugo+w phpPgAdmin.osx || _die "Couldn't set the permissions on the source directory"
@@ -33,27 +36,32 @@ _prep_phpPgAdmin_osx() {
     echo "Creating staging directory ($WD/phpPgAdmin/staging/osx)"
     mkdir -p $WD/phpPgAdmin/staging/osx/phpPgAdmin || _die "Couldn't create the staging directory"
 
-
 }
 
 ################################################################################
-# PG Build
+# phpPGAdmin Build
 ################################################################################
 
 _build_phpPgAdmin_osx() {
 
-	cd $WD
+    echo "*******************************************************"
+    echo " Build : phpPGAdmin (OSX)"
+    echo "*******************************************************"
+
+    cd $WD
+    cp -R $WD/phpPgAdmin/source/phpPgAdmin.osx/* $WD/phpPgAdmin/staging/osx/phpPgAdmin || _die "Failed to copy the phpPgAdmin Source into the staging directory"
 }
 
 
 ################################################################################
-# PG Build
+# phpPGAdmin Post-Process
 ################################################################################
 
 _postprocess_phpPgAdmin_osx() {
 
-
-    cp -R $WD/phpPgAdmin/source/phpPgAdmin.osx/* $WD/phpPgAdmin/staging/osx/phpPgAdmin || _die "Failed to copy the phpPgAdmin Source into the staging directory"
+    echo "*******************************************************"
+    echo " Post Process : phpPGAdmin (OSX)"
+    echo "*******************************************************"
 
     cd $WD/phpPgAdmin
 
@@ -65,7 +73,6 @@ _postprocess_phpPgAdmin_osx() {
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the phpPgAdmin Launch Scripts"
 
     cp scripts/osx/pg-launchPhpPgAdmin.applescript.in staging/osx/scripts/pg-launchPhpPgAdmin.applescript || _die "Failed to copy the pg-launchPhpPgAdmin.applescript  script (scripts/osx/pg-launchPhpPgAdmin.applescript.in)"
-    
 
     cp scripts/osx/getapacheport.sh staging/osx/scripts/getapacheport.sh || _die "Failed to copy the getapacheport.sh script (scripts/osx/getapacheport.sh)"
     chmod -R ugo+x staging/osx/scripts/getapacheport.sh || _die "Couldn't set the permissions on the getapacheport.sh"
@@ -73,7 +80,7 @@ _postprocess_phpPgAdmin_osx() {
     # Copy in the menu pick images
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/pg-launchPhpPgAdmin.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchPhpPgAdmin.icns)"
-	
+
     #Configure the conf.php file
     _replace "\$conf\['servers'\]\[0\]\['host'\] = '';" "\$conf\['servers'\]\[0\]\['host'\] = '@@PGHOST@@';" "$WD/phpPgAdmin/staging/osx/phpPgAdmin/conf/config.inc.php"
     _replace "\$conf\['servers'\]\[0\]\['port'\] = 5432;" "\$conf\['servers'\]\[0\]\['port'\] = @@PGPORT@@;" "$WD/phpPgAdmin/staging/osx/phpPgAdmin/conf/config.inc.php"
@@ -88,7 +95,6 @@ _postprocess_phpPgAdmin_osx() {
     cd $WD/output
     zip -r phppgadmin-$PG_VERSION_PHPPGADMIN-$PG_BUILDNUM_PHPPGADMIN-osx.zip phppgadmin-$PG_VERSION_PHPPGADMIN-$PG_BUILDNUM_PHPPGADMIN-osx.app/ || _die "Failed to zip the installer bundle"
     rm -rf phppgadmin-$PG_VERSION_PHPPGADMIN-$PG_BUILDNUM_PHPPGADMIN-osx.app/ || _die "Failed to remove the unpacked installer bundle"
-
 
     cd $WD
 

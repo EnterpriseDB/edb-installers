@@ -41,14 +41,14 @@ PG_BUILDNUM_HQAGENT=$PG_BUILDNUM_PGHYPERIC
 PG_BUILDNUM_REPLICATIONSERVER=1
 
 # PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
-#                     Minor version is revision.build. 
+#                     Minor version is revision.build.
 
 PG_MAJOR_VERSION=8.4
 PG_MINOR_VERSION=2.2
 
 # Other package versions
 PG_VERSION_APACHE=2.2.14
-PG_VERSION_PHP=5.2.11
+PG_VERSION_PHP=5.3.1
 PG_VERSION_MEDIAWIKI=1.15.0
 PG_VERSION_PHPWIKI=1.2.11
 PG_VERSION_PHPBB=3.0.5
