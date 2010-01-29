@@ -44,6 +44,19 @@
         </language>
     </customLanguageFileList>
     <preShowHelpActionList>
+
+        <setInstallerVariable name="defaultpubport" value="9011" />
+        <setInstallerVariable name="defaultsubport" value="9012" />
+        <setInstallerVariable name="defaultsyspassword" value="postgres" />
+        <setInstallerVariable name="defaultserviceaccount" value="postgres" />
+        <setInstallerVariable name="defaultdbtype" value="postgresql" />
+        <setInstallerVariable name="defaultcontroldb" value="postgres" />
+        <setInstallerVariable name="defaultpghost" value="localhost" />
+        <setInstallerVariable name="defaultpgport" value="5432" />
+        <setInstallerVariable name="defaultpguser" value="postgres" />
+        <setInstallerVariable name="defaultpgpassword" value="postgres" />
+
+
         <!-- MAC : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
@@ -98,11 +111,17 @@
         <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_REPLICATIONSERVER" />
         <setInstallerVariable name="xDBReplicationServerVersion"  persist="1" value=""/>
-        <setInstallerVariable name="defaultuser" value="postgres" />
         <setInstallerVariable name="defaultpubport" value="9011" />
         <setInstallerVariable name="defaultsubport" value="9012" />
         <setInstallerVariable name="defaultsyspassword" value="postgres" />
+        <setInstallerVariable name="defaultserviceaccount" value="postgres" />
         <setInstallerVariable name="defaultdbtype" value="postgresql" />
+        <setInstallerVariable name="defaultcontroldb" value="postgres" />
+        <setInstallerVariable name="defaultpghost" value="localhost" />
+        <setInstallerVariable name="defaultpgport" value="5432" />
+        <setInstallerVariable name="defaultpguser" value="postgres" />
+        <setInstallerVariable name="defaultpgpassword" value="postgres" />
+        
         
  
         <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
@@ -320,19 +339,19 @@
                             <file>/etc/postgres-reg.ini</file>
                             <section>xDBReplicationServer</section>
                             <key>ServiceAccount</key>
-                            <variable>serviceaccount</variable>
+                            <variable>iServiceaccount</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
                             <section>xDBReplicationServer</section>
                             <key>SubPort</key>
-                            <variable>subport</variable>
+                            <variable>iSubport</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
                             <section>xDBReplicationServer</section>
                             <key>PubPort</key>
-                            <variable>pubport</variable>
+                            <variable>iPubport</variable>
                         </iniFileGet>
                     </actionList>
                     <ruleList>
@@ -376,7 +395,17 @@
                         <registryGet>
                             <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                             <name>ServiceAccount</name>
-                            <variable>serviceaccount</variable>
+                            <variable>iServiceaccount</variable>
+                        </registryGet>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                            <name>SubPort</name>
+                            <variable>iSubport</variable>
+                        </registryGet>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                            <name>PubPort</name>
+                            <variable>iPubport</variable>
                         </registryGet>
                     </actionList>
                     <ruleList>
@@ -517,6 +546,71 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
+
+                <!-- Set the serviceaccount, subport, pubport values
+                     if its an upgrade -->
+                <setInstallerVariable name="serviceaccount" value="${iServiceaccount}" >
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${iServiceaccount}" value="" />
+                    </ruleList>
+                </setInstallerVariable> 
+                <setInstallerVariable name="subport" value="${iSubport}" >
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${iSubport}" value="" />
+                    </ruleList>
+                </setInstallerVariable> 
+                <setInstallerVariable name="pubport" value="${iPubport}" >
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${iPubport}" value="" />
+                    </ruleList>
+                </setInstallerVariable>
+ 
+                <!-- Set the serviceaccount, subport, pubport values to default values
+                     if nothing set on command line and its a fresh install -->
+                <setInstallerVariable name="serviceaccount" value="${defaultserviceaccount}" >
+                    <ruleList>
+                        <compareText logic="equals" text="${serviceaccount}" value="" />
+                    </ruleList>
+                </setInstallerVariable> 
+                <setInstallerVariable name="subport" value="${defaultsubport}" >
+                    <ruleList>
+                        <compareText logic="equals" text="${subport}" value="" />
+                    </ruleList>
+                </setInstallerVariable> 
+                <setInstallerVariable name="pubport" value="${defaultpubport}" >
+                    <ruleList>
+                        <compareText logic="equals" text="${pubport}" value="" />
+                    </ruleList>
+                </setInstallerVariable> 
+                
+                <!-- Set pghost, pguser, pgpassword, pgport and controldb
+                     for unattended mode and nothing set on commandline -->
+                <setInstallerVariable name="pghost" value="${defaultpghost}" >
+                    <ruleList>
+                        <compareText logic="equals" text="${pghost}" value="" /> 
+                    </ruleList>
+                </setInstallerVariable>  
+                <setInstallerVariable name="pgport" value="${defaultpgport}" >
+                    <ruleList>
+                        <compareText logic="equals" text="${pgport}" value="" /> 
+                    </ruleList>
+                </setInstallerVariable>  
+                <setInstallerVariable name="pguser" value="${defaultpguser}" >
+                    <ruleList>
+                        <compareText logic="equals" text="${pguser}" value="" /> 
+                    </ruleList>
+                </setInstallerVariable>  
+                <setInstallerVariable name="pgpassword" value="${defaultpgpassword}" >
+                    <ruleList>
+                        <compareText logic="equals" text="${pgpassword}" value="" /> 
+                        <compareText logic="equals" text="${installer_ui}" value="unattended" />
+                    </ruleList>
+                </setInstallerVariable>  
+                <setInstallerVariable name="controldb" value="${defaultcontroldb}" >
+                    <ruleList>
+                        <compareText logic="equals" text="${controldb}" value="" /> 
+                    </ruleList>
+                </setInstallerVariable>  
             </actionList>
             <ruleList>
                 <isFalse value="${extract_mode}"/>
@@ -845,7 +939,7 @@
                 <runProgram>
                    <customErrorMessage>${msg(error.create.edbrepl)}</customErrorMessage>
                    <program>${installdir}\installer\xDBReplicationServer\CreateEDBReplConfForUser.exe</program>
-                   <programArguments>${serviceaccount} "${servicepassword}" ${pghost} ${pgport} ${control_db} ${pguser} "${esc_enc_password}" ${dbtype}</programArguments>
+                   <programArguments>${serviceaccount} "${servicepassword}" ${pghost} ${pgport} ${controldb} ${pguser} "${esc_enc_password}" ${dbtype}</programArguments>
                    <workingDirectory>${installdir}\installer\xDBReplicationServer</workingDirectory>
                    <abortOnError>0</abortOnError>
                    <showMessageOnError>1</showMessageOnError>
@@ -869,7 +963,7 @@ port=${pgport}
 password=${esc_enc_password}
 type=${dbtype}
 host=${pghost}
-database=${control_db}
+database=${controldb}
                     </text>
                     <ruleList>
                         <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
@@ -1003,14 +1097,14 @@ database=${control_db}
                 <!-- Check the control database exits -->
                 <setInstallerVariableFromScriptOutput name="dbexist"
                                                       exec="${psql_path}"
-                                                      execArgs="-t -c &quot;SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${control_db}'&quot;"
+                                                      execArgs="-t -c &quot;SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${controldb}'&quot;"
                                                       workingDirectory="${system_temp_directory}/${product_fullname}/bin"
                                                       abortOnError="0"
                                                       showMessageOnError="0"/>
 
                 <runProgram>
                     <program>${psql_path}</program>
-                    <programArguments>-t -c "CREATE DATABASE ${control_db}"</programArguments>
+                    <programArguments>-t -c "CREATE DATABASE ${controldb}"</programArguments>
                     <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
                     <progressText>${msg(progress.text.creating.controldb)}</progressText>
                     <ruleList>
@@ -2148,8 +2242,8 @@ database=${control_db}
                     <name>pghost</name>
                     <description>Host</description>
                     <explanation/>
-                    <value/>
-                    <default>localhost</default>
+                    <value>${defaultpghost}</value>
+                    <default/>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
@@ -2158,8 +2252,8 @@ database=${control_db}
                     <name>pgport</name>
                     <description>Port</description>
                     <explanation/>
-                    <value/>
-                    <default>5432</default>
+                    <value>${defaultpgport}</value>
+                    <default/>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
@@ -2168,8 +2262,8 @@ database=${control_db}
                     <name>pguser</name>
                     <description>User Name</description>
                     <explanation/>
-                    <value/>
-                    <default>${defaultuser}</default>
+                    <value>${defaultpguser}</value>
+                    <default/>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
@@ -2184,11 +2278,11 @@ database=${control_db}
                 </passwordParameter>
                 <!-- Control Database -->
                 <stringParameter>
-                    <name>control_db</name>
+                    <name>controldb</name>
                     <description>Control Database</description>
                     <explanation/>
-                    <value/>
-                    <default></default>
+                    <value>${defaultcontroldb}</value>
+                    <default/>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
@@ -2224,7 +2318,7 @@ database=${control_db}
                             <value/>
                         </compareText>
                         <compareText>
-                            <text>${control_db}</text>
+                            <text>${controldb}</text>
                             <logic>equals</logic>
                             <value/>
                         </compareText>
@@ -2570,7 +2664,7 @@ database=${control_db}
                    <name>serviceaccount</name>
                    <description>${msg(config.serviceaccount.description)}</description>
                    <explanation/>
-                   <value/>
+                   <value>${defaultserviceaccount}</value>
                    <default/>
                    <allowEmptyValue>1</allowEmptyValue>
                    <width>40</width>
