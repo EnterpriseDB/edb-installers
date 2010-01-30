@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Postgres Plus HQ Monitoring Home Page
+Exec="PPHQ_INSTALLDIR/scripts/launchbrowser.sh" http://127.0.0.1:@@PPHQPORT@@
+Icon=pphq-launch-PPHQ_VERSION_STR.png
+Terminal=false
+Type=Application
+

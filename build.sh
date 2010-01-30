@@ -459,19 +459,19 @@ then
     _postprocess_jboss || exit 1
 fi
 
-# Package: PGHYPERIC
-if [ $PG_PACKAGE_PGHYPERIC = 1 ];
+# Package: PPHQ
+if [ $PG_PACKAGE_PPHQ = 1 ];
 then
     cd $WD
-    source ./pghyperic/build.sh
+    source ./pphq/build.sh
 
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_pghyperic || exit 1
-        _build_pghyperic || exit 1
+        _prep_pphq || exit 1
+        _build_pphq || exit 1
     fi
 
-    _postprocess_pghyperic || exit 1
+    _postprocess_pphq || exit 1
 fi
 
 # Package: HQAGENT
