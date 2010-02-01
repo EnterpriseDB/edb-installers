@@ -42,91 +42,65 @@ _prep_pphq() {
     cd $WD/pphq/source
 
     # pphq
-    if [ -e pphq-$PG_VERSION_PPHQ ];
+    if [ -d hq ];
     then
-      echo "Removing existing pphq-$PG_VERSION_PPHQ source directory"
-      rm -rf pphq-$PG_VERSION_PPHQ  || _die "Couldn't remove the existing pphq-$PG_VERSION_PPHQ source directory (source/pphq-$PG_VERSION_PPHQ)"
+        echo "Removing existing hyperic directory..."
+        rm -rf hq || _die "Couldn't remove the existing hyperic source directory (source/hq)"
     fi
 
-    # Linux
-    if [ $PG_ARCH_LINUX = 1 ];
+    echo "Extracting hyperic source ..."
+    extract_file ${WD}/tarballs/hyperic-hq-src-${PG_VERSION_PPHQ} || _die "Error extracting hyperic source..."
+
+    if [ ! -d jboss-${PPHQ_JBOSS_VERSION} ];
     then
-        if [ -e pphq-"$PG_VERSION_PPHQ" ];
-        then
-          echo "Removing existing pphq-"$PG_VERSION_PPHQ" source directory"
-          rm -rf pphq-"$PG_VERSION_PPHQ"  || _die "Couldn't remove the existing pphq-"$PG_VERSION_PPHQ" source directory (source/pphq-"$PG_VERSION_PPHQ")"
-        fi
-   
-	echo "Unpacking pphq source..."
-	 extract_file ../../tarballs/pphq-$PG_VERSION_PPHQ || exit 1
+      echo "Extracting jboss binaries..."
+      extract_file ${WD}/tarballs/jboss-${PPHQ_JBOSS_VERSION} || _die "Error extracting jboss binaries for pphq..."
     fi
 
-    # Linux-x64
-    if [ $PG_ARCH_LINUX_X64 = 1 ];
+    if [ -f ${WD}/tarballs/pphq-${PG_VERSION_PPHQ}.patch ];
     then
-        if [ -e pphq-"$PG_VERSION_PPHQ"-x64 ];
-        then
-          echo "Removing existing pphq-"$PG_VERSION_PPHQ"-x64 source directory"
-          rm -rf pphq-"$PG_VERSION_PPHQ"-x64  || _die "Couldn't remove the existing pphq-"$PG_VERSION_PPHQ"-x64 source directory (source/pphq-"$PG_VERSION_PPHQ"-x64)"
-        fi
-   
-	echo "Unpacking pphq source..."
-	 extract_file ../../tarballs/pphq-$PG_VERSION_PPHQ-x64 || exit 1
+      echo "Applying PPHQ patches ..."
+      cd $WD/pphq/source/hq
+      patch -p1 < ${WD}/tarballs/pphq-${PG_VERSION_PPHQ}.patch
+      # NOTE: You should apply your patches here for rebranding and replace the images/resources with actual one.
     fi
 
-    # osx
-    if [ $PG_ARCH_OSX = 1 ];
+    cd $WD/pphq/source
+    if [ -f build_pphq.sh ];
     then
-        if [ -e pphq-"$PG_VERSION_PPHQ"-osx ];
-        then
-          echo "Removing existing pphq-"$PG_VERSION_PPHQ"-osx source directory"
-          rm -rf pphq-"$PG_VERSION_PPHQ"-osx || _die "Couldn't remove the existing pphq-"$PG_VERSION_PPHQ"-osx source directory (source/pphq-"$PG_VERSION_PPHQ"-osx)"
-        fi
-   
-	echo "Unpacking pphq source..."
-	 extract_file ../../tarballs/pphq-$PG_VERSION_PPHQ-osx || exit 1
-    fi
-
-    # windows
-    if [ $PG_ARCH_WINDOWS = 1 ];
-    then
-        if [ -e pphq-"$PG_VERSION_PPHQ"-windows ];
-        then
-          echo "Removing existing pphq-"$PG_VERSION_PPHQ"-windows source directory"
-          rm -rf pphq-"$PG_VERSION_PPHQ"-windows || _die "Couldn't remove the existing pphq-"$PG_VERSION_PPHQ"-windows source directory (source/pphq-"$PG_VERSION_PPHQ"-windows)"
-        fi
-   
-	echo "Unpacking pphq source..."
-	 extract_file ../../tarballs/pphq-$PG_VERSION_PPHQ-windows || exit 1
+      rm -f build_pphq.sh
     fi
 
     # Per-platform prep
     cd $WD
-    
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
         _prep_pphq_osx || exit 1
     fi
 
+    cd $WD
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
         _prep_pphq_linux || exit 1
     fi
 
+    cd $WD
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
         _prep_pphq_linux_x64 || exit 1
     fi
 
+    cd $WD
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
         _prep_pphq_windows || exit 1
     fi
     
+    cd $WD
 }
 
 ################################################################################
@@ -135,29 +109,51 @@ _prep_pphq() {
 
 _build_pphq() {
 
+    cd $WD/pphq/source
+    cat <<EOT >build_pphq.sh
+#!/bin/bash
+export JAVA_HOME=${PG_JAVA_HOME_OSX}
+export ANT_HOME=${PG_ANT_HOME_OSX}
+export JBOSS_HOME=${PWD}/jboss-${PPHQ_JBOSS_VERSION}
+export ANT_OPTS="-Xmx256M -XX:MaxPermSize=128m"
+export JAVA_OPTS="-ea"
+
+cd hq
+\${ANT_HOME}/bin/ant -Djboss.zip=${WD}/tarballs/jboss-${PPHQ_JBOSS_VERSION}.zip -Dant.bz2=${WD}/tarballs/apache-ant-${PPHQ_ANT_VERSION}-bin.tar.bz2 archive-prep
+
+EOT
+    echo "Building PPHQ..."
+    /bin/bash build_pphq.sh
+
+    cd $WD
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
         _build_pphq_osx || exit 1
     fi
 
+    cd $WD
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
         _build_pphq_linux || exit 1
     fi
 
+    cd $WD
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
        _build_pphq_linux_x64 || exit 1
     fi
 
+    cd $WD
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
         _build_pphq_windows || exit 1
     fi
+
+    cd $WD
 }
 
 ################################################################################
@@ -169,7 +165,6 @@ _build_pphq() {
 _postprocess_pphq() {
 
     cd $WD/pphq
-
 
     # Prepare the installer XML file
     if [ -f installer.xml ];

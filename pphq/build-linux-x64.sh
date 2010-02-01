@@ -1,27 +1,14 @@
 #!/bin/bash
 
-    
 ################################################################################
 # Build preparation
 ################################################################################
 
 _prep_pphq_linux_x64() {
 
-    # Enter the source directory and cleanup if required
-    cd $WD/pphq/source
-
-    if [ -e pphq.linux-x64 ];
-    then
-      echo "Removing existing pphq.linux-x64 source directory"
-      rm -rf pphq.linux-x64  || _die "Couldn't remove the existing pphq.linux-x64 source directory (source/pphq.linux-x64)"
-    fi
-   
-    echo "Creating staging directory ($WD/pphq/source/pphq.linux-x64)"
-    mkdir -p $WD/pphq/source/pphq.linux-x64 || _die "Couldn't create the pphq.linux-x64 directory"
-
-    # Grab a copy of the source tree
-    cp -R pphq-$PG_VERSION_PPHQ-x64/* pphq.linux-x64 || _die "Failed to copy the source code (source/pphq-$PG_VERSION_PPHQ-x64)"
-    chmod -R ugo+w pphq.linux-x64 || _die "Couldn't set the permissions on the source directory"
+    echo "*******************************************************"
+    echo " Pre Process : PPHQ (LINUX-X64)"
+    echo "*******************************************************"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/pphq/staging/linux-x64 ];
@@ -33,96 +20,110 @@ _prep_pphq_linux_x64() {
     echo "Creating staging directory ($WD/pphq/staging/linux-x64)"
     mkdir -p $WD/pphq/staging/linux-x64 || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/pphq/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
-    cp -R $WD/pphq/source/pphq.linux-x64/* $WD/pphq/staging/linux-x64 || _die "Failed to copy the pphq Source into the staging directory"
- 
 
 }
 
 ################################################################################
-# PG Build
+# PPHQ Build
 ################################################################################
 
 _build_pphq_linux_x64() {
 
-     #Copy psql for postgres validation
-     mkdir -p $WD/pphq/staging/linux-x64/instscripts || _die "Failed to create the instscripts directory"
-     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/lib/libpq* $PG_PATH_LINUX_X64/pphq/staging/linux-x64/instscripts/" || _die "Failed to copy libpq in instscripts"
-     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/bin/psql $PG_PATH_LINUX_X64/pphq/staging/linux-x64/instscripts/" || _die "Failed to copy psql in instscripts"
+    echo "*******************************************************"
+    echo " Build : PPHQ (LINUX-X64)"
+    echo "*******************************************************"
 
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libssl.so* $PG_PATH_LINUX_X64/pphq/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypto.so* $PG_PATH_LINUX_X64/pphq/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libtermcap.so* $PG_PATH_LINUX_X64/pphq/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxml2.so* $PG_PATH_LINUX_X64/pphq/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libreadline.so* $PG_PATH_LINUX_X64/pphq/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
+    PPHQ_STAGING=$WD/pphq/staging/linux-x64
+    SERVER_STAGING=$WD/server/staging/linux-x64
+    echo ""
+    echo "Copying Postgres Plus installers to staging directory"
+    mkdir -p $PPHQ_STAGING/pphq || _die "Failed to create the pphq installer directory"
+    cp -r $WD/pphq/source/hq/build/archive/hyperic-hq-installer/* $PPHQ_STAGING/pphq/
+
+    mkdir -p $PPHQ_STAGING/pphq/templates
+    cp $WD/pphq/resources/*.prop $PPHQ_STAGING/pphq/templates
+
+    #Copy psql for postgres validation
+    mkdir -p $PPHQ_STAGING/instscripts || _die "Failed to create the instscripts directory"
+    mkdir -p $PPHQ_STAGING/instscripts/bin || _die "Failed to create the instscripts directory"
+    mkdir -p $PPHQ_STAGING/instscripts/lib || _die "Failed to create the instscripts directory"
+    cp $SERVER_STAGING/bin/psql $PPHQ_STAGING/instscripts/bin/ || _die "Failed to copy psql in instscripts"
+    cp $SERVER_STAGING/lib/libpq* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy libpq in instscripts"
+    cp $SERVER_STAGING/lib/libssl.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
+    cp $SERVER_STAGING/lib/libcrypto.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
+    cp $SERVER_STAGING/lib/libtermcap.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
+    cp $SERVER_STAGING/lib/libxml2.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
+    cp $SERVER_STAGING/lib/libreadline.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
 
 }
 
-
 ################################################################################
-# PG Build
+# PPHQ Post-Process
 ################################################################################
 
 _postprocess_pphq_linux_x64() {
- 
-    cd $WD/pphq
 
-    # Setup the installer scripts.
-    mkdir -p staging/linux-x64/installer/pphq || _die "Failed to create a directory for the install scripts"
-    cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/pphq/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux-x64/removeshortcuts.sh)"
-    chmod ugo+x staging/linux-x64/installer/pphq/removeshortcuts.sh
+    echo "*******************************************************"
+    echo " Post Process : PPHQ (LINUX-X64)"
+    echo "*******************************************************"
 
-    cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/pphq/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux-x64/createshortcuts.sh)"
-    chmod ugo+x staging/linux-x64/installer/pphq/createshortcuts.sh
+    PPHQ_STAGING=$WD/pphq/staging/linux-x64
+    PPHQ_DIR=$WD/pphq
 
-    cp scripts/tune-os.sh staging/linux-x64/installer/pphq/tune-os.sh || _die "Failed to copy the tuneos.sh script (scripts/tuneos.sh)"
-    chmod ugo+x staging/linux-x64/installer/pphq/tune-os.sh
+    cd $PPHQ_DIR
 
-    cp scripts/change_version_str.sh staging/linux-x64/installer/pphq/change_version_str.sh || _die "Failed to copy the change_version_str.sh script (scripts/change_version_str.sh)"
-    chmod ugo+x staging/linux-x64/installer/pphq/change_version_str.sh
-    
-	cp scripts/hqdb.sql staging/linux-x64/installer/pphq/hqdb.sql || _die "Failed to copy the hqdb.sql script (scripts/hqdb.sql)"
+    mkdir -p $PPHQ_STAGING/installer/pphq || _die "Failed to create a directory for the install scripts"
+    cp $PPHQ_DIR/scripts/linux/removeshortcuts.sh $PPHQ_STAGING/installer/pphq/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux-x64/removeshortcuts.sh)"
+    chmod ugo+x $PPHQ_STAGING/installer/pphq/removeshortcuts.sh
 
-      # Copy the XDG scripts
-      mkdir -p staging/linux-x64/installer/xdg || _die "Failed to create a directory for the xdg scripts"
-      cp -R $WD/scripts/xdg/xdg* staging/linux-x64/installer/xdg || _die "Failed to copy the xdg scripts (scripts/xdg/*)"
-      chmod ugo+x staging/linux-x64/installer/xdg/xdg*
- 
-      # Version string, for the xdg filenames
-      PPHQ_VERSION_STR=`echo $PG_VERSION_PPHQ | sed 's/\./_/g'`
- 
-      # Copy in the menu pick images  and XDG items
-      mkdir -p staging/linux-x64/scripts/images || _die "Failed to create a directory for the menu pick images"
-      cp resources/pphq.png staging/linux-x64/scripts/images/pphq-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
-      cp resources/pphq-launch.png staging/linux-x64/scripts/images/pphq-launch-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
-      cp resources/pphq-start.png staging/linux-x64/scripts/images/pphq-start-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
-      cp resources/pphq-stop.png staging/linux-x64/scripts/images/pphq-stop-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
-    cp resources/pphq-agent-start.png staging/linux-x64/scripts/images/pphq-agent-start-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
-    cp resources/pphq-agent-stop.png staging/linux-x64/scripts/images/pphq-agent-stop-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
- 
-      mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-      cp resources/xdg/pphq.directory staging/linux-x64/scripts/xdg/pphq-$PPHQ_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
-      cp resources/xdg/pphq-launch.desktop staging/linux-x64/scripts/xdg/pphq-launch-$PPHQ_VERSION_STR.desktop || _die "Failed to copy a menu pick"
-      cp resources/xdg/pphq-start.desktop staging/linux-x64/scripts/xdg/pphq-start-$PPHQ_VERSION_STR.desktop || _die "Failed to copy a menu pick"
-      cp resources/xdg/pphq-stop.desktop staging/linux-x64/scripts/xdg/pphq-stop-$PPHQ_VERSION_STR.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pphq-agent-start.desktop staging/linux-x64/scripts/xdg/pphq-agent-start-$PPHQ_VERSION_STR.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pphq-agent-stop.desktop staging/linux-x64/scripts/xdg/pphq-agent-stop-$PPHQ_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp $PPHQ_DIR/scripts/tune-os.sh $PPHQ_STAGING/installer/pphq/tune-os.sh || _die "Failed to copy the tune-os.sh script (scripts/tune-os.sh)"
+    chmod ugo+x $PPHQ_STAGING/installer/pphq/tune-os.sh
+
+    cp $PPHQ_DIR/scripts/linux/createshortcuts.sh $PPHQ_STAGING/installer/pphq/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux/createshortcuts.sh)"
+    chmod ugo+x $PPHQ_STAGING/installer/pphq/createshortcuts.sh
+
+    # Copy the XDG scripts
+    mkdir -p $PPHQ_STAGING/installer/xdg || _die "Failed to create a directory for the xdg scripts"
+    cp -R $WD/scripts/xdg/xdg* $PPHQ_STAGING/installer/xdg || _die "Failed to copy the xdg scripts (scripts/xdg/*)"
+    chmod ugo+x $PPHQ_STAGING/installer/xdg/xdg*
+
+    # Version string, for the xdg filenames
+    PPHQ_VERSION_STR=`echo $PG_VERSION_PPHQ | sed 's/\./_/g'`
+
+    # Copy in the menu pick images  and XDG items
+    mkdir -p $PPHQ_STAGING/scripts/images || _die "Failed to create a directory for the menu pick images"
+    cp $PPHQ_DIR/resources/pphq.png $PPHQ_STAGING/scripts/images/pphq-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
+    cp $PPHQ_DIR/resources/pphq-launch.png $PPHQ_STAGING/scripts/images/pphq-launch-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
+    cp $PPHQ_DIR/resources/pphq-start.png $PPHQ_STAGING/scripts/images/pphq-start-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
+    cp $PPHQ_DIR/resources/pphq-stop.png $PPHQ_STAGING/scripts/images/pphq-stop-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
+    cp $PPHQ_DIR/resources/pphq-agent-start.png $PPHQ_STAGING/scripts/images/pphq-agent-start-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
+    cp $PPHQ_DIR/resources/pphq-agent-stop.png $PPHQ_STAGING/scripts/images/pphq-agent-stop-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
+
+    mkdir -p $PPHQ_STAGING/scripts/xdg || _die "Failed to create a directory for the menu pick items"
+    cp resources/xdg/pphq.directory $PPHQ_STAGING/scripts/xdg/pphq-$PPHQ_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/pphq-launch.desktop $PPHQ_STAGING/scripts/xdg/pphq-launch-$PPHQ_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pphq-start.desktop $PPHQ_STAGING/scripts/xdg/pphq-start-$PPHQ_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pphq-stop.desktop $PPHQ_STAGING/scripts/xdg/pphq-stop-$PPHQ_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pphq-agent-start.desktop $PPHQ_STAGING/scripts/xdg/pphq-agent-start-$PPHQ_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pphq-agent-stop.desktop $PPHQ_STAGING/scripts/xdg/pphq-agent-stop-$PPHQ_VERSION_STR.desktop || _die "Failed to copy a menu pick"
 
 
-      # Copy the launch scripts
-      cp scripts/linux/launchsvrctl.sh staging/linux-x64/scripts/launchsvrctl.sh || _die "Failed to copy the launchsvrctl script (scripts/linux/launchsvrctl.sh)"
-      chmod ugo+x staging/linux-x64/scripts/launchsvrctl.sh
-      cp scripts/linux/serverctl.sh staging/linux-x64/scripts/serverctl.sh || _die "Failed to copy the serverctl script (scripts/linux/serverctl.sh)"
-      chmod ugo+x staging/linux-x64/scripts/serverctl.sh
-      cp scripts/linux/launchagentctl.sh staging/linux-x64/scripts/launchagentctl.sh || _die "Failed to copy the launchagentctl script (scripts/linux/launchagentctl.sh)"
-      chmod ugo+x staging/linux-x64/scripts/launchagentctl.sh
-      cp scripts/linux/agentctl.sh staging/linux-x64/scripts/agentctl.sh || _die "Failed to copy the agentctl script (scripts/linux-x64/agentctl.sh)"
-      chmod ugo+x staging/linux-x64/scripts/agentctl.sh
-      cp scripts/linux/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
-      chmod ugo+x staging/linux-x64/scripts/launchbrowser.sh
+    # Copy the launch scripts
+    cp $PPHQ_DIR/scripts/linux/launchsvrctl.sh $PPHQ_STAGING/scripts/launchsvrctl.sh || _die "Failed to copy the launchsvrctl script (scripts/linux/launchsvrctl.sh)"
+    chmod ugo+x $PPHQ_STAGING/scripts/launchsvrctl.sh
+    cp $PPHQ_DIR/scripts/linux/serverctl.sh $PPHQ_STAGING/scripts/serverctl.sh || _die "Failed to copy the serverctl script (scripts/linux/serverctl.sh)"
+    chmod ugo+x $PPHQ_STAGING/scripts/serverctl.sh
+    cp $PPHQ_DIR/scripts/linux/launchagentctl.sh $PPHQ_STAGING/scripts/launchagentctl.sh || _die "Failed to copy the launchagentctl script (scripts/linux/launchagentctl.sh)"
+    chmod ugo+x $PPHQ_STAGING/scripts/launchagentctl.sh
+    cp $PPHQ_DIR/scripts/linux/agentctl.sh $PPHQ_STAGING/scripts/agentctl.sh || _die "Failed to copy the agentctl script (scripts/linux-x64/agentctl.sh)"
+    chmod ugo+x $PPHQ_STAGING/scripts/agentctl.sh
+    cp $PPHQ_DIR/scripts/linux/launchbrowser.sh $PPHQ_STAGING/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
+    chmod ugo+x $PPHQ_STAGING/scripts/launchbrowser.sh
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 
     cd $WD
+
 }
 

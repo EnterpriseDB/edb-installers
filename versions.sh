@@ -81,3 +81,8 @@ PG_VERSION_REPLICATIONSERVER=2.41
 # PostgreSQL jdbc jar version used by PostGIS
 PG_JAR_POSTGRESQL=8.4-701.jdbc3
 
+# Dependent Packages for Postgres Plus HQ
+PPHQ_JBOSS_VERSION=4.2.3.GA
+PPHQ_ANT_VERSION=1.7.1
+
+

@@ -8,7 +8,7 @@
     <!-- Product Specific Options -->
     <productComments>Postgres Plus HQ: PostgreSQL Monitoring Tool, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
-    <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
+    <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <!-- The options are used for RPM registration -->
     <description>Postgres Plus HQ: PostgreSQL Monitoring Tool</description>
     <summary>Postgres Plus HQ: PostgreSQL Monitoring Tool, packaged by EnterpriseDB</summary>
@@ -44,53 +44,28 @@
     </customLanguageFileList>
     <preShowHelpActionList>
         <!-- Get a default port number - ideally 7080 -->
-        <getFreePort>
-            <variable>defaultpphqport</variable>
-            <initialPort>7080</initialPort>
-            <finalPort>65535</finalPort>
-        </getFreePort>
+        <getFreePort variable="defaultpphqport" initialPort="7080" finalPort="65535"/>
 
-    	<!-- MAC : Set the default installation directory -->
-        <setInstallerVariable>
-            <name>default_installdir</name>
-            <persist>1</persist>
-            <value>/Library/PostgresPlus/HQ</value>
+        <!-- MAC : Set the default installation directory -->
+        <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/HQ">
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
             </ruleList>
         </setInstallerVariable>
         <!-- LIN : Set the default installation directory -->
-        <setInstallerVariable>
-            <name>default_installdir</name>
-            <persist>1</persist>
-            <value>${platform_install_prefix}/PostgresPlus/HQ</value>
+        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgresPlus/HQ">
             <ruleList>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
+                <compareText logic="contains" text="${platform_name}" value="linux"/>
             </ruleList>
         </setInstallerVariable>
         <!-- WIN : Set the default installation directory -->
-        <setInstallerVariable>
-            <name>default_installdir</name>
-            <persist>1</persist>
-            <value>${platform_install_prefix}\PostgresPlus/HQ</value>
+        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgresPlus\HQ">
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </setInstallerVariable>
     </preShowHelpActionList>
-  
+
     <!-- Prebuild Actons-->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>
@@ -100,21 +75,24 @@
           </ruleList>
       </setInstallerVariable>
       <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0">
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
+          <ruleList>
+              <compareText text="${platform_name}" value="windows" logic="does_not_equal"/>
+          </ruleList>
       </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PPHQ" />
-	<setInstallerVariable name="hq_db_exist" value="0"/>
-	<setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>
-	<setInstallerVariable name="project.parameter(extract_mode).ask" value="0" />
-	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
+        <setInstallerVariable name="hq_db_exist" value="0"/>
+        <setInstallerVariable name="pphqAdminDB" value="PPHQ"/>
+        <setInstallerVariable name="project.parameter(jrehome).ask" value="0"/>
+        <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>
+        <setInstallerVariable name="pphqTempDir" value="${system_temp_directory}/pphq_installer"/>
+        <setInstallerVariable name="pphqTempDir" value="${system_temp_directory}\pphq_installer">
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
           <text>Unknown Error</text>
@@ -124,843 +102,756 @@
           </ruleList>
         </throwError>
         <!-- Get a default port number - ideally 7080 -->
-        <getFreePort>
-            <variable>defaultpphqport</variable>
-            <initialPort>7080</initialPort>
-            <finalPort>65535</finalPort>
-        </getFreePort>
+        <getFreePort variable="defaultpphqport" initialPort="7080" finalPort="65535"/>
 
         <!-- LIN : Set the default values for unattended mode -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/HQ"/>
-            </actionList>
+        <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/HQ">
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+                <compareText logic="contains" text="${platform_name}" value="linux"/>
             </ruleList>
-        </actionGroup>
+        </setInstallerVariable>
         <!-- WIN : Set the default values for unattended mode -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}\PostgresPlus/HQ"/>
-            </actionList>
+        <setInstallerVariable name="installdir" value="${platform_install_prefix}\PostgresPlus/HQ">
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
-        </actionGroup>
+        </setInstallerVariable>
         <!-- MAC : Set the default values for unattended mode -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="installdir" value="/Library/PostgresPlus/HQ"/>
-            </actionList>
+        <setInstallerVariable name="installdir" value="/Library/PostgresPlus/HQ">
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
             </ruleList>
-        </actionGroup>
-	<!-- MAC : Set the default installation directory -->
-        <setInstallerVariable>
-            <name>default_installdir</name>
-            <persist>1</persist>
-            <value>/Library/PostgresPlus/HQ</value>
+        </setInstallerVariable>
+        <!-- MAC : Set the default installation directory -->
+        <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/HQ">
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
             </ruleList>
         </setInstallerVariable>
         <!-- LIN : Set the default installation directory -->
-        <setInstallerVariable>
-            <name>default_installdir</name>
-            <persist>1</persist>
-            <value>${platform_install_prefix}/PostgresPlus/HQ</value>
+        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgresPlus\HQ">
             <ruleList>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
+                <compareText logic="contains" text="${platform_name}" value="linux"/>
             </ruleList>
         </setInstallerVariable>
         <!-- WIN : Set the default installation directory -->
-        <setInstallerVariable>
-            <name>default_installdir</name>
-            <persist>1</persist>
-            <value>${platform_install_prefix}\PostgresPlus/HQ</value>
+        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgresPlus/HQ">
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </setInstallerVariable>
+
+        <setInstallerVariable name="pphqport" value=""/>
+        <setInstallerVariable name="pphq_jnp_port" value=""/>
+        <setInstallerVariable name="pphq_secure_port" value=""/>
+        <setInstallerVariable name="pphq_jrpm_port" value=""/>
+
+        <!-- Check if the valid jrehome switch is supplied -->
+        <throwError customErrorMessage="${msg(jre.invalid.error)}" text="Unknown Error">
+            <ruleList>
+               <compareText text="${jrehome}" logic="does_not_equal" value="" />
+               <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+               <fileTest path="${jrehome}/bin/java" condition="not_exists" />
+            </ruleList>
+        </throwError>
+        <throwError customErrorMessage="${msg(jre.invalid.error.windows)}" text="Unknown Error">
+            <ruleList>
+               <compareText text="${jrehome}" logic="does_not_equal" value="" />
+               <compareText text="${platform_name}" logic="equals" value="windows" />
+               <fileTest path="${jrehome}\bin\java.exe" condition="not_exists" />
+            </ruleList>
+        </throwError>
+
+        <!-- Set the java_executable variable if valid jrehome switch is supplied -->
+        <setInstallerVariable name="java_executable" value="${jrehome}/bin/java" >
+            <ruleList>
+               <compareText text="${jrehome}" logic="does_not_equal" value="" />
+               <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+               <fileExists path="${jrehome}/bin/java" />
+            </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="java_executable" value="${jrehome}\bin\java.exe" >
+            <ruleList>
+                <compareText text="${jrehome}" logic="does_not_equal" value="" />
+                <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+                <fileExists path="${jrehome}\bin\java" />
+            </ruleList>
+        </setInstallerVariable>
+
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="java_executable" value="${env(JAVA_HOME)}/bin/java"/>
+                <setInstallerVariable name="jrehome" value="${env(JAVA_HOME)}"/>
+            </actionList>
+            <ruleList>
+                <compareText text="${jrehome}" logic="equals" value=""/>
+                <fileExists path="${env(JAVA_HOME)}/bin/java"/>
+                <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="java_executable" value="${env(JAVA_HOME)}\bin\java.exe"/>
+                <setInstallerVariable name="jrehome" value="${env(JAVA_HOME)}"/>
+            </actionList>
+            <ruleList>
+                <compareText text="${jrehome}" logic="equals" value=""/>
+                <fileExists path="${env(JAVA_HOME)}\bin\java.exe"/>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- Detecting Java, Abort if not found -->
+        <autodetectJava promptUser="0" abortOnError="1" showMessageOnError="1"
+              customErrorMessage="${msg(java.error)}">
+            <validVersionList>
+                <validVersion minVersion="1.5.0" requireJDK="0"/>
+            </validVersionList>
+            <ruleList>
+               <compareText text="${jrehome}" logic="equals" value=""/>
+            </ruleList>
+        </autodetectJava>
+
     </initializationActionList>
     <preInstallationActionList>
-        <!-- Creates the ini file if not exits -->
-        <touchFile path="/etc/postgres-reg.ini">
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </touchFile>
         <!-- LIN & MAC : Get the branding & check Previous Installation of PPHQ -->
         <actionGroup>
             <actionList>
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pphq</section>
-                    <key>Branding</key>
-                    <variable>iBranding</variable>
-                </iniFileGet>
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pphq</section>
-                    <key>Version</key>
-                    <variable>pphqVersion</variable>
-                </iniFileGet>
+                <setInstallerVariable name="psql_path" value="${pphqTempDir}/instscripts/bin/psql"/>
+                <!-- Creates the ini file if not exits -->
+                <touchFile path="/etc/postgres-reg.ini"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
+                            key="Branding" variable="iBranding"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
+                            key="Version" variable="pphqVersion"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
 
         <!-- WIN : Check Previous Installation of PPHQ -->
         <actionGroup>
             <actionList>
+                <setInstallerVariable name="psql_path" value="${system_temp_directory}\pphq_installer\instscripts\psql.exe"/>
                 <!-- Get the branding -->
-                <registryGet>
-                    <name>Branding</name>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ</key>
-                    <variable>iBranding</variable>
-                </registryGet> 
-                <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ</key>
-                    <name>Version</name>
-                    <variable>pphqVersion</variable>
-                </registryGet>
+                <registryGet name="Branding" variable="iBranding"
+                             key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"/>
+                <registryGet name="Version" variable="pphqVersion"
+                             key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
 
-	<!-- If there appears to be an existing installation, with no Branding value. --> 
-	<!-- force the default value. Otherwise, set the branding to whatever we read, -->
-	<!-- or, set the default -->
-	
-	<!-- Existing, old install (version, but no branding) -->
-	<setInstallerVariable>
-		<name>branding</name>
-		<persist>0</persist>
-		<value>Postgres Plus HQ</value>
-		<ruleList>
-			<compareText>
-				<logic>does_not_equal</logic>
-				<text>${pphqVersion}</text>
-				<value></value>
-			</compareText>
-			<compareText>
-				<logic>equals</logic>
-				<text>${iBranding}</text>
-				<value></value>
-			</compareText>
-		</ruleList>
-	</setInstallerVariable>
-	
-	<!-- Existing install, with branding -->
-	<setInstallerVariable>
-		<name>branding</name>
-		<persist>0</persist>
-		<value>${iBranding}</value>
-		<ruleList>
-			<compareText>
-				<logic>does_not_equal</logic>
-				<text>${iBranding}</text>
-				<value></value>
-			</compareText>
-		</ruleList>
-	</setInstallerVariable>
-	
-	<!-- New install, nothing set on the command line -->
-	<setInstallerVariable>
-		<name>branding</name>
-		<persist>0</persist>
-		<value>Postgres Plus HQ</value>
-		<ruleList>
-			<compareText>
-				<logic>equals</logic>
-				<text>${branding}</text>
-				<value></value>
-			</compareText>
-		</ruleList>
-	</setInstallerVariable>
-	
-        <logMessage>
-            <text>Using branding: ${branding}</text>
-        </logMessage>
+        <!-- If there appears to be an existing installation, with no Branding value. -->
+        <!-- force the default value. Otherwise, set the branding to whatever we read, -->
+        <!-- or, set the default -->
+
+        <!-- Existing install, with branding -->
+        <setInstallerVariable name="branding" value="${iBranding}">
+            <ruleList>
+                <compareText logic="does_not_equal"
+                             text="${iBranding}"
+                             value=""/>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- New install, nothing set on the command line -->
+        <setInstallerVariable name="branding"
+                              value="Postgres Plus HQ">
+            <ruleList>
+                <compareText logic="equals" text="${branding}" value=""/>
+            </ruleList>
+        </setInstallerVariable>
+        <logMessage text="Using branding: ${branding}"/>
+
         <!-- Set the installation directory in case of re-install/upgrade -->
         <actionGroup>
             <actionList>
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pphq</section>
-                    <key>InstallationDirectory</key>
-                    <variable>installdir</variable>
-                </iniFileGet>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
+                            key="InstallationDirectory"  variable="installdir"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
+                            key="AdminUser" variable="pphquser"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
+                            key="Port" variable="pphqport"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pgport" variable="pgport"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pghost" variable="pghost"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pguser" variable="pguser"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pgdatabase" variable="pgdatabase"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pgdatabase" variable="pgdatabase"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
+                            key="JNP_PORT" variable="pphq_jnp_port"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
+                            key="PPHQ_SECURE_PORT" variable="pphq_secure_port"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
+                            key="PPHQ_JRPM_PORT" variable="pphq_jrpm_port"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${pphqVersion}</text>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <compareText logic="does_not_equal" text="${pphqVersion}" value=""/>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
-   
+
+        <throwError text="Not a valid port (${pphqport}) ...">
+            <ruleList>
+                <compareText logic="does_not_equal"  text="${pphqport}" value=""/>
+                <stringTest text="${pphqport}" type="not_digit"/>
+            </ruleList>
+        </throwError>
+        <throwError text="Given port in already in use...">
+            <ruleList>
+                <portTest port="${pphqport}" condition="cannot_bind"/>
+                <compareText logic="equals" text="${pphqVersion}" value=""/>
+                <compareText logic="does_not_equal"  text="${pphqport}" value=""/>
+            </ruleList>
+        </throwError>
+
+        <!-- Get Free Port for JNDI -->
+        <getFreePort variable="pphq_jnp_port" initialPort="2099" finalPort="65535">
+            <ruleList>
+                <compareText logic="equals" text="${pphq_jnp_port}" value=""/>
+            </ruleList>
+        </getFreePort>
+
+        <!-- Get Free Port (PPHQ) greater than JNDI Port and starts from 7080 -->
+        <setInstallerVariable name="default_pphq_port" value="7080"/>
+        <mathExpression text="${pphq_jnp_port} + 1" variable="default_pphq_port">
+            <ruleList>
+                <compareValues value1="${pphq_jnp_port}" value2="${default_pphq_port}" logic="greater_or_equal"/>
+            </ruleList>
+        </mathExpression>
+        <getFreePort variable="pphqport" initialPort="${default_pphq_port}" finalPort="65535">
+            <ruleList>
+                <compareText logic="equals" text="${pphqport}" value=""/>
+            </ruleList>
+        </getFreePort>
+
+        <!-- Get Free Port (PPHQ Secure) greater than PPHQ-Port and starts from 7443 -->
+        <setInstallerVariable name="default_secure_port" value="7443"/>
+        <mathExpression text="${pphqport} + 10" variable="default_secure_port">
+            <ruleList>
+                <compareValues value1="${pphqport}" value2="${default_secure_port}" logic="greater_or_equal"/>
+            </ruleList>
+        </mathExpression>
+        <getFreePort variable="pphq_secure_port" initialPort="${default_secure_port}" finalPort="65535">
+            <ruleList>
+                <compareText logic="equals" text="${pphq_secure_port}" value=""/>
+            </ruleList>
+        </getFreePort>
+
+        <!-- Get Free Port for JRPM greater than PPHQ-Secure-Port and starts from 9234-->
+        <setInstallerVariable name="default_jrpm_port" value="9234"/>
+        <mathExpression text="${pphq_secure_port} + 1" variable="default_jrpm_port">
+            <ruleList>
+                <compareValues value1="${pphq_secure_port}" value2="${default_jrpm_port}" logic="greater_or_equal"/>
+            </ruleList>
+        </mathExpression>
+        <getFreePort variable="pphq_jrpm_port" initialPort="${default_jrpm_port}" finalPort="65535">
+            <ruleList>
+                <compareText logic="equals" text="${pphq_jrpm_port}" value=""/>
+            </ruleList>
+        </getFreePort>
+
         <!-- WIN: Set the installation directory in case of re-install/upgrade -->
         <actionGroup>
             <actionList>
-                <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ</key>
-                    <name>Location</name>
-                    <variable>installdir</variable>
-                </registryGet> 
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                             name="Location" variable="installdir"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${pphqVersion}</text>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <compareText logic="does_not_equal" text="${pphqVersion}" value=""/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
+
+        <createDirectory path="${pphqTempDir}"/>
 
         <actionGroup>
             <actionList>
                 <!-- We will also need to get the VC++ runtimes installed on Windows, before we do anything with binaries -->
-                <unpackFile>
-                    <component>default</component>
-                    <destination>${system_temp_directory}\vcredist_x86.exe</destination>
-                    <folder>installfileswindows</folder>
-                    <origin>instscripts/vcredist_x86.exe</origin>
-                </unpackFile>
-                <unpackFile>
-                    <component>default</component>
-                    <destination>${system_temp_directory}/installruntimes.vbs</destination>
-                    <folder>installfileswindows</folder>
-                    <origin>instscripts/installruntimes.vbs</origin>
-                </unpackFile>
-                <runProgram>
-                    <program>cscript</program>
-                    <programArguments>//NoLogo "${system_temp_directory}\installruntimes.vbs" "${system_temp_directory}\vcredist_x86.exe"</programArguments>
-                    <abortOnError>1</abortOnError>
-                    <showMessageOnError>1</showMessageOnError>
-                    <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
+                <unpackFile component="vcredistComponent"
+                            destination="${system_temp_directory}\pphq_installer\vcredist_x86.exe"
+                            folder="vcredist"
+                            origin="vcredist_x86.exe"/>
+                <unpackFile component="vcredistComponent"
+                            destination="${system_temp_directory}\pphq_installer\installruntimes.vbs"
+                            folder="vcredist"
+                            origin="vcredist_x86.exe"/>
+                <runProgram program="cscript"
+                            programArguments="//NoLogo &quot;${system_temp_directory}\pphq_installer\installruntimes.vbs&quot; &quot;${system_temp_directory}\pphq_installer\vcredist_x86.exe&quot;"
+                            abortOnError="0"
+                            showMessageOnError="1"
+                            customErrorMessage="${msg(error.installing.runtimes)}">
                     <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>1</text>
-                            <value>${install_runtimes}</value>
-                        </compareText>
+                        <isTrue value="${install_runtimes}"/>
                     </ruleList>
                 </runProgram>
-                <throwError>
-                    <text>${msg(script.command.line.error)}</text>
+                <throwError text="${msg(script.command.line.error)}">
                     <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>127</text>
-                            <value>${program_exit_code}</value>
-                        </compareText>
+                        <compareText logic="equals" text="127" value="${program_exit_code}"/>
                     </ruleList>
                 </throwError>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
+        <unpackDirectory component="InstScript" folder="inst${platform_name}"
+                         destination="${pphqTempDir}" origin="instscripts"/>
+
+        <!-- Validation in unattended mode -->
+        <actionGroup>
+            <actionList>
+                <!-- Validate Installation Directory -->
+
+                <stringModify text="${installdir}" variable="installdir" logic="trim"/>
+                <throwError text="${msg(pphq.installdir.empty)}">
+                    <ruleList>
+                        <compareText text="${installdir}" logic="equals" value=""/>
+                    </ruleList>
+                </throwError>
+                <throwError text="${msg(pphq.installdir.error)}">
+                    <ruleList>
+                       <regExMatch text="${installdir}" logic="does_not_match">
+                           <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                       </regExMatch>
+                       <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </throwError>
+                <throwError text="${msg(pphq.installdir.error)}">
+                   <ruleList>
+                       <regExMatch text="${installdir}" logic="does_not_match">
+                         <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
+                       </regExMatch>
+                       <compareText logic="equals" text="${platform_name}" value="windows"/>
+                   </ruleList>
+                </throwError>
+
+                <!-- Validate PostgreSQL Details -->
+                <stringModify text="${pghost}" variable="pghost" logic="trim"/>
+                <stringModify text="${pgport}" variable="pgport" logic="trim"/>
+                <stringModify text="${pguser}" variable="pguser" logic="trim"/>
+                <throwError text="${msg(pgplus.blank.error)}">
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText text="${pghost}" logic="equals" value=""/>
+                        <compareText text="${pgport}" logic="equals" value=""/>
+                        <compareText text="${pguser}" logic="equals" value=""/>
+                        <compareText text="${pgpassword}" logic="equals" value=""/>
+                        <compareText text="${pgdatabase}" logic="equals" value=""/>
+                    </ruleList>
+                </throwError>
+                <!-- Validate the PostgreSQL Server Details -->
+                <setEnvironmentVariable name="PGHOST" value="${pghost}" />
+                <setEnvironmentVariable name="PGUSER" value="${pguser}" />
+                <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
+                <setEnvironmentVariable name="PGPORT" value="${pgport}" />
+                <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/lib"/>
+                <runProgram program="${psql_path}" abortOnError="1"
+                        programArguments="-l &quot;${pgdatabase}&quot;"
+                        workingDirectory="${pphqTempDir}/instscripts"/>
+                <setInstallerVariable name="admin_db_exist" value="0"/>
+                <setInstallerVariable name="admin_db_owner" value="hqadmin"/>
+                <setInstallerVariableFromScriptOutput
+                        name="admin_db_exist" exec="${psql_path}"
+                        execArgs="-t -A -c &quot;SELECT 1 FROM (SELECT has_database_privilege('${pphqAdminDB}', 'CREATE')) a&quot;"
+                        workingDirectory="${pphqTempDir}/instscripts"
+                        abortOnError="0" showMessageOnError="0"/>
+                <setInstallerVariableFromScriptOutput
+                        name="admin_db_owner" exec="${psql_path}"
+                        execArgs="-t -A -c &quot;SELECT u.usename FROM pg_catalog.pg_user u WHERE u.usesysid in (SELECT d.datdba FROM pg_catalog.pg_database d WHERE d.datname='${pphqAdminDB}')&quot;"
+                        workingDirectory="${pphqTempDir}/instscripts">
+                    <ruleList>
+                        <isTrue value="${admin_db_exist}"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+
+                <!-- PPHQ ADMIN Details -->
+                <setInstallerVariable name="pphqpassword" value="hqadmin">
+                    <ruleList>
+                        <stringTest text="${pphqpassword}" type="empty"/>
+                    </ruleList>
+                </setInstallerVariable>
+                <stringModify text="${pphquser}" variable="pphquser" logic="trim"/>
+                <stringModify text="${pphqport}" variable="pphqport" logic="trim"/>
+                <throwError text="${msg(pphq.monitoring.console.blank.error)}">
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText text="${pphqport}" logic="equals" value=""/>
+                        <compareText text="${pphquser}" logic="equals" value=""/>
+                        <compareText text="${pphqpassword}" logic="equals" value=""/>
+                    </ruleList>
+                </throwError>
+                <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+                <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+                <setInstallerVariable name="pphq_db_user_exists" value="0"/>
+                <setInstallerVariableFromScriptOutput
+                        exec="${psql_path}"
+                        execArgs="-t -A -c &quot;SELECT 1 FROM pg_catalog.pg_user u WHERE u.usename='${pphquser}'&quot;"
+                        name="pphq_db_user_exists"
+                        workingDirectory="${pphqTempDir}/instscripts"/>
+                <actionGroup>
+                    <actionList>
+                        <setEnvironmentVariable name="PGUSER" value="${pphquser}" />
+                        <setEnvironmentVariable name="PGPASSWORD" value="${pphqpassword}"/>
+                        <runProgram program="${psql_path}"
+                                programArguments="-l &quot;${pgdatabase}&quot;"
+                                workingDirectory="${pphqTempDir}/instscripts"
+                                abortOnError="1" showMessageOnError="1"/>
+                    </actionList>
+                    <ruleList>
+                        <isTrue value="${pphq_db_user_exists}"/>
+                    </ruleList>
+                </actionGroup>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            </ruleList>
+        </actionGroup>
+
     </preInstallationActionList>
-	<postInstallationActionList>
-	<!-- We need to replace version string from 4.2.0 to 4_2_0 because xdg file name is
-	in 4_2_0 format. We need to use this varriable in replacing a string in a file. -->
-	<setInstallerVariableFromScriptOutput>
-		<exec>${installdir}/installer/pphq/change_version_str.sh</exec>
-		<execArgs>${productVersion}</execArgs>
-	  	<name>version_str</name>
-	    <showMessageOnError>0</showMessageOnError>
-	  	<abortOnError>0</abortOnError>
-	  	<ruleList>
-	    	<compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-	    </ruleList>
-	</setInstallerVariableFromScriptOutput>
+    <postInstallationActionList>
+        <setInstallerVariableFromRegEx name="pphqJavaHome" text="${java_executable}">
+            <pattern>bin.java*$</pattern>
+            <substitution/>
+        </setInstallerVariableFromRegEx>
+        <setEnvironmentVariable name="JAVA_HOME" value="${pphqJavaHome}"/>
+        <setEnvironmentVariable name="PGHOST" value="${pghost}" />
+        <setEnvironmentVariable name="PGUSER" value="${pguser}" />
+        <setEnvironmentVariable name="PGPORT" value="${pgport}" />
+        <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
+        <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
+        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/lib"/>
 
-	<substitute>
-	    <files>
-		${installdir}/installer/pphq/hqdb.sql
-		${installdir}/scripts/xdg/pphq-launch-${version_str}.desktop
-		${installdir}/scripts/osx/pphq-launch.applescript
-		${installdir}/server-PG_VERSION_PPHQ/conf/hq-server.conf
-		${installdir}/server-PG_VERSION_PPHQ/data/hq-server-install.conf	
-		${installdir}/server-PG_VERSION_PPHQ/hq-engine/server/default/deploy/hq.ear/META-INF/hibernate.cfg.xml
-		${installdir}/server-PG_VERSION_PPHQ/hq-engine/server/default/deploy/hq-ds.xml
-		${installdir}/server-PG_VERSION_PPHQ/tmp/hibernate/hibernate.properties.xml
-		${installdir}/server-PG_VERSION_PPHQ/tmp/hibernate/hibernate.properties
-		${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties
-	    </files>
-	    <substitutionList>
-		<substitution>
-		    <pattern>@@PPHQUSER@@</pattern>
-		    <value>${pphquser}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@PPHQPASSWORD@@</pattern>
-		    <value>${pphqpassword}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@PPHQPORT@@</pattern>
-		    <value>${pphqport}</value>
-		</substitution>
-		<!-- For consistency postgres user is same as pphq console user -->
-		<substitution>
-		    <pattern>@@PGUSER@@</pattern>
-		    <value>${pphquser}</value>
-		</substitution>
-		<!-- For consistency postgres password is same as pphq console password -->
-		<substitution>
-		    <pattern>@@PGPASSWORD@@</pattern>
-		    <value>${pphqpassword}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@PGPORT@@</pattern>
-		    <value>${pgport}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@PGHOST@@</pattern>
-		    <value>${pghost}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@SMTPHOST@@</pattern>
-		    <value>${smtphost}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@INSTALLDIR@@</pattern>
-		    <value>${installdir}</value>
-		</substitution>
-	    </substitutionList>
-	    <ruleList>
-		<compareText>
-		    <logic>does_not_equal</logic>
-		    <text>${platform_name}</text>
-		    <value>windows</value>
-		</compareText>
-	    </ruleList>
-	</substitute>
+        <runProgram program="${psql_path}"
+              programArguments="-t -A -c &quot;CREATE USER \&quot;${pphquser}\&quot; PASSWORD '${pphqpassword}'&quot;"
+              workingDirectory="${pphqTempDir}/instscripts"
+              progressText="Creating Postgres Plus HQ Admin User (${pphquser})..."
+              abortOnError="0" showMessageOnError="0">
+            <ruleList>
+                <isFalse value="${pphq_db_user_exists}"/>
+            </ruleList>
+        </runProgram>
 
-	<substitute>
-	    <files>
-		${installdir}\installer\pphq\hqdb.sql
-		${installdir}\scripts\xdg\pphq-launch-${version_str}.desktop
-		${installdir}\scripts\osx\pphq-launch.applescript
-		${installdir}\server-PG_VERSION_PPHQ\conf\hq-server.conf
-		${installdir}\server-PG_VERSION_PPHQ\data\hq-server-install.conf	
-		${installdir}\server-PG_VERSION_PPHQ\hq-engine\server\default\deploy\hq.ear\META-INF\hibernate.cfg.xml
-		${installdir}\server-PG_VERSION_PPHQ\hq-engine\server\default\deploy\hq-ds.xml
-		${installdir}\server-PG_VERSION_PPHQ\tmp\hibernate\hibernate.properties.xml
-		${installdir}\server-PG_VERSION_PPHQ\tmp\hibernate\hibernate.properties
-		${installdir}\agent-PG_VERSION_PPHQ\conf\agent.properties
-	    </files>
-	    <substitutionList>
-		<substitution>
-		    <pattern>@@PPHQUSER@@</pattern>
-		    <value>${pphquser}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@PPHQPASSWORD@@</pattern>
-		    <value>${pphqpassword}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@PPHQPORT@@</pattern>
-		    <value>${pphqport}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@PGUSER@@</pattern>
-		    <value>${pphquser}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@PGPASSWORD@@</pattern>
-		    <value>${pphqpassword}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@PGPORT@@</pattern>
-		    <value>${pgport}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@PGHOST@@</pattern>
-		    <value>${pghost}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@SMTPHOST@@</pattern>
-		    <value>${smtphost}</value>
-		</substitution>
-		<substitution>
-		    <pattern>@@INSTALLDIR@@</pattern>
-		    <value>${installdir}</value>
-		</substitution>
-	    </substitutionList>
-	    <ruleList>
-		<compareText>
-		    <logic>equals</logic>
-		    <text>${platform_name}</text>
-		    <value>windows</value>
-		</compareText>
-	    </ruleList>
-	</substitute>
+        <runProgram program="${psql_path}"
+              programArguments="-t -A -c &quot;CREATE DATABASE \&quot;${pphqAdminDB}\&quot; OWNER \&quot;${pphquser}\&quot;&quot;"
+              workingDirectory="${pphqTempDir}/instscripts"
+              progressText="Creating Postgres Plus Admin HQ Database (${pphqAdminDB})..."
+              abortOnError="0" showMessageOnError="0">
+            <ruleList>
+                <isFalse value="${admin_db_exist}"/>
+            </ruleList>
+        </runProgram>
 
+        <setEnvironmentVariable name="PGUSER" value="${pphquser}" />
+        <setEnvironmentVariable name="PGDATABASE" value="${pphqAdminDB}"/>
+        <setEnvironmentVariable name="PGPASSWORD" value="${pphqpassword}" />
+        <runProgram program="${psql_path}"
+              programArguments="-t -A -c &quot;CREATE LANGUAGE plpgsql&quot;"
+              workingDirectory="${pphqTempDir}/instscripts"
+              progressText="Making sure plpgsql exists in Postgres Plus HQ Admin Database (${pphqAdminDB})..."
+              abortOnError="0" showMessageOnError="0"/>
 
-	<!-- Check for existing HQ database -->
-	<setInstallerVariableFromScriptOutput>
-	  <exec>${system_temp_directory}/instscripts/psql</exec>
-	  <execArgs>-t -A -c "SELECT has_database_privilege('HQ', 'CREATE')"</execArgs>
-	  <name>hq_db_exist</name>
-	  <showMessageOnError>0</showMessageOnError>
-	  <abortOnError>0</abortOnError>
-	  <ruleList>
-	    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-	  </ruleList>
-	</setInstallerVariableFromScriptOutput>
-	<setInstallerVariableFromScriptOutput>
-	  <exec>${system_temp_directory}\instscripts\psql</exec>
-          <execArgs>-t -A -c "SELECT has_database_privilege('HQ', 'CREATE')"</execArgs>
-          <name>hq_db_exist</name>
-	  <showMessageOnError>0</showMessageOnError>
-	  <abortOnError>0</abortOnError>
-	  <ruleList>
-	    <compareText logic="equals" text="${platform_name}" value="windows"/>
-	  </ruleList>
-	</setInstallerVariableFromScriptOutput>
-	<stringModify text="${hq_db_exist}" variable="hq_db_exist" logic="trim"/>
+        <setInstallerVariableFromRegEx name="pphqInstallPath" text="${installdir}">
+            <pattern>\\</pattern>
+            <substitution>\\\\</substitution>
+        </setInstallerVariableFromRegEx>
 
-	<!-- create HQ database and related objects for PPHQ if they do not exist -->
-	<runProgram>
-	  <program>${system_temp_directory}/instscripts/psql</program>
-	  <programArguments>-f "${installdir}/installer/pphq/hqdb.sql"</programArguments>
-	  <progressText>${msg(progress.text.creating.hqdbschema)}</progressText>
-	  <abortOnError>0</abortOnError>
-	  <showMessageOnError>0</showMessageOnError>
-	  <ruleList>
-	    <compareText logic="equals" text="${hq_db_exist}" value=""/>
-	    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-	  </ruleList>
-	</runProgram>
-	<runProgram>
-	  <program>${system_temp_directory}\instscripts\psql.exe</program>
-	  <programArguments>-f "${installdir}\installer\pphq\hqdb.sql"</programArguments>
-	  <progressText>${msg(progress.text.creating.hqdbschema)}</progressText>
-	  <abortOnError>0</abortOnError>
-	  <showMessageOnError>0</showMessageOnError>
-	  <ruleList>
-	    <compareText logic="equals" text="${hq_db_exist}" value=""/>
-	    <compareText logic="equals" text="${platform_name}" value="windows"/>
-	  </ruleList>
-	</runProgram>
-
-	<!-- Inform user about configuring HQ Database -->
-	<showInfo text="${msg(configure.hqdbschema)}">
-	  <ruleList>
-	    <compareText logic="equals" text="${hq_db_exist}" value=""/>
-	  </ruleList>
-	</showInfo>
-
+        <substitute>
+            <files>${pphqTempDir}/pphq/templates/server.prop;${pphqTempDir}/pphq/templates/agent.prop</files>
+            <substitutionList>
+                <substitution pattern="@@INSTALLDIR@@" value="${installdir}"/>
+                <substitution pattern="@@PGUSER@@" value="${pphquser}"/>
+                <substitution pattern="@@PGPASS@@" value="${pphqpassword}"/>
+                <substitution pattern="@@PGPORT@@" value="${pgport}"/>
+                <substitution pattern="@@HQHOST@@" value="localhost"/>
+                <substitution pattern="@@HQSPORT@@" value="${pphq_secure_port}"/>
+                <substitution pattern="@@PGHOST@@" value="${pghost}"/>
+                <substitution pattern="@@HQ_JRPM_PORT@@" value="${pphq_jrpm_port}"/>
+                <substitution pattern="@@HQ_JNP_PORT@@" value="${pphq_jnp_port}"/>
+                <substitution pattern="@@PGADMINDB@@" value="${pphqAdminDB}"/>
+                <substitution pattern="@@HQPORT@@" value="${pphqport}"/>
+            </substitutionList>
+        </substitute>
 
         <actionGroup>
             <actionList>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pphq</section>
-                    <key>Description</key>
-                    <value>${msg(install.summary)}</value>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pphq</section>
-                    <key>InstallationDirectory</key>
-                    <value>${installdir}</value>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pphq</section>
-                    <key>Version</key>
-                    <value>${product_version}</value>
-                </iniFileSet>
-                <runProgram>
-                    <program>${installdir}/installer/pphq/createshortcuts.sh</program>
-                    <programArguments>"${productVersion}" "${branding}" "${installdir}"</programArguments>
-                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
-                    <workingDirectory>${installdir}/installer/pphq</workingDirectory>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                </runProgram>
+                <runProgram program="${installdir}/installer/pphq/tune-os.sh"
+                            workingDirectory="${installdir}/installer/pphq"
+                            abortOnError="0" showMessageOnError="0"/>
+
+                <runProgram program="${pphqTempDir}/pphq/setup.sh"
+                        programArguments="${pphqTempDir}/pphq/templates/server.prop"
+                        workingDirectory="${pphqTempDir}/instscripts"
+                        progressText="Configuring PPHQ Server (This may take some time) ..."
+                        abortOnError="1" showMessageOnError="1"/>
+
+                <runProgram program="${pphqTempDir}/pphq/setup.sh"
+                        programArguments="${pphqTempDir}/pphq/templates/agent.prop"
+                        workingDirectory="${pphqTempDir}/instscripts"
+                        progressText="Configuring PPHQ Client ..."
+                        abortOnError="1" showMessageOnError="1"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
-        <!-- Branding info -->
-        <logMessage>
-            <text>Write the branding to the ini file...</text>
-        </logMessage>
-        <iniFileSet>
-            <file>/etc/postgres-reg.ini</file>
-            <section>pphq</section>
-            <key>Branding</key>
-            <value>${branding}</value>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </iniFileSet>
-        <registrySet>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ</key>
-            <name>Branding</name>
-            <value>${branding}</value>
-        </registrySet>
 
-
-	<!-- Initialise the PPHQ server if this is an installation -->
         <actionGroup>
-	    <actionList>
-		<runProgram>
-		    <program>${installdir}/server-PG_VERSION_PPHQ/bin/pphq-server.sh</program>
-		    <programArguments> > ${system_temp_directory}/pphq-server.log 2> ${system_temp_directory}/pphq-server-error.log start</programArguments>
-		    <progressText>${msg(progress.text.initialising.server)}</progressText>
-		    <abortOnError>0</abortOnError>
-		    <showMessageOnError>0</showMessageOnError>
-		    <ruleList>
-			<compareText>
-			    <logic>does_not_equal</logic>
-			    <text>${platform_name}</text>
-			    <value>windows</value>
-			</compareText>
-		    </ruleList>
-		</runProgram>
-		<wait>10000</wait>
-		<runProgram>
-                    <program>${installdir}\server-PG_VERSION_PPHQ\bin\pphq-server.exe</program>
-                    <programArguments>start</programArguments>
-		    <progressText>${msg(progress.text.initialising.server)}</progressText>
-		    <abortOnError>0</abortOnError>
-		    <showMessageOnError>0</showMessageOnError>
-		    <ruleList>
-			<compareText>
-			    <logic>equals</logic>
-			    <text>${platform_name}</text>
-			    <value>windows</value>
-			</compareText>
-		    </ruleList>
-		</runProgram>
-
-		<setInstallerVariable>
-		    <name>didError</name>
-		    <value>1</value>
-		    <ruleList>
-			<compareText>
-			    <logic>does_not_equal</logic>
-			    <text>0</text>
-			    <value>${program_exit_code}</value>
-			</compareText>
-		    </ruleList>
-		</setInstallerVariable>
-
-		<throwError>
-		    <text>${msg(script.command.line.error)}</text>
-		    <ruleList>
-			<compareText>
-			    <logic>equals</logic>
-			    <text>127</text>
-			    <value>${program_exit_code}</value>
-			</compareText>
-		    </ruleList>
-		</throwError>
-		<throwError>
-		    <text>${msg(error.could.not.initialise.server)}</text>
-		    <ruleList>
-			<compareText>
-			    <logic>equals</logic>
-			    <text>1</text>
-			    <value>${program_exit_code}</value>
-			</compareText>
-		    </ruleList>
-		</throwError>
-		<showWarning>
-		    <text>${msg(warning.during.server.initialisation)}</text>
-		    <ruleList>
-			<compareText>
-			    <logic>equals</logic>
-			    <text>2</text>
-			    <value>${program_exit_code}</value>
-			</compareText>
-		    </ruleList>
-		</showWarning>
-	    </actionList>
-	    <!-- Only appropriate for installs -->
+            <actionList>
+                <runProgram program="cscript.exe"
+                      programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${pphqTempDir}\pphq\setup.bat&quot; &quot;${pphqTempDir}\pphq\templates\server.prop&quot;"
+                      workingDirectory="${pphqTempDir}\pphq"
+                      progressText="Configuring PPHQ Server (This may take some time) ..."
+                      abortOnError="1" showMessageOnError="1"/>
+                <runProgram program="cscript.exe"
+                      programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${pphqTempDir}\pphq\setup.bat&quot; &quot;${pphqTempDir}\pphq\templates\agent.prop&quot;"
+                      workingDirectory="${pphqTempDir}\pphq"
+                      progressText="Configuring PPHQ Agent (This may take some time) ..."
+                      abortOnError="1" showMessageOnError="1"/>
+                <runProgram program="${installdir}\server-PG_VERSION_PPHQ\bin\hq-server.exe"
+                      programArguments="-i -n pphq-PG_VERSION_PPHQ -j &quot;${pphqJavaHome}&quot;"
+                      workingDirectory="${installdir}\server-PG_VERSION_PPHQ\bin"
+                      progressText="Creating PPHQ service ..."
+                      abortOnError="1" showMessageOnError="1"/>
+            </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${pphqVersion}</text>
-                    <value/>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
-	</actionGroup>
+        </actionGroup>
 
-	<!-- Initialise the pphq agent if this is an installation -->
         <actionGroup>
-	    <actionList>
-		<runProgram>
-		    <program>${installdir}/agent-PG_VERSION_PPHQ/bin/pphq-agent.sh</program>
-		    <programArguments> > ${system_temp_directory}/pphq-agent-start.log 2> ${system_temp_directory}/pphq-agent-start-error.log start</programArguments>
-		    <progressText>${msg(progress.text.initialising.agent)}</progressText>
-		    <abortOnError>0</abortOnError>
-		    <showMessageOnError>0</showMessageOnError>
-		    <ruleList>
-			<compareText>
-			    <logic>does_not_equal</logic>
-			    <text>${platform_name}</text>
-			    <value>windows</value>
-			</compareText>
-		    </ruleList>
-		</runProgram>
-		<wait>5000</wait>
-		<runProgram>
-                    <program>${installdir}\agent-PG_VERSION_PPHQ\bin\pphq-agent.bat</program>
-                    <programArguments>start</programArguments>
-		    <progressText>${msg(progress.text.initialising.agent)}</progressText>
-		    <abortOnError>0</abortOnError>
-		    <showMessageOnError>0</showMessageOnError>
-		    <ruleList>
-			<compareText>
-			    <logic>equals</logic>
-			    <text>${platform_name}</text>
-			    <value>windows</value>
-			</compareText>
-		    </ruleList>
-		</runProgram>
-
-		<setInstallerVariable>
-		    <name>didError</name>
-		    <value>1</value>
-		    <ruleList>
-			<compareText>
-			    <logic>does_not_equal</logic>
-			    <text>0</text>
-			    <value>${program_exit_code}</value>
-			</compareText>
-		    </ruleList>
-		</setInstallerVariable>
-
-		<throwError>
-		    <text>${msg(script.command.line.error)}</text>
-		    <ruleList>
-			<compareText>
-			    <logic>equals</logic>
-			    <text>127</text>
-			    <value>${program_exit_code}</value>
-			</compareText>
-		    </ruleList>
-		</throwError>
-		<throwError>
-		    <text>${msg(error.could.not.initialise.agent)}</text>
-		    <ruleList>
-			<compareText>
-			    <logic>equals</logic>
-			    <text>1</text>
-			    <value>${program_exit_code}</value>
-			</compareText>
-		    </ruleList>
-		</throwError>
-		<showWarning>
-		    <text>${msg(warning.during.agent.initialisation)}</text>
-		    <ruleList>
-			<compareText>
-			    <logic>equals</logic>
-			    <text>2</text>
-			    <value>${program_exit_code}</value>
-			</compareText>
-		    </ruleList>
-		</showWarning>
-	    </actionList>
-	    <!-- Only appropriate for installs -->
+            <actionList>
+                <logMessage text="Write the information to the ini file..."/>
+                <logMessage text=" Description:${msg(install.summary)}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="Description" value="${msg(install.summary)}"/>
+                <logMessage text=" InstallationDirectory:${installdir}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="InstallationDirectory" value="${installdir}"/>
+                <logMessage text=" Version:${product_version}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="Version" value="${product_version}"/>
+                <logMessage text=" AdminUser:${pphquser}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="AdminUser" value="${pphquser}"/>
+                <logMessage text=" Port:${pphqport}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="Port" value="${pphqport}"/>
+                <logMessage text=" PGPORT:${pgport}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pgport" value="${pgport}"/>
+                <logMessage text=" PGHOST:${pghost}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pghost" value="${pghost}"/>
+                <logMessage text=" PGUSER:${pguser}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pguser" value="${pguser}"/>
+                <logMessage text=" PGDATABASE:${pgdatabase}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pgdatabase" value="${pgdatabase}"/>
+                <logMessage text=" BRANDING:${branding}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="Branding" value="${branding}"/>
+                <logMessage text=" JNP_PORT:${pphq_jnp_port}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="JNP_PORT" value="${pphq_jnp_port}"/>
+                <logMessage text=" SECURE PORT:${pphq_secure_port}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="PPHQ_SECURE_PORT" value="${pphq_secure_port}"/>
+                <logMessage text=" JRPM PORT:${pphq_jrpm_port}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="PPHQ_JRPM_PORT" value="${pphq_jrpm_port}"/>
+                <runProgram program="${installdir}/installer/pphq/createshortcuts.sh"
+                      programArguments="&quot;${productVersion}&quot; &quot;${branding}&quot; &quot;${installdir}&quot;"
+                      progressText="${msg(progress.text.creating.shortcuts)}"
+                      workingDirectory="${installdir}/installer/pphq"
+                      abortOnError="0" showMessageOnError="0"/>
+            </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${pphqVersion}</text>
-                    <value/>
-                </compareText>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
-	</actionGroup>
-
-	<!-- Shortcuts in case when platform is not windows -->
-	<runProgram>
-	    <program>${installdir}/installer/pphq/createshortcuts.sh</program>
-	    <programArguments>"${productVersion}" "${branding}" "${installdir}" </programArguments>
-	    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
-	    <abortOnError>0</abortOnError>
-	    <showMessageOnError>0</showMessageOnError>
-	    <ruleList>
-		<compareText>
-		    <logic>does_not_equal</logic>
-		    <text>${platform_name}</text>
-		    <value>windows</value>
-		</compareText>
-	    </ruleList>
-	</runProgram>
-
-
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+                <logMessage text="Write the information to the window registry ..."/>
+                <logMessage text=" Description:${msg(install.summary)}"/>
+                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="Description" value="${msg(install.summary)}"/>
+                <logMessage text=" InstallationDirectory:${installdir}"/>
+                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="InstallationDirectory" value="${installdir}"/>
+                <logMessage text=" Version:${product_version}"/>
+                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="Version" value="${product_version}"/>
+                <logMessage text=" AdminUser:${pphquser}"/>
+                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="AdminUser" value="${pphquser}"/>
+                <logMessage text=" Port:${pphqport}"/>
+                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="Port" value="${pphqport}"/>
+                <logMessage text=" PGPORT:${pgport}"/>
+                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="pgport" value="${pgport}"/>
+                <logMessage text=" PGHOST:${pghost}"/>
+                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="pghost" value="${pghost}"/>
+                <logMessage text=" PGUSER:${pguser}"/>
+                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="pguser" value="${pguser}"/>
+                <logMessage text=" PGDATABASE:${pgdatabase}"/>
+                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="pgdatabase" value="${pgdatabase}"/>
+                <logMessage text=" BRANDING:${branding}"/>
+                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="Branding" value="${branding}"/>
+                <logMessage text=" JNP_PORT:${pphq_jnp_port}"/>
+                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="JNP_PORT" value="${pphq_jnp_port}"/>
+                <logMessage text=" SECURE PORT:${pphq_secure_port}"/>
+                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="PPHQ_SECURE_PORT" value="${pphq_secure_port}"/>
+                <logMessage text=" JRPM PORT:${pphq_jrpm_port}"/>
+                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="PPHQ_JRPM_PORT" value="${pphq_jrpm_port}"/>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
+        <runProgram program="${installdir}/installer/pphq/removeshortcuts.sh"
+              programArguments="&quot;${installdir}&quot; &quot;${productVersion}&quot; &quot;${branding}&quot;"
+              workingDirectory="${installdir}/installer/pphq"
+              abortOnError="0"
+              showMessageOnError="0">
+            <ruleList>
+                <compareText logic="contains" text="${platform_name}" value="linux"/>
+            </ruleList>
+        </runProgram>
+        <deleteFile>
+            <path>/Applications/${branding}</path>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
+            </ruleList>
+        </deleteFile>
         <actionGroup>
             <actionList>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pphq</section>
-                    <key>Description</key>
-                    <value/>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pphq</section>
-                    <key>InstallationDirectory</key>
-                    <value/>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pphq</section>
-                    <key>Version</key>
-                    <value/>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>pphq</section>
-                    <key>Branding</key>
-                    <value/>
-                </iniFileSet>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="Description" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="InstallationDirectory" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="Version" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="AdminUser" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="Port" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pgport" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pghost" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pguser" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pgdatabase" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="Branding" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="JNP_PORT" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="PPHQ_SECURE_PORT" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="PPHQ_JRPM_PORT" value=""/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
-        <!-- LIN : Remove Menu shortcuts -->
-        <actionGroup>
-            <actionList>
-                <runProgram>
-                    <program>${installdir}/installer/pphq/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${productVersion}" "${branding}"</programArguments>
-                    <workingDirectory>${installdir}/installer/pphq</workingDirectory>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                </runProgram>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <actionGroup>
-            <actionList>
-                <deleteFile>
-                    <path>/Applications/${branding}</path>
-                </deleteFile>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
+        <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"/>
 
     </preUninstallationActionList>
-  
+
     <!-- finalPage actions -->
     <finalPageActionList>
       <launchBrowser url="http://127.0.0.1:${pphqport}/"
                      progressText="${msg(Installer.Installation.Finished.Visit.Us)}"/>
     </finalPageActionList>
 
-
     <!-- Components -->
     <componentList>
+        <component>
+            <name>vcredistComponent</name>
+            <description>Visual Studio Redist Support</description>
+            <canBeEdited>0</canBeEdited>
+            <selected>0</selected>
+            <show>0</show>
+            <folderList>
+                <folder>
+                    <destination>${system_temp_directory}</destination>
+                    <name>vcredist</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile origin="staging/windows/vcredist_x86.exe"/>
+                        <distributionFile origin="staging/windows/installruntimes.vbs"/>
+                    </distributionFileList>
+                </folder>
+            </folderList>
+        </component>
+        <component>
+            <name>InstScript</name>
+            <canBeEdited>0</canBeEdited>
+            <selected>0</selected>
+            <show>0</show>
+            <folderList>
+                <folder>
+                    <destination>${system_temp_directory}</destination>
+                    <name>instlinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory origin="staging/linux/instscripts"/>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <destination>${system_temp_directory}</destination>
+                    <name>instlinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory origin="staging/linux-x64/instscripts"/>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <destination>${system_temp_directory}</destination>
+                    <name>instosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory origin="staging/osx/instscripts"/>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <destination>${system_temp_directory}</destination>
+                    <name>instwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory origin="staging/windows/instscripts"/>
+                    </distributionFileList>
+                </folder>
+            </folderList>
+        </component>
         <component>
             <name>default</name>
             <description>Default Component</description>
@@ -971,16 +862,11 @@
                 <!-- LIN- Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${pphqTempDir}</destination>
                     <name>programfileslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux/server-PG_VERSION_PPHQ</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux/agent-PG_VERSION_PPHQ</origin>
-                        </distributionDirectory>
+                        <distributionDirectory origin="staging/linux/pphq"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -989,46 +875,19 @@
                     <name>installscriptslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux/installer</origin>
-                        </distributionDirectory>
+                        <distributionDirectory origin="staging/linux/installer"/>
+                        <distributionDirectory origin="staging/linux/scripts"/>
                     </distributionFileList>
                 </folder>
-                <folder>
-                    <description>Menu Scripts</description>
-                    <destination>${installdir}</destination>
-                    <name>menuscriptslinux</name>
-                    <platforms>linux</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux/scripts</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Installer Files</description>
-                    <destination>${installdir}</destination>
-                    <name>installfileslinux</name>
-                    <platforms>linux</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux/instscripts</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
+
                 <!-- LIN-X64 - Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${pphqTempDir}</destination>
                     <name>programfileslinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/server-PG_VERSION_PPHQ</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/agent-PG_VERSION_PPHQ</origin>
-                        </distributionDirectory>
+                        <distributionDirectory origin="staging/linux-x64/pphq"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1037,46 +896,19 @@
                     <name>installscriptslinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/installer</origin>
-                        </distributionDirectory>
+                        <distributionDirectory origin="staging/linux-x64/installer"/>
+                        <distributionDirectory origin="staging/linux-x64/scripts"/>
                     </distributionFileList>
                 </folder>
-                <folder>
-                    <description>Menu Scripts</description>
-                    <destination>${installdir}</destination>
-                    <name>menuscriptslinux-x64</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/scripts</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Installer Files</description>
-                    <destination>${installdir}</destination>
-                    <name>installfileslinux-x64</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/instscripts</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
+
                 <!-- MAC Program Files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${pphqTempDir}</destination>
                     <name>programfilesosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/osx/server-PG_VERSION_PPHQ</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/osx/agent-PG_VERSION_PPHQ</origin>
-                        </distributionDirectory>
+                        <distributionDirectory origin="staging/osx/pphq"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1085,105 +917,41 @@
                     <name>installscriptsosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/osx/installer</origin>
-                        </distributionDirectory>
+                        <distributionDirectory origin="staging/osx/installer"/>
+                        <distributionDirectory origin="staging/osx/scripts"/>
                     </distributionFileList>
                 </folder>
-                <folder>
-                    <description>Menu Scripts</description>
-                    <destination>${installdir}</destination>
-                    <name>menuscriptsosx</name>
-                    <platforms>osx</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/osx/scripts</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Binary Files</description>
-                    <destination>${installdir}</destination>
-                    <name>binfilesosx</name>
-                    <platforms>osx</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/osx/bin</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Library Files</description>
-                    <destination>${installdir}</destination>
-                    <name>libfilesosx</name>
-                    <platforms>osx</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/osx/lib</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
- 
+
                 <!-- WIN - Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${pphqTempDir}</destination>
                     <name>programfileswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/windows/server-PG_VERSION_PPHQ</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/windows/agent-PG_VERSION_PPHQ</origin>
-                        </distributionDirectory>
+                        <distributionDirectory origin="staging/windows/pphq"/>
                     </distributionFileList>
                 </folder>
-	       <folder>
+                <folder>
                     <description>Installer Scripts</description>
                     <destination>${installdir}</destination>
                     <name>installscriptswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/windows/installer</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-
-                <folder>
-                    <description>Menu Scripts</description>
-                    <destination>${installdir}</destination>
-                    <name>menuscriptswindows</name>
-                    <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/windows/scripts</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Installer Files</description>
-                    <destination>${installdir}</destination>
-                    <name>installfileswindows</name>
-                    <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/windows/instscripts</origin>
-                        </distributionDirectory>
+                        <distributionDirectory origin="staging/osx/scripts"/>
                     </distributionFileList>
                 </folder>
             </folderList>
             <!-- WIN: Start Menu -->
             <startMenuShortcutList>
-		<!-- Launch pphq monitoring page -->
+                <!-- Launch pphq monitoring page -->
                 <startMenuLinkShortcut>
                     <comment>Postgres Plus HQ Monitoring Home Page</comment>
                     <name>Postgres Plus HQ Monitoring Home Page</name>
                     <runInTerminal>0</runInTerminal>
                     <url>http://127.0.0.1:${pphqport}/</url>
                     <windowsIcon>${installdir}\scripts\images\pphq-launch.ico</windowsIcon>
-                </startMenuLinkShortcut>  
+                </startMenuLinkShortcut>
                 <!-- Start server -->
                 <startMenuShortcut>
                     <name>Start Server</name>
@@ -1199,7 +967,7 @@
                     <windowsExec>${installdir}\server-PG_VERSION_PPHQ\bin\pphq-server.exe</windowsExec>
                     <windowsExecArgs>stop</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pphq-stop.ico</windowsIcon>
-		</startMenuShortcut>
+                </startMenuShortcut>
                 <!-- Start agent -->
                 <startMenuShortcut>
                     <name>Start Agent</name>
@@ -1215,84 +983,57 @@
                     <windowsExec>${installdir}\agent-PG_VERSION_PPHQ\bin\pphq-agent.bat</windowsExec>
                     <windowsExecArgs>stop</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pphq-agent-stop.ico</windowsIcon>
-		</startMenuShortcut>
+                </startMenuShortcut>
             </startMenuShortcutList>
 
         </component>
     </componentList>
     <parameterList>
-        <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
-	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+        <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
-        <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
+        <stringParameter name="jrehome" cliOptionName="jrehome" default="" ask="1" cliOptionShow="1"/>
+
         <!-- Whether to install runtimes -->
-        <booleanParameter>
-           <name>install_runtimes</name>
-           <description>${msg(install.runtimes.description)}</description>
-           <explanation/>
-           <value/>
-           <default>1</default>
-           <ask>yes</ask>
-           <cliOptionName>install_runtimes</cliOptionName>
-           <cliOptionShow>1</cliOptionShow>
+        <booleanParameter name="install_runtimes"
+                          description="${msg(install.runtimes.description)}"
+                          explanation=""
+                          default="1"
+                          ask="1"
+                          cliOptionName="install-runtimes"
+                          cliOptionShow="1">
            <ruleList>
-               <compareText>
-                   <logic>equals</logic>
-                   <text>${platform_name}</text>
-                   <value>windows</value>
-               </compareText>
-               <isFalse value="${extract_mode}"/>
+               <compareText logic="equals" text="${platform_name}" value="windows"/>
            </ruleList>
         </booleanParameter>
- 
-	<parameterGroup>
-	    <name>smtp_server_details</name>
-	    <title>${msg(smtp.server.title)}</title>
-	    <explanation>${msg(smtp.server.details)}</explanation>
-	    <value/>
-	    <default/>
-	    <parameterList>
-		<!-- smtp Host -->
-		<stringParameter>
-		    <name>smtphost</name>
-		    <description>SMTP HostName</description>
-		    <explanation/>
-		    <value/>
-		    <default>localhost</default>
-		    <cliOptionName>smtphost</cliOptionName>
-		    <allowEmptyValue>1</allowEmptyValue>
-		    <width>40</width>
-		</stringParameter>
-	    </parameterList>
-	    <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${pphqVersion}</text>
-                    <value/>
-                </compareText>
+
+        <parameterGroup>
+            <name>smtp_server_details</name>
+            <title>${msg(smtp.server.title)}</title>
+            <explanation>${msg(smtp.server.details)}</explanation>
+            <value/>
+            <default/>
+            <parameterList>
+                <!-- smtp Host -->
+                <stringParameter name="smtphost" description="SMTP HostName"
+                                 explanation="" value="" default="localhost"
+                                 cliOptionName="smtphost" allowEmptyValue="1"
+                                 width="40"/>
+            </parameterList>
+            <ruleList>
+                <compareText logic="equals" text="${pphqVersion}" value=""/>
             </ruleList>
-	    <!-- Checking the validity of smtp host Details -->
+            <!-- Checking the validity of smtp host Details -->
             <validationActionList>
-                <actionGroup>
-                    <actionList>
-                        <throwError>
-                            <text>${msg(smtp.server.blank.error)}</text>
-                        </throwError>
-                    </actionList>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                <stringModify text="${smtphost}" variable="smpthost" logic="trim"/>
+                <throwError text="${msg(smtp.server.blank.error)}">
                     <ruleList>
-                        <compareText>
-                            <text>${smtphost}</text>
-                            <logic>equals</logic>
-                            <value/>
-                        </compareText>
+                        <compareText text="${smtphost}" logic="equals" value=""/>
                     </ruleList>
-                </actionGroup>
-	        <!-- Validate the smtp Server Details -->
-		<!-- This detail is not even validated in hyperic's own installer-->
+                </throwError>
+                <!-- Validate the smtp Server Details -->
+                <!-- This detail is not even validated in hyperic's own installer-->
             </validationActionList>
         </parameterGroup>
-
 
         <parameterGroup>
             <name>pgdetails</name>
@@ -1302,283 +1043,149 @@
             <default/>
             <parameterList>
                 <!-- Postgres Host -->
-                <stringParameter>
-                    <name>pghost</name>
-                    <description>HostName</description>
-                    <explanation/>
-                    <value/>
-                    <default>localhost</default>
-		    <cliOptionName>pghost</cliOptionName>
-                    <allowEmptyValue>1</allowEmptyValue>
-                    <width>40</width>
-                </stringParameter>
+                <stringParameter name="pghost" description="HostName"
+                                 explanation="" value="" default="localhost"
+                                 cliOptionName="pghost" allowEmptyValue="1" width="40"/>
                 <!-- Postgres User -->
-                <stringParameter>
-                    <name>pguser</name>
-                    <description>User Name</description>
-                    <explanation/>
-                    <value/>
-                    <default>postgres</default>
-		    <cliOptionName>pguser</cliOptionName>
-                    <allowEmptyValue>1</allowEmptyValue>
-                    <width>40</width>
-                </stringParameter>
-	        <!-- Postgres User Password -->
-                <passwordParameter>
-                    <name>pgpassword</name>
-                    <title>Password</title>
-                    <description>Password</description>
-                    <explanation/>
-                    <value/>
-                    <default>postgres</default>
-		    <cliOptionName>pgpassword</cliOptionName>
-                    <allowEmptyValue>1</allowEmptyValue>
-                    <askForConfirmation>0</askForConfirmation>
-                    <descriptionRetype/>
-                    <width>40</width>
-                </passwordParameter>
-	        <!-- Postgres Port(Default 5432) -->
-                <stringParameter>
-                    <name>pgport</name>
-                    <description>Port</description>
-                    <explanation/>
-                    <value/>
-                    <default>5432</default>
-		    <cliOptionName>pgport</cliOptionName>
-                    <allowEmptyValue>1</allowEmptyValue>
-                    <width>40</width>
-                </stringParameter>
-		
-                <stringParameter>
-                    <name>pgdatabase</name>
-                    <description>Database name</description>
-                    <explanation/>
-                    <value/>
-                    <default>postgres</default>
-                    <ask>1</ask>
-		    <cliOptionName>pgdatabase</cliOptionName>
-                    <allowEmptyValue>1</allowEmptyValue>
-                    <width>40</width>
-                </stringParameter>
+                <stringParameter name="pguser" description="User Name"
+                                 explanation="" value="" default="postgres"
+                                 cliOptionName="pguser" allowEmptyValue="1" width="40"/>
+                <!-- Postgres User Password -->
+                <passwordParameter name="pgpassword" title="Password" value="" width="40"
+                                   description="Password" explanation="" default="postgres"
+                                   cliOptionName="pgpassword" allowEmptyValue="1" askForConfirmation="0"/>
+                <!-- Postgres Port(Default 5432) -->
+                <stringParameter name="pgport" description="Port"
+                                 explanation="" value="" default="5432"
+                                 cliOptionName="pgport" allowEmptyValue="1" width="40"/>
+                <!-- Postgres Database -->
+                <stringParameter name="pgdatabase" description="Database name"
+                                 explanation="" value="" default="postgres" ask="1"
+                                 cliOptionName="pgdatabase" allowEmptyValue="1"/>
             </parameterList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${pphqVersion}</text>
-                    <value/>
-                </compareText>
-            </ruleList>
+
             <!-- Checking the validity of PostgreSQL Server Details -->
             <validationActionList>
-                <actionGroup>
-                    <actionList>
-                        <throwError>
-                            <text>${msg(pgplus.blank.error)}</text>
-                        </throwError>
-                    </actionList>
+                <stringModify text="${pghost}" variable="pghost" logic="trim"/>
+                <stringModify text="${pgport}" variable="pgport" logic="trim"/>
+                <stringModify text="${pguser}" variable="pguser" logic="trim"/>
+                <throwError text="${msg(pgplus.blank.error)}">
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
-                        <compareText>
-                            <text>${pghost}</text>
-                            <logic>equals</logic>
-                            <value/>
-                        </compareText>
-                        <compareText>
-                            <text>${pgport}</text>
-                            <logic>equals</logic>
-                            <value/>
-                        </compareText>
-                        <compareText>
-                            <text>${pguser}</text>
-                            <logic>equals</logic>
-                            <value/>
-                        </compareText>
-                        <compareText>
-                            <text>${pgpassword}</text>
-                            <logic>equals</logic>
-                            <value/>
-                        </compareText>
-                        <compareText>
-                            <text>${pghome}</text>
-                            <logic>equals</logic>
-                            <value/>
-                        </compareText>
+                        <compareText text="${pghost}" logic="equals" value=""/>
+                        <compareText text="${pgport}" logic="equals" value=""/>
+                        <compareText text="${pguser}" logic="equals" value=""/>
+                        <compareText text="${pgpassword}" logic="equals" value=""/>
                     </ruleList>
-                </actionGroup>
-	        <!-- Validate the PostgreSQL Server Details -->
-                <actionGroup>
-                    <actionList>
-			<!-- Extract file -->
-			<unpackDirectory>
-			    <origin>instscripts</origin>
-			    <destination>${system_temp_directory}</destination>
-			    <component>default</component>
-			    <folder>installfileslinux</folder>
-			    <ruleList>
-				<compareText>
-				    <logic>equals</logic>
-				    <text>${platform_name}</text>
-				    <value>linux</value>
-				</compareText>
-			    </ruleList>
-			</unpackDirectory>
-			<unpackDirectory>
-			    <origin>instscripts</origin>
-			    <destination>${system_temp_directory}</destination>
-			    <component>default</component>
-			    <folder>installfileslinux-x64</folder>
-			    <ruleList>
-				 <compareText>
-				     <logic>equals</logic>
-				     <text>${platform_name}</text>
-				     <value>linux-x64</value>
-				 </compareText>
-			    </ruleList>
-			</unpackDirectory>
-			<unpackDirectory>
-			     <origin>instscripts</origin>
-			     <destination>${system_temp_directory}</destination>
-			     <component>default</component>
-			     <folder>installfileswindows</folder>
-			     <ruleList>
-				  <compareText>
-				     <logic>equals</logic>
-				     <text>${platform_name}</text>
-				     <value>windows</value>
-				  </compareText>
-			    </ruleList>
-			</unpackDirectory>
-		        <!-- MAC: Unpack psql and its shared libraries -->
-			<unpackFile>
-			  <component>pphq</component>
-			  <destination>${system_temp_directory}/${product_fullname}/bin/psql</destination>
-			  <folder>binfilesosx</folder>
-			  <origin>bin/psql</origin>
-			  <ruleList>
-			    <compareText logic="equals" text="${platform_name}" value="osx"/>
-			  </ruleList>
-			</unpackFile>
-			<unpackDirectory>
-			  <component>pphq</component>
-			  <destination>${system_temp_directory}/${product_fullname}/lib</destination>
-			  <folder>libfilesosx</folder>
-			  <origin>lib</origin>
-			  <ruleList>
-			    <compareText logic="equals" text="${platform_name}" value="osx"/>
-			  </ruleList>
-			</unpackDirectory>
-                        <setEnvironmentVariable name="PGHOST" value="${pghost}" />
-                        <setEnvironmentVariable name="PGUSER" value="${pguser}" />
-                        <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
-                        <setEnvironmentVariable name="PGPORT" value="${pgport}" />
-                        <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
-	                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts"/>
-                        <setInstallerVariableFromScriptOutput>
-			  <exec>${system_temp_directory}/instscripts/psql</exec>
-			  <execArgs>-l ${pgdatabase}</execArgs>
-			  <name>connection</name>
-			  <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
-			  <ruleList>
-			    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-			  </ruleList>
-			</setInstallerVariableFromScriptOutput>
-			<setInstallerVariableFromScriptOutput>
-			  <exec>${system_temp_directory}\instscripts\psql.exe</exec>
-			  <execArgs>-l ${pgdatabase}</execArgs>
-			  <name>connection</name>
-			  <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
-			  <ruleList>
-			    <compareText logic="equals" text="${platform_name}" value="windows"/>
-			  </ruleList>
-			</setInstallerVariableFromScriptOutput>
-			<stringModify text="${connection}" variable="connection" logic="trim"/> 
-                    </actionList>
-                 </actionGroup> 
+                </throwError>
+                <!-- Validate the PostgreSQL Server Details -->
+                <setEnvironmentVariable name="PGHOST" value="${pghost}" />
+                <setEnvironmentVariable name="PGUSER" value="${pguser}" />
+                <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
+                <setEnvironmentVariable name="PGPORT" value="${pgport}" />
+                <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/lib"/>
+                <runProgram program="${psql_path}"
+                        programArguments="-l &quot;${pgdatabase}&quot;"
+                        workingDirectory="${pphqTempDir}/instscripts"/>
+
+                <setInstallerVariable name="admin_db_exist" value="0"/>
+                <setInstallerVariableFromScriptOutput
+                        name="admin_db_exist" exec="${psql_path}"
+                        execArgs="-t -A -c &quot;SELECT 1 FROM (SELECT has_database_privilege('${pphqAdminDB}', 'CREATE')) a&quot;"
+                        workingDirectory="${pphqTempDir}/instscripts"
+                        abortOnError="0" showMessageOnError="0"/>
+                <setInstallerVariableFromScriptOutput
+                        name="admin_db_owner" exec="${psql_path}"
+                        execArgs="-t -A -c &quot;SELECT u.usename FROM pg_catalog.pg_user u WHERE u.usesysid in (SELECT d.datdba FROM pg_catalog.pg_database d WHERE d.datname='${pphqAdminDB}')&quot;"
+                        workingDirectory="${pphqTempDir}/instscripts">
+                    <ruleList>
+                        <isTrue value="${admin_db_exist}"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
             </validationActionList>
         </parameterGroup>
 
-	<parameterGroup>
-            <name>pphqmonitoringconsoledetails</name>
+        <parameterGroup>
+            <name>pphqadmin</name>
             <title>${msg(pphq.monitoring.console.details.title)}</title>
-            <explanation>${msg(pphq.monitoring.console.details.explanation)}</explanation>
+            <explanation>${pphqadmin_explanation}</explanation>
             <value/>
             <default/>
             <parameterList>
                 <!-- PPHQ User -->
-                <stringParameter>
-                    <name>pphquser</name>
-                    <description>User Name</description>
-                    <explanation/>
-                    <value/>
-                    <default>hqadmin</default>
-		    <cliOptionName>pphquser</cliOptionName>
-                    <allowEmptyValue>1</allowEmptyValue>
-                    <width>40</width>
+                <stringParameter name="pphquser" description="User Name"
+                                 default="hqadmin" cliOptionName="pphquser"
+                                 allowEmptyValue="1" width="40">
+                    <ruleList>
+                        <compareText logic="equals" text="${pphqVersion}" value=""/>
+                    </ruleList>
                 </stringParameter>
-	        <!-- PPHQ User Password -->
-                <passwordParameter>
-                    <name>pphqpassword</name>
-                    <title>Password</title>
-                    <description>Password</description>
-                    <explanation/>
-                    <value/>
-                    <default>hqadmin</default>
-		    <cliOptionName>pphqpassword</cliOptionName>
-                    <allowEmptyValue>1</allowEmptyValue>
-                    <askForConfirmation>0</askForConfirmation>
-                    <descriptionRetype/>
-                    <width>40</width>
-                </passwordParameter>
-	        <!-- PPHQ Port(Default 7080) -->
-                <stringParameter>
-                    <name>pphqport</name>
-                    <description>Port</description>
-                    <explanation/>
-                    <value/>
-                    <default>${defaultpphqport}</default>
-		    <cliOptionName>pphqport</cliOptionName>
-                    <allowEmptyValue>1</allowEmptyValue>
-                    <width>40</width>
+                <!-- PPHQ User Password -->
+                <passwordParameter name="pphqpassword" description="Password" allowEmptyValue="1"
+                                   cliOptionName="pphqpassword" askForConfirmation="0" width="40"/>
+                <!-- PPHQ Port(Default 7080) -->
+                <stringParameter name="pphqport" description="Port" default="${defaultpphqport}"
+                                 cliOptionName="pphqport" allowEmptyValue="1" width="40">
+                    <ruleList>
+                        <compareText logic="equals" text="${pphqVersion}" value=""/>
+                    </ruleList>
                 </stringParameter>
             </parameterList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${pphqVersion}</text>
-                    <value/>
-                </compareText>
-            </ruleList>
-            <!-- Checking the validity of PPHQ Monitoring Console Details -->
-            <validationActionList>
+            <!-- Disable pg details -->
+            <preShowPageActionList>
+                <setInstallerVariable name="pphquser" value="${admin_db_owner}">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${admin_db_owner}" value=""/>
+                        <compareText logic="equals" text="${pphquser}" value=""/>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="pphqadmin_explanation" value="${msg(pphqadmin.explanation)}"/>
                 <actionGroup>
                     <actionList>
-                        <throwError>
-                            <text>${msg(pphq.monitoring.console.blank.error)}</text>
-                        </throwError>
+                        <setInstallerVariable name="pphqadmin_explanation" value="${msg(pphqadmin.explanation.upgrade)}"/>
                     </actionList>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
-                        <compareText>
-                            <text>${pphqport}</text>
-                            <logic>equals</logic>
-                            <value/>
-                        </compareText>
-                        <compareText>
-                            <text>${pphquser}</text>
-                            <logic>equals</logic>
-                            <value/>
-                        </compareText>
-                        <compareText>
-                            <text>${pphqpassword}</text>
-                            <logic>equals</logic>
-                            <value/>
-                        </compareText>
+                        <compareText text="${pphqVersion}" logic="does_not_equal" value=""/>
                     </ruleList>
                 </actionGroup>
-	    </validationActionList>
+            </preShowPageActionList>
+            <!-- Checking the validity of PPHQ Monitoring Console Details -->
+            <validationActionList>
+                <stringModify text="${pphquser}" variable="pphquser" logic="trim"/>
+                <stringModify text="${pphqport}" variable="pphqport" logic="trim"/>
+                <throwError text="${msg(pphq.monitoring.console.blank.error)}">
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText text="${pphqport}" logic="equals" value=""/>
+                        <compareText text="${pphquser}" logic="equals" value=""/>
+                        <compareText text="${pphqpassword}" logic="equals" value=""/>
+                    </ruleList>
+                </throwError>
+                <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+                <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+                <setInstallerVariable name="pphq_db_user_exists" value="0"/>
+                <setInstallerVariableFromScriptOutput
+                        exec="${psql_path}"
+                        execArgs="-t -A -c &quot;SELECT 1 FROM pg_catalog.pg_user u WHERE u.usename='${pphquser}'&quot;"
+                        name="pphq_db_user_exists"
+                        workingDirectory="${pphqTempDir}/instscripts"/>
+                <actionGroup>
+                    <actionList>
+                        <setEnvironmentVariable name="PGUSER" value="${pphquser}" />
+                        <setEnvironmentVariable name="PGPASSWORD" value="${pphqpassword}"/>
+                        <runProgram program="${psql_path}"
+                                programArguments="-l &quot;${pgdatabase}&quot;"
+                                workingDirectory="${pphqTempDir}/instscripts"/>
+                    </actionList>
+                    <ruleList>
+                        <isTrue value="${pphq_db_user_exists}"/>
+                    </ruleList>
+                </actionGroup>
+            </validationActionList>
         </parameterGroup>
 
-	<!-- Install Directory -->
+        <!-- Install Directory -->
         <directoryParameter>
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
@@ -1592,14 +1199,11 @@
             <mustExist>0</mustExist>
             <width>40</width>
             <ruleList>
-                <compareText>
-                    <text>${pphqVersion}</text>
-                    <logic>equals</logic>
-                    <value/>
-                </compareText>
+                <compareText text="${pphqVersion}" logic="equals" value=""/>
             </ruleList>
-	    <!-- Validating whether installdir is empty -->
+            <!-- Validating whether installdir is empty -->
             <validationActionList>
+                <stringModify text="${installdir}" variable="installdir" logic="trim"/>
                 <actionGroup>
                     <actionList>
                         <setInstallerVariable name="installdir" value="${default_installdir}" />
@@ -1608,22 +1212,14 @@
                         </throwError>
                     </actionList>
                     <ruleList>
-                        <compareText>
-                            <text>${installdir}</text>
-                            <logic>equals</logic>
-                            <value />
-                        </compareText>
+                        <compareText text="${installdir}" logic="equals" value=""/>
                     </ruleList>
                 </actionGroup>
-            </validationActionList>
-            <!-- Validating whether installdir contains whitespaces (Linux) -->
-            <postShowPageActionList>
+                <!-- Validating whether installdir is valid (linux/linux-x64/osx) -->
                 <actionGroup>
-                    <actionList>  
-                        <showWarning>
-                            <text>${msg(pphq.installdir.error)}</text>
-                        </showWarning>
-                        <setInstallerVariable name="next_page" value="installdir"/>
+                    <actionList>
+                        <setInstallerVariable name="installdir" value="${default_installdir}" />
+                        <throwError text="${msg(pphq.installdir.error)}"/>
                     </actionList>
                     <ruleList>
                        <regExMatch>
@@ -1631,21 +1227,14 @@
                            <logic>does_not_match</logic>
                            <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
                        </regExMatch>
-                       <compareText>
-                           <logic>does_not_equal</logic>
-                           <text>${platform_name}</text>
-                           <value>windows</value>
-                       </compareText>
+                       <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
-	        </actionGroup>
+                </actionGroup>
                 <!-- Validating whether installdir is valid (Windows) -->
                 <actionGroup>
                    <actionList>
                      <setInstallerVariable name="installdir" value="${default_installdir}" />
-                     <showWarning>
-                        <text>${msg(pphq.installdir.error)}</text>
-                     </showWarning>
-                     <setInstallerVariable name="next_page" value="installdir"/>
+                     <throwError text="${msg(pphq.installdir.error)}"/>
                    </actionList>
                    <ruleList>
                        <regExMatch>
@@ -1653,27 +1242,20 @@
                          <logic>does_not_match</logic>
                          <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
                        </regExMatch>
-                       <compareText>
-                         <text>${platform_name}</text>
-                         <logic>equals</logic>
-                         <value>windows</value>
-                       </compareText>
+                       <compareText logic="equals" text="${platform_name}" value="windows"/>
                    </ruleList>
                  </actionGroup>
-            </postShowPageActionList>
+            </validationActionList>
         </directoryParameter>
-	<!-- Explain that we're using an existing installation directory -->
+        <!-- Explain that we're using an existing installation directory -->
         <labelParameter>
             <name>upgrade</name>
             <title>${msg(upgrade.existing.installation.title)}</title>
             <description>${msg(upgrade.existing.installation.description)}</description>
             <ruleList>
-		<compareText>
-                    <text>${pphqVersion}</text>
-                    <logic>does_not_equal</logic>
-                    <value/>
-                </compareText>
+                <compareText text="${pphqVersion}" logic="does_not_equal" value=""/>
             </ruleList>
         </labelParameter>
     </parameterList>
 </project>
+
