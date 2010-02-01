@@ -117,25 +117,21 @@ cat <<EOT > "src/include/pg_config.h"
 
 EOT
 
-    # Fixup the makefiles
-    #echo "Post-processing Makefiles for Universal Binary build"
-    #find . -name Makefile -print -exec perl -p -i.backup -e 's/\Q$(LD) $(LDREL) $(LDOUT)\E (\S+) (.+)/\$(LD) -arch ppc \$(LDREL) \$(LDOUT) $1.ppc $2; \$(LD) -arch i386 \$(LDREL) \$(LDOUT) $1.i386 $2; lipo -create -output $1 $1.ppc $1.i386/' {} \; || _die "Failed to post-process the postgres Makefiles for Universal build"
-
     echo "Building postgres"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" make || _die "Failed to build postgres"
-    make install -j 4 || _die "Failed to install postgres"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" make -j4 || _die "Failed to build postgres"
+    make install || _die "Failed to install postgres"
     cp src/include/pg_config_i386.h $WD/server/staging/osx/include/
     cp src/include/pg_config_ppc.h $WD/server/staging/osx/include/
     cp src/include/pg_config_x86_64.h $WD/server/staging/osx/include/
 
     echo "Building contrib modules"
     cd contrib
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" make || _die "Failed to build the postgres contrib modules"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" make -j4 || _die "Failed to build the postgres contrib modules"
     make install || _die "Failed to install the postgres contrib modules"
 
     echo "Building contrib modules"
     cd pldebugger
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" make || _die "Failed to build the debugger module"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" make -j4 || _die "Failed to build the debugger module"
     make install || _die "Failed to install the debugger module"
     if [ ! -e $WD/server/staging/osx/doc ];
     then
@@ -144,7 +140,7 @@ EOT
     cp README.pldebugger $WD/server/staging/osx/doc || _die "Failed to copy the debugger README into the staging directory"
 
     cd ../uuid-ossp
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" make || _die "Failed to build the uuid-ossp module"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" make -j4 || _die "Failed to build the uuid-ossp module"
     make install || _die "Failed to install the uuid-ossp module"
 
     # Now, build pgAdmin
@@ -158,7 +154,7 @@ EOT
     ./configure --enable-appbundle --disable-dependency-tracking --with-pgsql=$WD/server/staging/osx --with-wx=/usr/local --with-libxml2=/usr/local --with-libxslt=/usr/local --disable-debug || _die "Failed to configure pgAdmin"
 
     # Build the app bundle
-    make all || _die "Failed to build pgAdmin"
+    make -j4 all || _die "Failed to build pgAdmin"
     make install || _die "Failed to install pgAdmin"
 
     # Move the utilties.ini file out of the way (Uncomment for Postgres Studio or pgAdmin 1.9+)
