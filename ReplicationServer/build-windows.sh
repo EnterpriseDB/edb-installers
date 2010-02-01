@@ -29,8 +29,11 @@ _prep_ReplicationServer_windows() {
     # Copy createuser to ReplicationServer directory
     cp -R $WD/ReplicationServer/scripts/windows/createuser $WD/ReplicationServer/source/ReplicationServer.windows/createuser || _die "Failed to copy scripts(createuser)"
 
-    # Copy createuser to ReplicationServer directory
+    # Copy CreateEDBReplConfForUser to ReplicationServer directory
     cp -R $WD/ReplicationServer/scripts/windows/CreateEDBReplConfForUser $WD/ReplicationServer/source/ReplicationServer.windows/CreateEDBReplConfForUser || _die "Failed to copy scripts(CreateEDBReplConfForUser)"
+
+    # Copy ServiceWrapper to ReplicationServer directory
+    cp -R $WD/resources/ServiceWrapper $WD/ReplicationServer/source/ReplicationServer.windows/ServiceWrapper || _die "Failed to copy scripts(ServiceWrapper)"
 
     #Copy the required jdbc drivers
     cp $WD/tarballs/edb-jdbc14.jar $WD/ReplicationServer/source/ReplicationServer.windows/lib || _die "Failed to copy the edb-jdbc-14.jar"
@@ -80,19 +83,21 @@ _build_ReplicationServer_windows() {
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/validateuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/createuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/CreateEDBReplConfForUser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat CreateEDBReplConfForUser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/ServiceWrapper ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat ServiceWrapper.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
 
     echo "copying application files into the output directory"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy validateuser\\\\release\\\\validateuser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy createuser\\\\release\\\\createuser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy CreateEDBReplConfForUser\\\\release\\\\CreateEDBReplConfForUser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy ServiceWrapper\\\\release\\\\ServiceWrapper.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy /Y C:\\\\pgBuild\\\\vcredist\\\\vcredist_x86.exe  $OUTPUT_DIR" || _die "Failed to copy the VC++ runtimes on the windows build host"
 
     # Zip up the installed code, copy it back here, and unpack.
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/; cmd /c zip -r dist.zip dist" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$SOURCE_DIR/ReplicationServer.windows)"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/; cmd /c zip -r dist.zip dist\\\\*" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$SOURCE_DIR/ReplicationServer.windows)"
     #Build encrypt-util
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR ; cmd /c $PG_ANT_WINDOWS\\\\bin\\\\ant -f custom_build.xml encrypt-util" || _die "Failed to build replication server on the build host"
     # Append to dist.zip
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/; cmd /c zip -r dist.zip dist" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$SOURCE_DIR/ReplicationServer.windows)"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/; cmd /c zip -r dist.zip dist\\\\*" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$SOURCE_DIR/ReplicationServer.windows)"
     echo "Copying built tree to host"
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/ReplicationServer.windows/dist.zip $WD/ReplicationServer/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/ReplicationServer.windows/dist.zip)"
     unzip $WD/ReplicationServer/staging/windows/dist.zip -d $WD/ReplicationServer/staging/windows/ || _die "Failed to unpack the built source tree ($WD/staging/windows/dist.zip)"
@@ -101,13 +106,15 @@ _build_ReplicationServer_windows() {
     rm -rf $WD/ReplicationServer/staging/windows/dist
 
     mkdir -p $WD/ReplicationServer/staging/windows/instscripts/bin || _die "Failed to make the instscripts bin directory"
-    mkdir -p $WD/ReplicationServer/staging/windows/installer/ReplicationServer || _die "Failed to make the installer scripts directory"
+    mkdir -p $WD/ReplicationServer/staging/windows/installer/xDBReplicationServer || _die "Failed to make the installer scripts directory"
+    mkdir -p $WD/ReplicationServer/staging/windows/scripts || _die "Failed to make the scripts bin directory"
     
-    mv $WD/ReplicationServer/staging/windows/validateuser.exe $WD/ReplicationServer/staging/windows/installer/ReplicationServer || _die "Failed to copy the utilities"
-    mv $WD/ReplicationServer/staging/windows/vcredist_x86.exe $WD/ReplicationServer/staging/windows/installer/ReplicationServer || _die "Failed to copy the utilities"
-    mv $WD/ReplicationServer/staging/windows/createuser.exe $WD/ReplicationServer/staging/windows/installer/ReplicationServer || _die "Failed to copy the utilities"
-    mv $WD/ReplicationServer/staging/windows/CreateEDBReplConfForUser.exe $WD/ReplicationServer/staging/windows/installer/ReplicationServer || _die "Failed to copy the utilities"
-    mv $WD/ReplicationServer/staging/windows/edb-repencrypter.jar $WD/ReplicationServer/staging/windows/installer/ReplicationServer || _die "Failed to copy the utilities"
+    mv $WD/ReplicationServer/staging/windows/validateuser.exe $WD/ReplicationServer/staging/windows/installer/xDBReplicationServer || _die "Failed to copy the utilities"
+    mv $WD/ReplicationServer/staging/windows/vcredist_x86.exe $WD/ReplicationServer/staging/windows/installer/xDBReplicationServer || _die "Failed to copy the utilities"
+    mv $WD/ReplicationServer/staging/windows/createuser.exe $WD/ReplicationServer/staging/windows/installer/xDBReplicationServer || _die "Failed to copy the utilities"
+    mv $WD/ReplicationServer/staging/windows/CreateEDBReplConfForUser.exe $WD/ReplicationServer/staging/windows/installer/xDBReplicationServer || _die "Failed to copy the utilities"
+    mv $WD/ReplicationServer/staging/windows/ServiceWrapper.exe $WD/ReplicationServer/staging/windows/scripts || _die "Failed to copy the utilities"
+    mv $WD/ReplicationServer/staging/windows/edb-repencrypter.jar $WD/ReplicationServer/staging/windows/installer/xDBReplicationServer || _die "Failed to copy the utilities"
     
     cd $WD
     cp -R server/staging/windows/lib/libpq* ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy libpq in instscripts"

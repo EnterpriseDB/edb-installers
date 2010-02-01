@@ -1,15 +1,16 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 3 ]; 
+if [ $# -ne 4 ]; 
 then
-echo "Usage: $0 <Installdir> <SystemUser> <SubPort>"
+echo "Usage: $0 <Installdir> <SystemUser> <SubPort> <Java Executable>"
     exit 127
 fi
 
 INSTALL_DIR=$1
 SYSTEM_USER=$2
 SUBPORT=$3
+JAVA=$4
 
 # Exit code
 WARN=0
@@ -50,7 +51,7 @@ start()
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; java -jar edb-repserver.jar subserver $SUBPORT &"
+       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -jar edb-repserver.jar subserver $SUBPORT &"
        exit 0
     else
        echo "Subscription Service already running"

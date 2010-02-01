@@ -134,6 +134,42 @@
           </ruleList>
         </throwError>
 
+        <!-- Check if the valid jrehome switch is supplied -->
+        <throwError>
+          <customErrorMessage>${msg(jre.invalid.error)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileTest path="${jrehome}/bin/java" condition="not_exists" />
+          </ruleList>
+        </throwError>    
+        <throwError>
+          <customErrorMessage>${msg(jre.invalid.error.windows)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="equals" value="windows" />
+             <fileTest path="${jrehome}\bin\java.exe" condition="not_exists" />
+          </ruleList>
+        </throwError>    
+
+        <!-- Set the java_executable variable if valid jrehome switch is supplied -->
+        <setInstallerVariable name="java_executable" value="${jrehome}/bin/java" >
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileExists path="${jrehome}/bin/java" />
+          </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="java_executable" value="${jrehome}\bin\java.exe" >
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileExists path="${jrehome}\bin\java" />
+          </ruleList>
+        </setInstallerVariable>
+
         <!-- Detecting Java, Abort if not found -->
         <autodetectJava>
             <promptUser>0</promptUser>
@@ -148,6 +184,9 @@
             <abortOnError>1</abortOnError>
             <showMessageOnError>1</showMessageOnError>
             <customErrorMessage>${msg(java.error)}</customErrorMessage>
+            <ruleList>
+                <compareText text="${jrehome}" logic="equals" value="" />
+            </ruleList> 
         </autodetectJava>
 
         <!-- LIN : Set the default values for unattended mode -->
@@ -641,8 +680,8 @@
                      </ruleList>
                  </runProgram>  
                  <stopWindowsService>
-                     <serviceName>PublicationServer</serviceName>
-                     <displayName>Publication Server</displayName>
+                     <serviceName>Publication Service</serviceName>
+                     <displayName>Publication Service</displayName>
                      <abortOnError>0</abortOnError>
                      <showMessageOnError>0</showMessageOnError>
                  </stopWindowsService>
@@ -676,8 +715,8 @@
                      </ruleList>
                  </runProgram>  
                  <stopWindowsService>
-                     <serviceName>SubscriptionServer</serviceName>
-                     <displayName>Subscription Server</displayName>
+                     <serviceName>Subscription Service</serviceName>
+                     <displayName>Subscription Service</displayName>
                      <abortOnError>0</abortOnError>
                      <showMessageOnError>0</showMessageOnError>
                  </stopWindowsService>
@@ -1201,7 +1240,7 @@ database=${controldb}
          <!-- Install Pub/Sub servers as service -->
          <runProgram>
             <program>${installdir}/scripts/startupcfg_publication.sh</program>
-            <programArguments>"${installdir}" "${serviceaccount}" "${pubport}"</programArguments>
+            <programArguments>"${installdir}" "${serviceaccount}" "${pubport}" "${java_executable}"</programArguments>
             <workingDirectory>${installdir}/scripts</workingDirectory>
             <progressText>${msg(progress.text.installing.pubservice)}</progressText>  
             <abortOnError>0</abortOnError>            
@@ -1221,7 +1260,7 @@ database=${controldb}
         </wait>
         <runProgram>
             <program>${installdir}/scripts/startupcfg_subscription.sh</program>
-            <programArguments>"${installdir}" "${serviceaccount}" "${subport}"</programArguments>
+            <programArguments>"${installdir}" "${serviceaccount}" "${subport}" "${java_executable}"</programArguments>
             <workingDirectory>${installdir}/scripts</workingDirectory>
             <progressText>${msg(progress.text.installing.subservice)}</progressText>  
             <abortOnError>0</abortOnError>            
@@ -1231,52 +1270,64 @@ database=${controldb}
             </ruleList>
         </runProgram>
 
-        <!-- Disable Service Creation on Windows 
-        <createWindowsService>
-            <program>"${java_executable}"</program>
-            <description>${msg(pubserver.service.description)}</description>
-            <account>${serviceaccount}</account>
-            <serviceName>PublicationServer</serviceName>
-            <programArguments>-jar "${installdir}\bin\edb-repserver.jar" pubserver ${pubport}</programArguments>
-            <password>${servicepassword}</password>
-            <displayName>Publication Server</displayName>
-            <abortOnError>0</abortOnError>    
+        <!-- Replace / with \/ or \ with \\ on windows -->
+        <setInstallerVariableFromRegEx>
+            <text>${java_executable}</text>
+            <substitution>\</substitution>
+            <name>java_executable_windows</name>
+            <pattern>\/</pattern>
+
             <ruleList>
-                <isTrue value="${component(pubserver).selected}" />                  
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+
+
+        <runProgram>
+            <program>${installdir}\scripts\ServiceWrapper.exe</program>
+            <programArguments>register -n "Publication Service" -c "${java_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" pubserver ${pubport}" -u "${serviceaccount}" -p "${servicepassword}"</programArguments>
+            <workingDirectory>${installdir}\scripts</workingDirectory>
+            <progressText>${msg(progress.text.installing.pubservice)}</progressText>  
+            <abortOnError>0</abortOnError>            
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+                <isTrue value="${component(pubserver).selected}" />
                 <isFalse value="${IsPubServerUpgrade}" /> 
             </ruleList>
-         </createWindowsService> 
-         <createWindowsService>
-            <program>"${java_executable}"</program>
-            <description>${msg(subserver.service.description)}</description>
-            <account>${serviceaccount}</account>
-            <serviceName>SubscriptionServer</serviceName>
-            <programArguments>-jar "${installdir}\bin\edb-repserver.jar" subserver ${subport}</programArguments>
-            <password>${servicepassword}</password>
-            <displayName>Subscription Server</displayName>
-            <abortOnError>0</abortOnError>    
+        </runProgram>
+        <runProgram>
+            <program>${installdir}\scripts\ServiceWrapper.exe</program>
+            <programArguments>register -n "Subscription Service" -c "${java_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" subserver ${subport}" -u "${serviceaccount}" -p "${servicepassword}"</programArguments>
+            <workingDirectory>${installdir}\scripts</workingDirectory>
+            <progressText>${msg(progress.text.installing.subservice)}</progressText>  
+            <abortOnError>0</abortOnError>            
             <ruleList>
-                <isTrue value="${component(subserver).selected}" />                  
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+                <isTrue value="${component(subserver).selected}" />
                 <isFalse value="${IsSubServerUpgrade}" /> 
             </ruleList>
-         </createWindowsService>
+        </runProgram>
 
-         <startWindowsService>
-            <serviceName>PublicationServer</serviceName>
-            <displayName>Publication Server</displayName>
+        <startWindowsService>
+            <serviceName>Publication Service</serviceName>
+            <displayName>Publication Service</displayName>
             <ruleList>
                 <isTrue value="${component(pubserver).selected}" />                  
             </ruleList>
-         </startWindowsService>
- 
-         <startWindowsService>
-            <serviceName>SubscriptionServer</serviceName>
-            <displayName>Subscription Server</displayName>
+        </startWindowsService>
+        <wait ms="10000" >
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+                <isTrue value="${component(subserver).selected}" />
+            </ruleList>
+        </wait>
+        <startWindowsService>
+            <serviceName>Subscription Service</serviceName>
+            <displayName>Subscription Service</displayName>
             <ruleList>
                 <isTrue value="${component(subserver).selected}" />                  
             </ruleList>
-         </startWindowsService>
-         -->
+        </startWindowsService>
         <runProgram>
             <program>/etc/init.d/edb-xdbpubserver</program>
             <programArguments>start &amp;</programArguments> 
@@ -1398,20 +1449,41 @@ database=${controldb}
         <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
         </registryDelete> 
-        <!--
+
         <stopWindowsService>
-            <serviceName>PublicationServer</serviceName>
-            <displayName>Publication Server</displayName>
+            <serviceName>Publication Service</serviceName>
+            <displayName>Publication Service</displayName>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
         </stopWindowsService>
         <stopWindowsService>
-            <serviceName>SubscriptionServer</serviceName>
-            <displayName>Subscription Server</displayName>
+            <serviceName>Subscription Service</serviceName>
+            <displayName>Subscription Service</displayName>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
         </stopWindowsService>
-        -->
+        <runProgram>
+            <program>${installdir}\scripts\ServiceWrapper.exe</program>
+            <programArguments>unregister -n "Publication Service"</programArguments>
+            <workingDirectory>${installdir}\scripts</workingDirectory>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows" />
+            </ruleList>
+        </runProgram>
+        <runProgram>
+            <program>${installdir}\scripts\ServiceWrapper.exe</program>
+            <programArguments>unregister -n "Subscription Service"</programArguments>
+            <workingDirectory>${installdir}\scripts</workingDirectory>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows" />
+            </ruleList>
+        </runProgram>
+
+
         <runProgram>
             <program>/etc/init.d/edb-xdbpubserver</program>
             <programArguments>stop</programArguments>
@@ -2227,7 +2299,8 @@ database=${controldb}
         <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
-        <stringParameter name="dbtype" cliOptionName="db-type" default="${defaultdbtype}" ask="0" cliOptionShow="0"/>
+        <stringParameter name="dbtype" cliOptionName="dbtype" default="${defaultdbtype}" ask="0" cliOptionShow="0"/>
+        <stringParameter name="jrehome" cliOptionName="jrehome" default="" ask="0" cliOptionShow="0"/>
 
         <!-- PostgreSQL Server Details Verification Page -->
         <parameterGroup>
