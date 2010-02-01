@@ -156,7 +156,8 @@ _postprocess_ReplicationServer_windows() {
 
     # Setup Launch Scripts
     mkdir -p staging/windows/scripts || _die "Failed to create a directory for the launch scripts"
-
+    cp scripts/windows/serviceWrapper.vbs staging/windows/scripts/ || _die "Failed to copy the serviceWrapper.vbs file"
+    cp scripts/windows/runRepConsole.vbs staging/windows/scripts/ || _die "Failed to copy the serviceWrapper.vbs file"
     # Copy in the menu pick images
     mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.ico staging/windows/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"

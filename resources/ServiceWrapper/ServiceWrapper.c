@@ -368,7 +368,9 @@ CommandLine(bool registration)
 		strcpy(cmdLine, argv0);
 
 		strcat(cmdLine, " runservice -n ");
+		strcat(cmdLine, "\"");
 		strcat(cmdLine, register_servicename);
+		strcat(cmdLine, "\"");
 		strcat(cmdLine, " -c \"");
 		strcat(cmdLine, exec_path);
 		strcat(cmdLine, "\"");

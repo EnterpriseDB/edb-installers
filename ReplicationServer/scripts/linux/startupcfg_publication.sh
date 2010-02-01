@@ -51,7 +51,7 @@ start()
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -jar edb-repserver.jar pubserver $PUBPORT &"
+       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
        exit 0
     else
        echo "Publication Service already running"

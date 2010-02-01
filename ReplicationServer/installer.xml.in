@@ -730,6 +730,31 @@
     </preInstallationActionList>
     <postInstallationActionList>
 
+        <!-- Replace / with \/ or \ with \\ on windows -->
+        <setInstallerVariableFromRegEx>
+            <text>${java_executable}</text>
+            <substitution>\</substitution>
+            <name>java_executable_windows</name>
+            <pattern>\/</pattern>
+
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+
+
+        <!-- Set javaw -->
+        <setInstallerVariableFromRegEx>
+            <text>${java_executable_windows}</text>
+            <substitution>javaw.exe</substitution>
+            <name>javaw_executable_windows</name>
+            <pattern>java.exe</pattern>
+
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+ 
         <!-- Create the user account with which publication/subscription service will run-->
         <runProgram>
           <program>${installdir}/installer/xDBReplicationServer/createuser.sh</program>
@@ -1272,7 +1297,7 @@ database=${controldb}
         </substitute> 
 
         <substitute>
-            <files>${installdir}/bin/runSubServer.sh</files>
+            <files>${installdir}/bin/runSubServer.bat</files>
             <substitutionList>
                 <substitution>
                     <pattern>@@INSTALL_DIR@@</pattern>
@@ -1336,6 +1361,7 @@ database=${controldb}
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="osx" />
                 <isTrue value="${component(subserver).selected}" />
+                <isTrue value="${component(pubserver).selected}" />
             </ruleList>
         </wait>
         <runProgram>
@@ -1350,44 +1376,65 @@ database=${controldb}
             </ruleList>
         </runProgram>
 
-        <!-- Replace / with \/ or \ with \\ on windows -->
-        <setInstallerVariableFromRegEx>
-            <text>${java_executable}</text>
-            <substitution>\</substitution>
-            <name>java_executable_windows</name>
-            <pattern>\/</pattern>
-
+       <writeFile>
+            <path>${system_temp_directory}/servicewrapper.bat</path>
+            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Publication Service" -c "${javaw_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" pubserver ${pubport}" -u "${serviceaccount}" -p "${servicepassword}"</text>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
+                <isTrue value="${component(pubserver).selected}" />
+                <isFalse value="${IsPubServerUpgrade}" /> 
             </ruleList>
-        </setInstallerVariableFromRegEx>
-
-
+        </writeFile>
         <runProgram>
-            <program>${installdir}\scripts\ServiceWrapper.exe</program>
-            <programArguments>register -n "Publication Service" -c "${java_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" pubserver ${pubport}" -u "${serviceaccount}" -p "${servicepassword}"</programArguments>
+            <program>cscript</program>
+            <programArguments>//NOLOGO "${installdir}\scripts\serviceWrapper.vbs" "${system_temp_directory}"</programArguments>
             <workingDirectory>${installdir}\scripts</workingDirectory>
             <progressText>${msg(progress.text.installing.pubservice)}</progressText>  
             <abortOnError>0</abortOnError>            
+            <show>0</show>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(pubserver).selected}" />
                 <isFalse value="${IsPubServerUpgrade}" /> 
             </ruleList>
         </runProgram>
+        <deleteFile path="${system_temp_directory}/servicewrapper.bat" >          
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+                <isTrue value="${component(pubserver).selected}" />
+                <isFalse value="${IsPubServerUpgrade}" /> 
+            </ruleList>
+        </deleteFile>
+
+        <writeFile>
+            <path>${system_temp_directory}/servicewrapper.bat</path>
+            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Subscription Service" -c "${javaw_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" subserver ${subport}" -u "${serviceaccount}" -p "${servicepassword}"</text>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+                <isTrue value="${component(subserver).selected}" />
+                <isFalse value="${IsSubServerUpgrade}" /> 
+            </ruleList>
+        </writeFile>
         <runProgram>
-            <program>${installdir}\scripts\ServiceWrapper.exe</program>
-            <programArguments>register -n "Subscription Service" -c "${java_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" subserver ${subport}" -u "${serviceaccount}" -p "${servicepassword}"</programArguments>
+            <program>cscript</program>
+            <programArguments>//NOLOGO "${installdir}\scripts\serviceWrapper.vbs" "${system_temp_directory}"</programArguments>
             <workingDirectory>${installdir}\scripts</workingDirectory>
             <progressText>${msg(progress.text.installing.subservice)}</progressText>  
-            <abortOnError>0</abortOnError>            
+            <abortOnError>0</abortOnError> 
+            <show>0</show>           
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(subserver).selected}" />
                 <isFalse value="${IsSubServerUpgrade}" /> 
             </ruleList>
         </runProgram>
-
+        <deleteFile path="${system_temp_directory}/servicewrapper.bat" >          
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+                <isTrue value="${component(subserver).selected}" />
+                <isFalse value="${IsSubServerUpgrade}" /> 
+            </ruleList>
+        </deleteFile>
         <startWindowsService>
             <serviceName>Publication Service</serviceName>
             <displayName>Publication Service</displayName>
@@ -1399,6 +1446,7 @@ database=${controldb}
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(subserver).selected}" />
+                <isTrue value="${component(pubserver).selected}" />
             </ruleList>
         </wait>
         <startWindowsService>
@@ -1423,12 +1471,13 @@ database=${controldb}
             <ruleList>
                 <compareText logic="contains" text="${platform_name}" value="linux" />
                 <isTrue value="${component(subserver).selected}" />
+                <isTrue value="${component(pubserver).selected}" />
             </ruleList>
         </wait>
         <runProgram>
             <program>/etc/init.d/edb-xdbsubserver</program>
             <programArguments>start &amp;</programArguments> 
-            <workingDirectory>${installdir}/bin</workingDirectory>
+            <workingDirectory>/etc/init.d</workingDirectory>
             <progressText>${msg(progress.text.starting.subservice)}</progressText>
             <ruleList>
                 <isTrue value="${component(subserver).selected}" />
@@ -1449,6 +1498,14 @@ database=${controldb}
                 <compareText logic="equals" text="${platform_name}" value="windows" />
             </ruleList>
         </deleteFile> 
+        <!-- Remove the serviceWrapper.vbs file -->      
+        <deleteFile path="${installdir}/scripts/serviceWrapper.vbs" >
+            <ruleList>
+                <fileExists path="${installdir}/scripts/serviceWrapper.vbs" />
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+            </ruleList>
+        </deleteFile> 
+
 
     </postInstallationActionList>
 
@@ -1609,20 +1666,6 @@ database=${controldb}
                 <compareText text="${platform_name}" logic="equals" value="osx" />
             </ruleList>
         </runProgram>
-        <!--
-        <deleteWindowsService>
-            <serviceName>PublicationServer</serviceName>
-            <displayName>Publication Server</displayName>
-            <abortOnError>0</abortOnError>
-            <showMessageOnError>0</showMessageOnError>
-        </deleteWindowsService>
-        <deleteWindowsService>
-            <serviceName>SubscriptionServer</serviceName>
-            <displayName>Subscription Server</displayName>
-            <abortOnError>0</abortOnError>
-            <showMessageOnError>0</showMessageOnError>
-        </deleteWindowsService>
-        --> 
         <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist" >
             <ruleList>
                 <fileExists path="/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist" />
@@ -1890,8 +1933,8 @@ database=${controldb}
                     <comment>xDB Replication Console</comment>
                     <name>xDB Replication Console</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${java_executable}</windowsExec>
-                    <windowsExecArgs>-jar "${installdir}\bin\edb-repconsole.jar"</windowsExecArgs>
+                    <windowsExec>cscript</windowsExec>
+                    <windowsExecArgs>//NOLOGO "${installdir}\scripts\runRepConsole.vbs" "${installdir}"</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pg-launchReplicationConsole.ico</windowsIcon>
                  </startMenuShortcut>  
             </startMenuShortcutList>
