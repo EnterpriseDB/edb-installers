@@ -1176,6 +1176,10 @@ database=${controldb}
             <files>${installdir}/bin/runRepConsole.sh</files>
             <substitutionList>
                 <substitution>
+                    <pattern>@@JAVA@@</pattern>
+                    <value>${java_executable}</value>
+                </substitution>
+                <substitution>
                     <pattern>@@INSTALL_DIR@@</pattern>
                     <value>${installdir}</value>
                 </substitution>
@@ -1190,6 +1194,14 @@ database=${controldb}
             <files>${installdir}/bin/runPubServer.sh</files>
             <substitutionList>
                 <substitution>
+                    <pattern>@@INSTALL_DIR@@</pattern>
+                    <value>${installdir}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@JAVA@@</pattern>
+                    <value>${java_executable}</value>
+                </substitution>
+                <substitution>
                     <pattern>@@PUBPORT@@</pattern>
                     <value>${pubport}</value>
                 </substitution>
@@ -1202,6 +1214,74 @@ database=${controldb}
         <substitute>
             <files>${installdir}/bin/runSubServer.sh</files>
             <substitutionList>
+                <substitution>
+                    <pattern>@@INSTALL_DIR@@</pattern>
+                    <value>${installdir}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@JAVA@@</pattern>
+                    <value>${java_executable}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@SUBPORT@@</pattern>
+                    <value>${subport}</value>
+                </substitution>
+            </substitutionList>
+            <ruleList>
+                <isTrue value="${component(subserver).selected}" />
+            </ruleList>
+        </substitute> 
+
+        <substitute>
+            <files>${installdir}/bin/runRepConsole.bat</files>
+            <substitutionList>
+                <substitution>
+                    <pattern>@@JAVA@@</pattern>
+                    <value>${java_executable_windows}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@INSTALL_DIR@@</pattern>
+                    <value>${installdir}</value>
+                </substitution>
+            </substitutionList>
+            <ruleList>
+                <isTrue value="${component(repconsole).selected}" />
+            </ruleList>
+        </substitute> 
+
+
+        <substitute>
+            <files>${installdir}/bin/runPubServer.bat</files>
+            <substitutionList>
+                <substitution>
+                    <pattern>@@INSTALL_DIR@@</pattern>
+                    <value>${installdir}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@JAVA@@</pattern>
+                    <value>${java_executable_windows}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@PUBPORT@@</pattern>
+                    <value>${pubport}</value>
+                </substitution>
+            </substitutionList>
+            <ruleList>
+                <isTrue value="${component(pubserver).selected}" />
+            </ruleList>
+        </substitute> 
+
+        <substitute>
+            <files>${installdir}/bin/runSubServer.sh</files>
+            <substitutionList>
+                <substitution>
+                    <pattern>@@INSTALL_DIR@@</pattern>
+                    <value>${installdir}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@JAVA@@</pattern>
+                    <value>${java_executable_windows}</value>
+                </substitution>
                 <substitution>
                     <pattern>@@SUBPORT@@</pattern>
                     <value>${subport}</value>
