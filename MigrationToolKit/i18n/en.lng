@@ -33,3 +33,6 @@ Installer.Installing.Text=Please wait while Setup installs EnterpriseDB Migratio
 jdbc.driver.not.found=PostgreSQL JDBC Drivers not found on your system.\nPlease ensure they are instlled before re-running the installer.
 
 mw.installation.dir=Installation Directory
+
+jre.invalid.error=Invalid --jrehome specified.\n\nCould not find '${jrehome}/bin/java'.
+jre.invalid.error.windows=Invalid --jrehome specified.\n\nCould not find '${jrehome}\bin\java.exe'.
