@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject ProjectType="Visual C++" Version="8.00" Name="ServiceWrapper" ProjectGUID="{32170834-DB3C-4568-BABA-D33C9CBE8B0B}">
+ <Platforms><Platform Name="Win32"/></Platforms>
+ <Configurations>
+  <Configuration Name="Debug|Win32" OutputDirectory=".\Debug" IntermediateDirectory=".\Debug"
+	ConfigurationType="1" UseOfMFC="0" ATLMinimizesCRunTimeLibraryUsage="FALSE" CharacterSet="2" WholeProgramOptimization="0">
+	<Tool Name="VCCLCompilerTool" Optimization="0"
+		AdditionalIncludeDirectories=""
+		PreprocessorDefinitions="WIN32;_WINDOWS;__WINDOWS__;__WIN32__;EXEC_BACKEND;WIN32_STACK_RLIMIT=4194304;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_DEBUG;DEBUG=1;"
+		StringPooling="false"
+		RuntimeLibrary="3" DisableSpecificWarnings="4018;4244;4273;4102;4090"
+		AdditionalOptions="/MP"
+		AssemblerOutput="0" AssemblerListingLocation=".\Debug\" ObjectFile=".\Debug\"
+		ProgramDataBaseFileName=".\Debug\" BrowseInformation="0"
+		WarningLevel="3" SuppressStartupBanner="TRUE" DebugInformationFormat="3" CompileAs="0"/>
+	<Tool Name="VCLinkerTool" OutputFile=".\Debug\ServiceWrapper.exe"
+		AdditionalDependencies=""
+		LinkIncremental="0" SuppressStartupBanner="TRUE" AdditionalLibraryDirectories="" IgnoreDefaultLibraryNames="libc"
+		StackReserveSize="4194304" DisableSpecificWarnings="4018;4244;4273;4102;4090"
+		GenerateDebugInformation="TRUE" ProgramDatabaseFile=".\Debug\ServiceWrapper.pdb"
+		GenerateMapFile="FALSE" MapFileName=".\Debug\ServiceWrapper.map"
+		SubSystem="1" TargetMachine="1"
+	/>
+	<Tool Name="VCLibrarianTool" OutputFile=".\Debug\ServiceWrapper.lib" IgnoreDefaultLibraryNames="libc" />
+	<Tool Name="VCResourceCompilerTool" AdditionalIncludeDirectories="" />
+  </Configuration>
+  <Configuration Name="Release|Win32" OutputDirectory=".\Release\" IntermediateDirectory=".\Release\"
+	ConfigurationType="1" UseOfMFC="0" ATLMinimizesCRunTimeLibraryUsage="FALSE" CharacterSet="2" WholeProgramOptimization="0">
+	<Tool Name="VCCLCompilerTool" Optimization="3"
+		AdditionalIncludeDirectories=""
+		PreprocessorDefinitions="WIN32;_WINDOWS;__WINDOWS__;__WIN32__;EXEC_BACKEND;WIN32_STACK_RLIMIT=4194304;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;"
+		StringPooling="true"
+		RuntimeLibrary="2" DisableSpecificWarnings="4018;4244;4273;4102;4090"
+		AdditionalOptions="/MP"
+		AssemblerOutput="0" AssemblerListingLocation=".\Release\" ObjectFile=".\Release\"
+		ProgramDataBaseFileName=".\Release\" BrowseInformation="0"
+		WarningLevel="3" SuppressStartupBanner="TRUE" DebugInformationFormat="3" CompileAs="0"/>
+	<Tool Name="VCLinkerTool" OutputFile=".\Release\ServiceWrapper.exe"
+		AdditionalDependencies=""
+		LinkIncremental="0" SuppressStartupBanner="TRUE" AdditionalLibraryDirectories="" IgnoreDefaultLibraryNames="libc"
+		StackReserveSize="4194304" DisableSpecificWarnings="4018;4244;4273;4102;4090"
+		GenerateDebugInformation="TRUE" ProgramDatabaseFile=".\Release\ServiceWrapper.pdb"
+		GenerateMapFile="FALSE" MapFileName=".\Release\ServiceWrapper.map"
+		SubSystem="1" TargetMachine="1"
+	/>
+	<Tool Name="VCLibrarianTool" OutputFile=".\Release\ServiceWrapper.lib" IgnoreDefaultLibraryNames="libc" />
+	<Tool Name="VCResourceCompilerTool" AdditionalIncludeDirectories="" />
+  </Configuration>
+ </Configurations>
+ <Files>
+  <Filter Name="src" Filter="">
+    <File RelativePath=".\ServiceWrapper.c" />
+  </Filter>
+ </Files>
+ <Globals/>
+</VisualStudioProject>
