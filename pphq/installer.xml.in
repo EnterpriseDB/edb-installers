@@ -575,8 +575,8 @@
             </ruleList>
         </actionGroup>
 
-        <setInstallerVariable name="antPath" variable="${pphqTempDir}/pphq/installer-PG_VERSION_PPHQ"/>
-        <setInstallerVariable name="antPath" variable="${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ">
+        <setInstallerVariable name="antPath" value="${pphqTempDir}/pphq/installer-PG_VERSION_PPHQ"/>
+        <setInstallerVariable name="antPath" value="${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
@@ -919,7 +919,7 @@
                     </distributionFileList>
                 </folder>
                 <folder>
-                    <destination>${}system_temp_directorysystem_temp_directorr
+                    <destination>${pphqTempDir}</destination>
                     <name>instlinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
