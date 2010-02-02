@@ -78,8 +78,10 @@ End If
 Dim strCmdLine, iIndex, arrCmdArgs(), iStatus
 strCmdLine = WScript.Arguments.Item(0)
 
+If WScript.Arguments.Count > 1 Then
+    ReDim arrCmdArgs(WScript.Arguments.Count - 2)
+End If
 For iIndex = 1 To WScript.Arguments.Count - 1
-  ReDim arrCmdArgs(iIndex - 1)
   arrCmdArgs(iIndex - 1) = WScript.Arguments.Item(iIndex)
 Next
 

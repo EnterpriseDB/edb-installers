@@ -238,7 +238,7 @@
         <!-- WIN : Check Previous Installation of PPHQ -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="psql_path" value="${system_temp_directory}\pphq_installer\instscripts\psql.exe"/>
+                <setInstallerVariable name="psql_path" value="${pphqTempDir}\instscripts\psql.exe"/>
                 <!-- Get the branding -->
                 <registryGet name="Branding" variable="iBranding"
                              key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"/>
@@ -382,15 +382,15 @@
             <actionList>
                 <!-- We will also need to get the VC++ runtimes installed on Windows, before we do anything with binaries -->
                 <unpackFile component="vcredistComponent"
-                            destination="${system_temp_directory}\pphq_installer\vcredist_x86.exe"
+                            destination="${pphqTempDir}\vcredist_x86.exe"
                             folder="vcredist"
                             origin="vcredist_x86.exe"/>
                 <unpackFile component="vcredistComponent"
-                            destination="${system_temp_directory}\pphq_installer\installruntimes.vbs"
+                            destination="${pphqTempDir}\installruntimes.vbs"
                             folder="vcredist"
                             origin="installruntimes.vbs"/>
                 <runProgram program="cscript"
-                            programArguments="//NoLogo &quot;${system_temp_directory}\pphq_installer\installruntimes.vbs&quot; &quot;${system_temp_directory}\pphq_installer\vcredist_x86.exe&quot;"
+                            programArguments="//NoLogo &quot;${pphqTempDir}\installruntimes.vbs&quot; &quot;${pphqTempDir}\vcredist_x86.exe&quot;"
                             abortOnError="0"
                             showMessageOnError="1"
                             customErrorMessage="${msg(error.installing.runtimes)}">
@@ -459,7 +459,7 @@
                 <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
                 <setEnvironmentVariable name="PGPORT" value="${pgport}" />
                 <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
-                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/lib"/>
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${pphqTempDir}/instscripts/lib"/>
                 <runProgram program="${psql_path}" abortOnError="1"
                         programArguments="-l &quot;${pgdatabase}&quot;"
                         workingDirectory="${pphqTempDir}/instscripts"/>
@@ -530,11 +530,11 @@
         </setInstallerVariableFromRegEx>
         <actionGroup>
             <actionList>
-                <setInstallerVariableFromRegEx name="pphqJavaHome" text="${java_executable}">
+                <setInstallerVariableFromRegEx name="java_executable" text="${java_executable}">
                     <pattern>\/</pattern>
                     <substitution>\\</substitution>
                 </setInstallerVariableFromRegEx>
-                <setInstallerVariableFromRegEx name="pphqJavaHome" text="${pphqJavaHome}">
+                <setInstallerVariableFromRegEx name="pphqJavaHome" text="${java_executable}">
                     <pattern>\\bin\\java.exe</pattern>
                     <substitution/>
                 </setInstallerVariableFromRegEx>
@@ -543,14 +543,22 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
-        <showInfo text="JAVA_HOME=${pphqJavaHome}"/>
+
+        <setInstallerVariable name="antPath" variable="${pphqTempDir}/pphq/installer-PG_VERSION_PPHQ"/>
+        <setInstallerVariable name="antPath" variable="${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ">
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariable>
+
+        <setEnvironmentVariable name="ANT_HOME" value="${antPath}"/>
         <setEnvironmentVariable name="JAVA_HOME" value="${pphqJavaHome}"/>
         <setEnvironmentVariable name="PGHOST" value="${pghost}" />
         <setEnvironmentVariable name="PGUSER" value="${pguser}" />
         <setEnvironmentVariable name="PGPORT" value="${pgport}" />
         <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
         <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
-        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/lib"/>
+        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${pphqTempDir}/instscripts/lib"/>
 
         <runProgram program="${psql_path}"
               programArguments="-t -A -c &quot;CREATE USER \&quot;${pphquser}\&quot; PASSWORD '${pphqpassword}'&quot;"
@@ -647,12 +655,12 @@
                         name="pphqTempShortName"
                         workingDirectory="${pphqTempDir}"/>
                 <runProgram program="cscript.exe"
-                      programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; ${pphqTempShortName}\setup.bat ${pphqTempShortName}\templates\server.prop"
-                      workingDirectory="${pphqTempDir}\pphq"
+                      programArguments="//nologo &quot;${java_executable}&quot; -classpath &quot;${pphqTempDir}\installer-4.2.0\lib\ant-launcher.jar&quot; -Dant.home=&quot;${pphqTempDir}\installer-4.2.0&quot; org.apache.tools.ant.launch.Launcher  -Dinstall.dir=&quot;${pphqTempDir}\installer-4.2.0&quot; -Dinstall.mode=&quot;quick&quot; -Dsetup=&quot;${pphqTempDir}\templates\server.prop&quot; -f &quot;${pphqTempDir}\installer-4.2.0\data\setup.xml&quot; -logger org.hyperic.tools.ant.installer.InstallerLogger"
+                      workingDirectory="${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ"
                       progressText="Configuring PPHQ Server (This may take some time) ..."
                       abortOnError="1" showMessageOnError="1"/>
                 <runProgram program="cscript.exe"
-                      programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; ${pphqTempShortName}\setup.bat ${pphqTempShortName}\templates\agent.prop"
+                      programArguments="//nologo &quot;${java_executable}&quot; -classpath &quot;${pphqTempDir}\installer-4.2.0\lib\ant-launcher.jar&quot; -Dant.home=&quot;${pphqTempDir}\installer-4.2.0&quot; org.apache.tools.ant.launch.Launcher  -Dinstall.dir=&quot;${pphqTempDir}\installer-4.2.0&quot; -Dinstall.mode=&quot;quick&quot; -Dsetup=&quot;${pphqTempDir}\templates\agent.prop&quot; -f &quot;${pphqTempDir}\installer-4.2.0\data\setup.xml&quot; -logger org.hyperic.tools.ant.installer.InstallerLogger"
                       workingDirectory="${pphqTempDir}\pphq"
                       progressText="Configuring PPHQ Agent (This may take some time) ..."
                       abortOnError="1" showMessageOnError="1"/>
@@ -846,7 +854,7 @@
             <show>0</show>
             <folderList>
                 <folder>
-                    <destination>${system_temp_directory}</destination>
+                    <destination>${pphqTempDir}</destination>
                     <name>vcredist</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
@@ -863,7 +871,7 @@
             <show>0</show>
             <folderList>
                 <folder>
-                    <destination>${system_temp_directory}</destination>
+                    <destination>${pphqTempDir}</destination>
                     <name>instlinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
@@ -871,7 +879,7 @@
                     </distributionFileList>
                 </folder>
                 <folder>
-                    <destination>${system_temp_directory}</destination>
+                    <destination>${}system_temp_directorysystem_temp_directorr
                     <name>instlinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
@@ -879,7 +887,7 @@
                     </distributionFileList>
                 </folder>
                 <folder>
-                    <destination>${system_temp_directory}</destination>
+                    <destination>${pphqTempDir}</destination>
                     <name>instosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
@@ -887,7 +895,7 @@
                     </distributionFileList>
                 </folder>
                 <folder>
-                    <destination>${system_temp_directory}</destination>
+                    <destination>${pphqTempDir}</destination>
                     <name>instwindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
@@ -1201,7 +1209,7 @@
                 <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
                 <setEnvironmentVariable name="PGPORT" value="${pgport}" />
                 <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
-                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/lib"/>
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${pphqTempDir}/instscripts/lib"/>
                 <runProgram program="${psql_path}"
                         programArguments="-l &quot;${pgdatabase}&quot;"
                         workingDirectory="${pphqTempDir}/instscripts"/>
