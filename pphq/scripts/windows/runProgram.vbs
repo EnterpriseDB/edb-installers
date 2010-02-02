@@ -30,7 +30,7 @@ Sub RunProgram(ByVal p_strCmd, ByRef p_aCmdArgs, ByRef pl_iStatusCode)
   End If
   p_strCmd = Trim( """" & p_strCmd & """ " & Trim(l_strCmdArgs))
 
-  WScript.WriteLine "RunProgram: " & p_strCmd
+  WSO.WriteLine "RunProgram: " & p_strCmd
 
   Set lExec = WshShell.Exec(p_strCmd)
 
@@ -71,19 +71,18 @@ Sub RunProgram(ByVal p_strCmd, ByRef p_aCmdArgs, ByRef pl_iStatusCode)
 End Sub
 
 If WScript.Arguments.Count < 1 Then
-    WScript.Echo "Please Provide the program to run..."
+    WSE.Echo "Please Provide the program to run..."
     WScript.Quit -127
 End If
 
 Dim strCmdLine, iIndex, arrCmdArgs(), iStatus
 strCmdLine = WScript.Arguments.Item(0)
 
-ReDim arrCmdArgs(WScript.Arguments.Count)
-
-For iIndex = 1 To WScript.Arguments.Count
+For iIndex = 1 To WScript.Arguments.Count - 1
+  ReDim arrCmdArgs(iIndex - 1)
   arrCmdArgs(iIndex - 1) = WScript.Arguments.Item(iIndex)
 Next
 
-RunProgram(strCmdLine, arrCmdArgs, iStatus)
+Call RunProgram(strCmdLine, arrCmdArgs, iStatus)
 
 WScript.Quit iStatus

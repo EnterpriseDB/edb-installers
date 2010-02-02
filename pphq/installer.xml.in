@@ -81,6 +81,8 @@
       </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
+        <setInstallerVariable name="pphqServer" value="hq-server"/>
+        <setInstallerVariable name="pphqAgent" value="hq-agent"/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PPHQ" />
         <setInstallerVariable name="hq_db_exist" value="0"/>
         <setInstallerVariable name="pphqAdminDB" value="PPHQ"/>
@@ -112,7 +114,7 @@
             </ruleList>
         </setInstallerVariable>
         <!-- WIN : Set the default values for unattended mode -->
-        <setInstallerVariable name="installdir" value="${platform_install_prefix}\PostgresPlus/HQ">
+        <setInstallerVariable name="installdir" value="${platform_install_prefix}\PostgresPlus\HQ">
             <ruleList>
                 <compareText logic="equals" text="${installer_ui}" value="unattended"/>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -132,13 +134,13 @@
             </ruleList>
         </setInstallerVariable>
         <!-- LIN : Set the default installation directory -->
-        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgresPlus\HQ">
+        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgresPlus/HQ">
             <ruleList>
                 <compareText logic="contains" text="${platform_name}" value="linux"/>
             </ruleList>
         </setInstallerVariable>
         <!-- WIN : Set the default installation directory -->
-        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgresPlus/HQ">
+        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgresPlus\HQ">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
@@ -148,6 +150,9 @@
         <setInstallerVariable name="pphq_jnp_port" value=""/>
         <setInstallerVariable name="pphq_secure_port" value=""/>
         <setInstallerVariable name="pphq_jrpm_port" value=""/>
+
+    </initializationActionList>
+    <preInstallationActionList>
 
         <!-- Check if the valid jrehome switch is supplied -->
         <throwError customErrorMessage="${msg(jre.invalid.error)}" text="Unknown Error">
@@ -214,9 +219,6 @@
                <compareText text="${jrehome}" logic="equals" value=""/>
             </ruleList>
         </autodetectJava>
-
-    </initializationActionList>
-    <preInstallationActionList>
         <!-- LIN & MAC : Get the branding & check Previous Installation of PPHQ -->
         <actionGroup>
             <actionList>
@@ -386,7 +388,7 @@
                 <unpackFile component="vcredistComponent"
                             destination="${system_temp_directory}\pphq_installer\installruntimes.vbs"
                             folder="vcredist"
-                            origin="vcredist_x86.exe"/>
+                            origin="installruntimes.vbs"/>
                 <runProgram program="cscript"
                             programArguments="//NoLogo &quot;${system_temp_directory}\pphq_installer\installruntimes.vbs&quot; &quot;${system_temp_directory}\pphq_installer\vcredist_x86.exe&quot;"
                             abortOnError="0"
@@ -523,9 +525,25 @@
     </preInstallationActionList>
     <postInstallationActionList>
         <setInstallerVariableFromRegEx name="pphqJavaHome" text="${java_executable}">
-            <pattern>bin.java*$</pattern>
+            <pattern>bin\/java</pattern>
             <substitution/>
         </setInstallerVariableFromRegEx>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariableFromRegEx name="pphqJavaHome" text="${java_executable}">
+                    <pattern>\/</pattern>
+                    <substitution>\\</substitution>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx name="pphqJavaHome" text="${pphqJavaHome}">
+                    <pattern>\\bin\\java.exe</pattern>
+                    <substitution/>
+                </setInstallerVariableFromRegEx>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
+        <showInfo text="JAVA_HOME=${pphqJavaHome}"/>
         <setEnvironmentVariable name="JAVA_HOME" value="${pphqJavaHome}"/>
         <setEnvironmentVariable name="PGHOST" value="${pghost}" />
         <setEnvironmentVariable name="PGUSER" value="${pguser}" />
@@ -571,7 +589,7 @@
         <substitute>
             <files>${pphqTempDir}/pphq/templates/server.prop;${pphqTempDir}/pphq/templates/agent.prop</files>
             <substitutionList>
-                <substitution pattern="@@INSTALLDIR@@" value="${installdir}"/>
+                <substitution pattern="@@INSTALLDIR@@" value="${pphqInstallPath}"/>
                 <substitution pattern="@@PGUSER@@" value="${pphquser}"/>
                 <substitution pattern="@@PGPASS@@" value="${pphqpassword}"/>
                 <substitution pattern="@@PGPORT@@" value="${pgport}"/>
@@ -588,20 +606,33 @@
         <actionGroup>
             <actionList>
                 <runProgram program="${installdir}/installer/pphq/tune-os.sh"
-                            workingDirectory="${installdir}/installer/pphq"
-                            abortOnError="0" showMessageOnError="0"/>
+                      workingDirectory="${installdir}/installer/pphq"
+                      abortOnError="0" showMessageOnError="0"/>
 
                 <runProgram program="${pphqTempDir}/pphq/setup.sh"
-                        programArguments="${pphqTempDir}/pphq/templates/server.prop"
-                        workingDirectory="${pphqTempDir}/instscripts"
-                        progressText="Configuring PPHQ Server (This may take some time) ..."
-                        abortOnError="1" showMessageOnError="1"/>
+                      programArguments="${pphqTempDir}/pphq/templates/server.prop"
+                      workingDirectory="${pphqTempDir}/instscripts"
+                      progressText="Configuring PPHQ Server (This may take some time) ..."
+                      abortOnError="1" showMessageOnError="1"/>
 
                 <runProgram program="${pphqTempDir}/pphq/setup.sh"
-                        programArguments="${pphqTempDir}/pphq/templates/agent.prop"
-                        workingDirectory="${pphqTempDir}/instscripts"
-                        progressText="Configuring PPHQ Client ..."
-                        abortOnError="1" showMessageOnError="1"/>
+                      programArguments="${pphqTempDir}/pphq/templates/agent.prop"
+                      workingDirectory="${pphqTempDir}/instscripts"
+                      progressText="Configuring PPHQ Client ..."
+                      abortOnError="1" showMessageOnError="1"/>
+
+                <actionGroup>
+                    <actionList>
+                        <runProgram program="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"
+                              programArguments="start"
+                              workingDirectory="${pphqTempDir}/server-PG_VERSION_PPHQ"
+                              progressText="Starting PPHQ Server ..."
+                              abortOnError="1" showMessageOnError="1"/>
+                    </actionList>
+                    <ruleList>
+                        <fileExists path="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"/>
+                    </ruleList>
+                </actionGroup>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -610,21 +641,34 @@
 
         <actionGroup>
             <actionList>
+                <setInstallerVariableFromScriptOutput 
+                        exec="cscript.exe"
+                        execArgs="//nologo ${installdir}\scripts\shortPathName.vbs &quot;${pphqTempDir}\pphq&quot;"
+                        name="pphqTempShortName"
+                        workingDirectory="${pphqTempDir}"/>
                 <runProgram program="cscript.exe"
-                      programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${pphqTempDir}\pphq\setup.bat&quot; &quot;${pphqTempDir}\pphq\templates\server.prop&quot;"
+                      programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; ${pphqTempShortName}\setup.bat ${pphqTempShortName}\templates\server.prop"
                       workingDirectory="${pphqTempDir}\pphq"
                       progressText="Configuring PPHQ Server (This may take some time) ..."
                       abortOnError="1" showMessageOnError="1"/>
                 <runProgram program="cscript.exe"
-                      programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${pphqTempDir}\pphq\setup.bat&quot; &quot;${pphqTempDir}\pphq\templates\agent.prop&quot;"
+                      programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; ${pphqTempShortName}\setup.bat ${pphqTempShortName}\templates\agent.prop"
                       workingDirectory="${pphqTempDir}\pphq"
                       progressText="Configuring PPHQ Agent (This may take some time) ..."
                       abortOnError="1" showMessageOnError="1"/>
-                <runProgram program="${installdir}\server-PG_VERSION_PPHQ\bin\hq-server.exe"
-                      programArguments="-i -n pphq-PG_VERSION_PPHQ -j &quot;${pphqJavaHome}&quot;"
-                      workingDirectory="${installdir}\server-PG_VERSION_PPHQ\bin"
-                      progressText="Creating PPHQ service ..."
-                      abortOnError="1" showMessageOnError="1"/>
+                <actionGroup>
+                    <actionList>
+                        <runProgram program="${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe"
+                              programArguments="-i -n pphq-PG_VERSION_PPHQ"
+                              workingDirectory="${installdir}\server-PG_VERSION_PPHQ\bin"
+                              progressText="Creating PPHQ service ..."
+                              abortOnError="0" showMessageOnError="0"/>
+                        <startWindowsService serviceName="pphq-PG_VERSION_PPHQ" abortOnError="0" showMessageOnError="1"/>
+                    </actionList>
+                    <ruleList>
+                        <fileExists path="${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe"/>
+                    </ruleList>
+                </actionGroup>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -938,7 +982,7 @@
                     <name>installscriptswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
-                        <distributionDirectory origin="staging/osx/scripts"/>
+                        <distributionDirectory origin="staging/windows/scripts"/>
                     </distributionFileList>
                 </folder>
             </folderList>
@@ -956,7 +1000,7 @@
                 <startMenuShortcut>
                     <name>Start Server</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\server-PG_VERSION_PPHQ\bin\pphq-server.exe</windowsExec>
+                    <windowsExec>${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe</windowsExec>
                     <windowsExecArgs>start</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pphq-start.ico</windowsIcon>
                 </startMenuShortcut>
@@ -964,7 +1008,7 @@
                 <startMenuShortcut>
                     <name>Stop Server</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\server-PG_VERSION_PPHQ\bin\pphq-server.exe</windowsExec>
+                    <windowsExec>${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe</windowsExec>
                     <windowsExecArgs>stop</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pphq-stop.ico</windowsIcon>
                 </startMenuShortcut>
@@ -972,7 +1016,7 @@
                 <startMenuShortcut>
                     <name>Start Agent</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\agent-PG_VERSION_PPHQ\bin\pphq-agent.bat</windowsExec>
+                    <windowsExec>${installdir}\agent-PG_VERSION_PPHQ\bin\${pphqAgent}.bat</windowsExec>
                     <windowsExecArgs>start</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pphq-agent-start.ico</windowsIcon>
                 </startMenuShortcut>
@@ -980,7 +1024,7 @@
                 <startMenuShortcut>
                     <name>Stop Agent</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\agent-PG_VERSION_PPHQ\bin\pphq-agent.bat</windowsExec>
+                    <windowsExec>${installdir}\agent-PG_VERSION_PPHQ\bin\${pphqAgent}.bat</windowsExec>
                     <windowsExecArgs>stop</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pphq-agent-stop.ico</windowsIcon>
                 </startMenuShortcut>
@@ -1005,6 +1049,79 @@
                <compareText logic="equals" text="${platform_name}" value="windows"/>
            </ruleList>
         </booleanParameter>
+
+        <!-- Install Directory -->
+        <directoryParameter>
+            <name>installdir</name>
+            <description>Installer.Parameter.installdir.description</description>
+            <explanation>Installer.Parameter.installdir.explanation</explanation>
+            <value>${default_installdir}</value>
+            <default/>
+            <allowEmptyValue>0</allowEmptyValue>
+            <ask>yes</ask>
+            <cliOptionName>prefix</cliOptionName>
+            <mustBeWritable>yes</mustBeWritable>
+            <mustExist>0</mustExist>
+            <width>40</width>
+            <ruleList>
+                <compareText text="${pphqVersion}" logic="equals" value=""/>
+            </ruleList>
+            <!-- Validating whether installdir is empty -->
+            <validationActionList>
+                <stringModify text="${installdir}" variable="installdir" logic="trim"/>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="installdir" value="${default_installdir}" />
+                        <throwError>
+                            <text>${msg(pphq.installdir.empty)}</text>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <compareText text="${installdir}" logic="equals" value=""/>
+                    </ruleList>
+                </actionGroup>
+                <!-- Validating whether installdir is valid (linux/linux-x64/osx) -->
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="installdir" value="${default_installdir}" />
+                        <throwError text="${msg(pphq.installdir.error)}"/>
+                    </actionList>
+                    <ruleList>
+                       <regExMatch>
+                           <text>${installdir}</text>
+                           <logic>does_not_match</logic>
+                           <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                       </regExMatch>
+                       <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </actionGroup>
+                <!-- Validating whether installdir is valid (Windows) -->
+                <actionGroup>
+                   <actionList>
+                     <setInstallerVariable name="installdir" value="${default_installdir}" />
+                     <throwError text="${msg(pphq.installdir.error)}"/>
+                   </actionList>
+                   <ruleList>
+                       <regExMatch>
+                         <text>${installdir}</text>
+                         <logic>does_not_match</logic>
+                         <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
+                       </regExMatch>
+                       <compareText logic="equals" text="${platform_name}" value="windows"/>
+                   </ruleList>
+                 </actionGroup>
+            </validationActionList>
+        </directoryParameter>
+
+        <!-- Explain that we're using an existing installation directory -->
+        <labelParameter>
+            <name>upgrade</name>
+            <title>${msg(upgrade.existing.installation.title)}</title>
+            <description>${msg(upgrade.existing.installation.description)}</description>
+            <ruleList>
+                <compareText text="${pphqVersion}" logic="does_not_equal" value=""/>
+            </ruleList>
+        </labelParameter>
 
         <parameterGroup>
             <name>smtp_server_details</name>
@@ -1162,6 +1279,11 @@
                         <compareText text="${pphqpassword}" logic="equals" value=""/>
                     </ruleList>
                 </throwError>
+                <throwError text="${msg(pphq.port.not.free)}">
+                    <ruleList>
+                        <portTest port="${pphqport}" condition="cannot_bind"/>
+                    </ruleList>
+                </throwError>
                 <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
                 <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
                 <setInstallerVariable name="pphq_db_user_exists" value="0"/>
@@ -1184,78 +1306,6 @@
                 </actionGroup>
             </validationActionList>
         </parameterGroup>
-
-        <!-- Install Directory -->
-        <directoryParameter>
-            <name>installdir</name>
-            <description>Installer.Parameter.installdir.description</description>
-            <explanation>Installer.Parameter.installdir.explanation</explanation>
-            <value>${default_installdir}</value>
-            <default/>
-            <allowEmptyValue>0</allowEmptyValue>
-            <ask>yes</ask>
-            <cliOptionName>prefix</cliOptionName>
-            <mustBeWritable>yes</mustBeWritable>
-            <mustExist>0</mustExist>
-            <width>40</width>
-            <ruleList>
-                <compareText text="${pphqVersion}" logic="equals" value=""/>
-            </ruleList>
-            <!-- Validating whether installdir is empty -->
-            <validationActionList>
-                <stringModify text="${installdir}" variable="installdir" logic="trim"/>
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="installdir" value="${default_installdir}" />
-                        <throwError>
-                            <text>${msg(pphq.installdir.empty)}</text>
-                        </throwError>
-                    </actionList>
-                    <ruleList>
-                        <compareText text="${installdir}" logic="equals" value=""/>
-                    </ruleList>
-                </actionGroup>
-                <!-- Validating whether installdir is valid (linux/linux-x64/osx) -->
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="installdir" value="${default_installdir}" />
-                        <throwError text="${msg(pphq.installdir.error)}"/>
-                    </actionList>
-                    <ruleList>
-                       <regExMatch>
-                           <text>${installdir}</text>
-                           <logic>does_not_match</logic>
-                           <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
-                       </regExMatch>
-                       <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </actionGroup>
-                <!-- Validating whether installdir is valid (Windows) -->
-                <actionGroup>
-                   <actionList>
-                     <setInstallerVariable name="installdir" value="${default_installdir}" />
-                     <throwError text="${msg(pphq.installdir.error)}"/>
-                   </actionList>
-                   <ruleList>
-                       <regExMatch>
-                         <text>${installdir}</text>
-                         <logic>does_not_match</logic>
-                         <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
-                       </regExMatch>
-                       <compareText logic="equals" text="${platform_name}" value="windows"/>
-                   </ruleList>
-                 </actionGroup>
-            </validationActionList>
-        </directoryParameter>
-        <!-- Explain that we're using an existing installation directory -->
-        <labelParameter>
-            <name>upgrade</name>
-            <title>${msg(upgrade.existing.installation.title)}</title>
-            <description>${msg(upgrade.existing.installation.description)}</description>
-            <ruleList>
-                <compareText text="${pphqVersion}" logic="does_not_equal" value=""/>
-            </ruleList>
-        </labelParameter>
     </parameterList>
 </project>
 

@@ -87,6 +87,7 @@ _postprocess_pphq_windows() {
     # Copy in the menu pick images
     mkdir -p $PPHQ_STAGING/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp $PPHQ_DIR/scripts/windows/runProgram.vbs $PPHQ_STAGING/scripts/ || _die "Failed to copy runProgram.vbs script"
+    cp $PPHQ_DIR/scripts/windows/shortPathName.vbs $PPHQ_STAGING/scripts/ || _die "Failed to copy runProgram.vbs script"
     cp $PPHQ_DIR/resources/*.ico $PPHQ_STAGING/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
     # Build the installer
