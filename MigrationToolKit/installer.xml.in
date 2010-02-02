@@ -122,6 +122,52 @@
             <persist>0</persist>
         </setInstallerVariable>
 	
+       <!-- MAC : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>/Library/PostgresPlus/EnterpriseDB-MigrationToolkit</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+		
+        <!-- LIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}/PostgresPlus/EnterpriseDB-MigrationToolkit</value>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+		
+        <!-- WIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}\PostgresPlus\EnterpriseDB-MigrationToolkit</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+    </initializationActionList>
+	
+    <!-- Preinstallation actions -->
+    <preInstallationActionList>
+
         <!-- Check if the valid jrehome switch is supplied -->
         <throwError>
           <customErrorMessage>${msg(jre.invalid.error)}</customErrorMessage>
@@ -169,51 +215,6 @@
             </ruleList>
         </autodetectJava>
 
-        <!-- MAC : Set the default installation directory -->
-        <setInstallerVariable>
-            <name>default_installdir</name>
-            <persist>1</persist>
-            <value>/Library/PostgresPlus/EnterpriseDB-MigrationToolkit</value>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
-		
-        <!-- LIN : Set the default installation directory -->
-        <setInstallerVariable>
-            <name>default_installdir</name>
-            <persist>1</persist>
-            <value>${platform_install_prefix}/PostgresPlus/EnterpriseDB-MigrationToolkit</value>
-            <ruleList>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
-		
-        <!-- WIN : Set the default installation directory -->
-        <setInstallerVariable>
-            <name>default_installdir</name>
-            <persist>1</persist>
-            <value>${platform_install_prefix}\PostgresPlus\EnterpriseDB-MigrationToolkit</value>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </setInstallerVariable>
-    </initializationActionList>
-	
-    <!-- Preinstallation actions -->
-    <preInstallationActionList>
         <!-- Creates the ini file if not exits -->
         <touchFile path="/etc/postgres-reg.ini">
             <ruleList>

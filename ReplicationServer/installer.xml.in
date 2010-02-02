@@ -122,8 +122,6 @@
         <setInstallerVariable name="defaultpguser" value="postgres" />
         <setInstallerVariable name="defaultpgpassword" value="postgres" />
         
-        
- 
         <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -133,61 +131,6 @@
             <compareText text="${originalplatform}" value="linux-x32"/>
           </ruleList>
         </throwError>
-
-        <!-- Check if the valid jrehome switch is supplied -->
-        <throwError>
-          <customErrorMessage>${msg(jre.invalid.error)}</customErrorMessage>
-          <text>Unknown Error</text>
-          <ruleList>
-             <compareText text="${jrehome}" logic="does_not_equal" value="" />
-             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
-             <fileTest path="${jrehome}/bin/java" condition="not_exists" />
-          </ruleList>
-        </throwError>    
-        <throwError>
-          <customErrorMessage>${msg(jre.invalid.error.windows)}</customErrorMessage>
-          <text>Unknown Error</text>
-          <ruleList>
-             <compareText text="${jrehome}" logic="does_not_equal" value="" />
-             <compareText text="${platform_name}" logic="equals" value="windows" />
-             <fileTest path="${jrehome}\bin\java.exe" condition="not_exists" />
-          </ruleList>
-        </throwError>    
-
-        <!-- Set the java_executable variable if valid jrehome switch is supplied -->
-        <setInstallerVariable name="java_executable" value="${jrehome}/bin/java" >
-          <ruleList>
-             <compareText text="${jrehome}" logic="does_not_equal" value="" />
-             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
-             <fileExists path="${jrehome}/bin/java" />
-          </ruleList>
-        </setInstallerVariable>
-        <setInstallerVariable name="java_executable" value="${jrehome}\bin\java.exe" >
-          <ruleList>
-             <compareText text="${jrehome}" logic="does_not_equal" value="" />
-             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
-             <fileExists path="${jrehome}\bin\java" />
-          </ruleList>
-        </setInstallerVariable>
-
-        <!-- Detecting Java, Abort if not found -->
-        <autodetectJava>
-            <promptUser>0</promptUser>
-            <validVersionList>
-                <validVersion>
-                    <vendor>sun</vendor>
-                    <maxVersion/>
-                    <minVersion>1.5.0</minVersion>
-                    <requireJDK>0</requireJDK>
-                </validVersion>
-            </validVersionList>
-            <abortOnError>1</abortOnError>
-            <showMessageOnError>1</showMessageOnError>
-            <customErrorMessage>${msg(java.error)}</customErrorMessage>
-            <ruleList>
-                <compareText text="${jrehome}" logic="equals" value="" />
-            </ruleList> 
-        </autodetectJava>
 
         <!-- LIN : Set the default values for unattended mode -->
         <actionGroup>
@@ -308,6 +251,62 @@
 
     </initializationActionList>
     <preInstallationActionList>
+
+        <!-- Check if the valid jrehome switch is supplied -->
+        <throwError>
+          <customErrorMessage>${msg(jre.invalid.error)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileTest path="${jrehome}/bin/java" condition="not_exists" />
+          </ruleList>
+        </throwError>    
+        <throwError>
+          <customErrorMessage>${msg(jre.invalid.error.windows)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="equals" value="windows" />
+             <fileTest path="${jrehome}\bin\java.exe" condition="not_exists" />
+          </ruleList>
+        </throwError>    
+
+        <!-- Set the java_executable variable if valid jrehome switch is supplied -->
+        <setInstallerVariable name="java_executable" value="${jrehome}/bin/java" >
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileExists path="${jrehome}/bin/java" />
+          </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="java_executable" value="${jrehome}\bin\java.exe" >
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileExists path="${jrehome}\bin\java" />
+          </ruleList>
+        </setInstallerVariable>
+
+        <!-- Detecting Java, Abort if not found -->
+        <autodetectJava>
+            <promptUser>0</promptUser>
+            <validVersionList>
+                <validVersion>
+                    <vendor>sun</vendor>
+                    <maxVersion/>
+                    <minVersion>1.5.0</minVersion>
+                    <requireJDK>0</requireJDK>
+                </validVersion>
+            </validVersionList>
+            <abortOnError>1</abortOnError>
+            <showMessageOnError>1</showMessageOnError>
+            <customErrorMessage>${msg(java.error)}</customErrorMessage>
+            <ruleList>
+                <compareText text="${jrehome}" logic="equals" value="" />
+            </ruleList> 
+        </autodetectJava>
+
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="branding" value=""/>
@@ -730,7 +729,7 @@
     </preInstallationActionList>
     <postInstallationActionList>
 
-        <!-- Replace / with \/ or \ with \\ on windows -->
+        <!-- Replace / with \  on windows -->
         <setInstallerVariableFromRegEx>
             <text>${java_executable}</text>
             <substitution>\</substitution>
