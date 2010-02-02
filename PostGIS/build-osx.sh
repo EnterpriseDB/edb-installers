@@ -194,25 +194,33 @@ _build_geos() {
 
     # Configure the source tree
     echo "Configuring the Geos source tree for Intel"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_CACHING/geos-$PG_TARBALL_GEOS.osx --disable-dependency-tracking || _die "Failed to configure Geos for i386"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_CACHING/geos-$PG_TARBALL_GEOS.osx --disable-dependency-tracking || _die "Failed to configure Geos for i386"
     mv source/headers/config.h source/headers/config_i386.h
 
     echo "Configuring the Geos source tree for PPC"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_CACHING/geos-$PG_TARBALL_GEOS.osx --disable-dependency-tracking || _die "Failed to configure Geos for PPC"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_CACHING/geos-$PG_TARBALL_GEOS.osx --disable-dependency-tracking || _die "Failed to configure Geos for PPC"
     mv source/headers/config.h source/headers/config_ppc.h
 
+    echo "Configuring the Geos source tree for x86_64"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_CACHING/geos-$PG_TARBALL_GEOS.osx --disable-dependency-tracking || _die "Failed to configure Geos for PPC"
+    mv source/headers/config.h source/headers/config_x86_64.h
+
     echo "Configuring the Geos source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS -arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_CACHING/geos-$PG_TARBALL_GEOS.osx --disable-dependency-tracking || _die "Failed to configure Geos for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS -arch i386 -arch ppc -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_CACHING/geos-$PG_TARBALL_GEOS.osx --disable-dependency-tracking || _die "Failed to configure Geos for Universal"
 
     # Create a replacement config.h that will pull in the appropriate architecture-specific one:
     echo "#ifdef __BIG_ENDIAN__" > source/headers/config.h
-    echo "#include \"config_ppc.h\"" >> source/headers/config.h
+    echo "  #include \"config_ppc.h\"" >> source/headers/config.h
     echo "#else" >> source/headers/config.h
-    echo "#include \"config_i386.h\"" >> source/headers/config.h
+    echo "  #ifdef __LP64__" >> source/headers/config.h
+    echo "    #include \"config_x86_64.h\"" >> source/headers/config.h
+    echo "  #else" >> source/headers/config.h
+    echo "    #include \"config_i386.h\"" >> source/headers/config.h
+    echo "  #endif" >> source/headers/config.h
     echo "#endif" >> source/headers/config.h
 
     echo "Building Geos"
-    MACOSX_DEPLOYMENT_TARGET=10.4 make LDFLAGS="-arch i386 -arch ppc" -j 2 || _die "Failed to build Geos"
+    MACOSX_DEPLOYMENT_TARGET=10.5 make LDFLAGS="-arch i386 -arch ppc -arch x86_64" -j 2 || _die "Failed to build Geos"
     make prefix=$PG_CACHING/geos-$PG_TARBALL_GEOS.osx install || _die "Failed to install Geos"
 
     cd $WD
@@ -229,25 +237,33 @@ _build_proj() {
 
     # Configure the source tree
     echo "Configuring the Proj source tree for Intel"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx --disable-dependency-tracking || _die "Failed to configure Proj for i386"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx --disable-dependency-tracking || _die "Failed to configure Proj for i386"
     mv src/proj_config.h src/proj_config_i386.h
 
     echo "Configuring the Proj source tree for PPC"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx --disable-dependency-tracking || _die "Failed to configure Proj for PPC"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx --disable-dependency-tracking || _die "Failed to configure Proj for PPC"
     mv src/proj_config.h src/proj_config_ppc.h
 
+    echo "Configuring the Proj source tree for x86_64"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx --disable-dependency-tracking || _die "Failed to configure Proj for PPC"
+    mv src/proj_config.h src/proj_config_x86_64.h
+
     echo "Configuring the Proj source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx --disable-dependency-tracking || _die "Failed to configure Proj for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx --disable-dependency-tracking || _die "Failed to configure Proj for Universal"
 
     # Create a replacement config.h that will pull in the appropriate architecture-specific one:
     echo "#ifdef __BIG_ENDIAN__" > src/proj_config.h
-    echo "#include \"proj_config_ppc.h\"" >> src/proj_config.h
+    echo "  #include \"proj_config_ppc.h\"" >> src/proj_config.h
     echo "#else" >> src/proj_config.h
-    echo "#include \"proj_config_i386.h\"" >> src/proj_config.h
+    echo "  #ifdef __LP64__" >> src/proj_config.h
+    echo "    #include \"proj_config_x86_64.h\"" >> src/proj_config.h
+    echo "  #else" >> src/proj_config.h
+    echo "    #include \"proj_config_i386.h\"" >> src/proj_config.h
+    echo "  #endif" >> src/proj_config.h
     echo "#endif" >> src/proj_config.h
 
     echo "Building Proj"
-    MACOSX_DEPLOYMENT_TARGET=10.4 make -j 2 || _die "Failed to build Proj"
+    MACOSX_DEPLOYMENT_TARGET=10.5 make -j 2 || _die "Failed to build Proj"
     make prefix=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx install || _die "Failed to install Proj"
 
     cd $WD
@@ -263,26 +279,33 @@ _build_postgis() {
 
     # Configure the source tree
     echo "Configuring the PostGIS source tree for Intel"
-    PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-projdir=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx --with-xsldir=$PG_DOCBOOK_OSX  || _die "Failed to configure PostGIS for i386"
+    PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-projdir=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx --with-xsldir=$PG_DOCBOOK_OSX  || _die "Failed to configure PostGIS for i386"
     mv postgis_config.h postgis_config_i386.h
 
     echo "Configuring the PostGIS source tree for PPC"
-    PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-projdir=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx --with-xsldir=$PG_DOCBOOK_OSX  || _die "Failed to configure PostGIS for PPC"
+    PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-projdir=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx --with-xsldir=$PG_DOCBOOK_OSX  || _die "Failed to configure PostGIS for PPC"
     mv postgis_config.h postgis_config_ppc.h
 
+    echo "Configuring the PostGIS source tree for x86_64"
+    PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-projdir=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx --with-xsldir=$PG_DOCBOOK_OSX  || _die "Failed to configure PostGIS for PPC"
+    mv postgis_config.h postgis_config_x86_64.h
+
     echo "Configuring the PostGIS source tree for Universal"
-    PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-projdir=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx  --with-xsldir=$PG_DOCBOOK_OSX  || _die "Failed to configure PostGIS for universal"
+    PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-projdir=$PG_CACHING/proj-$PG_TARBALL_PROJ.osx  --with-xsldir=$PG_DOCBOOK_OSX  || _die "Failed to configure PostGIS for universal"
 
     # Create a replacement config.h that will pull in the appropriate architecture-specific one:
     echo "#ifdef __BIG_ENDIAN__" > postgis_config.h
-    echo "#include \"postgis_config_ppc.h\"" >> postgis_config.h
+    echo "  #include \"postgis_config_ppc.h\"" >> postgis_config.h
     echo "#else" >> postgis_config.h
-    echo "#include \"postgis_config_i386.h\"" >> postgis_config.h
+    echo "  #ifdef __LP64__" >> postgis_config.h
+    echo "    #include \"postgis_config_x86_64.h\"" >> postgis_config.h
+    echo "  #else" >> postgis_config.h
+    echo "    #include \"postgis_config_i386.h\"" >> postgis_config.h
+    echo "  #endif" >> postgis_config.h
     echo "#endif" >> postgis_config.h
 
     echo "Building PostGIS"
-    #MACOSX_DEPLOYMENT_TARGET=10.4 make CFLAGS="-mmacosx-version-min=10.4 -headerpad_max_install_names -arch i386 -arch ppc" LDFLAGS="-arch i386 -arch ppc" -j 2 || _die "Failed to build PostGIS"
-    MACOSX_DEPLOYMENT_TARGET=10.4 make || _die "Failed to build PostGIS"
+    MACOSX_DEPLOYMENT_TARGET=10.5 make || _die "Failed to build PostGIS"
     make comments || _die "Failed to build comments"
     make install || _die "Failed to install PostGIS"
     make comments-install || _die "Failed to install PostGIS comments"
