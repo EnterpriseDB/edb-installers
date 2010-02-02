@@ -617,8 +617,8 @@
                       workingDirectory="${installdir}/installer/pphq"
                       abortOnError="0" showMessageOnError="0"/>
 
-                <runProgram program="${pphqTempDir}/pphq/setup.sh"
-                      programArguments="${pphqTempDir}/pphq/templates/server.prop"
+                <runProgram program="${pphqTempDir}/setup.sh"
+                      programArguments="${pphqTempDir}/templates/server.prop"
                       workingDirectory="${pphqTempDir}/instscripts"
                       progressText="Configuring PPHQ Server (This may take some time) ..."
                       abortOnError="1" showMessageOnError="1"/>
@@ -655,12 +655,12 @@
                         name="pphqTempShortName"
                         workingDirectory="${pphqTempDir}"/>
                 <runProgram program="cscript.exe"
-                      programArguments="//nologo &quot;${java_executable}&quot; -classpath &quot;${pphqTempDir}\installer-4.2.0\lib\ant-launcher.jar&quot; -Dant.home=&quot;${pphqTempDir}\installer-4.2.0&quot; org.apache.tools.ant.launch.Launcher  -Dinstall.dir=&quot;${pphqTempDir}\installer-4.2.0&quot; -Dinstall.mode=&quot;quick&quot; -Dsetup=&quot;${pphqTempDir}\templates\server.prop&quot; -f &quot;${pphqTempDir}\installer-4.2.0\data\setup.xml&quot; -logger org.hyperic.tools.ant.installer.InstallerLogger"
+                      programArguments="//nologo &quot;${java_executable}&quot; -classpath &quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ\lib\ant-launcher.jar&quot; -Dant.home=&quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ&quot; org.apache.tools.ant.launch.Launcher  -Dinstall.dir=&quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ&quot; -Dinstall.mode=&quot;quick&quot; -Dsetup=&quot;${pphqTempDir}\pphq\templates\server.prop&quot; -f &quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ\data\setup.xml&quot; -logger org.hyperic.tools.ant.installer.InstallerLogger"
                       workingDirectory="${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ"
                       progressText="Configuring PPHQ Server (This may take some time) ..."
                       abortOnError="1" showMessageOnError="1"/>
                 <runProgram program="cscript.exe"
-                      programArguments="//nologo &quot;${java_executable}&quot; -classpath &quot;${pphqTempDir}\installer-4.2.0\lib\ant-launcher.jar&quot; -Dant.home=&quot;${pphqTempDir}\installer-4.2.0&quot; org.apache.tools.ant.launch.Launcher  -Dinstall.dir=&quot;${pphqTempDir}\installer-4.2.0&quot; -Dinstall.mode=&quot;quick&quot; -Dsetup=&quot;${pphqTempDir}\templates\agent.prop&quot; -f &quot;${pphqTempDir}\installer-4.2.0\data\setup.xml&quot; -logger org.hyperic.tools.ant.installer.InstallerLogger"
+                      programArguments="//nologo &quot;${java_executable}&quot; -classpath &quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ\lib\ant-launcher.jar&quot; -Dant.home=&quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ&quot; org.apache.tools.ant.launch.Launcher  -Dinstall.dir=&quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ&quot; -Dinstall.mode=&quot;quick&quot; -Dsetup=&quot;${pphqTempDir}\pphq\templates\agent.prop&quot; -f &quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ\data\setup.xml&quot; -logger org.hyperic.tools.ant.installer.InstallerLogger"
                       workingDirectory="${pphqTempDir}\pphq"
                       progressText="Configuring PPHQ Agent (This may take some time) ..."
                       abortOnError="1" showMessageOnError="1"/>
