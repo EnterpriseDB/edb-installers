@@ -304,6 +304,37 @@
             </ruleList>
         </actionGroup>
 
+        <actionGroup>
+            <actionList>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="InstallationDirectory"  variable="installdir"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="AdminUser" variable="pphquser"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="Port" variable="pphqport"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="pgport" variable="pgport"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="pghost" variable="pghost"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="pguser" variable="pguser"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="pgdatabase" variable="pgdatabase"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="pgdatabase" variable="pgdatabase"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="JNP_PORT" variable="pphq_jnp_port"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="PPHQ_SECURE_PORT" variable="pphq_secure_port"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
+                            name="PPHQ_JRPM_PORT" variable="pphq_jrpm_port"/>
+            </actionList>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${pphqVersion}" value=""/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
+
         <throwError text="Not a valid port (${pphqport}) ...">
             <ruleList>
                 <compareText logic="does_not_equal"  text="${pphqport}" value=""/>
@@ -730,6 +761,15 @@
                       progressText="${msg(progress.text.creating.shortcuts)}"
                       workingDirectory="${installdir}/installer/pphq"
                       abortOnError="0" showMessageOnError="0"/>
+                <runProgram program="${installdir}/installer/pphq/startupcfg.sh"
+                      programArguments="&quot;${productVersion}&quot; &quot;${branding}&quot; &quot;${installdir}&quot;"
+                      progressText="${msg(progress.text.startup.config)}"
+                      workingDirectory="${installdir}/installer/pphq"
+                      abortOnError="0" showMessageOnError="0">
+                    <ruleList>
+                        <fileExists path="${installdir}/installer/pphq/startupcfg.sh"/>
+                    </ruleList>
+                </runProgram>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
