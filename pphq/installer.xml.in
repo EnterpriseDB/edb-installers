@@ -570,6 +570,11 @@
                     <pattern>\\bin\\java.exe</pattern>
                     <substitution/>
                 </setInstallerVariableFromRegEx>
+                <setInstallerVariable name="java_executable" value="${pphqJavaHome}\bin\javaw.exe">
+                    <ruleList>
+                        <fileExists path="${pphqJavaHome}\bin\javaw.exe"/>
+                    </ruleList>
+                </setInstallerVariable>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -682,18 +687,18 @@
             <actionList>
                 <setInstallerVariableFromScriptOutput
                         exec="cscript.exe"
-                        execArgs="//nologo ${installdir}\scripts\shortPathName.vbs &quot;${pphqTempDir}\pphq&quot;"
+                        execArgs="//nologo &quot;${installdir}\scripts\shortPathName.vbs&quot; &quot;${pphqTempDir}\pphq&quot;"
                         name="pphqTempShortName"
                         workingDirectory="${pphqTempDir}"/>
-                <runProgram program="cscript.exe"
-                      programArguments="//nologo &quot;${java_executable}&quot; -classpath &quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ\lib\ant-launcher.jar&quot; -Dant.home=&quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ&quot; org.apache.tools.ant.launch.Launcher  -Dinstall.dir=&quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ&quot; -Dinstall.mode=&quot;quick&quot; -Dsetup=&quot;${pphqTempDir}\pphq\templates\server.prop&quot; -f &quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ\data\setup.xml&quot; -logger org.hyperic.tools.ant.installer.InstallerLogger"
+                <runProgram program="${java_executable}"
+                      programArguments="-classpath &quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ\lib\ant-launcher.jar&quot; -Dant.home=&quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ&quot; org.apache.tools.ant.launch.Launcher  -Dinstall.dir=&quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ&quot; -Dinstall.mode=&quot;quick&quot; -Dsetup=&quot;${pphqTempDir}\pphq\templates\server.prop&quot; -f &quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ\data\setup.xml&quot; -logger org.hyperic.tools.ant.installer.InstallerLogger"
                       workingDirectory="${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ"
                       progressText="Configuring PPHQ Server (This may take some time) ..."
                       abortOnError="1" showMessageOnError="1"/>
-                <runProgram program="cscript.exe"
-                      programArguments="//nologo &quot;${java_executable}&quot; -classpath &quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ\lib\ant-launcher.jar&quot; -Dant.home=&quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ&quot; org.apache.tools.ant.launch.Launcher  -Dinstall.dir=&quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ&quot; -Dinstall.mode=&quot;quick&quot; -Dsetup=&quot;${pphqTempDir}\pphq\templates\agent.prop&quot; -f &quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ\data\setup.xml&quot; -logger org.hyperic.tools.ant.installer.InstallerLogger"
+                <runProgram program="${java_executable}"
+                      programArguments="-classpath &quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ\lib\ant-launcher.jar&quot; -Dant.home=&quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ&quot; org.apache.tools.ant.launch.Launcher  -Dinstall.dir=&quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ&quot; -Dinstall.mode=&quot;quick&quot; -Dsetup=&quot;${pphqTempDir}\pphq\templates\agent.prop&quot; -f &quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ\data\setup.xml&quot; -logger org.hyperic.tools.ant.installer.InstallerLogger"
                       workingDirectory="${pphqTempDir}\pphq"
-                      progressText="Configuring PPHQ Agent (This may take some time) ..."
+                      progressText="Configuring PPHQ Agent ..."
                       abortOnError="1" showMessageOnError="1"/>
                 <actionGroup>
                     <actionList>
