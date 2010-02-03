@@ -648,8 +648,8 @@
                       workingDirectory="${installdir}/installer/pphq"
                       abortOnError="0" showMessageOnError="0"/>
 
-                <runProgram program="${pphqTempDir}/setup.sh"
-                      programArguments="${pphqTempDir}/templates/server.prop"
+                <runProgram program="${pphqTempDir}/pphq/setup.sh"
+                      programArguments="${pphqTempDir}/pphq/templates/server.prop"
                       workingDirectory="${pphqTempDir}/instscripts"
                       progressText="Configuring PPHQ Server (This may take some time) ..."
                       abortOnError="1" showMessageOnError="1"/>
