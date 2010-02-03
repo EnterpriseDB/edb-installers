@@ -899,6 +899,19 @@
                 <compareText logic="contains" text="${platform_name}" value="linux"/>
             </ruleList>
         </actionGroup>
+        <actionGroup>
+            <actionList>
+                <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="1"/>
+                <runProgram program="${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe"
+                      programArguments="-u -n ${serviceName}"
+                      workingDirectory="${installdir}\server-PG_VERSION_PPHQ\bin"
+                      progressText="Removing Postgres Plus Server service ..."
+                      abortOnError="0" showMessageOnError="0"/>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
         <deleteFile>
             <path>/Applications/${branding}</path>
             <ruleList>
