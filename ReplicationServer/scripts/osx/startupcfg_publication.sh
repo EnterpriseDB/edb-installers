@@ -1,15 +1,16 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 3 ]; 
+if [ $# -ne 4 ]; 
 then
-echo "Usage: $0 <Install dir> <System User> <PubPort>"
+echo "Usage: $0 <Install dir> <System User> <PubPort> <Java Executable>"
     exit 127
 fi
 
 INSTALL_DIR=$1
 SYSTEM_USER=$2
 PUBPORT=$3
+JAVA=$4
 
 # Error handlers
 _die() {
@@ -40,7 +41,7 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist"
         <string>com.edb.launchd.xdbpubserver</string>
         <key>ProgramArguments</key>
         <array>
-                <string>java</string>
+                <string>$JAVA</string>
                 <string>-jar</string>
                 <string>$INSTALL_DIR/bin/edb-repserver.jar</string>
                 <string>pubserver</string>

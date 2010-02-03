@@ -63,7 +63,9 @@ _build_ReplicationServer_osx() {
     
 
     cd $WD
-    _replace "edb-repconsole.jar" "@@INSTALL_DIR@@/bin/edb-repconsole.jar" "$WD/ReplicationServer/staging/osx/repconsole/bin/runRepConsole.sh" || _die "Failed to put the placehoder in runRepConsole.sh file"
+    _replace "java -jar edb-repconsole.jar" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repconsole.jar" "$WD/ReplicationServer/staging/osx/repconsole/bin/runRepConsole.sh" || _die "Failed to put the placehoder in runRepConsole.sh file"
+    _replace "java -jar edb-repserver.jar" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar" "$WD/ReplicationServer/staging/osx/repserver/bin/runPubServer.sh" || _die "Failed to put the placehoder in runPubServer.sh file"
+    _replace "java -jar edb-repserver.jar" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar" "$WD/ReplicationServer/staging/osx/repserver/bin/runSubServer.sh" || _die "Failed to put the placehoder in runSubServer.sh file"
 
 }
 

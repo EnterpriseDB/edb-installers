@@ -1,0 +1,67 @@
+installer.Welcome.Title=Setup %1$s
+
+error.installing.runtimes=An error occured executing the Microsoft VC++ runtime installer.
+
+Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
+
+Installer.Installing.Title=Installing ${product_fullname}
+
+upgrade.existing.installation.title=Existing installation
+
+upgrade.existing.installation.description=An existing Postgres Plus HQ installation has been found at ${installdir}. This installation will be upgraded.
+
+platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
+
+progress.text.creating.shortcuts=Creating menu shortcuts
+
+progress.text.creating.hqdbschema=Creating HQ database for Postgres Plus HQ
+
+configure.hqdbschema=Creating HQ database
+
+Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
+
+Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
+
+install.summary=Postgres Plus HQ for PostgreSQL Server monitoring, packaged by EnterpriseDB.
+
+pphq.installdir.empty=The installation directory cannot be empty
+
+pphq.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
+
+pgplus.details.title=Postgres Installation Details
+
+pphq.monitoring.console.details.title=Postgres Plus HQ Monitoring Console details
+
+pgplus.details.explanation=Please verify the Postgres installation details
+
+pphq.monitoring.console.details.explanation=Please provide Postgres Plus HQ Monitoring Console details
+
+pgplus.details.error=Connection to the Postgres failed. Please re-check the details provided.
+
+pgplus.blank.error=Values must be entered for all fields.
+
+pphq.monitoring.console.blank.error=Values must be entered for all fields.
+
+smtp.server.title=Enter smtp server details.
+
+smtp.server.details=Enter the fully qualified domain name of the SMTP server that Postgres Plus HQ will use to send email messages for alerts.
+
+smtp.server.blank.error=Value must be entered for the field.
+
+Installer.Installation.Finished.Visit.Us=Visit monitoring interface (http://127.0.0.1:${pphqport}) using username:${pphquser} and password:${pphqpassword} to start postgres database monitoring.
+
+progress.text.initialising.server=Starting Postgres Plus HQ server (this may take a few minutes)...
+
+progress.text.initialising.agent=Starting Postgres Plus HQ agent (this may take a few minutes)...
+
+error.could.not.initialise.server=Postgres Plus HQ server start failed.
+
+error.could.not.initialise.agent=Postgres Plus HQ agent start failed.
+
+warning.during.server.initialisation=A non-fatal error occured during server start. Please check the installation error log in ${system_temp_directory} for details.
+
+warning.during.agent.initialisation=A non-fatal error occured during agent start. Please check the installation error log in ${system_temp_directory} for details.
+
+script.command.line.error=The script was called with an invalid command line
+
+install.runtimes.description=Specifies whether or not install the Microsoft Visual C++ runtimes before the installation proceeds.

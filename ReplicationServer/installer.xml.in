@@ -44,6 +44,19 @@
         </language>
     </customLanguageFileList>
     <preShowHelpActionList>
+
+        <setInstallerVariable name="defaultpubport" value="9011" />
+        <setInstallerVariable name="defaultsubport" value="9012" />
+        <setInstallerVariable name="defaultsyspassword" value="postgres" />
+        <setInstallerVariable name="defaultserviceaccount" value="postgres" />
+        <setInstallerVariable name="defaultdbtype" value="postgresql" />
+        <setInstallerVariable name="defaultcontroldb" value="postgres" />
+        <setInstallerVariable name="defaultpghost" value="localhost" />
+        <setInstallerVariable name="defaultpgport" value="5432" />
+        <setInstallerVariable name="defaultpguser" value="postgres" />
+        <setInstallerVariable name="defaultpgpassword" value="postgres" />
+
+
         <!-- MAC : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
@@ -98,13 +111,17 @@
         <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_REPLICATIONSERVER" />
         <setInstallerVariable name="xDBReplicationServerVersion"  persist="1" value=""/>
-        <setInstallerVariable name="defaultuser" value="postgres" />
         <setInstallerVariable name="defaultpubport" value="9011" />
         <setInstallerVariable name="defaultsubport" value="9012" />
         <setInstallerVariable name="defaultsyspassword" value="postgres" />
+        <setInstallerVariable name="defaultserviceaccount" value="postgres" />
         <setInstallerVariable name="defaultdbtype" value="postgresql" />
+        <setInstallerVariable name="defaultcontroldb" value="postgres" />
+        <setInstallerVariable name="defaultpghost" value="localhost" />
+        <setInstallerVariable name="defaultpgport" value="5432" />
+        <setInstallerVariable name="defaultpguser" value="postgres" />
+        <setInstallerVariable name="defaultpgpassword" value="postgres" />
         
- 
         <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -114,22 +131,6 @@
             <compareText text="${originalplatform}" value="linux-x32"/>
           </ruleList>
         </throwError>
-
-        <!-- Detecting Java, Abort if not found -->
-        <autodetectJava>
-            <promptUser>0</promptUser>
-            <validVersionList>
-                <validVersion>
-                    <vendor>sun</vendor>
-                    <maxVersion/>
-                    <minVersion>1.5.0</minVersion>
-                    <requireJDK>0</requireJDK>
-                </validVersion>
-            </validVersionList>
-            <abortOnError>1</abortOnError>
-            <showMessageOnError>1</showMessageOnError>
-            <customErrorMessage>${msg(java.error)}</customErrorMessage>
-        </autodetectJava>
 
         <!-- LIN : Set the default values for unattended mode -->
         <actionGroup>
@@ -250,6 +251,62 @@
 
     </initializationActionList>
     <preInstallationActionList>
+
+        <!-- Check if the valid jrehome switch is supplied -->
+        <throwError>
+          <customErrorMessage>${msg(jre.invalid.error)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileTest path="${jrehome}/bin/java" condition="not_exists" />
+          </ruleList>
+        </throwError>    
+        <throwError>
+          <customErrorMessage>${msg(jre.invalid.error.windows)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="equals" value="windows" />
+             <fileTest path="${jrehome}\bin\java.exe" condition="not_exists" />
+          </ruleList>
+        </throwError>    
+
+        <!-- Set the java_executable variable if valid jrehome switch is supplied -->
+        <setInstallerVariable name="java_executable" value="${jrehome}/bin/java" >
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileExists path="${jrehome}/bin/java" />
+          </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="java_executable" value="${jrehome}\bin\java.exe" >
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileExists path="${jrehome}\bin\java" />
+          </ruleList>
+        </setInstallerVariable>
+
+        <!-- Detecting Java, Abort if not found -->
+        <autodetectJava>
+            <promptUser>0</promptUser>
+            <validVersionList>
+                <validVersion>
+                    <vendor>sun</vendor>
+                    <maxVersion/>
+                    <minVersion>1.5.0</minVersion>
+                    <requireJDK>0</requireJDK>
+                </validVersion>
+            </validVersionList>
+            <abortOnError>1</abortOnError>
+            <showMessageOnError>1</showMessageOnError>
+            <customErrorMessage>${msg(java.error)}</customErrorMessage>
+            <ruleList>
+                <compareText text="${jrehome}" logic="equals" value="" />
+            </ruleList> 
+        </autodetectJava>
+
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="branding" value=""/>
@@ -320,19 +377,19 @@
                             <file>/etc/postgres-reg.ini</file>
                             <section>xDBReplicationServer</section>
                             <key>ServiceAccount</key>
-                            <variable>serviceaccount</variable>
+                            <variable>iServiceaccount</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
                             <section>xDBReplicationServer</section>
                             <key>SubPort</key>
-                            <variable>subport</variable>
+                            <variable>iSubport</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
                             <section>xDBReplicationServer</section>
                             <key>PubPort</key>
-                            <variable>pubport</variable>
+                            <variable>iPubport</variable>
                         </iniFileGet>
                     </actionList>
                     <ruleList>
@@ -376,7 +433,17 @@
                         <registryGet>
                             <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                             <name>ServiceAccount</name>
-                            <variable>serviceaccount</variable>
+                            <variable>iServiceaccount</variable>
+                        </registryGet>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                            <name>SubPort</name>
+                            <variable>iSubport</variable>
+                        </registryGet>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                            <name>PubPort</name>
+                            <variable>iPubport</variable>
                         </registryGet>
                     </actionList>
                     <ruleList>
@@ -517,6 +584,71 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
+
+                <!-- Set the serviceaccount, subport, pubport values
+                     if its an upgrade -->
+                <setInstallerVariable name="serviceaccount" value="${iServiceaccount}" >
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${iServiceaccount}" value="" />
+                    </ruleList>
+                </setInstallerVariable> 
+                <setInstallerVariable name="subport" value="${iSubport}" >
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${iSubport}" value="" />
+                    </ruleList>
+                </setInstallerVariable> 
+                <setInstallerVariable name="pubport" value="${iPubport}" >
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${iPubport}" value="" />
+                    </ruleList>
+                </setInstallerVariable>
+ 
+                <!-- Set the serviceaccount, subport, pubport values to default values
+                     if nothing set on command line and its a fresh install -->
+                <setInstallerVariable name="serviceaccount" value="${defaultserviceaccount}" >
+                    <ruleList>
+                        <compareText logic="equals" text="${serviceaccount}" value="" />
+                    </ruleList>
+                </setInstallerVariable> 
+                <setInstallerVariable name="subport" value="${defaultsubport}" >
+                    <ruleList>
+                        <compareText logic="equals" text="${subport}" value="" />
+                    </ruleList>
+                </setInstallerVariable> 
+                <setInstallerVariable name="pubport" value="${defaultpubport}" >
+                    <ruleList>
+                        <compareText logic="equals" text="${pubport}" value="" />
+                    </ruleList>
+                </setInstallerVariable> 
+                
+                <!-- Set pghost, pguser, pgpassword, pgport and controldb
+                     for unattended mode and nothing set on commandline -->
+                <setInstallerVariable name="pghost" value="${defaultpghost}" >
+                    <ruleList>
+                        <compareText logic="equals" text="${pghost}" value="" /> 
+                    </ruleList>
+                </setInstallerVariable>  
+                <setInstallerVariable name="pgport" value="${defaultpgport}" >
+                    <ruleList>
+                        <compareText logic="equals" text="${pgport}" value="" /> 
+                    </ruleList>
+                </setInstallerVariable>  
+                <setInstallerVariable name="pguser" value="${defaultpguser}" >
+                    <ruleList>
+                        <compareText logic="equals" text="${pguser}" value="" /> 
+                    </ruleList>
+                </setInstallerVariable>  
+                <setInstallerVariable name="pgpassword" value="${defaultpgpassword}" >
+                    <ruleList>
+                        <compareText logic="equals" text="${pgpassword}" value="" /> 
+                        <compareText logic="equals" text="${installer_ui}" value="unattended" />
+                    </ruleList>
+                </setInstallerVariable>  
+                <setInstallerVariable name="controldb" value="${defaultcontroldb}" >
+                    <ruleList>
+                        <compareText logic="equals" text="${controldb}" value="" /> 
+                    </ruleList>
+                </setInstallerVariable>  
             </actionList>
             <ruleList>
                 <isFalse value="${extract_mode}"/>
@@ -547,8 +679,8 @@
                      </ruleList>
                  </runProgram>  
                  <stopWindowsService>
-                     <serviceName>PublicationServer</serviceName>
-                     <displayName>Publication Server</displayName>
+                     <serviceName>Publication Service</serviceName>
+                     <displayName>Publication Service</displayName>
                      <abortOnError>0</abortOnError>
                      <showMessageOnError>0</showMessageOnError>
                  </stopWindowsService>
@@ -582,8 +714,8 @@
                      </ruleList>
                  </runProgram>  
                  <stopWindowsService>
-                     <serviceName>SubscriptionServer</serviceName>
-                     <displayName>Subscription Server</displayName>
+                     <serviceName>Subscription Service</serviceName>
+                     <displayName>Subscription Service</displayName>
                      <abortOnError>0</abortOnError>
                      <showMessageOnError>0</showMessageOnError>
                  </stopWindowsService>
@@ -597,6 +729,31 @@
     </preInstallationActionList>
     <postInstallationActionList>
 
+        <!-- Replace / with \  on windows -->
+        <setInstallerVariableFromRegEx>
+            <text>${java_executable}</text>
+            <substitution>\</substitution>
+            <name>java_executable_windows</name>
+            <pattern>\/</pattern>
+
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+
+
+        <!-- Set javaw -->
+        <setInstallerVariableFromRegEx>
+            <text>${java_executable_windows}</text>
+            <substitution>javaw.exe</substitution>
+            <name>javaw_executable_windows</name>
+            <pattern>java.exe</pattern>
+
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+ 
         <!-- Create the user account with which publication/subscription service will run-->
         <runProgram>
           <program>${installdir}/installer/xDBReplicationServer/createuser.sh</program>
@@ -845,7 +1002,7 @@
                 <runProgram>
                    <customErrorMessage>${msg(error.create.edbrepl)}</customErrorMessage>
                    <program>${installdir}\installer\xDBReplicationServer\CreateEDBReplConfForUser.exe</program>
-                   <programArguments>${serviceaccount} "${servicepassword}" ${pghost} ${pgport} ${control_db} ${pguser} "${esc_enc_password}" ${dbtype}</programArguments>
+                   <programArguments>${serviceaccount} "${servicepassword}" ${pghost} ${pgport} ${controldb} ${pguser} "${esc_enc_password}" ${dbtype}</programArguments>
                    <workingDirectory>${installdir}\installer\xDBReplicationServer</workingDirectory>
                    <abortOnError>0</abortOnError>
                    <showMessageOnError>1</showMessageOnError>
@@ -869,7 +1026,7 @@ port=${pgport}
 password=${esc_enc_password}
 type=${dbtype}
 host=${pghost}
-database=${control_db}
+database=${controldb}
                     </text>
                     <ruleList>
                         <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
@@ -1003,14 +1160,14 @@ database=${control_db}
                 <!-- Check the control database exits -->
                 <setInstallerVariableFromScriptOutput name="dbexist"
                                                       exec="${psql_path}"
-                                                      execArgs="-t -c &quot;SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${control_db}'&quot;"
+                                                      execArgs="-t -c &quot;SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${controldb}'&quot;"
                                                       workingDirectory="${system_temp_directory}/${product_fullname}/bin"
                                                       abortOnError="0"
                                                       showMessageOnError="0"/>
 
                 <runProgram>
                     <program>${psql_path}</program>
-                    <programArguments>-t -c "CREATE DATABASE ${control_db}"</programArguments>
+                    <programArguments>-t -c "CREATE DATABASE ${controldb}"</programArguments>
                     <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
                     <progressText>${msg(progress.text.creating.controldb)}</progressText>
                     <ruleList>
@@ -1043,6 +1200,10 @@ database=${control_db}
             <files>${installdir}/bin/runRepConsole.sh</files>
             <substitutionList>
                 <substitution>
+                    <pattern>@@JAVA@@</pattern>
+                    <value>${java_executable}</value>
+                </substitution>
+                <substitution>
                     <pattern>@@INSTALL_DIR@@</pattern>
                     <value>${installdir}</value>
                 </substitution>
@@ -1057,6 +1218,14 @@ database=${control_db}
             <files>${installdir}/bin/runPubServer.sh</files>
             <substitutionList>
                 <substitution>
+                    <pattern>@@INSTALL_DIR@@</pattern>
+                    <value>${installdir}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@JAVA@@</pattern>
+                    <value>${java_executable}</value>
+                </substitution>
+                <substitution>
                     <pattern>@@PUBPORT@@</pattern>
                     <value>${pubport}</value>
                 </substitution>
@@ -1069,6 +1238,74 @@ database=${control_db}
         <substitute>
             <files>${installdir}/bin/runSubServer.sh</files>
             <substitutionList>
+                <substitution>
+                    <pattern>@@INSTALL_DIR@@</pattern>
+                    <value>${installdir}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@JAVA@@</pattern>
+                    <value>${java_executable}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@SUBPORT@@</pattern>
+                    <value>${subport}</value>
+                </substitution>
+            </substitutionList>
+            <ruleList>
+                <isTrue value="${component(subserver).selected}" />
+            </ruleList>
+        </substitute> 
+
+        <substitute>
+            <files>${installdir}/bin/runRepConsole.bat</files>
+            <substitutionList>
+                <substitution>
+                    <pattern>@@JAVA@@</pattern>
+                    <value>${java_executable_windows}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@INSTALL_DIR@@</pattern>
+                    <value>${installdir}</value>
+                </substitution>
+            </substitutionList>
+            <ruleList>
+                <isTrue value="${component(repconsole).selected}" />
+            </ruleList>
+        </substitute> 
+
+
+        <substitute>
+            <files>${installdir}/bin/runPubServer.bat</files>
+            <substitutionList>
+                <substitution>
+                    <pattern>@@INSTALL_DIR@@</pattern>
+                    <value>${installdir}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@JAVA@@</pattern>
+                    <value>${java_executable_windows}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@PUBPORT@@</pattern>
+                    <value>${pubport}</value>
+                </substitution>
+            </substitutionList>
+            <ruleList>
+                <isTrue value="${component(pubserver).selected}" />
+            </ruleList>
+        </substitute> 
+
+        <substitute>
+            <files>${installdir}/bin/runSubServer.bat</files>
+            <substitutionList>
+                <substitution>
+                    <pattern>@@INSTALL_DIR@@</pattern>
+                    <value>${installdir}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@JAVA@@</pattern>
+                    <value>${java_executable_windows}</value>
+                </substitution>
                 <substitution>
                     <pattern>@@SUBPORT@@</pattern>
                     <value>${subport}</value>
@@ -1107,7 +1344,7 @@ database=${control_db}
          <!-- Install Pub/Sub servers as service -->
          <runProgram>
             <program>${installdir}/scripts/startupcfg_publication.sh</program>
-            <programArguments>"${installdir}" "${serviceaccount}" "${pubport}"</programArguments>
+            <programArguments>"${installdir}" "${serviceaccount}" "${pubport}" "${java_executable}"</programArguments>
             <workingDirectory>${installdir}/scripts</workingDirectory>
             <progressText>${msg(progress.text.installing.pubservice)}</progressText>  
             <abortOnError>0</abortOnError>            
@@ -1123,11 +1360,12 @@ database=${control_db}
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="osx" />
                 <isTrue value="${component(subserver).selected}" />
+                <isTrue value="${component(pubserver).selected}" />
             </ruleList>
         </wait>
         <runProgram>
             <program>${installdir}/scripts/startupcfg_subscription.sh</program>
-            <programArguments>"${installdir}" "${serviceaccount}" "${subport}"</programArguments>
+            <programArguments>"${installdir}" "${serviceaccount}" "${subport}" "${java_executable}"</programArguments>
             <workingDirectory>${installdir}/scripts</workingDirectory>
             <progressText>${msg(progress.text.installing.subservice)}</progressText>  
             <abortOnError>0</abortOnError>            
@@ -1137,52 +1375,86 @@ database=${control_db}
             </ruleList>
         </runProgram>
 
-        <!-- Disable Service Creation on Windows 
-        <createWindowsService>
-            <program>"${java_executable}"</program>
-            <description>${msg(pubserver.service.description)}</description>
-            <account>${serviceaccount}</account>
-            <serviceName>PublicationServer</serviceName>
-            <programArguments>-jar "${installdir}\bin\edb-repserver.jar" pubserver ${pubport}</programArguments>
-            <password>${servicepassword}</password>
-            <displayName>Publication Server</displayName>
-            <abortOnError>0</abortOnError>    
+       <writeFile>
+            <path>${system_temp_directory}/servicewrapper.bat</path>
+            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Publication Service" -c "${javaw_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" pubserver ${pubport}" -u "${serviceaccount}" -p "${servicepassword}"</text>
             <ruleList>
-                <isTrue value="${component(pubserver).selected}" />                  
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+                <isTrue value="${component(pubserver).selected}" />
                 <isFalse value="${IsPubServerUpgrade}" /> 
             </ruleList>
-         </createWindowsService> 
-         <createWindowsService>
-            <program>"${java_executable}"</program>
-            <description>${msg(subserver.service.description)}</description>
-            <account>${serviceaccount}</account>
-            <serviceName>SubscriptionServer</serviceName>
-            <programArguments>-jar "${installdir}\bin\edb-repserver.jar" subserver ${subport}</programArguments>
-            <password>${servicepassword}</password>
-            <displayName>Subscription Server</displayName>
-            <abortOnError>0</abortOnError>    
+        </writeFile>
+        <runProgram>
+            <program>cscript</program>
+            <programArguments>//NOLOGO "${installdir}\scripts\serviceWrapper.vbs" "${system_temp_directory}"</programArguments>
+            <workingDirectory>${installdir}\scripts</workingDirectory>
+            <progressText>${msg(progress.text.installing.pubservice)}</progressText>  
+            <abortOnError>0</abortOnError>            
+            <show>0</show>
             <ruleList>
-                <isTrue value="${component(subserver).selected}" />                  
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+                <isTrue value="${component(pubserver).selected}" />
+                <isFalse value="${IsPubServerUpgrade}" /> 
+            </ruleList>
+        </runProgram>
+        <deleteFile path="${system_temp_directory}/servicewrapper.bat" >          
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+                <isTrue value="${component(pubserver).selected}" />
+                <isFalse value="${IsPubServerUpgrade}" /> 
+            </ruleList>
+        </deleteFile>
+
+        <writeFile>
+            <path>${system_temp_directory}/servicewrapper.bat</path>
+            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Subscription Service" -c "${javaw_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" subserver ${subport}" -u "${serviceaccount}" -p "${servicepassword}"</text>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+                <isTrue value="${component(subserver).selected}" />
                 <isFalse value="${IsSubServerUpgrade}" /> 
             </ruleList>
-         </createWindowsService>
-
-         <startWindowsService>
-            <serviceName>PublicationServer</serviceName>
-            <displayName>Publication Server</displayName>
+        </writeFile>
+        <runProgram>
+            <program>cscript</program>
+            <programArguments>//NOLOGO "${installdir}\scripts\serviceWrapper.vbs" "${system_temp_directory}"</programArguments>
+            <workingDirectory>${installdir}\scripts</workingDirectory>
+            <progressText>${msg(progress.text.installing.subservice)}</progressText>  
+            <abortOnError>0</abortOnError> 
+            <show>0</show>           
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+                <isTrue value="${component(subserver).selected}" />
+                <isFalse value="${IsSubServerUpgrade}" /> 
+            </ruleList>
+        </runProgram>
+        <deleteFile path="${system_temp_directory}/servicewrapper.bat" >          
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+                <isTrue value="${component(subserver).selected}" />
+                <isFalse value="${IsSubServerUpgrade}" /> 
+            </ruleList>
+        </deleteFile>
+        <startWindowsService>
+            <serviceName>Publication Service</serviceName>
+            <displayName>Publication Service</displayName>
             <ruleList>
                 <isTrue value="${component(pubserver).selected}" />                  
             </ruleList>
-         </startWindowsService>
- 
-         <startWindowsService>
-            <serviceName>SubscriptionServer</serviceName>
-            <displayName>Subscription Server</displayName>
+        </startWindowsService>
+        <wait ms="10000" >
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+                <isTrue value="${component(subserver).selected}" />
+                <isTrue value="${component(pubserver).selected}" />
+            </ruleList>
+        </wait>
+        <startWindowsService>
+            <serviceName>Subscription Service</serviceName>
+            <displayName>Subscription Service</displayName>
             <ruleList>
                 <isTrue value="${component(subserver).selected}" />                  
             </ruleList>
-         </startWindowsService>
-         -->
+        </startWindowsService>
         <runProgram>
             <program>/etc/init.d/edb-xdbpubserver</program>
             <programArguments>start &amp;</programArguments> 
@@ -1198,12 +1470,13 @@ database=${control_db}
             <ruleList>
                 <compareText logic="contains" text="${platform_name}" value="linux" />
                 <isTrue value="${component(subserver).selected}" />
+                <isTrue value="${component(pubserver).selected}" />
             </ruleList>
         </wait>
         <runProgram>
             <program>/etc/init.d/edb-xdbsubserver</program>
             <programArguments>start &amp;</programArguments> 
-            <workingDirectory>${installdir}/bin</workingDirectory>
+            <workingDirectory>/etc/init.d</workingDirectory>
             <progressText>${msg(progress.text.starting.subservice)}</progressText>
             <ruleList>
                 <isTrue value="${component(subserver).selected}" />
@@ -1224,6 +1497,14 @@ database=${control_db}
                 <compareText logic="equals" text="${platform_name}" value="windows" />
             </ruleList>
         </deleteFile> 
+        <!-- Remove the serviceWrapper.vbs file -->      
+        <deleteFile path="${installdir}/scripts/serviceWrapper.vbs" >
+            <ruleList>
+                <fileExists path="${installdir}/scripts/serviceWrapper.vbs" />
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+            </ruleList>
+        </deleteFile> 
+
 
     </postInstallationActionList>
 
@@ -1304,20 +1585,41 @@ database=${control_db}
         <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
         </registryDelete> 
-        <!--
+
         <stopWindowsService>
-            <serviceName>PublicationServer</serviceName>
-            <displayName>Publication Server</displayName>
+            <serviceName>Publication Service</serviceName>
+            <displayName>Publication Service</displayName>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
         </stopWindowsService>
         <stopWindowsService>
-            <serviceName>SubscriptionServer</serviceName>
-            <displayName>Subscription Server</displayName>
+            <serviceName>Subscription Service</serviceName>
+            <displayName>Subscription Service</displayName>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
         </stopWindowsService>
-        -->
+        <runProgram>
+            <program>${installdir}\scripts\ServiceWrapper.exe</program>
+            <programArguments>unregister -n "Publication Service"</programArguments>
+            <workingDirectory>${installdir}\scripts</workingDirectory>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows" />
+            </ruleList>
+        </runProgram>
+        <runProgram>
+            <program>${installdir}\scripts\ServiceWrapper.exe</program>
+            <programArguments>unregister -n "Subscription Service"</programArguments>
+            <workingDirectory>${installdir}\scripts</workingDirectory>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows" />
+            </ruleList>
+        </runProgram>
+
+
         <runProgram>
             <program>/etc/init.d/edb-xdbpubserver</program>
             <programArguments>stop</programArguments>
@@ -1363,20 +1665,6 @@ database=${control_db}
                 <compareText text="${platform_name}" logic="equals" value="osx" />
             </ruleList>
         </runProgram>
-        <!--
-        <deleteWindowsService>
-            <serviceName>PublicationServer</serviceName>
-            <displayName>Publication Server</displayName>
-            <abortOnError>0</abortOnError>
-            <showMessageOnError>0</showMessageOnError>
-        </deleteWindowsService>
-        <deleteWindowsService>
-            <serviceName>SubscriptionServer</serviceName>
-            <displayName>Subscription Server</displayName>
-            <abortOnError>0</abortOnError>
-            <showMessageOnError>0</showMessageOnError>
-        </deleteWindowsService>
-        --> 
         <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist" >
             <ruleList>
                 <fileExists path="/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist" />
@@ -1644,8 +1932,8 @@ database=${control_db}
                     <comment>xDB Replication Console</comment>
                     <name>xDB Replication Console</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${java_executable}</windowsExec>
-                    <windowsExecArgs>-jar "${installdir}\bin\edb-repconsole.jar"</windowsExecArgs>
+                    <windowsExec>cscript</windowsExec>
+                    <windowsExecArgs>//NOLOGO "${installdir}\scripts\runRepConsole.vbs" "${installdir}"</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pg-launchReplicationConsole.ico</windowsIcon>
                  </startMenuShortcut>  
             </startMenuShortcutList>
@@ -2133,7 +2421,8 @@ database=${control_db}
         <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
-        <stringParameter name="dbtype" cliOptionName="db-type" default="${defaultdbtype}" ask="0" cliOptionShow="0"/>
+        <stringParameter name="dbtype" cliOptionName="dbtype" default="${defaultdbtype}" ask="0" cliOptionShow="0"/>
+        <stringParameter name="jrehome" cliOptionName="jrehome" default="" ask="0" cliOptionShow="0"/>
 
         <!-- PostgreSQL Server Details Verification Page -->
         <parameterGroup>
@@ -2148,8 +2437,8 @@ database=${control_db}
                     <name>pghost</name>
                     <description>Host</description>
                     <explanation/>
-                    <value/>
-                    <default>localhost</default>
+                    <value>${defaultpghost}</value>
+                    <default/>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
@@ -2158,8 +2447,8 @@ database=${control_db}
                     <name>pgport</name>
                     <description>Port</description>
                     <explanation/>
-                    <value/>
-                    <default>5432</default>
+                    <value>${defaultpgport}</value>
+                    <default/>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
@@ -2168,8 +2457,8 @@ database=${control_db}
                     <name>pguser</name>
                     <description>User Name</description>
                     <explanation/>
-                    <value/>
-                    <default>${defaultuser}</default>
+                    <value>${defaultpguser}</value>
+                    <default/>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
@@ -2184,11 +2473,11 @@ database=${control_db}
                 </passwordParameter>
                 <!-- Control Database -->
                 <stringParameter>
-                    <name>control_db</name>
+                    <name>controldb</name>
                     <description>Control Database</description>
                     <explanation/>
-                    <value/>
-                    <default></default>
+                    <value>${defaultcontroldb}</value>
+                    <default/>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
@@ -2224,7 +2513,7 @@ database=${control_db}
                             <value/>
                         </compareText>
                         <compareText>
-                            <text>${control_db}</text>
+                            <text>${controldb}</text>
                             <logic>equals</logic>
                             <value/>
                         </compareText>
@@ -2570,7 +2859,7 @@ database=${control_db}
                    <name>serviceaccount</name>
                    <description>${msg(config.serviceaccount.description)}</description>
                    <explanation/>
-                   <value/>
+                   <value>${defaultserviceaccount}</value>
                    <default/>
                    <allowEmptyValue>1</allowEmptyValue>
                    <width>40</width>

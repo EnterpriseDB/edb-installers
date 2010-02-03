@@ -40,7 +40,7 @@ PG_PACKAGE_LIBPQ=1
 PG_PACKAGE_PGMIGRATOR=1
 PG_PACKAGE_SBP=1
 PG_PACKAGE_MIGRATIONTOOLKIT=1
-PG_PACKAGE_PGHYPERIC=1
+PG_PACKAGE_PPHQ=1
 PG_PACKAGE_HQAGENT=1
 PG_PACKAGE_REPLICATIONSERVER=1
 
@@ -95,6 +95,7 @@ PG_PATH_OSX=`pwd`
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging/osx
 PG_ANT_HOME_OSX=/opt/apache-ant-1.7.1
 PG_DOCBOOK_OSX=$HOME/docbook-xsl-1.74.0
+PG_JAVA_HOME_OSX=/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home/
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the

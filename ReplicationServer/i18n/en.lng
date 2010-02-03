@@ -74,3 +74,6 @@ progress.text.starting.subservice=Starting Subscription Service
 
 error.create.edbrepl=Could not create edb-repl.conf file in the ${systemuser}'s %APPDATA%\EnterpriseDB directory.
 error.select.component=Please select atleast one component to continue.
+
+jre.invalid.error=Invalid --jrehome specified.\n\nCould not find '${jrehome}/bin/java'.
+jre.invalid.error.windows=Invalid --jrehome specified.\n\nCould not find '${jrehome}\bin\java.exe'.

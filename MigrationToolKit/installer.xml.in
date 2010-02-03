@@ -121,16 +121,8 @@
         <setInstallerVariable name="MigrationToolkitVersion" value="">
             <persist>0</persist>
         </setInstallerVariable>
-		
-        <!-- Detecting Java, Abort if not found -->
-        <autodetectJava>
-            <promptUser>0</promptUser>
-            <abortOnError>1</abortOnError>
-            <showMessageOnError>1</showMessageOnError>
-            <customErrorMessage>${msg(java.error)}</customErrorMessage>
-        </autodetectJava>
-
-        <!-- MAC : Set the default installation directory -->
+	
+       <!-- MAC : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
@@ -175,6 +167,54 @@
 	
     <!-- Preinstallation actions -->
     <preInstallationActionList>
+
+        <!-- Check if the valid jrehome switch is supplied -->
+        <throwError>
+          <customErrorMessage>${msg(jre.invalid.error)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileTest path="${jrehome}/bin/java" condition="not_exists" />
+          </ruleList>
+        </throwError>
+        <throwError>
+          <customErrorMessage>${msg(jre.invalid.error.windows)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="equals" value="windows" />
+             <fileTest path="${jrehome}\bin\java.exe" condition="not_exists" />
+          </ruleList>
+        </throwError>
+
+        <!-- Set the java_executable variable if valid jrehome switch is supplied -->
+        <setInstallerVariable name="java_executable" value="${jrehome}/bin/java" >
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileExists path="${jrehome}/bin/java" />
+          </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="java_executable" value="${jrehome}\bin\java.exe" >
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileExists path="${jrehome}\bin\java" />
+          </ruleList>
+        </setInstallerVariable>
+	
+        <!-- Detecting Java, Abort if not found -->
+        <autodetectJava>
+            <promptUser>0</promptUser>
+            <abortOnError>1</abortOnError>
+            <showMessageOnError>1</showMessageOnError>
+            <customErrorMessage>${msg(java.error)}</customErrorMessage>
+            <ruleList>
+               <compareText text="${jrehome}" logic="equals" value="" />
+            </ruleList>
+        </autodetectJava>
+
         <!-- Creates the ini file if not exits -->
         <touchFile path="/etc/postgres-reg.ini">
             <ruleList>
@@ -357,21 +397,27 @@
        <substitute>
             <files>
                    ${installdir}/runMTK.sh
-                   ${installdir}/runMTK.bat
             </files>
             <substitutionList>
                 <substitution>
-                   <pattern>..\\jre\\bin\\java</pattern>
-                   <value>${java_executable}</value>
-                </substitution>
-                <substitution>
-                   <pattern>../jre/bin/java</pattern>
+                   <pattern>java</pattern>
                    <value>${java_executable}</value>
                 </substitution>
             </substitutionList>
        </substitute>
  
-
+       <substitute>
+            <files>
+                   ${installdir}/runMTK.bat
+            </files>
+            <substitutionList>
+                <substitution>
+                   <pattern>java</pattern>
+                   <value>"${java_executable}"</value>
+                </substitution>
+            </substitutionList>
+       </substitute>
+ 
         <!-- LIN & MAC: Write the MigrationToolkit Version to INI File -->
         <actionGroup>
             <actionList>
@@ -559,8 +605,10 @@
     </componentList>
 	
     <parameterList>
-	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
-	<stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
+        <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+        <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
+        <stringParameter name="jrehome" cliOptionName="jrehome" default="" ask="0" cliOptionShow="0"/>
+
         <parameterGroup
             name="installationDirectory"
             description="Installer.Parameter.installdir.description"
