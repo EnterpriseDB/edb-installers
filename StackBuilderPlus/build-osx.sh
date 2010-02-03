@@ -57,7 +57,7 @@ _build_stackbuilderplus_osx() {
 
     cd $WD/StackBuilderPlus/source/stackbuilderplus.osx
 
-    cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON .  || _die "Failed to configure StackBuilderPlus"
+    cmake -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.5 -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON .  || _die "Failed to configure StackBuilderPlus"
     make all || _die "Failed to build StackBuilderPlus"
 
     cd $WD/StackBuilderPlus/source/updatemanager.osx
