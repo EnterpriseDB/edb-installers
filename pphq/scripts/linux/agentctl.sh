@@ -4,9 +4,9 @@
 # Dave Page, EnterpriseDB
 
 # Check the command line
-if [ $# -ne 1 -a $# -ne 2 ]; 
+if [ $# -lt 1  -o $# -gt 2 ]; 
 then
-    echo "Usage: $0 start|stop"
+    echo "Usage: $0 start|stop|restart|status [wait]"
     exit 127
 fi
 
@@ -33,19 +33,33 @@ then
     fi
 fi
 
-if [ $USE_SUDO != "1" ];
+CURRUSER=`whoami`
+
+if [ "$CURRUSER" != "@@SERVICEUSER@@" ];
 then
-    if [ `whoami` != "root" ];
+  if [ $USE_SUDO != "1" ];
+  then
+    if [ "$CURRUSER" != "root" ];
     then
         echo "Please enter the root password when requested."
     fi
-else
+  else
     echo "Please enter your password if requested."
+  fi
+
+  if [ $USE_SUDO != "1" ];
+  then
+      su - -c "\"@@INSTALLDIR@@/scripts/runAgent.sh\" $action"
+  else
+      sudo "@@INSTALLDIR@@/scripts/runAgent.sh" $action
+  fi
+else
+  "@@INSTALLDIR@@/scripts/runAgent.sh" $action
 fi
 
-if [ $USE_SUDO != "1" ];
+if [ x"$2" = x"wait" ];
 then
-    su - -c "PPHQ_INSTALLDIR/agent-PPHQ_VERSION_STR/bin/pphq-agent.sh $action"
-else
-    sudo  PPHQ_INSTALLDIR/agent-PPHQ_VERSION_STR/bin/pphq-agent.sh $action
+  echo
+  echo -n "Press <return> to continue..."
+  read dummy
 fi

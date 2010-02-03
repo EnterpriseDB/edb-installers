@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Postgres Plus HQ server control launch script for Linux
+# PostgreSQL server control launch script for Linux
 # Dave Page, EnterpriseDB
 
 # Check the command line
@@ -17,9 +17,9 @@ do
     then
         if [ x"$shell" = x"konsole" ]
         then
-            `which $shell` -e "PPHQ_INSTALLDIR/scripts/serverctl.sh" $1 wait
+            `which $shell` -e "@@INSTALLDIR@@/scripts/serverctl.sh" $1 wait
         else
-            `which $shell` -e "PPHQ_INSTALLDIR/scripts/serverctl.sh $1 wait"
+            `which $shell` -e "@@INSTALLDIR@@/scripts/serverctl.sh $1 wait"
         fi
         exit 0
     fi

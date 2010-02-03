@@ -30,13 +30,9 @@ Sub RunProgram(ByVal p_strCmd, ByRef p_aCmdArgs, ByRef pl_iStatusCode)
   End If
   p_strCmd = Trim( """" & p_strCmd & """ " & Trim(l_strCmdArgs))
 
-  WSO.WriteLine "RunProgram: " & p_strCmd
-
   Set lExec = WshShell.Exec(p_strCmd)
 
   l_iWaitCount = 0
-  WSO.WriteLine "Script Output: " & vbCRLF & _
-                "---------------"
   Do
     WScript.Sleep 100
     l_iWaitCount = l_iWaitCount + 1
@@ -62,9 +58,7 @@ Sub RunProgram(ByVal p_strCmd, ByRef p_aCmdArgs, ByRef pl_iStatusCode)
     l_strStdErr = l_strStdErr & vbCRLF & lExec.StdErr.ReadLine
   Loop
 
-  WSE.WriteLine vbCRLF & "Script Error : " & _
-           vbCRLF & "---------------" & _
-           l_strStdErr
+  WSE.WriteLine l_strStdErr
   If l_bTerminateAbnormally Then
     WSE.WriteLine "Couldn't complete execution of the command (" & p_strCmd & ")"
   End If

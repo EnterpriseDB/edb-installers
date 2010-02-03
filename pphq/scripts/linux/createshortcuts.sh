@@ -4,15 +4,16 @@
 # Dave Page, EnterpriseDB
 
 # Check the command line
-if [ $# -ne 3 ];
+if [ $# -ne 4 ];
 then
-    echo "Usage: $0 <Product Version> <Branding> <Install dir>"
+    echo "Usage: $0 <Product Version> <Branding> <Install dir> <Port>"
     exit 127
 fi
 
 VERSION=$1
 BRANDING=$2
 INSTALLDIR=$3
+PORT=$4
 
 # Exit code
 WARN=0
@@ -45,10 +46,10 @@ _warn() {
     WARN=2
 }
 
-# Search & replace in a file - _replace($find, $replace, $file) 
+# Search & replace in a file - _replace($find, $replace, $file)
 _replace() {
-    sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" || return 1 
-	mv /tmp/$$.tmp $3 || return 1
+    sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" || return 1
+    mv /tmp/$$.tmp $3 || return 1
 }
 
 # Substitute values into a file ($in)
@@ -56,6 +57,7 @@ _fixup_file() {
     _replace PPHQ_VERSION_STR $VERSION_STR $1
     _replace PPHQ_INSTALLDIR "$INSTALLDIR" $1
     _replace PPHQ_BRANDING "$BRANDING" $1
+    _replace PPHQ_PORT "$PORT" $1
 }
 
 
@@ -63,7 +65,7 @@ _fixup_file() {
 cd "$INSTALLDIR/scripts/images"
 for i in `ls *.png`
 do
-	"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 $i
+  "$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 $i
 done
 
 # Fixup the scripts
@@ -96,11 +98,11 @@ fi
 # Create the menu shortcuts - first the top level menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system --noupdate \
       "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory" \
-	  "$INSTALLDIR/scripts/xdg/pphq-launch-$VERSION_STR.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pphq-start-$VERSION_STR.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pphq-stop-$VERSION_STR.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pphq-agent-start-$VERSION_STR.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pphq-agent-stop-$VERSION_STR.desktop" || _warn "Failed to create the top level menu PPHQ"
+      "$INSTALLDIR/scripts/xdg/pphq-launch-$VERSION_STR.desktop" \
+      "$INSTALLDIR/scripts/xdg/pphq-start-$VERSION_STR.desktop" \
+      "$INSTALLDIR/scripts/xdg/pphq-stop-$VERSION_STR.desktop" \
+      "$INSTALLDIR/scripts/xdg/pphq-agent-start-$VERSION_STR.desktop" \
+      "$INSTALLDIR/scripts/xdg/pphq-agent-stop-$VERSION_STR.desktop" || _warn "Failed to create the top level menu PPHQ"
 
 echo "$0 ran to completion"
 exit 0

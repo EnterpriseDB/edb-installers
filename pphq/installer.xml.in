@@ -94,6 +94,7 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </setInstallerVariable>
+        <setInstallerVariable name="serviceName" value="pphq-PG_VERSION_PPHQ" persist="1"/>
         <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -659,7 +660,6 @@
                       workingDirectory="${pphqTempDir}/instscripts"
                       progressText="Configuring PPHQ Client ..."
                       abortOnError="1" showMessageOnError="1"/>
-
                 <actionGroup>
                     <actionList>
                         <runProgram program="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"
@@ -680,7 +680,7 @@
 
         <actionGroup>
             <actionList>
-                <setInstallerVariableFromScriptOutput 
+                <setInstallerVariableFromScriptOutput
                         exec="cscript.exe"
                         execArgs="//nologo ${installdir}\scripts\shortPathName.vbs &quot;${pphqTempDir}\pphq&quot;"
                         name="pphqTempShortName"
@@ -698,11 +698,11 @@
                 <actionGroup>
                     <actionList>
                         <runProgram program="${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe"
-                              programArguments="-i -n pphq-PG_VERSION_PPHQ"
+                              programArguments="-i -n ${serviceName}"
                               workingDirectory="${installdir}\server-PG_VERSION_PPHQ\bin"
                               progressText="Creating PPHQ service ..."
                               abortOnError="0" showMessageOnError="0"/>
-                        <startWindowsService serviceName="pphq-PG_VERSION_PPHQ" abortOnError="0" showMessageOnError="1"/>
+                        <startWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="1"/>
                     </actionList>
                     <ruleList>
                         <fileExists path="${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe"/>
@@ -756,11 +756,27 @@
                 <logMessage text=" JRPM PORT:${pphq_jrpm_port}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
                             key="PPHQ_JRPM_PORT" value="${pphq_jrpm_port}"/>
-                <runProgram program="${installdir}/installer/pphq/createshortcuts.sh"
-                      programArguments="&quot;${productVersion}&quot; &quot;${branding}&quot; &quot;${installdir}&quot;"
-                      progressText="${msg(progress.text.creating.shortcuts)}"
-                      workingDirectory="${installdir}/installer/pphq"
-                      abortOnError="0" showMessageOnError="0"/>
+                <substitute>
+                    <files>
+                         ${installdir}/installer/pphq/startupcfg.sh
+                         ${installdir}/installer/pphq/createshortcuts.sh
+                         ${installdir}/installer/pphq/removeshortcuts.sh
+                         ${installdir}/scripts/agentctl.sh
+                         ${installdir}/scripts/launchagentctl.sh
+                         ${installdir}/scripts/launchsvrctl.sh
+                         ${installdir}/scripts/runAgent.sh
+                         ${installdir}/scripts/serverctl.sh
+                    </files>
+                    <substitutionList>
+                        <substitution pattern="@@INSTALLDIR@@"  value="${pphqInstallPath}"/>
+                        <substitution pattern="@@PPHQVERSION@@"  value="PG_VERSION_PPHQ"/>
+                        <substitution pattern="@@SERVICEUSER@@" value="${system_username}"/>
+                        <substitution pattern="@@SERVICENAME@@" value="${serviceName}"/>
+                        <substitution pattern="@@PPHQAGENTSCRIPT@@" value="${pphqAgent}.sh"/>
+                        <substitution pattern="@@PPHQSERVERSCRIPT@@" value="${pphqServer}.sh"/>
+                        <substitution pattern="@@JAVAHOME@@" value="${pphqJavaHome}"/>
+                    </substitutionList>
+                </substitute>
                 <runProgram program="${installdir}/installer/pphq/startupcfg.sh"
                       programArguments="&quot;${productVersion}&quot; &quot;${branding}&quot; &quot;${installdir}&quot;"
                       progressText="${msg(progress.text.startup.config)}"
@@ -770,6 +786,32 @@
                         <fileExists path="${installdir}/installer/pphq/startupcfg.sh"/>
                     </ruleList>
                 </runProgram>
+                <runProgram program="${installdir}/installer/pphq/createshortcuts.sh"
+                      programArguments="&quot;${productVersion}&quot; &quot;${branding}&quot; &quot;${installdir}&quot; ${pphqport}"
+                      progressText="${msg(progress.text.creating.shortcuts)}"
+                      workingDirectory="${installdir}/installer/pphq"
+                      abortOnError="0" showMessageOnError="0"/>
+                <setInstallerVariable name="serverFiles" value=""/>
+                <setInstallerVariable name="agentFiles" value=""/>
+                <setInstallerVariableFromScriptOutput
+                        exec="find"
+                        execArgs="&quot;${installdir}/server-PG_VERSION_PPHQ&quot;"
+                        name="serverFiles"
+                        workingDirectory="${pphqTempDir}">
+                    <ruleList>
+                        <fileExists path="${installdir}/server-PG_VERSION_PPHQ"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput
+                        exec="find"
+                        execArgs="&quot;${installdir}/agent-PG_VERSION_PPHQ&quot;"
+                        name="agentFiles"
+                        workingDirectory="${pphqTempDir}">
+                    <ruleList>
+                        <fileExists path="${installdir}/agent-PG_VERSION_PPHQ"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <addFilesToUninstaller files="${serverFiles};${agentFiles}"/>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -826,15 +868,32 @@
 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
-        <runProgram program="${installdir}/installer/pphq/removeshortcuts.sh"
-              programArguments="&quot;${installdir}&quot; &quot;${productVersion}&quot; &quot;${branding}&quot;"
-              workingDirectory="${installdir}/installer/pphq"
-              abortOnError="0"
-              showMessageOnError="0">
+        <actionGroup>
+            <actionList>
+                <runProgram program="${installdir}/scripts/serverctl.sh"
+                        programArguments="stop"
+                        workingDirectory="${installdir}/scripts"
+                        abortOnError="0"/>
+                <runProgram program="${installdir}/installer/pphq/removeshortcuts.sh"
+                      programArguments="&quot;${installdir}&quot; &quot;${productVersion}&quot; &quot;${branding}&quot;"
+                      workingDirectory="${installdir}/installer/pphq"
+                      abortOnError="0"
+                      showMessageOnError="0"/>
+                <!-- Attempt to remove any runlevel config with chkconfig -->
+                <runProgram program="/sbin/chkconfig" showMessageOnError="0"
+                    programArguments="--del ${serviceName}" abortOnError="0"/>
+
+                <!-- Remove the startup script -->
+                <deleteFile path="/etc/init.d/${serviceName}"/>
+
+                <!-- Attempt to remove any runlevel config with update-rc.d -->
+                <runProgram program="/usr/sbin/update-rc.d" showMessageOnError="0"
+                    programArguments="-f ${serviceName} remove" abortOnError="0"/>
+            </actionList>
             <ruleList>
                 <compareText logic="contains" text="${platform_name}" value="linux"/>
             </ruleList>
-        </runProgram>
+        </actionGroup>
         <deleteFile>
             <path>/Applications/${branding}</path>
             <ruleList>
