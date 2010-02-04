@@ -19,7 +19,6 @@ Function CmdPrompt()
     l_strCmdLine = strCmd & " >" & Chr(34) & strOutputFile & Chr(34) & _
        " 2>"  & Chr(34) & strErrorFile & Chr(34)
   End If
-  WScript.Echo l_strCmdLine
 
   nRes = WShell.Run(l_strCmdLine, 0, True)
   If FSO.FileExists(strOutputFile) Then
