@@ -9,17 +9,18 @@ _prep_pphq_linux_x64() {
     echo "*******************************************************"
     echo " Pre Process : PPHQ (LINUX-X64)"
     echo "*******************************************************"
+    PPHQ_STAGING=$WD/pphq/staging/linux-x64
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/pphq/staging/linux-x64 ];
+    if [ -e $PPHQ_STAGING ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/pphq/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
+      rm -rf $PPHQ_STAGING || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/pphq/staging/linux-x64)"
-    mkdir -p $WD/pphq/staging/linux-x64 || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/pphq/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($PPHQ_STAGING)"
+    mkdir -p $PPHQ_STAGING || _die "Couldn't create the staging directory"
+    chmod ugo+w $PPHQ_STAGING || _die "Couldn't set the permissions on the staging directory"
 
 }
 
@@ -73,14 +74,11 @@ _postprocess_pphq_linux_x64() {
     cd $PPHQ_DIR
 
     mkdir -p $PPHQ_STAGING/installer/pphq || _die "Failed to create a directory for the install scripts"
-    cp $PPHQ_DIR/scripts/linux/removeshortcuts.sh $PPHQ_STAGING/installer/pphq/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux-x64/removeshortcuts.sh)"
-    chmod ugo+x $PPHQ_STAGING/installer/pphq/removeshortcuts.sh
-
-    cp $PPHQ_DIR/scripts/tune-os.sh $PPHQ_STAGING/installer/pphq/tune-os.sh || _die "Failed to copy the tune-os.sh script (scripts/tune-os.sh)"
-    chmod ugo+x $PPHQ_STAGING/installer/pphq/tune-os.sh
-
-    cp $PPHQ_DIR/scripts/linux/createshortcuts.sh $PPHQ_STAGING/installer/pphq/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux/createshortcuts.sh)"
-    chmod ugo+x $PPHQ_STAGING/installer/pphq/createshortcuts.sh
+    cp $PPHQ_DIR/scripts/linux/removeshortcuts.sh $PPHQ_STAGING/installer/pphq/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script"
+    cp $PPHQ_DIR/scripts/tune-os.sh $PPHQ_STAGING/installer/pphq/tune-os.sh || _die "Failed to copy the tune-os.sh script"
+    cp $PPHQ_DIR/scripts/linux/createshortcuts.sh $PPHQ_STAGING/installer/pphq/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script"
+    cp $PPHQ_DIR/scripts/linux/startupcfg.sh $PPHQ_STAGING/installer/pphq/startupcfg.sh || _die "Failed to copy the startupcfg.sh script"
+    chmod ugo+x $PPHQ_STAGING/installer/pphq/*.sh
 
     # Copy the XDG scripts
     mkdir -p $PPHQ_STAGING/installer/xdg || _die "Failed to create a directory for the xdg scripts"
@@ -109,16 +107,13 @@ _postprocess_pphq_linux_x64() {
 
 
     # Copy the launch scripts
-    cp $PPHQ_DIR/scripts/linux/launchsvrctl.sh $PPHQ_STAGING/scripts/launchsvrctl.sh || _die "Failed to copy the launchsvrctl script (scripts/linux/launchsvrctl.sh)"
-    chmod ugo+x $PPHQ_STAGING/scripts/launchsvrctl.sh
-    cp $PPHQ_DIR/scripts/linux/serverctl.sh $PPHQ_STAGING/scripts/serverctl.sh || _die "Failed to copy the serverctl script (scripts/linux/serverctl.sh)"
-    chmod ugo+x $PPHQ_STAGING/scripts/serverctl.sh
-    cp $PPHQ_DIR/scripts/linux/launchagentctl.sh $PPHQ_STAGING/scripts/launchagentctl.sh || _die "Failed to copy the launchagentctl script (scripts/linux/launchagentctl.sh)"
-    chmod ugo+x $PPHQ_STAGING/scripts/launchagentctl.sh
-    cp $PPHQ_DIR/scripts/linux/agentctl.sh $PPHQ_STAGING/scripts/agentctl.sh || _die "Failed to copy the agentctl script (scripts/linux-x64/agentctl.sh)"
-    chmod ugo+x $PPHQ_STAGING/scripts/agentctl.sh
-    cp $PPHQ_DIR/scripts/linux/launchbrowser.sh $PPHQ_STAGING/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
-    chmod ugo+x $PPHQ_STAGING/scripts/launchbrowser.sh
+    cp $PPHQ_DIR/scripts/linux/agentctl.sh $PPHQ_STAGING/scripts/agentctl.sh || _die "Failed to copy the agentctl script"
+    cp $PPHQ_DIR/scripts/linux/launchagentctl.sh $PPHQ_STAGING/scripts/launchagentctl.sh || _die "Failed to copy the launchagentctl script"
+    cp $PPHQ_DIR/scripts/linux/launchbrowser.sh $PPHQ_STAGING/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script"
+    cp $PPHQ_DIR/scripts/linux/launchsvrctl.sh $PPHQ_STAGING/scripts/launchsvrctl.sh || _die "Failed to copy the launchsvrctl script"
+    cp $PPHQ_DIR/scripts/linux/runAgent.sh $PPHQ_STAGING/scripts/ || _die "Failed to copy the runAgent script"
+    cp $PPHQ_DIR/scripts/linux/serverctl.sh $PPHQ_STAGING/scripts/serverctl.sh || _die "Failed to copy the serverctl script"
+    chmod ugo+x $PPHQ_STAGING/scripts/*.sh
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"

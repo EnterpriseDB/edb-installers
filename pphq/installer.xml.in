@@ -81,8 +81,8 @@
       </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
-        <setInstallerVariable name="pphqServer" value="hq-server"/>
-        <setInstallerVariable name="pphqAgent" value="hq-agent"/>
+        <setInstallerVariable name="pphqServer" value="pphq-server"/>
+        <setInstallerVariable name="pphqAgent" value="pphq-agent"/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PPHQ" />
         <setInstallerVariable name="hq_db_exist" value="0"/>
         <setInstallerVariable name="pphqAdminDB" value="PPHQ"/>
@@ -106,6 +106,8 @@
         </throwError>
         <!-- Get a default port number - ideally 7080 -->
         <getFreePort variable="defaultpphqport" initialPort="7080" finalPort="65535"/>
+        <setInstallerVariable name="defaultpgpassword" value=""/>
+        <setInstallerVariable name="defaultpphqpassword" value=""/>
 
         <!-- LIN : Set the default values for unattended mode -->
         <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/HQ">
@@ -154,6 +156,16 @@
 
     </initializationActionList>
     <preInstallationActionList>
+
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="defaultpgpassword" value="postgres"/>
+                <setInstallerVariable name="defaultpphqpassword" value="hqadmin"/>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            </ruleList>
+        </actionGroup>
 
         <!-- Check if the valid jrehome switch is supplied -->
         <throwError customErrorMessage="${msg(jre.invalid.error)}" text="Unknown Error">
@@ -555,7 +567,7 @@
         </actionGroup>
 
     </preInstallationActionList>
-    <postInstallationActionList>
+    <readyToInstallActionList>
         <setInstallerVariableFromRegEx name="pphqJavaHome" text="${java_executable}">
             <pattern>bin\/java</pattern>
             <substitution/>
@@ -597,6 +609,28 @@
         <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
         <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${pphqTempDir}/instscripts/lib"/>
 
+        <actionGroup>
+            <actionList>
+                <runProgram program="${installdir}/server-PG_VERSION_PPHQ/bin/${PPHQSERVERSCRIPT}.sh"
+                        programArguments="stop"
+                        workingDirectory="${installdir}/scripts"
+                        abortOnError="0">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                        <fileExists path="${installdir}/server-PG_VERSION_PPHQ/bin/${PPHQSERVERSCRIPT}.sh"/>
+                    </ruleList>
+                </runProgram>
+                <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="1"/>
+            </actionList>
+            <ruleList>
+                <stringTest text="${pphqVersion}" type="not_empty"/>
+            </ruleList>
+        </actionGroup>
+    </readyToInstallActionList>
+    <postInstallationActionList>
+        <setInstallerVariable name="serverFiles" value=""/>
+        <setInstallerVariable name="agentFiles" value=""/>
+
         <runProgram program="${psql_path}"
               programArguments="-t -A -c &quot;CREATE USER \&quot;${pphquser}\&quot; PASSWORD '${pphqpassword}'&quot;"
               workingDirectory="${pphqTempDir}/instscripts"
@@ -625,6 +659,16 @@
               workingDirectory="${pphqTempDir}/instscripts"
               progressText="Making sure plpgsql exists in Postgres Plus HQ Admin Database (${pphqAdminDB})..."
               abortOnError="0" showMessageOnError="0"/>
+
+        <setInstallerVariableFromScriptOutput
+                exec="cscript.exe"
+                execArgs="//nologo &quot;${installdir}\scripts\shortPathName.vbs&quot; &quot;${installdir}&quot;"
+                name="pphqInstallPath"
+                workingDirectory="${pphqTempDir}">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariableFromScriptOutput>
 
         <setInstallerVariableFromRegEx name="pphqInstallPath" text="${installdir}">
             <pattern>\\</pattern>
@@ -690,13 +734,13 @@
                         execArgs="//nologo &quot;${installdir}\scripts\shortPathName.vbs&quot; &quot;${pphqTempDir}\pphq&quot;"
                         name="pphqTempShortName"
                         workingDirectory="${pphqTempDir}"/>
-                <runProgram program="${java_executable}"
-                      programArguments="-classpath &quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ\lib\ant-launcher.jar&quot; -Dant.home=&quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ&quot; org.apache.tools.ant.launch.Launcher  -Dinstall.dir=&quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ&quot; -Dinstall.mode=&quot;quick&quot; -Dsetup=&quot;${pphqTempDir}\pphq\templates\server.prop&quot; -f &quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ\data\setup.xml&quot; -logger org.hyperic.tools.ant.installer.InstallerLogger"
-                      workingDirectory="${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ"
+                <runProgram program="cscript.exe"
+                      programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${pphqTempShortName}\setup.bat&quot; &quot;${pphqTempShortName}\templates\server.prop&quot;"
+                      workingDirectory="${pphqTempDir}\pphq"
                       progressText="Configuring PPHQ Server (This may take some time) ..."
                       abortOnError="1" showMessageOnError="1"/>
-                <runProgram program="${java_executable}"
-                      programArguments="-classpath &quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ\lib\ant-launcher.jar&quot; -Dant.home=&quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ&quot; org.apache.tools.ant.launch.Launcher  -Dinstall.dir=&quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ&quot; -Dinstall.mode=&quot;quick&quot; -Dsetup=&quot;${pphqTempDir}\pphq\templates\agent.prop&quot; -f &quot;${pphqTempDir}\pphq\installer-PG_VERSION_PPHQ\data\setup.xml&quot; -logger org.hyperic.tools.ant.installer.InstallerLogger"
+                <runProgram program="cscript.exe"
+                      programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${pphqTempShortName}\setup.bat&quot; &quot;${pphqTempShortName}\templates\agent.prop&quot;"
                       workingDirectory="${pphqTempDir}\pphq"
                       progressText="Configuring PPHQ Agent ..."
                       abortOnError="1" showMessageOnError="1"/>
@@ -764,7 +808,6 @@
                 <substitute>
                     <files>
                          ${installdir}/installer/pphq/startupcfg.sh
-                         ${installdir}/installer/pphq/createshortcuts.sh
                          ${installdir}/installer/pphq/removeshortcuts.sh
                          ${installdir}/scripts/agentctl.sh
                          ${installdir}/scripts/launchagentctl.sh
@@ -783,7 +826,7 @@
                     </substitutionList>
                 </substitute>
                 <runProgram program="${installdir}/installer/pphq/startupcfg.sh"
-                      programArguments="&quot;${productVersion}&quot; &quot;${branding}&quot; &quot;${installdir}&quot;"
+                      programArguments="1"
                       progressText="${msg(progress.text.startup.config)}"
                       workingDirectory="${installdir}/installer/pphq"
                       abortOnError="0" showMessageOnError="0">
@@ -796,8 +839,6 @@
                       progressText="${msg(progress.text.creating.shortcuts)}"
                       workingDirectory="${installdir}/installer/pphq"
                       abortOnError="0" showMessageOnError="0"/>
-                <setInstallerVariable name="serverFiles" value=""/>
-                <setInstallerVariable name="agentFiles" value=""/>
                 <setInstallerVariableFromScriptOutput
                         exec="find"
                         execArgs="&quot;${installdir}/server-PG_VERSION_PPHQ&quot;"
@@ -816,7 +857,6 @@
                         <fileExists path="${installdir}/agent-PG_VERSION_PPHQ"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
-                <addFilesToUninstaller files="${serverFiles};${agentFiles}"/>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -864,11 +904,32 @@
                 <logMessage text=" JRPM PORT:${pphq_jrpm_port}"/>
                 <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
                             name="PPHQ_JRPM_PORT" value="${pphq_jrpm_port}"/>
+                <setInstallerVariableFromScriptOutput
+                        exec="cscript.exe"
+                        progressText="Examine installation..."
+                        execArgs="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; -c &quot;dir /s /b&quot; &quot;${installdir}\server-PG_VERSION_PPHQ&quot;"
+                        name="serverFiles"
+                        workingDirectory="${installdir}\scripts\">
+                    <ruleList>
+                        <fileExists path="${installdir}\server-PG_VERSION_PPHQ"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput
+                        exec="cscript.exe"
+                        progressText="Examine installation..."
+                        execArgs="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; -c &quot;dir /s /b&quot; &quot;${installdir}\agent-PG_VERSION_PPHQ&quot;"
+                        name="agentFiles"
+                        workingDirectory="${installdir}\scripts">
+                    <ruleList>
+                        <fileExists path="${installdir}\agent-PG_VERSION_PPHQ"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
+        <addFilesToUninstaller files="${serverFiles};${agentFiles}"/>
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
@@ -1294,7 +1355,7 @@
                                  cliOptionName="pguser" allowEmptyValue="1" width="40"/>
                 <!-- Postgres User Password -->
                 <passwordParameter name="pgpassword" title="Password" value="" width="40"
-                                   description="Password" explanation="" default="postgres"
+                                   description="Password" explanation="" default="${defaultpgpassword}"
                                    cliOptionName="pgpassword" allowEmptyValue="1" askForConfirmation="0"/>
                 <!-- Postgres Port(Default 5432) -->
                 <stringParameter name="pgport" description="Port"
@@ -1365,7 +1426,8 @@
                 </stringParameter>
                 <!-- PPHQ User Password -->
                 <passwordParameter name="pphqpassword" description="Password" allowEmptyValue="1"
-                                   cliOptionName="pphqpassword" askForConfirmation="0" width="40"/>
+                                   cliOptionName="pphqpassword" askForConfirmation="0" width="40"
+                                   default="${defaultpphqpassword}"/>
                 <!-- PPHQ Port(Default 7080) -->
                 <stringParameter name="pphqport" description="Port" default="${defaultpphqport}"
                                  cliOptionName="pphqport" allowEmptyValue="1" width="40">

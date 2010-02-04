@@ -57,13 +57,41 @@ _prep_pphq() {
       extract_file ${WD}/tarballs/jboss-${PPHQ_JBOSS_VERSION} || _die "Error extracting jboss binaries for pphq..."
     fi
 
-    if [ -f ${WD}/tarballs/pphq-${PG_VERSION_PPHQ}.patch ];
+    if [ -f ${WD}/tarballs/pphq-${PG_VERSION_PPHQ}-rebranding.patch ];
     then
-      echo "Applying PPHQ patches ..."
+      echo "Applying PPHQ Rebrading patch..."
       cd $WD/pphq/source/hq
-      patch -p1 < ${WD}/tarballs/pphq-${PG_VERSION_PPHQ}.patch
-      # NOTE: You should apply your patches here for rebranding and replace the images/resources with actual one.
+      patch -p1 < ${WD}/tarballs/pphq-${PG_VERSION_PPHQ}-rebranding.patch
+    else
+      _die "PPHQ (${PG_VERSION_PPHQ}) Rebranding patch could be found..."
     fi
+
+    if [ -f ${WD}/tarballs/pphq-${PG_VERSION_PPHQ}-PG_8.4.patch ];
+    then
+      echo "Applying PPHQ PostgreSQL 8.4 auto-discovry patch..."
+      cd $WD/pphq/source/hq
+      patch -p1 < ${WD}/tarballs/pphq-${PG_VERSION_PPHQ}-PG_8.4.patch
+    else
+      _die "PPHQ PostgreSQL 8.4 auto-discovery patch could not be found"
+    fi
+
+    if [ -f ${WD}/tarballs/pphq-${PG_VERSION_PPHQ}-installer.patch ];
+    then
+      echo "Applying PPHQ Installer patches ..."
+      cd $WD/pphq/source/hq
+      patch -p1 < ${WD}/tarballs/pphq-${PG_VERSION_PPHQ}-installer.patch
+    else
+      _die "Installer patch for PPHQ(${PG_VERSION_PPHQ}) could not be found"
+    fi
+
+    cd $WD/pphq/source
+    if [ -f ${WD}/tarballs/pphq-${PG_VERSION_PPHQ}-images.tgz ];
+    then
+      echo "Extracting PPHQ Rebranding images..."
+      tar xvf $WD/tarballs/pphq-${PG_VERSION_PPHQ}-images.tgz
+    fi
+    mv $WD/pphq/source/hq/hq_bin/launcher_bin/hq-server.exe $WD/pphq/source/hq/hq_bin/launcher_bin/pphq-server.exe || _die "Couldn't rename hq-server.exe"
+    mv $WD/pphq/source/hq/hq_bin/launcher_bin/hq-agent.exe $WD/pphq/source/hq/hq_bin/launcher_bin/pphq-agent.exe || _die "Couldn't rename hq-agent.exe"
 
     cd $WD/pphq/source
     if [ -f build_pphq.sh ];
@@ -120,10 +148,11 @@ export JAVA_OPTS="-ea"
 
 cd hq
 \${ANT_HOME}/bin/ant -Djboss.zip=${WD}/tarballs/jboss-${PPHQ_JBOSS_VERSION}.zip -Dant.bz2=${WD}/tarballs/apache-ant-${PPHQ_ANT_VERSION}-bin.tar.bz2 archive-prep
+exit $?
 
 EOT
     echo "Building PPHQ..."
-    /bin/bash build_pphq.sh
+    /bin/bash build_pphq.sh || _die "Error building PPHQ from souce..."
 
     cd $WD
     # Mac OSX

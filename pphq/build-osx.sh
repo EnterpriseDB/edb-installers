@@ -71,18 +71,20 @@ _postprocess_pphq_osx() {
     # Setup the installer scripts.
     mkdir -p $PPHQ_STAGING/installer/pphq || _die "Failed to create a directory for the install scripts"
 
-    cp $PPHQ_DIR/scripts/tune-os.sh $PPHQ_STAGING/installer/pphq/tune-os.sh || _die "Failed to copy the tune-os.sh script (scripts/tune-os.sh)"
-    chmod ugo+x $PPHQ_STAGING/installer/pphq/tune-os.sh
-    cp $PPHQ_DIR/scripts/osx/createshortcuts.sh $PPHQ_STAGING/installer/pphq/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/osx/createshortcuts.sh)"
-    chmod ugo+x $PPHQ_STAGING/installer/pphq/createshortcuts.sh
+    cp $PPHQ_DIR/scripts/tune-os.sh $PPHQ_STAGING/installer/pphq/tune-os.sh || _die "Failed to copy the tune-os.sh script"
+    cp $PPHQ_DIR/scripts/osx/createshortcuts.sh $PPHQ_STAGING/installer/pphq/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script"
+    cp $PPHQ_DIR/scripts/osx/startupcfg.sh $PPHQ_STAGING/installer/pphq/ || _die "Failed to copy the startupcfg.sh script"
+    chmod ugo+x $PPHQ_STAGING/installer/pphq/*.sh
 
     # Hack up the scripts, and compile them into the staging directory
     mkdir -p $PPHQ_STAGING/scripts || _die "Failed to create a directory for the launch scripts"
-    cp $PPHQ_DIR/scripts/osx/pphq-launch.applescript.in $PPHQ_STAGING/scripts/pphq-launch.applescript || _die "Failed to to the menu pick script (scripts/osx/pphq-launch.applescript.in)"
-    cp $PPHQ_DIR/scripts/osx/server-start.applescript.in $PPHQ_STAGING/scripts/server-start.applescript || _die "Failed to to the menu pick script (scripts/osx/server-start.applescript.in)"
-    cp $PPHQ_DIR/scripts/osx/server-stop.applescript.in $PPHQ_STAGING/scripts/server-stop.applescript || _die "Failed to to the menu pick script (scripts/osx/server-stop.applescript.in)"
-    cp $PPHQ_DIR/scripts/osx/agent-start.applescript.in $PPHQ_STAGING/scripts/agent-start.applescript || _die "Failed to to the menu pick script (scripts/osx/agent-start.applescript.in)"
-    cp $PPHQ_DIR/scripts/osx/agent-stop.applescript.in $PPHQ_STAGING/scripts/agent-stop.applescript || _die "Failed to to the menu pick script (scripts/osx/agent-stop.applescript.in)"
+    cp $PPHQ_DIR/scripts/osx/pphq-launch.applescript.in $PPHQ_STAGING/scripts/ || _die "Failed to copy pphq-launch.applescript.in"
+    cp $PPHQ_DIR/scripts/osx/server-start.applescript.in $PPHQ_STAGING/scripts/ || _die "Failed to copy server-start.applescript.in"
+    cp $PPHQ_DIR/scripts/osx/server-stop.applescript.in $PPHQ_STAGING/scripts/ || _die "Failed to copy server-stop.applescript.in"
+    cp $PPHQ_DIR/scripts/osx/agent-start.applescript.in $PPHQ_STAGING/scripts/ || _die "Failed to copy agent-start.applescript.in"
+    cp $PPHQ_DIR/scripts/osx/agent-stop.applescript.in $PPHQ_STAGING/scripts/ || _die "Failed to copy agent-stop.applescript.in"
+    cp $PPHQ_DIR/scripts/osx/serverctl.sh $PPHQ_STAGING/scripts/ || _die "Failed to copy agent-stop.applescript.in"
+    chmod ugo+x $PPHQ_STAGING/scripts/*.sh
 
     # Copy in the menu pick images
     mkdir -p $PPHQ_STAGING/scripts/images || _die "Failed to create a directory for the menu pick images"

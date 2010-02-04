@@ -9,17 +9,18 @@ _prep_pphq_linux() {
     echo "*******************************************************"
     echo " Pre Process : PPHQ (LINUX)"
     echo "*******************************************************"
+    PPHQ_STAGING=$WD/pphq/staging/linux
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/pphq/staging/linux ];
+    if [ -e $PPHQ_STAGING ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/pphq/staging/linux || _die "Couldn't remove the existing staging directory"
+      rm -rf $PPHQ_STAGING || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/pphq/staging/linux)"
-    mkdir -p $WD/pphq/staging/linux || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/pphq/staging/linux || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($PPHQ_STAGING)"
+    mkdir -p $PPHQ_STAGING || _die "Couldn't create the staging directory"
+    chmod ugo+w $PPHQ_STAGING || _die "Couldn't set the permissions on the staging directory"
 
 }
 
@@ -74,15 +75,10 @@ _postprocess_pphq_linux() {
 
     mkdir -p $PPHQ_STAGING/installer/pphq || _die "Failed to create a directory for the install scripts"
     cp $PPHQ_DIR/scripts/linux/removeshortcuts.sh $PPHQ_STAGING/installer/pphq/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script"
-    chmod ugo+x $PPHQ_STAGING/installer/pphq/removeshortcuts.sh
-
-    cp $PPHQ_DIR/scripts/tune-os.sh $PPHQ_STAGING/installer/pphq/tune-os.sh || _die "Failed to copy the tune-os.sh script (scripts/tune-os.sh)"
-    chmod ugo+x $PPHQ_STAGING/installer/pphq/tune-os.sh
-
+    cp $PPHQ_DIR/scripts/tune-os.sh $PPHQ_STAGING/installer/pphq/tune-os.sh || _die "Failed to copy the tune-os.sh script"
     cp $PPHQ_DIR/scripts/linux/createshortcuts.sh $PPHQ_STAGING/installer/pphq/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script"
-    chmod ugo+x $PPHQ_STAGING/installer/pphq/createshortcuts.sh
     cp $PPHQ_DIR/scripts/linux/startupcfg.sh $PPHQ_STAGING/installer/pphq/startupcfg.sh || _die "Failed to copy the startupcfg.sh script"
-    chmod ugo+x $PPHQ_STAGING/installer/pphq/startupcfg.sh
+    chmod ugo+x $PPHQ_STAGING/installer/pphq/*.sh
 
     # Copy the XDG scripts
     mkdir -p $PPHQ_STAGING/installer/xdg || _die "Failed to create a directory for the xdg scripts"
