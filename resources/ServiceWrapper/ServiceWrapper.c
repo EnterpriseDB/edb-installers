@@ -58,7 +58,6 @@ static struct option
 };
 
 
-static int	wait_seconds = DEFAULT_WAIT;
 static CtlCommand ctl_command = NO_COMMAND;
 static char *exec_opts = NULL;
 static char *service_desc = NULL;
@@ -67,6 +66,7 @@ static char *exec_path = NULL;
 static char *register_servicename = NULL;
 static char *register_username = NULL;
 static char *register_password = NULL;
+static char *working_directory = NULL;
 static char *argv0 = NULL;
 
 int opterr;
@@ -91,14 +91,11 @@ static void WS_SetServiceStatus(DWORD);
 static void WINAPI ServiceHandler(DWORD);
 static void WINAPI ServiceMain(DWORD, LPTSTR *);
 static void doRunAsService(void);
-static int	CreateRestrictedProcess(char *cmd, PROCESS_INFORMATION *processInfo, bool as_service);
 
 static SERVICE_STATUS status;
 static SERVICE_STATUS_HANDLE hStatus = (SERVICE_STATUS_HANDLE) 0;
 static HANDLE shutdownHandles[2];
 static pid_t execPID = -1;
-static long shortWait = 5;
-static HANDLE threadHandle = 0;
 
 #define shutdownEvent	  shutdownHandles[0]
 #define execProcess shutdownHandles[1]
@@ -380,6 +377,12 @@ CommandLine(bool registration)
 			strcat(cmdLine, exec_opts);
 			strcat(cmdLine, "\"");
 		}
+		if (working_directory) 
+		{
+			strcat(cmdLine, " -w \"");
+			strcat(cmdLine, working_directory);
+			strcat(cmdLine, "\"");
+		}
 	}
 	else
 	{
@@ -413,7 +416,7 @@ doRegister(void)
 		write_stderr("%s: service \"%s\" already registered\n", progname, register_servicename);
 		exit(1);
 	}
-	if ((hService = CreateService(hSCM, register_servicename, register_servicename,
+	if ((hService = CreateService(hSCM, register_servicename, service_desc,
 							   SERVICE_ALL_ACCESS, SERVICE_WIN32_OWN_PROCESS,
 								  SERVICE_AUTO_START, SERVICE_ERROR_NORMAL,
 								  CommandLine(true),
@@ -508,11 +511,11 @@ bool startService()
 
 	ZeroMemory(&si, sizeof(si));
 	si.cb = sizeof(si);
-
+  
 	memset(&pi, 0, sizeof(pi));
 
 	/* Start the service */
-	if (!CreateProcess(NULL, CommandLine(false), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
+	if (!CreateProcess(NULL, CommandLine(false), NULL, NULL, FALSE, 0, NULL, working_directory, &si, &pi))
 	{
 		WS_SetServiceStatus(SERVICE_STOPPED);
 		return false;
@@ -528,6 +531,7 @@ static void WINAPI
 ServiceMain(DWORD argc, LPTSTR *argv)
 {
 	/* Initialize variables */
+	DWORD           ret;
 	status.dwWin32ExitCode = S_OK;
 	status.dwCheckPoint = 0;
 	status.dwWaitHint = 60000;
@@ -546,10 +550,15 @@ ServiceMain(DWORD argc, LPTSTR *argv)
         return;
 	} 
 
-    if (startService())
+        if (startService())
 	{
 		WS_SetServiceStatus(SERVICE_RUNNING); 
 	}
+
+	ret = WaitForSingleObject(execProcess, INFINITE);
+	
+	WS_SetServiceStatus(SERVICE_STOPPED);
+         
 }
 
 static void
@@ -591,8 +600,11 @@ do_help(void)
 	
 	printf("\nOptions for register and unregister:\n");
 	printf("  -n SERVICENAME  service name with which to register the java application\n");
+	printf("  -d SERVICEDESC  service description\n");
 	printf("  -p PASSWORD     password of account to register \n");
 	printf("  -u USERNAME     user name of account to register\n");
+        printf("  -w WORKING DIRECTORY  Working directory for the process\n");
+
 }
 
 
@@ -641,7 +653,7 @@ main(int argc, char **argv)
 	/* process command-line options */
 	while (optind < argc)
 	{
-		while ((c = getopt_long(argc, argv, "n:d:u:p:c:o:", long_options, &option_index)) != -1)
+		while ((c = getopt_long(argc, argv, "n:d:u:p:c:o:w:", long_options, &option_index)) != -1)
 		{
 			switch (c)
 			{
@@ -678,6 +690,9 @@ main(int argc, char **argv)
 					break;
 				case 'o':
 					exec_opts = xstrdup(optarg);
+					break;
+				case 'w':
+					working_directory = xstrdup(optarg);
 					break;
 				default:
 					/* getopt_long already issued a suitable error message */

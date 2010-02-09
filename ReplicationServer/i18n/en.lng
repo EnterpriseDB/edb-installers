@@ -77,3 +77,6 @@ error.select.component=Please select atleast one component to continue.
 
 jre.invalid.error=Invalid --jrehome specified.\n\nCould not find '${jrehome}/bin/java'.
 jre.invalid.error.windows=Invalid --jrehome specified.\n\nCould not find '${jrehome}\bin\java.exe'.
+
+pub.service.desc=Publication Service for xDB Replication Server.
+sub.service.desc=Subscription Service for xDB Replication Server.

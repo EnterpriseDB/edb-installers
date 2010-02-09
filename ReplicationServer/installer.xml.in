@@ -741,19 +741,6 @@
             </ruleList>
         </setInstallerVariableFromRegEx>
 
-
-        <!-- Set javaw -->
-        <setInstallerVariableFromRegEx>
-            <text>${java_executable_windows}</text>
-            <substitution>javaw.exe</substitution>
-            <name>javaw_executable_windows</name>
-            <pattern>java.exe</pattern>
-
-            <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows" />
-            </ruleList>
-        </setInstallerVariableFromRegEx>
- 
         <!-- Create the user account with which publication/subscription service will run-->
         <runProgram>
           <program>${installdir}/installer/xDBReplicationServer/createuser.sh</program>
@@ -1377,7 +1364,7 @@ database=${controldb}
 
        <writeFile>
             <path>${system_temp_directory}/servicewrapper.bat</path>
-            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Publication Service" -c "${javaw_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" pubserver ${pubport}" -u "${serviceaccount}" -p "${servicepassword}"</text>
+            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Publication Service" -d "${msg(pub.service.desc)}" -c "${java_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" pubserver ${pubport}" -u "${serviceaccount}" -p "${servicepassword}" -w "${installdir}\bin"</text>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(pubserver).selected}" />
@@ -1407,7 +1394,7 @@ database=${controldb}
 
         <writeFile>
             <path>${system_temp_directory}/servicewrapper.bat</path>
-            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Subscription Service" -c "${javaw_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" subserver ${subport}" -u "${serviceaccount}" -p "${servicepassword}"</text>
+            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Subscription Service" -d "${msg(sub.service.desc)}" -c "${java_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" subserver ${subport}" -u "${serviceaccount}" -p "${servicepassword}" -w "${installdir}\bin"</text>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(subserver).selected}" />
