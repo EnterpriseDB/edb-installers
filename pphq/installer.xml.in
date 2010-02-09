@@ -666,7 +666,7 @@
                 name="pphqInstallPath"
                 workingDirectory="${pphqTempDir}">
             <ruleList>
-                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </setInstallerVariableFromScriptOutput>
 
