@@ -136,8 +136,8 @@ _build_ReplicationServer_windows() {
     cp -R MigrationToolKit/staging/windows/MigrationToolKit/lib/edb-migrationtoolkit.jar ReplicationServer/staging/windows/repserver/lib/repl-mtk || _die "Failed to copy edb-migrationtoolkit.jar"
 
     _replace "java -jar edb-repconsole.jar" "\"@@JAVA@@\" -jar \"@@INSTALL_DIR@@\\\\bin\\\\edb-repconsole.jar\"" "$WD/ReplicationServer/staging/windows/repconsole/bin/runRepConsole.bat" || _die "Failed to put the placehoder in runRepConsole.bat file"
-    _replace "java -jar edb-repserver.jar" "\"@@JAVA@@\" -jar \"@@INSTALL_DIR@@\\\\bin\\\\edb-repserver.jar\"" "$WD/ReplicationServer/staging/windows/repserver/bin/runPubServer.bat" || _die "Failed to put the placehoder in runPubServer.bat file"
-    _replace "java -jar edb-repserver.jar" "\"@@JAVA@@\" -jar \"@@INSTALL_DIR@@\\\\bin\\\\edb-repserver.jar\"" "$WD/ReplicationServer/staging/windows/repserver/bin/runSubServer.bat" || _die "Failed to put the placehoder in runSubServer.bat file"
+    _replace "java -jar edb-repserver.jar pubserver 9011" "\"@@JAVA@@\" -jar \"@@INSTALL_DIR@@\\\\bin\\\\edb-repserver.jar\" pubserver @@PUBPORT@@" "$WD/ReplicationServer/staging/windows/repserver/bin/runPubServer.bat" || _die "Failed to put the placehoder in runPubServer.bat file"
+    _replace "java -jar edb-repserver.jar subserver 9012" "\"@@JAVA@@\" -jar \"@@INSTALL_DIR@@\\\\bin\\\\edb-repserver.jar\" subserver @@SUBPORT@@" "$WD/ReplicationServer/staging/windows/repserver/bin/runSubServer.bat" || _die "Failed to put the placehoder in runSubServer.bat file"
 
 }
 

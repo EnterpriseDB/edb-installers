@@ -65,8 +65,8 @@ _build_ReplicationServer_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp MigrationToolKit/staging/linux-x64/MigrationToolKit/lib/edb-migrationtoolkit.jar ReplicationServer/staging/linux-x64/repserver/lib/repl-mtk" || _die "Failed to copy edb-migrationtoolkit.jar"
     cd $WD
     _replace "java -jar edb-repconsole.jar" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repconsole.jar" "$WD/ReplicationServer/staging/linux-x64/repconsole/bin/runRepConsole.sh" || _die "Failed to put the placehoder in runRepConsole.sh file"
-    _replace "java -jar edb-repserver.jar" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar" "$WD/ReplicationServer/staging/linux-x64/repserver/bin/runPubServer.sh" || _die "Failed to put the placehoder in runPubServer.sh file"
-    _replace "java -jar edb-repserver.jar" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar" "$WD/ReplicationServer/staging/linux-x64/repserver/bin/runSubServer.sh" || _die "Failed to put the placehoder in runSubServer.sh file"
+    _replace "java -jar edb-repserver.jar pubserver 9011" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar pubserver @@PUBPORT@@" "$WD/ReplicationServer/staging/linux-x64/repserver/bin/runPubServer.sh" || _die "Failed to put the placehoder in runPubServer.sh file"
+    _replace "java -jar edb-repserver.jar subserver 9012" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar subserver @@SUBPORT@@" "$WD/ReplicationServer/staging/linux-x64/repserver/bin/runSubServer.sh" || _die "Failed to put the placehoder in runSubServer.sh file"
 
 }
 
