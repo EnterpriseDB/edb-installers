@@ -3,7 +3,7 @@
 
 'Initialization
 Dim WSI, FSO, WshShell, WshApp, TempFolder, LogFile, WMIService, Services, Locator
-Dim strSuperUser, strSuperPassword, strServiceAccount, strServicePassword, strDataDir, strInstallDir, strLocale, strPort, strServiceName, iPbPort
+Dim strSuperUser, strSuperPassword, strServiceAccount, strServicePassword, strDataDir, strInstallDir, strLocale, strServiceName, iPbPort
 Dim bUnattended, bWScript, bInstallRuntimes, bDebug
 Dim strExitMsg, strVCRedistFile, strLogFile
 
@@ -86,7 +86,7 @@ Sub SelectComponents(p_strComponentList)
       Case "sbp"
         bInstallSBP = "Y"
       Case Else
-        strExitMsg = "Unknow component : " & l_arrayComponents(l_iIndex)
+        strExitMsg = "Unknown component : " & l_arrayComponents(l_iIndex)
         Usage 1
     End Select
   Next
@@ -140,8 +140,8 @@ Sub Init()
 End Sub
 
 Sub Finish(p_iRetCode)
-  WScript.Echo "Logs is saved in: " & strLogFile
   If IsObject(LogFile) Then
+    WScript.Echo "Logs is saved in: " & strLogFile
     LogFile.Close
   End If
   SET WSI = Nothing
@@ -596,7 +596,7 @@ Do While argIndex<argCount
     If argIndex >= argCount Then
         Usage 1
     End If
-    strPort = cmdArguments(argIndex)
+    iPort = cmdArguments(argIndex)
   ElseIf cmdArguments(argIndex) = "-pb" OR cmdArguments(argIndex) = "--pgbouncer-port"  Then
     argIndex = argIndex + 1
     If argIndex >= argCount Then
@@ -670,7 +670,7 @@ Function Question(ByVal que, ByVal validator, ByVal defVal, ByVal actualVal, ByV
       LogError strErrMsg
     End If
     If NOT bRes AND loopUntilRes AND stopInstallOnError Then
-      LogNote strErrMsg
+      ShowMessage "NOTE: " & strErrMsg
     End If
   Loop Until bRes AND loopUntilRes
   Question = strAnswer
@@ -1607,9 +1607,15 @@ Class DevServer
       p_strErrMsg = "Not a valid locale." : Exit Function
     End If
     filteredArray = Filter(m_arrayLocales, LCase(p_strLocale))
-    If NOT IsArray(filteredArray) OR _
-       UBound(filteredArray) = -1 OR _
-       NOT filteredArray(0) = LCase(p_strLocale) Then
+    If NOT IsArray(filteredArray) Then
+      p_strErrMsg = "Not a valid locale." : Exit Function
+    End If
+
+    If UBound(filteredArray) = -1 Then
+      p_strErrMsg = "Not a valid locale." : Exit Function
+    End If
+
+    If NOT filteredArray(0) = LCase(p_strLocale) Then
       p_strErrMsg = "Not a valid locale." : Exit Function
     End If
 
