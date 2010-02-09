@@ -28,7 +28,6 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
-    <windowsSoftwareRegistryPrefix/>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
@@ -328,7 +327,6 @@
                        <isFalse value="${installer_is_root_install}"/>
                     </ruleList>
                 </throwError>
-                <setInstallerVariable name="windowsSoftwareRegistryPrefix" value="${vendor}\${fullName}" persist="1"/>
 
                 <!-- Creates the ini file if not exits -->
                 <touchFile path="/etc/postgres-reg.ini">
@@ -1495,6 +1493,14 @@ database=${controldb}
 
     </postInstallationActionList>
 
+    <readyToInstallActionList>
+        <setInstallerVariable name="branding" value="" >
+            <ruleList>
+               <isFalse value="${component(repconsole).selected}" /> 
+            </ruleList>
+        </setInstallerVariable>
+    </readyToInstallActionList> 
+
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
         <actionGroup>
@@ -2404,7 +2410,7 @@ database=${controldb}
    </componentList>
     <!-- Install Directory -->
     <parameterList>
-        <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
+        <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="0" cliOptionShow="0"/>
         <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
