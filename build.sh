@@ -26,6 +26,9 @@ _init() {
     
     # Set the package versions string
     PG_PACKAGE_VERSION=$PG_MAJOR_VERSION.`echo $PG_MINOR_VERSION | sed -e 's/\./-/'`
+
+    # Setup CVS
+    export CVS_RSH=ssh
 }
 
 ################################################################################
