@@ -1393,7 +1393,6 @@ database=${controldb}
                 <isFalse value="${IsPubServerUpgrade}" /> 
             </ruleList>
         </runProgram>
-        <!-- 
         <deleteFile path="${system_temp_directory}/servicewrapper.bat" >          
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
@@ -1401,7 +1400,6 @@ database=${controldb}
                 <isFalse value="${IsPubServerUpgrade}" /> 
             </ruleList>
         </deleteFile>
-        -->
         <writeFile>
             <path>${system_temp_directory}/servicewrapper.bat</path>
             <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Subscription Service" -d "${msg(sub.service.desc)}" -c "${java_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" subserver ${subport} """"${installdir}\etc""""" -u "${serviceaccount}" -p "${servicepassword}" -w "${installdir}\bin"</text>
