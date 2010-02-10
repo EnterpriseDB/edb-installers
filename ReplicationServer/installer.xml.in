@@ -984,24 +984,27 @@
                     <substitution>\=</substitution>    
                 </setInstallerVariableFromRegEx>
 
-                <runProgram>
-                   <customErrorMessage>${msg(error.create.edbrepl)}</customErrorMessage>
-                   <program>${installdir}\installer\xDBReplicationServer\CreateEDBReplConfForUser.exe</program>
-                   <programArguments>${serviceaccount} "${servicepassword}" ${pghost} ${pgport} ${controldb} ${pguser} "${esc_enc_password}" ${dbtype}</programArguments>
-                   <workingDirectory>${installdir}\installer\xDBReplicationServer</workingDirectory>
-                   <abortOnError>0</abortOnError>
-                   <showMessageOnError>1</showMessageOnError>
-                   <ruleList>
-                        <compareText text="${platform_name}" logic="equals" value="windows" />
-                   </ruleList>
-                </runProgram>
-
-                <deleteFile>
-                   <path>${installdir}\installer\xDBReplicationServer\CreatePGPassconfForUser.exe</path>
+               <createDirectory path="${installdir}\etc" >
                     <ruleList>
                         <compareText text="${platform_name}" logic="equals" value="windows" />
                     </ruleList>
-                </deleteFile>
+               </createDirectory> 
+
+               <writeFile>
+                   <path>${installdir}\etc\edb-repl.conf</path>
+                   <text>
+user=${pguser}
+port=${pgport}
+password=${esc_enc_password}
+type=${dbtype}
+host=${pghost}
+database=${controldb}
+                    </text>
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows" />
+                    </ruleList>
+               </writeFile>
+
 
                <writeFile>
                    <path>/etc/edb-repl.conf</path>
@@ -1274,6 +1277,10 @@ database=${controldb}
                     <pattern>@@PUBPORT@@</pattern>
                     <value>${pubport}</value>
                 </substitution>
+                <substitution>
+                    <pattern>@@CONFPATH@@</pattern>
+                    <value>${installdir}\etc</value>
+                </substitution>
             </substitutionList>
             <ruleList>
                 <isTrue value="${component(pubserver).selected}" />
@@ -1294,6 +1301,10 @@ database=${controldb}
                 <substitution>
                     <pattern>@@SUBPORT@@</pattern>
                     <value>${subport}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@CONFPATH@@</pattern>
+                    <value>${installdir}\etc</value>
                 </substitution>
             </substitutionList>
             <ruleList>
@@ -1362,7 +1373,7 @@ database=${controldb}
 
        <writeFile>
             <path>${system_temp_directory}/servicewrapper.bat</path>
-            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Publication Service" -d "${msg(pub.service.desc)}" -c "${java_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" pubserver ${pubport}" -u "${serviceaccount}" -p "${servicepassword}" -w "${installdir}\bin"</text>
+            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Publication Service" -d "${msg(pub.service.desc)}" -c "${java_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" pubserver ${pubport} """"${installdir}\etc""""" -u "${serviceaccount}" -p "${servicepassword}" -w "${installdir}\bin"</text>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(pubserver).selected}" />
@@ -1382,6 +1393,7 @@ database=${controldb}
                 <isFalse value="${IsPubServerUpgrade}" /> 
             </ruleList>
         </runProgram>
+        <!-- 
         <deleteFile path="${system_temp_directory}/servicewrapper.bat" >          
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
@@ -1389,10 +1401,10 @@ database=${controldb}
                 <isFalse value="${IsPubServerUpgrade}" /> 
             </ruleList>
         </deleteFile>
-
+        -->
         <writeFile>
             <path>${system_temp_directory}/servicewrapper.bat</path>
-            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Subscription Service" -d "${msg(sub.service.desc)}" -c "${java_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" subserver ${subport}" -u "${serviceaccount}" -p "${servicepassword}" -w "${installdir}\bin"</text>
+            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Subscription Service" -d "${msg(sub.service.desc)}" -c "${java_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" subserver ${subport} """"${installdir}\etc""""" -u "${serviceaccount}" -p "${servicepassword}" -w "${installdir}\bin"</text>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(subserver).selected}" />
@@ -1726,6 +1738,15 @@ database=${controldb}
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <!-- Delete the installdir\etc\edb-repl.conf file in windows -->
+        <deleteFile path="${installdir}\etc\edb-repl.conf" >
+            <ruleList>
+                <fileExists path="${installdir}\etc\edb-repl.conf" />
+                <compareText text="${platform_name}" logic="equals" value="windows" />
+            </ruleList>
+        </deleteFile> 
+
     </preUninstallationActionList>
     <allowComponentSelection>1</allowComponentSelection>
     <!-- Components -->

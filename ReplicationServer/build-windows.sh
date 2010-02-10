@@ -16,6 +16,12 @@ _prep_ReplicationServer_windows() {
       rm -rf ReplicationServer.windows  || _die "Couldn't remove the existing ReplicationServer.windows source directory (source/ReplicationServer.windows)"
     fi
    
+    if [ -e ReplicationServer.zip ];
+    then
+      echo "Removing existing ReplicationServer.zip"
+      rm -f ReplicationServer.zip  || _die "Couldn't remove the existing ReplicationServer.zip (source/ReplicationServer.zip)"
+    fi
+   
     echo "Creating staging directory ($WD/ReplicationServer/source/ReplicationServer.windows)"
     mkdir -p $WD/ReplicationServer/source/ReplicationServer.windows || _die "Couldn't create the ReplicationServer.windows directory"
 
@@ -28,9 +34,6 @@ _prep_ReplicationServer_windows() {
 
     # Copy createuser to ReplicationServer directory
     cp -R $WD/ReplicationServer/scripts/windows/createuser $WD/ReplicationServer/source/ReplicationServer.windows/createuser || _die "Failed to copy scripts(createuser)"
-
-    # Copy CreateEDBReplConfForUser to ReplicationServer directory
-    cp -R $WD/ReplicationServer/scripts/windows/CreateEDBReplConfForUser $WD/ReplicationServer/source/ReplicationServer.windows/CreateEDBReplConfForUser || _die "Failed to copy scripts(CreateEDBReplConfForUser)"
 
     # Copy ServiceWrapper to ReplicationServer directory
     cp -R $WD/resources/ServiceWrapper $WD/ReplicationServer/source/ReplicationServer.windows/ServiceWrapper || _die "Failed to copy scripts(ServiceWrapper)"
@@ -82,13 +85,11 @@ _build_ReplicationServer_windows() {
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR ; cmd /c $PG_ANT_WINDOWS\\\\bin\\\\ant -f custom_build.xml dist" || _die "Failed to build replication server on the build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/validateuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/createuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/CreateEDBReplConfForUser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat CreateEDBReplConfForUser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/ServiceWrapper ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat ServiceWrapper.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
 
     echo "copying application files into the output directory"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy validateuser\\\\release\\\\validateuser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy createuser\\\\release\\\\createuser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy CreateEDBReplConfForUser\\\\release\\\\CreateEDBReplConfForUser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy ServiceWrapper\\\\release\\\\ServiceWrapper.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy /Y C:\\\\pgBuild\\\\vcredist\\\\vcredist_x86.exe  $OUTPUT_DIR" || _die "Failed to copy the VC++ runtimes on the windows build host"
 
@@ -112,7 +113,6 @@ _build_ReplicationServer_windows() {
     mv $WD/ReplicationServer/staging/windows/validateuser.exe $WD/ReplicationServer/staging/windows/installer/xDBReplicationServer || _die "Failed to copy the utilities"
     mv $WD/ReplicationServer/staging/windows/vcredist_x86.exe $WD/ReplicationServer/staging/windows/installer/xDBReplicationServer || _die "Failed to copy the utilities"
     mv $WD/ReplicationServer/staging/windows/createuser.exe $WD/ReplicationServer/staging/windows/installer/xDBReplicationServer || _die "Failed to copy the utilities"
-    mv $WD/ReplicationServer/staging/windows/CreateEDBReplConfForUser.exe $WD/ReplicationServer/staging/windows/installer/xDBReplicationServer || _die "Failed to copy the utilities"
     mv $WD/ReplicationServer/staging/windows/ServiceWrapper.exe $WD/ReplicationServer/staging/windows/scripts || _die "Failed to copy the utilities"
     mv $WD/ReplicationServer/staging/windows/edb-repencrypter.jar $WD/ReplicationServer/staging/windows/installer/xDBReplicationServer || _die "Failed to copy the utilities"
     
@@ -136,8 +136,8 @@ _build_ReplicationServer_windows() {
     cp -R MigrationToolKit/staging/windows/MigrationToolKit/lib/edb-migrationtoolkit.jar ReplicationServer/staging/windows/repserver/lib/repl-mtk || _die "Failed to copy edb-migrationtoolkit.jar"
 
     _replace "java -jar edb-repconsole.jar" "\"@@JAVA@@\" -jar \"@@INSTALL_DIR@@\\\\bin\\\\edb-repconsole.jar\"" "$WD/ReplicationServer/staging/windows/repconsole/bin/runRepConsole.bat" || _die "Failed to put the placehoder in runRepConsole.bat file"
-    _replace "java -jar edb-repserver.jar pubserver 9011" "\"@@JAVA@@\" -jar \"@@INSTALL_DIR@@\\\\bin\\\\edb-repserver.jar\" pubserver @@PUBPORT@@" "$WD/ReplicationServer/staging/windows/repserver/bin/runPubServer.bat" || _die "Failed to put the placehoder in runPubServer.bat file"
-    _replace "java -jar edb-repserver.jar subserver 9012" "\"@@JAVA@@\" -jar \"@@INSTALL_DIR@@\\\\bin\\\\edb-repserver.jar\" subserver @@SUBPORT@@" "$WD/ReplicationServer/staging/windows/repserver/bin/runSubServer.bat" || _die "Failed to put the placehoder in runSubServer.bat file"
+    _replace "java -jar edb-repserver.jar pubserver 9011" "\"@@JAVA@@\" -jar \"@@INSTALL_DIR@@\\\\bin\\\\edb-repserver.jar\" pubserver @@PUBPORT@@ \"@@CONFPATH@@\"" "$WD/ReplicationServer/staging/windows/repserver/bin/runPubServer.bat" || _die "Failed to put the placehoder in runPubServer.bat file"
+    _replace "java -jar edb-repserver.jar subserver 9012" "\"@@JAVA@@\" -jar \"@@INSTALL_DIR@@\\\\bin\\\\edb-repserver.jar\" subserver @@SUBPORT@@ \"@@CONFPATH@@\"" "$WD/ReplicationServer/staging/windows/repserver/bin/runSubServer.bat" || _die "Failed to put the placehoder in runSubServer.bat file"
 
 }
 
