@@ -65,7 +65,7 @@ lack of reference counting between packages) or desirable to remove everything.
 Build platform
 --------------
 
-The build platform is Mac OS X Tiger. We use OS X because it allows us to run
+The build platform is Mac OS X Snow Leopard. We use OS X because it allows us to run
 all other Intel based OS's on the same machine. All other supported platforms
 are run in VMWare Fusion virtual machines, with the exception of Solaris Sparc
 which obviously must be an external machine. The supported platforms can be set
@@ -74,20 +74,9 @@ as external machines if required by exposing nfs shares from mac.
 A number of additional dependencies are required when setting up the system,
 such as libxml2 and libxslt, as well as useful utilties such as wget. Setting
 these up correct is essentially to ensuring future Universal binary builds will
-work as expected on all supported OS X versions (10.4/Tiger and above).
+work as expected on all supported OS X versions (10.5/Leopard and above).
 
-The builds use the -isysroot compiler flag to ensure the use of the 10.4u SDK.
-This causes the linker to prefix some library paths with the isysroot path, which
-can cause linker errors with private libraries such as libgeos. To resolve this,
-it is necessary to symlink the build root into the SDK, e.g:
-
-sudo ln -s /Users /Developer/SDKs/MacOSX10.4u.sdk/Users
-
-For additional discussion of this issue, please see:
-http://lists.apple.com/archives/Darwin-dev/2006/Apr/msg00041.html
-
-Utilities (bison and automake 1.9/1.10 is required, others such as wget may be
-useful) should be installed using MacPorts:
+Utilities should be installed using MacPorts:
 
 - Download the installer from http://www.macports.org/ and install the package.
 
@@ -96,28 +85,25 @@ useful) should be installed using MacPorts:
 
 export PATH=$PATH:/opt/local/bin:/opt/local/sbin
 
-- Edit the MacPorts variants configuration to ensure we always get Universal 
-  builds. Add the following line to /opt/local/etc/macports/variants.conf:
+- Install packages:
 
-+universal
-
-- Install bison and friends:
-
-$ sudo port install bison
+$ sudo port install cmake
 $ sudo port install wget
-$ sudo port ossp-uuid
+$ sudo port install apache-ant
+$ sudo port install bison
+$ sudo port install flex
 
 Dependency libraries must be built with a little more control to ensure they 
 use the correct SDK to allow them to be used on Tiger and above. We manually
 build and install these packages into /usr/local/
 
-- Download the source for each library (eg. libxml2 & libxslt).
+- Download the source for each library (eg. libuuid, libxml2 & libxslt).
 
 - Unpack the source into /usr/local/src
 
 - Configure the source with a command such as:
 
-CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" ./configure --prefix=/usr/local/ --disable-dependency-tracking
+CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -arch i386 -arch x86_64 -arch ppc" LDFLAGS="-arch i386 -arch ppc -arch x86_64" ./configure --prefix=/usr/local/ --disable-dependency-tracking
 
 - Build and install:
 
@@ -127,6 +113,10 @@ sudo make install
 Note that we must make sure all additional libraries link against these
 libraries, and not the older, system copies. In the case of libxslt, we can
 do this by configuring with --with-libxml-prefix=/usr/local
+
+libuuid will typically link only in the primary architecture of the build
+machine. To fix this, remove the library (libuuid.16.dylib) from .libs/ and
+re-run the final link command, with the addition of appropriate -arch flags.
 
 - Set up DocBook SGML
 
@@ -138,11 +128,6 @@ Configuring DocBook SGML on Mac OS X with MacPorts.
     openjade
     docbook-xsl
     docbook2X
-
-Note: opensp might give error for universal mode, if installation fails, try
-turning off universal mode:
-
-sudo port install opensp -universal
 
 2) Download the docbook-dsssl stylesheets from 
 http://sourceforge.net/project/showfiles.php?group_id=21935&package_id=16611 
@@ -172,15 +157,51 @@ CATALOG "docbook-dsssl-1.79/catalog"
 
 8) Make sure that settings.sh is updated with docbook installation path.
 
+- Fix PAM headers
+
+When building on Snow Leopard, using the Leopard SDK a failure may be seen when
+configuring PostgreSQL for PAM. This is because the PAM header location moved 
+from /usr/include/pam in 10.5 to /usr/include/security in 10.6. The difference between
+the base OS and the SDK confuses configure. To avoid this, it may be necessary
+to move the PAM headers in /usr/include/security so configure cannot find them.
+
+- Downgrade Java
+
+Snow Leopard only ships with Java 1.6, but most of our code, as well as pl/java
+should be compiled with 1.5.
+
+1) Download the Jlast Java update for Leopard: 
+   http://support.apple.com/downloads/java_for_Mac_OS_X_10_5_Update_5
+   
+2) Download Pacifist from http://www.charlessoft.com/
+
+3) * IMPORTANT * Delete the symlinks, 1.5 and 1.5.0 from 
+   /System/Library/Frameworks/JavaVM.framework/Versions
+
+4) Open the Java update in Pacifist, and extract the 
+   /System/Library/Frameworks/JavaVM.framework/Versions/1.5.0 directory into
+   the corresponding location on the hard disk. 
+   
+5) Recreate the 1.5 symlink, to point to the 1.5.0 directory.
+
+You can now use Java 1.5, by setting JAVA_HOME to: 
+/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home
+
+NOTE: That this update may have to be repeated following any Java updates from Apple.
+
+Couple of packages needs hacking, while building on snow leopard.
+PHP: http://www.firewing1.com/node/31
+Slony-I: http://www.slony.info/bugzilla/show_bug.cgi?id=109
+
+
 Build VMs
 ---------
 
 All VMs (and in fact, the host machine) are setup to use user accounts called
-'pginstaller'. In order to access each, the VMs must be setup with fixed IP
-addresses which are recorded with an appropriate hostname in /etc/hosts on the
-host machine. Each hostname is specified in settings.sh. It may be necessary to 
-manually configure VMWare Fusion to bridge the network adaptor instead of using
-NAT.
+'buildfarm'. In order to access each, the VMs must be setup with fixed IP
+addresses which are recorded with an appropriate hostname in DNS. Each hostname 
+is specified in settings.sh. It may be necessary to manually configure VMWare 
+Fusion to bridge the network adaptor instead of using NAT.
 
 The top level 'pginstaller' directory is shared with all the VMs using the VMware
 shared folders feature. The path to this directory is specified in settings.h
@@ -206,9 +227,9 @@ Copy the resulting id_rsa.pub file to ~/.ssh/authorized_keys on each VM.
 
 The Windows VM is the most tricky to setup:
 
-- Install Windows XP Pro with service pack 2
-- Install an appropriate anti-virus package
-- Install Visual Studio 2005, and update to the latest service pack
+- Install Windows 7
+- Install Microsoft Sercurity Essentials
+- Install Visual Studio 2008, and update to the latest service pack
 - Create the 'buildfarm' user account, as a limited user.
 - Install the a basic installation of Cygwin from http://www.cygwin.com/. 
   Include the OpenSSH package.
@@ -344,27 +365,26 @@ Additional configuration in the VM's :
        1) Install jpeg libraries
        Download and extract jpeg from http://www.ijg.org/
        Compile and install: 
-       >env CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -arch i386 -arch ppc" LDFLAGS="-arch i386 -arch ppc" ./configure --prefix=/usr/local --disable-dependency-tracking
+       >env CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -arch i386 -arch ppc -arch x86_64" LDFLAGS="-arch i386 -arch ppc -arch x86_64" ./configure --prefix=/usr/local --disable-dependency-tracking
        >make
        >sudo make install
       
-      2) Install libpng
+      2) Install libpng (User only 1.2.x version - php-5.2.1 has not yet include support for 1.4.x version)
       Download and extract libpng from http://www.libpng.org/pub/png/pngcode.html
       Compile and install:
-      >env CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -arch i386 -arch ppc" LDFLAGS="-arch i386 -arch ppc" ./configure --prefix=/usr/local --disable-dependency-tracking
+      >env CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -arch i386 -arch ppc -arch x86_64" LDFLAGS="-arch i386 -arch ppc -arch x86_64" ./configure --prefix=/usr/local --disable-dependency-tracking
       >make
       >sudo make install
 
       3) Install freetype
       Download and extract freetype from http://freetype.org/download.html
-      >env CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -arch i386 -arch ppc" LDFLAGS="-arch i386 -arch ppc" ./configure --prefix=/usr/local --disable-dependency-tracking
+      >env CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -arch i386 -arch ppc -arch x86_64" LDFLAGS="-arch i386 -arch ppc -arch x86_64" ./configure --prefix=/usr/local --disable-dependency-tracking
       >make
       >sudo make install
 
-
 * Adding gd module to php in linux
 
-   * Prequisites:
+   * Prequisites: (linux/linux-x64)
 
        1) yum install freetype
        2) yum install libpng
