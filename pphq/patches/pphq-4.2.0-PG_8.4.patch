@@ -1,0 +1,177 @@
+Only in ../hq: matches
+diff -r -c hq/plugins/postgresql/etc/hq-plugin.xml ../hq/plugins/postgresql/etc/hq-plugin.xml
+*** hq/plugins/postgresql/etc/hq-plugin.xml	2008-06-23 11:37:15.000000000 +0530
+--- ../hq/plugins/postgresql/etc/hq-plugin.xml	2010-02-02 14:11:29.024024004 +0530
+***************
+*** 56,61 ****
+--- 56,62 ----
+              alias="LocksHeld"
+              template="${domain}:Type=Server:${alias}"
+              category="UTILIZATION"
++             indicator="true"
+              units="none"
+              collectionType="dynamic"/>
+      <metric name="Data Space Used"
+***************
+*** 69,74 ****
+--- 70,76 ----
+              alias="IndexSpaceUsed"
+              template="${domain}:Type=Server:${alias}"
+              category="UTILIZATION"
++             indicator="true"
+              units="KB"
+              collectionType="dynamic"/>
+      <metric name="Commits"
+***************
+*** 82,87 ****
+--- 84,90 ----
+              alias="Rollbacks"
+              template="${domain}:Type=Server:xact_rollback"
+              category="THROUGHPUT"
++             indicator="true"
+              units="none"
+              collectionType="trendsup"/>
+      <metric name="Blocks Read"
+***************
+*** 95,100 ****
+--- 98,104 ----
+              alias="BufferHits"
+              template="${domain}:Type=Server:blks_hit"
+              category="THROUGHPUT"
++             indicator="true"
+              units="none"
+              collectionType="trendsup"/>
+    </metrics>
+***************
+*** 118,135 ****
+--- 122,142 ----
+              alias="IndexScans"
+              template="${domain}:Type=Table,table=%table%:idx_scan"
+              category="UTILIZATION"
++             indicator="true"
+              units="none"
+              collectionType="trendsup"/>
+      <metric name="Sequential Scan Rows Read"
+              alias="SeqScanRowsRead"
+              template="${domain}:Type=Table,table=%table%:seq_tup_read"
+              category="UTILIZATION"
++             indicator="true"
+              units="none"
+              collectionType="trendsup"/>
+      <metric name="Index Scan Rows Read"
+              alias="IdxScanRowsRead"
+              template="${domain}:Type=Table,table=%table%:idx_tup_fetch"
+              category="UTILIZATION"
++             indicator="true"
+              units="none"
+              collectionType="trendsup"/>
+      <metric name="Data Space Used"
+***************
+*** 157,168 ****
+--- 164,177 ----
+              alias="NumRowUpdates"
+              template="${domain}:Type=Table,table=%table%:n_tup_upd"
+              category="THROUGHPUT"
++             indicator="true"
+              units="none"
+              collectionType="trendsup"/>
+      <metric name="Number Of Row Deletes"
+              alias="NumRowDeletes"
+              template="${domain}:Type=Table,table=%table%:n_tup_del"
+              category="THROUGHPUT"
++             indicator="true"
+              units="none"
+              collectionType="trendsup"/>
+    </metrics>
+***************
+*** 193,199 ****
+              alias="IndexFetches"
+              template="${domain}:Type=Index,index=%index%:idx_tup_fetch"
+              category="UTILIZATION"
+!             indicator="false"
+              units="none"
+              collectionType="trendsup"/>
+    </metrics>
+--- 202,208 ----
+              alias="IndexFetches"
+              template="${domain}:Type=Index,index=%index%:idx_tup_fetch"
+              category="UTILIZATION"
+!             indicator="true"
+              units="none"
+              collectionType="trendsup"/>
+    </metrics>
+***************
+*** 243,248 ****
+--- 252,259 ----
+    <help name="PostgreSQL 8.0" include="PostgreSQL"/>
+    <help name="PostgreSQL 8.1" include="PostgreSQL"/>
+    <help name="PostgreSQL 8.2" include="PostgreSQL"/>
++   <help name="PostgreSQL 8.3" include="PostgreSQL"/>
++   <help name="PostgreSQL 8.4" include="PostgreSQL"/>
+  
+    <server name="PostgreSQL" 
+            version="7.4">
+***************
+*** 336,339 ****
+--- 347,356 ----
+            version="8.3"
+            include="8.2"/>
+  
++   <!-- Define 8.4 server type -->
++   <server name="PostgreSQL"
++           version="8.4"
++           include="8.3"/>
++ 	
++ 
+  </plugin>
+diff -r -c hq/plugins/postgresql/src/org/hyperic/hq/plugin/postgresql/PostgreSQLServerDetector.java ../hq/plugins/postgresql/src/org/hyperic/hq/plugin/postgresql/PostgreSQLServerDetector.java
+*** hq/plugins/postgresql/src/org/hyperic/hq/plugin/postgresql/PostgreSQLServerDetector.java	2008-07-04 11:36:24.000000000 +0530
+--- ../hq/plugins/postgresql/src/org/hyperic/hq/plugin/postgresql/PostgreSQLServerDetector.java	2010-02-01 15:02:19.000000000 +0530
+***************
+*** 84,94 ****
+--- 84,96 ----
+      static final String VERSION_81 = "8.1";
+      static final String VERSION_82 = "8.2";
+      static final String VERSION_83 = "8.3";
++     static final String VERSION_84 = "8.4";
+  
+      static final String HQ_SERVER_DB = "HQ PostgreSQL";
+      static final String HQ_SERVER_DB81 = "HQ PostgreSQL 8.1";
+      static final String HQ_SERVER_DB82 = "HQ PostgreSQL 8.2";
+      static final String HQ_SERVER_DB83 = "HQ PostgreSQL 8.3";
++     static final String HQ_SERVER_DB84 = "HQ PostgreSQL 8.4";
+  
+      private static List getServerProcessList() {
+          ArrayList servers = new ArrayList();
+***************
+*** 315,321 ****
+                  server.setName(name);
+                  servers.add(server);
+              }
+!         }
+  
+          return servers;
+      }
+--- 317,338 ----
+                  server.setName(name);
+                  servers.add(server);
+              }
+!         }else if (getTypeInfo().getVersion().equals(VERSION_84)) {
+! 		            if (version.indexOf(VERSION_84) != -1) {
+! 		                String name;
+! 		                if (installPath.indexOf("hqdb") != -1) {
+! 		                    name = getPlatformName() + " " +
+! 			                            HQ_SERVER_DB84;
+! 		                    server.setIdentifier(HQ_SERVER_DB84);
+! 		                } else {
+! 		                    name = getPlatformName() + " " +
+! 			                        SERVER_NAME + " " + version;
+! 		                }
+! 		
+! 		                server.setName(name);
+! 		                servers.add(server);
+! 		            }
+! 		}
+  
+          return servers;
+      }
