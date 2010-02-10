@@ -748,7 +748,7 @@
        <!-- Set create_shortcuts variable to 1 if it is blank -->
        <setInstallerVariable>
            <name>create_shortcuts</name>
-           <value>${iShortCut}</value>
+           <value>${iShortcut}</value>
            <persist>1</persist>
            <ruleList>
                <compareText>
