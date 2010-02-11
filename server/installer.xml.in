@@ -3118,7 +3118,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                            <text>#!/bin/sh
 # The script sets environment variables helpful for PostgreSQL
 
-export PATH=$PATH:${installdir}/bin
+export PATH=${installdir}/bin:$PATH
 export PGDATA=${datadir}
 export PGDATABASE=postgres
 export PGUSER=${superaccount}
@@ -3150,7 +3150,7 @@ export PGLOCALEDIR=${installdir}/share/locale
                            <text>@ECHO OFF
 REM The script sets environment variables helpful for PostgreSQL
 
-@SET PATH=%PATH%;${installdir}\bin
+@SET PATH="${installdir}\bin";%PATH%
 @SET PGDATA=${datadir}
 @SET PGDATABASE=postgres
 @SET PGUSER=${superaccount}
