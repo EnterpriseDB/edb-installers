@@ -83,7 +83,13 @@ _build_ApachePhp_linux() {
     echo "Building php"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux; make" || _die "Failed to build php"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux; make install" || _die "Failed to install php"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux; cp php.ini-recommended $PG_STAGING/php/php.ini" || _die "Failed to copy php.ini file"
+    cd $WD/ApachePhp
+    if [ -f source/php.linux/php.ini-production ]; then
+      cp source/php.linux/php.ini-production staging/linux/php/php.ini || _die "Failed to copy php.ini file"
+    else
+      cp source/php.linux/php.ini-recommended staging/linux/php/php.ini || _die "Failed to copy php.ini file"
+    fi
+    cd $WD
 
     # Copy in the dependency libraries
     ssh $PG_SSH_LINUX "cp -R /lib/libssl.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"

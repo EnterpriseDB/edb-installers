@@ -89,7 +89,13 @@ _build_ApachePhp_linux_x64() {
     echo "Building php"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/php.linux-x64; make" || _die "Failed to build php"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/php.linux-x64; make install" || _die "Failed to install php"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/php.linux-x64; cp php.ini-recommended $PG_STAGING/php/php.ini" || _die "Failed to copy php.ini file"
+    cd $WD/ApachePhp
+    if [ -f source/php.linux-x64/php.ini-production ]; then
+      cp source/php.linux-x64/php.ini-production staging/linux-x64/php/php.ini || _die "Failed to copy php.ini file"
+    else
+      cp source/php.linux-x64/php.ini-recommended staging/linux-x64/php/php.ini || _die "Failed to copy php.ini file"
+    fi
+    cd $WD
 
     # Copy in the dependency libraries
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libssl.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
