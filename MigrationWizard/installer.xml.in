@@ -830,6 +830,12 @@
                     <key>Branding</key>
                     <value/>
                 </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>MigrationWizard</section>
+                    <key>Username</key>
+                    <value/>
+                </iniFileSet>
             </actionList>
             <ruleList>
                 <compareText>
