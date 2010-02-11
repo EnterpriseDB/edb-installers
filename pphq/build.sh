@@ -87,13 +87,13 @@ _prep_pphq() {
     cd $WD/pphq/source
     if [ -f ${WD}/pphq/patches/pphq_console_banner_bg.png ];
     then
-      echo "Extracting PPHQ Console banner back ground image..."
+      echo "Copying PPHQ Console banner back ground image..."
       cp ${WD}/pphq/patches/pphq_console_banner_bg.png $WD/pphq/source/hq/web/images/4.0/backgrounds/hdbg.png
     fi
    
     if [ -f ${WD}/pphq/patches/pphq_logo.jpg ];
     then
-      echo "Extracting PPHQ Console logo image..."
+      echo "Copying PPHQ Console logo image..."
       cp ${WD}/pphq/patches/pphq_logo.jpg $WD/pphq/source/hq/web/images/4.0/logos/pphq_logo.jpg
     fi
 
