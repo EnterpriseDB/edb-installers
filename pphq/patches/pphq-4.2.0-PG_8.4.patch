@@ -1,7 +1,8 @@
-Only in ../hq: matches
-diff -r -c hq/plugins/postgresql/etc/hq-plugin.xml ../hq/plugins/postgresql/etc/hq-plugin.xml
-*** hq/plugins/postgresql/etc/hq-plugin.xml	2008-06-23 11:37:15.000000000 +0530
---- ../hq/plugins/postgresql/etc/hq-plugin.xml	2010-02-02 14:11:29.024024004 +0530
+Only in hq/: ${ENV.JBOSS_HOME}
+Only in hq/: build
+diff -r -c hq.orig/plugins/postgresql/etc/hq-plugin.xml hq/plugins/postgresql/etc/hq-plugin.xml
+*** hq.orig/plugins/postgresql/etc/hq-plugin.xml	2008-06-23 07:07:15.000000000 +0100
+--- hq/plugins/postgresql/etc/hq-plugin.xml	2010-02-10 21:51:20.000000000 +0000
 ***************
 *** 56,61 ****
 --- 56,62 ----
@@ -101,19 +102,87 @@ diff -r -c hq/plugins/postgresql/etc/hq-plugin.xml ../hq/plugins/postgresql/etc/
               collectionType="trendsup"/>
     </metrics>
 ***************
-*** 243,248 ****
---- 252,259 ----
+*** 239,248 ****
+--- 248,294 ----
+      ]]>
+    </help>  
+  
++   <help name="PostgreSQL83">
++     <![CDATA[
++     <p>
++     <h3>Configure PostgreSQL ${product.version} for Monitoring</h3>
++     </p>
++     <p>
++     Monitoring of PostgreSQL is done through the statistics collector.  For
++     PostgreSQL to collect these metrics, they must be enabled by modifying
++     the statistics parameter in postgresql.conf. This is not normally required
++     by default.
++     </p>
++     <p>
++     The parameter required for monitoring is as follows:<br>
++     </p>
++     <ul>
++       <li><b>track_counts = true</b></li>
++     </ul>
++ 
++     <p>
++     Make sure to restart PostgreSQL after making the changes to
++     postgresql.conf.</p>
++ 
++     <p>
++     Also note that some metrics like 'Index Space Used' and 'Database
++     Space Used' will only be incremented after vacuum or analyze is
++     run.</p>
++ 
++     <p>
++     For more information see the <a href="http://www.postgresql.org/docs">
++     PostgreSQL Documentation</a>
++     </p>
++     ]]>
++   </help>
++ 
++ 
+    <help name="PostgreSQL 7.4" include="PostgreSQL"/>
     <help name="PostgreSQL 8.0" include="PostgreSQL"/>
     <help name="PostgreSQL 8.1" include="PostgreSQL"/>
     <help name="PostgreSQL 8.2" include="PostgreSQL"/>
-+   <help name="PostgreSQL 8.3" include="PostgreSQL"/>
-+   <help name="PostgreSQL 8.4" include="PostgreSQL"/>
++   <help name="PostgreSQL 8.3" include="PostgreSQL83"/>
++   <help name="PostgreSQL 8.4" include="PostgreSQL83"/>
   
     <server name="PostgreSQL" 
             version="7.4">
 ***************
+*** 272,284 ****
+  
+      <properties>
+         <property name="version"
+!                  description="PostgreSQL Version"/>
+      </properties>
+  
+      <config>
+        <option name="jdbcUrl"
+                description="JDBC Connection URL"
+!               default="jdbc:postgresql://localhost/hq"/>
+        <option name="jdbcUser"
+                description="JDBC User"
+                default="postgres"/>
+--- 318,330 ----
+  
+      <properties>
+         <property name="version"
+!                  description="Postgres Version"/>
+      </properties>
+  
+      <config>
+        <option name="jdbcUrl"
+                description="JDBC Connection URL"
+!               default="jdbc:postgresql://localhost/postgres"/>
+        <option name="jdbcUser"
+                description="JDBC User"
+                default="postgres"/>
+***************
 *** 336,339 ****
---- 347,356 ----
+--- 382,391 ----
             version="8.3"
             include="8.2"/>
   
@@ -124,9 +193,9 @@ diff -r -c hq/plugins/postgresql/etc/hq-plugin.xml ../hq/plugins/postgresql/etc/
 + 	
 + 
   </plugin>
-diff -r -c hq/plugins/postgresql/src/org/hyperic/hq/plugin/postgresql/PostgreSQLServerDetector.java ../hq/plugins/postgresql/src/org/hyperic/hq/plugin/postgresql/PostgreSQLServerDetector.java
-*** hq/plugins/postgresql/src/org/hyperic/hq/plugin/postgresql/PostgreSQLServerDetector.java	2008-07-04 11:36:24.000000000 +0530
---- ../hq/plugins/postgresql/src/org/hyperic/hq/plugin/postgresql/PostgreSQLServerDetector.java	2010-02-01 15:02:19.000000000 +0530
+diff -r -c hq.orig/plugins/postgresql/src/org/hyperic/hq/plugin/postgresql/PostgreSQLServerDetector.java hq/plugins/postgresql/src/org/hyperic/hq/plugin/postgresql/PostgreSQLServerDetector.java
+*** hq.orig/plugins/postgresql/src/org/hyperic/hq/plugin/postgresql/PostgreSQLServerDetector.java	2008-07-04 07:06:24.000000000 +0100
+--- hq/plugins/postgresql/src/org/hyperic/hq/plugin/postgresql/PostgreSQLServerDetector.java	2010-02-10 21:12:19.000000000 +0000
 ***************
 *** 84,94 ****
 --- 84,96 ----

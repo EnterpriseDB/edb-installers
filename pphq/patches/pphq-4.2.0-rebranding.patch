@@ -5132,7 +5132,7 @@ diff -rcN hq/web/common/About.jsp ../hq/web/common/About.jsp
     </tr>
     <tr>
       <td valign="top" class="DisplayContent"><fmt:message key="about.MoreInfo.Label"/><br>
-!     <html:link href="http:/www.enterprisedb.com/myenterprisedb.do" onclick="window.close();window.open('http:/www.enterprisedb.com/myenterprisedb.do');"><fmt:message key="about.MoreInfo.LinkSupport"/></html:link><br>
+!     <html:link href="http://www.enterprisedb.com/myenterprisedb.do" onclick="window.close();window.open('http://www.enterprisedb.com/myenterprisedb.do');"><fmt:message key="about.MoreInfo.LinkSupport"/></html:link><br>
 !     <html:link href="http://www.enterprisedb.com/forumsAction.do"  onclick="window.close();window.open('http://www.enterprisedb.com/forumsAction.do');"><fmt:message key="about.MoreInfo.LinkForums"/></html:link><br>
       &nbsp;</td>
       <td valign="bottom" align="right" class="DisplayContent"><html:img page="/images/dash_movecontent_del-on.gif" onclick="window.close()"/></td>

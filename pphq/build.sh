@@ -85,11 +85,18 @@ _prep_pphq() {
     fi
 
     cd $WD/pphq/source
-    if [ -f ${WD}/pphq/patches/pphq-${PG_VERSION_PPHQ}-images.tgz ];
+    if [ -f ${WD}/pphq/patches/pphq_console_banner_bg.png ];
     then
-      echo "Extracting PPHQ Rebranding images..."
-      tar xvzf $WD/pphq/patches/pphq-${PG_VERSION_PPHQ}-images.tgz
+      echo "Extracting PPHQ Console banner back ground image..."
+      cp ${WD}/pphq/patches/pphq_console_banner_bg.png $WD/pphq/source/hq/web/images/4.0/backgrounds/hdbg.png
     fi
+   
+    if [ -f ${WD}/pphq/patches/pphq_logo.jpg ];
+    then
+      echo "Extracting PPHQ Console logo image..."
+      cp ${WD}/pphq/patches/pphq_logo.jpg $WD/pphq/source/hq/web/images/4.0/logos/pphq_logo.jpg
+    fi
+
     mv $WD/pphq/source/hq/hq_bin/launcher_bin/hq-server.exe $WD/pphq/source/hq/hq_bin/launcher_bin/pphq-server.exe || _die "Couldn't rename hq-server.exe"
     mv $WD/pphq/source/hq/hq_bin/launcher_bin/hq-agent.exe $WD/pphq/source/hq/hq_bin/launcher_bin/pphq-agent.exe || _die "Couldn't rename hq-agent.exe"
 

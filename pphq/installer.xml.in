@@ -1412,7 +1412,7 @@
         <parameterGroup>
             <name>pphqadmin</name>
             <title>${msg(pphq.monitoring.console.details.title)}</title>
-            <explanation>${pphqadmin_explanation}</explanation>
+            <explanation>${pphq.monitoring.console.details.explanation}</explanation>
             <value/>
             <default/>
             <parameterList>
@@ -1444,7 +1444,7 @@
                         <compareText logic="equals" text="${pphquser}" value=""/>
                     </ruleList>
                 </setInstallerVariable>
-                <setInstallerVariable name="pphqadmin_explanation" value="${msg(pphqadmin.explanation)}"/>
+                <setInstallerVariable name="pphqadmin_explanation" value="${msg(pphq.monitoring.console.details.explanation)}"/>
                 <actionGroup>
                     <actionList>
                         <setInstallerVariable name="pphqadmin_explanation" value="${msg(pphqadmin.explanation.upgrade)}"/>
@@ -1467,8 +1467,10 @@
                     </ruleList>
                 </throwError>
                 <throwError text="${msg(pphq.port.not.free)}">
+		    <!-- In case of upgrade this error should not be shown-->
                     <ruleList>
                         <portTest port="${pphqport}" condition="cannot_bind"/>
+			<compareText text="${pphqVersion}" logic="equals" value=""/>
                     </ruleList>
                 </throwError>
                 <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
