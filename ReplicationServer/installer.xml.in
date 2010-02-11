@@ -46,7 +46,6 @@
 
         <setInstallerVariable name="defaultpubport" value="9011" />
         <setInstallerVariable name="defaultsubport" value="9012" />
-        <setInstallerVariable name="defaultsyspassword" value="postgres" />
         <setInstallerVariable name="defaultserviceaccount" value="postgres" />
         <setInstallerVariable name="defaultdbtype" value="postgresql" />
         <setInstallerVariable name="defaultcontroldb" value="postgres" />
@@ -112,7 +111,6 @@
         <setInstallerVariable name="xDBReplicationServerVersion"  persist="1" value=""/>
         <setInstallerVariable name="defaultpubport" value="9011" />
         <setInstallerVariable name="defaultsubport" value="9012" />
-        <setInstallerVariable name="defaultsyspassword" value="postgres" />
         <setInstallerVariable name="defaultserviceaccount" value="postgres" />
         <setInstallerVariable name="defaultdbtype" value="postgresql" />
         <setInstallerVariable name="defaultcontroldb" value="postgres" />
@@ -2970,9 +2968,9 @@ database=${controldb}
                    <name>servicepassword</name>
                    <description>${msg(config.syspassword.description)}</description>
                    <explanation/>
-                   <value>${defaultsyspassword}</value>
+                   <value/>
                    <default/>
-                   <allowEmptyValue>1</allowEmptyValue>
+                   <allowEmptyValue>0</allowEmptyValue>
                    <cliOptionName>servicepassword</cliOptionName>
                    <cliOptionShow>yes</cliOptionShow>
                    <descriptionRetype>${msg(config.syspassword.confirm)}</descriptionRetype>
@@ -3024,17 +3022,6 @@ database=${controldb}
                  </actionList>
                  <ruleList>
                      <compareText logic="equals" text="${serviceaccount}" value=""/>
-                 </ruleList>
-              </actionGroup>
-              <actionGroup>
-                 <actionList>
-                     <throwError>
-                          <text>${msg(servicepassword.blank.error)}</text>
-                     </throwError>
-                 </actionList>
-                 <ruleList>
-                     <compareText logic="equals" text="${platform_name}" value="windows"/>
-                     <compareText logic="equals" text="${servicepassword}" value=""/>
                  </ruleList>
               </actionGroup>
               
