@@ -6170,7 +6170,7 @@ diff -rcN hq/web/WEB-INF/classes/ApplicationResources.properties ../hq/web/WEB-I
   errors.jsp.ClickHere=Click here
   errors.jsp.ToSee=to see the complete stack trace.
 ! errors.jsp.contactsupport=For help on this issue contact Postgres Plus HQ Support:
-! errors.jsp.callhyperic=support.enterprisedb.com
+! errors.jsp.callhyperic=support@enterprisedb.com
   #
   errors.cam.general=An unknown application error occurred.
   error.input.badchars=Input should not contain any of the following characters: |, ?, &, <, >, ', "

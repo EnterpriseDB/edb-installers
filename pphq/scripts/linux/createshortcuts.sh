@@ -88,16 +88,8 @@ _fixup_file "$INSTALLDIR/scripts/xdg/pphq-stop-$VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pphq-agent-start-$VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pphq-agent-stop-$VERSION_STR.desktop"
 
-# Copy the primary desktop file to the branded version. We don't do this if
-# the installation is not branded, to retain backwards compatibility.
-if [ $BRANDED -ne 0 ];
-then
-    cp "$INSTALLDIR/scripts/xdg/pphq-$VERSION_STR.directory" "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory"
-fi
-
 # Create the menu shortcuts - first the top level menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system --noupdate \
-      "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory" \
       "$INSTALLDIR/scripts/xdg/pphq-launch-$VERSION_STR.desktop" \
       "$INSTALLDIR/scripts/xdg/pphq-start-$VERSION_STR.desktop" \
       "$INSTALLDIR/scripts/xdg/pphq-stop-$VERSION_STR.desktop" \
