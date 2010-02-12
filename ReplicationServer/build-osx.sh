@@ -88,6 +88,7 @@ _postprocess_ReplicationServer_osx() {
     chmod ugo+x staging/osx/installer/xDBReplicationServer/createuser.sh
 
     cp staging/osx/edb-repencrypter.jar staging/osx/installer/xDBReplicationServer/ || _die "Failed to copy the DESEncrypter utility (staging/osx/edb-repencrypter.jar)"
+    cp -R staging/osx/lib staging/osx/installer/xDBReplicationServer/ || _die "Failed to copy the DESEncrypter utility's dependent libs (staging/osx/lib)"
     # Setup Launch Scripts
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the launch scripts"
     cp scripts/osx/startupcfg_publication.sh staging/osx/scripts/startupcfg_publication.sh || _die "Failed to copy the startupcfg_publication.sh script (scripts/osx/startupcfg_publication.sh)"

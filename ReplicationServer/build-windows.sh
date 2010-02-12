@@ -115,6 +115,7 @@ _build_ReplicationServer_windows() {
     mv $WD/ReplicationServer/staging/windows/createuser.exe $WD/ReplicationServer/staging/windows/installer/xDBReplicationServer || _die "Failed to copy the utilities"
     mv $WD/ReplicationServer/staging/windows/ServiceWrapper.exe $WD/ReplicationServer/staging/windows/scripts || _die "Failed to copy the utilities"
     mv $WD/ReplicationServer/staging/windows/edb-repencrypter.jar $WD/ReplicationServer/staging/windows/installer/xDBReplicationServer || _die "Failed to copy the utilities"
+    mv $WD/ReplicationServer/staging/windows/lib $WD/ReplicationServer/staging/windows/installer/xDBReplicationServer || _die "Failed to copy the utilities"
     
     cd $WD
     cp -R server/staging/windows/lib/libpq* ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy libpq in instscripts"

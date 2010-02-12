@@ -92,7 +92,7 @@ _postprocess_ReplicationServer_linux_x64() {
     chmod ugo+x staging/linux-x64/installer/xDBReplicationServer/createuser.sh
 
     cp staging/linux-x64/edb-repencrypter.jar staging/linux-x64/installer/xDBReplicationServer/ || _die "Failed to copy the DESEncrypter utility (staging/linux-x64/edb-repencrypter.jar)"
-
+    cp -R staging/linux-x64/lib staging/linux-x64/installer/xDBReplicationServer/ || _die "Failed to copy the DESEncrypter utility's dependent libs (staging/linux-x64/lib)" 
     # Setup Launch Scripts
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the launch scripts"
     cp scripts/linux/startupcfg_publication.sh staging/linux-x64/scripts/startupcfg_publication.sh || _die "Failed to copy the startupcfg_publication.sh script (scripts/linux-x64/startupcfg_publication.sh)"

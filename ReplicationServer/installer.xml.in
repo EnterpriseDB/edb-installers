@@ -118,6 +118,12 @@
         <setInstallerVariable name="defaultpgport" value="5432" />
         <setInstallerVariable name="defaultpguser" value="postgres" />
         <setInstallerVariable name="defaultpgpassword" value="postgres" />
+        <setInstallerVariable name="servicepassword" value="postgres" >
+          <ruleList>
+              <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+          </ruleList>
+        </setInstallerVariable>
+             
         
         <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
@@ -766,16 +772,41 @@
           </ruleList>
         </runProgram>
 
-        <!-- WIN : Create user, if not exists -->
-        <runProgram>
-          <program>${installdir}\installer\xDBReplicationServer\createuser.exe</program>
-          <!-- The dot at the beginning of the arguments is the domain -->
-          <programArguments>. "${serviceaccount}" "${servicepassword.password}"</programArguments>
-          <progressText>${msg(progress.text.creating.user)}</progressText>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
+        <actionGroup>
+          <actionList>
+             <!-- WIN : Create user, if not exists -->
+             <runProgram>
+               <program>${installdir}\installer\xDBReplicationServer\createuser.exe</program>
+               <!-- The dot at the beginning of the arguments is the domain -->
+               <programArguments>. "${serviceaccount}" "${servicepassword.password}"</programArguments>
+               <progressText>${msg(progress.text.creating.user)}</progressText>
+               <abortOnError>0</abortOnError>
+               <showMessageOnError>0</showMessageOnError>
+             </runProgram>
+             <!-- WIN : Validate user, if not exists -->
+             <runProgram>
+                <program>${installdir}\installer\xDBReplicationServer\validateuser.exe</program>
+                <!-- The dot at the beginning of the arguments is the domain -->
+                <programArguments>. "${serviceaccount}" "${servicepassword.password}"</programArguments>
+                <progressText>${msg(progress.text.creating.user)}</progressText>
+                <abortOnError>0</abortOnError>
+                <showMessageOnError>0</showMessageOnError>
+             </runProgram>
+             <throwError>
+                <text>${msg(script.command.line.error)}</text>
+                <ruleList>
+                    <compareText logic="equals" text="${program_exit_code}" value="127"/>
+                </ruleList>
+             </throwError>
+             <throwError>
+                <text>${msg(config.servicepassword.incorrect.windows)}</text>
+                <ruleList>
+                    <compareText logic="equals" text="${program_exit_code}" value="1"/>
+                </ruleList>
+             </throwError>
+          </actionList>
           <ruleList>            
-             <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+             <compareText text="${platform_name}" logic="equals" value="windows"/>
              <compareText text="${installer_ui}" logic="equals" value="unattended" />
              <ruleGroup>
                  <ruleEvaluationLogic>or</ruleEvaluationLogic>
@@ -793,11 +824,11 @@
                          </ruleList>                  
                      </ruleGroup>
                  </ruleList>
-            </ruleGroup> 
+             </ruleGroup> 
           </ruleList>
-        </runProgram>
+       </actionGroup>
 
-        <actionGroup>
+       <actionGroup>
             <actionList>
                 <actionGroup>
                     <actionList>
@@ -973,6 +1004,7 @@
                 </setInstallerVariableFromScriptOutput>   
 
                 <deleteFile path="${installdir}/installer/xDBReplicationServer/edb-repencrypter.jar" />
+                <deleteFile path="${installdir}/installer/xDBReplicationServer/lib" />
 
                 <!-- Escape the = sign -->
                 <setInstallerVariableFromRegEx>
