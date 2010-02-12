@@ -1448,7 +1448,7 @@
         <parameterGroup>
             <name>pphqadmin</name>
             <title>${msg(pphq.monitoring.console.details.title)}</title>
-            <explanation>${msg(pphq.monitoring.console.details.explanation)}</explanation>
+            <explanation>${pphqadmin_explanation}</explanation>
             <value/>
             <default/>
             <parameterList>

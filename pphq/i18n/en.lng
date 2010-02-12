@@ -42,7 +42,7 @@ pgplus.details.explanation=Please enter the connection information for the datab
 
 pphq.monitoring.console.details.explanation=Please provide Postgres Plus HQ Monitoring Console details
 
-pphqadmin.explanation.upgrade=Please provide password for Postgres Plus HQ Monitoring Console admin user:${pphquser} for port:${pphqport}
+pphqadmin.explanation.upgrade=Please provide password for Postgres Plus HQ Monitoring Console admin user:${pphquser} for port:${pphqport}.
 
 pphq.port.not.free=PPHQ port: ${pphqport} is already in use.
 
