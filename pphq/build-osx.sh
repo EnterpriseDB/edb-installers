@@ -11,16 +11,17 @@ _prep_pphq_osx() {
     echo " Pre Process : PPHQ (OSX)"
     echo "*******************************************************"
 
-    # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/pphq/staging/osx ];
+    PPHQ_STAGING=$WD/pphq/staging/osx
+
+    if [ -e $PPHQ_STAGING ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/pphq/staging/osx || _die "Couldn't remove the existing staging directory"
+      rm -rf $PPHQ_STAGING || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/pphq/staging/osx)"
-    mkdir -p $WD/pphq/staging/osx || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/pphq/staging/osx || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($PPHQ_STAGING)"
+    mkdir -p $PPHQ_STAGING || _die "Couldn't create the staging directory"
+    chmod ugo+w $PPHQ_STAGING || _die "Couldn't set the permissions on the staging directory"
 
 }
 
@@ -35,24 +36,25 @@ _build_pphq_osx() {
     echo "*******************************************************"
 
     PPHQ_STAGING=$WD/pphq/staging/osx
-    mkdir -p $PPHQ_STAGING/pphq
-    mkdir -p $PPHQ_STAGING/instscripts
-    mkdir -p $PPHQ_STAGING/instscripts/lib
-    mkdir -p $PPHQ_STAGING/instscripts/bin
+    SERVER_STAGING=$WD/server/staging/osx
+
+    mkdir -p $PPHQ_STAGING/pphq || _die "Failed to create the pphq installer directory"
+    mkdir -p $PPHQ_STAGING/instscripts || _die "Failed to create the instscripts directory"
+    mkdir -p $PPHQ_STAGING/instscripts/bin || _die "Failed to create the instscripts directory"
+    mkdir -p $PPHQ_STAGING/instscripts/lib || _die "Failed to create the instscripts directory"
 
     echo "Copying Postgres Plus HQ installer to staging directory"
-    cp -r $WD/pphq/source/hq/build/archive/hyperic-hq-installer/* $PPHQ_STAGING/pphq
+    cp -r $WD/pphq/source/hq/build/archive/hyperic-hq-installer/* $PPHQ_STAGING/pphq/
 
     mkdir -p $PPHQ_STAGING/pphq/templates
     cp $WD/pphq/resources/*.prop $PPHQ_STAGING/pphq/templates
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
-    cp $PG_PGHOME_OSX/bin/psql $PPHQ_STAGING/instscripts/bin || _die "Failed to copy psql"
-    cp $PG_PGHOME_OSX/lib/libpq.*dylib $PPHQ_STAGING/instscripts/lib || _die "Failed to copy the dependency library (libpq.5.dylib)"
-    cp $PG_PGHOME_OSX/lib/libxml2* $PPHQ_STAGING/instscripts/lib || _die "Failed to copy the latest libxml2"
+    cp $SERVER_STAGING/bin/psql $PPHQ_STAGING/instscripts/bin || _die "Failed to copy psql"
+    cp $SERVER_STAGING/lib/libpq.*dylib $PPHQ_STAGING/instscripts/lib || _die "Failed to copy the dependency library (libpq.5.dylib)"
+    cp $SERVER_STAGING/lib/libxml2* $PPHQ_STAGING/instscripts/lib || _die "Failed to copy the latest libxml2"
 
 }
-
 
 ################################################################################
 # PPHQ PostProcess
@@ -66,9 +68,9 @@ _postprocess_pphq_osx() {
 
     PPHQ_STAGING=$WD/pphq/staging/osx
     PPHQ_DIR=$WD/pphq
-    cd $WD/pphq
 
-    # Setup the installer scripts.
+    cd $PPHQ_DIR
+
     mkdir -p $PPHQ_STAGING/installer/pphq || _die "Failed to create a directory for the install scripts"
 
     cp $PPHQ_DIR/scripts/tune-os.sh $PPHQ_STAGING/installer/pphq/tune-os.sh || _die "Failed to copy the tune-os.sh script"

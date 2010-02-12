@@ -83,8 +83,8 @@
     <initializationActionList>
         <setInstallerVariable name="pphqServer" value="pphq-server"/>
         <setInstallerVariable name="pphqAgent" value="pphq-agent"/>
+        <setInstallerVariable name="pphqVersion" value=""/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PPHQ" />
-        <setInstallerVariable name="hq_db_exist" value="0"/>
         <setInstallerVariable name="pphqadmindb" value="pphq"/>
         <setInstallerVariable name="project.parameter(jrehome).ask" value="0"/>
         <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>
@@ -156,6 +156,7 @@
 
     </initializationActionList>
     <preInstallationActionList>
+        <setInstallerVariable name="create_database" value="Yes"/>
 
         <actionGroup>
             <actionList>
@@ -578,7 +579,7 @@
         </actionGroup>
 
     </preInstallationActionList>
-    <readyToInstallActionList>
+    <postInstallationActionList>
         <setInstallerVariableFromRegEx name="pphqJavaHome" text="${java_executable}">
             <pattern>bin\/java</pattern>
             <substitution/>
@@ -622,23 +623,24 @@
 
         <actionGroup>
             <actionList>
-                <runProgram program="${installdir}/server-PG_VERSION_PPHQ/bin/${PPHQSERVERSCRIPT}.sh"
+                <runProgram program="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"
                         programArguments="stop"
                         workingDirectory="${installdir}/scripts"
                         abortOnError="0">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                        <fileExists path="${installdir}/server-PG_VERSION_PPHQ/bin/${PPHQSERVERSCRIPT}.sh"/>
+                        <fileExists path="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"/>
                     </ruleList>
                 </runProgram>
                 <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="1"/>
+                <setInstallerVariable name="create_database" value="No">
+                    <isTrue value="${admin_db_exist}"/>
+                </setInstallerVariable>
             </actionList>
             <ruleList>
-                <stringTest text="${pphqVersion}" type="not_empty"/>
+                <compareText logic="does_not_equal" text="${pphqVersion}" value=""/>
             </ruleList>
         </actionGroup>
-    </readyToInstallActionList>
-    <postInstallationActionList>
         <setInstallerVariable name="serverFiles" value=""/>
         <setInstallerVariable name="agentFiles" value=""/>
 
@@ -710,6 +712,7 @@
                 <substitution pattern="@@HQ_JNP_PORT@@" value="${pphq_jnp_port}"/>
                 <substitution pattern="@@PGADMINDB@@" value="${pphqadmindb}"/>
                 <substitution pattern="@@HQPORT@@" value="${pphqport}"/>
+                <substitution pattern="@@DBCREATE@@" value="${create_database}"/>
             </substitutionList>
         </substitute>
 

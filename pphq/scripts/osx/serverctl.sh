@@ -12,7 +12,7 @@ DEBUG=1
 WAITONEXIT=1
 SCRIPTNAME=${0}
 
-usage()
+function usage()
 {
   log "USAGE: ${SCRIPTNAME} [--no-debug|--no-wait|--start|--stop|--restart]"
 }
@@ -70,7 +70,7 @@ do
     ;;
   *)
     log "Unknow option: $1"
-    Usage
+    usage
     exit 127
   esac
   shift

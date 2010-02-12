@@ -9,9 +9,9 @@ _prep_pphq_linux() {
     echo "*******************************************************"
     echo " Pre Process : PPHQ (LINUX)"
     echo "*******************************************************"
+
     PPHQ_STAGING=$WD/pphq/staging/linux
 
-    # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $PPHQ_STAGING ];
     then
       echo "Removing existing staging directory"
@@ -36,18 +36,19 @@ _build_pphq_linux() {
 
     PPHQ_STAGING=$WD/pphq/staging/linux
     SERVER_STAGING=$WD/server/staging/linux
-    echo ""
-    echo "Copying Postgres Plus installers to staging directory"
+
     mkdir -p $PPHQ_STAGING/pphq || _die "Failed to create the pphq installer directory"
+    mkdir -p $PPHQ_STAGING/instscripts || _die "Failed to create the instscripts directory"
+    mkdir -p $PPHQ_STAGING/instscripts/bin || _die "Failed to create the instscripts directory"
+    mkdir -p $PPHQ_STAGING/instscripts/lib || _die "Failed to create the instscripts directory"
+
+    echo "Copying Postgres Plus HQ installer to staging directory"
     cp -r $WD/pphq/source/hq/build/archive/hyperic-hq-installer/* $PPHQ_STAGING/pphq/
 
     mkdir -p $PPHQ_STAGING/pphq/templates
     cp $WD/pphq/resources/*.prop $PPHQ_STAGING/pphq/templates
 
     #Copy psql for postgres validation
-    mkdir -p $PPHQ_STAGING/instscripts || _die "Failed to create the instscripts directory"
-    mkdir -p $PPHQ_STAGING/instscripts/bin || _die "Failed to create the instscripts directory"
-    mkdir -p $PPHQ_STAGING/instscripts/lib || _die "Failed to create the instscripts directory"
     cp $SERVER_STAGING/bin/psql $PPHQ_STAGING/instscripts/bin/ || _die "Failed to copy psql in instscripts"
     cp $SERVER_STAGING/lib/libpq* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy libpq in instscripts"
     cp $SERVER_STAGING/lib/libssl.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
