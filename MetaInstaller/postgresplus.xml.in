@@ -2527,7 +2527,7 @@
                 <runProgram>
                   <program>${ppss_temp_directory}\createuser.exe</program>
                   <!-- The dot at the beginning of the arguments is the domain -->
-                  <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+                  <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
                   <abortOnError>0</abortOnError>
                   <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -2555,7 +2555,7 @@
                 <runProgram>
                   <abortOnError>0</abortOnError>
                   <program>${ppss_temp_directory}\validateuser.exe</program>
-                  <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+                  <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
                   <showMessageOnError>0</showMessageOnError>
                 </runProgram>
                 <setInstallerVariable name="validateuser_exit_code" value="${program_exit_code}"/>
@@ -2966,7 +2966,7 @@
             <runProgram>
               <abortOnError>0</abortOnError>
               <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux.bin</program>
-              <programArguments>--mode unattended --disable-stackbuilder 1 --installdir "${installdir}" --datadir "${datadir}" --serviceaccount "${serviceaccount}" --superaccount "${supername}" --superpassword "${superpassword}" --serverport ${serverport} --locale "${locale}" --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
+              <programArguments>--mode unattended --disable-stackbuilder 1 --installdir "${installdir}" --datadir "${datadir}" --serviceaccount "${serviceaccount}" --superaccount "${supername}" --superpassword "${superpassword.password}" --serverport ${serverport} --locale "${locale}" --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
               <progressText>Installing Database Server ... </progressText>
               <showMessageOnError>0</showMessageOnError>
               <ruleList>
@@ -2981,7 +2981,7 @@
             <runProgram>
               <abortOnError>0</abortOnError>
               <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</program>
-              <programArguments>--mode unattended --disable-stackbuilder 1 --installdir "${installdir}" --datadir "${datadir}" --serviceaccount "${serviceaccount}" --superaccount "${supername}" --superpassword "${superpassword}" --serverport ${serverport} --locale "${locale}" --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
+              <programArguments>--mode unattended --disable-stackbuilder 1 --installdir "${installdir}" --datadir "${datadir}" --serviceaccount "${serviceaccount}" --superaccount "${supername}" --superpassword "${superpassword.password}" --serverport ${serverport} --locale "${locale}" --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
               <progressText>Installing Database Server ... </progressText>
               <showMessageOnError>0</showMessageOnError>
               <ruleList>
@@ -3033,7 +3033,7 @@
             <runProgram>
               <abortOnError>0</abortOnError>
               <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux.bin</program>
-              <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+              <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword.password}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
               <progressText>Installing Database Server ... </progressText>
               <showMessageOnError>0</showMessageOnError>
               <ruleList>
@@ -3048,7 +3048,7 @@
             <runProgram>
               <abortOnError>0</abortOnError>
               <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</program>
-              <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+              <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword.password}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
               <progressText>Installing Database Server ... </progressText>
               <showMessageOnError>0</showMessageOnError>
               <ruleList>
@@ -3339,7 +3339,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${ppss_temp_directory}/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux.bin</program>
-          <programArguments>--mode unattended --installdir ${installdir} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <programArguments>--mode unattended --installdir ${installdir} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing PostGIS ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -3361,7 +3361,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${ppss_temp_directory}/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-x64.bin</program>
-          <programArguments>--mode unattended --installdir ${installdir} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <programArguments>--mode unattended --installdir ${installdir} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing PostGIS ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -3397,7 +3397,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${ppss_temp_directory}/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux.bin</program>
-          <programArguments>--mode unattended --prefix ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
+          <programArguments>--mode unattended --prefix ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
           <progressText>Installing pgbouncer ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -3419,7 +3419,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${ppss_temp_directory}/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux-x64.bin</program>
-          <programArguments>--mode unattended --prefix ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
+          <programArguments>--mode unattended --prefix ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
           <progressText>Installing pgbouncer ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -3512,7 +3512,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${ppss_temp_directory}/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux.bin</program>
-          <programArguments>--mode unattended --prefix ${installdir}/pgAgent --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --systemuser "${serviceaccount}" --schema ${schema} --autostart no</programArguments>
+          <programArguments>--mode unattended --prefix ${installdir}/pgAgent --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --systemuser "${serviceaccount}" --schema ${schema} --autostart no</programArguments>
           <progressText>Installing pgAgent ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -3532,7 +3532,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${ppss_temp_directory}/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux-x64.bin</program>
-          <programArguments>--mode unattended --installdir ${installdir}/pgAgent --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --systemuser "${serviceaccount}" --schema ${schema} --autostart no</programArguments>
+          <programArguments>--mode unattended --installdir ${installdir}/pgAgent --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --systemuser "${serviceaccount}" --schema ${schema} --autostart no</programArguments>
           <progressText>Installing pgAgent ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -3594,7 +3594,7 @@
                 <runProgram>
                   <abortOnError>0</abortOnError>
                   <program>${ppss_temp_directory}\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
-                  <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --serviceaccount "${serviceaccount}" --servicepassword "${servicepassword}" --superaccount "${supername}" --superpassword "${superpassword}" --serverport "${serverport}" --locale "${locale}" --branding "Postgres Plus Standard Server ${product_version}" --install_runtimes 0 --servicename "${servicename}"</programArguments>
+                  <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --serviceaccount "${serviceaccount}" --servicepassword "${servicepassword.password}" --superaccount "${supername}" --superpassword "${superpassword.password}" --serverport "${serverport}" --locale "${locale}" --branding "Postgres Plus Standard Server ${product_version}" --install_runtimes 0 --servicename "${servicename}"</programArguments>
                   <progressText>Installing Database Server ... </progressText>
                   <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -3614,7 +3614,7 @@
                 <runProgram>
                   <abortOnError>0</abortOnError>
                   <program>${ppss_temp_directory}\postgresql-PG_PACKAGE_VERSION-windows.exe</program>
-                  <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --servicepassword "${servicepassword}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+                  <programArguments>--mode unattended --prefix "${installdir}" --datadir "${datadir}" --servicepassword "${servicepassword.password}" --superpassword "${superpassword.password}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
                   <progressText>Installing Database Server ... </progressText>
                   <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -3816,7 +3816,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${ppss_temp_directory}\postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-windows.exe</program>
-          <programArguments>--mode unattended --prefix "${installdir}" --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <programArguments>--mode unattended --prefix "${installdir}" --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing PostGIS ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -3852,7 +3852,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${ppss_temp_directory}\pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-windows.exe</program>
-          <programArguments>--mode unattended --prefix "${installdir}\pgbouncer" --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
+          <programArguments>--mode unattended --prefix "${installdir}\pgbouncer" --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
           <progressText>Installing pgbouncer ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -3890,7 +3890,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${ppss_temp_directory}\pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-windows.exe</program>
-          <programArguments>--mode unattended --prefix "${installdir}\pgAgent" --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --systemuser "${serviceaccount}" --systempassword "${servicepassword}" --schema ${schema} --autostart no</programArguments>
+          <programArguments>--mode unattended --prefix "${installdir}\pgAgent" --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --systemuser "${serviceaccount}" --systempassword "${servicepassword.password}" --schema ${schema} --autostart no</programArguments>
           <progressText>Installing pgAgent ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -3936,7 +3936,7 @@
                 <runProgram>
                   <abortOnError>0</abortOnError>
                   <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-osx.app/Contents/MacOS/installbuilder.sh</program>
-                  <programArguments>--mode unattended --disable-stackbuilder 1 --installdir ${installdir} --datadir ${datadir} --serviceaccount "${serviceaccount}" --superaccount "${supername}" --superpassword "${superpassword}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
+                  <programArguments>--mode unattended --disable-stackbuilder 1 --installdir ${installdir} --datadir ${datadir} --serviceaccount "${serviceaccount}" --superaccount "${supername}" --superpassword "${superpassword.password}" --serverport ${serverport} --locale ${locale} --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
                   <progressText>Installing Database Server ... </progressText>
                   <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -3955,7 +3955,7 @@
                 <runProgram>
                   <abortOnError>0</abortOnError>
                   <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-osx.app/Contents/MacOS/installbuilder.sh</program>
-                  <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+                  <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword.password}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
                   <progressText>Installing Database Server ... </progressText>
                   <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -4156,7 +4156,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${ppss_temp_directory}/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-osx.app/Contents/MacOS/installbuilder.sh</program>
-          <programArguments>--mode unattended --installdir ${installdir} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <programArguments>--mode unattended --installdir ${installdir} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing PostGIS ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -4192,7 +4192,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${ppss_temp_directory}/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/installbuilder.sh</program>
-          <programArguments>--mode unattended --installdir ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
+          <programArguments>--mode unattended --installdir ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
           <progressText>Installing pgbouncer ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -4266,7 +4266,7 @@
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>${ppss_temp_directory}/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-osx.app/Contents/MacOS/installbuilder.sh</program>
-          <programArguments>--mode unattended --installdir ${installdir}/pgAgent --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword}" --pgport ${serverport} --systemuser "${serviceaccount}" --schema ${schema} --autostart no</programArguments>
+          <programArguments>--mode unattended --installdir ${installdir}/pgAgent --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --systemuser "${serviceaccount}" --schema ${schema} --autostart no</programArguments>
           <progressText>Installing pgAgent ... </progressText>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -7633,7 +7633,7 @@
             <setInstallerVariableFromScriptOutput>
               <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
               <exec>${ppss_temp_directory}/validateUserClient.o</exec>
-              <execArgs>"${dbserver_guid}" "${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${language}" "${os}" "${number_of_processors}" "${processor_arch}" "${processor_type}" "${total_mem_in_gb}" "${shared_memory_in_mb}" "${existingEmail}" "${existingpassword}" "${proxyHost}" "${proxyPort}"</execArgs>
+              <execArgs>"${dbserver_guid}" "${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${language}" "${os}" "${number_of_processors}" "${processor_arch}" "${processor_type}" "${total_mem_in_gb}" "${shared_memory_in_mb}" "${existingEmail}" "${existingpassword.password}" "${proxyHost}" "${proxyPort}"</execArgs>
               <name>ws_existing_result</name>
               <workingDirectory>${ppss_temp_directory}</workingDirectory>
               <ruleList>
@@ -7653,7 +7653,7 @@
             <setInstallerVariableFromScriptOutput>
               <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
               <exec>${ppss_temp_directory}/runvalidateUserClient.sh</exec>
-              <execArgs>"${ppss_temp_directory}" "${dbserver_guid}" "${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${language}" "${os}" "${number_of_processors}" "${processor_arch}" "${processor_type}" "${total_mem_in_gb}" "${shared_memory_in_mb}" "${existingEmail}" "${existingpassword}" "${proxyHost}" "${proxyPort}"</execArgs>
+              <execArgs>"${ppss_temp_directory}" "${dbserver_guid}" "${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${language}" "${os}" "${number_of_processors}" "${processor_arch}" "${processor_type}" "${total_mem_in_gb}" "${shared_memory_in_mb}" "${existingEmail}" "${existingpassword.password}" "${proxyHost}" "${proxyPort}"</execArgs>
               <name>ws_existing_result</name>
               <workingDirectory>${ppss_temp_directory}</workingDirectory>
               <ruleList>
@@ -7705,7 +7705,7 @@
             <setInstallerVariableFromScriptOutput>
               <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
               <exec>${ppss_temp_directory}\validateUserClient.exe</exec>
-              <execArgs>"${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${existingEmail}" "${existingpassword}" "${dbserver_guid}" "${proxyHost}" "${proxyPort}"</execArgs>
+              <execArgs>"${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${existingEmail}" "${existingpassword.password}" "${dbserver_guid}" "${proxyHost}" "${proxyPort}"</execArgs>
               <name>ws_existing_result</name>
               <workingDirectory>${ppss_temp_directory}</workingDirectory>
               <ruleList>
@@ -8971,7 +8971,7 @@
                 <runProgram>
                   <program>${ppss_temp_directory}\createuser.exe</program>
                   <!-- The dot at the beginning of the arguments is the domain -->
-                  <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+                  <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
                   <abortOnError>0</abortOnError>
                   <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -9019,7 +9019,7 @@
                 <runProgram>
                   <abortOnError>0</abortOnError>
                   <program>${ppss_temp_directory}\validateuser.exe</program>
-                  <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+                  <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
                   <showMessageOnError>0</showMessageOnError>
                 </runProgram>
                 <setInstallerVariable name="validateuser_exit_code" value="${program_exit_code}"/>
@@ -9102,7 +9102,7 @@
             <runProgram>
               <program>${ppss_temp_directory}\createuser.exe</program>
               <!-- The dot at the beginning of the arguments is the domain -->
-              <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+              <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
             </runProgram>
@@ -9138,7 +9138,7 @@
             <runProgram>
               <abortOnError>0</abortOnError>
               <program>${ppss_temp_directory}\validateuser.exe</program>
-              <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+              <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
               <showMessageOnError>0</showMessageOnError>
             </runProgram>
             <setInstallerVariable name="validateuser_exit_code" value="${program_exit_code}"/>

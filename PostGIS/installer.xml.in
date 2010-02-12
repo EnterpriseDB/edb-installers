@@ -882,7 +882,7 @@
                 <!-- Create Template Spatial Database -->
                 <runProgram>
                     <program>${installdir}/PostGIS/installer/PostGIS/createtemplatedb.sh</program>
-                    <programArguments>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" ${sharedir}</programArguments>
+                    <programArguments>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${pghome}" ${sharedir}</programArguments>
                     <progressText>${msg(progress.text.creating.templatedb)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>

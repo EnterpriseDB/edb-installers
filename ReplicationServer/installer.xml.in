@@ -770,7 +770,7 @@
         <runProgram>
           <program>${installdir}\installer\xDBReplicationServer\createuser.exe</program>
           <!-- The dot at the beginning of the arguments is the domain -->
-          <programArguments>. "${serviceaccount}" "${servicepassword}"</programArguments>
+          <programArguments>. "${serviceaccount}" "${servicepassword.password}"</programArguments>
           <progressText>${msg(progress.text.creating.user)}</progressText>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
@@ -955,7 +955,7 @@
                 <setInstallerVariableFromScriptOutput>
                     <name>enc_password</name>
                     <exec>${java_executable}</exec>
-                    <execArgs>-jar ${installdir}/installer/xDBReplicationServer/edb-repencrypter.jar "${pgpassword}"</execArgs>
+                    <execArgs>-jar ${installdir}/installer/xDBReplicationServer/edb-repencrypter.jar "${pgpassword.password}"</execArgs>
                     <workingDirectory>${installdir}/installer/xDBReplicationServer</workingDirectory>
                     <ruleList>
                         <compareText text="${platform_name}" logic="does_not_equal" value="windows" /> 
@@ -965,7 +965,7 @@
                 <setInstallerVariableFromScriptOutput>
                     <name>enc_password</name>
                     <exec>${java_executable}</exec>
-                    <execArgs>-jar "${installdir}\installer\xDBReplicationServer\edb-repencrypter.jar" "${pgpassword}"</execArgs>
+                    <execArgs>-jar "${installdir}\installer\xDBReplicationServer\edb-repencrypter.jar" "${pgpassword.password}"</execArgs>
                     <workingDirectory>${installdir}/installer/xDBReplicationServer</workingDirectory>
                     <ruleList>
                         <compareText text="${platform_name}" logic="equals" value="windows" /> 
@@ -1371,7 +1371,7 @@ database=${controldb}
 
        <writeFile>
             <path>${system_temp_directory}/servicewrapper.bat</path>
-            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Publication Service" -d "${msg(pub.service.desc)}" -c "${java_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" pubserver ${pubport} """"${installdir}\etc""""" -u "${serviceaccount}" -p "${servicepassword}" -w "${installdir}\bin"</text>
+            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Publication Service" -d "${msg(pub.service.desc)}" -c "${java_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" pubserver ${pubport} """"${installdir}\etc""""" -u "${serviceaccount}" -p "${servicepassword.password}" -w "${installdir}\bin"</text>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(pubserver).selected}" />
@@ -1400,7 +1400,7 @@ database=${controldb}
         </deleteFile>
         <writeFile>
             <path>${system_temp_directory}/servicewrapper.bat</path>
-            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Subscription Service" -d "${msg(sub.service.desc)}" -c "${java_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" subserver ${subport} """"${installdir}\etc""""" -u "${serviceaccount}" -p "${servicepassword}" -w "${installdir}\bin"</text>
+            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Subscription Service" -d "${msg(sub.service.desc)}" -c "${java_executable_windows}" -o "-jar """"${installdir}\bin\edb-repserver.jar"""" subserver ${subport} """"${installdir}\etc""""" -u "${serviceaccount}" -p "${servicepassword.password}" -w "${installdir}\bin"</text>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(subserver).selected}" />
@@ -3036,7 +3036,7 @@ database=${controldb}
                     </unpackFile>
                     <runProgram>
                       <program>${system_temp_directory}\${product_fullname}\createuser.exe</program>
-                      <programArguments>. "${serviceaccount}" "${servicepassword}"</programArguments>
+                      <programArguments>. "${serviceaccount}" "${servicepassword.password}"</programArguments>
                       <abortOnError>0</abortOnError>
                       <showMessageOnError>0</showMessageOnError>
                     </runProgram>
@@ -3068,7 +3068,7 @@ database=${controldb}
                   </unpackFile>
                   <runProgram>
                     <program>${system_temp_directory}\${product_fullname}\validateuser.exe</program>
-                    <programArguments>. "${serviceaccount}" "${servicepassword}"</programArguments>
+                    <programArguments>. "${serviceaccount}" "${servicepassword.password}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                   </runProgram>

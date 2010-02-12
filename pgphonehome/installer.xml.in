@@ -1430,7 +1430,7 @@
                 <!-- WIN: Running the Script to validate the PostgreSQL Server Details -->
                 <setInstallerVariableFromScriptOutput>
                         <exec>${system_temp_directory}\${product_fullname}\check-connection.bat</exec>
-                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
+                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
                         <name>connection</name>
                         <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
                         <abortOnError>0</abortOnError>
@@ -1449,7 +1449,7 @@
                         <!-- Running the Script to validate the PostgreSQL Server Details -->
                         <setInstallerVariableFromScriptOutput>
                             <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
@@ -1473,7 +1473,7 @@
                 <!-- Linux | MAC: Running the Script to validate the PostgreSQL Server Details -->
                 <setInstallerVariableFromScriptOutput>
                         <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
-                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
+                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
                         <name>connection</name>
                         <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                         <abortOnError>0</abortOnError>
@@ -1492,7 +1492,7 @@
                         <!-- Running the Script to validate the PostgreSQL Server Details -->
                         <setInstallerVariableFromScriptOutput>
                             <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>

@@ -2193,7 +2193,7 @@
                         <runProgram>
                         <program>${installdir}\installer\server\createuser.exe</program>
                         <!-- The dot at the beginning of the arguments is the domain -->
-                        <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+                        <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
                         <abortOnError>0</abortOnError>
                         <showMessageOnError>0</showMessageOnError>
                         </runProgram>
@@ -2320,7 +2320,7 @@
                         <!-- Initdb -->
                         <runProgram>
                             <program>${installdir}/installer/server/initcluster.sh</program>
-                            <programArguments>"${serviceaccount}" "${superaccount}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} ${reallocale}</programArguments>
+                            <programArguments>"${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport} ${reallocale}</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -2335,7 +2335,7 @@
 
                         <runProgram>
                             <program>cscript</program>
-                            <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} "${reallocale}"</programArguments>
+                            <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport} "${reallocale}"</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -2420,7 +2420,7 @@
 
                 <runProgram>
                     <program>cscript</program>
-                    <programArguments>//NoLogo "${installdir}\installer\server\startupcfg.vbs" ${product_version} "${serviceaccount}" "${servicepassword}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
+                    <programArguments>//NoLogo "${installdir}\installer\server\startupcfg.vbs" ${product_version} "${serviceaccount}" "${servicepassword.password}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
                     <progressText>${msg(progress.text.configuring.startup)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -2700,7 +2700,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <actionList>
                         <runProgram>
                             <program>${installdir}/installer/server/loadmodules.sh</program>
-                            <programArguments>"${serviceaccount}" "${superaccount}" "${superpassword}" "${installdir}" ${serverport} "${install_plpgsql}"</programArguments>
+                            <programArguments>"${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" ${serverport} "${install_plpgsql}"</programArguments>
                             <progressText>${msg(progress.text.loading.modules)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -2715,7 +2715,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
 
                         <runProgram>
                             <program>cscript</program>
-                            <programArguments>//NoLogo "${installdir}\installer\server\loadmodules.vbs" "${superaccount}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} "${install_plpgsql}"</programArguments>
+                            <programArguments>//NoLogo "${installdir}\installer\server\loadmodules.vbs" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport} "${install_plpgsql}"</programArguments>
                             <progressText>${msg(progress.text.loading.modules)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -4703,7 +4703,7 @@ REM The script sets environment variables helpful for PostgreSQL
                         <runProgram>
                             <program>${system_temp_directory}\postgresql_installer\createuser.exe</program>
                             <!-- The dot at the beginning of the arguments is the domain -->
-                            <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+                            <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
@@ -4838,7 +4838,7 @@ REM The script sets environment variables helpful for PostgreSQL
                         <runProgram>
                             <program>${system_temp_directory}\postgresql_installer\validateuser.exe</program>
                             <!-- The dot at the beginning of the arguments is the domain -->
-                            <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+                            <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>

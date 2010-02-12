@@ -643,7 +643,7 @@
         <setInstallerVariable name="agentFiles" value=""/>
 
         <runProgram program="${psql_path}"
-              programArguments="-t -A -c &quot;CREATE USER \&quot;${pphquser}\&quot; PASSWORD '${pphqpassword}'&quot;"
+              programArguments="-t -A -c &quot;CREATE USER \&quot;${pphquser}\&quot; PASSWORD '${pphqpassword.password}'&quot;"
               workingDirectory="${pphqTempDir}/instscripts"
               progressText="Creating Postgres Plus HQ Admin User (${pphquser})..."
               abortOnError="0" showMessageOnError="0">

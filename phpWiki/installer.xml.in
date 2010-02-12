@@ -796,7 +796,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/phpWiki/installer/phpWiki/install.sh</program>
-                    <programArguments>"${pghost}" "${pgport}" "${pguser}" "${pgpassword}" "${system_temp_directory}/instscripts" "${installdir}" "${pgdatabase}"</programArguments>
+                    <programArguments>"${pghost}" "${pgport}" "${pguser}" "${pgpassword.password}" "${system_temp_directory}/instscripts" "${installdir}" "${pgdatabase}"</programArguments>
                     <workingDirectory>${installdir}/phpWiki/installer/phpWiki</workingDirectory>
                 </runProgram>
                 <!-- Inform user about the database and role creation -->
@@ -1569,7 +1569,7 @@
                         <!-- Running the Script to validate the PostgreSQL Server Details -->
                         <setInstallerVariableFromScriptOutput>
                             <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
@@ -1590,7 +1590,7 @@
                         <!-- Running the Script to validate the PostgreSQL Server Details -->
                         <setInstallerVariableFromScriptOutput>
                             <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
@@ -1617,7 +1617,7 @@
                         <!-- Running the Script to validate the PostgreSQL Server Details -->
                         <setInstallerVariableFromScriptOutput>
                             <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
@@ -1638,7 +1638,7 @@
                         <!-- Running the Script to validate the PostgreSQL Server Details -->
                         <setInstallerVariableFromScriptOutput>
                             <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
@@ -1688,7 +1688,7 @@
                         <setInstallerVariableFromScriptOutput>
                             <name>dbexist</name>
                             <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "phpwiki" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "phpwiki" "${pgdatabase}"</execArgs>
                             <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -1697,7 +1697,7 @@
                         <setInstallerVariableFromScriptOutput>
                             <name>userexist</name>
                             <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "phpwikiuser" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "phpwikiuser" "${pgdatabase}"</execArgs>
                             <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -1723,7 +1723,7 @@
                         <setInstallerVariableFromScriptOutput>
                             <name>dbexist</name>
                             <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}/instscripts" "phpwiki" "${pgdatabase}"</execArgs> 
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "phpwiki" "${pgdatabase}"</execArgs> 
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -1732,7 +1732,7 @@
                         <setInstallerVariableFromScriptOutput>
                             <name>userexist</name>
                             <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}/instscripts" "phpwikiuser" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "phpwikiuser" "${pgdatabase}"</execArgs>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
