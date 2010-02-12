@@ -41,6 +41,19 @@ _prep_pphq() {
     # Enter the source directory and cleanup if required
     cd $WD/pphq/source
 
+    # Get a fresh tree
+    if [ -d PPHQ ];
+    then
+        echo "Cleaning and updating existing tree..."
+        cd PPHQ
+        git reset --hard || _die "Unable to clean the tree!"
+        git pull || _die "Unable to update the tree!"
+        cd ..
+    else
+        echo "Checking out a fresh source tree"
+        git clone ssh://pginstaller@cvs.enterprisedb.com/git/PPHQ || _die "Failed to checkout a copy of the PPHQ source tree"
+    fi
+  
     # pphq
     if [ -d hq ];
     then
@@ -48,8 +61,8 @@ _prep_pphq() {
         rm -rf hq || _die "Couldn't remove the existing hyperic source directory (source/hq)"
     fi
 
-    echo "Extracting hyperic source ..."
-    extract_file ${WD}/tarballs/hyperic-hq-src-${PG_VERSION_PPHQ} || _die "Error extracting hyperic source..."
+    echo "Creating a working copy of the source..."
+    cp -R PPHQ hq || _die "Unable to create a working copy of the source tree!"
 
     if [ ! -d jboss-${PPHQ_JBOSS_VERSION} ];
     then
@@ -57,67 +70,17 @@ _prep_pphq() {
       extract_file ${WD}/tarballs/jboss-${PPHQ_JBOSS_VERSION} || _die "Error extracting jboss binaries for pphq..."
     fi
 
-    if [ -f ${WD}/pphq/patches/pphq-${PG_VERSION_PPHQ}-bloatindex-dbage-metrics.patch ];
-    then
-      echo "Applying PPHQ bloatindex and database age metrics patch..."
-      cd $WD/pphq/source/hq
-      patch -p1 < ${WD}/pphq/patches/pphq-${PG_VERSION_PPHQ}-bloatindex-dbage-metrics.patch
-    else
-      _die "PPHQ (${PG_VERSION_PPHQ}) bloatindex and database age metrics patch could not be found..."
-    fi
- 
-    if [ -f ${WD}/pphq/patches/pphq-${PG_VERSION_PPHQ}-control.patch ];
-    then
-      echo "Applying PPHQ Control patch..."
-      cd $WD/pphq/source/hq
-      patch -p1 < ${WD}/pphq/patches/pphq-${PG_VERSION_PPHQ}-control.patch
-    else
-      _die "PPHQ (${PG_VERSION_PPHQ}) control patch could not be found..."
-    fi
-
-
-    if [ -f ${WD}/pphq/patches/pphq-${PG_VERSION_PPHQ}-rebranding.patch ];
-    then
-      echo "Applying PPHQ Rebrading patch..."
-      cd $WD/pphq/source/hq
-      patch -p1 < ${WD}/pphq/patches/pphq-${PG_VERSION_PPHQ}-rebranding.patch
-    else
-      _die "PPHQ (${PG_VERSION_PPHQ}) Rebranding patch could not be found..."
-    fi
-
-    if [ -f ${WD}/pphq/patches/pphq-${PG_VERSION_PPHQ}-PG_8.4.patch ];
-    then
-      echo "Applying PPHQ PostgreSQL 8.4 auto-discovry patch..."
-      cd $WD/pphq/source/hq
-      patch -p1 < ${WD}/pphq/patches/pphq-${PG_VERSION_PPHQ}-PG_8.4.patch
-    else
-      _die "PPHQ PostgreSQL 8.4 auto-discovery patch could not be found"
-    fi
-
-    if [ -f ${WD}/tarballs/pphq-${PG_VERSION_PPHQ}-installer.patch ];
-    then
-      echo "Applying PPHQ Installer patches ..."
-      cd $WD/pphq/source/hq
-      patch -p1 < ${WD}/tarballs/pphq-${PG_VERSION_PPHQ}-installer.patch
-    else
-      _die "Installer patch for PPHQ(${PG_VERSION_PPHQ}) could not be found"
-    fi
-
-    cd $WD/pphq/source
-    if [ -f ${WD}/pphq/patches/pphq_console_banner_bg.png ];
-    then
-      echo "Copying PPHQ Console banner back ground image..."
-      cp ${WD}/pphq/patches/pphq_console_banner_bg.png $WD/pphq/source/hq/web/images/4.0/backgrounds/hdbg.png
-    fi
-   
-    if [ -f ${WD}/pphq/patches/pphq_logo.jpg ];
-    then
-      echo "Copying PPHQ Console logo image..."
-      cp ${WD}/pphq/patches/pphq_logo.jpg $WD/pphq/source/hq/web/images/4.0/logos/pphq_logo.jpg
-    fi
-
+    echo "Fixing up the PPHQ source tree..."
     mv $WD/pphq/source/hq/hq_bin/launcher_bin/hq-server.exe $WD/pphq/source/hq/hq_bin/launcher_bin/pphq-server.exe || _die "Couldn't rename hq-server.exe"
     mv $WD/pphq/source/hq/hq_bin/launcher_bin/hq-agent.exe $WD/pphq/source/hq/hq_bin/launcher_bin/pphq-agent.exe || _die "Couldn't rename hq-agent.exe"
+    if [ ! -d $WD/pphq/source/hq/unittest/emptydir ];
+    then
+      mkdir $WD/pphq/source/hq/unittest/emptydir || _die "Failed to create $WD/pphq/source/hq/unittest/emptydir"
+    fi
+    if [ ! -d $WD/pphq/source/hq/etc/gconsoleTemplates ]; 
+    then
+      mkdir $WD/pphq/source/hq/etc/gconsoleTemplates || _die "Failed to create $WD/pphq/source/hq/etc/gconsoleTemplates"
+    fi
 
     cd $WD/pphq/source
     if [ -f build_pphq.sh ];
@@ -178,7 +141,7 @@ exit $?
 
 EOT
     echo "Building PPHQ..."
-    /bin/bash build_pphq.sh || _die "Error building PPHQ from souce..."
+    /bin/bash build_pphq.sh || _die "Error building PPHQ from source..."
 
     cd $WD
     # Mac OSX
