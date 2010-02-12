@@ -57,6 +57,25 @@ _prep_pphq() {
       extract_file ${WD}/tarballs/jboss-${PPHQ_JBOSS_VERSION} || _die "Error extracting jboss binaries for pphq..."
     fi
 
+    if [ -f ${WD}/pphq/patches/pphq-${PG_VERSION_PPHQ}-bloatindex-dbage-metrics.patch ];
+    then
+      echo "Applying PPHQ bloatindex and database age metrics patch..."
+      cd $WD/pphq/source/hq
+      patch -p1 < ${WD}/pphq/patches/pphq-${PG_VERSION_PPHQ}-bloatindex-dbage-metrics.patch
+    else
+      _die "PPHQ (${PG_VERSION_PPHQ}) bloatindex and database age metrics patch could not be found..."
+    fi
+ 
+    if [ -f ${WD}/pphq/patches/pphq-${PG_VERSION_PPHQ}-control.patch ];
+    then
+      echo "Applying PPHQ Control patch..."
+      cd $WD/pphq/source/hq
+      patch -p1 < ${WD}/pphq/patches/pphq-${PG_VERSION_PPHQ}-control.patch
+    else
+      _die "PPHQ (${PG_VERSION_PPHQ}) control patch could not be found..."
+    fi
+
+
     if [ -f ${WD}/pphq/patches/pphq-${PG_VERSION_PPHQ}-rebranding.patch ];
     then
       echo "Applying PPHQ Rebrading patch..."

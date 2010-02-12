@@ -1,0 +1,200 @@
+diff -rcN hq/plugins/postgresql/etc/hq-plugin.xml hq2/plugins/postgresql/etc/hq-plugin.xml
+*** hq/plugins/postgresql/etc/hq-plugin.xml	2008-06-23 11:37:15.000000000 +0530
+--- hq2/plugins/postgresql/etc/hq-plugin.xml	2010-02-12 11:35:02.911196302 +0530
+***************
+*** 96,102 ****
+              template="${domain}:Type=Server:blks_hit"
+              category="THROUGHPUT"
+              units="none"
+!             collectionType="trendsup"/>
+    </metrics>
+  
+    <metrics name="pg-table">
+--- 96,108 ----
+              template="${domain}:Type=Server:blks_hit"
+              category="THROUGHPUT"
+              units="none"
+! 			collectionType="trendsup"/>
+! 	<metric name="Database Age"
+!             alias="DatabaseAge"
+! 		    template="${domain}:Type=Server:${alias}"
+! 		    category="UTILIZATION"
+! 		    indicator="true"
+! 		    units="none"/>
+    </metrics>
+  
+    <metrics name="pg-table">
+***************
+*** 164,170 ****
+              template="${domain}:Type=Table,table=%table%:n_tup_del"
+              category="THROUGHPUT"
+              units="none"
+!             collectionType="trendsup"/>
+    </metrics>
+  
+    <metrics name="pg-index">
+--- 170,190 ----
+              template="${domain}:Type=Table,table=%table%:n_tup_del"
+              category="THROUGHPUT"
+              units="none"
+! 			collectionType="trendsup"/>
+!      <metric name="Table Bloated Space"
+!              alias="TableBloatedSpace"
+!              template="${domain}:Type=Table,table=%table%:${alias}"
+!              category="UTILIZATION"
+!              indicator="true"
+!              units="KB"
+!  			collectionType="dynamic"/>
+!  	  <metric name="Index Bloated Space"
+!              alias="IndexBloatedSpace"
+!              template="${domain}:Type=Table,table=%table%:${alias}"
+!              category="UTILIZATION"
+!              indicator="true"
+!              units="KB"
+!              collectionType="dynamic"/>
+    </metrics>
+  
+    <metrics name="pg-index">
+diff -rcN hq/plugins/postgresql/src/org/hyperic/hq/plugin/postgresql/PostgreSQLMeasurementPlugin.java hq2/plugins/postgresql/src/org/hyperic/hq/plugin/postgresql/PostgreSQLMeasurementPlugin.java
+*** hq/plugins/postgresql/src/org/hyperic/hq/plugin/postgresql/PostgreSQLMeasurementPlugin.java	2008-03-26 01:40:04.000000000 +0530
+--- hq2/plugins/postgresql/src/org/hyperic/hq/plugin/postgresql/PostgreSQLMeasurementPlugin.java	2010-02-12 11:38:25.959562153 +0530
+***************
+*** 101,106 ****
+--- 101,109 ----
+                  return "SELECT SUM(relpages) * 8 FROM pg_class WHERE " +
+                      "relname IN (SELECT indexrelname from " +
+                      "pg_stat_user_indexes)";
++             } else if (attr.equals("DatabaseAge")) {
++                 return "SELECT AGE(datfrozenxid) FROM pg_database WHERE " +
++                      "datname = '" + db + "'";
+              }
+              // Else normal query from pg_stat_database
+              return "SELECT " + attr + " FROM pg_stat_database " +
+***************
+*** 121,133 ****
+              if (attr.equals("DataSpaceUsed")) {
+                  return "SELECT SUM(relpages) * 8 FROM pg_class WHERE " +
+                      "relname = '" + table.toLowerCase() + "'";
+!             } else if (attr.equals("IndexSpaceUsed")) {
+!                 return "SELECT SUM(relpages) * 8 FROM pg_class WHERE " +
+!                     "relname IN (SELECT indexrelname FROM " +
+!                     "pg_stat_user_indexes WHERE relname='" +
+!                     table.toLowerCase() + "')";
+!             }
+!             
+              // Else normal query from pg_stat_user_table
+              return "SELECT " + attr + " FROM pg_stat_user_tables " +
+                  "WHERE relname='" + table.toLowerCase() + "'";
+--- 124,235 ----
+              if (attr.equals("DataSpaceUsed")) {
+                  return "SELECT SUM(relpages) * 8 FROM pg_class WHERE " +
+                      "relname = '" + table.toLowerCase() + "'";
+!             } else if (attr.equals("TableBloatedSpace")) {
+!  				/*
+!  				 * COALESCE function has been used in following query to make sure 
+!  				 * that 0 is returned to
+!  				 * the server for value of bloat in case there are no rows in the table and
+!  				 * first part of query does not return anything.
+!  				 * Apart from this in the version string 8.3 and 8.4 has been added.
+!  				 */
+!  				return "SELECT COALESCE ((SELECT " +
+!  					  "CASE WHEN relpages < otta THEN 0 ELSE (sml.relpages-otta)::bigint END AS wastedkilobytes " +
+!  					"FROM ( " +
+!  					   "SELECT " +
+!  						"schemaname, tablename, cc.reltuples, cc.relpages, bs, " +
+!  						"CEIL((cc.reltuples*((datahdr+ma- " +
+!  						  "(CASE WHEN datahdr%ma=0 THEN ma ELSE datahdr%ma END))+nullhdr2+4))/(bs-20::float)) AS otta, " +
+!  						"COALESCE(c2.relname,'?') AS iname, COALESCE(c2.reltuples,0) AS ituples, COALESCE(c2.relpages,0) AS ipages, " +
+!  						"COALESCE(CEIL((c2.reltuples*(datahdr-12))/(bs-20::float)),0) AS iotta " +
+!  					  "FROM ( " +
+!  					   "SELECT " +
+!  						  "ma,bs,schemaname,tablename, " +
+!  						  "(datawidth+(hdr+ma-(case when hdr%ma=0 THEN ma ELSE hdr%ma END)))::numeric AS datahdr, " +
+!  						  "(maxfracsum*(nullhdr+ma-(case when nullhdr%ma=0 THEN ma ELSE nullhdr%ma END))) AS nullhdr2 " +
+!  						"FROM ( " +
+!  						  "SELECT " +
+!  							"schemaname, tablename, hdr, ma, bs, " +
+!  							"SUM((1-null_frac)*avg_width) AS datawidth, " +
+!  							"MAX(null_frac) AS maxfracsum, " +
+!  							"hdr+( " +
+!  							  "SELECT 1+count(*)/8 " +
+!  							  "FROM pg_stats s2 " +
+!  							  "WHERE null_frac<>0 AND s2.schemaname = s.schemaname AND s2.tablename = s.tablename " +
+!  							") AS nullhdr " +
+!  						  "FROM pg_stats s, ( " +
+!  						"SELECT (SELECT current_setting('block_size')::numeric) AS bs, " +
+!  						"CASE WHEN substring(v,12,3) IN ('8.0','8.1','8.2','8.3','8.4') THEN 27 ELSE 23 END AS hdr, " +
+!  							"CASE WHEN v ~ 'mingw32' THEN 8 ELSE 4 END AS ma " +
+!  						"FROM (SELECT version() AS v) AS foo " +
+!  						  ") AS constants " +
+!  						  "GROUP BY 1,2,3,4,5 " +
+!  						") AS foo " +
+!  					  ") AS rs " +
+!  						"JOIN pg_class cc ON cc.relname = rs.tablename " +
+!  					  "JOIN pg_namespace nn ON cc.relnamespace = nn.oid AND nn.nspname = rs.schemaname AND nn.nspname <> 'information_schema' " +
+!  					  "LEFT JOIN pg_index i ON indrelid = cc.oid " +
+!  					  "LEFT JOIN pg_class c2 ON c2.oid = i.indexrelid " +
+!  					  ") AS sml " +
+!  					"WHERE " +
+!  					  "tablename = '" + table.toLowerCase() + "' " +
+!  					"LIMIT 1), 0::bigint)";
+!               } else if (attr.equals("IndexSpaceUsed")) {
+!                   return "SELECT SUM(relpages) * 8 FROM pg_class WHERE " +
+!                       "relname IN (SELECT indexrelname FROM " +
+!                       "pg_stat_user_indexes WHERE relname='" +
+!                       table.toLowerCase() + "')";
+!              } else if (attr.equals("IndexBloatedSpace")) {
+!  				/*
+!  				 * COALESCE function has been used in following query to make sure 
+!  				 * that 0 is returned to
+!  				 * the server for value of bloat in case there are no rows in the table and
+!  				 * first part of query does not return anything.
+!  				 * Apart from this in the version string 8.3 and 8.4 has been added.
+!  				 */
+!  				return "SELECT COALESCE ((SELECT " +
+!  					  "CASE WHEN relpages < otta THEN 0 ELSE (sml.relpages-otta)::bigint END AS wastedkilobytes " +
+!  					"FROM ( " +
+!  					   "SELECT " +
+!  						"schemaname, tablename, cc.reltuples, cc.relpages, bs, " +
+!  						"CEIL((cc.reltuples*((datahdr+ma- " +
+!  						  "(CASE WHEN datahdr%ma=0 THEN ma ELSE datahdr%ma END))+nullhdr2+4))/(bs-20::float)) AS otta, " +
+!  						"COALESCE(c2.relname,'?') AS iname, COALESCE(c2.reltuples,0) AS ituples, COALESCE(c2.relpages,0) AS ipages, " +
+!  						"COALESCE(CEIL((c2.reltuples*(datahdr-12))/(bs-20::float)),0) AS iotta " +
+!  					  "FROM ( " +
+!  					   "SELECT " +
+!  						  "ma,bs,schemaname,tablename, " +
+!  						  "(datawidth+(hdr+ma-(case when hdr%ma=0 THEN ma ELSE hdr%ma END)))::numeric AS datahdr, " +
+!  						  "(maxfracsum*(nullhdr+ma-(case when nullhdr%ma=0 THEN ma ELSE nullhdr%ma END))) AS nullhdr2 " +
+!  						"FROM ( " +
+!  						  "SELECT " +
+!  							"schemaname, tablename, hdr, ma, bs, " +
+!  							"SUM((1-null_frac)*avg_width) AS datawidth, " +
+!  							"MAX(null_frac) AS maxfracsum, " +
+!  							"hdr+( " +
+!  							  "SELECT 1+count(*)/8 " +
+!  							  "FROM pg_stats s2 " +
+!  							  "WHERE null_frac<>0 AND s2.schemaname = s.schemaname AND s2.tablename = s.tablename " +
+!  							") AS nullhdr " +
+!  						  "FROM pg_stats s, ( " +
+!  						"SELECT (SELECT current_setting('block_size')::numeric) AS bs, " +
+!  						"CASE WHEN substring(v,12,3) IN ('8.0','8.1','8.2','8.3','8.4') THEN 27 ELSE 23 END AS hdr, " +
+!  							"CASE WHEN v ~ 'mingw32' THEN 8 ELSE 4 END AS ma " +
+!  						"FROM (SELECT version() AS v) AS foo " +
+!  						  ") AS constants " +
+!  						  "GROUP BY 1,2,3,4,5 " +
+!  						") AS foo " +
+!  					  ") AS rs " +
+!  						"JOIN pg_class cc ON cc.relname = rs.tablename " +
+!  					  "JOIN pg_namespace nn ON cc.relnamespace = nn.oid AND nn.nspname = rs.schemaname AND nn.nspname <> 'information_schema' " +
+!  					  "LEFT JOIN pg_index i ON indrelid = cc.oid " +
+!  					  "LEFT JOIN pg_class c2 ON c2.oid = i.indexrelid " +
+!  					  ") AS sml " +
+!  					"WHERE " +
+!  					   "tablename IN (SELECT indexrelname FROM " +
+!  					    "pg_stat_user_indexes WHERE relname='" +
+!  						table.toLowerCase() + "')" +
+!  						"LIMIT 1), 0::bigint)";
+!              } 
+              // Else normal query from pg_stat_user_table
+              return "SELECT " + attr + " FROM pg_stat_user_tables " +
+                  "WHERE relname='" + table.toLowerCase() + "'";

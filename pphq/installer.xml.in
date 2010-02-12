@@ -85,7 +85,7 @@
         <setInstallerVariable name="pphqAgent" value="pphq-agent"/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PPHQ" />
         <setInstallerVariable name="hq_db_exist" value="0"/>
-        <setInstallerVariable name="pphqAdminDB" value="PPHQ"/>
+        <setInstallerVariable name="pphqadmindb" value="pphq"/>
         <setInstallerVariable name="project.parameter(jrehome).ask" value="0"/>
         <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>
         <setInstallerVariable name="pphqTempDir" value="${system_temp_directory}/pphq_installer"/>
@@ -301,9 +301,7 @@
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
                             key="pguser" variable="pguser"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
-                            key="pgdatabase" variable="pgdatabase"/>
-                <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
-                            key="pgdatabase" variable="pgdatabase"/>
+                            key="pphqadmindb" variable="pphqadmindb"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
                             key="JNP_PORT" variable="pphq_jnp_port"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
@@ -332,9 +330,7 @@
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
                             name="pguser" variable="pguser"/>
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
-                            name="pgdatabase" variable="pgdatabase"/>
-                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
-                            name="pgdatabase" variable="pgdatabase"/>
+                            name="pphqadmindb" variable="pphqadmindb"/>
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
                             name="JNP_PORT" variable="pphq_jnp_port"/>
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
@@ -494,7 +490,7 @@
                         <compareText text="${pgport}" logic="equals" value=""/>
                         <compareText text="${pguser}" logic="equals" value=""/>
                         <compareText text="${pgpassword}" logic="equals" value=""/>
-                        <compareText text="${pgdatabase}" logic="equals" value=""/>
+                        <compareText text="${pphqadmindb}" logic="equals" value=""/>
                     </ruleList>
                 </throwError>
                 <!-- Validate the PostgreSQL Server Details -->
@@ -502,21 +498,36 @@
                 <setEnvironmentVariable name="PGUSER" value="${pguser}" />
                 <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
                 <setEnvironmentVariable name="PGPORT" value="${pgport}" />
-                <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
+                <setEnvironmentVariable name="PGDATABASE" value="postgres"/>
                 <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${pphqTempDir}/instscripts/lib"/>
-                <runProgram program="${psql_path}" abortOnError="1"
-                        programArguments="-l &quot;${pgdatabase}&quot;"
-                        workingDirectory="${pphqTempDir}/instscripts"/>
+                <runProgram program="${psql_path}" abortOnError="0"
+                        programArguments="-l &quot;${env(PGDATABASE)}&quot;"
+                        workingDirectory="${pphqTempDir}/instscripts"
+			showMessageOnError="0"/>
+
+		<!-- If it fails for postgres database, fall back to edb -->
+                <setEnvironmentVariable name="PGDATABASE" value="edb"/>
+		<runProgram program="${psql_path}" abortOnError="0"
+		    programArguments="-l &quot;${env(PGDATABASE)}&quot;"
+                    workingDirectory="${pphqTempDir}/instscripts"
+		    showMessageOnError="0"/>
+		
+		<!-- If it fails for edb database, fall back to template1 -->
+                <setEnvironmentVariable name="PGDATABASE" value="template1"/>
+		<runProgram program="${psql_path}" abortOnError="1" showMessageOnError="1"
+		    programArguments="-l &quot;${env(PGDATABASE)}&quot;"
+                    workingDirectory="${pphqTempDir}/instscripts"/>
+
                 <setInstallerVariable name="admin_db_exist" value="0"/>
                 <setInstallerVariable name="admin_db_owner" value="hqadmin"/>
                 <setInstallerVariableFromScriptOutput
                         name="admin_db_exist" exec="${psql_path}"
-                        execArgs="-t -A -c &quot;SELECT 1 FROM (SELECT has_database_privilege('${pphqAdminDB}', 'CREATE')) a&quot;"
+                        execArgs="-t -A -c &quot;SELECT 1 FROM (SELECT has_database_privilege('${pphqadmindb}', 'CREATE')) a&quot;"
                         workingDirectory="${pphqTempDir}/instscripts"
                         abortOnError="0" showMessageOnError="0"/>
                 <setInstallerVariableFromScriptOutput
                         name="admin_db_owner" exec="${psql_path}"
-                        execArgs="-t -A -c &quot;SELECT u.usename FROM pg_catalog.pg_user u WHERE u.usesysid in (SELECT d.datdba FROM pg_catalog.pg_database d WHERE d.datname='${pphqAdminDB}')&quot;"
+                        execArgs="-t -A -c &quot;SELECT u.usename FROM pg_catalog.pg_user u WHERE u.usesysid in (SELECT d.datdba FROM pg_catalog.pg_database d WHERE d.datname='${pphqadmindb}')&quot;"
                         workingDirectory="${pphqTempDir}/instscripts">
                     <ruleList>
                         <isTrue value="${admin_db_exist}"/>
@@ -552,7 +563,7 @@
                         <setEnvironmentVariable name="PGUSER" value="${pphquser}" />
                         <setEnvironmentVariable name="PGPASSWORD" value="${pphqpassword}"/>
                         <runProgram program="${psql_path}"
-                                programArguments="-l &quot;${pgdatabase}&quot;"
+                                programArguments="-l &quot;${env(PGDATABASE)}&quot;"
                                 workingDirectory="${pphqTempDir}/instscripts"
                                 abortOnError="1" showMessageOnError="1"/>
                     </actionList>
@@ -642,22 +653,32 @@
         </runProgram>
 
         <runProgram program="${psql_path}"
-              programArguments="-t -A -c &quot;CREATE DATABASE \&quot;${pphqAdminDB}\&quot; OWNER \&quot;${pphquser}\&quot;&quot;"
+              programArguments="-t -A -c &quot;CREATE DATABASE \&quot;${pphqadmindb}\&quot; OWNER \&quot;${pphquser}\&quot;&quot;"
               workingDirectory="${pphqTempDir}/instscripts"
-              progressText="Creating Postgres Plus Admin HQ Database (${pphqAdminDB})..."
+              progressText="Creating Postgres Plus Admin HQ Database (${pphqadmindb})..."
               abortOnError="0" showMessageOnError="0">
             <ruleList>
                 <isFalse value="${admin_db_exist}"/>
             </ruleList>
         </runProgram>
+	
+	<runProgram program="${psql_path}"
+              programArguments="-t -A -c &quot;GRANT CREATE, CONNECT on DATABASE \&quot;${pphqadmindb}\&quot; TO \&quot;${pphquser}\&quot;&quot;"
+              workingDirectory="${pphqTempDir}/instscripts"
+              progressText="Granting permissions Postgres Plus HQ Admin User (${pphquser}) on database (${pphqadmindb})"
+              abortOnError="0" showMessageOnError="0">
+            <ruleList>
+                <isTrue value="${admin_db_exists}"/>
+            </ruleList>
+        </runProgram>
 
         <setEnvironmentVariable name="PGUSER" value="${pphquser}" />
-        <setEnvironmentVariable name="PGDATABASE" value="${pphqAdminDB}"/>
+        <setEnvironmentVariable name="PGDATABASE" value="${pphqadmindb}"/>
         <setEnvironmentVariable name="PGPASSWORD" value="${pphqpassword}" />
         <runProgram program="${psql_path}"
               programArguments="-t -A -c &quot;CREATE LANGUAGE plpgsql&quot;"
               workingDirectory="${pphqTempDir}/instscripts"
-              progressText="Making sure plpgsql exists in Postgres Plus HQ Admin Database (${pphqAdminDB})..."
+              progressText="Making sure plpgsql exists in Postgres Plus HQ Admin Database (${pphqadmindb})..."
               abortOnError="0" showMessageOnError="0"/>
 
         <setInstallerVariableFromScriptOutput
@@ -687,7 +708,7 @@
                 <substitution pattern="@@PGHOST@@" value="${pghost}"/>
                 <substitution pattern="@@HQ_JRPM_PORT@@" value="${pphq_jrpm_port}"/>
                 <substitution pattern="@@HQ_JNP_PORT@@" value="${pphq_jnp_port}"/>
-                <substitution pattern="@@PGADMINDB@@" value="${pphqAdminDB}"/>
+                <substitution pattern="@@PGADMINDB@@" value="${pphqadmindb}"/>
                 <substitution pattern="@@HQPORT@@" value="${pphqport}"/>
             </substitutionList>
         </substitute>
@@ -790,9 +811,9 @@
                 <logMessage text=" PGUSER:${pguser}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
                             key="pguser" value="${pguser}"/>
-                <logMessage text=" PGDATABASE:${pgdatabase}"/>
+                <logMessage text=" pphqadmindb:${pphqadmindb}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
-                            key="pgdatabase" value="${pgdatabase}"/>
+                            key="pphqadmindb" value="${pphqadmindb}"/>
                 <logMessage text=" BRANDING:${branding}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
                             key="Branding" value="${branding}"/>
@@ -889,9 +910,9 @@
                 <logMessage text=" PGUSER:${pguser}"/>
                 <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
                             name="pguser" value="${pguser}"/>
-                <logMessage text=" PGDATABASE:${pgdatabase}"/>
+                <logMessage text=" pphqadmindb:${pphqadmindb}"/>
                 <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
-                            name="pgdatabase" value="${pgdatabase}"/>
+                            name="pphqadmindb" value="${pphqadmindb}"/>
                 <logMessage text=" BRANDING:${branding}"/>
                 <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
                             name="Branding" value="${branding}"/>
@@ -998,7 +1019,7 @@
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
                             key="pguser" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
-                            key="pgdatabase" value=""/>
+                            key="pphqadmindb" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
                             key="Branding" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
@@ -1362,9 +1383,9 @@
                                  explanation="" value="" default="5432"
                                  cliOptionName="pgport" allowEmptyValue="1" width="40"/>
                 <!-- Postgres Database -->
-                <stringParameter name="pgdatabase" description="Database name"
-                                 explanation="" value="" default="postgres" ask="1"
-                                 cliOptionName="pgdatabase" allowEmptyValue="1"/>
+                <stringParameter name="pphqadmindb" description="Database name"
+                                 explanation="" value="" default="${pphqadmindb}" ask="1"
+                                 cliOptionName="pphqadmindb" allowEmptyValue="1"/>
             </parameterList>
 
             <!-- Checking the validity of PostgreSQL Server Details -->
@@ -1372,6 +1393,7 @@
                 <stringModify text="${pghost}" variable="pghost" logic="trim"/>
                 <stringModify text="${pgport}" variable="pgport" logic="trim"/>
                 <stringModify text="${pguser}" variable="pguser" logic="trim"/>
+                <stringModify text="${pphqadmindb}" variable="pphqadmindb" logic="trim"/>
                 <throwError text="${msg(pgplus.blank.error)}">
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
@@ -1379,6 +1401,7 @@
                         <compareText text="${pgport}" logic="equals" value=""/>
                         <compareText text="${pguser}" logic="equals" value=""/>
                         <compareText text="${pgpassword}" logic="equals" value=""/>
+                        <compareText text="${pphqadmindb}" logic="equals" value=""/>
                     </ruleList>
                 </throwError>
                 <!-- Validate the PostgreSQL Server Details -->
@@ -1386,21 +1409,34 @@
                 <setEnvironmentVariable name="PGUSER" value="${pguser}" />
                 <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
                 <setEnvironmentVariable name="PGPORT" value="${pgport}" />
-                <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
+                <setEnvironmentVariable name="PGDATABASE" value="postgres"/>
                 <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${pphqTempDir}/instscripts/lib"/>
-                <runProgram program="${psql_path}"
-                        programArguments="-l &quot;${pgdatabase}&quot;"
+
+                <runProgram program="${psql_path}" abortOnError="0" showMessageOnError="0"
+                        programArguments="-l &quot;${env(PGDATABASE)}&quot;"
                         workingDirectory="${pphqTempDir}/instscripts"/>
+
+		<!-- If it fails for postgres database, fall back to edb -->
+                <setEnvironmentVariable name="PGDATABASE" value="edb"/>
+		<runProgram program="${psql_path}" abortOnError="0" showMessageOnError="0"
+		    programArguments="-l &quot;${env(PGDATABASE)}&quot;"
+                    workingDirectory="${pphqTempDir}/instscripts"/>
+		
+		<!-- If it fails for edb database, fall back to template1 -->
+                <setEnvironmentVariable name="PGDATABASE" value="template1"/>
+		<runProgram program="${psql_path}" abortOnError="1" showMessageOnError="1"
+		    programArguments="-l &quot;${env(PGDATABASE)}&quot;"
+                    workingDirectory="${pphqTempDir}/instscripts"/>
 
                 <setInstallerVariable name="admin_db_exist" value="0"/>
                 <setInstallerVariableFromScriptOutput
                         name="admin_db_exist" exec="${psql_path}"
-                        execArgs="-t -A -c &quot;SELECT 1 FROM (SELECT has_database_privilege('${pphqAdminDB}', 'CREATE')) a&quot;"
+                        execArgs="-t -A -c &quot;SELECT 1 FROM (SELECT has_database_privilege('${pphqadmindb}', 'CREATE')) a&quot;"
                         workingDirectory="${pphqTempDir}/instscripts"
                         abortOnError="0" showMessageOnError="0"/>
                 <setInstallerVariableFromScriptOutput
                         name="admin_db_owner" exec="${psql_path}"
-                        execArgs="-t -A -c &quot;SELECT u.usename FROM pg_catalog.pg_user u WHERE u.usesysid in (SELECT d.datdba FROM pg_catalog.pg_database d WHERE d.datname='${pphqAdminDB}')&quot;"
+                        execArgs="-t -A -c &quot;SELECT u.usename FROM pg_catalog.pg_user u WHERE u.usesysid in (SELECT d.datdba FROM pg_catalog.pg_database d WHERE d.datname='${pphqadmindb}')&quot;"
                         workingDirectory="${pphqTempDir}/instscripts">
                     <ruleList>
                         <isTrue value="${admin_db_exist}"/>
@@ -1412,7 +1448,7 @@
         <parameterGroup>
             <name>pphqadmin</name>
             <title>${msg(pphq.monitoring.console.details.title)}</title>
-            <explanation>${pphq.monitoring.console.details.explanation}</explanation>
+            <explanation>${msg(pphq.monitoring.console.details.explanation)}</explanation>
             <value/>
             <default/>
             <parameterList>
@@ -1486,7 +1522,7 @@
                         <setEnvironmentVariable name="PGUSER" value="${pphquser}" />
                         <setEnvironmentVariable name="PGPASSWORD" value="${pphqpassword}"/>
                         <runProgram program="${psql_path}"
-                                programArguments="-l &quot;${pgdatabase}&quot;"
+                                programArguments="-l &quot;${env(PGDATABASE)}&quot;"
                                 workingDirectory="${pphqTempDir}/instscripts"/>
                     </actionList>
                     <ruleList>

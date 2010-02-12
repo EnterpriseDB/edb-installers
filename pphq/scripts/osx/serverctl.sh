@@ -29,7 +29,7 @@ function log()
 function stopServer()
 {
   log "Stopping Postgres HQ server..."
-  LOGMSG=`"@@INSTALLDIR@@/server-@@PPHQVERSION@@/bin/@@PPHQSERVERSCRIPT" stop`
+  LOGMSG=`"@@INSTALLDIR@@/server-@@PPHQVERSION@@/bin/@@PPHQSERVERSCRIPT@@" stop`
   log "${LOGMSG}"
 }
 
@@ -43,7 +43,7 @@ function gotSignal()
 function startServer()
 {
   log "Starting Postgres HQ Server..."
-  LOGMSG=`"@@INSTALLDIR@@/server-@@PPHQVERSION@@/bin/@@PPHQSERVERSCRIPT" start`
+  LOGMSG=`"@@INSTALLDIR@@/server-@@PPHQVERSION@@/bin/@@PPHQSERVERSCRIPT@@" start`
   log "${LOGMSG}"
 }
 
@@ -51,7 +51,7 @@ trap stopServer SIGHUP SIGINT SIGKILL SIGTERM
 while [ $# -ne 0 ];
 do
   RAR_NO_PROCD_CMD=0
-  case $1) in
+  case $1 in
   --no-debug)
     DEBUG=0
     ;;
