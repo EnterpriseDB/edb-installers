@@ -634,7 +634,9 @@
                 </runProgram>
                 <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="1"/>
                 <setInstallerVariable name="create_database" value="No">
-                    <isTrue value="${admin_db_exist}"/>
+                    <ruleList>
+                        <isTrue value="${admin_db_exist}"/>
+                    </ruleList>
                 </setInstallerVariable>
             </actionList>
             <ruleList>
