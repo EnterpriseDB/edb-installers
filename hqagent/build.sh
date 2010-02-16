@@ -32,6 +32,9 @@ fi
 
 _prep_hqagent() {
 
+    # Per-platform prep
+    cd $WD
+
     # Create the source directory if required
     if [ ! -e $WD/hqagent/source ];
     then
@@ -41,97 +44,39 @@ _prep_hqagent() {
     # Enter the source directory and cleanup if required
     cd $WD/hqagent/source
 
-    # hqagent
-    if [ -e hqagent-$PG_VERSION_HQAGENT ];
+    if [ ! -f $WD/pphq/source/hq/build/archive/hyperic-hq-installer/agent-$PG_VERSION_HQAGENT.tgz ];
     then
-      echo "Removing existing hqagent-$PG_VERSION_HQAGENT source directory"
-      rm -rf hqagent-$PG_VERSION_HQAGENT  || _die "Couldn't remove the existing hqagent-$PG_VERSION_HQAGENT source directory (source/hqagent-$PG_VERSION_HQAGENT)"
+      _die "Please build PPHQ before PPHQ-Agent..."
     fi
 
-    # Linux
-    if [ $PG_ARCH_LINUX = 1 ];
-    then
-        if [ -e hqagent-"$PG_VERSION_PGAGENT" ];
-        then
-          echo "Removing existing hqagent-"$PG_VERSION_HQAGENT" source directory"
-          rm -rf hqagent-"$PG_VERSION_HQAGENT"  || _die "Couldn't remove the existing hqagent-"$PG_VERSION_HQAGENT" source directory (source/hqagent-"$PG_VERSION_HQAGENT")"
-        fi
-
-        echo "Unpacking hqagent source..."
-         extract_file ../../tarballs/hqagent-$PG_VERSION_HQAGENT || exit 1
-    fi
-
-    # Linux-x64
-    if [ $PG_ARCH_LINUX_X64 = 1 ];
-    then
-        if [ -e hqagent-"$PG_VERSION_HQAGENT"-x64 ];
-        then
-          echo "Removing existing hqagent-"$PG_VERSION_HQAGENT"-x64 source directory"
-          rm -rf hqagent-"$PG_VERSION_HQAGENT"-x64  || _die "Couldn't remove the existing hqagent-"$PG_VERSION_HQAGENT"-x64 source directory (source/hqagent-"$PG_VERSION_HQAGENT"-x64)"
-        fi
-
-        echo "Unpacking hqagent source..."
-         extract_file ../../tarballs/hqagent-$PG_VERSION_HQAGENT-x64 || exit 1
-    fi
-
-    # osx
-    if [ $PG_ARCH_OSX = 1 ];
-    then
-        if [ -e hqagent-"$PG_VERSION_HQAGENT"-osx ];
-        then
-          echo "Removing existing hqagent-"$PG_VERSION_HQAGENT"-osx source directory"
-          rm -rf hqagent-"$PG_VERSION_HQAGENT"-osx || _die "Couldn't remove the existing hqagent-"$PG_VERSION_HQAGENT"-osx source directory (source/hqagent-"$PG_VERSION_HQAGENT"-osx)"
-        fi
-
-        echo "Unpacking hqagent source..."
-         extract_file ../../tarballs/hqagent-$PG_VERSION_HQAGENT-osx || exit 1
-    fi
-
-    # windows
-    if [ $PG_ARCH_WINDOWS = 1 ];
-    then
-        if [ -e hqagent-"$PG_VERSION_HQAGENT"-windows ];
-        then
-          echo "Removing existing hqagent-"$PG_VERSION_HQAGENT"-windows source directory"
-          rm -rf hqagent-"$PG_VERSION_HQAGENT"-windows || _die "Couldn't remove the existing hqagent-"$PG_VERSION_HQAGENT"-windows source directory (source/hqagent-"$PG_VERSION_HQAGENT"-windows)"
-        fi
-  
-        echo "Unpacking hqagent source..."
-         extract_file ../../tarballs/hqagent-$PG_VERSION_HQAGENT-windows || exit 1
-    fi
-
-
-    # Per-platform prep
-    cd $WD
-    
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _prep_hqagent_osx || exit 1
+        _prep_pphqagent_osx || exit 1
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _prep_hqagent_linux || exit 1
+        _prep_pphqagent_linux || exit 1
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _prep_hqagent_linux_x64 || exit 1
+        _prep_pphqagent_linux_x64 || exit 1
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _prep_hqagent_windows || exit 1
+        _prep_pphqagent_windows || exit 1
     fi
     
 }
 
 ################################################################################
-# Build hqagent
+# Build pphqagent
 ################################################################################
 
 _build_hqagent() {
@@ -139,30 +84,30 @@ _build_hqagent() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _build_hqagent_osx || exit 1
+        _build_pphqagent_osx || exit 1
     fi
 
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _build_hqagent_linux || exit 1
+        _build_pphqagent_linux || exit 1
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-       _build_hqagent_linux_x64 || exit 1
+       _build_pphqagent_linux_x64 || exit 1
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _build_hqagent_windows || exit 1
+        _build_pphqagent_windows || exit 1
     fi
 }
 
 ################################################################################
-# Postprocess hqagent
+# Postprocess pphqagent
 ################################################################################
 #
 # Note that this is the only step run if we're executed with -skipbuild so it must
@@ -170,7 +115,6 @@ _build_hqagent() {
 _postprocess_hqagent() {
 
     cd $WD/hqagent
-
 
     # Prepare the installer XML file
     if [ -f installer.xml ];
@@ -185,24 +129,25 @@ _postprocess_hqagent() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _postprocess_hqagent_osx || exit 1
+        _postprocess_pphqagent_osx || exit 1
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _postprocess_hqagent_linux || exit 1
+        _postprocess_pphqagent_linux || exit 1
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _postprocess_hqagent_linux_x64 || exit 1
+        _postprocess_pphqagent_linux_x64 || exit 1
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-       _postprocess_hqagent_windows || exit 1
+       _postprocess_pphqagent_windows || exit 1
     fi
+
 }

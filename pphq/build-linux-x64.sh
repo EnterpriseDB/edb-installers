@@ -12,7 +12,6 @@ _prep_pphq_linux_x64() {
 
     PPHQ_STAGING=$WD/pphq/staging/linux-x64
 
-    # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $PPHQ_STAGING ];
     then
       echo "Removing existing staging directory"
@@ -37,18 +36,19 @@ _build_pphq_linux_x64() {
 
     PPHQ_STAGING=$WD/pphq/staging/linux-x64
     SERVER_STAGING=$WD/server/staging/linux-x64
-    echo ""
-    echo "Copying Postgres Plus installers to staging directory"
+
     mkdir -p $PPHQ_STAGING/pphq || _die "Failed to create the pphq installer directory"
+    mkdir -p $PPHQ_STAGING/instscripts || _die "Failed to create the instscripts directory"
+    mkdir -p $PPHQ_STAGING/instscripts/bin || _die "Failed to create the instscripts directory"
+    mkdir -p $PPHQ_STAGING/instscripts/lib || _die "Failed to create the instscripts directory"
+
+    echo "Copying Postgres Plus HQ installer to staging directory"
     cp -r $WD/pphq/source/hq/build/archive/hyperic-hq-installer/* $PPHQ_STAGING/pphq/
 
     mkdir -p $PPHQ_STAGING/pphq/templates
     cp $WD/pphq/resources/*.prop $PPHQ_STAGING/pphq/templates
 
     #Copy psql for postgres validation
-    mkdir -p $PPHQ_STAGING/instscripts || _die "Failed to create the instscripts directory"
-    mkdir -p $PPHQ_STAGING/instscripts/bin || _die "Failed to create the instscripts directory"
-    mkdir -p $PPHQ_STAGING/instscripts/lib || _die "Failed to create the instscripts directory"
     cp $SERVER_STAGING/bin/psql $PPHQ_STAGING/instscripts/bin/ || _die "Failed to copy psql in instscripts"
     cp $SERVER_STAGING/lib/libpq* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy libpq in instscripts"
     cp $SERVER_STAGING/lib/libssl.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
@@ -75,6 +75,7 @@ _postprocess_pphq_linux_x64() {
     cd $PPHQ_DIR
 
     mkdir -p $PPHQ_STAGING/installer/pphq || _die "Failed to create a directory for the install scripts"
+    cp $PPHQ_DIR/scripts/linux/createuser.sh $PPHQ_STAGING/installer/pphq/ || _die "Failed to copy the createuser script"
     cp $PPHQ_DIR/scripts/linux/removeshortcuts.sh $PPHQ_STAGING/installer/pphq/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script"
     cp $PPHQ_DIR/scripts/tune-os.sh $PPHQ_STAGING/installer/pphq/tune-os.sh || _die "Failed to copy the tune-os.sh script"
     cp $PPHQ_DIR/scripts/linux/createshortcuts.sh $PPHQ_STAGING/installer/pphq/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script"

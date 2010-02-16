@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 ################################################################################
 # Build preparation
 ################################################################################
@@ -72,7 +71,7 @@ _postprocess_pphq_osx() {
     cd $PPHQ_DIR
 
     mkdir -p $PPHQ_STAGING/installer/pphq || _die "Failed to create a directory for the install scripts"
-
+    cp $PPHQ_DIR/scripts/osx/createuser.sh $PPHQ_STAGING/installer/pphq
     cp $PPHQ_DIR/scripts/tune-os.sh $PPHQ_STAGING/installer/pphq/tune-os.sh || _die "Failed to copy the tune-os.sh script"
     cp $PPHQ_DIR/scripts/osx/createshortcuts.sh $PPHQ_STAGING/installer/pphq/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script"
     cp $PPHQ_DIR/scripts/osx/startupcfg.sh $PPHQ_STAGING/installer/pphq/ || _die "Failed to copy the startupcfg.sh script"
@@ -86,6 +85,7 @@ _postprocess_pphq_osx() {
     cp $PPHQ_DIR/scripts/osx/agent-start.applescript.in $PPHQ_STAGING/scripts/ || _die "Failed to copy agent-start.applescript.in"
     cp $PPHQ_DIR/scripts/osx/agent-stop.applescript.in $PPHQ_STAGING/scripts/ || _die "Failed to copy agent-stop.applescript.in"
     cp $PPHQ_DIR/scripts/osx/serverctl.sh $PPHQ_STAGING/scripts/ || _die "Failed to copy agent-stop.applescript.in"
+    cp $PPHQ_DIR/scripts/osx/agentctl.sh $PPHQ_STAGING/scripts/ || _die "Failed to copy agent-stop.applescript.in"
     chmod ugo+x $PPHQ_STAGING/scripts/*.sh
 
     # Copy in the menu pick images

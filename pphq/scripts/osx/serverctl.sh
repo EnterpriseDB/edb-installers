@@ -12,6 +12,14 @@ DEBUG=1
 WAITONEXIT=1
 SCRIPTNAME=${0}
 
+# Check user has permission to write logs
+touch "@@INSTALLDIR@@/server-@@PPHQVERSION@@/logs/server_startup_${CURRENTDATE}.log"2>/dev/null
+if [ $? -ne 0 ];
+then
+  echo "The current user does not have permission to write to '@@INSTALLDIR@@/server-@@PPHQVERSION@@/logs' directory"
+  exit 1
+fi
+
 function usage()
 {
   log "USAGE: ${SCRIPTNAME} [--no-debug|--no-wait|--start|--stop|--restart]"
@@ -33,13 +41,6 @@ function stopServer()
   log "${LOGMSG}"
 }
 
-function gotSignal()
-{
-  log "Got SIGKILL/SIGTERM/SIGHUP/SIGINT signal.."
-  stopServer
-  exit 0 
-}
-
 function startServer()
 {
   log "Starting Postgres HQ Server..."
@@ -47,7 +48,14 @@ function startServer()
   log "${LOGMSG}"
 }
 
-trap stopServer SIGHUP SIGINT SIGKILL SIGTERM
+function gotSignal()
+{
+  log "Got SIGKILL/SIGTERM/SIGHUP/SIGINT signal.."
+  stopServer
+  exit 0 
+}
+
+trap gotSignal SIGHUP SIGINT SIGKILL SIGTERM
 while [ $# -ne 0 ];
 do
   RAR_NO_PROCD_CMD=0

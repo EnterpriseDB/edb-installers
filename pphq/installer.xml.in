@@ -67,21 +67,30 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </setInstallerVariable>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="project.parameter(serviceAccount).ask" value="0"/>
+                <setInstallerVariable name="project.parameter(agentServiceAccount).ask" value="0"/>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" value="windows" logic="equals"/>
+            </ruleList>
+        </actionGroup>
     </preShowHelpActionList>
 
     <!-- Prebuild Actons-->
     <preBuildActionList>
-      <setInstallerVariable name="originalplatform" value="${platform_name}"/>
-      <setInstallerVariable name="originalplatform" value="linux-x32">
-          <ruleList>
-              <compareText text="${platform_name}" value="linux"/>
-          </ruleList>
-      </setInstallerVariable>
-      <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0">
-          <ruleList>
-              <compareText text="${platform_name}" value="windows" logic="does_not_equal"/>
-          </ruleList>
-      </setInstallerVariable>
+        <setInstallerVariable name="originalplatform" value="${platform_name}"/>
+        <setInstallerVariable name="originalplatform" value="linux-x32">
+            <ruleList>
+                <compareText text="${platform_name}" value="linux"/>
+            </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0">
+            <ruleList>
+                <compareText text="${platform_name}" value="windows" logic="does_not_equal"/>
+            </ruleList>
+        </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
         <setInstallerVariable name="pphqServer" value="pphq-server"/>
@@ -91,6 +100,8 @@
         <setInstallerVariable name="pphqadmindb" value="pphq"/>
         <setInstallerVariable name="project.parameter(jrehome).ask" value="0"/>
         <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>
+        <setInstallerVariable name="project.parameter(serviceAccount).ask" value="0"/>
+        <setInstallerVariable name="project.parameter(agentServiceAccount).ask" value="0"/>
         <setInstallerVariable name="pphqTempDir" value="${system_temp_directory}/pphq_installer"/>
         <setInstallerVariable name="pphqTempDir" value="${system_temp_directory}\pphq_installer">
             <ruleList>
@@ -98,6 +109,7 @@
             </ruleList>
         </setInstallerVariable>
         <setInstallerVariable name="serviceName" value="pphq-PG_VERSION_PPHQ" persist="1"/>
+        <setInstallerVariable name="agentServiceName" value="pphq-agent-PG_VERSION_PPHQ" persist="1"/>
         <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -156,6 +168,7 @@
         <setInstallerVariable name="pphq_jnp_port" value=""/>
         <setInstallerVariable name="pphq_secure_port" value=""/>
         <setInstallerVariable name="pphq_jrpm_port" value=""/>
+        <setInstallerVariable name="defaultpphqadmindb" value="pphq"/>
 
     </initializationActionList>
     <preInstallationActionList>
@@ -170,6 +183,32 @@
                 <compareText logic="equals" text="${installer_ui}" value="unattended"/>
             </ruleList>
         </actionGroup>
+
+        <!-- Check if pphq-agent already been installer on this machine -->
+        <setInstallerVariable name="pphqAgentVersion" value=""/>
+        <touchFile path="/etc/postgres-reg.ini">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </touchFile>
+        <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent"
+                    key="Version" variable="pphqAgentVersion">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </iniFileGet>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphqagent" variable="pphqAgentVersion" name="Version">
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </registryGet>
+
+        <stringModify text="${pphqAgentVersion}" variable="pphqAgentVersion" logic="trim"/>
+        <throwError text="${pphq.hqagent.present.error}">
+            <ruleList>
+                <stringTest text="${pphqAgentVersion}" type="not_empty"/>
+            </ruleList>
+        </throwError>
 
         <!-- Check if the valid jrehome switch is supplied -->
         <throwError customErrorMessage="${msg(jre.invalid.error)}" text="Unknown Error">
@@ -236,6 +275,7 @@
                <compareText text="${jrehome}" logic="equals" value=""/>
             </ruleList>
         </autodetectJava>
+
         <!-- LIN & MAC : Get the branding & check Previous Installation of PPHQ -->
         <actionGroup>
             <actionList>
@@ -266,6 +306,9 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
+
+        <setInstallerVariableFromRegEx name="pphqVersion" text="${pphqVersion}"
+              pattern="^(.*)-.*$" substitution="\1"/>
 
         <!-- If there appears to be an existing installation, with no Branding value. -->
         <!-- force the default value. Otherwise, set the branding to whatever we read, -->
@@ -498,29 +541,33 @@
                     </ruleList>
                 </throwError>
                 <!-- Validate the PostgreSQL Server Details -->
-                <setEnvironmentVariable name="PGHOST" value="${pghost}" />
-                <setEnvironmentVariable name="PGUSER" value="${pguser}" />
-                <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
-                <setEnvironmentVariable name="PGPORT" value="${pgport}" />
+                <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+                <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+                <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+                <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
                 <setEnvironmentVariable name="PGDATABASE" value="postgres"/>
                 <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${pphqTempDir}/instscripts/lib"/>
                 <runProgram program="${psql_path}" abortOnError="0"
-                        programArguments="-l &quot;${env(PGDATABASE)}&quot;"
-                        workingDirectory="${pphqTempDir}/instscripts"
-			showMessageOnError="0"/>
-
-		<!-- If it fails for postgres database, fall back to edb -->
-                <setEnvironmentVariable name="PGDATABASE" value="edb"/>
-		<runProgram program="${psql_path}" abortOnError="0"
-		    programArguments="-l &quot;${env(PGDATABASE)}&quot;"
-                    workingDirectory="${pphqTempDir}/instscripts"
-		    showMessageOnError="0"/>
-		
-		<!-- If it fails for edb database, fall back to template1 -->
-                <setEnvironmentVariable name="PGDATABASE" value="template1"/>
-		<runProgram program="${psql_path}" abortOnError="1" showMessageOnError="1"
-		    programArguments="-l &quot;${env(PGDATABASE)}&quot;"
-                    workingDirectory="${pphqTempDir}/instscripts"/>
+                      programArguments="-l &quot;${env(PGDATABASE)}&quot;"
+                      workingDirectory="${pphqTempDir}/instscripts"
+                      showMessageOnError="0">
+                    <onErrorActionList>
+                        <showInfo text="It fails for postgres database, fall back to edb"/>
+                        <setEnvironmentVariable name="PGDATABASE" value="edb"/>
+                        <runProgram program="${psql_path}" abortOnError="0"
+                              programArguments="-l"
+                              workingDirectory="${pphqTempDir}/instscripts"
+                              showMessageOnError="0">
+                            <onErrorActionList>
+                                <showInfo text="It fails for edb database, fall back to template1"/>
+                                <setEnvironmentVariable name="PGDATABASE" value="template1"/>
+                                <runProgram program="${psql_path}" abortOnError="1" showMessageOnError="1"
+                                      programArguments="-l"
+                                      workingDirectory="${pphqTempDir}/instscripts"/>
+                            </onErrorActionList>
+                        </runProgram>
+                    </onErrorActionList>
+                </runProgram>
 
                 <setInstallerVariable name="admin_db_exist" value="0"/>
                 <setInstallerVariable name="admin_db_owner" value="hqadmin"/>
@@ -582,7 +629,7 @@
         </actionGroup>
 
     </preInstallationActionList>
-    <postInstallationActionList>
+    <readyToInstallActionList>
         <setInstallerVariableFromRegEx name="pphqJavaHome" text="${java_executable}">
             <pattern>bin\/java</pattern>
             <substitution/>
@@ -617,10 +664,6 @@
 
         <setEnvironmentVariable name="ANT_HOME" value="${antPath}"/>
         <setEnvironmentVariable name="JAVA_HOME" value="${pphqJavaHome}"/>
-        <setEnvironmentVariable name="PGHOST" value="${pghost}" />
-        <setEnvironmentVariable name="PGUSER" value="${pguser}" />
-        <setEnvironmentVariable name="PGPORT" value="${pgport}" />
-        <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
         <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${pphqTempDir}/instscripts/lib"/>
 
         <actionGroup>
@@ -634,7 +677,8 @@
                         <fileExists path="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"/>
                     </ruleList>
                 </runProgram>
-                <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="1"/>
+                <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="0"/>
+                <deleteWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="0"/>
                 <setInstallerVariable name="create_database" value="No">
                     <ruleList>
                         <isTrue value="${admin_db_exist}"/>
@@ -645,6 +689,14 @@
                 <compareText logic="does_not_equal" text="${pphqVersion}" value=""/>
             </ruleList>
         </actionGroup>
+    </readyToInstallActionList>
+    <postInstallationActionList>
+        <setEnvironmentVariable name="PGHOST" value="${pghost}" />
+        <setEnvironmentVariable name="PGUSER" value="${pguser}" />
+        <setEnvironmentVariable name="PGPORT" value="${pgport}" />
+        <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
+        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${pphqTempDir}/instscripts/lib"/>
+
         <setInstallerVariable name="serverFiles" value=""/>
         <setInstallerVariable name="agentFiles" value=""/>
 
@@ -833,7 +885,7 @@
                 <logMessage text=" JRPM PORT:${pphq_jrpm_port}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
                             key="PPHQ_JRPM_PORT" value="${pphq_jrpm_port}"/>
-                <substitute>
+                <substitute abortOnError="0" showMessageOnError="0">
                     <files>
                          ${installdir}/installer/pphq/startupcfg.sh
                          ${installdir}/installer/pphq/removeshortcuts.sh
@@ -846,15 +898,37 @@
                     <substitutionList>
                         <substitution pattern="@@INSTALLDIR@@"  value="${pphqInstallPath}"/>
                         <substitution pattern="@@PPHQVERSION@@"  value="PG_VERSION_PPHQ"/>
-                        <substitution pattern="@@SERVICEUSER@@" value="${system_username}"/>
+                        <substitution pattern="@@SERVICEUSER@@" value="${serviceAccount}"/>
+                        <substitution pattern="@@AGENTSERVICEUSER@@" value="${agentServiceAccount}"/>
                         <substitution pattern="@@SERVICENAME@@" value="${serviceName}"/>
+                        <substitution pattern="@@AGENTSERVICENAME@@" value="${agentServiceName}"/>
                         <substitution pattern="@@PPHQAGENTSCRIPT@@" value="${pphqAgent}.sh"/>
                         <substitution pattern="@@PPHQSERVERSCRIPT@@" value="${pphqServer}.sh"/>
                         <substitution pattern="@@JAVAHOME@@" value="${pphqJavaHome}"/>
                     </substitutionList>
                 </substitute>
+                <!-- Create user (serviceAccount) for the server -->
+                <runProgram program="${installdir}/installer/pphq/createuser.sh"
+                      programArguments="${serviceAccount} &quot;${installdir}/server-PG_VERSION_PPHQ&quot;"
+                      workingDirectory="${installdir}/installer/pphq"
+                      abortOnError="0" showMessageOnError="0">
+                    <ruleList>
+                        <fileExists path="${installdir}/installer/pphq/createuser.sh"/>
+                        <compareText logic="does_not_equal" text="${serviceAccount}" value="root"/>
+                    </ruleList>
+                </runProgram>
+                <!-- Create user (agentServiceAccount) for the agent -->
+                <runProgram program="${installdir}/installer/pphq/createuser.sh"
+                      programArguments="${agentServiceAccount} &quot;${installdir}/agent-PG_VERSION_PPHQ&quot;"
+                      workingDirectory="${installdir}/installer/pphq"
+                      abortOnError="0" showMessageOnError="0">
+                    <ruleList>
+                        <fileExists path="${installdir}/installer/pphq/createuser.sh"/>
+                        <compareText logic="does_not_equal" text="${agentServiceAccount}" value="root"/>
+                    </ruleList>
+                </runProgram>
                 <runProgram program="${installdir}/installer/pphq/startupcfg.sh"
-                      programArguments="1"
+                      programArguments="1 1"
                       progressText="${msg(progress.text.startup.config)}"
                       workingDirectory="${installdir}/installer/pphq"
                       abortOnError="0" showMessageOnError="0">
@@ -958,6 +1032,9 @@
             </ruleList>
         </actionGroup>
         <addFilesToUninstaller files="${serverFiles};${agentFiles}"/>
+        <setInstallerVariable name="serviceName" value="${serviceName}" persist="1"/>
+        <setInstallerVariable name="agentServiceName" value="${agentServiceName}" persist="1"/>
+        <setInstallerVariable name="branding" value="${branding}" persist="1"/>
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
@@ -983,6 +1060,16 @@
                 <!-- Attempt to remove any runlevel config with update-rc.d -->
                 <runProgram program="/usr/sbin/update-rc.d" showMessageOnError="0"
                     programArguments="-f ${serviceName} remove" abortOnError="0"/>
+                <!-- Attempt to remove any runlevel config with chkconfig -->
+                <runProgram program="/sbin/chkconfig" showMessageOnError="0"
+                    programArguments="--del ${agentServiceName}" abortOnError="0"/>
+
+                <!-- Remove the startup script -->
+                <deleteFile path="/etc/init.d/${agentServiceName}"/>
+
+                <!-- Attempt to remove any runlevel config with update-rc.d -->
+                <runProgram program="/usr/sbin/update-rc.d" showMessageOnError="0"
+                    programArguments="-f ${agentServiceName} remove" abortOnError="0"/>
             </actionList>
             <ruleList>
                 <compareText logic="contains" text="${platform_name}" value="linux"/>
@@ -1001,12 +1088,16 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
-        <deleteFile>
-            <path>/Applications/${branding}</path>
+        <actionGroup>
+            <actionList>
+                <deleteFile path="/Applications/${branding}" abortOnError="0" showMessageOnError="0"/>
+                <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.${serviceName}.plist" abortOnError="0" showMessageOnError="0"/>
+                <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.${agentServiceName}.plist" abortOnError="0" showMessageOnError="0"/>
+            </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="osx"/>
             </ruleList>
-        </deleteFile>
+        </actionGroup>
         <actionGroup>
             <actionList>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
@@ -1207,7 +1298,7 @@
                     <comment>Postgres Plus HQ Monitoring Home Page</comment>
                     <name>Postgres Plus HQ Monitoring Home Page</name>
                     <runInTerminal>0</runInTerminal>
-                    <url>http://127.0.0.1:${pphqport}/</url>
+                    <url>http://localhost:${pphqport}/</url>
                     <windowsIcon>${installdir}\scripts\images\pphq-launch.ico</windowsIcon>
                 </startMenuLinkShortcut>
                 <!-- Start server -->
@@ -1243,13 +1334,14 @@
                     <windowsIcon>${installdir}\scripts\images\pphq-agent-stop.ico</windowsIcon>
                 </startMenuShortcut>
             </startMenuShortcutList>
-
         </component>
     </componentList>
     <parameterList>
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <stringParameter name="jrehome" cliOptionName="jrehome" default="" ask="1" cliOptionShow="1"/>
+        <stringParameter name="agentServiceAccount" cliOptionName="agent-service-account" ask="1" cliOptionShow="0" default="root"/>
+        <stringParameter name="serviceAccount" cliOptionName="service-account" ask="1" cliOptionShow="0" default="pphq"/>
 
         <!-- Whether to install runtimes -->
         <booleanParameter name="install_runtimes"
@@ -1391,7 +1483,7 @@
                                  cliOptionName="pgport" allowEmptyValue="1" width="40"/>
                 <!-- Postgres Database -->
                 <stringParameter name="pphqadmindb" description="Database name"
-                                 explanation="" value="" default="${pphqadmindb}" ask="1"
+                                 explanation="" value="" default="${defaultpphqadmindb}" ask="1"
                                  cliOptionName="pphqadmindb" allowEmptyValue="1"/>
             </parameterList>
 

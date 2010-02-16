@@ -35,3 +35,6 @@ error.could.not.initialise.agent=Hyperic agent start failed.
 warning.during.agent.initialisation=A non-fatal error occured during agent start. Please check the installation error log in ${system_temp_directory} for details.
 
 script.command.line.error=The script was called with an invalid command line
+
+hqagent.pphq.present.error=Postgres Plus HQ is installed on this machine. The Postgres Plus HQ Agent is included in Postgres Plus HQ and cannot be installed from the Agent installer unless Postgres Plus HQ is uninstalled.
+

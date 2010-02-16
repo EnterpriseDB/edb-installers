@@ -75,6 +75,7 @@ _postprocess_pphq_linux() {
     cd $PPHQ_DIR
 
     mkdir -p $PPHQ_STAGING/installer/pphq || _die "Failed to create a directory for the install scripts"
+    cp $PPHQ_DIR/scripts/linux/createuser.sh $PPHQ_STAGING/installer/pphq/ || _die "Failed to copy the createuser script"
     cp $PPHQ_DIR/scripts/linux/removeshortcuts.sh $PPHQ_STAGING/installer/pphq/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script"
     cp $PPHQ_DIR/scripts/tune-os.sh $PPHQ_STAGING/installer/pphq/tune-os.sh || _die "Failed to copy the tune-os.sh script"
     cp $PPHQ_DIR/scripts/linux/createshortcuts.sh $PPHQ_STAGING/installer/pphq/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script"
@@ -108,12 +109,13 @@ _postprocess_pphq_linux() {
 
 
     # Copy the launch scripts
-    cp $PPHQ_DIR/scripts/linux/agentctl.sh $PPHQ_STAGING/scripts/agentctl.sh || _die "Failed to copy the agentctl script"
-    cp $PPHQ_DIR/scripts/linux/launchagentctl.sh $PPHQ_STAGING/scripts/launchagentctl.sh || _die "Failed to copy the launchagentctl script"
-    cp $PPHQ_DIR/scripts/linux/launchbrowser.sh $PPHQ_STAGING/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script"
-    cp $PPHQ_DIR/scripts/linux/launchsvrctl.sh $PPHQ_STAGING/scripts/launchsvrctl.sh || _die "Failed to copy the launchsvrctl script"
+    cp $PPHQ_DIR/scripts/linux/agentctl.sh $PPHQ_STAGING/scripts/ || _die "Failed to copy the agentctl script"
+    cp $PPHQ_DIR/scripts/linux/launchagentctl.sh $PPHQ_STAGING/scripts/ || _die "Failed to copy the launchagentctl script"
+    cp $PPHQ_DIR/scripts/linux/launchbrowser.sh $PPHQ_STAGING/scripts/ || _die "Failed to copy the launchbrowser script"
+    cp $PPHQ_DIR/scripts/linux/launchsvrctl.sh $PPHQ_STAGING/scripts/ || _die "Failed to copy the launchsvrctl script"
     cp $PPHQ_DIR/scripts/linux/runAgent.sh $PPHQ_STAGING/scripts/ || _die "Failed to copy the runAgent script"
-    cp $PPHQ_DIR/scripts/linux/serverctl.sh $PPHQ_STAGING/scripts/serverctl.sh || _die "Failed to copy the serverctl script"
+    cp $PPHQ_DIR/scripts/linux/serverctl.sh $PPHQ_STAGING/scripts/ || _die "Failed to copy the serverctl script"
+    cp $PPHQ_DIR/scripts/linux/runServer.sh $PPHQ_STAGING/scripts/ || _die "Failed to copy the serverctl script"
     chmod ugo+x $PPHQ_STAGING/scripts/*.sh
 
     # Build the installer

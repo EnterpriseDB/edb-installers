@@ -1,12 +1,12 @@
 #!/bin/sh
 
 # Postgres Plus HQ agent control script for Linux
-# Dave Page, EnterpriseDB
+# Ashesh Vashi, EnterpriseDB
 
 # Check the command line
 if [ $# -lt 1  -o $# -gt 2 ]; 
 then
-    echo "Usage: $0 start|stop|restart|status [wait]"
+    echo "Usage: $0 start|stop|restart|status|ping [wait]"
     exit 127
 fi
 
@@ -17,8 +17,17 @@ case $1 in
     stop) 
         action=stop
         ;;
+    restart)
+        action=restart
+        ;;
+    status)
+        action=status
+        ;;
+    ping)
+        action=ping
+        ;;
     *)
-        echo "Usage: $0 start|stop"
+        echo "Usage: $0 start|stop|restart|status|ping [wait]"
         exit 127
         ;;
 esac
@@ -35,7 +44,7 @@ fi
 
 CURRUSER=`whoami`
 
-if [ "$CURRUSER" != "@@SERVICEUSER@@" ];
+if [ "$CURRUSER" != "@@AGENTSERVICEUSER@@" ];
 then
   if [ $USE_SUDO != "1" ];
   then
@@ -49,9 +58,9 @@ then
 
   if [ $USE_SUDO != "1" ];
   then
-      su - -c "\"@@INSTALLDIR@@/scripts/runAgent.sh\" $action"
+      su - -c "su @@AGENTSERVICEUSER@@ -c \"\\\"@@INSTALLDIR@@/scripts/runAgent.sh\\\" $action\""
   else
-      sudo "@@INSTALLDIR@@/scripts/runAgent.sh" $action
+      sudo su @@AGENTSERVICEUSER@@ -c "\"@@INSTALLDIR@@/scripts/runAgent.sh\" $action"
   fi
 else
   "@@INSTALLDIR@@/scripts/runAgent.sh" $action

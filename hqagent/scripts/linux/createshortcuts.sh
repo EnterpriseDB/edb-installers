@@ -66,31 +66,27 @@ do
 	"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 $i
 done
 
-# Fixup the scripts
-# Fixup the scripts
-_fixup_file "$INSTALLDIR/scripts/launchagentctl.sh"
-_fixup_file "$INSTALLDIR/scripts/agentctl.sh"
 # In case of agentctl.sh: We do not want to change HQAGENT_VERSION_STR to X_Y_Z from X.Y.Z because path is agent-4.2.0 not agent-4_2_0. But we want to replace HQAGENT_INSTALLDIR. So revert back one  change done by fix_up function.
 _replace $VERSION_STR $VERSION "$INSTALLDIR/scripts/agentctl.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/scripts/xdg/hqagent-$VERSION_STR.directory"
-_fixup_file "$INSTALLDIR/scripts/xdg/hqagent-start-$VERSION_STR.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/hqagent-stop-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/hqagent.directory"
+_fixup_file "$INSTALLDIR/scripts/xdg/hqagent-start.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/hqagent-stop.desktop"
 
 # Copy the primary desktop file to the branded version. We don't do this if
 # the installation is not branded, to retain backwards compatibility.
 if [ $BRANDED -ne 0 ];
 then
-    cp "$INSTALLDIR/scripts/xdg/hqagent-$VERSION_STR.directory" "$INSTALLDIR/scripts/xdg/hq-$BRANDING_STR.directory"
+    cp "$INSTALLDIR/scripts/xdg/hqagent.directory" "$INSTALLDIR/scripts/xdg/hq-$BRANDING_STR.directory"
 fi
 
 # Create the menu shortcuts - first the top level menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system --noupdate \
       "$INSTALLDIR/scripts/xdg/hq-$BRANDING_STR.directory" \
-	  "$INSTALLDIR/scripts/xdg/hqagent-start-$VERSION_STR.desktop" \
-	  "$INSTALLDIR/scripts/xdg/hqagent-stop-$VERSION_STR.desktop" || _warn "Failed to create the top level menu for hyperic agent"
+	  "$INSTALLDIR/scripts/xdg/hqagent-start.desktop" \
+	  "$INSTALLDIR/scripts/xdg/hqagent-stop.desktop" || _warn "Failed to create the top level menu for hyperic agent"
 
 echo "$0 ran to completion"
 exit 0

@@ -77,3 +77,6 @@ warning.during.agent.initialisation=A non-fatal error occured during agent start
 script.command.line.error=The script was called with an invalid command line
 
 install.runtimes.description=Specifies whether or not install the Microsoft Visual C++ runtimes before the installation proceeds.
+
+pphq.hqagent.present.error=The Postgres Plus HQ agent is installed on this machine. Please uninstall it before installing Postgres Plus HQ.
+

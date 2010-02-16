@@ -1,26 +1,29 @@
 #!/bin/sh
 
 # Postgres Plus HQ server control script for Linux
-# Dave Page, EnterpriseDB
+# Ashesh Vashi, EnterpriseDB
 
 # Check the command line
 if [ $# -lt 1  -o $# -gt 2 ]; 
 then
-    echo "Usage: $0 start|stop"
+    echo "Usage: $0 start|stop|restart [wait]"
     exit 127
 fi
 
 case $1 in
     start)
         action=start     
-        ;;
+    ;;
     stop) 
         action=stop
-        ;;
+    ;;
+    restart)
+        action=restart
+    ;;
     *)
-        echo "Usage: $0 start|stop"
+        echo "Usage: $0 start|stop [wait]"
         exit 127
-        ;;
+    ;;
 esac
 
 # Try to figure out if this is a 'sudo' platform such as Ubuntu
@@ -49,12 +52,12 @@ then
 
   if [ $USE_SUDO != "1" ];
   then
-      su - -c "JAVA_HOME=@@JAVAHOME@@; /etc/init.d/@@SERVICENAME@@ $action"
+      su - -c "su @@SERVICEUSER@@ -c \"\\\"@@INSTALLDIR@@/scritps/runServer.sh\\\" $action\""
   else
-      sudo /etc/init.d/@@SERVICENAME@@ $action
+      sudo su @@SERVICEUSER@@ -c "\"@@INSTALLDIR@@/scritps/runServer.sh\" $action"
   fi
 else
-  JAVA_HOME=@@JAVAHOME@@ "@@INSTALLDIR@@/server-@@PPHQVERSION@@/bin/@@PPHQSERVERSCRIPT@@" $action
+  "@@INSTALLDIR@@/scripts/runServer.sh" $action
 fi
 
 if [ x"$2" = x"wait" ];

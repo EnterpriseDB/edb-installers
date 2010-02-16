@@ -1,10 +1,20 @@
 #!/bin/sh
 
 # Postgres Plus HQ agent control script for Linux
-# Dave Page, EnterpriseDB
+# Ashesh Vashi
+
+if [ "`whoami`" != "@@AGENTSERVICEUSER@@" ];
+then
+     echo ""
+     echo "This script must be run by the '@@AGENTSERVICEUSER@@' user."
+     echo ""
+     exit 1;
+fi
+
+
 
 # Check the command line
-if [ $# -ne 1 ]; 
+if [ $# -ne 1 ];
 then
     echo "Usage: $0 start|stop|restart|status"
     exit 127
@@ -12,9 +22,9 @@ fi
 
 case $1 in
     start)
-        action=start     
+        action=start
         ;;
-    stop) 
+    stop)
         action=stop
         ;;
     restart)
@@ -29,33 +39,7 @@ case $1 in
         ;;
 esac
 
-if [ "\$USER" = "root" -o "\$UID" = "0" -o "\$EUID" = "0" ];
-then
-     echo "Running the runAgent.sh script: Action(\$1).."
-elif [ "$USER" != "@@SERVICEUSER@@" ];
-then
-     echo ""
-     echo "This script must be run by the root user."
-     echo ""
-     exit 1;
-fi
-
-# Try to figure out if this is a 'sudo' platform such as Ubuntu
-USE_SUDO=0
-if [ -f /etc/lsb-release ];
-then
-    if [ `grep -E '^DISTRIB_ID=[a-zA-Z]?buntu$' /etc/lsb-release | wc -l` != "0" ];
-    then
-        USE_SUDO=1
-    fi
-fi
-
-CURRUSER=`whoami`
-
-if [ "$CURRUSER" != "@@SERVICEUSER@@" ];
-then
-  su - @@SERVICEUSER@@ -c "JAVA_HOME=@@JAVAHOME@@; \"@@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/@@PPHQAGENTSCRIPT@@\" $action"
-else
-  JAVA_HOME=@@JAVAHOME@@; "@@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/@@PPHQAGENTSCRIPT@@" $action
-fi
+JAVA_HOME=@@JAVAHOME@@
+export JAVA_HOME
+"@@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/@@PPHQAGENTSCRIPT@@" $action
 

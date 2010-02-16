@@ -66,7 +66,6 @@ _build_pphq_windows() {
 
 }
 
-
 ################################################################################
 # PPHQ Post-Process
 ################################################################################
@@ -82,7 +81,6 @@ _postprocess_pphq_windows() {
     SERVER_STAGING=$WD/server/staging/windows
 
     cd $WD/pphq
-
 
     # Copy in the menu pick images
     mkdir -p $PPHQ_STAGING/scripts/images || _die "Failed to create a directory for the menu pick images"

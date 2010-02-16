@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 1 ]; 
+if [ $# -ne 2 ]; 
 then
-  echo "Usage: $0 <install_service>"
+  echo "Usage: $0 <install_server_service> <install_agent_service>"
   exit 127
 fi
 
@@ -51,8 +51,43 @@ if [ x$1 = x1 ]; then
 </plist>
 EOT
 
-# Fixup the permissions on the launchDaemon
-chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.@@SERVICENAME@@.plist" || _warn "Failed to set the ownership of the launchd daemon for @@SERVICENAME@@ (/Library/LaunchDaemons/com.edb.launchd.@@SERVICENAME@@.plist)"
+  # Fixup the permissions on the launchDaemon
+  chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.@@SERVICENAME@@.plist" || _warn "Failed to set the ownership of the launchd daemon for @@SERVICENAME@@ (/Library/LaunchDaemons/com.edb.launchd.@@SERVICENAME@@.plist)"
+fi
+
+if [ x$2 = x1 ]; then
+  # Write the plist file
+  cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.@@AGENTSERVICENAME@@.plist"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
+        "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Disabled</key>
+	<false/>
+        <key>Label</key>
+        <string>com.edb.launchd.@@AGENTSERVICENAME@@</string>
+        <key>ProgramArguments</key>
+        <array>
+                <string>@@INSTALLDIR@@/scripts/agentctl.sh</string>
+                <string>--no-debug</string>
+                <string>--start</string>
+        </array>
+        <key>RunAtLoad</key>
+        <true/>
+	<key>UserName</key>
+        <string>@@AGENTSERVICEUSER@@</string>
+        <key>KeepAlive</key>
+    <dict>
+         <key>SuccessfulExit</key>
+         <false/>
+    </dict>
+</dict>
+</plist>
+EOT
+
+  # Fixup the permissions on the launchDaemon
+  chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.@@AGENTSERVICENAME@@.plist" || _warn "Failed to set the ownership of the launchd daemon for @@SERVICENAME@@ (/Library/LaunchDaemons/com.edb.launchd.@@AGENTSERVICENAME@@.plist)"
 fi
 
 if [ -d "@@INSTALLDIR@@/server-@@PPHQVERSION@@" ];
