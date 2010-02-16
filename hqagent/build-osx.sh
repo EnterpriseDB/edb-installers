@@ -63,6 +63,7 @@ _postprocess_pphqagent_osx() {
     # Setup the installer scripts.
     mkdir -p $PPHQAGENT_STAGING_DIR/installer/pphqagent || _die "Failed to create a directory for the install scripts"
     cp $PPHQ_DIR/scripts/osx/createuser.sh $PPHQAGENT_STAGING_DIR/installer/pphqagent/ || _die "Failed to copy the createuser script"
+    cp $PPHQ_DIR/scripts/osx/startupcfg.sh $PPHQAGENT_STAGING_DIR/installer/pphqagent/ || _die "Failed to copy the startupcfg sscript"
     cp $PPHQAGENT_DIR/scripts/osx/createshortcuts.sh $PPHQAGENT_STAGING_DIR/installer/pphqagent/ || _die "Failed to copy the createshortcuts script"
     chmod ugo+x $PPHQAGENT_STAGING_DIR/installer/pphqagent/*.sh
 

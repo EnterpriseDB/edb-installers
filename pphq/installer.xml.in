@@ -677,13 +677,27 @@
                         <fileExists path="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"/>
                     </ruleList>
                 </runProgram>
-                <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="0"/>
-                <deleteWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="0"/>
+                <stopWindowsService serviceName="pphq-${pphqVersion}" abortOnError="0" showMessageOnError="0"/>
+                <deleteWindowsService serviceName="pphq-${pphqVersion}" abortOnError="0" showMessageOnError="0"/>
                 <setInstallerVariable name="create_database" value="No">
                     <ruleList>
                         <isTrue value="${admin_db_exist}"/>
                     </ruleList>
                 </setInstallerVariable>
+                <runProgram program="cscript.exe" workingDirectory="${installdir}\agent-PG_VERSION_PPHQ\bin"
+                      programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-${pphqVersion}\bin\pphq-agent.bat&quot; stop"
+                      progressText="Stoping PPHQ Agent ..." abortOnError="1" showMessageOnError="1">
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </runProgram>
+                <runProgram program="${installdir}/agent-${pphqVersion}/bin/pphq-agent.sh"
+                      programArguments="stop" workingDirectory="${installdir}/agent-PG_VERSION_PPHQ/bin"
+                      progressText="Stoping PPHQ Agent ..." abortOnError="1" showMessageOnError="1">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </runProgram>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${pphqVersion}" value=""/>
@@ -1035,6 +1049,36 @@
         <setInstallerVariable name="serviceName" value="${serviceName}" persist="1"/>
         <setInstallerVariable name="agentServiceName" value="${agentServiceName}" persist="1"/>
         <setInstallerVariable name="branding" value="${branding}" persist="1"/>
+        <getFreePort variable="agentport" initialPort="2144" finalPort="65535"/>
+
+        <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
+                           key="agent.setup.camIP" value="localhost"/>
+        <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
+                           key="agent.setup.camPort" value="${pphqport}"/>
+        <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
+                           key="agent.setup.camSSLPort" value="${pphq_secure_port}"/>
+        <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
+                           key="agent.setup.camSecure" value="yes"/>
+        <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
+                           key="agent.setup.camLogin" value="${pphquser}"/>
+        <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
+                           key="agent.setup.camPword" value="${pphqpassword}"/>
+        <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
+                           key="agent.setup.agentPort" value="${agentport}"/>
+        <runProgram program="cscript.exe" workingDirectory="${installdir}\agent-PG_VERSION_PPHQ\bin"
+              programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_PPHQ\bin\pphq-agent.bat&quot; start"
+              progressText="Starting PPHQ Agent ..." abortOnError="1" showMessageOnError="1">
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </runProgram>
+        <runProgram program="${installdir}/agent-PG_VERSION_PPHQ/bin/pphq-agent.sh"
+              programArguments="start" workingDirectory="${installdir}/agent-PG_VERSION_PPHQ/bin"
+              progressText="Starting PPHQ Agent ..." abortOnError="1" showMessageOnError="1">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </runProgram>
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->

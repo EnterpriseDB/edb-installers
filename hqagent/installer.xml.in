@@ -399,13 +399,22 @@
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </runProgram>
-        <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="1">
+        <!-- stopWindowsService serviceName="pphq-agent-${pphqAgentVersion}" abortOnError="0" showMessageOnError="1">
             <ruleList>
                 <stringTest text="${pphqAgentVersion}" type="not_empty"/>
-                <fileExists path="${installdir}\scripts\agentctl.vbs"/>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
-        </stopWindowsService>
+        </stopWindowsService -->
+        <runProgram program="cscript.exe" workingDirectory="${installdir}\agent-PG_VERSION_PPHQ\bin"
+              programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-${pphqVersion}\bin\pphq-agent.bat&quot; stop"
+              progressText="Stoping agent ..." abortOnError="1" showMessageOnError="1">
+            <ruleList>
+                <stringTest text="${pphqAgentVersion}" type="not_empty"/>
+                <fileExists path="${installdir}\agent-${pphqAgentVersion}\bin\pphq-agent.bat"/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </runProgram>
+
     </readyToInstallActionList>
     <postInstallationActionList>
         <setInstallerVariableFromRegEx name="pphqInstallPath" text="${installdir}">
@@ -472,6 +481,16 @@
                         <compareText logic="does_not_equal" text="${serviceAccount}" value="root"/>
                     </ruleList>
                 </runProgram>
+                <runProgram program="${installdir}/installer/pphqagent/startupcfg.sh"
+                      programArguments="0 0"
+                      progressText="${msg(progress.text.startup.config)}"
+                      workingDirectory="${installdir}/installer/pphq"
+                      abortOnError="0" showMessageOnError="0">
+                    <ruleList>
+                        <fileExists path="${installdir}/installer/pphqagent/startupcfg.sh"/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </runProgram>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -524,8 +543,14 @@
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
+                <runProgram program="cscript.exe"
+                      programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; stop" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
+                      abortOnError="1" showMessageOnError="0">
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </runProgram>
         	<setInstallerVariable name="errMessage" value="${program_stderr}"/>
-        
         	<actionGroup>
         	    <actionList>
                         <setInstallerVariable name="strmsg" value="${errMessage}"/>
@@ -546,22 +571,52 @@
                                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                             </ruleList>
                         </runProgram>
+                        <runProgram program="cscript.exe"
+                              programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; stop" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
+                              abortOnError="0" showMessageOnError="0">
+                            <ruleList>
+                                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                            </ruleList>
+                        </runProgram>
                         <throwError text="ERROR: ${strmsg}"/>
                     </actionList>
                     <ruleList>
                         <stringTest text="${errMessage}" type="not_empty"/>
                     </ruleList>
                 </actionGroup>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqhost" value="${pphqhost}"/>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqport" value="${pphqport}"/>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value="${pphqsecureconn}"/>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value="${pphquser}"/>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
-                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphqagent" name="pphqhost" value="${pphqhost}"/>
-                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphqagent" name="pphqport" value="${pphqport}"/>
-                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphqagent" name="secure-connection" value="${pphqsecureconn}"/>
-                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphqagent" name="pphquser" value="${pphquser}"/>
-                <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphqagent" name="agentport" value="${agentport}"/>
+                <actionGroup>
+                    <actionList>
+                        <runProgram program="${installdir}/installer/pphqagent/startupcfg.sh"
+                              programArguments="0 1"
+                              progressText="${msg(progress.text.startup.config)}"
+                              workingDirectory="${installdir}/installer/pphq"
+                              abortOnError="0" showMessageOnError="0">
+                            <ruleList>
+                                <fileExists path="${installdir}/installer/pphqagent/startupcfg.sh"/>
+                            </ruleList>
+                        </runProgram>
+                        <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqhost" value="${pphqhost}"/>
+                        <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqport" value="${pphqport}"/>
+                        <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value="${pphqsecureconn}"/>
+                        <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value="${pphquser}"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphqagent" name="pphqhost" value="${pphqhost}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphqagent" name="pphqport" value="${pphqport}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphqagent" name="secure-connection" value="${pphqsecureconn}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphqagent" name="pphquser" value="${pphquser}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphqagent" name="agentport" value="${agentport}"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </actionGroup>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${installer_ui}" value="unattended"/>
@@ -819,6 +874,8 @@
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                                    key="agent.setup.camIP" value="${pphqhost}"/>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
+                                   key="agent.setup.camPort" value="${pphqport}"/>
+                <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                                    key="agent.setup.camSSLPort" value="${pphqport}"/>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                                    key="agent.setup.camSecure" value="yes"/>
@@ -849,6 +906,13 @@
                         <compareText logic="does_not_equal" text="${program_exitcode}" value="0"/>
                     </ruleList>
                 </throwError>
+                <runProgram program="cscript.exe"
+                      programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; stop" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
+                      abortOnError="0" showMessageOnError="0">
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </runProgram>
         	<setInstallerVariable name="errMessage" value="${program_stderr}"/>
         
         	<actionGroup>
@@ -871,6 +935,13 @@
                                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                             </ruleList>
                         </runProgram>
+                        <runProgram program="cscript.exe"
+                	      programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; stop" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
+                	      abortOnError="0" showMessageOnError="0">
+                            <ruleList>
+                                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                            </ruleList>
+                        </runProgram>
                         <throwError text="ERROR: ${strmsg}"/>
                     </actionList>
                     <ruleList>
@@ -889,6 +960,16 @@
                 <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphqagent" name="secure-connection" value="${pphqsecureconn}"/>
                 <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphqagent" name="pphquser" value="${pphquser}"/>
                 <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphqagent" name="agentport" value="${agentport}"/>
+                <runProgram program="${installdir}/installer/pphqagent/startupcfg.sh"
+                      programArguments="0 1"
+                      progressText="${msg(progress.text.startup.config)}"
+                      workingDirectory="${installdir}/installer/pphq"
+                      abortOnError="0" showMessageOnError="0">
+                    <ruleList>
+                        <fileExists path="${installdir}/installer/pphqagent/startupcfg.sh"/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </runProgram>
             </postShowPageActionList>
         </parameterGroup>
     </parameterList>

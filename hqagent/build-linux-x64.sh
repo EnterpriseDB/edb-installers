@@ -36,7 +36,6 @@ _build_pphqagent_linux_x64() {
     echo "*******************************************************"
 
     PPHQ_STAGING=$WD/hqagent/staging/linux-x64
-    mkdir -p $PPHQ_STAGING/ || _die "Failed to create the pphq installer directory"
 
     echo "Copying PPHQ Agent binaries to staging directory"
     cd $PPHQ_STAGING/
@@ -65,6 +64,7 @@ _postprocess_pphqagent_linux_64() {
     # Setup the installer scripts.
     mkdir -p $PPHQAGENT_STAGING_DIR/installer/pphqagent || _die "Failed to create a directory for the install scripts"
     cp $PPHQ_DIR/scripts/osx/createuser.sh $PPHQAGENT_STAGING_DIR/installer/pphqagent/ || _die "Failed to copy the createuser script"
+    cp $PPHQ_DIR/scripts/osx/startupcfg.sh $PPHQAGENT_STAGING_DIR/installer/pphqagent/ || _die "Failed to copy the startupcfg script"
     cp $PPHQAGENT_DIR/scripts/linux/removeshortcuts.sh $PPHQAGENT_STAGING_DIR/installer/pphqagent/ || _die "Failed to copy the removeshortcuts script"
     cp $PPHQAGENT_DIR/scripts/linux/createshortcuts.sh $PPHQAGENT_STAGING_DIR/installer/pphqagent/ || _die "Failed to copy the createshortcuts script"
     chmod ugo+x $PPHQAGENT_STAGING_DIR/installer/pphqagent/*.sh

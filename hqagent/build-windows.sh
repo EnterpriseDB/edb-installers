@@ -56,10 +56,12 @@ _postprocess_pphqagent_windows() {
 
     PPHQAGENT_STAGING_DIR=$WD/hqagent/staging/windows
     PPHQAGENT_DIR=$WD/hqagent
+    PPHQ_DIR=$WD/pphq
     cd $PPHQAGENT_DIR
 
     # Copy in the menu pick images
     mkdir -p $PPHQAGENT_STAGING_DIR/scripts/images || _die "Failed to create a directory for the menu pick images"
+    cp $PPHQ_DIR/scripts/windows/runProgram.vbs $PPHQ_STAGING/scripts/ || _die "Failed to copy runProgram.vbs script"
     cp $PPHQAGENT_DIR/resources/*.ico $PPHQAGENT_STAGING_DIR/scripts/images || _die "Failed to copy the menu pick images (resources/*.ico)"
 
     # Build the installer
