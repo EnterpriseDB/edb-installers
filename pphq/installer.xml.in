@@ -45,6 +45,9 @@
     <preShowHelpActionList>
         <!-- Get a default port number - ideally 7080 -->
         <getFreePort variable="defaultpphqport" initialPort="7080" finalPort="65535"/>
+        <setInstallerVariable name="defaultpgpassword" persist="1" value="postgres"> </setInstallerVariable>
+        <setInstallerVariable name="pphqadmindb" persist="1" value="pphq"> </setInstallerVariable>
+        <setInstallerVariable name="defaultpphqpassword" persist="1" value="hqadmin"> </setInstallerVariable>
 
         <!-- MAC : Set the default installation directory -->
         <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/HQ">
@@ -106,8 +109,8 @@
         </throwError>
         <!-- Get a default port number - ideally 7080 -->
         <getFreePort variable="defaultpphqport" initialPort="7080" finalPort="65535"/>
-        <setInstallerVariable name="defaultpgpassword" value=""/>
-        <setInstallerVariable name="defaultpphqpassword" value=""/>
+        <setInstallerVariable name="defaultpgpassword" value="postgres"/>
+        <setInstallerVariable name="defaultpphqpassword" value="hqadmin"/>
 
         <!-- LIN : Set the default values for unattended mode -->
         <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/HQ">
@@ -617,7 +620,6 @@
         <setEnvironmentVariable name="PGHOST" value="${pghost}" />
         <setEnvironmentVariable name="PGUSER" value="${pguser}" />
         <setEnvironmentVariable name="PGPORT" value="${pgport}" />
-        <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
         <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
         <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${pphqTempDir}/instscripts/lib"/>
 
@@ -1343,7 +1345,7 @@
             <default/>
             <parameterList>
                 <!-- smtp Host -->
-                <stringParameter name="smtphost" description="SMTP HostName"
+                <stringParameter name="smtphost" description="SMTP Hostname"
                                  explanation="" value="" default="localhost"
                                  cliOptionName="smtphost" allowEmptyValue="1"
                                  width="40"/>
@@ -1372,7 +1374,7 @@
             <default/>
             <parameterList>
                 <!-- Postgres Host -->
-                <stringParameter name="pghost" description="HostName"
+                <stringParameter name="pghost" description="Hostname"
                                  explanation="" value="" default="localhost"
                                  cliOptionName="pghost" allowEmptyValue="1" width="40"/>
                 <!-- Postgres User -->

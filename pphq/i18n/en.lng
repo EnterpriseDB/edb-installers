@@ -16,7 +16,7 @@ jre.invalid.error=Please specify valid JAVA_HOME environment varriable or valid 
 
 jre.invalid.error.windows=Please specify valid JAVA_HOME environment varriable or valid --jrehome command-line argument
 
-java.error=java binary is not valid in JAVA_HOME.
+java.error=java binary in JAVA_HOME is not valid.
 
 progress.text.creating.shortcuts=Creating menu shortcuts
 
