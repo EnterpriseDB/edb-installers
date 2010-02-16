@@ -142,7 +142,7 @@
         <!-- Creates the ini file if not exits -->
         <touchFile path="/etc/postgres-reg.ini">
             <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </touchFile>
 
