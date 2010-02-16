@@ -81,8 +81,8 @@ _postprocess_pphqagent_osx() {
 
     # Zip up the output
     cd $WD/output
-    zip -r pphqagent-$PG_VERSION_HQAGENT-osx.zip pphqagent-$PG_VERSION_HQAGENT-osx.app/ || _die "Failed to zip the installer bundle"
-    rm -rf pphqagent-$PG_VERSION_HQAGENT-osx.app/ || _die "Failed to remove the unpacked installer bundle"
+    zip -r pphqagent-$PG_VERSION_HQAGENT-$PG_BUILDNUM_HQAGENT-osx.zip pphqagent-$PG_VERSION_HQAGENT-$PG_BUILDNUM_HQAGENT-osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf pphqagent-$PG_VERSION_HQAGENT-$PG_BUILDNUM_HQAGENT-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
 
