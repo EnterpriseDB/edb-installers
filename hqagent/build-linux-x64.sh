@@ -49,7 +49,7 @@ _build_pphqagent_linux_x64() {
 # PPHQ Agent Build
 ################################################################################
 
-_postprocess_pphqagent_linux_64() {
+_postprocess_pphqagent_linux_x64() {
 
     echo "*******************************************************"
     echo " Post Process : PPHQ Agent (LINUX-X64)"
