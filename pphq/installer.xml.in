@@ -1065,8 +1065,6 @@
                            key="agent.setup.camPword" value="${pphqpassword}"/>
         <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
                            key="agent.setup.agentPort" value="${agentport}"/>
-        <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
-                           key="agent.setup.agentIP" value="localhost"/>
         <runProgram program="cscript.exe" workingDirectory="${installdir}\agent-PG_VERSION_PPHQ\bin"
               programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_PPHQ\bin\pphq-agent.bat&quot; start"
               progressText="Starting PPHQ Agent ..." abortOnError="1" showMessageOnError="1">
@@ -1514,19 +1512,19 @@
                 <!-- Postgres Host -->
                 <stringParameter name="pghost" description="Hostname"
                                  explanation="" value="" default="localhost"
-                                 cliOptionName="pghost" allowEmptyValue="1" width="40"/>
+                                 cliOptionName="pghost" allowEmptyValue="1" width="40">
 		  <ruleList>
                         <compareText logic="equals" text="${pphqVersion}" value=""/>
-                    </ruleList>
+                  </ruleList>
                 </stringParameter>
 
                 <!-- Postgres User -->
                 <stringParameter name="pguser" description="User Name"
                                  explanation="" value="" default="postgres"
-                                 cliOptionName="pguser" allowEmptyValue="1" width="40"/>
+                                 cliOptionName="pguser" allowEmptyValue="1" width="40">
 		  <ruleList>
                         <compareText logic="equals" text="${pphqVersion}" value=""/>
-                    </ruleList>
+                  </ruleList>
                 </stringParameter>
 
                 <!-- Postgres User Password -->
@@ -1537,16 +1535,16 @@
                 <!-- Postgres Port(Default 5432) -->
                 <stringParameter name="pgport" description="Port"
                                  explanation="" value="" default="5432"
-                                 cliOptionName="pgport" allowEmptyValue="1" width="40"/>
+                                 cliOptionName="pgport" allowEmptyValue="1" width="40">
 		  <ruleList>
                         <compareText logic="equals" text="${pphqVersion}" value=""/>
-                    </ruleList>
+                  </ruleList>
                 </stringParameter>
 
                 <!-- Postgres Database -->
                 <stringParameter name="pphqadmindb" description="Database name"
                                  explanation="" value="" default="${defaultpphqadmindb}" ask="1"
-                                 cliOptionName="pphqadmindb" allowEmptyValue="1"/>
+                                 cliOptionName="pphqadmindb" allowEmptyValue="1">
 		  <ruleList>
                         <compareText logic="equals" text="${pphqVersion}" value=""/>
                     </ruleList>
