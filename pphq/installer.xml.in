@@ -108,8 +108,8 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </setInstallerVariable>
-        <setInstallerVariable name="serviceName" value="pphq-PG_VERSION_PPHQ" persist="1"/>
-        <setInstallerVariable name="agentServiceName" value="pphq-agent-PG_VERSION_PPHQ" persist="1"/>
+        <setInstallerVariable name="serviceName" value="pphq" persist="1"/>
+        <setInstallerVariable name="agentServiceName" value="pphq-agent" persist="1"/>
         <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -669,16 +669,19 @@
         <actionGroup>
             <actionList>
                 <runProgram program="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"
-                        programArguments="stop"
+                        programArguments="stop" abortOnError="0" showMessageOnError="0"
                         workingDirectory="${installdir}/scripts"
-                        abortOnError="0">
+                        progressText="${msg(pphq.server.stoping)}">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                         <fileExists path="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"/>
                     </ruleList>
                 </runProgram>
-                <stopWindowsService serviceName="pphq-${pphqVersion}" abortOnError="0" showMessageOnError="0"/>
-                <deleteWindowsService serviceName="pphq-${pphqVersion}" abortOnError="0" showMessageOnError="0"/>
+
+                <!-- Stopping pphq service on windows -->
+                <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="0"/>
+                <!-- Removing pphq service on windows in upgrade mode, it will be recreated later -->
+                <deleteWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="0"/>
                 <setInstallerVariable name="create_database" value="No">
                     <ruleList>
                         <isTrue value="${admin_db_exist}"/>
@@ -686,14 +689,14 @@
                 </setInstallerVariable>
                 <runProgram program="cscript.exe" workingDirectory="${installdir}\agent-PG_VERSION_PPHQ\bin"
                       programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-${pphqVersion}\bin\pphq-agent.bat&quot; stop"
-                      progressText="Stoping PPHQ Agent ..." abortOnError="1" showMessageOnError="1">
+                      progressText="${msg(pphq.agent.stoping)}" abortOnError="1" showMessageOnError="1">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
                 <runProgram program="${installdir}/agent-${pphqVersion}/bin/pphq-agent.sh"
-                      programArguments="stop" workingDirectory="${installdir}/agent-PG_VERSION_PPHQ/bin"
-                      progressText="Stoping PPHQ Agent ..." abortOnError="1" showMessageOnError="1">
+                      programArguments="stop" workingDirectory="${installdir}/agent-${pphqVersion}/bin"
+                      progressText="${msg(pphq.agent.stoping)}" abortOnError="1" showMessageOnError="1">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
@@ -717,7 +720,7 @@
         <runProgram program="${psql_path}"
               programArguments="-t -A -c &quot;CREATE USER \&quot;${pphquser}\&quot; PASSWORD '${pphqpassword.password}'&quot;"
               workingDirectory="${pphqTempDir}/instscripts"
-              progressText="Creating Postgres Plus HQ Admin User (${pphquser})..."
+              progressText="${msg(pphq.creating.db.user)}"
               abortOnError="0" showMessageOnError="0">
             <ruleList>
                 <isFalse value="${pphq_db_user_exists}"/>
@@ -727,7 +730,7 @@
         <runProgram program="${psql_path}"
               programArguments="-t -A -c &quot;CREATE DATABASE \&quot;${pphqadmindb}\&quot; OWNER \&quot;${pphquser}\&quot;&quot;"
               workingDirectory="${pphqTempDir}/instscripts"
-              progressText="Creating Postgres Plus Admin HQ Database (${pphqadmindb})..."
+              progressText="${msg(pphq.creating.database)}"
               abortOnError="0" showMessageOnError="0">
             <ruleList>
                 <isFalse value="${admin_db_exist}"/>
@@ -737,7 +740,7 @@
 	<runProgram program="${psql_path}"
               programArguments="-t -A -c &quot;GRANT CREATE, CONNECT on DATABASE \&quot;${pphqadmindb}\&quot; TO \&quot;${pphquser}\&quot;&quot;"
               workingDirectory="${pphqTempDir}/instscripts"
-              progressText="Granting permissions Postgres Plus HQ Admin User (${pphquser}) on database (${pphqadmindb})"
+              progressText="${msg(pphq.granting.dbuser.database)}"
               abortOnError="0" showMessageOnError="0">
             <ruleList>
                 <isTrue value="${admin_db_exists}"/>
@@ -750,7 +753,7 @@
         <runProgram program="${psql_path}"
               programArguments="-t -A -c &quot;CREATE LANGUAGE plpgsql&quot;"
               workingDirectory="${pphqTempDir}/instscripts"
-              progressText="Making sure plpgsql exists in Postgres Plus HQ Admin Database (${pphqadmindb})..."
+              progressText="${msg(pphq.creating.plpgsql)}"
               abortOnError="0" showMessageOnError="0"/>
 
         <setInstallerVariableFromScriptOutput
@@ -795,20 +798,20 @@
                 <runProgram program="${pphqTempDir}/pphq/setup.sh"
                       programArguments="${pphqTempDir}/pphq/templates/server.prop"
                       workingDirectory="${pphqTempDir}/instscripts"
-                      progressText="Configuring PPHQ Server (This may take some time) ..."
-                      abortOnError="1" showMessageOnError="1"/>
+                      progressText="${msg(pphq.server.configure)}"
+                      abortOnError="0" showMessageOnError="1"/>
 
                 <runProgram program="${pphqTempDir}/pphq/setup.sh"
                       programArguments="${pphqTempDir}/pphq/templates/agent.prop"
                       workingDirectory="${pphqTempDir}/instscripts"
-                      progressText="Configuring PPHQ Client ..."
+                      progressText="${msg(pphq.agent.configure)}"
                       abortOnError="1" showMessageOnError="1"/>
                 <actionGroup>
                     <actionList>
                         <runProgram program="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"
                               programArguments="start"
                               workingDirectory="${pphqTempDir}/server-PG_VERSION_PPHQ"
-                              progressText="Starting PPHQ Server ..."
+                              progressText="${msg(pphq.server.starting)}"
                               abortOnError="1" showMessageOnError="1"/>
                     </actionList>
                     <ruleList>
@@ -827,24 +830,26 @@
                         exec="cscript.exe"
                         execArgs="//nologo &quot;${installdir}\scripts\shortPathName.vbs&quot; &quot;${pphqTempDir}\pphq&quot;"
                         name="pphqTempShortName"
-                        workingDirectory="${pphqTempDir}"/>
+                        workingDirectory="${pphqTempDir}" showMessageOnError="0" abortOnError="0"/>
                 <runProgram program="cscript.exe"
                       programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${pphqTempShortName}\setup.bat&quot; &quot;${pphqTempShortName}\templates\server.prop&quot;"
                       workingDirectory="${pphqTempDir}\pphq"
-                      progressText="Configuring PPHQ Server (This may take some time) ..."
-                      abortOnError="1" showMessageOnError="1"/>
+                      progressText="${msg(pphq.server.configure)}"
+                      abortOnError="0" showMessageOnError="1"/>
                 <runProgram program="cscript.exe"
                       programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${pphqTempShortName}\setup.bat&quot; &quot;${pphqTempShortName}\templates\agent.prop&quot;"
                       workingDirectory="${pphqTempDir}\pphq"
-                      progressText="Configuring PPHQ Agent ..."
-                      abortOnError="1" showMessageOnError="1"/>
+                      progressText="${msg(pphq.agent.configure)}"
+                      abortOnError="0" showMessageOnError="1"/>
                 <actionGroup>
                     <actionList>
+                        <!-- Register PPHQ windows service -->
                         <runProgram program="${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe"
                               programArguments="-i -n ${serviceName}"
                               workingDirectory="${installdir}\server-PG_VERSION_PPHQ\bin"
-                              progressText="Creating PPHQ service ..."
+                              progressText="${msg(pphq.server.service.configure)}"
                               abortOnError="0" showMessageOnError="0"/>
+                        <!-- Start PPHQ windows service -->
                         <startWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="1"/>
                     </actionList>
                     <ruleList>
@@ -904,10 +909,11 @@
                          ${installdir}/installer/pphq/startupcfg.sh
                          ${installdir}/installer/pphq/removeshortcuts.sh
                          ${installdir}/scripts/agentctl.sh
+                         ${installdir}/scripts/serverctl.sh
                          ${installdir}/scripts/launchagentctl.sh
                          ${installdir}/scripts/launchsvrctl.sh
                          ${installdir}/scripts/runAgent.sh
-                         ${installdir}/scripts/serverctl.sh
+                         ${installdir}/scripts/runServer.sh
                     </files>
                     <substitutionList>
                         <substitution pattern="@@INSTALLDIR@@"  value="${pphqInstallPath}"/>
@@ -953,22 +959,19 @@
                 <runProgram program="${installdir}/installer/pphq/createshortcuts.sh"
                       programArguments="&quot;${productVersion}&quot; &quot;${branding}&quot; &quot;${installdir}&quot; ${pphqport}"
                       progressText="${msg(progress.text.creating.shortcuts)}"
-                      workingDirectory="${installdir}/installer/pphq"
-                      abortOnError="0" showMessageOnError="0"/>
+                      workingDirectory="${installdir}/installer/pphq" abortOnError="0" showMessageOnError="0"/>
                 <setInstallerVariableFromScriptOutput
-                        exec="find"
-                        execArgs="&quot;${installdir}/server-PG_VERSION_PPHQ&quot;"
-                        name="serverFiles"
-                        workingDirectory="${pphqTempDir}">
+                        exec="find" execArgs="&quot;${installdir}/server-PG_VERSION_PPHQ&quot;"
+                        progressText="${msg(pphq.server.add.server.files)}"
+                        name="serverFiles" workingDirectory="${pphqTempDir}">
                     <ruleList>
                         <fileExists path="${installdir}/server-PG_VERSION_PPHQ"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
                 <setInstallerVariableFromScriptOutput
-                        exec="find"
-                        execArgs="&quot;${installdir}/agent-PG_VERSION_PPHQ&quot;"
-                        name="agentFiles"
-                        workingDirectory="${pphqTempDir}">
+                        exec="find" execArgs="&quot;${installdir}/agent-PG_VERSION_PPHQ&quot;"
+                        progressText="${msg(pphq.server.add.server.files)}"
+                        name="agentFiles" workingDirectory="${pphqTempDir}">
                     <ruleList>
                         <fileExists path="${installdir}/agent-PG_VERSION_PPHQ"/>
                     </ruleList>
@@ -1022,7 +1025,7 @@
                             name="PPHQ_JRPM_PORT" value="${pphq_jrpm_port}"/>
                 <setInstallerVariableFromScriptOutput
                         exec="cscript.exe"
-                        progressText="Examine installation..."
+                        progressText="${msg(pphq.server.add.server.files)}"
                         execArgs="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; -c &quot;dir /s /b&quot; &quot;${installdir}\server-PG_VERSION_PPHQ&quot;"
                         name="serverFiles"
                         workingDirectory="${installdir}\scripts\">
@@ -1032,7 +1035,7 @@
                 </setInstallerVariableFromScriptOutput>
                 <setInstallerVariableFromScriptOutput
                         exec="cscript.exe"
-                        progressText="Examine installation..."
+                        progressText="${msg(pphq.server.add.server.files)}"
                         execArgs="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; -c &quot;dir /s /b&quot; &quot;${installdir}\agent-PG_VERSION_PPHQ&quot;"
                         name="agentFiles"
                         workingDirectory="${installdir}\scripts">
@@ -1069,14 +1072,14 @@
                            key="agent.setup.agentIP" value="localhost"/>
         <runProgram program="cscript.exe" workingDirectory="${installdir}\agent-PG_VERSION_PPHQ\bin"
               programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_PPHQ\bin\pphq-agent.bat&quot; start"
-              progressText="Starting PPHQ Agent (This may take some time, it can complete until server gets started completely)..." abortOnError="1" showMessageOnError="1">
+              progressText="${msg(pphq.agent.starting)}" abortOnError="0" showMessageOnError="1">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </runProgram>
         <runProgram program="${installdir}/agent-PG_VERSION_PPHQ/bin/pphq-agent.sh"
               programArguments="start" workingDirectory="${installdir}/agent-PG_VERSION_PPHQ/bin"
-              progressText="Starting PPHQ Agent (This may take some time, it can complete until server gets started completely)..." abortOnError="1" showMessageOnError="1">
+              progressText="${msg(pphq.agent.starting)}" abortOnError="1" showMessageOnError="1">
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
@@ -1090,28 +1093,37 @@
                 <runProgram program="${installdir}/scripts/serverctl.sh"
                         programArguments="stop"
                         workingDirectory="${installdir}/scripts"
-                        abortOnError="0"/>
+                        progressText="${msg(pphq.server.stoping)}"
+                        abortOnError="0" showMessageOnError="0"/>
                 <runProgram program="${installdir}/installer/pphq/removeshortcuts.sh"
                       programArguments="&quot;${installdir}&quot; &quot;${productVersion}&quot; &quot;${branding}&quot;"
                       workingDirectory="${installdir}/installer/pphq"
-                      abortOnError="0"
-                      showMessageOnError="0"/>
+                      progressText="${msg(pphq.shortcuts.removing)}"
+                      abortOnError="0" showMessageOnError="0"/>
+                <runProgram program="${installdir}/scripts/agentctl.sh"
+                        programArguments="stop"
+                        workingDirectory="${installdir}/scripts"
+                        progressText="${msg(pphq.agent.stoping)}"
+                        abortOnError="0" showMessageOnError="0"/>
                 <!-- Attempt to remove any runlevel config with chkconfig -->
                 <runProgram program="/sbin/chkconfig" showMessageOnError="0"
-                    programArguments="--del ${serviceName}" abortOnError="0"/>
+                    programArguments="--del ${serviceName}" abortOnError="0"
+                    progressText="${msg(pphq.server.service.removing)}"/>
 
                 <!-- Remove the startup script -->
-                <deleteFile path="/etc/init.d/${serviceName}"/>
+                <deleteFile path="/etc/init.d/${serviceName}" abortOnError="0" showMessageOnError="0"/>
 
                 <!-- Attempt to remove any runlevel config with update-rc.d -->
                 <runProgram program="/usr/sbin/update-rc.d" showMessageOnError="0"
                     programArguments="-f ${serviceName} remove" abortOnError="0"/>
+
                 <!-- Attempt to remove any runlevel config with chkconfig -->
                 <runProgram program="/sbin/chkconfig" showMessageOnError="0"
-                    programArguments="--del ${agentServiceName}" abortOnError="0"/>
+                    programArguments="--del ${agentServiceName}" abortOnError="0"
+                    progressText="${msg(pphq.server.service.removing)}"/>
 
                 <!-- Remove the startup script -->
-                <deleteFile path="/etc/init.d/${agentServiceName}"/>
+                <deleteFile path="/etc/init.d/${agentServiceName}" abortOnError="0" showMessageOnError="0"/>
 
                 <!-- Attempt to remove any runlevel config with update-rc.d -->
                 <runProgram program="/usr/sbin/update-rc.d" showMessageOnError="0"
@@ -1123,11 +1135,12 @@
         </actionGroup>
         <actionGroup>
             <actionList>
-                <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="1"/>
+                <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="1"
+                      progressText="${msg(pphq.server.stoping)}"/>
                 <runProgram program="${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe"
                       programArguments="-u -n ${serviceName}"
                       workingDirectory="${installdir}\server-PG_VERSION_PPHQ\bin"
-                      progressText="Removing Postgres Plus Server service ..."
+                      progressText="${msg(pphq.server.service.removing)}"
                       abortOnError="0" showMessageOnError="0"/>
             </actionList>
             <ruleList>

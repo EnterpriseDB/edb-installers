@@ -31,14 +31,13 @@ VERSION_STR=`echo $VERSION | sed 's/\./_/g'`
 
 # Branding string, for the xdg filenames. If the branding is 'Postgres Plus HQ X.Y',
 # Don't do anything to ensure we remain backwards compatible.
-if [ "x$BRANDING" = "xPostgres Plus HQ $VERSION" ];
+if [ "x$BRANDING" = "xPostgres Plus HQ" ];
 then
-    BRANDING_STR="Postgres Plus HQ-$VERSION_STR"
     BRANDED=0
 else
-    BRANDING_STR=`echo $BRANDING | sed 's/\./_/g' | sed 's/ /_/g'`
     BRANDED=1
 fi
+BRANDING_STR=`echo $BRANDING | sed 's/\./_/g' | sed 's/ /_/g'`
 
 # Error handlers
 _die() {
@@ -52,12 +51,12 @@ _warn() {
 }
 
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
-	"$INSTALLDIR/scripts/xdg/pphq-$VERSION_STR.directory" \
-	"$INSTALLDIR/scripts/xdg/pphq-launch-$VERSION_STR.desktop"\
-	"$INSTALLDIR/scripts/xdg/pphq-start-$VERSION_STR.desktop"\
-	"$INSTALLDIR/scripts/xdg/pphq-stop-$VERSION_STR.desktop" \
-	"$INSTALLDIR/scripts/xdg/pphq-agent-start-$VERSION_STR.desktop"\
-	"$INSTALLDIR/scripts/xdg/pphq-agent-stop-$VERSION_STR.desktop" || _warn "Failed to remove the top level menu"
+	"$INSTALLDIR/scripts/xdg/pphq-$BRANDING_STR.directory" \
+	"$INSTALLDIR/scripts/xdg/pphq-launch.desktop"\
+	"$INSTALLDIR/scripts/xdg/pphq-start.desktop"\
+	"$INSTALLDIR/scripts/xdg/pphq-stop.desktop" \
+	"$INSTALLDIR/scripts/xdg/pphq-agent-start.desktop"\
+	"$INSTALLDIR/scripts/xdg/pphq-agent-stop.desktop" || _warn "Failed to remove the top level menu"
 
 # Remove the icon resources
 cd "$INSTALLDIR/scripts/images"
@@ -67,10 +66,7 @@ do
 done
 
 # Only remove the directory file if it's branded
-if [ $BRANDED -ne 0 ];
-then
-    rm "$INSTALLDIR/scripts/xdg/pphq-$BRANDING_STR.directory"
-fi
+rm "$INSTALLDIR/scripts/xdg/pphq-$BRANDING_STR.directory"
 
 xdg_dir_name=menus
 
@@ -87,11 +83,11 @@ xdg_global_dir="$xdg_global_dir/applications-merged"
 
 
 # Hack up the XDG menu files to make sure everything really does go.
-_replace "<Filename>pphq-launch-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
-_replace "<Filename>pphq-start-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
-_replace "<Filename>pphq-stop-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
-_replace "<Filename>pphq-agent-start-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
-_replace "<Filename>pphq-agent-stop-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
+_replace "<Filename>pphq-launch.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
+_replace "<Filename>pphq-start.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
+_replace "<Filename>pphq-stop.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
+_replace "<Filename>pphq-agent-start.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
+_replace "<Filename>pphq-agent-stop.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
 
 echo "$0 ran to completion"
 exit 0

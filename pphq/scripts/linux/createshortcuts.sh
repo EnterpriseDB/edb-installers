@@ -26,14 +26,14 @@ VERSION_STR=`echo $VERSION | sed 's/\./_/g'`
 
 # Branding string, for the xdg filenames. If the branding is 'Postgres Plus HQ X.Y',
 # Don't do anything to ensure we remain backwards compatible.
-if [ "x$BRANDING" = "xPostgres Plus HQ $VERSION" ];
+if [ "x$BRANDING" = "xPostgres Plus HQ" ];
 then
-    BRANDING_STR="Postgres Plus HQ-$VERSION_STR"
     BRANDED=0
 else
-    BRANDING_STR=`echo $BRANDING | sed 's/\./_/g' | sed 's/ /_/g'`
     BRANDED=1
 fi
+
+BRANDING_STR=`echo $BRANDING | sed 's/\./_/g' | sed 's/ /_/g'`
 
 # Error handlers
 _die() {
@@ -60,7 +60,6 @@ _fixup_file() {
     _replace PPHQ_PORT "$PORT" $1
 }
 
-
 # Create the icon resources
 cd "$INSTALLDIR/scripts/images"
 for i in `ls *.png`
@@ -81,20 +80,23 @@ _replace $VERSION_STR $VERSION "$INSTALLDIR/scripts/agentctl.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/scripts/xdg/pphq.directory"
+_fixup_file "$INSTALLDIR/scripts/xdg/pphq-pphq.directory"
 _fixup_file "$INSTALLDIR/scripts/xdg/pphq-launch.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pphq-start.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pphq-stop.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pphq-agent-start.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pphq-agent-stop.desktop"
 
+mv "$INSTALLDIR/scripts/xdg/pphq-pphq.directory" "$INSTALLDIR/scripts/xdg/pphq-$BRANDING_STR.directory"
+
 # Create the menu shortcuts - first the top level menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system --noupdate \
-      "$INSTALLDIR/scripts/xdg/pphq-launch.desktop" \
-      "$INSTALLDIR/scripts/xdg/pphq-start.desktop" \
-      "$INSTALLDIR/scripts/xdg/pphq-stop.desktop" \
-      "$INSTALLDIR/scripts/xdg/pphq-agent-start.desktop" \
-      "$INSTALLDIR/scripts/xdg/pphq-agent-stop.desktop" || _warn "Failed to create the top level menu PPHQ"
+    "$INSTALLDIR/scripts/xdg/pphq-$BRANDING_STR.directory" \
+        "$INSTALLDIR/scripts/xdg/pphq-launch.desktop" \
+        "$INSTALLDIR/scripts/xdg/pphq-start.desktop" \
+        "$INSTALLDIR/scripts/xdg/pphq-stop.desktop" \
+        "$INSTALLDIR/scripts/xdg/pphq-agent-start.desktop" \
+        "$INSTALLDIR/scripts/xdg/pphq-agent-stop.desktop" || _warn "Failed to create the top level menu PPHQ"
 
 echo "$0 ran to completion"
 exit 0
