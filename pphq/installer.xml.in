@@ -552,14 +552,14 @@
                       workingDirectory="${pphqTempDir}/instscripts"
                       showMessageOnError="0">
                     <onErrorActionList>
-                        <showInfo text="It fails for postgres database, fall back to edb"/>
+                        <logMessage text="It fails for postgres database, fall back to edb"/>
                         <setEnvironmentVariable name="PGDATABASE" value="edb"/>
                         <runProgram program="${psql_path}" abortOnError="0"
                               programArguments="-l"
                               workingDirectory="${pphqTempDir}/instscripts"
                               showMessageOnError="0">
                             <onErrorActionList>
-                                <showInfo text="It fails for edb database, fall back to template1"/>
+                                <logMessage text="It fails for edb database, fall back to template1"/>
                                 <setEnvironmentVariable name="PGDATABASE" value="template1"/>
                                 <runProgram program="${psql_path}" abortOnError="1" showMessageOnError="1"
                                       programArguments="-l"
@@ -1069,14 +1069,14 @@
                            key="agent.setup.agentIP" value="localhost"/>
         <runProgram program="cscript.exe" workingDirectory="${installdir}\agent-PG_VERSION_PPHQ\bin"
               programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_PPHQ\bin\pphq-agent.bat&quot; start"
-              progressText="Starting PPHQ Agent ..." abortOnError="1" showMessageOnError="1">
+              progressText="Starting PPHQ Agent (This may take some time, it can complete until server gets started completely)..." abortOnError="1" showMessageOnError="1">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </runProgram>
         <runProgram program="${installdir}/agent-PG_VERSION_PPHQ/bin/pphq-agent.sh"
               programArguments="start" workingDirectory="${installdir}/agent-PG_VERSION_PPHQ/bin"
-              progressText="Starting PPHQ Agent ..." abortOnError="1" showMessageOnError="1">
+              progressText="Starting PPHQ Agent (This may take some time, it can complete until server gets started completely)..." abortOnError="1" showMessageOnError="1">
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
@@ -1594,14 +1594,14 @@
                       workingDirectory="${pphqTempDir}/instscripts"
                       showMessageOnError="0">
                     <onErrorActionList>
-                        <showInfo text="It fails for postgres database, fall back to edb"/>
+                        <logMessage text="It fails for postgres database, fall back to edb"/>
                         <setEnvironmentVariable name="PGDATABASE" value="edb"/>
                         <runProgram program="${psql_path}" abortOnError="0"
                               programArguments="-l"
                               workingDirectory="${pphqTempDir}/instscripts"
                               showMessageOnError="0">
                             <onErrorActionList>
-                                <showInfo text="It fails for edb database, fall back to template1"/>
+                                <logMessage text="It fails for edb database, fall back to template1"/>
                                 <setEnvironmentVariable name="PGDATABASE" value="template1"/>
                                 <runProgram program="${psql_path}" abortOnError="1" showMessageOnError="1"
                                       programArguments="-l"
