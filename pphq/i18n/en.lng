@@ -62,7 +62,7 @@ smtp.server.details=Enter the fully qualified domain name of the SMTP server tha
 
 smtp.server.blank.error=Value must be entered for the field.
 
-Installer.Installation.Finished.Visit.Us="Open the PPHQ console at http://localhost:${pphqport} to start postgres database monitoring.
+Installer.Installation.Finished.Visit.Us=Open the PPHQ console at http://localhost:${pphqport} to start postgres database monitoring.
 
 progress.text.initialising.server=Starting Postgres Plus HQ server (this may take a few minutes)...
 

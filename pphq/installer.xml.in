@@ -1183,15 +1183,12 @@
 
     <!-- finalPage actions -->
     <finalPageActionList>
-        <actionGroup>
-            <actionList>
-	      <launchBrowser url="http://127.0.0.1:${pphqport}/" progressText="${msg(Installer.Installation.Finished.Visit.Us)}"/>
-            </actionList>
+        <launchBrowser url="http://127.0.0.1:${pphqport}/" progressText="${msg(Installer.Installation.Finished.Visit.Us)}">
             <ruleList>
                 <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
-            </ruleList>
-        </actionGroup>
-   </finalPageActionList>
+            </ruleList> 
+        </launchBrowser>
+    </finalPageActionList>
 
     <!-- Components -->
     <componentList>
