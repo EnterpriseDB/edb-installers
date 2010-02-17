@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Hyperic agent shortcut removal script for Linux
+# Postgres Plus HQ agent shortcut removal script for Linux
 # Dave Page, EnterpriseDB
 
 # Check the command line

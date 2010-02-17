@@ -58,8 +58,8 @@ FOLDER="/Applications/$BRANDING"
 mkdir -p "$FOLDER" || _die "Failed to create the menu directory ($FOLDER)"
 
 # Create the scripts
-_compile_script "$INSTALLDIR/scripts/agent-start.applescript" "$FOLDER/Start Hyperic Agent.app" "$INSTALLDIR/scripts/images/pghyperic-agent-start.icns"
-_compile_script "$INSTALLDIR/scripts/agent-stop.applescript" "$FOLDER/Stop Hyperic Agent.app" "$INSTALLDIR/scripts/images/pghyperic-agent-stop.icns"
+_compile_script "$INSTALLDIR/scripts/agent-start.applescript" "$FOLDER/Start Postgres Plus HQ Agent.app" "$INSTALLDIR/scripts/images/hqagent-start.icns"
+_compile_script "$INSTALLDIR/scripts/agent-stop.applescript" "$FOLDER/Stop Postgres Plus HQ Agent.app" "$INSTALLDIR/scripts/images/hqagent-stop.icns"
 
 echo "$0 ran to completion"
 exit 0

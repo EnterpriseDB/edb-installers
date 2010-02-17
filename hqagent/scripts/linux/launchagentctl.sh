@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Hyperic agent control launch script for Linux
+# Postgres Plus HQ agent control launch script for Linux
 # Dave Page, EnterpriseDB
 
 # Check the command line

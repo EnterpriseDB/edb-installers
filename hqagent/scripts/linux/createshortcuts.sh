@@ -86,7 +86,7 @@ fi
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system --noupdate \
       "$INSTALLDIR/scripts/xdg/hq-$BRANDING_STR.directory" \
 	  "$INSTALLDIR/scripts/xdg/hqagent-start.desktop" \
-	  "$INSTALLDIR/scripts/xdg/hqagent-stop.desktop" || _warn "Failed to create the top level menu for hyperic agent"
+	  "$INSTALLDIR/scripts/xdg/hqagent-stop.desktop" || _warn "Failed to create the top level menu for Postgres Plus HQ agent"
 
 echo "$0 ran to completion"
 exit 0

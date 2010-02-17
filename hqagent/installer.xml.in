@@ -651,7 +651,7 @@
                 <compareText logic="contains" text="${platform_name}" value="linux"/>
             </ruleList>
         </runProgram>
-        <deleteFile path="/Applications/${branding}/PostgreSQL Hyperic Home Page.app">
+        <deleteFile path="/Applications/${branding}/Postgres Plus HQ Home Page.app">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="osx"/>
             </ruleList>
@@ -820,8 +820,8 @@
         </labelParameter>
 
         <!-- PPHQ Agent Configuration Page -->
-        <parameterGroup name="pphqserverdetails" title="${msg(hyperic.server.title)}"
-                        explanation="${msg(hyperic.server.details)}" insertAfter="installation">
+        <parameterGroup name="pphqserverdetails" title="${msg(pphq.server.title)}"
+                        explanation="${msg(pphq.server.details)}" insertAfter="installation">
             <parameterList>
                 <!-- Postgres Plus HQ server Host -->
                 <stringParameter name="pphqhost" explanation="" value="" default="localhost"
@@ -856,12 +856,12 @@
                     </ruleList>
                 </booleanParameter>
             </parameterList>
-            <!-- Checking the validity of Hyperic Server Details -->
+            <!-- Checking the validity of Postgres Plus HQ Server Details -->
             <validationActionList>
                 <stringModify text="${pphqhost}" variable="pphqhost" logic="trim"/>
                 <stringModify text="${pphqport}" variable="pphqport" logic="trim"/>
                 <stringModify text="${pphquser}" variable="pphquser" logic="trim"/>
-                <throwError text="${msg(hyperic.server.blank.error)}">
+                <throwError text="${msg(pphq.server.blank.error)}">
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                         <stringTest text="${pphqhost}" type="empty"/>
