@@ -67,7 +67,7 @@ _postprocess_pphqagent_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
     # Sign the installer
-    win32_sign "pphqagent-$PG_VERSION_HQAGENT-windows.exe"
+    win32_sign "pphqagent-$PG_VERSION_HQAGENT-$PG_BUILDNUM_HQAGENT-windows.exe"
 
     cd $WD
 
