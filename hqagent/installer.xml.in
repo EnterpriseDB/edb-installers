@@ -161,7 +161,7 @@
         </registryGet>
 
         <stringModify text="${pphqVersion}" variable="pphqVersion" logic="trim"/>
-        <throwError text="${hqagent.pphq.present.error}">
+        <throwError text="${msg(hqagent.pphq.present.error)}">
             <ruleList>
                 <stringTest text="${pphqVersion}" type="not_empty"/>
             </ruleList>

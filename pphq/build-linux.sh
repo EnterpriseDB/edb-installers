@@ -92,20 +92,20 @@ _postprocess_pphq_linux() {
 
     # Copy in the menu pick images  and XDG items
     mkdir -p $PPHQ_STAGING/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp $PPHQ_DIR/resources/pphq.png $PPHQ_STAGING/scripts/images/pphq-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
-    cp $PPHQ_DIR/resources/pphq-launch.png $PPHQ_STAGING/scripts/images/pphq-launch-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
-    cp $PPHQ_DIR/resources/pphq-start.png $PPHQ_STAGING/scripts/images/pphq-start-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
-    cp $PPHQ_DIR/resources/pphq-stop.png $PPHQ_STAGING/scripts/images/pphq-stop-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
-    cp $PPHQ_DIR/resources/pphq-agent-start.png $PPHQ_STAGING/scripts/images/pphq-agent-start-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
-    cp $PPHQ_DIR/resources/pphq-agent-stop.png $PPHQ_STAGING/scripts/images/pphq-agent-stop-$PPHQ_VERSION_STR.png || _die "Failed to copy a menu pick image"
+    cp $PPHQ_DIR/resources/pphq.png $PPHQ_STAGING/scripts/images/pphq.png || _die "Failed to copy a menu pick image"
+    cp $PPHQ_DIR/resources/pphq-launch.png $PPHQ_STAGING/scripts/images/pphq-launch.png || _die "Failed to copy a menu pick image"
+    cp $PPHQ_DIR/resources/pphq-start.png $PPHQ_STAGING/scripts/images/pphq-start.png || _die "Failed to copy a menu pick image"
+    cp $PPHQ_DIR/resources/pphq-stop.png $PPHQ_STAGING/scripts/images/pphq-stop.png || _die "Failed to copy a menu pick image"
+    cp $PPHQ_DIR/resources/pphq-agent-start.png $PPHQ_STAGING/scripts/images/pphq-agent-start.png || _die "Failed to copy a menu pick image"
+    cp $PPHQ_DIR/resources/pphq-agent-stop.png $PPHQ_STAGING/scripts/images/pphq-agent-stop.png || _die "Failed to copy a menu pick image"
 
     mkdir -p $PPHQ_STAGING/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp resources/xdg/pphq.directory $PPHQ_STAGING/scripts/xdg/pphq-$PPHQ_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/pphq-launch.desktop $PPHQ_STAGING/scripts/xdg/pphq-launch-$PPHQ_VERSION_STR.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pphq-start.desktop $PPHQ_STAGING/scripts/xdg/pphq-start-$PPHQ_VERSION_STR.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pphq-stop.desktop $PPHQ_STAGING/scripts/xdg/pphq-stop-$PPHQ_VERSION_STR.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pphq-agent-start.desktop $PPHQ_STAGING/scripts/xdg/pphq-agent-start-$PPHQ_VERSION_STR.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pphq-agent-stop.desktop $PPHQ_STAGING/scripts/xdg/pphq-agent-stop-$PPHQ_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pphq.directory $PPHQ_STAGING/scripts/xdg/pphq.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/pphq-launch.desktop $PPHQ_STAGING/scripts/xdg/pphq-launch.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pphq-start.desktop $PPHQ_STAGING/scripts/xdg/pphq-start.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pphq-stop.desktop $PPHQ_STAGING/scripts/xdg/pphq-stop.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pphq-agent-start.desktop $PPHQ_STAGING/scripts/xdg/pphq-agent-start.desktop || _die "Failed to copy a menu pick"
+    cp resources/xdg/pphq-agent-stop.desktop $PPHQ_STAGING/scripts/xdg/pphq-agent-stop.desktop || _die "Failed to copy a menu pick"
 
 
     # Copy the launch scripts

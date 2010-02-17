@@ -3,6 +3,6 @@ Version=1.0
 Encoding=UTF-8
 Name=Start Postgres Plus HQ server
 Exec=PPHQ_INSTALLDIR/scripts/launchsvrctl.sh start
-Icon=pphq-start-PPHQ_VERSION_STR.png
+Icon=pphq-start.png
 Terminal=false
 Type=Application

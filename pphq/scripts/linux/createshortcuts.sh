@@ -81,20 +81,20 @@ _replace $VERSION_STR $VERSION "$INSTALLDIR/scripts/agentctl.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/scripts/xdg/pphq-$VERSION_STR.directory"
-_fixup_file "$INSTALLDIR/scripts/xdg/pphq-launch-$VERSION_STR.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pphq-start-$VERSION_STR.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pphq-stop-$VERSION_STR.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pphq-agent-start-$VERSION_STR.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pphq-agent-stop-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pphq.directory"
+_fixup_file "$INSTALLDIR/scripts/xdg/pphq-launch.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pphq-start.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pphq-stop.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pphq-agent-start.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pphq-agent-stop.desktop"
 
 # Create the menu shortcuts - first the top level menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system --noupdate \
-      "$INSTALLDIR/scripts/xdg/pphq-launch-$VERSION_STR.desktop" \
-      "$INSTALLDIR/scripts/xdg/pphq-start-$VERSION_STR.desktop" \
-      "$INSTALLDIR/scripts/xdg/pphq-stop-$VERSION_STR.desktop" \
-      "$INSTALLDIR/scripts/xdg/pphq-agent-start-$VERSION_STR.desktop" \
-      "$INSTALLDIR/scripts/xdg/pphq-agent-stop-$VERSION_STR.desktop" || _warn "Failed to create the top level menu PPHQ"
+      "$INSTALLDIR/scripts/xdg/pphq-launch.desktop" \
+      "$INSTALLDIR/scripts/xdg/pphq-start.desktop" \
+      "$INSTALLDIR/scripts/xdg/pphq-stop.desktop" \
+      "$INSTALLDIR/scripts/xdg/pphq-agent-start.desktop" \
+      "$INSTALLDIR/scripts/xdg/pphq-agent-stop.desktop" || _warn "Failed to create the top level menu PPHQ"
 
 echo "$0 ran to completion"
 exit 0
