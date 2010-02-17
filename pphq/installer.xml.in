@@ -1552,6 +1552,18 @@
                     </ruleList>
                 </stringParameter>
             </parameterList>
+            <!-- Disable pg details -->
+            <preShowPageActionList>
+                <setInstallerVariable name="pg_details_explanation" value="${msg(pgplus.details.explanation)}"/>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="pg_details_explanation" value="${msg(pgplus.details.explanation.upgrade)}"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText text="${pphqVersion}" logic="does_not_equal" value=""/>
+                    </ruleList>
+                </actionGroup>
+            </preShowPageActionList>
 
             <!-- Checking the validity of PostgreSQL Server Details -->
             <validationActionList>
@@ -1652,11 +1664,9 @@
                     </ruleList>
                 </setInstallerVariable>
                 <setInstallerVariable name="pphqadmin_explanation" value="${msg(pphq.monitoring.console.details.explanation)}"/>
-                <setInstallerVariable name="pg_details_explanation" value="${msg(pgplus.details.explanation)}"/>
                 <actionGroup>
                     <actionList>
 			<setInstallerVariable name="pphqadmin_explanation" value="${msg(pphqadmin.explanation.upgrade)}"/>
-                        <setInstallerVariable name="pg_details_explanation" value="${msg(pgplus.details.explanation.upgrade)}"/>
                     </actionList>
                     <ruleList>
                         <compareText text="${pphqVersion}" logic="does_not_equal" value=""/>
