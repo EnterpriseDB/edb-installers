@@ -286,7 +286,7 @@
         <setInstallerVariable name="java_executable" value="${jrehome}\bin\java.exe" >
           <ruleList>
              <compareText text="${jrehome}" logic="does_not_equal" value="" />
-             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <compareText text="${platform_name}" logic="equals" value="windows" />
              <fileExists path="${jrehome}\bin\java" />
           </ruleList>
         </setInstallerVariable>
@@ -995,7 +995,7 @@
  
                 <setInstallerVariableFromScriptOutput>
                     <name>enc_password</name>
-                    <exec>${java_executable}</exec>
+                    <exec>${java_executable_windows}</exec>
                     <execArgs>-jar "${installdir}\installer\xDBReplicationServer\edb-repencrypter.jar" "${pgpassword.password}"</execArgs>
                     <workingDirectory>${installdir}/installer/xDBReplicationServer</workingDirectory>
                     <ruleList>
