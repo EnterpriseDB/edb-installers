@@ -891,6 +891,8 @@
         	<propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
         			   key="agent.setup.camPword" value="${pphqpassword}"/>
         	<propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
+        			   key="agent.setup.agentIP" value="localhost"/>
+        	<propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
         			   key="agent.setup.agentPort" value="${agentport}"/>
         	<deleteFile path="${installdir}/agent-PG_VERSION_HQAGENT/data/keyvals"
         		    abortOnError="0" showMessageOnError="0"/>
