@@ -1507,7 +1507,7 @@
         <parameterGroup>
             <name>pgdetails</name>
             <title>${msg(pgplus.details.title)}</title>
-            <explanation>${msg(pgplus.details.explanation)}</explanation>
+            <explanation>${pg_details_explanation}</explanation>
             <value/>
             <default/>
             <parameterList>
@@ -1515,22 +1515,42 @@
                 <stringParameter name="pghost" description="Hostname"
                                  explanation="" value="" default="localhost"
                                  cliOptionName="pghost" allowEmptyValue="1" width="40"/>
+		  <ruleList>
+                        <compareText logic="equals" text="${pphqVersion}" value=""/>
+                    </ruleList>
+                </stringParameter>
+
                 <!-- Postgres User -->
                 <stringParameter name="pguser" description="User Name"
                                  explanation="" value="" default="postgres"
                                  cliOptionName="pguser" allowEmptyValue="1" width="40"/>
+		  <ruleList>
+                        <compareText logic="equals" text="${pphqVersion}" value=""/>
+                    </ruleList>
+                </stringParameter>
+
                 <!-- Postgres User Password -->
                 <passwordParameter name="pgpassword" title="Password" value="" width="40"
                                    description="Password" explanation="" default="${defaultpgpassword}"
                                    cliOptionName="pgpassword" allowEmptyValue="1" askForConfirmation="0"/>
+
                 <!-- Postgres Port(Default 5432) -->
                 <stringParameter name="pgport" description="Port"
                                  explanation="" value="" default="5432"
                                  cliOptionName="pgport" allowEmptyValue="1" width="40"/>
+		  <ruleList>
+                        <compareText logic="equals" text="${pphqVersion}" value=""/>
+                    </ruleList>
+                </stringParameter>
+
                 <!-- Postgres Database -->
                 <stringParameter name="pphqadmindb" description="Database name"
                                  explanation="" value="" default="${defaultpphqadmindb}" ask="1"
                                  cliOptionName="pphqadmindb" allowEmptyValue="1"/>
+		  <ruleList>
+                        <compareText logic="equals" text="${pphqVersion}" value=""/>
+                    </ruleList>
+                </stringParameter>
             </parameterList>
 
             <!-- Checking the validity of PostgreSQL Server Details -->
@@ -1557,21 +1577,27 @@
                 <setEnvironmentVariable name="PGDATABASE" value="postgres"/>
                 <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${pphqTempDir}/instscripts/lib"/>
 
-                <runProgram program="${psql_path}" abortOnError="0" showMessageOnError="0"
-                        programArguments="-l &quot;${env(PGDATABASE)}&quot;"
-                        workingDirectory="${pphqTempDir}/instscripts"/>
-
-		<!-- If it fails for postgres database, fall back to edb -->
-                <setEnvironmentVariable name="PGDATABASE" value="edb"/>
-		<runProgram program="${psql_path}" abortOnError="0" showMessageOnError="0"
-		    programArguments="-l &quot;${env(PGDATABASE)}&quot;"
-                    workingDirectory="${pphqTempDir}/instscripts"/>
-		
-		<!-- If it fails for edb database, fall back to template1 -->
-                <setEnvironmentVariable name="PGDATABASE" value="template1"/>
-		<runProgram program="${psql_path}" abortOnError="1" showMessageOnError="1"
-		    programArguments="-l &quot;${env(PGDATABASE)}&quot;"
-                    workingDirectory="${pphqTempDir}/instscripts"/>
+                <runProgram program="${psql_path}" abortOnError="0"
+                      programArguments="-l &quot;${env(PGDATABASE)}&quot;"
+                      workingDirectory="${pphqTempDir}/instscripts"
+                      showMessageOnError="0">
+                    <onErrorActionList>
+                        <showInfo text="It fails for postgres database, fall back to edb"/>
+                        <setEnvironmentVariable name="PGDATABASE" value="edb"/>
+                        <runProgram program="${psql_path}" abortOnError="0"
+                              programArguments="-l"
+                              workingDirectory="${pphqTempDir}/instscripts"
+                              showMessageOnError="0">
+                            <onErrorActionList>
+                                <showInfo text="It fails for edb database, fall back to template1"/>
+                                <setEnvironmentVariable name="PGDATABASE" value="template1"/>
+                                <runProgram program="${psql_path}" abortOnError="1" showMessageOnError="1"
+                                      programArguments="-l"
+                                      workingDirectory="${pphqTempDir}/instscripts"/>
+                            </onErrorActionList>
+                        </runProgram>
+                    </onErrorActionList>
+                </runProgram>
 
                 <setInstallerVariable name="admin_db_exist" value="0"/>
                 <setInstallerVariableFromScriptOutput
@@ -1626,9 +1652,11 @@
                     </ruleList>
                 </setInstallerVariable>
                 <setInstallerVariable name="pphqadmin_explanation" value="${msg(pphq.monitoring.console.details.explanation)}"/>
+                <setInstallerVariable name="pg_details_explanation" value="${msg(pgplus.details.explanation)}"/>
                 <actionGroup>
                     <actionList>
-                        <setInstallerVariable name="pphqadmin_explanation" value="${msg(pphqadmin.explanation.upgrade)}"/>
+			<setInstallerVariable name="pphqadmin_explanation" value="${msg(pphqadmin.explanation.upgrade)}"/>
+                        <setInstallerVariable name="pg_details_explanation" value="${msg(pgplus.details.explanation.upgrade)}"/>
                     </actionList>
                     <ruleList>
                         <compareText text="${pphqVersion}" logic="does_not_equal" value=""/>

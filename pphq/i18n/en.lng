@@ -40,6 +40,8 @@ pphq.monitoring.console.details.title=Postgres Plus HQ Monitoring Console detail
 
 pgplus.details.explanation=Please enter the connection information for the database that will store the monitoring data. The database will be created if necessary.
 
+pgplus.details.explanation.upgrade=Please enter password for the database:${pphqadmindb}, port:${pgport}, host:${pghost}, user:${pguser}
+
 pphq.monitoring.console.details.explanation=Please provide Postgres Plus HQ Monitoring Console details
 
 pphqadmin.explanation.upgrade=Please provide password for Postgres Plus HQ Monitoring Console admin user:${pphquser} for port:${pphqport}.
