@@ -113,7 +113,7 @@ _prep_PostGIS_windows() {
     #Clear postgis file in the pgsql folder
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/bin; cmd /c del /S /Q pgsql2shp.exe shp2pgsql.exe" || _die "Failed to clear postgis bin files"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/lib; cmd /c del /S /Q postgis-$POSTGIS_MAJOR_VERSION.dll" || _die "Failed to clear postgis lib files"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/share/contrib; cmd /c del /S /Q spatial_ref_sys.sql postgis.sql postgis_upgrade.sql postgis_comments.sql uninstall_postgis.sql" || _die "Failed to clear postgis lib files"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/share/contrib; cmd /c del /S /Q spatial_ref_sys.sql postgis.sql postgis_upgrade*.sql postgis_comments.sql uninstall_postgis.sql" || _die "Failed to clear postgis lib files"
          
 }
 
@@ -182,7 +182,7 @@ EOT
    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/bin; cp pgsql2shp.exe shp2pgsql.exe $PG_PATH_WINDOWS/postgis.staging/bin/" || _die "Failed to create doc directory"
    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/lib; cp postgis-$POSTGIS_MAJOR_VERSION.dll $PG_PATH_WINDOWS/postgis.staging/bin/" || _die "Failed to create doc directory"
    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; mkdir -p postgis.staging/share/contrib" || _die "Failed to create doc directory"
-   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/share/contrib; cp spatial_ref_sys.sql postgis.sql uninstall_postgis.sql postgis_upgrade.sql postgis_comments.sql $PG_PATH_WINDOWS/postgis.staging/share/contrib" || _die "Failed to create doc directory"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/share/contrib; cp spatial_ref_sys.sql postgis.sql uninstall_postgis.sql postgis_upgrade*.sql postgis_comments.sql $PG_PATH_WINDOWS/postgis.staging/share/contrib" || _die "Failed to create doc directory"
 
    echo "Copying Readme files"
    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.staging; mkdir -p doc/postgis" || _die "Failed to create doc directory"

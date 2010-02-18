@@ -74,7 +74,7 @@ _prep_PostGIS_osx() {
     rm -f bin/shp2pgsql bin/pgsql2shp  || _die "Failed to remove postgis binary files"
     rm -f lib/postgresql/postgis-$POSTGIS_MAJOR_VERSION.so  || _die "Failed to remove postgis library files"
     rm -f share/postgresql/contrib/spatial_ref_sys.sql share/postgresql/contrib/postgis.sql  || _die "Failed to remove postgis share files"
-    rm -f share/postgresql/contrib/uninstall_postgis.sql  share/postgresql/contrib/postgis_upgrade.sql  || _die "Failed to remove postgis share files"
+    rm -f share/postgresql/contrib/uninstall_postgis.sql  share/postgresql/contrib/postgis_upgrade*.sql  || _die "Failed to remove postgis share files"
     rm -f share/postgresql/contrib/postgis_comments.sql  || _die "Failed to remove postgis share files"
     rm -f doc/postgresql/postgis/postgis.html doc/postgresql/postgis/README.postgis || _die "Failed to remove documentation"
     rm -f share/man/man1/pgsql2shp.1 share/man/man1/shp2pgsql.1 || _die "Failed to remove man pages"
@@ -347,7 +347,7 @@ _build_PostGIS_osx() {
   
     cp $PG_PGHOME_OSX/share/postgresql/contrib/postgis.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
     cp $PG_PGHOME_OSX/share/postgresql/contrib/uninstall_postgis.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
-    cp $PG_PGHOME_OSX/share/postgresql/contrib/postgis_upgrade.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
+    cp $PG_PGHOME_OSX/share/postgresql/contrib/postgis_upgrade*.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
     cp $PG_PGHOME_OSX/share/postgresql/contrib/spatial_ref_sys.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
     cp $PG_PGHOME_OSX/share/postgresql/contrib/postgis_comments.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
   
