@@ -52,9 +52,9 @@ then
 
   if [ $USE_SUDO != "1" ];
   then
-      su - -c "su @@SERVICEUSER@@ -c \"\\\"@@INSTALLDIR@@/scritps/runServer.sh\\\" $action\""
+      su - -c "su @@SERVICEUSER@@ -c \"\\\"@@INSTALLDIR@@/scripts/runServer.sh\\\" $action\""
   else
-      sudo su @@SERVICEUSER@@ -c "\"@@INSTALLDIR@@/scritps/runServer.sh\" $action"
+      sudo su @@SERVICEUSER@@ -c "\"@@INSTALLDIR@@/scripts/runServer.sh\" $action"
   fi
 else
   "@@INSTALLDIR@@/scripts/runServer.sh" $action

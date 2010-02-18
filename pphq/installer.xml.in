@@ -668,7 +668,7 @@
 
         <actionGroup>
             <actionList>
-                <runProgram program="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"
+                <runProgram program="${installdir}/scripts/serverctl.sh"
                         programArguments="stop" abortOnError="0" showMessageOnError="0"
                         workingDirectory="${installdir}/scripts"
                         progressText="${msg(pphq.server.stoping)}">
@@ -694,7 +694,7 @@
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
-                <runProgram program="${installdir}/agent-${pphqVersion}/bin/pphq-agent.sh"
+                <runProgram program="${installdir}/scripts/agentctl.sh"
                       programArguments="stop" workingDirectory="${installdir}/agent-${pphqVersion}/bin"
                       progressText="${msg(pphq.agent.stoping)}" abortOnError="1" showMessageOnError="1">
                     <ruleList>
@@ -808,7 +808,7 @@
                       abortOnError="0" showMessageOnError="1"/>
                 <actionGroup>
                     <actionList>
-                        <runProgram program="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"
+                        <runProgram program="${installdir}/scripts/serverctl.sh"
                               programArguments="start"
                               workingDirectory="${pphqTempDir}/server-PG_VERSION_PPHQ"
                               progressText="${msg(pphq.server.starting)}"
@@ -1077,7 +1077,7 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </runProgram>
-        <runProgram program="${installdir}/agent-PG_VERSION_PPHQ/bin/pphq-agent.sh"
+        <runProgram program="${installdir}/scripts/agentctl.sh"
               programArguments="start" workingDirectory="${installdir}/agent-PG_VERSION_PPHQ/bin"
               progressText="${msg(pphq.agent.starting)}" abortOnError="1" showMessageOnError="1">
             <ruleList>
