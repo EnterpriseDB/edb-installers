@@ -71,10 +71,8 @@ done
 xdg_global_dir="$xdg_global_dir/applications-merged"
 
 # Hack up the XDG menu files to make sure everything really does go.
-_replace "<Filename>hqagent-start.desktop</Filename>" ""
-"$xdg_global_dir/hqagent.menu"
-_replace "<Filename>hqagent-stop.desktop</Filename>" ""
-"$xdg_global_dir/hqagent.menu"
+_replace "<Filename>hqagent-start.desktop</Filename>" "" "$xdg_global_dir/hqagent.menu"
+_replace "<Filename>hqagent-stop.desktop</Filename>" "" "$xdg_global_dir/hqagent.menu"
 
 echo "$0 ran to completion"
 exit 0
