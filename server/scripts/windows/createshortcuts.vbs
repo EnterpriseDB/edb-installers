@@ -17,7 +17,7 @@ End If
 
 strVersion = WScript.Arguments.Item(0)
 strUsername = WScript.Arguments.Item(1)
-iPort = CInt(WScript.Arguments.Item(2))
+iPort = CLng(WScript.Arguments.Item(2))
 strBranding = WScript.Arguments.Item(3)
 strInstallDir = WScript.Arguments.Item(4)
 strDataDir = WScript.Arguments.Item(5)
