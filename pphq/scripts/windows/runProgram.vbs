@@ -69,7 +69,12 @@ If bIsCommand = True Then
 End If
 
 For iIndex = currIndex To WScript.Arguments.Count - 1
-  strCmd = strCmd & " " & strQuote &  WScript.Arguments.Item(iIndex) & strQuote
+  ' Put quote around arguments only if space found with in the arguments
+  strArg = WScript.Arguments.Item(iIndex)
+  If InStr(strArg, " ") <> 0 Then
+    strArg = strQuote & strArg & strQuote
+  End If
+  strCmd = strCmd & " " & WScript.Arguments.Item(iIndex)
   strQuote = """"
 Next
 

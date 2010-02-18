@@ -680,20 +680,12 @@
 
                 <!-- Stopping pphq service on windows -->
                 <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="0"/>
-                <!-- Removing pphq service on windows in upgrade mode, it will be recreated later -->
-                <deleteWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="0"/>
+                <stopWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0" showMessageOnError="0"/>
                 <setInstallerVariable name="create_database" value="No">
                     <ruleList>
                         <isTrue value="${admin_db_exist}"/>
                     </ruleList>
                 </setInstallerVariable>
-                <runProgram program="cscript.exe" workingDirectory="${installdir}\agent-PG_VERSION_PPHQ\bin"
-                      programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-${pphqVersion}\bin\pphq-agent.bat&quot; stop"
-                      progressText="${msg(pphq.agent.stopping)}" abortOnError="1" showMessageOnError="1">
-                    <ruleList>
-                        <compareText logic="equals" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </runProgram>
                 <runProgram program="${installdir}/scripts/agentctl.sh"
                       programArguments="stop" workingDirectory="${installdir}/agent-${pphqVersion}/bin"
                       progressText="${msg(pphq.agent.stopping)}" abortOnError="1" showMessageOnError="1">
@@ -708,6 +700,28 @@
         </actionGroup>
     </readyToInstallActionList>
     <postInstallationActionList>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariableFromScriptOutput
+                        exec="cscript.exe"
+                        execArgs="//nologo &quot;${installdir}\scripts\shortPathName.vbs&quot; &quot;${pphqJavaHome}&quot;"
+                        name="pphqJavaHome"
+                        workingDirectory="${installdir}"/>
+                <setEnvironmentVariable name="HQ_JAVA_HOME" value="${pphqJavaHome}"/>
+                <setEnvironmentVariable name="JAVA_HOME" value="${pphqJavaHome}"/>
+                <addEnvironmentVariable name="HQ_JAVA_HOME" value="${pphqJavaHome}" scope="system"/>
+                <addEnvironmentVariable name="JAVA_HOME" value="${pphqJavaHome}" scope="system"/>
+
+                <setInstallerVariableFromScriptOutput
+                        exec="cscript.exe"
+                        execArgs="//nologo &quot;${installdir}\scripts\shortPathName.vbs&quot; &quot;${installdir}&quot;"
+                        name="pphqInstallPath"
+                        workingDirectory="${pphqTempDir}"/>
+            </actionList>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
         <setEnvironmentVariable name="PGHOST" value="${pghost}" />
         <setEnvironmentVariable name="PGUSER" value="${pguser}" />
         <setEnvironmentVariable name="PGPORT" value="${pgport}" />
@@ -736,7 +750,7 @@
                 <isFalse value="${admin_db_exist}"/>
             </ruleList>
         </runProgram>
-	
+
 	<runProgram program="${psql_path}"
               programArguments="-t -A -c &quot;GRANT CREATE, CONNECT on DATABASE \&quot;${pphqadmindb}\&quot; TO \&quot;${pphquser}\&quot;&quot;"
               workingDirectory="${pphqTempDir}/instscripts"
@@ -755,16 +769,6 @@
               workingDirectory="${pphqTempDir}/instscripts"
               progressText="${msg(pphq.creating.plpgsql)}"
               abortOnError="0" showMessageOnError="0"/>
-
-        <setInstallerVariableFromScriptOutput
-                exec="cscript.exe"
-                execArgs="//nologo &quot;${installdir}\scripts\shortPathName.vbs&quot; &quot;${installdir}&quot;"
-                name="pphqInstallPath"
-                workingDirectory="${pphqTempDir}">
-            <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
-            </ruleList>
-        </setInstallerVariableFromScriptOutput>
 
         <setInstallerVariableFromRegEx name="pphqInstallPath" text="${installdir}">
             <pattern>\\</pattern>
@@ -1142,6 +1146,10 @@
                       workingDirectory="${installdir}\server-PG_VERSION_PPHQ\bin"
                       progressText="${msg(pphq.server.service.removing)}"
                       abortOnError="0" showMessageOnError="0"/>
+                <stopWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphq.server.stopping)}"/>
+                <deleteWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphq.server.removing)}"/>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -1199,7 +1207,7 @@
         <launchBrowser url="http://127.0.0.1:${pphqport}/" progressText="${msg(Installer.Installation.Finished.Visit.Us)}">
             <ruleList>
                 <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
-            </ruleList> 
+            </ruleList>
         </launchBrowser>
     </finalPageActionList>
 

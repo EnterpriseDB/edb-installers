@@ -38,3 +38,10 @@ script.command.line.error=The script was called with an invalid command line
 
 hqagent.pphq.present.error=Postgres Plus HQ is installed on this machine. The Postgres Plus HQ Agent is included in Postgres Plus HQ and cannot be installed from the Agent installer unless Postgres Plus HQ is uninstalled.
 
+pphqagent.server.validating=Validating Server Details
+
+pphqagent.update.configuration=Upgrading configuration files
+
+pphqagent.server.connection.fail=The connection couldn't be established with the Postgres Plus HQ Server.&#xA;Please make sure the Postgres Plus HQ Server is running...
+
+pphqagent.start.error.question=Error running Postgres Plus HQ Agent with the given details.&#xA;Do you want to try again by providing the details again?&#xA;&#xA;Actual error:&#xA;${errMessage}
