@@ -425,8 +425,11 @@
                 <setInstallerVariableFromScriptOutput
                         exec="cscript.exe"
                         execArgs="//nologo &quot;${installdir}\scripts\shortPathName.vbs&quot; &quot;${pphqJavaHome}&quot;"
-                        name="pphqJavaHome"
-                        workingDirectory="${installdir}"/>
+                        name="pphqJavaHome" workingDirectory="${installdir}"/>
+                <setInstallerVariableFromScriptOutput
+                        exec="cscript.exe"
+                        execArgs="//nologo &quot;${installdir}\scripts\shortPathName.vbs&quot; &quot;${installdir}&quot;"
+                        name="installdir" workingDirectory="${installdir}"/>
                 <setEnvironmentVariable name="HQ_JAVA_HOME" value="${pphqJavaHome}"/>
                 <setEnvironmentVariable name="JAVA_HOME" value="${pphqJavaHome}"/>
                 <addEnvironmentVariable name="HQ_JAVA_HOME" value="${pphqJavaHome}" scope="system"/>
