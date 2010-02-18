@@ -671,7 +671,7 @@
                 <runProgram program="${installdir}/scripts/serverctl.sh"
                         programArguments="stop" abortOnError="0" showMessageOnError="0"
                         workingDirectory="${installdir}/scripts"
-                        progressText="${msg(pphq.server.stoping)}">
+                        progressText="${msg(pphq.server.stopping)}">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                         <fileExists path="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"/>
@@ -689,14 +689,14 @@
                 </setInstallerVariable>
                 <runProgram program="cscript.exe" workingDirectory="${installdir}\agent-PG_VERSION_PPHQ\bin"
                       programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-${pphqVersion}\bin\pphq-agent.bat&quot; stop"
-                      progressText="${msg(pphq.agent.stoping)}" abortOnError="1" showMessageOnError="1">
+                      progressText="${msg(pphq.agent.stopping)}" abortOnError="1" showMessageOnError="1">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
                 <runProgram program="${installdir}/scripts/agentctl.sh"
                       programArguments="stop" workingDirectory="${installdir}/agent-${pphqVersion}/bin"
-                      progressText="${msg(pphq.agent.stoping)}" abortOnError="1" showMessageOnError="1">
+                      progressText="${msg(pphq.agent.stopping)}" abortOnError="1" showMessageOnError="1">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
@@ -1093,7 +1093,7 @@
                 <runProgram program="${installdir}/scripts/serverctl.sh"
                         programArguments="stop"
                         workingDirectory="${installdir}/scripts"
-                        progressText="${msg(pphq.server.stoping)}"
+                        progressText="${msg(pphq.server.stopping)}"
                         abortOnError="0" showMessageOnError="0"/>
                 <runProgram program="${installdir}/installer/pphq/removeshortcuts.sh"
                       programArguments="&quot;${installdir}&quot; &quot;${productVersion}&quot; &quot;${branding}&quot;"
@@ -1103,7 +1103,7 @@
                 <runProgram program="${installdir}/scripts/agentctl.sh"
                         programArguments="stop"
                         workingDirectory="${installdir}/scripts"
-                        progressText="${msg(pphq.agent.stoping)}"
+                        progressText="${msg(pphq.agent.stopping)}"
                         abortOnError="0" showMessageOnError="0"/>
                 <!-- Attempt to remove any runlevel config with chkconfig -->
                 <runProgram program="/sbin/chkconfig" showMessageOnError="0"
@@ -1136,7 +1136,7 @@
         <actionGroup>
             <actionList>
                 <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="1"
-                      progressText="${msg(pphq.server.stoping)}"/>
+                      progressText="${msg(pphq.server.stopping)}"/>
                 <runProgram program="${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe"
                       programArguments="-u -n ${serviceName}"
                       workingDirectory="${installdir}\server-PG_VERSION_PPHQ\bin"
