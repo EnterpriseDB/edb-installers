@@ -16,6 +16,12 @@ _die() {
     exit 1
 }
 
+# Create the group if required
+if ! getent group $1 > /dev/null
+then
+    groupadd $1 || _die $1
+fi
+
 # Create the user account if required
 if getent passwd $1 > /dev/null
 then
