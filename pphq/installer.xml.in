@@ -719,7 +719,7 @@
                         workingDirectory="${pphqTempDir}"/>
             </actionList>
             <ruleList>
-                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
         <setEnvironmentVariable name="PGHOST" value="${pghost}" />
