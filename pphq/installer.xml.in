@@ -1365,7 +1365,7 @@
                 </startMenuLinkShortcut>
                 <!-- Start server -->
                 <startMenuShortcut>
-                    <name>Start Server</name>
+                    <name>Start Postgres Plus HQ Server</name>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe</windowsExec>
                     <windowsExecArgs>start</windowsExecArgs>
@@ -1373,7 +1373,7 @@
                 </startMenuShortcut>
                 <!-- Stop server -->
                 <startMenuShortcut>
-                    <name>Stop Server</name>
+                    <name>Stop Postgres Plus HQ Server</name>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe</windowsExec>
                     <windowsExecArgs>stop</windowsExecArgs>
@@ -1381,7 +1381,7 @@
                 </startMenuShortcut>
                 <!-- Start agent -->
                 <startMenuShortcut>
-                    <name>Start Agent</name>
+                    <name>Start Postgres Plus HQ Agent</name>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}\agent-PG_VERSION_PPHQ\bin\${pphqAgent}.bat</windowsExec>
                     <windowsExecArgs>start</windowsExecArgs>
@@ -1389,7 +1389,7 @@
                 </startMenuShortcut>
                 <!-- Stop server -->
                 <startMenuShortcut>
-                    <name>Stop Agent</name>
+                    <name>Stop Postgres Plus HQ Agent</name>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}\agent-PG_VERSION_PPHQ\bin\${pphqAgent}.bat</windowsExec>
                     <windowsExecArgs>stop</windowsExecArgs>
