@@ -805,14 +805,14 @@
                       programArguments="${pphqTempDir}/pphq/templates/agent.prop"
                       workingDirectory="${pphqTempDir}/instscripts"
                       progressText="${msg(pphq.agent.configure)}"
-                      abortOnError="1" showMessageOnError="1"/>
+                      abortOnError="0" showMessageOnError="1"/>
                 <actionGroup>
                     <actionList>
                         <runProgram program="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"
                               programArguments="start"
                               workingDirectory="${pphqTempDir}/server-PG_VERSION_PPHQ"
                               progressText="${msg(pphq.server.starting)}"
-                              abortOnError="1" showMessageOnError="1"/>
+                              abortOnError="0" showMessageOnError="1"/>
                     </actionList>
                     <ruleList>
                         <fileExists path="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"/>

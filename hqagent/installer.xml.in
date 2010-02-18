@@ -139,6 +139,7 @@
         <setInstallerVariable name="pphqAgentVersion" value=""/>
     </initializationActionList>
     <preInstallationActionList>
+        <setInstallerVariable name="serviceName" value="pphq-agent"/>
         <!-- Creates the ini file if not exits -->
         <touchFile path="/etc/postgres-reg.ini">
             <ruleList>
@@ -399,7 +400,7 @@
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </runProgram>
-        <!-- stopWindowsService serviceName="pphq-agent-${pphqAgentVersion}" abortOnError="0" showMessageOnError="1">
+        <!-- stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="1">
             <ruleList>
                 <stringTest text="${pphqAgentVersion}" type="not_empty"/>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -432,7 +433,7 @@
             <substitutionList>
                 <substitution pattern="@@INSTALLDIR@@"  value="${pphqInstallPath}"/>
                 <substitution pattern="@@PPHQVERSION@@"  value="PG_VERSION_HQAGENT"/>
-                <substitution pattern="@@AGENTSERVICEUSER@@" value="${serviceuser}"/>
+                <substitution pattern="@@AGENTSERVICEUSER@@" value="${serviceaccount}"/>
                 <substitution pattern="@@AGENTSERVICENAME@@" value="${serviceName}"/>
                 <substitution pattern="@@PPHQAGENTSCRIPT@@" value="${pphq-agent}.sh"/>
                 <substitution pattern="@@JAVAHOME@@" value="${pphqJavaHome}"/>
@@ -461,13 +462,10 @@
                     </files>
                     <substitutionList>
                         <substitution pattern="@@INSTALLDIR@@"  value="${pphqInstallPath}"/>
-                        <substitution pattern="@@PPHQVERSION@@"  value="PG_VERSION_PPHQ"/>
-                        <substitution pattern="@@SERVICEUSER@@" value="${serviceAccount}"/>
-                        <substitution pattern="@@AGENTSERVICEUSER@@" value="${agentServiceAccount}"/>
-                        <substitution pattern="@@SERVICENAME@@" value="${serviceName}"/>
-                        <substitution pattern="@@AGENTSERVICENAME@@" value="${agentServiceName}"/>
-                        <substitution pattern="@@PPHQAGENTSCRIPT@@" value="${pphqAgent}.sh"/>
-                        <substitution pattern="@@PPHQSERVERSCRIPT@@" value="${pphqServer}.sh"/>
+                        <substitution pattern="@@PPHQVERSION@@"  value="PG_VERSION_HQAGENT"/>
+                        <substitution pattern="@@AGENTSERVICEUSER@@" value="${serviceaccount}"/>
+                        <substitution pattern="@@AGENTSERVICENAME@@" value="${serviceName}"/>
+                        <substitution pattern="@@PPHQAGENTSCRIPT@@" value="${pphq-agent}.sh"/>
                         <substitution pattern="@@JAVAHOME@@" value="${pphqJavaHome}"/>
                     </substitutionList>
                 </substitute>
@@ -757,7 +755,7 @@
     <parameterList>
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
-        <stringParameter name="serviceAccount" cliOptionName="serviceAccount" ask="1" cliOptionShow="1" default="root"/>
+        <stringParameter name="serviceaccount" cliOptionName="service-user" ask="1" cliOptionShow="1" default="root"/>
         <stringParameter name="jrehome" cliOptionName="jrehome" default="" ask="1" cliOptionShow="1"/>
 
         <!-- Install Directory -->
