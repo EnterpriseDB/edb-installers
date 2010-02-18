@@ -74,7 +74,7 @@ For iIndex = currIndex To WScript.Arguments.Count - 1
   If InStr(strArg, " ") <> 0 Then
     strArg = strQuote & strArg & strQuote
   End If
-  strCmd = strCmd & " " & WScript.Arguments.Item(iIndex)
+  strCmd = strCmd & " " & strArg
   strQuote = """"
 Next
 
