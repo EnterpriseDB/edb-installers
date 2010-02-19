@@ -336,7 +336,7 @@
         </setInstallerVariable>
 
         <!-- New install, nothing set on the command line -->
-        <setInstallerVariable name="branding" value="pphqagent">
+        <setInstallerVariable name="branding" value="Postgres Plus HQ Agent">
             <ruleList>
                 <compareText logic="equals" text="${branding}" value=""/>
             </ruleList>
