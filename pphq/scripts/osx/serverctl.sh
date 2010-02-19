@@ -22,7 +22,7 @@ fi
 
 function usage()
 {
-  log "USAGE: ${SCRIPTNAME} [--no-debug|--no-wait|--start|--stop|--restart]"
+  log "USAGE: ${SCRIPTNAME} [--no-debug|--no-wait] [start|stop|restart]"
 }
 
 function log()
@@ -66,13 +66,13 @@ do
   --no-wait)
     WAITONEXIT=0
     ;;
-  --start)
+  start)
     startServer
     ;;
-  --stop)
+  stop)
     stopServer
     ;;
-  --restart)
+  restart)
     startServer
     stopServer
     ;;

@@ -3,16 +3,16 @@ try
 set currentUser to do shell script "whoami"
 end try
 
-if currentUser = "@@SERVICEUSER@@" then
+if currentUser = "@@AGENTSERVICEUSER@@" then
   try
-    set ret to do shell script "JAVA_HOME=@@JAVAHOME@@; export JAVA_HOME; @@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/@@PPHQAGENTSCRIPT@@ start > /tmp/pphq_agent_@@SERVICEUSER@@.log 2>&1"
+    set ret to do shell script "@@INSTALLDIR@@/scripts/agentctl.sh --no-wait start > /tmp/pphq_agent_@@AGENTSERVICEUSER@@.log 2>&1"
   end try
-  set output to shell script "cat /tmp/pphq_agent_@@SERVICEUSER@@.log"
-  set ret to do shell script "rm /tmp/pphq_agent_@@SERVICEUSER@@.log"
+  set output to shell script "cat /tmp/pphq_agent_@@AGENTSERVICEUSER@@.log"
+  set ret to do shell script "rm /tmp/pphq_agent_@@AGENTSERVICEUSER@@.log"
   display dialog output buttons {"OK"} with icon 1 default button 1
 else
   try
-    set ret to do shell script "su @@SERVICEUSER@@ -c \"JAVA_HOME=@@JAVAHOME@@; export JAVA_HOME; @@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/@@PPHQAGENTSCRIPT@@ start > /tmp/pphq_agent.log 2>&1\""
+    set ret to do shell script "su @@AGENTSERVICEUSER@@ -c \"@@INSTALLDIR@@/scripts/agentctl.sh --no-wait start> /tmp/pphq_agent.log 2>&1\"" with administrator privileges
   end try
   set output to shell script "cat /tmp/pphq_agent.log" with administrator privileges
   set ret to do shell script "rm /tmp/pphq_agent.log" with administrator privileges

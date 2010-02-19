@@ -5,14 +5,14 @@ end try
 
 if currentUser = "@@SERVICEUSER@@" then
   try
-    set ret to do shell script "JAVA_HOME=@@JAVAHOME@@; export JAVA_HOME; @@INSTALLDIR@@/server-@@PPHQVERSION@@/bin/@@PPHQSERVERSCRIPT@@ start > /tmp/pphq_msg_@@SERVICEUSER@@.log 2>&1"
+    set ret to do shell script "@@INSTALLDIR@@/scripts/serverctl.sh --no-wait start > /tmp/pphq_msg_@@SERVICEUSER@@.log 2>&1"
   end try
   set output to shell script "cat /tmp/pphq_msg_@@SERVICEUSER@@.log"
   set ret to do shell script "rm /tmp/pphq_msg_@@SERVICEUSER@@.log"
   display dialog output buttons {"OK"} with icon 1 default button 1
 else
   try
-    set ret to do shell script "su @@SERVICEUSER@@ -c \"JAVA_HOME=@@JAVAHOME@@; export JAVA_HOME; @@INSTALLDIR@@/server-@@PPHQVERSION@@/bin/@@PPHQSERVERSCRIPT@@ start > /tmp/pphq_msg.log 2>&1\"" with administrator privileges
+    set ret to do shell script "su @@SERVICEUSER@@ -c \"@@INSTALLDIR@@/scripts/serverctl.sh --no-wait start > /tmp/pphq_msg.log 2>&1\"" with administrator privileges
   end try
   set output to shell script "cat /tmp/pphq_msg.log" with administrator privileges
   set ret to do shell script "rm /tmp/pphq_msg.log" with administrator privileges

@@ -197,7 +197,7 @@
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </iniFileGet>
-        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphqagent" variable="pphqAgentVersion" name="Version">
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="pphqAgentVersion" name="Version">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
@@ -810,18 +810,6 @@
                       workingDirectory="${pphqTempDir}/instscripts"
                       progressText="${msg(pphq.agent.configure)}"
                       abortOnError="0" showMessageOnError="1"/>
-                <actionGroup>
-                    <actionList>
-                        <runProgram program="${installdir}/scripts/serverctl.sh"
-                              programArguments="start"
-                              workingDirectory="${pphqTempDir}/server-PG_VERSION_PPHQ"
-                              progressText="${msg(pphq.server.starting)}"
-                              abortOnError="0" showMessageOnError="1"/>
-                    </actionList>
-                    <ruleList>
-                        <fileExists path="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"/>
-                    </ruleList>
-                </actionGroup>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -908,29 +896,6 @@
                 <logMessage text=" JRPM PORT:${pphq_jrpm_port}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
                             key="PPHQ_JRPM_PORT" value="${pphq_jrpm_port}"/>
-                <substitute abortOnError="0" showMessageOnError="0">
-                    <files>
-                         ${installdir}/installer/pphq/startupcfg.sh
-                         ${installdir}/installer/pphq/removeshortcuts.sh
-                         ${installdir}/scripts/agentctl.sh
-                         ${installdir}/scripts/serverctl.sh
-                         ${installdir}/scripts/launchagentctl.sh
-                         ${installdir}/scripts/launchsvrctl.sh
-                         ${installdir}/scripts/runAgent.sh
-                         ${installdir}/scripts/runServer.sh
-                    </files>
-                    <substitutionList>
-                        <substitution pattern="@@INSTALLDIR@@"  value="${pphqInstallPath}"/>
-                        <substitution pattern="@@PPHQVERSION@@"  value="PG_VERSION_PPHQ"/>
-                        <substitution pattern="@@SERVICEUSER@@" value="${serviceAccount}"/>
-                        <substitution pattern="@@AGENTSERVICEUSER@@" value="${agentServiceAccount}"/>
-                        <substitution pattern="@@SERVICENAME@@" value="${serviceName}"/>
-                        <substitution pattern="@@AGENTSERVICENAME@@" value="${agentServiceName}"/>
-                        <substitution pattern="@@PPHQAGENTSCRIPT@@" value="${pphqAgent}.sh"/>
-                        <substitution pattern="@@PPHQSERVERSCRIPT@@" value="${pphqServer}.sh"/>
-                        <substitution pattern="@@JAVAHOME@@" value="${pphqJavaHome}"/>
-                    </substitutionList>
-                </substitute>
                 <!-- Create user (serviceAccount) for the server -->
                 <runProgram program="${installdir}/installer/pphq/createuser.sh"
                       programArguments="${serviceAccount} &quot;${installdir}/server-PG_VERSION_PPHQ&quot;"
@@ -952,32 +917,41 @@
                     </ruleList>
                 </runProgram>
                 <runProgram program="${installdir}/installer/pphq/startupcfg.sh"
-                      programArguments="1 1"
+                      programArguments="1 1 PG_VERSION_PPHQ &quot;${installdir}&quot; &quot;${serviceName}&quot; &quot;${agentServiceName}&quot; &quot;${serviceAccount}&quot; &quot;${agentServiceAccount}&quot;"
                       progressText="${msg(progress.text.startup.config)}"
                       workingDirectory="${installdir}/installer/pphq"
                       abortOnError="0" showMessageOnError="0">
-                    <ruleList>
-                        <fileExists path="${installdir}/installer/pphq/startupcfg.sh"/>
-                    </ruleList>
                 </runProgram>
                 <runProgram program="${installdir}/installer/pphq/createshortcuts.sh"
-                      programArguments="&quot;${productVersion}&quot; &quot;${branding}&quot; &quot;${installdir}&quot; ${pphqport}"
+                      programArguments="&quot;${productVersion}&quot; &quot;${branding}&quot; &quot;${installdir}&quot; ${pphqport} &quot;${pphqJavaHome}&quot; &quot;${serviceAccount}&quot; &quot;${agentServiceAccount}&quot;"
                       progressText="${msg(progress.text.creating.shortcuts)}"
                       workingDirectory="${installdir}/installer/pphq" abortOnError="0" showMessageOnError="0"/>
-                <setInstallerVariableFromScriptOutput
-                        exec="find" execArgs="&quot;${installdir}/server-PG_VERSION_PPHQ&quot;"
-                        progressText="${msg(pphq.server.add.server.files)}"
-                        name="serverFiles" workingDirectory="${pphqTempDir}">
+                <actionGroup>
+                    <actionList>
+                        <runProgram program="${installdir}/scripts/serverctl.sh"
+                              programArguments="start"
+                              workingDirectory="${pphqTempDir}/server-PG_VERSION_PPHQ"
+                              progressText="${msg(pphq.server.starting)}"
+                              abortOnError="0" showMessageOnError="1"/>
+                    </actionList>
                     <ruleList>
-                        <fileExists path="${installdir}/server-PG_VERSION_PPHQ"/>
+                        <fileExists path="${installdir}/server-PG_VERSION_PPHQ/bin/${pphqServer}.sh"/>
                     </ruleList>
-                </setInstallerVariableFromScriptOutput>
+                </actionGroup>
                 <setInstallerVariableFromScriptOutput
                         exec="find" execArgs="&quot;${installdir}/agent-PG_VERSION_PPHQ&quot;"
                         progressText="${msg(pphq.server.add.server.files)}"
                         name="agentFiles" workingDirectory="${pphqTempDir}">
                     <ruleList>
                         <fileExists path="${installdir}/agent-PG_VERSION_PPHQ"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput
+                        exec="find" execArgs="&quot;${installdir}/server-PG_VERSION_PPHQ&quot;"
+                        progressText="${msg(pphq.server.add.server.files)}"
+                        name="serverFiles" workingDirectory="${pphqTempDir}">
+                    <ruleList>
+                        <fileExists path="${installdir}/server-PG_VERSION_PPHQ"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
             </actionList>
@@ -1088,6 +1062,8 @@
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </runProgram>
+        <setInstallerVariable name="branding" value="${branding}" persist="1"/>
+        <deleteFile path="${pphqTempDir}"/>
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
@@ -1100,7 +1076,7 @@
                         progressText="${msg(pphq.server.stopping)}"
                         abortOnError="0" showMessageOnError="0"/>
                 <runProgram program="${installdir}/installer/pphq/removeshortcuts.sh"
-                      programArguments="&quot;${installdir}&quot; &quot;${productVersion}&quot; &quot;${branding}&quot;"
+                      programArguments="&quot;${installdir}&quot; &quot;${branding}&quot;"
                       workingDirectory="${installdir}/installer/pphq"
                       progressText="${msg(pphq.shortcuts.removing)}"
                       abortOnError="0" showMessageOnError="0"/>

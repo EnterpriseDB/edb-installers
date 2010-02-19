@@ -2,7 +2,7 @@
 Version=1.0
 Encoding=UTF-8
 Name=Stop Postgres Plus HQ agent
-Exec=PPHQ_INSTALLDIR/scripts/launchagentctl.sh stop
+Exec=@@INSTALLDIR@@/scripts/launchagentctl.sh stop
 Icon=pphq-agent-stop.png
 Terminal=false
 Type=Application

@@ -4,6 +4,7 @@
 # Author: Ashesh Vashi, EnterpriseDB
 
 JAVA_HOME=@@JAVAHOME@@
+HQ_JAVA_HOME=@@JAVAHOME@@
 export JAVA_HOME
 
 CURRENTDATE=`date "+%Y%m%d%H%M%S"`
@@ -28,7 +29,7 @@ fi
 
 function usage()
 {
-  log "USAGE: ${SCRIPTNAME} [--no-debug|--no-wait] [--start|--stop|--restart|--status|--ping]"
+  log "USAGE: ${SCRIPTNAME} [--no-debug|--no-wait] [start|stop|restart|status|ping]"
 }
 
 function log()
@@ -97,19 +98,19 @@ do
   --no-wait)
     WAITONEXIT=0
     ;;
-  --start)
+  start)
     startAgent
     ;;
-  --stop)
+  stop)
     stopAgent
     ;;
-  --restart)
+  restart)
     restartAgent
     ;;
-  --status)
+  status)
     check
     ;;
-  --ping)
+  ping)
     pingAgent
     ;;
   *)

@@ -1,12 +1,12 @@
 #!/bin/sh
 
 # Postgres Plus HQ server shortcut creation script for Linux
-# Dave Page, EnterpriseDB
+# Ashesh Vashi, EnterpriseDB
 
 # Check the command line
-if [ $# -ne 4 ];
+if [ $# -ne 7 ];
 then
-    echo "Usage: $0 <Product Version> <Branding> <Install dir> <Port>"
+    echo "Usage: $0 <Product Version> <Branding> <Install dir> <Port> <java_home> <serviceuser> <agentserviceuser>"
     exit 127
 fi
 
@@ -14,24 +14,12 @@ VERSION=$1
 BRANDING=$2
 INSTALLDIR=$3
 PORT=$4
+JAVAHOME=$5
+SERVERSERVICEUSER=$6
+AGENTSERVICEUSER=$7
 
 # Exit code
 WARN=0
-
-# Working directory
-WD=`pwd`
-
-# Version string, for the xdg filenames
-VERSION_STR=`echo $VERSION | sed 's/\./_/g'`
-
-# Branding string, for the xdg filenames. If the branding is 'Postgres Plus HQ X.Y',
-# Don't do anything to ensure we remain backwards compatible.
-if [ "x$BRANDING" = "xPostgres Plus HQ" ];
-then
-    BRANDED=0
-else
-    BRANDED=1
-fi
 
 BRANDING_STR=`echo $BRANDING | sed 's/\./_/g' | sed 's/ /_/g'`
 
@@ -54,38 +42,39 @@ _replace() {
 
 # Substitute values into a file ($in)
 _fixup_file() {
-    _replace PPHQ_VERSION_STR $VERSION_STR $1
-    _replace PPHQ_INSTALLDIR "$INSTALLDIR" $1
-    _replace PPHQ_BRANDING "$BRANDING" $1
-    _replace PPHQ_PORT "$PORT" $1
+  _replace @@PPHQVERSION@@ "$VERSION"               $1
+  _replace @@INSTALLDIR@@  "$INSTALLDIR"            $1
+  _replace @@BRANDING@@    "$BRANDING"              $1
+  _replace @@JAVAHOME@@    "$JAVAHOME"              $1
+  _replace @@PPHQPORT@@    "$PORT"                  $1
+  _replace @@PORT@@        "$PORT"                  $1
+  _replace @@SERVICEUSER@@ "$SERVERSERVICEUSER"     $1
+  _replace @@AGENTSERVICEUSER@@ "$AGENTSERVICEUSER" $1
 }
+
+_fixup_file "$INSTALLDIR/scripts/agentctl.sh"
+_fixup_file "$INSTALLDIR/scripts/serverctl.sh"
+_fixup_file "$INSTALLDIR/scripts/launchagentctl.sh"
+_fixup_file "$INSTALLDIR/scripts/launchsvrctl.sh"
+_fixup_file "$INSTALLDIR/scripts/runAgent.sh"
+_fixup_file "$INSTALLDIR/scripts/runServer.sh"
+_fixup_file "$INSTALLDIR/scripts/launchbrowser.sh"
 
 # Create the icon resources
 cd "$INSTALLDIR/scripts/images"
 for i in `ls *.png`
 do
-  "$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 $i
+    "$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 $i
 done
 
-# Fixup the scripts
-# Fixup the scripts
-_fixup_file "$INSTALLDIR/scripts/launchbrowser.sh"
-_fixup_file "$INSTALLDIR/scripts/launchsvrctl.sh"
-_fixup_file "$INSTALLDIR/scripts/serverctl.sh"
-_fixup_file "$INSTALLDIR/scripts/launchagentctl.sh"
-_fixup_file "$INSTALLDIR/scripts/agentctl.sh"
-# In case of serverctl.sh and agentctl.sh: We do not want to change PPHQ_VERSION_STR to X_Y_Z from X.Y.Z because path is server-4.2.0 not server-4_2_0. But we want to replace PPHQ_INSTALLDIR. So revert back one  change done by fix_up function.
-_replace $VERSION_STR $VERSION "$INSTALLDIR/scripts/serverctl.sh"
-_replace $VERSION_STR $VERSION "$INSTALLDIR/scripts/agentctl.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
-# Fixup the XDG files (don't just loop in case we have old entries we no longer want)
 _fixup_file "$INSTALLDIR/scripts/xdg/pphq-pphq.directory"
+_fixup_file "$INSTALLDIR/scripts/xdg/pphq-agent-start.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pphq-agent-stop.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pphq-launch.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pphq-start.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pphq-stop.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pphq-agent-start.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pphq-agent-stop.desktop"
 
 mv "$INSTALLDIR/scripts/xdg/pphq-pphq.directory" "$INSTALLDIR/scripts/xdg/pphq-$BRANDING_STR.directory"
 

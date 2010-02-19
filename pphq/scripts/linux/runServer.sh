@@ -25,7 +25,7 @@ case $1 in
         ;;
     restart)
         action=stop
-        ACTIONMSG="Stopping PPHQ Server..."
+        ACTIONMSG="Restarting PPHQ Server..."
         RESTART=1
         ;;
     *)
@@ -45,12 +45,12 @@ fi
 echo $ACTIONMSG
 JAVA_HOME=@@JAVAHOME@@
 export JAVA_HOME
-"@@INSTALLDIR@@/server-@@PPHQVERSION@@/bin/@@PPHQSERVERSCRIPT@@" $action
+"@@INSTALLDIR@@/server-@@PPHQVERSION@@/bin/pphq-server.sh" $action
 
 if [ $RESTART -eq 1 ]; then
   sleep 3
   echo "Starting PPHQ Server..."
-  "@@INSTALLDIR@@/server-@@PPHQVERSION@@/bin/@@PPHQSERVERSCRIPT@@" start
+  "@@INSTALLDIR@@/server-@@PPHQVERSION@@/bin/pphq-server.sh" start
 fi
 
 

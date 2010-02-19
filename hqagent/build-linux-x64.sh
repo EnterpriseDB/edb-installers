@@ -63,8 +63,8 @@ _postprocess_pphqagent_linux_x64() {
 
     # Setup the installer scripts.
     mkdir -p $PPHQAGENT_STAGING_DIR/installer/pphqagent || _die "Failed to create a directory for the install scripts"
-    cp $PPHQ_DIR/scripts/osx/createuser.sh $PPHQAGENT_STAGING_DIR/installer/pphqagent/ || _die "Failed to copy the createuser script"
-    cp $PPHQ_DIR/scripts/osx/startupcfg.sh $PPHQAGENT_STAGING_DIR/installer/pphqagent/ || _die "Failed to copy the startupcfg script"
+    cp $PPHQ_DIR/scripts/linux/createuser.sh $PPHQAGENT_STAGING_DIR/installer/pphqagent/ || _die "Failed to copy the createuser script"
+    cp $PPHQ_DIR/scripts/linux/startupcfg.sh $PPHQAGENT_STAGING_DIR/installer/pphqagent/ || _die "Failed to copy the startupcfg script"
     cp $PPHQAGENT_DIR/scripts/linux/removeshortcuts.sh $PPHQAGENT_STAGING_DIR/installer/pphqagent/ || _die "Failed to copy the removeshortcuts script"
     cp $PPHQAGENT_DIR/scripts/linux/createshortcuts.sh $PPHQAGENT_STAGING_DIR/installer/pphqagent/ || _die "Failed to copy the createshortcuts script"
     chmod ugo+x $PPHQAGENT_STAGING_DIR/installer/pphqagent/*.sh
@@ -83,9 +83,9 @@ _postprocess_pphqagent_linux_x64() {
     cp $PPHQAGENT_DIR/resources/hqagent-stop.png $PPHQAGENT_STAGING_DIR/scripts/images/hqagent-stop.png || _die "Failed to copy a menu pick image"
 
     mkdir -p $PPHQAGENT_STAGING_DIR/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp $PPHQAGENT_DIR/resources/xdg/hqagent.directory $PPHQAGENT_STAGING_DIR/scripts/xdg/hqagent.directory || _die "Failed to copy a menu pick directory"
-    cp $PPHQAGENT_DIR/resources/xdg/hqagent-start.desktop $PPHQAGENT_STAGING_DIR/scripts/xdg/hqagent-start.desktop || _die "Failed to copy a menu pick"
-    cp $PPHQAGENT_DIR/resources/xdg/hqagent-stop.desktop $PPHQAGENT_STAGING_DIR/scripts/xdg/hqagent-stop.desktop || _die "Failed to copy a menu pick"
+    cp $PPHQAGENT_DIR/resources/xdg/hqagent.directory $PPHQAGENT_STAGING_DIR/scripts/xdg/hqagent.directory || _die "Failed to copy a menu pick directory (hqagent.directory)"
+    cp $PPHQ_DIR/resources/xdg/pphq-agent-start.desktop $PPHQAGENT_STAGING_DIR/scripts/xdg/hqagent-start.desktop || _die "Failed to copy a menu pick (hqagent-start.desktop)"
+    cp $PPHQ_DIR/resources/xdg/pphq-agent-stop.desktop $PPHQAGENT_STAGING_DIR/scripts/xdg/hqagent-stop.desktop || _die "Failed to copy a menu pick (hqagent-stop.desktop)"
 
     # Copy the launch scripts
     cp $PPHQ_DIR/scripts/linux/launchagentctl.sh $PPHQAGENT_STAGING_DIR/scripts/ || _die "Failed to copy the launchagentctl script (scripts/linux/launchagentctl.sh)"

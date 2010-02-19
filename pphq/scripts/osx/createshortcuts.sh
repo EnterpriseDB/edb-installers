@@ -1,12 +1,12 @@
 #!/bin/sh
 
-# Postgres Plus HQ shortcut creation script for OSX
+# Postgres Plus HQ Agent shortcut creation script for OSX
 # Ashesh Vashi, EnterpriseDB
 
 # Check the command line
-if [ $# -ne 4 ]; 
+if [ $# -ne 7 ];
 then
-    echo "Usage: $0 <Product Version> <Branding> <Install dir> <Port>"
+    echo "Usage: $0 <Product Version> <Branding> <Install dir> <Port> <java_home> <serviceuser> <agentserviceuser>"
     exit 127
 fi
 
@@ -14,6 +14,9 @@ VERSION=$1
 BRANDING=$2
 INSTALLDIR=$3
 PORT=$4
+JAVAHOME=$5
+SERVERSERVICEUSER=$6
+AGENTSERVICEUSER=$7
 
 # Exit code
 WARN=0
@@ -32,11 +35,18 @@ _replace() {
 
 # Substitute values into a file ($in)
 _fixup_file() {
-  _replace @@PPHQVERSION@@ $VERSION $1
-  _replace @@INSTALLDIR@@ $INSTALLDIR $1
-  _replace @@BRANDING@@ $BRANDING $1
-  _replace @@PPHQPORT@@ $PORT $1
+  _replace @@PPHQVERSION@@ "$VERSION"               $1
+  _replace @@INSTALLDIR@@  "$INSTALLDIR"            $1
+  _replace @@BRANDING@@    "$BRANDING"              $1
+  _replace @@JAVAHOME@@    "$JAVAHOME"              $1
+  _replace @@PPHQPORT@@    "$PORT"                  $1
+  _replace @@SERVICEUSER@@ "$SERVERSERVICEUSER"     $1
+  _replace @@AGENTSERVICEUSER@@ "$AGENTSERVICEUSER" $1
 }
+
+_fixup_file "$INSTALLDIR/scripts/agentctl.sh"
+_fixup_file "$INSTALLDIR/scripts/serverctl.sh"
+_fixup_file "$INSTALLDIR/installer/pphq/startupcfg.sh"
 
 # Compile a script - _compile_script($in.applescript, $out.app, $image)
 _compile_script() {

@@ -17,9 +17,9 @@ do
     then
         if [ x"$shell" = x"konsole" ]
         then
-            `which $shell` -e "PPHQ_INSTALLDIR/scripts/agentctl.sh" $1 wait
+            `which $shell` -e "@@INSTALLDIR@@/scripts/agentctl.sh" $1 wait
         else
-            `which $shell` -e "PPHQ_INSTALLDIR/scripts/agentctl.sh $1 wait"
+            `which $shell` -e "@@INSTALLDIR@@/scripts/agentctl.sh $1 wait"
         fi
         exit 0
     fi

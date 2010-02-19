@@ -40,6 +40,7 @@ case $1 in
 esac
 
 JAVA_HOME=@@JAVAHOME@@
+HQ_JAVA_HOME=@@JAVAHOME@@
 export JAVA_HOME
-"@@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/@@PPHQAGENTSCRIPT@@" $action
+"@@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/pphq-agent.sh" $action
 
