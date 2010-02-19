@@ -105,7 +105,7 @@ fi
 
 if [ -d "${INSTALLDIR}/agent-${VERSION}" ];
 then
-  chown -R ${AGENTSERVICEUSER} "${INSTALLDIR}/agent-${VERSION}"
+  chown -R ${AGENTUSER} "${INSTALLDIR}/agent-${VERSION}"
 fi
 
 echo "$0 ran to completion"
