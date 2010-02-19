@@ -669,7 +669,7 @@
         <actionGroup>
             <actionList>
                 <runProgram program="${installdir}/scripts/serverctl.sh"
-                        programArguments="stop" abortOnError="0" showMessageOnError="0"
+                        programArguments="--no-wait stop" abortOnError="0" showMessageOnError="0"
                         workingDirectory="${installdir}/scripts"
                         progressText="${msg(pphq.server.stopping)}">
                     <ruleList>
@@ -687,7 +687,7 @@
                     </ruleList>
                 </setInstallerVariable>
                 <runProgram program="${installdir}/scripts/agentctl.sh"
-                      programArguments="stop" workingDirectory="${installdir}/agent-${pphqVersion}/bin"
+                      programArguments="--no-wait stop" workingDirectory="${installdir}/agent-${pphqVersion}/bin"
                       progressText="${msg(pphq.agent.stopping)}" abortOnError="1" showMessageOnError="1">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -929,7 +929,7 @@
                 <actionGroup>
                     <actionList>
                         <runProgram program="${installdir}/scripts/serverctl.sh"
-                              programArguments="start"
+                              programArguments="--no-wait start"
                               workingDirectory="${pphqTempDir}/server-PG_VERSION_PPHQ"
                               progressText="${msg(pphq.server.starting)}"
                               abortOnError="0" showMessageOnError="1"/>
@@ -1056,7 +1056,7 @@
             </ruleList>
         </runProgram>
         <runProgram program="${installdir}/scripts/agentctl.sh"
-              programArguments="start" workingDirectory="${installdir}/agent-PG_VERSION_PPHQ/bin"
+              programArguments="--no-wait start" workingDirectory="${installdir}/agent-PG_VERSION_PPHQ/bin"
               progressText="${msg(pphq.agent.starting)}" abortOnError="1" showMessageOnError="1">
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -1071,7 +1071,7 @@
         <actionGroup>
             <actionList>
                 <runProgram program="${installdir}/scripts/serverctl.sh"
-                        programArguments="stop"
+                        programArguments="--no-wait stop"
                         workingDirectory="${installdir}/scripts"
                         progressText="${msg(pphq.server.stopping)}"
                         abortOnError="0" showMessageOnError="0"/>
@@ -1081,7 +1081,7 @@
                       progressText="${msg(pphq.shortcuts.removing)}"
                       abortOnError="0" showMessageOnError="0"/>
                 <runProgram program="${installdir}/scripts/agentctl.sh"
-                        programArguments="stop"
+                        programArguments="--no-wait stop"
                         workingDirectory="${installdir}/scripts"
                         progressText="${msg(pphq.agent.stopping)}"
                         abortOnError="0" showMessageOnError="0"/>

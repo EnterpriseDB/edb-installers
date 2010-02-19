@@ -44,35 +44,35 @@ function log()
 function stopAgent()
 {
   log "Stopping Postgres Plus HQ Agent..."
-  LOGMSG=`"@@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/@@PPHQSERVERSCRIPT@@" stop`
+  LOGMSG=`"@@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/pphq-agent.sh" stop`
   log "${LOGMSG}"
 }
 
 function startAgent()
 {
   log "Starting Postgres Plus HQ Agent..."
-  LOGMSG=`"@@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/@@PPHQSERVERSCRIPT@@" start`
+  LOGMSG=`"@@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/pphq-agent.sh" start`
   log "${LOGMSG}"
 }
 
 function restartAgent()
 {
   log "Restarting Postgres Plus HQ Agent..."
-  LOGMSG=`"@@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/@@PPHQSERVERSCRIPT@@" restart`
+  LOGMSG=`"@@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/pphq-agent.sh" restart`
   log "${LOGMSG}"
 }
 
 function check()
 {
   log "Check status of Postgres Plus HQ Agent..."
-  LOGMSG=`"@@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/@@PPHQSERVERSCRIPT@@" status`
+  LOGMSG=`"@@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/pphq-agent.sh" status`
   log "${LOGMSG}"
 }
 
 function pingAgent()
 {
   log "Pinging the Postgres Plus HQ Agent..."
-  LOGMSG=`"@@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/@@PPHQSERVERSCRIPT@@" ping`
+  LOGMSG=`"@@INSTALLDIR@@/agent-@@PPHQVERSION@@/bin/pphq-agent.sh" ping`
   log "${LOGMSG}"
 }
 

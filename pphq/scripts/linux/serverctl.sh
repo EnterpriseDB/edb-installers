@@ -1,13 +1,29 @@
-#!/bin/sh
+#!/bin/bash
 
 # Postgres Plus HQ server control script for Linux
 # Ashesh Vashi, EnterpriseDB
 
 # Check the command line
+usage()
+{
+    echo "Usage: $0 [--no-wait] <start|stop|restart>"
+    exit 127
+}
+
 if [ $# -lt 1  -o $# -gt 2 ]; 
 then
-    echo "Usage: $0 start|stop|restart [wait]"
-    exit 127
+  usage
+fi
+
+WAIT=1
+
+if [ x"$1" == x"--no-wait" ];
+then
+  WAIT=0
+  shift
+elif [ $# -gt 1 ];
+then
+  usage
 fi
 
 case $1 in
@@ -21,8 +37,7 @@ case $1 in
         action=restart
     ;;
     *)
-        echo "Usage: $0 start|stop [wait]"
-        exit 127
+        usage
     ;;
 esac
 
@@ -60,7 +75,7 @@ else
   "@@INSTALLDIR@@/scripts/runServer.sh" $action
 fi
 
-if [ x"$2" = x"wait" ];
+if [ $WAIT -eq 1 ];
 then
   echo
   echo -n "Press <return> to continue..."

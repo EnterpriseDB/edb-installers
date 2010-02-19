@@ -1,7 +1,7 @@
 [Desktop Entry]
 Version=1.0
 Type=Directory
-Name=HQAGENT_BRANDING
+Name=@@BRANDING@@
 Comment=Postgres Plus HQ Agent, packaged by EnterpriseDB
 Icon=hqagent.png
 Encoding=UTF-8

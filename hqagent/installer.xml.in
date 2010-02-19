@@ -401,10 +401,9 @@
             <actionList>
                 <!-- stoping the pphq-agent in upgrade mode -->
                 <runProgram program="${installdir}/scripts/agentctl.sh" abortOnError="0"
-                    programArguments="stop" workingDirectory="${installdir}"
+                    programArguments="--no-wait stop" workingDirectory="${installdir}"
                     showMessageOnError="0" progressText="Stopping agent...">
                     <ruleList>
-                        <fileExists path="${installdir}/scripts/agentctl.sh"/>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
@@ -506,7 +505,6 @@
             workingDirectory="${installdir}/installer/pphqagent"
             abortOnError="0" showMessageOnError="0">
             <ruleList>
-                <isTrue value="${create_shortcuts}"/>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </runProgram>
@@ -563,7 +561,7 @@
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                     key="agent.setup.resetupTokens" value="yes"/>
                 <runProgram program="${installdir}/scripts/agentctl.sh"
-                    programArguments="start" workingDirectory="${installdir}/agent-PG_VERSION_HQAGENT/bin"
+                    programArguments="--no-wait start" workingDirectory="${installdir}/agent-PG_VERSION_HQAGENT/bin"
                     abortOnError="0" showMessageOnError="0">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -583,7 +581,7 @@
                     </ruleList>
                 </setInstallerVariable>
                 <runProgram program="${installdir}/scripts/agentctl.sh"
-                    programArguments="stop" workingDirectory="${installdir}/agent-PG_VERSION_HQAGENT/bin"
+                    programArguments="--no-wait stop" workingDirectory="${installdir}/agent-PG_VERSION_HQAGENT/bin"
                     abortOnError="0" showMessageOnError="0">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -754,9 +752,6 @@
                     <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\hq-agent.bat</windowsExec>
                     <windowsExecArgs>start</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pphqagent-start.ico</windowsIcon>
-                    <ruleList>
-                        <isTrue value="${create_shortcuts}" />
-                    </ruleList>
                 </startMenuShortcut>
                 <!-- Stop server -->
                 <startMenuShortcut>
@@ -765,9 +760,6 @@
                     <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\hq-agent.bat</windowsExec>
                     <windowsExecArgs>stop</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pphqagent-stop.ico</windowsIcon>
-                    <ruleList>
-                        <isTrue value="${create_shortcuts}" />
-                    </ruleList>
                 </startMenuShortcut>
             </startMenuShortcutList>
         </component>
@@ -923,7 +915,7 @@
                         <setInstallerVariable name="errMessage" value=""/>
                         <runProgram program="${installdir}/scripts/agentctl.sh"
                             progressText="${msg(pphqagent.starting)}"
-                            programArguments="start" workingDirectory="${installdir}/agent-PG_VERSION_HQAGENT/bin"
+                            programArguments="--no-wait start" workingDirectory="${installdir}/agent-PG_VERSION_HQAGENT/bin"
                             abortOnError="0" showMessageOnError="0">
                             <ruleList>
                                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -949,7 +941,7 @@
                             </ruleList>
                         </setInstallerVariable>
                         <runProgram program="${installdir}/scripts/agentctl.sh"
-                            programArguments="stop" workingDirectory="${installdir}/agent-PG_VERSION_HQAGENT/bin"
+                            programArguments="--no-wait stop" workingDirectory="${installdir}/agent-PG_VERSION_HQAGENT/bin"
                             abortOnError="0" showMessageOnError="0">
                             <ruleList>
                                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>

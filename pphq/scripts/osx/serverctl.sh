@@ -37,14 +37,14 @@ function log()
 function stopServer()
 {
   log "Stopping Postgres HQ server..."
-  LOGMSG=`"@@INSTALLDIR@@/server-@@PPHQVERSION@@/bin/@@PPHQSERVERSCRIPT@@" stop`
+  LOGMSG=`"@@INSTALLDIR@@/server-@@PPHQVERSION@@/bin/pphq-server.sh" stop`
   log "${LOGMSG}"
 }
 
 function startServer()
 {
   log "Starting Postgres HQ Server..."
-  LOGMSG=`"@@INSTALLDIR@@/server-@@PPHQVERSION@@/bin/@@PPHQSERVERSCRIPT@@" start`
+  LOGMSG=`"@@INSTALLDIR@@/server-@@PPHQVERSION@@/bin/pphq-server.sh" start`
   log "${LOGMSG}"
 }
 

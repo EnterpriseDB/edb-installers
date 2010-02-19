@@ -17,9 +17,9 @@ do
     then
         if [ x"$shell" = x"konsole" ]
         then
-            `which $shell` -e "@@INSTALLDIR@@/scripts/serverctl.sh" $1 wait
+            `which $shell` -e "@@INSTALLDIR@@/scripts/serverctl.sh" $1
         else
-            `which $shell` -e "@@INSTALLDIR@@/scripts/serverctl.sh $1 wait"
+            `which $shell` -e "@@INSTALLDIR@@/scripts/serverctl.sh $1"
         fi
         exit 0
     fi

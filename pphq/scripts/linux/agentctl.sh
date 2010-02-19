@@ -1,35 +1,50 @@
-#!/bin/sh
+#!/bin/bash
 
 # Postgres Plus HQ agent control script for Linux
 # Ashesh Vashi, EnterpriseDB
 
 # Check the command line
+usage()
+{
+    echo "Usage: $0 [--no-wait] <start|stop|restart|status|ping>"
+    exit 127
+}
+
 if [ $# -lt 1  -o $# -gt 2 ]; 
 then
-    echo "Usage: $0 start|stop|restart|status|ping [wait]"
-    exit 127
+  usage
+fi
+
+WAIT=1
+
+if [ x"$1" == x"--no-wait" ];
+then
+  WAIT=0
+  shift
+elif [ $# -gt 1 ];
+then
+  usage
 fi
 
 case $1 in
     start)
         action=start     
-        ;;
+    ;;
     stop) 
         action=stop
-        ;;
+    ;;
     restart)
         action=restart
-        ;;
+    ;;
     status)
         action=status
-        ;;
+    ;;
     ping)
         action=ping
-        ;;
+    ;;
     *)
-        echo "Usage: $0 start|stop|restart|status|ping [wait]"
-        exit 127
-        ;;
+        usage
+    ;;
 esac
 
 # Try to figure out if this is a 'sudo' platform such as Ubuntu
@@ -66,7 +81,7 @@ else
   "@@INSTALLDIR@@/scripts/runAgent.sh" $action
 fi
 
-if [ x"$2" = x"wait" ];
+if [ $WAIT -eq 1 ];
 then
   echo
   echo -n "Press <return> to continue..."
