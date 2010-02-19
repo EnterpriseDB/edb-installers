@@ -69,9 +69,9 @@ _postprocess_pphqagent_osx() {
 
     # Hack up the scripts, and compile them into the staging directory
     mkdir -p $PPHQAGENT_STAGING_DIR/scripts || _die "Failed to create a directory for the launch scripts"
-    cp $PPHQ_DIR/scripts/osx/agentctl.sh $PPHQAGENT_STAGING_DIR/scripts/ || _die "Failed to to the agentctl.sh"
-    cp $PPHQ_DIR/scripts/osx/agent-start.applescript.in $PPHQAGENT_STAGING_DIR/scripts/ || _die "Failed to to the agent-start.applescript"
-    cp $PPHQ_DIR/scripts/osx/agent-stop.applescript.in $PPHQAGENT_STAGING_DIR/scripts/ || _die "Failed to to the agent-stop.applescript"
+    cp $PPHQ_DIR/scripts/osx/agentctl.sh $PPHQAGENT_STAGING_DIR/scripts/ || _die "Failed to copy agentctl.sh"
+    cp $PPHQ_DIR/scripts/osx/agent-start.applescript.in $PPHQAGENT_STAGING_DIR/scripts/agent-start.applescript || _die "Failed to copy agent-start.applescript.in"
+    cp $PPHQ_DIR/scripts/osx/agent-stop.applescript.in $PPHQAGENT_STAGING_DIR/scripts/agent-stop.applescript || _die "Failed to copy agent-stop.applescript.in"
 
     # Copy in the menu pick images
     mkdir -p $PPHQAGENT_STAGING_DIR/scripts/images || _die "Failed to create a directory for the menu pick images"

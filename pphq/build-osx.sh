@@ -79,11 +79,11 @@ _postprocess_pphq_osx() {
 
     # Hack up the scripts, and compile them into the staging directory
     mkdir -p $PPHQ_STAGING/scripts || _die "Failed to create a directory for the launch scripts"
-    cp $PPHQ_DIR/scripts/osx/pphq-launch.applescript.in $PPHQ_STAGING/scripts/ || _die "Failed to copy pphq-launch.applescript.in"
-    cp $PPHQ_DIR/scripts/osx/server-start.applescript.in $PPHQ_STAGING/scripts/ || _die "Failed to copy server-start.applescript.in"
-    cp $PPHQ_DIR/scripts/osx/server-stop.applescript.in $PPHQ_STAGING/scripts/ || _die "Failed to copy server-stop.applescript.in"
-    cp $PPHQ_DIR/scripts/osx/agent-start.applescript.in $PPHQ_STAGING/scripts/ || _die "Failed to copy agent-start.applescript.in"
-    cp $PPHQ_DIR/scripts/osx/agent-stop.applescript.in $PPHQ_STAGING/scripts/ || _die "Failed to copy agent-stop.applescript.in"
+    cp $PPHQ_DIR/scripts/osx/pphq-launch.applescript.in $PPHQ_STAGING/scripts/pphq-launch.applescript || _die "Failed to copy pphq-launch.applescript.in"
+    cp $PPHQ_DIR/scripts/osx/server-start.applescript.in $PPHQ_STAGING/scripts/server-start.applescript || _die "Failed to copy server-start.applescript.in"
+    cp $PPHQ_DIR/scripts/osx/server-stop.applescript.in $PPHQ_STAGING/scripts/server-stop.applescript || _die "Failed to copy server-stop.applescript.in"
+    cp $PPHQ_DIR/scripts/osx/agent-start.applescript.in $PPHQ_STAGING/scripts/agent-start.applescript || _die "Failed to copy agent-start.applescript.in"
+    cp $PPHQ_DIR/scripts/osx/agent-stop.applescript.in $PPHQ_STAGING/scripts/agent-stop.applescript || _die "Failed to copy agent-stop.applescript.in"
     cp $PPHQ_DIR/scripts/osx/serverctl.sh $PPHQ_STAGING/scripts/ || _die "Failed to copy agent-stop.applescript.in"
     cp $PPHQ_DIR/scripts/osx/agentctl.sh $PPHQ_STAGING/scripts/ || _die "Failed to copy agent-stop.applescript.in"
     chmod ugo+x $PPHQ_STAGING/scripts/*.sh
