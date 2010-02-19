@@ -55,39 +55,39 @@ _prep_pphq() {
     fi
   
     # pphq
-#    if [ -d hq ];
-#    then
-#        echo "Removing existing hyperic directory..."
-#        rm -rf hq || _die "Couldn't remove the existing hyperic source directory (source/hq)"
-#    fi
+    if [ -d hq ];
+    then
+        echo "Removing existing hyperic directory..."
+        rm -rf hq || _die "Couldn't remove the existing hyperic source directory (source/hq)"
+    fi
 
-#    echo "Creating a working copy of the source..."
-#    cp -R PPHQ hq || _die "Unable to create a working copy of the source tree!"
+    echo "Creating a working copy of the source..."
+    cp -R PPHQ hq || _die "Unable to create a working copy of the source tree!"
 
-#    if [ ! -d jboss-${PPHQ_JBOSS_VERSION} ];
-#    then
-#      echo "Extracting jboss binaries..."
-#      extract_file ${WD}/tarballs/jboss-${PPHQ_JBOSS_VERSION} || _die "Error extracting jboss binaries for pphq..."
-#    fi
-#
-#    echo "Fixing up the PPHQ source tree..."
-#    mv $WD/pphq/source/hq/hq_bin/launcher_bin/hq-server.exe $WD/pphq/source/hq/hq_bin/launcher_bin/pphq-server.exe || _die "Couldn't rename hq-server.exe"
-#    mv $WD/pphq/source/hq/hq_bin/launcher_bin/hq-agent.exe $WD/pphq/source/hq/hq_bin/launcher_bin/pphq-agent.exe || _die "Couldn't rename hq-agent.exe"
-#    if [ ! -d $WD/pphq/source/hq/unittest/emptydir ];
-#    then
-#      mkdir $WD/pphq/source/hq/unittest/emptydir || _die "Failed to create $WD/pphq/source/hq/unittest/emptydir"
-#    fi
-#    if [ ! -d $WD/pphq/source/hq/etc/gconsoleTemplates ]; 
-#    then
-#      mkdir $WD/pphq/source/hq/etc/gconsoleTemplates || _die "Failed to create $WD/pphq/source/hq/etc/gconsoleTemplates"
-#    fi
-#
-#    cd $WD/pphq/source
-#    if [ -f build_pphq.sh ];
-#    then
-#      rm -f build_pphq.sh
-#    fi
-#
+    if [ ! -d jboss-${PPHQ_JBOSS_VERSION} ];
+    then
+      echo "Extracting jboss binaries..."
+      extract_file ${WD}/tarballs/jboss-${PPHQ_JBOSS_VERSION} || _die "Error extracting jboss binaries for pphq..."
+    fi
+
+    echo "Fixing up the PPHQ source tree..."
+    mv $WD/pphq/source/hq/hq_bin/launcher_bin/hq-server.exe $WD/pphq/source/hq/hq_bin/launcher_bin/pphq-server.exe || _die "Couldn't rename hq-server.exe"
+    mv $WD/pphq/source/hq/hq_bin/launcher_bin/hq-agent.exe $WD/pphq/source/hq/hq_bin/launcher_bin/pphq-agent.exe || _die "Couldn't rename hq-agent.exe"
+    if [ ! -d $WD/pphq/source/hq/unittest/emptydir ];
+    then
+      mkdir $WD/pphq/source/hq/unittest/emptydir || _die "Failed to create $WD/pphq/source/hq/unittest/emptydir"
+    fi
+    if [ ! -d $WD/pphq/source/hq/etc/gconsoleTemplates ]; 
+    then
+      mkdir $WD/pphq/source/hq/etc/gconsoleTemplates || _die "Failed to create $WD/pphq/source/hq/etc/gconsoleTemplates"
+    fi
+
+    cd $WD/pphq/source
+    if [ -f build_pphq.sh ];
+    then
+      rm -f build_pphq.sh
+    fi
+
     # Per-platform prep
     cd $WD
     # Mac OS X
@@ -140,8 +140,8 @@ cd hq
 exit $?
 
 EOT
-#    echo "Building PPHQ..."
-#    /bin/bash build_pphq.sh || _die "Error building PPHQ from source..."
+    echo "Building PPHQ..."
+    /bin/bash build_pphq.sh || _die "Error building PPHQ from source..."
 
     cd $WD
     # Mac OSX
