@@ -45,6 +45,8 @@ _fixup_file() {
   _replace @@AGENTSERVICEUSER@@ "${SERVICEUSER}" $1
 }
 
+_fixup_file "$INSTALLDIR/scripts/agentctl.sh"
+
 # Compile a script - _compile_script($in.applescript, $out.app, $image)
 _compile_script() {
     _fixup_file "$1"
