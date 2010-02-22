@@ -16,7 +16,7 @@ fi
 # Check the command line
 if [ $# -ne 1 ];
 then
-    echo "Usage: $0 start|stop|restart|status"
+    echo "Usage: $0 start|stop|restart|status|ping"
     exit 127
 fi
 
@@ -33,8 +33,11 @@ case $1 in
     status)
         action=status
         ;;
+    ping)
+        action=ping
+        ;;
     *)
-        echo "Usage: $0 start|stop"
+        echo "Usage: $0 start|stop|restart|status|ping"
         exit 127
         ;;
 esac
