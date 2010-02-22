@@ -191,8 +191,8 @@
         <actionGroup>
             <actionList>
                 <!-- Get the branding -->
-                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" variable="iBranding" name="Branding"/>
-                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" variable="pphqAgentVersion" name="Version"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="iBranding" name="Branding"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="pphqAgentVersion" name="Version"/>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -227,11 +227,11 @@
         <actionGroup>
             <actionList>
                 <!-- Get the branding -->
-                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" variable="pphqhost" name="pphqhost"/>
-                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" variable="pphqport" name="pphqport"/>
-                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" variable="secure-connection" name="${pphqsecureconn}"/>
-                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" variable="pphquser" name="pphquser"/>
-                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" variable="agentport" name="agentport"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="pphqhost" name="pphqhost"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="pphqport" name="pphqport"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="secure-connection" name="${pphqsecureconn}"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="pphquser" name="pphquser"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="agentport" name="agentport"/>
             </actionList>
             <ruleList>
                 <stringTest text="${pphqAgentVersion}" type="not_empty"/>
@@ -359,7 +359,7 @@
         <!-- WIN: Set the installation directory in case of re-install/upgrade -->
         <actionGroup>
             <actionList>
-                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" variable="installdir" name="Location"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="installdir" name="Location"/>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${pphqAgentVersion}" value=""/>
@@ -407,11 +407,15 @@
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
-                <stopWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0" showMessageOnError="0">
+                <actionGroup>
+                    <actionList>
+                        <stopWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0" showMessageOnError="0"/>
+                        <deleteWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0"  showMessageOnError="0"/>
+                    </actionList>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
-                </stopWindowsService>
+                </actionGroup>
             </actionList>
             <ruleList>
                 <stringTest text="${pphqAgentVersion}" type="not_empty"/>
@@ -432,13 +436,12 @@
                 <setEnvironmentVariable name="HQ_JAVA_HOME" value="${pphqJavaHome}"/>
                 <setEnvironmentVariable name="JAVA_HOME" value="${pphqJavaHome}"/>
                 <addEnvironmentVariable name="HQ_JAVA_HOME" value="${pphqJavaHome}" scope="system"/>
-                <addEnvironmentVariable name="JAVA_HOME" value="${pphqJavaHome}" scope="system"/>
 
                 <setInstallerVariableFromScriptOutput
                         exec="cscript.exe"
                         execArgs="//nologo &quot;${installdir}\scripts\shortPathName.vbs&quot; &quot;${installdir}&quot;"
                         name="pphqInstallPath"
-                        workingDirectory="${pphqTempDir}"/>
+                        workingDirectory="${installdir}"/>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -486,8 +489,8 @@
             </ruleList>
         </actionGroup>
 
-        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" name="Branding" value="${branding}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" name="Description" value="${msg(install.summary)}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="Branding" value="${branding}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="Description" value="${msg(install.summary)}"/>
 
         <!-- We need to install the agent service in order to start it -->
         <runProgram program="cscript.exe"
@@ -509,6 +512,32 @@
             </ruleList>
         </runProgram>
 
+        <setInstallerVariableFromScriptOutput
+                exec="${java_executable}"
+                execArgs="-jar &quot;${installdir}/agent-PG_VERSION_HQAGENT/bundles/agent-PG_VERSION_HQAGENT-PPHQ_BUILD/pdk/lib/sigar.jar&quot; netinfo"
+                name="machineNetInfo"
+                workingDirectory="${installdir}"/>
+
+        <setInstallerVariable name="agenthost" value="localhost"/>
+
+        <setInstallerVariableFromRegEx name="agenthost"  text="${machineNetInfo}">
+            <pattern>^.*host\sname\.*([a-zA-Z0-9\.\-]*).*$</pattern>
+            <substitution>\1</substitution>
+            <ruleList>
+                <stringTest text="${machineNetInfo}" type="not_empty"/>
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+
+        <!-- switch to ip-address, if host-name does not contain '.' (dot) -->
+        <setInstallerVariableFromRegEx name="agenthost" text="${machineNetInfo}">
+            <pattern>^.*primary\sip\saddress\.*([0-9\.]*).*$</pattern>
+            <substitution>\1</substitution>
+            <ruleList>
+                <compareText logic="does_not_contain" text="${agenthost}" value="."/>
+                <stringTest text="${machineNetInfo}" type="not_empty"/>
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+
         <!-- Get a default port number - ideally 2144 -->
         <getFreePort variable="agentport" initialPort="2144" finalPort="65535"/>
         <setInstallerVariable name="pphquser" value="hqadmin">
@@ -516,7 +545,7 @@
                 <stringTest text="${pphquser}" type="empty"/>
             </ruleList>
         </setInstallerVariable>
-        <setInstallerVariable name="pphqhost" value="localhost">
+        <setInstallerVariable name="pphqhost" value="${agenthost}">
             <ruleList>
                 <stringTest text="${pphqhost}" type="empty"/>
             </ruleList>
@@ -555,7 +584,7 @@
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                     key="agent.setup.camPword" value="${pphqpassword}"/>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
-                    key="agent.setup.agentIP" value="localhost"/>
+                    key="agent.setup.agentIP" value="${agenthost}"/>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                     key="agent.setup.agentPort" value="${agentport}"/>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
@@ -621,11 +650,11 @@
                 <actionGroup>
                     <actionList>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
-                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" name="pphqhost" value="${pphqhost}"/>
-                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" name="pphqport" value="${pphqport}"/>
-                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" name="secure-connection" value="${pphqsecureconn}"/>
-                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" name="pphquser" value="${pphquser}"/>
-                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" name="agentport" value="${agentport}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphqhost" value="${pphqhost}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphqport" value="${pphqport}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="secure-connection" value="${pphqsecureconn}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphquser" value="${pphquser}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agentport" value="${agentport}"/>
                     </actionList>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -672,7 +701,15 @@
                 <compareText logic="equals" text="${platform_name}" value="osx"/>
             </ruleList>
         </deleteFile>
-
+        <actionGroup>
+            <actionList>
+                <stopWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0" showMessageOnError="0"/>
+                <deleteWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0"  showMessageOnError="0"/>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
     </preUninstallationActionList>
 
     <!-- Components -->
@@ -834,7 +871,7 @@
             explanation="${msg(pphq.server.details)}" insertAfter="installation">
             <parameterList>
                 <!-- Postgres Plus HQ server Host -->
-                <stringParameter name="pphqhost" explanation="" value="" default="localhost"
+                <stringParameter name="pphqhost" explanation="" value="" default="${agenthost}"
                     description="Postgres Plus HQ Server Host" cliOptionName="pphqhost"
                     allowEmptyValue="1" width="40">
                     <ruleList>
@@ -903,7 +940,7 @@
                         <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                             key="agent.setup.camPword" value="${pphqpassword}"/>
                         <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
-                            key="agent.setup.agentIP" value="localhost"/>
+                            key="agent.setup.agentIP" value="${agenthost}"/>
                         <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                             key="agent.setup.agentPort" value="${agentport}"/>
                         <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
@@ -922,7 +959,7 @@
                             </ruleList>
                         </runProgram>
                         <runProgram program="cscript.exe"
-                            programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; stop" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
+                            programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; start" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
                             abortOnError="0" showMessageOnError="0">
                             <ruleList>
                                 <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -930,51 +967,51 @@
                         </runProgram>
                         <setInstallerVariable name="errMessage" value="${program_stderr}"/>
                         <setInstallerVariable name="strmsg" value=""/>
+
+                        <actionGroup>
+                            <actionList>
+                                <setInstallerVariable name="strmsg" value="${msg(hqagent.server.validation.fail)}">
+                                    <ruleList>
+                                        <compareText logic="contains" text="${errMessage}" value="Invalid username"/>
+                                    </ruleList>
+                                </setInstallerVariable>
+                                <runProgram program="${installdir}/scripts/agentctl.sh"
+                                    programArguments="--no-wait stop" workingDirectory="${installdir}/agent-PG_VERSION_HQAGENT/bin"
+                                    abortOnError="0" showMessageOnError="0">
+                                    <ruleList>
+                                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                                    </ruleList>
+                                </runProgram>
+                                <runProgram program="cscript.exe"
+                                    programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; stop" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
+                                    abortOnError="0" showMessageOnError="0">
+                                    <ruleList>
+                                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                                    </ruleList>
+                                </runProgram>
+                                <throwError text="ERROR: ${strmsg}">
+                                    <ruleList>
+                                        <stringTest text="${strmsg}" type="not_empty"/>
+                                    </ruleList>
+                                </throwError>
+                                <setInstallerVariable name="errMessage" value="${msg(pphqagent.server.connection.fail)}">
+                                    <ruleList>
+                                        <compareText logic="contains" text="${errMessage}" value="Unable to connect"/>
+                                    </ruleList>
+                                </setInstallerVariable>
+                                <showQuestion default="yes" text="${msg(pphqagent.start.error.question)}" variable="response"/>
+                                <setInstallerVariable name="next_page" value="pphqserverdetails">
+                                    <ruleList>
+                                        <compareText logic="equals" text="${response}" value="yes"/>
+                                    </ruleList>
+                                </setInstallerVariable>
+                            </actionList>
+                            <ruleList>
+                                <stringTest text="${errMessage}" type="not_empty"/>
+                            </ruleList>
+                        </actionGroup>
                     </actionList>
                 </showProgressDialog>
-
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="strmsg" value="${msg(hqagent.server.validation.fail)}">
-                            <ruleList>
-                                <compareText logic="contains" text="${errMessage}" value="Invalid username"/>
-                            </ruleList>
-                        </setInstallerVariable>
-                        <runProgram program="${installdir}/scripts/agentctl.sh"
-                            programArguments="--no-wait stop" workingDirectory="${installdir}/agent-PG_VERSION_HQAGENT/bin"
-                            abortOnError="0" showMessageOnError="0">
-                            <ruleList>
-                                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                            </ruleList>
-                        </runProgram>
-                        <runProgram program="cscript.exe"
-                            programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; stop" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
-                            abortOnError="0" showMessageOnError="0">
-                            <ruleList>
-                                <compareText logic="equals" text="${platform_name}" value="windows"/>
-                            </ruleList>
-                        </runProgram>
-                        <throwError text="ERROR: ${strmsg}">
-                            <ruleList>
-                                <stringTest text="${strmsg}" type="not_empty"/>
-                            </ruleList>
-                        </throwError>
-                        <setInstallerVariable name="errMessage" value="${msg(pphqagent.server.connection.fail)}">
-                            <ruleList>
-                                <compareText logic="contains" text="${errMessage}" value="Unable to connect"/>
-                            </ruleList>
-                        </setInstallerVariable>
-                        <showQuestion default="yes" text="${msg(pphqagent.start.error.question)}" variable="response"/>
-                        <setInstallerVariable name="next_page" value="pphqserverdetails">
-                            <ruleList>
-                                <compareText logic="equals" text="${response}" value="yes"/>
-                            </ruleList>
-                        </setInstallerVariable>
-                    </actionList>
-                    <ruleList>
-                        <stringTest text="${errMessage}" type="not_empty"/>
-                    </ruleList>
-                </actionGroup>
             </validationActionList>
             <postShowPageActionList>
                 <actionGroup>
@@ -1000,11 +1037,11 @@
                 </actionGroup>
                 <actionGroup>
                     <actionList>
-                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" name="pphqhost" value="${pphqhost}"/>
-                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" name="pphqport" value="${pphqport}"/>
-                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" name="secure-connection" value="${pphqsecureconn}"/>
-                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" name="pphquser" value="${pphquser}"/>
-                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" name="agentport" value="${agentport}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphqhost" value="${pphqhost}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphqport" value="${pphqport}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="secure-connection" value="${pphqsecureconn}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphquser" value="${pphquser}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agentport" value="${agentport}"/>
                     </actionList>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>

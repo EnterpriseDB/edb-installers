@@ -498,6 +498,31 @@
         <unpackDirectory component="InstScript" folder="inst${platform_name}"
                          destination="${pphqTempDir}" origin="instscripts"/>
 
+        <setInstallerVariableFromScriptOutput
+                exec="${java_executable}"
+                execArgs="-jar &quot;${pphqTempDir}/instscripts/lib/sigar.jar&quot; netinfo"
+                name="machineNetInfo"
+                workingDirectory="${pphqTempDir}/instscripts/lib"/>
+
+        <setInstallerVariable name="pphqmachinehost" value="localhost"/>
+        <setInstallerVariableFromRegEx name="pphqmachinehost"  text="${machineNetInfo}">
+            <pattern>^.*host\sname\.*([a-zA-Z0-9\.\-]*).*$</pattern>
+            <substitution>\1</substitution>
+            <ruleList>
+                <stringTest text="${machineNetInfo}" type="not_empty"/>
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+
+        <!-- switch to ip-address, if host-name does not contain '.' (dot) -->
+        <setInstallerVariableFromRegEx name="pphqmachinehost" text="${machineNetInfo}">
+            <pattern>^.*primary\sip\saddress\.*([0-9\.]*).*$</pattern>
+            <substitution>\1</substitution>
+            <ruleList>
+                <compareText logic="does_not_contain" text="${pphqmachinehost}" value="."/>
+                <stringTest text="${machineNetInfo}" type="not_empty"/>
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+
         <!-- Validation in unattended mode -->
         <actionGroup>
             <actionList>
@@ -782,7 +807,7 @@
                 <substitution pattern="@@PGUSER@@" value="${pphquser}"/>
                 <substitution pattern="@@PGPASS@@" value="${pphqpassword}"/>
                 <substitution pattern="@@PGPORT@@" value="${pgport}"/>
-                <substitution pattern="@@HQHOST@@" value="localhost"/>
+                <substitution pattern="@@HQHOST@@" value="${pphqmachinehost}"/>
                 <substitution pattern="@@HQSPORT@@" value="${pphq_secure_port}"/>
                 <substitution pattern="@@PGHOST@@" value="${pghost}"/>
                 <substitution pattern="@@HQ_JRPM_PORT@@" value="${pphq_jrpm_port}"/>
@@ -790,6 +815,8 @@
                 <substitution pattern="@@PGADMINDB@@" value="${pphqadmindb}"/>
                 <substitution pattern="@@HQPORT@@" value="${pphqport}"/>
                 <substitution pattern="@@DBCREATE@@" value="${create_database}"/>
+                <substitution pattern="@@SMTPHOST@@" value="${smtphost}"/>
+                <substitution pattern="@@MACHINEHOST@@" value="${pphqmachinehost}"/>
             </substitutionList>
         </substitute>
 
@@ -1027,13 +1054,14 @@
             </ruleList>
         </actionGroup>
         <addFilesToUninstaller files="${serverFiles};${agentFiles}"/>
+
         <setInstallerVariable name="serviceName" value="${serviceName}" persist="1"/>
         <setInstallerVariable name="agentServiceName" value="${agentServiceName}" persist="1"/>
         <setInstallerVariable name="branding" value="${branding}" persist="1"/>
         <getFreePort variable="agentport" initialPort="2144" finalPort="65535"/>
 
         <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
-                           key="agent.setup.camIP" value="localhost"/>
+                           key="agent.setup.camIP" value="${pphqmachinehost}"/>
         <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
                            key="agent.setup.camPort" value="${pphqport}"/>
         <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
@@ -1047,7 +1075,7 @@
         <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
                            key="agent.setup.agentPort" value="${agentport}"/>
         <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
-                           key="agent.setup.agentIP" value="localhost"/>
+                           key="agent.setup.agentIP" value="${pphqmachinehost}"/>
         <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
                     key="agent.setup.resetupTokens" value="yes"/>
         <runProgram program="cscript.exe" workingDirectory="${installdir}\agent-PG_VERSION_PPHQ\bin"
@@ -1346,7 +1374,7 @@
                     <comment>Postgres Plus HQ Monitoring Home Page</comment>
                     <name>Postgres Plus HQ Monitoring Home Page</name>
                     <runInTerminal>0</runInTerminal>
-                    <url>http://localhost:${pphqport}/</url>
+                    <url>http://${pphqmachinehost}:${pphqport}/</url>
                     <windowsIcon>${installdir}\scripts\images\pphq-launch.ico</windowsIcon>
                 </startMenuLinkShortcut>
                 <!-- Start server -->
@@ -1486,7 +1514,7 @@
             <parameterList>
                 <!-- smtp Host -->
                 <stringParameter name="smtphost" description="SMTP Hostname"
-                                 explanation="" value="" default="localhost"
+                                 explanation="" value="" default="${pphqmachinehost}"
                                  cliOptionName="smtphost" allowEmptyValue="1"
                                  width="40"/>
             </parameterList>
@@ -1515,7 +1543,7 @@
             <parameterList>
                 <!-- Postgres Host -->
                 <stringParameter name="pghost" description="Hostname"
-                                 explanation="" value="" default="localhost"
+                                 explanation="" value="" default="${pphqmachinehost}"
                                  cliOptionName="pghost" allowEmptyValue="1" width="40">
 		  <ruleList>
                         <compareText logic="equals" text="${pphqVersion}" value=""/>

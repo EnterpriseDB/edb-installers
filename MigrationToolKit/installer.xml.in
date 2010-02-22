@@ -199,8 +199,8 @@
         <setInstallerVariable name="java_executable" value="${jrehome}\bin\java.exe" >
           <ruleList>
              <compareText text="${jrehome}" logic="does_not_equal" value="" />
-             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
-             <fileExists path="${jrehome}\bin\java" />
+             <compareText text="${platform_name}" logic="equals" value="windows" />
+             <fileExists path="${jrehome}\bin\java.exe" />
           </ruleList>
         </setInstallerVariable>
 	
@@ -393,6 +393,18 @@
 	
     <!-- Post installation actions -->
     <postInstallationActionList>
+  
+       <!-- Replace / with \  on windows -->
+       <setInstallerVariableFromRegEx>
+            <text>${java_executable}</text>
+            <substitution>\</substitution>
+            <name>java_executable_windows</name>
+            <pattern>\/</pattern>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows" />
+            </ruleList>
+       </setInstallerVariableFromRegEx>
+
 
        <substitute>
             <files>
@@ -413,7 +425,7 @@
             <substitutionList>
                 <substitution>
                    <pattern>java</pattern>
-                   <value>"${java_executable}"</value>
+                   <value>"${java_executable_windows}"</value>
                 </substitution>
             </substitutionList>
        </substitute>

@@ -71,8 +71,6 @@ _prep_pphq() {
     fi
 
     echo "Fixing up the PPHQ source tree..."
-    mv $WD/pphq/source/hq/hq_bin/launcher_bin/hq-server.exe $WD/pphq/source/hq/hq_bin/launcher_bin/pphq-server.exe || _die "Couldn't rename hq-server.exe"
-    mv $WD/pphq/source/hq/hq_bin/launcher_bin/hq-agent.exe $WD/pphq/source/hq/hq_bin/launcher_bin/pphq-agent.exe || _die "Couldn't rename hq-agent.exe"
     if [ ! -d $WD/pphq/source/hq/unittest/emptydir ];
     then
       mkdir $WD/pphq/source/hq/unittest/emptydir || _die "Failed to create $WD/pphq/source/hq/unittest/emptydir"
@@ -189,6 +187,7 @@ _postprocess_pphq() {
     then
         rm installer.xml
     fi
+
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (pphq/installer.xml.in)"
     
     _replace PG_VERSION_PPHQ $PG_VERSION_PPHQ installer.xml || _die "Failed to set the version in the installer project file (pphq/installer.xml)"
