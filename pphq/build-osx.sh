@@ -52,6 +52,8 @@ _build_pphq_osx() {
     cp $SERVER_STAGING/bin/psql $PPHQ_STAGING/instscripts/bin || _die "Failed to copy psql"
     cp $SERVER_STAGING/lib/libpq.*dylib $PPHQ_STAGING/instscripts/lib || _die "Failed to copy the dependency library (libpq.5.dylib)"
     cp $SERVER_STAGING/lib/libxml2* $PPHQ_STAGING/instscripts/lib || _die "Failed to copy the latest libxml2"
+    cp `find "$WD/pphq/source/hq/hq_bin/sigar_bin/lib" -print $1 | grep [.]dylib$` $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the sigar libraries"
+    cp $WD/pphq/source/hq/hq_bin/sigar_bin/lib/sigar.jar $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the sigar jar"
 
 }
 

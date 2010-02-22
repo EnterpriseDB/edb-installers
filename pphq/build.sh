@@ -187,6 +187,7 @@ _postprocess_pphq() {
     then
         rm installer.xml
     fi
+
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (pphq/installer.xml.in)"
     
     _replace PG_VERSION_PPHQ $PG_VERSION_PPHQ installer.xml || _die "Failed to set the version in the installer project file (pphq/installer.xml)"

@@ -45,6 +45,7 @@ _build_pphq_windows() {
 
     # Copy the various support files into place
     mkdir -p $PPHQ_STAGING/instscripts || _die "Failed to create the instscripts directory"
+    mkdir -p $PPHQ_STAGING/instscripts/lib || _die "Failed to create the instscripts directory"
     cp $SERVER_STAGING/lib/libpq* $PPHQ_STAGING/instscripts/ || _die "Failed to copy libpq in instscripts"
     cp $SERVER_STAGING/bin/psql.exe $PPHQ_STAGING/instscripts/ || _die "Failed to copy psql in instscripts"
     cp $SERVER_STAGING/bin/gssapi32.dll $PPHQ_STAGING/instscripts/ || _die "Failed to copy dependent libs"
@@ -63,6 +64,8 @@ _build_pphq_windows() {
     cp $SERVER_STAGING/bin/msvcr71.dll $PPHQ_STAGING/instscripts/ || _die "Failed to copy dependent libs"
     cp $SERVER_STAGING/installer/vcredist_x86.exe $PPHQ_STAGING/ || _die "Failed to copy the VC++ runtimes"
     cp $WD/pphq/scripts/windows/installruntimes.vbs $PPHQ_STAGING/ || _die "Failed to copy the installruntimes script ($PPHQ_STAGING)"
+    cp `find "$WD/pphq/source/hq/hq_bin/sigar_bin/lib" -print $1 | grep [.]dll$` $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the sigar libraries"
+    cp $WD/pphq/source/hq/hq_bin/sigar_bin/lib/sigar.jar $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the sigar jar"
 
 }
 

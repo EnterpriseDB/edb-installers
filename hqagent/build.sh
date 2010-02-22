@@ -121,10 +121,13 @@ _postprocess_hqagent() {
     then
         rm installer.xml
     fi
+
+    PPHQ_BUILDVER=`grep "build=" $WD/pphq/source/hq/etc/version.properties  | sed -e 's/^\(.*\)=\(.*\)/\2/g'`
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (hqagent/installer.xml.in)"
     
     _replace PG_VERSION_HQAGENT $PG_VERSION_HQAGENT installer.xml || _die "Failed to set the version in the installer project file (hqagent/installer.xml)"
     _replace PG_BUILDNUM_HQAGENT $PG_BUILDNUM_HQAGENT installer.xml || _die "Failed to set the Build Number in the installer project file (hqagent/installer.xml)"
+    _replace PPHQ_BUILD $PPHQ_BUILDVER installer.xml || _die "Failed to set the Build Number in the installer project file (hqagent/installer.xml)"
    
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
