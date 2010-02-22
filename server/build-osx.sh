@@ -69,10 +69,12 @@ _build_server_osx() {
     cd $WD/server/source/postgres.osx
     
     # Hack up gen_bki.sh so the bki files are generated correctly from our hacked pg_config.h.
-    echo "Updating genbki.sh (WARNING: Not 64 bit safe!)..."
-    echo ""
-    _replace "pg_config.h" "pg_config_i386.h" src/backend/catalog/genbki.sh
-    sleep 2
+	if [ -f src/backend/catalog/genbki.sh ];
+	then
+      echo "Updating genbki.sh (WARNING: Not 64 bit safe!)..."
+      echo ""
+      _replace "pg_config.h" "pg_config_i386.h" src/backend/catalog/genbki.sh
+    fi
     
     # Configure the source tree
     echo "Configuring the postgres source tree for Intel"

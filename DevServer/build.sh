@@ -183,6 +183,7 @@ _prep_DevServer() {
     patch -p0 < ../../../tarballs/pljava-fix.patch
     patch -p1 < ../../../tarballs/pljava-fix2.patch
     patch -p1 < ../../../tarballs/pljava-fix3.patch
+    patch -p1 < ../../../tarballs/pljava-fix4.patch
 
     echo "making another source tree for building postgres Docs"
     cd $WD/DevServer/source
