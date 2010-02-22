@@ -160,7 +160,7 @@ case "\$1" in
         exit 1
 esac
 
-su ${AGENTUSER} -c "\"${INSTALLDIR}/scripts/runServer.sh\" \$action"
+su ${AGENTUSER} -c "\"${INSTALLDIR}/scripts/runAgent.sh\" \$action"
 
 exit 0
 
