@@ -506,6 +506,11 @@
                             <text>${iBranding}</text>
                             <value></value>
                         </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${branding}</text>
+                            <value></value>
+                        </compareText>
                     </ruleList>
                 </setInstallerVariable>
 
