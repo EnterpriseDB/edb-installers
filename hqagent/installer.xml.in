@@ -258,7 +258,7 @@
                 <fileTest path="${jrehome}/bin/java" condition="not_exists" />
             </ruleList>
         </throwError>
-        <throwError customErrorMessage="${msg(jre.invalid.error.windows)}" text="Unknown Error">
+        <throwError customErrorMessage="${msg(jre.invalid.error)}" text="Unknown Error">
             <ruleList>
                 <compareText text="${jrehome}" logic="does_not_equal" value="" />
                 <compareText text="${platform_name}" logic="equals" value="windows" />

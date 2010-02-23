@@ -12,11 +12,9 @@ upgrade.existing.installation.description=An existing Postgres Plus HQ installat
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now.
 
-jre.invalid.error=Please specify valid JAVA_HOME environment varriable or valid --jrehome command-line argument.
+jre.invalid.error=Please set the JAVA_HOME environment variable to a valid location, or use the --jrehome command line option.
 
-jre.invalid.error.windows=Please specify valid JAVA_HOME environment varriable or valid --jrehome command-line argument.
-
-java.error=java binary in JAVA_HOME is not valid.
+java.error=The java binary in JAVA_HOME is not valid.
 
 progress.text.creating.shortcuts=Creating menu shortcuts...
 

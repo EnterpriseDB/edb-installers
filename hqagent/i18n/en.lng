@@ -32,11 +32,9 @@ progress.text.initialising.agent=Starting Postgres Plus HQ agent (this may take 
 
 error.could.not.initialise.agent=Postgres Plus HQ agent start failed.
 
-jre.invalid.error=Please specify valid JAVA_HOME environment varriable or valid --jrehome command-line argument.
+jre.invalid.error=Please set the JAVA_HOME environment variable to a valid location, or use the --jrehome command line option.
 
-jre.invalid.error.windows=Please specify valid JAVA_HOME environment varriable or valid --jrehome command-line argument.
-
-java.error=java binary in JAVA_HOME is not valid.
+java.error=The java binary in JAVA_HOME is not valid.
 
 warning.during.agent.initialisation=A non-fatal error occured during agent start. Please check the installation error log in ${system_temp_directory} for details.
 
