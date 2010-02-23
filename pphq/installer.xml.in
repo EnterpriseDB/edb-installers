@@ -98,10 +98,6 @@
         <setInstallerVariable name="pphqVersion" value=""/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PPHQ" />
         <setInstallerVariable name="pphqadmindb" value="pphq"/>
-        <setInstallerVariable name="project.parameter(jrehome).ask" value="0"/>
-        <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>
-        <setInstallerVariable name="project.parameter(serviceAccount).ask" value="0"/>
-        <setInstallerVariable name="project.parameter(agentServiceAccount).ask" value="0"/>
         <setInstallerVariable name="pphqTempDir" value="${system_temp_directory}/pphq_installer"/>
         <setInstallerVariable name="pphqTempDir" value="${system_temp_directory}\pphq_installer">
             <ruleList>
@@ -169,9 +165,14 @@
         <setInstallerVariable name="pphq_secure_port" value=""/>
         <setInstallerVariable name="pphq_jrpm_port" value=""/>
         <setInstallerVariable name="defaultpphqadmindb" value="pphq"/>
-
+        <setInstallerVariable name="agentServiceAccount" value=""/>
+        <setInstallerVariable name="serviceAccount" value=""/>
     </initializationActionList>
     <preInstallationActionList>
+        <setInstallerVariable name="project.parameter(jrehome).ask" value="0"/>
+        <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>
+        <setInstallerVariable name="project.parameter(serviceAccount).ask" value="0"/>
+        <setInstallerVariable name="project.parameter(agentServiceAccount).ask" value="0"/>
         <setInstallerVariable name="create_database" value="Yes"/>
 
         <actionGroup>
@@ -355,6 +356,10 @@
                             key="PPHQ_SECURE_PORT" variable="pphq_secure_port"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
                             key="PPHQ_JRPM_PORT" variable="pphq_jrpm_port"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
+                            key="ServerServiceAccount" variable="${serviceAccount}"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
+                            key="AgentServiceAccount" variable="${agentServiceAccount}"/>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${pphqVersion}" value=""/>
@@ -390,6 +395,17 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
+
+        <setInstallerVariable name="serviceAccount" value="pphq">
+            <ruleList>
+                <stringTest text="${serviceAccount}" type="empty"/>
+            </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="agentServiceAccount" value="root">
+            <ruleList>
+                <stringTest text="${agentServiceAccount}" type="empty"/>
+            </ruleList>
+        </setInstallerVariable>
 
         <throwError text="Not a valid port (${pphqport}) ...">
             <ruleList>
@@ -923,6 +939,12 @@
                 <logMessage text=" JRPM PORT:${pphq_jrpm_port}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
                             key="PPHQ_JRPM_PORT" value="${pphq_jrpm_port}"/>
+                <logMessage text=" Server Service Account:${serviceAccount}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="ServerServiceAccount" value="${serviceAccount}"/>
+                <logMessage text=" Agent Service Account:${agentServiceAccount}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="AgentServiceAccount" value="${agentServiceAccount}"/>
                 <!-- Create user (serviceAccount) for the server -->
                 <runProgram program="${installdir}/installer/pphq/createuser.sh"
                       programArguments="${serviceAccount} &quot;${installdir}/server-PG_VERSION_PPHQ&quot;"
@@ -1199,6 +1221,10 @@
                             key="PPHQ_SECURE_PORT" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
                             key="PPHQ_JRPM_PORT" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="ServerServiceAccount" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="AgentServiceAccount" value=""/>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
