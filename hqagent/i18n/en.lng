@@ -1,6 +1,6 @@
 installer.Welcome.Title=Setup %1$s
 
-Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
+Installer.Welcome.Text=Welcome to the %1$s Setup Wizard
 
 Installer.Installing.Title=Installing ${product_fullname}
 
@@ -8,23 +8,23 @@ upgrade.existing.installation.title=Existing installation
 
 upgrade.existing.installation.description=An existing Postgres Plus HQ agent installation has been found at ${installdir}. This installation will be upgraded.
 
-platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
+platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now.
 
-progress.text.creating.shortcuts=Creating menu shortcuts
+progress.text.creating.shortcuts=Creating menu shortcuts...
 
 Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
-Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
+Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com.
 
 install.summary=Postgres Plus HQ Agent, packaged by EnterpriseDB.
 
-hqagent.installdir.empty=The installation directory cannot be empty
+hqagent.installdir.empty=The installation directory cannot be empty.
 
 hqagent.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
-pphq.server.title=Enter Postgres Plus HQ server details.
+pphq.server.title=Enter Postgres Plus HQ server details
 
-pphq.server.details=Enter the fully qualified domain name of the Postgres Plus HQ Server
+pphq.server.details=Enter the fully qualified domain name of the Postgres Plus HQ Server.
 
 pphq.server.blank.error=Value must be entered for the field.
 
@@ -34,14 +34,14 @@ error.could.not.initialise.agent=Postgres Plus HQ agent start failed.
 
 warning.during.agent.initialisation=A non-fatal error occured during agent start. Please check the installation error log in ${system_temp_directory} for details.
 
-script.command.line.error=The script was called with an invalid command line
+script.command.line.error=The script was called with an invalid command line.
 
 hqagent.pphq.present.error=Postgres Plus HQ is installed on this machine. The Postgres Plus HQ Agent is included in Postgres Plus HQ and cannot be installed from the Agent installer unless Postgres Plus HQ is uninstalled.
 
-pphqagent.server.validating=Validating Server Details
+pphqagent.server.validating=Validating Server Details...
 
-pphqagent.update.configuration=Upgrading configuration files
+pphqagent.update.configuration=Upgrading configuration files...
 
 pphqagent.server.connection.fail=The connection couldn't be established with the Postgres Plus HQ Server.\nPlease make sure the Postgres Plus HQ Server is running...
 
-pphqagent.start.error.question=Error running Postgres Plus HQ Agent with the given details.\nDo you want to try again by providing the details again?\n\nActual error:\n${errMessage}
+pphqagent.start.error.question=Error running Postgres Plus HQ Agent with the given details.\nDo you want to try again by providing the details again?\n\nActual error:\n${errMessage}.
