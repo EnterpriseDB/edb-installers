@@ -40,6 +40,7 @@ _prep_pgmemcache_linux() {
       rm -rf $WD/pgmemcache/staging/linux || _die "Couldn't remove the existing staging directory"
     fi
 
+    ssh $PG_SSH_LINUX "rm -rf $PG_PGHOME_LINUX/include/libmemcached $PG_PGHOME_LINUX/include/postgresql/server/libmemcached" || _die "Failed to remove libmemcached from server staging directory"
     echo "Creating staging directory ($WD/pgmemcache/staging/linux)"
     mkdir -p $WD/pgmemcache/staging/linux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/pgmemcache/staging/linux || _die "Couldn't set the permissions on the staging directory"

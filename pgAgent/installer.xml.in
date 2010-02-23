@@ -348,7 +348,7 @@
         <runProgram>
           <program>${installdir}\installer\pgAgent\createuser.exe</program>
           <!-- The dot at the beginning of the arguments is the domain -->
-          <programArguments>. "${systemuser}" "${systempassword}"</programArguments>
+          <programArguments>. "${systemuser}" "${systempassword.password}"</programArguments>
           <progressText>${msg(progress.text.creating.user)}</progressText>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
@@ -631,7 +631,7 @@
             <runProgram>
               <customErrorMessage>${msg(error.create.pgpass)}</customErrorMessage>
               <program>${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe</program>
-              <programArguments>${systemuser} "${systempassword}" ${pghost} ${pgport} ${pgdbname} ${pguser} "${pgpassword}"</programArguments>
+              <programArguments>${systemuser} "${systempassword.password}" ${pghost} ${pgport} ${pgdbname} ${pguser} "${pgpassword.password}"</programArguments>
               <workingDirectory>${windir}</workingDirectory>
               <abortOnError>0</abortOnError>
               <showMessageOnError>1</showMessageOnError>
@@ -655,7 +655,7 @@
             <runProgram>
               <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
               <program>${installdir}\bin\pgagent.exe</program>
-              <programArguments>INSTALL pgAgent -u ${systemuser} -p "${systempassword}" host=${pghost} port=${pgport} user=${pguser} dbname=${pgdbname}</programArguments>
+              <programArguments>INSTALL pgAgent -u ${systemuser} -p "${systempassword.password}" host=${pghost} port=${pgport} user=${pguser} dbname=${pgdbname}</programArguments>
               <workingDirectory>${installdir}\bin</workingDirectory>
               <abortOnError>0</abortOnError>
               <showMessageOnError>1</showMessageOnError>
@@ -1743,7 +1743,7 @@
               </unpackFile>
               <runProgram>
                 <program>${system_temp_directory}\${product_fullname}\bin\createuser.exe</program>
-                <programArguments>. "${systemuser}" "${systempassword}"</programArguments>
+                <programArguments>. "${systemuser}" "${systempassword.password}"</programArguments>
                 <abortOnError>0</abortOnError>
                 <showMessageOnError>0</showMessageOnError>
               </runProgram>
@@ -1775,7 +1775,7 @@
             </unpackFile>
             <runProgram>
               <program>${system_temp_directory}\${product_fullname}\bin\validateuser.exe</program>
-              <programArguments>. "${systemuser}" "${systempassword}"</programArguments>
+              <programArguments>. "${systemuser}" "${systempassword.password}"</programArguments>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
             </runProgram>

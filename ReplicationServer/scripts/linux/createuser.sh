@@ -16,22 +16,28 @@ _die() {
     exit 1
 }
 
+# Create the group if required
+if ! getent group $1 > /dev/null
+then
+    groupadd $1 || _die $1
+fi
 
 # Create the user account if required
-if [ "x`cat /etc/passwd|cut -f1 -d':'|grep $1`" != "x" ];
+if getent passwd $1 > /dev/null
 then
-    echo "User account '$1' already exists"
-    exit 0
-else
 
-    # Create the group if required
-    if [ "x`cat /etc/group|cut -f1 -d':'|grep $1`" = "x" ];
-    then
-        groupadd $1 || _die $1
+    HOME_DIR=`su $1 -c "echo \\\$HOME"`
+    if [ -e $HOME_DIR ]; then
+        echo "User account '$1' already exists"
+        exit 0
+    else
+        echo "User account '$1' already exists - fixing non-existent home directory to $2"
+        usermod -d "$2" $1
+        exit 0
     fi
- 
-    useradd -m -c "xDBReplication" -d "$2" -g $1 $1 || _die $1
 
+else
+        useradd -m -c "xDBReplication" -d "$2" -g $1 $1 || _die $1
 fi
 
 echo "$0 ran to completion"

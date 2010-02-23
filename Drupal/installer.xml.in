@@ -777,7 +777,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/Drupal/installer/Drupal/install.sh</program>
-                    <programArguments> "${pghost}" "${pgport}" "${pguser}" "${pgpassword}" "${system_temp_directory}/instscripts" "${pgdatabase}"</programArguments>
+                    <programArguments> "${pghost}" "${pgport}" "${pguser}" "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</programArguments>
                     <workingDirectory>${installdir}/Drupal/installer/Drupal</workingDirectory>
                 </runProgram>
                 <!-- Inform user about the database and role creation -->
@@ -1563,7 +1563,7 @@
                         <!-- Running the Script to validate the PostgreSQL Server Details -->
                         <setInstallerVariableFromScriptOutput>
                             <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
@@ -1584,7 +1584,7 @@
                         <!-- Running the Script to validate the PostgreSQL Server Details -->
                         <setInstallerVariableFromScriptOutput>
                             <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
@@ -1611,7 +1611,7 @@
                         <!-- Running the Script to validate the PostgreSQL Server Details -->
                         <setInstallerVariableFromScriptOutput>
                             <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
@@ -1632,7 +1632,7 @@
                         <!-- Running the Script to validate the PostgreSQL Server Details -->
                         <setInstallerVariableFromScriptOutput>
                             <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
@@ -1682,7 +1682,7 @@
                         <setInstallerVariableFromScriptOutput>
                             <name>dbexist</name>
                             <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "drupal" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "drupal" "${pgdatabase}"</execArgs>
                             <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -1691,7 +1691,7 @@
                         <setInstallerVariableFromScriptOutput>
                             <name>userexist</name>
                             <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "drupaluser" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "drupaluser" "${pgdatabase}"</execArgs>
 
                             <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
@@ -1718,7 +1718,7 @@
                         <setInstallerVariableFromScriptOutput>
                             <name>dbexist</name>
                             <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}/instscripts" "drupal" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "drupal" "${pgdatabase}"</execArgs>
 
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
@@ -1728,7 +1728,7 @@
                         <setInstallerVariableFromScriptOutput>
                             <name>userexist</name>
                             <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${system_temp_directory}\instscripts" "drupaluser" "${pgdatabase}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "drupaluser" "${pgdatabase}"</execArgs>
                             <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>

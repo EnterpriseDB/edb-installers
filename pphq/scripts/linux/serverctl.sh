@@ -1,26 +1,44 @@
-#!/bin/sh
+#!/bin/bash
 
 # Postgres Plus HQ server control script for Linux
-# Dave Page, EnterpriseDB
+# Ashesh Vashi, EnterpriseDB
 
 # Check the command line
-if [ $# -ne 1 -a $# -ne 2 ]; 
-then
-    echo "Usage: $0 start|stop"
+usage()
+{
+    echo "Usage: $0 [--no-wait] <start|stop|restart>"
     exit 127
+}
+
+if [ $# -lt 1  -o $# -gt 2 ]; 
+then
+  usage
+fi
+
+WAIT=1
+
+if [ x"$1" == x"--no-wait" ];
+then
+  WAIT=0
+  shift
+elif [ $# -gt 1 ];
+then
+  usage
 fi
 
 case $1 in
     start)
         action=start     
-        ;;
+    ;;
     stop) 
         action=stop
-        ;;
+    ;;
+    restart)
+        action=restart
+    ;;
     *)
-        echo "Usage: $0 start|stop"
-        exit 127
-        ;;
+        usage
+    ;;
 esac
 
 # Try to figure out if this is a 'sudo' platform such as Ubuntu
@@ -33,19 +51,33 @@ then
     fi
 fi
 
-if [ $USE_SUDO != "1" ];
+CURRUSER=`whoami`
+
+if [ "$CURRUSER" != "@@SERVICEUSER@@" ];
 then
-    if [ `whoami` != "root" ];
+  if [ $USE_SUDO != "1" ];
+  then
+    if [ "$CURRUSER" != "root" ];
     then
         echo "Please enter the root password when requested."
     fi
-else
+  else
     echo "Please enter your password if requested."
+  fi
+
+  if [ $USE_SUDO != "1" ];
+  then
+      su - -c "su @@SERVICEUSER@@ -c \"\\\"@@INSTALLDIR@@/scripts/runServer.sh\\\" $action\""
+  else
+      sudo su @@SERVICEUSER@@ -c "\"@@INSTALLDIR@@/scripts/runServer.sh\" $action"
+  fi
+else
+  "@@INSTALLDIR@@/scripts/runServer.sh" $action
 fi
 
-if [ $USE_SUDO != "1" ];
+if [ $WAIT -eq 1 ];
 then
-    su - -c "PPHQ_INSTALLDIR/server-PPHQ_VERSION_STR/bin/pphq-server.sh $action"
-else
-    sudo  PPHQ_INSTALLDIR/server-PPHQ_VERSION_STR/bin/pphq-server.sh $action
+  echo
+  echo -n "Press <return> to continue..."
+  read dummy
 fi

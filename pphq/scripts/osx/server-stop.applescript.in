@@ -1,6 +1,21 @@
+set currentUser to ""
 try
-set ret to do shell script "PPHQ_INSTALLDIR/server-PPHQ_VERSION_STR/bin/pphq-server.sh stop > /tmp/pgmsg.txt 2>&1" with administrator privileges
+set currentUser to do shell script "whoami"
 end try
-set output to do shell script "cat /tmp/pgmsg.txt" with administrator privileges
-set ret to do shell script "rm /tmp/pgmsg.txt" with administrator privileges
-display dialog output buttons {"OK"} with icon 1 default button 1
+
+if currentUser = "@@SERVICEUSER@@" then
+  try
+    set ret to do shell script "@@INSTALLDIR@@/scripts/serverctl.sh --no-wait stop > /tmp/pphq_msg_stop_@@SERVICEUSER@@.log 2>&1"
+  end try
+  set output to do shell script "cat /tmp/pphq_msg_stop_@@SERVICEUSER@@.log"
+  set ret to do shell script "rm /tmp/pphq_msg_stop_@@SERVICEUSER@@.log"
+  display dialog output buttons {"OK"} with icon 1 default button 1
+else
+  try
+    set ret to do shell script "su @@SERVICEUSER@@ -c \"@@INSTALLDIR@@/scripts/serverctl.sh --no-wait stop > /tmp/pphq_msg_stop.log 2>&1\"" with administrator privileges
+  end try
+  set output to do shell script "cat /tmp/pphq_msg_stop.log" with administrator privileges
+  set ret to do shell script "rm /tmp/pphq_msg_stop.log" with administrator privileges
+  display dialog output buttons {"OK"} with icon 1 default button 1
+end if
+

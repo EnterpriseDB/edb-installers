@@ -1,90 +1,83 @@
-Dim FSO, WSO, WshShell
+Dim strCmd, strTempDir, strOutputFile, strErrorFile, bIsCommand
 
-CONST L_CONST_TIMEOUT = 10000
-SET WshShell = CreateObject("WScript.Shell")
-SET WSO      = WScript.StdOut
-SET WSE      = WScript.StdErr
+SET FSO       = CreateObject("Scripting.FileSystemObject")
+SET WShell    = CreateObject("Wscript.Shell")
+SET WSO       = WScript.StdOut
+SET WSE       = WScript.StdErr
+strTempDir    = FSO.GetSpecialFolder(2)
+strOutputFile = strTempDir & "\" & FSO.GetTempName
+strErrorFile  = strTempDir & "\" & FSO.GetTempName
+bIsCommand    = false
 
-Sub RunProgram(ByVal p_strCmd, ByRef p_aCmdArgs, ByRef pl_iStatusCode)
-  Dim lExec
-  Dim l_iLArgs, l_iUArgs, l_strCmdArgs, l_strStdOut, l_strStdErr
-  l_strStdOut   = ""
-  l_strStdErr   = ""
-  pl_iStatusCode = 0
-
-  If p_strCmd = NULL OR Trim(p_strCmd) = "" Then
-    WSE.WriteLine "RunProgram : Provide command to execute."
-    WScript.Quit -127
-  End If
-
-  If NOT IsArray(p_aCmdArgs) Then
-    If NOT p_aCmdArgs = "" Then
-      l_strCmdArgs = """" & p_aCmdArgs & """"
-    End If
+' A function to facilitate the use command line utilities
+'
+Function CmdPrompt()
+  If bIsCommand = true Then
+    l_strCmdLine = """%comspec%"" /c " & strCmd & ">" & Chr(34) & strOutputFile & Chr(34) & _
+       " 2>"  & Chr(34) & strErrorFile & Chr(34)
   Else
-    l_iLArgs = LBound(p_aCmdArgs)
-    l_iUArgs = UBound(p_aCmdArgs)
-    For l_index = l_iLArgs To l_iUArgs Step 1
-      l_strCmdArgs = l_strCmdArgs & " """ & p_aCmdArgs(l_index) & """"
-    Next
-  End If
-  p_strCmd = Trim( """" & p_strCmd & """ " & Trim(l_strCmdArgs))
-
-  WSO.WriteLine "RunProgram: " & p_strCmd
-
-  Set lExec = WshShell.Exec(p_strCmd)
-
-  l_iWaitCount = 0
-  WSO.WriteLine "Script Output: " & vbCRLF & _
-                "---------------"
-  Do
-    WScript.Sleep 100
-    l_iWaitCount = l_iWaitCount + 1
-    If lExec.StdOut.AtEndOfStream <> True Then
-      WSO.WriteLine lExec.StdOut.ReadLine
-      l_strStdOut = l_strStdOut & vbCRLF & lExec.StdOut.ReadLine
-    End If
-
-  Loop Until lExec.Status <> 0 OR l_iWaitCount >= L_CONST_TIMEOUT
-
-  l_bTerminateAbnormally = false
-  If l_iWaitCount >= L_CONST_TIMEOUT AND lExec.Status = 0 Then
-    lExec.Terminate()
-    l_bTerminateAbnormally = true
+    l_strCmdLine = strCmd & " >" & Chr(34) & strOutputFile & Chr(34) & _
+       " 2>"  & Chr(34) & strErrorFile & Chr(34)
   End If
 
-  pl_iStatusCode = lExec.ExitCode
-  Do While lExec.StdOut.AtEndOfStream <> True
-    WSO.WriteLine lExec.StdOut.ReadLine
-  Loop
-
-  Do While lExec.StdErr.AtEndOfStream <> True
-    l_strStdErr = l_strStdErr & vbCRLF & lExec.StdErr.ReadLine
-  Loop
-
-  WSE.WriteLine vbCRLF & "Script Error : " & _
-           vbCRLF & "---------------" & _
-           l_strStdErr
-  If l_bTerminateAbnormally Then
-    WSE.WriteLine "Couldn't complete execution of the command (" & p_strCmd & ")"
+  nRes = WShell.Run(l_strCmdLine, 0, True)
+  If FSO.FileExists(strOutputFile) Then
+    With FSO.OpenTextFile(strOutputFile)
+      Do While Not .AtEndOfStream
+        WSO.WriteLine .ReadLine
+      Loop
+    End With
+    FSO.DeleteFile strOutputFile 
+  End if
+  If FSO.FileExists(strErrorFile) Then
+    With FSO.OpenTextFile(strErrorFile)
+      Do While Not .AtEndOfStream
+        WSE.WriteLine .ReadLine
+      Loop
+    End With
+    FSO.DeleteFile strErrorFile 
+  End if
+  If Err.Number <> 0 Then
+    WSE.WriteLine "ERROR:" & CStr(Err.Number) & Err.Description
   End If
-End Sub
+  CmdPrompt = iRes
+End Function 
 
 If WScript.Arguments.Count < 1 Then
-    WSE.Echo "Please Provide the program to run..."
-    WScript.Quit -127
+    WSE.WriteLine "runCmd: Please Provide the command/program to run..."
+    WScript.Quit 127
 End If
 
-Dim strCmdLine, iIndex, arrCmdArgs(), iStatus
-strCmdLine = WScript.Arguments.Item(0)
+Dim iIndex, iStatus, currIndex
+currIndex = 0
 
-If WScript.Arguments.Count > 1 Then
-    ReDim arrCmdArgs(WScript.Arguments.Count - 2)
+If WScript.Arguments.Item(currIndex) = "-c" Then
+  bIsCommand = true
+  currIndex = currIndex + 1
 End If
-For iIndex = 1 To WScript.Arguments.Count - 1
-  arrCmdArgs(iIndex - 1) = WScript.Arguments.Item(iIndex)
+
+' command provided
+If WScript.Arguments.Count = currIndex Then
+  WSE.WriteLine "runCmd: Please Provide the command/program to run..."
+  WScript.Quit 127
+End If
+
+strQuote = """"
+' Do not put quote around the command, but around it's arguments
+If bIsCommand = True Then
+  strQuote = ""
+End If
+
+For iIndex = currIndex To WScript.Arguments.Count - 1
+  ' Put quote around arguments only if space found with in the arguments
+  strArg = WScript.Arguments.Item(iIndex)
+  If InStr(strArg, " ") <> 0 Then
+    strArg = strQuote & strArg & strQuote
+  End If
+  strCmd = strCmd & " " & strArg
+  strQuote = """"
 Next
 
-Call RunProgram(strCmdLine, arrCmdArgs, iStatus)
+strCmd = Trim(strCmd)
 
-WScript.Quit iStatus
+WScript.Quit CmdPrompt()

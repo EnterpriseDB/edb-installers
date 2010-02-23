@@ -6,7 +6,7 @@ server.overwrite=Yes
 server.database.choice=PostgreSQL
 server.database-driver=org.postgresql.Driver
 server.database=PostgreSQL
-server.database.create=Yes
+server.database.create=@@DBCREATE@@
 server.database-user=@@PGUSER@@
 server.database-password=@@PGPASS@@
 server.database.upgrade.choice=Overwrite the HQ server database (ERASE all existing data)
@@ -20,14 +20,14 @@ server.admin.email=@@PGUSER@@@@@HQHOST@@
 # that communicate with the HQ server in non-secure mode
 # Default: 7080
 server.webapp.port=@@HQPORT@@
-server.webapp.baseurl=http\://localhost\:@@HQPORT@@/
+server.webapp.baseurl=http\://@@MACHINEHOST@@\:@@HQPORT@@/
 
 # The HTTPS listen port.  This is for the HQ web-based GUI and also HQ agents
 # that communicate with the HQ server in secure mode
 server.webapp.secure.port=@@HQSPORT@@
 
-server.mail.host=localhost
-server.mail.sender=@@PGUSER@@@localhost
+server.mail.host=@@SMTPHOST@@
+server.mail.sender=@@PGUSER@@@@SMTPHOST@@
 
 server.multicast.addr=227.0.0.1
 server.multicast.port=3030

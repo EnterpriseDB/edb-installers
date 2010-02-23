@@ -387,6 +387,7 @@
                 <!-- Do not create uninstaller in case of extract-only mode -->
                 <setInstallerVariable name="createUninstaller" value="0"/>
                 <setInstallerVariable name="iBranding" value=""/>
+                <componentSelection select="extractonly"/>
             </actionList>
             <ruleList>
                 <isTrue value="${extract_mode}"/>
@@ -747,7 +748,7 @@
        <!-- Set create_shortcuts variable to 1 if it is blank -->
        <setInstallerVariable>
            <name>create_shortcuts</name>
-           <value>${iShortCut}</value>
+           <value>${iShortcut}</value>
            <persist>1</persist>
            <ruleList>
                <compareText>
@@ -2192,7 +2193,7 @@
                         <runProgram>
                         <program>${installdir}\installer\server\createuser.exe</program>
                         <!-- The dot at the beginning of the arguments is the domain -->
-                        <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+                        <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
                         <abortOnError>0</abortOnError>
                         <showMessageOnError>0</showMessageOnError>
                         </runProgram>
@@ -2319,7 +2320,7 @@
                         <!-- Initdb -->
                         <runProgram>
                             <program>${installdir}/installer/server/initcluster.sh</program>
-                            <programArguments>"${serviceaccount}" "${superaccount}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} ${reallocale}</programArguments>
+                            <programArguments>"${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport} ${reallocale}</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -2334,7 +2335,7 @@
 
                         <runProgram>
                             <program>cscript</program>
-                            <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} "${reallocale}"</programArguments>
+                            <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport} "${reallocale}"</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -2419,7 +2420,7 @@
 
                 <runProgram>
                     <program>cscript</program>
-                    <programArguments>//NoLogo "${installdir}\installer\server\startupcfg.vbs" ${product_version} "${serviceaccount}" "${servicepassword}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
+                    <programArguments>//NoLogo "${installdir}\installer\server\startupcfg.vbs" ${product_version} "${serviceaccount}" "${servicepassword.password}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
                     <progressText>${msg(progress.text.configuring.startup)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -2699,7 +2700,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <actionList>
                         <runProgram>
                             <program>${installdir}/installer/server/loadmodules.sh</program>
-                            <programArguments>"${serviceaccount}" "${superaccount}" "${superpassword}" "${installdir}" ${serverport} "${install_plpgsql}"</programArguments>
+                            <programArguments>"${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" ${serverport} "${install_plpgsql}"</programArguments>
                             <progressText>${msg(progress.text.loading.modules)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -2714,7 +2715,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
 
                         <runProgram>
                             <program>cscript</program>
-                            <programArguments>//NoLogo "${installdir}\installer\server\loadmodules.vbs" "${superaccount}" "${superpassword}" "${installdir}" "${datadir}" ${serverport} "${install_plpgsql}"</programArguments>
+                            <programArguments>//NoLogo "${installdir}\installer\server\loadmodules.vbs" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport} "${install_plpgsql}"</programArguments>
                             <progressText>${msg(progress.text.loading.modules)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -3506,6 +3507,55 @@ REM The script sets environment variables helpful for PostgreSQL
 
     <!-- Components. Most components will be separate packages, so expect just one entry here most of the time -->
     <componentList>
+        <component>
+            <name>extractonly</name>
+            <description>Scripts (runAsRoot.sh &amp; runAsAdmin.vbs) for extract-only mode...</description>
+            <canBeEdited>0</canBeEdited>
+            <selected>0</selected>
+            <show>0</show>
+            <folderList>
+                <folder>
+                    <name>extractonlylinux</name>
+                    <platforms>linux</platforms>
+                    <destination>${installdir}/scripts</destination>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux/runAsRoot.sh</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <name>extractonlylinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <destination>${installdir}/scripts</destination>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux-x64/runAsRoot.sh</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <name>extractonlyosx</name>
+                    <platforms>osx</platforms>
+                    <destination>${installdir}/scripts</destination>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/osx/runAsRoot.sh</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <name>extractonlywindows</name>
+                    <platforms>windows</platforms>
+                    <destination>${installdir}/scripts</destination>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/windows/runAsAdmin.vbs</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+            </folderList>
+        </component>
         <component>
             <name>default</name>
             <description>Default Component</description>
@@ -4653,7 +4703,7 @@ REM The script sets environment variables helpful for PostgreSQL
                         <runProgram>
                             <program>${system_temp_directory}\postgresql_installer\createuser.exe</program>
                             <!-- The dot at the beginning of the arguments is the domain -->
-                            <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+                            <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
@@ -4788,7 +4838,7 @@ REM The script sets environment variables helpful for PostgreSQL
                         <runProgram>
                             <program>${system_temp_directory}\postgresql_installer\validateuser.exe</program>
                             <!-- The dot at the beginning of the arguments is the domain -->
-                            <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword}"</programArguments>
+                            <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>

@@ -76,12 +76,13 @@ _build_server_osx() {
 
     cd $WD/server/source/postgres.osx
 
-    # Hack up gen_bki.sh so the bki files are generated correctly from our hacked pg_config.h.
-    echo "Updating genbki.sh (WARNING: Not 64 bit safe!)..."
-    echo ""
-    _replace "pg_config.h" "pg_config_i386.h" src/backend/catalog/genbki.sh
-    sleep 2
-
+    if [ -f src/backend/catalog/genbki.sh ];
+	then
+      echo "Updating genbki.sh (WARNING: Not 64 bit safe!)..."
+      echo ""
+      _replace "pg_config.h" "pg_config_i386.h" src/backend/catalog/genbki.sh
+    fi
+    
     # Configure the source tree
     echo "Configuring the postgres source tree for Intel"
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-L/usr/local/lib" ./configure --host=i386-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql || _die "Failed to configure postgres for i386"
@@ -217,6 +218,7 @@ _postprocess_server_osx() {
     # Welcome doc
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/osx/doc/" || _die "Failed to install the welcome document"
     cp "$WD/server/resources/enterprisedb.gif" "$WD/server/staging/osx/doc/" || _die "Failed to install the welcome logo"
+    cp "$WD/scripts/runAsRoot.sh" "$WD/server/staging/osx" || _die "Failed to copy the runAsRoot script"
 
     #Creating a archive of the binaries
     mkdir -p $WD/server/staging/osx/pgsql || _die "Failed to create the directory for binaries "

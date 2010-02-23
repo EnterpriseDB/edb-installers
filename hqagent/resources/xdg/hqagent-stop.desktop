@@ -1,8 +1,8 @@
 [Desktop Entry]
 Version=1.0
 Encoding=UTF-8
-Name=Stop Hyperic HQ agent
+Name=Stop Postgres Plus HQ agent
 Exec=HQAGENT_INSTALLDIR/scripts/launchagentctl.sh stop
-Icon=hqagent-stop-HQAGENT_VERSION_STR.png
+Icon=hqagent-stop.png
 Terminal=false
 Type=Application

@@ -67,8 +67,8 @@ _build_ReplicationServer_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp MigrationToolKit/staging/linux/MigrationToolKit/lib/edb-migrationtoolkit.jar ReplicationServer/staging/linux/repserver/lib/repl-mtk" || _die "Failed to copy edb-migrationtoolkit.jar"
     cd $WD
     _replace "java -jar edb-repconsole.jar" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repconsole.jar" "$WD/ReplicationServer/staging/linux/repconsole/bin/runRepConsole.sh" || _die "Failed to put the placehoder in runRepConsole.sh file"
-    _replace "java -jar edb-repserver.jar" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar" "$WD/ReplicationServer/staging/linux/repserver/bin/runPubServer.sh" || _die "Failed to put the placehoder in runPubServer.sh file"
-    _replace "java -jar edb-repserver.jar" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar" "$WD/ReplicationServer/staging/linux/repserver/bin/runSubServer.sh" || _die "Failed to put the placehoder in runSubServer.sh file"
+    _replace "java -jar edb-repserver.jar pubserver 9011" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar pubserver @@PUBPORT@@" "$WD/ReplicationServer/staging/linux/repserver/bin/runPubServer.sh" || _die "Failed to put the placehoder in runPubServer.sh file"
+    _replace "java -jar edb-repserver.jar subserver 9012" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar subserver @@SUBPORT@@" "$WD/ReplicationServer/staging/linux/repserver/bin/runSubServer.sh" || _die "Failed to put the placehoder in runSubServer.sh file"
 
 }
 
@@ -94,6 +94,7 @@ _postprocess_ReplicationServer_linux() {
     chmod ugo+x staging/linux/installer/xDBReplicationServer/createuser.sh
 
     cp staging/linux/edb-repencrypter.jar staging/linux/installer/xDBReplicationServer/ || _die "Failed to copy the DESEncrypter utility (staging/linux/edb-repencrypter.jar)"
+    cp -R staging/linux/lib staging/linux/installer/xDBReplicationServer/ || _die "Failed to copy the DESEncrypter utility's dependent libs (staging/linux/lib)"
     # Setup Launch Scripts
     mkdir -p staging/linux/scripts || _die "Failed to create a directory for the launch scripts"
     cp scripts/linux/startupcfg_publication.sh staging/linux/scripts/startupcfg_publication.sh || _die "Failed to copy the startupcfg_publication.sh script (scripts/linux/startupcfg_publication.sh)"

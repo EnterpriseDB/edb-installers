@@ -28,7 +28,7 @@ java.error=Sun Java 1.5 or later is not installed on your system.\nPlease ensure
 pubserver.service.description=Publication Service.
 subserver.service.description=Subscription Service.
 pgplus.details.title=PostgresPlus Standard Server Installation Details
-pgplus.details.explanation=Please verify the PostgresPlus Standard installation details
+pgplus.details.explanation=Please verify the PostgresPlus Standard Server installation details
 
 config.servicepassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the service user account.
 config.serviceaccount.description=Operating system username
@@ -59,12 +59,17 @@ pubport.details.explanation=Please specify a port on which publication server wi
 pubport.blank.error=Values must be entered for port field.
 pubport.port.error=Invalid port specified.
 
+port.pubsub.equal.error=Publication Server port and Subscription Server port cannot be same.
+pubport.offset.pubsub.equal.error=Publication Server offset port (i.e. specified port + 2) and Subscription Server port cannot be same.
+subport.offset.pubsub.equal.error=Subscription Server offset port (i.e. specified port + 2) and Publication Server port cannot be same.
+
 subport.details.title=Subscription server details
 subport.details.explanation=Please specify a port on which subscription server will run.
 subport.blank.error=Values must be entered for port field.
 subport.port.error=Invalid port specified.
 
 port.bind.error=The specified port number is not available. Please enter a different port.
+port.offset.bind.error=The offset port (i.e specified port + 2) number is not available. Please enter a different port.
 
 progress.text.creating.controldb=Creating Control Database
 progress.text.installing.pubservice=Installing Publication Service
@@ -77,3 +82,6 @@ error.select.component=Please select atleast one component to continue.
 
 jre.invalid.error=Invalid --jrehome specified.\n\nCould not find '${jrehome}/bin/java'.
 jre.invalid.error.windows=Invalid --jrehome specified.\n\nCould not find '${jrehome}\bin\java.exe'.
+
+pub.service.desc=Publication Service for xDB Replication Server.
+sub.service.desc=Subscription Service for xDB Replication Server.

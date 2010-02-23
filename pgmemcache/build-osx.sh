@@ -39,7 +39,16 @@ _prep_pgmemcache_osx() {
       echo "Removing existing staging directory"
       rm -rf $WD/pgmemcache/staging/osx || _die "Couldn't remove the existing staging directory"
     fi
-
+   
+    # Remove the libmemcached from server staging directory if left behind.
+    if [ -e $PG_PGHOME_OSX/include/libmemcached ]
+    then 
+       rm -rf $PG_PGHOME_OSX/include/libmemcached || _die "Couldn't remove the libmemcached directory from server staging directory"
+    fi 
+    if [ -e $PG_PGHOME_OSX/include/postgresql/server/libmemcached ]
+    then 
+       rm -rf $PG_PGHOME_OSX/include/postgresql/server/libmemcached || _die "Couldn't remove the libmemcached directory from server staging directory"
+    fi 
     echo "Creating staging directory ($WD/pgmemcache/staging/osx)"
     mkdir -p $WD/pgmemcache/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/pgmemcache/staging/osx || _die "Couldn't set the permissions on the staging directory"
@@ -56,25 +65,25 @@ _build_pgmemcache_osx() {
     cd $PG_PATH_OSX/pgmemcache/source/libmemcached.osx
 
     CFLAGS="$PG_ARCH_OSX_FLAGS -arch ppc" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure prefix=$PG_PGHOME_OSX  --disable-static --disable-dependency-tracking || _die "Failed to configure libmemcached"
-    mv libmemcached/libmemcached_config.h libmemcached/libmemcached_config_ppc.h || _die "Failed to rename config.h"
+    mv config.h config_ppc.h  || _die "Failed to rename config.h"
 
     CFLAGS="$PG_ARCH_OSX_FLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure prefix=$PG_PGHOME_OSX  --disable-static --disable-dependency-tracking || _die "Failed to configure libmemcached"
-    mv libmemcached/libmemcached_config.h libmemcached/libmemcached_config_i386.h || _die "Failed to rename config.h"
-
-    CFLAGS="$PG_ARCH_OSX_FLAGS -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure prefix=$PG_PGHOME_OSX  --disable-static --disable-dependency-tracking || _die "Failed to configure libmemcached"
-    mv libmemcached/libmemcached_config.h libmemcached/libmemcached_config_x86_64.h || _die "Failed to rename config.h"
+    mv config.h config_i386.h  || _die "Failed to rename config.h"
+    
+   CFLAGS="$PG_ARCH_OSX_FLAGS -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure prefix=$PG_PGHOME_OSX  --disable-static --disable-dependency-tracking || _die "Failed to configure libmemcached"
+    mv config.h config_x86_64.h  || _die "Failed to rename config.h"
 
     CFLAGS="$PG_ARCH_OSX_FLAGS -arch i386 -arch ppc -arch x86_64"  MACOSX_DEPLOYMENT_TARGET=10.5 ./configure prefix=$PG_PGHOME_OSX  --disable-static --disable-dependency-tracking || _die "Failed to configure libmemcached"
 
-    echo "#ifdef __BIG_ENDIAN__" > libmemcached/libmemcached_config.h
-    echo "  #include \"libmemcached_config_ppc.h\"" >> libmemcached/libmemcached_config.h
-    echo "#else" >> libmemcached/libmemcached_config.h
-    echo "  #ifdef __LP64__" >> libmemcached/libmemcached_config.h
-    echo "    #include \"libmemcached_config_x86_64.h\"" >> libmemcached/libmemcached_config.h
-    echo "  #else" >> libmemcached/libmemcached_config.h
-    echo "    #include \"libmemcached_config_i386.h\"" >> libmemcached/libmemcached_config.h
-    echo "  #endif" >> libmemcached/libmemcached_config.h
-    echo "#endif" >> libmemcached/libmemcached_config.h
+    echo "#ifdef __BIG_ENDIAN__" > config.h
+    echo "  #include \"config_ppc.h\"" >> config.h
+    echo "#else" >> config.h
+    echo "  #ifdef __LP64__" >> config.h
+    echo "    #include \"config_x86_64.h\"" >> config.h
+    echo "  #else" >> config.h
+    echo "    #include \"config_i386.h\"" >> config.h
+    echo "  #endif" >> config.h
+    echo "#endif" >> config.h
 
     CFLAGS="$PG_ARCH_OSX_FLAGS -arch i386 -arch ppc -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 make  || _die "Failed to build libmemcached"
     make install  || _die "Failed to install libmemcached"

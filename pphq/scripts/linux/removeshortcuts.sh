@@ -4,9 +4,9 @@
 # Dave Page, EnterpriseDB
 
 # Check the command line
-if [ $# -ne 3 ]; 
+if [ $# -ne 2 ]; 
 then
-    echo "Usage: $0 <Install dir> <Version> <Branding>"
+    echo "Usage: $0 <Install dir> <Branding>"
     exit 127
 fi
 
@@ -17,7 +17,6 @@ _replace() {
 }
 
 INSTALLDIR=$1
-VERSION=$2
 BRANDING=$3
 
 # Exit code
@@ -26,19 +25,7 @@ WARN=0
 # Working directory
 WD=`pwd`
 
-# Version string, for the xdg filenames
-VERSION_STR=`echo $VERSION | sed 's/\./_/g'`
-
-# Branding string, for the xdg filenames. If the branding is 'Postgres Plus HQ X.Y',
-# Don't do anything to ensure we remain backwards compatible.
-if [ "x$BRANDING" = "xPostgres Plus HQ $VERSION" ];
-then
-    BRANDING_STR="Postgres Plus HQ-$VERSION_STR"
-    BRANDED=0
-else
-    BRANDING_STR=`echo $BRANDING | sed 's/\./_/g' | sed 's/ /_/g'`
-    BRANDED=1
-fi
+BRANDING_STR=`echo $BRANDING | sed 's/\./_/g' | sed 's/ /_/g'`
 
 # Error handlers
 _die() {
@@ -52,25 +39,21 @@ _warn() {
 }
 
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
-	"$INSTALLDIR/scripts/xdg/pphq-$VERSION_STR.directory" \
-	"$INSTALLDIR/scripts/xdg/pphq-launch-$VERSION_STR.desktop"\
-	"$INSTALLDIR/scripts/xdg/pphq-start-$VERSION_STR.desktop"\
-	"$INSTALLDIR/scripts/xdg/pphq-stop-$VERSION_STR.desktop" \
-	"$INSTALLDIR/scripts/xdg/pphq-agent-start-$VERSION_STR.desktop"\
-	"$INSTALLDIR/scripts/xdg/pphq-agent-stop-$VERSION_STR.desktop" || _warn "Failed to remove the top level menu"
+    "$INSTALLDIR/scripts/xdg/pphq-$BRANDING_STR.directory" \
+        "$INSTALLDIR/scripts/xdg/pphq-launch.desktop"\
+        "$INSTALLDIR/scripts/xdg/pphq-start.desktop"\
+        "$INSTALLDIR/scripts/xdg/pphq-stop.desktop" \
+        "$INSTALLDIR/scripts/xdg/pphq-agent-start.desktop"\
+        "$INSTALLDIR/scripts/xdg/pphq-agent-stop.desktop" || _warn "Failed to remove the top level menu"
 
 # Remove the icon resources
 cd "$INSTALLDIR/scripts/images"
 for i in `ls *.png`
 do
-	"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 $i
+    "$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 $i
 done
 
-# Only remove the directory file if it's branded
-if [ $BRANDED -ne 0 ];
-then
-    rm "$INSTALLDIR/scripts/xdg/pphq-$BRANDING_STR.directory"
-fi
+rm "$INSTALLDIR/scripts/xdg/pphq-$BRANDING_STR.directory"
 
 xdg_dir_name=menus
 
@@ -85,13 +68,12 @@ for x in `echo $xdg_system_dirs | sed 's/:/ /g'` ; do
 done
 xdg_global_dir="$xdg_global_dir/applications-merged"
 
-
 # Hack up the XDG menu files to make sure everything really does go.
-_replace "<Filename>pphq-launch-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
-_replace "<Filename>pphq-start-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
-_replace "<Filename>pphq-stop-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
-_replace "<Filename>pphq-agent-start-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
-_replace "<Filename>pphq-agent-stop-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
+_replace "<Filename>pphq-launch.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
+_replace "<Filename>pphq-start.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
+_replace "<Filename>pphq-stop.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
+_replace "<Filename>pphq-agent-start.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
+_replace "<Filename>pphq-agent-stop.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
 
 echo "$0 ran to completion"
 exit 0

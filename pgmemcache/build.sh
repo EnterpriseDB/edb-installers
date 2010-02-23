@@ -54,10 +54,10 @@ _prep_pgmemcache() {
 
 
     # pgmemcache
-    if [ -e pgmemcache-$PG_VERSION_PGMEMCACHE ];
+    if [ -e pgmemcache_$PG_VERSION_PGMEMCACHE ];
     then
-      echo "Removing existing pgmemcache-$PG_VERSION_PGMEMCACHE source directory"
-      rm -rf pgmemcache-$PG_VERSION_PGMEMCACHE  || _die "Couldn't remove the existing pgmemcache-$PG_VERSION_PGMEMCACHE source directory (source/pgmemcache-$PG_VERSION_PGMEMCACHE)"
+      echo "Removing existing pgmemcache_$PG_VERSION_PGMEMCACHE source directory"
+      rm -rf pgmemcache_$PG_VERSION_PGMEMCACHE  || _die "Couldn't remove the existing pgmemcache_$PG_VERSION_PGMEMCACHE source directory (source/pgmemcache_$PG_VERSION_PGMEMCACHE)"
     fi
 
     echo "Unpacking pgmemcache source..."

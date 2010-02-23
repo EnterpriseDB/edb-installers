@@ -41,6 +41,19 @@ _prep_pphq() {
     # Enter the source directory and cleanup if required
     cd $WD/pphq/source
 
+    # Get a fresh tree
+    if [ -d PPHQ ];
+    then
+        echo "Cleaning and updating existing tree..."
+        cd PPHQ
+        git reset --hard || _die "Unable to clean the tree!"
+        git pull || _die "Unable to update the tree!"
+        cd ..
+    else
+        echo "Checking out a fresh source tree"
+        git clone ssh://pginstaller@cvs.enterprisedb.com/git/PPHQ || _die "Failed to checkout a copy of the PPHQ source tree"
+    fi
+  
     # pphq
     if [ -d hq ];
     then
@@ -48,8 +61,8 @@ _prep_pphq() {
         rm -rf hq || _die "Couldn't remove the existing hyperic source directory (source/hq)"
     fi
 
-    echo "Extracting hyperic source ..."
-    extract_file ${WD}/tarballs/hyperic-hq-src-${PG_VERSION_PPHQ} || _die "Error extracting hyperic source..."
+    echo "Creating a working copy of the source..."
+    cp -R PPHQ hq || _die "Unable to create a working copy of the source tree!"
 
     if [ ! -d jboss-${PPHQ_JBOSS_VERSION} ];
     then
@@ -57,12 +70,14 @@ _prep_pphq() {
       extract_file ${WD}/tarballs/jboss-${PPHQ_JBOSS_VERSION} || _die "Error extracting jboss binaries for pphq..."
     fi
 
-    if [ -f ${WD}/tarballs/pphq-${PG_VERSION_PPHQ}.patch ];
+    echo "Fixing up the PPHQ source tree..."
+    if [ ! -d $WD/pphq/source/hq/unittest/emptydir ];
     then
-      echo "Applying PPHQ patches ..."
-      cd $WD/pphq/source/hq
-      patch -p1 < ${WD}/tarballs/pphq-${PG_VERSION_PPHQ}.patch
-      # NOTE: You should apply your patches here for rebranding and replace the images/resources with actual one.
+      mkdir $WD/pphq/source/hq/unittest/emptydir || _die "Failed to create $WD/pphq/source/hq/unittest/emptydir"
+    fi
+    if [ ! -d $WD/pphq/source/hq/etc/gconsoleTemplates ]; 
+    then
+      mkdir $WD/pphq/source/hq/etc/gconsoleTemplates || _die "Failed to create $WD/pphq/source/hq/etc/gconsoleTemplates"
     fi
 
     cd $WD/pphq/source
@@ -120,10 +135,11 @@ export JAVA_OPTS="-ea"
 
 cd hq
 \${ANT_HOME}/bin/ant -Djboss.zip=${WD}/tarballs/jboss-${PPHQ_JBOSS_VERSION}.zip -Dant.bz2=${WD}/tarballs/apache-ant-${PPHQ_ANT_VERSION}-bin.tar.bz2 archive-prep
+exit $?
 
 EOT
     echo "Building PPHQ..."
-    /bin/bash build_pphq.sh
+    /bin/bash build_pphq.sh || _die "Error building PPHQ from source..."
 
     cd $WD
     # Mac OSX
@@ -171,6 +187,7 @@ _postprocess_pphq() {
     then
         rm installer.xml
     fi
+
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (pphq/installer.xml.in)"
     
     _replace PG_VERSION_PPHQ $PG_VERSION_PPHQ installer.xml || _die "Failed to set the version in the installer project file (pphq/installer.xml)"

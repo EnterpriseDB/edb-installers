@@ -1,6 +1,21 @@
+set currentUser to ""
 try
-set ret to do shell script "PPHQ_INSTALLDIR/agent-PPHQ_VERSION_STR/bin/pphq-agent.sh start > /tmp/pgmsg.txt 2>&1" with administrator privileges
+set currentUser to do shell script "whoami"
 end try
-set output to do shell script "cat /tmp/pgmsg.txt" with administrator privileges
-set ret to do shell script "rm /tmp/pgmsg.txt" with administrator privileges
-display dialog output buttons {"OK"} with icon 1 default button 1
+
+if currentUser = "@@AGENTSERVICEUSER@@" then
+  try
+    set ret to do shell script "@@INSTALLDIR@@/scripts/agentctl.sh --no-wait start > /tmp/pphq_agent_@@AGENTSERVICEUSER@@.log 2>&1"
+  end try
+  set output to do shell script "cat /tmp/pphq_agent_@@AGENTSERVICEUSER@@.log"
+  set ret to do shell script "rm /tmp/pphq_agent_@@AGENTSERVICEUSER@@.log"
+  display dialog output buttons {"OK"} with icon 1 default button 1
+else
+  try
+    set ret to do shell script "su @@AGENTSERVICEUSER@@ -c \"@@INSTALLDIR@@/scripts/agentctl.sh --no-wait start> /tmp/pphq_agent.log 2>&1\"" with administrator privileges
+  end try
+  set output to do shell script "cat /tmp/pphq_agent.log" with administrator privileges
+  set ret to do shell script "rm /tmp/pphq_agent.log" with administrator privileges
+  display dialog output buttons {"OK"} with icon 1 default button 1
+end if
+

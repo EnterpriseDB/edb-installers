@@ -163,7 +163,9 @@ EOT
       for configFile in ${CONFIG_FILES}
       do
            if [ -f "${configFile}.h" ]; then
-              cp ${configFile}.h ${configFile}_${ARCH}.h
+              #Hack for php 5.2.12
+              _replace "#define HAVE_ARPA_NAMESER_COMPAT_H 1" "#define HAVE_ARPA_NAMESER_COMPAT_H 0" "main/php_config.h"
+              mv ${configFile}.h ${configFile}_${ARCH}.h
            fi
       done
     done
@@ -198,7 +200,13 @@ EOT
 
     echo "Building php"
     cd $PG_PATH_OSX/ApachePhp/source/php.osx
+    #Remove the -L/usr/lib LDFLAG as it links to the system libxml2.
+    #Hack for php 5.2.12
+    line=`grep "EXTRA_LDFLAGS =" Makefile | sed -e 's:-L/usr/lib ::g'`
+    sed -e "s:EXTRA_LDFLAGS = .*:$line:g" Makefile > /tmp/Makefile.tmp
+    mv  /tmp/Makefile.tmp Makefile
     CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" LDFLAGS="-lresolv" make -j2 || _die "Failed to build php"
+    
     install_name_tool -change "libpq.5.dylib" "$PG_PGHOME_OSX/lib/libpq.5.dylib" "$PG_PATH_OSX/ApachePhp/source/php.osx/sapi/cli/php"
 
     make install || _die "Failed to install php"
