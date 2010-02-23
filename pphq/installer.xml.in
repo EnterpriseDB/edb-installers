@@ -1070,6 +1070,10 @@
                         <fileExists path="${installdir}\agent-PG_VERSION_PPHQ"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
+                <!-- Installing agent service -->
+                <runProgram program="cscript.exe" workingDirectory="${installdir}\agent-PG_VERSION_PPHQ\bin"
+                      programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_PPHQ\bin\pphq-agent.bat&quot; start"
+                      progressText="${msg(pphq.agent.starting)}" abortOnError="0" showMessageOnError="1"/>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
