@@ -1072,8 +1072,8 @@
                 </setInstallerVariableFromScriptOutput>
                 <!-- Installing agent service -->
                 <runProgram program="cscript.exe" workingDirectory="${installdir}\agent-PG_VERSION_PPHQ\bin"
-                      programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_PPHQ\bin\pphq-agent.bat&quot; start"
-                      progressText="${msg(pphq.agent.starting)}" abortOnError="0" showMessageOnError="1"/>
+                      programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_PPHQ\bin\pphq-agent.bat&quot; install"
+                      progressText="${msg(pphq.agent.installing)}" abortOnError="0" showMessageOnError="1"/>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
