@@ -400,7 +400,7 @@
                 <!-- stopping the pphq-agent in upgrade mode -->
                 <runProgram program="${installdir}/scripts/agentctl.sh" abortOnError="0"
                     programArguments="--no-wait stop" workingDirectory="${installdir}"
-                    showMessageOnError="0" progressText="Stopping agent...">
+                    showMessageOnError="0" progressText="${msg(pphqagent.stopping)}">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
@@ -865,36 +865,35 @@
         </labelParameter>
 
         <!-- PPHQ Agent Configuration Page -->
-        <parameterGroup name="pphqserverdetails" title="${msg(pphq.server.title)}"
-            explanation="${msg(pphq.server.details)}" insertAfter="installation">
+        <parameterGroup name="pphqserverdetails" title="${msg(pphq.server.title)}" insertAfter="installation">
             <parameterList>
                 <!-- Postgres Plus HQ server Host -->
                 <stringParameter name="pphqhost" explanation="" value="" default="${agenthost}"
-                    description="PPHQ Server Hostname/Address" cliOptionName="pphqhost"
+                    description="${msg(pphqagent.config.pphqhost)}" cliOptionName="pphqhost"
                     allowEmptyValue="1" width="40">
                     <ruleList>
                         <isTrue value="${configure}"/>
                     </ruleList>
                 </stringParameter>
                 <!-- Postgres Plus HQ server port -->
-                <stringParameter name="pphqport" description="PPHQ Server Port" explanation=""
+                <stringParameter name="pphqport" description="${msg(pphqagent.config.pphqport)}" explanation=""
                     value="" default="7080" cliOptionName="pphqport" allowEmptyValue="1" width="40">
                     <ruleList>
                         <isTrue value="${configure}"/>
                     </ruleList>
                 </stringParameter>
                 <!-- Postgres Plus HQ monitoring Interface User -->
-                <stringParameter name="pphquser" description="PPHQ Username" explanation=""
+                <stringParameter name="pphquser" description="${msg(pphqagent.config.pphquser)}" explanation=""
                     value="" default="hqadmin" cliOptionName="pphquser" allowEmptyValue="1" width="40">
                     <ruleList>
                         <isTrue value="${configure}"/>
                     </ruleList>
                 </stringParameter>
                 <!-- Postgres Plus HQ monitoring Interface User Password -->
-                <passwordParameter name="pphqpassword" title="Password" description="PPHQ Password" explanation=""
+                <passwordParameter name="pphqpassword" description="${msg(pphqagent.config.pphqpassword)}" explanation=""
                     value="${pphqdefaultpassword}" cliOptionName="pphqpassword" descriptionRetype=""
                     allowEmptyValue="1" askForConfirmation="0" width="40"/>
-                <booleanParameter name="pphqsecureconn" description="Secure connection" explanation="" value=""
+                <booleanParameter name="pphqsecureconn" description="${msg(pphqagent.config.pphqsecureconn)}" explanation="" value=""
                     default="0" displayStyle="checkbox-left" cliOptionName="secure-connection">
                     <ruleList>
                         <isTrue value="${configure}"/>
@@ -902,7 +901,7 @@
                 </booleanParameter>
                 <!-- Postgres Plus HQ agent Host -->
                 <stringParameter name="agenthost" explanation="" value="" default="${agenthost}"
-                    description="PPHQ Agent Hostname/Address" cliOptionName="agenthost"
+                    description="${msg(pphqagent.config.agenthost)}" cliOptionName="agenthost"
                     allowEmptyValue="1" width="40">
                     <ruleList>
                         <isTrue value="${configure}"/>
@@ -1029,6 +1028,7 @@
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value="${pphqsecureconn}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value="${pphquser}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
+						<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value="${agenthost}"/>
                         <runProgram program="${installdir}/installer/pphqagent/startupcfg.sh"
                             programArguments="0 1 PG_VERSION_HQAGENT &quot;${installdir}&quot; &quot;no-server-present&quot; &quot;${serviceName}&quot; &quot;root&quot; &quot;${serviceaccount}&quot;"
                             progressText="${msg(progress.text.startup.config)}"
@@ -1050,6 +1050,7 @@
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="secure-connection" value="${pphqsecureconn}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphquser" value="${pphquser}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agentport" value="${agentport}"/>
+						<registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agenthost" value="${agenthost}"/>
                     </actionList>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>

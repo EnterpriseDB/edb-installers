@@ -22,9 +22,7 @@ hqagent.installdir.empty=The installation directory cannot be empty.
 
 hqagent.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
-pphq.server.title=Enter Postgres Plus HQ server details
-
-pphq.server.details=Enter the fully qualified domain name of the Postgres Plus HQ Server.
+pphq.server.title=Enter PPHQ agent configuration options
 
 pphq.server.blank.error=Value must be entered for the field.
 
@@ -55,3 +53,17 @@ progress.text.startup.config=Starting Postgres Plus HQ Agent services...
 hqagent.server.validation.fail=Postgres Plus HQ server validation failed. Please provide correct user name and password for Postgres Plus HQ server.
 
 pphqagent.starting=Starting Postgres Plus HQ Agent...
+
+pphqagent.stopping=Stopping Postgres Plus HQ Agent...
+
+pphqagent.config.pphqhost=PPHQ Server Hostname/Address
+
+pphqagent.config.pphqport=PPHQ Server Port
+
+pphqagent.config.pphquser=PPHQ Username
+
+pphqagent.config.pphqpassword=PPHQ Password
+
+pphqagent.config.pphqsecureconn=Use a Secure Connection?
+
+pphqagent.config.agenthost=PPHQ Agent Hostname/Address
