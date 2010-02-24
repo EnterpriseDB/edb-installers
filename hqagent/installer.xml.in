@@ -790,9 +790,9 @@
                     <windowsExecArgs>start</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pphqagent-start.ico</windowsIcon>
                 </startMenuShortcut>
-                <!-- Stop server -->
+                <!-- Stop Agent -->
                 <startMenuShortcut>
-                    <name>Stop Server</name>
+                    <name>Stop Agent</name>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\hq-agent.bat</windowsExec>
                     <windowsExecArgs>stop</windowsExecArgs>
