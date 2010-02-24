@@ -38,7 +38,6 @@ _prep_ReplicationServer_linux() {
     mkdir -p $WD/ReplicationServer/staging/linux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/ReplicationServer/staging/linux || _die "Couldn't set the permissions on the staging directory"
     
-
 }
 
 ################################################################################
@@ -47,12 +46,10 @@ _prep_ReplicationServer_linux() {
 
 _build_ReplicationServer_linux() {
 
-
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux; JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX/bin/ant -f custom_build.xml dist" || _die "Failed to build the Replication xDB Replicator"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux; cp -R dist/* $PG_PATH_LINUX/ReplicationServer/staging/linux/" || _die "Failed to copy the dist content to staging directory"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux; JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX/bin/ant -f custom_build.xml encrypt-util" || _die "Failed to build the DESEncrypter utility"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux; cp -R dist/* $PG_PATH_LINUX/ReplicationServer/staging/linux/" || _die "Failed to copy the dist content to staging directory"
-    
 
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; mkdir -p ReplicationServer/staging/linux/instscripts" || _die "Failed to create instscripts directory"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; mkdir -p ReplicationServer/staging/linux/instscripts/bin" || _die "Failed to create instscripts directory"
@@ -69,6 +66,16 @@ _build_ReplicationServer_linux() {
     _replace "java -jar edb-repconsole.jar" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repconsole.jar" "$WD/ReplicationServer/staging/linux/repconsole/bin/runRepConsole.sh" || _die "Failed to put the placehoder in runRepConsole.sh file"
     _replace "java -jar edb-repserver.jar pubserver 9011" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar pubserver @@PUBPORT@@" "$WD/ReplicationServer/staging/linux/repserver/bin/runPubServer.sh" || _die "Failed to put the placehoder in runPubServer.sh file"
     _replace "java -jar edb-repserver.jar subserver 9012" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar subserver @@SUBPORT@@" "$WD/ReplicationServer/staging/linux/repserver/bin/runSubServer.sh" || _die "Failed to put the placehoder in runSubServer.sh file"
+
+    # Build the validateUserClient binary
+    if [ ! -f $WD/MetaInstaller/source/MetaInstaller.linux/validateUser/validateUserClient.o ]; then
+        cp -R $WD/MetaInstaller/scripts/validateUser $WD/ReplicationServer/source/ReplicationServer.linux/validateUser || _die "Failed to copy validateUser source files"
+        ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux/validateUser; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
+        ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp ReplicationServer/source/ReplicationServer.linux/validateUser/validateUserClient.o ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy edb-migrationtoolkit.jar"
+    else
+       cp $WD/MetaInstaller/source/MetaInstaller.linux/validateUser/validateUserClient.o $WD/ReplicationServer/staging/linux/instscripts/validateUserClient.o || _die "Failed to copy validateUserClient.o utility"
+    fi
+    chmod ugo+x $WD/ReplicationServer/staging/linux/instscripts/validateUserClient.o || _die "Failed to give execution permission to validateUserClient.o"
 
 }
 
