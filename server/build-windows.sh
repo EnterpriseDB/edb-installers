@@ -111,23 +111,27 @@ _build_server_windows() {
 	cd $WD/server/scripts/windows
 	
     cat <<EOT > "vc-build.bat"
-@SET VSINSTALLDIR=C:\Program Files\Microsoft Visual Studio 8
-@SET VCINSTALLDIR=C:\Program Files\Microsoft Visual Studio 8\VC
+@SET VSINSTALLDIR=C:\Program Files\Microsoft Visual Studio 9.0
+@SET VCINSTALLDIR=C:\Program Files\Microsoft Visual Studio 9.0\VC
+    
 @SET FrameworkDir=C:\WINDOWS\Microsoft.NET\Framework
 @SET FrameworkVersion=v2.0.50727
-@SET FrameworkSDKDir=C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0
+@SET Framework35Version=v3.5
+@SET FrameworkSDKDir=C:\Program Files\Microsoft Visual Studio 9.0\SDK\v3.5
 
-@set DevEnvDir=C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
-
-@set PATH=C:\Program Files\Microsoft Visual Studio 8\Common7\IDE;C:\Program Files\Microsoft Visual Studio 8\VC\BIN;C:\Program Files\Microsoft Visual Studio 8\Common7\Tools;C:\Program Files\Microsoft Visual Studio 8\Common7\Tools\bin;C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\bin;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\bin;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727;C:\Program Files\Microsoft Visual Studio 8\VC\VCPackages;%PATH%
-@set INCLUDE=C:\Program Files\Microsoft Visual Studio 8\VC\ATLMFC\INCLUDE;C:\Program Files\Microsoft Visual Studio 8\VC\INCLUDE;C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\include;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\include;%INCLUDE%
-@set LIB=C:\Program Files\Microsoft Visual Studio 8\VC\ATLMFC\LIB;C:\Program Files\Microsoft Visual Studio 8\VC\LIB;C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\lib;%LIB%
-@set LIBPATH=C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727;C:\Program Files\Microsoft Visual Studio 8\VC\ATLMFC\LIB
+@SET DevEnvDir=C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE
+@SET VS90COMNTOOLS=C:\Program Files\Microsoft Visual Studio 9.0\Common7\tools
+@SET PATH=c:\Program Files\Microsoft Visual Studio 9.0\VC\bin;C:\Program Files\Microsoft SDKs\Windows\v6.0A\\bin;c:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools\bin;c:\Program Files\Microsoft Visual Studio 9.0\Common7\tools;c:\Program Files\Microsoft Visual Studio 9.0\Common7\ide;C:\Program Files\HTML Help Workshop;C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin;C:\Windows\Microsoft.NET\Framework\v2.0.50727;c:\Program Files\Microsoft Visual Studio 9.0\;C:\Windows\SysWow64;;c:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE;c:\Program Files\Microsoft Visual Studio 9.0\VC\BIN;c:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools;c:\Windows\Microsoft.NET\Framework\v3.5;c:\Windows\Microsoft.NET\Framework\v2.0.50727;c:\Program Files\Microsoft Visual Studio 9.0\VC\VCPackages;%PATH%
+@SET INCLUDE=c:\Program Files\Microsoft Visual Studio 9.0\VC\include;c:\Program Files\Microsoft Visual Studio 9.0\VC\atlmfc\include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\\include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\include
+@SET LIB=c:\Program Files\Microsoft Visual Studio 9.0\VC\lib;c:\Program Files\Microsoft Visual Studio 9.0\VC\atlmfc\lib;c:\Program Files\Microsoft Visual Studio 9.0\VC\atlmfc\lib\i386;C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib;C:\Program Files\Microsoft SDKs\Windows\v6.0A\lib;c:\Program Files\Microsoft Visual Studio 9.0\;c:\Program Files\Microsoft Visual Studio 9.0\lib
+@SET LIBPATH=C:\Windows\Microsoft.NET\Framework\v2.0.50727;c:\Program Files\Microsoft Visual Studio 9.0\VC\atlmfc\lib;c:\Program Files\Microsoft Visual Studio 9.0\VC\lib
+@SET WindowsSdkDir=C:\Program Files\Microsoft SDKs\Windows\v6.0A\
 
 @SET PGBUILD=C:\pgBuild
 @SET WXWIN=%PGBUILD%\wxWidgets
 @SET PGDIR=$PG_PATH_WINDOWS\output
 
+vcbuild /upgrade
 vcbuild %1 %2 %3 %4 %5 %6 %7 %8 %9
 EOT
     
@@ -142,9 +146,9 @@ our \$config = {
     asserts=>0,                         # --enable-cassert
     integer_datetimes=>1,               # --enable-integer-datetimes
     nls=>'C:\pgBuild\gettext',        # --enable-nls=<path>
-    tcl=>'C:\tcl85',            # --with-tls=<path>
-    perl=>'C:\perl510',             # --with-perl
-    python=>'C:\python26',         # --with-python=<path>
+    tcl=>'C:\Tcl-8.5',            # --with-tls=<path>
+    perl=>'C:\Perl-5.10',             # --with-perl
+    python=>'C:\Python26',         # --with-python=<path>
     krb5=>'C:\pgBuild\krb5',         # --with-krb5=<path>
     ldap=>1,                # --with-ldap
     openssl=>'C:\pgBuild\openssl',     # --with-ssl=<path>
@@ -162,26 +166,27 @@ EOT
 use strict;
 use warnings;
 
-\$ENV{VSINSTALLDIR} = 'C:\Program Files\Microsoft Visual Studio 8';
-\$ENV{VCINSTALLDIR} = 'C:\Program Files\Microsoft Visual Studio 8\VC';
-\$ENV{VS80COMNTOOLS} = 'C:\Program Files\Microsoft Visual Studio 8\Common7\Tools';
+\$ENV{VSINSTALLDIR} = 'C:\Program Files\Microsoft Visual Studio 9.0';
+\$ENV{VCINSTALLDIR} = 'C:\Program Files\Microsoft Visual Studio 9.0\VC';
+\$ENV{VS90COMNTOOLS} = 'C:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools';
 \$ENV{FrameworkDir} = 'C:\WINDOWS\Microsoft.NET\Framework';
 \$ENV{FrameworkVersion} = 'v2.0.50727';
-\$ENV{FrameworkSDKDir} = 'C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0';
-\$ENV{DevEnvDir} = 'C:\Program Files\Microsoft Visual Studio 8\Common7\IDE';
+\$ENV{Framework35Version} = 'v3.5';
+\$ENV{FrameworkSDKDir} = 'C:\Program Files\Microsoft Visual Studio 9.0\SDK\v3.5';
+\$ENV{DevEnvDir} = 'C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE';
 \$ENV{M4} = 'C:\pgBuild\bison\bin\m4.exe';
 
 \$ENV{PATH} = join
 (
     ';' ,
-    'C:\Program Files\Microsoft Visual Studio 8\Common7\IDE',
-    'C:\Program Files\Microsoft Visual Studio 8\VC\BIN',
-    'C:\Program Files\Microsoft Visual Studio 8\Common7\Tools',
-    'C:\Program Files\Microsoft Visual Studio 8\Common7\Tools\bin',
-    'C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\bin',
-    'C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\Bin',
+    'C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE',
+    'C:\Program Files\Microsoft Visual Studio 9.0\VC\BIN',
+    'C:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools',
+    'C:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools\bin',
+    'C:\Program Files\Microsoft Visual Studio 9.0\SDK\v3.5\bin',
+    'C:\Program Files\Microsoft Visual Studio 9.0\VC\PlatformSDK\Bin',
     'C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727',
-    'C:\Program Files\Microsoft Visual Studio 8\VC\VCPackages',
+    'C:\Program Files\Microsoft Visual Studio 9.0\VC\VCPackages',
     'C:\Program Files\TortoiseCVS',
     'C:\pgBuild\bison\bin',
     'C:\pgBuild\flex\bin',
@@ -192,7 +197,7 @@ use warnings;
     'C:\pgBuild\krb5\bin\i386',
     'C:\pgBuild\libxml2\bin',
     'C:\pgBuild\zlib',
-    'C:\Perl510\Bin',
+    'C:\Perl-5.10\Bin',
     'C:\Python26\Bin',
     'C:\Tcl85\Bin',
     'C:\msys\1.0\bin',
@@ -202,10 +207,10 @@ use warnings;
 \$ENV{INCLUDE} = join
 (
     ';',
-    'C:\Program Files\Microsoft Visual Studio 8\VC\ATLMFC\INCLUDE',
-    'C:\Program Files\Microsoft Visual Studio 8\VC\INCLUDE',
-    'C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\include',
-    'C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\include',
+    'C:\Program Files\Microsoft Visual Studio 9.0\VC\ATLMFC\INCLUDE',
+    'C:\Program Files\Microsoft Visual Studio 9.0\VC\INCLUDE',
+    'C:\Program Files\Microsoft Visual Studio 9.0\VC\PlatformSDK\include',
+    'C:\Program Files\Microsoft Visual Studio 9.0\SDK\v3.5\include',
     'C:\pgBuild\OpenSSL\include',
     \$ENV{INCLUDE}
 );
@@ -213,10 +218,10 @@ use warnings;
 \$ENV{LIB} = join
 (
     ';',
-    'C:\Program Files\Microsoft Visual Studio 8\VC\ATLMFC\LIB',
-    'C:\Program Files\Microsoft Visual Studio 8\VC\LIB',
-    'C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib',
-    'C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\lib',
+    'C:\Program Files\Microsoft Visual Studio 9.0\VC\ATLMFC\LIB',
+    'C:\Program Files\Microsoft Visual Studio 9.0\VC\LIB',
+    'C:\Program Files\Microsoft Visual Studio 9.0\VC\PlatformSDK\lib',
+    'C:\Program Files\Microsoft Visual Studio 9.0\SDK\v3.5\lib',
     'C:\pgBuild\OpenSSL\lib',
     \$ENV{LIB}
 );
@@ -225,7 +230,7 @@ use warnings;
 (
     ';',
     'C:\Windows\Microsoft.NET\Framework\v2.0.50727',
-    'C:\Program Files\Microsoft Visual Studio 8\VC\ATLMFC\LIB'
+    'C:\Program Files\Microsoft Visual Studio 9.0\VC\ATLMFC\LIB'
 );
 
 1;
@@ -266,9 +271,9 @@ EOT
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip scripts.zip" || _die "Failed to unpack the scripts source tree on the windows build host (scripts.zip)"	
 	
     # Build the code and install into a temporary directory
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/createuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcproj" || _die "Failed to build createuser on the windows build host"
-	ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/getlocales; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat getlocales.vcproj" || _die "Failed to build getlocales on the windows build host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/validateuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcproj" || _die "Failed to build validateuser on the windows build host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\createuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcproj" || _die "Failed to build createuser on the windows build host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\getlocales; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat getlocales.vcproj" || _die "Failed to build getlocales on the windows build host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\validateuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcpro" || _die "Failed to build validateuser on the windows build host"
 	
     # Move the resulting binaries into place
 	ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\output\\\\installer\\\\server" || _die "Failed to create the server directory on the windows build host"
