@@ -788,9 +788,7 @@
         <setInstallerVariable name="proxyHost" value="${env(PROXY_HOST)}" />
         <setInstallerVariable name="proxyPort" value="${env(PROXY_PORT)}" />
 
-        <!-- Validate edb-user and password in unattended mode -->
-        <!--   1. Fresh installation                           -->
-        <!--   2. Upgrade mode and yet not registered          -->
+        <!-- Validate edb-user and password in unattended mode for the fresh installation -->
         <actionGroup>
             <actionList>
                 <throwError text="xdb.registration.email.empty">
@@ -854,18 +852,7 @@
             <ruleList>
                 <isTrue value="${validateEmail}"/>
                 <compareText logic="equals" text="${installer_ui}" value="unattended"/> 
-                <ruleGroup>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                    <ruleList>
-                        <ruleGroup>
-                            <ruleList>
-                                <stringTest text="${xDBReplicationServer}" type="not_empty"/>
-                                <stringTest text="${iExistingEmail}" type="empty"/>
-                            </ruleList>                  
-                        </ruleGroup>
-                        <stringTest text="${xDBReplicationServer}" type="empty"/>
-                    </ruleList>
-                </ruleGroup>
+                <stringTest text="${xDBReplicationServerVersion}" type="empty"/>
             </ruleList>
         </actionGroup>
     </preInstallationActionList>
@@ -1206,12 +1193,12 @@ database=${controldb}
                 </writeFile>
 
                 <!-- Set variable psql_path -->
-                <setInstallerVariable name="psql_path" value="${system_temp_directory}/${product_fullname}/bin/psql">
+                <setInstallerVariable name="psql_path" value="${system_temp_directory}/${product_fullname}/instscripts/bin/psql">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </setInstallerVariable>
-                <setInstallerVariable name="psql_path" value="${system_temp_directory}\${product_fullname}\bin\psql.exe">
+                <setInstallerVariable name="psql_path" value="${system_temp_directory}\${product_fullname}\instscripts\bin\psql.exe">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
@@ -1231,7 +1218,7 @@ database=${controldb}
                 <setInstallerVariableFromScriptOutput name="connection"
                                                       exec="${psql_path}"
                                                       execArgs="-l"
-                                                      workingDirectory="${system_temp_directory}/${product_fullname}/bin"
+                                                      workingDirectory="${system_temp_directory}/${product_fullname}/instscripts/bin"
                                                       showMessageOnError="0"
                                                       abortOnError="0" />
 
@@ -1243,7 +1230,7 @@ database=${controldb}
                          <setInstallerVariableFromScriptOutput name="connection"
                                                        exec="${psql_path}"
                                                        execArgs="-l ${env(PGDATABASE)}"
-                                                       workingDirectory="${system_temp_directory}/${product_fullname}/bin"
+                                                       workingDirectory="${system_temp_directory}/${product_fullname}/instscripts/bin"
                                                        customErrorMessage="${program_stderr}" />
                     </actionList>
                     <ruleList>
@@ -1256,14 +1243,14 @@ database=${controldb}
                 <setInstallerVariableFromScriptOutput name="dbexist"
                                                       exec="${psql_path}"
                                                       execArgs="-t -c &quot;SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${controldb}'&quot;"
-                                                      workingDirectory="${system_temp_directory}/${product_fullname}/bin"
+                                                      workingDirectory="${system_temp_directory}/${product_fullname}/instscripts/bin"
                                                       abortOnError="0"
                                                       showMessageOnError="0"/>
 
                 <runProgram>
                     <program>${psql_path}</program>
                     <programArguments>-t -c "CREATE DATABASE ${controldb}"</programArguments>
-                    <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
+                    <workingDirectory>${system_temp_directory}/${product_fullname}/instscripts/bin</workingDirectory>
                     <progressText>${msg(progress.text.creating.controldb)}</progressText>
                     <ruleList>
                         <compareText>
@@ -2573,18 +2560,7 @@ database=${controldb}
                  which does not have this authentication process -->
             <ruleList>
                 <isTrue value="${validateEmail}"/>
-                <ruleGroup>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                    <ruleList>
-                        <ruleGroup>
-                            <ruleList>
-                                <stringTest text="${xDBReplicationServer}" type="not_empty"/>
-                                <stringTest text="${iExistingEmail}" type="empty"/>
-                            </ruleList>                  
-                        </ruleGroup>
-                        <stringTest text="${xDBReplicationServer}" type="empty"/>
-                    </ruleList>
-                </ruleGroup>
+                <stringTest text="${xDBReplicationServerVersion}" type="empty"/>
             </ruleList>
         </parameterGroup>
         <parameterGroup name="userAuthenticationPage"
@@ -2690,18 +2666,7 @@ database=${controldb}
                  which does not have this authentication process -->
             <ruleList>
                 <isTrue value="${validateEmail}"/>
-                <ruleGroup>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                    <ruleList>
-                        <ruleGroup>
-                            <ruleList>
-                                <stringTest text="${xDBReplicationServer}" type="not_empty"/>
-                                <stringTest text="${iExistingEmail}" type="empty"/>
-                            </ruleList>                  
-                        </ruleGroup>
-                        <stringTest text="${xDBReplicationServer}" type="empty"/>
-                    </ruleList>
-                </ruleGroup>
+                <stringTest text="${xDBReplicationServerVersion}" type="empty"/>
             </ruleList>
         </parameterGroup>
 
@@ -2828,12 +2793,12 @@ database=${controldb}
                 <actionGroup>
                     <actionList>
                         <!-- Set variable psql_path -->
-                        <setInstallerVariable name="psql_path" value="${system_temp_directory}/${product_fullname}/bin/psql">
+                        <setInstallerVariable name="psql_path" value="${system_temp_directory}/${product_fullname}/instscripts/bin/psql">
                             <ruleList>
                                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                             </ruleList>
                         </setInstallerVariable>
-                        <setInstallerVariable name="psql_path" value="${system_temp_directory}\${product_fullname}\bin\psql.exe">
+                        <setInstallerVariable name="psql_path" value="${system_temp_directory}\${product_fullname}\instscripts\bin\psql.exe">
                             <ruleList>
                                 <compareText logic="equals" text="${platform_name}" value="windows"/>
                             </ruleList>
