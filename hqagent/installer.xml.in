@@ -208,16 +208,12 @@
 
         <actionGroup>
             <actionList>
-                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="pphqhost" variable="pphqhost"/>
-                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="pphqport" variable="pphqport"/>
-                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="secure-connection" variable="pphqsecureconn"/>
-                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="pphquser" variable="pphquser"/>
-                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="agentport" variable="agentport"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqhost" variable="pphqhost"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqport" variable="pphqport"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" variable="pphqsecureconn"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" variable="pphquser"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" variable="agentport"/>
+				<iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" variable="agenthost"/>
             </actionList>
             <ruleList>
                 <stringTest text="${pphqAgentVersion}" type="not_empty"/>
@@ -232,6 +228,7 @@
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="secure-connection" name="${pphqsecureconn}"/>
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="pphquser" name="pphquser"/>
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="agentport" name="agentport"/>
+				<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="agenthost" name="agenthost"/>
             </actionList>
             <ruleList>
                 <stringTest text="${pphqAgentVersion}" type="not_empty"/>
@@ -247,6 +244,7 @@
                 <stringTest text="${pphqport}" type="empty"/>
                 <stringTest text="${pphquser}" type="empty"/>
                 <stringTest text="${agentport}" type="empty"/>
+				<stringTest text="${agenthost}" type="empty"/>
             </ruleList>
         </setInstallerVariable>
 
@@ -399,10 +397,10 @@
 
         <actionGroup>
             <actionList>
-                <!-- stoping the pphq-agent in upgrade mode -->
+                <!-- stopping the pphq-agent in upgrade mode -->
                 <runProgram program="${installdir}/scripts/agentctl.sh" abortOnError="0"
                     programArguments="--no-wait stop" workingDirectory="${installdir}"
-                    showMessageOnError="0" progressText="Stopping agent...">
+                    showMessageOnError="0" progressText="${msg(pphqagent.stopping)}">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
@@ -456,14 +454,10 @@
 
         <actionGroup>
             <actionList>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="Description" value="${msg(install.summary)}"/>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="InstallationDirectory" value="${installdir}"/>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="Version" value="${product_version}"/>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="Branding" value="${branding}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Description" value="${msg(install.summary)}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="InstallationDirectory" value="${installdir}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Version" value="${product_version}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Branding" value="${branding}"/>
                 <!-- Create user (serviceaccount) for the server, if does not exists -->
                 <runProgram program="${installdir}/installer/pphqagent/createuser.sh"
                     programArguments="${serviceaccount} &quot;${installdir}/agent-PG_VERSION_HQAGENT&quot;"
@@ -642,6 +636,8 @@
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqport" value="${pphqport}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value="${pphqsecureconn}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value="${pphquser}"/>
+						<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
+						<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value="${agenthost}"/>
                     </actionList>
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -655,6 +651,7 @@
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="secure-connection" value="${pphqsecureconn}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphquser" value="${pphquser}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agentport" value="${agentport}"/>
+						<registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agenthost" value="${agenthost}"/>
                     </actionList>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -682,6 +679,7 @@
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value=""/>
+				<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value=""/>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -867,53 +865,62 @@
         </labelParameter>
 
         <!-- PPHQ Agent Configuration Page -->
-        <parameterGroup name="pphqserverdetails" title="${msg(pphq.server.title)}"
-            explanation="${msg(pphq.server.details)}" insertAfter="installation">
+        <parameterGroup name="pphqserverdetails" title="${msg(pphq.server.title)}" insertAfter="installation">
             <parameterList>
                 <!-- Postgres Plus HQ server Host -->
                 <stringParameter name="pphqhost" explanation="" value="" default="${agenthost}"
-                    description="Postgres Plus HQ Server Host" cliOptionName="pphqhost"
+                    description="${msg(pphqagent.config.pphqhost)}" cliOptionName="pphqhost"
                     allowEmptyValue="1" width="40">
                     <ruleList>
                         <isTrue value="${configure}"/>
                     </ruleList>
                 </stringParameter>
                 <!-- Postgres Plus HQ server port -->
-                <stringParameter name="pphqport" description="Postgres Plus HQ Server Port" explanation=""
+                <stringParameter name="pphqport" description="${msg(pphqagent.config.pphqport)}" explanation=""
                     value="" default="7080" cliOptionName="pphqport" allowEmptyValue="1" width="40">
                     <ruleList>
                         <isTrue value="${configure}"/>
                     </ruleList>
                 </stringParameter>
                 <!-- Postgres Plus HQ monitoring Interface User -->
-                <stringParameter name="pphquser" description="Postgres Plus HQ Interface User" explanation=""
+                <stringParameter name="pphquser" description="${msg(pphqagent.config.pphquser)}" explanation=""
                     value="" default="hqadmin" cliOptionName="pphquser" allowEmptyValue="1" width="40">
                     <ruleList>
                         <isTrue value="${configure}"/>
                     </ruleList>
                 </stringParameter>
                 <!-- Postgres Plus HQ monitoring Interface User Password -->
-                <passwordParameter name="pphqpassword" title="Password" description="Password" explanation=""
+                <passwordParameter name="pphqpassword" description="${msg(pphqagent.config.pphqpassword)}" explanation=""
                     value="${pphqdefaultpassword}" cliOptionName="pphqpassword" descriptionRetype=""
                     allowEmptyValue="1" askForConfirmation="0" width="40"/>
-                <booleanParameter name="pphqsecureconn" description="Secure Connection" explanation="" value=""
+                <booleanParameter name="pphqsecureconn" description="${msg(pphqagent.config.pphqsecureconn)}" explanation="" value=""
                     default="0" displayStyle="checkbox-left" cliOptionName="secure-connection">
                     <ruleList>
                         <isTrue value="${configure}"/>
                     </ruleList>
                 </booleanParameter>
+                <!-- Postgres Plus HQ agent Host -->
+                <stringParameter name="agenthost" explanation="" value="" default="${agenthost}"
+                    description="${msg(pphqagent.config.agenthost)}" cliOptionName="agenthost"
+                    allowEmptyValue="1" width="40">
+                    <ruleList>
+                        <isTrue value="${configure}"/>
+                    </ruleList>
+                </stringParameter>
             </parameterList>
             <!-- Checking the validity of Postgres Plus HQ Server Details -->
             <validationActionList>
                 <stringModify text="${pphqhost}" variable="pphqhost" logic="trim"/>
                 <stringModify text="${pphqport}" variable="pphqport" logic="trim"/>
                 <stringModify text="${pphquser}" variable="pphquser" logic="trim"/>
+				<stringModify text="${agenthost}" variable="agenthost" logic="trim"/>
                 <throwError text="${msg(pphq.server.blank.error)}">
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                         <stringTest text="${pphqhost}" type="empty"/>
                         <stringTest text="${pphqport}" type="empty"/>
                         <stringTest text="${pphquser}" type="empty"/>
+						<stringTest text="${agenthost}" type="empty"/>
                         <stringTest text="${pphqpassword}" type="empty"/>
                     </ruleList>
                 </throwError>
@@ -1021,6 +1028,7 @@
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value="${pphqsecureconn}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value="${pphquser}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
+						<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value="${agenthost}"/>
                         <runProgram program="${installdir}/installer/pphqagent/startupcfg.sh"
                             programArguments="0 1 PG_VERSION_HQAGENT &quot;${installdir}&quot; &quot;no-server-present&quot; &quot;${serviceName}&quot; &quot;root&quot; &quot;${serviceaccount}&quot;"
                             progressText="${msg(progress.text.startup.config)}"
@@ -1042,6 +1050,7 @@
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="secure-connection" value="${pphqsecureconn}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphquser" value="${pphquser}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agentport" value="${agentport}"/>
+						<registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agenthost" value="${agenthost}"/>
                     </actionList>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
