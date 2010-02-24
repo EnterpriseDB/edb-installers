@@ -208,16 +208,12 @@
 
         <actionGroup>
             <actionList>
-                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="pphqhost" variable="pphqhost"/>
-                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="pphqport" variable="pphqport"/>
-                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="secure-connection" variable="pphqsecureconn"/>
-                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="pphquser" variable="pphquser"/>
-                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="agentport" variable="agentport"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqhost" variable="pphqhost"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqport" variable="pphqport"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" variable="pphqsecureconn"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" variable="pphquser"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" variable="agentport"/>
+				<iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" variable="agenthost"/>
             </actionList>
             <ruleList>
                 <stringTest text="${pphqAgentVersion}" type="not_empty"/>
@@ -232,6 +228,7 @@
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="secure-connection" name="${pphqsecureconn}"/>
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="pphquser" name="pphquser"/>
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="agentport" name="agentport"/>
+				<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="agenthost" name="agenthost"/>
             </actionList>
             <ruleList>
                 <stringTest text="${pphqAgentVersion}" type="not_empty"/>
@@ -247,6 +244,7 @@
                 <stringTest text="${pphqport}" type="empty"/>
                 <stringTest text="${pphquser}" type="empty"/>
                 <stringTest text="${agentport}" type="empty"/>
+				<stringTest text="${agenthost}" type="empty"/>
             </ruleList>
         </setInstallerVariable>
 
@@ -456,14 +454,10 @@
 
         <actionGroup>
             <actionList>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="Description" value="${msg(install.summary)}"/>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="InstallationDirectory" value="${installdir}"/>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="Version" value="${product_version}"/>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="Branding" value="${branding}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Description" value="${msg(install.summary)}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="InstallationDirectory" value="${installdir}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Version" value="${product_version}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Branding" value="${branding}"/>
                 <!-- Create user (serviceaccount) for the server, if does not exists -->
                 <runProgram program="${installdir}/installer/pphqagent/createuser.sh"
                     programArguments="${serviceaccount} &quot;${installdir}/agent-PG_VERSION_HQAGENT&quot;"
@@ -642,6 +636,8 @@
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqport" value="${pphqport}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value="${pphqsecureconn}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value="${pphquser}"/>
+						<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
+						<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value="${agenthost}"/>
                     </actionList>
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -655,6 +651,7 @@
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="secure-connection" value="${pphqsecureconn}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphquser" value="${pphquser}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agentport" value="${agentport}"/>
+						<registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agenthost" value="${agenthost}"/>
                     </actionList>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -682,6 +679,7 @@
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value=""/>
+				<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value=""/>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
