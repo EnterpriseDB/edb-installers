@@ -96,7 +96,8 @@ Sub Init()
   If NOT bUnattended Then
     WScript.Echo "NOTE: " & VBCRLF & _
                  "This script should be running with the administrator rights." & VBCRLF & _
-                 "Please press enter to continue or press Ctrl+C to exit and rerun the script appropriately."
+                 "Please press enter to continue or press Ctrl+C to exit and rerun the script appropriately." & VBCRLF & VBCRLF & _
+                 "You must ensure that the admin user account running this script has full permissions on all directories in the installation path. Permissions inherited through group membership will not suffice."
     WSI.ReadLine
   End If
   ' Open Log File
@@ -417,45 +418,45 @@ End Function
 '      INIRead("c:\test.ini", "SEC1", "superuser")
 Function INIRead(strFile,strSection,strKey)
   Dim objReadFile,strLine,blnFoundSect,blnReadAll,intKeySize
-  If Not FSO.FileExists(strFile) Then 
+  If Not FSO.FileExists(strFile) Then
     INIRead = "" : Exit Function
   End if
-  Set objReadFile = FSO.OpenTextFile(strFile,1)   
+  Set objReadFile = FSO.OpenTextFile(strFile,1)
   blnFoundSect = False : blnReadAll=False : intKeySize = Len(strKey)+1
   If strSection = "" Then
     blnFoundSect = true
   End If
-  Do While Not objReadFile.AtEndOfStream 
+  Do While Not objReadFile.AtEndOfStream
     strLine= objReadFile.ReadLine
     If blnFoundSect Then
-    If Left(strLine,1)="[" Then 
+    If Left(strLine,1)="[" Then
       If blnReadAll=False then INIRead = ""
         objReadFile.close : Exit Function
       End if
-      If blnReadAll then 
+      If blnReadAll then
         INIRead = IniRead & strLine & VBCRLF
       Else
-        If Left(strLine,intKeySize) = strKey & "=" then 
+        If Left(strLine,intKeySize) = strKey & "=" then
           INIRead=Right(strLine,Len(strLine)-intKeySize)
-          objReadFile.close : Exit Function  
+          objReadFile.close : Exit Function
         End if
       End if
     Else
-      If Left(strLine,1)="[" Then 
-        If strLine = "[" & strSection & "]" Then 
+      If Left(strLine,1)="[" Then
+        If strLine = "[" & strSection & "]" Then
           blnFoundSect=True : if strKey="" then blnReadAll=True
         End if
       End if
     End if
   Loop
-  If blnReadAll=False then 
+  If blnReadAll=False then
     If blnFoundSect Then
       INIRead = ""
     Else
-      INIRead = "" 
+      INIRead = ""
     End If
   End If
-  objReadFile.close 
+  objReadFile.close
 End Function
 
 '----------------------------- INI Write -----------------------------------
@@ -481,24 +482,24 @@ Sub INIWrite(strFile,strSection,strKey,strValue)
     objWriteFile.WriteLine strKey & "=" & strValue
     objWriteFile.close : Exit Sub
   End if
-  Set objReadFile = FSO.OpenTextFile(strFile,1)   
-  Set objWriteFile = FSO.CreateTextFile(strFile & "INITMP",2)  
+  Set objReadFile = FSO.OpenTextFile(strFile,1)
+  Set objWriteFile = FSO.CreateTextFile(strFile & "INITMP",2)
   blnChanging = True : blnFoundSect = False : blnFoundKey = False
   blnSkipWrite = False : intKeySize = Len(strKey)+1
   If strSection = "" Then
     blnFoundSect = True
   End If
-  Do While Not objReadFile.AtEndOfStream 
+  Do While Not objReadFile.AtEndOfStream
     strLine= objReadFile.ReadLine
     If blnChanging Then
       If blnFoundSect Then
-        If Left(strLine,intKeySize) = strKey & "=" then 
+        If Left(strLine,intKeySize) = strKey & "=" then
           If strValue="" then
             strLine="="
           Else
             strLine = strKey & "=" & strValue
-          End if 
-          blnFoundKey=True : blnChanging = False     
+          End if
+          blnFoundKey=True : blnChanging = False
         End if
         If Left(strLine,1)="[" Then
           If blnFoundKey=False and strValue<>"" Then
@@ -507,10 +508,10 @@ Sub INIWrite(strFile,strSection,strKey,strValue)
           End if
         End if
       Else
-        If Left(strLine,1)="[" Then 
+        If Left(strLine,1)="[" Then
           blnSkipWrite=False
-          If strLine = "[" & strSection & "]" Then 
-            If strKey="" Then 
+          If strLine = "[" & strSection & "]" Then
+            If strKey="" Then
               blnSkipWrite=True
             Else
               blnFoundSect=True
@@ -527,11 +528,11 @@ Sub INIWrite(strFile,strSection,strKey,strValue)
     objWriteFile.WriteLine strKey & "=" & strValue
   Else
     If blnFoundKey=False and strValue<>"" Then
-      objWriteFile.WriteLine strKey & "=" & strValue 
+      objWriteFile.WriteLine strKey & "=" & strValue
     End if
   End if
-  objReadFile.close : objWriteFile.close : FSO.DeleteFile strFile,True 
-  FSO.MoveFile strFile & "INITMP",strFile 
+  objReadFile.close : objWriteFile.close : FSO.DeleteFile strFile,True
+  FSO.MoveFile strFile & "INITMP",strFile
 End Sub
 
 ' Handle Command line arguments
@@ -539,7 +540,7 @@ Dim argCount, argIndex
 Set cmdArguments = WScript.Arguments
 argCount = WScript.Arguments.Count
 argIndex = 0
- 
+
 Do While argIndex<argCount
   ' Super User
   If cmdArguments(argIndex) = "-su" OR cmdArguments(argIndex) = "--superuser" Then
@@ -633,7 +634,7 @@ Do While argIndex<argCount
   ElseIf cmdArguments(argIndex) = "-h" OR cmdArguments(argIndex) = "--help" Then
     Usage 0
   Else
-    strExitMsg = "'" & cmdArguments(argIndex) & "' is not a supported command-line argument." 
+    strExitMsg = "'" & cmdArguments(argIndex) & "' is not a supported command-line argument."
     Usage 1
   End If
   argIndex = argIndex + 1
@@ -669,7 +670,7 @@ Function Question(ByVal que, ByVal validator, ByVal defVal, ByVal actualVal, ByV
     If NOT bRes AND bUnattended AND stopInstallOnError Then
       LogError strErrMsg
     End If
-    If NOT bRes AND loopUntilRes AND stopInstallOnError Then
+    If NOT bRes AND loopUntilRes AND NOT stopInstallOnError Then
       ShowMessage "NOTE: " & strErrMsg
     End If
   Loop Until bRes AND loopUntilRes
@@ -692,7 +693,7 @@ Function AskYesNo(ByVal que, ByVal defVal)
   If strAnswer = "Y" OR strAnswer = "Y" Then
     AskYesNo = true
   End If
-  
+
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -710,7 +711,7 @@ End Function
 Public Sub WMI_Service_Restart(p_strServiceName, _
                                intWaitTimeout)
   On Error Resume Next
-  
+
   Dim colServiceList, objService
   Dim intReturnCode
   Dim dtmStart
@@ -932,7 +933,7 @@ Private Function WMI_Service_State_Set(p_strServiceName, _
   'Instantiate a reference to the service
   Err.Clear
   Set objService = Services.Get("Win32_Service='" & p_strServiceName & "'")
-  
+
   'Error check
   If (Err.Number <> 0) And Not IsObject(objService) Then
     LogWarn "Error connecting to the " & p_strServiceName & " service." & VBCRLF & _
@@ -1393,7 +1394,7 @@ Class DevServer
 
   Public Property Let ServiceAccount(p_strServiceAccount)
     Dim l_strServiceAccount, l_strServiceDomain
-    
+
     l_strServiceAccount = p_strServiceAccount
     l_strServiceDomain = "."
 
@@ -1506,7 +1507,7 @@ Class DevServer
       If CONSTPGAGENTSERVICE = "" Then
         CONSTPGAGENTSERVICE = "pgagent_" & CONSTADMINDATABASE & "_" & m_iMajoVersion & "_" & m_iMinorVersion
       End If
-      
+
       ' Fetch locale array
       SetVariableFromScriptOutput p_strInstallDir & "\installer\server\getlocales.exe", "", lStrLocales, l_strErrMsg, l_iStatus
       lArrayLocale = split(lStrLocales, vbCRLF)
@@ -1528,7 +1529,7 @@ Class DevServer
 
   Public Function validateDataDir(pStrDataDir, ByRef pStrErrMsg)
     validateDataDir = false
-    
+
     If NOT FSO.FolderExists(pStrDataDir) Then
       If IsFileExists(pStrDataDir, "", lStrErrMsg) Then
         pStrErrMsg = "'" & pStrDataDir & "' is a file, could not be a valid data directory."
@@ -1556,31 +1557,54 @@ Class DevServer
       Exit Function
     End If
 
+    set objDataFolder = FSO.GetFolder(pStrDataDir)
     If NOT IsFileExists(pStrDataDir, "postgresql.conf", lStrErrMsg) OR _
        NOT IsFileExists(pStrDataDir, "PG_VERSION", lStrErrMsg) OR _
        NOT IsFileExists(pStrDataDir, "global\pg_database", lStrErrMsg) OR _
        NOT IsFileExists(pStrDataDir, "global\pg_auth", lStrErrMsg) Then
-      pStrErrMsg = vbCRLF & "Not a Valid Data Directory." & lStrErrMsg
-      Exit Function
+       If NOT objDataFolder.Files.Count = 0 Then
+         pStrErrMsg = vbCRLF & "Not a Valid Data Directory." & lStrErrMsg
+         Exit Function
+       End If
     End If
- 
+
     m_strDataDir = pStrDataDir
     validateDataDir = true
 
-    ' Over-write the value provided by user by the actual data-dir\postgresql.conf file owner
-    Set objDataDir = WshApp.NameSpace (m_strDataDir)
-    l_iOwner = 8
-    For l_iIndex = 0 to 13
-      If UCase(objDataDir.GetDetailsOf(objDataDir.Items, l_iIndex)) = "OWNER" Then
-        l_iOwner = l_iIndex
+    If NOT objDataFolder.Files.Count = 0 Then
+
+      ' Over-write the value provided by user by the actual data-dir\postgresql.conf file owner
+      Set objDataDir = WshApp.NameSpace (m_strDataDir)
+      l_iOwner = 8
+      For l_iIndex = 0 to 13
+        If UCase(objDataDir.GetDetailsOf(objDataDir.Items, l_iIndex)) = "OWNER" Then
+          l_iOwner = l_iIndex
+        End If
+      Next
+      For Each l_objFile in objDataDir.Items
+        l_strFile = "" & LCase(objDataDir.GetDetailsOf (l_objFile, 0))
+        If l_strFile = "postgresql.conf" Then
+          ServiceAccount = objDataDir.GetDetailsOf (l_objFile, l_iOwner)
+        End If
+      Next
+    Else
+      ' Fetch owner of pg_ctl.exe
+      If m_strServiceAccount = NULL OR m_strServiceAccount = "" Then
+         Set objBinDir = WshApp.NameSpace (m_strInstallDir & "\bin")
+         l_iOwner = 8
+         For l_iIndex = 0 to 13
+           If UCase(objBinDir.GetDetailsOf(objBinDir.Items, l_iIndex)) = "OWNER" Then
+             l_iOwner = l_iIndex
+           End If
+         Next
+         For Each l_objFile in objBinDir.Items
+           l_strFile = "" & LCase(objBinDir.GetDetailsOf (l_objFile, 0))
+           If l_strFile = "pg_ctl" Then
+             ServiceAccount = objBinDir.GetDetailsOf (l_objFile, l_iOwner)
+           End If
+         Next
       End If
-    Next
-    For Each l_objFile in objDataDir.Items
-      l_strFile = "" & LCase(objDataDir.GetDetailsOf (l_objFile, 0))
-      If l_strFile = "postgresql.conf" Then
-        ServiceAccount = objDataDir.GetDetailsOf (l_objFile, l_iOwner)
-      End If
-    Next  
+    End If
   End Function
 
   Public Function validatePort(p_iPort, ByRef p_strErrMsg)
@@ -1593,7 +1617,7 @@ Class DevServer
       p_strErrMsg = "'" & p_iPort & "' is not within valid range (Port < 1000 & > 65535)."
       Exit Function
     End If
-    
+
     m_iPort = p_iPort
     validatePort = true
   End Function
@@ -1630,7 +1654,7 @@ Class DevServer
     Call RunProgram(m_strInstallDir & "\installer\server\createuser.exe",  _
                     array(m_strServiceDomain, m_strServiceAccount, p_strServicePassword), _
                     l_strScriptOutput, l_strScriptError, l_iRes)
- 
+
     Select Case l_iRes
       Case 0
       Case 2203
@@ -1706,7 +1730,7 @@ Class PGBouncer
       p_strErrMsg = "The given port for the pgbouncer is same as the server port."
       Exit Function
     End If
-    
+
     m_iPort = p_iPort
     validatePort = true
   End Function
@@ -1834,7 +1858,7 @@ End Function
 Sub ConfigureSlony
   LogMessage "ConfigureSlony:"
   l_strConfFile = objDevServer.InstallDir & "\Slony\installer\Slony\configureslony.bat"
-  l_strRemoveFile = objDevServer.InstallDir & "\Slony\installer\Slony\removeFiles.bat" 
+  l_strRemoveFile = objDevServer.InstallDir & "\Slony\installer\Slony\removeFiles.bat"
   SetVariableFromScriptOutput objDevServer.InstallDir & "\bin\pg_config.exe", "--pkglibdir", l_strPkgLibDir, l_strErrMsg, l_iStatus
   SetVariableFromScriptOutput objDevServer.InstallDir & "\bin\pg_config.exe", "--sharedir", l_strShareDir, l_strErrMsg, l_iStatus
 
@@ -1852,7 +1876,7 @@ Sub ConfigureSlony
   Set l_objConfFile = FSO.OpenTextFile(l_strConfFile, 2)
   l_objConfFile.WriteLine l_strData
   l_objConfFile.Close
-  
+
   ' Run the configuration file
   RunProgram l_strConfFile, objDevServer.InstallDir, strScriptOutput, strScriptError, iStatus
 
@@ -1861,11 +1885,11 @@ Sub ConfigureSlony
   l_objRemoveFile.Close
 
   l_strData = Replace(l_strData, """", "")
-  
+
   Set l_objRemoveFile = FSO.OpenTextFile(l_strRemoveFile, 2)
-  l_objRemoveFile.WriteLine l_strData 
+  l_objRemoveFile.WriteLine l_strData
   l_objRemoveFile.Close
-  
+
 End Sub
 
 Function IsPgAgentPresent
@@ -1875,7 +1899,7 @@ Function IsPgAgentPresent
      IsFileExists(objDevServer.InstallDir, "bin\pgagent.exe", l_strErrMsg) AND _
      IsFileExists(objDevServer.InstallDir, "bin\pgaevent.dll", l_strErrMsg) AND _
      IsFileExists(objDevServer.InstallDir, "installer\pgAgent\pgaevent.dll", l_strErrMsg) Then
-    SetVariableFrompsqlOutput l_strHasSchema, "SELECT has_schema_privilege('pgagent', 'USAGE')", CONSTADMINDATABASE 
+    SetVariableFrompsqlOutput l_strHasSchema, "SELECT has_schema_privilege('pgagent', 'USAGE')", CONSTADMINDATABASE
     ' pgAgent component present, but we will configure it only if 'pgagent' schema does not exists
     If l_strHasSchema = "" Then
       IsPgAgentPresent = true
@@ -1901,16 +1925,16 @@ Sub CreatePGPassConfig
   If NOT FSO.FolderExists(l_strUserProfile & "\postgresql") Then
     FSO.CreateFolder l_strUserProfile & "\postgresql"
   End If
-  
+
   l_strConfData = ""
-  l_strConfMatch = "localhost:" & objDevServer.Port & ":" & CONSTADMINDATABASE & ":" & _ 
+  l_strConfMatch = "localhost:" & objDevServer.Port & ":" & CONSTADMINDATABASE & ":" & _
                   objDevServer.SuperUser
   l_strConfLine = l_strConfMatch & ":" & objDevServer.SuperPassword
 
   If IsFileExists(l_strUserProfile, "postgresql\pgpass.conf", l_strDummy) Then
     l_iLenMatch = Len(l_strConfMatch)
     l_bMatched = false
-    Set objReadFile = FSO.OpenTextFile(l_strUserProfile & "\postgresql\pgpass.conf",1)   
+    Set objReadFile = FSO.OpenTextFile(l_strUserProfile & "\postgresql\pgpass.conf",1)
     Do While Not objReadFile.AtEndOfStream
       l_strCurrLine = objReadFile.ReadLine
       If NOT l_bMatched AND Left(l_strCurrLine, l_iLenMatch) = l_strConfMatch Then
@@ -2079,7 +2103,7 @@ Sub ConfigurePgBouncer
   If NOT FSO.FolderExists(objPGBouncer.Path & "\etc") Then
     FSO.CreateFolder objPGBouncer.Path & "\etc"
   End If
-  
+
   Question "Please enter the data directory", "objPGBouncer.validatePort", iPbPort, iPbPort, bUnattended, true
   BackupFile objPGBouncer.Path & "\share\pgbouncer.ini"
   BackupNUseOriginalFile objPGBouncer.Path & "\share\pgbouncer.ini"
@@ -2118,7 +2142,7 @@ Sub ConfigurePgBouncer
              l_strStdOut, l_strStrErr, l_iStatus
 
   Call WMI_Service_Restart("pgbouncer", 300)
-  
+
 End Sub
 
 ' Initialize
@@ -2160,10 +2184,12 @@ ShowMessage "Super Password  : " & objDevServer.SuperPassword
 ShowMessage "Serivce Account : " & objDevServer.ServiceAccount
 ShowMessage "Serivce Password: " & objDevServer.ServicePassword
 
-If NOT FSO.FolderExists(objDevServer.DataDir) AND _
+If NOT FSO.FolderExists(objDevServer.DataDir) OR _
    NOT IsFileExists(objDevServer.DataDir, "postgresql.conf", lStrErrMsg) Then
   ShowMessage "Initializing Cluster..."
-  FSO.CreateFolder objDevServer.DataDir
+  If NOT FSO.FolderExists(objDevServer.DataDir) Then
+    FSO.CreateFolder objDevServer.DataDir
+  End If
   LogNote "This can take some time..."
   RunProgram WScript.FullName, _
              array("//nologo", objDevServer.InstallDir & "\installer\server\initcluster.vbs", _
