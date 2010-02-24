@@ -399,7 +399,7 @@
 
         <actionGroup>
             <actionList>
-                <!-- stoping the pphq-agent in upgrade mode -->
+                <!-- stopping the pphq-agent in upgrade mode -->
                 <runProgram program="${installdir}/scripts/agentctl.sh" abortOnError="0"
                     programArguments="--no-wait stop" workingDirectory="${installdir}"
                     showMessageOnError="0" progressText="Stopping agent...">
@@ -872,48 +872,58 @@
             <parameterList>
                 <!-- Postgres Plus HQ server Host -->
                 <stringParameter name="pphqhost" explanation="" value="" default="${agenthost}"
-                    description="Postgres Plus HQ Server Host" cliOptionName="pphqhost"
+                    description="PPHQ Server Hostname/Address" cliOptionName="pphqhost"
                     allowEmptyValue="1" width="40">
                     <ruleList>
                         <isTrue value="${configure}"/>
                     </ruleList>
                 </stringParameter>
                 <!-- Postgres Plus HQ server port -->
-                <stringParameter name="pphqport" description="Postgres Plus HQ Server Port" explanation=""
+                <stringParameter name="pphqport" description="PPHQ Server Port" explanation=""
                     value="" default="7080" cliOptionName="pphqport" allowEmptyValue="1" width="40">
                     <ruleList>
                         <isTrue value="${configure}"/>
                     </ruleList>
                 </stringParameter>
                 <!-- Postgres Plus HQ monitoring Interface User -->
-                <stringParameter name="pphquser" description="Postgres Plus HQ Interface User" explanation=""
+                <stringParameter name="pphquser" description="PPHQ Username" explanation=""
                     value="" default="hqadmin" cliOptionName="pphquser" allowEmptyValue="1" width="40">
                     <ruleList>
                         <isTrue value="${configure}"/>
                     </ruleList>
                 </stringParameter>
                 <!-- Postgres Plus HQ monitoring Interface User Password -->
-                <passwordParameter name="pphqpassword" title="Password" description="Password" explanation=""
+                <passwordParameter name="pphqpassword" title="Password" description="PPHQ Password" explanation=""
                     value="${pphqdefaultpassword}" cliOptionName="pphqpassword" descriptionRetype=""
                     allowEmptyValue="1" askForConfirmation="0" width="40"/>
-                <booleanParameter name="pphqsecureconn" description="Secure Connection" explanation="" value=""
+                <booleanParameter name="pphqsecureconn" description="Secure connection" explanation="" value=""
                     default="0" displayStyle="checkbox-left" cliOptionName="secure-connection">
                     <ruleList>
                         <isTrue value="${configure}"/>
                     </ruleList>
                 </booleanParameter>
+                <!-- Postgres Plus HQ agent Host -->
+                <stringParameter name="agenthost" explanation="" value="" default="${agenthost}"
+                    description="PPHQ Agent Hostname/Address" cliOptionName="agenthost"
+                    allowEmptyValue="1" width="40">
+                    <ruleList>
+                        <isTrue value="${configure}"/>
+                    </ruleList>
+                </stringParameter>
             </parameterList>
             <!-- Checking the validity of Postgres Plus HQ Server Details -->
             <validationActionList>
                 <stringModify text="${pphqhost}" variable="pphqhost" logic="trim"/>
                 <stringModify text="${pphqport}" variable="pphqport" logic="trim"/>
                 <stringModify text="${pphquser}" variable="pphquser" logic="trim"/>
+				<stringModify text="${agenthost}" variable="agenthost" logic="trim"/>
                 <throwError text="${msg(pphq.server.blank.error)}">
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                         <stringTest text="${pphqhost}" type="empty"/>
                         <stringTest text="${pphqport}" type="empty"/>
                         <stringTest text="${pphquser}" type="empty"/>
+						<stringTest text="${agenthost}" type="empty"/>
                         <stringTest text="${pphqpassword}" type="empty"/>
                     </ruleList>
                 </throwError>
