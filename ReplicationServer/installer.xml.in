@@ -2686,7 +2686,7 @@ database=${controldb}
                     </ruleList>
                 </setInstallerVariable>
             </postShowPageActionList>
-            <!-- Check if upgradation is done on older version of TuningWizard,
+            <!-- Check if upgradation is done on older version of xDBReplicationServer,
                  which does not have this authentication process -->
             <ruleList>
                 <isTrue value="${validateEmail}"/>
