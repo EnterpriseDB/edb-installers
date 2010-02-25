@@ -44,6 +44,17 @@ _build_pphqagent_linux() {
     echo "Copying JRE to staging directory"
     tar -jxf $WD/tarballs/jre6-linux.tar.bz2 || _die "Couldn't extract the JRE"
 
+    echo "Cleaning up unnecessary files..."
+    find . -name *ia64-linux* -delete \
+        -o -name *ppc64-linux* -delete \
+        -o -name *ppc-linux* -delete \
+        -o -name *solaris* -delete \
+        -o -name *freebsd* -delete \
+        -o -name *aix* -delete \
+        -o -name *hpux* -delete \
+        -o -name *winnt* -delete \
+        -o -name *macosx* -delete
+
     cd $WD
 
 }

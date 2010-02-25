@@ -43,6 +43,14 @@ _build_pphqagent_windows() {
     echo "Copying JRE to staging directory"
     tar -jxf $WD/tarballs/jre6-windows.tar.bz2 || _die "Couldn't extract the JRE"
 
+    echo "Cleaning up unnecessary files..."
+    find . -name *linux* -delete \
+        -o -name *solaris* -delete \
+        -o -name *freebsd* -delete \
+        -o -name *aix* -delete \
+        -o -name *hpux* -delete \
+        -o -name *macosx* -delete
+
     cd $WD
 
 }
