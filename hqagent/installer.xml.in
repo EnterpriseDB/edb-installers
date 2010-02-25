@@ -213,7 +213,7 @@
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" variable="pphqsecureconn"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" variable="pphquser"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" variable="agentport"/>
-				<iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" variable="agenthost"/>
+		<iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" variable="agenthost"/>
             </actionList>
             <ruleList>
                 <stringTest text="${pphqAgentVersion}" type="not_empty"/>
@@ -636,8 +636,8 @@
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqport" value="${pphqport}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value="${pphqsecureconn}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value="${pphquser}"/>
-						<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
-						<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value="${agenthost}"/>
+			<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
+			<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value="${agenthost}"/>
                     </actionList>
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -645,7 +645,6 @@
                 </actionGroup>
                 <actionGroup>
                     <actionList>
-                        <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphqhost" value="${pphqhost}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphqport" value="${pphqport}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="secure-connection" value="${pphqsecureconn}"/>
@@ -679,7 +678,7 @@
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value=""/>
-				<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value=""/>
+		<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value=""/>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -1028,7 +1027,7 @@
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value="${pphqsecureconn}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value="${pphquser}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
-						<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value="${agenthost}"/>
+			<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value="${agenthost}"/>
                         <runProgram program="${installdir}/installer/pphqagent/startupcfg.sh"
                             programArguments="0 1 PG_VERSION_HQAGENT &quot;${installdir}&quot; &quot;no-server-present&quot; &quot;${serviceName}&quot; &quot;root&quot; &quot;${serviceaccount}&quot;"
                             progressText="${msg(progress.text.startup.config)}"
