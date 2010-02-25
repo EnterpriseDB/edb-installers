@@ -39,6 +39,8 @@
         <language code="en" encoding="iso8859-1" file="i18n/en.lng"/>
     </customLanguageFileList>
     <preShowHelpActionList>
+        <setInstallerVariable name="agenthost" persist="1" value="localhost"/>
+        <setInstallerVariable name="pphqdefaultpassword" persist="1" value="hqadmin"/>
         <!-- MAC : Set the default installation directory -->
         <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/HQ">
             <ruleList>

@@ -48,6 +48,7 @@
         <setInstallerVariable name="defaultpgpassword" persist="1" value="postgres"> </setInstallerVariable>
         <setInstallerVariable name="pphqadmindb" persist="1" value="pphq"> </setInstallerVariable>
         <setInstallerVariable name="defaultpphqpassword" persist="1" value="hqadmin"> </setInstallerVariable>
+        <setInstallerVariable name="pphqmachinehost" persist="1" value="localhost"> </setInstallerVariable>
 
         <!-- MAC : Set the default installation directory -->
         <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/HQ">
