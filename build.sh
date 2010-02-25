@@ -419,8 +419,9 @@ then
         _postprocess_libpq || exit 1
 fi
 
-#Package: MigrationToolKit
-if [ $PG_PACKAGE_MIGRATIONTOOLKIT = 1 ];
+#Package: MigrationToolKitA
+#The replication server always needs the latest build of MTK...
+if [ $PG_PACKAGE_MIGRATIONTOOLKIT = 1 -o $PG_PACKAGE_REPLICATIONSERVER = 1 ]; 
 then
     cd $WD
     source ./MigrationToolKit/build.sh
