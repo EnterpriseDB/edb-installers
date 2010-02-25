@@ -41,6 +41,9 @@ _build_pphqagent_linux_x64() {
     cd $PPHQ_STAGING/
     tar -zxf $WD/pphq/source/hq/build/archive/hyperic-hq-installer/agent-$PG_VERSION_HQAGENT.tgz || _die "Couldn't extract agent binaries"
 
+    echo "Copying JRE to staging directory"
+    tar -jxf $WD/tarballs/jre6-linux-x64.tar.bz2 || _die "Couldn't extract the JRE"
+
     cd $WD
 
 }

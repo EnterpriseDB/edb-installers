@@ -282,40 +282,6 @@
             </ruleList>
         </setInstallerVariable>
 
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="java_executable" value="${env(JAVA_HOME)}/bin/java"/>
-                <setInstallerVariable name="jrehome" value="${env(JAVA_HOME)}"/>
-            </actionList>
-            <ruleList>
-                <compareText text="${jrehome}" logic="equals" value=""/>
-                <fileExists path="${env(JAVA_HOME)}/bin/java"/>
-                <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
-            </ruleList>
-        </actionGroup>
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="java_executable" value="${env(JAVA_HOME)}\bin\java.exe"/>
-                <setInstallerVariable name="jrehome" value="${env(JAVA_HOME)}"/>
-            </actionList>
-            <ruleList>
-                <compareText text="${jrehome}" logic="equals" value=""/>
-                <fileExists path="${env(JAVA_HOME)}\bin\java.exe"/>
-                <compareText text="${platform_name}" logic="equals" value="windows"/>
-            </ruleList>
-        </actionGroup>
-
-        <!-- Detecting Java, Abort if not found -->
-        <autodetectJava promptUser="0" abortOnError="1" showMessageOnError="1"
-            customErrorMessage="${msg(java.error)}">
-            <validVersionList>
-                <validVersion minVersion="1.5.0" requireJDK="0"/>
-            </validVersionList>
-            <ruleList>
-                <compareText text="${jrehome}" logic="equals" value=""/>
-            </ruleList>
-        </autodetectJava>
-
         <!-- If there appears to be an existing installation, with no Branding value. -->
         <!-- force the default value. Otherwise, set the branding to whatever we read, -->
         <!-- or, set the default -->
@@ -369,33 +335,41 @@
 
     </preInstallationActionList>
     <readyToInstallActionList>
-        <setInstallerVariableFromRegEx name="pphqJavaHome" text="${java_executable}">
-            <pattern>bin\/java</pattern>
-            <substitution/>
-        </setInstallerVariableFromRegEx>
+	
+	    <!-- Use the bundled JRE, if no other has been specified -->
         <actionGroup>
             <actionList>
-                <setInstallerVariableFromRegEx name="java_executable" text="${java_executable}">
-                    <pattern>\/</pattern>
-                    <substitution>\\</substitution>
-                </setInstallerVariableFromRegEx>
-                <setInstallerVariableFromRegEx name="pphqJavaHome" text="${java_executable}">
-                    <pattern>\\bin\\java.exe</pattern>
-                    <substitution/>
-                </setInstallerVariableFromRegEx>
-                <setInstallerVariable name="java_executable" value="${pphqJavaHome}\bin\javaw.exe">
-                    <ruleList>
-                        <fileExists path="${pphqJavaHome}\bin\javaw.exe"/>
-                    </ruleList>
-                </setInstallerVariable>
+                <setInstallerVariable name="java_executable" value="${installdir}/jre6/bin/java"/>
+                <setInstallerVariable name="jrehome" value="${installdir}/jre6"/>
             </actionList>
             <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText text="${jrehome}" logic="equals" value=""/>
+                <compareText text="${platform_name}" logic="contains" value="linux"/>
             </ruleList>
         </actionGroup>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="java_executable" value="${installdir}\jre6\bin\java.exe"/>
+                <setInstallerVariable name="jrehome" value="${installdir}\jre6"/>
+            </actionList>
+            <ruleList>
+                <compareText text="${jrehome}" logic="equals" value=""/>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="java_executable" value="/System/Library/Frameworks/JavaVM.framework/Home/bin/java"/>
+                <setInstallerVariable name="jrehome" value="/System/Library/Frameworks/JavaVM.framework/Home"/>
+            </actionList>
+            <ruleList>
+                <compareText text="${jrehome}" logic="equals" value=""/>
+                <compareText text="${platform_name}" logic="equals" value="osx"/>
+            </ruleList>
+        </actionGroup>	
 
-        <setEnvironmentVariable name="JAVA_HOME" value="${pphqJavaHome}"/>
-        <setEnvironmentVariable name="HQ_JAVA_HOME" value="${pphqJavaHome}"/>
+        <setEnvironmentVariable name="JAVA_HOME" value="${jrehome}"/>
+        <setEnvironmentVariable name="HQ_JAVA_HOME" value="${jrehome}"/>
 
         <actionGroup>
             <actionList>
@@ -427,15 +401,15 @@
             <actionList>
                 <setInstallerVariableFromScriptOutput
                         exec="cscript.exe"
-                        execArgs="//nologo &quot;${installdir}\scripts\shortPathName.vbs&quot; &quot;${pphqJavaHome}&quot;"
-                        name="pphqJavaHome" workingDirectory="${installdir}"/>
+                        execArgs="//nologo &quot;${installdir}\scripts\shortPathName.vbs&quot; &quot;${jrehome}&quot;"
+                        name="jrehome" workingDirectory="${installdir}"/>
                 <setInstallerVariableFromScriptOutput
                         exec="cscript.exe"
                         execArgs="//nologo &quot;${installdir}\scripts\shortPathName.vbs&quot; &quot;${installdir}&quot;"
                         name="installdir" workingDirectory="${installdir}"/>
-                <setEnvironmentVariable name="HQ_JAVA_HOME" value="${pphqJavaHome}"/>
-                <setEnvironmentVariable name="JAVA_HOME" value="${pphqJavaHome}"/>
-                <addEnvironmentVariable name="HQ_JAVA_HOME" value="${pphqJavaHome}" scope="system"/>
+                <setEnvironmentVariable name="HQ_JAVA_HOME" value="${jrehome}"/>
+                <setEnvironmentVariable name="JAVA_HOME" value="${jrehome}"/>
+                <addEnvironmentVariable name="HQ_JAVA_HOME" value="${jrehome}" scope="system"/>
 
                 <setInstallerVariableFromScriptOutput
                         exec="cscript.exe"
@@ -499,7 +473,7 @@
 
         <!-- Shortcuts in case when platform is not windows -->
         <runProgram program="${installdir}/installer/pphqagent/createshortcuts.sh"
-            programArguments="&quot;PG_VERSION_HQAGENT&quot; &quot;${branding}&quot; &quot;${installdir}&quot; &quot;${pphqJavaHome}&quot; &quot;${serviceaccount}&quot;"
+            programArguments="&quot;PG_VERSION_HQAGENT&quot; &quot;${branding}&quot; &quot;${installdir}&quot; &quot;${jrehome}&quot; &quot;${serviceaccount}&quot;"
             progressText="${msg(progress.text.creating.shortcuts)}"
             workingDirectory="${installdir}/installer/pphqagent"
             abortOnError="0" showMessageOnError="0">
@@ -731,6 +705,8 @@
                         <distributionDirectory origin="staging/linux/agent-PG_VERSION_HQAGENT"/>
                         <!-- Installer Scripts -->
                         <distributionDirectory origin="staging/linux/installer"/>
+                        <!-- JRE -->
+                        <distributionDirectory origin="staging/linux/jre6"/>
                         <!-- Control Scripts -->
                         <distributionDirectory origin="staging/linux/scripts"/>
                     </distributionFileList>
@@ -746,6 +722,8 @@
                         <distributionDirectory origin="staging/linux-x64/agent-PG_VERSION_HQAGENT"/>
                         <!-- Installer Scripts -->
                         <distributionDirectory origin="staging/linux-x64/installer"/>
+                        <!-- JRE -->
+                        <distributionDirectory origin="staging/linux-x64/jre6"/>
                         <!-- Control Scripts -->
                         <distributionDirectory origin="staging/linux-x64/scripts"/>
                     </distributionFileList>
@@ -774,6 +752,8 @@
                     <distributionFileList>
                         <!-- PPHQ Agent binaries -->
                         <distributionDirectory origin="staging/windows/agent-PG_VERSION_HQAGENT"/>
+                        <!-- JRE -->
+                        <distributionDirectory origin="staging/windows/jre6"/>
                         <!-- Control Scripts -->
                         <distributionDirectory origin="staging/windows/scripts"/>
                     </distributionFileList>
