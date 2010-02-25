@@ -791,12 +791,12 @@
         <!-- Validate edb-user and password in unattended mode for the fresh installation -->
         <actionGroup>
             <actionList>
-                <throwError text="xdb.registration.email.empty">
+                <throwError text="${msg(xdb.registration.email.empty)}">
                     <ruleList>
                         <stringTest text="${existingEmail}" type="empty"/>
                     </ruleList>
                 </throwError>
-                <throwError text="xdb.registration.password.empty">
+                <throwError text="${msg(xdb.registration.password.empty)}">
                     <ruleList>
                         <stringTest text="${existingPassword}" type="empty"/>
                     </ruleList>
@@ -804,23 +804,24 @@
                 <setEnvironmentVariable name="LD_LIBRARY_PATH"
                       value="${env(LD_LIBRARY_PATH)}:${system_temp_directory}/${product_fullname}/instscripts/lib"/>
                 <!-- Email/Password Validation -->
-                <runProgram program="${system_temp_directory}/${product_fullname}/instscripts/validateUserClient.o"
-                      programArguments="&quot;${uuid_val}&quot; &quot;xdb&quot; &quot;false&quot; &quot;false&quot; &quot;&quot; &quot;&quot; &quot;1&quot; &quot;&quot; &quot;&quot; &quot;0&quot; &quot;0&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
+                <setInstallerVariableFromScriptOutput name="registered"
+                      exec="${system_temp_directory}/${product_fullname}/instscripts/validateUserClient.o"
+                      execArgs="&quot;${uuid_val}&quot; &quot;xdb&quot; &quot;false&quot; &quot;false&quot; &quot;&quot; &quot;&quot; &quot;1&quot; &quot;&quot; &quot;&quot; &quot;0&quot; &quot;0&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
                       abortOnError="1" showMessageOnError="1"
                       customErrorMessage="${msg(validatinguser.ws.error)}">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
-                </runProgram>
-                <runProgram program="${system_temp_directory}\${product_fullname}\instscripts\bin\validateUserClient.exe"
-                      programArguments="&quot;xdb&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${uuid_val}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput name="registered"
+                      exec="${system_temp_directory}\${product_fullname}\instscripts\bin\validateUserClient.exe"
+                      execArgs="&quot;xdb&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${uuid_val}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
                       abortOnError="1" showMessageOnError="1"
                       customErrorMessage="${msg(validatinguser.ws.error)}">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
-                </runProgram>
-                <setInstallerVariable name="registered" value="${program_output}"/>
+                </setInstallerVariableFromScriptOutput>
                 <stringModify text="${registered}" variable="registered" logic="trim"/>
 
                 <throwError text="${msg(ws.email.not.authenticated)}">
