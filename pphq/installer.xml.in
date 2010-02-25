@@ -645,6 +645,7 @@
                 <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
                 <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
                 <setInstallerVariable name="pphq_db_user_exists" value="0"/>
+                <setInstallerVariable name="pphquser_has_permission" value="t"/>
                 <setInstallerVariableFromScriptOutput
                         exec="${psql_path}"
                         execArgs="-t -A -c &quot;SELECT 1 FROM pg_catalog.pg_user u WHERE u.usename='${pphquser}'&quot;"
@@ -662,6 +663,32 @@
                     <ruleList>
                         <isTrue value="${pphq_db_user_exists}"/>
                     </ruleList>
+                </actionGroup>
+		<!-- If ppqadmindb already exists and pphqadminuser does not have permission to access
+		objects of pphqadmindb then tell user to specify correct password of the owner of pphqadmindb
+		or change the database name.
+		-->
+		<setEnvironmentVariable name="PGUSER" value="${pguser}" />
+		<setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+		<setEnvironmentVariable name="PGDATABASE" value="${pphqadmindb}"/>
+                <setInstallerVariableFromScriptOutput
+                        exec="${psql_path}"
+                        execArgs="-t -A -c &quot;SELECT bool_and(has_table_privilege('${pphquser}', c.oid::regclass, 'INSERT')AND has_table_privilege('${pphquser}', c.oid::regclass, 'UPDATE') AND has_table_privilege('${pphquser}', c.oid::regclass, 'DELETE') AND has_table_privilege('${pphquser}', c.oid::regclass, 'SELECT'))  FROM pg_class c, pg_namespace n, pg_database d WHERE c.relnamespace = n.oid AND n.nspname = 'public' AND relkind='r'&quot;"
+                        name="pphquser_has_permission"
+                        workingDirectory="${pphqTempDir}/instscripts">
+		   <ruleList>
+                        <isTrue value="${admin_db_exist}"/>
+                        <isTrue value="${pphq_db_user_exists}"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <actionGroup>
+                    <actionList>
+			<throwError text="${msg(pphquser.does.not.have.permission)}">
+	                    <ruleList>
+                                <compareText text="${pphquser_has_permission}" logic="does_not_equal" value="t" />
+			    </ruleList>
+	                </throwError>
+                    </actionList>
                 </actionGroup>
             </actionList>
             <ruleList>
@@ -1755,6 +1782,7 @@
                 <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
                 <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
                 <setInstallerVariable name="pphq_db_user_exists" value="0"/>
+                <setInstallerVariable name="pphquser_has_permission" value="t"/>
                 <setInstallerVariableFromScriptOutput
                         exec="${psql_path}"
                         execArgs="-t -A -c &quot;SELECT 1 FROM pg_catalog.pg_user u WHERE u.usename='${pphquser}'&quot;"
@@ -1771,6 +1799,32 @@
                     <ruleList>
                         <isTrue value="${pphq_db_user_exists}"/>
                     </ruleList>
+                </actionGroup>
+		<!-- If ppqadmindb already exists and pphqadminuser does not have permission to access
+		objects of pphqadmindb then tell user to specify correct password of the owner of pphqadmindb
+		or change the database name.
+		-->
+		<setEnvironmentVariable name="PGUSER" value="${pguser}" />
+		<setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+		<setEnvironmentVariable name="PGDATABASE" value="${pphqadmindb}"/>
+                <setInstallerVariableFromScriptOutput
+                        exec="${psql_path}"
+                        execArgs="-t -A -c &quot;SELECT bool_and(has_table_privilege('${pphquser}', c.oid::regclass, 'INSERT')AND has_table_privilege('${pphquser}', c.oid::regclass, 'UPDATE') AND has_table_privilege('${pphquser}', c.oid::regclass, 'DELETE') AND has_table_privilege('${pphquser}', c.oid::regclass, 'SELECT'))  FROM pg_class c, pg_namespace n, pg_database d WHERE c.relnamespace = n.oid AND n.nspname = 'public' AND relkind='r'&quot;"
+                        name="pphquser_has_permission"
+                        workingDirectory="${pphqTempDir}/instscripts">
+		   <ruleList>
+                        <isTrue value="${admin_db_exist}"/>
+                        <isTrue value="${pphq_db_user_exists}"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <actionGroup>
+                    <actionList>
+			<throwError text="${msg(pphquser.does.not.have.permission)}">
+	                    <ruleList>
+                                <compareText text="${pphquser_has_permission}" logic="does_not_equal" value="t" />
+			    </ruleList>
+	                </throwError>
+                    </actionList>
                 </actionGroup>
             </validationActionList>
         </parameterGroup>

@@ -784,17 +784,17 @@
                 <startMenuShortcut>
                     <name>Start Agent</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\hq-agent.bat</windowsExec>
+                    <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat</windowsExec>
                     <windowsExecArgs>start</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\pphqagent-start.ico</windowsIcon>
+                    <windowsIcon>${installdir}\scripts\images\hqagent-start.ico</windowsIcon>
                 </startMenuShortcut>
                 <!-- Stop Agent -->
                 <startMenuShortcut>
                     <name>Stop Agent</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\hq-agent.bat</windowsExec>
+                    <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat</windowsExec>
                     <windowsExecArgs>stop</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\pphqagent-stop.ico</windowsIcon>
+                    <windowsIcon>${installdir}\scripts\images\hqagent-stop.ico</windowsIcon>
                 </startMenuShortcut>
             </startMenuShortcutList>
         </component>

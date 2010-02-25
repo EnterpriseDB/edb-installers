@@ -45,7 +45,7 @@ fi
 
 if [ $USE_SUDO != "1" ];
 then
-    su - -c "HQAGENT_INSTALLDIR/agent-HQAGENT_VERSION_STR/bin/hq-agent.sh $action"
+    su - -c "HQAGENT_INSTALLDIR/agent-HQAGENT_VERSION_STR/bin/pphq-agent.sh $action"
 else
-    sudo  HQAGENT_INSTALLDIR/agent-HQAGENT_VERSION_STR/bin/hq-agent.sh $action
+    sudo  HQAGENT_INSTALLDIR/agent-HQAGENT_VERSION_STR/bin/pphq-agent.sh $action
 fi
