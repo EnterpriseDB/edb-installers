@@ -559,6 +559,7 @@
                     key="agent.setup.agentPort" value="${agentport}"/>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                     key="agent.setup.resetupTokens" value="yes"/>
+
                 <runProgram program="${installdir}/scripts/agentctl.sh"
                     programArguments="--no-wait start" workingDirectory="${installdir}/agent-PG_VERSION_HQAGENT/bin"
                     abortOnError="0" showMessageOnError="0">
@@ -639,6 +640,31 @@
         </actionGroup>
         <!-- Making user this value is available in uninstaller -->
         <setInstallerVariable name="branding" value="${branding}" persist="1"/>
+	<!--
+	Changing permissions of agent.properties file because it has password in plain text format.
+	-->
+	<actionGroup>
+	    <actionList>
+               <changePermissions>
+	          <files>${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties</files>
+	          <permissions>600</permissions>
+               </changePermissions>
+	    </actionList>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+	</actionGroup>
+	<actionGroup>
+	    <actionList>
+               <changePermissions>
+	          <files>${installdir}\agent-PG_VERSION_HQAGENT\conf\agent.properties</files>
+	          <permissions>600</permissions>
+               </changePermissions>
+	    </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+	</actionGroup>
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->

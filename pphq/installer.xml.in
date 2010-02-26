@@ -1148,6 +1148,31 @@
         </runProgram>
         <setInstallerVariable name="branding" value="${branding}" persist="1"/>
         <deleteFile path="${pphqTempDir}"/>
+        <!--
+        Changing permissions of agent.properties file because it has password in plain text format.
+        -->
+        <actionGroup>
+            <actionList>
+               <changePermissions>
+                  <files>${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties</files>
+                  <permissions>600</permissions>
+               </changePermissions>
+            </actionList>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+               <changePermissions>
+                  <files>${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties</files>
+                  <permissions>600</permissions>
+               </changePermissions>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
