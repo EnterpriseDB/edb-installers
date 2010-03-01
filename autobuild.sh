@@ -56,10 +56,10 @@ DATE=`date +'%Y-%m-%d'`
 echo "Creating /var/www/html/builds/pgInstaller/$DATE on the builds server" >> autobuild.log
 ssh buildfarm@builds.enterprisedb.com mkdir -p /var/www/html/builds/pgInstaller/$DATE >> autobuild.log 2>&1
 
-echo "Uploading output to /var/www/html/builds/pgInstaller/$DATE on the store server" >> autobuild.log
+echo "Uploading output to /var/www/html/builds/pgInstaller/$DATE on the builds server" >> autobuild.log
 scp output/* buildfarm@builds.enterprisedb.com:/var/www/html/builds/pgInstaller/$DATE >> autobuild.log 2>&1
 
-echo "Purging old builds from the store server" >> autobuild.log
+echo "Purging old builds from the builds server" >> autobuild.log
 ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"/var/www/html/builds/pgInstaller/*-*-*\" 3" >> autobuild.log 2>&1
 
 echo "#######################################################################" >> autobuild.log
