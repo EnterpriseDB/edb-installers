@@ -278,7 +278,7 @@
             <ruleList>
                 <compareText text="${jrehome}" logic="does_not_equal" value="" />
                 <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
-                <fileExists path="${jrehome}\bin\java" />
+                <fileExists path="${jrehome}\bin\java.exe" />
             </ruleList>
         </setInstallerVariable>
 
