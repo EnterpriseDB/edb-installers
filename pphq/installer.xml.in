@@ -1868,10 +1868,10 @@
 		-->
 		<setEnvironmentVariable name="PGUSER" value="${pguser}" />
 		<setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
-		<setEnvironmentVariable name="PGDATABASE" value="${pphqadmindb}"/>
+
                 <setInstallerVariable name="has_eam_agent_table" value="false"/>
                 <setInstallerVariableFromScriptOutput name="has_eam_agent_table"
-                        execArgs="-t -A -c &quot;SELECT count(*) FROM pg_class c WHERE c.relname='eam_agent'&quot;"
+                        execArgs="-d &quot;${pphqadmindb}&quot; -t -A -c &quot;SELECT count(*) FROM pg_class c WHERE c.relname='eam_agent'&quot;"
                         exec="${psql_path}"
                         workingDirectory="${pphqTempDir}/instscripts">
                     <ruleList>
