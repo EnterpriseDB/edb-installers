@@ -175,6 +175,14 @@
         <setInstallerVariable name="project.parameter(serviceAccount).ask" value="0"/>
         <setInstallerVariable name="project.parameter(agentServiceAccount).ask" value="0"/>
         <setInstallerVariable name="create_database" value="Yes"/>
+        <setInstallerVariable name="upgrade_database" value="No"/>
+        <setInstallerVariable name="overwrite" value="No"/>
+        <setInstallerVariable name="overwrite" value="Yes">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${pphqVersion}" value=""/>
+                <fileExists path="${installdir}/server-PG_VERSION_PPHQ"/>
+            </ruleList>
+        </setInstallerVariable>
 
         <actionGroup>
             <actionList>
@@ -611,10 +619,10 @@
                     </onErrorActionList>
                 </runProgram>
 
-                <setInstallerVariable name="admin_db_exist" value="0"/>
+                <setInstallerVariable name="admin_db_exists" value="0"/>
                 <setInstallerVariable name="admin_db_owner" value="hqadmin"/>
                 <setInstallerVariableFromScriptOutput
-                        name="admin_db_exist" exec="${psql_path}"
+                        name="admin_db_exists" exec="${psql_path}"
                         execArgs="-t -A -c &quot;SELECT 1 FROM (SELECT has_database_privilege('${pphqadmindb}', 'CREATE')) a&quot;"
                         workingDirectory="${pphqTempDir}/instscripts"
                         abortOnError="0" showMessageOnError="0"/>
@@ -623,7 +631,7 @@
                         execArgs="-t -A -c &quot;SELECT u.usename FROM pg_catalog.pg_user u WHERE u.usesysid in (SELECT d.datdba FROM pg_catalog.pg_database d WHERE d.datname='${pphqadmindb}')&quot;"
                         workingDirectory="${pphqTempDir}/instscripts">
                     <ruleList>
-                        <isTrue value="${admin_db_exist}"/>
+                        <isTrue value="${admin_db_exists}"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
 
@@ -669,17 +677,28 @@
 		objects of pphqadmindb then tell user to specify correct password of the owner of pphqadmindb
 		or change the database name.
 		-->
-		<setEnvironmentVariable name="PGUSER" value="${pguser}" />
+		<setEnvironmentVariable name="PGUSER" value="${pguser}"/>
 		<setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
 		<setEnvironmentVariable name="PGDATABASE" value="${pphqadmindb}"/>
+                <setInstallerVariable name="has_eam_agent_table" value="false"/>
+                <setInstallerVariableFromScriptOutput name="has_eam_agent_table"
+                        execArgs="-t -A -c &quot;SELECT count(*) FROM pg_class c WHERE c.relname='eam_agent'&quot;"
+                        exec="${psql_path}"
+                        workingDirectory="${pphqTempDir}/instscripts">
+                    <ruleList>
+                        <isTrue value="${admin_db_exists}"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <stringModify text="${has_eam_agent_table}" variable="has_eam_agent_table" logic="trim"/>
                 <setInstallerVariableFromScriptOutput
                         exec="${psql_path}"
-                        execArgs="-t -A -c &quot;SELECT bool_and(has_table_privilege('${pphquser}', c.oid::regclass, 'INSERT')AND has_table_privilege('${pphquser}', c.oid::regclass, 'UPDATE') AND has_table_privilege('${pphquser}', c.oid::regclass, 'DELETE') AND has_table_privilege('${pphquser}', c.oid::regclass, 'SELECT'))  FROM pg_class c, pg_namespace n, pg_database d WHERE c.relnamespace = n.oid AND n.nspname = 'public' AND relkind='r'&quot;"
+                        execArgs="-t -A -c &quot;SELECT bool_and(has_table_privilege('${pphquser}', c.oid::regclass, 'INSERT') AND has_table_privilege('${pphquser}', c.oid::regclass, 'UPDATE') AND has_table_privilege('${pphquser}', c.oid::regclass, 'DELETE') AND has_table_privilege('${pphquser}', c.oid::regclass, 'SELECT')) FROM pg_class c, pg_namespace n, pg_database d WHERE c.relnamespace = n.oid AND n.nspname = 'public' AND relkind='r' AND c.relname='eam_agent'&quot;"
                         name="pphquser_has_permission"
                         workingDirectory="${pphqTempDir}/instscripts">
 		   <ruleList>
-                        <isTrue value="${admin_db_exist}"/>
+                        <isTrue value="${admin_db_exists}"/>
                         <isTrue value="${pphq_db_user_exists}"/>
+                        <isTrue value="${has_eam_agent_table}"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
                 <actionGroup>
@@ -750,11 +769,6 @@
                 <!-- Stopping pphq service on windows -->
                 <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="0"/>
                 <stopWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0" showMessageOnError="0"/>
-                <setInstallerVariable name="create_database" value="No">
-                    <ruleList>
-                        <isTrue value="${admin_db_exist}"/>
-                    </ruleList>
-                </setInstallerVariable>
                 <runProgram program="${installdir}/scripts/agentctl.sh"
                       programArguments="--no-wait stop" workingDirectory="${installdir}/agent-${pphqVersion}/bin"
                       progressText="${msg(pphq.agent.stopping)}" abortOnError="1" showMessageOnError="1">
@@ -816,7 +830,7 @@
               progressText="${msg(pphq.creating.database)}"
               abortOnError="0" showMessageOnError="0">
             <ruleList>
-                <isFalse value="${admin_db_exist}"/>
+                <isFalse value="${admin_db_exists}"/>
             </ruleList>
         </runProgram>
 
@@ -844,6 +858,21 @@
             <substitution>\\\\</substitution>
         </setInstallerVariableFromRegEx>
 
+        <setInstallerVariable name="pphqDBUpgradeChoice" value="Overwrite the HQ server database (ERASE all existing data)"/>
+
+        <!-- The admin database exits, upgrade it -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="pphqDBUpgradeChoice" value="Upgrade the HQ server database"/>
+                <setInstallerVariable name="create_database" value="No"/>
+                <setInstallerVariable name="upgrade_database" value="Yes"/>
+            </actionList>
+            <ruleList>
+                <isTrue value="${admin_db_exists}"/>
+                <isTrue value="${has_eam_agent_table}"/>
+            </ruleList>
+        </actionGroup>
+
         <substitute>
             <files>${pphqTempDir}/pphq/templates/server.prop;${pphqTempDir}/pphq/templates/agent.prop</files>
             <substitutionList>
@@ -859,8 +888,11 @@
                 <substitution pattern="@@PGADMINDB@@" value="${pphqadmindb}"/>
                 <substitution pattern="@@HQPORT@@" value="${pphqport}"/>
                 <substitution pattern="@@DBCREATE@@" value="${create_database}"/>
+                <substitution pattern="@@DBUPGRADE@@" value="${upgrade_database}"/>
                 <substitution pattern="@@SMTPHOST@@" value="${smtphost}"/>
                 <substitution pattern="@@MACHINEHOST@@" value="${pphqmachinehost}"/>
+                <substitution pattern="@@UPGRADE_CHOICE@@" value="${pphqDBUpgradeChoice}"/>
+                <substitution pattern="@@OVERWRITE@@" value="${overwrite}"/>
             </substitutionList>
         </substitute>
 
@@ -875,12 +907,16 @@
                       workingDirectory="${pphqTempDir}/instscripts"
                       progressText="${msg(pphq.server.configure)}"
                       abortOnError="0" showMessageOnError="1"/>
+                <copyFile origin="${pphqTempDir}/pphq/installer-PG_VERSION_PPHQ/logs/hq-install.log.verbose"
+                          destination="${system_temp_directory}/pphq-server-install.log.verbose"/>
 
                 <runProgram program="${pphqTempDir}/pphq/setup.sh"
                       programArguments="${pphqTempDir}/pphq/templates/agent.prop"
                       workingDirectory="${pphqTempDir}/instscripts"
                       progressText="${msg(pphq.agent.configure)}"
                       abortOnError="0" showMessageOnError="1"/>
+                <copyFile origin="${pphqTempDir}/pphq/installer-PG_VERSION_PPHQ/logs/hq-install.log.verbose"
+                          destination="${system_temp_directory}/pphq-agent-install.log.verbose"/>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -1147,14 +1183,14 @@
             </ruleList>
         </runProgram>
         <setInstallerVariable name="branding" value="${branding}" persist="1"/>
-        <deleteFile path="${pphqTempDir}"/>
+        <!-- deleteFile path="${pphqTempDir}"/ -->
         <!--
-        Changing permissions of agent.properties file because it has password in plain text format.
+        Changing permissions of hq-server.conf & agent.properties file because it has password in plain text format.
         -->
         <actionGroup>
             <actionList>
                <changePermissions>
-                  <files>${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties</files>
+                  <files>${installdir}/server-PG_VERSION_PPHQ/conf/hq-server.conf</files>
                   <permissions>600</permissions>
                </changePermissions>
             </actionList>
@@ -1724,9 +1760,9 @@
                     </onErrorActionList>
                 </runProgram>
 
-                <setInstallerVariable name="admin_db_exist" value="0"/>
+                <setInstallerVariable name="admin_db_exists" value="0"/>
                 <setInstallerVariableFromScriptOutput
-                        name="admin_db_exist" exec="${psql_path}"
+                        name="admin_db_exists" exec="${psql_path}"
                         execArgs="-t -A -c &quot;SELECT 1 FROM (SELECT has_database_privilege('${pphqadmindb}', 'CREATE')) a&quot;"
                         workingDirectory="${pphqTempDir}/instscripts"
                         abortOnError="0" showMessageOnError="0"/>
@@ -1735,7 +1771,7 @@
                         execArgs="-t -A -c &quot;SELECT u.usename FROM pg_catalog.pg_user u WHERE u.usesysid in (SELECT d.datdba FROM pg_catalog.pg_database d WHERE d.datname='${pphqadmindb}')&quot;"
                         workingDirectory="${pphqTempDir}/instscripts">
                     <ruleList>
-                        <isTrue value="${admin_db_exist}"/>
+                        <isTrue value="${admin_db_exists}"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
             </validationActionList>
@@ -1833,16 +1869,28 @@
 		<setEnvironmentVariable name="PGUSER" value="${pguser}" />
 		<setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
 		<setEnvironmentVariable name="PGDATABASE" value="${pphqadmindb}"/>
+                <setInstallerVariable name="has_eam_agent_table" value="false"/>
+                <setInstallerVariableFromScriptOutput name="has_eam_agent_table"
+                        execArgs="-t -A -c &quot;SELECT count(*) FROM pg_class c WHERE c.relname='eam_agent'&quot;"
+                        exec="${psql_path}"
+                        workingDirectory="${pphqTempDir}/instscripts">
+                    <ruleList>
+                        <isTrue value="${admin_db_exists}"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <stringModify text="${has_eam_agent_table}" variable="has_eam_agent_table" logic="trim"/>
                 <setInstallerVariableFromScriptOutput
                         exec="${psql_path}"
-                        execArgs="-t -A -c &quot;SELECT bool_and(has_table_privilege('${pphquser}', c.oid::regclass, 'INSERT')AND has_table_privilege('${pphquser}', c.oid::regclass, 'UPDATE') AND has_table_privilege('${pphquser}', c.oid::regclass, 'DELETE') AND has_table_privilege('${pphquser}', c.oid::regclass, 'SELECT'))  FROM pg_class c, pg_namespace n, pg_database d WHERE c.relnamespace = n.oid AND n.nspname = 'public' AND relkind='r'&quot;"
+                        execArgs="-t -A -c &quot;SELECT bool_and(has_table_privilege('${pphquser}', c.oid::regclass, 'INSERT') AND has_table_privilege('${pphquser}', c.oid::regclass, 'UPDATE') AND has_table_privilege('${pphquser}', c.oid::regclass, 'DELETE') AND has_table_privilege('${pphquser}', c.oid::regclass, 'SELECT')) FROM pg_class c, pg_namespace n, pg_database d WHERE c.relnamespace = n.oid AND n.nspname = 'public' AND relkind='r' AND c.relname='eam_agent'&quot;"
                         name="pphquser_has_permission"
                         workingDirectory="${pphqTempDir}/instscripts">
 		   <ruleList>
-                        <isTrue value="${admin_db_exist}"/>
+                        <isTrue value="${admin_db_exists}"/>
                         <isTrue value="${pphq_db_user_exists}"/>
+                        <isTrue value="${has_eam_agent_table}"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
+                <stringModify text="${pphquser_has_permission}" variable="pphquser_has_permission" logic="trim"/>
                 <actionGroup>
                     <actionList>
 			<throwError text="${msg(pphquser.does.not.have.permission)}">
