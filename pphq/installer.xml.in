@@ -1183,7 +1183,7 @@
             </ruleList>
         </runProgram>
         <setInstallerVariable name="branding" value="${branding}" persist="1"/>
-        <!-- deleteFile path="${pphqTempDir}"/ -->
+        <deleteFile path="${pphqTempDir}"/>
         <!--
         Changing permissions of hq-server.conf & agent.properties file because it has password in plain text format.
         -->
