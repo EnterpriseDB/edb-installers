@@ -47,12 +47,15 @@ _build_pphqagent_linux() {
     echo "Cleaning up unnecessary files..."
     find . -name *ia64-linux* -delete \
         -o -name *ppc64-linux* -delete \
-        -o -name *ppc-linux* -delete \
+        -o -name *ppc64-linux* -delete \
+        -o -name *s390x-linux* -delete \
+        -o -name *linux-ppc* -delete \
         -o -name *solaris* -delete \
         -o -name *freebsd* -delete \
         -o -name *aix* -delete \
         -o -name *hpux* -delete \
         -o -name *winnt* -delete \
+        -o -name *windows* -delete \
         -o -name *macosx* -delete
 
     cd $WD

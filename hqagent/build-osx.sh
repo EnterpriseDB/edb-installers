@@ -47,10 +47,10 @@ _build_pphqagent_osx() {
         -o -name *freebsd* -delete \
         -o -name *aix* -delete \
         -o -name *hpux* -delete \
+        -o -name *windows* -delete \
         -o -name *winnt* -delete 
 
     cd $WD
-
 }
 
 ################################################################################
