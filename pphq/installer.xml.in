@@ -222,7 +222,6 @@
         <setInstallerVariable name="project.parameter(agentServiceAccount).ask" value="0"/>
         <setInstallerVariable name="create_database" value="Yes"/>
         <setInstallerVariable name="upgrade_database" value="No"/>
-        <setInstallerVariable name="overwrite" value="No"/>
         <setInstallerVariable name="overwrite" value="Yes">
             <ruleList>
                 <compareText logic="does_not_equal" text="${pphqVersion}" value=""/>
