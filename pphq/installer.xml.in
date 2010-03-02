@@ -118,8 +118,53 @@
         </throwError>
         <!-- Get a default port number - ideally 7080 -->
         <getFreePort variable="defaultpphqport" initialPort="7080" finalPort="65535"/>
-        <setInstallerVariable name="defaultpgpassword" value="postgres"/>
-        <setInstallerVariable name="defaultpphqpassword" value="hqadmin"/>
+
+        <!-- Set the default password, to be used only in unnattended mode -->
+        <setInstallerVariable>
+            <name>defaultpgpassword</name>
+            <value>postgres</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable>
+            <name>defaultpgpassword</name>
+            <value></value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <!-- Set the default password, to be used only in unnattended mode -->
+        <setInstallerVariable>
+            <name>defaultpphqpassword</name>
+            <value>hqadmin</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable>
+            <name>defaultpphqpassword</name>
+            <value></value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
 
         <!-- LIN : Set the default values for unattended mode -->
         <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/HQ">
@@ -142,6 +187,7 @@
                 <compareText logic="equals" text="${platform_name}" value="osx"/>
             </ruleList>
         </setInstallerVariable>
+
         <!-- MAC : Set the default installation directory -->
         <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/HQ">
             <ruleList>
@@ -183,16 +229,6 @@
                 <fileExists path="${installdir}/server-PG_VERSION_PPHQ"/>
             </ruleList>
         </setInstallerVariable>
-
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="defaultpgpassword" value="postgres"/>
-                <setInstallerVariable name="defaultpphqpassword" value="hqadmin"/>
-            </actionList>
-            <ruleList>
-                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-            </ruleList>
-        </actionGroup>
 
         <!-- Check if pphq-agent already been installer on this machine -->
         <setInstallerVariable name="pphqAgentVersion" value=""/>
@@ -1703,8 +1739,8 @@
                 </stringParameter>
 
                 <!-- Postgres User Password -->
-                <passwordParameter name="pgpassword" title="Password" value="" width="40"
-                                   description="Password" explanation="" default="${defaultpgpassword}"
+                <passwordParameter name="pgpassword" title="Password" value="${defaultpgpassword}" width="40"
+                                   description="Password" explanation="" default=""
                                    cliOptionName="pgpassword" allowEmptyValue="1" askForConfirmation="0"/>
 
                 <!-- Postgres Port(Default 5432) -->

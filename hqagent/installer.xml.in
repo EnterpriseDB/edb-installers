@@ -141,12 +141,29 @@
         <setInstallerVariable name="pphqAgentVersion" value=""/>
     </initializationActionList>
     <preInstallationActionList>
-        <setInstallerVariable name="pphqdefaultpassword" value=""/>
-        <setInstallerVariable name="pphqdefaultpassword" value="hqadmin">
+	<setInstallerVariable>
+            <name>pphqdefaultpassword</name>
+            <value>hqadmin</value>
             <ruleList>
-                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
             </ruleList>
         </setInstallerVariable>
+        <setInstallerVariable>
+            <name>pphqdefaultpassword</name>
+            <value></value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
         <setInstallerVariable name="serviceName" value="pphq-agent"/>
         <!-- Creates the ini file if not exits -->
         <touchFile path="/etc/postgres-reg.ini">
