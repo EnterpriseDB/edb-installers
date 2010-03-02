@@ -1421,10 +1421,16 @@
                             key="AgentServiceAccount" value=""/>
             </actionList>
             <ruleList>
+                <compareText text="${pphqVersion}" logic="equals" value=""/>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
-        <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"/>
+        <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ">
+            <ruleList>
+                <compareText text="${pphqVersion}" logic="equals" value=""/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </registryDelete>
     </installationAbortedActionList>
 
     <!-- finalPage actions -->
