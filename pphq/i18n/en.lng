@@ -42,7 +42,7 @@ pgplus.details.explanation.upgrade=Please enter password for the database:${pphq
 
 pphq.monitoring.console.details.explanation=Please provide Postgres Plus HQ Monitoring Console details.
 
-pphqadmin.explanation.upgrade=Please provide password for Postgres Plus HQ Monitoring Console admin user:${pphquser} for port:${pphqport}.
+pphqadmin.explanation.upgrade=Please provide password for Postgres Plus HQ Monitoring console backend database (${pphqadmindb}), Postgres Plus HQ Monitoring console admin user:${pphquser} and port:${pphqport}.
 
 pphq.port.not.free=PPHQ port: ${pphqport} is already in use.
 
@@ -111,3 +111,7 @@ pphq.agent.stopping=Stopping PPHQ Agent...
 pphq.shortcuts.removing=Removing PPHQ menu shortcuts...
 
 pphquser.does.not.have.permission=Postgtgres Plus HQ admin user (${pphquser}) does not have permission to modify existing database ${pphqadmindb}. Current owner of ${pphqadmindb} database is ${admin_db_owner}. Either specify Postgtgres Plus HQ admin as ${admin_db_owner} and provide corresponding password or change Postgtgres Plus HQ admin database name.
+
+pphquser.password.do.not.match=Postgtgres Plus HQ Console user (${pphquser}) specified by you will be administrator of Postgres Plus HQ admin database (${pphqadmindb}). User specified by you (${pphquser}) already exists and has different password than what you have provided. Either provide correct password for preexisitng user (${pphquser}) or change the Postgres Plus HQ admin user.
+
+pphquser.upgrade.password.do.not.match=Password for Postgres Plus HQ admin database user (${pphquser}) is not valid.

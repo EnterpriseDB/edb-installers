@@ -673,6 +673,8 @@
                         execArgs="-t -A -c &quot;SELECT 1 FROM pg_catalog.pg_user u WHERE u.usename='${pphquser}'&quot;"
                         name="pphq_db_user_exists"
                         workingDirectory="${pphqTempDir}/instscripts"/>
+		<!-- If it is a fresh installation and pphq console user specified already exists in the database and passwprd			does not match then ask for either specifying correct password as stored in the database or change user name		    . If it is upgrade then just ask pphq admin database password.	
+		-->
                 <actionGroup>
                     <actionList>
                         <setEnvironmentVariable name="PGUSER" value="${pphquser}" />
@@ -680,12 +682,32 @@
                         <runProgram program="${psql_path}"
                                 programArguments="-l &quot;${env(PGDATABASE)}&quot;"
                                 workingDirectory="${pphqTempDir}/instscripts"
-                                abortOnError="1" showMessageOnError="1"/>
+                                abortOnError="1" showMessageOnError="1"
+				customErrorMessage="${msg(pphquser.password.do.not.match)}"/>
                     </actionList>
                     <ruleList>
+                        <compareText text="${pphqVersion}" logic="equals" value=""/>
                         <isTrue value="${pphq_db_user_exists}"/>
                     </ruleList>
                 </actionGroup>
+		<!-- If it is a upgrade then verify pphq admin database password.	
+		-->
+                <actionGroup>
+                    <actionList>
+                        <setEnvironmentVariable name="PGUSER" value="${pphquser}" />
+                        <setEnvironmentVariable name="PGPASSWORD" value="${pphqpassword}"/>
+                        <runProgram program="${psql_path}"
+                                programArguments="-l &quot;${env(PGDATABASE)}&quot;"
+                                workingDirectory="${pphqTempDir}/instscripts"
+                                abortOnError="1" showMessageOnError="1"
+				customErrorMessage="${msg(pphquser.upgrade.password.do.not.match)}"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText text="${pphqVersion}" logic="does_not_equal" value=""/>
+                        <isTrue value="${pphq_db_user_exists}"/>
+                    </ruleList>
+                </actionGroup>
+
 		<!-- If ppqadmindb already exists and pphqadminuser does not have permission to access
 		objects of pphqadmindb then tell user to specify correct password of the owner of pphqadmindb
 		or change the database name.
@@ -1887,18 +1909,41 @@
                         execArgs="-t -A -c &quot;SELECT 1 FROM pg_catalog.pg_user u WHERE u.usename='${pphquser}'&quot;"
                         name="pphq_db_user_exists"
                         workingDirectory="${pphqTempDir}/instscripts"/>
+		<!-- If it is a fresh installation and pphq console user specified already exists in the database and passwprd			does not match then ask for either specifying correct password as stored in the database or change user name		    . If it is upgrade then just ask pphq admin database password.	
+		-->
                 <actionGroup>
                     <actionList>
                         <setEnvironmentVariable name="PGUSER" value="${pphquser}" />
                         <setEnvironmentVariable name="PGPASSWORD" value="${pphqpassword}"/>
                         <runProgram program="${psql_path}"
                                 programArguments="-l &quot;${env(PGDATABASE)}&quot;"
-                                workingDirectory="${pphqTempDir}/instscripts"/>
+                                workingDirectory="${pphqTempDir}/instscripts"
+                                abortOnError="1" showMessageOnError="1"
+				customErrorMessage="${msg(pphquser.password.do.not.match)}"/>
                     </actionList>
                     <ruleList>
+                        <compareText text="${pphqVersion}" logic="equals" value=""/>
                         <isTrue value="${pphq_db_user_exists}"/>
                     </ruleList>
                 </actionGroup>
+		<!-- If it is a upgrade then verify pphq admin database password.	
+		-->
+                <actionGroup>
+                    <actionList>
+                        <setEnvironmentVariable name="PGUSER" value="${pphquser}" />
+                        <setEnvironmentVariable name="PGPASSWORD" value="${pphqpassword}"/>
+                        <runProgram program="${psql_path}"
+                                programArguments="-l &quot;${env(PGDATABASE)}&quot;"
+                                workingDirectory="${pphqTempDir}/instscripts"
+                                abortOnError="1" showMessageOnError="1"
+				customErrorMessage="${msg(pphquser.upgrade.password.do.not.match)}"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText text="${pphqVersion}" logic="does_not_equal" value=""/>
+                        <isTrue value="${pphq_db_user_exists}"/>
+                    </ruleList>
+                </actionGroup>
+
 		<!-- If ppqadmindb already exists and pphqadminuser does not have permission to access
 		objects of pphqadmindb then tell user to specify correct password of the owner of pphqadmindb
 		or change the database name.
