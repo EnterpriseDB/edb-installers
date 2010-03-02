@@ -12,21 +12,17 @@ upgrade.existing.installation.description=An existing Postgres Plus HQ installat
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now.
 
-jre.invalid.error=Please set the JAVA_HOME environment variable to a valid location, or use the --jrehome command line option.
-
-java.error=The java binary in JAVA_HOME is not valid.
-
 progress.text.creating.shortcuts=Creating menu shortcuts...
 
-progress.text.creating.hqdbschema=Creating HQ database for Postgres Plus HQ...
+progress.text.creating.hqdbschema=Creating the database for Postgres Plus HQ...
 
-configure.hqdbschema=Creating HQ database...
+configure.hqdbschema=Creating PPHQ database...
 
 Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com.
 
-install.summary=Postgres Plus HQ for PostgreSQL Server monitoring, packaged by EnterpriseDB.
+install.summary=Postgres Plus HQ.
 
 pphq.installdir.empty=The installation directory cannot be empty.
 
@@ -34,15 +30,15 @@ pphq.installdir.error=The installation directory must be an absolute path, conta
 
 pgplus.details.title=Monitoring database information
 
-pphq.monitoring.console.details.title=Postgres Plus HQ Monitoring Console details
+pphq.monitoring.console.details.title=PPHQ Monitoring Console details
 
 pgplus.details.explanation=Please enter the connection information for the database that will store the monitoring data. The database will be created if necessary.
 
-pgplus.details.explanation.upgrade=Please enter password for the database:${pphqadmindb}, port:${pgport}, host:${pghost}, user:${pguser}.
+pgplus.details.explanation.upgrade=Please enter the password for the '${pguser}' user on the Postgres server at ${pghost}:${pgport}:
 
-pphq.monitoring.console.details.explanation=Please provide Postgres Plus HQ Monitoring Console details.
+pphq.monitoring.console.details.explanation=Please provide the Postgres Plus HQ Monitoring Console configuration options.
 
-pphqadmin.explanation.upgrade=Please provide password for Postgres Plus HQ Monitoring console backend database (${pphqadmindb}), Postgres Plus HQ Monitoring console admin user:${pphquser} and port:${pphqport}.
+pphqadmin.explanation.upgrade=Please enter the password for the '${pphquser}' user on the Postgres server at ${pghost}:${pgport}:
 
 pphq.port.not.free=PPHQ port: ${pphqport} is already in use.
 
@@ -54,21 +50,21 @@ pphq.monitoring.console.blank.error=Values must be entered for all fields.
 
 progress.text.startup.config=Starting PPHQ services...
 
-smtp.server.title=Enter smtp server details
+smtp.server.title=SMTP server details
 
-smtp.server.details=Enter the fully qualified domain name of the SMTP server that Postgres Plus HQ will use to send email messages for alerts.
+smtp.server.details=Enter the fully qualified domain name of the SMTP server that Postgres Plus HQ will use to send email messages for alerts:
 
 smtp.server.blank.error=Value must be entered for the field.
 
-Installer.Installation.Finished.Visit.Us=Open the PPHQ console at http://${pphqmachinehost}:${pphqport} to start postgres database monitoring.
+Installer.Installation.Finished.Visit.Us=Open the PPHQ console at http://${pphqmachinehost}:${pphqport}.
 
 progress.text.initialising.server=Starting PPHQ server (this may take a few minutes)...
 
 progress.text.initialising.agent=Starting PPHQ agent (this may take a few minutes)...
 
-error.could.not.initialise.server=Postgres Plus HQ server start failed.
+error.could.not.initialise.server=Postgres Plus HQ server startup failed.
 
-error.could.not.initialise.agent=Postgres Plus HQ agent start failed.
+error.could.not.initialise.agent=Postgres Plus HQ agent startup failed.
 
 warning.during.server.initialisation=A non-fatal error occured during server start. Please check the installation error log in ${system_temp_directory} for details.
 
@@ -80,17 +76,17 @@ install.runtimes.description=Specifies whether or not install the Microsoft Visu
 
 pphq.hqagent.present.error=The Postgres Plus HQ agent is installed on this machine. Please uninstall it before installing Postgres Plus HQ.
 
-pphq.creating.db.user=Creating Postgres Plus HQ Admin Database User (${pphquser})...
+pphq.creating.db.user=Creating PPHQ Database User '${pphquser}'...
 
-pphq.creating.database=Creating Postgres Plus Admin HQ Database (${pphqadmindb})...
+pphq.creating.database=Creating PPHQ Database '${pphqadmindb}'...
 
-pphq.granting.dbuser.database=Granting permissions Postgres Plus HQ Admin User (${pphquser}) on database (${pphqadmindb})...
+pphq.granting.dbuser.database=Configuring database security...
 
-pphq.creating.plpgsql=Making sure plpgsql exists in Postgres Plus HQ Admin Database (${pphqadmindb})...
+pphq.creating.plpgsql=Enabling pl/pgsql in '${pphqadmindb}'...
 
-pphq.server.configure=Configuring PPHQ Server (this may take some time)...
+pphq.server.configure=Configuring the PPHQ Server (this may take some time)...
 
-pphq.agent.configure=Configuring PPHQ Agent (this may take some time)...
+pphq.agent.configure=Configuring the PPHQ Agent (this may take some time)...
 
 pphq.agent.installing=Creating PPHQ Agent Service...
 
@@ -110,8 +106,8 @@ pphq.agent.stopping=Stopping PPHQ Agent...
 
 pphq.shortcuts.removing=Removing PPHQ menu shortcuts...
 
-pphquser.does.not.have.permission=Postgtgres Plus HQ admin user (${pphquser}) does not have permission to modify existing database ${pphqadmindb}. Current owner of ${pphqadmindb} database is ${admin_db_owner}. Either specify Postgtgres Plus HQ admin as ${admin_db_owner} and provide corresponding password or change Postgtgres Plus HQ admin database name.
+pphquser.does.not.have.permission=The Postgres user '${pphquser}' does not have permission to modify the existing PPHQ database '${pphqadmindb}'. The owner of the '${pphqadmindb}' database is ${admin_db_owner}. Either specify PPHQ user as ${admin_db_owner} and provide the corresponding password or select a new database.
 
-pphquser.password.do.not.match=Postgtgres Plus HQ Console user (${pphquser}) specified by you will be administrator of Postgres Plus HQ admin database (${pphqadmindb}). User specified by you (${pphquser}) already exists and has different password than what you have provided. Either provide correct password for preexisitng user (${pphquser}) or change the Postgres Plus HQ admin user.
+pphquser.password.do.not.match=The PPHQ user '${pphquser}' will be the owner of the PPHQ database '${pphqadmindb}'. The username specified already exists and has different password than entered. Either provide the correct password for '${pphquser}' or select a new user.
 
-pphquser.upgrade.password.do.not.match=Password for Postgres Plus HQ admin database user (${pphquser}) is not valid.
+pphquser.upgrade.password.do.not.match=The password specified for the database user (${pphquser}) is not correct.

@@ -1360,6 +1360,53 @@
 
     </preUninstallationActionList>
 
+    <installationAbortedActionList>
+        <actionGroup>
+            <actionList>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="Description" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="InstallationDirectory" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="Version" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="AdminUser" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="Port" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pgport" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pghost" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pguser" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="pphqadmindb" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="Branding" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="JNP_PORT" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="PPHQ_SECURE_PORT" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="PPHQ_JRPM_PORT" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="ServerServiceAccount" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
+                            key="AgentServiceAccount" value=""/>
+            </actionList>
+            <ruleList>
+                <compareText text="${pphqVersion}" logic="equals" value=""/>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
+        <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ">
+            <ruleList>
+                <compareText text="${pphqVersion}" logic="equals" value=""/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </registryDelete>
+    </installationAbortedActionList>
+
     <!-- finalPage actions -->
     <finalPageActionList>
         <launchBrowser url="http://127.0.0.1:${pphqport}/" progressText="${msg(Installer.Installation.Finished.Visit.Us)}">
