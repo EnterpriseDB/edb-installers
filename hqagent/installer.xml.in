@@ -927,7 +927,8 @@
         </labelParameter>
 
         <!-- PPHQ Agent Configuration Page -->
-        <parameterGroup name="pphqserverdetails" title="${msg(pphq.server.title)}" insertAfter="installation">
+        <parameterGroup name="pphqserverdetails" title="${msg(pphq.server.title)}" insertAfter="installation"
+              explanation="${pphqServerDetailsExplaination}">
             <parameterList>
                 <!-- Postgres Plus HQ server Host -->
                 <stringParameter name="pphqhost" explanation="" value="" default="${agenthost}"
@@ -946,11 +947,7 @@
                 </stringParameter>
                 <!-- Postgres Plus HQ monitoring Interface User -->
                 <stringParameter name="pphquser" description="${msg(pphqagent.config.pphquser)}" explanation=""
-                    value="" default="hqadmin" cliOptionName="pphquser" allowEmptyValue="1" width="40">
-                    <ruleList>
-                        <isTrue value="${configure}"/>
-                    </ruleList>
-                </stringParameter>
+                    value="" default="hqadmin" cliOptionName="pphquser" allowEmptyValue="1" width="40"/>
                 <!-- Postgres Plus HQ monitoring Interface User Password -->
                 <passwordParameter name="pphqpassword" description="${msg(pphqagent.config.pphqpassword)}" explanation=""
                     value="${pphqdefaultpassword}" cliOptionName="pphqpassword" descriptionRetype=""
@@ -970,6 +967,17 @@
                     </ruleList>
                 </stringParameter>
             </parameterList>
+            <preShowPageActionList>
+                <setInstallerVariable name="pphqServerDetailsExplaination"
+                      value="${msg(pphqagent.server.details.explaination)}"/>
+                <setInstallerVariable name="pphqServerDetailsExplaination"
+                      value="${msg(pphqagent.server.details.explaination.upgrade)}">
+                    <ruleList>
+                        <isFalse value="${configure}"/>
+                        <stringTest text="${pphqAgentVersion}" type="not_empty"/>
+                    </ruleList>
+                </setInstallerVariable>
+            </preShowPageActionList>
             <!-- Checking the validity of Postgres Plus HQ Server Details -->
             <validationActionList>
                 <stringModify text="${pphqhost}" variable="pphqhost" logic="trim"/>

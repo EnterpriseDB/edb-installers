@@ -17,7 +17,7 @@ _replace() {
 }
 
 INSTALLDIR=$1
-BRANDING=$3
+BRANDING=$2
 
 # Exit code
 WARN=0
