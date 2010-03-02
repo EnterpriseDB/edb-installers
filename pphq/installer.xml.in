@@ -222,12 +222,7 @@
         <setInstallerVariable name="project.parameter(agentServiceAccount).ask" value="0"/>
         <setInstallerVariable name="create_database" value="Yes"/>
         <setInstallerVariable name="upgrade_database" value="No"/>
-        <setInstallerVariable name="overwrite" value="Yes">
-            <ruleList>
-                <compareText logic="does_not_equal" text="${pphqVersion}" value=""/>
-                <fileExists path="${installdir}/server-PG_VERSION_PPHQ"/>
-            </ruleList>
-        </setInstallerVariable>
+        <setInstallerVariable name="overwrite" value="Yes" />
 
         <!-- Check if pphq-agent already been installer on this machine -->
         <setInstallerVariable name="pphqAgentVersion" value=""/>
