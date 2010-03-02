@@ -64,8 +64,6 @@ _build_pphq_windows() {
     cp $SERVER_STAGING/bin/msvcr71.dll $PPHQ_STAGING/instscripts/ || _die "Failed to copy dependent libs"
     cp $SERVER_STAGING/installer/vcredist_x86.exe $PPHQ_STAGING/ || _die "Failed to copy the VC++ runtimes"
     cp $WD/pphq/scripts/windows/installruntimes.vbs $PPHQ_STAGING/ || _die "Failed to copy the installruntimes script ($PPHQ_STAGING)"
-    cp `find "$WD/pphq/source/hq/hq_bin/sigar_bin/lib" -print $1 | grep [.]dll$` $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the sigar libraries"
-    cp $WD/pphq/source/hq/hq_bin/sigar_bin/lib/sigar.jar $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the sigar jar"
 
 }
 

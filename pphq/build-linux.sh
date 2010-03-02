@@ -56,8 +56,6 @@ _build_pphq_linux() {
     cp $SERVER_STAGING/lib/libtermcap.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
     cp $SERVER_STAGING/lib/libxml2.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
     cp $SERVER_STAGING/lib/libreadline.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
-    cp `find "$WD/pphq/source/hq/hq_bin/sigar_bin/lib" -print $1 | grep [.]so$ | grep -v 64` $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the sigar libraries"
-    cp $WD/pphq/source/hq/hq_bin/sigar_bin/lib/sigar.jar $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the sigar jar"
 
 }
 

@@ -559,30 +559,7 @@
         <unpackDirectory component="InstScript" folder="inst${platform_name}"
                          destination="${pphqTempDir}" origin="instscripts"/>
 
-        <setInstallerVariableFromScriptOutput
-                exec="${java_executable}"
-                execArgs="-jar &quot;${pphqTempDir}/instscripts/lib/sigar.jar&quot; netinfo"
-                name="machineNetInfo"
-                workingDirectory="${pphqTempDir}/instscripts/lib"/>
-
-        <setInstallerVariable name="pphqmachinehost" value="localhost"/>
-        <setInstallerVariableFromRegEx name="pphqmachinehost"  text="${machineNetInfo}">
-            <pattern>^.*host\sname\.*([a-zA-Z0-9\.\-]*).*$</pattern>
-            <substitution>\1</substitution>
-            <ruleList>
-                <stringTest text="${machineNetInfo}" type="not_empty"/>
-            </ruleList>
-        </setInstallerVariableFromRegEx>
-
-        <!-- switch to ip-address, if host-name does not contain '.' (dot) -->
-        <setInstallerVariableFromRegEx name="pphqmachinehost" text="${machineNetInfo}">
-            <pattern>^.*primary\sip\saddress\.*([0-9\.]*).*$</pattern>
-            <substitution>\1</substitution>
-            <ruleList>
-                <compareText logic="does_not_contain" text="${pphqmachinehost}" value="."/>
-                <stringTest text="${machineNetInfo}" type="not_empty"/>
-            </ruleList>
-        </setInstallerVariableFromRegEx>
+        <setInstallerVariable name="pphqmachinehost" value="127.0.0.1"/>
 
         <!-- Validation in unattended mode -->
         <actionGroup>
