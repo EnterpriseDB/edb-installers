@@ -53,6 +53,17 @@ _build_pphq_osx() {
     cp $SERVER_STAGING/lib/libpq.*dylib $PPHQ_STAGING/instscripts/lib || _die "Failed to copy the dependency library (libpq.5.dylib)"
     cp $SERVER_STAGING/lib/libxml2* $PPHQ_STAGING/instscripts/lib || _die "Failed to copy the latest libxml2"
 
+    echo "Cleaning up unnecessary files..."
+	cd $PPHQ_STAGING/
+    find . -name *linux* -delete \
+        -o -name *solaris* -delete \
+        -o -name *freebsd* -delete \
+        -o -name *aix* -delete \
+        -o -name *hpux* -delete \
+        -o -name *windows* -delete \
+        -o -name *winnt* -delete 
+
+    cd $WD
 }
 
 ################################################################################
