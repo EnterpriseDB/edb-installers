@@ -335,7 +335,7 @@
 
     </preInstallationActionList>
     <readyToInstallActionList>
-	
+
 	    <!-- Use the bundled JRE, if no other has been specified -->
         <actionGroup>
             <actionList>
@@ -366,7 +366,7 @@
                 <compareText text="${jrehome}" logic="equals" value=""/>
                 <compareText text="${platform_name}" logic="equals" value="osx"/>
             </ruleList>
-        </actionGroup>	
+        </actionGroup>
 
         <setEnvironmentVariable name="JAVA_HOME" value="${jrehome}"/>
         <setEnvironmentVariable name="HQ_JAVA_HOME" value="${jrehome}"/>
@@ -613,8 +613,8 @@
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqport" value="${pphqport}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value="${pphqsecureconn}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value="${pphquser}"/>
-			<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
-			<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value="${agenthost}"/>
+                        <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
+                        <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value="${agenthost}"/>
                     </actionList>
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -627,7 +627,7 @@
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="secure-connection" value="${pphqsecureconn}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphquser" value="${pphquser}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agentport" value="${agentport}"/>
-						<registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agenthost" value="${agenthost}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agenthost" value="${agenthost}"/>
                     </actionList>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -640,6 +640,7 @@
         </actionGroup>
         <!-- Making user this value is available in uninstaller -->
         <setInstallerVariable name="branding" value="${branding}" persist="1"/>
+        <setInstallerVariable name="serviceName" value="${serviceName}" persist="1"/>
 	<!--
 	Changing permissions of agent.properties file because it has password in plain text format.
 	-->
@@ -671,6 +672,53 @@
     <preUninstallationActionList>
         <actionGroup>
             <actionList>
+                <runProgram program="launchctl"
+                      programArguments="unload /Library/LaunchDaemons/com.edb.launchd.${serviceName}.plist"
+                      abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphqagent.stopping)}"/>
+                <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.${serviceName}.plist"
+                      abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphqagent.service.removing)}"/>
+                <deleteFile path="/Applications/${branding}/Start Postgres Plus HQ Agent.app"
+                      abortOnError="0" showMessageOnError="0"/>
+                <deleteFile path="/Applications/${branding}/Stop Postgres Plus HQ Agent.app"
+                      abortOnError="0" showMessageOnError="0"/>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+                <runProgram program="${installdir}/scripts/agentctl.sh"
+                        programArguments="--no-wait stop"
+                        workingDirectory="${installdir}/scripts"
+                        progressText="${msg(pphqagent.stopping)}"
+                        abortOnError="0" showMessageOnError="0"/>
+                <actionGroup>
+                    <actionList>
+                        <!-- Attempt to remove any runlevel config with chkconfig -->
+                        <runProgram program="/sbin/chkconfig" showMessageOnError="0"
+                              programArguments="--del ${serviceName}" abortOnError="0"
+                              progressText="${msg(pphqagent.service.removing)}"/>
+
+                        <!-- Remove the startup script -->
+                        <deleteFile path="/etc/init.d/${serviceName}" abortOnError="0" showMessageOnError="0"/>
+
+                        <!-- Attempt to remove any runlevel config with update-rc.d -->
+                        <runProgram program="/usr/sbin/update-rc.d" showMessageOnError="0"
+                              programArguments="-f ${serviceName} remove" abortOnError="0"/>
+
+                        <!-- LIN : Remove Menu shortcuts -->
+                        <runProgram program="${installdir}/installer/pphqagent/removeshortcuts.sh"
+                              programArguments="&quot;${installdir}&quot; &quot;${branding}&quot;"
+                              workingDirectory="${installdir}/installer/pphqagent" abortOnError="0" showMessageOnError="0"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="linux"/>
+                    </ruleList>
+                </actionGroup>
+
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="InstallationDirectory" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Description" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Version" value=""/>
@@ -687,23 +735,13 @@
             </ruleList>
         </actionGroup>
 
-        <!-- LIN : Remove Menu shortcuts -->
-        <runProgram program="${installdir}/installer/pphqagent/removeshortcuts.sh"
-            programArguments="&quot;${installdir}&quot; &quot;${branding}&quot;"
-            workingDirectory="${installdir}/installer/pphqagent" abortOnError="0" showMessageOnError="0">
-            <ruleList>
-                <compareText logic="contains" text="${platform_name}" value="linux"/>
-            </ruleList>
-        </runProgram>
-        <deleteFile path="/Applications/${branding}/Postgres Plus HQ Home Page.app">
-            <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="osx"/>
-            </ruleList>
-        </deleteFile>
         <actionGroup>
             <actionList>
-                <stopWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0" showMessageOnError="0"/>
-                <deleteWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0"  showMessageOnError="0"/>
+                <stopWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphqagent.stopping)}"/>
+                <deleteWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0"  showMessageOnError="0"
+                      progressText="${msg(pphqagent.service.removing)}"/>
+                <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent"/>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>

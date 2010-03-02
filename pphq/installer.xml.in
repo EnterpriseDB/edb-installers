@@ -1183,6 +1183,8 @@
             </ruleList>
         </runProgram>
         <setInstallerVariable name="branding" value="${branding}" persist="1"/>
+        <setInstallerVariable name="serviceName" value="${serviceName}" persist="1"/>
+        <setInstallerVariable name="agentServiceName" value="${agentServiceName}" persist="1"/>
         <deleteFile path="${pphqTempDir}"/>
         <!--
         Changing permissions of hq-server.conf & agent.properties file because it has password in plain text format.
@@ -1278,6 +1280,28 @@
         </actionGroup>
         <actionGroup>
             <actionList>
+                <runProgram program="launchctl"
+                      programArguments="unload /Library/LaunchDaemons/com.edb.launchd.${serviceName}.plist"
+                      abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphq.server.stopping)}"/>
+                <!-- Making sure the server is stopped properly -->
+                <runProgram program="${installdir}/scripts/serverctl.sh"
+                        programArguments="--no-wait stop"
+                        workingDirectory="${installdir}/scripts"
+                        progressText="${msg(pphq.server.stopping)}"
+                        abortOnError="0" showMessageOnError="0"/>
+
+                <runProgram program="launchctl"
+                      programArguments="unload /Library/LaunchDaemons/com.edb.launchd.${agentServiceName}.plist"
+                      abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphq.server.stopping)}"/>
+                <!-- Making sure the agent is stopped properly -->
+                <runProgram program="${installdir}/scripts/agentctl.sh"
+                        programArguments="--no-wait stop"
+                        workingDirectory="${installdir}/scripts"
+                        progressText="${msg(pphq.agent.stopping)}"
+                        abortOnError="0" showMessageOnError="0"/>
+
                 <deleteFile path="/Applications/${branding}" abortOnError="0" showMessageOnError="0"/>
                 <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.${serviceName}.plist" abortOnError="0" showMessageOnError="0"/>
                 <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.${agentServiceName}.plist" abortOnError="0" showMessageOnError="0"/>
