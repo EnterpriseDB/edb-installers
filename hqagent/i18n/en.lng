@@ -70,3 +70,4 @@ pphqagent.server.details.explaination=Please provide the Postgres Plus HQ userna
 
 pphqagent.server.details.explaination.upgrade=Please enter the username and password for the Postgres Plus HQ server at ${pphqhost}:${pphqport}:
 
+pphqagent.work.directory.removing=Removing HQ Agent work directory...

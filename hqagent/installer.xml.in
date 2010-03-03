@@ -696,6 +696,9 @@
                 <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.${serviceName}.plist"
                       abortOnError="0" showMessageOnError="0"
                       progressText="${msg(pphqagent.service.removing)}"/>
+		<deleteFile path="${installdir}/agent-PG_VERSION_HQAGENT/bundles/agent-PG_VERSION_HQAGENT-PPHQ_BUILD/pdk/work"
+                      abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphqagent.work.directory.removing)}"/>
                 <deleteFile path="/Applications/${branding}/Start Postgres Plus HQ Agent.app"
                       abortOnError="0" showMessageOnError="0"/>
                 <deleteFile path="/Applications/${branding}/Stop Postgres Plus HQ Agent.app"
@@ -730,6 +733,10 @@
                         <runProgram program="${installdir}/installer/pphqagent/removeshortcuts.sh"
                               programArguments="&quot;${installdir}&quot; &quot;${branding}&quot;"
                               workingDirectory="${installdir}/installer/pphqagent" abortOnError="0" showMessageOnError="0"/>
+		
+                        <deleteFile path="${installdir}/agent-PG_VERSION_HQAGENT/bundles/agent-PG_VERSION_HQAGENT-PPHQ_BUILD/pdk/work"
+			      abortOnError="0" showMessageOnError="0"
+                              progressText="${msg(pphqagent.work.directory.removing)}"/>
                     </actionList>
                     <ruleList>
                         <compareText logic="contains" text="${platform_name}" value="linux"/>
@@ -759,6 +766,9 @@
                 <deleteWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0"  showMessageOnError="0"
                       progressText="${msg(pphqagent.service.removing)}"/>
                 <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent"/>
+		<deleteFile path="${installdir}\agent-PG_VERSION_HQAGENT\bundles\agent-PG_VERSION_HQAGENT-PPHQ_BUILD\pdk\work"
+                      abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphqagent.work.directory.removing)}"/>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
