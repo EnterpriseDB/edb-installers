@@ -591,24 +591,29 @@
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
+                <setInstallerVariable name="errCode" value="${program_exit_code}"/>
                 <setInstallerVariable name="errMessage" value="${program_stderr}"/>
                 <setInstallerVariable name="errMessage" value="${msg(hqagent.server.validation.fail)}">
                     <ruleList>
                         <compareText logic="contains" text="${errMessage}" value="Invalid username"/>
                     </ruleList>
                 </setInstallerVariable>
+                <!-- Stop Agent, if it failed on configuration -->
                 <runProgram program="${installdir}/scripts/agentctl.sh"
                     programArguments="--no-wait stop" workingDirectory="${installdir}/agent-PG_VERSION_HQAGENT/bin"
                     abortOnError="0" showMessageOnError="0">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                        <compareText logic="does_not_equal" text="${errCode}" value="0"/>
                     </ruleList>
                 </runProgram>
+                <!-- Stop Agent, if it failed on configuration -->
                 <runProgram program="cscript.exe"
                     programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; stop" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
                     abortOnError="0" showMessageOnError="0">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
+                        <compareText logic="does_not_equal" text="${errCode}" value="0"/>
                     </ruleList>
                 </runProgram>
                 <setInstallerVariable name="errMessage" value="${msg(pphqagent.server.connection.fail)}">
@@ -1053,6 +1058,7 @@
                             </ruleList>
                         </runProgram>
                         <setInstallerVariable name="errMessage" value="${program_stderr}"/>
+                        <setInstallerVariable name="errCode" value="${program_exit_code}"/>
                         <setInstallerVariable name="strmsg" value=""/>
 
                         <actionGroup>
@@ -1095,6 +1101,7 @@
                             </actionList>
                             <ruleList>
                                 <stringTest text="${errMessage}" type="not_empty"/>
+                                <compareText logic="does_not_equal" text="${errCode}" value="0"/>
                             </ruleList>
                         </actionGroup>
                     </actionList>
