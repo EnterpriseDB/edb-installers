@@ -453,7 +453,7 @@ _process_command_line()
      then
        loadOptionFile ${2}
      else
-       error "Option file could not be found!"
+       _die "Option file could not be found!"
      fi
      RAR_NO_PROCD_CMD=2
      ;;
