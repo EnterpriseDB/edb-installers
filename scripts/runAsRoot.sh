@@ -240,7 +240,7 @@ usage()
    LRAR_SCRIPTNAME=`basename $0`
    _title 1 "USAGE: ${RAR_WD}/${LRAR_SCRIPTNAME} <options>"
    _info  1 "options:"
-   _info  1 "   -i  | --installdir       <Installation Directory> - Directory, where PostgreSQL one click installer binaries has been extracted."
+   _info  1 "   -i  | --installdir       <Installation Directory> - Directory containing previously extracted installation files"
    _info  1 "                                                       (Default: Current Working Directory. i.e. $PWD)"
    _info  1 "   -su | --superuser        <super-user>             - Database Super User"
    _info  1 "   -sp | --superpassword    <super-password>         - Database Password for the Super User"
