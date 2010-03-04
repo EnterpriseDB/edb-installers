@@ -62,12 +62,12 @@ pphqagent.config.pphqpassword=Password
 
 pphqagent.config.pphqsecureconn=Use a Secure Connection?
 
-pphqagent.config.agenthost=Agent Hostname/Address (The Agent Hostname/Address will be used by the PPHQ Server to connect to the agent)
+pphqagent.config.agenthost=Agent Hostname/Address
 
 pphqagent.service.removing=Removing Postgres Plus HQ Agent service...
 
 pphqagent.server.details.explaination=Please provide the Postgres Plus HQ username and password to configure the agent.
 
-pphqagent.server.details.explaination.upgrade=Please enter the username and password for the Postgres Plus HQ server at ${pphqhost}:${pphqport}:
+pphqagent.server.details.explaination.upgrade=Please enter the username and password for the Postgres Plus HQ server at ${pphqhost}:${pphqport}. The Agent Hostname/Address will be used by the PPHQ Server to connect to the agent.
 
 pphqagent.work.directory.removing=Removing HQ Agent work directory...
