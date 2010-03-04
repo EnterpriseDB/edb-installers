@@ -955,7 +955,7 @@ Public Sub WMI_Service_Start(strServiceName, intWaitTimeout)
              "-----------------------------------------------------------------------------" & VBCRLF & _
              "Checking if the " & strServiceName & " service exists." & VBCRLF & _
              "-----------------------------------------------------------------------------"
-  If Not WMI_Service_Exists(Services, strServiceName) Then
+  If Not WMI_Service_Exists(strServiceName) Then
     LogWarn "The service " & strServiceName & " does not exist."
     Exit Sub
   End If
@@ -965,12 +965,12 @@ Public Sub WMI_Service_Start(strServiceName, intWaitTimeout)
              "-----------------------------------------------------------------------------" & VBCRLF & _
              "Checking the state of the " & strServiceName & " service." & VBCRLF & _
              "-----------------------------------------------------------------------------"
-  strServiceState = WMI_Service_State_Get(Services, strServiceName)
+  strServiceState = WMI_Service_State_Get(strServiceName)
 
   'Wait for the service to stabilize if the service state is changing
   If Instr(1, "Start Pending, Continue Pending, Stop Pending, Pause Pending, Paused, Running", strServiceState, vbTextCompare) Then
-    Call WMI_Service_State_WaitOnChange(Services, strServiceName, "Paused, Running, Stopped", intWaitTimeout)
-    strServiceState = WMI_Service_State_Get(Services, strServiceName)
+    Call WMI_Service_State_WaitOnChange(strServiceName, "Paused, Running, Stopped", intWaitTimeout)
+    strServiceState = WMI_Service_State_Get(strServiceName)
   End If
 
   'The service is in an 'Unknown' state
@@ -983,7 +983,7 @@ Public Sub WMI_Service_Start(strServiceName, intWaitTimeout)
              "-----------------------------------------------------------------------------"
 
   'Call the procedure to send the command to the user specified service
-  strServiceState = WMI_Service_State_Set(Services, strServiceName, "Start", intWaitTimeout)
+  strServiceState = WMI_Service_State_Set(strServiceName, "Start", intWaitTimeout)
 
   If UCase(strServiceState) = "Running" Then
     LogMessage "The service '" & strServiceName & "' started successfully."
@@ -1046,7 +1046,7 @@ Public Sub WMI_Service_Stop(strServiceName, intWaitTimeout)
              "-----------------------------------------------------------------------------" & VBCRLF & _
              "Checking if the " & strServiceName & " service exists." & VBCRLF & _
              "-----------------------------------------------------------------------------"
-  If Not WMI_Service_Exists(Services, strServiceName) Then
+  If Not WMI_Service_Exists(strServiceName) Then
     LogWarn "The service " & strServiceName & " does not exist."
     Exit Sub
   End If
@@ -1057,12 +1057,12 @@ Public Sub WMI_Service_Stop(strServiceName, intWaitTimeout)
              "-----------------------------------------------------------------------------" & VBCRLF & _
              "Checking the state of the " & strServiceName & " service." & VBCRLF & _
              "-----------------------------------------------------------------------------"
-  strServiceState = WMI_Service_State_Get(Services, strServiceName)
+  strServiceState = WMI_Service_State_Get(strServiceName)
 
   'Wait for the service to stabilize if the service state is changing
   If Instr(1, "Start Pending, Continue Pending, Stop Pending, Pause Pending", strServiceState, vbTextCompare) Then
-    Call WMI_Service_State_WaitOnChange(Services, strServiceName, "Paused, Running, Stopped", intWaitTimeout)
-    strServiceState = WMI_Service_State_Get(Services, strServiceName)
+    Call WMI_Service_State_WaitOnChange(strServiceName, "Paused, Running, Stopped", intWaitTimeout)
+    strServiceState = WMI_Service_State_Get(strServiceName)
   End If
 
   'The service is in an 'Unknown' state
@@ -1105,7 +1105,7 @@ Public Sub WMI_Service_Stop(strServiceName, intWaitTimeout)
           LogMessage "  The " & objService.Name & " service is already Stopped."
         Else
           'Call the procedure to send the command
-          strServiceState = WMI_Service_State_Set(Services, objService.Name, "Stop", intWaitTimeout)
+          strServiceState = WMI_Service_State_Set(objService.Name, "Stop", intWaitTimeout)
         End If
       Next
     End If
@@ -1114,7 +1114,7 @@ Public Sub WMI_Service_Stop(strServiceName, intWaitTimeout)
                "-----------------------------------------------------------------------------"
 
     'Call the procedure to send the command to the user specified service
-    strServiceState = WMI_Service_State_Set(Services, strServiceName, "Stop", intWaitTimeout)
+    strServiceState = WMI_Service_State_Set(strServiceName, "Stop", intWaitTimeout)
     If strServiceState = "Stopped" Then
       LogMessage "The " & strServiceName & " service stopped successfully."
     End If
@@ -2069,6 +2069,8 @@ Function IsPostGISPresent()
 End Function
 
 Sub ConfigurePostGIS
+  ShowMessage "Configuring PostGIS..."
+  LogNote "This will take some time..."
   ' Create postgis template database
   RunPsql true, "-t", true, "CREATE DATABASE template_postgis", ""
   ' Mark teh the database as a template
@@ -2098,7 +2100,7 @@ Function IsSlonyPresent
 End Function
 
 Sub ConfigureSlony
-  LogMessage "ConfigureSlony:"
+  ShowMessage "Configuring Slony..."
   l_strConfFile = objDevServer.InstallDir & "\Slony\installer\Slony\configureslony.bat"
   l_strRemoveFile = objDevServer.InstallDir & "\Slony\installer\Slony\removeFiles.bat"
   SetVariableFromScriptOutput objDevServer.InstallDir & "\bin\pg_config.exe", "--pkglibdir", l_strPkgLibDir, l_strErrMsg, l_iStatus
@@ -2137,10 +2139,10 @@ End Sub
 Function IsPgAgentPresent
   IsPgAgentPresent = false
   If FSO.FolderExists(objDevServer.InstallDir & "\pgAgent") AND _
-     IsFileExists(objDevServer.InstallDir, "share\pgagent.sql", l_strErrMsg) AND _
-     IsFileExists(objDevServer.InstallDir, "bin\pgagent.exe", l_strErrMsg) AND _
-     IsFileExists(objDevServer.InstallDir, "bin\pgaevent.dll", l_strErrMsg) AND _
-     IsFileExists(objDevServer.InstallDir, "installer\pgAgent\pgaevent.dll", l_strErrMsg) Then
+     IsFileExists(objDevServer.InstallDir, "\pgAgentshare\pgagent.sql", l_strErrMsg) AND _
+     IsFileExists(objDevServer.InstallDir, "\pgAgentbin\pgagent.exe", l_strErrMsg) AND _
+     IsFileExists(objDevServer.InstallDir, "\pgAgentbin\pgaevent.dll", l_strErrMsg) AND _
+     IsFileExists(objDevServer.InstallDir, "\pgAgentinstaller\pgAgent\pgaevent.dll", l_strErrMsg) Then
     SetVariableFrompsqlOutput l_strHasSchema, "SELECT has_schema_privilege('pgagent', 'USAGE')", CONSTADMINDATABASE
     ' pgAgent component present, but we will configure it only if 'pgagent' schema does not exists
     If l_strHasSchema = "" Then
@@ -2194,6 +2196,7 @@ Sub CreatePGPassConfig
 End Sub
 
 Sub ConfigurepgAgent
+  ShowMessage "Configuring pgAgent..."
   RunPsql true, "-t", true, "CREATE SCHEMA pgagent", CONSTADMINDATABASE
   RunPsql true, "-t", false, objDevServer.InstallDir & "\pgAgent\share\pgagent.sql"
 
@@ -2280,13 +2283,13 @@ Function IsPsqlODBCPresent
   IsPsqlODBCPresent = false
   If RegistryItemExists("HKLM\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers\PostgreSQL " & objDevServer.Version & " (UNICODE)") Then
     If WshShell.RegRead("HKLM\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers\PostgreSQL " & objDevServer.Version & " (UNICODE)") = "Installed" Then
-      ShowMessage "PostgreSQL " & objDevServer.MajorVersion & " (UNICODE) Driver is already been installed."
+      ShowMessage "PostgreSQL " & objDevServer.Version & " (UNICODE) Driver is already been installed."
       Exit Function
     End If
   End If
   If RegistryItemExists("HKLM\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers\PostgreSQL " & objDevServer.Version & " (ANSI)") Then
     If WshShell.RegRead("HKLM\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers\PostgreSQL " & objDevServer.Version & " (ANSI)") = "Installed" Then
-      ShowMessage "PostgreSQL " & objDevServer.MajorVersion & " (ANSI) Driver is already been installed."
+      ShowMessage "PostgreSQL " & objDevServer.Version & " (ANSI) Driver is already been installed."
       Exit Function
     End If
   End If
@@ -2303,6 +2306,7 @@ Function IsPsqlODBCPresent
 End Function
 
 Sub ConfigurepgsqlODBC
+  ShowMessage "Configuring psqlODBC..."
   l_strTmpFile     = Replace(FSO.GetTempName, ".tmp", ".bat")
   l_strTmpFilePath = TempFolder.Path & "\" & l_strTmpFile
   Set objTmpBatch  = TempFolder.CreateTextFile(l_strTmpFile, True)
@@ -2337,6 +2341,7 @@ Function IsPgBouncerPresent
 End Function
 
 Sub ConfigurePgBouncer
+  ShowMessage "Configuring pgBouncer..."
   If NOT FSO.FolderExists(objPGBouncer.Path & "\log") Then
     FSO.CreateFolder objPGBouncer.Path & "\log"
   End If
@@ -2468,6 +2473,8 @@ If NOT WMI_Service_Exists(objDevServer.ServiceName) Then
   End Select
 Else
   ShowMessage "The Service " & objDevServer.ServiceName & " already exists."
+  ShowMessage "Stopping the service (" & objDevServer.ServiceName & ")"
+  WMI_Service_Stop objDevServer.ServiceName, 500
 End If
 
 BackupNUseOriginalFile objDevServer.InstallDir & "\scripts\serverctl.vbs"
@@ -2492,9 +2499,17 @@ FSO.CopyFile objDevServer.InstallDir & "\scripts\serverctl.vbs", objDevServer.In
 FSO.CopyFile objDevServer.InstallDir & "\scripts\runpsql.bat", objDevServer.InstallDir & "\scripts\runpsql_" & objDevServer.ServiceName & ".bat", true
 
 ShowMessage "Starting server..."
-RunProgram WScript.FullName, _
-           array("//nologo", objDevServer.InstallDir & "\scripts\serverctl.vbs", "start"), _
-           strScriptOutput, strScriptError, iStatus
+'RunProgram WScript.FullName, _
+'           array("//nologo", objDevServer.InstallDir & "\scripts\serverctl.vbs", "start"), _
+'           strScriptOutput, strScriptError, iStatus
+WMI_Service_Start objDevServer.ServiceName, 1000
+
+l_strServiceState = WMI_Service_State_Get(objDevServer.ServiceName)
+If NOT UCase(l_strServiceState) = "Running" Then
+    LogError "The service '" & objDevServer.ServiceName & "' could not be started."
+    Call Finish(1)
+End If
+
 
 If NOT iStatus = 0 Then
   LogError "Couldn't start the server service (" & objDevServer.ServiceName & ")."
