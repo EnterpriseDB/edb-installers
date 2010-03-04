@@ -1493,7 +1493,7 @@ _title ============================
 
 readPassword "Please provide password for the super-user(${PG_RAR_SUPERUSER}):" PG_RAR_SUPERPASSWORD "${PG_RAR_SUPERPASSWORD}" " " "Database super-user's password"
 
-_info 1 "Super Password: ${PG_RAR_SUPERPASSWORD}"
+_info 1 "Super User Password: ${PG_RAR_SUPERPASSWORD}"
 
 ##############################
 # START INSTALLATION PROCESS #
