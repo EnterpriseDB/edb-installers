@@ -505,13 +505,20 @@
                 name="machineNetInfo"
                 workingDirectory="${installdir}"/>
 
-        <setInstallerVariable name="agenthost" value="localhost"/>
+	<!-- do not reset agent host in case of upgrade. It will be picked up from registry.
+	-->
+        <setInstallerVariable name="agenthost" value="localhost">
+            <ruleList>
+                <compareText text="${pphqAgentVersion}" logic="equals" value=""/>
+            </ruleList>
+	</setInstallerVariable>
 
         <setInstallerVariableFromRegEx name="agenthost"  text="${machineNetInfo}">
             <pattern>^.*host\sname\.*([a-zA-Z0-9\.\-]*).*$</pattern>
             <substitution>\1</substitution>
             <ruleList>
                 <stringTest text="${machineNetInfo}" type="not_empty"/>
+                <compareText text="${pphqAgentVersion}" logic="equals" value=""/>
             </ruleList>
         </setInstallerVariableFromRegEx>
 
@@ -522,6 +529,7 @@
             <ruleList>
                 <compareText logic="does_not_contain" text="${agenthost}" value="."/>
                 <stringTest text="${machineNetInfo}" type="not_empty"/>
+                <compareText text="${pphqAgentVersion}" logic="equals" value=""/>
             </ruleList>
         </setInstallerVariableFromRegEx>
 
