@@ -108,6 +108,8 @@ pphq.shortcuts.removing=Removing PPHQ menu shortcuts...
 
 pphquser.does.not.have.permission=The Postgres user '${pphquser}' does not have permission to modify the existing PPHQ database '${pphqadmindb}'. The owner of the '${pphqadmindb}' database is ${admin_db_owner}. Either specify PPHQ user as ${admin_db_owner} and provide the corresponding password or select a new database.
 
+pphquser.does.not.have.create.permission=The Postgres user '${pphquser}' does not have permission to create tables in the existing PPHQ database '${pphqadmindb}'. The owner of the '${pphqadmindb}' database is ${admin_db_owner}. Either specify PPHQ user as ${admin_db_owner} and provide the corresponding password or specify a different user.
+
 pphquser.password.do.not.match=The PPHQ user '${pphquser}' will be the owner of the PPHQ database '${pphqadmindb}'. The username specified already exists and has different password than entered. Either provide the correct password for '${pphquser}' or select a new user.
 
 pphquser.upgrade.password.do.not.match=The password specified for the database user (${pphquser}) is not correct.

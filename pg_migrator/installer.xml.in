@@ -1200,9 +1200,8 @@
                                 <compareText text="${installdir}" logic="equals" value=""/>
                             </ruleList>
                         </actionGroup>
-                    </validationActionList>
-                    <!-- Validating whether installdir is proper pg_home -->
-                    <validationActionList>
+
+                        <!-- Validating whether installdir is proper pg_home -->
                         <actionGroup>
                             <actionList>
                                 <setInstallerVariable name="installdir" value="${default_installdir}" />
@@ -1223,9 +1222,8 @@
                                 <compareText text="${platform_name}" logic="equals" value="windows"/>
                             </ruleList>
                         </actionGroup>
-                    </validationActionList>
-                    <!-- Validating the pg_home is of compatible version --> 
-                    <validationActionList>
+
+                        <!-- Validating the pg_home is of compatible version --> 
                         <setInstallerVariableFromScriptOutput name="pg_version_str"
                                                               exec="${installdir}\bin\pg_config.exe"
                                                               execArgs="--version"
@@ -1259,9 +1257,8 @@
                                 <compareText logic="does_not_equal" text="${pg_version}" value="PG_MAJOR_VERSION"/>
                             </ruleList>
                         </actionGroup>
-                    </validationActionList>
-                    <!-- Validating we have a working pkglibdir -->
-                    <validationActionList>
+
+                        <!-- Validating we have a working pkglibdir -->
                         <setInstallerVariableFromScriptOutput name="pkglibdir"
                                                               exec="${installdir}\bin\pg_config.exe"
                                                               execArgs="--pkglibdir"
@@ -1307,9 +1304,7 @@
                                 <compareText text="${platform_name}" logic="equals" value="windows"/>
                             </ruleList>
                         </setInstallerVariableFromRegEx>
-                    </validationActionList>
         
-                    <validationActionList>
                         <!-- Validating whether installdir contains whitespaces (Linux) -->
                         <actionGroup>
                             <actionList>  

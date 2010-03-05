@@ -30,8 +30,8 @@
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
 
     <!-- Images -->
-    <disableSplashScreen>1</disableSplashScreen>
     <leftImage>../resources/edb-side.png</leftImage>
+    <splashImage>resources/splash_screen.png</splashImage>
 
     <!-- i18n files for the UI -->
     <allowedLanguages>en</allowedLanguages>
@@ -703,10 +703,6 @@
                     </ruleList>
                 </actionGroup>
 
-		<!-- If ppqadmindb already exists and pphqadminuser does not have permission to access
-		objects of pphqadmindb then tell user to specify correct password of the owner of pphqadmindb
-		or change the database name.
-		-->
 		<setEnvironmentVariable name="PGUSER" value="${pguser}"/>
 		<setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
 
@@ -720,6 +716,10 @@
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
                 <stringModify text="${has_eam_agent_table}" variable="has_eam_agent_table" logic="trim"/>
+		<!-- If ppqadmindb already exists and pphqadminuser does not have permission to access
+		objects of pphqadmindb then tell user to specify correct password of the owner of pphqadmindb
+		or change the database name.
+		-->
                 <setInstallerVariableFromScriptOutput
                         exec="${psql_path}"
                         execArgs="-d &quot;${pphqadmindb}&quot; -t -A -c &quot;SELECT bool_and(has_table_privilege('${pphquser}', c.oid::regclass, 'INSERT') AND has_table_privilege('${pphquser}', c.oid::regclass, 'UPDATE') AND has_table_privilege('${pphquser}', c.oid::regclass, 'DELETE') AND has_table_privilege('${pphquser}', c.oid::regclass, 'SELECT')) FROM pg_class c, pg_namespace n, pg_database d WHERE c.relnamespace = n.oid AND n.nspname = 'public' AND relkind='r' AND c.relname='eam_agent'&quot;"
@@ -734,6 +734,29 @@
                 <actionGroup>
                     <actionList>
 			<throwError text="${msg(pphquser.does.not.have.permission)}">
+	                    <ruleList>
+                                <compareText text="${pphquser_has_permission}" logic="does_not_equal" value="t" />
+			    </ruleList>
+	                </throwError>
+                    </actionList>
+                </actionGroup>
+	    	<!-- If ppqadmindb already exists and pphqadminuser does not have permission to create
+		new objects in pphqadmindb then tell user to specify some other user.
+		-->
+                <setInstallerVariableFromScriptOutput
+                        exec="${psql_path}"
+                        execArgs="-d &quot;${pphqadmindb}&quot; -t -A -c &quot;SELECT has_schema_privilege('${pphquser}', 'public', 'CREATE')&quot;"
+                        name="pphquser_has_permission"
+                        workingDirectory="${pphqTempDir}/instscripts">
+		   <ruleList>
+                        <isTrue value="${admin_db_exists}"/>
+                        <isTrue value="${pphq_db_user_exists}"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <stringModify text="${pphquser_has_permission}" variable="pphquser_has_permission" logic="trim"/>
+                <actionGroup>
+                    <actionList>
+			<throwError text="${msg(pphquser.does.not.have.create.permission)}">
 	                    <ruleList>
                                 <compareText text="${pphquser_has_permission}" logic="does_not_equal" value="t" />
 			    </ruleList>
@@ -1962,11 +1985,7 @@
                     </ruleList>
                 </actionGroup>
 
-		<!-- If ppqadmindb already exists and pphqadminuser does not have permission to access
-		objects of pphqadmindb then tell user to specify correct password of the owner of pphqadmindb
-		or change the database name.
-		-->
-		<setEnvironmentVariable name="PGUSER" value="${pguser}" />
+	    	<setEnvironmentVariable name="PGUSER" value="${pguser}" />
 		<setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
 
                 <setInstallerVariable name="has_eam_agent_table" value="false"/>
@@ -1979,6 +1998,10 @@
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
                 <stringModify text="${has_eam_agent_table}" variable="has_eam_agent_table" logic="trim"/>
+	    	<!-- If ppqadmindb already exists and pphqadminuser does not have permission to access
+		objects of pphqadmindb then tell user to specify correct password of the owner of pphqadmindb
+		or change the database name.
+		-->
                 <setInstallerVariableFromScriptOutput
                         exec="${psql_path}"
                         execArgs="-d &quot;${pphqadmindb}&quot; -t -A -c &quot;SELECT bool_and(has_table_privilege('${pphquser}', c.oid::regclass, 'INSERT') AND has_table_privilege('${pphquser}', c.oid::regclass, 'UPDATE') AND has_table_privilege('${pphquser}', c.oid::regclass, 'DELETE') AND has_table_privilege('${pphquser}', c.oid::regclass, 'SELECT')) FROM pg_class c, pg_namespace n, pg_database d WHERE c.relnamespace = n.oid AND n.nspname = 'public' AND relkind='r' AND c.relname='eam_agent'&quot;"
@@ -1994,6 +2017,29 @@
                 <actionGroup>
                     <actionList>
 			<throwError text="${msg(pphquser.does.not.have.permission)}">
+	                    <ruleList>
+                                <compareText text="${pphquser_has_permission}" logic="does_not_equal" value="t" />
+			    </ruleList>
+	                </throwError>
+                    </actionList>
+                </actionGroup>
+	    	<!-- If ppqadmindb already exists and pphqadminuser does not have permission to create
+		new objects in pphqadmindb then tell user to specify some other user.
+		-->
+                <setInstallerVariableFromScriptOutput
+                        exec="${psql_path}"
+                        execArgs="-d &quot;${pphqadmindb}&quot; -t -A -c &quot;SELECT has_schema_privilege('${pphquser}', 'public', 'CREATE')&quot;"
+                        name="pphquser_has_permission"
+                        workingDirectory="${pphqTempDir}/instscripts">
+		   <ruleList>
+                        <isTrue value="${admin_db_exists}"/>
+                        <isTrue value="${pphq_db_user_exists}"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <stringModify text="${pphquser_has_permission}" variable="pphquser_has_permission" logic="trim"/>
+                <actionGroup>
+                    <actionList>
+			<throwError text="${msg(pphquser.does.not.have.create.permission)}">
 	                    <ruleList>
                                 <compareText text="${pphquser_has_permission}" logic="does_not_equal" value="t" />
 			    </ruleList>
