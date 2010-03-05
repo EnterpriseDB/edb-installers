@@ -85,29 +85,105 @@ _build_ReplicationServer_windows() {
     SOURCE_DIR=$PG_PATH_WINDOWS/ReplicationServer.windows
     OUTPUT_DIR=$PG_PATH_WINDOWS\\\\ReplicationServer.windows\\\\dist
     STAGING_DIR=$WD/ReplicationServer/staging/windows
+
+    cd $WD/ReplicationServer/source
+
+cat <<EOT > "rs-build.bat"
+@SET VSINSTALLDIR=$PG_VSINSTALLDIR_WINDOWS
+@SET VCINSTALLDIR=$PG_VSINSTALLDIR_WINDOWS\VC
+@SET FrameworkDir=$PG_FRAMEWORKDIR_WINDOWS
+@SET FrameworkVersion=$PG_FRAMEWORKVERSION_WINDOWS
+@SET FrameworkSDKDir=$PG_FRAMEWORKSDKDIR_WINDOWS
+@set DevEnvDir=$PG_DEVENVDIR_WINDOWS
+@set INCLUDE=%VCINSTALLDIR%\ATLMFC\INCLUDE;%VCINSTALLDIR%\INCLUDE;%VCINSTALLDIR%\PlatformSDK\include;%FrameworkSDKDir%\include;%INCLUDE%
+@set LIB=%VCINSTALLDIR%\ATLMFC\LIB;%VCINSTALLDIR%\LIB;%VCINSTALLDIR%\PlatformSDK\lib;%FrameworkSDKDir%\lib;%LIB%
+@set LIBPATH=$PG_FRAMEWORKDIR_WINDOWS\$PG_FRAMEWORKVERSION_WINDOWS;%VCINSTALLDIR%\ATLMFC\LIB
+
+@SET PGBUILD=C:\pgBuild
+
+@SET JAVA_HOME=$PG_JAVA_HOME_WINDOWS
+
+@set PATH=$PG_CMAKE_WINDOWS\bin;%VSINSTALLDIR%\Common7\IDE;%VCINSTALLDIR%\BIN;%VSINSTALLDIR%\Common7\Tools;%VSINSTALLDIR%\Common7\Tools\bin;%VCINSTALLDIR%\PlatformSDK\bin;%FrameworkSDKDir%\bin;$PG_FRAMEWORKDIR_WINDOWS\$PG_FRAMEWORKVERSION_WINDOWS;%VCINSTALLDIR%\VCPackages;%PATH%
+
+cd "$PG_PATH_WINDOWS\ReplicationServer.windows"
+SET SOURCE_PATH=%CD%
+
+@CALL $PG_ANT_WINDOWS\\bin\\ant -f custom_build.xml dist
+IF NOT EXIST "dist\repconsole\bin\edb-repcli.jar" goto build-failed
+
+cd "%SOURCE_PATH%\\validateuser"
+vcbuild validateuser.vcproj RELEASE
+IF NOT EXIST "release\\validateuser.exe" goto build-validateuser-failed
+
+cd "%SOURCE_PATH%\\createuser"
+vcbuild createuser.vcproj RELEASE
+IF NOT EXIST "release\\createuser.exe" goto build-createuser-failed
+
+cd "%SOURCE_PATH%\\ServiceWrapper"
+vcbuild ServiceWrapper.vcproj RELEASE
+IF NOT EXIST "release\\ServiceWrapper.exe" goto build-servicewrapper-failed
+
+
+cd "%SOURCE_PATH%\\validateUserClient"
+vcbuild validateuser.vcproj RELEASE
+IF NOT EXIST "release\\validateUserClient.exe" goto build-wsvalidateuser-failed
+
+cd "%SOURCE_PATH%\\dbserver_guid"
+vcbuild dbserver_guid.vcproj RELEASE
+IF NOT EXIST "release\\dbserver_guid.exe" goto build-dbserver-guid-failed
+
+echo "copying application files into the output directory"
+cd "%SOURCE_PATH%"
+copy /y validateuser\\release\\validateuser.exe $OUTPUT_DIR
+copy /y createuser\\\\release\\\\createuser.exe $OUTPUT_DIR
+copy /y ServiceWrapper\\\\release\\\\ServiceWrapper.exe $OUTPUT_DIR
+copy /y validateUserClient\\\\release\\\\validateUserClient.exe $OUTPUT_DIR
+copy /y dbserver_guid\\\\release\\\\dbserver_guid.exe $OUTPUT_DIR
+copy /Y C:\\\\pgBuild\\\\vcredist\\\\vcredist_x86.exe  $OUTPUT_DIR
+
+echo "Removing existing dist.zip (if any)"
+If EXIST dist.zip del /q dist.zip
+echo "Archieving distribution files"
+zip -r dist.zip dist\\*
+
+echo Build encrypt-util
+@CALL $PG_ANT_WINDOWS\\bin\\ant -f custom_build.xml encrypt-util
+
+echo "Appending new files in the archieve"
+zip -r dist.zip dist\\*
+
+goto eof
+
+:build-failed
+echo "Replication Server failed to build on windows VM
+exit 1
+
+:build-validateuser-failed
+echo "Failed to build validate-user utility"
+exit 1
+
+:build-createuser-failed
+echo "Failed to build create-user utility"
+exit 1
+
+:build-servicewrapper-failed
+echo "Failed to build service-wrapper utility"
+exit 1
+
+:build-wsvalidateuser-failed
+echo "Failed to build web-service-validate-user utility"
+exit 1
+
+:build-dbserver-guid-failed
+echo "Failed to build guid utility"
+exit 1
+
+:eof
+
+EOT
  
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR ; cmd /c $PG_ANT_WINDOWS\\\\bin\\\\ant -f custom_build.xml dist" || _die "Failed to build replication server on the build host"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/validateuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/createuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcproj RELEASE" || _die "Failed to build createuser on the build host"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/ServiceWrapper ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat ServiceWrapper.vcproj RELEASE" || _die "Failed to build ServiceWrapper on the build host"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/validateUserClient; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateUser.vcproj RELEASE" || _die "Failed to build validateuserClient on the build host"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/dbserver_guid; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat dbserver_guid.vcproj RELEASE" || _die "Failed to build validateuserClient on the build host"
-
-    echo "copying application files into the output directory"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy validateuser\\\\release\\\\validateuser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy createuser\\\\release\\\\createuser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy ServiceWrapper\\\\release\\\\ServiceWrapper.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy validateUserClient\\\\release\\\\validateUserClient.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy dbserver_guid\\\\release\\\\dbserver_guid.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy /Y C:\\\\pgBuild\\\\vcredist\\\\vcredist_x86.exe  $OUTPUT_DIR" || _die "Failed to copy the VC++ runtimes on the windows build host"
-
-    # Zip up the installed code, copy it back here, and unpack.
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/; cmd /c zip -r dist.zip dist\\\\*" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$SOURCE_DIR/ReplicationServer.windows)"
-    #Build encrypt-util
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR ; cmd /c $PG_ANT_WINDOWS\\\\bin\\\\ant -f custom_build.xml encrypt-util" || _die "Failed to build replication server on the build host"
-    # Append to dist.zip
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/; cmd /c zip -r dist.zip dist\\\\*" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$SOURCE_DIR/ReplicationServer.windows)"
-    echo "Copying built tree to host"
+    scp $WD/ReplicationServer/source/rs-build.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/ReplicationServer.windows/ || _die "Failed to copy the build script"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/ReplicationServer.windows; cmd /c rs-build.bat" || _die "Failed to build Replication Server on windows host"
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/ReplicationServer.windows/dist.zip $WD/ReplicationServer/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/ReplicationServer.windows/dist.zip)"
     unzip $WD/ReplicationServer/staging/windows/dist.zip -d $WD/ReplicationServer/staging/windows/ || _die "Failed to unpack the built source tree ($WD/staging/windows/dist.zip)"
     rm $WD/ReplicationServer/staging/windows/dist.zip
