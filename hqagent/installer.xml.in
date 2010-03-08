@@ -560,6 +560,8 @@
                     </ruleList>
                 </setInstallerVariable>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
+                    key="agent.listerPort" value="${pphqport}"/>
+                <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                     key="agent.setup.camIP" value="${pphqhost}"/>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                     key="agent.setup.camPort" value="${pphqport}"/>
@@ -1028,6 +1030,8 @@
                 <showProgressDialog title="${msg(pphqagent.server.validating)}"
                     progressText="${msg(pphqagent.update.configuration)}">
                     <actionList>
+                        <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
+                            key="agent.listerPort" value="${pphqport}"/>
                         <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                             key="agent.setup.camIP" value="${pphqhost}"/>
                         <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"

@@ -1185,6 +1185,8 @@
         <getFreePort variable="agentport" initialPort="2144" finalPort="65535"/>
 
         <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
+                           key="agent.listenPort" value="${agentport}"/>
+        <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
                            key="agent.setup.camIP" value="${pphqmachinehost}"/>
         <propertiesFileSet file="${installdir}/agent-PG_VERSION_PPHQ/conf/agent.properties"
                            key="agent.setup.camPort" value="${pphqport}"/>
