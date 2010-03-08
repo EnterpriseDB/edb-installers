@@ -252,6 +252,9 @@ _postprocess_ReplicationServer_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
+    # Sign the installer
+    win32_sign "xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-windows.exe"
+
     cd $WD
 }
 
