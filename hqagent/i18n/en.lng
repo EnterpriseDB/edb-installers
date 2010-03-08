@@ -66,10 +66,10 @@ pphqagent.config.agenthost=Agent Hostname/Address
 
 pphqagent.service.removing=Removing Postgres Plus HQ Agent service...
 
-pphqagent.server.details.explaination=Please provide the Postgres Plus HQ username and password to configure the agent.
+pphqagent.server.details.explanation=Please provide the required information to configure the agent.
 
-pphqagent.server.details.explaination.upgrade=Please enter the username and password for the Postgres Plus HQ server at ${pphqhost}:${pphqport}.
+pphqagent.server.details.explanation.upgrade=Please enter the username and password for the Postgres Plus HQ server at ${pphqhost}:${pphqport}.
 
 pphqagent.work.directory.removing=Removing HQ Agent work directory...
 
-pphq.agent.host.error=The Agent Hostname/Address is used by the PPHQ Server to connect to the agent so it can not be localhost or 127.0.0.1.
+pphq.agent.host.error=The Agent Hostname/Address is used by the PPHQ Server to connect to the agent. It must be a netowrk address or hostname that the server can reach, and may not be a loopback address or 'localhost'.

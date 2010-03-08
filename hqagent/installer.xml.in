@@ -992,9 +992,9 @@
             </parameterList>
             <preShowPageActionList>
                 <setInstallerVariable name="pphqServerDetailsExplaination"
-                      value="${msg(pphqagent.server.details.explaination)}"/>
+                      value="${msg(pphqagent.server.details.explanation)}"/>
                 <setInstallerVariable name="pphqServerDetailsExplaination"
-                      value="${msg(pphqagent.server.details.explaination.upgrade)}">
+                      value="${msg(pphqagent.server.details.explanation.upgrade)}">
                     <ruleList>
                         <isFalse value="${configure}"/>
                         <stringTest text="${pphqAgentVersion}" type="not_empty"/>
