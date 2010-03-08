@@ -976,8 +976,8 @@
                                   destination="${installdir}\server-PG_VERSION_PPHQ\bin\"/>
                         <!-- Register PPHQ windows service -->
                         <runProgram program="${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe"
-                              programArguments="-j&quot;${installdir}\jre6&quot; -i -n ${serviceName}"
-                              workingDirectory="${installdir}\server-PG_VERSION_PPHQ\bin"
+                              programArguments="-j${jrehome} -i -n ${serviceName}"
+                              workingDirectory="${installdir}"
                               progressText="${msg(pphq.server.service.configure)}"
                               abortOnError="0" showMessageOnError="0"/>
                         <!-- Start PPHQ windows service -->
@@ -1281,7 +1281,7 @@
                 <!-- Attempt to remove any runlevel config with chkconfig -->
                 <runProgram program="/sbin/chkconfig" showMessageOnError="0"
                     programArguments="--del ${agentServiceName}" abortOnError="0"
-                    progressText="${msg(pphq.server.service.removing)}"/>
+                    progressText="${msg(pphq.agent.service.removing)}"/>
 
                 <!-- Remove the startup script -->
                 <deleteFile path="/etc/init.d/${agentServiceName}" abortOnError="0" showMessageOnError="0"/>
@@ -1298,15 +1298,12 @@
             <actionList>
                 <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="1"
                       progressText="${msg(pphq.server.stopping)}"/>
-                <runProgram program="${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe"
-                      programArguments="-u -n ${serviceName}"
-                      workingDirectory="${installdir}\server-PG_VERSION_PPHQ\bin"
-                      progressText="${msg(pphq.server.service.removing)}"
-                      abortOnError="0" showMessageOnError="0"/>
+                <deleteWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphq.server.service.removing)}"/>
                 <stopWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0" showMessageOnError="0"
-                      progressText="${msg(pphq.server.stopping)}"/>
+                      progressText="${msg(pphq.agent.stopping)}"/>
                 <deleteWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0" showMessageOnError="0"
-                      progressText="${msg(pphq.server.removing)}"/>
+                      progressText="${msg(pphq.agent.service.removing)}"/>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -1337,8 +1334,10 @@
                         abortOnError="0" showMessageOnError="0"/>
 
                 <deleteFile path="/Applications/${branding}" abortOnError="0" showMessageOnError="0"/>
-                <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.${serviceName}.plist" abortOnError="0" showMessageOnError="0"/>
-                <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.${agentServiceName}.plist" abortOnError="0" showMessageOnError="0"/>
+                <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.${serviceName}.plist" abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphq.server.service.removing)}"/>
+                <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.${agentServiceName}.plist" abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphq.agent.service.removing)}"/>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="osx"/>
