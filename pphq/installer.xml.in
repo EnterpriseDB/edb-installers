@@ -282,7 +282,7 @@
             </ruleList>
         </setInstallerVariable>
 
-	    <!-- Use the bundled JRE, if no other has been specified -->
+        <!-- Use the bundled JRE, if no other has been specified -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="java_executable" value="${installdir}/jre6/bin/java"/>
@@ -312,7 +312,7 @@
                 <compareText text="${jrehome}" logic="equals" value=""/>
                 <compareText text="${platform_name}" logic="equals" value="osx"/>
             </ruleList>
-        </actionGroup>	
+        </actionGroup>
 
         <setEnvironmentVariable name="JAVA_HOME" value="${jrehome}"/>
         <setEnvironmentVariable name="HQ_JAVA_HOME" value="${jrehome}"/>
@@ -668,7 +668,7 @@
                         execArgs="-t -A -c &quot;SELECT 1 FROM pg_catalog.pg_user u WHERE u.usename='${pphquser}'&quot;"
                         name="pphq_db_user_exists"
                         workingDirectory="${pphqTempDir}/instscripts"/>
-		<!-- If it is a fresh installation and pphq console user specified already exists in the database and passwprd			does not match then ask for either specifying correct password as stored in the database or change user name		    . If it is upgrade then just ask pphq admin database password.	
+		<!-- If it is a fresh installation and pphq console user specified already exists in the database and passwprd			does not match then ask for either specifying correct password as stored in the database or change user name		    . If it is upgrade then just ask pphq admin database password.
 		-->
                 <actionGroup>
                     <actionList>
@@ -685,7 +685,7 @@
                         <isTrue value="${pphq_db_user_exists}"/>
                     </ruleList>
                 </actionGroup>
-		<!-- If it is a upgrade then verify pphq admin database password.	
+		<!-- If it is a upgrade then verify pphq admin database password.
 		-->
                 <actionGroup>
                     <actionList>
@@ -968,9 +968,15 @@
                       abortOnError="0" showMessageOnError="1"/>
                 <actionGroup>
                     <actionList>
+                        <!-- copy the msvcr71.dll and msvcrt.dll in the server-4.2.0\bin directory,
+                             otherwise it fails to load Java Runtime while runing the server -->
+                        <copyFile origin="${installdir}\jre6\bin\msvcr71.dll"
+                                  destination="${installdir}\server-PG_VERSION_PPHQ\bin\"/>
+                        <copyFile origin="${installdir}\jre6\bin\msvcrt.dll"
+                                  destination="${installdir}\server-PG_VERSION_PPHQ\bin\"/>
                         <!-- Register PPHQ windows service -->
                         <runProgram program="${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe"
-                              programArguments="-i -n ${serviceName}"
+                              programArguments="-j&quot;${installdir}\jre6&quot; -i -n ${serviceName}"
                               workingDirectory="${installdir}\server-PG_VERSION_PPHQ\bin"
                               progressText="${msg(pphq.server.service.configure)}"
                               abortOnError="0" showMessageOnError="0"/>
@@ -1150,6 +1156,7 @@
                         <fileExists path="${installdir}\server-PG_VERSION_PPHQ"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
+                <setInstallerVariable name="serverFiles" value="${serverFiles};${installdir}\server-PG_VERSION_PPHQ"/>
                 <setInstallerVariableFromScriptOutput
                         exec="cscript.exe"
                         progressText="${msg(pphq.server.add.server.files)}"
@@ -1160,6 +1167,7 @@
                         <fileExists path="${installdir}\agent-PG_VERSION_PPHQ"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
+                <setInstallerVariable name="agentFiles" value="${agentFiles};${installdir}\agent-PG_VERSION_PPHQ"/>
                 <!-- Installing agent service -->
                 <runProgram program="cscript.exe" workingDirectory="${installdir}\agent-PG_VERSION_PPHQ\bin"
                       programArguments="//nologo &quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_PPHQ\bin\pphq-agent.bat&quot; install"
@@ -1950,7 +1958,7 @@
                         execArgs="-t -A -c &quot;SELECT 1 FROM pg_catalog.pg_user u WHERE u.usename='${pphquser}'&quot;"
                         name="pphq_db_user_exists"
                         workingDirectory="${pphqTempDir}/instscripts"/>
-		<!-- If it is a fresh installation and pphq console user specified already exists in the database and passwprd			does not match then ask for either specifying correct password as stored in the database or change user name		    . If it is upgrade then just ask pphq admin database password.	
+		<!-- If it is a fresh installation and pphq console user specified already exists in the database and passwprd			does not match then ask for either specifying correct password as stored in the database or change user name		    . If it is upgrade then just ask pphq admin database password.
 		-->
                 <actionGroup>
                     <actionList>
@@ -1967,7 +1975,7 @@
                         <isTrue value="${pphq_db_user_exists}"/>
                     </ruleList>
                 </actionGroup>
-		<!-- If it is a upgrade then verify pphq admin database password.	
+		<!-- If it is a upgrade then verify pphq admin database password.
 		-->
                 <actionGroup>
                     <actionList>
