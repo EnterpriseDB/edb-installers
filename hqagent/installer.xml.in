@@ -1006,7 +1006,7 @@
                 <stringModify text="${pphqhost}" variable="pphqhost" logic="trim"/>
                 <stringModify text="${pphqport}" variable="pphqport" logic="trim"/>
                 <stringModify text="${pphquser}" variable="pphquser" logic="trim"/>
-				<stringModify text="${agenthost}" variable="agenthost" logic="trim"/>
+                <stringModify text="${agenthost}" variable="agenthost" logic="trim"/>
                 <throwError text="${msg(pphq.server.blank.error)}">
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
@@ -1015,6 +1015,13 @@
                         <stringTest text="${pphquser}" type="empty"/>
 						<stringTest text="${agenthost}" type="empty"/>
                         <stringTest text="${pphqpassword}" type="empty"/>
+                    </ruleList>
+                </throwError>
+		<throwError text="${msg(pphq.agent.host.error)}">
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+			<compareText logic="contains" text="${agenthost}" value="localhost"/>
+			<compareText logic="contains" text="${agenthost}" value="127.0.0.1"/>
                     </ruleList>
                 </throwError>
                 <showProgressDialog title="${msg(pphqagent.server.validating)}"
