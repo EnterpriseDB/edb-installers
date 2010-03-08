@@ -51,6 +51,9 @@ echo "Updating REL-8_3 branch build system" >> autobuild.log
 echo "Running the build (REL-8_3) " >> autobuild.log
 ./build.sh > output/build-83.log 2>&1
 
+echo "Purging old builds from the builds server" >> autobuild.log
+ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"/var/www/html/builds/pgInstaller/*-*-*\" 2" >> autobuild.log 2>&1
+
 # Create a remote directory and upload the output.
 DATE=`date +'%Y-%m-%d'`
 echo "Creating /var/www/html/builds/pgInstaller/$DATE on the builds server" >> autobuild.log
@@ -58,9 +61,6 @@ ssh buildfarm@builds.enterprisedb.com mkdir -p /var/www/html/builds/pgInstaller/
 
 echo "Uploading output to /var/www/html/builds/pgInstaller/$DATE on the builds server" >> autobuild.log
 scp output/* buildfarm@builds.enterprisedb.com:/var/www/html/builds/pgInstaller/$DATE >> autobuild.log 2>&1
-
-echo "Purging old builds from the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"/var/www/html/builds/pgInstaller/*-*-*\" 3" >> autobuild.log 2>&1
 
 echo "#######################################################################" >> autobuild.log
 echo "Build run completed at `date`" >> autobuild.log
