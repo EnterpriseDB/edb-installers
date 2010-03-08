@@ -1773,6 +1773,23 @@ Class DevServer
       p_strDataDir= Left(p_strDataDir, Len(p_strDataDir)-1)
     End If
 
+    ' Fetch owner of pg_ctl.exe
+    If m_strServiceAccount = NULL OR m_strServiceAccount = "" Then
+       Set objBinDir = WshApp.NameSpace (m_strInstallDir & "\bin")
+       l_iOwner = 8
+       For l_iIndex = 0 to 13
+         If UCase(objBinDir.GetDetailsOf(objBinDir.Items, l_iIndex)) = "OWNER" Then
+           l_iOwner = l_iIndex
+         End If
+       Next
+       For Each l_objFile in objBinDir.Items
+         l_strFile = "" & LCase(objBinDir.GetDetailsOf (l_objFile, 0))
+         If l_strFile = "pg_ctl" Then
+           ServiceAccount = objBinDir.GetDetailsOf (l_objFile, l_iOwner)
+         End If
+       Next
+    End If
+
     If NOT FSO.FolderExists(p_strDataDir) Then
       If IsFileExists(p_strDataDir, "", lStrErrMsg) Then
         p_strErrMsg = "'" & p_strDataDir & "' is a file, could not be a valid data directory."
@@ -1780,23 +1797,6 @@ Class DevServer
       End If
       m_strDataDir = p_strDataDir
       validateDataDir = true
-
-      ' Fetch owner of pg_ctl.exe
-      If m_strServiceAccount = NULL OR m_strServiceAccount = "" Then
-         Set objBinDir = WshApp.NameSpace (m_strInstallDir & "\bin")
-         l_iOwner = 8
-         For l_iIndex = 0 to 13
-           If UCase(objBinDir.GetDetailsOf(objBinDir.Items, l_iIndex)) = "OWNER" Then
-             l_iOwner = l_iIndex
-           End If
-         Next
-         For Each l_objFile in objBinDir.Items
-           l_strFile = "" & LCase(objBinDir.GetDetailsOf (l_objFile, 0))
-           If l_strFile = "pg_ctl" Then
-             ServiceAccount = objBinDir.GetDetailsOf (l_objFile, l_iOwner)
-           End If
-         Next
-      End If
       Exit Function
     End If
 
@@ -1813,41 +1813,6 @@ Class DevServer
 
     m_strDataDir = p_strDataDir
     validateDataDir = true
-
-    If NOT objDataFolder.Files.Count = 0 Then
-
-      ' Over-write the value provided by user by the actual data-dir\postgresql.conf file owner
-      Set objDataDir = WshApp.NameSpace (m_strDataDir)
-      l_iOwner = 8
-      For l_iIndex = 0 to 13
-        If UCase(objDataDir.GetDetailsOf(objDataDir.Items, l_iIndex)) = "OWNER" Then
-          l_iOwner = l_iIndex
-        End If
-      Next
-      For Each l_objFile in objDataDir.Items
-        l_strFile = "" & LCase(objDataDir.GetDetailsOf (l_objFile, 0))
-        If l_strFile = "postgresql.conf" Then
-          ServiceAccount = objDataDir.GetDetailsOf (l_objFile, l_iOwner)
-        End If
-      Next
-    Else
-      ' Fetch owner of pg_ctl.exe
-      If m_strServiceAccount = NULL OR m_strServiceAccount = "" Then
-         Set objBinDir = WshApp.NameSpace (m_strInstallDir & "\bin")
-         l_iOwner = 8
-         For l_iIndex = 0 to 13
-           If UCase(objBinDir.GetDetailsOf(objBinDir.Items, l_iIndex)) = "OWNER" Then
-             l_iOwner = l_iIndex
-           End If
-         Next
-         For Each l_objFile in objBinDir.Items
-           l_strFile = "" & LCase(objBinDir.GetDetailsOf (l_objFile, 0))
-           If l_strFile = "pg_ctl" Then
-             ServiceAccount = objBinDir.GetDetailsOf (l_objFile, l_iOwner)
-           End If
-         Next
-      End If
-    End If
   End Function
 
   Public Function validatePort(p_iPort, ByRef p_strErrMsg)
