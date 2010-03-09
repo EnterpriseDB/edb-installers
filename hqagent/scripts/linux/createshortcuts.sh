@@ -60,19 +60,19 @@ done
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/scripts/xdg/hqagent.directory"
-_fixup_file "$INSTALLDIR/scripts/xdg/hqagent-start.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/hqagent-stop.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pphq-pphq.directory"
+_fixup_file "$INSTALLDIR/scripts/xdg/pphq-agent-start.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pphq-agent-stop.desktop"
 
 # Copy the primary desktop file to the branded version. We don't do this if
 # the installation is not branded, to retain backwards compatibility.
-cp "$INSTALLDIR/scripts/xdg/hqagent.directory" "$INSTALLDIR/scripts/xdg/hqagent-$BRANDING_STR.directory"
+cp "$INSTALLDIR/scripts/xdg/pphq-pphq.directory" "$INSTALLDIR/scripts/xdg/pphq-$BRANDING_STR.directory"
 
 # Create the menu shortcuts - first the top level menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system --noupdate \
-    "$INSTALLDIR/scripts/xdg/hqagent-$BRANDING_STR.directory" \
-        "$INSTALLDIR/scripts/xdg/hqagent-start.desktop" \
-        "$INSTALLDIR/scripts/xdg/hqagent-stop.desktop" || _warn "Failed to create the top level menu for Postgres Plus HQ agent"
+    "$INSTALLDIR/scripts/xdg/pphq-$BRANDING_STR.directory" \
+        "$INSTALLDIR/scripts/xdg/pphq-agent-start.desktop" \
+        "$INSTALLDIR/scripts/xdg/pphq-agent-stop.desktop" || _warn "Failed to create the top level menu for Postgres Plus HQ agent"
 
 echo "$0 ran to completion"
 exit 0

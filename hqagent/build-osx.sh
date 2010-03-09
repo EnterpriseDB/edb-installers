@@ -83,7 +83,7 @@ _postprocess_pphqagent_osx() {
 
     # Copy in the menu pick images
     mkdir -p $PPHQAGENT_STAGING_DIR/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp $PPHQAGENT_DIR/resources/*.icns $PPHQAGENT_STAGING_DIR/scripts/images || _die "Failed to copy the menu pick images (resources/*.icns)"
+    cp $PPHQ_DIR/resources/*.icns $PPHQAGENT_STAGING_DIR/scripts/images || _die "Failed to copy the menu pick images (resources/*.icns)"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
