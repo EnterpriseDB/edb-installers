@@ -1945,8 +1945,16 @@
                 <throwError text="${msg(pphq.port.not.free)}">
 		    <!-- In case of upgrade this error should not be shown-->
                     <ruleList>
-                        <portTest port="${pphqport}" condition="cannot_bind"/>
 			<compareText text="${pphqVersion}" logic="equals" value=""/>
+			<ruleGroup>
+			    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+			    <ruleList>
+			        <portTest port="${pphqport}" condition="cannot_bind"/>
+		                <compareText text="${pphqport}" logic="equals" value="${pphq_jnp_port}"/>
+	    		        <compareText text="${pphqport}" logic="equals" value="${pphq_jrpm_port}"/>
+			        <compareText text="${pphqport}" logic="equals" value="${pphq_secure_port}"/>
+			    </ruleList>
+			</ruleGroup>
                     </ruleList>
                 </throwError>
                 <setEnvironmentVariable name="PGUSER" value="${pguser}"/>

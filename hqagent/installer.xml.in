@@ -353,7 +353,7 @@
     </preInstallationActionList>
     <readyToInstallActionList>
 
-	    <!-- Use the bundled JRE, if no other has been specified -->
+	<!-- Use the bundled JRE, if no other has been specified -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="java_executable" value="${installdir}/jre6/bin/java"/>
