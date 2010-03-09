@@ -85,3 +85,39 @@ jre.invalid.error.windows=Invalid --jrehome specified.\n\nCould not find '${jreh
 
 pub.service.desc=Publication Service for xDB Replication Server.
 sub.service.desc=Subscription Service for xDB Replication Server.
+
+error.invalid.email.value=Invalid email address. You must provide a valid email address.  Please try again.
+
+error.invalid.password.value=Password is empty or contains invalid characters. Please enter valid password.
+
+existingemail.authentication.explanation.value=Please enter the email address and password for your enterprisedb.com user account.
+
+existingemail.authentication.title.value=EnterpriseDB User Account Information
+
+registration.existingemail.no=I do not have an enterprisedb.com user account.
+
+registration.existingemail.yes=I already have an enterprisedb.com user account.
+
+registration.explanation.value=If you do not have an account, click 'Next' to register at the EnterpriseDB website.  Registration will also give you access to many free assets at\nEnterpriseDB including:\n\n- A PostgreSQL Replication Solutions webcast by Bruce Momjian\n- The xDB Replication Tutorial in PDF format\n- High Availability Database Solutions for PostgreSQL and Postgres Plus
+
+registration.title.value=Registration required at www.enterprisedb.com
+
+userAuth.email.value=Email address
+
+userAuth.password.value=Password
+
+validatinguser.ws.error=Connection to the WebService failed. Please re-check the internet connection.
+
+ws.email.already.exists=This email address already exists.  Please use Existing User fields or enter a new email address to continue.
+
+ws.email.not.authenticated=The email and/or password are not valid. Please try again.
+
+ws.email.not.validated=The email address has not been validated. An email has been sent to the email address that you provided. Please follow the steps in the email to validate your email address.
+
+ws.exception.from.server=An error occured. Please try again.
+
+ws.internet.not.connected=Error in calling web service. Please check the internet connection and try again.
+
+xdb.registration.email.empty=Please provide the email address registered www.enterprisedb.com using the '--existing-email' command-line option.
+
+xdb.registration.password.empty=Please provide the password, set while registring with www.enterprisedb.com, using the '--existing-password' command-line option.

@@ -4902,7 +4902,7 @@
           </ruleList>
         </setInstallerVariable>
         <runProgram abortOnError="0"
-                    progressText="Extracting Npgsql binaries... "
+                    progressText="Extracting pgmemcache binaries... "
                     showMessageOnError="0"
                     program="${pgmemcache_installer}"
                     programArguments="--mode unattended --prefix &quot;${installdir}&quot; --branding &quot;Postgres Plus Standard Server ${product_version}&quot; --extract-only 1">
@@ -4925,7 +4925,7 @@
           </ruleList>
         </setInstallerVariable>
         <runProgram abortOnError="0"
-                    progressText="Extracting Npgsql binaries... "
+                    progressText="Extracting pgagent binaries... "
                     showMessageOnError="0"
                     program="${pgagent_installer}"
                     programArguments="--mode unattended --prefix &quot;${installdir}/pgAgent&quot; --extract-only 1">

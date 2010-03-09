@@ -1,5 +1,5 @@
 try
-set ret to do shell script "HQAGENT_INSTALLDIR/agent-HQAGENT_VERSION_STR/bin/hq-agent.sh stop > /tmp/pgmsg.txt 2>&1" with administrator privileges
+set ret to do shell script "HQAGENT_INSTALLDIR/agent-HQAGENT_VERSION_STR/bin/pphq-agent.sh stop > /tmp/pgmsg.txt 2>&1" with administrator privileges
 end try
 set output to do shell script "cat /tmp/pgmsg.txt" with administrator privileges
 set ret to do shell script "rm /tmp/pgmsg.txt" with administrator privileges

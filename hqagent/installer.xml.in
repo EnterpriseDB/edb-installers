@@ -31,7 +31,7 @@
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
-    <leftImage>../resources/pg-side.png</leftImage>
+    <leftImage>../resources/edb-side.png</leftImage>
 
     <!-- i18n files for the UI -->
     <allowedLanguages>en</allowedLanguages>
@@ -39,6 +39,8 @@
         <language code="en" encoding="iso8859-1" file="i18n/en.lng"/>
     </customLanguageFileList>
     <preShowHelpActionList>
+        <setInstallerVariable name="agenthost" persist="1" value="localhost"/>
+        <setInstallerVariable name="pphqdefaultpassword" persist="1" value="hqadmin"/>
         <!-- MAC : Set the default installation directory -->
         <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/HQ">
             <ruleList>
@@ -139,12 +141,29 @@
         <setInstallerVariable name="pphqAgentVersion" value=""/>
     </initializationActionList>
     <preInstallationActionList>
-        <setInstallerVariable name="pphqdefaultpassword" value=""/>
-        <setInstallerVariable name="pphqdefaultpassword" value="hqadmin">
+	<setInstallerVariable>
+            <name>pphqdefaultpassword</name>
+            <value>hqadmin</value>
             <ruleList>
-                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
             </ruleList>
         </setInstallerVariable>
+        <setInstallerVariable>
+            <name>pphqdefaultpassword</name>
+            <value></value>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
         <setInstallerVariable name="serviceName" value="pphq-agent"/>
         <!-- Creates the ini file if not exits -->
         <touchFile path="/etc/postgres-reg.ini">
@@ -208,16 +227,12 @@
 
         <actionGroup>
             <actionList>
-                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="pphqhost" variable="pphqhost"/>
-                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="pphqport" variable="pphqport"/>
-                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="secure-connection" variable="pphqsecureconn"/>
-                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="pphquser" variable="pphquser"/>
-                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="agentport" variable="agentport"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqhost" variable="pphqhost"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqport" variable="pphqport"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" variable="pphqsecureconn"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" variable="pphquser"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" variable="agentport"/>
+		<iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" variable="agenthost"/>
             </actionList>
             <ruleList>
                 <stringTest text="${pphqAgentVersion}" type="not_empty"/>
@@ -232,6 +247,7 @@
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="secure-connection" name="${pphqsecureconn}"/>
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="pphquser" name="pphquser"/>
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="agentport" name="agentport"/>
+				<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="agenthost" name="agenthost"/>
             </actionList>
             <ruleList>
                 <stringTest text="${pphqAgentVersion}" type="not_empty"/>
@@ -247,6 +263,7 @@
                 <stringTest text="${pphqport}" type="empty"/>
                 <stringTest text="${pphquser}" type="empty"/>
                 <stringTest text="${agentport}" type="empty"/>
+				<stringTest text="${agenthost}" type="empty"/>
             </ruleList>
         </setInstallerVariable>
 
@@ -258,7 +275,7 @@
                 <fileTest path="${jrehome}/bin/java" condition="not_exists" />
             </ruleList>
         </throwError>
-        <throwError customErrorMessage="${msg(jre.invalid.error.windows)}" text="Unknown Error">
+        <throwError customErrorMessage="${msg(jre.invalid.error)}" text="Unknown Error">
             <ruleList>
                 <compareText text="${jrehome}" logic="does_not_equal" value="" />
                 <compareText text="${platform_name}" logic="equals" value="windows" />
@@ -278,43 +295,9 @@
             <ruleList>
                 <compareText text="${jrehome}" logic="does_not_equal" value="" />
                 <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
-                <fileExists path="${jrehome}\bin\java" />
+                <fileExists path="${jrehome}\bin\java.exe" />
             </ruleList>
         </setInstallerVariable>
-
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="java_executable" value="${env(JAVA_HOME)}/bin/java"/>
-                <setInstallerVariable name="jrehome" value="${env(JAVA_HOME)}"/>
-            </actionList>
-            <ruleList>
-                <compareText text="${jrehome}" logic="equals" value=""/>
-                <fileExists path="${env(JAVA_HOME)}/bin/java"/>
-                <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
-            </ruleList>
-        </actionGroup>
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="java_executable" value="${env(JAVA_HOME)}\bin\java.exe"/>
-                <setInstallerVariable name="jrehome" value="${env(JAVA_HOME)}"/>
-            </actionList>
-            <ruleList>
-                <compareText text="${jrehome}" logic="equals" value=""/>
-                <fileExists path="${env(JAVA_HOME)}\bin\java.exe"/>
-                <compareText text="${platform_name}" logic="equals" value="windows"/>
-            </ruleList>
-        </actionGroup>
-
-        <!-- Detecting Java, Abort if not found -->
-        <autodetectJava promptUser="0" abortOnError="1" showMessageOnError="1"
-            customErrorMessage="${msg(java.error)}">
-            <validVersionList>
-                <validVersion minVersion="1.5.0" requireJDK="0"/>
-            </validVersionList>
-            <ruleList>
-                <compareText text="${jrehome}" logic="equals" value=""/>
-            </ruleList>
-        </autodetectJava>
 
         <!-- If there appears to be an existing installation, with no Branding value. -->
         <!-- force the default value. Otherwise, set the branding to whatever we read, -->
@@ -369,40 +352,48 @@
 
     </preInstallationActionList>
     <readyToInstallActionList>
-        <setInstallerVariableFromRegEx name="pphqJavaHome" text="${java_executable}">
-            <pattern>bin\/java</pattern>
-            <substitution/>
-        </setInstallerVariableFromRegEx>
+
+	<!-- Use the bundled JRE, if no other has been specified -->
         <actionGroup>
             <actionList>
-                <setInstallerVariableFromRegEx name="java_executable" text="${java_executable}">
-                    <pattern>\/</pattern>
-                    <substitution>\\</substitution>
-                </setInstallerVariableFromRegEx>
-                <setInstallerVariableFromRegEx name="pphqJavaHome" text="${java_executable}">
-                    <pattern>\\bin\\java.exe</pattern>
-                    <substitution/>
-                </setInstallerVariableFromRegEx>
-                <setInstallerVariable name="java_executable" value="${pphqJavaHome}\bin\javaw.exe">
-                    <ruleList>
-                        <fileExists path="${pphqJavaHome}\bin\javaw.exe"/>
-                    </ruleList>
-                </setInstallerVariable>
+                <setInstallerVariable name="java_executable" value="${installdir}/jre6/bin/java"/>
+                <setInstallerVariable name="jrehome" value="${installdir}/jre6"/>
             </actionList>
             <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText text="${jrehome}" logic="equals" value=""/>
+                <compareText text="${platform_name}" logic="contains" value="linux"/>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="java_executable" value="${installdir}\jre6\bin\java.exe"/>
+                <setInstallerVariable name="jrehome" value="${installdir}\jre6"/>
+            </actionList>
+            <ruleList>
+                <compareText text="${jrehome}" logic="equals" value=""/>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="java_executable" value="/System/Library/Frameworks/JavaVM.framework/Home/bin/java"/>
+                <setInstallerVariable name="jrehome" value="/System/Library/Frameworks/JavaVM.framework/Home"/>
+            </actionList>
+            <ruleList>
+                <compareText text="${jrehome}" logic="equals" value=""/>
+                <compareText text="${platform_name}" logic="equals" value="osx"/>
             </ruleList>
         </actionGroup>
 
-        <setEnvironmentVariable name="JAVA_HOME" value="${pphqJavaHome}"/>
-        <setEnvironmentVariable name="HQ_JAVA_HOME" value="${pphqJavaHome}"/>
+        <setEnvironmentVariable name="JAVA_HOME" value="${jrehome}"/>
+        <setEnvironmentVariable name="HQ_JAVA_HOME" value="${jrehome}"/>
 
         <actionGroup>
             <actionList>
-                <!-- stoping the pphq-agent in upgrade mode -->
+                <!-- stopping the pphq-agent in upgrade mode -->
                 <runProgram program="${installdir}/scripts/agentctl.sh" abortOnError="0"
                     programArguments="--no-wait stop" workingDirectory="${installdir}"
-                    showMessageOnError="0" progressText="Stopping agent...">
+                    showMessageOnError="0" progressText="${msg(pphqagent.stopping)}">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
@@ -427,15 +418,15 @@
             <actionList>
                 <setInstallerVariableFromScriptOutput
                         exec="cscript.exe"
-                        execArgs="//nologo &quot;${installdir}\scripts\shortPathName.vbs&quot; &quot;${pphqJavaHome}&quot;"
-                        name="pphqJavaHome" workingDirectory="${installdir}"/>
+                        execArgs="//nologo &quot;${installdir}\scripts\shortPathName.vbs&quot; &quot;${jrehome}&quot;"
+                        name="jrehome" workingDirectory="${installdir}"/>
                 <setInstallerVariableFromScriptOutput
                         exec="cscript.exe"
                         execArgs="//nologo &quot;${installdir}\scripts\shortPathName.vbs&quot; &quot;${installdir}&quot;"
                         name="installdir" workingDirectory="${installdir}"/>
-                <setEnvironmentVariable name="HQ_JAVA_HOME" value="${pphqJavaHome}"/>
-                <setEnvironmentVariable name="JAVA_HOME" value="${pphqJavaHome}"/>
-                <addEnvironmentVariable name="HQ_JAVA_HOME" value="${pphqJavaHome}" scope="system"/>
+                <setEnvironmentVariable name="HQ_JAVA_HOME" value="${jrehome}"/>
+                <setEnvironmentVariable name="JAVA_HOME" value="${jrehome}"/>
+                <addEnvironmentVariable name="HQ_JAVA_HOME" value="${jrehome}" scope="system"/>
 
                 <setInstallerVariableFromScriptOutput
                         exec="cscript.exe"
@@ -456,14 +447,10 @@
 
         <actionGroup>
             <actionList>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="Description" value="${msg(install.summary)}"/>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="InstallationDirectory" value="${installdir}"/>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="Version" value="${product_version}"/>
-                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent"
-                    key="Branding" value="${branding}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Description" value="${msg(install.summary)}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="InstallationDirectory" value="${installdir}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Version" value="${product_version}"/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Branding" value="${branding}"/>
                 <!-- Create user (serviceaccount) for the server, if does not exists -->
                 <runProgram program="${installdir}/installer/pphqagent/createuser.sh"
                     programArguments="${serviceaccount} &quot;${installdir}/agent-PG_VERSION_HQAGENT&quot;"
@@ -503,7 +490,7 @@
 
         <!-- Shortcuts in case when platform is not windows -->
         <runProgram program="${installdir}/installer/pphqagent/createshortcuts.sh"
-            programArguments="&quot;PG_VERSION_HQAGENT&quot; &quot;${branding}&quot; &quot;${installdir}&quot; &quot;${pphqJavaHome}&quot; &quot;${serviceaccount}&quot;"
+            programArguments="&quot;PG_VERSION_HQAGENT&quot; &quot;${branding}&quot; &quot;${installdir}&quot; &quot;${jrehome}&quot; &quot;${serviceaccount}&quot;"
             progressText="${msg(progress.text.creating.shortcuts)}"
             workingDirectory="${installdir}/installer/pphqagent"
             abortOnError="0" showMessageOnError="0">
@@ -518,13 +505,20 @@
                 name="machineNetInfo"
                 workingDirectory="${installdir}"/>
 
-        <setInstallerVariable name="agenthost" value="localhost"/>
+	<!-- do not reset agent host in case of upgrade. It will be picked up from registry.
+	-->
+        <setInstallerVariable name="agenthost" value="localhost">
+            <ruleList>
+                <compareText text="${pphqAgentVersion}" logic="equals" value=""/>
+            </ruleList>
+	</setInstallerVariable>
 
         <setInstallerVariableFromRegEx name="agenthost"  text="${machineNetInfo}">
             <pattern>^.*host\sname\.*([a-zA-Z0-9\.\-]*).*$</pattern>
             <substitution>\1</substitution>
             <ruleList>
                 <stringTest text="${machineNetInfo}" type="not_empty"/>
+                <compareText text="${pphqAgentVersion}" logic="equals" value=""/>
             </ruleList>
         </setInstallerVariableFromRegEx>
 
@@ -535,6 +529,7 @@
             <ruleList>
                 <compareText logic="does_not_contain" text="${agenthost}" value="."/>
                 <stringTest text="${machineNetInfo}" type="not_empty"/>
+                <compareText text="${pphqAgentVersion}" logic="equals" value=""/>
             </ruleList>
         </setInstallerVariableFromRegEx>
 
@@ -565,6 +560,8 @@
                     </ruleList>
                 </setInstallerVariable>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
+                    key="agent.listerPort" value="${pphqport}"/>
+                <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                     key="agent.setup.camIP" value="${pphqhost}"/>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                     key="agent.setup.camPort" value="${pphqport}"/>
@@ -589,6 +586,7 @@
                     key="agent.setup.agentPort" value="${agentport}"/>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                     key="agent.setup.resetupTokens" value="yes"/>
+
                 <runProgram program="${installdir}/scripts/agentctl.sh"
                     programArguments="--no-wait start" workingDirectory="${installdir}/agent-PG_VERSION_HQAGENT/bin"
                     abortOnError="0" showMessageOnError="0">
@@ -597,30 +595,37 @@
                     </ruleList>
                 </runProgram>
                 <runProgram program="cscript.exe"
+		    progressText="${msg(pphqagent.starting)}"
                     programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; start" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
                     abortOnError="0" showMessageOnError="0">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
+                <setInstallerVariable name="errCode" value="${program_exit_code}"/>
                 <setInstallerVariable name="errMessage" value="${program_stderr}"/>
                 <setInstallerVariable name="errMessage" value="${msg(hqagent.server.validation.fail)}">
                     <ruleList>
                         <compareText logic="contains" text="${errMessage}" value="Invalid username"/>
                     </ruleList>
                 </setInstallerVariable>
+                <!-- Stop Agent, if it failed on configuration -->
                 <runProgram program="${installdir}/scripts/agentctl.sh"
                     programArguments="--no-wait stop" workingDirectory="${installdir}/agent-PG_VERSION_HQAGENT/bin"
                     abortOnError="0" showMessageOnError="0">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                        <compareText logic="does_not_equal" text="${errCode}" value="0"/>
                     </ruleList>
                 </runProgram>
+                <!-- Stop Agent, if it failed on configuration -->
                 <runProgram program="cscript.exe"
+		progressText="${msg(pphqagent.stopping)}"
                     programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; stop" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
                     abortOnError="0" showMessageOnError="0">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
+                        <compareText logic="does_not_equal" text="${errCode}" value="0"/>
                     </ruleList>
                 </runProgram>
                 <setInstallerVariable name="errMessage" value="${msg(pphqagent.server.connection.fail)}">
@@ -642,6 +647,8 @@
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqport" value="${pphqport}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value="${pphqsecureconn}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value="${pphquser}"/>
+                        <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
+                        <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value="${agenthost}"/>
                     </actionList>
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -649,12 +656,12 @@
                 </actionGroup>
                 <actionGroup>
                     <actionList>
-                        <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphqhost" value="${pphqhost}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphqport" value="${pphqport}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="secure-connection" value="${pphqsecureconn}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphquser" value="${pphquser}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agentport" value="${agentport}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agenthost" value="${agenthost}"/>
                     </actionList>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -667,12 +674,92 @@
         </actionGroup>
         <!-- Making user this value is available in uninstaller -->
         <setInstallerVariable name="branding" value="${branding}" persist="1"/>
+        <setInstallerVariable name="serviceName" value="${serviceName}" persist="1"/>
+	<!--
+	Changing permissions of agent.properties file because it has password in plain text format.
+	-->
+	<actionGroup>
+	    <actionList>
+               <changePermissions>
+	          <files>${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties</files>
+	          <permissions>600</permissions>
+               </changePermissions>
+	    </actionList>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+	</actionGroup>
+	<actionGroup>
+	    <actionList>
+               <changePermissions>
+	          <files>${installdir}\agent-PG_VERSION_HQAGENT\conf\agent.properties</files>
+	          <permissions>600</permissions>
+               </changePermissions>
+	    </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+	</actionGroup>
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
         <actionGroup>
             <actionList>
+                <runProgram program="launchctl"
+                      programArguments="unload /Library/LaunchDaemons/com.edb.launchd.${serviceName}.plist"
+                      abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphqagent.stopping)}"/>
+                <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.${serviceName}.plist"
+                      abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphqagent.service.removing)}"/>
+		<deleteFile path="${installdir}/agent-PG_VERSION_HQAGENT/bundles/agent-PG_VERSION_HQAGENT-PPHQ_BUILD/pdk/work"
+                      abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphqagent.work.directory.removing)}"/>
+                <deleteFile path="/Applications/${branding}/Start Postgres Plus HQ Agent.app"
+                      abortOnError="0" showMessageOnError="0"/>
+                <deleteFile path="/Applications/${branding}/Stop Postgres Plus HQ Agent.app"
+                      abortOnError="0" showMessageOnError="0"/>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+                <runProgram program="${installdir}/scripts/agentctl.sh"
+                        programArguments="--no-wait stop"
+                        workingDirectory="${installdir}/scripts"
+                        progressText="${msg(pphqagent.stopping)}"
+                        abortOnError="0" showMessageOnError="0"/>
+                <actionGroup>
+                    <actionList>
+                        <!-- Attempt to remove any runlevel config with chkconfig -->
+                        <runProgram program="/sbin/chkconfig" showMessageOnError="0"
+                              programArguments="--del ${serviceName}" abortOnError="0"
+                              progressText="${msg(pphqagent.service.removing)}"/>
+
+                        <!-- Remove the startup script -->
+                        <deleteFile path="/etc/init.d/${serviceName}" abortOnError="0" showMessageOnError="0"/>
+
+                        <!-- Attempt to remove any runlevel config with update-rc.d -->
+                        <runProgram program="/usr/sbin/update-rc.d" showMessageOnError="0"
+                              programArguments="-f ${serviceName} remove" abortOnError="0"/>
+
+                        <!-- LIN : Remove Menu shortcuts -->
+                        <runProgram program="${installdir}/installer/pphqagent/removeshortcuts.sh"
+                              programArguments="&quot;${installdir}&quot; &quot;${branding}&quot;"
+                              workingDirectory="${installdir}/installer/pphqagent" abortOnError="0" showMessageOnError="0"/>
+		
+                        <deleteFile path="${installdir}/agent-PG_VERSION_HQAGENT/bundles/agent-PG_VERSION_HQAGENT-PPHQ_BUILD/pdk/work"
+			      abortOnError="0" showMessageOnError="0"
+                              progressText="${msg(pphqagent.work.directory.removing)}"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="linux"/>
+                    </ruleList>
+                </actionGroup>
+
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="InstallationDirectory" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Description" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Version" value=""/>
@@ -682,29 +769,23 @@
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value=""/>
+		<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value=""/>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
 
-        <!-- LIN : Remove Menu shortcuts -->
-        <runProgram program="${installdir}/installer/pphqagent/removeshortcuts.sh"
-            programArguments="&quot;${installdir}&quot; &quot;${branding}&quot;"
-            workingDirectory="${installdir}/installer/pphqagent" abortOnError="0" showMessageOnError="0">
-            <ruleList>
-                <compareText logic="contains" text="${platform_name}" value="linux"/>
-            </ruleList>
-        </runProgram>
-        <deleteFile path="/Applications/${branding}/Postgres Plus HQ Home Page.app">
-            <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="osx"/>
-            </ruleList>
-        </deleteFile>
         <actionGroup>
             <actionList>
-                <stopWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0" showMessageOnError="0"/>
-                <deleteWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0"  showMessageOnError="0"/>
+                <stopWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphqagent.stopping)}"/>
+                <deleteWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0"  showMessageOnError="0"
+                      progressText="${msg(pphqagent.service.removing)}"/>
+                <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent"/>
+		<deleteFile path="${installdir}\agent-PG_VERSION_HQAGENT\bundles\agent-PG_VERSION_HQAGENT-PPHQ_BUILD\pdk\work"
+                      abortOnError="0" showMessageOnError="0"
+                      progressText="${msg(pphqagent.work.directory.removing)}"/>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -732,6 +813,8 @@
                         <distributionDirectory origin="staging/linux/agent-PG_VERSION_HQAGENT"/>
                         <!-- Installer Scripts -->
                         <distributionDirectory origin="staging/linux/installer"/>
+                        <!-- JRE -->
+                        <distributionDirectory origin="staging/linux/jre6"/>
                         <!-- Control Scripts -->
                         <distributionDirectory origin="staging/linux/scripts"/>
                     </distributionFileList>
@@ -747,6 +830,8 @@
                         <distributionDirectory origin="staging/linux-x64/agent-PG_VERSION_HQAGENT"/>
                         <!-- Installer Scripts -->
                         <distributionDirectory origin="staging/linux-x64/installer"/>
+                        <!-- JRE -->
+                        <distributionDirectory origin="staging/linux-x64/jre6"/>
                         <!-- Control Scripts -->
                         <distributionDirectory origin="staging/linux-x64/scripts"/>
                     </distributionFileList>
@@ -775,6 +860,8 @@
                     <distributionFileList>
                         <!-- PPHQ Agent binaries -->
                         <distributionDirectory origin="staging/windows/agent-PG_VERSION_HQAGENT"/>
+                        <!-- JRE -->
+                        <distributionDirectory origin="staging/windows/jre6"/>
                         <!-- Control Scripts -->
                         <distributionDirectory origin="staging/windows/scripts"/>
                     </distributionFileList>
@@ -786,17 +873,17 @@
                 <startMenuShortcut>
                     <name>Start Agent</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\hq-agent.bat</windowsExec>
+                    <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat</windowsExec>
                     <windowsExecArgs>start</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\pphqagent-start.ico</windowsIcon>
+                    <windowsIcon>${installdir}\scripts\images\hqagent-start.ico</windowsIcon>
                 </startMenuShortcut>
-                <!-- Stop server -->
+                <!-- Stop Agent -->
                 <startMenuShortcut>
-                    <name>Stop Server</name>
+                    <name>Stop Agent</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\hq-agent.bat</windowsExec>
+                    <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat</windowsExec>
                     <windowsExecArgs>stop</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\pphqagent-stop.ico</windowsIcon>
+                    <windowsIcon>${installdir}\scripts\images\hqagent-stop.ico</windowsIcon>
                 </startMenuShortcut>
             </startMenuShortcutList>
         </component>
@@ -867,59 +954,86 @@
         </labelParameter>
 
         <!-- PPHQ Agent Configuration Page -->
-        <parameterGroup name="pphqserverdetails" title="${msg(pphq.server.title)}"
-            explanation="${msg(pphq.server.details)}" insertAfter="installation">
+        <parameterGroup name="pphqserverdetails" title="${msg(pphq.server.title)}" insertAfter="installation"
+              explanation="${pphqServerDetailsExplaination}">
             <parameterList>
                 <!-- Postgres Plus HQ server Host -->
                 <stringParameter name="pphqhost" explanation="" value="" default="${agenthost}"
-                    description="Postgres Plus HQ Server Host" cliOptionName="pphqhost"
+                    description="${msg(pphqagent.config.pphqhost)}" cliOptionName="pphqhost"
                     allowEmptyValue="1" width="40">
                     <ruleList>
                         <isTrue value="${configure}"/>
                     </ruleList>
                 </stringParameter>
                 <!-- Postgres Plus HQ server port -->
-                <stringParameter name="pphqport" description="Postgres Plus HQ Server Port" explanation=""
+                <stringParameter name="pphqport" description="${msg(pphqagent.config.pphqport)}" explanation=""
                     value="" default="7080" cliOptionName="pphqport" allowEmptyValue="1" width="40">
                     <ruleList>
                         <isTrue value="${configure}"/>
                     </ruleList>
                 </stringParameter>
                 <!-- Postgres Plus HQ monitoring Interface User -->
-                <stringParameter name="pphquser" description="Postgres Plus HQ Interface User" explanation=""
-                    value="" default="hqadmin" cliOptionName="pphquser" allowEmptyValue="1" width="40">
-                    <ruleList>
-                        <isTrue value="${configure}"/>
-                    </ruleList>
-                </stringParameter>
+                <stringParameter name="pphquser" description="${msg(pphqagent.config.pphquser)}" explanation=""
+                    value="" default="hqadmin" cliOptionName="pphquser" allowEmptyValue="1" width="40"/>
                 <!-- Postgres Plus HQ monitoring Interface User Password -->
-                <passwordParameter name="pphqpassword" title="Password" description="Password" explanation=""
+                <passwordParameter name="pphqpassword" description="${msg(pphqagent.config.pphqpassword)}" explanation=""
                     value="${pphqdefaultpassword}" cliOptionName="pphqpassword" descriptionRetype=""
                     allowEmptyValue="1" askForConfirmation="0" width="40"/>
-                <booleanParameter name="pphqsecureconn" description="Secure Connection" explanation="" value=""
+                <booleanParameter name="pphqsecureconn" description="${msg(pphqagent.config.pphqsecureconn)}" explanation="" value=""
                     default="0" displayStyle="checkbox-left" cliOptionName="secure-connection">
                     <ruleList>
                         <isTrue value="${configure}"/>
                     </ruleList>
                 </booleanParameter>
+                <!-- Postgres Plus HQ agent Host -->
+                <stringParameter name="agenthost" explanation="" value="" default="${agenthost}"
+                    description="${msg(pphqagent.config.agenthost)}" cliOptionName="agenthost"
+                    allowEmptyValue="1" width="40">
+                    <ruleList>
+                        <isTrue value="${configure}"/>
+                    </ruleList>
+                </stringParameter>
             </parameterList>
+            <preShowPageActionList>
+                <setInstallerVariable name="pphqServerDetailsExplaination"
+                      value="${msg(pphqagent.server.details.explanation)}"/>
+                <setInstallerVariable name="pphqServerDetailsExplaination"
+                      value="${msg(pphqagent.server.details.explanation.upgrade)}">
+                    <ruleList>
+                        <isFalse value="${configure}"/>
+                        <stringTest text="${pphqAgentVersion}" type="not_empty"/>
+                    </ruleList>
+                </setInstallerVariable>
+            </preShowPageActionList>
             <!-- Checking the validity of Postgres Plus HQ Server Details -->
             <validationActionList>
                 <stringModify text="${pphqhost}" variable="pphqhost" logic="trim"/>
                 <stringModify text="${pphqport}" variable="pphqport" logic="trim"/>
                 <stringModify text="${pphquser}" variable="pphquser" logic="trim"/>
+                <stringModify text="${agenthost}" variable="agenthost" logic="trim"/>
                 <throwError text="${msg(pphq.server.blank.error)}">
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                         <stringTest text="${pphqhost}" type="empty"/>
                         <stringTest text="${pphqport}" type="empty"/>
                         <stringTest text="${pphquser}" type="empty"/>
+						<stringTest text="${agenthost}" type="empty"/>
                         <stringTest text="${pphqpassword}" type="empty"/>
+                    </ruleList>
+                </throwError>
+		<throwError text="${msg(pphq.agent.host.error)}">
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+			<compareText logic="contains" text="${agenthost}" value="localhost"/>
+			<compareText logic="contains" text="${agenthost}" value="127.0.0.1"/>
+			<compareText logic="contains" text="${agenthost}" value="127.0.1.1"/>
                     </ruleList>
                 </throwError>
                 <showProgressDialog title="${msg(pphqagent.server.validating)}"
                     progressText="${msg(pphqagent.update.configuration)}">
                     <actionList>
+                        <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
+                            key="agent.listerPort" value="${pphqport}"/>
                         <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                             key="agent.setup.camIP" value="${pphqhost}"/>
                         <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
@@ -959,6 +1073,7 @@
                             </ruleList>
                         </runProgram>
                         <runProgram program="cscript.exe"
+			    progressText="${msg(pphqagent.starting)}"
                             programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; start" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
                             abortOnError="0" showMessageOnError="0">
                             <ruleList>
@@ -966,6 +1081,7 @@
                             </ruleList>
                         </runProgram>
                         <setInstallerVariable name="errMessage" value="${program_stderr}"/>
+                        <setInstallerVariable name="errCode" value="${program_exit_code}"/>
                         <setInstallerVariable name="strmsg" value=""/>
 
                         <actionGroup>
@@ -983,7 +1099,8 @@
                                     </ruleList>
                                 </runProgram>
                                 <runProgram program="cscript.exe"
-                                    programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; stop" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
+				progressText="${msg(pphqagent.stopping)}"
+                                programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; stop" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
                                     abortOnError="0" showMessageOnError="0">
                                     <ruleList>
                                         <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -1008,6 +1125,7 @@
                             </actionList>
                             <ruleList>
                                 <stringTest text="${errMessage}" type="not_empty"/>
+                                <compareText logic="does_not_equal" text="${errCode}" value="0"/>
                             </ruleList>
                         </actionGroup>
                     </actionList>
@@ -1021,6 +1139,7 @@
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value="${pphqsecureconn}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value="${pphquser}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
+			<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value="${agenthost}"/>
                         <runProgram program="${installdir}/installer/pphqagent/startupcfg.sh"
                             programArguments="0 1 PG_VERSION_HQAGENT &quot;${installdir}&quot; &quot;no-server-present&quot; &quot;${serviceName}&quot; &quot;root&quot; &quot;${serviceaccount}&quot;"
                             progressText="${msg(progress.text.startup.config)}"
@@ -1042,6 +1161,7 @@
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="secure-connection" value="${pphqsecureconn}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphquser" value="${pphquser}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agentport" value="${agentport}"/>
+						<registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agenthost" value="${agenthost}"/>
                     </actionList>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>

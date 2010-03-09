@@ -56,9 +56,26 @@ _build_pphq_linux() {
     cp $SERVER_STAGING/lib/libtermcap.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
     cp $SERVER_STAGING/lib/libxml2.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
     cp $SERVER_STAGING/lib/libreadline.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
-    cp `find "$WD/pphq/source/hq/hq_bin/sigar_bin/lib" -print $1 | grep [.]so$ | grep -v 64` $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the sigar libraries"
-    cp $WD/pphq/source/hq/hq_bin/sigar_bin/lib/sigar.jar $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the sigar jar"
 
+    echo "Copying JRE to staging directory"
+	cd $PPHQ_STAGING/
+    tar -jxf $WD/tarballs/jre6-linux.tar.bz2 || _die "Couldn't extract the JRE"
+
+    echo "Cleaning up unnecessary files..."
+    find . -name *ia64-linux* -delete \
+        -o -name *ppc64-linux* -delete \
+        -o -name *ppc64-linux* -delete \
+        -o -name *s390x-linux* -delete \
+        -o -name *linux-ppc* -delete \
+        -o -name *solaris* -delete \
+        -o -name *freebsd* -delete \
+        -o -name *aix* -delete \
+        -o -name *hpux* -delete \
+        -o -name *winnt* -delete \
+        -o -name *windows* -delete \
+        -o -name *macosx* -delete
+		
+	cd $WD
 }
 
 ################################################################################

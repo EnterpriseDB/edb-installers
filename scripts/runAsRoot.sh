@@ -240,7 +240,7 @@ usage()
    LRAR_SCRIPTNAME=`basename $0`
    _title 1 "USAGE: ${RAR_WD}/${LRAR_SCRIPTNAME} <options>"
    _info  1 "options:"
-   _info  1 "   -i  | --installdir       <Installation Directory> - Directory, where PostgreSQL one click installer binaries has been extracted."
+   _info  1 "   -i  | --installdir       <Installation Directory> - Directory containing previously extracted installation files"
    _info  1 "                                                       (Default: Current Working Directory. i.e. $PWD)"
    _info  1 "   -su | --superuser        <super-user>             - Database Super User"
    _info  1 "   -sp | --superpassword    <super-password>         - Database Password for the Super User"
@@ -453,7 +453,7 @@ _process_command_line()
      then
        loadOptionFile ${2}
      else
-       error "Option file could not be found!"
+       _die "Option file could not be found!"
      fi
      RAR_NO_PROCD_CMD=2
      ;;
@@ -1493,7 +1493,7 @@ _title ============================
 
 readPassword "Please provide password for the super-user(${PG_RAR_SUPERUSER}):" PG_RAR_SUPERPASSWORD "${PG_RAR_SUPERPASSWORD}" " " "Database super-user's password"
 
-_info 1 "Super Password: ${PG_RAR_SUPERPASSWORD}"
+_info 1 "Super User Password: ${PG_RAR_SUPERPASSWORD}"
 
 ##############################
 # START INSTALLATION PROCESS #

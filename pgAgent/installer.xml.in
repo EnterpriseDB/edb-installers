@@ -148,28 +148,6 @@
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </setInstallerVariable>
-    <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{7299052b-02a4-4627-81f2-1818da5d550d}" name="DisplayVersion" variable="VC_REDIST_2005_VERSION"/>
-    <actionGroup>
-      <actionList>
-        <unpackFile>
-          <component>configuration</component>
-          <destination>${system_temp_directory}\vcredist_x86.exe</destination>
-          <folder>vcredistwindows</folder>
-          <origin>vcredist_x86.exe</origin>
-        </unpackFile>
-        <runProgram>
-          <program>${system_temp_directory}\vcredist_x86.exe</program>
-          <programArguments>/q</programArguments>
-          <workingDirectory>${windir}</workingDirectory>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-        </runProgram>
-      </actionList>
-      <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="windows"/>
-        <compareText logic="equals" text="${VC_REDIST_2005_VERSION}" value=""/>
-      </ruleList>
-    </actionGroup>
   </initializationActionList>
 
   <!-- Preinstallation actions -->
@@ -197,6 +175,23 @@
           </ruleList>
         </throwError>
         <setInstallerVariable name="windowsSoftwareRegistryPrefix" value="${vendor}\${fullName}" persist="1"/>
+
+        <!-- Installing vcredist on windows -->
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{7299052b-02a4-4627-81f2-1818da5d550d}" name="DisplayVersion" variable="VC_REDIST_2005_VERSION"/>
+        <actionGroup>
+          <actionList>
+            <unpackFile component="configuration"
+               destination="${system_temp_directory}\vcredist_x86.exe"
+               folder="vcredistwindows" origin="vcredist_x86.exe"/>
+            <runProgram program="${system_temp_directory}\vcredist_x86.exe"
+               programArguments="/q" workingDirectory="${windir}"
+               abortOnError="0" showMessageOnError="0"/>
+          </actionList>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <compareText logic="equals" text="${VC_REDIST_2005_VERSION}" value=""/>
+          </ruleList>
+        </actionGroup>
 
         <!-- Creates the ini file if not exits -->
         <touchFile path="/etc/postgres-reg.ini">

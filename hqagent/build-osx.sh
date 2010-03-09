@@ -41,8 +41,16 @@ _build_pphqagent_osx() {
     cd $PPHQ_STAGING/
     tar -zxf $WD/pphq/source/hq/build/archive/hyperic-hq-installer/agent-$PG_VERSION_HQAGENT.tgz || _die "Couldn't extract agent binaries"
 
-    cd $WD
+    echo "Cleaning up unnecessary files..."
+    find . -name *linux* -delete \
+        -o -name *solaris* -delete \
+        -o -name *freebsd* -delete \
+        -o -name *aix* -delete \
+        -o -name *hpux* -delete \
+        -o -name *windows* -delete \
+        -o -name *winnt* -delete 
 
+    cd $WD
 }
 
 ################################################################################

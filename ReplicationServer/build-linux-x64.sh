@@ -68,6 +68,16 @@ _build_ReplicationServer_linux_x64() {
     _replace "java -jar edb-repserver.jar pubserver 9011" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar pubserver @@PUBPORT@@" "$WD/ReplicationServer/staging/linux-x64/repserver/bin/runPubServer.sh" || _die "Failed to put the placehoder in runPubServer.sh file"
     _replace "java -jar edb-repserver.jar subserver 9012" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar subserver @@SUBPORT@@" "$WD/ReplicationServer/staging/linux-x64/repserver/bin/runSubServer.sh" || _die "Failed to put the placehoder in runSubServer.sh file"
 
+    # Build the validateUserClient binary
+    if [ ! -f $WD/MetaInstaller/source/MetaInstaller.linux-x64/validateUser/validateUserClient.o ]; then
+        cp -R $WD/MetaInstaller/scripts/validateUser $WD/ReplicationServer/source/ReplicationServer.linux-x64/validateUser || _die "Failed to copy validateUser source files"
+        ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux-x64/validateUser; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
+        ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp ReplicationServer/source/ReplicationServer.linux-x64/validateUser/validateUserClient.o ReplicationServer/staging/linux-x64/instscripts/lib" || _die "Failed to copy edb-migrationtoolkit.jar"
+    else
+       cp $WD/MetaInstaller/source/MetaInstaller.linux-x64/validateUser/validateUserClient.o $WD/ReplicationServer/staging/linux-x64/instscripts/validateUserClient.o || _die "Failed to copy validateUserClient.o utility"
+    fi
+    chmod ugo+x $WD/ReplicationServer/staging/linux-x64/instscripts/validateUserClient.o || _die "Failed to give execution permission to validateUserClient.o"
+
 }
 
 

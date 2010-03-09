@@ -106,6 +106,7 @@
       </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
+        <setInstallerVariable name="existingEmail" value=""/>
         <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_REPLICATIONSERVER" />
         <setInstallerVariable name="xDBReplicationServerVersion"  persist="1" value=""/>
@@ -342,6 +343,9 @@
                         </compareText>
                     </ruleList>
                 </touchFile>
+
+                <setInstallerVariable name="iExistingEmail" value=""/>
+
                 <!-- LIN & MAC : Get the branding & check Previous Installation of xDBReplicationServer-->
                 <actionGroup>
                     <actionList>
@@ -554,6 +558,12 @@
                             <key>InstallationDirectory</key>
                             <variable>installdir</variable>
                         </iniFileGet>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>xDBReplicationServer</section>
+                            <key>EnterpriseDBEmail</key>
+                            <variable>iExistingEmail</variable>
+                        </iniFileGet>
                     </actionList>
                     <ruleList>
                         <compareText>
@@ -576,6 +586,11 @@
                             <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                             <name>Location</name>
                             <variable>installdir</variable>
+                        </registryGet>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                            <name>EnterpriseDBEmail</name>
+                            <variable>iExistingEmail</variable>
                         </registryGet>
                     </actionList>
                     <ruleList>
@@ -655,7 +670,36 @@
                     <ruleList>
                         <compareText logic="equals" text="${controldb}" value="" /> 
                     </ruleList>
-                </setInstallerVariable>  
+                </setInstallerVariable>
+
+                <!-- Use already register user in case of upgrade mode -->
+                <setInstallerVariable name="existingEmail" value="${iExistingEmail}">
+                    <ruleList>
+                        <stringTest text="${iExistingEmail}" type="not_empty"/>
+                        <stringTest text="${xDBReplicationServerVersion}" type="not_empty"/>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <setInstallerVariable name="uuid_val" value=""/>
+                <setInstallerVariableFromScriptOutput name="uuid_val" showMessageOnError="0" exec="uuidgen" abortOnError="0">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+
+                <setInstallerVariableFromScriptOutput name="uuid_val" showMessageOnError="0" abortOnError="0"
+                      exec="${system_temp_directory}\${product_fullname}\instscripts\bin\uuid.exe">
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+
+                <!-- Use predefined value, if uuid could not be determined -->
+                <setInstallerVariable name="uuid_val" value="a172352a-20a4-11df-a5a3-000c29a2e41e">
+                    <ruleList>
+                        <stringTest text="${uuid_val}" type="empty"/>
+                    </ruleList>
+                </setInstallerVariable>
             </actionList>
             <ruleList>
                 <isFalse value="${extract_mode}"/>
@@ -732,7 +776,86 @@
            </ruleList>
         </actionGroup> 
 
+        <!-- Creating a temporary directory -->
+        <createDirectory path="${system_temp_directory}/${product_fullname}"/>
 
+        <!-- Extracting installation scripts -->
+        <unpackDirectory origin="instscripts"
+              destination="${system_temp_directory}/${product_fullname}"
+              folder="instscripts${platform_name}" component="psql"/>
+
+        <!-- Set Proxy values from environement variables if any -->
+        <setInstallerVariable name="proxyHost" value="${env(PROXY_HOST)}" />
+        <setInstallerVariable name="proxyPort" value="${env(PROXY_PORT)}" />
+
+        <!-- Validate edb-user and password in unattended mode for the fresh installation -->
+        <actionGroup>
+            <actionList>
+                <throwError text="${msg(xdb.registration.email.empty)}">
+                    <ruleList>
+                        <stringTest text="${existingEmail}" type="empty"/>
+                    </ruleList>
+                </throwError>
+                <throwError text="${msg(xdb.registration.password.empty)}">
+                    <ruleList>
+                        <stringTest text="${existingPassword}" type="empty"/>
+                    </ruleList>
+                </throwError>
+                <setEnvironmentVariable name="LD_LIBRARY_PATH"
+                      value="${env(LD_LIBRARY_PATH)}:${system_temp_directory}/${product_fullname}/instscripts/lib"/>
+                <!-- Email/Password Validation -->
+                <setInstallerVariableFromScriptOutput name="registered"
+                      exec="${system_temp_directory}/${product_fullname}/instscripts/validateUserClient.o"
+                      execArgs="&quot;${uuid_val}&quot; &quot;xdb&quot; &quot;false&quot; &quot;false&quot; &quot;&quot; &quot;&quot; &quot;1&quot; &quot;&quot; &quot;&quot; &quot;0&quot; &quot;0&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
+                      abortOnError="1" showMessageOnError="1"
+                      customErrorMessage="${msg(validatinguser.ws.error)}">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput name="registered"
+                      exec="${system_temp_directory}\${product_fullname}\instscripts\bin\validateUserClient.exe"
+                      execArgs="&quot;xdb&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${uuid_val}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
+                      abortOnError="1" showMessageOnError="1"
+                      customErrorMessage="${msg(validatinguser.ws.error)}">
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <stringModify text="${registered}" variable="registered" logic="trim"/>
+
+                <throwError text="${msg(ws.email.not.authenticated)}">
+                    <ruleList>
+                        <compareText logic="equals" text="${registered}" value="1"/>
+                  </ruleList>
+                </throwError>
+                <throwError text="${msg(ws.email.not.validated)}">
+                  <ruleList>
+                    <compareText logic="equals" text="${registered}" value="2"/>
+                  </ruleList>
+                </throwError>
+                <throwError text="${msg(ws.email.already.exists)}">
+                  <ruleList>
+                    <compareText logic="equals" text="${registered}" value="3"/>
+                  </ruleList>
+                </throwError>
+                <throwError text="${msg(ws.exception.from.server)}">
+                  <ruleList>
+                    <compareText logic="equals" text="${registered}" value="4"/>
+                  </ruleList>
+                </throwError>
+                <throwError text="${msg(ws.internet.not.connected)}">
+                  <ruleList>
+                    <compareText logic="equals" text="${registered}" value=""/>
+                  </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <isTrue value="${validateEmail}"/>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/> 
+                <stringTest text="${xDBReplicationServerVersion}" type="empty"/>
+            </ruleList>
+        </actionGroup>
     </preInstallationActionList>
     <postInstallationActionList>
 
@@ -897,6 +1020,15 @@
                                <isTrue value="${component(pubserver).selected}"/>
                             </ruleList>
                         </iniFileSet>
+                        <iniFileSet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>xDBReplicationServer</section>
+                            <key>EnterpriseDBEmail</key>
+                            <value>${existingEmail}</value>
+                            <ruleList>
+                               <stringTest text="${existingEmail}" type="not_empty"/>
+                            </ruleList>
+                        </iniFileSet>
                         <runProgram>
                             <program>${installdir}/installer/xDBReplicationServer/createshortcuts.sh</program>
                             <programArguments>"${installdir}" "${branding}"</programArguments>
@@ -976,13 +1108,18 @@
                         <isTrue value="${component(pubserver).selected}"/>
                     </ruleList>
                 </registrySet>
-
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                    <name>EnterpriseDBEmail</name>
+                    <value>${existingEmail}</value>
+                    <ruleList>
+                        <stringTest text="${existingEmail}" type="not_empty"/>
+                    </ruleList>
+                </registrySet>
             </actionList>
-
             <ruleList>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
-
         </actionGroup>
    
         <actionGroup>
@@ -1056,90 +1193,13 @@ database=${controldb}
                     </ruleList>
                 </writeFile>
 
-                 <!-- Creating a temporary directory -->
-                <createDirectory path="${system_temp_directory}/${product_fullname}"/>
-
-                <actionGroup>
-                    <actionList>  
-                        <unpackDirectory>
-                            <origin>instscripts/bin</origin>
-                            <destination>${system_temp_directory}/${product_fullname}</destination>
-                            <folder>psqlscriptslinux</folder> 
-                            <component>psql</component>
-                        </unpackDirectory>  
-                        <unpackDirectory>
-                            <origin>instscripts/lib</origin>
-                            <destination>${system_temp_directory}/${product_fullname}</destination>
-                            <folder>psqlscriptslinux</folder> 
-                            <component>psql</component>
-                        </unpackDirectory>  
-                     </actionList>
-                     <ruleList>
-                         <compareText logic="equals" text="${platform_name}" value="linux" />
-                     </ruleList>
-                </actionGroup> 
- 
-                <actionGroup>
-                    <actionList>  
-                        <unpackDirectory>
-                            <origin>instscripts/bin</origin>
-                            <destination>${system_temp_directory}/${product_fullname}</destination>
-                            <folder>psqlscriptslinux-x64</folder> 
-                            <component>psql</component>
-                        </unpackDirectory>  
-                        <unpackDirectory>
-                            <origin>instscripts/lib</origin>
-                            <destination>${system_temp_directory}/${product_fullname}</destination>
-                            <folder>psqlscriptslinux-x64</folder> 
-                            <component>psql</component>
-                        </unpackDirectory>  
-                     </actionList>
-                     <ruleList>
-                         <compareText logic="equals" text="${platform_name}" value="linux-x64" />
-                     </ruleList>
-                </actionGroup> 
-
-                <actionGroup>
-                    <actionList>  
-                        <unpackDirectory>
-                            <origin>instscripts/bin</origin>
-                            <destination>${system_temp_directory}/${product_fullname}</destination>
-                            <folder>psqlscriptsosx</folder> 
-                            <component>psql</component>
-                        </unpackDirectory>  
-                        <unpackDirectory>
-                            <origin>instscripts/lib</origin>
-                            <destination>${system_temp_directory}/${product_fullname}</destination>
-                            <folder>psqlscriptsosx</folder> 
-                            <component>psql</component>
-                        </unpackDirectory>  
-                     </actionList>
-                     <ruleList>
-                         <compareText logic="equals" text="${platform_name}" value="osx" />
-                     </ruleList>
-                </actionGroup> 
- 
-                <actionGroup>
-                    <actionList>  
-                        <unpackDirectory>
-                            <origin>instscripts\bin</origin>
-                            <destination>${system_temp_directory}\${product_fullname}</destination>
-                            <folder>psqlscriptswindows</folder> 
-                            <component>psql</component>
-                        </unpackDirectory>  
-                     </actionList>
-                     <ruleList>
-                         <compareText logic="equals" text="${platform_name}" value="windows" />
-                     </ruleList>
-                </actionGroup> 
- 
                 <!-- Set variable psql_path -->
-                <setInstallerVariable name="psql_path" value="${system_temp_directory}/${product_fullname}/bin/psql">
+                <setInstallerVariable name="psql_path" value="${system_temp_directory}/${product_fullname}/instscripts/bin/psql">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </setInstallerVariable>
-                <setInstallerVariable name="psql_path" value="${system_temp_directory}\${product_fullname}\bin\psql.exe">
+                <setInstallerVariable name="psql_path" value="${system_temp_directory}\${product_fullname}\instscripts\bin\psql.exe">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
@@ -1159,7 +1219,7 @@ database=${controldb}
                 <setInstallerVariableFromScriptOutput name="connection"
                                                       exec="${psql_path}"
                                                       execArgs="-l"
-                                                      workingDirectory="${system_temp_directory}/${product_fullname}/bin"
+                                                      workingDirectory="${system_temp_directory}/${product_fullname}/instscripts/bin"
                                                       showMessageOnError="0"
                                                       abortOnError="0" />
 
@@ -1171,7 +1231,7 @@ database=${controldb}
                          <setInstallerVariableFromScriptOutput name="connection"
                                                        exec="${psql_path}"
                                                        execArgs="-l ${env(PGDATABASE)}"
-                                                       workingDirectory="${system_temp_directory}/${product_fullname}/bin"
+                                                       workingDirectory="${system_temp_directory}/${product_fullname}/instscripts/bin"
                                                        customErrorMessage="${program_stderr}" />
                     </actionList>
                     <ruleList>
@@ -1184,14 +1244,14 @@ database=${controldb}
                 <setInstallerVariableFromScriptOutput name="dbexist"
                                                       exec="${psql_path}"
                                                       execArgs="-t -c &quot;SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${controldb}'&quot;"
-                                                      workingDirectory="${system_temp_directory}/${product_fullname}/bin"
+                                                      workingDirectory="${system_temp_directory}/${product_fullname}/instscripts/bin"
                                                       abortOnError="0"
                                                       showMessageOnError="0"/>
 
                 <runProgram>
                     <program>${psql_path}</program>
                     <programArguments>-t -c "CREATE DATABASE ${controldb}"</programArguments>
-                    <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
+                    <workingDirectory>${system_temp_directory}/${product_fullname}/instscripts/bin</workingDirectory>
                     <progressText>${msg(progress.text.creating.controldb)}</progressText>
                     <ruleList>
                         <compareText>
@@ -1535,6 +1595,8 @@ database=${controldb}
             </ruleList>
         </deleteFile> 
 
+        <!-- Making sure this variable is available in uninstaller -->
+        <setInstallerVariable name="EnterpriseDBEmail" value="${existingEmail}" persist="1"/>
 
     </postInstallationActionList>
 
@@ -1609,6 +1671,15 @@ database=${controldb}
                     <section>xDBReplicationServer</section>
                     <key>PubPort</key>
                     <value/>
+                </iniFileSet>
+                <iniFileSet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>xDBReplicationServer</section>
+                    <key>EnterpriseDBEmail</key>
+                    <value/>
+                    <ruleList>
+                        <stringTest text="${existingEmail}" type="not_empty"/>
+                    </ruleList>
                 </iniFileSet>
             </actionList>
             <ruleList>
@@ -2396,9 +2467,9 @@ database=${controldb}
             <folderList>
                 <!-- LIN- Program files -->
                 <folder>
-                    <description>psql files</description>
+                    <description>Installation Scripts</description>
                     <destination>${system_temp_directory}</destination>
-                    <name>psqlscriptslinux</name>
+                    <name>instscriptslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionDirectory>
@@ -2408,9 +2479,9 @@ database=${controldb}
                 </folder>
                 <!-- LIN-X64- Program files -->
                 <folder>
-                    <description>psql files</description>
+                    <description>Installation Scripts</description>
                     <destination>${system_temp_directory}</destination>
-                    <name>psqlscriptslinux-x64</name>
+                    <name>instscriptslinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionDirectory>
@@ -2420,9 +2491,9 @@ database=${controldb}
                 </folder>
                 <!-- OSX- Program files -->
                 <folder>
-                    <description>psql files</description>
+                    <description>Installation Scripts</description>
                     <destination>${system_temp_directory}</destination>
-                    <name>psqlscriptsosx</name>
+                    <name>instscriptsosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionDirectory>
@@ -2432,9 +2503,9 @@ database=${controldb}
                 </folder>
                  <!-- Windows- Program files -->
                 <folder>
-                    <description>psql files</description>
+                    <description>Installation Scripts</description>
                     <destination>${system_temp_directory}</destination>
-                    <name>psqlscriptswindows</name>
+                    <name>instscriptswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
@@ -2464,8 +2535,145 @@ database=${controldb}
    </componentList>
     <!-- Install Directory -->
     <parameterList>
+        <parameterGroup name="registration"
+              title="${msg(registration.title.value)}"
+              explanation="${msg(registration.explanation.value)}">
+            <parameterList>
+                <choiceParameter name="alreadyRegistered" default="0"
+                    width="30" allowEmptyValue="0" cliOptionShow="0"
+                    displayType="radiobuttons">
+                    <optionList>
+                        <option text="${msg(registration.existingemail.no)}" value="0"/>
+                        <option text="${msg(registration.existingemail.yes)}" value="1"/>
+                    </optionList>
+                </choiceParameter>
+            </parameterList>
+            <!-- Open registration page, if not already registered user -->
+            <postShowPageActionList>
+                <launchBrowser url="http://www.enterprisedb.com/create-promo-account.do?type=xdb"
+                      abortOnError="1">
+                    <ruleList>
+                            <isFalse value="${alreadyRegistered}"/>
+                    </ruleList>
+                </launchBrowser>
+            </postShowPageActionList>
+            <!-- Check if upgradation is done on older version of xDBReplicationServer,
+                 which does not have this authentication process -->
+            <ruleList>
+                <isTrue value="${validateEmail}"/>
+                <stringTest text="${xDBReplicationServerVersion}" type="empty"/>
+            </ruleList>
+        </parameterGroup>
+        <parameterGroup name="userAuthenticationPage"
+            title="${msg(existingemail.authentication.title.value)}">
+            <parameterList>
+                <labelParameter name="existingemail_authentication_lbl"
+                    explanation="${msg(existingemail.authentication.explanation.value)}"/>
+                <stringParameter name="existingEmail" cliOptionName="existing-email"
+                    width="30" ask="1" description="${msg(userAuth.email.value)}"
+                    allowEmptyValue="1" cliOptionShow="1">
+                    <validationActionList>
+                        <throwError text="${msg(error.invalid.email.value)}">
+                            <ruleList>
+                                <regExMatch logic="does_not_match" text="${existingEmail}">
+                                    <pattern>^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$</pattern>
+                                </regExMatch>
+                            </ruleList>
+                        </throwError>
+                    </validationActionList>
+                </stringParameter>
+                <passwordParameter name="existingPassword" width="30" cliOptionName="existing-password"
+                    ask="1" description="${msg(userAuth.password.value)}" allowEmptyValue="1"
+                    askForConfirmation="0" cliOptionShow="1">
+                    <validationActionList>
+                        <throwError text="${msg(error.invalid.password.value)}">
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                            <ruleList>
+                                <stringTest text="${existingPassword}" type="empty"/>
+                                <regExMatch logic="matches" pattern="\s+" text="${existingPassword}"/>
+                            </ruleList>
+                        </throwError>
+                    </validationActionList>
+                </passwordParameter>
+            </parameterList>
+            <!-- Validate entered email & password -->
+            <postShowPageActionList>
+                <setEnvironmentVariable name="LD_LIBRARY_PATH"
+                      value="${env(LD_LIBRARY_PATH)}:${system_temp_directory}/${product_fullname}/instscripts/lib"/>
+                <setInstallerVariableFromScriptOutput name="ws_existinguser_result"
+                    customErrorMessage="${msg(validatinguser.ws.error)}" abortOnError="0"
+                    exec="${system_temp_directory}/${product_fullname}/instscripts/validateUserClient.o"
+                    execArgs="&quot;${uuid_val}&quot; &quot;xdb&quot; &quot;false&quot; &quot;false&quot; &quot;&quot; &quot;&quot; &quot;1&quot; &quot;&quot; &quot;&quot; &quot;0&quot; &quot;0&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
+                    workingDirectory="${system_temp_directory}/${product_fullname}/instscripts">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput name="ws_existinguser_result"
+                    customErrorMessage="${msg(validatinguser.ws.error)}" abortOnError="0"
+                    exec="${system_temp_directory}\${product_fullname}\instscripts\bin\validateUserClient.exe"
+                    execArgs="&quot;xdb&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${uuid_val}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
+                    workingDirectory="${system_temp_directory}\${product_fullname}\instscripts\bin">
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <throwError abortOnError="0" text="${msg(ws.email.not.authenticated)}">
+                    <ruleList>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value="1"/>
+                    </ruleList>
+                </throwError>
+                <throwError abortOnError="0" text="${msg(ws.email.not.validated)}">
+                    <ruleList>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value="2"/>
+                    </ruleList>
+                </throwError>
+                <throwError abortOnError="0" text="${msg(ws.email.already.exists)}">
+                    <ruleList>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value="3"/>
+                    </ruleList>
+                </throwError>
+                <throwError abortOnError="0" text="${msg(ws.exception.from.server)}">
+                    <ruleList>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value="4"/>
+                    </ruleList>
+                </throwError>
+                <throwError abortOnError="0" text="${msg(ws.internet.not.connected)}">
+                    <ruleList>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value=""/>
+                    </ruleList>
+                </throwError>
+        
+                <setInstallerVariable name="stay_on_this_page" value="true"/>
+                <setInstallerVariable name="stay_on_this_page" value="false">
+                    <ruleList>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value="0"/>
+                    </ruleList>
+                </setInstallerVariable>
+                 <setInstallerVariable name="stay_on_this_page" value="false">
+                    <ruleList>
+                        <compareText logic="equals" text="${ws_existinguser_result}" value="00"/>
+                        <isTrue value="${ws_existinguser_result}"/>
+                    </ruleList>
+                </setInstallerVariable>
+        
+                <setInstallerVariable name="next_page" value="userAuthenticationPage">
+                    <ruleList>
+                        <isTrue value="${stay_on_this_page}"/>
+                    </ruleList>
+                </setInstallerVariable>
+            </postShowPageActionList>
+            <!-- Check if upgradation is done on older version of xDBReplicationServer,
+                 which does not have this authentication process -->
+            <ruleList>
+                <isTrue value="${validateEmail}"/>
+                <stringTest text="${xDBReplicationServerVersion}" type="empty"/>
+            </ruleList>
+        </parameterGroup>
+
         <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="0" cliOptionShow="0"/>
         <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
+        <booleanParameter name="validateEmail" cliOptionName="validate" default="1" ask="0" cliOptionShow="0"/>
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <stringParameter name="dbtype" cliOptionName="dbtype" default="${defaultdbtype}" ask="0" cliOptionShow="0"/>
@@ -2584,91 +2792,14 @@ database=${controldb}
                     </ruleList>
                 </throwError>
                 <actionGroup>
-                    <actionList> 
-                         <!-- Creating a temporary directory -->
-                        <createDirectory path="${system_temp_directory}/${product_fullname}"/>
-        
-                        <actionGroup>
-                            <actionList>  
-                                <unpackDirectory>
-                                    <origin>instscripts/bin</origin>
-                                    <destination>${system_temp_directory}/${product_fullname}</destination>
-                                    <folder>psqlscriptslinux</folder> 
-                                    <component>psql</component>
-                                </unpackDirectory>  
-                                <unpackDirectory>
-                                    <origin>instscripts/lib</origin>
-                                    <destination>${system_temp_directory}/${product_fullname}</destination>
-                                    <folder>psqlscriptslinux</folder> 
-                                    <component>psql</component>
-                                </unpackDirectory>  
-                             </actionList>
-                             <ruleList>
-                                 <compareText logic="equals" text="${platform_name}" value="linux" />
-                             </ruleList>
-                        </actionGroup> 
-         
-                        <actionGroup>
-                            <actionList>  
-                                <unpackDirectory>
-                                    <origin>instscripts/bin</origin>
-                                    <destination>${system_temp_directory}/${product_fullname}</destination>
-                                    <folder>psqlscriptslinux-x64</folder> 
-                                    <component>psql</component>
-                                </unpackDirectory>  
-                                <unpackDirectory>
-                                    <origin>instscripts/lib</origin>
-                                    <destination>${system_temp_directory}/${product_fullname}</destination>
-                                    <folder>psqlscriptslinux-x64</folder> 
-                                    <component>psql</component>
-                                </unpackDirectory>  
-                             </actionList>
-                             <ruleList>
-                                 <compareText logic="equals" text="${platform_name}" value="linux-x64" />
-                             </ruleList>
-                        </actionGroup> 
-        
-                        <actionGroup>
-                            <actionList>  
-                                <unpackDirectory>
-                                    <origin>instscripts/bin</origin>
-                                    <destination>${system_temp_directory}/${product_fullname}</destination>
-                                    <folder>psqlscriptsosx</folder> 
-                                    <component>psql</component>
-                                </unpackDirectory>  
-                                <unpackDirectory>
-                                    <origin>instscripts/lib</origin>
-                                    <destination>${system_temp_directory}/${product_fullname}</destination>
-                                    <folder>psqlscriptsosx</folder> 
-                                    <component>psql</component>
-                                </unpackDirectory>  
-                             </actionList>
-                             <ruleList>
-                                 <compareText logic="equals" text="${platform_name}" value="osx" />
-                             </ruleList>
-                        </actionGroup> 
-         
-                        <actionGroup>
-                            <actionList>  
-                                <unpackDirectory>
-                                    <origin>instscripts\bin</origin>
-                                    <destination>${system_temp_directory}\${product_fullname}</destination>
-                                    <folder>psqlscriptswindows</folder> 
-                                    <component>psql</component>
-                                </unpackDirectory>  
-                             </actionList>
-                             <ruleList>
-                                 <compareText logic="equals" text="${platform_name}" value="windows" />
-                             </ruleList>
-                        </actionGroup> 
-         
+                    <actionList>
                         <!-- Set variable psql_path -->
-                        <setInstallerVariable name="psql_path" value="${system_temp_directory}/${product_fullname}/bin/psql">
+                        <setInstallerVariable name="psql_path" value="${system_temp_directory}/${product_fullname}/instscripts/bin/psql">
                             <ruleList>
                                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                             </ruleList>
                         </setInstallerVariable>
-                        <setInstallerVariable name="psql_path" value="${system_temp_directory}\${product_fullname}\bin\psql.exe">
+                        <setInstallerVariable name="psql_path" value="${system_temp_directory}\${product_fullname}\instscripts\bin\psql.exe">
                             <ruleList>
                                 <compareText logic="equals" text="${platform_name}" value="windows"/>
                             </ruleList>

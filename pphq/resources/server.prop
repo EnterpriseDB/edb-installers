@@ -1,15 +1,16 @@
 # Installation Directory
 server.installdir=@@INSTALLDIR@@
-server.overwrite=Yes
+server.overwrite=@@OVERWRITE@@
 
 # Database Selection
 server.database.choice=PostgreSQL
 server.database-driver=org.postgresql.Driver
 server.database=PostgreSQL
 server.database.create=@@DBCREATE@@
+server.database.upgrade=@@DBUPGRADE@@
 server.database-user=@@PGUSER@@
 server.database-password=@@PGPASS@@
-server.database.upgrade.choice=Overwrite the HQ server database (ERASE all existing data)
+server.database.upgrade.choice=@@UPGRADE_CHOICE@@
 server.database-url=jdbc\:postgresql\://@@PGHOST@@\:@@PGPORT@@/@@PGADMINDB@@?protocolVersion\=2
 
 server.admin.username=@@PGUSER@@
@@ -27,7 +28,7 @@ server.webapp.baseurl=http\://@@MACHINEHOST@@\:@@HQPORT@@/
 server.webapp.secure.port=@@HQSPORT@@
 
 server.mail.host=@@SMTPHOST@@
-server.mail.sender=@@PGUSER@@@@SMTPHOST@@
+server.mail.sender=@@PGUSER@@@@@SMTPHOST@@
 
 server.multicast.addr=227.0.0.1
 server.multicast.port=3030

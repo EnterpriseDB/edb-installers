@@ -67,6 +67,19 @@ _build_ReplicationServer_osx() {
     _replace "java -jar edb-repserver.jar pubserver 9011" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar pubserver @@PUBPORT@@" "$WD/ReplicationServer/staging/osx/repserver/bin/runPubServer.sh" || _die "Failed to put the placehoder in runPubServer.sh file"
     _replace "java -jar edb-repserver.jar subserver 9012" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar subserver @@SUBPORT@@" "$WD/ReplicationServer/staging/osx/repserver/bin/runSubServer.sh" || _die "Failed to put the placehoder in runSubServer.sh file"
 
+    if [ ! -f $WD/MetaInstaller/source/MetaInstaller.osx/validateUser/validateUserClient.o ];
+    then
+      echo "Building validateUserClient utility"
+      cp -R $WD/MetaInstaller/scripts/osx/validateUser $WD/ReplicationServer/source/ReplicationServer.osx/validateUser || _die "Failed copying validateUser script while building"
+      cd $WD/ReplicationServer/source/ReplicationServer.osx/validateUser
+      gcc -DWITH_OPENSSL -I. -o validateUserClient.o $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto || _die "Failed to build the validateUserClient utility"
+      cp validateUserClient.o $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/validateUserClient.o || _die "Failed to copy validateUserClient utility to staging directory"
+    else
+      echo "Using validateUserClient utility from MetaInstaller package"
+      cp $WD/MetaInstaller/source/MetaInstaller.osx/validateUser/validateUserClient.o $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/validateUserClient.o || _die "Failed to copy validateUserClient utility from MetaInstaller package"
+    fi
+    chmod ugo+x $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/validateUserClient.o
+
 }
 
 
