@@ -595,6 +595,7 @@
                     </ruleList>
                 </runProgram>
                 <runProgram program="cscript.exe"
+		    progressText="${msg(pphqagent.starting)}"
                     programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; start" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
                     abortOnError="0" showMessageOnError="0">
                     <ruleList>
@@ -619,6 +620,7 @@
                 </runProgram>
                 <!-- Stop Agent, if it failed on configuration -->
                 <runProgram program="cscript.exe"
+		progressText="${msg(pphqagent.stopping)}"
                     programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; stop" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
                     abortOnError="0" showMessageOnError="0">
                     <ruleList>
@@ -1071,6 +1073,7 @@
                             </ruleList>
                         </runProgram>
                         <runProgram program="cscript.exe"
+			    progressText="${msg(pphqagent.starting)}"
                             programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; start" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
                             abortOnError="0" showMessageOnError="0">
                             <ruleList>
@@ -1096,7 +1099,8 @@
                                     </ruleList>
                                 </runProgram>
                                 <runProgram program="cscript.exe"
-                                    programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; stop" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
+				progressText="${msg(pphqagent.stopping)}"
+                                programArguments="&quot;${installdir}\scripts\runProgram.vbs&quot; &quot;${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat&quot; stop" workingDirectory="${installdir}\agent-PG_VERSION_HQAGENT\bin"
                                     abortOnError="0" showMessageOnError="0">
                                     <ruleList>
                                         <compareText logic="equals" text="${platform_name}" value="windows"/>
