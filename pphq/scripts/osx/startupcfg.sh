@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 
 if [ $# -ne 8 ];
 then
@@ -12,7 +12,7 @@ VERSION=$3
 INSTALLDIR=$4
 SERVERSERVICE=$5
 AGENTSERVICE=$6
-SERVERUSER=$7
+SERVICEUSER=$7
 AGENTUSER=$8
 
 # Exit code
