@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh 
 
 if [ $# -ne 8 ];
 then
