@@ -3,12 +3,15 @@
     <shortName>pphqagent</shortName>
     <fullName>Postgres Plus HQ Agent</fullName>
     <version>PG_VERSION_HQAGENT-PG_BUILDNUM_HQAGENT</version>
+
     <!-- These options are used on Windows -->
     <startMenuGroupName>${branding}</startMenuGroupName>
+
     <!-- Product Specific Options -->
     <productComments>Postgres Plus HQ Agent, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
+
     <!-- The options are used for RPM registration -->
     <description>Postgres Plus HQ Agent</description>
     <summary>Postgres Plus HQ Agent, packaged by EnterpriseDB</summary>
@@ -28,6 +31,7 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+    <licenseFile>../pphq/resources/licence.txt</licenseFile>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>

@@ -3,12 +3,15 @@
     <shortName>pphq</shortName>
     <fullName>Postgres Plus HQ</fullName>
     <version>PG_VERSION_PPHQ-PG_BUILDNUM_PPHQ</version>
+
     <!-- These options are used on Windows -->
     <startMenuGroupName>${branding}</startMenuGroupName>
+
     <!-- Product Specific Options -->
     <productComments>Postgres Plus HQ: PostgreSQL Monitoring Tool, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
+
     <!-- The options are used for RPM registration -->
     <description>Postgres Plus HQ: PostgreSQL Monitoring Tool</description>
     <summary>Postgres Plus HQ: PostgreSQL Monitoring Tool, packaged by EnterpriseDB</summary>
@@ -28,6 +31,7 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+    <licenseFile>resources/licence.txt</licenseFile>
 
     <!-- Images -->
     <leftImage>../resources/edb-side.png</leftImage>
