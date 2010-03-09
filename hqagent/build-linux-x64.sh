@@ -95,7 +95,7 @@ _postprocess_pphqagent_linux_x64() {
 
     # Copy in the menu pick images  and XDG items
     mkdir -p $PPHQAGENT_STAGING_DIR/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp $PPHQAGENT_DIR/resources/hqagent.png $PPHQAGENT_STAGING_DIR/scripts/images/hqagent.png || _die "Failed to copy a menu pick image"
+    cp $PPHQAGENT_DIR/resources/hqagent.png $PPHQAGENT_STAGING_DIR/scripts/images/pphq-logo.png || _die "Failed to copy a menu pick image"
     cp $PPHQAGENT_DIR/resources/hqagent-start.png $PPHQAGENT_STAGING_DIR/scripts/images/hqagent-start.png || _die "Failed to copy a menu pick image"
     cp $PPHQAGENT_DIR/resources/hqagent-stop.png $PPHQAGENT_STAGING_DIR/scripts/images/hqagent-stop.png || _die "Failed to copy a menu pick image"
 
