@@ -877,17 +877,17 @@
                 <startMenuShortcut>
                     <name>Start Agent</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat</windowsExec>
-                    <windowsExecArgs>start</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\hqagent-start.ico</windowsIcon>
+		    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\agentctl.vbs" start wait</windowsExecArgs>
+                    <windowsIcon>${installdir}\scripts\images\pphq-agent-start.ico</windowsIcon>
                 </startMenuShortcut>
                 <!-- Stop Agent -->
                 <startMenuShortcut>
                     <name>Stop Agent</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat</windowsExec>
-                    <windowsExecArgs>stop</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\hqagent-stop.ico</windowsIcon>
+                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\agentctl.vbs" stop wait</windowsExecArgs>
+                    <windowsIcon>${installdir}\scripts\images\pphq-agent-stop.ico</windowsIcon>
                 </startMenuShortcut>
             </startMenuShortcutList>
         </component>

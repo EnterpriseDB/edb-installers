@@ -45,7 +45,7 @@ strFile_Log = strTempDir & "\" & FILE_NAME_LOG
 Set objFile_Log = objFSO.OpenTextFile(strFile_Log, ForAppending, True)
 
 Sub Usage()
-  LogError "USAGE: servicectl.vbs <start|stop|restart|reload> <wait>"
+  LogError "USAGE: serverctl.vbs <start|stop|restart|reload> <wait>"
   WScript.Quit 127
 End Sub
 
