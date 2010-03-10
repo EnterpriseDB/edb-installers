@@ -2,7 +2,7 @@ Option Explicit
 ' Postgres Plus Advanced Server server control script for Windows
 
 'The name of the log file
-Const FILE_NAME_LOG = "serverctl.log"
+Const FILE_NAME_LOG = "agentctl.log"
 
 Const ForAppending  = 8
 
@@ -45,7 +45,7 @@ strFile_Log = strTempDir & "\" & FILE_NAME_LOG
 Set objFile_Log = objFSO.OpenTextFile(strFile_Log, ForAppending, True)
 
 Sub Usage()
-  LogError "USAGE: serverctl.vbs <start|stop|restart|reload> <wait>"
+  LogError "USAGE: agentctl.vbs <start|stop|restart|reload> <wait>"
   WScript.Quit 127
 End Sub
 
@@ -62,7 +62,7 @@ If WScript.Arguments.Count = 2 Then
     End If
 End If
 
-strServiceName = "pphq"
+strServiceName = "Postgres Plus HQ Agent"
 strAction      = WScript.Arguments.Item(0)
 
 
