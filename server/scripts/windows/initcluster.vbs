@@ -147,6 +147,7 @@ End If
 '      port = $PORT
 '      log_destination = 'stderr'
 '      logging_collector = on
+'      log_line_prefix = '%t '
 Set objConfFile = objFso.OpenTextFile(strDataDir & "\postgresql.conf", ForReading)
 strConfig = objConfFile.ReadAll
 objConfFile.Close
@@ -154,7 +155,7 @@ strConfig = Replace(strConfig, "#listen_addresses = 'localhost'", "listen_addres
 strConfig = Replace(strConfig, "#port = 5432", "port = " & lPort)
 strConfig = Replace(strConfig, "#log_destination = 'stderr'", "log_destination = 'stderr'")
 strConfig = Replace(strConfig, "#logging_collector = off", "logging_collector = on")
-strConfig = Replace(strConfig, "#log_line_prefix = ''", "log_line_prefix = '%t'")
+strConfig = Replace(strConfig, "#log_line_prefix = ''", "log_line_prefix = '%t '")
 Set objConfFile = objFso.OpenTextFile(strDataDir & "\postgresql.conf", ForWriting)
 objConfFile.WriteLine strConfig
 objConfFile.Close
