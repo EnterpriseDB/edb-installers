@@ -184,7 +184,7 @@
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </iniFileGet>
-        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphq" variable="pphqVersion" name="Version">
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" variable="pphqVersion" name="Version">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
