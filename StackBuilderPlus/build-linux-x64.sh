@@ -138,6 +138,7 @@ _postprocess_stackbuilderplus_linux_x64() {
 
     mkdir -p staging/linux-x64/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/edb-stackbuilderplus.png staging/linux-x64/scripts/images/edb-stackbuilderplus-$PG_VERSION_STR.png  || _die "Failed to copy the menu pick images (resources/edb-stackbuilderplus.png)"
+    cp resources/pg-postgresql.png staging/linux-x64/scripts/images/pg-postgresql-$PG_VERSION_STR.png  || _die "Failed to copy the menu pick images (pg-postgresql.png)"
 
     mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
     mkdir -p staging/linux-x64/UpdateManager/scripts/xdg || _die "Failed to create a directory for the menu pick items"
