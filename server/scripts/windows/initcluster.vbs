@@ -35,6 +35,11 @@ strBatchFile = Replace(objFso.GetTempName, ".tmp", ".bat")
 strOutputFile = objTempFolder.Path & "\" & objFso.GetTempName
 Set objFso = CreateObject("Scripting.FileSystemObject")
 
+' Change the current directory to the installation directory
+' This is important, because initdb will drop Administrative
+' permissions and may lose access to the current working directory
+objShell.CurrentDirectory = strInstallDir
+
 ' Is this Vista or above?
 Function IsVistaOrNewer()
     Set objWMI = GetObject("winmgmts:\\.\root\cimv2")
@@ -99,7 +104,7 @@ Function CreateDirectory(DirectoryPath)
 End Function
 
 ' Create a password file
-strInitdbPass = objTempFolder.Path & "\" & objFso.GetTempName
+strInitdbPass = strInstallDir & "\" & objFso.GetTempName
 Set objInitdbPass = objFso.OpenTextFile(strInitdbPass, ForWriting, True)
 WScript.Echo Err.description
 objInitdbPass.WriteLine(strPassword)
