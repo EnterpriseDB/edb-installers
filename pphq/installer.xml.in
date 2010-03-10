@@ -1612,16 +1612,24 @@
                 <startMenuShortcut>
                     <name>Start Postgres Plus HQ Server</name>
                     <runInTerminal>0</runInTerminal>
+                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" start wait</windowsExecArgs>
+		    <!--
                     <windowsExec>${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe</windowsExec>
                     <windowsExecArgs>start</windowsExecArgs>
+		    -->
                     <windowsIcon>${installdir}\scripts\images\pphq-start.ico</windowsIcon>
                 </startMenuShortcut>
                 <!-- Stop server -->
                 <startMenuShortcut>
                     <name>Stop Postgres Plus HQ Server</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe</windowsExec>
+                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" stop wait</windowsExecArgs>
+                    <!--
+		    <windowsExec>${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe</windowsExec>
                     <windowsExecArgs>stop</windowsExecArgs>
+		    -->
                     <windowsIcon>${installdir}\scripts\images\pphq-stop.ico</windowsIcon>
                 </startMenuShortcut>
                 <!-- Start agent -->
