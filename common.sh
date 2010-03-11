@@ -134,7 +134,7 @@ extract_file()
        # This is a tgz tarball
        tar -zxvf $FILENAME.tgz
     else
-       echo "tarball doesn't exist for the this Package"
+       echo "tarball doesn't exist for the this Package ($FILENAME)"
        exit 1
     fi
 }
