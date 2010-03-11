@@ -85,6 +85,7 @@
         <setInstallerVariable name="project.parameter(jrehome).ask" value="0"/>
         <setInstallerVariable name="project.parameter(serviceaccount).ask" value="0"/>
         <setInstallerVariable name="agentport" value=""/>
+        <setInstallerVariable name="sslport" value=""/>
         <setInstallerVariable name="configure" value="false"/>
 
         <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
@@ -236,6 +237,7 @@
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" variable="pphqsecureconn"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" variable="pphquser"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" variable="agentport"/>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="sslport" variable="sslport"/>
 		<iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" variable="agenthost"/>
             </actionList>
             <ruleList>
@@ -251,6 +253,7 @@
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="secure-connection" name="${pphqsecureconn}"/>
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="pphquser" name="pphquser"/>
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="agentport" name="agentport"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="sslport" name="sslport"/>
 				<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="agenthost" name="agenthost"/>
             </actionList>
             <ruleList>
@@ -267,7 +270,8 @@
                 <stringTest text="${pphqport}" type="empty"/>
                 <stringTest text="${pphquser}" type="empty"/>
                 <stringTest text="${agentport}" type="empty"/>
-				<stringTest text="${agenthost}" type="empty"/>
+                <stringTest text="${sslport}" type="empty"/>
+		<stringTest text="${agenthost}" type="empty"/>
             </ruleList>
         </setInstallerVariable>
 
@@ -539,6 +543,7 @@
 
         <!-- Get a default port number - ideally 2144 -->
         <getFreePort variable="agentport" initialPort="2144" finalPort="65535"/>
+        <getFreePort variable="sslport" initialPort="7443" finalPort="65535"/>
         <setInstallerVariable name="pphquser" value="hqadmin">
             <ruleList>
                 <stringTest text="${pphquser}" type="empty"/>
@@ -564,13 +569,13 @@
                     </ruleList>
                 </setInstallerVariable>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
-                    key="agent.listerPort" value="${pphqport}"/>
+                    key="agent.listenPort" value="${pphqport}"/>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                     key="agent.setup.camIP" value="${pphqhost}"/>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                     key="agent.setup.camPort" value="${pphqport}"/>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
-                    key="agent.setup.camSSLPort" value="${pphqport}"/>
+                    key="agent.setup.camSSLPort" value="${sslport}"/>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                     key="agent.setup.camSecure" value="yes"/>
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
@@ -667,6 +672,7 @@
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value="${pphqsecureconn}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value="${pphquser}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
+                        <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="sslport" value="${sslport}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value="${agenthost}"/>
                     </actionList>
                     <ruleList>
@@ -680,6 +686,7 @@
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="secure-connection" value="${pphqsecureconn}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphquser" value="${pphquser}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agentport" value="${agentport}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="sslport" value="${sslport}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agenthost" value="${agenthost}"/>
                     </actionList>
                     <ruleList>
@@ -788,6 +795,7 @@
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="sslport" value=""/>
 		<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value=""/>
             </actionList>
             <ruleList>
@@ -1052,13 +1060,13 @@
                     progressText="${msg(pphqagent.update.configuration)}">
                     <actionList>
                         <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
-                            key="agent.listerPort" value="${pphqport}"/>
+                            key="agent.listenPort" value="${pphqport}"/>
                         <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                             key="agent.setup.camIP" value="${pphqhost}"/>
                         <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                             key="agent.setup.camPort" value="${pphqport}"/>
                         <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
-                            key="agent.setup.camSSLPort" value="${pphqport}"/>
+                            key="agent.setup.camSSLPort" value="${sslport}"/>
                         <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                             key="agent.setup.camSecure" value="yes"/>
                         <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
@@ -1171,6 +1179,7 @@
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value="${pphqsecureconn}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value="${pphquser}"/>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value="${agentport}"/>
+                        <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="sslport" value="${sslport}"/>
 			<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value="${agenthost}"/>
                         <runProgram program="${installdir}/installer/pphqagent/startupcfg.sh"
                             programArguments="0 1 PG_VERSION_HQAGENT &quot;${installdir}&quot; &quot;no-server-present&quot; &quot;${serviceName}&quot; &quot;root&quot; &quot;${serviceaccount}&quot;"
@@ -1193,6 +1202,7 @@
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="secure-connection" value="${pphqsecureconn}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphquser" value="${pphquser}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agentport" value="${agentport}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="sslport" value="${sslport}"/>
 						<registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agenthost" value="${agenthost}"/>
                     </actionList>
                     <ruleList>
