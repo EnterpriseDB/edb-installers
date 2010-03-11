@@ -36,6 +36,11 @@ strBatchFile = Replace(objFso.GetTempName, ".tmp", ".bat")
 strOutputFile = objTempFolder.Path & "\" & objFso.GetTempName
 Set objFso = CreateObject("Scripting.FileSystemObject")
 
+' Change the current directory to the installation directory
+' This is important, because initdb will drop Administrative
+' permissions and may lose access to the current working directory
+objShell.CurrentDirectory = strInstallDir
+
 ' Is this Vista or above?
 Function IsVistaOrNewer()
     Set objWMI = GetObject("winmgmts:\\.\root\cimv2")
@@ -100,7 +105,7 @@ Function CreateDirectory(DirectoryPath)
 End Function
 
 ' Create a password file
-strInitdbPass = objTempFolder.Path & "\" & objFso.GetTempName
+strInitdbPass = strInstallDir & "\" & objFso.GetTempName
 Set objInitdbPass = objFso.OpenTextFile(strInitdbPass, ForWriting, True)
 WScript.Echo Err.description
 objInitdbPass.WriteLine(strPassword)
@@ -148,6 +153,7 @@ End If
 '      port = $PORT
 '      log_destination = 'stderr'
 '      logging_collector = on
+'      log_line_prefix = '%t '
 Set objConfFile = objFso.OpenTextFile(strDataDir & "\postgresql.conf", ForReading)
 strConfig = objConfFile.ReadAll
 objConfFile.Close
@@ -155,7 +161,7 @@ strConfig = Replace(strConfig, "#listen_addresses = 'localhost'", "listen_addres
 strConfig = Replace(strConfig, "#port = 5432", "port = " & lPort)
 strConfig = Replace(strConfig, "#log_destination = 'stderr'", "log_destination = 'stderr'")
 strConfig = Replace(strConfig, "#logging_collector = off", "logging_collector = on")
-strConfig = Replace(strConfig, "#log_line_prefix = ''", "log_line_prefix = '%t'")
+strConfig = Replace(strConfig, "#log_line_prefix = ''", "log_line_prefix = '%t '")
 Set objConfFile = objFso.OpenTextFile(strDataDir & "\postgresql.conf", ForWriting)
 objConfFile.WriteLine strConfig
 objConfFile.Close

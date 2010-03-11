@@ -3,5 +3,5 @@ Version=1.0
 Type=Directory
 Name=@@BRANDING@@
 Comment=Postgres Plus HQ Agent, packaged by EnterpriseDB
-Icon=hqagent.png
+Icon=pphq-logo.png
 Encoding=UTF-8

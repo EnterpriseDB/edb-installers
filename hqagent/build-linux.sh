@@ -95,14 +95,14 @@ _postprocess_pphqagent_linux() {
 
     # Copy in the menu pick images  and XDG items
     mkdir -p $PPHQAGENT_STAGING_DIR/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp $PPHQAGENT_DIR/resources/hqagent.png $PPHQAGENT_STAGING_DIR/scripts/images/hqagent.png || _die "Failed to copy a menu pick image"
-    cp $PPHQAGENT_DIR/resources/hqagent-start.png $PPHQAGENT_STAGING_DIR/scripts/images/hqagent-start.png || _die "Failed to copy a menu pick image"
-    cp $PPHQAGENT_DIR/resources/hqagent-stop.png $PPHQAGENT_STAGING_DIR/scripts/images/hqagent-stop.png || _die "Failed to copy a menu pick image"
+    cp $PPHQ_DIR/resources/pphq.png $PPHQAGENT_STAGING_DIR/scripts/images/pphq-logo.png || _die "Failed to copy a menu pick image"
+    cp $PPHQ_DIR/resources/pphq-agent-start.png $PPHQAGENT_STAGING_DIR/scripts/images/ || _die "Failed to copy a menu pick image"
+    cp $PPHQ_DIR/resources/pphq-agent-stop.png $PPHQAGENT_STAGING_DIR/scripts/images/ || _die "Failed to copy a menu pick image"
 
     mkdir -p $PPHQAGENT_STAGING_DIR/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp $PPHQAGENT_DIR/resources/xdg/hqagent.directory $PPHQAGENT_STAGING_DIR/scripts/xdg/hqagent.directory || _die "Failed to copy a menu pick directory (hqagent.directory)"
-    cp $PPHQ_DIR/resources/xdg/pphq-agent-start.desktop $PPHQAGENT_STAGING_DIR/scripts/xdg/hqagent-start.desktop || _die "Failed to copy a menu pick (hqagent-start.desktop)"
-    cp $PPHQ_DIR/resources/xdg/pphq-agent-stop.desktop $PPHQAGENT_STAGING_DIR/scripts/xdg/hqagent-stop.desktop || _die "Failed to copy a menu pick (hqagent-stop.desktop)"
+    cp $PPHQ_DIR/resources/xdg/pphq.directory $PPHQAGENT_STAGING_DIR/scripts/xdg/pphq-pphq.directory || _die "Failed to copy a menu pick directory (pphq.directory)"
+    cp $PPHQ_DIR/resources/xdg/pphq-agent-start.desktop $PPHQAGENT_STAGING_DIR/scripts/xdg/ || _die "Failed to copy a menu pick (pphq-agent-start.desktop)"
+    cp $PPHQ_DIR/resources/xdg/pphq-agent-stop.desktop $PPHQAGENT_STAGING_DIR/scripts/xdg/ || _die "Failed to copy a menu pick (pphq-agent-stop.desktop)"
 
     # Copy the launch scripts
     cp $PPHQ_DIR/scripts/linux/launchagentctl.sh $PPHQAGENT_STAGING_DIR/scripts/ || _die "Failed to copy the launchagentctl script (scripts/linux/launchagentctl.sh)"

@@ -3,12 +3,15 @@
     <shortName>pphqagent</shortName>
     <fullName>Postgres Plus HQ Agent</fullName>
     <version>PG_VERSION_HQAGENT-PG_BUILDNUM_HQAGENT</version>
+
     <!-- These options are used on Windows -->
     <startMenuGroupName>${branding}</startMenuGroupName>
+
     <!-- Product Specific Options -->
     <productComments>Postgres Plus HQ Agent, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
+
     <!-- The options are used for RPM registration -->
     <description>Postgres Plus HQ Agent</description>
     <summary>Postgres Plus HQ Agent, packaged by EnterpriseDB</summary>
@@ -28,6 +31,7 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+    <licenseFile>../pphq/resources/licence.txt</licenseFile>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
@@ -180,7 +184,7 @@
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </iniFileGet>
-        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pphq" variable="pphqVersion" name="Version">
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ" variable="pphqVersion" name="Version">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
@@ -873,17 +877,17 @@
                 <startMenuShortcut>
                     <name>Start Agent</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat</windowsExec>
-                    <windowsExecArgs>start</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\hqagent-start.ico</windowsIcon>
+		    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\agentctl.vbs" start wait</windowsExecArgs>
+                    <windowsIcon>${installdir}\scripts\images\pphq-agent-start.ico</windowsIcon>
                 </startMenuShortcut>
                 <!-- Stop Agent -->
                 <startMenuShortcut>
                     <name>Stop Agent</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\agent-PG_VERSION_HQAGENT\bin\pphq-agent.bat</windowsExec>
-                    <windowsExecArgs>stop</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\hqagent-stop.ico</windowsIcon>
+                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\agentctl.vbs" stop wait</windowsExecArgs>
+                    <windowsIcon>${installdir}\scripts\images\pphq-agent-stop.ico</windowsIcon>
                 </startMenuShortcut>
             </startMenuShortcutList>
         </component>

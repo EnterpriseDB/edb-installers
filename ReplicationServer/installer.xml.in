@@ -3,12 +3,15 @@
     <shortName>xdbreplicationserver</shortName>
     <fullName>xDBReplicationServer</fullName>
     <version>PG_VERSION_REPLICATIONSERVER-PG_BUILDNUM_REPLICATIONSERVER</version>
+
     <!-- These options are used on Windows -->
     <startMenuGroupName>${branding}</startMenuGroupName>
+
     <!-- Product Specific Options -->
     <productComments>Postgres Plus xDB Replication Server, by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
     <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
+
     <!-- The options are used for RPM registration -->
     <description>Postgres Plus xDB Replication Server</description>
     <summary>Postgres Plus xDB Replication Server, by EnterpriseDB</summary>
@@ -28,6 +31,7 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+    <licenseFile>resources/licence.txt</licenseFile>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>

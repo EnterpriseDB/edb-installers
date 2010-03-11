@@ -3,12 +3,15 @@
     <shortName>pphq</shortName>
     <fullName>Postgres Plus HQ</fullName>
     <version>PG_VERSION_PPHQ-PG_BUILDNUM_PPHQ</version>
+
     <!-- These options are used on Windows -->
     <startMenuGroupName>${branding}</startMenuGroupName>
+
     <!-- Product Specific Options -->
     <productComments>Postgres Plus HQ: PostgreSQL Monitoring Tool, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
+
     <!-- The options are used for RPM registration -->
     <description>Postgres Plus HQ: PostgreSQL Monitoring Tool</description>
     <summary>Postgres Plus HQ: PostgreSQL Monitoring Tool, packaged by EnterpriseDB</summary>
@@ -28,6 +31,7 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+    <licenseFile>resources/licence.txt</licenseFile>
 
     <!-- Images -->
     <leftImage>../resources/edb-side.png</leftImage>
@@ -1608,32 +1612,32 @@
                 <startMenuShortcut>
                     <name>Start Postgres Plus HQ Server</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe</windowsExec>
-                    <windowsExecArgs>start</windowsExecArgs>
+                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" start wait</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pphq-start.ico</windowsIcon>
                 </startMenuShortcut>
                 <!-- Stop server -->
                 <startMenuShortcut>
                     <name>Stop Postgres Plus HQ Server</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\server-PG_VERSION_PPHQ\bin\${pphqServer}.exe</windowsExec>
-                    <windowsExecArgs>stop</windowsExecArgs>
+                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" stop wait</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pphq-stop.ico</windowsIcon>
                 </startMenuShortcut>
                 <!-- Start agent -->
                 <startMenuShortcut>
                     <name>Start Postgres Plus HQ Agent</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\agent-PG_VERSION_PPHQ\bin\${pphqAgent}.bat</windowsExec>
-                    <windowsExecArgs>start</windowsExecArgs>
+                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\agentctl.vbs" start wait</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pphq-agent-start.ico</windowsIcon>
                 </startMenuShortcut>
                 <!-- Stop server -->
                 <startMenuShortcut>
                     <name>Stop Postgres Plus HQ Agent</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\agent-PG_VERSION_PPHQ\bin\${pphqAgent}.bat</windowsExec>
-                    <windowsExecArgs>stop</windowsExecArgs>
+                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\agentctl.vbs" stop wait</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pphq-agent-stop.ico</windowsIcon>
                 </startMenuShortcut>
             </startMenuShortcutList>
