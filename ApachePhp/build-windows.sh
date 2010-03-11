@@ -55,6 +55,7 @@ _prep_ApachePhp_windows() {
     #Remove existing staging directory on Windows VM
     echo "Removing existing directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache.zip del /S /Q apache.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache.zip on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache-staging.zip del /S /Q apache-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache-staging.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST build-apache.bat del /S /Q build-apache.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache-build.bat on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache.windows rd /S /Q apache.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache.windows directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache.staging rd /S /Q apache.staging" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache.staging directory on Windows VM"
@@ -62,6 +63,7 @@ _prep_ApachePhp_windows() {
     # Remove existing staging directory on Windows VM
     echo "Removing existing source & staging directories on Winodws VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST php.zip del /S /Q php.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\\\php.zip on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST php-staging.zip del /S /Q php-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\\\php-staging.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST php.windows rd /S /Q php.windows" || _die "Couldn't remove the source directory on Windows VM (php.windows)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST php.staging rd /S /Q php.staging" || _die "Couldn't remove the source directory on Windows VM (php.staging)"
 
@@ -117,9 +119,9 @@ perl srclib\apr\build\cvtdsp.pl -2005
 perl srclib\apr\build\fixwin32mak.pl
 
 REM Compiling Apache with Standard configuration
-nmake -f Makefile.win _apacher PORT=8080
+nmake -f Makefile.win _apacher PORT=8080 NO_EXTERNAL_DEPS=1
 
-nmake -f Makefile.win installr INSTDIR="%STAGING_DIR%\apache.staging"
+nmake -f Makefile.win installr INSTDIR="%STAGING_DIR%\apache.staging" NO_EXTERNAL_DEPS=1
 
 EOT
 
