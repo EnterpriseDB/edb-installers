@@ -71,20 +71,24 @@ _build_TuningWizard_windows() {
     
     cat <<EOT > "build-tuningwizard.bat"
 
-@SET VSINSTALLDIR=$PG_VSINSTALLDIR_WINDOWS
-@SET VCINSTALLDIR=$PG_VSINSTALLDIR_WINDOWS\VC
-@SET FrameworkDir=$PG_FRAMEWORKDIR_WINDOWS
-@SET FrameworkVersion=$PG_FRAMEWORKVERSION_WINDOWS
-@SET FrameworkSDKDir=$PG_FRAMEWORKSDKDIR_WINDOWS
-@set DevEnvDir=$PG_DEVENVDIR_WINDOWS
-@set INCLUDE=%VCINSTALLDIR%\ATLMFC\INCLUDE;%VCINSTALLDIR%\INCLUDE;%VCINSTALLDIR%\PlatformSDK\include;%FrameworkSDKDir%\include;%INCLUDE%
-@set LIB=%VCINSTALLDIR%\ATLMFC\LIB;%VCINSTALLDIR%\LIB;%VCINSTALLDIR%\PlatformSDK\lib;%FrameworkSDKDir%\lib;%LIB%
-@set LIBPATH=$PG_FRAMEWORKDIR_WINDOWS\$PG_FRAMEWORKVERSION_WINDOWS;%VCINSTALLDIR%\ATLMFC\LIB
+@SET VSINSTALLDIR=C:\Program Files\Microsoft Visual Studio 9.0
+@SET VCINSTALLDIR=C:\Program Files\Microsoft Visual Studio 9.0\VC
+    
+@SET FrameworkDir=C:\WINDOWS\Microsoft.NET\Framework
+@SET FrameworkVersion=v2.0.50727
+@SET Framework35Version=v3.5
+@SET FrameworkSDKDir=C:\Program Files\Microsoft Visual Studio 9.0\SDK\v3.5
+
+@SET DevEnvDir=C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE
+@SET VS90COMNTOOLS=C:\Program Files\Microsoft Visual Studio 9.0\Common7\tools
+@SET PATH=c:\Program Files\Microsoft Visual Studio 9.0\VC\bin;C:\Program Files\Microsoft SDKs\Windows\v6.0A\\bin;c:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools\bin;c:\Program Files\Microsoft Visual Studio 9.0\Common7\tools;c:\Program Files\Microsoft Visual Studio 9.0\Common7\ide;C:\Program Files\HTML Help Workshop;C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin;C:\Windows\Microsoft.NET\Framework\v2.0.50727;c:\Program Files\Microsoft Visual Studio 9.0\;C:\Windows\SysWow64;;c:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE;c:\Program Files\Microsoft Visual Studio 9.0\VC\BIN;c:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools;c:\Windows\Microsoft.NET\Framework\v3.5;c:\Windows\Microsoft.NET\Framework\v2.0.50727;c:\Program Files\Microsoft Visual Studio 9.0\VC\VCPackages;%PATH%
+@SET INCLUDE=c:\Program Files\Microsoft Visual Studio 9.0\VC\include;c:\Program Files\Microsoft Visual Studio 9.0\VC\atlmfc\include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\\include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\include
+@SET LIB=c:\Program Files\Microsoft Visual Studio 9.0\VC\lib;c:\Program Files\Microsoft Visual Studio 9.0\VC\atlmfc\lib;c:\Program Files\Microsoft Visual Studio 9.0\VC\atlmfc\lib\i386;C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib;C:\Program Files\Microsoft SDKs\Windows\v6.0A\lib;c:\Program Files\Microsoft Visual Studio 9.0\;c:\Program Files\Microsoft Visual Studio 9.0\lib
+@SET LIBPATH=C:\Windows\Microsoft.NET\Framework\v2.0.50727;c:\Program Files\Microsoft Visual Studio 9.0\VC\atlmfc\lib;c:\Program Files\Microsoft Visual Studio 9.0\VC\lib
+@SET WindowsSdkDir=C:\Program Files\Microsoft SDKs\Windows\v6.0A\
 
 @SET PGBUILD=C:\pgBuild
 @SET WXWIN=%PGBUILD%\wxWidgets
-
-@set PATH=%WXWIN%;%WXWIN%\include;%WXWIN%\lib\vc_lib;$PG_CMAKE_WINDOWS\bin;%VSINSTALLDIR%\Common7\IDE;%VCINSTALLDIR%\BIN;%VSINSTALLDIR%\Common7\Tools;%VSINSTALLDIR%\Common7\Tools\bin;%VCINSTALLDIR%\PlatformSDK\bin;%FrameworkSDKDir%\bin;$PG_FRAMEWORKDIR_WINDOWS\$PG_FRAMEWORKVERSION_WINDOWS;%VCINSTALLDIR%\VCPackages;%PATH%
 
 cd "$PG_PATH_WINDOWS"
 SET SOURCE_PATH=%CD%
@@ -101,9 +105,11 @@ REM Compiling TuningWizard
 devenv TuningWizard.vcproj /build release
 
 cd %SOURCE_PATH%\\tuningwizard.windows\\userValidation\\dbserver_guid
+vcbuild /upgrade
 vcbuild dbserver_guid.vcproj release
 
 cd %SOURCE_PATH%\\tuningwizard.windows\\userValidation\\validateUser
+vcbuild /upgrade
 vcbuild validateUser.vcproj release
 
 

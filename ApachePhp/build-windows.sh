@@ -91,7 +91,7 @@ _build_ApachePhp_windows() {
     cat <<EOT > "build-apache.bat"
 
 REM Setting Visual Studio Environment
-CALL "c:\Program Files\Microsoft Visual Studio 8\Common7\Tools\vsvars32.bat"
+CALL "c:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools\vsvars32.bat"
 
 REM Building zlib first
 cd $PG_PATH_WINDOWS\apache.windows\srclib\zlib
@@ -103,7 +103,7 @@ REM Building openssl
 cd $PG_PATH_WINDOWS\apache.windows\srclib\openssl
 SET LIB=$PG_PATH_WINDOWS\apache.windows\srclib\zlib;%LIB%
 SET INCLUDE=$PG_PATH_WINDOWS\apache.windows\srclib\zlib;%INCLUDE%
-SET PATH=$PG_PATH_WINDOWS;%PATH%
+SET PATH=$PG_PATH_WINDOWS;C:\pgBuild\gawk\bin;%PATH%
 
 perl Configure no-mdc2 no-rc5 no-idea enable-zlib VC-WIN32
 CALL ms\do_masm.bat
@@ -123,7 +123,7 @@ nmake -f Makefile.win installr INSTDIR="%STAGING_DIR%\apache.staging"
 
 EOT
 
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; if [ \"x`which awk`\" != \"x\" ]; then cp `which awk` awk.exe; fi"
+    #ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; if [ \"x`which awk`\" != \"x\" ]; then cp `which awk` awk.exe; fi"
     
     scp build-apache.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
 	ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-apache.bat"
@@ -135,14 +135,15 @@ EOT
 @ECHO OFF
 @ECHO Setting Proper Environment Variable to build PHP
 @SET BUILD_DIR=%~dp0
+@SET PHPBUILD=C:\phpBuild
 @SET PGBUILD=C:\pgBuild
 @SET PG_HOME_PATH=$PG_PATH_WINDOWS\output
 @CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
 IF EXIST "$PG_PSDK_WINDOWS\SetEnv.Bat" @CALL "$PG_PSDK_WINDOWS\SetEnv.Bat"
 IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 @SET INCLUDE=$PG_PATH_WINDOWS\apache.staging\include;%INCLUDE%
-@SET LIB=%PGBUILD%\libxml2\lib;%PGBUILD%\libxslt\lib;%LIB%
-@SET PATH=%PGBUILD%\bison\bin;%PGBUILD%\flex\bin;%PATH%
+@SET LIB=%PHPBUILD%\lib;%LIB%
+@SET PATH=%PHPBUILD%\bin;%PATH%
 
 @cd $PG_PATH_WINDOWS
 @SET APACHE_STAGING=%CD%\apache.staging
@@ -157,14 +158,14 @@ IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 @cd %BUILD_DIR%/php.windows
 
 @REM Use zlib from pgBuild instead of the one provided by PHP-WIN32BUILD
-@IF EXIST "win32build\lib\zlib.lib" @move win32build\lib\zlib.lib win32build\lib\z.lib
+@REM EXIST "win32build\lib\zlib.lib" @move win32build\lib\zlib.lib win32build\lib\z.lib
 @REM Have make to change to compile bcmath properly
 @IF EXIST "ext\bcmath\libbcmath\src\config.h" @copy /Y ext\bcmath\libbcmath\src\config.h ext\bcmath\config.h
 @REM Copy WinResrc.h in current directory as winres.h
 @IF EXIST "$PG_PSDK_WINDOWS\Include\WinResrc.h" @copy "$PG_PSDK_WINDOWS\Include\WinResrc.h" winres.h
 
 @REM Patch the configure macros for a change in 5.2.9
-@ECHO #define HAVE_STRNLEN 1 >> win32\build\config.w32.h.in
+@REM #define HAVE_STRNLEN 1 >> win32\build\config.w32.h.in
 
 @ECHO Generating configuration files
 @cscript /nologo win32\build\buildconf.js 
@@ -173,13 +174,13 @@ IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 
 @ECHO Configure PHP
 @REM  --disable-ipv6 --enable-fd-setsize
-@cscript /nologo configure.js --enable-snapshot-build --enable-cli --enable-cgi  --with-openssl=%PGBUILD%\OpenSSL --enable-pdo --with-extra-includes=%PGBUILD%\iconv\include;%PGBUILD%\libxml2\include;%PGBUILD%\libxslt\include;%PGBUILD%\OpenSSL\include;%APACHE_STAGING%\include;%PGBUILD%\zlib\include;%PG_HOME_PATH%\include;%PGBUILD%\jpeg\include;%PGBUILD%\libpng\include;%PGBUILD%\freetype\include;%PGBUILD%\gettext\include --with-extra-libs=%PGBUILD%\iconv\lib;%PGBUILD%\libxml2\lib;%PGBUILD%\libxslt\lib;%PGBUILD%\OpenSSL\lib;%APACHE_STAGING%\lib;%PGBUILD%\zlib\lib;%PG_HOME_PATH%\lib;%PGBUILD%\jpeg\lib;%PGBUILD%\libpng\lib;%PGBUILD%\freetype\lib;%PGBUILD%\gettext\lib --enable-apache=yes --with-apache-includes=%APACHE_STAGING%\include --with-apache-libs=%APACHE_STAGING%\lib --enable-apache2filter --enable-apache2-2filter --enable-apache2handler --enable-apache2-2handler --with-apache-hooks --with-pgsql --with-pdo-pgsql --enable-prefix=%PHP_STAGING% --enable-one-shot --enable-zend-multibyte=yes --enable-cli-win32 --enable-embed --enable-isapi --enable-ftp --without-mysql  --without-msql --without-mysqli --without-pdo-mysql --without-sqlite --without-pdo-sqlite --without-pdo-sqlite-external --with-xsl=SHARED  --enable-mbstring --enable-mbregex --enable-shmop  --enable-exif --enable-soap --enable-sockets --with-php-build=%PGBUILD%\phpBuild\win32build --with-gd=SHARED
+@cscript /nologo configure.js --enable-snapshot-build --enable-cli --enable-cgi  --with-openssl --enable-pdo --with-extra-includes=%PHPBUILD%\include;%PHPBUILD%\include\freetype;%PHPBUILD%\include\libpng12;%PHPBUILD%\include\openssl;%PHPBUILD%\include\c-client;%PHPBUILD%\include\curl;%PHPBUILD%\include\glib-2.0;%PHPBUILD%\include\layout;%PHPBUILD%\include\libexslt;%PHPBUILD%\include\libssh2;%PHPBUILD%\include\libxml;%PHPBUILD%\include\libxslt;%PHPBUILD%\include\mpir;%PHPBUILD%\include\mutils;%PHPBUILD%\include\net-snmp;%PHPBUILD%\include\openldap;%APACHE_STAGING%\include;%PG_HOME_PATH%\include --with-extra-libs=%PHPBUILD%\lib;%APACHE_STAGING%\lib;%PG_HOME_PATH%\lib --enable-apache=yes --with-apache-includes=%APACHE_STAGING%\include --with-apache-libs=%APACHE_STAGING%\lib --enable-apache2filter --enable-apache2-2filter --enable-apache2handler --enable-apache2-2handler --with-apache-hooks --with-pgsql --with-pdo-pgsql --enable-prefix=%PHP_STAGING% --enable-one-shot --enable-zend-multibyte=yes --enable-cli-win32 --enable-embed --enable-isapi --enable-ftp --without-mysql --without-mysqli --without-pdo-mysql --without-sqlite --without-pdo-sqlite --without-pdo-sqlite-external --with-xsl=SHARED  --enable-mbstring --enable-mbregex --enable-shmop  --enable-exif --enable-soap --enable-sockets --with-php-build --with-gd=SHARED
 
 @IF NOT EXIST "Makefile" @GOTO make-not-created
 @REM Some extension fails with error 'LNK1169: one or more multiply defined symbols'
 @REM Hack to remove this error in those extensions
-sed -e 's/^LDFLAGS=/LDFLAGS=\/FORCE:MULTIPLE /' Makefile > Makefile.tmp
-move /Y Makefile.tmp Makefile
+@REM sed -e 's/^LDFLAGS=/LDFLAGS=\/FORCE:MULTIPLE /' Makefile > Makefile.tmp
+@REM move /Y Makefile.tmp Makefile
 
 @ECHO Compiling PHP
 @nmake
@@ -190,22 +191,22 @@ move /Y Makefile.tmp Makefile
 cd ..
 IF NOT EXIST php.staging/php.exe @GOTO installation-failed
 
-@COPY "%PGBUILD%\jpeg\bin\jpeg62.dll" php.staging || echo Failed to copy jpeg62.dll && EXIT -1
-@COPY "%PGBUILD%\freetype\bin\freetype6.dll" php.staging || echo Failed to copy freetype6.dll && EXIT -1
-@COPY "%PGBUILD%\libpng\bin\libpng12.dll" php.staging || echo Failed to copy libpng12.dll && EXIT -1
+@REM @COPY "%PHPBUILD%\bin\jpeg62.dll" php.staging || echo Failed to copy jpeg62.dll && EXIT -1
+@REM @COPY "%PHPBUILD%\bin\freetype6.dll" php.staging || echo Failed to copy freetype6.dll && EXIT -1
+@REM @COPY "%PHPBUILD%\bin\libpng12.dll" php.staging || echo Failed to copy libpng12.dll && EXIT -1
 @COPY "%PGBUILD%\vcredist\vcredist_x86.exe" php.staging || echo Failed to copy VC redist && EXIT -1
-@COPY "%PGBUILD%\OpenSSL\bin\ssleay32.dll" php.staging || echo Failed to copy OpenSSL\bin\ssleay32.dll && EXIT -1
-@COPY "%PGBUILD%\OpenSSL\bin\libeay32.dll" php.staging || echo Failed to copy OpenSSL\bin\libeay32.dll && EXIT -1
+@COPY "%PHPBUILD%\bin\ssleay32.dll" php.staging || echo Failed to copy OpenSSL\bin\ssleay32.dll && EXIT -1
+@COPY "%PHPBUILD%\bin\libeay32.dll" php.staging || echo Failed to copy OpenSSL\bin\libeay32.dll && EXIT -1
 
-@COPY "%PGBUILD%\iconv\bin\iconv.dll" php.staging || echo Failed to copy iconv\bin\iconv.dll && EXIT -1
-@COPY "%PGBUILD%\gettext\bin\libintl-8.dll" php.staging || echo Failed to copy gettext\bin\libintl3.dll && EXIT -1
-@COPY "%PGBUILD%\gettext\bin\libiconv-2.dll" php.staging || echo Failed to copy gettext\bin\libiconv2.dll && EXIT -1
-@COPY "%PGBUILD%\libxml2\bin\libxml2.dll" php.staging || echo Failed to copy libxml2\bin\libxml2.dll && EXIT -1
-@COPY "%PGBUILD%\libxslt\bin\libxslt.dll" php.staging || echo Failed to copy libxslt\bin\libxslt.dll && EXIT -1
-@COPY "%PGBUILD%\zlib\zlib1.dll" php.staging || echo Failed to copy zlib\zlib1.dll && EXIT -1
-@COPY "%PGBUILD%\krb5\bin\i386\krb5_32.dll" php.staging || @COPY "%PGBUILD%\krb5\bin\krb5_32.dll" php.staging || echo Failed to copy krb5\bin\krb5_32.dll && EXIT -1
-@COPY "%PGBUILD%\krb5\bin\i386\comerr32.dll" php.staging || @COPY "%PGBUILD%\krb5\bin\comerr32.dll" php.staging || echo Failed to copy krb5\bin\comerr32.dll && EXIT -1
-@COPY "%PGBUILD%\krb5\bin\i386\gssapi32.dll" php.staging || @COPY "%PGBUILD%\krb5\bin\gssapi32.dll" php.staging || echo Failed to copy krb5\bin\gssapi32.dll && EXIT -1
+@REM @COPY "%PHPBUILD%\bin\iconv.dll" php.staging || echo Failed to copy iconv\bin\iconv.dll && EXIT -1
+@COPY "%PHPBUILD%\bin\libintl.dll" php.staging || echo Failed to copy gettext\bin\libintl.dll && EXIT -1
+@COPY "%PHPBUILD%\bin\libiconv.dll" php.staging || echo Failed to copy gettext\bin\libiconv.dll && EXIT -1
+@COPY "%PHPBUILD%\bin\libxml2.dll" php.staging || echo Failed to copy libxml2\bin\libxml2.dll && EXIT -1
+@COPY "%PHPBUILD%\bin\libxslt.dll" php.staging || echo Failed to copy libxslt\bin\libxslt.dll && EXIT -1
+@COPY "%PHPBUILD%\bin\zlib.dll" php.staging || echo Failed to copy zlib.dll && EXIT -1
+@REM @COPY "%PHPBUILD%\bin\i386\krb5_32.dll" php.staging || @COPY "%PHPBUILD%\krb5\bin\krb5_32.dll" php.staging || echo Failed to copy krb5\bin\krb5_32.dll && EXIT -1
+@REM @COPY "%PHPBUILD%\bin\i386\comerr32.dll" php.staging || @COPY "%PHPBUILD%\krb5\bin\comerr32.dll" php.staging || echo Failed to copy krb5\bin\comerr32.dll && EXIT -1
+@REM @COPY "%PHPBUILD%\bin\i386\gssapi32.dll" php.staging || @COPY "%PHPBUILD%\krb5\bin\gssapi32.dll" php.staging || echo Failed to copy krb5\bin\gssapi32.dll && EXIT -1
 @COPY "%PG_HOME_PATH%\bin\libpq.dll" php.staging || echo Failed to copy libpq.dll && EXIT -1
 @COPY "%PG_HOME_PATH%\bin\k5sprt32.dll" php.staging || echo Failed to copy k5sprt32.dll && EXIT -1
 
@@ -245,7 +246,8 @@ IF NOT EXIST php.staging/php.exe @GOTO installation-failed
 EOT
     scp build-php.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-php.bat"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/php.windows; cp php.ini-recommended $PG_PATH_WINDOWS/php.staging/php.ini" || _die "Failed to copy php.ini"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/php.windows; cmd /c if EXIST php.ini-recommended copy php.ini-recommended $PG_PATH_WINDOWS\\php.staging\\php.ini " || _die "Failed to copy php.ini"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/php.windows; cmd /c if EXIST php.ini-production copy php.ini-production $PG_PATH_WINDOWS\\php.staging\\php.ini " || _die "Failed to copy php.ini"
     
 
     # Zip up the installed code, copy it back here, and unpack.

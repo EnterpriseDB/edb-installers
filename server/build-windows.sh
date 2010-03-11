@@ -273,7 +273,7 @@ EOT
     # Build the code and install into a temporary directory
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\createuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcproj" || _die "Failed to build createuser on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\getlocales; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat getlocales.vcproj" || _die "Failed to build getlocales on the windows build host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\validateuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcpro" || _die "Failed to build validateuser on the windows build host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\validateuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcproj" || _die "Failed to build validateuser on the windows build host"
 	
     # Move the resulting binaries into place
 	ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\output\\\\installer\\\\server" || _die "Failed to create the server directory on the windows build host"
@@ -408,7 +408,7 @@ EOT
 	# Install the PostgreSQL docs
 	mkdir -p $WD/server/staging/windows/doc/postgresql/html || _die "Failed to create the doc directory"
 	cd $WD/server/staging/windows/doc/postgresql/html || _die "Failed to change to the doc directory"
-	tar -zxvf $WD/server/source/postgres.windows/doc/postgres.tar.gz || _die "Failed to unpack the PostgreSQL documentation"
+	cp -R $WD/server/source/postgres.windows/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
 	
 	# Copy in the plDebugger docs & SQL script
 	cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/README.pldebugger $WD/server/staging/windows/doc

@@ -112,23 +112,28 @@ SET SOURCE_PATH=%CD%
 IF NOT EXIST "dist\repconsole\bin\edb-repcli.jar" goto build-failed
 
 cd "%SOURCE_PATH%\\validateuser"
+vcbuild /upgrade
 vcbuild validateuser.vcproj RELEASE
 IF NOT EXIST "release\\validateuser.exe" goto build-validateuser-failed
 
 cd "%SOURCE_PATH%\\createuser"
+vcbuild /upgrade
 vcbuild createuser.vcproj RELEASE
 IF NOT EXIST "release\\createuser.exe" goto build-createuser-failed
 
 cd "%SOURCE_PATH%\\ServiceWrapper"
+vcbuild /upgrade
 vcbuild ServiceWrapper.vcproj RELEASE
 IF NOT EXIST "release\\ServiceWrapper.exe" goto build-servicewrapper-failed
 
 
 cd "%SOURCE_PATH%\\validateUserClient"
+vcbuild /upgrade
 vcbuild validateuser.vcproj RELEASE
 IF NOT EXIST "release\\validateUserClient.exe" goto build-wsvalidateuser-failed
 
 cd "%SOURCE_PATH%\\dbserver_guid"
+vcbuild /upgrade
 vcbuild dbserver_guid.vcproj RELEASE
 IF NOT EXIST "release\\dbserver_guid.exe" goto build-dbserver-guid-failed
 

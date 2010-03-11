@@ -84,7 +84,7 @@ _build_MigrationToolKit_windows() {
 
 cd "$PG_PATH_WINDOWS"
 SET SOURCE_PATH=%CD%
-
+SET JAVA_HOME=$PG_JAVA_HOME_WINDOWS
 REM Extracting MigrationToolKit sources
 if NOT EXIST "migrationtoolkit.zip" GOTO zip-not-found
 unzip migrationtoolkit.zip

@@ -84,6 +84,7 @@ _build_MigrationWizard_windows() {
 
 cd "$PG_PATH_WINDOWS"
 SET SOURCE_PATH=%CD%
+SET JAVA_HOME=$PG_JAVA_HOME_WINDOWS
 
 REM Extracting MigrationWizard sources
 if NOT EXIST "migrationwizard.zip" GOTO zip-not-found

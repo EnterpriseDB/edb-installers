@@ -21,6 +21,9 @@ _prep_psqlODBC_windows() {
 
     # Grab a copy of the source tree
     cp -R psqlodbc-$PG_VERSION_PSQLODBC/* psqlODBC.windows || _die "Failed to copy the source code (source/psqlODBC-$PG_VERSION_PSQLODBC)"
+    cd psqlODBC.windows
+    patch -p1 < $WD/tarballs/psqlodbc-9_0_fix.patch
+    cd $WD/psqlODBC/source
 
     echo "Archieving psqlODBC sources"
     zip -r psqlODBC.zip psqlODBC.windows/ || _die "Couldn't create archieve of the psqlODBC sources (psqlODBC.zip)"
@@ -69,6 +72,7 @@ IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 @SET OPENSSL_PATH=C:\pgBuild\OpenSSL
 @SET PG_HOME_PATH=$PG_PATH_WINDOWS\output
 @SET PATH=%PG_HOME_PATH%\bin;%PATH%
+@SET LIB=C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib;%LIB%
 
 cd $PG_PATH_WINDOWS\psqlODBC.windows
 REM Compiling psqlODBC (ANSI)
