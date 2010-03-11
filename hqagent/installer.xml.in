@@ -606,8 +606,23 @@
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
-                <setInstallerVariable name="errCode" value="${program_exit_code}"/>
                 <setInstallerVariable name="errMessage" value="${program_stderr}"/>
+		<!-->
+		we can not just check program_exit_code to make sure that there is some error because 
+		in case of Windows program_exit_code is 0 even if program_sterr has error hence FB Case 
+		14687. So we need to check errors by inspecting ${program_stderr}. Issue in inspecting 
+		is: When agent starts following error comes while running it first time even if agent 
+		stats after that.(No token file found, waiting for Agent to initialize)	So we need to 
+		replace this message in ${program_stderr} with blank and then check ${program_stderr} 
+		for any other error.
+		-->
+		<setInstallerVariableFromRegEx name="errMessage" text="${errMessage}"
+		    pattern="No token file found, waiting for Agent to initialize." substitution="">
+		    <ruleList>
+			<stringTest text="${errMessage}" type="not_empty"/>
+		    </ruleList>
+		</setInstallerVariableFromRegEx>
+
                 <setInstallerVariable name="errMessage" value="${msg(hqagent.server.validation.fail)}">
                     <ruleList>
                         <compareText logic="contains" text="${errMessage}" value="Invalid username"/>
@@ -619,7 +634,7 @@
                     abortOnError="0" showMessageOnError="0">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                        <compareText logic="does_not_equal" text="${errCode}" value="0"/>
+			<stringTest text="${errMessage}" type="not_empty"/>
                     </ruleList>
                 </runProgram>
                 <!-- Stop Agent, if it failed on configuration -->
@@ -629,7 +644,7 @@
                     abortOnError="0" showMessageOnError="0">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
-                        <compareText logic="does_not_equal" text="${errCode}" value="0"/>
+			<stringTest text="${errMessage}" type="not_empty"/>
                     </ruleList>
                 </runProgram>
                 <setInstallerVariable name="errMessage" value="${msg(pphqagent.server.connection.fail)}">
@@ -875,7 +890,7 @@
             <startMenuShortcutList>
                 <!-- Start agent -->
                 <startMenuShortcut>
-                    <name>Start Agent</name>
+                    <name>Start Postgres Plus HQ Agent</name>
                     <runInTerminal>0</runInTerminal>
 		    <windowsExec>cscript.exe</windowsExec>
                     <windowsExecArgs>//NoLogo "${installdir}\scripts\agentctl.vbs" start wait</windowsExecArgs>
@@ -883,7 +898,7 @@
                 </startMenuShortcut>
                 <!-- Stop Agent -->
                 <startMenuShortcut>
-                    <name>Stop Agent</name>
+                    <name>Stop Postgres Plus HQ Agent</name>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>cscript.exe</windowsExec>
                     <windowsExecArgs>//NoLogo "${installdir}\scripts\agentctl.vbs" stop wait</windowsExecArgs>
@@ -984,7 +999,7 @@
                     value="${pphqdefaultpassword}" cliOptionName="pphqpassword" descriptionRetype=""
                     allowEmptyValue="1" askForConfirmation="0" width="40"/>
                 <booleanParameter name="pphqsecureconn" description="${msg(pphqagent.config.pphqsecureconn)}" explanation="" value=""
-                    default="0" displayStyle="checkbox-left" cliOptionName="secure-connection">
+                    default="false" displayStyle="checkbox-left" cliOptionName="secure-connection">
                     <ruleList>
                         <isTrue value="${configure}"/>
                     </ruleList>
@@ -1085,8 +1100,22 @@
                             </ruleList>
                         </runProgram>
                         <setInstallerVariable name="errMessage" value="${program_stderr}"/>
-                        <setInstallerVariable name="errCode" value="${program_exit_code}"/>
                         <setInstallerVariable name="strmsg" value=""/>
+			<!-->
+			we can not just check program_exit_code to make sure that there is some error because 
+			in case of Windows program_exit_code is 0 even if program_sterr has error hence FB Case 
+			14687. So we need to check errors by inspecting ${program_stderr}. Issue in inspecting 
+			is: When agent starts following error comes while running it first time even if agent 
+			stats after that.(No token file found, waiting for Agent to initialize)	So we need to 
+			replace this message in ${program_stderr} with blank and then check ${program_stderr} 
+			for any other error.
+			-->
+			<setInstallerVariableFromRegEx name="errMessage" text="${errMessage}"
+			    pattern="No token file found, waiting for Agent to initialize." substitution="">
+			    <ruleList>
+				<stringTest text="${errMessage}" type="not_empty"/>
+			    </ruleList>
+			</setInstallerVariableFromRegEx>
 
                         <actionGroup>
                             <actionList>
@@ -1129,7 +1158,6 @@
                             </actionList>
                             <ruleList>
                                 <stringTest text="${errMessage}" type="not_empty"/>
-                                <compareText logic="does_not_equal" text="${errCode}" value="0"/>
                             </ruleList>
                         </actionGroup>
                     </actionList>
