@@ -136,6 +136,9 @@ extract_file()
     elif [ -e $FILENAME.tar.bz2 ]; then
        # This is a tar.bz2 tarball
        tar -jxvf $FILENAME.tar.bz2
+    elif [ -e $FILENAME.bz2 ]; then
+       # This is a bz2 tarball
+       tar -jxvf $FILENAME.bz2
     elif [ -e $FILENAME.tgz ]; then
        # This is a tgz tarball
        tar -zxvf $FILENAME.tgz
