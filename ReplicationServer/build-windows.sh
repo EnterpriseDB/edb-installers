@@ -89,27 +89,17 @@ _build_ReplicationServer_windows() {
     cd $WD/ReplicationServer/source
 
 cat <<EOT > "rs-build.bat"
-@SET VSINSTALLDIR=$PG_VSINSTALLDIR_WINDOWS
-@SET VCINSTALLDIR=$PG_VSINSTALLDIR_WINDOWS\VC
-@SET FrameworkDir=$PG_FRAMEWORKDIR_WINDOWS
-@SET FrameworkVersion=$PG_FRAMEWORKVERSION_WINDOWS
-@SET FrameworkSDKDir=$PG_FRAMEWORKSDKDIR_WINDOWS
-@set DevEnvDir=$PG_DEVENVDIR_WINDOWS
-@set INCLUDE=%VCINSTALLDIR%\ATLMFC\INCLUDE;%VCINSTALLDIR%\INCLUDE;%VCINSTALLDIR%\PlatformSDK\include;%FrameworkSDKDir%\include;%INCLUDE%
-@set LIB=%VCINSTALLDIR%\ATLMFC\LIB;%VCINSTALLDIR%\LIB;%VCINSTALLDIR%\PlatformSDK\lib;%FrameworkSDKDir%\lib;%LIB%
-@set LIBPATH=$PG_FRAMEWORKDIR_WINDOWS\$PG_FRAMEWORKVERSION_WINDOWS;%VCINSTALLDIR%\ATLMFC\LIB
-
-@SET PGBUILD=C:\pgBuild
 
 @SET JAVA_HOME=$PG_JAVA_HOME_WINDOWS
-
-@set PATH=$PG_CMAKE_WINDOWS\bin;%VSINSTALLDIR%\Common7\IDE;%VCINSTALLDIR%\BIN;%VSINSTALLDIR%\Common7\Tools;%VSINSTALLDIR%\Common7\Tools\bin;%VCINSTALLDIR%\PlatformSDK\bin;%FrameworkSDKDir%\bin;$PG_FRAMEWORKDIR_WINDOWS\$PG_FRAMEWORKVERSION_WINDOWS;%VCINSTALLDIR%\VCPackages;%PATH%
 
 cd "$PG_PATH_WINDOWS\ReplicationServer.windows"
 SET SOURCE_PATH=%CD%
 
 @CALL $PG_ANT_WINDOWS\\bin\\ant -f custom_build.xml dist
 IF NOT EXIST "dist\repconsole\bin\edb-repcli.jar" goto build-failed
+
+REM Setting Visual Studio Environment
+CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
 
 cd "%SOURCE_PATH%\\validateuser"
 vcbuild /upgrade

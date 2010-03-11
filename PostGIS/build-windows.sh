@@ -149,9 +149,8 @@ EOT
      
 
     cat <<EOT > "build-postgis.bat"
-
 REM Setting Visual Studio Environment
-CALL "c:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools\vsvars32.bat"
+CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
 
 IF EXIST "$PG_PATH_WINDOWS\\proj-$PG_TARBALL_PROJ.staging" GOTO skip-proj
 cd $PG_PATH_WINDOWS\proj-$PG_TARBALL_PROJ.windows
@@ -163,12 +162,12 @@ move C:\PROJ $PG_PATH_WINDOWS\proj-$PG_TARBALL_PROJ.staging
 
 
 IF EXIST $PG_PATH_WINDOWS\\geos-$PG_TARBALL_GEOS.staging GOTO skip-geos
-@SET PATH=%PATH%;$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;$PG_PGBUILD_WINDOWS\flex\bin;$PG_PGBUILD_WINDOWS\bison\bin;C:\phpBuild\bin
+@SET PATH=%PATH%;$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;$PG_PGBUILD_WINDOWS\flex\bin;$PG_PGBUILD_WINDOWS\bison\bin
 REM Configuring the geos source tree
 @echo cd $PG_PATH_WINDOWS/geos-$PG_TARBALL_GEOS.windows; ./configure --prefix=$PG_STAGING/geos-$PG_TARBALL_GEOS.staging; make; make install | $PG_MSYS_WINDOWS\bin\sh --login -i
 :skip-geos
 
-@SET PATH=%PATH%;$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;$PG_PGBUILD_WINDOWS\flex\bin;$PG_PGBUILD_WINDOWS\bison\bin;C:\phpBuild\bin
+@SET PATH=%PATH%;$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;$PG_PGBUILD_WINDOWS\flex\bin;$PG_PGBUILD_WINDOWS\bison\bin
 REM Configuring the postgis source tree
 @echo cd $PG_PATH_WINDOWS/postgis.windows/; export PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.staging:\$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.staging:\$LD_LIBRARY_PATH; ./configure --with-pgconfig=$PG_PGHOME_MINGW_WINDOWS/bin/pg_config  --with-projdir=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging --with-geosconfig=$PG_STAGING/geos-$PG_TARBALL_GEOS.staging/bin/geos-config --with-xml2config=$PG_PGBUILD_MINGW_WINDOWS/libxml2_mingw/bin/xml2-config --with-libiconv=$PG_PGBUILD_MINGW_WINDOWS/iconv; make; make comments; make install; make comments-install | $PG_MSYS_WINDOWS\bin\sh --login -i
 

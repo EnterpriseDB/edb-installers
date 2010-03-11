@@ -91,7 +91,7 @@ _build_ApachePhp_windows() {
     cat <<EOT > "build-apache.bat"
 
 REM Setting Visual Studio Environment
-CALL "c:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools\vsvars32.bat"
+CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
 
 REM Building zlib first
 cd $PG_PATH_WINDOWS\apache.windows\srclib\zlib

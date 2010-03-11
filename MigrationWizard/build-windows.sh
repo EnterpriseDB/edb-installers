@@ -66,21 +66,6 @@ _build_MigrationWizard_windows() {
     # Zip up the source directory and copy it to the build host, then unzip
     cd $WD/MigrationWizard/source/
     cat <<EOT > "mw-build.bat"
-@SET VSINSTALLDIR=$PG_VSINSTALLDIR_WINDOWS
-@SET VCINSTALLDIR=$PG_VSINSTALLDIR_WINDOWS\VC
-@SET FrameworkDir=$PG_FRAMEWORKDIR_WINDOWS
-@SET FrameworkVersion=$PG_FRAMEWORKVERSION_WINDOWS
-@SET FrameworkSDKDir=$PG_FRAMEWORKSDKDIR_WINDOWS
-@set DevEnvDir=$PG_DEVENVDIR_WINDOWS
-@set INCLUDE=%VCINSTALLDIR%\ATLMFC\INCLUDE;%VCINSTALLDIR%\INCLUDE;%VCINSTALLDIR%\PlatformSDK\include;%FrameworkSDKDir%\include;%INCLUDE%
-@set LIB=%VCINSTALLDIR%\ATLMFC\LIB;%VCINSTALLDIR%\LIB;%VCINSTALLDIR%\PlatformSDK\lib;%FrameworkSDKDir%\lib;%LIB%
-@set LIBPATH=$PG_FRAMEWORKDIR_WINDOWS\$PG_FRAMEWORKVERSION_WINDOWS;%VCINSTALLDIR%\ATLMFC\LIB
-
-@SET PGBUILD=C:\pgBuild
-
-@SET JAVA_HOME=$PG_JAVA_HOME_WINDOWS
-
-@set PATH=$PG_CMAKE_WINDOWS\bin;%VSINSTALLDIR%\Common7\IDE;%VCINSTALLDIR%\BIN;%VSINSTALLDIR%\Common7\Tools;%VSINSTALLDIR%\Common7\Tools\bin;%VCINSTALLDIR%\PlatformSDK\bin;%FrameworkSDKDir%\bin;$PG_FRAMEWORKDIR_WINDOWS\$PG_FRAMEWORKVERSION_WINDOWS;%VCINSTALLDIR%\VCPackages;%PATH%
 
 cd "$PG_PATH_WINDOWS"
 SET SOURCE_PATH=%CD%
@@ -98,12 +83,18 @@ cmd /c $PG_ANT_WINDOWS\\bin\\ant
 echo Building migrationwizard distribution...
 cmd /c $PG_ANT_WINDOWS\\bin\\ant dist
 
+REM Setting Visual Studio Environment
+CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
+
+
 cd %SOURCE_PATH%\\migrationwizard.windows\\userValidation\\dbserver_guid
+if NOT EXIST "%SOURCE_PATH%\\tuningwizard.windows\\userValidation\\dbserver_guid\\Release\\dbserver_guid.exe" vcbuild /upgrade || SET ERRORMSG="Couldn't upgrade the validateUserClient script" && goto OnError
 if NOT EXIST "%SOURCE_PATH%\\tuningwizard.windows\\userValidation\\dbserver_guid\\Release\\dbserver_guid.exe" vcbuild dbserver_guid.vcproj release || SET ERRORMSG="Couldn't build the validateUserClient script" && goto OnError
 if NOT EXIST "%SOURCE_PATH%\\tuningwizard.windows\\userValidation\\dbserver_guid\\Release\\dbserver_guid.exe" copy "%SOURCE_PATH%\\migrationwizard.windows\\userValidation\\dbserver_guid\\Release\\dbserver_guid.exe" "%SOURCE_PATH%\\migrationwizard.windows\\dist"
 if EXIST "%SOURCE_PATH%\\tuningwizard.windows\\userValidation\\dbserver_guid\\Release\\dbserver_guid.exe" copy "%SOURCE_PATH%\\tuningwizard.windows\\userValidation\\dbserver_guid\\Release\\dbserver_guid.exe" "%SOURCE_PATH%\\migrationwizard.windows\\dist"
 
 cd %SOURCE_PATH%\\migrationwizard.windows\\userValidation\\validateUser
+if NOT EXIST "%SOURCE_PATH%\\tuningwizard.windows\\userValidation\\validateUser\\release\\validateUserClient.exe" vcbuild /upgrade
 if NOT EXIST "%SOURCE_PATH%\\tuningwizard.windows\\userValidation\\validateUser\\release\\validateUserClient.exe" vcbuild validateUser.vcproj release
 if NOT EXIST "%SOURCE_PATH%\\tuningwizard.windows\\userValidation\\validateUser\\Release\\validateUserClient.exe" copy "%SOURCE_PATH%\\migrationwizard.windows\\userValidation\\validateUser\\Release\\validateUserClient.exe" "%SOURCE_PATH%\\migrationwizard.windows\\dist"
 if EXIST "%SOURCE_PATH%\\tuningwizard.windows\\userValidation\\validateUser\\Release\\validateUserClient.exe" copy "%SOURCE_PATH%\\tuningwizard.windows\\userValidation\\validateUser\\Release\\validateUserClient.exe" "%SOURCE_PATH%\\migrationwizard.windows\\dist"

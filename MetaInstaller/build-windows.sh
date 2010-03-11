@@ -124,19 +124,10 @@ _build_metainstaller_windows() {
 
     echo "Creating metavc-build.bat..."
     cat <<EOT > "metavc-build.bat"
-@SET VSINSTALLDIR=C:\Program Files\Microsoft Visual Studio 8
-@SET VCINSTALLDIR=C:\Program Files\Microsoft Visual Studio 8\VC
-@SET FrameworkDir=C:\WINDOWS\Microsoft.NET\Framework
-@SET FrameworkVersion=v2.0.50727
-@SET FrameworkSDKDir=C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0
+REM Setting Visual Studio Environment
+CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
 
-@set DevEnvDir=C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
-
-@set PATH=C:\Program Files\Microsoft Visual Studio 8\Common7\IDE;C:\Program Files\Microsoft Visual Studio 8\VC\BIN;C:\Program Files\Microsoft Visual Studio 8\Common7\Tools;C:\Program Files\Microsoft Visual Studio 8\Common7\Tools\bin;C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\bin;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\bin;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727;C:\Program Files\Microsoft Visual Studio 8\VC\VCPackages;%PATH%
-@set INCLUDE=C:\Program Files\Microsoft Visual Studio 8\VC\ATLMFC\INCLUDE;C:\Program Files\Microsoft Visual Studio 8\VC\INCLUDE;C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\include;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\include;%INCLUDE%
-@set LIB=C:\Program Files\Microsoft Visual Studio 8\VC\ATLMFC\LIB;C:\Program Files\Microsoft Visual Studio 8\VC\LIB;C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib;C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\lib;%LIB%
-@set LIBPATH=C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727;C:\Program Files\Microsoft Visual Studio 8\VC\ATLMFC\LIB
-
+vcbuild /upgrade
 vcbuild %1 %2 %3 %4 %5 %6 %7 %8 %9
 EOT
     

@@ -111,23 +111,10 @@ _build_server_windows() {
 	cd $WD/server/scripts/windows
 	
     cat <<EOT > "vc-build.bat"
-@SET VSINSTALLDIR=C:\Program Files\Microsoft Visual Studio 9.0
-@SET VCINSTALLDIR=C:\Program Files\Microsoft Visual Studio 9.0\VC
-    
-@SET FrameworkDir=C:\WINDOWS\Microsoft.NET\Framework
-@SET FrameworkVersion=v2.0.50727
-@SET Framework35Version=v3.5
-@SET FrameworkSDKDir=C:\Program Files\Microsoft Visual Studio 9.0\SDK\v3.5
+REM Setting Visual Studio Environment
+CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
 
-@SET DevEnvDir=C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE
-@SET VS90COMNTOOLS=C:\Program Files\Microsoft Visual Studio 9.0\Common7\tools
-@SET PATH=c:\Program Files\Microsoft Visual Studio 9.0\VC\bin;C:\Program Files\Microsoft SDKs\Windows\v6.0A\\bin;c:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools\bin;c:\Program Files\Microsoft Visual Studio 9.0\Common7\tools;c:\Program Files\Microsoft Visual Studio 9.0\Common7\ide;C:\Program Files\HTML Help Workshop;C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin;C:\Windows\Microsoft.NET\Framework\v2.0.50727;c:\Program Files\Microsoft Visual Studio 9.0\;C:\Windows\SysWow64;;c:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE;c:\Program Files\Microsoft Visual Studio 9.0\VC\BIN;c:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools;c:\Windows\Microsoft.NET\Framework\v3.5;c:\Windows\Microsoft.NET\Framework\v2.0.50727;c:\Program Files\Microsoft Visual Studio 9.0\VC\VCPackages;%PATH%
-@SET INCLUDE=c:\Program Files\Microsoft Visual Studio 9.0\VC\include;c:\Program Files\Microsoft Visual Studio 9.0\VC\atlmfc\include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\\include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\include
-@SET LIB=c:\Program Files\Microsoft Visual Studio 9.0\VC\lib;c:\Program Files\Microsoft Visual Studio 9.0\VC\atlmfc\lib;c:\Program Files\Microsoft Visual Studio 9.0\VC\atlmfc\lib\i386;C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib;C:\Program Files\Microsoft SDKs\Windows\v6.0A\lib;c:\Program Files\Microsoft Visual Studio 9.0\;c:\Program Files\Microsoft Visual Studio 9.0\lib
-@SET LIBPATH=C:\Windows\Microsoft.NET\Framework\v2.0.50727;c:\Program Files\Microsoft Visual Studio 9.0\VC\atlmfc\lib;c:\Program Files\Microsoft Visual Studio 9.0\VC\lib
-@SET WindowsSdkDir=C:\Program Files\Microsoft SDKs\Windows\v6.0A\
-
-@SET PGBUILD=C:\pgBuild
+@SET PGBUILD=$PG_PGBUILD_WINDOWS
 @SET WXWIN=%PGBUILD%\wxWidgets
 @SET PGDIR=$PG_PATH_WINDOWS\output
 
@@ -145,18 +132,18 @@ use warnings;
 our \$config = {
     asserts=>0,                         # --enable-cassert
     integer_datetimes=>1,               # --enable-integer-datetimes
-    nls=>'C:\pgBuild\gettext',        # --enable-nls=<path>
+    nls=>'$PG_PGBUILD_WINDOWS\gettext',        # --enable-nls=<path>
     tcl=>'C:\Tcl-8.5',            # --with-tls=<path>
     perl=>'C:\Perl-5.10',             # --with-perl
     python=>'C:\Python26',         # --with-python=<path>
-    krb5=>'C:\pgBuild\krb5',         # --with-krb5=<path>
+    krb5=>'$PG_PGBUILD_WINDOWS\krb5',         # --with-krb5=<path>
     ldap=>1,                # --with-ldap
-    openssl=>'C:\pgBuild\openssl',     # --with-ssl=<path>
-    xml=>'C:\pgBuild\libxml2',
-    xslt=>'C:\pgBuild\libxslt',
-    iconv=>'C:\pgBuild\iconv',
-    zlib=>'C:\pgBuild\zlib',        # --with-zlib=<path>
-    uuid=>'C:\pgBuild\uuid-ossp'       # --with-uuid-ossp
+    openssl=>'$PG_PGBUILD_WINDOWS\openssl',     # --with-ssl=<path>
+    xml=>'$PG_PGBUILD_WINDOWS\libxml2',
+    xslt=>'$PG_PGBUILD_WINDOWS\libxslt',
+    iconv=>'$PG_PGBUILD_WINDOWS\iconv',
+    zlib=>'$PG_PGBUILD_WINDOWS\zlib',        # --with-zlib=<path>
+    uuid=>'$PG_PGBUILD_WINDOWS\uuid-ossp'       # --with-uuid-ossp
 };
 
 1;
@@ -166,37 +153,37 @@ EOT
 use strict;
 use warnings;
 
-\$ENV{VSINSTALLDIR} = 'C:\Program Files\Microsoft Visual Studio 9.0';
-\$ENV{VCINSTALLDIR} = 'C:\Program Files\Microsoft Visual Studio 9.0\VC';
-\$ENV{VS90COMNTOOLS} = 'C:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools';
+\$ENV{VSINSTALLDIR} = '$PG_VSINSTALLDIR_WINDOWS';
+\$ENV{VCINSTALLDIR} = '$PG_VSINSTALLDIR_WINDOWS\VC';
+\$ENV{VS90COMNTOOLS} = '$PG_VSINSTALLDIR_WINDOWS\Common7\Tools';
 \$ENV{FrameworkDir} = 'C:\WINDOWS\Microsoft.NET\Framework';
-\$ENV{FrameworkVersion} = 'v2.0.50727';
+\$ENV{FrameworkVersion} = '$PG_FRAMEWORKVERSION_WINDOWS';
 \$ENV{Framework35Version} = 'v3.5';
-\$ENV{FrameworkSDKDir} = 'C:\Program Files\Microsoft Visual Studio 9.0\SDK\v3.5';
-\$ENV{DevEnvDir} = 'C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE';
-\$ENV{M4} = 'C:\pgBuild\bison\bin\m4.exe';
+\$ENV{FrameworkSDKDir} = '$PG_FRAMEWORKSDKDIR_WINDOWS';
+\$ENV{DevEnvDir} = '$PG_DEVENVDIR_WINDOWS';
+\$ENV{M4} = '$PG_PGBUILD_WINDOWS\bison\bin\m4.exe';
 
 \$ENV{PATH} = join
 (
     ';' ,
-    'C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE',
-    'C:\Program Files\Microsoft Visual Studio 9.0\VC\BIN',
-    'C:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools',
-    'C:\Program Files\Microsoft Visual Studio 9.0\Common7\Tools\bin',
-    'C:\Program Files\Microsoft Visual Studio 9.0\SDK\v3.5\bin',
-    'C:\Program Files\Microsoft Visual Studio 9.0\VC\PlatformSDK\Bin',
-    'C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727',
-    'C:\Program Files\Microsoft Visual Studio 9.0\VC\VCPackages',
+    '$PG_DEVENVDIR_WINDOWS',
+    '$PG_VSINSTALLDIR_WINDOWS\VC\BIN',
+    '$PG_VSINSTALLDIR_WINDOWS\Common7\Tools',
+    '$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\bin',
+    '$PG_FRAMEWORKSDKDIR_WINDOWS\bin',
+    '$PG_VSINSTALLDIR_WINDOWS\VC\PlatformSDK\Bin',
+    'C:\WINDOWS\Microsoft.NET\Framework\\$PG_FRAMEWORKVERSION_WINDOWS',
+    '$PG_VSINSTALLDIR_WINDOWS\VC\VCPackages',
     'C:\Program Files\TortoiseCVS',
-    'C:\pgBuild\bison\bin',
-    'C:\pgBuild\flex\bin',
-    'C:\pgBuild\diffutils\bin',
-    'C:\pgBuild\patch\bin',
-    'C:\pgBuild\gettext\bin',
-    'C:\pgBuild\openssl\bin',
-    'C:\pgBuild\krb5\bin\i386',
-    'C:\pgBuild\libxml2\bin',
-    'C:\pgBuild\zlib',
+    '$PG_PGBUILD_WINDOWS\bison\bin',
+    '$PG_PGBUILD_WINDOWS\flex\bin',
+    '$PG_PGBUILD_WINDOWS\diffutils\bin',
+    '$PG_PGBUILD_WINDOWS\patch\bin',
+    '$PG_PGBUILD_WINDOWS\gettext\bin',
+    '$PG_PGBUILD_WINDOWS\openssl\bin',
+    '$PG_PGBUILD_WINDOWS\krb5\bin\i386',
+    '$PG_PGBUILD_WINDOWS\libxml2\bin',
+    '$PG_PGBUILD_WINDOWS\zlib',
     'C:\Perl-5.10\Bin',
     'C:\Python26\Bin',
     'C:\Tcl85\Bin',
@@ -207,30 +194,30 @@ use warnings;
 \$ENV{INCLUDE} = join
 (
     ';',
-    'C:\Program Files\Microsoft Visual Studio 9.0\VC\ATLMFC\INCLUDE',
-    'C:\Program Files\Microsoft Visual Studio 9.0\VC\INCLUDE',
-    'C:\Program Files\Microsoft Visual Studio 9.0\VC\PlatformSDK\include',
-    'C:\Program Files\Microsoft Visual Studio 9.0\SDK\v3.5\include',
-    'C:\pgBuild\OpenSSL\include',
+    '$PG_VSINSTALLDIR_WINDOWS\VC\ATLMFC\INCLUDE',
+    '$PG_VSINSTALLDIR_WINDOWS\VC\INCLUDE',
+    '$PG_VSINSTALLDIR_WINDOWS\VC\PlatformSDK\include',
+    '$PG_FRAMEWORKSDKDIR_WINDOWS\include',
+    '$PG_PGBUILD_WINDOWS\OpenSSL\include',
     \$ENV{INCLUDE}
 );
 
 \$ENV{LIB} = join
 (
     ';',
-    'C:\Program Files\Microsoft Visual Studio 9.0\VC\ATLMFC\LIB',
-    'C:\Program Files\Microsoft Visual Studio 9.0\VC\LIB',
-    'C:\Program Files\Microsoft Visual Studio 9.0\VC\PlatformSDK\lib',
-    'C:\Program Files\Microsoft Visual Studio 9.0\SDK\v3.5\lib',
-    'C:\pgBuild\OpenSSL\lib',
+    '$PG_VSINSTALLDIR_WINDOWS\VC\ATLMFC\LIB',
+    '$PG_VSINSTALLDIR_WINDOWS\VC\LIB',
+    '$PG_VSINSTALLDIR_WINDOWS\VC\PlatformSDK\lib',
+    '$PG_FRAMEWORKSDKDIR_WINDOWS\lib',
+    '$PG_PGBUILD_WINDOWS\OpenSSL\lib',
     \$ENV{LIB}
 );
 
 \$ENV{LIBPATH} = join
 (
     ';',
-    'C:\Windows\Microsoft.NET\Framework\v2.0.50727',
-    'C:\Program Files\Microsoft Visual Studio 9.0\VC\ATLMFC\LIB'
+    'C:\Windows\Microsoft.NET\Framework\\$PG_FRAMEWORKVERSION_WINDOWS',
+    '$PG_VSINSTALLDIR_WINDOWS\VC\ATLMFC\LIB'
 );
 
 1;
@@ -250,13 +237,13 @@ EOT
         <PGPATH>..\..\</PGPATH>
         
         <!-- Gettext source tree -->
-        <GETTEXTPATH>C:\pgBuild\gettext</GETTEXTPATH>
+        <GETTEXTPATH>$PG_PGBUILD_WINDOWS\gettext</GETTEXTPATH>
         
         <!-- OpenSSL source tree -->
-        <OPENSSLPATH>C:\pgBuild\OpenSSL</OPENSSLPATH>
+        <OPENSSLPATH>$PG_PGBUILD_WINDOWS\OpenSSL</OPENSSLPATH>
         
         <!-- Kerberos source tree -->
-        <KERBEROSPATH>C:\pgBuild\krb5</KERBEROSPATH>
+        <KERBEROSPATH>$PG_PGBUILD_WINDOWS\krb5</KERBEROSPATH>
 
     </PropertyGroup>
 </Project>
