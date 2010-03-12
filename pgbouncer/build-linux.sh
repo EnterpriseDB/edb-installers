@@ -67,7 +67,7 @@ _build_pgbouncer_linux() {
     ssh $PG_SSH_LINUX "cp -R /lib/libcrypto.so* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libtermcap.so* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libxml2.so* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy the dependency library"
-
+    ssh $PG_SSH_LINUX "cp -R /usr/lib/libreadline.so* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy the dependency library"
 
 }
 
