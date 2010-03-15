@@ -515,6 +515,7 @@
                     </ruleList>
                 </actionGroup>
                 <!-- Exit the installation if the PostGIS version installed is not the same as the current Version -->
+                <!-- For versions less than 1.4 -->
                 <actionGroup>
                     <actionList>
                         <showWarning>
@@ -535,6 +536,7 @@
                             <text>${PostGISVersionInstalled}</text>
                             <value/>
                         </compareText>
+                        <compareVersions version1="${PostGISVersionInstalled}" version2="1.4.0" logic="less" />
                     </ruleList>
                 </actionGroup>
                 <!-- LIN | MAC : Exit the installation if the installdir is not valid (Unattended mode) -->
@@ -846,6 +848,9 @@
                     <files>
                            ${sharedir}/contrib/postgis.sql
                            ${sharedir}/contrib/postgis_upgrade.sql
+                           ${sharedir}/contrib/postgis_upgrade_12_to_14.sql
+                           ${sharedir}/contrib/postgis_upgrade_13_to_14.sql
+                           ${sharedir}/contrib/postgis_upgrade_14_minor.sql
                     </files>
                     <substitutionList>
                         <substitution>
@@ -862,23 +867,6 @@
                     </ruleList>
                 </substitute>
 
-                <!-- Configuring Scripts to set the installation path in PostGIS -->
-                <!--
-                <runProgram>
-                    <customErrorMessage>${msg(error.configure.postgis)}</customErrorMessage>
-                    <program>${installdir}/PostGIS/installer/PostGIS/configurePostGIS.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
-                    <progressText>${msg(progress.text.configure.postgis)}</progressText>
-                    <workingDirectory>${installdir}/PostGIS/installer/PostGIS</workingDirectory>
-                    <ruleList>
-        	        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </runProgram>
-                -->
                 <!-- Create Template Spatial Database -->
                 <runProgram>
                     <program>${installdir}/PostGIS/installer/PostGIS/createtemplatedb.sh</program>
@@ -925,24 +913,13 @@
                 </setInstallerVariableFromRegEx>
 
                 <substitute>
-                   <files>${installdir}\share\contrib\postgis.sql</files>
-                   <substitutionList>
-                      <substitution>
-                         <pattern>\$libdir</pattern>
-                         <value>${installdir_str}/bin</value>
-                      </substitution>
-                  </substitutionList>
-                  <ruleList>
-                      <compareText>
-                         <logic>equals</logic>
-                         <text>${platform_name}</text>
-                         <value>windows</value>
-                      </compareText>
-                   </ruleList>
-                </substitute>
-
-                <substitute>
-                   <files>${installdir}\share\contrib\postgis_upgrade.sql</files>
+                   <files>
+                          ${installdir}\share\contrib\postgis.sql
+                          ${installdir}\share\contrib\postgis_upgrade.sql
+                          ${installdir}\share\contrib\postgis_upgrade_12_to_14.sql
+                          ${installdir}\share\contrib\postgis_upgrade_13_to_14.sql
+                          ${installdir}\share\contrib\postgis_upgrade_14_minor.sql
+                   </files>
                    <substitutionList>
                       <substitution>
                          <pattern>\$libdir</pattern>
@@ -1038,7 +1015,21 @@
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-
+        <showInfo text="${msg(postgis.upgrade.info)}" >
+            <ruleList>
+                <compareValues>
+                    <logic>does_not_equal</logic>
+                    <value1>${PostGISVersionInstalled}</value1>
+                    <value2>${productVersion}</value2>
+                </compareValues>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${PostGISVersionInstalled}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </showInfo>    
+                         
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
@@ -1725,7 +1716,40 @@
                                                       exec="${psql_path}"
                                                       execArgs="-l"
                                                       workingDirectory="${pghome}/bin"
-                                                      customErrorMessage="${program_stderr}"/>
+                                                      abortOnError="0"
+                                                      showMessageOnError="0" /> 
+
+                <!-- If it fails for postgres database, fall back to edb -->
+                <actionGroup>
+                    <actionList>
+                         <setEnvironmentVariable name="PGDATABASE" value="edb" />
+                         <!-- Check connection -->
+                         <setInstallerVariableFromScriptOutput name="connection"
+                                                       exec="${psql_path}"
+                                                       execArgs="-l ${env(PGDATABASE)}"
+                                                       workingDirectory="${system_temp_directory}/${product_fullname}/instscripts/bin"
+                                                       abortOnError="0"
+                                                       showMessageOnError="0" /> 
+                    </actionList>
+                    <ruleList>
+                         <compareText text="${program_stderr}" logic="does_not_equal" value="" />
+                    </ruleList>
+                </actionGroup>
+                <!-- If it fails for edb database, fall back to template1 -->
+                <actionGroup>
+                    <actionList>
+                         <setEnvironmentVariable name="PGDATABASE" value="template1" />
+                         <!-- Check connection -->
+                         <setInstallerVariableFromScriptOutput name="connection"
+                                                       exec="${psql_path}"
+                                                       execArgs="-l ${env(PGDATABASE)}"
+                                                       workingDirectory="${system_temp_directory}/${product_fullname}/instscripts/bin"
+                                                       customErrorMessage="${program_stderr}" />
+                    </actionList>
+                    <ruleList>
+                         <compareText text="${program_stderr}" logic="does_not_equal" value="" />
+                    </ruleList>
+                </actionGroup>
 
                 <!-- Check the database 'template_postgis' exits -->
                 <setInstallerVariableFromScriptOutput name="dbexist"

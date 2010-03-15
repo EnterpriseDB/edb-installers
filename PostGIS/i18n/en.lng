@@ -64,3 +64,5 @@ db.drop.info=The template database 'template_postgis' has not been removed from 
 postgis.incompatible.install.error=An incomaptible version of PostGIS is already installed. \nPlease remove the incompatible installation before installing this version. 
 
 postgis.incompatible.pg.error=The PostgreSQL Server Installation is incompatible with this version of PostGIS.
+
+postgis.upgrade.info=To complete the upgrade process, you need to run the upgrade sql scripts on your spatial databases.\nThe upgrade scripts are located under:\n${installdir}/share/postgresql/contrib)\n
