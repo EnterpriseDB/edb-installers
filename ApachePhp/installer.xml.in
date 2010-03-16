@@ -298,7 +298,7 @@
    <!-- Stopping apache if already started -  MAC  -->
     <runProgram>
       <program>launchctl</program>
-      <programArguments>unload /Library/LaunchDaemons/com.edb.launcd.apache.plist</programArguments>
+      <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.apache.plist</programArguments>
       <workingDirectory/>
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
@@ -664,6 +664,14 @@
         </compareText>
       </ruleList>
     </actionGroup>
+    <!-- Set the actual port value to previously installed apache port, if exist, in order
+         to ignore the CLI option specified -->
+    <setInstallerVariable name="port" value="${apacheport}" > 
+      <ruleList>
+         <compareText logic="does_not_equal" text="${apacheport}" value="" />
+      </ruleList>
+    </setInstallerVariable>
+
   </preInstallationActionList>
   <!-- Postinstallation actions -->
   <postInstallationActionList>
@@ -1032,11 +1040,6 @@ include conf\addons\*.conf
           <text>${platform_name}</text>
           <value>osx</value>
         </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${apacheport}</text>
-          <value/>
-        </compareText>
       </ruleList>
     </actionGroup>
     
@@ -1055,11 +1058,6 @@ include conf\addons\*.conf
           <logic>contains</logic>
           <text>${platform_name}</text>
           <value>osx</value>
-        </compareText>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${apacheport}</text>
-          <value/>
         </compareText>
 	<fileExists>
           <path>/Library/StartupItems/EnterpriseDB-ApachePhp</path>

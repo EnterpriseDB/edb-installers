@@ -143,7 +143,7 @@ extract_file()
        # This is a tgz tarball
        tar -zxvf $FILENAME.tgz
     else
-       echo "tarball doesn't exist for the this Package"
+       echo "tarball doesn't exist for the this Package ($FILENAME)"
        exit 1
     fi
 }
@@ -171,7 +171,9 @@ win32_sign()
             ssh $PG_SSH_WINDOWS "cmd /c \"$PG_SIGNTOOL_WINDOWS\" sign /t http://tsa.starfieldtech.com $PG_PATH_WINDOWS/$FILENAME" || NOT_SIGNED=1
             COUNT=`expr $COUNT + 1`
         done
-        scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/$FILENAME $WD/output/$FILENAME || _die "Failed to copy the installer from the windows host after signing ($FILENAME)"		
+        scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/$FILENAME $WD/output/$FILENAME || _die "Failed to copy the installer from the windows host after signing ($FILENAME)"
+        echo "Removing the singed installer ($FILENAME) from the windows VM..."
+        ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; rm -f $FILENAME" || _die "Failed to remove the signed installer ($FILENAME) on the windows host"
     fi
 }
 

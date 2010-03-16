@@ -1001,7 +1001,7 @@
                 <logMessage text="Write the information to the ini file..."/>
                 <logMessage text=" Description:${msg(install.summary)}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
-                            key="Description" value="${msg(install.summary)}"/>
+                            key="Description" value="Posgres Plus HQ"/>
                 <logMessage text=" InstallationDirectory:${installdir}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
                             key="InstallationDirectory" value="${installdir}"/>
@@ -1112,7 +1112,7 @@
                 <logMessage text="Write the information to the window registry ..."/>
                 <logMessage text=" Description:${msg(install.summary)}"/>
                 <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
-                            name="Description" value="${msg(install.summary)}"/>
+                            name="Description" value="Postgres Plus HQ"/>
                 <logMessage text=" InstallationDirectory:${installdir}"/>
                 <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"
                             name="InstallationDirectory" value="${installdir}"/>

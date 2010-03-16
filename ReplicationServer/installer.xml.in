@@ -1227,7 +1227,25 @@ database=${controldb}
                                                       showMessageOnError="0"
                                                       abortOnError="0" />
 
-                <!-- If it fails for postgres database, fall back to template1 --> 
+                <!-- If it fails for postgres database, fall back to edb --> 
+                <actionGroup>     
+                    <actionList>     
+                         <setEnvironmentVariable name="PGDATABASE" value="edb" />
+                         <!-- Check connection -->
+                         <setInstallerVariableFromScriptOutput name="connection"
+                                                       exec="${psql_path}"
+                                                       execArgs="-l ${env(PGDATABASE)}"
+                                                       workingDirectory="${system_temp_directory}/${product_fullname}/instscripts/bin"
+                                                       showMessageOnError="0"
+                                                       abortOnError="0" />
+                    </actionList>
+                    <ruleList>
+                         <compareText text="${program_stderr}" logic="does_not_equal" value="" />
+                    </ruleList>
+                </actionGroup>  
+
+
+                <!-- If it fails for edb database, fall back to template1 --> 
                 <actionGroup>     
                     <actionList>     
                          <setEnvironmentVariable name="PGDATABASE" value="template1" />
@@ -2826,8 +2844,25 @@ database=${controldb}
                                                               workingDirectory="${system_temp_directory}/${product_fullname}/bin"
                                                               showMessageOnError="0"
                                                               abortOnError="0" /> 
+                        <!-- If it fails for postgres database, fall back to edb --> 
+                        <actionGroup>
+                             <actionList>
+                                   <setEnvironmentVariable name="PGDATABASE" value="edb" />
+                                   <!-- Check connection -->
+                                   <setInstallerVariableFromScriptOutput name="connection"
+                                                              exec="${psql_path}"
+                                                              execArgs="-l ${env(PGDATABASE)}"
+                                                              workingDirectory="${system_temp_directory}/${product_fullname}/bin"
+                                                              showMessageOnError="0"
+                                                              abortOnError="0" /> 
+                            </actionList>
+                            <ruleList>
+                                  <compareText text="${program_stderr}" logic="does_not_equal" value="" />
+                            </ruleList>
+                       </actionGroup>  
 
-                        <!-- If it fails for postgres database, fall back to template1 --> 
+
+                        <!-- If it fails for edb database, fall back to template1 --> 
                         <actionGroup>
                              <actionList>
                                    <setEnvironmentVariable name="PGDATABASE" value="template1" />

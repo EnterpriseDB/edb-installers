@@ -1469,6 +1469,32 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="pgdatabase" value="template1" />
+                        <!-- Running the Script to validate the PostgreSQL Server Details -->
+                        <setInstallerVariableFromScriptOutput>
+                            <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
+                            <name>connection</name>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${connection}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
        
                 <!-- Linux | MAC: Running the Script to validate the PostgreSQL Server Details -->
                 <setInstallerVariableFromScriptOutput>
@@ -1512,6 +1538,33 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="pgdatabase" value="template1" />
+                        <!-- Running the Script to validate the PostgreSQL Server Details -->
+                        <setInstallerVariableFromScriptOutput>
+                            <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
+                            <name>connection</name>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${connection}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
 
                 <actionGroup>
                     <actionList>

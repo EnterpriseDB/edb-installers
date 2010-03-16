@@ -177,7 +177,6 @@
         <setInstallerVariable name="windowsSoftwareRegistryPrefix" value="${vendor}\${fullName}" persist="1"/>
 
         <!-- Installing vcredist on windows -->
-        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{7299052b-02a4-4627-81f2-1818da5d550d}" name="DisplayVersion" variable="VC_REDIST_2005_VERSION"/>
         <actionGroup>
           <actionList>
             <unpackFile component="configuration"
@@ -189,7 +188,6 @@
           </actionList>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
-            <compareText logic="equals" text="${VC_REDIST_2005_VERSION}" value=""/>
           </ruleList>
         </actionGroup>
 
@@ -372,13 +370,7 @@
         <!-- Create pgagent schema if not exists -->
         <actionGroup>
           <actionList>
-            <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
-            <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
-            <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
-            <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-            <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
-            <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
-            <!-- Create plpgsql, if not exists -->
+           <!-- Create plpgsql, if not exists -->
             <runProgram>
               <program>${installdir}/bin/psql</program>
               <programArguments>-t -c "CREATE LANGUAGE plpgsql"</programArguments>
@@ -502,8 +494,55 @@
             <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
             <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
             <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-            <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
+            <setEnvironmentVariable name="PGDATABASE" value="">
             <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
+            <foreach variables="pgdbname">
+              <values>postgres edb template1</values>
+              <actionList>   
+                <setInstallerVariableFromScriptOutput>
+                  <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
+                  <execArgs>-l -d ${pgdbname}</execArgs>
+                  <name>connection</name>
+                  <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError> 
+                  <ruleList>
+                    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    <compareText logic="equals" text="${connection}" value=""/>
+                  </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                  <exec>${system_temp_directory}\${product_fullname}\bin\psql.exe</exec>
+                  <execArgs>-t -c "SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${pgdbname}'" -d ${pgdbname}</execArgs>
+                  <name>connection</name>
+                  <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError> 
+                  <ruleList>
+                    <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    <compareText logic="equals" text="${connection}" value=""/>
+                  </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <stringModify text="${connection}" variable="connection" logic="trim"/>
+                <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}">
+                  <ruleList>
+                    <compareText logic="does_not_equal" text="${connection}" value=""/>
+                    <compareText logic="equals" text="${env(PGDATABASE)}" value=""/>
+                  </ruleList>
+                </setEnvironmentVariable>
+              </actionList>
+            </foreach>
+            <actionGroup>
+              <actionList>
+                <setInstallerVariable name="pgdbname" value="postgres" />
+                <throwError>
+                    <text>${program_stderr}</text>
+                </thorwError>
+              </actionList>
+              <ruleList>
+                <compareText logic="equals" text="${connection}" value=""/>
+              </ruleList>
+            </actionGroup>                            
             <!-- Create plpgsql, if not exists -->
             <runProgram>
               <program>${installdir}/bin/psql</program>
@@ -587,6 +626,9 @@
               </ruleList>
             </runProgram>
           </actionList>
+          <ruleList>
+            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+          </ruleList>
         </actionGroup>
         <substitute>
           <files>${installdir}/installer/pgAgent/pgpass</files>
@@ -1445,31 +1487,60 @@
             <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
             <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
             <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-            <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
+            <setEnvironmentVariable name="PGDATABASE" value=""/>
             <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/${product_fullname}/lib"/>
 
-            <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
-              <execArgs>-l ${pgdbname}</execArgs>
-              <name>connection</name>
-              <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
-              <customErrorMessage>${program_stderr}</customErrorMessage>
+            <foreach variables="pgdbname">
+              <values>postgres edb template1</values>
+              <actionList>   
+                <setInstallerVariableFromScriptOutput>
+                  <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
+                  <execArgs>-l -d ${pgdbname}</execArgs>
+                  <name>connection</name>
+                  <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError> 
+                  <ruleList>
+                    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    <compareText logic="equals" text="${connection}" value=""/>
+                  </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                  <exec>${system_temp_directory}\${product_fullname}\bin\psql.exe</exec>
+                  <execArgs>-t -c "SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${pgdbname}'" -d ${pgdbname}</execArgs>
+                  <name>connection</name>
+                  <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError> 
+                  <ruleList>
+                    <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    <compareText logic="equals" text="${connection}" value=""/>
+                  </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <stringModify text="${connection}" variable="connection" logic="trim"/>
+                <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}">
+                  <ruleList>
+                    <compareText logic="does_not_equal" text="${connection}" value=""/>
+                    <compareText logic="equals" text="${env(PGDATABASE)}" value=""/>
+                  </ruleList>
+                </setEnvironmentVariable>
+              </actionList>
+            </foreach>
+            <actionGroup>
+              <actionList>
+                <setInstallerVariable name="pgdbname" value="postgres" />
+                <showWarning>
+                    <text>${program_stderr}</text>
+                </showWarning>
+                <setInstallerVariable>
+                    <name>next_page</name>
+                    <value>pgdetails</value>
+                </setInstallerVariable>
+              </actionList>
               <ruleList>
-                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${connection}" value=""/>
               </ruleList>
-            </setInstallerVariableFromScriptOutput>
-            <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}\${product_fullname}\bin\psql.exe</exec>
-              <execArgs>-t -c "SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${pgdbname}'"</execArgs>
-              <name>connection</name>
-              <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
-              <customErrorMessage>${program_stderr}</customErrorMessage>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
-              </ruleList>
-            </setInstallerVariableFromScriptOutput>
-            <stringModify text="${connection}" variable="connection" logic="trim"/>
-
+            </actionGroup>                            
             <!-- Check if plpgsql exists -->
             <setInstallerVariableFromScriptOutput>
               <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>

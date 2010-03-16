@@ -6,7 +6,7 @@
 # Check the command line
 usage()
 {
-    echo "Usage: $0 [--no-wait] <start|stop|restart|status|ping>"
+    echo "Usage: $0 [--no-wait] <start|stop|restart|status>"
     exit 127
 }
 
@@ -38,9 +38,6 @@ case $1 in
     ;;
     status)
         action=status
-    ;;
-    ping)
-        action=ping
     ;;
     *)
         usage

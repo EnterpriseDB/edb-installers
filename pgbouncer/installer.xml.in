@@ -1248,17 +1248,43 @@
                 <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
                 <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
                 <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-                <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
                 <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts"/>
     
                 <setInstallerVariableFromScriptOutput>
                   <exec>${system_temp_directory}/instscripts/psql</exec>
-                  <execArgs>-l ${pgdbname}</execArgs>
+                  <execArgs>-d ${pgdbname} -l ${pgdbname}</execArgs>
                   <name>connection</name>
                   <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
-                  <customErrorMessage>${program_stderr}</customErrorMessage>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError> 
                   <ruleList>
                     <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                  </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariable name="pgdbname" value="edb" />
+                <setInstallerVariableFromScriptOutput>
+                  <exec>${system_temp_directory}/instscripts/psql</exec>
+                  <execArgs>-d ${pgdbname} -l ${pgdbname}</execArgs>
+                  <name>connection</name>
+                  <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError> 
+                  <ruleList>
+                    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    <compareText logic="equals" text="${connection}" value=""/>
+                  </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariable name="pgdbname" value="template1" />
+                <setInstallerVariableFromScriptOutput>
+                  <exec>${system_temp_directory}/instscripts/psql</exec>
+                  <execArgs>-d ${pgdbname} -l ${pgdbname}</execArgs>
+                  <name>connection</name>
+                  <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError> 
+                  <ruleList>
+                    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    <compareText logic="equals" text="${connection}" value=""/>
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
                 <setInstallerVariableFromScriptOutput>
@@ -1266,12 +1292,56 @@
                   <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
                   <name>connection</name>
                   <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
-                  <customErrorMessage>${program_stderr}</customErrorMessage>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError> 
+                  <ruleList>
+                    <compareText logic="equals" text="${platform_name}" value="windows"/>
+                  </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariable name="pgdbname" value="edb" />
+                <setInstallerVariableFromScriptOutput>
+                  <exec>${system_temp_directory}\instscripts\check-connection.bat</exec>
+                  <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
+                  <name>connection</name>
+                  <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError> 
+                  <ruleList>
+                    <compareText logic="equals" text="${platform_name}" value="windows"/>
+                  </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariable name="pgdbname" value="template1" />
+                <setInstallerVariableFromScriptOutput>
+                  <exec>${system_temp_directory}\instscripts\check-connection.bat</exec>
+                  <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
+                  <name>connection</name>
+                  <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
+                  <abortOnError>0</abortOnError>
+                  <showMessageOnError>0</showMessageOnError> 
                   <ruleList>
                     <compareText logic="equals" text="${platform_name}" value="windows"/>
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
                 <stringModify text="${connection}" variable="connection" logic="trim"/>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="pgdbname" value="postgres" />
+                        <showWarning>
+                             <text>${program_stderr}</text>
+                        </showWarning>
+                        <setInstallerVariable>
+                             <name>next_page</name>
+                             <value>pgdetails</value>
+                        </setInstallerVariable>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${connection}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
               </actionList>
              </actionGroup> 
           </validationActionList>   
