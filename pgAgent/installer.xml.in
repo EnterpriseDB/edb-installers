@@ -537,7 +537,7 @@
                 <setInstallerVariable name="pgdbname" value="postgres" />
                 <throwError>
                     <text>${program_stderr}</text>
-                </thorwError>
+                </throwError>
               </actionList>
               <ruleList>
                 <compareText logic="equals" text="${connection}" value=""/>
