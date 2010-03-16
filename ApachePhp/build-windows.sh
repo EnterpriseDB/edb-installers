@@ -248,8 +248,8 @@ IF NOT EXIST php.staging/php.exe @GOTO installation-failed
 EOT
     scp build-php.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-php.bat"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/php.windows; cmd /c if EXIST php.ini-recommended copy php.ini-recommended $PG_PATH_WINDOWS\\php.staging\\php.ini " || _die "Failed to copy php.ini"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/php.windows; cmd /c if EXIST php.ini-production copy php.ini-production $PG_PATH_WINDOWS\\php.staging\\php.ini " || _die "Failed to copy php.ini"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/php.windows; cmd /c if EXIST php.ini-recommended copy php.ini-recommended $PG_PATH_WINDOWS\\\\php.staging\\\\php.ini " || _die "Failed to copy php.ini"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/php.windows; cmd /c if EXIST php.ini-production copy php.ini-production $PG_PATH_WINDOWS\\\\php.staging\\\\php.ini " || _die "Failed to copy php.ini"
     
 
     # Zip up the installed code, copy it back here, and unpack.
