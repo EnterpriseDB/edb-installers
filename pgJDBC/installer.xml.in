@@ -223,7 +223,7 @@
                        <isFalse value="${installer_is_root_install}"/>
                     </ruleList>
                 </throwError>
-                <setInstallerVariable name="windowsSoftwareRegistryPrefix" value="${vendor}\${fullName}" persist="1"/>
+                <setInstallerVariable name="project.windowsSoftwareRegistryPrefix" value="${project.vendor}\${project.fullName}"/>
 
                 <!-- Creates the ini file if not exits -->
                 <touchFile path="/etc/postgres-reg.ini">
