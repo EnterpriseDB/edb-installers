@@ -824,6 +824,25 @@
                     </ruleList>
                 </registrySet>
 
+                <!-- LIN : Remove the old Menu shortcuts -->
+                <actionGroup>
+                    <actionList>
+                       <runProgram>
+                          <program>${installdir}/PostGIS/installer/PostGIS/removeshortcuts.sh</program>
+                          <programArguments>"${installdir}" "${PostGISVersionInstalled}" "PG_MAJOR_VERSION" "${branding}"</programArguments>
+                          <abortOnError>0</abortOnError>
+                          <showMessageOnError>0</showMessageOnError>
+                       </runProgram>
+                    </actionList>
+                    <ruleList>
+                       <compareText>
+                          <logic>contains</logic>
+                          <text>${platform_name}</text>
+                          <value>linux</value>
+                       </compareText>
+                    </ruleList>
+                </actionGroup>
+
                 <!-- LIN & MAC: Create Menu Shortcuts -->
                 <actionGroup>
                     <actionList>
