@@ -494,7 +494,7 @@
             <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
             <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
             <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-            <setEnvironmentVariable name="PGDATABASE" value="">
+            <setEnvironmentVariable name="PGDATABASE" value="" />
             <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
             <foreach variables="pgdbname">
               <values>postgres edb template1</values>
