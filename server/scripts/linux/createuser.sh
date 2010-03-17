@@ -39,6 +39,7 @@ then
    
 else
 	useradd -m -c "PostgreSQL" -d "$2" -g $1 $1 || _die $1
+	usermod -p "*" $1
 fi
 
 echo "$0 ran to completion"

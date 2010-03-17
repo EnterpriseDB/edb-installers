@@ -15,19 +15,34 @@ _prep_ReplicationServer_windows() {
       echo "Removing existing ReplicationServer.windows source directory"
       rm -rf ReplicationServer.windows  || _die "Couldn't remove the existing ReplicationServer.windows source directory (source/ReplicationServer.windows)"
     fi
+    if [ -e DataValidator.windows ];
+    then
+      echo "Removing existing DataValidator.windows source directory"
+      rm -rf DataValidator.windows  || _die "Couldn't remove the existing DataValidator.windows source directory (source/DataValidator.windows)"
+    fi
    
     if [ -e ReplicationServer.zip ];
     then
       echo "Removing existing ReplicationServer.zip"
       rm -f ReplicationServer.zip  || _die "Couldn't remove the existing ReplicationServer.zip (source/ReplicationServer.zip)"
     fi
-   
+    if [ -e DataValidator.zip ];
+    then
+      echo "Removing existing DataValidator.zip"
+      rm -f DataValidator.zip  || _die "Couldn't remove the existing DataValidator.zip (source/DataValidator.zip)"
+    fi
+
     echo "Creating staging directory ($WD/ReplicationServer/source/ReplicationServer.windows)"
     mkdir -p $WD/ReplicationServer/source/ReplicationServer.windows || _die "Couldn't create the ReplicationServer.windows directory"
+    echo "Creating staging directory ($WD/ReplicationServer/source/DataValidator.windows)"
+    mkdir -p $WD/ReplicationServer/source/DataValidator.windows || _die "Couldn't create the DataValidator.windows directory"
+
 
     # Grab a copy of the source tree
     cp -R replicator/* ReplicationServer.windows || _die "Failed to copy the source code (source/ReplicationServer-$PG_VERSION_ReplicationServer)"
     chmod -R ugo+w ReplicationServer.windows || _die "Couldn't set the permissions on the source directory"
+    cp -R DataValidator/* DataValidator.windows || _die "Failed to copy the source code (source/DataValidator-$PG_VERSION_DataValidator)"
+    chmod -R ugo+w DataValidator.windows || _die "Couldn't set the permissions on the source directory"
 
     # Copy validateuser to ReplicationServer directory
     cp -R $WD/ReplicationServer/scripts/windows/validateuser $WD/ReplicationServer/source/ReplicationServer.windows/validateuser || _die "Failed to copy scripts(validateuser)"
@@ -44,10 +59,13 @@ _prep_ReplicationServer_windows() {
 
     #Copy the required jdbc drivers
     cp $WD/tarballs/edb-jdbc14.jar $WD/ReplicationServer/source/ReplicationServer.windows/lib || _die "Failed to copy the edb-jdbc-14.jar"
+    cp $WD/tarballs/edb-jdbc14.jar $WD/ReplicationServer/source/DataValidator.windows/lib || _die "Failed to copy the edb-jdbc-14.jar"
     cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/source/ReplicationServer.windows/lib || _die "Failed to copy pg jdbc drivers" 
+    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/source/DataValidator.windows/lib || _die "Failed to copy pg jdbc drivers" 
 
     echo "Archieving ReplicationServer sources"
     zip -r ReplicationServer.zip ReplicationServer.windows/ || _die "Couldn't create archieve of the ReplicationServer sources (ReplicationServer.zip)"
+    zip -r DataValidator.zip DataValidator.windows/ || _die "Couldn't create archieve of the DataValidator sources (DataValidator.zip)"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/ReplicationServer/staging/windows ];
@@ -64,11 +82,15 @@ _prep_ReplicationServer_windows() {
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST ReplicationServer.zip del /S /Q ReplicationServer.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\ReplicationServer.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST ReplicationServer.windows rd /S /Q ReplicationServer.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\ReplicationServer.windows directory on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST DataValidator.zip del /S /Q DataValidator.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\DataValidator.zip on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST DataValidator.windows rd /S /Q DataValidator.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\DataValidator.windows directory on Windows VM"
 
     # Copy sources on windows VM
     echo "Copying ReplicationServer sources to Windows VM"
     scp ReplicationServer.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the ReplicationServer archieve to windows VM (ReplicationServer.zip)"
+    scp DataValidator.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the DataValidator archieve to windows VM (DataValidator.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip ReplicationServer.zip" || _die "Couldn't extract ReplicationServer archieve on windows VM (ReplicationServer.zip)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip DataValidator.zip" || _die "Couldn't extract DataValidator archieve on windows VM (DataValidator.zip)"
 
 }
 
@@ -97,6 +119,10 @@ SET SOURCE_PATH=%CD%
 
 @CALL $PG_ANT_WINDOWS\\bin\\ant -f custom_build.xml dist
 IF NOT EXIST "dist\repconsole\bin\edb-repcli.jar" goto build-failed
+
+cd "$PG_PATH_WINDOWS\DataValidator.windows"
+@CALL $PG_ANT_WINDOWS\\bin\\ant -f custom_build.xml dist
+xcopy /y /s dist\* $PG_PATH_WINDOWS\ReplicationServer.windows\dist\repconsole\ 
 
 REM Setting Visual Studio Environment
 CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
@@ -216,6 +242,7 @@ EOT
     cp -R server/staging/windows/bin/zlib1.dll ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/msvcr71.dll ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy dependent libs"
     cp -R MigrationToolKit/staging/windows/MigrationToolKit/lib/edb-migrationtoolkit.jar ReplicationServer/staging/windows/repserver/lib/repl-mtk || _die "Failed to copy edb-migrationtoolkit.jar"
+    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/staging/windows/repconsole/lib/jdbc/ || _die "Failed to copy pg jdbc drivers"
 
     _replace "java -jar edb-repconsole.jar" "\"@@JAVA@@\" -jar \"@@INSTALL_DIR@@\\\\bin\\\\edb-repconsole.jar\"" "$WD/ReplicationServer/staging/windows/repconsole/bin/runRepConsole.bat" || _die "Failed to put the placehoder in runRepConsole.bat file"
     _replace "java -jar edb-repserver.jar pubserver 9011" "\"@@JAVA@@\" -jar \"@@INSTALL_DIR@@\\\\bin\\\\edb-repserver.jar\" pubserver @@PUBPORT@@ \"@@CONFPATH@@\"" "$WD/ReplicationServer/staging/windows/repserver/bin/runPubServer.bat" || _die "Failed to put the placehoder in runPubServer.bat file"

@@ -15,17 +15,29 @@ _prep_ReplicationServer_osx() {
       echo "Removing existing ReplicationServer.osx source directory"
       rm -rf ReplicationServer.osx  || _die "Couldn't remove the existing ReplicationServer.osx source directory (source/ReplicationServer.osx)"
     fi
+
+    if [ -e DataValidator.osx ];
+    then
+      echo "Removing existing DataValidator.osx source directory"
+      rm -rf DataValidator.osx  || _die "Couldn't remove the existing DataValidator.osx source directory (source/DataValidator.osx)"
+    fi
    
     echo "Creating staging directory ($WD/ReplicationServer/source/ReplicationServer.osx)"
     mkdir -p $WD/ReplicationServer/source/ReplicationServer.osx || _die "Couldn't create the ReplicationServer.osx directory"
+    echo "Creating staging directory ($WD/ReplicationServer/source/DataValidator.osx)"
+    mkdir -p $WD/ReplicationServer/source/DataValidator.osx || _die "Couldn't create the DataValidator.osx directory"
 
     # Grab a copy of the source tree
-    cp -R replicator/* ReplicationServer.osx || _die "Failed to copy the source code (source/ReplicationServer-$PG_VERSION_ReplicationServer)"
+    cp -R replicator/* ReplicationServer.osx || _die "Failed to copy the source code (source/replicator)"
     chmod -R ugo+w ReplicationServer.osx || _die "Couldn't set the permissions on the source directory"
+    cp -R DataValidator/* DataValidator.osx || _die "Failed to copy the source code (source/DataValidator)"
+    chmod -R ugo+w DataValidator.osx || _die "Couldn't set the permissions on the source directory"
 
     #Copy the required jdbc drivers
     cp $WD/tarballs/edb-jdbc14.jar $WD/ReplicationServer/source/ReplicationServer.osx/lib || _die "Failed to copy the edb-jdbc-14.jar"
+    cp $WD/tarballs/edb-jdbc14.jar $WD/ReplicationServer/source/DataValidator.osx/lib || _die "Failed to copy the edb-jdbc-14.jar"
     cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/source/ReplicationServer.osx/lib || _die "Failed to copy pg jdbc drivers" 
+    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/source/DataValidator.osx/lib || _die "Failed to copy pg jdbc drivers" 
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/ReplicationServer/staging/osx ];
@@ -52,6 +64,9 @@ _build_ReplicationServer_osx() {
     cp -R dist/* $WD/ReplicationServer/staging/osx/ || _die "Failed to copy the dist content to staging directory"
     ant -f custom_build.xml encrypt-util || _die "Failed to build the Replication xDB Replicator"
     cp -R dist/* $WD/ReplicationServer/staging/osx/ || _die "Failed to copy the dist content to staging directory"
+    cd $WD/ReplicationServer/source/DataValidator.osx 
+    ant -f custom_build.xml dist || _die "Failed to build the Replication xDB Replicator"
+    cp -R dist/* $WD/ReplicationServer/staging/osx/repconsole/ || _die "Failed to copy the dist content to staging directory"
 
     mkdir -p $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/bin || _die "Failed to create the instscripts directory"
     mkdir -p $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/lib || _die "Failed to create the instscripts directory"
@@ -60,7 +75,8 @@ _build_ReplicationServer_osx() {
     cp -R $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/bin || _die "Failed to copy psql in instscripts"
    
     cp -R $PG_PATH_OSX/MigrationToolKit/staging/osx/MigrationToolKit/lib/edb-migrationtoolkit.jar $PG_PATH_OSX/ReplicationServer/staging/osx/repserver/lib/repl-mtk || _die "Failed to copy edb-migrationtoolkit.jar"
-    
+    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/staging/osx/repconsole/lib/jdbc || _die "Failed to copy pg jdbc drivers"
+  
 
     cd $WD
     _replace "java -jar edb-repconsole.jar" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repconsole.jar" "$WD/ReplicationServer/staging/osx/repconsole/bin/runRepConsole.sh" || _die "Failed to put the placehoder in runRepConsole.sh file"

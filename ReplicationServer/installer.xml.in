@@ -1908,6 +1908,20 @@ database=${controldb}
                     </distributionFileList>
                 </folder>
                 <folder>
+                    <description>DataValidatorFiles</description>
+                    <destination>${installdir}</destination>
+                    <name>datavalidatorfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/repconsole/doc</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/repconsole/etc</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
                     <description>Installer Scripts</description>
                     <destination>${installdir}</destination>
                     <name>installscriptslinux</name>
@@ -1949,6 +1963,20 @@ database=${controldb}
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/linux-x64/repconsole/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>DataValidatorFiles</description>
+                    <destination>${installdir}</destination>
+                    <name>datavalidatorfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/repconsole/doc</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/repconsole/etc</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1998,6 +2026,20 @@ database=${controldb}
                     </distributionFileList>
                 </folder>
                 <folder>
+                    <description>DataValidatorFiles</description>
+                    <destination>${installdir}</destination>
+                    <name>datavalidatorfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/repconsole/doc</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/osx/repconsole/etc</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
                     <description>Installer Scripts</description>
                     <destination>${installdir}</destination>
                     <name>installscriptsosx</name>
@@ -2039,6 +2081,20 @@ database=${controldb}
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/windows/repconsole/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>DataValidatorFiles</description>
+                    <destination>${installdir}</destination>
+                    <name>datavalidatorfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/repconsole/doc</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/windows/repconsole/etc</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>

@@ -15,17 +15,29 @@ _prep_ReplicationServer_linux_x64() {
       echo "Removing existing ReplicationServer.linux-x64 source directory"
       rm -rf ReplicationServer.linux-x64  || _die "Couldn't remove the existing ReplicationServer.linux-x64 source directory (source/ReplicationServer.linux-x64)"
     fi
+
+    if [ -e DataValidator.linux-x64 ];
+    then
+      echo "Removing existing DataValidator.linux-x64 source directory"
+      rm -rf DataValidator.linux-x64  || _die "Couldn't remove the existing DataValidator.linux-x64 source directory (source/DataValidator.linux-x64)"
+    fi
    
     echo "Creating staging directory ($WD/ReplicationServer/source/ReplicationServer.linux-x64)"
     mkdir -p $WD/ReplicationServer/source/ReplicationServer.linux-x64 || _die "Couldn't create the ReplicationServer.linux-x64 directory"
+    echo "Creating staging directory ($WD/ReplicationServer/source/DataValidator.linux-x64)"
+    mkdir -p $WD/ReplicationServer/source/DataValidator.linux-x64 || _die "Couldn't create the DataValidator.linux-x64 directory"
 
     # Grab a copy of the source tree
     cp -R replicator/* ReplicationServer.linux-x64 || _die "Failed to copy the source code (source/ReplicationServer-$PG_VERSION_ReplicationServer)"
     chmod -R ugo+w ReplicationServer.linux-x64 || _die "Couldn't set the permissions on the source directory"
+    cp -R DataValidator/* DataValidator.linux-x64 || _die "Failed to copy the source code (source/DataValidator-$PG_VERSION_DataValidator)"
+    chmod -R ugo+w DataValidator.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
     #Copy the required jdbc drivers
     cp $WD/tarballs/edb-jdbc14.jar $WD/ReplicationServer/source/ReplicationServer.linux-x64/lib || _die "Failed to copy the edb-jdbc-14.jar"
+    cp $WD/tarballs/edb-jdbc14.jar $WD/ReplicationServer/source/DataValidator.linux-x64/lib || _die "Failed to copy the edb-jdbc-14.jar"
     cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/source/ReplicationServer.linux-x64/lib || _die "Failed to copy pg jdbc drivers" 
+    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/source/DataValidator.linux-x64/lib || _die "Failed to copy pg jdbc drivers" 
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/ReplicationServer/staging/linux-x64 ];
@@ -51,6 +63,8 @@ _build_ReplicationServer_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ReplicationServer/source/ReplicationServer.linux-x64; cp -R dist/* $PG_PATH_LINUX_X64/ReplicationServer/staging/linux-x64/" || _die "Failed to copy the dist content to staging directory"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ReplicationServer/source/ReplicationServer.linux-x64; JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 $PG_ANT_HOME_LINUX_X64/bin/ant -f custom_build.xml encrypt-util" || _die "Failed to build the Replication xDB Replicator"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ReplicationServer/source/ReplicationServer.linux-x64; cp -R dist/* $PG_PATH_LINUX_X64/ReplicationServer/staging/linux-x64/" || _die "Failed to copy the dist content to staging directory"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ReplicationServer/source/DataValidator.linux-x64; JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 $PG_ANT_HOME_LINUX_X64/bin/ant -f custom_build.xml dist" || _die "Failed to build the Replication xDB Replicator"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ReplicationServer/source/DataValidator.linux-x64; cp -R dist/* $PG_PATH_LINUX_X64/ReplicationServer/staging/linux-x64/repconsole/" || _die "Failed to copy the dist content to staging directory"
 
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; mkdir -p ReplicationServer/staging/linux-x64/instscripts" || _die "Failed to create instscripts directory"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; mkdir -p ReplicationServer/staging/linux-x64/instscripts/bin" || _die "Failed to create instscripts directory"
@@ -63,6 +77,7 @@ _build_ReplicationServer_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libtermcap.so* ReplicationServer/staging/linux-x64/instscripts/lib" || _die "Failed to copy libtermcap.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxml2.so* ReplicationServer/staging/linux-x64/instscripts/lib" || _die "Failed to copy libxml2.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp MigrationToolKit/staging/linux-x64/MigrationToolKit/lib/edb-migrationtoolkit.jar ReplicationServer/staging/linux-x64/repserver/lib/repl-mtk" || _die "Failed to copy edb-migrationtoolkit.jar"
+    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/staging/linux-x64/repconsole/lib/jdbc/ || _die "Failed to copy pg jdbc drivers" 
     cd $WD
     _replace "java -jar edb-repconsole.jar" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repconsole.jar" "$WD/ReplicationServer/staging/linux-x64/repconsole/bin/runRepConsole.sh" || _die "Failed to put the placehoder in runRepConsole.sh file"
     _replace "java -jar edb-repserver.jar pubserver 9011" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar pubserver @@PUBPORT@@" "$WD/ReplicationServer/staging/linux-x64/repserver/bin/runPubServer.sh" || _die "Failed to put the placehoder in runPubServer.sh file"
