@@ -51,7 +51,6 @@ _prep_ReplicationServer() {
     echo "Unpacking pgJDBC source..."
     extract_file ../../tarballs/pgJDBC-$PG_VERSION_PGJDBC || exit 1
 
-
     # ReplicationServer
     if [ -e replicator ];
     then
@@ -61,6 +60,17 @@ _prep_ReplicationServer() {
     else
       echo "Fetching xDB Replication Server source directory"
       cvs -d:ext:pginstaller@cvs.enterprisedb.com/cvs/EDB-RREP co replicator
+    fi
+    cd $WD/ReplicationServer/source
+    # DataValidator
+    if [ -e DataValidator ];
+    then
+      cd DataValidator
+      echo "Updating DataValidator source directory"
+      CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -PdC
+    else
+      echo "Fetching xDB DataValidator source directory"
+      cvs -d:ext:pginstaller@cvs.enterprisedb.com/cvs/EDB-RREP co DataValidator
     fi
 
     # Per-platform prep

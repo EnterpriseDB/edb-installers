@@ -15,13 +15,24 @@ _prep_ReplicationServer_linux() {
       echo "Removing existing ReplicationServer.linux source directory"
       rm -rf ReplicationServer.linux  || _die "Couldn't remove the existing ReplicationServer.linux source directory (source/ReplicationServer.linux)"
     fi
+    if [ -e DataValidator.linux ];
+    then
+      echo "Removing existing DataValidator.linux source directory"
+      rm -rf DataValidator.linux  || _die "Couldn't remove the existing DataValidator.linux source directory (source/DataValidator.linux)"
+    fi
    
     echo "Creating staging directory ($WD/ReplicationServer/source/ReplicationServer.linux)"
     mkdir -p $WD/ReplicationServer/source/ReplicationServer.linux || _die "Couldn't create the ReplicationServer.linux directory"
+    echo "Creating staging directory ($WD/ReplicationServer/source/DataValidator.linux)"
+    mkdir -p $WD/ReplicationServer/source/DataValidator.linux || _die "Couldn't create the DataValidator.linux directory"
 
     # Grab a copy of the source tree
     cp -R replicator/* ReplicationServer.linux || _die "Failed to copy the source code (source/ReplicationServer-$PG_VERSION_ReplicationServer)"
     chmod -R ugo+w ReplicationServer.linux || _die "Couldn't set the permissions on the source directory"
+    # Grab a copy of the source tree
+    cp -R DataValidator/* DataValidator.linux || _die "Failed to copy the source code (source/DataValidator-$PG_VERSION_DataValidator)"
+    chmod -R ugo+w DataValidator.linux || _die "Couldn't set the permissions on the source directory"
+
 
     #Copy the required jdbc drivers
     cp $WD/tarballs/edb-jdbc14.jar $WD/ReplicationServer/source/ReplicationServer.linux/lib || _die "Failed to copy the edb-jdbc-14.jar"
@@ -50,6 +61,8 @@ _build_ReplicationServer_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux; cp -R dist/* $PG_PATH_LINUX/ReplicationServer/staging/linux/" || _die "Failed to copy the dist content to staging directory"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux; JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX/bin/ant -f custom_build.xml encrypt-util" || _die "Failed to build the DESEncrypter utility"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux; cp -R dist/* $PG_PATH_LINUX/ReplicationServer/staging/linux/" || _die "Failed to copy the dist content to staging directory"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/DataValidator.linux; JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX/bin/ant -f custom_build.xml dist" || _die "Failed to build the Replication xDB Replicator"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/DataValidator.linux; cp -R dist/* $PG_PATH_LINUX/ReplicationServer/staging/linux/repconsole/" || _die "Failed to copy the dist content to staging directory"
 
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; mkdir -p ReplicationServer/staging/linux/instscripts" || _die "Failed to create instscripts directory"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; mkdir -p ReplicationServer/staging/linux/instscripts/bin" || _die "Failed to create instscripts directory"
@@ -62,6 +75,7 @@ _build_ReplicationServer_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libtermcap.so* ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy libtermcap.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libxml2.so* ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy libxml2.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp MigrationToolKit/staging/linux/MigrationToolKit/lib/edb-migrationtoolkit.jar ReplicationServer/staging/linux/repserver/lib/repl-mtk" || _die "Failed to copy edb-migrationtoolkit.jar"
+    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/staging/linux/repconsole/lib/jdbc/ || _die "Failed to copy pg jdbc drivers" 
     cd $WD
     _replace "java -jar edb-repconsole.jar" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repconsole.jar" "$WD/ReplicationServer/staging/linux/repconsole/bin/runRepConsole.sh" || _die "Failed to put the placehoder in runRepConsole.sh file"
     _replace "java -jar edb-repserver.jar pubserver 9011" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar pubserver @@PUBPORT@@" "$WD/ReplicationServer/staging/linux/repserver/bin/runPubServer.sh" || _die "Failed to put the placehoder in runPubServer.sh file"
