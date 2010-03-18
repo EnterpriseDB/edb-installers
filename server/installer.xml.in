@@ -34,7 +34,7 @@
 
     <!-- Languages allowed? -->
     <!-- <allowLanguageSelection>1</allowLanguageSelection> -->
-    <allowedLanguages>en es</allowedLanguages>
+    <allowedLanguages>en es fr</allowedLanguages>
     <defaultLanguage>auto</defaultLanguage>
 
     <!-- i18n files for the UI -->
@@ -48,6 +48,11 @@
             <code>es</code>
             <encoding>iso8859-1</encoding>
             <file>i18n/es.lng</file>
+        </language>
+        <language>
+            <code>fr</code>
+            <encoding>iso8859-1</encoding>
+            <file>i18n/fr.lng</file>
         </language>
     </customLanguageFileList>
 
