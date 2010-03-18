@@ -18,6 +18,9 @@ echo "#######################################################################" >
 echo "Build run starting at `date`" >> autobuild.log
 echo "#######################################################################" >> autobuild.log
 
+#Get the date in the beginning to maintain consistency.
+DATE=`date +'%Y-%m-%d'`
+
 # Clear out any old output
 echo "Cleaning up old output" >> autobuild.log
 rm -rf output/* >> autobuild.log 2>&1
@@ -43,7 +46,6 @@ echo "Purging old builds from the builds server" >> autobuild.log
 ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"/var/www/html/builds/pgInstaller/*-*-*\" 2" >> autobuild.log 2>&1
 
 # Create a remote directory and upload the output.
-DATE=`date +'%Y-%m-%d'`
 echo "Creating /var/www/html/builds/pgInstaller/$DATE/8.4 on the builds server" >> autobuild.log
 ssh buildfarm@builds.enterprisedb.com mkdir -p /var/www/html/builds/pgInstaller/$DATE/8.4 >> autobuild.log 2>&1
 
