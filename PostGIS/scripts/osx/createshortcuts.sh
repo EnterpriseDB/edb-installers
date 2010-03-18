@@ -13,14 +13,7 @@ SLONY_VERSION=$3
 BRANDING=$4
 DOCDIR=$5
 
-if [ "x$BRANDING" = "xPostgreSQL $PG_VERSION" ];
-then
-    FOLDER="/Applications/$BRANDING/PostGIS"
-else
-    FOLDER="/Applications/$BRANDING"
-fi
-
-
+FOLDER="/Applications/$BRANDING/PostGIS"
 
 # Exit code
 WARN=0
