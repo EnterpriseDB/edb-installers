@@ -189,18 +189,11 @@ EOT
     cp -R stackbuilder.app $WD/server/staging/osx || _die "Failed to copy StackBuilder into the staging directory"
 
     cd $WD/server/staging/osx
-<<<<<<< HEAD
-    # Copy libxml2 as System's libxml can be old.
-    cp /usr/local/lib/libxml2* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"
-    cp /usr/local/lib/libuuid* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
-
-=======
     # Copy libxml2 as System's libxml can be old. 	
     cp /usr/local/lib/libxml2* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
     cp /usr/local/lib/libxslt* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxslt"	
     cp /usr/local/lib/libuuid* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"	
 	 
->>>>>>> master
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     _rewrite_so_refs $WD/server/staging/osx bin @loader_path/..
     _rewrite_so_refs $WD/server/staging/osx lib @loader_path/..
