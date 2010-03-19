@@ -89,7 +89,7 @@
         <actionGroup>
             <actionList>
                 <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\libpq</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\libpq64</key>
                     <name>Version</name>
                     <variable>libpqVersion</variable>
                 </registryGet>
@@ -107,7 +107,7 @@
         <actionGroup>
             <actionList>
                 <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\libpq</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\libpq64</key>
                     <name>Location</name>
                     <variable>installdir</variable>
                 </registryGet> 
