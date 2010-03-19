@@ -163,8 +163,6 @@ EOT
       for configFile in ${CONFIG_FILES}
       do
            if [ -f "${configFile}.h" ]; then
-              #Hack for php 5.2.12
-              _replace "#define HAVE_ARPA_NAMESER_COMPAT_H 1" "#define HAVE_ARPA_NAMESER_COMPAT_H 0" "main/php_config.h"
               mv ${configFile}.h ${configFile}_${ARCH}.h
            fi
       done
