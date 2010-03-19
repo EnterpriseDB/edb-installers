@@ -842,6 +842,21 @@
                        </compareText>
                     </ruleList>
                 </actionGroup>
+                <deleteFile path="/Applications/${branding}/PostGIS" >
+                   <ruleList>
+                       <fileExists path="/Applications/${branding}/PostGIS" />
+                   </ruleList>
+                </deleteFile>     
+                <deleteFile path="/Applications/${branding}/JDBC Docs.app" >    
+                   <ruleList>
+                       <fileExists path="/Applications/${branding}/JDBC Docs.app" />
+                   </ruleList>
+                </deleteFile>     
+                <deleteFile path="/Applications/${branding}/PostGIS Docs.app" >    
+                   <ruleList>
+                       <fileExists path="/Applications/${branding}/PostGIS Docs.app" />
+                   </ruleList>
+                </deleteFile>     
 
                 <!-- LIN & MAC: Create Menu Shortcuts -->
                 <actionGroup>
@@ -1115,31 +1130,6 @@
                 </deleteFile>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${branding}</text>
-                    <value>PostgreSQL ${PGMajorVersion}</value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-
-        <actionGroup>
-            <actionList>
-                <deleteFile>
-                    <path>/Applications/${branding}</path>
-                </deleteFile>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${branding}</text>
-                    <value>PostgreSQL ${PGMajorVersion}</value>
-                </compareText>
                 <compareText>
                     <logic>equals</logic>
                     <text>${platform_name}</text>

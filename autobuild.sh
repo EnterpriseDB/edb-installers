@@ -46,6 +46,7 @@ echo "Purging old builds from the builds server" >> autobuild.log
 ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"/var/www/html/builds/pgInstaller/*-*-*\" 2" >> autobuild.log 2>&1
 
 # Create a remote directory and upload the output.
+
 echo "Creating /var/www/html/builds/pgInstaller/$DATE/9.0 on the builds server" >> autobuild.log
 ssh buildfarm@builds.enterprisedb.com mkdir -p /var/www/html/builds/pgInstaller/$DATE/9.0 >> autobuild.log 2>&1
 

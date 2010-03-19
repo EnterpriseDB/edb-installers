@@ -1459,6 +1459,8 @@
               </throwError>
             </validationActionList>
             <postShowPageActionList>
+                <setInstallerVariable name="resp" value="" /> 
+                <setInstallerVariable name="response" value="" /> 
                 <!-- LIN, LIN64 & MAC : PGHOME Validation -->
                 <showQuestion>
                     <text>${msg(config.pghome.invalid)}</text>
