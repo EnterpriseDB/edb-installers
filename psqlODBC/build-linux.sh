@@ -130,7 +130,7 @@ _build_psqlODBC_linux() {
     SOURCE_DIR=$PG_PATH_LINUX/psqlODBC/source/psqlODBC.linux
 
     echo "Configuring psqlODBC sources"
-    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; PATH=$PG_PGHOME_LINUX/bin:\$PATH ./configure --prefix=$PG_STAGING " || _die "Couldn't configure the psqlODBC sources"
+    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:\$LD_LIBRARY_PATH PATH=$PG_PGHOME_LINUX/bin:\$PATH ./configure --prefix=$PG_STAGING " || _die "Couldn't configure the psqlODBC sources"
     echo "Compiling psqlODBC"
     ssh $PG_SSH_LINUX "cd $SOURCE_DIR; make" || _die "Couldn't compile the psqlODBC sources"
     echo "Installing psqlODBC into the sources"

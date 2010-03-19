@@ -137,7 +137,7 @@ _build_psqlODBC_linux_x64() {
     SOURCE_DIR=$PG_PATH_LINUX_X64/psqlODBC/source/psqlODBC.linux-x64
 
     echo "Configuring psqlODBC sources"
-    ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR;PATH=\"$PG_PGHOME_LINUX_X64/bin:\$PATH\" CFLAGS=\"-I\`odbc_config --include-prefix\` \" LDFLAGS=\" -Wl,--rpath -Wl,\`odbc_config --lib-prefix\` \`odbc_config --libs\` \" ./configure --prefix=$PG_STAGING " || _die "Couldn't configure the psqlODBC sources"
+    ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; LD_LIBRARY_PATH=$PG_PGHOME_LINUX_X64/lib:\$LD_LIBRARY_PATH PATH=\"$PG_PGHOME_LINUX_X64/bin:\$PATH\" CFLAGS=\"-I\`odbc_config --include-prefix\` \" LDFLAGS=\" -Wl,--rpath -Wl,\`odbc_config --lib-prefix\` \`odbc_config --libs\` \" ./configure --prefix=$PG_STAGING " || _die "Couldn't configure the psqlODBC sources"
     echo "Compiling psqlODBC"
     ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; make" || _die "Couldn't compile the psqlODBC sources"
     echo "Installing psqlODBC into the sources"
