@@ -13,7 +13,7 @@ PG_TARBALL_PROJ=4.6.1
 
 # Build nums
 PG_BUILDNUM_POSTGIS=3
-PG_BUILDNUM_SLONY=2
+PG_BUILDNUM_SLONY=1
 
 
 # PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
@@ -24,7 +24,7 @@ PG_MINOR_VERSION=10.1
 
 # Other package versions
 PG_VERSION_POSTGIS=1.3.6
-PG_VERSION_SLONY=1.2.15
+PG_VERSION_SLONY=1.2.20
 
 # Miscellaneous options
 
