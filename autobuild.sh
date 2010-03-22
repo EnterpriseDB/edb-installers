@@ -43,7 +43,7 @@ echo "Running the build" >> autobuild.log
 ./build.sh > output/build-84.log 2>&1
 
 echo "Purging old builds from the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"/var/www/html/builds/pgInstaller/*-*-*\" 2" >> autobuild.log 2>&1
+ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"/var/www/html/builds/pgInstaller/[2-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\" 2" >> autobuild.log 2>&1
 
 # Create a remote directory and upload the output.
 echo "Creating /var/www/html/builds/pgInstaller/$DATE/8.4 on the builds server" >> autobuild.log
