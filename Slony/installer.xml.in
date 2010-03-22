@@ -704,11 +704,6 @@
                     </actionList>
                     <ruleList>
                         <compareText>
-                            <logic>equals</logic>
-                            <text>${SlonyVersion}</text>
-                            <value/>
-                        </compareText>
-                        <compareText>
                             <logic>does_not_equal</logic>
                             <text>${platform_name}</text>
                             <value>windows</value>
@@ -804,11 +799,6 @@
                         </runProgram>
                     </actionList>
                     <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${SlonyVersion}</text>
-                            <value/>
-                        </compareText>
                         <compareText>
                             <logic>equals</logic>
                             <text>${platform_name}</text>
