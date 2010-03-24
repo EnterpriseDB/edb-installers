@@ -512,7 +512,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/installer/npgsql/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}" "{branding}"</programArguments>
+                    <programArguments>"${installdir}" "${branding}"</programArguments>
                     <workingDirectory>${installdir}/installer/npgsql</workingDirectory>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
