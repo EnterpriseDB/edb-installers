@@ -502,7 +502,7 @@
                 <setInstallerVariable>
                     <name>branding</name>
                     <persist>0</persist>
-                    <value>PostgresPlus</value>
+                    <value>Postgres Plus</value>
                     <ruleList>
                         <compareText>
                             <logic>does_not_equal</logic>
@@ -540,7 +540,7 @@
                 <setInstallerVariable>
                     <name>branding</name>
                     <persist>0</persist>
-                    <value>PostgresPlus</value>
+                    <value>Postgres Plus</value>
                     <ruleList>
                         <compareText>
                             <logic>equals</logic>
