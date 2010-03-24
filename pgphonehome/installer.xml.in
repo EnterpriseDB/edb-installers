@@ -343,10 +343,34 @@
               <fileTest>
                  <path>${apachehome}/conf/addons/application_secure.conf</path>
                  <condition>not_exists</condition>
-              </fileTest> 
+              </fileTest>
+              <compareText>
+                 <logic>does_not_equal</logic>
+                 <text>${installer_ui}</text>
+                 <value>unattended</value>
+              </compareText> 
            </ruleList>
         </showQuestion>
 
+        <setInstallerVariable name="response" value="yes" >
+           <ruleList>
+              <compareText>
+                 <logic>equals</logic>
+                 <text>${pgphonehomeVersion}</text>
+                 <value/>
+              </compareText>
+              <fileTest>
+                 <path>${apachehome}/conf/addons/application_secure.conf</path>
+                 <condition>not_exists</condition>
+              </fileTest>
+              <compareText>
+                 <logic>equals</logic>
+                 <text>${installer_ui}</text>
+                 <value>unattended</value>
+              </compareText> 
+           </ruleList>
+        </setInstallerVariable>
+  
         <!-- Exit the installation if the user selects 'no' -->
         <exit>
           <exitCode>0</exitCode>
