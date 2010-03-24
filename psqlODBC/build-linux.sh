@@ -109,7 +109,7 @@ _process_dependent_libs() {
 EOT
 
    chmod ugo+x process_dependent_libs.sh  || _die "Failed to change permissions"
-   scp process_dependent_libs.sh $PG_SSH_LINUX:$PG_PATH_LINUX
+   scp process_dependent_libs.sh $PG_SSH_LINUX:$PG_PATH_LINUX/
 
    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; sh process_dependent_libs.sh" || _die "Failed to process dependent libs for $libname"
    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; rm -f process_dependent_libs.sh" || _die "Failed to remove the process_dependent_libs.sh file from the Linux VM"
