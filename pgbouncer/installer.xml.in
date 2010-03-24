@@ -1252,7 +1252,7 @@
     
                 <setInstallerVariableFromScriptOutput>
                   <exec>${system_temp_directory}/instscripts/psql</exec>
-                  <execArgs>-d ${pgdbname} -l ${pgdbname}</execArgs>
+                  <execArgs>-d ${pgdbname} -l </execArgs>
                   <name>connection</name>
                   <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
                   <abortOnError>0</abortOnError>
@@ -1264,7 +1264,7 @@
                 <setInstallerVariable name="pgdbname" value="edb" />
                 <setInstallerVariableFromScriptOutput>
                   <exec>${system_temp_directory}/instscripts/psql</exec>
-                  <execArgs>-d ${pgdbname} -l ${pgdbname}</execArgs>
+                  <execArgs>-d ${pgdbname} -l </execArgs>
                   <name>connection</name>
                   <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
                   <abortOnError>0</abortOnError>
@@ -1277,7 +1277,7 @@
                 <setInstallerVariable name="pgdbname" value="template1" />
                 <setInstallerVariableFromScriptOutput>
                   <exec>${system_temp_directory}/instscripts/psql</exec>
-                  <execArgs>-d ${pgdbname} -l ${pgdbname}</execArgs>
+                  <execArgs>-d ${pgdbname} -l </execArgs>
                   <name>connection</name>
                   <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
                   <abortOnError>0</abortOnError>
