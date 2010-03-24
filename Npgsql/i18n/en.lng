@@ -22,9 +22,7 @@ Installer.Installation.Finished.Title=Completed the ${productFullName} Setup Wiz
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
-Installer.Uninstallation.Title=Uninstalling ${productFullName}
-
-Installer.Uninstallation.Uninstalling=Uninstalling ${productFullName} ...
+Installer.Uninstallation.Title=Uninstalling Npgsql
 
 npgsql.installdir.empty=The installation directory cannot be empty
 
