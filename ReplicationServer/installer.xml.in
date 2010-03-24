@@ -2817,6 +2817,7 @@ database=${controldb}
             </parameterList>
             <!-- Checking the validity of PostgreSQL Server Details -->
             <validationActionList>
+                <stringModify variable="controldb" text="${controldb}" logic="trim" />
                 <actionGroup>
                     <actionList>
                         <throwError>
