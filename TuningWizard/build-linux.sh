@@ -82,7 +82,7 @@ _build_TuningWizard_linux() {
 
     # Build the validateUserClient binary
     if [ ! -f $WD/MetaInstaller/source/MetaInstaller.linux/validateUser/validateUserClient.o ]; then
-        cp -R $WD/MetaInstaller/scripts/validateUser $WD/TuningWizard/source/tuningwizard.linux/validateUser || _die "Failed to copy validateUser source files"
+        cp -R $WD/MetaInstaller/scripts/linux/validateUser $WD/TuningWizard/source/tuningwizard.linux/validateUser || _die "Failed to copy validateUser source files"
         ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/TuningWizard/source/tuningwizard.linux/validateUser; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
         cp $WD/TuningWizard/source/tuningwizard.linux/validateUser/validateUserClient.o $WD/TuningWizard/staging/linux/UserValidation/validateUserClient.o || _die "Failed to copy validateUserClient.o utility"
     else
