@@ -3044,7 +3044,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <file>${PostgreSqlIni}</file>
                     <section>PostgreSQL/${product_version}</section>
                     <key>Description</key>
-                    <value>PostgreSQL ${product_version}</value>
+                    <value>${branding}</value>
                     <ruleList>
                         <compareText>
                             <logic>does_not_equal</logic>
@@ -3056,7 +3056,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                 <registrySet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
                     <name>Display Name</name>
-                    <value>PostgreSQL ${product_version}</value>
+                    <value>${branding}</value>
                 </registrySet>
 
                 <!-- Branding info -->
