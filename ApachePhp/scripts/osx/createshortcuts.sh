@@ -54,8 +54,6 @@ _compile_script() {
 }
 
 # Create the menu 
-FOLDER="/Applications/PostgreSQL"
-mkdir -p "$FOLDER" 
 mkdir -p "$FOLDER/EnterpriseDB ApachePhp" || _die "Failed to create the menu directory ($FOLDER/EnterpriseDB ApachePhp)"
 
 # Create the scripts
