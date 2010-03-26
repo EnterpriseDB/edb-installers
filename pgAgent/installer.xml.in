@@ -503,10 +503,10 @@
               <values>postgres edb template1</values>
               <actionList>   
                 <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
+                  <exec>${installdir}/bin/psql</exec>
                   <execArgs>-l -d ${pgdbname}</execArgs>
                   <name>connection</name>
-                  <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
+                  <workingDirectory>${installdir}/bin</workingDirectory>
                   <abortOnError>0</abortOnError>
                   <showMessageOnError>0</showMessageOnError> 
                   <ruleList>
@@ -515,10 +515,10 @@
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
                 <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}\${product_fullname}\bin\psql.exe</exec>
+                  <exec>${installdir}\bin\psql.exe</exec>
                   <execArgs>-t -c "SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${dbname}'" -d ${dbname}</execArgs>
                   <name>connection</name>
-                  <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
+                  <workingDirectory>${installdir}/bin</workingDirectory>
                   <abortOnError>0</abortOnError>
                   <showMessageOnError>0</showMessageOnError> 
                   <ruleList>
