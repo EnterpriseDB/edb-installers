@@ -16,7 +16,7 @@ progress.text.creating.user=Creating user account
 
 install.summary=pgAgent is a job scheduler for PostgreSQL which may be managed using pgAdmin.
 
-configure.pgagent.schema=Created and configured the 'pgagent' schema in the 'postgres' database. 
+configure.pgagent.schema=Created and configured the 'pgagent' schema in the '${pgdbname}' database. 
 
 schema.drop.info=The 'pgagent' schema and user account have not been removed from the system.
 
@@ -76,7 +76,7 @@ pgagent.installdir.explanation=Please select an empty directory for pgAgent inst
 
 error.could.not.create.user=Could not create the user '${systemuser}'.
 
-progress.text.creating.pgagentschema=Creating the 'pgagent' schema in the 'postgres' database
+progress.text.creating.pgagentschema=Creating the 'pgagent' schema in the '${pgdbname}' database
 
 progress.text.upgrading.pgagentschema=Upgrading the 'pgagent' schema to version ${pgagent_installer_schema_version}
 
