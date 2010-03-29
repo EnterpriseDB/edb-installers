@@ -515,6 +515,16 @@
         <isTrue value="${extract_mode}"/>
       </ruleList>
     </actionGroup>
+
+    <!-- Check if dbserver component is deselected in unattended mode -->
+    <throwError>
+        <text>${msg(dbserver.required.pgerror)}</text>
+        <ruleList>
+            <compareText text="${component(dbserver).selected}" value="0" logic="equals"/>
+            <compareText text="${installer_ui}" value="unattended" logic="equals" />
+        </ruleList>
+    </throwError>
+
     <actionGroup>
       <actionList>
         <setInstallerVariable>
