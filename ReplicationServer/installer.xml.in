@@ -271,6 +271,24 @@
             </ruleList>
         </throwError>
 
+        <!-- Check for AS84 installed jre -->
+        <registryGet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\AS\8.4\jre</key>
+          <name>Location</name>
+          <variable>jrehome</variable>
+        </registryGet>
+
+        <iniFileGet>
+          <file>/etc/ppas-8.4.ini</file>
+          <section>jre</section>
+          <key>InstallationDirectory</key>
+          <variable>jrehome</variable>
+          <ruleList>
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileExists path="/etc/ppas-8.4.ini" />
+          </ruleList>
+        </iniFileGet>
+
         <!-- Check if the valid jrehome switch is supplied -->
         <throwError>
           <customErrorMessage>${msg(jre.invalid.error)}</customErrorMessage>
