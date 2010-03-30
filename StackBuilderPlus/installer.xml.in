@@ -170,7 +170,7 @@
         </setInstallerVariable>
 
         <!-- New install, nothing set on the command line -->
-        <setInstallerVariable name="branding" persist="1" value="PostgreSQL PG_MAJOR_VERSION">
+        <setInstallerVariable name="branding" persist="1" value="Postgres Plus Standard Server PG_MAJOR_VERSION">
           <ruleList>
             <compareText logic="equals" text="${branding}" value=""/>
           </ruleList>

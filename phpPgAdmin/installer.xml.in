@@ -99,7 +99,7 @@
         <!-- WIN: Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\8.3"/>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\PG_MAJOR_VERSION"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -117,7 +117,7 @@
         <!-- LIN: Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/8.3"/>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -135,7 +135,7 @@
         <!-- MAC : Set the    pghome default value for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/8.3"/>
+                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/PG_MAJOR_VERSION"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -558,7 +558,7 @@
 	<setInstallerVariable>
 		<name>branding</name>
 		<persist>0</persist>
-		<value>PostgreSQL</value>
+		<value>Postgres Plus Add-ons</value>
 		<ruleList>
 			<compareText>
 				<logic>equals</logic>

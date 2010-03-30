@@ -131,6 +131,7 @@ _postprocess_phpPgAdmin() {
 
     _replace PG_VERSION_PHPPGADMIN $PG_VERSION_PHPPGADMIN installer.xml || _die "Failed to set the version in the installer project file (phpPgAdmin/installer.xml)"
     _replace PG_BUILDNUM_PHPPGADMIN $PG_BUILDNUM_PHPPGADMIN installer.xml || _die "Failed to set the Build Number in the installer project file (phpPgAdmin/installer.xml)"
+    _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION installer.xml || _die "Failed to set the version in the installer project file (phpPgAdmin/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

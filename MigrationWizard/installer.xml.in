@@ -394,7 +394,7 @@
 	<setInstallerVariable>
 		<name>branding</name>
 		<persist>0</persist>
-		<value>PostgreSQL</value>
+		<value>Postgres Plus Add-ons</value>
 		<ruleList>
 			<compareText>
 				<logic>equals</logic>
