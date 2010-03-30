@@ -301,7 +301,7 @@
                             <file>/etc/postgres-reg.ini</file>
                             <section>pgbouncer</section>
                             <key>System_User</key>
-                            <variable>system_user</variable>
+                            <variable>iSystem_User</variable>
                             <ruleList>
                                 <compareText>
                                     <logic>does_not_equal</logic>
@@ -314,7 +314,7 @@
                             <file>/etc/postgres-reg.ini</file>
                             <section>pgbouncer</section>
                             <key>SystemUser</key>
-                            <variable>system_user</variable>
+                            <variable>iSystem_User</variable>
                             <ruleList>
                                 <compareText>
                                     <logic>does_not_equal</logic>
@@ -323,11 +323,16 @@
                                 </compareText>
                                 <compareText>
                                     <logic>equals</logic>
-                                    <text>${system_user}</text>
+                                    <text>${iSystem_User}</text>
                                     <value/>
                                 </compareText>
                             </ruleList>
                         </iniFileGet>
+                        <setInstallerVariable name="system_user" value="${iSystem_User}" >
+                            <ruleList>
+                                <compareText text="${iSystem_User}" logic="does_not_equal" value="" />
+                            </ruleList>
+                        </setInstallerVariable>
                         <!-- LIN & MAC: Set the installation directory in case of re-install/upgrade -->
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
