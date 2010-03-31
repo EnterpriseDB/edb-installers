@@ -7777,7 +7777,7 @@
       </parameterList>
       <ruleList>
         <isTrue value="${dbInstallTune}" />
-        <isFalse value="{IsUpgrade}" />
+        <isFalse value="${IsUpgrade}" />
         <compareText>
           <logic>equals</logic>
           <text>${ws_existing_result}</text>
@@ -8111,7 +8111,7 @@
       </postShowPageActionList>
       <ruleList>
         <isTrue value="${dbInstallTune}" />
-        <isFalse value="{IsUpgrade}" />
+        <isFalse value="${IsUpgrade}" />
         <compareText>
           <logic>equals</logic>
           <text>${ws_existing_result}</text>
