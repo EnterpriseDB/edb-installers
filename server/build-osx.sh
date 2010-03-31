@@ -92,6 +92,10 @@ _build_server_osx() {
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" LDFLAGS="-L/usr/local/lib" ./configure --host=powerpc-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt || _die "Failed to configure postgres for PPC"
     mv src/include/pg_config.h src/include/pg_config_ppc.h
 
+    echo "Configuring the postgres source tree for PPC64"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc64" LDFLAGS="-L/usr/local/lib" ./configure --host=powerpc-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt || _die "Failed to configure postgres for PPC64"
+    mv src/include/pg_config.h src/include/pg_config_ppc64.h
+
     echo "Configuring the postgres source tree for x86_64"
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/usr/local/lib" ./configure --host=powerpc-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt || _die "Failed to configure postgres for PPC"
     mv src/include/pg_config.h src/include/pg_config_x86_64.h
@@ -104,7 +108,7 @@ _build_server_osx() {
 cat <<EOT > "src/include/pg_config.h"
 #ifdef __BIG_ENDIAN__
  #ifdef __LP64__
-  #error "pg_config: Does not have support for ppc64 architecture"
+  #include "pg_config_ppc64.h"
  #else
   #include "pg_config_ppc.h"
  #endif
@@ -123,8 +127,17 @@ EOT
     make install || _die "Failed to install postgres"
     cp src/include/pg_config_i386.h $WD/server/staging/osx/include/
     cp src/include/pg_config_ppc.h $WD/server/staging/osx/include/
+    cp src/include/pg_config_ppc64.h $WD/server/staging/osx/include/
     cp src/include/pg_config_x86_64.h $WD/server/staging/osx/include/
 
+    echo "Adding ppc64 arch to libpq"
+    cd src/interfaces/libpq
+    make clean
+    make CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc -arch ppc64 -arch x86_64"
+    make install
+
+    cd $WD/server/source/postgres.osx
+   
     echo "Building contrib modules"
     cd contrib
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" make -j4 || _die "Failed to build the postgres contrib modules"
