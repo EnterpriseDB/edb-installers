@@ -38,7 +38,7 @@ PG_BUILDNUM_MIGRATIONTOOLKIT=2
 PG_BUILDNUM_JBOSS=1
 PG_BUILDNUM_PPHQ=1
 PG_BUILDNUM_HQAGENT=$PG_BUILDNUM_PPHQ
-PG_BUILDNUM_REPLICATIONSERVER=2
+PG_BUILDNUM_REPLICATIONSERVER=1
 
 # PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
 #                     Minor version is revision.build. 
