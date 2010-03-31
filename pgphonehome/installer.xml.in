@@ -333,17 +333,21 @@
         <showQuestion>
            <text>${msg(apache.restart.question)}</text>
            <variable>response</variable>
-           <ruleEvaluationLogic>OR</ruleEvaluationLogic>
            <ruleList>
-              <compareText>
-                 <logic>equals</logic>
-                 <text>${pgphonehomeVersion}</text>
-                 <value/>
-              </compareText>
-              <fileTest>
-                 <path>${apachehome}/conf/addons/application_secure.conf</path>
-                 <condition>not_exists</condition>
-              </fileTest>
+              <ruleGroup>
+                  <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                  <ruleList>
+                     <compareText>
+                         <logic>equals</logic>
+                         <text>${pgphonehomeVersion}</text>
+                         <value/>
+                     </compareText>
+                     <fileTest>
+                         <path>${apachehome}/conf/addons/application_secure.conf</path>
+                         <condition>not_exists</condition>
+                     </fileTest>
+                  </ruleList>
+              </ruleGroup>
               <compareText>
                  <logic>does_not_equal</logic>
                  <text>${installer_ui}</text>
@@ -355,16 +359,7 @@
         <setInstallerVariable name="response" value="yes" >
            <ruleList>
               <compareText>
-                 <logic>equals</logic>
-                 <text>${pgphonehomeVersion}</text>
-                 <value/>
-              </compareText>
-              <fileTest>
-                 <path>${apachehome}/conf/addons/application_secure.conf</path>
-                 <condition>not_exists</condition>
-              </fileTest>
-              <compareText>
-                 <logic>equals</logic>
+                 <logic>does_not_equal</logic>
                  <text>${installer_ui}</text>
                  <value>unattended</value>
               </compareText> 
@@ -1307,7 +1302,7 @@
                     <description>Password</description>
                     <explanation></explanation>
                     <value/>
-                    <default>${defaultpgpassword}</default>
+                    <default></default>
                     <allowEmptyValue>1</allowEmptyValue>
                     <askForConfirmation>0</askForConfirmation>
                     <descriptionRetype></descriptionRetype>
@@ -1368,6 +1363,11 @@
                         </compareText>
                         <compareText>
                            <text>${pguser}</text>
+                           <logic>equals</logic>
+                           <value/>
+                        </compareText>
+                        <compareText>
+                           <text>${pgpassword}</text>
                            <logic>equals</logic>
                            <value/>
                         </compareText>

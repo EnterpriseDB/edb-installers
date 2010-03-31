@@ -582,14 +582,14 @@
                         <logMessage text="It fails for postgres database, fall back to edb"/>
                         <setEnvironmentVariable name="PGDATABASE" value="edb"/>
                         <runProgram program="${psql_path}" abortOnError="0"
-                              programArguments="-l"
+                              programArguments="-l &quot;${env(PGDATABASE)}&quot;"
                               workingDirectory="${pphqTempDir}/instscripts"
                               showMessageOnError="0">
                             <onErrorActionList>
                                 <logMessage text="It fails for edb database, fall back to template1"/>
                                 <setEnvironmentVariable name="PGDATABASE" value="template1"/>
                                 <runProgram program="${psql_path}" abortOnError="1" showMessageOnError="1"
-                                      programArguments="-l"
+                                      programArguments="-l &quot;${env(PGDATABASE)}&quot;"
                                       workingDirectory="${pphqTempDir}/instscripts"/>
                             </onErrorActionList>
                         </runProgram>
@@ -1858,14 +1858,14 @@
                         <logMessage text="It fails for postgres database, fall back to edb"/>
                         <setEnvironmentVariable name="PGDATABASE" value="edb"/>
                         <runProgram program="${psql_path}" abortOnError="0"
-                              programArguments="-l"
+                              programArguments="-l &quot;${env(PGDATABASE)}&quot;"
                               workingDirectory="${pphqTempDir}/instscripts"
                               showMessageOnError="0">
                             <onErrorActionList>
                                 <logMessage text="It fails for edb database, fall back to template1"/>
                                 <setEnvironmentVariable name="PGDATABASE" value="template1"/>
                                 <runProgram program="${psql_path}" abortOnError="1" showMessageOnError="1"
-                                      programArguments="-l"
+                                      programArguments="-l &quot;${env(PGDATABASE)}&quot;"
                                       workingDirectory="${pphqTempDir}/instscripts"/>
                             </onErrorActionList>
                         </runProgram>
