@@ -985,7 +985,7 @@ Public Sub WMI_Service_Start(strServiceName, intWaitTimeout)
   'Call the procedure to send the command to the user specified service
   strServiceState = WMI_Service_State_Set(strServiceName, "Start", intWaitTimeout)
 
-  If UCase(strServiceState) = "Running" Then
+  If UCase(strServiceState) = "RUNNING" Then
     LogMessage "The service '" & strServiceName & "' started successfully."
   End If
   LogMessage "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" & VBCRLF & _
@@ -1426,7 +1426,7 @@ Private Function WMI_Service_State_WaitOnChange(p_strServiceName, _
       'Pause for 1/2 second
       Wscript.Sleep(500)
       'Get the state of the service
-      strServiceState = WMI_Service_State_Get(p_strServiceName)
+      l_strServiceState = WMI_Service_State_Get(p_strServiceName)
     Loop
   End If
   'Return the current service state
@@ -2471,7 +2471,7 @@ ShowMessage "Starting server..."
 WMI_Service_Start objDevServer.ServiceName, 1000
 
 l_strServiceState = WMI_Service_State_Get(objDevServer.ServiceName)
-If NOT UCase(l_strServiceState) = "Running" Then
+If NOT UCase(l_strServiceState) = "RUNNING" Then
     LogError "The service '" & objDevServer.ServiceName & "' could not be started."
     Call Finish(1)
 End If
