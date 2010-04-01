@@ -1830,7 +1830,7 @@ Class DevServer
   Public Function validatePort(p_iPort, ByRef p_strErrMsg)
     validatePort = false
     If NOT IsNumeric(p_iPort) OR NOT InStr(p_iPort, ".") = 0 Then
-      p_strErrMsg = "'" & pPort & "' is not a valid port."
+      p_strErrMsg = "'" & p_iPort & "' is not a valid port."
       Exit Function
     End If
     If p_iPort < 1000 OR p_iPort > 65535 Then
