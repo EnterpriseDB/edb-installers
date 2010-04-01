@@ -1715,6 +1715,18 @@ Class DevServer
        IsFileExists(p_strInstallDir, "scripts\serverctl.vbs", p_strErrMsg) Then
       validateServerPath = true
       m_strInstallDir = p_strInstallDir
+
+      If bInstallRuntimes Then
+        ShowMessage "Installing VC Runtimes..."
+        RunProgram WScript.FullName, _
+                   array("//nologo", objDevServer.InstallDir & "\installer\installruntimes.vbs", _
+                         objDevServer.InstallDir & strVCRedistFile), _
+                   strScriptOutput, strScriptError, iStatus
+        If iStatus <> 0 Then
+          LogError "Failed to install vc runtimes..." & strScriptError
+        End If
+      End If
+
       ' Find out PostgreSQL Version
       SetVariableFromScriptOutput p_strInstallDir & "\bin\pg_config.exe", "--version", l_strVersion, l_strErrMsg, l_iStatus
 
@@ -2364,17 +2376,6 @@ Question "Please enter the installation directory", "objDevServer.validateServer
 objDevServer.SuperUser      = Trim(strSuperUser)
 objDevServer.ServiceAccount = Trim(strServiceAccount)
 objDevServer.ServiceName  = Trim(strServiceName)
-
-If bInstallRuntimes Then
-  ShowMessage "Installing VC Runtimes..."
-  RunProgram WScript.FullName, _
-             array("//nologo", objDevServer.InstallDir & "\installer\installruntimes.vbs", _
-                   objDevServer.InstallDir & strVCRedistFile), _
-             strScriptOutput, strScriptError, iStatus
-  If iStatus <> 0 Then
-    LogError "Failed to install vc runtimes..." & strScriptError
-  End If
-End If
 
 Question "Please enter the data directory", "objDevServer.validateDataDir", objDevServer.InstallDir & "\data", strDataDir, bUnattended, true
 Question "Please enter the port", "objDevServer.validatePort", iPort, iPort, bUnattended, true
