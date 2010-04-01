@@ -136,7 +136,7 @@ our \$config = {
     tcl=>'C:\Tcl-8.5',            # --with-tls=<path>
     perl=>'C:\Perl-5.10',             # --with-perl
     python=>'C:\Python26',         # --with-python=<path>
-    krb5=>'$PG_PGBUILD_WINDOWS\krb5',         # --with-krb5=<path>
+    krb5=>'',         # --with-krb5=<path>
     ldap=>1,                # --with-ldap
     openssl=>'$PG_PGBUILD_WINDOWS\openssl',     # --with-ssl=<path>
     xml=>'$PG_PGBUILD_WINDOWS\libxml2',
@@ -181,7 +181,6 @@ use warnings;
     '$PG_PGBUILD_WINDOWS\patch\bin',
     '$PG_PGBUILD_WINDOWS\gettext\bin',
     '$PG_PGBUILD_WINDOWS\openssl\bin',
-    '$PG_PGBUILD_WINDOWS\krb5\bin\i386',
     '$PG_PGBUILD_WINDOWS\libxml2\bin',
     '$PG_PGBUILD_WINDOWS\zlib',
     'C:\Perl-5.10\Bin',
@@ -242,9 +241,6 @@ EOT
         <!-- OpenSSL source tree -->
         <OPENSSLPATH>$PG_PGBUILD_WINDOWS\OpenSSL</OPENSSLPATH>
         
-        <!-- Kerberos source tree -->
-        <KERBEROSPATH>$PG_PGBUILD_WINDOWS\krb5</KERBEROSPATH>
-
     </PropertyGroup>
 </Project>
 EOT
@@ -375,10 +371,6 @@ EOT
     ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\iconv\\\\bin\\\\iconv.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\gettext\\\\bin\\\\libintl-8.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\gettext\\\\bin\\\\libiconv-2.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\krb5\\\\bin\\\\i386\\\\comerr32.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\krb5\\\\bin\\\\i386\\\\krb5_32.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\krb5\\\\bin\\\\i386\\\\k5sprt32.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\krb5\\\\bin\\\\i386\\\\gssapi32.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\libxml2\\\\bin\\\\libxml2.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\libxslt\\\\bin\\\\libxslt.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\zlib\\\\zlib1.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host"
