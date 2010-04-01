@@ -6,8 +6,8 @@ Const ForReading = 1
 Const ForWriting = 2
 
 ' Check the command line
-If WScript.Arguments.Count <> 6 Then
- Wscript.Echo "Usage: loadmodules.vbs <Username> <Password> <Install dir> <Data dir> <Port> <install_plpgsql>"
+If WScript.Arguments.Count <> 5 Then
+ Wscript.Echo "Usage: loadmodules.vbs <Username> <Password> <Install dir> <Data dir> <Port>"
  Wscript.Quit 127
 End If
 
@@ -16,7 +16,6 @@ strPassword = WScript.Arguments.Item(1)
 strInstallDir = WScript.Arguments.Item(2)
 strDataDir = WScript.Arguments.Item(3)
 iPort = WScript.Arguments.Item(4)
-strInstallPlPgsql = WScript.Arguments.Item(5)
 
 'Escape the '%' as '%%', if present in the password
 Set regExp = new regexp
@@ -58,13 +57,6 @@ Sub Warn(msg)
     WScript.Echo msg
     iWarn = 2
 End Sub
-
-if strInstallPlPgsql = "1" Then
-    ' Create the plpgsql language
-    WScript.Echo "Installing pl/pgsql in the template1 databases..."
-    iRet = DoCmd("""" & strInstallDir & "\bin\psql.exe"" -p " & iPort & " -U " & strUsername & " -c ""CREATE LANGUAGE plpgsql;"" template1")
-    if iRet <> 0 Then warn "Failed to install pl/pgsql in the 'template1' database"
-End if
 
 ' Install adminpack in the postgres database
 WScript.Echo "Installing the adminpack module in the postgres database..."

@@ -2704,7 +2704,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <actionList>
                         <runProgram>
                             <program>${installdir}/installer/server/loadmodules.sh</program>
-                            <programArguments>"${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" ${serverport} "${install_plpgsql}"</programArguments>
+                            <programArguments>"${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" ${serverport}</programArguments>
                             <progressText>${msg(progress.text.loading.modules)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -2719,7 +2719,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
 
                         <runProgram>
                             <program>cscript</program>
-                            <programArguments>//NoLogo "${installdir}\installer\server\loadmodules.vbs" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport} "${install_plpgsql}"</programArguments>
+                            <programArguments>//NoLogo "${installdir}\installer\server\loadmodules.vbs" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport}</programArguments>
                             <progressText>${msg(progress.text.loading.modules)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -4979,15 +4979,6 @@ REM The script sets environment variables helpful for PostgreSQL
                         </throwError>
                     </validationActionList>
                 </choiceParameter>
-                <booleanParameter>
-                    <name>install_plpgsql</name>
-                    <description>${msg(plpgsql.install.description)}</description>
-                    <explanation/>
-                    <displayStyle>checkbox-left</displayStyle>
-                    <cliOptionName>install_plpgsql</cliOptionName>
-                    <ask>yes</ask>
-                    <default>1</default>
-                </booleanParameter>
             </parameterList>
             <ruleList>
                 <isFalse value="${IsUpgrade}"/>
