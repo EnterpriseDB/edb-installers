@@ -20,7 +20,7 @@ PG_BUILDNUM_SLONY=2
 #                     Minor version is revision.build. 
 
 PG_MAJOR_VERSION=8.3
-PG_MINOR_VERSION=10.1
+PG_MINOR_VERSION=10.2
 
 # Other package versions
 PG_VERSION_POSTGIS=1.3.6
