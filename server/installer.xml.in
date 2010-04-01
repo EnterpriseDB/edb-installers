@@ -199,7 +199,10 @@
     
     <!-- Preinstallation actions -->
     <preInstallationActionList>
-        
+       
+        <setInstallerVariable name="iDataDirectory" value=""/>
+        <setInstallerVariable name="iBaseDirectory" value=""/>
+ 
         <!-- !WIN: Get existing directories & branding -->
         <actionGroup>
             <actionList>
@@ -437,7 +440,26 @@
         <logMessage>
             <text>Using branding: ${branding}</text>
         </logMessage>
-        
+       
+        <!-- In unattended mode, set installdir to iBaseDirectory,
+             if an already existing base directory value is found in the ini/registry. 
+        -->
+        <setInstallerVariable>
+            <name>installdir</name>
+            <value>${iBaseDirectory}</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <stringTest>
+                    <text>${iBaseDirectory}</text>
+                    <type>not_empty</type>
+                </stringTest>
+            </ruleList>
+        </setInstallerVariable>
+ 
         <!-- Temp directory for preflight scripts -->
         <createDirectory path="${system_temp_directory}/postgresql_installer"/>
 
