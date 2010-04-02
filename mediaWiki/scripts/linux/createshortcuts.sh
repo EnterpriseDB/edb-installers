@@ -69,7 +69,7 @@ _fixup_file "$INSTALLDIR/mediaWiki/scripts/xdg/pg-launchMediaWiki.desktop"
 # the installation is not branded, to retain backwards compatibility.
 if [ $BRANDED -ne 0 ];
 then
-    cp "$INSTALLDIR/scripts/xdg/pg-postgresql.directory" "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory"
+    cp "$INSTALLDIR/mediaWiki/scripts/xdg/pg-postgresql.directory" "$INSTALLDIR/mediaWiki/scripts/xdg/pg-$BRANDING_STR.directory"
 fi
 
 # Create the menu shortcuts - first the top level, then the documentation menu.

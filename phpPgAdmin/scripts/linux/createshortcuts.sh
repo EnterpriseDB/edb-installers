@@ -69,7 +69,7 @@ _fixup_file "$INSTALLDIR/phpPgAdmin/scripts/xdg/pg-launchPhpPgAdmin.desktop"
 # the installation is not branded, to retain backwards compatibility.
 if [ $BRANDED -ne 0 ];
 then
-    cp "$INSTALLDIR/scripts/xdg/pg-postgresql.directory" "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory"
+    cp "$INSTALLDIR/phpPgAdmin/scripts/xdg/pg-postgresql.directory" "$INSTALLDIR/phpPgAdmin/scripts/xdg/pg-$BRANDING_STR.directory"
 fi
 
 
