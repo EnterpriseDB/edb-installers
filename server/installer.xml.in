@@ -4641,6 +4641,12 @@ REM The script sets environment variables helpful for PostgreSQL
                         </stringTest>
                     </ruleList>
                 </throwError>
+                <throwError text="${msg(Installer.Warning.PasswordsDoNotMatch)}">
+                    <ruleList>
+                        <compareText logic="does_not_equal"
+                              text="${superpassword}" value="${project.parameter(superpassword).valueRetype}"/>
+                    </ruleList>
+                </throwError>
 
                 <actionGroup>
                     <actionList>

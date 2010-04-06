@@ -8598,6 +8598,14 @@
           </ruleList>
         </throwError>
 
+        <!-- Password Mismatch -->
+        <throwError text="${msg(Installer.Warning.PasswordsDoNotMatch)}">
+            <ruleList>
+                <compareText logic="does_not_equal"
+                      text="${superpassword}" value="${project.parameter(superpassword).valueRetype}"/>
+            </ruleList>
+        </throwError>
+
         <!-- START: Authentication for the super-password -->
         <!-- Set variable psql_path -->
         <!-- Set variable psql_path -->
@@ -8970,6 +8978,14 @@
         <isFalse value="${extract_mode}"/>
       </ruleList>
       <validationActionList>
+
+        <!-- Password Mismatch -->
+        <throwError text="${msg(Installer.Warning.PasswordsDoNotMatch)}">
+            <ruleList>
+                <compareText logic="does_not_equal"
+                      text="${servicepassword}" value="${project.parameter(servicepassword).valueRetype}"/>
+            </ruleList>
+        </throwError>
 
         <!-- START: System user authention -->
         <actionGroup>
