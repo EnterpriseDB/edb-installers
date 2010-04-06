@@ -274,18 +274,22 @@
         <!-- Check for AS84 installed jre -->
         <registryGet>
           <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\AS\8.4\jre</key>
-          <name>Location</name>
+          <name>Base Directory</name>
           <variable>jrehome</variable>
+          <ruleList>
+             <isFalse value="${extract_mode}"/>
+          </ruleList>
         </registryGet>
 
         <iniFileGet>
-          <file>/etc/ppas-8.4.ini</file>
-          <section>jre</section>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ppas_jre_8.4</section>
           <key>InstallationDirectory</key>
           <variable>jrehome</variable>
           <ruleList>
              <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
-             <fileExists path="/etc/ppas-8.4.ini" />
+             <fileExists path="/etc/postgres-reg.ini" />
+             <isFalse value="${extract_mode}"/>
           </ruleList>
         </iniFileGet>
 
@@ -306,6 +310,7 @@
              <compareText text="${jrehome}" logic="does_not_equal" value="" />
              <compareText text="${platform_name}" logic="equals" value="windows" />
              <fileTest path="${jrehome}\bin\java.exe" condition="not_exists" />
+             <isFalse value="${extract_mode}"/>
           </ruleList>
         </throwError>    
 
@@ -341,6 +346,7 @@
             <customErrorMessage>${msg(java.error)}</customErrorMessage>
             <ruleList>
                 <compareText text="${jrehome}" logic="equals" value="" />
+                <isFalse value="${extract_mode}"/>
             </ruleList> 
         </autodetectJava>
 
@@ -522,6 +528,36 @@
                         <isTrue value="${IsSubServerUpgrade}" />
                     </ruleList>
                 </actionGroup>  
+
+                <!-- Unselect the components which are not installed previously during upgradation -->
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="component(repconsole).selected" value="0" />
+                        <setInstallerVariable name="component(repconsole).canBeEdited" value="1" />
+                    </actionList>
+                    <ruleList>
+                        <isFalse value="${IsRepConsoleUpgrade}" />
+                    </ruleList>
+                </actionGroup>  
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="component(pubserver).selected" value="0" />
+                        <setInstallerVariable name="component(pubserver).canBeEdited" value="1" />
+                    </actionList>
+                    <ruleList>
+                        <isFalse value="${IsPubServerUpgrade}" />
+                    </ruleList>
+                </actionGroup>  
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="component(subserver).selected" value="0" />
+                        <setInstallerVariable name="component(subserver).canBeEdited" value="1" />
+                    </actionList>
+                    <ruleList>
+                        <isFalse value="${IsSubServerUpgrade}" />
+                    </ruleList>
+                </actionGroup>  
+
 
                 <!-- If there appears to be an existing installation, with no Branding value. -->
                 <!-- force the default value. Otherwise, set the branding to whatever we read, -->
@@ -771,6 +807,7 @@
            </actionList>
            <ruleList>
                 <isTrue value="${IsPubServerUpgrade}" />
+                <isFalse value="${extract_mode}"/>
            </ruleList>
         </actionGroup> 
 
@@ -806,6 +843,7 @@
            </actionList>
            <ruleList>
                 <isTrue value="${IsSubServerUpgrade}" />
+                <isFalse value="${extract_mode}"/>
            </ruleList>
         </actionGroup> 
 
@@ -887,6 +925,7 @@
                 <isTrue value="${validateEmail}"/>
                 <compareText logic="equals" text="${installer_ui}" value="unattended"/> 
                 <stringTest text="${xDBReplicationServerVersion}" type="empty"/>
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
     </preInstallationActionList>
@@ -901,6 +940,7 @@
 
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </setInstallerVariableFromRegEx>
 
@@ -912,6 +952,7 @@
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>            
+            <isFalse value="${extract_mode}"/>
             <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
             <ruleGroup>
                  <ruleEvaluationLogic>or</ruleEvaluationLogic>
@@ -967,6 +1008,7 @@
              </throwError>
           </actionList>
           <ruleList>            
+             <isFalse value="${extract_mode}"/>
              <compareText text="${platform_name}" logic="equals" value="windows"/>
              <compareText text="${installer_ui}" logic="equals" value="unattended" />
              <ruleGroup>
@@ -1327,6 +1369,7 @@ database=${controldb}
                        <isFalse value="${IsSubServerUpgrade}" />  
                    </ruleList>
                </ruleGroup> 
+               <isFalse value="${extract_mode}"/>
            </ruleList>
         </actionGroup>        
  
@@ -1344,6 +1387,7 @@ database=${controldb}
             </substitutionList>
             <ruleList>
                 <isTrue value="${component(repconsole).selected}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </substitute> 
 
@@ -1366,6 +1410,7 @@ database=${controldb}
             </substitutionList>
             <ruleList>
                 <isTrue value="${component(pubserver).selected}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </substitute> 
 
@@ -1387,6 +1432,7 @@ database=${controldb}
             </substitutionList>
             <ruleList>
                 <isTrue value="${component(subserver).selected}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </substitute> 
 
@@ -1404,6 +1450,7 @@ database=${controldb}
             </substitutionList>
             <ruleList>
                 <isTrue value="${component(repconsole).selected}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </substitute> 
 
@@ -1430,6 +1477,7 @@ database=${controldb}
             </substitutionList>
             <ruleList>
                 <isTrue value="${component(pubserver).selected}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </substitute> 
 
@@ -1455,6 +1503,7 @@ database=${controldb}
             </substitutionList>
             <ruleList>
                 <isTrue value="${component(subserver).selected}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </substitute> 
 
@@ -1463,6 +1512,7 @@ database=${controldb}
             <permissions>755</permissions>
             <ruleList>
                 <isTrue value="${component(pubserver).selected}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </changePermissions> 
 
@@ -1471,6 +1521,7 @@ database=${controldb}
             <permissions>755</permissions>
             <ruleList>
                 <isTrue value="${component(subserver).selected}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </changePermissions> 
 
@@ -1479,6 +1530,7 @@ database=${controldb}
             <permissions>755</permissions>
             <ruleList>
                 <isTrue value="${component(repconsole).selected}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </changePermissions> 
 
@@ -1493,6 +1545,7 @@ database=${controldb}
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows" />
                 <isTrue value="${component(pubserver).selected}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram>
         <!-- Pause for 10 sec between publication/subscription startup.
@@ -1503,6 +1556,7 @@ database=${controldb}
                 <compareText logic="equals" text="${platform_name}" value="osx" />
                 <isTrue value="${component(subserver).selected}" />
                 <isTrue value="${component(pubserver).selected}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </wait>
         <runProgram>
@@ -1514,6 +1568,7 @@ database=${controldb}
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows" />
                 <isTrue value="${component(subserver).selected}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram>
 
@@ -1524,6 +1579,7 @@ database=${controldb}
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(pubserver).selected}" />
                 <isFalse value="${IsPubServerUpgrade}" /> 
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </writeFile>
         <runProgram>
@@ -1537,6 +1593,7 @@ database=${controldb}
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(pubserver).selected}" />
                 <isFalse value="${IsPubServerUpgrade}" /> 
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram>
         <deleteFile path="${system_temp_directory}/servicewrapper.bat" >          
@@ -1544,6 +1601,7 @@ database=${controldb}
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(pubserver).selected}" />
                 <isFalse value="${IsPubServerUpgrade}" /> 
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </deleteFile>
         <writeFile>
@@ -1553,6 +1611,7 @@ database=${controldb}
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(subserver).selected}" />
                 <isFalse value="${IsSubServerUpgrade}" /> 
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </writeFile>
         <runProgram>
@@ -1566,6 +1625,7 @@ database=${controldb}
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(subserver).selected}" />
                 <isFalse value="${IsSubServerUpgrade}" /> 
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram>
         <deleteFile path="${system_temp_directory}/servicewrapper.bat" >          
@@ -1573,6 +1633,7 @@ database=${controldb}
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(subserver).selected}" />
                 <isFalse value="${IsSubServerUpgrade}" /> 
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </deleteFile>
         <startWindowsService>
@@ -1580,6 +1641,7 @@ database=${controldb}
             <displayName>Publication Service</displayName>
             <ruleList>
                 <isTrue value="${component(pubserver).selected}" />                  
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </startWindowsService>
         <wait ms="10000" >
@@ -1587,6 +1649,7 @@ database=${controldb}
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(subserver).selected}" />
                 <isTrue value="${component(pubserver).selected}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </wait>
         <startWindowsService>
@@ -1594,6 +1657,7 @@ database=${controldb}
             <displayName>Subscription Service</displayName>
             <ruleList>
                 <isTrue value="${component(subserver).selected}" />                  
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </startWindowsService>
         <runProgram>
@@ -1604,6 +1668,7 @@ database=${controldb}
             <ruleList>
                 <isTrue value="${component(pubserver).selected}" />
                 <compareText logic="contains" text="${platform_name}" value="linux" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram> 
         <!-- Pause for 10 sec between publication/subscription startup. -->
@@ -1612,6 +1677,7 @@ database=${controldb}
                 <compareText logic="contains" text="${platform_name}" value="linux" />
                 <isTrue value="${component(subserver).selected}" />
                 <isTrue value="${component(pubserver).selected}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </wait>
         <runProgram>
@@ -1622,6 +1688,7 @@ database=${controldb}
             <ruleList>
                 <isTrue value="${component(subserver).selected}" />
                 <compareText logic="contains" text="${platform_name}" value="linux" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram> 
 
@@ -2669,6 +2736,7 @@ database=${controldb}
             <ruleList>
                 <isTrue value="${validateEmail}"/>
                 <stringTest text="${xDBReplicationServerVersion}" type="empty"/>
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </parameterGroup>
         <parameterGroup name="userAuthenticationPage"
@@ -2775,10 +2843,10 @@ database=${controldb}
             <ruleList>
                 <isTrue value="${validateEmail}"/>
                 <stringTest text="${xDBReplicationServerVersion}" type="empty"/>
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </parameterGroup>
-
-        <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="0" cliOptionShow="0"/>
+        <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
         <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
         <booleanParameter name="validateEmail" cliOptionName="validate" default="1" ask="0" cliOptionShow="0"/>
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
@@ -2982,6 +3050,7 @@ database=${controldb}
                        <isFalse value="${IsSubServerUpgrade}" />
                    </ruleList>
                 </ruleGroup>
+                <isFalse value="${extract_mode}"/>
             </ruleList> 
         </parameterGroup>
 
@@ -3006,6 +3075,7 @@ database=${controldb}
             <ruleList>
                 <isTrue value="${component(pubserver).selected}" />
                 <isFalse value="${IsPubServerUpgrade}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
             <!-- Checking the validity of Pubserver port -->
             <validationActionList>
@@ -3116,6 +3186,7 @@ database=${controldb}
             <ruleList>
                 <isTrue value="${component(subserver).selected}" />
                 <isFalse value="${IsSubServerUpgrade}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
             <!-- Checking the validity of SubServer port -->
             <validationActionList>
@@ -3291,6 +3362,7 @@ database=${controldb}
                                  <isFalse value="${IsSubServerUpgrade}"/>
                              </ruleList>
                          </ruleGroup>                
+                         <isFalse value="${extract_mode}"/>
                    </ruleList> 
                </ruleGroup>       
                <ruleGroup>
@@ -3303,6 +3375,7 @@ database=${controldb}
                              </ruleList>
                         </ruleGroup>
                         <compareText logic="equals" text="${platform_name}" value="windows" />
+                        <isFalse value="${extract_mode}"/>
                    </ruleList>
               </ruleGroup>  
            </ruleList>
