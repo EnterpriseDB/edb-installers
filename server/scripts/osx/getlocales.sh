@@ -27,7 +27,7 @@ _encoding_is_valid()
 }
 
 # Echo the locales
-for LOCALE in `locale -a | LC_CTYPE=C grep -v -e "[^a-zA-Z0-9@\.\-\_]"`
+for LOCALE in `locale -a | LC_CTYPE=C grep -v -e "[^a-zA-Z0-9@\.\_\-]"`
 do
     if [ x`echo $LOCALE | grep @` = "x$LOCALE" ];
 	then
