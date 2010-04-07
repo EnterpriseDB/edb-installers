@@ -537,6 +537,7 @@
                     </actionList>
                     <ruleList>
                         <isFalse value="${IsRepConsoleUpgrade}" />
+                        <compareText text="${xDBReplicationServerVersion}" logic="does_not_equal" value="" />
                     </ruleList>
                 </actionGroup>  
                 <actionGroup>
@@ -546,6 +547,7 @@
                     </actionList>
                     <ruleList>
                         <isFalse value="${IsPubServerUpgrade}" />
+                        <compareText text="${xDBReplicationServerVersion}" logic="does_not_equal" value="" />
                     </ruleList>
                 </actionGroup>  
                 <actionGroup>
@@ -555,6 +557,7 @@
                     </actionList>
                     <ruleList>
                         <isFalse value="${IsSubServerUpgrade}" />
+                        <compareText text="${xDBReplicationServerVersion}" logic="does_not_equal" value="" />
                     </ruleList>
                 </actionGroup>  
 
