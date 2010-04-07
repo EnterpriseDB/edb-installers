@@ -2046,6 +2046,21 @@
             </compareText>
             <compareText>
               <text>${locale}</text>
+              <value>C</value>
+              <logic>does_not_equal</logic>
+            </compareText>
+            <compareText>
+              <text>${locale}</text>
+              <value>POSIX</value>
+              <logic>does_not_equal</logic>
+            </compareText>
+            <compareText>
+              <text>${locale}</text>
+              <value>DEFAULT</value>
+              <logic>does_not_equal</logic>
+            </compareText>
+            <compareText>
+              <text>${locale}</text>
               <value/>
               <logic>does_not_equal</logic>
             </compareText>
