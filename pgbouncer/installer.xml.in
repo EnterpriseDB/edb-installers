@@ -470,7 +470,7 @@
                             <substitutionList>
                                 <substitution>
                                     <pattern>@@CON@@</pattern>
-                                    <value>postgres = host=${pghost} port=${pgport}</value>
+                                    <value>${pgdbname} = host=${pghost} port=${pgport}</value>
                                 </substitution>
                                 <substitution>
                                     <pattern>@@LISTENADDR@@</pattern>
@@ -1266,7 +1266,11 @@
                     <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
-                <setInstallerVariable name="pgdbname" value="edb" />
+                <setInstallerVariable name="pgdbname" value="edb" >
+                  <ruleList>
+                    <compareText logic="equals" text="${connection}" value=""/>
+                  </ruleList>
+                </setInstallerVariable>
                 <setInstallerVariableFromScriptOutput>
                   <exec>${system_temp_directory}/instscripts/psql</exec>
                   <execArgs>-d ${pgdbname} -l </execArgs>
@@ -1279,7 +1283,11 @@
                     <compareText logic="equals" text="${connection}" value=""/>
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
-                <setInstallerVariable name="pgdbname" value="template1" />
+                <setInstallerVariable name="pgdbname" value="template1" >
+                  <ruleList>
+                    <compareText logic="equals" text="${connection}" value=""/>
+                  </ruleList>
+                </setInstallerVariable>
                 <setInstallerVariableFromScriptOutput>
                   <exec>${system_temp_directory}/instscripts/psql</exec>
                   <execArgs>-d ${pgdbname} -l </execArgs>
@@ -1303,7 +1311,11 @@
                     <compareText logic="equals" text="${platform_name}" value="windows"/>
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
-                <setInstallerVariable name="pgdbname" value="edb" />
+                <setInstallerVariable name="pgdbname" value="edb" >
+                  <ruleList>
+                    <compareText logic="equals" text="${connection}" value=""/>
+                  </ruleList>
+                </setInstallerVariable>
                 <setInstallerVariableFromScriptOutput>
                   <exec>${system_temp_directory}\instscripts\check-connection.bat</exec>
                   <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
@@ -1315,7 +1327,11 @@
                     <compareText logic="equals" text="${platform_name}" value="windows"/>
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
-                <setInstallerVariable name="pgdbname" value="template1" />
+                <setInstallerVariable name="pgdbname" value="template1" >
+                  <ruleList>
+                    <compareText logic="equals" text="${connection}" value=""/>
+                  </ruleList>
+                </setInstallerVariable>
                 <setInstallerVariableFromScriptOutput>
                   <exec>${system_temp_directory}\instscripts\check-connection.bat</exec>
                   <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
