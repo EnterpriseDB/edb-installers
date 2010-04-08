@@ -206,11 +206,7 @@ IF NOT EXIST php.staging/php.exe @GOTO installation-failed
 @COPY "%PHPBUILD%\bin\libxml2.dll" php.staging || echo Failed to copy libxml2\bin\libxml2.dll && EXIT -1
 @COPY "%PHPBUILD%\bin\libxslt.dll" php.staging || echo Failed to copy libxslt\bin\libxslt.dll && EXIT -1
 @COPY "%PHPBUILD%\bin\zlib.dll" php.staging || echo Failed to copy zlib.dll && EXIT -1
-@REM @COPY "%PHPBUILD%\bin\i386\krb5_32.dll" php.staging || @COPY "%PHPBUILD%\krb5\bin\krb5_32.dll" php.staging || echo Failed to copy krb5\bin\krb5_32.dll && EXIT -1
-@REM @COPY "%PHPBUILD%\bin\i386\comerr32.dll" php.staging || @COPY "%PHPBUILD%\krb5\bin\comerr32.dll" php.staging || echo Failed to copy krb5\bin\comerr32.dll && EXIT -1
-@REM @COPY "%PHPBUILD%\bin\i386\gssapi32.dll" php.staging || @COPY "%PHPBUILD%\krb5\bin\gssapi32.dll" php.staging || echo Failed to copy krb5\bin\gssapi32.dll && EXIT -1
 @COPY "%PG_HOME_PATH%\bin\libpq.dll" php.staging || echo Failed to copy libpq.dll && EXIT -1
-@COPY "%PG_HOME_PATH%\bin\k5sprt32.dll" php.staging || echo Failed to copy k5sprt32.dll && EXIT -1
 
 @COPY "%SYSTEMROOT%\System32\msvcr71.dll" php.staging || echo Failed to copy %SYSTEMROOT%\System32\msvcr71.dll && EXIT -1
 @GOTO end
