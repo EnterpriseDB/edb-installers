@@ -234,7 +234,6 @@
             </ruleList>
         </setInstallerVariable>
 
-        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{7299052b-02a4-4627-81f2-1818da5d550d}" name="DisplayVersion" variable="VC_REDIST_2005_VERSION"/>
         <actionGroup>
             <actionList>
                 <unpackFile>
@@ -253,7 +252,6 @@
            </actionList>
            <ruleList>
                <compareText logic="equals" text="${platform_name}" value="windows"/>
-               <compareText logic="equals" text="${VC_REDIST_2005_VERSION}" value=""/>
            </ruleList>
        </actionGroup>
 
