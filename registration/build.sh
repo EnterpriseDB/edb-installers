@@ -107,7 +107,7 @@ _registration_postprocess()
   _replace @@REGISTRY_PREFIX@@     "$5" registration_preuninstallation.xml
 
   # Mac OSX
-  if [ $PG_ARCH_OSX = 1 ]; 
+  if [ $PG_ARCH_OSX = 1 ];
   then
     _registration_postprocess_osx $1
   fi
@@ -123,7 +123,7 @@ _registration_postprocess()
   then
     _registration_postprocess_linux_x64 $1
   fi
-  
+
   # Windows
   if [ $PG_ARCH_WINDOWS = 1 ];
   then
