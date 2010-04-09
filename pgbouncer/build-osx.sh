@@ -8,7 +8,7 @@
 _prep_pgbouncer_osx() {
 
     echo "**********************************"
-    echo "*  Pre Process: pgsqlODBC (OSX)  *"
+    echo "*  Pre Process: pgBouncer (OSX)  *"
     echo "**********************************"
 
     # Enter the source directory and cleanup if required
@@ -55,7 +55,7 @@ _prep_pgbouncer_osx() {
 _build_pgbouncer_osx() {
 
     echo "****************************"
-    echo "*  Build: pgsqlODBC (OSX)  *"
+    echo "*  Build: pgBouncer (OSX)  *"
     echo "****************************"
 
     cd $PG_PATH_OSX/pgbouncer/source/libevent.osx/; 
@@ -124,7 +124,7 @@ _build_pgbouncer_osx() {
 _postprocess_pgbouncer_osx() {
 
     echo "***********************************"
-    echo "*  Post Process: pgsqlODBC (OSX)  *"
+    echo "*  Post Process: pgBouncer (OSX)  *"
     echo "***********************************"
  
     cd $WD/pgbouncer
