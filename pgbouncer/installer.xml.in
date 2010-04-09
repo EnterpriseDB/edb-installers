@@ -117,6 +117,7 @@
 		</setInstallerVariable>
 
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PGBOUNCER" />
+        <setInstallerVariable name="pgbouncerVersion" value="" />
 
 	    <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
@@ -1562,6 +1563,7 @@
                     <logic>does_not_equal</logic>
                     <value/>
                 </compareText>
+                <isFalse value="${extract_mode}" />
             </ruleList>
         </labelParameter>
     </parameterList>
