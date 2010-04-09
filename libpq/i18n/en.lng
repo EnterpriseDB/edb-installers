@@ -20,7 +20,8 @@ install.summary=libpq for win64, packaged by EnterpriseDB.
 
 install.runtimes.description=Specifies whether or not install the Microsoft Visual C++ runtimes before the installation proceeds.
 
-pgjdbc.installdir.empty=The installation directory cannot be empty
+libpq.installdir.empty=The installation directory cannot be empty
 
-pgjdbc.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
+libpq.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
+platform.not.match=You are trying to run a 64bit installer in a 32bit machine. The installer will exit now

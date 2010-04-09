@@ -62,9 +62,28 @@
             </ruleList>
         </setInstallerVariable>
     </preShowHelpActionList>
-  	
+  
+    <preBuildActionList>	
+        <setInstallerVariable name="originalplatform" value="${platform_name}">
+        <setInstallerVariable name="originalplatform" value="windows-x64">
+          <ruleList>
+              <platformTest type="windows-x64"/>
+          </ruleList>
+      </setInstallerVariable>
+    </preBuildActionList>	
     <initializationActionList>
-	    <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>  
+
+        <!-- Abort Installation as trying to  run a 64-bit installer on 32-bit machine -->
+        <throwError>
+          <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+            <platformTest type="windows"/>
+            <compareText text="${originalplatform}" value="windows-x64" logic="does_not_equal" />
+          </ruleList>
+        </throwError>
+
+	<setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>  
 	
         <!-- WIN : Set the default values for unattended mode -->
         <actionGroup>
@@ -101,6 +120,29 @@
 	
     <preInstallationActionList>
 
+        <setInstallerVariable name="libpqVersion" value="" />
+        <setInstallerVariable name="IsOldInstall" value="0" />
+
+        <!-- For Old installation till 8.4.2 -->
+        <registryGet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\EnterpriseDB\libpq64</key>
+            <name>Version</name>
+            <variable>libpqVersion</variable>
+        </registryGet>
+        <setInstallerVariable name="IsOldInstall" value="1">
+            <ruleList>
+                <compareText text="${libpqVersion}" value="" logic="equals" />
+            </ruleList> 
+        </setInstallerVariable>
+        <registryGet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\EnterpriseDB\libpq64</key>
+            <name>Location</name>
+            <variable>installdir</variable>
+            <ruleList>
+                <isTrue value="${IsOldInstall}" />
+            </ruleList> 
+        </registryGet>
+
         <!-- WIN : Check Previous Installation of libpq-->
         <actionGroup>
             <actionList>
@@ -111,6 +153,7 @@
                 </registryGet>
             </actionList>
             <ruleList>
+                <isFalse value="${IsOldInstall}" />
                 <compareText>
                     <logic>equals</logic>
                     <text>${platform_name}</text>
@@ -129,6 +172,7 @@
                 </registryGet> 
             </actionList>
             <ruleList>
+                <isFalse value="${IsOldInstall}" />
                 <compareText>
                     <logic>does_not_equal</logic>
                     <text>${libpqVersion}</text>
@@ -141,6 +185,13 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <!-- Delete the old registry entry -->
+        <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\EnterpriseDB\libpq64" >
+            <ruleList>
+                <isTrue value="${IsOldInstall}" />
+            </ruleList>
+        </registryDelete> 
 		
         <actionGroup>
             <actionList>
