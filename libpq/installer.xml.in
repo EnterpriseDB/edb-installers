@@ -63,16 +63,14 @@
         </setInstallerVariable>
     </preShowHelpActionList>
   
-    <preBuildActionList>	
+    <initializationActionList>
+
         <setInstallerVariable name="originalplatform" value="${platform_name}"/>
         <setInstallerVariable name="originalplatform" value="windows-x64">
           <ruleList>
               <platformTest type="windows-x64"/>
           </ruleList>
-      </setInstallerVariable>
-    </preBuildActionList>	
-    <initializationActionList>
-
+        </setInstallerVariable>   
         <!-- Abort Installation as trying to  run a 64-bit installer on 32-bit machine -->
         <throwError>
           <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -121,6 +119,7 @@
     <preInstallationActionList>
 
         <setInstallerVariable name="libpqVersion" value="" />
+        <setInstallerVariable name="iLocation" value="" />
         <setInstallerVariable name="IsOldInstall" value="0" />
 
         <!-- For Old installation till 8.4.2 -->
@@ -137,7 +136,7 @@
         <registryGet>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\EnterpriseDB\libpq64</key>
             <name>Location</name>
-            <variable>installdir</variable>
+            <variable>iLocation</variable>
             <ruleList>
                 <isTrue value="${IsOldInstall}" />
             </ruleList> 
@@ -168,7 +167,7 @@
                 <registryGet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\libpq64</key>
                     <name>Location</name>
-                    <variable>installdir</variable>
+                    <variable>iLocation</variable>
                 </registryGet> 
             </actionList>
             <ruleList>
@@ -193,6 +192,12 @@
             </ruleList>
         </registryDelete> 
 		
+        <setInstallerVariable name="installdir" value="${iLocation}" >
+            <ruleList>
+                <compareText text="${iLocation}" logic="does_not_equal" value="" />
+            </ruleList>
+        </setInstallerVariable>   
+
         <actionGroup>
             <actionList>
 			
