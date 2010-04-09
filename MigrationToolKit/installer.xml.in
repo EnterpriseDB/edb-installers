@@ -163,6 +163,10 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
+
+        <!-- Registration Pre-Installation Action List -->
+        <include file="staging/registration_initialization.xml"/>
+
     </initializationActionList>
 	
     <!-- Preinstallation actions -->
@@ -407,6 +411,10 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <!-- Custome Page for Registration -->
+        <include file="staging/registration_preinstallation.xml"/>
+
     </preInstallationActionList>
 	
     <!-- Post installation actions -->
@@ -493,6 +501,10 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </registrySet>
+
+        <!-- Custome Page for Registration -->
+        <include file="staging/registration_postinstallation.xml"/>
+
     </postInstallationActionList>
 	
     <!-- preUninstallation actions -->
@@ -534,6 +546,10 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <!-- Custome Page for Registration -->
+        <include file="staging/registration_preuninstallation.xml"/>
+
     </preUninstallationActionList>
 	
     <!-- Components -->
@@ -632,9 +648,18 @@
                 </folder>
             </folderList>
         </component>
+
+        <!-- Custome Page for Registration -->
+        <include file="staging/registration_component.xml"/>
+
     </componentList>
 	
     <parameterList>
+
+        <!-- Custome Page for Registration -->
+        <include file="staging/registration_already_registered_parameter.xml"/>
+        <include file="staging/registration_authentication_parameter.xml"/>
+
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <stringParameter name="jrehome" cliOptionName="jrehome" default="" ask="0" cliOptionShow="0"/>

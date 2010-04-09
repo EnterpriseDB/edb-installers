@@ -3,16 +3,16 @@
   <shortName>tuningwizard</shortName>
   <fullName>TuningWizard</fullName>
   <version>PG_VERSION_TUNINGWIZARD-PG_BUILDNUM_TUNINGWIZARD</version>
-  
+
   <!-- These options are used on Windows -->
   <startMenuGroupName>${branding}</startMenuGroupName>
-  
+
   <!-- Product Specific Options -->
   <productDisplayName>EnterpriseDB ${product_fullname} ${productVersion}</productDisplayName>
   <productComments>EnterpriseDB ${product_fullname} ${productVersion}</productComments>
   <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
   <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
-  
+
   <!-- The options are used for RPM registration -->
   <description>${product_fullname} ${productVersion} by EnterpriseDB</description>
   <summary>${msg(install.summary)}</summary>
@@ -51,14 +51,14 @@
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </setInstallerVariable>
-    
+
     <!-- LIN/LIN-X64 : Set the default installation directory -->
     <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgreSQL/EnterpriseDB-TuningWizard">
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
       </ruleList>
     </setInstallerVariable>
-    
+
     <!-- WIN : Set the default installation directory -->
     <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgreSQL\EnterpriseDB-TuningWizard">
       <ruleList>
@@ -75,11 +75,11 @@
       </ruleList>
     </setInstallerVariable>
   </preBuildActionList>
-  
+
   <!-- Initialisation actions -->
   <initializationActionList>
     <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_TUNINGWIZARD" />
-  
+
     <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
     <throwError customErrorMessage="${msg(platform.not.match)}" text="Unknown Error">
       <ruleList>
@@ -87,24 +87,24 @@
         <compareText text="${originalplatform}" value="linux-x32"/>
       </ruleList>
     </throwError>
-    
+
     <!-- Set the TuningWizard version(if exists) -->
     <setInstallerVariable name="TuningWizardVersion" value="" persist="0"/>
-    
+
     <!-- MAC : Set the default installation directory -->
     <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgreSQL/EnterpriseDB-TuningWizard">
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </setInstallerVariable>
-    
+
     <!-- LIN/LIN-X64 : Set the default installation directory -->
     <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgreSQL/EnterpriseDB-TuningWizard">
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
       </ruleList>
     </setInstallerVariable>
-    
+
     <!-- WIN : Set the default installation directory -->
     <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgreSQL\EnterpriseDB-TuningWizard">
       <ruleList>
@@ -112,16 +112,15 @@
       </ruleList>
     </setInstallerVariable>
 
-    <!-- Set Proxy values from environement variables if any -->
-    <setInstallerVariable name="proxyHost" value="${env(PROXY_HOST)}" />
-    <setInstallerVariable name="proxyPort" value="${env(PROXY_PORT)}" />
+    <!-- Registration Pre-Installation Action List -->
+    <include file="staging/registration_initialization.xml"/>
 
   </initializationActionList>
-  
+
   <!-- Preinstallation actions -->
   <preInstallationActionList>
-  
-    <setInstallerVariable name="iExistingEmail" persist="0" value=""/>
+
+    <createDirectory path="${system_temp_directory}/tuningwizard"/>
 
     <!-- LIN & MAC: Check Previous Installation of TuningWizard -->
     <actionGroup>
@@ -137,7 +136,6 @@
         <actionGroup>
           <actionList>
             <iniFileGet file="/etc/postgres-reg.ini" section="TuningWizard" key="InstallationDirectory" variable="installdir"/>
-            <iniFileGet file="/etc/postgres-reg.ini" section="TuningWizard" key="Username" variable="iExistingEmail"/>
           </actionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${TuningWizardVersion}" value=""/>
@@ -148,7 +146,7 @@
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
       </ruleList>
     </actionGroup>
-    
+
     <!-- WIN: Check Previous Installation of TuningWizard -->
     <actionGroup>
       <actionList>
@@ -159,7 +157,6 @@
         <actionGroup>
           <actionList>
             <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\TuningWizard" name="InstallationDirectory" variable="installdir"/>
-            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\TuningWizard" name="Username" variable="iExistingEmail"/>
           </actionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${TuningWizardVersion}" value=""/>
@@ -170,11 +167,11 @@
         <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
     </actionGroup>
-    
-    <!-- If there appears to be an existing installation, with no Branding value. --> 
+
+    <!-- If there appears to be an existing installation, with no Branding value. -->
     <!-- force the default value. Otherwise, set the branding to whatever we read, -->
     <!-- or, set the default -->
-    
+
     <!-- Existing, old install (version, but no branding) -->
     <setInstallerVariable name="branding" persist="0" value="PostgreSQL">
       <ruleList>
@@ -189,32 +186,15 @@
         <compareText logic="does_not_equal" text="${iBranding}" value=""/>
       </ruleList>
     </setInstallerVariable>
-    
+
     <!-- New install, nothing set on the command line -->
     <setInstallerVariable name="branding" persist="0" value="Postgres Plus Add-ons">
       <ruleList>
         <compareText logic="equals" text="${branding}" value=""/>
       </ruleList>
     </setInstallerVariable>
-  
-    <logMessage text="Using branding: ${branding}"/>
 
-    <!-- Existing, old install (version found, but no Username and not provided on the command-line) -->
-    <setInstallerVariable name="existingEmail" persist="0" value="">
-      <ruleList>
-        <compareText logic="does_not_equal" text="${TuningWizardVersion}" value=""/>
-        <compareText logic="equals" text="${iExistingEmail}" value=""/>
-        <compareText logic="does_not_equal" text="${existingEmail}" value=""/>
-      </ruleList>
-    </setInstallerVariable>
- 
-    <!-- Existing install with Username (ignore command-line) -->
-    <setInstallerVariable name="existingEmail" persist="0" value="${iExistingEmail}">
-      <ruleList>
-        <compareText logic="does_not_equal" text="${TuningWizardVersion}" value=""/>
-        <compareText logic="does_not_equal" text="${iExistingEmail}" value=""/>
-      </ruleList>
-    </setInstallerVariable>
+    <logMessage text="Using branding: ${branding}"/>
 
     <!-- Setting the installation type as upgrade if previous installation found -->
     <actionGroup>
@@ -226,154 +206,12 @@
       </ruleList>
     </actionGroup>
 
-    <!-- LIN/LIN-X64/MAC: Unpack existing-enterprisedb-mail authentication scripts -->
     <actionGroup>
       <actionList>
-        <createDirectory path="${system_temp_directory}/tuningwizard"/>
-        <!-- Lin: Unpack scripts and required libraries -->
-        <actionGroup>
-          <actionList>
-            <unpackFile
-              component="userValidation"
-              destination="${system_temp_directory}/tuningwizard/sysinfo.sh"
-              folder="scriptslinux"
-              origin="sysinfo.sh"/>
-            <unpackFile
-              component="userValidation"
-              destination="${system_temp_directory}/tuningwizard/validateUserClient.o"
-              folder="scriptslinux"
-              origin="validateUserClient.o"/>
-            <unpackDirectory
-              component="userValidation"
-              destination="${system_temp_directory}/tuningwizard/"
-              folder="scriptslinux"
-              origin="lib"/>
-          </actionList>
-          <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="linux"/>
-          </ruleList>
-        </actionGroup>
-        <!-- Lin-x64: Unpack scripts and required libraries -->
-        <actionGroup>
-          <actionList>
-            <unpackFile
-              component="userValidation"
-              destination="${system_temp_directory}/tuningwizard/sysinfo.sh"
-              folder="scriptslinux-x64"
-              origin="sysinfo.sh"/>
-            <unpackFile
-              component="userValidation"
-              destination="${system_temp_directory}/tuningwizard/validateUserClient.o"
-              folder="scriptslinux-x64"
-              origin="validateUserClient.o"/>
-            <unpackDirectory
-              component="userValidation"
-              destination="${system_temp_directory}/tuningwizard/"
-              folder="scriptslinux-x64"
-              origin="lib"/>
-          </actionList>
-          <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
-          </ruleList>
-        </actionGroup>
-        <!-- MAC: Unpack scripts and required libraries -->
-        <actionGroup>
-          <actionList>
-            <unpackFile
-              component="userValidation"
-              destination="${system_temp_directory}/tuningwizard/sysinfo.sh"
-              folder="scriptsosx"
-              origin="sysinfo.sh"/>
-            <unpackFile
-              component="userValidation"
-              destination="${system_temp_directory}/tuningwizard/validateUserClient.o"
-              folder="scriptsosx"
-              origin="validateUserClient.o"/>
-          </actionList>
-          <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="osx"/>
-          </ruleList>
-        </actionGroup>
-
-        <!-- Use script to generate the required information, while validating email -->
-        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/tuningwizard/lib"/>
-        <!-- Generate UUID -->
-        <setInstallerVariableFromScriptOutput name="uuid_val" showMessageOnError="0" exec="uuidgen" abortOnError="0"/>
-        <!-- User predefined value, if uuidgen does not exist -->
-        <setInstallerVariable name="uuid_val" value="16a874e6-241e-44ae-b27e-74aecded209a">
-          <ruleList>
-            <compareText value="" logic="equals" text="${uuid_val}"/>
-          </ruleList>
-        </setInstallerVariable>
-        <!-- run sysinfo.sh -->
-        <runProgram program="${system_temp_directory}/tuningwizard/sysinfo.sh"
-                    workingDirectory="${system_temp_directory}/tuningwizard"
-                    showMessageOnError="0"
-                    abortOnError="0"/>
-        <propertiesFileGet
-          file="${system_temp_directory}/tuningwizard/sysinfo.properties"
-          key="PROCESSOR_ARCH"
-          variable="processor_arch"/>
-        <propertiesFileGet
-          file="${system_temp_directory}/tuningwizard/sysinfo.properties"
-          key="TOTAL_MEM_IN_GB"
-          variable="total_mem_in_gb"/>
-        <propertiesFileGet
-          file="${system_temp_directory}/tuningwizard/sysinfo.properties"
-          key="OS"
-          variable="os"/>
-        <propertiesFileGet
-          file="${system_temp_directory}/tuningwizard/sysinfo.properties"
-          key="NUMBER_OF_PROCESSORS"
-          variable="number_of_processors"/>
-        <propertiesFileGet
-          file="${system_temp_directory}/tuningwizard/sysinfo.properties"
-          key="PROCESSOR_TYPE"
-          variable="processor_type"/>
-        <propertiesFileGet
-          file="${system_temp_directory}/tuningwizard/sysinfo.properties"
-          key="LANGUAGE"
-          variable="language"/>
-        <propertiesFileGet
-          file="${system_temp_directory}/tuningwizard/sysinfo.properties"
-          key="SHARED_MEMORY_IN_MB"
-          variable="shared_memory_in_mb"/>
-
-        <stringModify text="${processor_arch}" variable="processor_arch" logic="trim"/>
-        <stringModify text="${total_mem_in_gb}" variable="total_mem_in_gb" logic="trim"/>
-        <stringModify text="${os}" variable="os" logic="trim"/>
-        <stringModify text="${number_of_processors}" variable="number_of_processors" logic="trim"/>
-        <stringModify text="${processor_type}" variable="processor_type" logic="trim"/>
-        <stringModify text="${language}" variable="language" logic="trim"/>
-        <stringModify text="${shared_memory_in_mb}" variable="shared_memory_in_mb" logic="trim"/>
-
-        <!-- The sysinfo.sh script can not find the shared memory/total memory info -->
-        <!-- Because, bc (The arbitrary precision calculator) could not be found on the system -->
-        <setInstallerVariable name="shared_memory_in_mb" value="0">
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
-          <ruleList>
-            <stringTest text="${shared_memory_in_mb}" type="empty"/>
-            <stringTest text="${shared_memory_in_mb}" type="not_digit"/>
-          </ruleList>
-        </setInstallerVariable>
-        <setInstallerVariable name="total_mem_in_gb" value="0">
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
-          <ruleList>
-            <stringTest text="${total_mem_in_gb}" type="empty"/>
-            <stringTest text="${total_mem_in_gb}" type="not_digit"/>
-          </ruleList>
-        </setInstallerVariable>
-      </actionList>
-      <ruleList>
-        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-      </ruleList>
-    </actionGroup>
-    <actionGroup>
-      <actionList>
-        <createDirectory path="${system_temp_directory}\tuningwizard"/>
         <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{7299052b-02a4-4627-81f2-1818da5d550d}" name="DisplayVersion" variable="VC_REDIST_2005_VERSION"/>
         <actionGroup>
           <actionList>
+            <createDirectory path="${system_temp_directory}\tuningwizard"/>
             <unpackFile component="vcredist"
                         destination="${system_temp_directory}\vcredist_x86.exe"
                         folder="vcredistwindows"
@@ -388,123 +226,20 @@
             <compareText logic="equals" text="${VC_REDIST_2005_VERSION}" value=""/>
           </ruleList>
         </actionGroup>
-        <unpackFile
-          component="userValidation"
-          destination="${system_temp_directory}\tuningwizard\validateUserClient.exe"
-          folder="scriptswindows"
-          origin="validateUserClient.exe"/>
-        <unpackFile
-          component="userValidation"
-          destination="${system_temp_directory}\tuningwizard\dbserver_guid.exe"
-          folder="scriptswindows"
-          origin="dbserver_guid.exe"/>
-        <setInstallerVariableFromScriptOutput
-          name="uuid_val"
-          showMessageOnError="0"
-          exec="${system_temp_directory}\tuningwizard\dbserver_guid.exe"
-          abortOnError="0"/>
-        <setInstallerVariableFromRegEx
-          name="uuid_val"
-          text="${uuid_val}"
-          pattern="^dbser_guid=([^\S]*)$"
-          substitution="\1"
-          abortOnError="0"
-          showMessageOnError="0">
-          <ruleList>
-            <compareText logic="does_not_equal" text="${uuid_val}" value=""/>
-          </ruleList>
-        </setInstallerVariableFromRegEx>
-        <setInstallerVariable name="uuid_val" value="16a874e6-241e-44ae-b27e-74aecded209a">
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
-          <ruleList>
-            <compareText text="${uuid_val}" logic="equals" value=""/>
-            <regExMatch text="${uuid_val}" logic="does_not_match" pattern="^([A-Fa-f0-9\-]*)$"/>
-          </ruleList>
-        </setInstallerVariable>
       </actionList>
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
     </actionGroup>
-    <actionGroup>
-      <actionList>
-        <throwError text="${msg(emailpassword.not.provided)}" abortOnError="1">
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
-          <ruleList>
-            <compareText logic="equals" text="${existingEmail}" value=""/>
-            <compareText logic="equals" text="${existingPassword}" value=""/>
-          </ruleList>
-        </throwError>
-        <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;">
-          <ruleList>
-            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-          </ruleList>
-        </logMessage>
-        <setInstallerVariableFromScriptOutput
-          customErrorMessage="${msg(validatinguser.ws.error)}"
-          exec="${system_temp_directory}/tuningwizard/validateUserClient.o"
-          execArgs="&quot;${uuid_val}&quot; &quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
-          name="ws_existinguser_result"
-          abortOnError="0"
-          workingDirectory="${system_temp_directory}/tuningwizard">
-          <ruleList>
-            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-          </ruleList>
-        </setInstallerVariableFromScriptOutput>
-        <logMessage text="Sending parameter: &quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${uuid_val}&quot;">
-          <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="windows"/>
-          </ruleList>
-        </logMessage>
 
-        <setInstallerVariableFromScriptOutput
-          customErrorMessage="${msg(validatinguser.ws.error)}"
-          exec="${system_temp_directory}\tuningwizard\validateUserClient.exe"
-          execArgs="&quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${uuid_val}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
-          name="ws_existinguser_result"
-          abortOnError="0"
-          workingDirectory="${system_temp_directory}\tuningwizard">
-          <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="windows"/>
-          </ruleList>
-        </setInstallerVariableFromScriptOutput>
-        <stringModify text="${ws_existinguser_result}" variable="ws_existinguser_result" logic="trim"/>
-        <throwError abortOnError="1" text="${msg(ws.email.not.authenticated)}">
-          <ruleList>
-            <compareText logic="equals" text="${ws_existinguser_result}" value="1"/>
-          </ruleList>
-        </throwError>
-        <throwError abortOnError="1" text="${msg(ws.email.not.validated)}">
-          <ruleList>
-            <compareText logic="equals" text="${ws_existinguser_result}" value="2"/>
-          </ruleList>
-        </throwError>
-        <throwError abortOnError="1" text="${msg(ws.email.already.exists)}">
-          <ruleList>
-            <compareText logic="equals" text="${ws_existinguser_result}" value="3"/>
-          </ruleList>
-        </throwError>
-        <throwError abortOnError="1" text="${msg(ws.exception.from.server)}">
-          <ruleList>
-            <compareText logic="equals" text="${ws_existinguser_result}" value="4"/>
-          </ruleList>
-        </throwError>
-        <throwError abortOnError="1" text="${msg(ws.internet.not.connected)}">
-          <ruleList>
-            <compareText logic="equals" text="${ws_existinguser_result}" value=""/>
-          </ruleList>
-        </throwError>
-      </actionList>
-      <ruleList>
-        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-        <compareText logic="equals" text="${iExistingEmail}" value=""/>
-      </ruleList>
-    </actionGroup>
+    <!-- Registration Pre-Installation Action List -->
+    <include file="staging/registration_preinstallation.xml"/>
+
   </preInstallationActionList>
-  
+
   <!-- Post installation actions -->
   <postInstallationActionList>
-  
+
     <!-- Write the TuningWizard Version to INI File -->
     <actionGroup>
       <actionList>
@@ -512,26 +247,24 @@
         <iniFileSet file="/etc/postgres-reg.ini" section="TuningWizard" key="InstallationDirectory" value="${installdir}"/>
         <iniFileSet file="/etc/postgres-reg.ini" section="TuningWizard" key="Version" value="${product_version}"/>
         <iniFileSet file="/etc/postgres-reg.ini" section="TuningWizard" key="Branding" value="${branding}"/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="TuningWizard" key="Username" value="${existingEmail}"/>
       </actionList>
       <ruleList>
         <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
       </ruleList>
     </actionGroup>
-    
+
     <actionGroup>
       <actionList>
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\TuningWizard" name="Description" value="${msg(install.summary)}"/>
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\TuningWizard" name="InstallationDirectory" value="${installdir}"/>
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\TuningWizard" name="Version" value="${product_version}"/>
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\TuningWizard" name="Branding" value="${branding}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\TuningWizard" name="Username" value="${existingEmail}"/>
       </actionList>
       <ruleList>
         <compareText text="${platform_name}" logic="equals" value="windows"/>
       </ruleList>
     </actionGroup>
-    
+
     <!-- LIN & MAC: Setting the installation directory in the launch script -->
     <actionGroup>
       <actionList>
@@ -555,7 +288,7 @@
         <compareText text="${platform_name}" logic="contains" value="linux"/>
       </ruleList>
     </actionGroup>
-    
+
     <!-- LIN & MAC: Create Menu Shortcuts -->
     <runProgram
       program="${installdir}/installer/TuningWizard/createshortcuts.sh"
@@ -568,11 +301,15 @@
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
       </ruleList>
     </runProgram>
+
+    <!-- Registration Code -->
+    <include file="staging/registration_postinstallation.xml"/>
+
   </postInstallationActionList>
-  
+
   <!-- preUninstallation actions -->
   <preUninstallationActionList>
-  
+
     <!-- Unsetting the TuningWizard values in the ini file -->
     <actionGroup>
       <actionList>
@@ -580,13 +317,12 @@
         <iniFileSet file="/etc/postgres-reg.ini" section="TuningWizard" key="InstallationDirectory" value=""/>
         <iniFileSet file="/etc/postgres-reg.ini" section="TuningWizard" key="Version" value=""/>
         <iniFileSet file="/etc/postgres-reg.ini" section="TuningWizard" key="Branding" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="TuningWizard" key="Username" value=""/>
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
       </ruleList>
     </actionGroup>
-    
+
     <!-- LIN : Remove Menu shortcuts -->
     <runProgram
       program="${installdir}/installer/TuningWizard/removeshortcuts.sh"
@@ -598,21 +334,24 @@
         <compareText logic="contains" text="${platform_name}" value="linux"/>
       </ruleList>
     </runProgram>
-    
+
     <!-- MAC : Remove Menu shortcuts -->
     <deleteFile path="/Applications/${branding}/Tuning Wizard.app">
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </deleteFile>
+
+    <!-- Registration Code -->
+    <include file="staging/registration_preuninstallation.xml"/>
   </preUninstallationActionList>
-  
+
   <!-- finalPage actions -->
   <finalPageActionList>
     <launchBrowser url="http://www.enterprisedb.com/installer/tuning.do"
                    progressText="${msg(Installer.Installation.Finished.Visit.Us)}"/>
   </finalPageActionList>
-  
+
   <!-- Components -->
   <componentList>
     <component>
@@ -622,7 +361,7 @@
       <selected>1</selected>
       <show>1</show>
       <folderList>
-      
+
         <!-- LIN: Program files -->
         <folder>
           <description>Program Files</description>
@@ -660,7 +399,7 @@
             </distributionDirectory>
           </distributionFileList>
         </folder>
-        
+
         <!-- LIN-X64: Program files -->
         <folder>
           <description>Program Files</description>
@@ -698,7 +437,7 @@
             </distributionDirectory>
           </distributionFileList>
         </folder>
-        
+
         <!-- MAC: Program files -->
         <folder>
           <description>Program Files</description>
@@ -733,7 +472,7 @@
             </distributionDirectory>
           </distributionFileList>
         </folder>
-        
+
         <!-- WIN: Program files -->
         <folder>
           <description>Program Files</description>
@@ -750,11 +489,11 @@
           </distributionFileList>
         </folder>
       </folderList>
-      
+
       <!-- WIN: Start Menu -->
       <startMenuShortcutList>
         <startMenuShortcut>
-        
+
           <!-- Launch TuningWizard -->
           <comment>EnterpriseDB Tuning Wizard</comment>
           <name>Tuning Wizard</name>
@@ -781,232 +520,14 @@
             </folder>
         </folderList>
     </component>
-    <component>
-      <name>userValidation</name>
-      <description>User Validation Scripts</description>
-      <canBeEdited>0</canBeEdited>
-      <selected>0</selected>
-      <show>0</show>
-      <folderList>
-        <!-- LIN: Program files -->
-        <folder>
-          <description>Scripts</description>
-          <destination>${system_temp_directory}/tuningwizard</destination>
-          <name>scriptslinux</name>
-          <platforms>linux</platforms>
-          <distributionFileList>
-            <distributionFile origin="staging/linux/UserValidation/validateUserClient.o"/>
-            <distributionFile origin="staging/linux/UserValidation/sysinfo.sh"/>
-            <distributionDirectory origin="staging/linux/UserValidation/lib"/>
-          </distributionFileList>
-        </folder>
-        <!-- LIN-X64: Program files -->
-        <folder>
-          <description>Scripts</description>
-          <destination>${system_temp_directory}/tuningwizard</destination>
-          <name>scriptslinux-x64</name>
-          <platforms>linux-x64</platforms>
-          <distributionFileList>
-            <distributionFile origin="staging/linux-x64/UserValidation/validateUserClient.o"/>
-            <distributionFile origin="staging/linux-x64/UserValidation/sysinfo.sh"/>
-            <distributionDirectory origin="staging/linux-x64/UserValidation/lib"/>
-          </distributionFileList>
-        </folder>
-        
-        <!-- MAC: Program files -->
-        <folder>
-          <description>Scripts</description>
-          <destination>${system_temp_directory}/tuningwizard</destination>
-          <name>scriptsosx</name>
-          <platforms>osx</platforms>
-          <distributionFileList>
-            <distributionFile origin="staging/osx/UserValidation/validateUserClient.o"/>
-            <distributionFile origin="staging/osx/UserValidation/sysinfo.sh"/>
-          </distributionFileList>
-        </folder>
-
-        <!-- WIN: Program files -->
-        <folder>
-          <description>Scripts</description>
-          <destination>${system_temp_directory}/tuningwizard</destination>
-          <name>scriptswindows</name>
-          <platforms>windows</platforms>
-          <distributionFileList>
-            <distributionFile origin="staging/windows/UserValidation/dbserver_guid.exe"/>
-            <distributionFile origin="staging/windows/UserValidation/validateUserClient.exe"/>
-          </distributionFileList>
-        </folder>
-      </folderList>
-    </component>
+    <include file="staging/registration_component.xml"/>
   </componentList>
+
   <parameterList>
-    <parameterGroup
-      name="registration"
-      title="${msg(registration.title.value)}"
-      explanation="${msg(registration.explanation.value)}">
-      <parameterList>
-        <choiceParameter
-          name="alreadyRegistered"
-          default="0"
-          width="30"
-          allowEmptyValue="0"
-          cliOptionShow="0"
-          displayType="radiobuttons">
-          <optionList>
-            <option
-              text="${msg(registration.existingemail.no)}"
-              value="0"/>
-            <option
-              text="${msg(registration.existingemail.yes)}"
-              value="1"/>
-          </optionList>
-        </choiceParameter>
-      </parameterList>
-      <!-- Open registration page, if not already registered user -->
-      <postShowPageActionList>
-        <launchBrowser url="http://www.enterprisedb.com/create-promo-account.do?type=tuning"
-                       abortOnError="1">
-          <ruleList>
-              <isFalse value="${alreadyRegistered}"/>
-          </ruleList>
-        </launchBrowser>
-      </postShowPageActionList>
-      <!-- Check if upgradation is done on older version of TuningWizard,
-           which does not have this authentication process -->
-      <ruleList>
-         <compareText logic="equals" text="${iExistingEmail}" value=""/>
-      </ruleList>
-    </parameterGroup>
-    <parameterGroup
-      name="userAuthenticationPage"
-      title="${msg(existingemail.authentication.title.value)}">
-      <parameterList>
-        <labelParameter
-          name="existingemail_authentication_lbl"
-          explanation="${msg(existingemail.authentication.explanation.value)}"/>
-        <stringParameter
-          name="existingEmail"
-          cliOptionName="existing-user"
-          width="30"
-          ask="1"
-          description="${msg(userAuth.email.value)}"
-          allowEmptyValue="1"
-          cliOptionShow="1">
-          <validationActionList>
-            <throwError text="${msg(error.invalid.email.value)}">
-              <ruleList>
-                <regExMatch logic="does_not_match" text="${existingEmail}">
-                  <pattern>^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$</pattern>
-                </regExMatch>
-              </ruleList>
-            </throwError>
-          </validationActionList>
-        </stringParameter>
-        <passwordParameter
-          name="existingPassword"
-          width="30"
-          cliOptionName="existing-password"
-          ask="1"
-          description="${msg(userAuth.password.value)}"
-          allowEmptyValue="1"
-          askForConfirmation="0"
-          cliOptionShow="1">
-          <validationActionList>
-            <throwError text="${msg(error.invalid.password.value)}">
-              <ruleEvaluationLogic>or</ruleEvaluationLogic>
-              <ruleList>
-                <stringTest text="${existingPassword}" type="empty"/>
-                <regExMatch logic="matches" pattern="\s+" text="${existingPassword}"/>
-              </ruleList>
-            </throwError>
-          </validationActionList>
-        </passwordParameter>
-      </parameterList>
-      <!-- Validate entered email & password -->
-      <postShowPageActionList>
-        <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;">
-          <ruleList>
-            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-          </ruleList>
-        </logMessage>
-        <setInstallerVariableFromScriptOutput
-          customErrorMessage="${msg(validatinguser.ws.error)}"
-          exec="${system_temp_directory}/tuningwizard/validateUserClient.o"
-          execArgs="&quot;${uuid_val}&quot; &quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
-          name="ws_existinguser_result"
-          abortOnError="0"
-          workingDirectory="${system_temp_directory}/tuningwizard">
-          <ruleList>
-            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-          </ruleList>
-        </setInstallerVariableFromScriptOutput>
-        <logMessage text="Sending parameter:&quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${uuid_val}&quot;">
-          <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="windows"/>
-          </ruleList>
-        </logMessage>
-        <setInstallerVariableFromScriptOutput
-          customErrorMessage="${msg(validatinguser.ws.error)}"
-          exec="${system_temp_directory}\tuningwizard\validateUserClient.exe"
-          execArgs="&quot;TuningWizard&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${uuid_val}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
-          name="ws_existinguser_result"
-          abortOnError="0"
-          workingDirectory="${system_temp_directory}\tuningwizard">
-          <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="windows"/>
-          </ruleList>
-        </setInstallerVariableFromScriptOutput>
-        <throwError abortOnError="0" text="${msg(ws.email.not.authenticated)}">
-          <ruleList>
-            <compareText logic="equals" text="${ws_existinguser_result}" value="1"/>
-          </ruleList>
-        </throwError>
-        <throwError abortOnError="0" text="${msg(ws.email.not.validated)}">
-          <ruleList>
-            <compareText logic="equals" text="${ws_existinguser_result}" value="2"/>
-          </ruleList>
-        </throwError>
-        <throwError abortOnError="0" text="${msg(ws.email.already.exists)}">
-          <ruleList>
-            <compareText logic="equals" text="${ws_existinguser_result}" value="3"/>
-          </ruleList>
-        </throwError>
-        <throwError abortOnError="0" text="${msg(ws.exception.from.server)}">
-          <ruleList>
-            <compareText logic="equals" text="${ws_existinguser_result}" value="4"/>
-          </ruleList>
-        </throwError>
-        <throwError abortOnError="0" text="${msg(ws.internet.not.connected)}">
-          <ruleList>
-            <compareText logic="equals" text="${ws_existinguser_result}" value=""/>
-          </ruleList>
-        </throwError>
+    <!-- Registration Parameters -->
+    <include file="staging/registration_already_registered_parameter.xml"/>
+    <include file="staging/registration_authentication_parameter.xml"/>
 
-        <setInstallerVariable name="stay_on_this_page" value="true"/>
-        <setInstallerVariable name="stay_on_this_page" value="false">
-          <ruleList>
-            <compareText logic="equals" text="${ws_existinguser_result}" value="0"/>
-          </ruleList>
-        </setInstallerVariable>
-         <setInstallerVariable name="stay_on_this_page" value="false">
-          <ruleList>
-            <compareText logic="equals" text="${ws_existinguser_result}" value="00"/>
-            <isTrue value="${ws_existinguser_result}"/>
-          </ruleList>
-        </setInstallerVariable>
-
-        <setInstallerVariable name="next_page" value="userAuthenticationPage">
-          <ruleList>
-            <isTrue value="${stay_on_this_page}"/>
-          </ruleList>
-        </setInstallerVariable>
-      </postShowPageActionList>
-      <!-- Check if upgradation is done on older version of TuningWizard,
-           which does not have this authentication process -->
-      <ruleList>
-         <compareText logic="equals" text="${iExistingEmail}" value=""/>
-      </ruleList>
-    </parameterGroup>
     <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
     <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
     <!-- Install Directory -->
@@ -1026,7 +547,7 @@
           <mustBeWritable>yes</mustBeWritable>
           <mustExist>0</mustExist>
           <width>40</width>
-          
+
           <!-- Validating whether installdir is empty -->
           <validationActionList>
             <actionGroup>
@@ -1039,7 +560,7 @@
               </ruleList>
             </actionGroup>
           </validationActionList>
-          
+
           <!-- Validating whether installdir contains whitespaces (Linux | Mac) -->
           <validationActionList>
             <actionGroup>
@@ -1054,7 +575,7 @@
                 <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
               </ruleList>
             </actionGroup>
-            
+
             <!-- Validating whether installdir is valid (Windows) -->
             <actionGroup>
               <actionList>
@@ -1075,7 +596,8 @@
       <ruleList>
         <compareText text="${TuningWizardVersion}" logic="equals" value=""/>
       </ruleList>
-   </parameterGroup> 
+    </parameterGroup>
+
     <!-- Explain that we're using an existing installation directory -->
     <labelParameter>
       <name>upgrade</name>

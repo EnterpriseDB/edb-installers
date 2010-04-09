@@ -218,6 +218,10 @@
         <setInstallerVariable name="defaultpphqadmindb" value="pphq"/>
         <setInstallerVariable name="agentServiceAccount" value=""/>
         <setInstallerVariable name="serviceAccount" value=""/>
+
+        <!-- Registration Pre-Installation Action List -->
+        <include file="staging/registration_initialization.xml"/>
+
     </initializationActionList>
     <preInstallationActionList>
         <setInstallerVariable name="project.parameter(jrehome).ask" value="0"/>
@@ -738,6 +742,8 @@
             </ruleList>
         </actionGroup>
 
+        <include file="staging/registration_preinstallation.xml"/>
+
     </preInstallationActionList>
     <readyToInstallActionList>
         <!-- Use the bundled JRE, if no other has been specified -->
@@ -1250,6 +1256,7 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
+        <include file="staging/registration_postinstallation.xml"/>
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
@@ -1386,6 +1393,8 @@
             </ruleList>
         </actionGroup>
         <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ"/>
+
+        <include file="staging/registration_preuninstallation.xml"/>
 
     </preUninstallationActionList>
 
@@ -1642,8 +1651,13 @@
                 </startMenuShortcut>
             </startMenuShortcutList>
         </component>
+        <include file="staging/registration_component.xml"/>
     </componentList>
     <parameterList>
+        <!-- Registration Parameters -->
+        <include file="staging/registration_already_registered_parameter.xml"/>
+        <include file="staging/registration_authentication_parameter.xml"/>
+
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <stringParameter name="jrehome" cliOptionName="jrehome" default="" ask="1" cliOptionShow="1"/>
@@ -1664,67 +1678,72 @@
         </booleanParameter>
 
         <!-- Install Directory -->
-        <directoryParameter>
-            <name>installdir</name>
-            <description>Installer.Parameter.installdir.description</description>
-            <explanation>Installer.Parameter.installdir.explanation</explanation>
-            <value>${default_installdir}</value>
-            <default/>
-            <allowEmptyValue>0</allowEmptyValue>
-            <ask>yes</ask>
-            <cliOptionName>prefix</cliOptionName>
-            <mustBeWritable>yes</mustBeWritable>
-            <mustExist>0</mustExist>
-            <width>40</width>
+        <parameterGroup name="installationDirectory"
+                        description="Installer.Parameter.installdir.description"
+                        explanation="Installer.Parameter.installdir.explanation"
+                        title="${msg(pphq.installation.dir)}">
+            <parameterList>
+                <directoryParameter>
+                    <name>installdir</name>
+                    <value>${default_installdir}</value>
+                    <default/>
+                    <allowEmptyValue>0</allowEmptyValue>
+                    <ask>yes</ask>
+                    <cliOptionName>prefix</cliOptionName>
+                    <mustBeWritable>yes</mustBeWritable>
+                    <mustExist>0</mustExist>
+                    <width>40</width>
+                    <!-- Validating whether installdir is empty -->
+                    <validationActionList>
+                        <stringModify text="${installdir}" variable="installdir" logic="trim"/>
+                        <actionGroup>
+                            <actionList>
+                                <setInstallerVariable name="installdir" value="${default_installdir}" />
+                                <throwError>
+                                    <text>${msg(pphq.installdir.empty)}</text>
+                                </throwError>
+                            </actionList>
+                            <ruleList>
+                                <compareText text="${installdir}" logic="equals" value=""/>
+                            </ruleList>
+                        </actionGroup>
+                        <!-- Validating whether installdir is valid (linux/linux-x64/osx) -->
+                        <actionGroup>
+                            <actionList>
+                                <setInstallerVariable name="installdir" value="${default_installdir}" />
+                                <throwError text="${msg(pphq.installdir.error)}"/>
+                            </actionList>
+                            <ruleList>
+                               <regExMatch>
+                                   <text>${installdir}</text>
+                                   <logic>does_not_match</logic>
+                                   <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                               </regExMatch>
+                               <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                            </ruleList>
+                        </actionGroup>
+                        <!-- Validating whether installdir is valid (Windows) -->
+                        <actionGroup>
+                           <actionList>
+                             <setInstallerVariable name="installdir" value="${default_installdir}" />
+                             <throwError text="${msg(pphq.installdir.error)}"/>
+                           </actionList>
+                           <ruleList>
+                               <regExMatch>
+                                 <text>${installdir}</text>
+                                 <logic>does_not_match</logic>
+                                 <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
+                               </regExMatch>
+                               <compareText logic="equals" text="${platform_name}" value="windows"/>
+                           </ruleList>
+                         </actionGroup>
+                    </validationActionList>
+                </directoryParameter>
+            </parameterList>
             <ruleList>
                 <compareText text="${pphqVersion}" logic="equals" value=""/>
             </ruleList>
-            <!-- Validating whether installdir is empty -->
-            <validationActionList>
-                <stringModify text="${installdir}" variable="installdir" logic="trim"/>
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="installdir" value="${default_installdir}" />
-                        <throwError>
-                            <text>${msg(pphq.installdir.empty)}</text>
-                        </throwError>
-                    </actionList>
-                    <ruleList>
-                        <compareText text="${installdir}" logic="equals" value=""/>
-                    </ruleList>
-                </actionGroup>
-                <!-- Validating whether installdir is valid (linux/linux-x64/osx) -->
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="installdir" value="${default_installdir}" />
-                        <throwError text="${msg(pphq.installdir.error)}"/>
-                    </actionList>
-                    <ruleList>
-                       <regExMatch>
-                           <text>${installdir}</text>
-                           <logic>does_not_match</logic>
-                           <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
-                       </regExMatch>
-                       <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </actionGroup>
-                <!-- Validating whether installdir is valid (Windows) -->
-                <actionGroup>
-                   <actionList>
-                     <setInstallerVariable name="installdir" value="${default_installdir}" />
-                     <throwError text="${msg(pphq.installdir.error)}"/>
-                   </actionList>
-                   <ruleList>
-                       <regExMatch>
-                         <text>${installdir}</text>
-                         <logic>does_not_match</logic>
-                         <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
-                       </regExMatch>
-                       <compareText logic="equals" text="${platform_name}" value="windows"/>
-                   </ruleList>
-                 </actionGroup>
-            </validationActionList>
-        </directoryParameter>
+        </parameterGroup>
 
         <!-- Explain that we're using an existing installation directory -->
         <labelParameter>

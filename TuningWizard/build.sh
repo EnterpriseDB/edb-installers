@@ -133,6 +133,9 @@ _postprocess_TuningWizard() {
     _replace PG_VERSION_TUNINGWIZARD $PG_VERSION_TUNINGWIZARD installer.xml || _die "Failed to set the major version in the installer project file (TuningWizard/installer.xml)"
     _replace PG_BUILDNUM_TUNINGWIZARD $PG_BUILDNUM_TUNINGWIZARD installer.xml || _die "Failed to set the major version in the installer project file (TuningWizard/installer.xml)"
 
+    #_registration_postprocess(STAGING DIRECTORY, COMPONENT NAME, VERSION VARIABLE, INI, REGISTRY_PREFIX, REGISTRY_PREFIX_WIN, TEMP DIRECTORY, COMONENT TYPE)
+    _registration_postprocess "$WD/TuningWizard/staging" "Tuning Wizard" "TuningWizardVersion" "/etc/postgres-reg.ini" "TuningWizard" "TuningWizard" "tuningwizard" "tuning"
+
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
@@ -157,3 +160,4 @@ _postprocess_TuningWizard() {
         _postprocess_TuningWizard_windows || exit 1
     fi
 }
+
