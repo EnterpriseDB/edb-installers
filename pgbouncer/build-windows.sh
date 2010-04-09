@@ -163,7 +163,7 @@ _postprocess_pgbouncer_windows() {
     _replace "foodb =" "@@CON@@" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "logfile = pgbouncer.log" "logfile = @@LOGFILE@@" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "pidfile = pgbouncer.pid" "pidfile = @@PIDFILE@@" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"
-    _replace "listen_addr = 127.0.0.1" "listen_addr = @@LISTENADDR@@" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"
+    _replace "listen_addr = 127.0.0.1" "listen_addr = *" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "listen_port = 6432" "listen_port = @@LISTENPORT@@" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "auth_file = etc/userlist.txt" "auth_file = @@AUTHFILE@@" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "admin_users = user2, someadmin, otheradmin" "admin_users = @@ADMINUSERS@@" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"

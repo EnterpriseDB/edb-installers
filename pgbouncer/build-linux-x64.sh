@@ -94,7 +94,7 @@ _postprocess_pgbouncer_linux_x64() {
     _replace "foodb =" "@@CON@@" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "logfile = pgbouncer.log" "logfile = @@LOGFILE@@" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder" 
     _replace "pidfile = pgbouncer.pid" "pidfile = @@PIDFILE@@" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
-    _replace "listen_addr = 127.0.0.1" "listen_addr = @@LISTENADDR@@" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
+    _replace "listen_addr = 127.0.0.1" "listen_addr = *" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "listen_port = 6432" "listen_port = @@LISTENPORT@@" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder" 
     _replace "auth_file = etc/userlist.txt" "auth_file = @@AUTHFILE@@" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "admin_users = user2, someadmin, otheradmin" "admin_users = @@ADMINUSERS@@" staging/linux-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"

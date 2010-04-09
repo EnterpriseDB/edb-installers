@@ -99,6 +99,15 @@
               <compareText text="${platform_name}" value="linux"/>
           </ruleList>
       </setInstallerVariable>
+      <setInstallerVariable name="project.parameter(pgbouncerdetails).parameter(system_user).ask" value="0">
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+      </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
         <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
@@ -472,10 +481,6 @@
                                 <substitution>
                                     <pattern>@@CON@@</pattern>
                                     <value>${pgdbname} = host=${pghost} port=${pgport}</value>
-                                </substitution>
-                                <substitution>
-                                    <pattern>@@LISTENADDR@@</pattern>
-                                    <value>${client_ips}</value>
                                 </substitution>
                                 <substitution>
                                     <pattern>@@LISTENPORT@@</pattern>
@@ -1377,17 +1382,6 @@
           <default/>
           <parameterList>
     
-            <!-- Waiting for client request from IP(s) -->
-            <stringParameter>
-              <name>client_ips</name>
-              <description>Listening IP's (',' separated), * for all IPs</description>
-              <explanation></explanation>
-              <value/>
-              <default>*</default>
-              <allowEmptyValue>1</allowEmptyValue>
-              <width>40</width>
-            </stringParameter>
-      
             <!-- Listening Port(Default 6432) -->
             <stringParameter>
               <name>pgbouncer_port</name>
@@ -1436,7 +1430,6 @@
               <ruleList>
                 <compareText logic="equals" text="${system_user}" value=""/>
                 <compareText logic="equals" text="${pgbouncer_port}" value=""/>
-                <compareText logic="equals" text="${client_ips}" value=""/>
               </ruleList>
             </actionGroup>
             <throwError>
