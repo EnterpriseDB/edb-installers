@@ -1432,6 +1432,14 @@
                 <compareText logic="equals" text="${pgbouncer_port}" value=""/>
               </ruleList>
             </actionGroup>
+
+            <throwError>
+                <text>${msg(pgbouncer.system.user.error)}</text>
+                <ruleList>
+                  <compareText logic="equals" text="${system_user}" value="root"/>
+                </ruleList>
+            </throwError> 
+                
             <throwError>
                 <text>${msg(pgbouncer.port.error)}</text>
                 <ruleList>
