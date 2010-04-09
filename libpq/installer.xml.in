@@ -46,7 +46,23 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
-	
+  
+    <preShowHelpActionList>
+        <!-- WIN : Set the default installation directory -->
+        <setInstallerVariable>
+            <name>default_installdir</name>
+            <persist>1</persist>
+            <value>${platform_install_prefix}\PostgreSQL\libpq64</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+    </preShowHelpActionList>
+  	
     <initializationActionList>
 	    <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>  
 	
