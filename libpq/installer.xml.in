@@ -64,7 +64,7 @@
     </preShowHelpActionList>
   
     <preBuildActionList>	
-        <setInstallerVariable name="originalplatform" value="${platform_name}">
+        <setInstallerVariable name="originalplatform" value="${platform_name}"/>
         <setInstallerVariable name="originalplatform" value="windows-x64">
           <ruleList>
               <platformTest type="windows-x64"/>
