@@ -89,6 +89,7 @@ _build_pgmemcache_osx() {
     make install  || _die "Failed to install libmemcached"
 
     mv $PG_PGHOME_OSX/include/libmemcached $PG_PGHOME_OSX/include/postgresql/server/ || _die "Failed to copy libmemcached folder to staging directory"
+    mv $PG_PGHOME_OSX/include/libhashkit $PG_PGHOME_OSX/include/postgresql/server/ || _die "Failed to copy libhashkit folder to staging directory"
  
     mkdir -p $PG_PATH_OSX/pgmemcache/staging/osx/lib  || _die "Failed to create staging/osx/lib "
     mkdir -p $PG_PATH_OSX/pgmemcache/staging/osx/include  || _die "Failed to create staging/osx/include "
@@ -103,7 +104,9 @@ _build_pgmemcache_osx() {
 
 
     cp $PG_PGHOME_OSX/lib/libmemcached* $PG_PATH_OSX/pgmemcache/staging/osx/lib/ ; rm -f $PG_PGHOME_OSX/lib/libmemcached*  || _die "Failed to copy libmemcached to staging directory"
+    cp $PG_PGHOME_OSX/lib/libhashkit* $PG_PATH_OSX/pgmemcache/staging/osx/lib/ ; rm -f $PG_PGHOME_OSX/lib/libhashkit*  || _die "Failed to copy libhashkit to staging directory"
     cp -R $PG_PGHOME_OSX/include/postgresql/server/libmemcached $PG_PATH_OSX/pgmemcache/staging/osx/include/; rm -rf $PG_PGHOME_OSX/include/postgresql/server/libmemcached || _die "Failed to copy memcache folder to staging directory"
+    cp -R $PG_PGHOME_OSX/include/postgresql/server/libhashkit $PG_PATH_OSX/pgmemcache/staging/osx/include/; rm -rf $PG_PGHOME_OSX/include/postgresql/server/libhashkit || _die "Failed to copy hashkit folder to staging directory"
 
     cd $PG_PATH_OSX/pgmemcache/staging/osx/lib
 
