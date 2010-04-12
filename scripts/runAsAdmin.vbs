@@ -95,7 +95,8 @@ Sub Init()
     WScript.Echo "NOTE: " & VBCRLF & _
                  "This script should be running with the administrator rights." & VBCRLF & _
                  "Please press enter to continue or press Ctrl+C to exit and rerun the script appropriately." & VBCRLF & VBCRLF & _
-                 "You must ensure that the admin user account running this script has full permissions on all directories in the installation path. Permissions inherited through group membership will not suffice."
+                 "You must ensure that the admin user account running this script has full permissions on all directories in the installation path. Permissions inherited through group membership will not suffice." & VBCRLF & VBCRLF & _
+                 "[ Press Enter to continue... ]"
     WSI.ReadLine
   End If
   ' Open Log File
@@ -1693,9 +1694,9 @@ Class DevServer
 
     ' Remove trailing '\' (slash) from path
     p_strInstallDir = Trim(p_strInstallDir)
-    If Right(p_strInstallDir, 1) = "\" Then
+    While Right(p_strInstallDir, 1) = "\"
       p_strInstallDir = Left(p_strInstallDir, Len(p_strInstallDir)-1)
-    End If
+    Wend
 
     If IsFileExists(p_strInstallDir, "bin\psql.exe", p_strErrMsg) AND _
        IsFileExists(p_strInstallDir, "bin\postgres.exe", p_strErrMsg) AND _
