@@ -13,6 +13,7 @@ strServiceName = WScript.Arguments.Item(0)
 
 lServices = 0
 
+Dim objWMIService, colServiceList, objService
 Set objWMIService = GetObject("winmgmts:{impersonationLevel=impersonate}!\\.\root\cimv2")
 
 ' Find any service we require

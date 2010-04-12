@@ -51,6 +51,8 @@ WScript.Quit iRet
 
 ' Execute a command
 Function DoCmd(cmd)
+    WScript.Echo "Start DoCmd(" & cmd & ")..."
+    Dim objShell, objOutput
     Set objShell = WScript.CreateObject("WScript.Shell")
     Set objOutput = objShell.Exec(cmd)
     Do While Not objOutput.StdOut.AtEndOfStream
@@ -65,6 +67,7 @@ Function DoCmd(cmd)
     Loop
     WScript.Echo strOutput
     DoCmd = objOutput.ExitCode
+
     Set objOutput = Nothing
     Set objShell = Nothing
 End Function

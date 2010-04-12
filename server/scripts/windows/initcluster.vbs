@@ -3,6 +3,10 @@ On Error Resume Next
 ' PostgreSQL server cluster init script for Windows
 ' Dave Page, EnterpriseDB
 
+' Findings (ASHESH):
+' - http://support.microsoft.com/kb/951978
+' - http://social.msdn.microsoft.com/Forums/en-US/vssetup/thread/ca9c69e6-9b75-462f-b2e5-92198e584981
+
 Const ForReading = 1
 Const ForWriting = 2
 
@@ -28,13 +32,29 @@ End IF
 Dim strInitdbPass
 iWarn = 0
 
+Dim objShell, objFso, objTempFolder, objWMI
 ' Get temporary filenames
 Set objShell = WScript.CreateObject("WScript.Shell")
+If objShell Is Nothing Then
+  WScript.Echo "Couldn't create WScript.Shell object..."
+ElseIF IsObject(objShell) Then
+  WScript.Echo "WScript.Shell Initialized..."
+Else
+  WScript.Echo "WScript.Shell not initialized..."
+End If
+
 Set objFso = CreateObject("Scripting.FileSystemObject")
+If objFso Is Nothing Then
+  WScript.Echo "Couldn't create Scripting.FileSystemObject object..."
+ElseIf IsObject(objFso) Then
+  WScript.Echo "Scripting.FileSystemObject initialized..."
+Else
+  WScript.Echo "Scripting.FileSystemObject not initialized..."
+End If
+
 Set objTempFolder = objFso.GetSpecialFolder(2)
 strBatchFile = Replace(objFso.GetTempName, ".tmp", ".bat")
 strOutputFile = objTempFolder.Path & "\" & objFso.GetTempName
-Set objFso = CreateObject("Scripting.FileSystemObject")
 
 ' Change the current directory to the installation directory
 ' This is important, because initdb will drop Administrative
@@ -43,12 +63,22 @@ objShell.CurrentDirectory = strInstallDir
 
 ' Is this Vista or above?
 Function IsVistaOrNewer()
+    WScript.Echo "Called IsVistaOrNewer()..."
     Set objWMI = GetObject("winmgmts:\\.\root\cimv2")
+    If objWMI Is Nothing Then
+        WScript.Echo "    Couldn't create 'winmgmts:\\.\root\cimv2' object"
+        IsVistaOrNewer=false
+    ElseIF IsObject(objWMI) Then
+        WScript.Echo "    'winmgmts' object initialized..."
+    Else
+        WScript.Echo "    'winmgmts' object not initialized..."
+    End If
     Set colItems = objWMI.ExecQuery("Select * from Win32_OperatingSystem",,48)
 	
     For Each objItem In colItems
         strVersion = Left(objItem.Version, 3)
     Next
+    WScript.Echo "    Version:" & strVersion
 	
     If InStr(strVersion, ".") > 0 Then
         majorVersion = CInt(Left(strVersion,  InStr(strVersion, ".") - 1))
@@ -57,6 +87,8 @@ Function IsVistaOrNewer()
     Else
         majorVersion = CInt(strVersion)
     End If
+
+    WScript.Echo "    MajorVersion:" & majorVersion
 	
     If majorVersion >= 6.0 Then
         IsVistaOrNewer = True
@@ -67,24 +99,34 @@ End Function
 
 ' Execute a command
 Function DoCmd(strCmd)
+    WScript.Echo "Start DoCmd(" & strCmd & ")..."
+    Dim objBatchFile
     Set objBatchFile = objTempFolder.CreateTextFile(strBatchFile, True)
     objBatchFile.WriteLine "@ECHO OFF"
     objBatchFile.WriteLine strCmd & " > """ & strOutputFile & """ 2>&1"
 	objBatchFile.WriteLine "EXIT /B %ERRORLEVEL%"
     objBatchFile.Close
+    WScript.Echo "    Executing batch file '" & strBatchFile & "'..."
     DoCmd = objShell.Run(objTempFolder.Path & "\" & strBatchFile, 0, True)
     If objFso.FileExists(objTempFolder.Path & "\" & strBatchFile) = True Then
-        objFso.DeleteFile objTempFolder.Path & "\" & strBatchFile, True
+        'objFso.DeleteFile objTempFolder.Path & "\" & strBatchFile, True
+    Else
+        WScript.Echo "    Batch file '" & strBatchFile & "' does not exist..."
     End If
     If objFso.FileExists(strOutputFile) = True Then
+        Dim objOutputFile
         Set objOutputFile = objFso.OpenTextFile(strOutputFile, ForReading)
-        WScript.Echo objOutputFile.ReadAll
+        WScript.Echo "    " & objOutputFile.ReadAll
         objOutputFile.Close
         objFso.DeleteFile strOutputFile, True
+    Else
+        WScript.Echo "    Output file does not exists..."
     End If
+    WScript.Echo "Ending DoCmd()..."
 End Function
 
 Sub Die(msg)
+    WScript.Echo "Called Die(" & msg & ")..."
     If objFso.FileExists(strInitdbPass) = True Then
         objFso.DeleteFile strInitdbPass, True
     End If
@@ -98,6 +140,7 @@ Sub Warn(msg)
 End Sub
 
 Function CreateDirectory(DirectoryPath)
+    WScript.Echo "Called CreateDirectory(" & DirectoryPath & ")..."
     If objFso.FolderExists(DirectoryPath) Then Exit Function
 
     Call CreateDirectory(objFso.GetParentFolderName(DirectoryPath))
@@ -106,6 +149,7 @@ End Function
 
 ' Create a password file
 strInitdbPass = strInstallDir & "\" & objFso.GetTempName
+Dim objInitdbPass
 Set objInitdbPass = objFso.OpenTextFile(strInitdbPass, ForWriting, True)
 WScript.Echo Err.description
 objInitdbPass.WriteLine(strPassword)
@@ -119,7 +163,16 @@ If objFso.FolderExists(strDataDir) <> True Then
     End If
 End If
 
+Dim objNetwork
 Set objNetwork = CreateObject("WScript.Network")
+If objNetwork Is Nothing Then
+    WScript.Echo "Couldn't create WScript.Network object"
+ElseIf IsObject(objNetwork) Then
+    WScript.Echo "WScript.Network initialized..."
+Else
+    WScript.Echo "WScript.Network not initialized..."
+End If
+
 If IsVistaOrNewer() = True Then
     WScript.Echo "Ensuring we can write to the data directory (using icacls):"
     iRet = DoCmd("icacls """ & strDataDir & """ /T /grant:r """ & objNetwork.Username & """:F")
@@ -154,7 +207,15 @@ End If
 '      log_destination = 'stderr'
 '      logging_collector = on
 '      log_line_prefix = '%t '
+Dim objConfFil
 Set objConfFile = objFso.OpenTextFile(strDataDir & "\postgresql.conf", ForReading)
+If objConfFile Is Nothing Then
+   WScript.Echo "Reading:    objConfFile is nothing..."
+ElseIf IsObject(objConfFile) Then
+   WScript.Echo "Reading:    " & strDataDir & "\postgresql.conf exists..."
+Else
+   WScript.Echo "Reading:    " & strDataDir & "\postgresql.conf not exists..."
+End If
 strConfig = objConfFile.ReadAll
 objConfFile.Close
 strConfig = Replace(strConfig, "#listen_addresses = 'localhost'", "listen_addresses = '*'")
@@ -163,17 +224,23 @@ strConfig = Replace(strConfig, "#log_destination = 'stderr'", "log_destination =
 strConfig = Replace(strConfig, "#logging_collector = off", "logging_collector = on")
 strConfig = Replace(strConfig, "#log_line_prefix = ''", "log_line_prefix = '%t '")
 Set objConfFile = objFso.OpenTextFile(strDataDir & "\postgresql.conf", ForWriting)
+If objConfFile Is Nothing Then
+   WScript.Echo "Writing:    objConfFile is nothing..."
+ElseIf IsObject(objConfFile) Then
+   WScript.Echo "Writing:    " & strDataDir & "\postgresql.conf exists..."
+Else
+   WScript.Echo "Writing:    " & strDataDir & "\postgresql.conf not exists..."
+End If
 objConfFile.WriteLine strConfig
 objConfFile.Close
 
 ' Secure the data directory
-
 If IsVistaOrNewer() = True Then
     WScript.Echo "Granting service account access to the data directory (using icacls):"
     iRet = DoCmd("icacls """ & strDataDir & """ /T /C /grant:r """ & strOSUsername & """:M")
 Else
     WScript.Echo "Granting service account access to the data directory (using cacls):"
-    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /C /G """ & strOSUsername & """:C")
+    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /C /G """ & strOSUsername & """:F")
 End If
 if iRet <> 0 Then
     Warn "Failed to grant service account access to the data directory (" & strDataDir & ")"
