@@ -1691,7 +1691,22 @@ database=${controldb}
                 <compareText logic="contains" text="${platform_name}" value="linux" />
                 <isFalse value="${extract_mode}"/>
             </ruleList>
-        </runProgram> 
+        </runProgram>
+
+        <!-- Add description to the services -->
+        <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Publication Service" name="Description" value="${msg(pub.service.description)}" >
+            <ruleList>
+                <isTrue value="${component(pubserver).selected}" />
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </registrySet>
+        <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Subscription Service" name="Description" value="${msg(sub.service.description)}" >
+            <ruleList>
+                <isTrue value="${component(subserver).selected}" />
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </registrySet>
+            
 
         <!-- Remove different platform specific launch file runRepConsole.sh or runRepConsole.bat -->
         <deleteFile path="${installdir}/bin/runRepConsole.bat" >

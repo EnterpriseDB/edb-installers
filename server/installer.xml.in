@@ -3191,6 +3191,13 @@ REM The script sets environment variables helpful for PostgreSQL
             </ruleList>
         </actionGroup>
 
+        <!-- Add description to the service -->
+        <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\postgresql-${product_version}" name="Description" value="${msg(pg.service.description)}" >
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </registrySet>
+
     </postInstallationActionList>
 
     <!-- Final page actions -->

@@ -783,6 +783,13 @@
         <isFalse value="${extract_mode}"/>
       </ruleList>
     </actionGroup>
+  
+    <!-- Add description to the services -->
+    <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\pgAgent" name="Description" value="${msg(pgagent.service.description)}" >
+        <ruleList>
+           <isFalse value="${extract_mode}"/>
+        </ruleList>
+    </registrySet>
   </postInstallationActionList>
 
   <!-- preUninstallation actions -->

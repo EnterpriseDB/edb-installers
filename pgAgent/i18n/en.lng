@@ -98,3 +98,4 @@ pgagent.schema.older.exist=An older version of the 'pgagent' schema was found.\n
 
 pgagent.schema.older.version.exist=An older version (${pgagent_current_schema_version}) of the 'pgagent' schema was found.\nDo you want to upgrade the schema to version ${pgagent_installer_schema_version}?
 
+pgagent.service.description=Provides the ability to schedule tasks within a Postgres database server.
