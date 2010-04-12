@@ -787,7 +787,7 @@ validateDevPort ()
     _warn \"${LRAR_PORT}\" is not a valid port number.
     return 0
   fi
-  if [ ${LRAR_PORT} -lt 1000 -a ${LRAR_PORT} -gt 65535 ]
+  if [ ${LRAR_PORT} -lt 1000 -o ${LRAR_PORT} -gt 65535 ]
   then
      _warn Please enter port within 1000 to 65535
      return 0

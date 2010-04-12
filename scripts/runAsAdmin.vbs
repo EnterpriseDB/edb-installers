@@ -72,7 +72,7 @@ Sub SelectComponents(p_strComponentList)
   l_iUBound = UBound(l_arrayComponents)
 
   For l_iIndex = iLBound To iUBound Step 1
-    Select Case l_arrayComponents(l_iIndex)
+    Select Case LCase(l_arrayComponents(l_iIndex))
       Case "postgis"
         bInstallPostGIS = "Y"
       Case "slony"
@@ -384,11 +384,11 @@ Function Usage(exitcode)
     "-sap | --servicepassword <password> # Password for the service account" & VBCRLF & _
     "         Default: postgres" & VBCRLF & _
     "-d   | --datadir <directory> # Data Directory" & VBCRLF & _
-    "         Defalut: <Installation-Directory>\data" & VBCRLF & _
+    "         Default: <Installation-Directory>\data" & VBCRLF & _
     "-i   | --installdir <directory> # Installation Directory" & VBCRLF & _
     "         Default: <curernt working directory>" & VBCRLF & _
     "-l   | --locale <locale> # Locale" & VBCRLF & _
-    "         Defualt: DEFAULT" & VBCRLF & _
+    "         Default: DEFAULT" & VBCRLF & _
     "-p   | --port <port> # Port" & VBCRLF & _
     "         Default: 5432" & VBCRLF & _
     "-pb  | --pgbouncer-port # Port for pgbouncer" & VBCRLF & _
@@ -1795,7 +1795,7 @@ Class DevServer
          End If
        Next
        For Each l_objFile in objBinDir.Items
-         l_strFile = "" & LCase(objBinDir.GetDetailsOf (l_objFile, 0))
+         l_strFile = "" & LCase(objBinDir.GetDetailsOf(l_objFile, 0))
          If l_strFile = "pg_ctl" Then
            ServiceAccount = objBinDir.GetDetailsOf (l_objFile, l_iOwner)
          End If
@@ -2045,9 +2045,39 @@ Function IsPostGISPresent()
   End If
 End Function
 
+Function ReplaceInFile(p_strFile, p_strFindStr, p_strSubstitute)
+  Dim l_strData, l_objFile
+
+  If IsEmpty(p_strFindStr) OR p_strFindStr = "" Then
+    ReplaceInFile=false
+    Exit Function
+  End If
+
+  ' Open the file and replace the place holders
+  Set l_objFile = FSO.OpenTextFile(p_strFile, 1)
+  l_strData = l_objFile.ReadAll
+  l_objFile.Close
+  l_objFile = Nothing
+
+  l_strData = Replace(l_strData, p_strFindStr, p_strSubstitute)
+
+  Set l_objFile = FSO.OpenTextFile(l_strfFile, 2)
+  l_objFile.WriteLine l_strData
+  l_objFile.Close
+  l_objFile = Nothing
+
+  ReplaceInFile=true
+End Function
+
 Sub ConfigurePostGIS
   ShowMessage "Configuring PostGIS..."
   LogNote "This will take some time..."
+  l_strInstallDir= Replace(objDevServer.InstallDir & "\bin", "\", "/")
+  ReplaceInFile objDevServer.InstallDir & "\share\contrib\postgis.sql", "$libdir", l_strInstallDir
+  ReplaceInFile objDevServer.InstallDir & "\share\contrib\postgis_upgrade.sql", "$libdir", l_strInstallDir
+  ReplaceInFile objDevServer.InstallDir & "\share\contrib\postgis_upgrade_12_to_14.sql", "$libdir", l_strInstallDir
+  ReplaceInFile objDevServer.InstallDir & "\share\contrib\postgis_upgrade_13_to_14.sql", "$libdir", l_strInstallDir
+  ReplaceInFile objDevServer.InstallDir & "\share\contrib\postgis_upgrade_14_minor.sql", "$libdir", l_strInstallDir
   ' Create postgis template database
   RunPsql true, "-t", true, "CREATE DATABASE template_postgis", ""
   ' Mark teh the database as a template
@@ -2116,10 +2146,10 @@ End Sub
 Function IsPgAgentPresent
   IsPgAgentPresent = false
   If FSO.FolderExists(objDevServer.InstallDir & "\pgAgent") AND _
-     IsFileExists(objDevServer.InstallDir, "\pgAgentshare\pgagent.sql", l_strErrMsg) AND _
-     IsFileExists(objDevServer.InstallDir, "\pgAgentbin\pgagent.exe", l_strErrMsg) AND _
-     IsFileExists(objDevServer.InstallDir, "\pgAgentbin\pgaevent.dll", l_strErrMsg) AND _
-     IsFileExists(objDevServer.InstallDir, "\pgAgentinstaller\pgAgent\pgaevent.dll", l_strErrMsg) Then
+     IsFileExists(objDevServer.InstallDir, "\pgAgent\share\pgagent.sql", l_strErrMsg) AND _
+     IsFileExists(objDevServer.InstallDir, "\pgAgent\bin\pgagent.exe", l_strErrMsg) AND _
+     IsFileExists(objDevServer.InstallDir, "\pgAgent\bin\pgaevent.dll", l_strErrMsg) AND _
+     IsFileExists(objDevServer.InstallDir, "\pgAgent\installer\pgAgent\pgaevent.dll", l_strErrMsg) Then
     SetVariableFrompsqlOutput l_strHasSchema, "SELECT has_schema_privilege('pgagent', 'USAGE')", CONSTADMINDATABASE
     ' pgAgent component present, but we will configure it only if 'pgagent' schema does not exists
     If l_strHasSchema = "" Then
@@ -2306,7 +2336,7 @@ Sub ConfigurepgsqlODBC
 End Sub
 
 Function IsPgBouncerPresent
-  IsPgBouncerPresent = true
+  IsPgBouncerPresent = false
   If FSO.FolderExists(objDevServer.InstallDir & "\pgbouncer") AND _
      IsFileExists(objDevServer.InstallDir, "\pgbouncer\bin\pgbouncer.exe", l_strErrMsg) AND _
      IsFileExists(objDevServer.InstallDir, "\pgbouncer\installer\pgbouncer\securefile.vbs", l_strErrMsg) AND _
@@ -2326,7 +2356,7 @@ Sub ConfigurePgBouncer
     FSO.CreateFolder objPGBouncer.Path & "\etc"
   End If
 
-  Question "Please enter the data directory", "objPGBouncer.validatePort", iPbPort, iPbPort, bUnattended, true
+  Question "Please enter the port on which pgbouncer will listen", "objPGBouncer.validatePort", iPbPort, iPbPort, bUnattended, true
   BackupFile objPGBouncer.Path & "\share\pgbouncer.ini"
   BackupNUseOriginalFile objPGBouncer.Path & "\share\pgbouncer.ini"
   Set objFile = FSO.OpenTextFile(objPGBouncer.Path & "\share\pgbouncer.ini", 1)
@@ -2346,7 +2376,7 @@ Sub ConfigurePgBouncer
   objFile.WriteLine l_strData
   objFile.Close
 
-  BackupFile objPGBouncer.Path & "\ect\userlist.txt"
+  BackupFile objPGBouncer.Path & "\etc\userlist.txt"
   Set objFile = FSO.OpenTextFile(objPGBouncer.Path & "\etc\userlist.txt", 2)
   objFile.WriteLine """" & objDevServer.SuperUser & """ """ & objDevServer.SuperPassword & """"
   objFile.Close
