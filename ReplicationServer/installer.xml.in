@@ -234,6 +234,9 @@
             </ruleList>
         </setInstallerVariable>
 
+    </initializationActionList>
+    <preInstallationActionList>
+
         <actionGroup>
             <actionList>
                 <unpackFile>
@@ -252,11 +255,10 @@
            </actionList>
            <ruleList>
                <compareText logic="equals" text="${platform_name}" value="windows"/>
+               <isFalse value="${extract_mode}"/>
            </ruleList>
        </actionGroup>
 
-    </initializationActionList>
-    <preInstallationActionList>
 
         <!-- Abort installation if not super-user and not running in extract-only mode-->
         <throwError text="${msg(Installer.Warning.RootPrivileges)}">
