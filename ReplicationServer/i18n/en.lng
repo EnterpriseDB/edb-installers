@@ -27,8 +27,8 @@ java.error=Sun Java 1.5 or later is not installed on your system.\nPlease ensure
 
 pubserver.service.description=Publication Service.
 subserver.service.description=Subscription Service.
-pgplus.details.title=PostgresPlus Standard Server Installation Details
-pgplus.details.explanation=Please verify the PostgresPlus Standard Server installation details
+pgplus.details.title=Postgres Plus Installation Details
+pgplus.details.explanation=Please verify the Postgres Plus installation details
 
 config.servicepassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the service user account.
 config.serviceaccount.description=Operating system username
