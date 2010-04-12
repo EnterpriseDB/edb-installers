@@ -258,6 +258,14 @@
     </initializationActionList>
     <preInstallationActionList>
 
+        <!-- Abort installation if not super-user and not running in extract-only mode-->
+        <throwError text="${msg(Installer.Warning.RootPrivileges)}">
+          <ruleList>
+            <isFalse value="${installer_is_root_install}"/>
+            <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </throwError>
+        
         <!-- Check if all components are deselected in unattended mode -->
         <throwError>
             <text>${msg(error.select.component)}</text>
