@@ -805,7 +805,7 @@
                 <!-- Stopping pphq service on windows -->
                 <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="0"/>
                 <stopWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0" showMessageOnError="0"/>
-                <runProgram program="${installdir}/scripts/agentctl.sh"
+                <runProgram program="${installdir}/scripts/agentctl.sh" runAs="${agentServiceAccount}"
                       programArguments="--no-wait stop" workingDirectory="${installdir}/agent-${pphqVersion}/bin"
                       progressText="${msg(pphq.agent.stopping)}" abortOnError="1" showMessageOnError="1">
                     <ruleList>
@@ -1083,7 +1083,7 @@
                 <actionGroup>
                     <actionList>
                         <runProgram program="${installdir}/scripts/serverctl.sh"
-                              programArguments="--no-wait start"
+                              programArguments="--no-wait start" runAs="${serviceAccount}"
                               workingDirectory="${pphqTempDir}/server-PG_VERSION_PPHQ"
                               progressText="${msg(pphq.server.starting)}"
                               abortOnError="0" showMessageOnError="1"/>

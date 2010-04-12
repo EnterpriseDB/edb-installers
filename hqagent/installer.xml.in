@@ -591,7 +591,7 @@
                 <propertiesFileSet file="${installdir}/agent-PG_VERSION_HQAGENT/conf/agent.properties"
                     key="agent.setup.resetupTokens" value="yes"/>
 
-                <runProgram program="${installdir}/scripts/agentctl.sh"
+                <runProgram program="${installdir}/scripts/agentctl.sh" runAs="${serviceaccount}"
                     programArguments="--no-wait start" workingDirectory="${installdir}/agent-PG_VERSION_HQAGENT/bin"
                     abortOnError="0" showMessageOnError="0">
                     <ruleList>
@@ -1084,7 +1084,7 @@
                             abortOnError="0" showMessageOnError="0"/>
                         <setInstallerVariable name="errMessage" value=""/>
                         <runProgram program="${installdir}/scripts/agentctl.sh"
-                            progressText="${msg(pphqagent.starting)}"
+                            progressText="${msg(pphqagent.starting)}" runAs="${serviceaccount}"
                             programArguments="--no-wait start" workingDirectory="${installdir}/agent-PG_VERSION_HQAGENT/bin"
                             abortOnError="0" showMessageOnError="0">
                             <ruleList>
