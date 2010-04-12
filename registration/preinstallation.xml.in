@@ -80,13 +80,11 @@
         <!-- Try validating email and password in unattended mode (if not already registered) -->
         <actionGroup>
           <actionList>
-            <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;@@COMPONENT@@&quot; &quot;false&quot; &quot;true&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"/>
-            <setInstallerVariableFromScriptOutput
-              customErrorMessage="${msg(registration.validatinguser.ws.error)}"
+            <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;@@COMPONENT@@&quot; &quot;false&quot; &quot;true&quot; &quot;&quot; &quot;&quot; &quot;1&quot; &quot;&quot; &quot;&quot; &quot;0&quot; &quot;0&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"/>
+            <setInstallerVariableFromScriptOutput name="ws_existinguser_result"
+              abortOnError="0" customErrorMessage="${msg(registration.validatinguser.ws.error)}"
               exec="${system_temp_directory}/@@TEMPDIR@@/UserValidation/validateUserClient.o"
-              execArgs="&quot;${uuid_val}&quot; &quot;@@COMPONENT@@&quot; &quot;false&quot; &quot;true&quot; &quot;${language}&quot; &quot;${os}&quot; &quot;${number_of_processors}&quot; &quot;${processor_arch}&quot; &quot;${processor_type}&quot; &quot;${total_mem_in_gb}&quot; &quot;${shared_memory_in_mb}&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
-              name="ws_existinguser_result"
-              abortOnError="0"
+              execArgs="&quot;${uuid_val}&quot; &quot;@@COMPONENT@@&quot; &quot;false&quot; &quot;true&quot; &quot;&quot; &quot;&quot; &quot;1&quot; &quot;&quot; &quot;&quot; &quot;0&quot; &quot;0&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
               workingDirectory="${system_temp_directory}/@@TEMPDIR@@/UserValidation"/>
           </actionList>
           <ruleList>
