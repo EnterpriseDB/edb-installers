@@ -124,3 +124,5 @@ xdb.registration.password.empty=Please provide the password, set while registrin
 
 pub.service.description=Provides data replication services from Oracle (tm) to Postgres Plus.
 sub.service.description=Provides data replication services from Oracle (tm) to Postgres Plus.
+
+Installer.CustomError.CommandLineOptionsNotPresent=The following options was not specified and is required: ${optionRequired}

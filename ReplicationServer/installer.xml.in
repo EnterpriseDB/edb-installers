@@ -236,7 +236,16 @@
 
     </initializationActionList>
     <preInstallationActionList>
-
+         
+        <setInstallerVariable name="optionRequired" value="servicepassword" />
+        <throwError text="${msg(Installer.CustomError.CommandLineOptionsNotPresent)}" >
+          <ruleList>
+               <compareText text="${installer_ui}" logic="equals" value="unattended" />
+               <compareText text="${servicepassword}" logic="equals" value="" />
+               <isFalse value="${extract_mode}" /> 
+          </ruleList>
+        </throwError>
+            
         <actionGroup>
             <actionList>
                 <unpackFile>
@@ -3360,7 +3369,7 @@ database=${controldb}
                    <explanation/>
                    <value/>
                    <default/>
-                   <allowEmptyValue>0</allowEmptyValue>
+                   <allowEmptyValue>1</allowEmptyValue>
                    <cliOptionName>servicepassword</cliOptionName>
                    <cliOptionShow>yes</cliOptionShow>
                    <descriptionRetype>${msg(config.syspassword.confirm)}</descriptionRetype>
@@ -3414,6 +3423,16 @@ database=${controldb}
                  </actionList>
                  <ruleList>
                      <compareText logic="equals" text="${serviceaccount}" value=""/>
+                 </ruleList>
+              </actionGroup>
+              <actionGroup>
+                 <actionList>
+                     <throwError>
+                         <text>${msg(servicepassword.blank.error)}</text>
+                     </throwError>
+                 </actionList>
+                 <ruleList>
+                     <compareText logic="equals" text="${servicepassword}" value=""/>
                  </ruleList>
               </actionGroup>
               
