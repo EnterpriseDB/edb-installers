@@ -790,7 +790,7 @@
         <actionGroup>
             <actionList>
                 <substitute>
-                    <files>${installdir}\scripts\launchMigrationWizard.bat</files>
+                    <files>${installdir}\scripts\launchMigrationWizard.vbs</files>
                     <substitutionList>
                         <substitution>
                             <pattern>@@INSTALLDIR@@</pattern>
@@ -1111,8 +1111,8 @@
                     <comment>EnterpriseDB MySQL Migration Wizard</comment>
                     <name>Migration Wizard</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>wscript</windowsExec>
-                    <windowsExecArgs>//NoLogo "${installdir}\scripts\launchMigrationWizard.vbs" "" "${java_executable}" "-jar MigrationWizard.jar" "${installdir}""</windowsExecArgs>
+                    <windowsExec>wscript.exe</windowsExec>
+                    <windowsExecArgs>//nologo "${installdir}\scripts\launchMigrationWizard.vbs"</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\application.ico</windowsIcon>
                 </startMenuShortcut>
             </startMenuShortcutList>
