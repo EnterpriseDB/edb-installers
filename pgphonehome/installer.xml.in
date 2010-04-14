@@ -359,7 +359,7 @@
         <setInstallerVariable name="response" value="yes" >
            <ruleList>
               <compareText>
-                 <logic>does_not_equal</logic>
+                 <logic>equals</logic>
                  <text>${installer_ui}</text>
                  <value>unattended</value>
               </compareText> 
