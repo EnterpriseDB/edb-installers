@@ -570,6 +570,10 @@
                     <pattern>@@PASSWORD@@</pattern>
                     <value>${pgpassword}</value>
                 </substitution>
+                <substitution>
+                    <pattern>@@DBNAME@@</pattern>
+                    <value>${pgdatabase}</value>
+                </substitution>
               </substitutionList>
             </substitute>
           </actionList>
@@ -1449,7 +1453,9 @@
                             <value>osx</value>
                         </compareText>
                     </ruleList>
-                </unpackFile>   
+                </unpackFile>  
+
+                <setInstallerVariable name="connection" value="" /> 
 
                 <!-- WIN: Running the Script to validate the PostgreSQL Server Details -->
                 <setInstallerVariableFromScriptOutput>
