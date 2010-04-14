@@ -124,19 +124,21 @@
 
         <!-- For Old installation till 8.4.2 -->
         <registryGet>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\EnterpriseDB\libpq64</key>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\libpq64</key>
             <name>Version</name>
             <variable>libpqVersion</variable>
+            <wowMode>32</wowMode>
         </registryGet>
         <setInstallerVariable name="IsOldInstall" value="1">
             <ruleList>
-                <compareText text="${libpqVersion}" value="" logic="equals" />
+                <compareText text="${libpqVersion}" value="" logic="does_not_equal" />
             </ruleList> 
         </setInstallerVariable>
         <registryGet>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\EnterpriseDB\libpq64</key>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\libpq64</key>
             <name>Location</name>
             <variable>iLocation</variable>
+            <wowMode>32</wowMode>
             <ruleList>
                 <isTrue value="${IsOldInstall}" />
             </ruleList> 
