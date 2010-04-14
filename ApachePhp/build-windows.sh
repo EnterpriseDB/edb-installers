@@ -15,6 +15,15 @@ _prep_ApachePhp_windows() {
     mv openssl-$PG_TARBALL_OPENSSL apache.windows/srclib/openssl
     mv zlib-$PG_TARBALL_ZLIB apache.windows/srclib/zlib
 
+    # Apply the patch
+    cd apache.windows
+    if [ -f $WD/tarballs/apache_win_$PG_VERSION_APACHE.patch ];
+    then
+      patch -p1 < $WD/tarballs/apache_win_$PG_VERSION_APACHE.patch
+    fi
+    cd ..
+
+    cd $WD/ApachePhp/source
     if [ -e php.windows ]; then 
         echo "Removing old php sources"
         rm -rf php.windows || _die "Couldn't remove the php sources"
