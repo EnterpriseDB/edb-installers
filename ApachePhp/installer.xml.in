@@ -223,6 +223,9 @@
         </compareText>
       </ruleList>
     </touchFile>
+    <setInstallerVariable name="apachephpVersion" value="" />
+    <setInstallerVariable name="branding" value="" />
+    <setInstallerVariable name="iBranding" value="" />
     <!-- Getting apache home value from ini file - Linux | Mac -->
     <actionGroup>
       <actionList>
