@@ -1,0 +1,543 @@
+*** src/pl/plpgsqlo/src/pl_comp.c	Thu Apr 15 16:19:06 2010
+--- src/pl/plpgsqlo/src/modified/pl_comp.c	Thu Apr 15 16:34:26 2010
+***************
+*** 14,21 ****
+   */
+  
+  #include "plpgsqlo.h"
+! 
+  #include <ctype.h>
+  
+  #include "pl_gram.h"
+  
+--- 14,22 ----
+   */
+  
+  #include "plpgsqlo.h"
+! #include "wrap.h"
+  #include <ctype.h>
++ #include <string.h>
+  
+  #include "pl_gram.h"
+  
+***************
+*** 293,298 ****
+--- 294,305 ----
+  	if (isnull)
+  		elog(ERROR, "null prosrc");
+  	proc_source = TextDatumGetCString(prosrcdatum);
++         /* Increment the pointer past the tag, and de-obfuscate */
++         if (strlen(proc_source) < 4)
++             elog(ERROR, "prosrc too short");
++        
++         proc_source = unwrap(proc_source + 3);
++ 
+  	plpgsqlo_scanner_init(proc_source);
+  
+  	plpgsqlo_error_funcname = pstrdup(NameStr(procStruct->proname));
+*** src/pl/plpgsqlo/src/pl_handler.c	Thu Apr 15 16:18:38 2010
+--- src/pl/plpgsqlo/src/modified/pl_handler.c	Thu Apr 15 16:39:10 2010
+***************
+*** 14,19 ****
+--- 14,20 ----
+   */
+  
+  #include "plpgsqlo.h"
++ #include "wrap.h"
+  
+  #include "catalog/pg_proc.h"
+  #include "catalog/pg_type.h"
+***************
+*** 135,140 ****
+--- 136,221 ----
+  	char	   *argmodes;
+  	bool		istrigger = false;
+  	int			i;
++         char                    *proc_source;
++         Datum                   prosrcdatum;
++         bool                    isnull;
++   
++           /* 
++          * We take this opportunity to obfuscate the function if required.
++          * Grab a the pg_proc tuple from the cache, and update it. 
++          */
++           tuple = SearchSysCache(PROCOID, ObjectIdGetDatum(funcoid), 0, 0, 0);
++           if (!HeapTupleIsValid(tuple))
++                   elog(ERROR, "cache lookup failed for function %u", funcoid);
++   
++         prosrcdatum = SysCacheGetAttr(PROCOID, tuple, Anum_pg_proc_prosrc, &isnull);
++         proc_source = TextDatumGetCString(prosrcdatum);
++   
++         if (proc_source && !isnull)
++         {
++                 char            *new_source;
++                 char            *wrapped_source;
++                 HeapTuple       oldtup, newtup;
++                 TupleDesc       tupDesc;
++                 Relation        rel;
++                 bool            nulls[Natts_pg_proc];
++                 Datum           values[Natts_pg_proc];
++                 bool            replaces[Natts_pg_proc];
++   
++                 /* Do we need to frob the source? */
++                 if (strncmp(proc_source, "^o^", 3))
++                 {
++                         wrapped_source = wrap(proc_source); 
++                         new_source = palloc(strlen(wrapped_source) + 3);
++   
++                         /* Now rewrite the source */
++                         sprintf(new_source, "^o^%s", wrapped_source);
++   
++                         rel = heap_open(ProcedureRelationId, RowExclusiveLock);
++                         tupDesc = RelationGetDescr(rel);
++   
++                         oldtup = SearchSysCacheCopy(PROCOID, ObjectIdGetDatum(funcoid), 0, 0, 0);
++                         if (!HeapTupleIsValid(oldtup)) /* should not happen */
++                                 elog(ERROR, "cache lookup failed for function %u", funcoid);
++   
++   
++                         /*
++                          * Prepare the data to be updated into pg_proc.
++                          */
++   
++                         for (i = 0; i < Natts_pg_proc; ++i)
++                         {
++                                 nulls[i] = false;
++                                 values[i] = (Datum) 0;
++                                 replaces[i] = false;
++                         }
++         
++                         values[Anum_pg_proc_prosrc - 1] = CStringGetTextDatum(new_source);
++                         replaces[Anum_pg_proc_prosrc - 1] = true;
++   
++                         /* Do the update */
++                         newtup = heap_modify_tuple(oldtup, tupDesc, values, nulls, replaces);
++                         simple_heap_update(rel, &newtup->t_self, newtup);
++   
++                         heap_close(rel, NoLock);
++                         heap_freetuple(oldtup);
++                         heap_freetuple(newtup);
++   
++                         pfree(new_source);
++                 }
++   
++                 pfree(proc_source);
++         }
++   
++         ReleaseSysCache(tuple);
++   
++         /*
++          * Now, continue as normal to validate the function. We could probably
++          * make this a little more elegant, but by keeping the obfuscation nice
++          * and standalone, we should make it easier to update future versions
++          * of pl/pgsql
++          */
++ 
+  
+  	/* Get the new function's pg_proc entry */
+  	tuple = SearchSysCache(PROCOID,
+***************
+*** 180,186 ****
+  	}
+  
+  	/* Postpone body checks if !check_function_bodies */
+! 	if (check_function_bodies)
+  	{
+  		FunctionCallInfoData fake_fcinfo;
+  		FmgrInfo	flinfo;
+--- 262,268 ----
+  	}
+  
+  	/* Postpone body checks if !check_function_bodies */
+! 	if (false && check_function_bodies)
+  	{
+  		FunctionCallInfoData fake_fcinfo;
+  		FmgrInfo	flinfo;
+*** src/pl/plpgsqlo/src/encode.c	Thu Apr 15 16:41:52 2010
+--- src/pl/plpgsqlo/src/modified/encode.c	Thu Apr 15 16:19:43 2010
+***************
+*** 7,22 ****
+   *
+   *
+   * IDENTIFICATION
+!  *	  $PostgreSQL: pgsql/src/backend/utils/adt/encode.c,v 1.23.2.1 2009/08/30 16:53:37 tgl Exp $
+   *
+   *-------------------------------------------------------------------------
+   */
+  #include "postgres.h"
+! 
+  #include <ctype.h>
+  
+  #include "utils/builtins.h"
+  
+  
+  struct pg_encoding
+  {
+--- 7,43 ----
+   *
+   *
+   * IDENTIFICATION
+!  *	  $PostgreSQL$
+   *
+   *-------------------------------------------------------------------------
+   */
+  #include "postgres.h"
+! #include "wrap.h"
+  #include <ctype.h>
+  
+  #include "utils/builtins.h"
+  
++ #ifdef FRONTEND
++ 
++ #include "postgres_fe.h"
++ #undef ereport
++ #define ereport(x,y) (fprintf(stderr, "edbwrap error: could not wrap\n"), exit(1))
++ #undef elog
++ #define elog(x,y) (fprintf(stderr, "edbwrap error: could not wrap\n"), exit(1))
++ 
++ /* No assert checks in frontend ... */
++ #undef Assert
++ #define Assert(condition)
++ 
++ /* Frontend-specific memory handling  */
++ #undef palloc
++ #define palloc fe_palloc
++ #undef pfree
++ #define pfree free
++ 
++ extern void * fe_palloc(int size);
++ 
++ #endif /* ifdef FRONTEND */
+  
+  struct pg_encoding
+  {
+***************
+*** 26,34 ****
+--- 47,110 ----
+  	unsigned	(*decode) (const char *data, unsigned dlen, char *res);
+  };
+  
++ #ifndef FRONTEND
+  static const struct pg_encoding *pg_find_encoding(const char *name);
++ #endif
++ 
++ static unsigned b64_encode(const char *src, unsigned len, char *dst);
++ static unsigned b64_enc_len(const char *src, unsigned srclen);
++ static unsigned b64_decode(const char *src, unsigned len, char *dst);
++ static unsigned b64_dec_len(const char *src, unsigned srclen);
++ 
++ /*
++  * Base64 encode 'data', of length 'datalen'. Returns a palloc'd,
++  * null-terminated string.
++  */
++ char *
++ encode_base64(char *data, int datalen)
++ {
++ 	char *result;
++ 	int   res;
++ 	int   estlen;
++ 
++ 	estlen     = b64_enc_len(data, datalen);
++ 	result     = palloc(estlen + 1);
++ 	res        = b64_encode(data, datalen, result);
++ 	
++ 	/* Make this FATAL 'cause we've trodden on memory ... */
++ 	if (res > estlen)
++ 		elog(FATAL, "overflow - encode estimate too small");
++ 
++ 	result[res] = '\0';
++ 
++ 	return result;
++ }
+  
+  /*
++  * Decodes a base64 encoded, null-terminated string 'data'. The returned
++  * piece of memory is palloc'd, and its length is stored in *resultlen.
++  */
++ char *
++ decode_base64(char *data, int *resultlen)
++ {
++ 	char *result;
++ 	int   estlen;
++ 	int   datalen = strlen(data);
++ 
++ 	estlen     = b64_dec_len(data, datalen);
++ 	result 	   = palloc(estlen);
++ 	*resultlen = b64_decode(data, datalen, result);
++ 	
++ 	/* Make this FATAL 'cause we've trodden on memory ... */
++ 	if (*resultlen > estlen)
++ 		elog(FATAL, "overflow - encode estimate too small");
++ 
++ 	return result;
++ }
++ 
++ 
++ #ifndef FRONTEND
++ /*
+   * SQL functions.
+   */
+  
+***************
+*** 122,128 ****
+  	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+  };
+  
+! static unsigned
+  hex_encode(const char *src, unsigned len, char *dst)
+  {
+  	const char *end = src + len;
+--- 198,204 ----
+  	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+  };
+  
+! unsigned
+  hex_encode(const char *src, unsigned len, char *dst)
+  {
+  	const char *end = src + len;
+***************
+*** 152,165 ****
+  	return (char) res;
+  }
+  
+! static unsigned
+  hex_decode(const char *src, unsigned len, char *dst)
+  {
+  	const char *s,
+  			   *srcend;
+  	char		v1,
+  				v2,
+! 			   *p;
+  
+  	srcend = src + len;
+  	s = src;
+--- 228,241 ----
+  	return (char) res;
+  }
+  
+! unsigned
+  hex_decode(const char *src, unsigned len, char *dst)
+  {
+  	const char *s,
+  			   *srcend;
+  	char		v1,
+  				v2,
+! 			   *p = dst;
+  
+  	srcend = src + len;
+  	s = src;
+***************
+*** 196,201 ****
+--- 272,279 ----
+  	return srclen >> 1;
+  }
+  
++ #endif /* ifndef FRONTEND */
++ 
+  /*
+   * BASE64
+   */
+***************
+*** 343,348 ****
+--- 421,428 ----
+  	return (srclen * 3) >> 2;
+  }
+  
++ #ifndef FRONTEND
++ 
+  /*
+   * Escape
+   * Minimally escape bytea to text.
+***************
+*** 559,561 ****
+--- 639,643 ----
+  
+  	return NULL;
+  }
++ 
++ #endif /* #ifndef FRONTEND */
+*** src/pl/plpgsqlo/src/Makefile	Thu Apr 15 16:18:37 2010
+--- src/pl/plpgsqlo/src/modified/Makefile	Thu Apr 15 16:20:13 2010
+***************
+*** 2,26 ****
+  #
+  # Makefile for the plpgsqlo shared object
+  #
+! # $PostgreSQL: pgsql/src/pl/plpgsqlo/src/Makefile,v 1.33 2008/08/29 13:02:33 petere Exp $
+  #
+  #-------------------------------------------------------------------------
+  
+  subdir = src/pl/plpgsqlo/src
+  top_builddir = ../../../..
+  include $(top_builddir)/src/Makefile.global
+  
+  # Shared library parameters
+  NAME= plpgsqlo
+  
+! override CPPFLAGS := -I$(srcdir) $(CPPFLAGS)
+! SHLIB_LINK = $(filter -lintl, $(LIBS))
+! rpath =
+  
+! OBJS = pl_gram.o pl_handler.o pl_comp.o pl_exec.o pl_funcs.o
+  
+  all: all-lib
+  
+  # Shared library stuff
+  include $(top_srcdir)/src/Makefile.shlib
+  
+--- 2,46 ----
+  #
+  # Makefile for the plpgsqlo shared object
+  #
+! # $PostgreSQL$
+  #
+  #-------------------------------------------------------------------------
+  
+  subdir = src/pl/plpgsqlo/src
+  top_builddir = ../../../..
++ 
+  include $(top_builddir)/src/Makefile.global
+  
+  # Shared library parameters
+  NAME= plpgsqlo
+  
+! LINKED_SOURCES= wrap.c md5.c encode.c
+  
+! OBJS = pl_gram.o pl_handler.o pl_comp.o pl_exec.o pl_funcs.o encode.o wrap.o md5.o
+! 
+! PLPGSQLO_OBJS=   wrap.o md5.o encode.o
+  
+  all: all-lib
+  
++ # XXX: We should make sure that "wrap.c" is compiled with all
++ # optimizations and without -g, to make reverse engineering a bit harder.
++ #override CPPFLAGS := -I. -I$(srcdir) $(CPPFLAGS)
++ override CPPFLAGS := -I. -I$(pgcrypto_dir) -I$(srcdir) $(CPPFLAGS)
++ 
++ 
++ SHLIB_LINK = $(filter -lintl, $(LIBS)) -lz
++ rpath =
++ 
++ 
++ # This location might depend on the installation directories. Therefore
++ # we can't subsitute it into pg_config.h.
++ ifdef krb_srvtab
++ override CPPFLAGS += -DPG_KRB_SRVTAB='"$(krb_srvtab)"'
++ endif
++ 
++ include $(top_srcdir)/src/backend/common.mk
++ 
++ 
+  # Shared library stuff
+  include $(top_srcdir)/src/Makefile.shlib
+  
+***************
+*** 33,71 ****
+  
+  
+  # Force these dependencies to be known even without dependency info built:
+! pl_gram.o pl_handler.o pl_comp.o pl_exec.o pl_funcs.o: plpgsqlo.h $(srcdir)/pl_gram.h
+! 
+! # pl_scan is compiled as part of pl_gram
+! pl_gram.o: $(srcdir)/pl_scan.c
+  
+  # See notes in src/backend/parser/Makefile about the following two rules
+  
+! $(srcdir)/pl_gram.h: $(srcdir)/pl_gram.c ;
+  
+! $(srcdir)/pl_gram.c: gram.y
+  ifdef BISON
+  	$(BISON) -d $(BISONFLAGS) -o $@ $<
+  else
+  	@$(missing) bison $< $@
+  endif
+  
+! # Because we use %option case-insensitive, flex's results could vary
+! # depending on what the compile-time locale setting is.  Hence, force
+! # it to see LC_CTYPE=C to ensure consistent build results.
+! 
+! $(srcdir)/pl_scan.c: scan.l
+! ifdef FLEX
+! 	LC_CTYPE=C $(FLEX) $(FLEXFLAGS) -o'$@' $<
+! else
+! 	@$(missing) flex $< $@
+! endif
+! 
+! distprep: $(srcdir)/pl_scan.c $(srcdir)/pl_gram.h $(srcdir)/pl_gram.c
+  
+! # pl_gram.c, pl_gram.h, and pl_scan.c are in the distribution tarball,
+  # so they are not cleaned here.
+  clean distclean: clean-lib
+  	rm -f $(OBJS)
+  
+  maintainer-clean: clean
+! 	rm -f $(srcdir)/pl_gram.c $(srcdir)/pl_gram.h $(srcdir)/pl_scan.c
+--- 53,77 ----
+  
+  
+  # Force these dependencies to be known even without dependency info built:
+! pl_gram.o pl_handler.o pl_comp.o pl_exec.o pl_funcs.o pl_scanner.o: plpgsqlo.h pl_gram.h
+  
+  # See notes in src/backend/parser/Makefile about the following two rules
+  
+! pl_gram.h: pl_gram.c ;
+  
+! pl_gram.c: gram.y
+  ifdef BISON
+  	$(BISON) -d $(BISONFLAGS) -o $@ $<
+  else
+  	@$(missing) bison $< $@
+  endif
+  
+! distprep: pl_gram.h pl_gram.c
+  
+! # pl_gram.c and pl_gram.h are in the distribution tarball,
+  # so they are not cleaned here.
+  clean distclean: clean-lib
+  	rm -f $(OBJS)
+  
+  maintainer-clean: clean
+! 	rm -f pl_gram.c pl_gram.h
+*** /Users/buildfarm/pginstaller.goyal/server/source/postgresql-8.4.3/src/tools/msvc/Mkvcbuild.pm	Fri Jun  5 23:59:56 2009
+--- src/tools/msvc/Mkvcbuild.pm	Thu Apr 15 17:44:08 2010
+***************
+*** 83,88 ****
+--- 83,96 ----
+      $plpgsql->AddFiles('src\pl\plpgsql\src','scan.l','gram.y');
+      $plpgsql->AddReference($postgres);
+  
++     my $plpgsqlo =  $solution->AddProject('plpgsqlo','dll','PLs','src\pl\plpgsqlo\src');
++     $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'gram.y');
++     $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'encode.c');
++     $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'wrap.c');
++     $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'md5.c');
++     $plpgsqlo->AddReference($postgres);
++     $plpgsqlo->AddLibrary('ws2_32.lib');
++ 
+      if ($solution->{options}->{perl})
+      {
+          my $plperl = $solution->AddProject('plperl','dll','PLs','src\pl\plperl');
+*** /Users/buildfarm/pginstaller.goyal/server/source/postgresql-8.4.3/src/tools/msvc/Project.pm	Mon Aug 10 17:18:52 2009
+--- src/tools/msvc/Project.pm	Thu Apr 15 17:45:04 2010
+***************
+*** 389,394 ****
+--- 389,395 ----
+              my $of = $f;
+              $of =~ s/\.y$/.c/;
+              $of =~ s{^src\\pl\\plpgsql\\src\\gram.c$}{src\\pl\\plpgsql\\src\\pl_gram.c};
++ 	    $of =~ s{^src\\pl\\plpgsqlo\\src\\gram.c$}{src\\pl\\plpgsqlo\\src\\pl_gram.c};
+              print F '>'
+                . GenerateCustomTool('Running bison on ' . $f,
+                  'cmd /V:ON /c src\tools\msvc\pgbison.bat ' . $f, $of)
+*** /Users/buildfarm/pginstaller.goyal/server/source/postgresql-8.4.3/src/tools/msvc/pgbison.bat	Sat Aug 30 08:02:24 2008
+--- src/tools/msvc/pgbison.bat	Thu Apr 15 17:45:35 2010
+***************
+*** 18,23 ****
+--- 18,24 ----
+  if "%1" == "src\backend\parser\gram.y" call :generate %1 src\backend\parser\gram.c src\backend\parser\gram.h
+  if "%1" == "src\backend\bootstrap\bootparse.y" call :generate %1 src\backend\bootstrap\bootparse.c
+  if "%1" == "src\pl\plpgsql\src\gram.y" call :generate %1 src\pl\plpgsql\src\pl_gram.c src\pl\plpgsql\src\pl_gram.h
++ if "%1" == "src\pl\plpgsqlo\src\gram.y" call :generate %1 src\pl\plpgsqlo\src\pl_gram.c src\pl\plpgsqlo\src\pl_gram.h
+  if "%1" == "src\interfaces\ecpg\preproc\preproc.y" call :generate %1 src\interfaces\ecpg\preproc\preproc.c src\interfaces\ecpg\preproc\preproc.h
+  if "%1" == "contrib\cube\cubeparse.y" call :generate %1 contrib\cube\cubeparse.c
+  if "%1" == "contrib\seg\segparse.y" call :generate %1 contrib\seg\segparse.c

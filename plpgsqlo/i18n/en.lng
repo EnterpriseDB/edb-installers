@@ -1,0 +1,24 @@
+Installer.Welcome.Title=%1$s Setup Wizard
+
+Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
+
+install.summary=obfuscated pl/pgsql
+
+Installer.Installing.Title=Installing ${product_fullname}
+
+platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
+
+error.pg.notfound=Postgres server was not found. Please run the Postgres installer.
+
+plpgsqlo.installdir.pgerror=Postgres installation directory: ${installdir} is not valid.
+
+incompatible.pg.error=The PostgreSQL Server Installation is incompatible with this version of plpgsqlo.
+
+Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
+
+Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
+
+upgrade.existing.installation.title=Existing installation
+
+upgrade.existing.installation.description=An existing pl/pgsqlo installation has been found at ${installdir}. This installation will be upgraded.
+
