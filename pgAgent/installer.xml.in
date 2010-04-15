@@ -795,6 +795,28 @@
   <!-- preUninstallation actions -->
   <preUninstallationActionList>
 
+    <!-- Abort uninstallation if not super-user/Administrator -->
+    <actionGroup>
+      <actionList>
+        <showWarning text="${msg(Installer.Warning.UninstallerAdministratorPrivileges)}"/>
+        <exit/>
+      </actionList>
+      <ruleList>
+        <isFalse value="${installer_is_root_install}"/>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+    <actionGroup>
+      <actionList>
+        <showWarning text="${msg(Installer.Warning.UninstallerRootPrivileges)}"/>
+        <exit/>
+      </actionList>
+      <ruleList>
+        <isFalse value="${installer_is_root_install}"/>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
     <!-- LIN & MAC : Unset the pgAgent Info from the ini file -->
     <actionGroup>
       <actionList>
