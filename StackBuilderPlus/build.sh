@@ -43,20 +43,20 @@ _prep_stackbuilderplus() {
 
     # StackBuilderPlus
     if [ ! -e STACKBUILDER-PLUS ]; then
-        _die "Please check-out the StackBuilder Plus source in \"$WD/StackBuilderPlus/source\" directory before start building the installer."
+        git clone ssh://pginstaller@cvs.enterprisedb.com/git/STACKBUILDER-PLUS
+    else
+        cd $WD/StackBuilderPlus/source/STACKBUILDER-PLUS
+        git pull
     fi
-
-    cd $WD/StackBuilderPlus/source/STACKBUILDER-PLUS
-    git pull
 
     cd $WD/StackBuilderPlus/source
     # Update Manager
     if [ ! -e SS-UPDATEMANAGER ]; then
-        _die "Please check-out the UpdateManager source in \"$WD/StackBuilderPlus/source\" directory before start building the installer."
+        git clone ssh://pginstaller@cvs.enterprisedb.com/git/SS-UPDATEMANAGER
+    else
+        cd $WD/StackBuilderPlus/source/SS-UPDATEMANAGER
+        git pull
     fi
-    
-    cd $WD/StackBuilderPlus/source/SS-UPDATEMANAGER
-    git pull
 
     # Per-platform prep
     cd $WD
