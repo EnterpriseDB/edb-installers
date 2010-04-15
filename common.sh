@@ -172,7 +172,7 @@ win32_sign()
             COUNT=`expr $COUNT + 1`
         done
         scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/$FILENAME $WD/output/$FILENAME || _die "Failed to copy the installer from the windows host after signing ($FILENAME)"
-        echo "Removing the singed installer ($FILENAME) from the windows VM..."
+        echo "Removing the signed installer ($FILENAME) from the windows VM..."
         ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; rm -f $FILENAME" || _die "Failed to remove the signed installer ($FILENAME) on the windows host"
     fi
 }
