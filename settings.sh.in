@@ -43,6 +43,7 @@ PG_PACKAGE_JBOSS=0
 PG_PACKAGE_PGHYPERIC=0
 PG_PACKAGE_HQAGENT=0
 PG_PACKAGE_REPLICATIONSERVER=0
+PG_PACKAGE_PLPGSQLO=1
 
 # Path for the build machine (/opt/... must be at the end!)
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
