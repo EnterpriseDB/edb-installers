@@ -106,7 +106,6 @@
         <!-- Set the default values -->
 	
         <setInstallerVariable name="pgdatabase" value="postgres"/>	
-        <setInstallerVariable name="defaultusername" value=""/>
         <setInstallerVariable name="defaultpasswd" value=""/>
         <setInstallerVariable name="defaultpguser" value="postgres"/>
         <setInstallerVariable name="defaultpgpassword" value=""/>
@@ -128,69 +127,12 @@
         </actionGroup>
 
 
-        <!-- WIN: Set the default values for unattended mode -->
-        <actionGroup>
-           <actionList>
-        	<setInstallerVariable name="defaultusername" value="${env(USERNAME)}"/>
-           </actionList>
-           <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-           </ruleList>
-        </actionGroup>
-
-        <!-- LINUX: Set the default values for unattended mode -->
-        <actionGroup>
-           <actionList>
-                <setInstallerVariable name="defaultusername" value="${env(USERNAME)}"/>
-           </actionList>
-           <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-           </ruleList>
-        </actionGroup> 
- 
-        <!-- MAC: Set the default values for unattended mode -->
-        <actionGroup>
-           <actionList>
-                <setInstallerVariable name="defaultusername" value="${env(USER)}"/>
-           </actionList>
-           <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-           </ruleList>
-        </actionGroup>
-
-
     </initializationActionList>
     
     <!-- Preinstallation actions -->
     <preInstallationActionList>
 
+        <setInstallerVariable name="defaultusername" value="${system_username}"/>
         <!-- Check Previous Installation of pgphonehome -->
         <registryGet>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgPhoneHome</key>
@@ -449,7 +391,7 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable> 
-        
+
         <!-- Creating back up of config file -->	
         <actionGroup>
             <actionList>
