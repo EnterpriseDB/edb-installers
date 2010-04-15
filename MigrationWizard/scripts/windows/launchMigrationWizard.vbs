@@ -1,7 +1,7 @@
 DIM objShell, strCmd, strWD
 SET objShell = CreateObject("Shell.Application")
 
-strCmd       = "JAVA@@"
+strCmd       = "@@JAVA@@"
 strArguments = "-jar MigrationWizard.jar"
 strWD        = "@@INSTALLDIR@@"
 
