@@ -601,7 +601,232 @@
                      <value>windows</value>
                 </compareText>
             </ruleList>
-        </unpackDirectory>  
+        </unpackDirectory> 
+
+        <actionGroup>
+            <actionList>
+                <!-- Creating a temporary directory -->
+                <createDirectory path="${system_temp_directory}/${product_fullname}"/>
+                <!-- WIN: Unpacking the Script file to temporary directory -->
+                <unpackFile>
+                    <component>mediaWiki</component>
+                    <destination>${system_temp_directory}/${product_fullname}/check-connection.bat</destination>
+                    <folder>installfileswindows</folder>
+                    <origin>installer/mediaWiki/check-connection.bat</origin>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>		    
+                </unpackFile>
+
+                <!-- Linux: Unpacking the Script file to temporary directory -->
+                <unpackFile>
+                    <component>mediaWiki</component>
+                    <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
+                    <folder>installfileslinux</folder>
+                    <origin>installer/mediaWiki/check-connection.sh</origin>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>linux</value>
+                        </compareText>
+                    </ruleList>
+                </unpackFile>
+
+                <!-- Linux-x64: Unpacking the Script file to temporary directory -->
+                <unpackFile>
+                    <component>mediaWiki</component>
+                    <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
+                    <folder>installfileslinux-x64</folder>
+                    <origin>installer/mediaWiki/check-connection.sh</origin>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+                </unpackFile>
+
+                <!-- MAC: Unpacking the Script file to temporary directory -->
+                <unpackFile>
+                    <component>mediaWiki</component>
+                    <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
+                    <folder>installfilesosx</folder>
+                    <origin>installer/mediaWiki/check-connection.sh</origin>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                </unpackFile>  
+
+                <setInstallerVariable name="connection" value="" /> 
+
+                <!-- WIN: Running the Script to validate the PostgreSQL Server Details -->
+                <setInstallerVariableFromScriptOutput>
+                        <exec>${system_temp_directory}\${product_fullname}\check-connection.bat</exec>
+                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
+                        <name>connection</name>
+                        <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
+                        <abortOnError>0</abortOnError>
+                        <showMessageOnError>0</showMessageOnError>
+                        <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="pgdatabase" value="edb" />
+                        <!-- Running the Script to validate the PostgreSQL Server Details -->
+                        <setInstallerVariableFromScriptOutput>
+                            <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
+                            <name>connection</name>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${connection}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="pgdatabase" value="template1" />
+                        <!-- Running the Script to validate the PostgreSQL Server Details -->
+                        <setInstallerVariableFromScriptOutput>
+                            <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
+                            <name>connection</name>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${connection}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+       
+                <!-- Linux | MAC: Running the Script to validate the PostgreSQL Server Details -->
+                <setInstallerVariableFromScriptOutput>
+                        <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
+                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
+                        <name>connection</name>
+                        <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                        <abortOnError>0</abortOnError>
+                        <showMessageOnError>0</showMessageOnError>
+                        <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="pgdatabase" value="edb" />
+                        <!-- Running the Script to validate the PostgreSQL Server Details -->
+                        <setInstallerVariableFromScriptOutput>
+                            <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
+                            <name>connection</name>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${connection}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="pgdatabase" value="template1" />
+                        <!-- Running the Script to validate the PostgreSQL Server Details -->
+                        <setInstallerVariableFromScriptOutput>
+                            <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
+                            <name>connection</name>
+                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${connection}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <throwError>
+                    <text>${program_stderr}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${connection}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+            </ruleList>
+         </actionGroup> 
     </preInstallationActionList>
     <!-- Post installation actions -->
     <postInstallationActionList>
