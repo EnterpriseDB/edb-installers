@@ -85,7 +85,7 @@ _build_pgbouncer_windows() {
 
     cat <<EOT > "build-libevent.bat"
 
-@SET PATH=$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;C:\Perl\bin;C:\Python25;C:\Tcl\bin;
+@SET PATH=$PG_MSYS_WINDOWS\bin;C:\Perl\bin;C:\Python25;C:\Tcl\bin;%PATH%
 
 REM Configuring, building the libevent source tree
 @echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD;cd libevent.windows;./configure --prefix=\$COMMONDIR/libevent.staging; make; make install  | $PG_MSYS_WINDOWS\bin\sh --login -i

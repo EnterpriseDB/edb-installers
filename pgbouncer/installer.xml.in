@@ -717,14 +717,14 @@
                         <compareText logic="contains" text="${platform_name}" value="linux"/>
                         <fileExists path="/tmp/.s.PGSQL.${pgbouncer_port}"/>
                     </ruleList>
-                </deletFile>
+                </deleteFile>
         
                 <deleteFile path="/tmp/pgbouncer.pid">
                     <ruleList>
                         <compareText logic="contains" text="${platform_name}" value="linux"/>
                         <fileExists path="/tmp/pgbouncer.pid"/>
                     </ruleList>
-                </deletFile>
+                </deleteFile>
 
                 <!-- MAC: Start the pgbouncer service -->    
                 <runProgram>
