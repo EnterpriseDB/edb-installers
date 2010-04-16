@@ -83,7 +83,7 @@ _build_ReplicationServer_linux() {
 
     # Build the validateUserClient binary
     if [ ! -f $WD/MetaInstaller/source/MetaInstaller.linux/validateUser/validateUserClient.o ]; then
-        cp -R $WD/MetaInstaller/scripts/validateUser $WD/ReplicationServer/source/ReplicationServer.linux/validateUser || _die "Failed to copy validateUser source files"
+        cp -R $WD/MetaInstaller/scripts/linux/validateUser $WD/ReplicationServer/source/ReplicationServer.linux/validateUser || _die "Failed to copy validateUser source files"
         ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux/validateUser; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
         ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp ReplicationServer/source/ReplicationServer.linux/validateUser/validateUserClient.o ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy edb-migrationtoolkit.jar"
     else
