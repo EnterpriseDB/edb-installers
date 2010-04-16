@@ -680,6 +680,11 @@
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
+                    <text>${pgphonehomeVersion}</text>
+                    <value></value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
                     <text>${installer_ui}</text>
                     <value>unattended</value>
                 </compareText>

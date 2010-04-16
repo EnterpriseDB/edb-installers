@@ -835,6 +835,11 @@
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
+                    <text>${phpBBVersion}</text>
+                    <value></value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
                     <text>${installer_ui}</text>
                     <value>unattended</value>
                 </compareText>
