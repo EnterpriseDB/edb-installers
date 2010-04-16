@@ -670,7 +670,18 @@
                         </compareText>
                     </ruleList>
                 </runProgram>
-        
+                <!-- Win : Disable pgbouncer Service if autostart is no-->
+                <runProgram>
+                    <program>sc</program>
+                    <programArguments>config pgbouncer start= demand</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                        <isFalse value="${autostart}"/>
+                    </ruleList>
+                </runProgram>
+ 
                 <!-- WIN: Start the pgbouncer service -->    
                 <startWindowsService>
                     <serviceName>pgbouncer</serviceName>
