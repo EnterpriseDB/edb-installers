@@ -681,7 +681,28 @@
                         <isFalse value="${autostart}"/>
                     </ruleList>
                 </runProgram>
- 
+                <!-- LIN : Disable pgbouncer Service if autostart is no-->
+                <actionGroup>
+                    <actionList>
+                        <runProgram>
+                           <program>/sbin/chkconfig</program>
+                           <programArguments>pgbouncer off</programArguments>
+                           <abortOnError>0</abortOnError>
+                           <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+                        <runProgram>
+                           <program>/usr/sbin/update-rc.d</program>
+                           <programArguments>pgbouncer disable</programArguments>
+                           <abortOnError>0</abortOnError>
+                           <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+                     </actionList>
+                     <ruleList>
+                         <compareText logic="contains" text="${platform_name}" value="linux"/>
+                         <isFalse value="${autostart}"/>
+                     </ruleList>
+                </actionGroup>
+
                 <!-- WIN: Start the pgbouncer service -->    
                 <startWindowsService>
                     <serviceName>pgbouncer</serviceName>
