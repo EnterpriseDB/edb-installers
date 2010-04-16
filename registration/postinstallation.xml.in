@@ -14,7 +14,4 @@
     </registrySet>
     <deleteFile path="@@TEMPDIR@@" abortOnError="0" showMessageOnError="0"/>
   </actionList>
-  <ruleList>
-    <isTrue value="${reg_required}"/>
-  </ruleList>
 </actionGroup>

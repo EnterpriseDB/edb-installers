@@ -3,6 +3,9 @@
   name="userAuthenticationPage"
   title="${msg(registration.existingemail.authentication.title.value)}">
   <parameterList>
+    <!-- Hidden parameter to check, if registration required or not -->
+    <booleanParameter name="registration_required" cliOptionName="register" default="1" ask="0" cliOptionShow="0"/>
+
     <labelParameter name="existingemail_authentication_lbl"
           explanation="${msg(registration.existingemail.authentication.explanation.value)}"/>
     <stringParameter name="existingEmail" allowEmptyValue="1" ask="1"
@@ -129,7 +132,7 @@
        which does not have this authentication process -->
   <ruleList>
     <compareText logic="equals" text="${iExistingEmail}" value=""/>
-    <isTrue value="${reg_required}"/>
+    <isTrue value="${registration_required}"/>
   </ruleList>
 
 </parameterGroup>

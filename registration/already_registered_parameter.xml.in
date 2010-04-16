@@ -4,9 +4,6 @@
   title="${msg(registration.title.value)}"
   explanation="${msg(registration.explanation.value)}">
   <parameterList>
-    <!-- Hidden parameter to check, if registration required or not -->
-    <booleanParameter name="reg_required" cliOptionName="register" default="1" ask="0" cliOptionShow="0"/>
-
     <choiceParameter
       name="alreadyRegistered"
       default="0"
@@ -36,7 +33,8 @@
   <!-- Check if upgradation is done on older version of @@COMPONENT@@,
        which does not have this authentication process -->
   <ruleList>
-     <compareText logic="equals" text="${iExistingEmail}" value=""/>
-    <isTrue value="${reg_required}"/>
+    <compareText logic="equals" text="${iExistingEmail}" value=""/>
+    <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
+    <isTrue value="${registration_required}"/>
   </ruleList>
 </parameterGroup>
