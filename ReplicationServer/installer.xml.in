@@ -242,7 +242,14 @@
           <ruleList>
                <compareText text="${installer_ui}" logic="equals" value="unattended" />
                <compareText text="${servicepassword}" logic="equals" value="" />
-               <isFalse value="${extract_mode}" /> 
+               <isFalse value="${extract_mode}" />
+               <ruleGroup>
+                   <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                   <ruleList>
+                        <isTrue value="${component(pubserver).selected}" /> 
+                        <isTrue value="${component(subserver).selected}" /> 
+                   </ruleList>
+               </ruleGroup>
           </ruleList>
         </throwError>
             
@@ -1034,18 +1041,8 @@
              <ruleGroup>
                  <ruleEvaluationLogic>or</ruleEvaluationLogic>
                  <ruleList>
-                     <ruleGroup> 
-                         <ruleList>
-                             <isFalse value="${IsPubServerUpgrade}"/>
-                             <isTrue value="${component(pubserver).selected}" />
-                         </ruleList>
-                     </ruleGroup>  
-                     <ruleGroup> 
-                         <ruleList>
-                             <isFalse value="${IsSubServerUpgrade}"/>
-                             <isTrue value="${component(subserver).selected}" />
-                         </ruleList>                  
-                     </ruleGroup>
+                    <isTrue value="${component(pubserver).selected}" />
+                    <isTrue value="${component(subserver).selected}" />
                  </ruleList>
              </ruleGroup> 
           </ruleList>
@@ -1591,6 +1588,30 @@ database=${controldb}
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram>
+        <runProgram>
+            <program>${installdir}\scripts\ServiceWrapper.exe</program>
+            <programArguments>unregister -n "Publication Service"</programArguments>
+            <workingDirectory>${installdir}\scripts</workingDirectory>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows" />
+                <isTrue value="${component(pubserver).selected}" />
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </runProgram>
+        <runProgram>
+            <program>${installdir}\scripts\ServiceWrapper.exe</program>
+            <programArguments>unregister -n "Subscription Service"</programArguments>
+            <workingDirectory>${installdir}\scripts</workingDirectory>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows" />
+                <isTrue value="${component(subserver).selected}" />
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </runProgram>
 
        <writeFile>
             <path>${system_temp_directory}/servicewrapper.bat</path>
@@ -1598,7 +1619,6 @@ database=${controldb}
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(pubserver).selected}" />
-                <isFalse value="${IsPubServerUpgrade}" /> 
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </writeFile>
@@ -1612,7 +1632,6 @@ database=${controldb}
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(pubserver).selected}" />
-                <isFalse value="${IsPubServerUpgrade}" /> 
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram>
@@ -1620,7 +1639,6 @@ database=${controldb}
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(pubserver).selected}" />
-                <isFalse value="${IsPubServerUpgrade}" /> 
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </deleteFile>
@@ -1630,7 +1648,6 @@ database=${controldb}
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(subserver).selected}" />
-                <isFalse value="${IsSubServerUpgrade}" /> 
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </writeFile>
@@ -1644,7 +1661,6 @@ database=${controldb}
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(subserver).selected}" />
-                <isFalse value="${IsSubServerUpgrade}" /> 
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram>
@@ -1652,7 +1668,6 @@ database=${controldb}
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(subserver).selected}" />
-                <isFalse value="${IsSubServerUpgrade}" /> 
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </deleteFile>
