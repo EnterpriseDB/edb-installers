@@ -55,6 +55,25 @@ function gotSignal()
   exit 0 
 }
 
+function waitForPid()
+{
+   if [ $WAITONEXIT -eq 1 ];
+   then 
+       SERVER_PID=`cat @@INSTALLDIR@@/server-@@PPHQVERSION@@/logs/hq-server.pid 2> /dev/null`
+       if [ x"$SERVER_PID" != x ];
+       then
+           PID_EXISTS=1
+           while [ x"$PID_EXISTS" != x ];
+           do
+               # waiting ..
+               PID_EXISTS=`ps ax -o pid | sed -e 's:\ ::g' | grep "^$SERVER_PID\$"`
+               # Sleep for 2 seconds before checking again.
+               sleep 2 
+           done
+       fi
+   fi 
+}
+
 trap gotSignal SIGHUP SIGINT SIGKILL SIGTERM
 while [ $# -ne 0 ];
 do
@@ -68,13 +87,15 @@ do
     ;;
   start)
     startServer
+    waitForPid
     ;;
   stop)
     stopServer
     ;;
   restart)
-    startServer
     stopServer
+    startServer
+    waitForPid
     ;;
   *)
     log "Unknow option: $1"
@@ -83,10 +104,3 @@ do
   esac
   shift
 done
-
-if [ $WAITONEXIT -eq 1 ];
-then
-  echo "Press Any key to finish..."
-  read dummy
-fi
-
