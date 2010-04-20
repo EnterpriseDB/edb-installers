@@ -82,6 +82,13 @@ _postprocess_plpgsqlo_osx() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
+    # Using own scripts for extract-only mode
+    cp -f $WD/scripts/risePrivileges $WD/output/plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/Contents/MacOS/plpgsqlo
+    chmod a+x $WD/output/plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/Contents/MacOS/plpgsqlo
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ plpgsqlo $WD/output/plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
+    chmod a+x $WD/output/plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/Contents/MacOS/installbuilder.sh
+
     # Zip up the output
     cd $WD/output
     zip -r plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.zip plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/ || _die "Failed to zip the installer bundle"
