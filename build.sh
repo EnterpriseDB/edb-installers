@@ -499,6 +499,21 @@ then
     _postprocess_plpgsqlo || exit 1
 fi
 
+# Package: SQLPROTECT
+if [ $PG_PACKAGE_SQLPROTECT = 1 ];
+then
+    cd $WD
+    source ./sqlprotect/build.sh
+
+    if [ $SKIPBUILD = 0 ];
+    then
+        _prep_sqlprotect || exit 1
+        _build_sqlprotect || exit 1
+    fi
+
+    _postprocess_sqlprotect || exit 1
+fi
+
 # Package: DevServer
 # ALWAYS BUILD THIS LAST!!
 if [ $PG_PACKAGE_DEVSERVER = 1 ];
