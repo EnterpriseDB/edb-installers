@@ -162,7 +162,7 @@ EOT
     cd $WD/server/source/pgadmin.osx
 
     # Bootstrap
-    sh bootstrap
+    PATH=/opt/local/bin:$PATH sh bootstrap
 
     # Configure
     ./configure --enable-appbundle --disable-dependency-tracking --with-pgsql=$WD/server/staging/osx --with-wx=/usr/local --with-libxml2=/usr/local --with-libxslt=/usr/local --disable-debug || _die "Failed to configure pgAdmin"
