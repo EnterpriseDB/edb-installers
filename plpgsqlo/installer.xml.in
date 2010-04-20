@@ -289,9 +289,14 @@
 		<actionGroup>
 		    <actionList>
 			<registryGet>
-			    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgreSQL\8.4</key>
+			    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgreSQL\PG_MAJOR_VERSION</key>
 			    <name>Location</name>
 			    <variable>pginstalldir</variable>
+			</registryGet>
+			<registryGet>
+			    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgreSQL\PG_MAJOR_VERSION</key>
+			    <name>Superuser</name>
+			    <variable>superuser</variable>
 			</registryGet>
 		    </actionList>
 		    <ruleList>
@@ -308,10 +313,17 @@
 		    <actionList>
 			<iniFileGet>
 			    <file>/etc/postgres-reg.ini</file>
-			    <section>PostgreSQL/8.4</section>
+			    <section>PostgreSQL/PG_MAJOR_VERSION</section>
 			    <key>InstallationDirectory</key>
 			    <variable>pginstalldir</variable>
 			</iniFileGet>
+			<iniFileGet>
+			    <file>/etc/postgres-reg.ini</file>
+			    <section>PostgreSQL/PG_MAJOR_VERSION</section>
+			    <key>Superuser</key>
+			    <variable>superuser</variable>
+			</iniFileGet>
+
 		    </actionList>
 		    <ruleList>
 			<compareText>
@@ -338,6 +350,23 @@
 			</compareTextLength>
 		    </ruleList>
 		</actionGroup>
+		<!-- Abort Installation if superuser not found -->
+		<actionGroup>
+		    <actionList>
+			<throwError>
+			    <customErrorMessage>${msg(error.pg.notfound)}</customErrorMessage>
+			    <text>Unknown Error</text>
+			</throwError>
+		    </actionList>
+		    <ruleList>
+			<compareTextLength>
+			    <length>0</length>
+			    <logic>equals</logic>
+			    <text>${superuser}</text>
+			</compareTextLength>
+		    </ruleList>
+		</actionGroup>
+
 		<!-- WIN: Set the Installation Directory -->
 		<actionGroup>
 		    <actionList>
@@ -359,7 +388,7 @@
                     </actionList>
                     <ruleList>
                         <ruleGroup>
-                            <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
                             <ruleList>
                                 <fileTest>
                                     <path>${installdir}/bin/psql</path>
@@ -407,7 +436,7 @@
                     </actionList>
                     <ruleList>
                         <ruleGroup>
-                            <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
                             <ruleList>
                                 <fileTest>
                                     <path>${installdir}\bin\psql.exe</path>
@@ -581,6 +610,10 @@
                     <pattern>\$libdir</pattern>
                     <value>${installdir}/lib</value>
                 </substitution>
+                <substitution>
+                    <pattern>\$SUPERUSER</pattern>
+                    <value>${superuser}</value>
+                </substitution>
             </substitutionList>
         </substitute>
     </postInstallationActionList>
@@ -644,6 +677,19 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+               <!-- WIN: plpgsqlo.sql -->
+                <folder>
+                    <description>SQL Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilessharewindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/windows/share</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+
                 <!-- LIN: Program files -->
                 <folder>
                     <description>Program Files</description>
@@ -656,6 +702,19 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+               <!-- LIN: plpgsqlo.sql -->
+                <folder>
+                    <description>SQL Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilessharelinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/share</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+
                 <!-- LIN-X64: Program files -->
                 <folder>
                     <description>Program Files</description>
@@ -668,6 +727,19 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+               <!-- LIN-X64: plpgsqlo.sql -->
+                <folder>
+                    <description>SQL Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilessharelinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/share</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+
                 <!-- MAC: Program files -->
                 <folder>
                     <description>Program Files</description>
@@ -680,6 +752,19 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+               <!-- MAC: plpgsqlo.sql -->
+                <folder>
+                    <description>SQL Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesshareosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/share</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+
             </folderList>
         </component>
     </componentList>
