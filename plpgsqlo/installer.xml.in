@@ -176,16 +176,20 @@
     </initializationActionList>
     <!-- Preinstallation actions -->
     <preInstallationActionList>
+
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="branding" value=""/>
                 <!-- Do not create uninstaller in case of extract-only mode -->
                 <setInstallerVariable name="createUninstaller" value="0" persist="1"/>
+                <setInstallerVariable name="libdir" value="${installdir}/lib"/>
+                <setInstallerVariable name="sharedir" value="${installdir}/share"/>
             </actionList>
             <ruleList>
                 <isTrue value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
+
 
         <!-- Do not perform the below actions in case of extract-only mode -->
         <actionGroup>
@@ -567,7 +571,69 @@
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-    
+   
+        <setInstallerVariable name="pg_config" value="${installdir}/bin/pg_config"/>
+        <setInstallerVariable name="pg_config" value="${installdir}\bin\pg_config.exe">
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- Get libdir and sharedir to copy plpgsqlo.so-->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariableFromScriptOutput>
+                    <name>libdir</name>
+                    <exec>${pg_config}</exec>
+                    <execArgs>--pkglibdir</execArgs>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <onErrorActionList>
+                        <setInstallerVariable name="libdir" value="${installdir}/lib"/>
+                    </onErrorActionList>
+                </setInstallerVariableFromScriptOutput>
+
+                <setInstallerVariableFromScriptOutput>
+                    <name>sharedir</name>
+                    <exec>${pg_config}</exec>
+                    <execArgs>--sharedir</execArgs>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <onErrorActionList>
+                        <setInstallerVariable name="sharedir" value="${installdir}/share"/>
+                    </onErrorActionList>
+                </setInstallerVariableFromScriptOutput>
+            </actionList>
+            <ruleList>
+                <fileExists path="${pg_config}"/>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+                <!-- change "C:\" to "C:/" in case of Windows -->
+                <setInstallerVariableFromRegEx>
+                    <name>libdir</name>
+                    <text>${libdir}</text>
+                    <pattern>\\</pattern>
+                    <substitution>//</substitution>
+                </setInstallerVariableFromRegEx>
+                <logMessage>
+                    <text>Using libdir: ${libdir}</text>
+                </logMessage>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+ 
 	<include file="staging/registration_preinstallation.xml"/>
 
     </preInstallationActionList>
@@ -621,11 +687,11 @@
             </ruleList>
         </actionGroup>
         <substitute>
-            <files>${installdir}/share/plpgsqlo.sql</files>
+            <files>${sharedir}/plpgsqlo.sql</files>
             <substitutionList>
                 <substitution>
                     <pattern>\$libdir</pattern>
-                    <value>${installdir}/lib</value>
+                    <value>${libdir}</value>
                 </substitution>
                 <substitution>
                     <pattern>\$SUPERUSER</pattern>
@@ -691,100 +757,84 @@
                 <!-- WIN: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${libdir}</destination>
                     <name>programfileslibwindows</name>
                     <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/windows/lib</origin>
-                        </distributionDirectory>
+		    <distributionFileList>
+			<distributionFile origin="staging/windows/lib/plpgsqlo.dll"/>
                     </distributionFileList>
                 </folder>
                <!-- WIN: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${sharedir}</destination>
                     <name>programfilessharewindows</name>
                     <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/windows/share</origin>
-                        </distributionDirectory>
+		    <distributionFileList>
+                            <distributionFile origin="staging/windows/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
 
                 <!-- LIN: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${libdir}</destination>
                     <name>programfilesliblinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux/lib</origin>
-                        </distributionDirectory>
+                            <distributionFile origin="staging/linux/lib/plpgsqlo.so"/>
                     </distributionFileList>
                 </folder>
                <!-- LIN: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${sharedir}</destination>
                     <name>programfilessharelinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux/share</origin>
-                        </distributionDirectory>
+                            <distributionFile origin="staging/linux/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
 
                 <!-- LIN-X64: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${libdir}</destination>
                     <name>programfilesliblinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/lib</origin>
-                        </distributionDirectory>
+                            <distributionFile origin="staging/linux-x64/lib/plpgsqlo.so"/>
                     </distributionFileList>
                 </folder>
                <!-- LIN-X64: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${sharedir}</destination>
                     <name>programfilessharelinux-x64</name>
                     <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/share</origin>
-                        </distributionDirectory>
+		    <distributionFileList>
+                            <distributionFile origin="staging/linux-x64/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
 
                 <!-- MAC: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${libdir}</destination>
                     <name>programfileslibosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/osx/lib</origin>
-                        </distributionDirectory>
+                            <distributionFile origin="staging/osx/lib/plpgsqlo.so"/>
                     </distributionFileList>
                 </folder>
                <!-- MAC: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${sharedir}</destination>
                     <name>programfilesshareosx</name>
                     <platforms>osx</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/osx/share</origin>
-                        </distributionDirectory>
+		    <distributionFileList>
+                            <distributionFile origin="staging/osx/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
 
