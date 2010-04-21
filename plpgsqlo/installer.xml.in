@@ -619,11 +619,8 @@
                     <name>libdir</name>
                     <text>${libdir}</text>
                     <pattern>\\</pattern>
-                    <substitution>//</substitution>
+                    <substitution>/</substitution>
                 </setInstallerVariableFromRegEx>
-                <logMessage>
-                    <text>Using libdir: ${libdir}</text>
-                </logMessage>
             </actionList>
             <ruleList>
                 <compareText>
