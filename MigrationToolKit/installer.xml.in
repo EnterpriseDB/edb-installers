@@ -163,10 +163,32 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
+
+        <!-- Registration Pre-Installation Action List -->
+        <include file="staging/registration_initialization.xml"/>
+
     </initializationActionList>
 	
     <!-- Preinstallation actions -->
-    <preInstallationActionList>
+    <preInstallationActionList> 
+
+        <!-- Check for AS84 installed jre -->
+        <registryGet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\AS\8.4\jre</key>
+          <name>Base Directory</name>
+          <variable>jrehome</variable>
+        </registryGet>
+
+        <iniFileGet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ppas_jre_8.4</section>
+          <key>InstallationDirectory</key>
+          <variable>jrehome</variable>
+          <ruleList>
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileExists path="/etc/postgres-reg.ini" />
+          </ruleList>
+        </iniFileGet>
 
         <!-- Check if the valid jrehome switch is supplied -->
         <throwError>
@@ -362,7 +384,7 @@
 	<setInstallerVariable>
 		<name>branding</name>
 		<persist>0</persist>
-		<value>PostgreSQL</value>
+		<value>Postgres Plus Add-ons</value>
 		<ruleList>
 			<compareText>
 				<logic>equals</logic>
@@ -389,6 +411,10 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <!-- Custome Page for Registration -->
+        <include file="staging/registration_preinstallation.xml"/>
+
     </preInstallationActionList>
 	
     <!-- Post installation actions -->
@@ -475,6 +501,10 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </registrySet>
+
+        <!-- Custome Page for Registration -->
+        <include file="staging/registration_postinstallation.xml"/>
+
     </postInstallationActionList>
 	
     <!-- preUninstallation actions -->
@@ -516,6 +546,10 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <!-- Custome Page for Registration -->
+        <include file="staging/registration_preuninstallation.xml"/>
+
     </preUninstallationActionList>
 	
     <!-- Components -->
@@ -614,9 +648,18 @@
                 </folder>
             </folderList>
         </component>
+
+        <!-- Custome Page for Registration -->
+        <include file="staging/registration_component.xml"/>
+
     </componentList>
 	
     <parameterList>
+
+        <!-- Custome Page for Registration -->
+        <include file="staging/registration_already_registered_parameter.xml"/>
+        <include file="staging/registration_authentication_parameter.xml"/>
+
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <stringParameter name="jrehome" cliOptionName="jrehome" default="" ask="0" cliOptionShow="0"/>

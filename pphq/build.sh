@@ -187,12 +187,14 @@ _postprocess_pphq() {
     then
         rm installer.xml
     fi
-
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (pphq/installer.xml.in)"
-    
+
     _replace PG_VERSION_PPHQ $PG_VERSION_PPHQ installer.xml || _die "Failed to set the version in the installer project file (pphq/installer.xml)"
     _replace PG_BUILDNUM_PPHQ $PG_BUILDNUM_PPHQ installer.xml || _die "Failed to set the Build Number in the installer project file (pphq/installer.xml)"
-   
+
+    #_registration_postprocess(STAGING DIRECTORY, COMPONENT NAME, VERSION VARIABLE, INI, REGISTRY_PREFIX, REGISTRY_PREFIX_WIN, TEMP DIRECTORY, COMONENT TYPE)
+    _registration_postprocess "$WD/pphq/staging"  "PPHQ"         "pphqVersion" "/etc/postgres-reg.ini" "pphq" "Postgres Plus HQ" "pphq_installer" "pphq"
+
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
@@ -217,3 +219,4 @@ _postprocess_pphq() {
        _postprocess_pphq_windows || exit 1
     fi
 }
+

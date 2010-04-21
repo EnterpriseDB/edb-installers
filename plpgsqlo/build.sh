@@ -113,6 +113,10 @@ _postprocess_plpgsqlo() {
     _replace PG_VERSION_PLPGSQLO $PG_VERSION_PLPGSQLO installer.xml || _die "Failed to set the version in the installer project file (plpgsqlo/installer.xml)"
     _replace PG_BUILDNUM_PLPGSQLO $PG_BUILDNUM_PLPGSQLO installer.xml || _die "Failed to set the Build Number in the installer project file (plpgsqlo/installer.xml)"
     _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION installer.xml || _die "Failed to set the version in the installer project file (plpgsqlo/installer.xml)"
+   
+    #_registration_postprocess(STAGING DIRECTORY, COMPONENT NAME, VERSION VARIABLE, INI, REGISTRY_PREFIX, REGISTRY_PREFIX_WIN, TEMP DIRECTORY, COMONENT TYPE) 
+    _registration_postprocess "$WD/plpgsqlo/staging"  "PLPGSQLO"         "plpgsqloVersion" "/etc/postgres-reg.ini" "plpgsqlo/$PG_MAJOR_VERSION" "plpgsqlo-$PG_MAJOR_VERSION" "plpgsqlo_installer" "plpgsqlo"
+
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

@@ -68,7 +68,7 @@ stop()
         echo "pgbouncer not running"
         exit 2
     else
-        kill -9 \$PID
+        kill \$PID
     fi
 }
 status()

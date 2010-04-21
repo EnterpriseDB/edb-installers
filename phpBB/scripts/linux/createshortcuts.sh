@@ -68,7 +68,7 @@ _fixup_file "$INSTALLDIR/phpBB/scripts/xdg/pg-launchPhpBB.desktop"
 # the installation is not branded, to retain backwards compatibility.
 if [ $BRANDED -ne 0 ];
 then
-    cp "$INSTALLDIR/scripts/xdg/pg-postgresql.directory" "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory"
+    cp "$INSTALLDIR/phpBB/scripts/xdg/pg-postgresql.directory" "$INSTALLDIR/phpBB/scripts/xdg/pg-$BRANDING_STR.directory"
 fi
 
 

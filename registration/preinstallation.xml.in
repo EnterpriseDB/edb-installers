@@ -1,0 +1,204 @@
+<actionGroup>
+  <actionList>
+    <setInstallerVariable name="iExistingEmail" persist="0" value=""/>
+
+    <!-- Set the Installation Directory in case of re-install/upgrade -->
+    <actionGroup>
+      <actionList>
+        <iniFileGet file="@@REGISTRY_INI@@" section="@@REGISTRY_PREFIX@@" key="Username" variable="iExistingEmail">
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </iniFileGet>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\@@REGISTRY_PREFIX_WIN@@" name="Username" variable="iExistingEmail">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </registryGet>
+      </actionList>
+      <ruleList>
+        <stringTest type="not_empty" text="${@@COMPONENT_VERSION@@}"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- Existing install with Username (ignore command-line) -->
+    <setInstallerVariable name="existingEmail" persist="0" value="${iExistingEmail}">
+      <ruleList>
+        <compareText logic="does_not_equal" text="${@@COMPONENT_VERSION@@}" value=""/>
+        <compareText logic="does_not_equal" text="${iExistingEmail}" value=""/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <!-- dummy value for existingEmail, if registration_required set to 0 -->
+    <setInstallerVariable name="existingEmail" value="dummy@mail.edb.com">
+      <ruleList>
+        <isFalse value="${registration_required}"/>
+        <compareText logic="equals" text="${iExistingEmail}" value=""/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <throwError text="${msg(registration.emailpassword.not.provided)}" abortOnError="1">
+      <ruleList>
+        <ruleGroup>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <compareText logic="equals" text="${existingEmail}" value=""/>
+            <compareText logic="equals" text="${existingPassword}" value=""/>
+          </ruleList>
+        </ruleGroup>
+        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+        <compareText logic="equals" text="${iExistingEmail}" value=""/>
+        <isTrue value="${registration_required}"/>
+      </ruleList>
+    </throwError>
+
+    <throwError text="${msg(registration.error.invalid.email.value)}">
+      <ruleList>
+        <regExMatch logic="does_not_match" text="${existingEmail}">
+          <pattern>^([\w]+)(([-\.][\w]+)?)*@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)</pattern>
+        </regExMatch>
+        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+        <isTrue value="${registration_required}"/>
+        <compareText logic="equals" text="${iExistingEmail}" value=""/>
+      </ruleList>
+    </throwError>
+
+    <createDirectory path="${system_temp_directory}/@@TEMPDIR@@"/>
+
+    <actionGroup>
+      <actionList>
+
+        <!-- Unpack scripts and required libraries -->
+        <unpackDirectory
+          component="userValidation"
+          destination="${system_temp_directory}/@@TEMPDIR@@/"
+          folder="registration${platform_name}"
+          origin="UserValidation"/>
+
+        <!-- LIN/LIN-X64/MAC: Unpack existing-enterprisedb-mail authentication scripts -->
+        <actionGroup>
+          <actionList>
+
+            <!-- Use script to generate the required information, while validating email -->
+            <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/@@TEMPDIR@@/UserValidation/lib"/>
+
+            <!-- Generate UUID -->
+            <setInstallerVariableFromScriptOutput name="uuid_val" showMessageOnError="0" exec="uuidgen" abortOnError="0">
+              <onErrorActionList>
+                <!-- User predefined value, if uuidgen does not exist/could not generate the uuid -->
+                <setInstallerVariable name="uuid_val" value="16a874e6-241e-44ae-b27e-74aecded209a"/>
+              </onErrorActionList>
+            </setInstallerVariableFromScriptOutput>
+
+            <!-- Try validating email and password in unattended mode (if not already registered) -->
+            <actionGroup>
+              <actionList>
+                <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;@@COMPONENT@@&quot; &quot;false&quot; &quot;true&quot; &quot;&quot; &quot;&quot; &quot;1&quot; &quot;&quot; &quot;&quot; &quot;0&quot; &quot;0&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"/>
+                <setInstallerVariableFromScriptOutput name="ws_existinguser_result"
+                  abortOnError="0" customErrorMessage="${msg(registration.validatinguser.ws.error)}"
+                  exec="${system_temp_directory}/@@TEMPDIR@@/UserValidation/validateUserClient.o"
+                  execArgs="&quot;${uuid_val}&quot; &quot;@@COMPONENT@@&quot; &quot;false&quot; &quot;true&quot; &quot;&quot; &quot;&quot; &quot;1&quot; &quot;&quot; &quot;&quot; &quot;0&quot; &quot;0&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
+                  workingDirectory="${system_temp_directory}/@@TEMPDIR@@/UserValidation"/>
+              </actionList>
+              <ruleList>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+              </ruleList>
+            </actionGroup>
+
+          </actionList>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+          <actionList>
+            <setInstallerVariableFromScriptOutput
+              name="uuid_val"
+              showMessageOnError="0"
+              exec="${system_temp_directory}\@@TEMPDIR@@\UserValidation\dbserver_guid.exe"
+              abortOnError="0"/>
+            <setInstallerVariableFromRegEx
+              name="uuid_val"
+              text="${uuid_val}"
+              pattern="^dbser_guid=([^\S]*)$"
+              substitution="\1"
+              abortOnError="0"
+              showMessageOnError="0">
+              <ruleList>
+                <compareText logic="does_not_equal" text="${uuid_val}" value=""/>
+              </ruleList>
+            </setInstallerVariableFromRegEx>
+            <setInstallerVariable name="uuid_val" value="16a874e6-241e-44ae-b27e-74aecded209a">
+              <ruleEvaluationLogic>or</ruleEvaluationLogic>
+              <ruleList>
+                <compareText text="${uuid_val}" logic="equals" value=""/>
+                <regExMatch text="${uuid_val}" logic="does_not_match" pattern="^([A-Fa-f0-9\-]*)$"/>
+              </ruleList>
+            </setInstallerVariable>
+
+            <!-- Try validating email and password in unattended mode (if not already registered) -->
+            <actionGroup>
+              <actionList>
+                <logMessage text="Sending parameter: &quot;@@COMPONENT@@&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${uuid_val}&quot;"/>
+                <setInstallerVariableFromScriptOutput
+                  customErrorMessage="${msg(registration.validatinguser.ws.error)}"
+                  exec="${system_temp_directory}\@@TEMPDIR@@\UserValidation\validateUserClient.exe"
+                  execArgs="&quot;@@COMPONENT@@&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${uuid_val}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
+                  name="ws_existinguser_result"
+                  abortOnError="0"
+                  workingDirectory="${system_temp_directory}\@@TEMPDIR@@\UserValidation"/>
+              </actionList>
+              <ruleList>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+              </ruleList>
+            </actionGroup>
+
+          </actionList>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+          <actionList>
+            <stringModify text="${ws_existinguser_result}" variable="ws_existinguser_result" logic="trim"/>
+            <throwError abortOnError="1" text="${msg(registration.ws.email.not.authenticated)}">
+              <ruleList>
+                <compareText logic="equals" text="${ws_existinguser_result}" value="1"/>
+              </ruleList>
+            </throwError>
+            <throwError abortOnError="1" text="${msg(registration.ws.email.not.validated)}">
+              <ruleList>
+                <compareText logic="equals" text="${ws_existinguser_result}" value="2"/>
+              </ruleList>
+            </throwError>
+            <throwError abortOnError="1" text="${msg(registration.ws.email.already.exists)}">
+              <ruleList>
+                <compareText logic="equals" text="${ws_existinguser_result}" value="3"/>
+              </ruleList>
+            </throwError>
+            <throwError abortOnError="1" text="${msg(registration.ws.exception.from.server)}">
+              <ruleList>
+                <compareText logic="equals" text="${ws_existinguser_result}" value="4"/>
+              </ruleList>
+            </throwError>
+            <throwError abortOnError="1" text="${msg(registration.ws.internet.not.connected)}">
+              <ruleList>
+                <compareText logic="equals" text="${ws_existinguser_result}" value=""/>
+              </ruleList>
+            </throwError>
+          </actionList>
+          <ruleList>
+            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+          </ruleList>
+        </actionGroup>
+
+      </actionList>
+      <ruleList>
+        <isTrue value="${registration_required}"/>
+        <compareText logic="equals" text="${iExistingEmail}" value=""/>
+      </ruleList>
+    </actionGroup>
+  </actionList>
+</actionGroup>

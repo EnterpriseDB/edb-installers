@@ -125,7 +125,62 @@
         <!-- Set Proxy values from environement variables if any -->
         <setInstallerVariable name="proxyHost" value="${env(PROXY_HOST)}" />
         <setInstallerVariable name="proxyPort" value="${env(PROXY_PORT)}" />
-		
+
+
+        <!-- Check for AS84 installed jre -->
+        <registryGet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\AS\8.4\jre</key>
+          <name>Base Directory</name>
+          <variable>jrehome</variable>
+        </registryGet>
+
+        <iniFileGet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ppas_jre_8.4</section>
+          <key>InstallationDirectory</key>
+          <variable>jrehome</variable>
+          <ruleList>
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileExists path="/etc/postgres-reg.ini" />
+          </ruleList>
+        </iniFileGet>
+	
+        <!-- Check if the valid jrehome switch is supplied -->
+        <throwError>
+          <customErrorMessage>${msg(jre.invalid.error)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileTest path="${jrehome}/bin/java" condition="not_exists" />
+          </ruleList>
+        </throwError>
+        <throwError>
+          <customErrorMessage>${msg(jre.invalid.error.windows)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="equals" value="windows" />
+             <fileTest path="${jrehome}\bin\java.exe" condition="not_exists" />
+          </ruleList>
+        </throwError>
+
+        <!-- Set the java_executable variable if valid jrehome switch is supplied -->
+        <setInstallerVariable name="java_executable" value="${jrehome}/bin/java" >
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+             <fileExists path="${jrehome}/bin/java" />
+          </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="java_executable" value="${jrehome}\bin\java.exe" >
+          <ruleList>
+             <compareText text="${jrehome}" logic="does_not_equal" value="" />
+             <compareText text="${platform_name}" logic="equals" value="windows" />
+             <fileExists path="${jrehome}\bin\java.exe" />
+          </ruleList>
+        </setInstallerVariable>
+    
         <!-- Detecting Java, Abort if not found -->
         <autodetectJava>
             <promptUser>0</promptUser>
@@ -140,6 +195,9 @@
             <abortOnError>1</abortOnError>
             <showMessageOnError>1</showMessageOnError>
             <customErrorMessage>${msg(java.error)}</customErrorMessage>
+            <ruleList>
+               <compareText text="${jrehome}" logic="equals" value="" />
+            </ruleList>
         </autodetectJava>
 		
 	    <!-- MAC : Set the default installation directory -->
@@ -337,7 +395,7 @@
 	<setInstallerVariable>
 		<name>branding</name>
 		<persist>0</persist>
-		<value>PostgreSQL</value>
+		<value>Postgres Plus Add-ons</value>
 		<ruleList>
 			<compareText>
 				<logic>equals</logic>
@@ -732,7 +790,7 @@
         <actionGroup>
             <actionList>
                 <substitute>
-                    <files>${installdir}\scripts\launchMigrationWizard.bat</files>
+                    <files>${installdir}\scripts\launchMigrationWizard.vbs</files>
                     <substitutionList>
                         <substitution>
                             <pattern>@@INSTALLDIR@@</pattern>
@@ -1053,8 +1111,8 @@
                     <comment>EnterpriseDB MySQL Migration Wizard</comment>
                     <name>Migration Wizard</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>wscript</windowsExec>
-                    <windowsExecArgs>//NoLogo "${installdir}\scripts\launchMigrationWizard.vbs" "" "${java_executable}" "-jar MigrationWizard.jar" "${installdir}""</windowsExecArgs>
+                    <windowsExec>wscript.exe</windowsExec>
+                    <windowsExecArgs>//nologo "${installdir}\scripts\launchMigrationWizard.vbs"</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\application.ico</windowsIcon>
                 </startMenuShortcut>
             </startMenuShortcutList>
@@ -1137,6 +1195,7 @@
     <parameterList>
 	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
 	<stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
+        <stringParameter name="jrehome" cliOptionName="jrehome" default="" ask="0" cliOptionShow="0"/>
         <parameterGroup
             name="registration"
             title="${msg(registration.title.value)}"
@@ -1193,7 +1252,7 @@
                         <throwError text="${msg(error.invalid.email.value)}">
                             <ruleList>
                                 <regExMatch logic="does_not_match" text="${existingEmail}">
-                                    <pattern>^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$</pattern>
+                                    <pattern>^([\w]+)(([-\.][\w]+)?)*@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)</pattern>
                                 </regExMatch>
                             </ruleList>
                         </throwError>

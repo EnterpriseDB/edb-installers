@@ -107,13 +107,27 @@ fi
 # Initialise the build system
 _init
 
-################################################################################
+echo "################################################"
+echo " Build common utilities or modularized packages"
+echo "################################################"
+
+echo "### Module: registartion"
+source $WD/registration/build.sh
+
+if [ $SKIPBUILD = 0 ];
+then
+  _registration_component_build
+fi
+
 # Build each package. This may have interdepencies so must be built in order
-################################################################################
+echo "############################################################################"
+echo " Build Packages"
+echo "############################################################################"
 
 # Package: Server
 if [ $PG_PACKAGE_SERVER = 1 ];
 then
+    echo "### Package: Server"
     cd $WD
     source ./server/build.sh
 
@@ -129,6 +143,7 @@ fi
 # Package: ApachePhp
 if [ $PG_PACKAGE_APACHEPHP = 1 ];
 then
+    echo "### Package: ApachePhp"
     cd $WD
     source ./ApachePhp/build.sh
 
@@ -144,6 +159,7 @@ fi
 # Package: mediaWiki
 if [ $PG_PACKAGE_MEDIAWIKI = 1 ];
 then
+    echo "### Package: mediaWiki"
     cd $WD
     source ./mediaWiki/build.sh
 
@@ -159,6 +175,7 @@ fi
 # Package: phpWiki
 if [ $PG_PACKAGE_PHPWIKI = 1 ];
 then
+    echo "### Package: phpWiki"
     cd $WD
     source ./phpWiki/build.sh
 
@@ -174,6 +191,7 @@ fi
 # Package: phpBB
 if [ $PG_PACKAGE_PHPBB = 1 ];
 then
+    echo "### Package: phpBB"
     cd $WD
     source ./phpBB/build.sh
 
@@ -189,6 +207,7 @@ fi
 # Package: Drupal
 if [ $PG_PACKAGE_DRUPAL = 1 ];
 then
+    echo "### Package: Drupal"
     cd $WD
     source ./Drupal/build.sh
 
@@ -204,6 +223,7 @@ fi
 # Package: phppgadmin
 if [ $PG_PACKAGE_PHPPGADMIN = 1 ];
 then
+    echo "### Package: phppgadmin"
     cd $WD
     source ./phpPgAdmin/build.sh
 
@@ -219,6 +239,7 @@ fi
 # Package: pgJDBC
 if [ $PG_PACKAGE_PGJDBC = 1 ];
 then
+    echo "### Package: pgJDBC"
     cd $WD
     source ./pgJDBC/build.sh
 
@@ -234,6 +255,7 @@ fi
 # Package: psqlODBC
 if [ $PG_PACKAGE_PSQLODBC = 1 ];
 then
+    echo "### Package: psqlODBC"
     cd $WD
     source ./psqlODBC/build.sh
 
@@ -249,6 +271,7 @@ fi
 # Package: PostGIS
 if [ $PG_PACKAGE_POSTGIS = 1 ];
 then
+    echo "### Package: PostGIS"
     cd $WD
     source ./PostGIS/build.sh
 
@@ -264,6 +287,7 @@ fi
 # Package: Slony
 if [ $PG_PACKAGE_SLONY = 1 ];
 then
+    echo "### Package: Slony"
     cd $WD
     source ./Slony/build.sh
 
@@ -278,6 +302,7 @@ fi
 # Package: TuningWizard
 if [ $PG_PACKAGE_TUNINGWIZARD = 1 ];
 then
+    echo "### Package: TuningWizard"
     cd $WD
     source ./TuningWizard/build.sh
 
@@ -292,6 +317,7 @@ fi
 # Package: MigrationWizard
 if [ $PG_PACKAGE_MIGRATIONWIZARD = 1 ];
 then
+    echo "### Package: MigrationWizard"
     cd $WD
     source ./MigrationWizard/build.sh
 
@@ -306,6 +332,7 @@ fi
 # Package: pgphonehome
 if [ $PG_PACKAGE_PGPHONEHOME = 1 ];
 then
+    echo "### Package: pgphonehome"
     cd $WD
     source ./pgphonehome/build.sh
 
@@ -320,6 +347,7 @@ fi
 # Package: Npgsql
 if [ $PG_PACKAGE_NPGSQL = 1 ];
 then
+    echo "### Package: Npgsql"
     cd $WD
     source ./Npgsql/build.sh
 
@@ -334,6 +362,7 @@ fi
 # Package: pgAgent
 if [ $PG_PACKAGE_PGAGENT = 1 ];
 then
+    echo "### Package: pgAgent"
     cd $WD
     source ./pgAgent/build.sh
 
@@ -348,6 +377,7 @@ fi
 # Package: pgmemcache
 if [ $PG_PACKAGE_PGMEMCACHE = 1 ];
 then
+    echo "### Package: pgmemcache"
     cd $WD
     source ./pgmemcache/build.sh
 
@@ -362,6 +392,7 @@ fi
 # Package: pgbouncer
 if [ $PG_PACKAGE_PGBOUNCER = 1 ];
 then
+    echo "### Package: pgbouncer"
     cd $WD
     source ./pgbouncer/build.sh
 
@@ -442,6 +473,7 @@ fi
 # Package: ReplicationServer
 if [ $PG_PACKAGE_REPLICATIONSERVER = 1 ];
 then
+    echo "### Package: ReplicationServer"
     cd $WD
     source ./ReplicationServer/build.sh
 
@@ -457,6 +489,7 @@ fi
 # Package: PPHQ
 if [ $PG_PACKAGE_PPHQ = 1 ];
 then
+    echo "### Package: PPHQ"
     cd $WD
     source ./pphq/build.sh
 
@@ -472,6 +505,7 @@ fi
 # Package: HQAGENT
 if [ $PG_PACKAGE_HQAGENT = 1 ];
 then
+    echo "### Package: HQAGENT"
     cd $WD
     source ./hqagent/build.sh
 
@@ -518,6 +552,7 @@ fi
 # ALWAYS BUILD THIS LAST!!
 if [ $PG_PACKAGE_DEVSERVER = 1 ];
 then
+    echo "### Package: DevServer"
     cd $WD
     source ./DevServer/build.sh
 

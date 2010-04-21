@@ -17,6 +17,7 @@ strInstallDir = WScript.Arguments.Item(2)
 strDataDir = WScript.Arguments.Item(3)
 iPort = WScript.Arguments.Item(4)
 
+Dim regExp, objShell, objFso, objTempFolder
 'Escape the '%' as '%%', if present in the password
 Set regExp = new regexp
 regExp.Pattern = "[%]"
@@ -34,6 +35,8 @@ strOutputFile = objTempFolder.Path & "\" & objFso.GetTempName
 ' Execute a command. Note that we use Shell.Run here to prevent spawning DOS boxes.
 ' Unfortunately that means we have to hack things about to get the command output
 Function DoCmd(strCmd)
+    WScript.Echo "Start DoCmd(" & strCmd &")..."
+    Dim objBatchFile
     Set objBatchFile = objTempFolder.CreateTextFile(strBatchFile, True)
     objBatchFile.WriteLine "@ECHO OFF"
     objBatchFile.WriteLine "SET PGPASSWORD=" & strFormattedPassword
@@ -41,6 +44,7 @@ Function DoCmd(strCmd)
     objBatchFile.WriteLine "SET PGPASSWORD="
 	objBatchFile.WriteLine "EXIT /B %ERRORLEVEL%"
     objBatchFile.Close
+    WScript.Echo "    Executing '" & objTempFolder.Path & "\" & strBatchFile & "'..."
     DoCmd = objShell.Run(objTempFolder.Path & "\" & strBatchFile, 0, True)
     If objFso.FileExists(objTempFolder.Path & "\" & strBatchFile) = True Then
         objFso.DeleteFile objTempFolder.Path & "\" & strBatchFile, True
@@ -50,7 +54,10 @@ Function DoCmd(strCmd)
         WScript.Echo objOutputFile.ReadAll
         objOutputFile.Close
         objFso.DeleteFile strOutputFile, True
+    Else
+        WScript.Echo "    Couldn't find the output file..."
     End If
+    WScript.Echo "    End DoCmd()"
 End Function
 
 Sub Warn(msg)

@@ -5,7 +5,7 @@ SET INSTALL_DIR="%2"
 SET DB=%3
 
 REM Creating user for wiki application
-"%TEMPDIR%\psql.exe" -d %DB% -c "CREATE ROLE phpwikiuser PASSWORD 'phpwikiuser' SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN"
+"%TEMPDIR%\psql.exe" -d %DB% -c "CREATE ROLE phpwikiuser PASSWORD 'phpwikiuser' CREATEDB CREATEROLE INHERIT LOGIN"
 
 REM Creating database for wiki application
 "%TEMPDIR%\psql.exe" -d %DB% -c "CREATE DATABASE phpwiki OWNER phpwikiuser"

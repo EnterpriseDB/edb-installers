@@ -34,10 +34,8 @@ _prep_TuningWizard_osx() {
 
     echo "Creating staging directory ($WD/TuningWizard/staging/osx)"
     mkdir -p $WD/TuningWizard/staging/osx || _die "Couldn't create the staging directory"
-    mkdir -p $WD/TuningWizard/staging/osx/UserValidation || _die "Couldn't create the staging/UserValidation directory"
     chmod ugo+w $WD/TuningWizard/staging/osx || _die "Couldn't set the permissions on the staging directory"
-    chmod ugo+w $WD/TuningWizard/staging/osx/UserValidation || _die "Couldn't set the permissions on the staging/UserValidation directory"
-        
+
 }
 
 
@@ -63,23 +61,8 @@ _build_TuningWizard_osx() {
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     _rewrite_so_refs $WD/TuningWizard/staging/osx/TuningWizard TuningWizard.app/Contents/MacOS @loader_path/../../.. || _die "Failed rewriting references"
-    cp $WD/MetaInstaller/scripts/osx/sysinfo.sh $PG_STAGING/UserValidation/sysinfo.sh || _die "Failed copying sysinfo.sh to staging directory"
-    
-    if [ ! -f $WD/MetaInstaller/source/MetaInstaller.osx/validateUser/validateUserClient.o ];
-    then
-      echo "Building validateUserClient utility"
-      cp -R $WD/MetaInstaller/scripts/osx/validateUser $WD/TuningWizard/source/tuningwizard.osx/validateUser || _die "Failed copying validateUser script while building"
-      cd $WD/TuningWizard/source/tuningwizard.osx/validateUser
-      gcc -DWITH_OPENSSL -I. -o validateUserClient.o $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto || _die "Failed to build the validateUserClient utility"
-      cp validateUserClient.o $PG_STAGING/UserValidation/validateUserClient.o || _die "Failed to copy validateUserClient utility to staging directory"
-    else
-      echo "Using validateUserClient utility from MetaInstaller package"
-      cp $WD/MetaInstaller/source/MetaInstaller.osx/validateUser/validateUserClient.o $PG_STAGING/UserValidation/validateUserClient.o || _die "Failed to copy validateUserClient utility from MetaInstaller package"
-    fi
-    chmod ugo+x $PG_STAGING/UserValidation/*
 
 }
-    
 
 
 ################################################################################

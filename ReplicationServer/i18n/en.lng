@@ -27,8 +27,8 @@ java.error=Sun Java 1.5 or later is not installed on your system.\nPlease ensure
 
 pubserver.service.description=Publication Service.
 subserver.service.description=Subscription Service.
-pgplus.details.title=PostgresPlus Standard Server Installation Details
-pgplus.details.explanation=Please verify the PostgresPlus Standard Server installation details
+pgplus.details.title=Postgres Plus Installation Details
+pgplus.details.explanation=Please verify the Postgres Plus installation details
 
 config.servicepassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the service user account.
 config.serviceaccount.description=Operating system username
@@ -121,3 +121,8 @@ ws.internet.not.connected=Error in calling web service. Please check the interne
 xdb.registration.email.empty=Please provide the email address registered www.enterprisedb.com using the '--existing-email' command-line option.
 
 xdb.registration.password.empty=Please provide the password, set while registring with www.enterprisedb.com, using the '--existing-password' command-line option.
+
+pub.service.description=Provides data replication services from Oracle (tm) to Postgres Plus.
+sub.service.description=Provides data replication services from Oracle (tm) to Postgres Plus.
+
+Installer.CustomError.CommandLineOptionsNotPresent=The following options was not specified and is required: ${optionRequired}

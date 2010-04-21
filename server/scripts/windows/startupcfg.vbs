@@ -16,6 +16,7 @@ strInstallDir = WScript.Arguments.Item(3)
 strDataDir = WScript.Arguments.Item(4)
 strServiceName = WScript.Arguments.Item(5)
 
+Dim regExp, objShell, objFso, objTempFolder
 'Escape the '%' as '%%', if present in the password
 Set regExp = new regexp  
 regExp.Pattern = "[%]"
@@ -32,6 +33,8 @@ strOutputFile = objTempFolder.Path & "\" & objFso.GetTempName
 
 ' Execute a command
 Function DoCmd(strCmd)
+    WScript.Echo "Start DoCmd(" & strCmd & ")..."
+    Dim objBatchFile
     Set objBatchFile = objTempFolder.CreateTextFile(strBatchFile, True)
     objBatchFile.WriteLine "@ECHO OFF"
     objBatchFile.WriteLine strCmd & " > """ & strOutputFile & """ 2>&1"
@@ -47,6 +50,7 @@ Function DoCmd(strCmd)
         objOutputFile.Close
         objFso.DeleteFile strOutputFile, True
     End If
+    WScript.Echo "End DoCmd(" & strCmd & ")..."
 End Function
 
 Sub Die(msg)

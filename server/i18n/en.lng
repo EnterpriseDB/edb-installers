@@ -91,3 +91,4 @@ servicename.not.valid='${servicename}' is not a valid service name.\n\nIt must m
 servicename.already.exists.linux=A service (${servicename}) already exists in the '/etc/init.d' directory.\nPlease specify another name.
 servicename.already.exists.windows=A service (${servicename}) already exists.\nPlease specify another name.
 servicename.already.exists.osx=A service (com.edb.launchd.${servicename}.plist) already exists in the '/Library/LaunchDaemons' directory.\nPlease specify another name.
+pg.service.description=Provides relational database storage.

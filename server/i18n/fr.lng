@@ -90,3 +90,4 @@ servicename.not.valid=« ${servicename} » n'est pas un nom de service valide.\n
 servicename.already.exists.linux=Un service (${servicename}) existe déjà dans le répertoire « /etc/init.d ».\nMerci d'indiquer un autre nom.
 servicename.already.exists.windows=Un service (${servicename}) existe déjà.\nMerci d'indiquer un autre nom.
 servicename.already.exists.osx=Un service (com.edb.launchd.${servicename}.plist) existe déjà dans le répertoire '/Library/LaunchDaemons'.\nMerci d'indiquer un autre nom.
+pg.service.description=permet de conserver les bases de données relationnelles .

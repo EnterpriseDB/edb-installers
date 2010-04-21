@@ -293,6 +293,9 @@
                             <execArgs>--libdir</execArgs>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
+                            <onErrorActionList>
+                                <setInstallerVariable name="libdir" value="${installdir}/lib"/>
+                            </onErrorActionList>
                         </setInstallerVariableFromScriptOutput>
                         <setInstallerVariableFromScriptOutput>
                             <name>sharedir</name>
@@ -300,6 +303,9 @@
                             <execArgs>--sharedir</execArgs>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
+                            <onErrorActionList>
+                                <setInstallerVariable name="sharedir" value="${installdir}/share"/>
+                            </onErrorActionList>
                         </setInstallerVariableFromScriptOutput>
                         <setInstallerVariableFromScriptOutput>
                             <name>docdir</name>
@@ -307,6 +313,9 @@
                             <execArgs>--docdir</execArgs>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
+                            <onErrorActionList>
+                                <setInstallerVariable name="docdir" value="${installdir}/doc"/>
+                            </onErrorActionList>
                         </setInstallerVariableFromScriptOutput>
                         <setInstallerVariableFromScriptOutput>
                             <name>mandir</name>
@@ -314,6 +323,9 @@
                             <execArgs>--mandir</execArgs>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
+                            <onErrorActionList>
+                                <setInstallerVariable name="mandir" value="${installdir}/man"/>
+                            </onErrorActionList>
                         </setInstallerVariableFromScriptOutput>
                         <setInstallerVariableFromRegEx>
                             <name>parentlibdir</name>
@@ -1068,6 +1080,29 @@
 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
+
+        <!-- Abort uninstallation if not super-user/Administrator -->
+        <actionGroup>
+            <actionList>
+                <showWarning text="${msg(Installer.Warning.UninstallerAdministratorPrivileges)}"/>
+                <exit/>
+            </actionList>
+            <ruleList>
+                <isFalse value="${installer_is_root_install}"/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+                <showWarning text="${msg(Installer.Warning.UninstallerRootPrivileges)}"/>
+                <exit/>
+            </actionList>
+            <ruleList>
+                <isFalse value="${installer_is_root_install}"/>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
+
         <!-- LIN & MAC: Unsetting the PostGIS values in the ini file -->
         <actionGroup>
             <actionList>

@@ -338,7 +338,7 @@
         	<setInstallerVariable>
         		<name>branding</name>
         		<persist>0</persist>
-        		<value>PostgreSQL</value>
+        		<value>Postgres Plus Add-ons</value>
         		<ruleList>
         			<compareText>
         				<logic>equals</logic>
@@ -472,6 +472,29 @@
 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
+
+        <!-- Abort uninstallation if not super-user/Administrator -->
+        <actionGroup>
+            <actionList>
+                <showWarning text="${msg(Installer.Warning.UninstallerAdministratorPrivileges)}"/>
+                <exit/>
+            </actionList>
+            <ruleList>
+                <isFalse value="${installer_is_root_install}"/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+                <showWarning text="${msg(Installer.Warning.UninstallerRootPrivileges)}"/>
+                <exit/>
+            </actionList>
+            <ruleList>
+                <isFalse value="${installer_is_root_install}"/>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
+
         <actionGroup>
             <actionList>
                 <iniFileSet>
@@ -512,7 +535,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/installer/npgsql/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}" "{branding}"</programArguments>
+                    <programArguments>"${installdir}" "${branding}"</programArguments>
                     <workingDirectory>${installdir}/installer/npgsql</workingDirectory>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>

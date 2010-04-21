@@ -72,7 +72,7 @@ Sub SelectComponents(p_strComponentList)
   l_iUBound = UBound(l_arrayComponents)
 
   For l_iIndex = iLBound To iUBound Step 1
-    Select Case l_arrayComponents(l_iIndex)
+    Select Case LCase(l_arrayComponents(l_iIndex))
       Case "postgis"
         bInstallPostGIS = "Y"
       Case "slony"
@@ -95,7 +95,8 @@ Sub Init()
     WScript.Echo "NOTE: " & VBCRLF & _
                  "This script should be running with the administrator rights." & VBCRLF & _
                  "Please press enter to continue or press Ctrl+C to exit and rerun the script appropriately." & VBCRLF & VBCRLF & _
-                 "You must ensure that the admin user account running this script has full permissions on all directories in the installation path. Permissions inherited through group membership will not suffice."
+                 "You must ensure that the admin user account running this script has full permissions on all directories in the installation path. Permissions inherited through group membership will not suffice." & VBCRLF & VBCRLF & _
+                 "[ Press Enter to continue... ]"
     WSI.ReadLine
   End If
   ' Open Log File
@@ -384,11 +385,11 @@ Function Usage(exitcode)
     "-sap | --servicepassword <password> # Password for the service account" & VBCRLF & _
     "         Default: postgres" & VBCRLF & _
     "-d   | --datadir <directory> # Data Directory" & VBCRLF & _
-    "         Defalut: <Installation-Directory>\data" & VBCRLF & _
+    "         Default: <Installation-Directory>\data" & VBCRLF & _
     "-i   | --installdir <directory> # Installation Directory" & VBCRLF & _
     "         Default: <curernt working directory>" & VBCRLF & _
     "-l   | --locale <locale> # Locale" & VBCRLF & _
-    "         Defualt: DEFAULT" & VBCRLF & _
+    "         Default: DEFAULT" & VBCRLF & _
     "-p   | --port <port> # Port" & VBCRLF & _
     "         Default: 5432" & VBCRLF & _
     "-pb  | --pgbouncer-port # Port for pgbouncer" & VBCRLF & _
@@ -985,7 +986,7 @@ Public Sub WMI_Service_Start(strServiceName, intWaitTimeout)
   'Call the procedure to send the command to the user specified service
   strServiceState = WMI_Service_State_Set(strServiceName, "Start", intWaitTimeout)
 
-  If UCase(strServiceState) = "Running" Then
+  If UCase(strServiceState) = "RUNNING" Then
     LogMessage "The service '" & strServiceName & "' started successfully."
   End If
   LogMessage "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" & VBCRLF & _
@@ -1426,7 +1427,7 @@ Private Function WMI_Service_State_WaitOnChange(p_strServiceName, _
       'Pause for 1/2 second
       Wscript.Sleep(500)
       'Get the state of the service
-      strServiceState = WMI_Service_State_Get(p_strServiceName)
+      l_strServiceState = WMI_Service_State_Get(p_strServiceName)
     Loop
   End If
   'Return the current service state
@@ -1693,9 +1694,9 @@ Class DevServer
 
     ' Remove trailing '\' (slash) from path
     p_strInstallDir = Trim(p_strInstallDir)
-    If Right(p_strInstallDir, 1) = "\" Then
+    While Right(p_strInstallDir, 1) = "\"
       p_strInstallDir = Left(p_strInstallDir, Len(p_strInstallDir)-1)
-    End If
+    Wend
 
     If IsFileExists(p_strInstallDir, "bin\psql.exe", p_strErrMsg) AND _
        IsFileExists(p_strInstallDir, "bin\postgres.exe", p_strErrMsg) AND _
@@ -1715,6 +1716,18 @@ Class DevServer
        IsFileExists(p_strInstallDir, "scripts\serverctl.vbs", p_strErrMsg) Then
       validateServerPath = true
       m_strInstallDir = p_strInstallDir
+
+      If bInstallRuntimes Then
+        ShowMessage "Installing VC Runtimes..."
+        RunProgram WScript.FullName, _
+                   array("//nologo", objDevServer.InstallDir & "\installer\installruntimes.vbs", _
+                         objDevServer.InstallDir & strVCRedistFile), _
+                   strScriptOutput, strScriptError, iStatus
+        If iStatus <> 0 Then
+          LogError "Failed to install vc runtimes..." & strScriptError
+        End If
+      End If
+
       ' Find out PostgreSQL Version
       SetVariableFromScriptOutput p_strInstallDir & "\bin\pg_config.exe", "--version", l_strVersion, l_strErrMsg, l_iStatus
 
@@ -1783,7 +1796,7 @@ Class DevServer
          End If
        Next
        For Each l_objFile in objBinDir.Items
-         l_strFile = "" & LCase(objBinDir.GetDetailsOf (l_objFile, 0))
+         l_strFile = "" & LCase(objBinDir.GetDetailsOf(l_objFile, 0))
          If l_strFile = "pg_ctl" Then
            ServiceAccount = objBinDir.GetDetailsOf (l_objFile, l_iOwner)
          End If
@@ -1818,7 +1831,7 @@ Class DevServer
   Public Function validatePort(p_iPort, ByRef p_strErrMsg)
     validatePort = false
     If NOT IsNumeric(p_iPort) OR NOT InStr(p_iPort, ".") = 0 Then
-      p_strErrMsg = "'" & pPort & "' is not a valid port."
+      p_strErrMsg = "'" & p_iPort & "' is not a valid port."
       Exit Function
     End If
     If p_iPort < 1000 OR p_iPort > 65535 Then
@@ -2033,9 +2046,39 @@ Function IsPostGISPresent()
   End If
 End Function
 
+Function ReplaceInFile(p_strFile, p_strFindStr, p_strSubstitute)
+  Dim l_strData, l_objFile
+
+  If IsEmpty(p_strFindStr) OR p_strFindStr = "" Then
+    ReplaceInFile=false
+    Exit Function
+  End If
+
+  ' Open the file and replace the place holders
+  Set l_objFile = FSO.OpenTextFile(p_strFile, 1)
+  l_strData = l_objFile.ReadAll
+  l_objFile.Close
+  l_objFile = Nothing
+
+  l_strData = Replace(l_strData, p_strFindStr, p_strSubstitute)
+
+  Set l_objFile = FSO.OpenTextFile(l_strfFile, 2)
+  l_objFile.WriteLine l_strData
+  l_objFile.Close
+  l_objFile = Nothing
+
+  ReplaceInFile=true
+End Function
+
 Sub ConfigurePostGIS
   ShowMessage "Configuring PostGIS..."
   LogNote "This will take some time..."
+  l_strInstallDir= Replace(objDevServer.InstallDir & "\bin", "\", "/")
+  ReplaceInFile objDevServer.InstallDir & "\share\contrib\postgis.sql", "$libdir", l_strInstallDir
+  ReplaceInFile objDevServer.InstallDir & "\share\contrib\postgis_upgrade.sql", "$libdir", l_strInstallDir
+  ReplaceInFile objDevServer.InstallDir & "\share\contrib\postgis_upgrade_12_to_14.sql", "$libdir", l_strInstallDir
+  ReplaceInFile objDevServer.InstallDir & "\share\contrib\postgis_upgrade_13_to_14.sql", "$libdir", l_strInstallDir
+  ReplaceInFile objDevServer.InstallDir & "\share\contrib\postgis_upgrade_14_minor.sql", "$libdir", l_strInstallDir
   ' Create postgis template database
   RunPsql true, "-t", true, "CREATE DATABASE template_postgis", ""
   ' Mark teh the database as a template
@@ -2104,10 +2147,10 @@ End Sub
 Function IsPgAgentPresent
   IsPgAgentPresent = false
   If FSO.FolderExists(objDevServer.InstallDir & "\pgAgent") AND _
-     IsFileExists(objDevServer.InstallDir, "\pgAgentshare\pgagent.sql", l_strErrMsg) AND _
-     IsFileExists(objDevServer.InstallDir, "\pgAgentbin\pgagent.exe", l_strErrMsg) AND _
-     IsFileExists(objDevServer.InstallDir, "\pgAgentbin\pgaevent.dll", l_strErrMsg) AND _
-     IsFileExists(objDevServer.InstallDir, "\pgAgentinstaller\pgAgent\pgaevent.dll", l_strErrMsg) Then
+     IsFileExists(objDevServer.InstallDir, "\pgAgent\share\pgagent.sql", l_strErrMsg) AND _
+     IsFileExists(objDevServer.InstallDir, "\pgAgent\bin\pgagent.exe", l_strErrMsg) AND _
+     IsFileExists(objDevServer.InstallDir, "\pgAgent\bin\pgaevent.dll", l_strErrMsg) AND _
+     IsFileExists(objDevServer.InstallDir, "\pgAgent\installer\pgAgent\pgaevent.dll", l_strErrMsg) Then
     SetVariableFrompsqlOutput l_strHasSchema, "SELECT has_schema_privilege('pgagent', 'USAGE')", CONSTADMINDATABASE
     ' pgAgent component present, but we will configure it only if 'pgagent' schema does not exists
     If l_strHasSchema = "" Then
@@ -2294,7 +2337,7 @@ Sub ConfigurepgsqlODBC
 End Sub
 
 Function IsPgBouncerPresent
-  IsPgBouncerPresent = true
+  IsPgBouncerPresent = false
   If FSO.FolderExists(objDevServer.InstallDir & "\pgbouncer") AND _
      IsFileExists(objDevServer.InstallDir, "\pgbouncer\bin\pgbouncer.exe", l_strErrMsg) AND _
      IsFileExists(objDevServer.InstallDir, "\pgbouncer\installer\pgbouncer\securefile.vbs", l_strErrMsg) AND _
@@ -2314,7 +2357,7 @@ Sub ConfigurePgBouncer
     FSO.CreateFolder objPGBouncer.Path & "\etc"
   End If
 
-  Question "Please enter the data directory", "objPGBouncer.validatePort", iPbPort, iPbPort, bUnattended, true
+  Question "Please enter the port on which pgbouncer will listen", "objPGBouncer.validatePort", iPbPort, iPbPort, bUnattended, true
   BackupFile objPGBouncer.Path & "\share\pgbouncer.ini"
   BackupNUseOriginalFile objPGBouncer.Path & "\share\pgbouncer.ini"
   Set objFile = FSO.OpenTextFile(objPGBouncer.Path & "\share\pgbouncer.ini", 1)
@@ -2334,7 +2377,7 @@ Sub ConfigurePgBouncer
   objFile.WriteLine l_strData
   objFile.Close
 
-  BackupFile objPGBouncer.Path & "\ect\userlist.txt"
+  BackupFile objPGBouncer.Path & "\etc\userlist.txt"
   Set objFile = FSO.OpenTextFile(objPGBouncer.Path & "\etc\userlist.txt", 2)
   objFile.WriteLine """" & objDevServer.SuperUser & """ """ & objDevServer.SuperPassword & """"
   objFile.Close
@@ -2364,17 +2407,6 @@ Question "Please enter the installation directory", "objDevServer.validateServer
 objDevServer.SuperUser      = Trim(strSuperUser)
 objDevServer.ServiceAccount = Trim(strServiceAccount)
 objDevServer.ServiceName  = Trim(strServiceName)
-
-If bInstallRuntimes Then
-  ShowMessage "Installing VC Runtimes..."
-  RunProgram WScript.FullName, _
-             array("//nologo", objDevServer.InstallDir & "\installer\installruntimes.vbs", _
-                   objDevServer.InstallDir & strVCRedistFile), _
-             strScriptOutput, strScriptError, iStatus
-  If iStatus <> 0 Then
-    LogError "Failed to install vc runtimes..." & strScriptError
-  End If
-End If
 
 Question "Please enter the data directory", "objDevServer.validateDataDir", objDevServer.InstallDir & "\data", strDataDir, bUnattended, true
 Question "Please enter the port", "objDevServer.validatePort", iPort, iPort, bUnattended, true
@@ -2470,7 +2502,7 @@ ShowMessage "Starting server..."
 WMI_Service_Start objDevServer.ServiceName, 1000
 
 l_strServiceState = WMI_Service_State_Get(objDevServer.ServiceName)
-If NOT UCase(l_strServiceState) = "Running" Then
+If NOT UCase(l_strServiceState) = "RUNNING" Then
     LogError "The service '" & objDevServer.ServiceName & "' could not be started."
     Call Finish(1)
 End If

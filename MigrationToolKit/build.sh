@@ -143,6 +143,9 @@ _postprocess_MigrationToolKit() {
     _replace PG_VERSION_MIGRATIONTOOLKIT $PG_VERSION_MIGRATIONTOOLKIT installer.xml || _die "Failed to set the major version in the installer project file (MigrationToolKit/installer.xml)"
     _replace PG_BUILDNUM_MIGRATIONTOOLKIT $PG_BUILDNUM_MIGRATIONTOOLKIT installer.xml || _die "Failed to set the Build Number in the installer project file (MigrationToolKit/installer.xml)"
 
+    #_registration_postprocess(STAGING DIRECTORY, COMPONENT NAME, VERSION VARIABLE, INI, REGISTRY_PREFIX, REGISTRY_PREFIX_WIN, TEMP DIRECTORY, COMONENT TYPE)
+    _registration_postprocess "$WD/MigrationToolKit/staging"  "MigrationToolKit"         "MigrationToolkitVersion" "/etc/postgres-reg.ini" "MigrationToolkit" "MigrationToolkit" "mtk" "mtk"
+
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then

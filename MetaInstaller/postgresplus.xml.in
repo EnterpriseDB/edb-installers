@@ -515,6 +515,16 @@
         <isTrue value="${extract_mode}"/>
       </ruleList>
     </actionGroup>
+
+    <!-- Check if dbserver component is deselected in unattended mode -->
+    <throwError>
+        <text>${msg(dbserver.required.pgerror)}</text>
+        <ruleList>
+            <compareText text="${component(dbserver).selected}" value="0" logic="equals"/>
+            <compareText text="${installer_ui}" value="unattended" logic="equals" />
+        </ruleList>
+    </throwError>
+
     <actionGroup>
       <actionList>
         <setInstallerVariable>
@@ -2033,6 +2043,21 @@
               <logic>does_not_equal</logic>
               <text>${IsUpgrade}</text>
               <value>1</value>
+            </compareText>
+            <compareText>
+              <text>${locale}</text>
+              <value>C</value>
+              <logic>does_not_equal</logic>
+            </compareText>
+            <compareText>
+              <text>${locale}</text>
+              <value>POSIX</value>
+              <logic>does_not_equal</logic>
+            </compareText>
+            <compareText>
+              <text>${locale}</text>
+              <value>DEFAULT</value>
+              <logic>does_not_equal</logic>
             </compareText>
             <compareText>
               <text>${locale}</text>
@@ -5022,6 +5047,29 @@
 
   <!-- Preuninstallation actions -->
   <preUninstallationActionList>
+
+    <!-- Abort uninstallation if not super-user/Administrator -->
+    <actionGroup>
+      <actionList>
+        <showWarning text="${msg(Installer.Warning.UninstallerAdministratorPrivileges)}"/>
+        <exit/>
+      </actionList>
+      <ruleList>
+        <isFalse value="${installer_is_root_install}"/>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+    <actionGroup>
+      <actionList>
+        <showWarning text="${msg(Installer.Warning.UninstallerRootPrivileges)}"/>
+        <exit/>
+      </actionList>
+      <ruleList>
+        <isFalse value="${installer_is_root_install}"/>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
     <actionGroup>
       <actionList>
         <iniFileGet file="/etc/postgresplus-reg.ini"
@@ -7207,6 +7255,7 @@
             </compareText>
           </ruleList>
         </actionGroup>
+        <setInstallerVariable name="dbInstallTuneBool" value="false" />
         <actionGroup>
           <actionList>
             <setInstallerVariable>
@@ -7216,29 +7265,10 @@
             </setInstallerVariable>
           </actionList>
           <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${dbInstallTune}</text>
-              <value>1</value>
-            </compareText>
+            <isTrue value="${dbInstallTune}" />
           </ruleList>
         </actionGroup>
-        <actionGroup>
-          <actionList>
-            <setInstallerVariable>
-              <name>dbInstallTuneBool</name>
-              <persist>1</persist>
-              <value>false</value>
-            </setInstallerVariable>
-          </actionList>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${dbInstallTune}</text>
-              <value>0</value>
-            </compareText>
-          </ruleList>
-        </actionGroup>
+        <setInstallerVariable name="updateNotificationBool" value="false" />
         <actionGroup>
           <actionList>
             <setInstallerVariable>
@@ -7248,64 +7278,21 @@
             </setInstallerVariable>
           </actionList>
           <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${updateNotification}</text>
-              <value>1</value>
-            </compareText>
+            <isTrue value="${updateNotification}" />
           </ruleList>
         </actionGroup>
-        <actionGroup>
-          <actionList>
-            <setInstallerVariable>
-              <name>updateNotificationBool</name>
-              <persist>1</persist>
-              <value>false</value>
-            </setInstallerVariable>
-          </actionList>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${updateNotification}</text>
-              <value>0</value>
-            </compareText>
-          </ruleList>
-        </actionGroup>
+        <setInstallerVariable name="showAuthenticateScreen" value="0" />
         <setInstallerVariable>
           <name>showAuthenticateScreen</name>
           <persist>0</persist>
           <value>1</value>
           <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${dbInstallTune}</text>
-              <value>1</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${updateNotification}</text>
-              <value>1</value>
-            </compareText>
+            <isTrue value="${dbInstallTune}" />
+            <isTrue value="${updateNotification}" />
           </ruleList>
         </setInstallerVariable>
-        <setInstallerVariable>
-          <name>showAuthenticateScreen</name>
-          <persist>0</persist>
-          <value>0</value>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${dbInstallTune}</text>
-              <value>0</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${updateNotification}</text>
-              <value>0</value>
-            </compareText>
-          </ruleList>
-        </setInstallerVariable>
+        <setInstallerVariable name="showNextPage" value="0" />
         <setInstallerVariable>
           <name>showNextPage</name>
           <persist>1</persist>
@@ -7324,23 +7311,7 @@
             </compareText>
           </ruleList>
         </setInstallerVariable>
-        <setInstallerVariable>
-          <name>showNextPage</name>
-          <persist>1</persist>
-          <value>0</value>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${component(dbserver).selected}</text>
-              <value>0</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${component(postgis).selected}</text>
-              <value>0</value>
-            </compareText>
-          </ruleList>
-        </setInstallerVariable>
+        <setInstallerVariable name="showNextPage2" value="0" />
         <setInstallerVariable>
           <name>showNextPage2</name>
           <persist>1</persist>
@@ -7356,62 +7327,20 @@
               <logic>equals</logic>
               <text>${component(postgis).selected}</text>
               <value>1</value>
-            </compareText>
-          </ruleList>
-        </setInstallerVariable>
-        <setInstallerVariable>
-          <name>showNextPage2</name>
-          <persist>1</persist>
-          <value>0</value>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${component(dbserver).selected}</text>
-              <value>0</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${component(postgis).selected}</text>
-              <value>0</value>
             </compareText>
           </ruleList>
         </setInstallerVariable>
 
         <!-- authenticateUser variable is created to check whether we should call webservice to authenticate user or not-->
-
+        <setInstallerVariable name="authenticateUser" value="0" />
         <setInstallerVariable>
           <name>authenticateUser</name>
           <persist>1</persist>
           <value>1</value>
           <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${dbInstallTune}</text>
-              <value>1</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${updateNotification}</text>
-              <value>1</value>
-            </compareText>
-          </ruleList>
-        </setInstallerVariable>
-        <setInstallerVariable>
-          <name>authenticateUser</name>
-          <persist>1</persist>
-          <value>0</value>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${dbInstallTune}</text>
-              <value>0</value>
-            </compareText>
-            <compareText>
-              <logic>equals</logic>
-              <text>${updateNotification}</text>
-              <value>0</value>
-            </compareText>
+            <isTrue value="${dbInstallTune}" />
+            <isTrue value="${updateNotification}" />
           </ruleList>
         </setInstallerVariable>
       </postShowPageActionList>
@@ -7501,7 +7430,7 @@
               <ruleList>
                 <regExMatch>
                   <logic>does_not_match</logic>
-                  <pattern>^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$</pattern>
+                  <pattern>^([\w]+)(([-\.][\w]+)?)*@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)</pattern>
                   <text>${existingEmail}</text>
                 </regExMatch>
               </ruleList>
@@ -7885,20 +7814,12 @@
         </choiceParameter>
       </parameterList>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${dbInstallTune}</text>
-          <value>1</value>
-        </compareText>
+        <isTrue value="${dbInstallTune}" />
+        <isFalse value="${IsUpgrade}" />
         <compareText>
           <logic>equals</logic>
           <text>${ws_existing_result}</text>
           <value>0</value>
-        </compareText>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${IsUpgrade}</text>
-          <value>1</value>
         </compareText>
         <isFalse value="${extract_mode}"/>
       </ruleList>
@@ -8227,20 +8148,12 @@
         </actionGroup>
       </postShowPageActionList>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${dbInstallTune}</text>
-          <value>1</value>
-        </compareText>
+        <isTrue value="${dbInstallTune}" />
+        <isFalse value="${IsUpgrade}" />
         <compareText>
           <logic>equals</logic>
           <text>${ws_existing_result}</text>
           <value>0</value>
-        </compareText>
-        <compareText>
-          <logic>does_not_equal</logic>
-          <text>${IsUpgrade}</text>
-          <value>1</value>
         </compareText>
         <isFalse value="${extract_mode}"/>
       </ruleList>
@@ -8723,6 +8636,14 @@
           </ruleList>
         </throwError>
 
+        <!-- Password Mismatch -->
+        <throwError text="${msg(Installer.Warning.PasswordsDoNotMatch)}">
+            <ruleList>
+                <compareText logic="does_not_equal"
+                      text="${superpassword}" value="${project.parameter(superpassword).valueRetype}"/>
+            </ruleList>
+        </throwError>
+
         <!-- START: Authentication for the super-password -->
         <!-- Set variable psql_path -->
         <!-- Set variable psql_path -->
@@ -9095,6 +9016,14 @@
         <isFalse value="${extract_mode}"/>
       </ruleList>
       <validationActionList>
+
+        <!-- Password Mismatch -->
+        <throwError text="${msg(Installer.Warning.PasswordsDoNotMatch)}">
+            <ruleList>
+                <compareText logic="does_not_equal"
+                      text="${servicepassword}" value="${project.parameter(servicepassword).valueRetype}"/>
+            </ruleList>
+        </throwError>
 
         <!-- START: System user authention -->
         <actionGroup>

@@ -223,6 +223,9 @@
         </compareText>
       </ruleList>
     </touchFile>
+    <setInstallerVariable name="apachephpVersion" value="" />
+    <setInstallerVariable name="branding" value="" />
+    <setInstallerVariable name="iBranding" value="" />
     <!-- Getting apache home value from ini file - Linux | Mac -->
     <actionGroup>
       <actionList>
@@ -430,7 +433,7 @@
     <setInstallerVariable>
       <name>branding</name>
       <persist>0</persist>
-      <value>PostgreSQL</value>
+      <value>Postgres Plus Add-ons</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>

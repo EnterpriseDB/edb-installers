@@ -8,7 +8,7 @@
 _prep_pgbouncer_osx() {
 
     echo "**********************************"
-    echo "*  Pre Process: pgbouncer (OSX)  *"
+    echo "*  Pre Process: pgBouncer (OSX)  *"
     echo "**********************************"
 
     # Enter the source directory and cleanup if required
@@ -55,7 +55,7 @@ _prep_pgbouncer_osx() {
 _build_pgbouncer_osx() {
 
     echo "****************************"
-    echo "*  Build: pgbouncer (OSX)  *"
+    echo "*  Build: pgBouncer (OSX)  *"
     echo "****************************"
 
     cd $PG_PATH_OSX/pgbouncer/source/libevent.osx/; 
@@ -131,7 +131,7 @@ _build_pgbouncer_osx() {
 _postprocess_pgbouncer_osx() {
 
     echo "***********************************"
-    echo "*  Post Process: pgsqlODBC (OSX)  *"
+    echo "*  Post Process: pgBouncer (OSX)  *"
     echo "***********************************"
  
     cd $WD/pgbouncer
@@ -148,7 +148,7 @@ _postprocess_pgbouncer_osx() {
     _replace "foodb =" "@@CON@@" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "logfile = pgbouncer.log" "logfile = @@LOGFILE@@" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "pidfile = pgbouncer.pid" "pidfile = @@PIDFILE@@" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
-    _replace "listen_addr = 127.0.0.1" "listen_addr = @@LISTENADDR@@" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
+    _replace "listen_addr = 127.0.0.1" "listen_addr = *" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "listen_port = 6432" "listen_port = @@LISTENPORT@@" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "auth_file = etc/userlist.txt" "auth_file = @@AUTHFILE@@" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "admin_users = user2, someadmin, otheradmin" "admin_users = @@ADMINUSERS@@" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"

@@ -170,7 +170,7 @@
         </setInstallerVariable>
 
         <!-- New install, nothing set on the command line -->
-        <setInstallerVariable name="branding" persist="1" value="PostgreSQL PG_MAJOR_VERSION">
+        <setInstallerVariable name="branding" persist="1" value="Postgres Plus Standard Server PG_MAJOR_VERSION">
           <ruleList>
             <compareText logic="equals" text="${branding}" value=""/>
           </ruleList>
@@ -607,6 +607,28 @@
 
   <!-- preUninstallation actions -->
   <preUninstallationActionList>
+
+    <!-- Abort uninstallation if not super-user/Administrator -->
+    <actionGroup>
+      <actionList>
+        <showWarning text="${msg(Installer.Warning.UninstallerAdministratorPrivileges)}"/>
+        <exit/>
+      </actionList>
+      <ruleList>
+        <isFalse value="${installer_is_root_install}"/>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+    <actionGroup>
+      <actionList>
+        <showWarning text="${msg(Installer.Warning.UninstallerRootPrivileges)}"/>
+        <exit/>
+      </actionList>
+      <ruleList>
+        <isFalse value="${installer_is_root_install}"/>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
 
     <!-- Stop the montioring if installed -->
     <kill path="${installdir}\bin\UpdManager.exe" >

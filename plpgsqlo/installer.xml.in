@@ -169,14 +169,21 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+    
+        <!-- Registration Pre-Installation Action List -->
+        <include file="staging/registration_initialization.xml"/>
+
     </initializationActionList>
     <!-- Preinstallation actions -->
     <preInstallationActionList>
+
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="branding" value=""/>
                 <!-- Do not create uninstaller in case of extract-only mode -->
                 <setInstallerVariable name="createUninstaller" value="0" persist="1"/>
+                <setInstallerVariable name="libdir" value="${installdir}/lib"/>
+                <setInstallerVariable name="sharedir" value="${installdir}/share"/>
             </actionList>
             <ruleList>
                 <isTrue value="${extract_mode}"/>
@@ -207,7 +214,7 @@
                 <actionGroup>
                     <actionList>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_VERSION_PLPGSQLO</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION</key>
                             <name>Version</name>
                             <variable>plpgsqloVersion</variable>
                         </registryGet>
@@ -225,7 +232,7 @@
                     <actionList>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                            <section>plpgsqlo/PG_MAJOR_VERSION</section>
                             <key>Version</key>
                             <variable>plpgsqloVersion</variable>
                         </iniFileGet>
@@ -242,7 +249,7 @@
                 <actionGroup>
                     <actionList>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_VERSION_PLPGSQLO</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION</key>
                             <name>Location</name>
                             <variable>installdir</variable>
                         </registryGet>
@@ -265,7 +272,7 @@
                     <actionList>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                            <section>plpgsqlo/PG_MAJOR_VERSION</section>
                             <key>InstallationDirectory</key>
                             <variable>installdir</variable>
                         </iniFileGet>
@@ -563,6 +570,68 @@
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
+   
+        <setInstallerVariable name="pg_config" value="${installdir}/bin/pg_config"/>
+        <setInstallerVariable name="pg_config" value="${installdir}\bin\pg_config.exe">
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- Get libdir and sharedir to copy plpgsqlo.so-->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariableFromScriptOutput>
+                    <name>libdir</name>
+                    <exec>${pg_config}</exec>
+                    <execArgs>--pkglibdir</execArgs>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <onErrorActionList>
+                        <setInstallerVariable name="libdir" value="${installdir}/lib"/>
+                    </onErrorActionList>
+                </setInstallerVariableFromScriptOutput>
+
+                <setInstallerVariableFromScriptOutput>
+                    <name>sharedir</name>
+                    <exec>${pg_config}</exec>
+                    <execArgs>--sharedir</execArgs>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <onErrorActionList>
+                        <setInstallerVariable name="sharedir" value="${installdir}/share"/>
+                    </onErrorActionList>
+                </setInstallerVariableFromScriptOutput>
+            </actionList>
+            <ruleList>
+                <fileExists path="${pg_config}"/>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+                <!-- change "C:\" to "C:/" in case of Windows -->
+                <setInstallerVariableFromRegEx>
+                    <name>libdir</name>
+                    <text>${libdir}</text>
+                    <pattern>\\</pattern>
+                    <substitution>/</substitution>
+                </setInstallerVariableFromRegEx>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+ 
+	<include file="staging/registration_preinstallation.xml"/>
+
     </preInstallationActionList>
     <!-- Post installation actions -->
     <postInstallationActionList>
@@ -573,19 +642,20 @@
                     <actionList>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                            <section>plpgsqlo/PG_MAJOR_VERSION</section>
                             <key>Description</key>
                             <value>${msg(install.summary)}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
                             <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                            <section>plpgsqlo/PG_MAJOR_VERSION</section>
                             <key>InstallationDirectory</key>
                             <value>${installdir}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                            <section>plpgsqlo/PG_MAJOR_VERSION</section>
                             <key>Version</key>
                             <value>${product_version}</value>
                         </iniFileSet>
@@ -598,17 +668,27 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION" name="Description" value="${msg(install.summary)}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION" name="Version" value="${plpgsqloVersion}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION" name="Location" value="${installdir}"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </actionGroup>
             </actionList>
             <ruleList>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
         <substitute>
-            <files>${installdir}/share/plpgsqlo.sql</files>
+            <files>${sharedir}/plpgsqlo.sql</files>
             <substitutionList>
                 <substitution>
                     <pattern>\$libdir</pattern>
-                    <value>${installdir}/lib</value>
+                    <value>${libdir}</value>
                 </substitution>
                 <substitution>
                     <pattern>\$SUPERUSER</pattern>
@@ -616,6 +696,9 @@
                 </substitution>
             </substitutionList>
         </substitute>
+
+	<include file="staging/registration_postinstallation.xml"/>
+
     </postInstallationActionList>
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
@@ -624,25 +707,25 @@
             <actionList>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                    <section>plpgsqlo/PG_MAJOR_VERSION</section>
                     <key>Description</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                    <section>plpgsqlo/PG_MAJOR_VERSION</section>
                     <key>InstallationDirectory</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                    <section>plpgsqlo/PG_MAJOR_VERSION</section>
                     <key>Version</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                    <section>plpgsqlo/PG_MAJOR_VERSION</section>
                     <key>Branding</key>
                     <value/>
                 </iniFileSet>
@@ -655,6 +738,9 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+	<include file="staging/registration_preuninstallation.xml"/>
+
     </preUninstallationActionList>
     <!-- Components -->
     <componentList>
@@ -668,107 +754,96 @@
                 <!-- WIN: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${libdir}</destination>
                     <name>programfileslibwindows</name>
                     <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/windows/lib</origin>
-                        </distributionDirectory>
+		    <distributionFileList>
+			<distributionFile origin="staging/windows/lib/plpgsqlo.dll"/>
                     </distributionFileList>
                 </folder>
                <!-- WIN: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${sharedir}</destination>
                     <name>programfilessharewindows</name>
                     <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/windows/share</origin>
-                        </distributionDirectory>
+		    <distributionFileList>
+                            <distributionFile origin="staging/windows/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
 
                 <!-- LIN: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${libdir}</destination>
                     <name>programfilesliblinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux/lib</origin>
-                        </distributionDirectory>
+                            <distributionFile origin="staging/linux/lib/plpgsqlo.so"/>
                     </distributionFileList>
                 </folder>
                <!-- LIN: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${sharedir}</destination>
                     <name>programfilessharelinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux/share</origin>
-                        </distributionDirectory>
+                            <distributionFile origin="staging/linux/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
 
                 <!-- LIN-X64: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${libdir}</destination>
                     <name>programfilesliblinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/lib</origin>
-                        </distributionDirectory>
+                            <distributionFile origin="staging/linux-x64/lib/plpgsqlo.so"/>
                     </distributionFileList>
                 </folder>
                <!-- LIN-X64: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${sharedir}</destination>
                     <name>programfilessharelinux-x64</name>
                     <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/share</origin>
-                        </distributionDirectory>
+		    <distributionFileList>
+                            <distributionFile origin="staging/linux-x64/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
 
                 <!-- MAC: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${libdir}</destination>
                     <name>programfileslibosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/osx/lib</origin>
-                        </distributionDirectory>
+                            <distributionFile origin="staging/osx/lib/plpgsqlo.so"/>
                     </distributionFileList>
                 </folder>
                <!-- MAC: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
-                    <destination>${installdir}</destination>
+                    <destination>${sharedir}</destination>
                     <name>programfilesshareosx</name>
                     <platforms>osx</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/osx/share</origin>
-                        </distributionDirectory>
+		    <distributionFileList>
+                            <distributionFile origin="staging/osx/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
 
             </folderList>
         </component>
+	<include file="staging/registration_component.xml"/>
     </componentList>
     <parameterList>
+        <!-- Registration Parameters -->
+        <include file="staging/registration_already_registered_parameter.xml"/>
+        <include file="staging/registration_authentication_parameter.xml"/>
+
         <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
         <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>

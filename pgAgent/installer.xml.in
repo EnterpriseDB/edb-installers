@@ -34,6 +34,7 @@
   <uninstallerDirectory>${installdir}</uninstallerDirectory>
   <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
   <windowsSoftwareRegistryPrefix/>
+  <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
 
   <!-- Images -->
   <disableSplashScreen>1</disableSplashScreen>
@@ -295,6 +296,69 @@
   <!-- Postinstallation actions -->
   <postInstallationActionList>
 
+    <actionGroup>
+       <actionList>
+          <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+          <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+          <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+          <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+          <setEnvironmentVariable name="PGDATABASE" value="" />
+          <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
+          <setInstallerVariable name="pgdbname" value="" />
+          <setInstallerVariable name="connection" value="" />
+          <foreach variables="dbname">
+            <values>postgres edb template1</values>
+            <actionList>   
+              <setInstallerVariableFromScriptOutput>
+                <exec>${installdir}/bin/psql</exec>
+                <execArgs>-l -d ${dbname}</execArgs>
+                <name>connection</name>
+                <workingDirectory>${installdir}/bin</workingDirectory>
+                <abortOnError>0</abortOnError>
+                <showMessageOnError>0</showMessageOnError> 
+                <ruleList>
+                  <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                  <compareText logic="equals" text="${connection}" value=""/>
+                </ruleList>
+              </setInstallerVariableFromScriptOutput>
+              <setInstallerVariableFromScriptOutput>
+                <exec>${installdir}\bin\psql.exe</exec>
+                <execArgs>-t -c "SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${dbname}'" -d ${dbname}</execArgs>
+                <name>connection</name>
+                <workingDirectory>${installdir}/bin</workingDirectory>
+                <abortOnError>0</abortOnError>
+                <showMessageOnError>0</showMessageOnError> 
+                <ruleList>
+                  <compareText logic="equals" text="${platform_name}" value="windows"/>
+                  <compareText logic="equals" text="${connection}" value=""/>
+                </ruleList>
+              </setInstallerVariableFromScriptOutput>
+              <stringModify text="${connection}" variable="connection" logic="trim"/>
+              <setInstallerVariable name="pgdbname" value="${dbname}">
+                <ruleList>
+                  <compareText logic="does_not_equal" text="${connection}" value=""/>
+                  <compareText logic="equals" text="${pgdbname}" value=""/>
+                </ruleList>
+              </setInstallerVariable>
+            </actionList>
+          </foreach>
+          <actionGroup>
+            <actionList>
+              <throwError>
+                  <text>${program_stderr}</text>
+              </throwError>
+            </actionList>
+            <ruleList>
+              <compareText logic="equals" text="${connection}" value=""/>
+            </ruleList>
+          </actionGroup>                            
+          <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}" />
+       </actionList>
+       <ruleList>
+          <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+       </ruleList>
+    </actionGroup>
+ 
     <!-- Do not perform the below actions in case of extract-only mode -->
     <actionGroup>
       <actionList>
@@ -490,61 +554,6 @@
         <!-- Create pgagent schema in unattended mode -->
         <actionGroup>
           <actionList>
-            <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
-            <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
-            <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
-            <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-            <setEnvironmentVariable name="PGDATABASE" value="" />
-            <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
-            <setInstallerVariable name="pgdbname" value="" />
-            <setInstallerVariable name="connection" value="" />
-            <foreach variables="dbname">
-              <values>postgres edb template1</values>
-              <actionList>   
-                <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
-                  <execArgs>-l -d ${pgdbname}</execArgs>
-                  <name>connection</name>
-                  <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
-                  <abortOnError>0</abortOnError>
-                  <showMessageOnError>0</showMessageOnError> 
-                  <ruleList>
-                    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                    <compareText logic="equals" text="${connection}" value=""/>
-                  </ruleList>
-                </setInstallerVariableFromScriptOutput>
-                <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}\${product_fullname}\bin\psql.exe</exec>
-                  <execArgs>-t -c "SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${dbname}'" -d ${dbname}</execArgs>
-                  <name>connection</name>
-                  <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
-                  <abortOnError>0</abortOnError>
-                  <showMessageOnError>0</showMessageOnError> 
-                  <ruleList>
-                    <compareText logic="equals" text="${platform_name}" value="windows"/>
-                    <compareText logic="equals" text="${connection}" value=""/>
-                  </ruleList>
-                </setInstallerVariableFromScriptOutput>
-                <stringModify text="${connection}" variable="connection" logic="trim"/>
-                <setInstallerVariable name="pgdbname" value="${dbname}">
-                  <ruleList>
-                    <compareText logic="does_not_equal" text="${connection}" value=""/>
-                    <compareText logic="equals" text="${pgdbname}" value=""/>
-                  </ruleList>
-                </setInstallerVariable>
-              </actionList>
-            </foreach>
-            <actionGroup>
-              <actionList>
-                <throwError>
-                    <text>${program_stderr}</text>
-                </throwError>
-              </actionList>
-              <ruleList>
-                <compareText logic="equals" text="${connection}" value=""/>
-              </ruleList>
-            </actionGroup>                            
-            <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}" />
             <!-- Create plpgsql, if not exists -->
             <runProgram>
               <program>${installdir}/bin/psql</program>
@@ -774,10 +783,39 @@
         <isFalse value="${extract_mode}"/>
       </ruleList>
     </actionGroup>
+  
+    <!-- Add description to the services -->
+    <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\pgAgent" name="Description" value="${msg(pgagent.service.description)}" >
+        <ruleList>
+           <isFalse value="${extract_mode}"/>
+        </ruleList>
+    </registrySet>
   </postInstallationActionList>
 
   <!-- preUninstallation actions -->
   <preUninstallationActionList>
+
+    <!-- Abort uninstallation if not super-user/Administrator -->
+    <actionGroup>
+      <actionList>
+        <showWarning text="${msg(Installer.Warning.UninstallerAdministratorPrivileges)}"/>
+        <exit/>
+      </actionList>
+      <ruleList>
+        <isFalse value="${installer_is_root_install}"/>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+    <actionGroup>
+      <actionList>
+        <showWarning text="${msg(Installer.Warning.UninstallerRootPrivileges)}"/>
+        <exit/>
+      </actionList>
+      <ruleList>
+        <isFalse value="${installer_is_root_install}"/>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
 
     <!-- LIN & MAC : Unset the pgAgent Info from the ini file -->
     <actionGroup>
@@ -1323,7 +1361,7 @@
           <description>Database</description>
           <explanation/>
           <value/>
-          <default>${defaultpgdbname}</default>
+          <default></default>
           <allowEmptyValue>1</allowEmptyValue>
           <width>40</width>
         </stringParameter>
@@ -1374,7 +1412,6 @@
             <compareText logic="equals" text="${pgport}" value=""/>
             <compareText logic="equals" text="${pguser}" value=""/>
             <compareText logic="equals" text="${pgpassword}" value=""/>
-            <compareText logic="equals" text="${pgdbname}" value=""/>
           </ruleList>
         </actionGroup>
         <throwError>
@@ -1542,7 +1579,7 @@
               <ruleList>
                 <compareText logic="equals" text="${connection}" value=""/>
               </ruleList>
-            </actionGroup>                            
+            </actionGroup>                          
             <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}" />  
             <!-- Check if plpgsql exists -->
             <setInstallerVariableFromScriptOutput>

@@ -23,15 +23,21 @@ strInstallDir = WScript.Arguments.Item(4)
 strDataDir = WScript.Arguments.Item(5)
 strServiceName = WScript.Arguments.Item(6)
 
+Dim objShell, objFso
 Set objShell = WScript.CreateObject("WScript.Shell")
 Set objFso = WScript.CreateObject("Scripting.FileSystemObject")
 
 ' Substitute values into a file ($in)
 Sub FixupFile(strFile)
+    WScript.Echo "Start FixupFile(" & strFile & ")..."
+    WScript.Echo "   Opening file for reading..."
+    Dim objFile, strData
     Set objFile = objFso.OpenTextFile(strFile, ForReading)
     strData = objFile.ReadAll
     objFile.Close
+    WScript.Echo "   Closing file (reading)..."
 
+    WScript.Echo "   Replacing placeholders..."
     strData = Replace(strData, "PG_MAJOR_VERSION", strVersion)
     strData = Replace(strData, "PG_USERNAME", strUsername)
     strData = Replace(strData, "PG_PORT", iPort)
@@ -39,9 +45,12 @@ Sub FixupFile(strFile)
     strData = Replace(strData, "PG_DATADIR", strDataDir)
     strData = Replace(strData, "PG_SERVICENAME", strServiceName)
 
+    WScript.Echo "   Opening file for writing..."
     Set objFile = objFso.OpenTextFile(strFile, ForWriting)
     objFile.WriteLine strData
     objFile.Close
+    WScript.Echo "   Closing file..."
+    WScript.Echo "  End FixupFile()..."
 End Sub
 
 ' Fixup the scripts

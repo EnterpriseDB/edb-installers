@@ -152,11 +152,8 @@ case "\$1" in
   status)
         action=status
         ;;
-  ping)
-        action=ping
-        ;;
   *)
-        echo \$"Usage: \$0 {start|stop|restart|status|ping}"
+        echo \$"Usage: \$0 {start|stop|restart|status}"
         exit 1
 esac
 
