@@ -169,6 +169,10 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+    
+        <!-- Registration Pre-Installation Action List -->
+        <include file="staging/registration_initialization.xml"/>
+
     </initializationActionList>
     <!-- Preinstallation actions -->
     <preInstallationActionList>
@@ -207,7 +211,7 @@
                 <actionGroup>
                     <actionList>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_VERSION_PLPGSQLO</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION</key>
                             <name>Version</name>
                             <variable>plpgsqloVersion</variable>
                         </registryGet>
@@ -225,7 +229,7 @@
                     <actionList>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                            <section>plpgsqlo/PG_MAJOR_VERSION</section>
                             <key>Version</key>
                             <variable>plpgsqloVersion</variable>
                         </iniFileGet>
@@ -242,7 +246,7 @@
                 <actionGroup>
                     <actionList>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_VERSION_PLPGSQLO</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION</key>
                             <name>Location</name>
                             <variable>installdir</variable>
                         </registryGet>
@@ -265,7 +269,7 @@
                     <actionList>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                            <section>plpgsqlo/PG_MAJOR_VERSION</section>
                             <key>InstallationDirectory</key>
                             <variable>installdir</variable>
                         </iniFileGet>
@@ -563,6 +567,9 @@
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
+    
+	<include file="staging/registration_preinstallation.xml"/>
+
     </preInstallationActionList>
     <!-- Post installation actions -->
     <postInstallationActionList>
@@ -573,19 +580,19 @@
                     <actionList>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                            <section>plpgsqlo/PG_MAJOR_VERSION</section>
                             <key>Description</key>
                             <value>${msg(install.summary)}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                            <section>plpgsqlo/PG_MAJOR_VERSION</section>
                             <key>InstallationDirectory</key>
                             <value>${installdir}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                            <section>plpgsqlo/PG_MAJOR_VERSION</section>
                             <key>Version</key>
                             <value>${product_version}</value>
                         </iniFileSet>
@@ -596,6 +603,16 @@
                             <logic>does_not_equal</logic>
                             <value>windows</value>
                         </compareText>
+                    </ruleList>
+                </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION" name="Description" value="${msg(install.summary)}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION" name="Version" value="${plpgsqloVersion}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION" name="Location" value="${installdir}"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </actionGroup>
             </actionList>
@@ -616,6 +633,9 @@
                 </substitution>
             </substitutionList>
         </substitute>
+
+	<include file="staging/registration_postinstallation.xml"/>
+
     </postInstallationActionList>
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
@@ -624,25 +644,25 @@
             <actionList>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                    <section>plpgsqlo/PG_MAJOR_VERSION</section>
                     <key>Description</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                    <section>plpgsqlo/PG_MAJOR_VERSION</section>
                     <key>InstallationDirectory</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                    <section>plpgsqlo/PG_MAJOR_VERSION</section>
                     <key>Version</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>plpgsqlo-PG_VERSION_PLPGSQLO</section>
+                    <section>plpgsqlo/PG_MAJOR_VERSION</section>
                     <key>Branding</key>
                     <value/>
                 </iniFileSet>
@@ -655,6 +675,9 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+	<include file="staging/registration_preuninstallation.xml"/>
+
     </preUninstallationActionList>
     <!-- Components -->
     <componentList>
@@ -767,8 +790,13 @@
 
             </folderList>
         </component>
+	<include file="staging/registration_component.xml"/>
     </componentList>
     <parameterList>
+        <!-- Registration Parameters -->
+        <include file="staging/registration_already_registered_parameter.xml"/>
+        <include file="staging/registration_authentication_parameter.xml"/>
+
         <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
         <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
