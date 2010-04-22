@@ -578,11 +578,18 @@
                 <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
                 <setEnvironmentVariable name="PGDATABASE" value="postgres"/>
                 <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${pphqTempDir}/instscripts/lib"/>
+                <setInstallerVariable name="recheck_connection" value="0"/>
                 <runProgram program="${psql_path}" abortOnError="0"
                       programArguments="-l &quot;${env(PGDATABASE)}&quot;"
                       workingDirectory="${pphqTempDir}/instscripts"
                       showMessageOnError="0">
                     <onErrorActionList>
+                        <setInstallerVariable name="recheck_connection" value="1"/>
+                    </onErrorActionList>
+                </runProgram>
+
+                <actionGroup>
+                    <actionList>
                         <logMessage text="It fails for postgres database, fall back to edb"/>
                         <setEnvironmentVariable name="PGDATABASE" value="edb"/>
                         <runProgram program="${psql_path}" abortOnError="0"
@@ -597,8 +604,11 @@
                                       workingDirectory="${pphqTempDir}/instscripts"/>
                             </onErrorActionList>
                         </runProgram>
-                    </onErrorActionList>
-                </runProgram>
+                    </actionList>
+                    <ruleList>
+                        <isTrue value="${recheck_connection}"/>
+                    </ruleList>
+                </actionGroup>
 
                 <setInstallerVariable name="admin_db_exists" value="0"/>
                 <setInstallerVariable name="admin_db_owner" value="hqadmin"/>
@@ -1869,11 +1879,18 @@
                 <setEnvironmentVariable name="PGDATABASE" value="postgres"/>
                 <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${pphqTempDir}/instscripts/lib"/>
 
+                <setInstallerVariable name="recheck_connection" value="0"/>
                 <runProgram program="${psql_path}" abortOnError="0"
                       programArguments="-l &quot;${env(PGDATABASE)}&quot;"
                       workingDirectory="${pphqTempDir}/instscripts"
                       showMessageOnError="0">
                     <onErrorActionList>
+                        <setInstallerVariable name="recheck_connection" value="1"/>
+                    </onErrorActionList>
+                </runProgram>
+
+                <actionGroup>
+                    <actionList>
                         <logMessage text="It fails for postgres database, fall back to edb"/>
                         <setEnvironmentVariable name="PGDATABASE" value="edb"/>
                         <runProgram program="${psql_path}" abortOnError="0"
@@ -1888,8 +1905,11 @@
                                       workingDirectory="${pphqTempDir}/instscripts"/>
                             </onErrorActionList>
                         </runProgram>
-                    </onErrorActionList>
-                </runProgram>
+                    </actionList>
+                    <ruleList>
+                        <isTrue value="${recheck_connection}"/>
+                    </ruleList>
+                </actionGroup>
 
                 <setInstallerVariable name="admin_db_exists" value="0"/>
                 <setInstallerVariableFromScriptOutput
