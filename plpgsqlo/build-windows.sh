@@ -28,6 +28,10 @@ _prep_plpgsqlo_windows() {
     # copy wrap.c and wrap.h in plpgsqlo. These 2 files are taken from edb sources.
     cp $WD/plpgsqlo/resources/wrap.c $WD/server/source/postgres.windows/src/pl/plpgsqlo/src || _die "Failed to copy wrap.c file for plpgsqlo obfuscation"
     cp $WD/plpgsqlo/resources/wrap.h $WD/server/source/postgres.windows/src/pl/plpgsqlo/src || _die "Failed to copy wrap.h file for plpgsqlo obfuscation"
+    # Copy files from pg-sources into plpgsqlo which are required for windows build
+    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Project.pm $WD/server/source/postgres.windows/src/tools/msvc/. || _die "Failed to copy Project.pm"
+    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Mkvcbuild.pm $WD/server/source/postgres.windows/src/tools/msvc/. || _die "Failed to copy Mkvcbuild.pm"
+    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/pgbison.bat $WD/server/source/postgres.windows/src/tools/msvc/. || _die "Failed to copy pgbison.bat"
 
     cd postgres.windows
     patch -p0 < $WD/plpgsqlo/resources/plpgsqlo.patch || _die "Failed to apply patch on plpgsqlo tree (plpgsqlo.patch)"
@@ -106,6 +110,11 @@ _postprocess_plpgsqlo_windows() {
 
     # Sign the installer
     win32_sign "plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-windows.exe"
+    
+    # Restoring postgres.platform_name files which were changed by plpgsqlo.patch
+    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Project.pm $WD/server/source/postgres.windows/src/tools/msvc/. || _die "Failed to copy Project.pm"
+    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Mkvcbuild.pm $WD/server/source/postgres.windows/src/tools/msvc/. || _die "Failed to copy Mkvcbuild.pm"
+    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/pgbison.bat $WD/server/source/postgres.windows/src/tools/msvc/. || _die "Failed to copy pgbison.bat"
 	
     cd $WD
 

@@ -619,7 +619,7 @@
                 <actionGroup>
                     <actionList>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION" name="Description" value="${msg(install.summary)}"/>
-                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION" name="Version" value="${plpgsqloVersion}"/>
+                        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION" name="Version" value="${product_version}"/>
                         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION" name="Location" value="${installdir}"/>
                     </actionList>
                     <ruleList>
@@ -671,12 +671,6 @@
                     <key>Version</key>
                     <value/>
                 </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>plpgsqlo/PG_MAJOR_VERSION</section>
-                    <key>Branding</key>
-                    <value/>
-                </iniFileSet>
             </actionList>
             <ruleList>
                 <compareText>
@@ -686,6 +680,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+	<registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION"/>
 
 	<include file="staging/registration_preuninstallation.xml"/>
 
