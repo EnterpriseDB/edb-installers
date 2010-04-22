@@ -310,9 +310,6 @@ _postprocess_ApachePhp_osx() {
    
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the launch scripts"
 
-    cp scripts/osx/runApache.sh staging/osx/scripts/runApache.sh || _die "Failed to copy the runApache script (scripts/osx/runApache.sh)"
-    chmod ugo+x staging/osx/scripts/runApache.sh
-
     chmod ugo+x staging/osx/php/php.ini
 
     # Copy in the menu pick images 
@@ -320,9 +317,6 @@ _postprocess_ApachePhp_osx() {
     cp resources/*.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/*.icns)"
 
     cp scripts/osx/pg-launchApachePhp.applescript.in staging/osx/scripts/pg-launchApachePhp.applescript || _die "Failed to copy a menu pick desktop"
-    cp scripts/osx/pg-startApache.applescript.in staging/osx/scripts/pg-startApache.applescript || _die "Failed to copy a menu pick desktop"
-    cp scripts/osx/pg-stopApache.applescript.in staging/osx/scripts/pg-stopApache.applescript || _die "Failed to copy a menu pick desktop"
-    cp scripts/osx/pg-restartApache.applescript.in staging/osx/scripts/pg-restartApache.applescript || _die "Failed to copy a menu pick desktop"
     cp scripts/osx/getapacheport.sh staging/osx/scripts/getapacheport.sh || _die "Failed to copy the getapacheport script (scripts/osx/getapacheport.sh)"
     chmod ugo+x staging/osx/scripts/getapacheport.sh
 

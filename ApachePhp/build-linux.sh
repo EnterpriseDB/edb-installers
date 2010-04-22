@@ -197,12 +197,6 @@ _postprocess_ApachePhp_linux() {
     cp scripts/linux/launchbrowser.sh staging/linux/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
     chmod ugo+x staging/linux/scripts/launchbrowser.sh
 
-    cp scripts/linux/ctlApache.sh staging/linux/scripts/ctlApache.sh || _die "Failed to copy the ctlApache script (scripts/linux/ctlApache.sh)"
-    chmod ugo+x staging/linux/scripts/ctlApache.sh
-
-    cp scripts/linux/runApache.sh staging/linux/scripts/runApache.sh || _die "Failed to copy the runApache script (scripts/linux/runApache.sh)"
-    chmod ugo+x staging/linux/scripts/runApache.sh
-
     chmod ugo+x staging/linux/php/php.ini
 
     # Copy the XDG scripts
@@ -218,9 +212,6 @@ _postprocess_ApachePhp_linux() {
     cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/pg-apachephp.directory staging/linux/scripts/xdg/pg-apachephp.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/pg-launchApachePhp.desktop staging/linux/scripts/xdg/pg-launchApachePhp.desktop || _die "Failed to copy a menu pick desktop"
-    cp resources/xdg/pg-startApache.desktop staging/linux/scripts/xdg/pg-startApache.desktop || _die "Failed to copy a menu pick desktop"
-    cp resources/xdg/pg-stopApache.desktop staging/linux/scripts/xdg/pg-stopApache.desktop || _die "Failed to copy a menu pick desktop"
-    cp resources/xdg/pg-restartApache.desktop staging/linux/scripts/xdg/pg-restartApache.desktop || _die "Failed to copy a menu pick desktop"
 
     cp resources/index.php staging/linux/apache/www || _die "Failed to copy index.php"
     chmod ugo+x staging/linux/apache/www/index.php

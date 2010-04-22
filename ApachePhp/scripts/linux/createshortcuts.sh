@@ -54,9 +54,6 @@ _fixup_file() {
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-postgresql.png"
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-apachephp.png"
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-launchApachePhp.png"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-startApache.png"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-stopApache.png"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-restartApache.png"
 
 # Fixup the scripts
 chmod ugo+x "$INSTALLDIR/installer/ApachePhp/"*.sh
@@ -65,9 +62,6 @@ chmod ugo+x "$INSTALLDIR/scripts/launchApachePhp.sh"
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-launchApachePhp.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-startApache.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-stopApache.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-restartApache.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-postgresql.directory"
 
 # Copy the primary desktop file to the branded version. We don't do this if
@@ -82,10 +76,7 @@ fi
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system \
          "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory" \
          "$INSTALLDIR/scripts/xdg/pg-apachephp.directory" \
-    "$INSTALLDIR/scripts/xdg/pg-launchApachePhp.desktop" \
-    "$INSTALLDIR/scripts/xdg/pg-startApache.desktop" \
-    "$INSTALLDIR/scripts/xdg/pg-stopApache.desktop" \
-    "$INSTALLDIR/scripts/xdg/pg-restartApache.desktop"  || _warn "Failed to create the ApachePhp menu"
+    "$INSTALLDIR/scripts/xdg/pg-launchApachePhp.desktop" || _warn "Failed to create the ApachePhp menu"
 
 echo "$0 ran to completion"
 exit 0

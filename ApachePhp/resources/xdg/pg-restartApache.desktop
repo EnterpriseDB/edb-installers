@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Encoding=UTF-8
-Name=Restart Apache
-Exec="INSTALL_DIR/scripts/ctlApache.sh" "restart"
-Icon=pg-restartApache.png
-Terminal=false
-Type=Application

@@ -47,18 +47,12 @@ _replace() {
 # Remove the menu shortcuts
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system   \
     "$INSTALLDIR/scripts/xdg/pg-apachephp.directory" \
-    "$INSTALLDIR/scripts/xdg/pg-launchApachePhp.desktop" \
-    "$INSTALLDIR/scripts/xdg/pg-startApache.desktop" \
-    "$INSTALLDIR/scripts/xdg/pg-stopApache.desktop" \
-    "$INSTALLDIR/scripts/xdg/pg-restartApache.desktop" || _warn "Failed to remove the ApachePhp menu"
+    "$INSTALLDIR/scripts/xdg/pg-launchApachePhp.desktop" || _warn "Failed to remove the ApachePhp menu"
 
       
 # Remove the icon resources
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-apachephp.png"
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-launchApachePhp.png"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-startApache.png"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-stopApache.png"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-restartApache.png"
 
 # Only remove the directory file if it's branded
 if [ $BRANDED -ne 0 ];
@@ -82,9 +76,6 @@ xdg_global_dir="$xdg_global_dir/applications-merged"
 
 # Hack up the XDG menu files to make sure everything really does go.
 _replace "<Filename>pg-launchApachePhp.desktop</Filename>" "" "$xdg_global_dir/pg-apachephp.menu"
-_replace "<Filename>pg-startApache.desktop</Filename>" "" "$xdg_global_dir/pg-apachephp.menu"
-_replace "<Filename>pg-stopApache.desktop</Filename>" "" "$xdg_global_dir/pg-apachephp.menu"
-_replace "<Filename>pg-restartApache.desktop</Filename>" "" "$xdg_global_dir/pg-apachephp.menu"
 
 echo "$0 ran to completion"
 exit 0
