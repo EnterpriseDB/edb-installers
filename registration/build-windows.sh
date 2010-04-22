@@ -67,10 +67,12 @@ REM Setting Visual Studio Environment
 CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
 
 cd $PG_REG_COMP_HOST_PATH\\dbserver_guid
+vcbuild /upgrade
 vcbuild dbserver_guid.vcproj release
 if NOT EXIST $PG_REG_COMP_HOST_PATH\\dbserver_guid\\release\\dbserver_guid.exe GOTO dbserver_guid-build-failed
 
 cd $PG_REG_COMP_HOST_PATH\\validateUser
+vcbuild /upgrade
 vcbuild validateUser.vcproj release
 if NOT EXIST $PG_REG_COMP_HOST_PATH\\validateUser\\release\\validateUserClient.exe GOTO validateuser-build-failed
 GOTO end
