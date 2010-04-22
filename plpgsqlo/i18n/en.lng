@@ -46,7 +46,7 @@ registration.emailpassword.not.provided=Please provide the email address and pas
 
 plpgsqlo.installdir.pgerror=Postgres installation directory: ${installdir} is not valid.
 
-plpgsqlo.incompatible.pg.error=The PostgreSQL Server Installation is incompatible with this version of plpgsqlo.
+plpgsqlo.incompatible.pg.error=The PostgreSQL Server Installation is incompatible with this version of Obfuscated pl/pgsql.
 
 Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
 
@@ -54,5 +54,5 @@ Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of val
 
 upgrade.existing.installation.title=Existing installation
 
-upgrade.existing.installation.description=An existing pl/pgsqlo installation has been found at ${installdir}. This installation will be upgraded.
+upgrade.existing.installation.description=An existing Obfuscated pl/pgsql installation has been found at ${installdir}. This installation will be upgraded.
 
