@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Reload configuration
+Exec=PG_INSTALLDIR/scripts/launchsvrctl.sh reload
+Icon=pg-reload-PG_VERSION_STR.png
+Terminal=false
+Type=Application
