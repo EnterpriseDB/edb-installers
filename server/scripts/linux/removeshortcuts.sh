@@ -65,9 +65,6 @@ _warn() {
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
 	  "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION_STR.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION_STR.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION_STR.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-start-$VERSION_STR.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION_STR.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION_STR.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop" || _warn "Failed to remove the top level menu"
 	  
@@ -101,9 +98,6 @@ xdg_global_dir="$xdg_global_dir/applications-merged"
 # Hack up the XDG menu files to make sure everything really does go.
 _replace "<Filename>pg-psql-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
 _replace "<Filename>pg-reload-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
-_replace "<Filename>pg-restart-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
-_replace "<Filename>pg-start-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
-_replace "<Filename>pg-stop-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
 _replace "<Filename>pg-pgadmin-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
 _replace "<Filename>pg-stackbuilder-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
 

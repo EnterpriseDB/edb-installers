@@ -3895,42 +3895,6 @@ REM The script sets environment variables helpful for PostgreSQL
                     </ruleList>
                 </startMenuShortcut>
 
-                <!-- Restart server -->
-                <startMenuShortcut>
-                    <name>Restart Server</name>
-                    <runInTerminal>0</runInTerminal>
-                    <windowsExec>cscript.exe</windowsExec>
-                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" restart wait</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\pg-restart.ico</windowsIcon>
-                    <ruleList>
-                        <isTrue value="${create_shortcuts}" />
-                    </ruleList>
-                </startMenuShortcut>
-
-                <!-- Start server -->
-                <startMenuShortcut>
-                    <name>Start Server</name>
-                    <runInTerminal>0</runInTerminal>
-                    <windowsExec>cscript.exe</windowsExec>
-                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" start wait</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\pg-start.ico</windowsIcon>
-                    <ruleList>
-                        <isTrue value="${create_shortcuts}" />
-                    </ruleList>
-                </startMenuShortcut>
-
-                <!-- Stop server -->
-                <startMenuShortcut>
-                    <name>Stop Server</name>
-                    <runInTerminal>0</runInTerminal>
-                    <windowsExec>cscript.exe</windowsExec>
-                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" stop wait</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\pg-stop.ico</windowsIcon>
-                    <ruleList>
-                        <isTrue value="${create_shortcuts}" />
-                    </ruleList>
-                </startMenuShortcut>
-
             </startMenuShortcutList>
 
         </component>

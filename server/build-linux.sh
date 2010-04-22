@@ -343,10 +343,7 @@ _postprocess_server_linux() {
     cp resources/pg-postgresql.png staging/linux/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
     cp resources/pg-psql.png staging/linux/scripts/images/pg-psql-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
     cp resources/pg-reload.png staging/linux/scripts/images/pg-reload-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
-    cp resources/pg-restart.png staging/linux/scripts/images/pg-restart-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
     cp resources/pg-stackbuilder.png staging/linux/scripts/images/pg-stackbuilder-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
-    cp resources/pg-start.png staging/linux/scripts/images/pg-start-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
-    cp resources/pg-stop.png staging/linux/scripts/images/pg-stop-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
 
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the menu pick items"
 
@@ -362,20 +359,13 @@ _postprocess_server_linux() {
     cp resources/xdg/pg-pgadmin.desktop staging/linux/scripts/xdg/pg-pgadmin-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-psql.desktop staging/linux/scripts/xdg/pg-psql-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-reload.desktop staging/linux/scripts/xdg/pg-reload-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-restart.desktop staging/linux/scripts/xdg/pg-restart-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-stackbuilder.desktop staging/linux/scripts/xdg/pg-stackbuilder-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-start.desktop staging/linux/scripts/xdg/pg-start-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-stop.desktop staging/linux/scripts/xdg/pg-stop-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
 
     # Copy the launch scripts
     cp scripts/linux/launchpsql.sh staging/linux/scripts/launchpsql.sh || _die "Failed to copy the launchpsql script (scripts/linux/launchpsql.sh)"
     chmod ugo+x staging/linux/scripts/launchpsql.sh
-    cp scripts/linux/launchsvrctl.sh staging/linux/scripts/launchsvrctl.sh || _die "Failed to copy the launchsvrctl script (scripts/linux/launchsvrctl.sh)"
-    chmod ugo+x staging/linux/scripts/launchsvrctl.sh
     cp scripts/linux/runpsql.sh staging/linux/scripts/runpsql.sh || _die "Failed to copy the runpsql script (scripts/linux/runpsql.sh)"
     chmod ugo+x staging/linux/scripts/runpsql.sh
-    cp scripts/linux/serverctl.sh staging/linux/scripts/serverctl.sh || _die "Failed to copy the serverctl script (scripts/linux/serverctl.sh)"
-    chmod ugo+x staging/linux/scripts/serverctl.sh
     cp scripts/linux/launchbrowser.sh staging/linux/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
     chmod ugo+x staging/linux/scripts/launchbrowser.sh
     cp scripts/linux/launchpgadmin.sh staging/linux/scripts/launchpgadmin.sh || _die "Failed to copy the launchpgadmin script (scripts/linux/launchpgadmin.sh)"

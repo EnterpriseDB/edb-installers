@@ -280,9 +280,6 @@ _postprocess_server_osx() {
 
     cp scripts/osx/psql.applescript.in staging/osx/scripts/psql.applescript || _die "Failed to to the menu pick script (scripts/osx/psql.applescript.in)"
     cp scripts/osx/reload.applescript.in staging/osx/scripts/reload.applescript || _die "Failed to to the menu pick script (scripts/osx/reload.applescript.in)"
-    cp scripts/osx/restart.applescript.in staging/osx/scripts/restart.applescript || _die "Failed to to the menu pick script (scripts/osx/restart.applescript.in)"
-    cp scripts/osx/start.applescript.in staging/osx/scripts/start.applescript || _die "Failed to to the menu pick script (scripts/osx/start.applescript.in)"
-    cp scripts/osx/stop.applescript.in staging/osx/scripts/stop.applescript || _die "Failed to to the menu pick script (scripts/osx/stop.applescript.in)"
     cp scripts/osx/pgadmin.applescript.in staging/osx/scripts/pgadmin.applescript || _die "Failed to to the menu pick script (scripts/osx/pgadmin.applescript.in)"
     cp scripts/osx/stackbuilder.applescript.in staging/osx/scripts/stackbuilder.applescript || _die "Failed to to the menu pick script (scripts/osx/stackbuilder.applescript.in)"
 

@@ -1,6 +1,0 @@
-try
-set ret to do shell script "su - PG_OSUSERNAME -c \"PG_INSTALLDIR/bin/pg_ctl stop -D PG_DATADIR -m fast\" > /tmp/pgmsg.txt 2>&1" with administrator privileges
-end try
-set output to do shell script "cat /tmp/pgmsg.txt" with administrator privileges
-set ret to do shell script "rm /tmp/pgmsg.txt" with administrator privileges
-display dialog output buttons {"OK"} with icon 1 default button 1

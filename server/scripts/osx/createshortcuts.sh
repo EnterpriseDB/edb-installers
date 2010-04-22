@@ -89,9 +89,6 @@ _compile_script "$INSTALLDIR/scripts/doc-pljava.applescript" "$FOLDER/Documentat
 _compile_script "$INSTALLDIR/scripts/doc-pljava-readme.applescript" "$FOLDER/Documentation/PL Java README.app" "$INSTALLDIR/scripts/images/pg-help.icns"
 _compile_script "$INSTALLDIR/scripts/psql.applescript" "$FOLDER/SQL Shell (psql).app" "$INSTALLDIR/scripts/images/pg-psql.icns"
 _compile_script "$INSTALLDIR/scripts/reload.applescript" "$FOLDER/Reload Configuration.app" "$INSTALLDIR/scripts/images/pg-reload.icns"
-_compile_script "$INSTALLDIR/scripts/restart.applescript" "$FOLDER/Restart Server.app" "$INSTALLDIR/scripts/images/pg-restart.icns"
-_compile_script "$INSTALLDIR/scripts/start.applescript" "$FOLDER/Start Server.app" "$INSTALLDIR/scripts/images/pg-start.icns"
-_compile_script "$INSTALLDIR/scripts/stop.applescript" "$FOLDER/Stop Server.app" "$INSTALLDIR/scripts/images/pg-stop.icns"
 _compile_script "$INSTALLDIR/scripts/pgadmin.applescript" "$FOLDER/pgAdmin III.app" "$INSTALLDIR/pgAdmin3.app/Contents/Resources/pgAdmin3.icns"
 
 # Do not create stack-builder shortcut, if DISABLE_STACKBUILDER is equal to 1

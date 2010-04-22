@@ -107,9 +107,6 @@ then
           "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
           "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-start-$VERSION.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION.desktop"
 
     rm "$INSTALLDIR/scripts/xdg/"pg-*-$VERSION.directory
@@ -134,10 +131,8 @@ _fixup_file "$INSTALLDIR/scripts/launchbrowser.sh"
 _fixup_file "$INSTALLDIR/scripts/launchpgadmin.sh"
 _fixup_file "$INSTALLDIR/scripts/launchpsql.sh"
 _fixup_file "$INSTALLDIR/scripts/launchstackbuilder.sh"
-_fixup_file "$INSTALLDIR/scripts/launchsvrctl.sh"
 _fixup_file "$INSTALLDIR/scripts/runpsql.sh"
 _fixup_file "$INSTALLDIR/scripts/runstackbuilder.sh"
-_fixup_file "$INSTALLDIR/scripts/serverctl.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
@@ -151,9 +146,6 @@ _fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION_STR.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION_STR.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-start-$VERSION_STR.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop"
 
@@ -170,9 +162,6 @@ fi
       "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory" \
 	  "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION_STR.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION_STR.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-restart-$VERSION_STR.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-start-$VERSION_STR.desktop" \
-	  "$INSTALLDIR/scripts/xdg/pg-stop-$VERSION_STR.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION_STR.desktop" || _warn "Failed to create the top level menu"
 
 # Do not create stack-builder menu, if DISABLE_STACKBUILDER is equal to 1
