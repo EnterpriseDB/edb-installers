@@ -1985,6 +1985,22 @@
                         <compareText text="${pphqpassword}" logic="equals" value=""/>
                     </ruleList>
                 </throwError>
+                <throwError>
+                    <text>${msg(pphq.port.invalid)}</text>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareValues>
+                            <value1>${pphqport}</value1>
+                            <logic>less</logic>
+                            <value2>1024</value2>
+                        </compareValues>
+                        <compareValues>
+                            <value1>${pphqport}</value1>
+                            <logic>greater</logic>
+                            <value2>65535</value2>
+                        </compareValues>
+                    </ruleList>
+                </throwError>
                 <throwError text="${msg(pphq.port.not.free)}">
 		    <!-- In case of upgrade this error should not be shown-->
                     <ruleList>

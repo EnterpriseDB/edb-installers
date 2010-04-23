@@ -73,3 +73,8 @@ pphqagent.server.details.explanation.upgrade=Please enter the username and passw
 pphqagent.work.directory.removing=Removing HQ Agent work directory...
 
 pphq.agent.host.error=The Agent Hostname/Address is used by the PPHQ Server to connect to the agent. It must be a network address or hostname that the server can reach, and may not be a loopback address or 'localhost'.
+
+jre.invalid.error=Invalid --jrehome specified.\n\nCould not find '${jrehome}/bin/java'.
+
+jre.invalid.error.windows=Invalid --jrehome specified.\n\nCould not find '${jrehome}\bin\java.exe'.
+
