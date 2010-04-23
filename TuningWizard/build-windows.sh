@@ -147,3 +147,4 @@ _postprocess_TuningWizard_windows() {
     win32_sign "tuningwizard-$PG_VERSION_TUNINGWIZARD-$PG_BUILDNUM_TUNINGWIZARD-windows.exe"
 	
     cd $WD
+}
