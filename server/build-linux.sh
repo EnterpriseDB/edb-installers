@@ -156,7 +156,7 @@ _build_server_linux() {
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/;sh ./configure --prefix=$PG_STAGING --with-openssl --with-perl --with-python --with-tcl --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/;PATH=$PG_PERL_LINUX/bin:$PG_PYTHON_LINUX/bin:$PG_TCL_LINUX/bin:\$PATH ./configure --prefix=$PG_STAGING --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX/lib --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; make" || _die "Failed to build postgres" 
