@@ -85,7 +85,8 @@
         <setInstallerVariable name="project.parameter(jrehome).ask" value="0"/>
         <setInstallerVariable name="project.parameter(serviceaccount).ask" value="0"/>
         <setInstallerVariable name="agentport" value=""/>
-        <setInstallerVariable name="agenthost" value="localhost"/>
+        <setInstallerVariable name="agenthost" value=""/>
+        <setInstallerVariable name="defaultagenthost" value=""/>
         <setInstallerVariable name="configure" value="false"/>
 
         <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
@@ -357,28 +358,15 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
-	<!-- reset agent host in case of upgrade and agent host is null. Meaning if 
-	installation was cancelled at the time of pphq configuration screen then next time
-	installation will be a upgrade but registry will not contain any agent host and server host info
-	as previous installation was cancelled at the agent configuration screen.
-	-->
 	<actionGroup>
 	    <actionList>
-		<setInstallerVariable name="iagenthost" value="localhost">
+		<setInstallerVariable name="agenthost" value="${iagenthost}">
 		</setInstallerVariable>
 	    </actionList>
 	    <ruleList>
 			<compareText text="${pphqAgentVersion}" logic="does_not_equal" value=""/>
-			<compareText text="${iagenthost}" logic="equals" value=""/>
-		    </ruleList>
+	    </ruleList>
 	</actionGroup>
-
-	<setInstallerVariable>
-            <name>agenthost</name>
-            <value>${iagenthost}</value>
-        </setInstallerVariable>
-	<logMessage text="agenthost=${agenthost}"/>
-	<logMessage text="iagenthost=${iagenthost}"/>
 
     </preInstallationActionList>
     <readyToInstallActionList>
@@ -554,7 +542,7 @@
 
 
 
-        <setInstallerVariableFromRegEx name="agenthost"  text="${machineNetInfo}">
+        <setInstallerVariableFromRegEx name="defaultagenthost"  text="${machineNetInfo}">
             <pattern>^.*host\sname\.*([a-zA-Z0-9\.\-]*).*$</pattern>
             <substitution>\1</substitution>
             <ruleList>
@@ -564,22 +552,15 @@
         </setInstallerVariableFromRegEx>
 
         <!-- switch to ip-address, if host-name does not contain '.' (dot) -->
-        <setInstallerVariableFromRegEx name="agenthost" text="${machineNetInfo}">
+        <setInstallerVariableFromRegEx name="defaultagenthost" text="${machineNetInfo}">
             <pattern>^.*primary\sip\saddress\.*([0-9\.]*).*$</pattern>
             <substitution>\1</substitution>
             <ruleList>
-                <compareText logic="does_not_contain" text="${agenthost}" value="."/>
+                <compareText logic="does_not_contain" text="${defaultagenthost}" value="."/>
                 <stringTest text="${machineNetInfo}" type="not_empty"/>
                 <compareText text="${pphqAgentVersion}" logic="equals" value=""/>
             </ruleList>
         </setInstallerVariableFromRegEx>
-	<!-- do not reset agent host in case of upgrade. It will be picked up from registry.
-	-->
-        <setInstallerVariable name="agenthost" value="localhost">
-            <ruleList>
-                <compareText text="${pphqAgentVersion}" logic="equals" value=""/>
-            </ruleList>
-	</setInstallerVariable>
 
         <!-- Get a default port number - ideally 2144 -->
         <getFreePort variable="agentport" initialPort="2144" finalPort="65535"/>
@@ -588,7 +569,7 @@
                 <stringTest text="${pphquser}" type="empty"/>
             </ruleList>
         </setInstallerVariable>
-        <setInstallerVariable name="pphqhost" value="${agenthost}">
+        <setInstallerVariable name="pphqhost" value="${defaultagenthost}">
             <ruleList>
                 <stringTest text="${pphqhost}" type="empty"/>
             </ruleList>
@@ -1023,7 +1004,7 @@
               explanation="${pphqServerDetailsExplaination}">
             <parameterList>
                 <!-- Postgres Plus HQ server Host -->
-                <stringParameter name="pphqhost" explanation="" value="" default="${agenthost}"
+                <stringParameter name="pphqhost" explanation="" value="" default="${defaultagenthost}"
                     description="${msg(pphqagent.config.pphqhost)}" cliOptionName="pphqhost"
                     allowEmptyValue="1" width="40">
                     <ruleList>
@@ -1051,7 +1032,7 @@
                     </ruleList>
                 </booleanParameter>
                 <!-- Postgres Plus HQ agent Host -->
-                <stringParameter name="agenthost" explanation="" value="" default="${agenthost}"
+                <stringParameter name="agenthost" explanation="" value="" default="${defaultagenthost}"
                     description="${msg(pphqagent.config.agenthost)}" cliOptionName="agenthost"
                     allowEmptyValue="1" width="40">
                     <ruleList>
