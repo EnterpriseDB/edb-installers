@@ -133,6 +133,8 @@ _fixup_file "$INSTALLDIR/scripts/launchpsql.sh"
 _fixup_file "$INSTALLDIR/scripts/launchstackbuilder.sh"
 _fixup_file "$INSTALLDIR/scripts/runpsql.sh"
 _fixup_file "$INSTALLDIR/scripts/runstackbuilder.sh"
+_fixup_file "$INSTALLDIR/scripts/serverctl.sh"
+_fixup_file "$INSTALLDIR/scripts/launchsvrctl.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
