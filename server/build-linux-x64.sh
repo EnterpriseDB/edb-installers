@@ -270,6 +270,9 @@ _build_server_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/lib; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}\" \$f; done"
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/lib/postgresql; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/..\" \$f; done"
 
+    #Fix permission in the staging/linux-x64/lib
+    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/lib; chmod a+r *"
+
     # Stackbuilder
 	
     # Configure
