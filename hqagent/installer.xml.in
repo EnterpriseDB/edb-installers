@@ -1060,6 +1060,10 @@
                 </stringParameter>
             </parameterList>
             <preShowPageActionList>
+		 <setInstallerVariable>
+		      <name>installation_finished</name>
+		      <value>0</value>
+		 </setInstallerVariable>
                 <setInstallerVariable name="pphqServerDetailsExplaination"
                       value="${msg(pphqagent.server.details.explanation)}"/>
                 <setInstallerVariable name="pphqServerDetailsExplaination"
@@ -1210,6 +1214,10 @@
                 </showProgressDialog>
             </validationActionList>
             <postShowPageActionList>
+		<setInstallerVariable>
+		     <name>installation_finished</name>
+		     <value>1</value>
+		</setInstallerVariable>
                 <actionGroup>
                     <actionList>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqhost" value="${pphqhost}"/>
