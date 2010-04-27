@@ -178,6 +178,11 @@ _build_server_linux() {
     echo "Building uuid-ossp module"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/uuid-ossp; make" || _die "Failed to build the uuid-ossp module"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
+ 
+    # Install the PostgreSQL docs
+    mkdir -p $WD/server/staging/linux/doc/postgresql/html || _die "Failed to create the doc directory"
+    cd $WD/server/staging/linux/doc/postgresql/html || _die "Failed to change to the doc directory"
+    cp -R $WD/server/source/postgres.linux/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
 	
     # Copy in the dependency libraries
     ssh $PG_SSH_LINUX "cp -R /lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"

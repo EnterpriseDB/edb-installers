@@ -157,6 +157,11 @@ EOT
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" make -j4 || _die "Failed to build the uuid-ossp module"
     make install || _die "Failed to install the uuid-ossp module"
 
+    # Install the PostgreSQL docs
+    mkdir -p $WD/server/staging/osx/doc/postgresql/html || _die "Failed to create the doc directory"
+    cd $WD/server/staging/osx/doc/postgresql/html || _die "Failed to change to the doc directory"
+    cp -R $WD/server/source/postgres.osx/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
+
     # Now, build pgAdmin
 
     cd $WD/server/source/pgadmin.osx
