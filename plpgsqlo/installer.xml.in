@@ -7,11 +7,11 @@
     <startMenuGroupName/>
     <!-- Product Specific Options -->
     <productDisplayName>PL/Secure ${productVersion}</productDisplayName>
-    <productComments>${product_fullname} ${productVersion}, packaged by EnterpriseDB</productComments>
+    <productComments>${product_fullname} ${productVersion}</productComments>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
     <!-- The options are used for RPM registration -->
-    <description>PL/Secure: Secure pl/pgsql</description>
+    <description>PL/Secure for PL/pgSQL</description>
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>

@@ -2,7 +2,7 @@ Installer.Welcome.Title=%1$s Setup Wizard
 
 Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
 
-install.summary=PL/Secure for pl/pgsql
+install.summary=PL/Secure for PL/pgSQL
 
 Installer.Installing.Title=Installing ${product_fullname}
 
