@@ -1194,8 +1194,15 @@
                                         <stringTest text="${strmsg}" type="not_empty"/>
                                     </ruleList>
                                 </throwError>
+                                <setInstallerVariable name="errMessage" value="${msg(pphqagent.server.secure.connection.fail)}">
+                                    <ruleList>
+					<isTrue value="${pphqsecureconn}"/>
+                                        <compareText logic="contains" text="${errMessage}" value="Unable to connect"/>
+                                    </ruleList>
+                                </setInstallerVariable>
                                 <setInstallerVariable name="errMessage" value="${msg(pphqagent.server.connection.fail)}">
                                     <ruleList>
+					<isFalse value="${pphqsecureconn}"/>
                                         <compareText logic="contains" text="${errMessage}" value="Unable to connect"/>
                                     </ruleList>
                                 </setInstallerVariable>

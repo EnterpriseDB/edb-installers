@@ -40,7 +40,9 @@ pphqagent.server.validating=Validating server details...
 
 pphqagent.update.configuration=Upgrading configuration files...
 
-pphqagent.server.connection.fail=A connection couldn't be established with the Postgres Plus HQ Server.\nPlease make sure the Postgres Plus HQ Server is running.
+pphqagent.server.secure.connection.fail=A connection couldn't be established with the Postgres Plus HQ Server.\nPlease ensurethat Postgres Plus HQ Server is running and correct PPHQ host and secure port number has been specified.
+
+pphqagent.server.connection.fail=A connection couldn't be established with the Postgres Plus HQ Server.\nPlease make sure the Postgres Plus HQ Server is running and correct PPHQ host and port number has been specified.
 
 pphqagent.start.error.question=An error occured starting the agent:\n\n${errMessage}\n\nThis may be caused by incorrect settings, or a firewall on the agent or server machine. Do you wish to try again?
 
