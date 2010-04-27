@@ -696,9 +696,9 @@
 
                 <!-- Check whether menus were created, if its a re-install/upgrade -->
                 <registryGet>
-                    <name>iShortcut</name>
+                    <name>Shortcuts</name>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
-                    <variable>Shortcuts</variable>
+                    <variable>iShortcut</variable>
                 </registryGet>
 
                 <registryGet>
