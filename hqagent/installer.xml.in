@@ -312,51 +312,46 @@
         <!-- check the version of java. It should be >=1.5.0 -->
         <actionGroup>
             <actionList>
-		<setInstallerVariableFromScriptOutput
-			exec="${java_executable}"
-			execArgs="-version"
-			name="javaVersionInfo"
-			workingDirectory="${installdir}"/>
-            </actionList>
-	    <ruleList>
-		<compareText text="${jrehome}" logic="does_not_equal" value="" />
-	    </ruleList>
-        </actionGroup>
+                <setInstallerVariable name="javaVersionInfo" value=""/>
+                <setInstallerVariableFromScriptOutput
+                    exec="${java_executable}"
+                    execArgs="-version"
+                    name="javaVersionInfo"
+                    workingDirectory="${installdir}"/>
+                <!-- In case of java -version, output comes into program_stderr
+                     check program_stderr if it was not there in standard output
+                -->
+                <setInstallerVariable  name="javaVersionInfo" value="${program_stderr}">
+                    <ruleList>
+                    <compareText text="${javaVersionInfo}" logic="equals" value="" />
+                            <compareText logic="does_not_contain" text="${program_stderr}" value="error"/>
+                            <compareText logic="equals" text="${javaVersionInfo}" value=""/>
+                    </ruleList>
+                </setInstallerVariable>
 
-	<!-- In case of java -version, output comes into program_stderr 
-	     check program_stderr if it was not there in standard output
-	-->
-	<setInstallerVariable  name="javaVersionInfo" value="${program_stderr}">
-	    <ruleList>
-		<compareText text="${javaVersionInfo}" logic="equals" value="" />
-                <compareText>
-                    <logic>does_not_contain</logic>
-                    <text>${program_stderr}</text>
-                    <value>error</value>
-                </compareText>
-	    </ruleList>
-	</setInstallerVariable>
+                <setInstallerVariableFromRegEx name="javaVersion"  text="${javaVersionInfo}">
+                    <pattern>^.*java\sversion\s"([0-9]\.[0-9]).*$</pattern>
+                    <substitution>\1</substitution>
+                    <ruleList>
+                        <stringTest text="${javaVersionInfo}" type="not_empty"/>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
 
-        <setInstallerVariableFromRegEx name="javaVersion"  text="${javaVersionInfo}">
-            <pattern>^.*java\sversion\s"([0-9]\.[0-9]).*$</pattern>
-            <substitution>\1</substitution>
+                <throwError>
+                    <text>${msg(jre.invalid.version.error)}</text>
+                    <ruleList>
+                    <compareValues>
+                        <value1>${javaVersion}</value1>
+                        <logic>less_or_equal</logic>
+                        <value2>1.5</value2>
+                    </compareValues>
+                    </ruleList>
+                </throwError>
+                </actionList>
             <ruleList>
                 <compareText text="${jrehome}" logic="does_not_equal" value="" />
-                <stringTest text="${javaVersionInfo}" type="not_empty"/>
             </ruleList>
-        </setInstallerVariableFromRegEx>
-
-	<throwError>
-	    <text>${msg(jre.invalid.version.error)}</text>
-	    <ruleList>
-		<compareValues>
-		    <value1>${javaVersion}</value1>
-		    <logic>less_or_equal</logic>
-		    <value2>1.5</value2>
-		</compareValues>
-	    </ruleList>
-	</throwError>
-
+        </actionGroup>
 
         <!-- If there appears to be an existing installation, with no Branding value. -->
         <!-- force the default value. Otherwise, set the branding to whatever we read, -->
