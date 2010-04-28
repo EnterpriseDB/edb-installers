@@ -46,6 +46,8 @@ pgplus.details.error=Connection to the Postgres failed. Please re-check the deta
 
 jre.invalid.error=Invalid --jrehome specified.\n\nCould not find '${jrehome}/bin/java'.
 
+jre.invalid.version.error=Java version inside jrehome should be >=1.5.
+
 jre.invalid.error.windows=Invalid --jrehome specified.\n\nCould not find '${jrehome}\bin\java.exe'.
 
 pphq.port.invalid=This port number must be a valid integer between 1024 and 65535.
