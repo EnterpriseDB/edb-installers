@@ -109,9 +109,9 @@ _postprocess_plpgsqlo_windows() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
     # Sign the installer
-    win32_sign "plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-windows.exe"
+    win32_sign "plsecure-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-windows.exe"
     
-    # Restoring postgres.platform_name files which were changed by plpgsqlo.patch
+    # Restoring postgres.platform_name files which were changed by plsecure.patch
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Project.pm $WD/server/source/postgres.windows/src/tools/msvc/. || _die "Failed to copy Project.pm"
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Mkvcbuild.pm $WD/server/source/postgres.windows/src/tools/msvc/. || _die "Failed to copy Mkvcbuild.pm"
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/pgbison.bat $WD/server/source/postgres.windows/src/tools/msvc/. || _die "Failed to copy pgbison.bat"
