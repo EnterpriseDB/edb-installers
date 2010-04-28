@@ -1093,6 +1093,11 @@
                             <section>xDBReplicationServer</section>
                             <key>ServiceAccount</key>
                             <value>${serviceaccount}</value>
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                            <ruleList>
+                               <isTrue value="${component(subserver).selected}"/>
+                               <isTrue value="${component(pubserver).selected}"/>
+                            </ruleList>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
@@ -1183,6 +1188,11 @@
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
                     <name>ServiceAccount</name>
                     <value>${serviceaccount}</value>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <isTrue value="${component(subserver).selected}"/>
+                        <isTrue value="${component(pubserver).selected}"/>
+                    </ruleList>
                 </registrySet>
                 <registrySet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
