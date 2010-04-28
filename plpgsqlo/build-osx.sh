@@ -87,17 +87,17 @@ _postprocess_plpgsqlo_osx() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
     # Using own scripts for extract-only mode
-    cp -f $WD/scripts/risePrivileges $WD/output/plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/Contents/MacOS/plpgsqlo
-    chmod a+x $WD/output/plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/Contents/MacOS/plpgsqlo
-    cp -f $WD/resources/extract_installbuilder.osx $WD/output/plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/Contents/MacOS/installbuilder.sh
-    _replace @@PROJECTNAME@@ plpgsqlo $WD/output/plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
-    chmod a+x $WD/output/plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/Contents/MacOS/installbuilder.sh
+    cp -f $WD/scripts/risePrivileges $WD/output/plsecure-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/Contents/MacOS/plsecure
+    chmod a+x $WD/output/plsecure-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/Contents/MacOS/plsecure
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/plsecure-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ plsecure $WD/output/plsecure-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
+    chmod a+x $WD/output/plsecure-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/Contents/MacOS/installbuilder.sh
 
     # Zip up the output
     cd $WD/output
-    zip -r plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.zip plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/ || _die "Failed to zip the installer bundle"
-    rm -rf plpgsqlo-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/ || _die "Failed to remove the unpacked installer bundle"
-    # Restoring postgres.platform_name files which were changed by plpgsqlo.patch
+    zip -r plsecure-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.zip plsecure-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf plsecure-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/ || _die "Failed to remove the unpacked installer bundle"
+    # Restoring postgres.platform_name files which were changed by plsecure.patch
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Project.pm $WD/server/source/postgres.osx/src/tools/msvc/. || _die "Failed to copy Project.pm"
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Mkvcbuild.pm $WD/server/source/postgres.osx/src/tools/msvc/. || _die "Failed to copy Mkvcbuild.pm"
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/pgbison.bat $WD/server/source/postgres.osx/src/tools/msvc/. || _die "Failed to copy pgbison.bat"
