@@ -284,14 +284,27 @@
 
         <actionGroup>
            <actionList>
+               <setInstallerVariable name="chkVersion" value="" />  
                <iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${monitorServer}" key="Version" variable="chkVersion">
                   <ruleList>
                      <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                   </ruleList>
                </iniFileGet>
+               <iniFileGet file="/etc/postgres-reg.ini" section="EnterpriseDB/${monitorServer}AS" key="Version" variable="chkVersion">
+                  <ruleList>
+                     <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                     <compareText logic="equals" text="${chkVersion}" value=""/>
+                  </ruleList>
+               </iniFileGet>
                <registryGet name="Version" key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${monitorServer}" variable="chkVersion">
                   <ruleList>
                      <compareText logic="equals" text="${platform_name}" value="windows"/>
+                  </ruleList>
+               </registryGet>
+               <registryGet name="Version" key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\pgplusas-${monitorServer}" variable="chkVersion">
+                  <ruleList>
+                     <compareText logic="equals" text="${platform_name}" value="windows"/>
+                     <compareText logic="equals" text="${chkVersion}" value=""/>
                   </ruleList>
                </registryGet>
 
@@ -884,14 +897,27 @@
             <compareText logic="equals" text="${iSBPVersion}" value=""/>
        </ruleList>
        <validationActionList>
+            <setInstallerVariable name="chkVersion" value="" />
             <iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${monitorServer}" key="Version" variable="chkVersion">
               <ruleList>
                  <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
               </ruleList>
             </iniFileGet>
+            <iniFileGet file="/etc/postgres-reg.ini" section="EnterpriseDB/${monitorServer}AS" key="Version" variable="chkVersion">
+              <ruleList>
+                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                 <compareText logic="equals" text="${chkVersion}" value=""/>
+              </ruleList>
+            </iniFileGet>
             <registryGet name="Version" key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${monitorServer}" variable="chkVersion">
               <ruleList>
                  <compareText logic="equals" text="${platform_name}" value="windows"/>
+              </ruleList>
+            </registryGet>
+            <registryGet name="Version" key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\pgplusas-${monitorServer}" variable="chkVersion">
+              <ruleList>
+                 <compareText logic="equals" text="${platform_name}" value="windows"/>
+                 <compareText logic="equals" text="${chkVersion}" value=""/>
               </ruleList>
             </registryGet>
 
