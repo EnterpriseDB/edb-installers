@@ -805,6 +805,7 @@
 		<deleteFile path="${installdir}/agent-PG_VERSION_HQAGENT/bundles/agent-PG_VERSION_HQAGENT-PPHQ_BUILD/pdk/work"
                       abortOnError="0" showMessageOnError="0"
                       progressText="${msg(pphqagent.work.directory.removing)}"/>
+		<deleteFile path="/Applications/${branding}" abortOnError="0" showMessageOnError="0"/>
                 <deleteFile path="/Applications/${branding}/Start Postgres Plus HQ Agent.app"
                       abortOnError="0" showMessageOnError="0"/>
                 <deleteFile path="/Applications/${branding}/Stop Postgres Plus HQ Agent.app"
