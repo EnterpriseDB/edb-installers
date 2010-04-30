@@ -33,7 +33,7 @@ pgplus.details.explanation=Please verify the Postgres Plus installation details
 config.servicepassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the service user account.
 config.serviceaccount.description=Operating system username
 
-pgplus.port.error=Invalid port specified.
+pgplus.port.error=The port number must be an integer between 1024 and 65535.
 
 pgplus.blank.error=Values must be entered for all fields.
 

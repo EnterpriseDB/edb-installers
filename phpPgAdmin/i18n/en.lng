@@ -34,7 +34,7 @@ pgplus.blank.error=Values must be entered for host/port fields.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 
-config.pgport.invalid=This port number must be a valid integer between 1024 and 65535.
+config.pgport.invalid=The port number must be an integer between 1024 and 65535.
 
 config.pgport.in.use=The specified port number is not available. Please enter a different port.
 
