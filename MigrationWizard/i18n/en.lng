@@ -6,7 +6,7 @@ Installer.Installing.Title=Installing ${product_fullname}
 
 upgrade.existing.installation.title=Existing installation
 
-upgrade.existing.installation.description=An existing MigrationWizard installation has been found at ${installdir}. This installation will be upgraded.
+upgrade.existing.installation.description=An existing Migration Wizard installation has been found at ${installdir}. This installation will be upgraded.
 
 install.summary=EnterpriseDB's MySQL to PostgreSQL Migration Wizard. 
 

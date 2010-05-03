@@ -1,7 +1,7 @@
 <project>
     <!-- Package details -->
     <shortName>migrationwizard</shortName>
-    <fullName>MigrationWizard</fullName>
+    <fullName>Migration Wizard</fullName>
     <version>PG_VERSION_MIGRATIONWIZARD-PG_BUILDNUM_MIGRATIONWIZARD</version>
 	
     <!-- These options are used on Windows -->
