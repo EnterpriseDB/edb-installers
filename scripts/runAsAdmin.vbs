@@ -2,12 +2,12 @@
 ' Ashesh Vashi, EnterpriseDB
 
 'Initialization
-Dim WSI, FSO, WshShell, WshApp, TempFolder, LogFile, WMIService, Services, Locator, Password
+Dim WSI, FSO, WshShell, WshApp, TempFolder, LogFile, WMIService, Services, Locator
 Dim strSuperUser, strSuperPassword, strServiceAccount, strServicePassword, strDataDir, strInstallDir, strLocale, strServiceName, iPbPort
 Dim bUnattended, bWScript, bInstallRuntimes, bDebug
 Dim strExitMsg, strVCRedistFile, strLogFile
 
-Dim iStatus, strScriptOutput, strScriptError, isPassword
+Dim iStatus, strScriptOutput, strScriptError
 Dim objDevServer
 
 Dim bInstallPostGIS, bInstallSlony, bInstallPgAgent, bInstallPsqlODBC, bInstallPgBouncer, bInstallSBP
@@ -17,10 +17,8 @@ CONSTADMINDATABASE = "postgres"
 const HKCU = &H80000001
 const HKLM = &H80000002
 
-isPassword = false
 LogFile = NULL
 SET WSI = WScript.StdIn
-SET Password = CreateObject( "ScriptPW.Password" )
 SET WMIService = GetObject("winmgmts:\\.\root\cimv2")
 SET FSO = CreateObject("Scripting.FileSystemObject")
 Set WshShell = CreateObject("WScript.Shell")
@@ -656,11 +654,7 @@ Function Question(ByVal que, ByVal validator, ByVal defVal, ByVal actualVal, ByV
   Do
     If NOT bUnattended Then
       ShowMessage que & " [" & defVal & "] : "
-      If isPassword Then
-          strAnswer = Password.GetPassword()
-      Else
-          strAnswer = Trim(WSI.ReadLine())
-      End If
+      strAnswer = Trim(WSI.ReadLine())
     End If
     If strAnswer = "" Then
       strAnswer = defVal
@@ -680,13 +674,6 @@ Function Question(ByVal que, ByVal validator, ByVal defVal, ByVal actualVal, ByV
     End If
   Loop Until bRes AND loopUntilRes
   Question = strAnswer
-End Function
-
-
-Function AskPassword(ByVal que, ByVal validator, ByVal defVal, ByVal actualVal, ByVal stopInstallOnError, ByVal loopUntilRes)
-  isPassword = true
-  AskPassword = Question(que, validator, defVal, actualVal, stopInstallOnError, loopUntilRes)
-  isPassword = false
 End Function
 
 Function AskYesNo(ByVal que, ByVal defVal)
@@ -2426,22 +2413,18 @@ Question "Please enter the port", "objDevServer.validatePort", iPort, iPort, bUn
 Question "Please enter the locale", "objDevServer.validateLocale", "DEFAULT", strLocale, bUnattended, true
 
 LogNote "We won't be able to check the superuser - database password. Hence, there will no be validation done."
-objDevServer.SuperPassword = AskPassword("Please enter the Password for the SuperUser (" & objDevServer.SuperUser & ")", "", strSuperPassword, strSuperPassword, bUnattended, true)
+objDevServer.SuperPassword = Question("Please enter the Password for the SuperUser (" & objDevServer.SuperUser & ")", "", strSuperPassword, strSuperPassword, bUnattended, true)
 LogNote "Service Account (" & objDevServer.ServiceAccount & ") will be created (only if not present, otherwise validated) with the provided password immediatedly"
-AskPassword "Please enter the Password for the ServiceAccount (" & objDevServer.ServiceAccount & ")", "objDevServer.validateServicePassword", strServicePassword, strServicePassword, bUnattended, true
+Question "Please enter the Password for the ServiceAccount (" & objDevServer.ServiceAccount & ")", "objDevServer.validateServicePassword", strServicePassword, strServicePassword, bUnattended, true
 
 ShowMessage "INSTALL DIR         : " & objDevServer.InstallDir
 ShowMessage "DATA DIR            : " & objDevServer.DataDir
 ShowMessage "PORT                : " & objDevServer.Port
 ShowMessage "LOCALE              : " & objDevServer.Locale
 ShowMessage "SUPER USER          : " & objDevServer.SuperUser
-If bDebug Then
-  ShowMessage "SUPER USER PASSWORD : " & objDevServer.SuperPassword
-End IF
+ShowMessage "SUPER USER PASSWORD : " & objDevServer.SuperPassword
 ShowMessage "SERVICE ACCOUNT     : " & objDevServer.ServiceAccount
-If bDebug Then
-  ShowMessage "SERVICE PASSWORD    : " & objDevServer.ServicePassword
-End IF
+ShowMessage "SERVICE PASSWORD    : " & objDevServer.ServicePassword
 
 If NOT FSO.FolderExists(objDevServer.DataDir) OR _
    NOT IsFileExists(objDevServer.DataDir, "postgresql.conf", lStrErrMsg) Then
