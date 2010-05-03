@@ -14,7 +14,7 @@ plpgsqlo.installdir.pgerror=The Postgres installation directory: ${installdir} i
 
 incompatible.pg.error=The Postgres server installation is incompatible with this version of SQL Protect, which requires Postgres ${pgmajorversion}.
 
-Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
+Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
