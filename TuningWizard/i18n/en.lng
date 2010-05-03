@@ -18,7 +18,7 @@ tuningwizard.installdir.error=The installation directory must be an absolute pat
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 
-Installer.Installation.Finished.Title=Completing the EnterpriseDB Tuning Wizard Setup.
+Installer.Installation.Finished.Title=Completed the EnterpriseDB Tuning Wizard Setup.
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of enterprise-class products and services based on PostgreSQL, the world's most advanced open source database.
 

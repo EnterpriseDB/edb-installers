@@ -34,7 +34,7 @@ post.install.error=Error Configuring phpWiki Application.
 
 pgplus.port.error=Invalid port specified.
 
-Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
+Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
