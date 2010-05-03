@@ -121,19 +121,19 @@ _build_ApachePhp_osx() {
     cd $PG_PATH_OSX/ApachePhp/source/php.osx
 
     echo "Configuring the php source tree for intel"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf || _die "Failed to configure PHP for intel"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf --enable-mbstring=all|| _die "Failed to configure PHP for intel"
     #Hack for php 5.2.12
     _replace "#define HAVE_ARPA_NAMESER_COMPAT_H 1" "#define HAVE_ARPA_NAMESER_COMPAT_H 0" "main/php_config.h"
     mv main/php_config.h main/php_config_i386.h
  
     echo "Configuring the php source tree for ppc"
-    CFLAGS="$PG_ARCH_OSX_CFLAG -arch ppc" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf || _die "Failed to configure PHP for ppc"
+    CFLAGS="$PG_ARCH_OSX_CFLAG -arch ppc" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf --enable-mbstring=all|| _die "Failed to configure PHP for ppc"
     #Hack for php 5.2.12
     _replace "#define HAVE_ARPA_NAMESER_COMPAT_H 1" "#define HAVE_ARPA_NAMESER_COMPAT_H 0" "main/php_config.h"
     mv main/php_config.h main/php_config_ppc.h
  
     echo "Configuring the php source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf || _die "Failed to configure PHP for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf --enable-mbstring=all|| _die "Failed to configure PHP for Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     echo "#ifdef __BIG_ENDIAN__" > main/php_config.h
