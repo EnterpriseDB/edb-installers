@@ -40,7 +40,7 @@ progress.text.creating.shortcuts=Creating Menu Shortcuts
 
 progress.passwd.file.create=Creating Password File
 
-Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
+Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of enterprise-class products and services based on PostgreSQL, the world's most advanced open source database.
 

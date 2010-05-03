@@ -40,6 +40,6 @@ apachephp.installdir.error=The installation directory must be an absolute path, 
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 
-Installer.Installation.Finished.Title=Completing the EnterpriseDB %1$s Setup Wizard
+Installer.Installation.Finished.Title=Completed the EnterpriseDB %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com

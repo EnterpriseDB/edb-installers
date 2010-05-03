@@ -20,7 +20,7 @@ java.error=Java is not installed on your system.\nPlease ensure it is installed 
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 
-Installer.Installation.Finished.Title=Completing the EnterpriseDB Migration Toolkit Setup.
+Installer.Installation.Finished.Title=Completed the EnterpriseDB Migration Toolkit Setup.
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of enterprise-class products and services based on PostgreSQL, the world's most advanced open source database.
 

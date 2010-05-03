@@ -10,7 +10,7 @@ Installer.Ready.Text1=Setup is now ready to begin installing pgmemcache on your 
 
 Installer.Installing.Text=Please wait while Setup installs pgmemcache on your computer.
 
-Installer.Installation.Finished.Title=Completing the pgmemcache Setup Wizard.
+Installer.Installation.Finished.Title=Completed the pgmemcache Setup Wizard.
 
 Installer.Installation.Finished.Text=Setup has finished installing pgmemcache on your computer.
 
