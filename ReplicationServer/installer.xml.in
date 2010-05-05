@@ -1165,27 +1165,27 @@
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                     <name>Branding</name>
                     <value>${branding}</value>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                     <name>RepConsole</name>
                     <value>${component(repconsole).selected}</value>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                     <name>PubServer</name>
                     <value>${component(pubserver).selected}</value>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                     <name>SubServer</name>
                     <value>${component(subserver).selected}</value>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                     <name>ServiceAccount</name>
                     <value>${serviceaccount}</value>
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
@@ -1195,7 +1195,7 @@
                     </ruleList>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                     <name>SubPort</name>
                     <value>${subport}</value>
                     <ruleList>
@@ -1203,7 +1203,7 @@
                     </ruleList>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                     <name>PubPort</name>
                     <value>${pubport}</value>
                     <ruleList>
@@ -1211,7 +1211,7 @@
                     </ruleList>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                     <name>EnterpriseDBEmail</name>
                     <value>${existingEmail}</value>
                     <ruleList>
