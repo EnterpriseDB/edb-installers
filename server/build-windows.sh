@@ -55,7 +55,7 @@ _prep_server_windows() {
     if [ -f $WD/server/staging/windows/output.zip ];
     then
         echo "Removing existing output archive"
-        rm -rf $WD/server/scripts/windows/output.zip || _die "Couldn't remove the existing output archive"
+        rm -rf $WD/server/staging/windows/output.zip || _die "Couldn't remove the existing output archive"
     fi
 	
     # Cleanup the build host
