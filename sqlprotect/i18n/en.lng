@@ -8,11 +8,19 @@ Installer.Installing.Title=Installing ${product_fullname}
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 
-error.pg.notfound=A suitable Postgres ${pgmajorversion} server installation could not be found. Please run the Postgres ${pgmajorversion} installer.
-
-plpgsqlo.installdir.pgerror=The Postgres installation directory: ${installdir} is not valid.
+sqlprotect.installdir.pgerror=The Postgres installation directory: ${installdir} is not valid.
 
 incompatible.pg.error=The Postgres server installation is incompatible with this version of SQL Protect, which requires Postgres ${pgmajorversion}.
+
+sqlprotect.installdir.empty=The installation directory cannot be empty.
+
+sqlprotect.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
+
+pg.server.title=Postgres Installation Directory
+
+Installer.Parameter.pg.installdir=Postgres Installation Directory
+
+Installer.Parameter.installdir.pg.explanation=Please provide the path where your postgres server is installed.
 
 Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 

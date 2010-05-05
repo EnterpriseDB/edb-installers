@@ -64,13 +64,6 @@ _postprocess_sqlprotect_osx() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
-    # Using own scripts for extract-only mode
-    cp -f $WD/scripts/risePrivileges $WD/output/sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.app/Contents/MacOS/sqlprotect
-    chmod a+x $WD/output/sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.app/Contents/MacOS/sqlprotect
-    cp -f $WD/resources/extract_installbuilder.osx $WD/output/sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.app/Contents/MacOS/installbuilder.sh
-    _replace @@PROJECTNAME@@ sqlprotect $WD/output/SQLPROTECT-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
-    chmod a+x $WD/output/sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.app/Contents/MacOS/installbuilder.sh
-	
     # Zip up the output
     cd $WD/output
     zip -r sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.zip sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.app/ || _die "Failed to zip the installer bundle"
