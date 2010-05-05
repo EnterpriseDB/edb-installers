@@ -179,6 +179,10 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+       <!-- Custome Page for Registration -->
+       <include file="staging/registration_initialization.xml"/>
+
     </initializationActionList>
     <!-- Preinstallation actions -->
     <preInstallationActionList>
@@ -544,6 +548,10 @@
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
+
+        <!-- Custome Page for Registration -->
+        <include file="staging/registration_preinstallation.xml"/>
+
     </preInstallationActionList>
     <!-- Post installation actions -->
     <postInstallationActionList>
@@ -593,6 +601,10 @@
                 </substitution>
             </substitutionList>
         </substitute>
+
+        <!-- Custome Page for Registration -->
+        <include file="staging/registration_postinstallation.xml"/>
+
     </postInstallationActionList>
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
@@ -632,6 +644,10 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <!-- Custome Page for Registration -->
+        <include file="staging/registration_preuninstallation.xml"/>
+
     </preUninstallationActionList>
     <!-- Components -->
     <componentList>
@@ -716,8 +732,17 @@
                 </folder>
             </folderList>
         </component>
+
+        <!-- Custome Page for Registration -->
+        <include file="staging/registration_component.xml"/>
+
     </componentList>
     <parameterList>
+
+        <!-- Custome Page for Registration -->
+        <include file="staging/registration_already_registered_parameter.xml"/>
+        <include file="staging/registration_authentication_parameter.xml"/>
+
         <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
         <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
