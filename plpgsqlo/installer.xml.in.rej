@@ -1,0 +1,23 @@
+--- plpgsqlo/installer.xml.in
++++ plpgsqlo/installer.xml.in
+@@ -114,20 +72,6 @@
+     <!-- Preinstallation actions -->
+     <preInstallationActionList>
+ 
+-        <actionGroup>
+-            <actionList>
+-                <setInstallerVariable name="branding" value=""/>
+-                <!-- Do not create uninstaller in case of extract-only mode -->
+-                <setInstallerVariable name="createUninstaller" value="0" persist="1"/>
+-                <setInstallerVariable name="libdir" value="${installdir}/lib"/>
+-                <setInstallerVariable name="sharedir" value="${installdir}/share"/>
+-            </actionList>
+-            <ruleList>
+-                <isTrue value="${extract_mode}"/>
+-            </ruleList>
+-        </actionGroup>
+-
+-
+         <!-- Do not perform the below actions in case of extract-only mode -->
+         <actionGroup>
+             <actionList>
