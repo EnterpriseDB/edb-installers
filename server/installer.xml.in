@@ -3426,6 +3426,22 @@ REM The script sets environment variables helpful for PostgreSQL
                     <key>Serviceaccount</key>
                     <value></value>
                 </iniFileSet>
+
+                <!--Locale -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Locale</key>
+                    <value></value>
+                </iniFileSet>
+
+                <!--Shortcuts -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Shortcuts</key>
+                    <value></value>
+                </iniFileSet>
              </actionList>
 
              <ruleList>
