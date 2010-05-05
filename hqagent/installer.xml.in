@@ -43,9 +43,22 @@
         <language code="en" encoding="iso8859-1" file="i18n/en.lng"/>
     </customLanguageFileList>
     <preShowHelpActionList>
+	<setInstallerVariable name="project.parameter(serviceaccount).ask" value="0" >
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="agenthost" value="localhost"/>
         <setInstallerVariable name="defaultagenthost" value="localhost"/>
         <setInstallerVariable name="pphqdefaultpassword" value="hqadmin"/>
+	<!-- We do not want to provide service-user option to the user in case of windows
+	    because hq itself runs the service as local user and doesn't allow it to be run
+	    as a customozed user where as in case of non windows platforms, it allows to change the user -->
+	<setInstallerVariable name="defaultserviceaccount" value="root" >
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariable>
         <!-- MAC : Set the default installation directory -->
         <setInstallerVariable name="default_installdir" value="/Library/PostgresPlus/HQ">
             <ruleList>
@@ -74,9 +87,9 @@
                 <compareText text="${platform_name}" value="linux"/>
             </ruleList>
         </setInstallerVariable>
-        <setInstallerVariable name="project.parameter(serviceaccount).ask" value="0">
+	<setInstallerVariable name="project.parameter(serviceaccount).ask" value="0" >
             <ruleList>
-                <compareText text="${platform_name}" value="windows" logic="equals"/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </setInstallerVariable>
     </preBuildActionList>
@@ -84,7 +97,16 @@
     <initializationActionList>
         <setInstallerVariable name="productVersion" value="PG_VERSION_HQAGENT"/>
         <setInstallerVariable name="project.parameter(jrehome).ask" value="0"/>
-        <setInstallerVariable name="project.parameter(serviceaccount).ask" value="0"/>
+	<setInstallerVariable name="project.parameter(serviceaccount).ask" value="0" />
+	<!-- We do not want to provide service-user option to the user in case of windows
+	    because hq itself runs the service as local user and doesn't allow it to be run
+	    as a customozed user where as in case of non windows platforms, it allows to change the user -->
+	<setInstallerVariable name="defaultserviceaccount" value="root" >
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariable>
+
         <setInstallerVariable name="agentport" value=""/>
         <setInstallerVariable name="agenthost" value=""/>
         <setInstallerVariable name="defaultagenthost" value=""/>
@@ -235,6 +257,7 @@
 
         <actionGroup>
             <actionList>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="Serviceaccount" variable="serviceaccount"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqhost" variable="pphqhost"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqport" variable="pphqport"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" variable="pphqsecureconn"/>
@@ -510,6 +533,7 @@
 
         <actionGroup>
             <actionList>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Serviceaccount" value="${serviceaccount}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Description" value="${msg(install.summary)}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="InstallationDirectory" value="${installdir}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Version" value="${product_version}"/>
@@ -982,7 +1006,11 @@
     <parameterList>
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
-        <stringParameter name="serviceaccount" cliOptionName="service-user" ask="1" cliOptionShow="1" default="root"/>
+        <stringParameter name="serviceaccount" cliOptionName="service-user" ask="1" cliOptionShow="1" default="${defaultserviceaccount}">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+	</stringParameter>
         <stringParameter name="jrehome" cliOptionName="jrehome" default="" ask="1" cliOptionShow="1"/>
 
         <!-- Install Directory -->
