@@ -476,41 +476,41 @@
                         <!-- Get the branding -->
                         <registryGet>
                             <name>Branding</name>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <variable>iBranding</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>Version</name>
                             <variable>xDBReplicationServerVersion</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>RepConsole</name>
                             <variable>IsRepConsoleUpgrade</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>PubServer</name>
                             <variable>IsPubServerUpgrade</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>SubServer</name>
                             <variable>IsSubServerUpgrade</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>ServiceAccount</name>
                             <variable>iServiceaccount</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>SubPort</name>
                             <variable>iSubport</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDBReplicationServer</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>PubPort</name>
                             <variable>iPubport</variable>
                         </registryGet>
