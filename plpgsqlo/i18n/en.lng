@@ -46,7 +46,7 @@ registration.emailpassword.not.provided=Please provide the email address and pas
 
 plpgsqlo.installdir.pgerror=Postgres installation directory: ${installdir} is not valid.
 
-incompatible.pg.error=The PostgreSQL Server Installation is incompatible with this version of plpgsqlo.
+plpgsqlo.incompatible.pg.error=The PostgreSQL Server Installation is incompatible with this version of plpgsqlo.
 
 Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
