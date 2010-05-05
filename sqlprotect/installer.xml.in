@@ -303,8 +303,8 @@
 		<actionGroup>
 		    <actionList>
 			<registryGet>
-			    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PostgreSQL\PG_MAJOR_VERSION</key>
-			    <name>Location</name>
+			    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
+			    <name>Base Directory</name>
 			    <variable>pginstalldir</variable>
 			</registryGet>
 		    </actionList>
