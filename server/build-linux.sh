@@ -242,6 +242,9 @@ _build_server_linux() {
 
     echo "Changing the rpath for the pgAdmin binaries"
     ssh $PG_SSH_LINUX "cd $PG_STAGING/pgAdmin3/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
+
+    #Fix permission in the staging/linux/pgAdmin3/lib
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/pgAdmin3/lib; chmod a+r *"
 	
     # Copy the Postgres utilities
     ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/server/staging/linux/bin/pg_dump $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"

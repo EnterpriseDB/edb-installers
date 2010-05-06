@@ -244,6 +244,9 @@ _build_server_linux_x64() {
     echo "Changing the rpath for the pgAdmin binaries"
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/pgAdmin3/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
 
+    #Fix permission in the staging/linux-x64/pgAdmin3/lib
+    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/pgAdmin3/lib; chmod a+r *"
+
     # Copy the Postgres utilities
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/bin/pg_dump $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/bin/pg_dumpall $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
