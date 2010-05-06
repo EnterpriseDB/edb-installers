@@ -368,6 +368,48 @@
 		    </ruleList>
 		</actionGroup>
 
+		<!-- Set libdir and sharedir value if postgres installation is not found in registry -->
+		<actionGroup>
+		    <actionList>
+			<!-- Set the default installation directory -->
+			<setInstallerVariable>
+			    <name>libdir</name>
+			    <persist>1</persist>
+			    <value>${default_installdir}/lib/postgresql</value>
+			    <ruleList>
+				<compareText>
+				    <logic>does_not_equal</logic>
+				    <text>${platform_name}</text>
+				    <value>windows</value>
+				</compareText>
+			    </ruleList>
+			</setInstallerVariable>
+
+			<setInstallerVariable>
+			    <name>libdir</name>
+			    <persist>1</persist>
+			    <value>${default_installdir}/lib</value>
+			    <ruleList>
+				<compareText>
+				    <logic>equals</logic>
+				    <text>${platform_name}</text>
+				    <value>windows</value>
+				</compareText>
+			    </ruleList>
+			</setInstallerVariable>
+
+			<setInstallerVariable>
+			    <name>sharedir</name>
+			    <persist>1</persist>
+			    <value>${default_installdir}/share</value>
+			</setInstallerVariable>
+		    </actionList>
+		    <ruleList>
+			<compareText logic="equals" text="${pginstalldir}" value=""/>
+		    </ruleList>
+		</actionGroup>
+
+
                 <actionGroup>
 		    <actionList>
 			<setInstallerVariable name="superuser" value="postgres"/>
