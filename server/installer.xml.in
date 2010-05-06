@@ -1539,7 +1539,7 @@
                     <name>serverconfig</name>
                 </readFile>
                 <setInstallerVariableFromRegEx>
-                    <name>defaultport</name>
+                    <name>serverport</name>
                     <text>${serverconfig}</text>
                     <pattern>^.*port\s*=\s*([\d]+)\s+.*$</pattern>
                     <substitution>\1</substitution>
