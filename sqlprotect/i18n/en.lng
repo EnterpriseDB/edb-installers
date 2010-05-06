@@ -10,7 +10,7 @@ platform.not.match=You are trying to run a 32bit installer in a 64bit machine. T
 
 sqlprotect.installdir.pgerror=The Postgres installation directory: ${installdir} is not valid.
 
-incompatible.pg.error=The Postgres server installation is incompatible with this version of SQL Protect, which requires Postgres ${pgmajorversion}.
+sqlprotect.incompatible.pg.error=The Postgres server installation is incompatible with this version of SQL Protect, which requires Postgres ${pgmajorversion}.
 
 sqlprotect.installdir.empty=The installation directory cannot be empty.
 
