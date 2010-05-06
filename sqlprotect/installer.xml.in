@@ -290,20 +290,21 @@
 
         <actionGroup>
             <actionList>
-                <setInstallerVariableFromScriptOutput name="pg_version_str"
-                      exec="${installdir}/bin/pg_config" execArgs="--version"
-                      workingDirectory="${installdir}\bin">
+                <setInstallerVariable name="pg_version_str" value=""/>
+                <setInstallerVariable name="pg_config_exec" value="${installdir}/bin/pg_config">
                     <ruleList>
                         <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
                     </ruleList>
-                </setInstallerVariableFromScriptOutput>
-                <setInstallerVariableFromScriptOutput name="pg_version_str"
-                      exec="${installdir}\bin\pg_config.exe" execArgs="--version"
-                      workingDirectory="${installdir}\bin">
+                </setInstallerVariable>
+                <setInstallerVariable name="pg_config_exec" value="${installdir}\bin\pg_config.exe">
                     <ruleList>
                         <compareText text="${platform_name}" logic="equals" value="windows"/>
                     </ruleList>
-                </setInstallerVariableFromScriptOutput>
+                </setInstallerVariable>
+                <setInstallerVariableFromScriptOutput name="pg_version_str"
+                      exec="${pg_config_exec}" execArgs="--version"
+                      abortOnError="0" showMessageOnError="0"
+                      workingDirectory="${installdir}/bin"/>
                 <setInstallerVariableFromRegEx name="pg_version" text="${pg_version_str}">
                     <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
                     <substitution>\1</substitution>
@@ -316,6 +317,14 @@
                         <compareText logic="does_not_equal" text="${pg_version}" value="PG_MAJOR_VERSION"/>
                     </ruleList>
                 </throwError>
+                <setInstallerVariableFromScriptOutput name="pglibdir"
+                      exec="${pg_config_exec}" execArgs="--pkglibdir"
+                      abortOnError="0" showMessageOnError="0"
+                      workingDirectory="${installdir}/bin">
+                    <onErrorActionList>
+                        <setInstallerVariable name="pglibdir" value="${installdir}/lib"/>
+                    </onErrorActionList>
+                </setInstallerVariableFromScriptOutput>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${installer_ui}" value="unattended"/>
@@ -351,6 +360,7 @@
                             <key>Version</key>
                             <value>${product_version}</value>
                         </iniFileSet>
+                        <changePermissions files="${pglibdir}/sqlprotect.so" permissions="755"/>
                     </actionList>
                     <ruleList>
                         <compareText>
@@ -362,15 +372,6 @@
                 </actionGroup>
             </actionList>
         </actionGroup>
-        <substitute>
-            <files>${installdir}/share/sqlprotect.sql</files>
-            <substitutionList>
-                <substitution>
-                    <pattern>\$libdir</pattern>
-                    <value>${installdir}/lib</value>
-                </substitution>
-            </substitutionList>
-        </substitute>
 
         <!-- Custome Page for Registration -->
         <include file="staging/registration_postinstallation.xml"/>
@@ -420,24 +421,30 @@
             <description>sqlprotect</description>
             <canBeEdited>0</canBeEdited>
             <selected>1</selected>
-            <show>1</show>
+            <show>0</show>
             <folderList>
                 <!-- WIN: Program files -->
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}</destination>
-                    <name>programfileslibwindows</name>
+                    <name>programfileswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
 					    <distributionDirectory>
                             <origin>staging/windows/doc</origin>
                         </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/windows/lib</origin>
-                        </distributionDirectory>
 		                <distributionDirectory>
                             <origin>staging/windows/share</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Lib</description>
+                    <destination>${pglibdir}</destination>
+                    <name>libfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile origin="staging/windows/lib/postgresql/sqlprotect.dll"/>
                     </distributionFileList>
                 </folder>
                 <!-- LIN: Program files -->
@@ -450,12 +457,18 @@
 					    <distributionDirectory>
                             <origin>staging/linux/doc</origin>
                         </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux/lib</origin>
-                        </distributionDirectory>
 						<distributionDirectory>
                             <origin>staging/linux/share</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Lib</description>
+                    <destination>${pglibdir}</destination>
+                    <name>libfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionFile origin="staging/linux/lib/postgresql/sqlprotect.so"/>
                     </distributionFileList>
                 </folder>
                 <!-- LIN-X64: Program files -->
@@ -468,12 +481,18 @@
 					    <distributionDirectory>
                             <origin>staging/linux-x64/doc</origin>
                         </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/lib</origin>
-                        </distributionDirectory>
 						<distributionDirectory>
                             <origin>staging/linux-x64/share</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Lib</description>
+                    <destination>${pglibdir}</destination>
+                    <name>libfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionFile origin="staging/linux-x64/lib/postgresql/sqlprotect.so"/>
                     </distributionFileList>
                 </folder>
                 <!-- MAC: Program files -->
@@ -487,11 +506,17 @@
                             <origin>staging/osx/doc</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/osx/lib</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
                             <origin>staging/osx/share</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Lib</description>
+                    <destination>${pglibdir}</destination>
+                    <name>libfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile origin="staging/osx/lib/postgresql/sqlprotect.so"/>
                     </distributionFileList>
                 </folder>
             </folderList>
@@ -580,20 +605,21 @@
                                 <compareText text="${platform_name}" logic="equals" value="windows"/>
                             </ruleList>
                         </throwError>
-                        <setInstallerVariableFromScriptOutput name="pg_version_str"
-                              exec="${installdir}/bin/pg_config" execArgs="--version"
-                              workingDirectory="${installdir}\bin">
+                        <setInstallerVariable name="pg_version_str" value=""/>
+                        <setInstallerVariable name="pg_config_exec" value="${installdir}/bin/pg_config">
                             <ruleList>
                                 <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
                             </ruleList>
-                        </setInstallerVariableFromScriptOutput>
-                        <setInstallerVariableFromScriptOutput name="pg_version_str"
-                              exec="${installdir}\bin\pg_config.exe" execArgs="--version"
-                              workingDirectory="${installdir}\bin">
+                        </setInstallerVariable>
+                        <setInstallerVariable name="pg_config_exec" value="${installdir}\bin\pg_config.exe">
                             <ruleList>
                                 <compareText text="${platform_name}" logic="equals" value="windows"/>
                             </ruleList>
-                        </setInstallerVariableFromScriptOutput>
+                        </setInstallerVariable>
+                        <setInstallerVariableFromScriptOutput name="pg_version_str"
+                              exec="${pg_config_exec}" execArgs="--version"
+                              abortOnError="0" showMessageOnError="0"
+                              workingDirectory="${installdir}/bin"/>
                         <setInstallerVariableFromRegEx name="pg_version" text="${pg_version_str}">
                             <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
                             <substitution>\1</substitution>
@@ -606,6 +632,14 @@
                                 <compareText logic="does_not_equal" text="${pg_version}" value="PG_MAJOR_VERSION"/>
                             </ruleList>
                         </throwError>
+                        <setInstallerVariableFromScriptOutput name="pglibdir"
+                              exec="${pg_config_exec}" execArgs="--pkglibdir"
+                              abortOnError="0" showMessageOnError="0"
+                              workingDirectory="${installdir}/bin">
+                            <onErrorActionList>
+                                <setInstallerVariable name="pglibdir" value="${installdir}/lib"/>
+                            </onErrorActionList>
+                        </setInstallerVariableFromScriptOutput>
                     </validationActionList>
                 </directoryParameter>
             </parameterList>
