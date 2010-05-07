@@ -1864,8 +1864,15 @@
                <isFalse value="${extract_mode}"/>
             </ruleList>
         </stopWindowsService>
-
-        <!--
+        <deleteWindowsService>
+            <serviceName>${servicename}</serviceName>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+               <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </deleteWindowsService>
+        <!-- 
              In case of upgrade,
              Delete the dependent libraries from the existing installation
              The current installer will put only the required version of these libraries
