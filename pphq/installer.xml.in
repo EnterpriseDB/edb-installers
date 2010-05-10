@@ -439,9 +439,9 @@
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
                             key="PPHQ_JRPM_PORT" variable="pphq_jrpm_port"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
-                            key="ServerServiceAccount" variable="${iserviceaccount}"/>
+                            key="ServerServiceAccount" variable="iserviceaccount"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
-                            key="AgentServiceAccount" variable="${iagentserviceaccount}"/>
+                            key="AgentServiceAccount" variable="iagentserviceaccount"/>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${pphqVersion}" value=""/>
@@ -488,7 +488,6 @@
 			<compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
 	    </ruleList>
 	</actionGroup>
-
 	<!--
         <setInstallerVariable name="serviceaccount" value="pphq">
             <ruleList>
