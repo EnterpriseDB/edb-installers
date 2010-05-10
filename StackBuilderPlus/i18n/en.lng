@@ -10,7 +10,7 @@ Installer.Ready.Text1=Setup is now ready to begin installing StackBuilder Plus o
 
 Installer.Installing.Text=Please wait while Setup installs StackBuilder Plus on your computer.
 
-Installer.Installation.Finished.Title=Completing the StackBuilder Plus Setup Wizard.
+Installer.Installation.Finished.Title=Completed the StackBuilder Plus Setup Wizard.
 
 Installer.Installation.Finished.Text=Setup has finished installing StackBuilder Plus on your computer.
 

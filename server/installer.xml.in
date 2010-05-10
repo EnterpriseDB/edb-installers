@@ -1539,7 +1539,7 @@
                     <name>serverconfig</name>
                 </readFile>
                 <setInstallerVariableFromRegEx>
-                    <name>defaultport</name>
+                    <name>serverport</name>
                     <text>${serverconfig}</text>
                     <pattern>^.*port\s*=\s*([\d]+)\s+.*$</pattern>
                     <substitution>\1</substitution>
@@ -1864,8 +1864,15 @@
                <isFalse value="${extract_mode}"/>
             </ruleList>
         </stopWindowsService>
-
-        <!--
+        <deleteWindowsService>
+            <serviceName>${servicename}</serviceName>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+               <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </deleteWindowsService>
+        <!-- 
              In case of upgrade,
              Delete the dependent libraries from the existing installation
              The current installer will put only the required version of these libraries
@@ -3424,6 +3431,22 @@ REM The script sets environment variables helpful for PostgreSQL
                     <file>${PostgreSqlIni}</file>
                     <section>PostgreSQL/${product_version}</section>
                     <key>Serviceaccount</key>
+                    <value></value>
+                </iniFileSet>
+
+                <!--Locale -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Locale</key>
+                    <value></value>
+                </iniFileSet>
+
+                <!--Shortcuts -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Shortcuts</key>
                     <value></value>
                 </iniFileSet>
              </actionList>

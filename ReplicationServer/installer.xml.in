@@ -1370,7 +1370,7 @@ database=${controldb}
 
                 <runProgram>
                     <program>${psql_path}</program>
-                    <programArguments>-t -c 'CREATE DATABASE &quot;${controldb}&quot;'</programArguments>
+                    <programArguments>-t -c "CREATE DATABASE \"${controldb}\""</programArguments>
                     <workingDirectory>${system_temp_directory}/${product_fullname}/instscripts/bin</workingDirectory>
                     <progressText>${msg(progress.text.creating.controldb)}</progressText>
                     <ruleList>

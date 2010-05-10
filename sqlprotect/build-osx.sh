@@ -48,6 +48,7 @@ _build_sqlprotect_osx() {
     cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/sqlprotect.so $PG_PATH_OSX/sqlprotect/staging/osx/lib/postgresql/ || _die "Failed to copy sqlprotect.so to staging directory"
 	cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/sqlprotect.sql $PG_PATH_OSX/sqlprotect/staging/osx/share/ || _die "Failed to copy sqlprotect.sql to staging directory"
 	cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/README.sqlprotect $PG_PATH_OSX/sqlprotect/staging/osx/doc/ || _die "Failed to copy README.sqlprotect to staging directory"
+    chmod -R ugo+r $WD/sqlprotect/staging/osx
 
 }
 
@@ -64,13 +65,6 @@ _postprocess_sqlprotect_osx() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
-    # Using own scripts for extract-only mode
-    cp -f $WD/scripts/risePrivileges $WD/output/sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.app/Contents/MacOS/sqlprotect
-    chmod a+x $WD/output/sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.app/Contents/MacOS/sqlprotect
-    cp -f $WD/resources/extract_installbuilder.osx $WD/output/sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.app/Contents/MacOS/installbuilder.sh
-    _replace @@PROJECTNAME@@ sqlprotect $WD/output/SQLPROTECT-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
-    chmod a+x $WD/output/sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.app/Contents/MacOS/installbuilder.sh
-	
     # Zip up the output
     cd $WD/output
     zip -r sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.zip sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.app/ || _die "Failed to zip the installer bundle"

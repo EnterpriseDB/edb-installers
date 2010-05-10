@@ -51,6 +51,7 @@ _prep_sqlprotect_windows() {
     echo "Copying sqlprotect sources to Windows VM"
     scp sqlprotect.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the sqlprotect archive to windows VM (sqlprotect.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c  unzip sqlprotect.zip" || _die "Couldn't extract postgresql archieve on windows VM (sqlprotect.zip)"
+    chmod -R ugo+r $WD/sqlprotect/staging/windows
  
 }
 

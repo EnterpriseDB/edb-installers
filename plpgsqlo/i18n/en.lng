@@ -2,13 +2,11 @@ Installer.Welcome.Title=%1$s Setup Wizard
 
 Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
 
-install.summary=Obfuscated pl/pgsql
+install.summary=PL/Secure for PL/pgSQL
 
 Installer.Installing.Title=Installing ${product_fullname}
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
-
-error.pg.notfound=Postgres server was not found. Please run the Postgres installer.
 
 registration.error.invalid.email.value=Invalid email address. You must provide a valid email address.  Please try again.
 
@@ -46,13 +44,22 @@ registration.emailpassword.not.provided=Please provide the email address and pas
 
 plpgsqlo.installdir.pgerror=Postgres installation directory: ${installdir} is not valid.
 
-incompatible.pg.error=The PostgreSQL Server Installation is incompatible with this version of plpgsqlo.
+plpgsqlo.installdir.empty=The installation directory cannot be empty.
 
-Installer.Installation.Finished.Title=Completing the %1$s Setup Wizard
+plpgsqlo.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
+
+plpgsqlo.incompatible.pg.error=The PostgreSQL Server Installation is incompatible with this version of PL/Secure.
+
+pg.server.title=Postgres Installation Directory
+
+Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
 upgrade.existing.installation.title=Existing installation
 
-upgrade.existing.installation.description=An existing pl/pgsqlo installation has been found at ${installdir}. This installation will be upgraded.
+upgrade.existing.installation.description=An existing PL/Secure installation has been found at ${installdir}. This installation will be upgraded.
 
+Installer.Parameter.pg.installdir=Postgres Installation Directory
+
+Installer.Parameter.installdir.pg.explanation=Please provide the path where your postgres server is installed.
