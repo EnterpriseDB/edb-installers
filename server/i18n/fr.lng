@@ -1,93 +1,93 @@
-default.locale=Locale par dÃ©faut
+default.locale=Locale par défaut
 
-error.installing.runtimes=Une erreur est survenu lors de l'exÃ©cution de l'installeur Â« Microsoft VC++ runtime Â».
+error.installing.runtimes=Une erreur est survenu lors de l'exécution de l'installeur « Microsoft VC++ runtime ».
 
 upgrade.existing.installation.title=Installation existante
-upgrade.existing.installation.description=Une ancienne installation de PostgreSQL a Ã©tÃ© trouvÃ©e dans ${iBaseDirectory}. Cette installation sera mise Ã  jour.
+upgrade.existing.installation.description=Une ancienne installation de PostgreSQL a été trouvée dans ${iBaseDirectory}. Cette installation sera mise à jour.
 
-upgrade.existing.datadir.title=RÃ©pertoire des donnÃ©es existant
-upgrade.existing.datadir.description=Un ancien rÃ©pertoire des donnÃ©es a Ã©tÃ© trouvÃ©e dans ${datadir}, configurÃ© pour utiliser le port ${serverport}. Ce rÃ©pertoire et la configuration seront utilisÃ©s pour cette installation.
+upgrade.existing.datadir.title=Répertoire des données existant
+upgrade.existing.datadir.description=Un ancien répertoire des données a été trouvée dans ${datadir}, configuré pour utiliser le port ${serverport}. Ce répertoire et la configuration seront utilisés pour cette installation.
 
-error.install.directory.invalid=Le rÃ©pertoire d'installation doit Ãªtre un chemin complet, contenant seulement des letters, des chiffres et les caractÃ¨res '-', '/', '.' et '_'. De plus, il doit Ãªtre possible d'Ã©crire dans ce rÃ©pertoire.
-error.install.directory.invalid.linux=Le rÃ©pertoire d'installation ne peut pas Ãªtre '/' ou '/usr'.
-error.install.directory.not.writable=Droit refusÃ© pour lire/Ã©crire dans le rÃ©pertoire d'installation.
+error.install.directory.invalid=Le répertoire d'installation doit être un chemin complet, contenant seulement des letters, des chiffres et les caractères '-', '/', '.' et '_'. De plus, il doit être possible d'écrire dans ce répertoire.
+error.install.directory.invalid.linux=Le répertoire d'installation ne peut pas être '/' ou '/usr'.
+error.install.directory.not.writable=Droit refusé pour lire/écrire dans le répertoire d'installation.
 
-platform.not.match=Vous essayez d'exÃ©cuter un installeur 32 bits sur une machine 64 bits. L'installeur va quitter maintenant.
-error.data.directory.invalid=Le rÃ©pertoire d'installation doit Ãªtre un chemin complet, contenant seulement des letters, des chiffres et les caractÃ¨res '-', '/', '.' et '_'. De plus, il doit Ãªtre possible d'Ã©crire dans ce rÃ©pertoire.
-error.data.directory.matches.install=Le rÃ©pertoire des donnÃ©es ne doit Ãªtre ni un parent du rÃ©pertoire d'installation ni le rÃ©pertoire d'installation lui-mÃªme.
-error.data.directory.registered.broken=Un rÃ©pertoire des donnÃ©es est enregistrÃ© dans ${PostgreSqlIni} mais n'est ni vide ni un rÃ©pertoire de donnÃ©es reconnu.
-error.data.directory.existing.broken=Un ancien rÃ©pertoire des donnÃ©es a Ã©tÃ© sÃ©lectionnÃ© mais n'est ni vide ni un rÃ©pertoire de donnÃ©es reconnu.
-error.data.directory.incompatible=Le rÃ©pertoire des donnÃ©es existant (version du catalogue : ${CurrentCatalogVersion}) n'est pas compatible avec ce serveur (version du catalogue : ${CatalogVersion}).
-error.data.directory.incompatible.datetime=L'ancien rÃ©pertoire des donnÃ©es existing data directory (configuration date/heure : ${CurrentDateTimeSettings}) n'est pas compatible avec ce serveur (configuration date/heure : ${DateTimeSetting}).
+platform.not.match=Vous essayez d'exécuter un installeur 32 bits sur une machine 64 bits. L'installeur va quitter maintenant.
+error.data.directory.invalid=Le répertoire d'installation doit être un chemin complet, contenant seulement des letters, des chiffres et les caractères '-', '/', '.' et '_'. De plus, il doit être possible d'écrire dans ce répertoire.
+error.data.directory.matches.install=Le répertoire des données ne doit être ni un parent du répertoire d'installation ni le répertoire d'installation lui-même.
+error.data.directory.registered.broken=Un répertoire des données est enregistré dans ${PostgreSqlIni} mais n'est ni vide ni un répertoire de données reconnu.
+error.data.directory.existing.broken=Un ancien répertoire des données a été sélectionné mais n'est ni vide ni un répertoire de données reconnu.
+error.data.directory.incompatible=Le répertoire des données existant (version du catalogue : ${CurrentCatalogVersion}) n'est pas compatible avec ce serveur (version du catalogue : ${CatalogVersion}).
+error.data.directory.incompatible.datetime=L'ancien répertoire des données existing data directory (configuration date/heure : ${CurrentDateTimeSettings}) n'est pas compatible avec ce serveur (configuration date/heure : ${DateTimeSetting}).
 
-error.shared.memory.manual=Votre systÃ¨me semble Ãªtre configurÃ© avec moins de 32 Mo de mÃ©moire partagÃ©e, ce qui est un prÃ©-requis pour cette application. Merci de lire le fichier README de l'installeur pour plus d'informations sur la configuration des paramÃ¨tres de mÃ©moire partagÃ©e.
-error.shared.memory.updated=Votre configuration de la mÃ©moire partagÃ©e a Ã©tÃ© ajustÃ©e grÃ¢ce au fichier /etc/sysctl.conf. Merci de redÃ©marrer le systÃ¨me pour prendre en compte le nouveau paramÃ©trage, puis rÃ©-exÃ©cuter l'installeur. Si vous souhaitez restaurer le paramÃ©trage prÃ©cÃ©dent, supprimez le fichier /etc/sysctl.conf et re-dÃ©marrez.
-error.shared.memory.shmall.manual=Votre systÃ¨me semble Ãªtre configurÃ© avec un paramÃ¨tre SHMALL infÃ©rieur Ã  SHMMAX/4096. Merci de lire le fichier README de l'installeur pour plus d'informations sur la configuration des paramÃ¨tres de mÃ©moire partagÃ©e.
-error.shared.memory.shmall.updated=Votre configuration de la mÃ©moire partagÃ©e a Ã©tÃ© ajustÃ©e grÃ¢ce au fichier /etc/sysctl.conf. Merci de redÃ©marrer le systÃ¨me pour prendre en compte le nouveau paramÃ©trage, puis rÃ©-exÃ©cuter l'installeur. Si vous souhaitez restaurer le paramÃ©trage prÃ©cÃ©dent, supprimez le fichier /etc/sysctl.conf et re-dÃ©marrez.
+error.shared.memory.manual=Votre système semble être configuré avec moins de 32 Mo de mémoire partagée, ce qui est un pré-requis pour cette application. Merci de lire le fichier README de l'installeur pour plus d'informations sur la configuration des paramètres de mémoire partagée.
+error.shared.memory.updated=Votre configuration de la mémoire partagée a été ajustée grâce au fichier /etc/sysctl.conf. Merci de redémarrer le système pour prendre en compte le nouveau paramétrage, puis ré-exécuter l'installeur. Si vous souhaitez restaurer le paramétrage précédent, supprimez le fichier /etc/sysctl.conf et re-démarrez.
+error.shared.memory.shmall.manual=Votre système semble être configuré avec un paramètre SHMALL inférieur à SHMMAX/4096. Merci de lire le fichier README de l'installeur pour plus d'informations sur la configuration des paramètres de mémoire partagée.
+error.shared.memory.shmall.updated=Votre configuration de la mémoire partagée a été ajustée grâce au fichier /etc/sysctl.conf. Merci de redémarrer le système pour prendre en compte le nouveau paramétrage, puis ré-exécuter l'installeur. Si vous souhaitez restaurer le paramétrage précédent, supprimez le fichier /etc/sysctl.conf et re-démarrez.
 
-warning.could.not.stop.server=Le serveur installÃ© n'a pas pu Ãªtre arrÃªtÃ©.
+warning.could.not.stop.server=Le serveur installé n'a pas pu être arrêté.
 
-script.command.line.error=Le script a Ã©tÃ© appelÃ© avec une ligne de commande invalide
+script.command.line.error=Le script a été appelé avec une ligne de commande invalide
 
-progress.text.creating.user=CrÃ©ation du compte utilisateur pour le service...
-error.could.not.create.user=Le compte utilisateur du service Â« ${serviceaccount} Â» n'a pas pu Ãªtre crÃ©Ã©.
+progress.text.creating.user=Création du compte utilisateur pour le service...
+error.could.not.create.user=Le compte utilisateur du service « ${serviceaccount} » n'a pas pu être créé.
 
-progress.text.initialising.cluster=Initialisation du cluster de bases de donnÃ©es (cela peut prendre un certain temps)...
-error.could.not.initialise.cluster=L'initialisation du cluster de bases de donnÃ©es a Ã©chouÃ©.
-warning.during.cluster.initialisation=Une erreur non fatale est survenue lors de l'initialisation d'un cluster. Merci de vÃ©rifier les traces de l'installation enregistrÃ©es dans ${system_temp_directory} pour plus de dÃ©tails.
+progress.text.initialising.cluster=Initialisation du cluster de bases de données (cela peut prendre un certain temps)...
+error.could.not.initialise.cluster=L'initialisation du cluster de bases de données a échoué.
+warning.during.cluster.initialisation=Une erreur non fatale est survenue lors de l'initialisation d'un cluster. Merci de vérifier les traces de l'installation enregistrées dans ${system_temp_directory} pour plus de détails.
 
-progress.text.configuring.startup=Configuration du dÃ©marrage du serveur...
-error.could.not.configure.startup=Ã‰chec de la configuration du serveur pour qu'il dÃ©marre automatiquement au dÃ©marrage de la machine.
-warning.during.startup.configuration=Une erreur non fatale est survenue lors de la configuration du dÃ©marrage. Merci de vÃ©rifier les traces de l'installation enregistrÃ©es dans ${system_temp_directory} pour plus de dÃ©tails.
+progress.text.configuring.startup=Configuration du démarrage du serveur...
+error.could.not.configure.startup=Échec de la configuration du serveur pour qu'il démarre automatiquement au démarrage de la machine.
+warning.during.startup.configuration=Une erreur non fatale est survenue lors de la configuration du démarrage. Merci de vérifier les traces de l'installation enregistrées dans ${system_temp_directory} pour plus de détails.
 
-progress.text.creating.shortcuts=CrÃ©ation des raccourcis...
-warning.could.not.create.shortcuts=Une erreur non fatale est survenue lors de la crÃ©ation des raccourcis.
+progress.text.creating.shortcuts=Création des raccourcis...
+warning.could.not.create.shortcuts=Une erreur non fatale est survenue lors de la création des raccourcis.
 
-progress.text.starting.server=DÃ©marrage du serveur...
-error.could.not.start.server=Ã‰chec lors du lancement du serveur.
+progress.text.starting.server=Démarrage du serveur...
+error.could.not.start.server=Échec lors du lancement du serveur.
 
-progress.text.loading.modules=Chargement des modules SQL supplÃ©mentaires...
-error.could.not.load.modules=Ã‰chec lors du chargement des modules SQL dans le cluster de bases de donnÃ©es.
-warning.during.module.loading=Une erreur non fatale est survenue lors du chargement des modules de bases de donnÃ©es. Merci de vÃ©rifier les traces de l'installation enregistrÃ©es dans ${system_temp_directory} pour plus de dÃ©tails.
+progress.text.loading.modules=Chargement des modules SQL supplémentaires...
+error.could.not.load.modules=Échec lors du chargement des modules SQL dans le cluster de bases de données.
+warning.during.module.loading=Une erreur non fatale est survenue lors du chargement des modules de bases de données. Merci de vérifier les traces de l'installation enregistrées dans ${system_temp_directory} pour plus de détails.
 
-progress.text.run.stackbuilder=ExÃ©cuter Stack Builder en sortie ?\n\nStack Builder pourrait Ãªtre utilisÃ© pour tÃ©lÃ©charger et installer des outils supplÃ©mentaires, pilotes et applications pour complÃ©ter votre installation de PostgreSQL.
+progress.text.run.stackbuilder=Exécuter Stack Builder en sortie ?\n\nStack Builder pourrait être utilisé pour télécharger et installer des outils supplémentaires, pilotes et applications pour compléter votre installation de PostgreSQL.
 
-config.datadir.description=RÃ©pertoire des donnÃ©es
-config.datadir.explanation=SÃ©lectionnez un rÃ©pertoire dans lequel sera enregistrÃ© vos donnÃ©es.
+config.datadir.description=Répertoire des données
+config.datadir.explanation=Sélectionnez un répertoire dans lequel sera enregistré vos données.
 
 config.superpassword.description=Mot de passe
-config.superpassword.explanation=Donnez un mot de passe pour le super-utilisateur de la base de donnÃ©es (${superaccount}). Un compte utilisateur Unix verrouillÃ© (${serviceaccount}) sera crÃ©Ã© s'il n'existe pas dÃ©jÃ .
-config.superpassword.explanation.windows=Donnez un mot de passe pour le super-utilisateur de la base de donnÃ©es (${superaccount}) et le compte du service (${serviceaccount}). Si le compte du service existe dÃ©jÃ  sur Windows, vous devez saisir le mot de passe actuel de ce compte. Si le compte n'existe pas, il sera crÃ©Ã© quand vous cliquerez sur Â« Suivant Â».
+config.superpassword.explanation=Donnez un mot de passe pour le super-utilisateur de la base de données (${superaccount}). Un compte utilisateur Unix verrouillé (${serviceaccount}) sera créé s'il n'existe pas déjà.
+config.superpassword.explanation.windows=Donnez un mot de passe pour le super-utilisateur de la base de données (${superaccount}) et le compte du service (${serviceaccount}). Si le compte du service existe déjà sur Windows, vous devez saisir le mot de passe actuel de ce compte. Si le compte n'existe pas, il sera créé quand vous cliquerez sur « Suivant ».
 config.superpassword.explanation.upgrade.windows=Donnez un mot de passe pour le compte du service (${serviceaccount}).
 config.superpassword.confirm=Confirmez le mot de passe.
 config.superpassword.no.password=Vous devez saisir un mot de passe pour continuer.
-config.superpassword.incorrect.windows=Le mot de passe indiquÃ© n'est pas correct. Saisissez le bon mot de passe pour le compte utilisateur windows ${serviceaccount}.
-config.superpassword.format.error.windows=Le mot de passe spÃ©cifiÃ© ne correspond pas Ã  la politique locale ou du domaine. VÃ©rifier la longueur minimale du mot de passe, sa complexitÃ© et son historique.
+config.superpassword.incorrect.windows=Le mot de passe indiqué n'est pas correct. Saisissez le bon mot de passe pour le compte utilisateur windows ${serviceaccount}.
+config.superpassword.format.error.windows=Le mot de passe spécifié ne correspond pas à la politique locale ou du domaine. Vérifier la longueur minimale du mot de passe, sa complexité et son historique.
 
 config.port.description=Port
-config.port.explanation=SÃ©lectionnez le numÃ©ro du port sur lequel le serveur devra Ã©couter
-config.port.invalid=Ce numÃ©ro doit Ãªtre un entier valide entre 1024 et 65535.
-config.port.in.use=Le numÃ©ro de port indiquÃ© n'est pas disponible. Entrez un autre port.
+config.port.explanation=Sélectionnez le numéro du port sur lequel le serveur devra écouter
+config.port.invalid=Ce numéro doit être un entier valide entre 1024 et 65535.
+config.port.in.use=Le numéro de port indiqué n'est pas disponible. Entrez un autre port.
 
-config.advancedoption.title=Options avancÃ©s
+config.advancedoption.title=Options avancés
 
 config.locale.description=Locale
-config.locale.explanation=SÃ©lectionnez la locale utilisÃ©e par le nouveau cluster de bases de donnÃ©es.
-config.locale.no.locale=Vous devez sÃ©lectionner une locale pour continuer.
+config.locale.explanation=Sélectionnez la locale utilisée par le nouveau cluster de bases de données.
+config.locale.no.locale=Vous devez sélectionner une locale pour continuer.
 
 plpgsql.install.description=Installer pl/pgsql dans la base template1 ?
-install.runtimes.description=Indique s'il faut installer le Â« Microsoft Visual C++ runtimes Â» avant le dÃ©but de l'installation.
-create.shortcut.description=Indique s'il faut crÃ©er les raccourcis.
+install.runtimes.description=Indique s'il faut installer le « Microsoft Visual C++ runtimes » avant le début de l'installation.
+create.shortcut.description=Indique s'il faut créer les raccourcis.
 
-info.datadirectory.user.kept=Le rÃ©pertoire des donnÃ©es (${datadir}) et le compte utilisateur du service (${serviceaccount}) n'ont pas Ã©tÃ© supprimÃ©s.
-locale.error=La locale indiquÃ©e n'est pas supportÃ©e.
+info.datadirectory.user.kept=Le répertoire des données (${datadir}) et le compte utilisateur du service (${serviceaccount}) n'ont pas été supprimés.
+locale.error=La locale indiquée n'est pas supportée.
 
-superaccount.description=Configure le nom utilisateur du super-utilisateur de la base de donnÃ©es. Par dÃ©faut, Â« postgres Â».
-serviceaccount.description=Configure le compte utilisateur du systÃ¨me d'exploitation qui possÃ¨de le processus serveur. Par dÃ©faut, Â« postgres Â».
-servicepassword.description=Configure le mot de passe pour le compte utilisateur du systÃ¨me d'exploitation qui possÃ¨de le processus serveur. Par dÃ©faut, le mot de passe du super-utilisateur.
+superaccount.description=Configure le nom utilisateur du super-utilisateur de la base de données. Par défaut, « postgres ».
+serviceaccount.description=Configure le compte utilisateur du système d'exploitation qui possède le processus serveur. Par défaut, « postgres ».
+servicepassword.description=Configure le mot de passe pour le compte utilisateur du système d'exploitation qui possède le processus serveur. Par défaut, le mot de passe du super-utilisateur.
 
-servicename.not.valid=Â« ${servicename} Â» n'est pas un nom de service valide.\n\nIl doit correspondre aux critÃ¨res suivants :\n* commence avec un caractÃ¨re alphabÃ©tique\n* Finit avec un caractÃ¨re alphanumÃ©rique\n* Les caractÃ¨res spÃ©ciaux autorisÃ©s sont _ (tiret bas), . (point) et - (tiret)\n* Longueur minimum : 6 caractÃ¨res & Longueur maximum : 50 caractÃ¨res
-servicename.already.exists.linux=Un service (${servicename}) existe dÃ©jÃ  dans le rÃ©pertoire Â« /etc/init.d Â».\nMerci d'indiquer un autre nom.
-servicename.already.exists.windows=Un service (${servicename}) existe dÃ©jÃ .\nMerci d'indiquer un autre nom.
-servicename.already.exists.osx=Un service (com.edb.launchd.${servicename}.plist) existe dÃ©jÃ  dans le rÃ©pertoire '/Library/LaunchDaemons'.\nMerci d'indiquer un autre nom.
-pg.service.description=permet de conserver les bases de donnÃ©es relationnelles .
+servicename.not.valid=« ${servicename} » n'est pas un nom de service valide.\n\nIl doit correspondre aux critères suivants :\n* commence avec un caractère alphabétique\n* Finit avec un caractère alphanumérique\n* Les caractères spéciaux autorisés sont _ (tiret bas), . (point) et - (tiret)\n* Longueur minimum : 6 caractères & Longueur maximum : 50 caractères
+servicename.already.exists.linux=Un service (${servicename}) existe déjà dans le répertoire « /etc/init.d ».\nMerci d'indiquer un autre nom.
+servicename.already.exists.windows=Un service (${servicename}) existe déjà.\nMerci d'indiquer un autre nom.
+servicename.already.exists.osx=Un service (com.edb.launchd.${servicename}.plist) existe déjà dans le répertoire '/Library/LaunchDaemons'.\nMerci d'indiquer un autre nom.
+pg.service.description=permet de conserver les bases de données relationnelles .
