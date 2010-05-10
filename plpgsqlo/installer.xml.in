@@ -98,6 +98,7 @@
     <initializationActionList>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PLPGSQLO"/>
         <setInstallerVariable name="superuser" persist="0" value=""/>
+        <setInstallerVariable name="installdir" persist="0" value=""/>
         <!-- Abort Installation as trying to    run a 32-bit installer on 64-bit machine -->
         <throwError>
             <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -319,8 +320,19 @@
 		    </ruleList>
 		</actionGroup>
 
+		<!-- In case of unattended mode raise error if pg installation dir not found and it is not 
+		    specified on command line -->
+		<throwError>
+		  <customErrorMessage>${msg(plpgsqlo.installdir.pgerror)}</customErrorMessage>
+		    <ruleList>
+			<compareText logic="equals" text="${installer_ui}" value="unattended"/>
+			<compareText logic="equals" text="${pginstalldir}" value=""/>
+			<compareText logic="equals" text="${installdir}" value=""/>
+		    </ruleList>
+		</throwError>
 
-		<!-- Set the default value of installdir if it is not found in registry -->
+		<!-- Set the default value of installdir if it is not found in registry and installer
+		    ui is not unattended. -->
 		<actionGroup>
 		    <actionList>
 			<!-- Set the default installation directory -->
@@ -365,8 +377,21 @@
 		    </actionList>
 		    <ruleList>
 			<compareText logic="equals" text="${pginstalldir}" value=""/>
+			<compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
 		    </ruleList>
 		</actionGroup>
+
+		<!-- Set the default value of installdir if it is set as default_installdir -->
+		<actionGroup>
+		    <actionList>
+			<setInstallerVariable name="installdir" value="${default_installdir}"/>
+		    </actionList>
+		    <ruleList>
+			<compareText logic="equals" text="${pginstalldir}" value=""/>
+			<compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
+		    </ruleList>
+		</actionGroup>
+
 
 		<!-- Set libdir and sharedir value if postgres installation is not found in registry -->
 		<actionGroup>
@@ -406,6 +431,7 @@
 		    </actionList>
 		    <ruleList>
 			<compareText logic="equals" text="${pginstalldir}" value=""/>
+			<compareText logic="does_not_equal" text="${default_installdir}" value=""/>
 		    </ruleList>
 		</actionGroup>
 
@@ -871,7 +897,7 @@
 			<actionGroup>
 			    <actionList>
 				<setInstallerVariable name="installdir" value="${default_installdir}" />
-				<showWarning text="${msg(hqagent.installdir.error)}"/>
+				<showWarning text="${msg(plpgsqlo.installdir.error)}"/>
 				<setInstallerVariable name="next_page" value="installdir"/>
 			    </actionList>
 			    <ruleList>
