@@ -83,7 +83,13 @@
 	
     <preInstallationActionList>
 
-        <setInstallerVariableFromRegEx name="programfiles" text="${env(ProgramFiles)}" pattern="(.*) \(x86\)" substitution="\1"/>
+        <setInstallerVariable name="programfiles" value="${env(programw6432)}" >
+           <ruleList>
+               <platformTest type="windows-x64" />
+               <compareText text="${env(programw6432)}" logic="does_not_equal" value=""/>
+           </ruleList> 
+        </setInstallerVariable>
+
         <!-- WIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
