@@ -117,6 +117,8 @@
             </ruleList>
         </setInstallerVariable>
 
+        <setInstallerVariable name="pglibdir" value=""/>
+
         <!-- Custome Page for Registration -->
         <include file="staging/registration_initialization.xml"/>
 
@@ -336,6 +338,33 @@
         <include file="staging/registration_preinstallation.xml"/>
 
     </preInstallationActionList>
+    <readyToInstallActionList>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="pg_config_exec" value="${installdir}/bin/pg_config">
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="pg_config_exec" value="${installdir}\bin\pg_config.exe">
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows"/>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariableFromScriptOutput name="pglibdir"
+                      exec="${pg_config_exec}" execArgs="--pkglibdir"
+                      abortOnError="0" showMessageOnError="0"
+                      workingDirectory="${installdir}/bin">
+                    <onErrorActionList>
+                        <setInstallerVariable name="pglibdir" value="${installdir}/lib"/>
+                    </onErrorActionList>
+                </setInstallerVariableFromScriptOutput>
+            </actionList>
+            <ruleList>
+                <stringTest text="${pglibdir}" value="empty"/>
+            </ruleList>
+        </actionGroup>
+    </readyToInstallActionList>
     <!-- Post installation actions -->
     <postInstallationActionList>
         <actionGroup>
