@@ -11,7 +11,7 @@
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
 
     <!-- Windows Specific Options -->
-    <startMenuGroupName>PostgreSQL</startMenuGroupName>
+    <startMenuGroupName></startMenuGroupName>
     
     <!-- The options are used for RPM registration -->
     <description>${product_fullname} ${productVersion} by EnterpriseDB</description>
