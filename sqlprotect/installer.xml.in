@@ -596,8 +596,8 @@
                         explanation="Installer.Parameter.installdir.pg.explanation">
             <parameterList>
                 <directoryParameter name="installdir" value="${default_installdir}"
-                            default="" allowEmptyValue="0" ask="1" mustExist="0"
-                            cliOptionName="prefix" mustBeWritable="yes"
+                            default="" allowEmptyValue="1" ask="1" mustExist="1"
+                            cliOptionName="prefix" mustBeWritable="1"
                             width="40">
                     <!-- Validating whether installdir is empty -->
                     <validationActionList>
