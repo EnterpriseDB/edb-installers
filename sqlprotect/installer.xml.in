@@ -118,6 +118,7 @@
         </setInstallerVariable>
 
         <setInstallerVariable name="pglibdir" value=""/>
+        <setInstallerVariable name="installdir" value=""/>
 
         <!-- Custome Page for Registration -->
         <include file="staging/registration_initialization.xml"/>
@@ -171,6 +172,7 @@
                </compareText>
            </ruleList>
        </actionGroup>
+
        <!-- WIN: Set Installation Directory in case of re-install/upgrade -->
        <actionGroup>
            <actionList>
@@ -193,6 +195,7 @@
                </compareText>
            </ruleList>
        </actionGroup>
+
        <!-- LIN | MAC : Set Installation Directory in case of re-install/upgrade -->
        <actionGroup>
            <actionList>
@@ -217,80 +220,74 @@
            </ruleList>
        </actionGroup>
 
-       <!-- Get the installation directory from previous pg installation -->
-       <!--    Postgres Installation would have set these values -->
-       <actionGroup>
-           <actionList>
-       	<registryGet>
-       	    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
-       	    <name>Base Directory</name>
-       	    <variable>pginstalldir</variable>
-       	</registryGet>
-           </actionList>
-           <ruleList>
-       	<compareText>
-       	    <logic>equals</logic>
-       	    <text>${platform_name}</text>
-       	    <value>windows</value>
-       	</compareText>
-           </ruleList>
-       </actionGroup>
-       <!-- LIN & MAC: Set the installation Directory from registry. -->
-       <!--    sqlprotect Installation would have set these values -->
-       <actionGroup>
-           <actionList>
-       	<iniFileGet>
-       	    <file>/etc/postgres-reg.ini</file>
-       	    <section>PostgreSQL/PG_MAJOR_VERSION</section>
-       	    <key>InstallationDirectory</key>
-       	    <variable>pginstalldir</variable>
-       	</iniFileGet>
-           </actionList>
-           <ruleList>
-       	<compareText>
-       	    <logic>does_not_equal</logic>
-       	    <text>${platform_name}</text>
-       	    <value>windows</value>
-       	</compareText>
-           </ruleList>
-       </actionGroup>
+        <actionGroup>
+            <actionList>
+                <!-- Get the installation directory from previous pg installation -->
+                <!--    Postgres Installation would have set these values -->
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
+                    <name>Base Directory</name>
+                    <variable>pginstalldir</variable>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </registryGet>
 
-       <!-- WIN: Set the Installation Directory -->
-       <setInstallerVariable name="installdir" value="${pginstalldir}"/>
+                <!-- LIN & MAC: Set the installation Directory from registry. -->
+                <!--    sqlprotect Installation would have set these values -->
+                <iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>PostgreSQL/PG_MAJOR_VERSION</section>
+                    <key>InstallationDirectory</key>
+                    <variable>pginstalldir</variable>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </iniFileGet>
 
-       <!-- Set the default value of installdir as found in registry if it is found there -->
-       <setInstallerVariable name="default_installdir" value="${pginstalldir}">
-           <ruleList>
-               <compareText logic="does_not_equal" text="${pginstalldir}" value=""/>
-           </ruleList>
-       </setInstallerVariable>
+                <!-- Set the default value of installdir as found in registry if it is found there -->
+                <setInstallerVariable name="default_installdir" value="${pginstalldir}">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${pginstalldir}" value=""/>
+                    </ruleList>
+                </setInstallerVariable>
 
-       <actionGroup>
-           <actionList>
-               <!-- WIN: Set the pghome default value -->
-               <setInstallerVariable name="default_installdir" value="${platform_install_prefix}\PostgreSQL\PG_MAJOR_VERSION">
-                   <ruleList>
-                       <compareText logic="equals" text="${platform_name}" value="windows"/>
-                   </ruleList>
-               </setInstallerVariable>
-               <!-- LIN: Set the pghome default value  -->
-               <setInstallerVariable name="default_installdir" value="${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION">
-                   <ruleList>
-                       <compareText logic="contains" text="${platform_name}" value="linux"/>
-                   </ruleList>
-               </setInstallerVariable>
-               <!-- MAC: Set the  pghome default value  -->
-               <setInstallerVariable name="default_installdir" value="/Library/PostgreSQL/PG_VERSION_SQLPROTECT">
-                   <ruleList>
-                       <compareText logic="equals" text="${platform_name}" value="osx"/>
-                   </ruleList>
-               </setInstallerVariable>
-           </actionList>
-           <ruleList>
-               <compareText logic="equals" text="${pginstalldir}" value=""/>
-           </ruleList>
-       </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <!-- WIN: Set the pghome default value -->
+                        <setInstallerVariable name="default_installdir" value="${platform_install_prefix}\PostgreSQL\PG_MAJOR_VERSION">
+                            <ruleList>
+                                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                            </ruleList>
+                        </setInstallerVariable>
+                        <!-- LIN: Set the pghome default value  -->
+                        <setInstallerVariable name="default_installdir" value="${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION">
+                            <ruleList>
+                                <compareText logic="contains" text="${platform_name}" value="linux"/>
+                            </ruleList>
+                        </setInstallerVariable>
+                        <!-- MAC: Set the  pghome default value  -->
+                        <setInstallerVariable name="default_installdir" value="/Library/PostgreSQL/PG_VERSION_SQLPROTECT">
+                            <ruleList>
+                                <compareText logic="equals" text="${platform_name}" value="osx"/>
+                            </ruleList>
+                        </setInstallerVariable>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${default_installdir}" value=""/>
+                    </ruleList>
+                </actionGroup>
 
+                <setInstallerVariable name="installdir" value="${default_installdir}">
+                    <ruleList>
+                         <stringTest text="${installdir}" type="empty"/>
+                    </ruleList>
+                </setInstallerVariable>
+            </actionList>
+            <ruleList>
+                <stringTest text="${sqlprotectVersion}" type="empty"/>
+            </ruleList>
+        </actionGroup>
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="pg_version_str" value=""/>
@@ -304,6 +301,39 @@
                         <compareText text="${platform_name}" logic="equals" value="windows"/>
                     </ruleList>
                 </setInstallerVariable>
+
+                <!-- LIN | MAC : show error if the installdir is not valid -->
+                <throwError text="${msg(sqlprotect.installdir.pgerror)}">
+                    <ruleList>
+                        <ruleGroup>
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                            <ruleList>
+                                <fileTest path="${installdir}/bin/psql" condition="not_exists"/>
+                                <fileTest path="${installdir}/bin/createdb" condition="not_exists"/>
+                                <fileTest path="${installdir}/bin/createlang" condition="not_exists"/>
+                                <fileTest path="${installdir}/bin/pg_config" condition="not_exists"/>
+                            </ruleList>
+                        </ruleGroup>
+                        <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+                    </ruleList>
+                </throwError>
+
+                <!-- WIN : show error if the installdir is not valid -->
+                <throwError text="${msg(sqlprotect.installdir.pgerror)}">
+                    <ruleList>
+                        <ruleGroup>
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                            <ruleList>
+                                <fileTest path="${installdir}\bin\psql.exe" condition="not_exists"/>
+                                <fileTest path="${installdir}\bin\createdb.exe" condition="not_exists"/>
+                                <fileTest path="${installdir}\bin\createlang.exe" condition="not_exists"/>
+                                <fileTest path="${installdir}\bin\pg_config.exe" condition="not_exists"/>
+                            </ruleList>
+                        </ruleGroup>
+                        <compareText text="${platform_name}" logic="equals" value="windows"/>
+                    </ruleList>
+                </throwError>
+
                 <setInstallerVariableFromScriptOutput name="pg_version_str"
                       exec="${pg_config_exec}" execArgs="--version"
                       abortOnError="0" showMessageOnError="0"
@@ -361,7 +391,7 @@
                 </setInstallerVariableFromScriptOutput>
             </actionList>
             <ruleList>
-                <stringTest text="${pglibdir}" value="empty"/>
+                <stringTest text="${pglibdir}" type="empty"/>
             </ruleList>
         </actionGroup>
     </readyToInstallActionList>
