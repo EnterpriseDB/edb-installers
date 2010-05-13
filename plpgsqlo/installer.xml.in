@@ -320,19 +320,8 @@
 		    </ruleList>
 		</actionGroup>
 
-		<!-- In case of unattended mode raise error if pg installation dir not found and it is not 
-		    specified on command line -->
-		<throwError>
-		  <customErrorMessage>${msg(plpgsqlo.installdir.pgerror)}</customErrorMessage>
-		    <ruleList>
-			<compareText logic="equals" text="${installer_ui}" value="unattended"/>
-			<compareText logic="equals" text="${pginstalldir}" value=""/>
-			<compareText logic="equals" text="${installdir}" value=""/>
-		    </ruleList>
-		</throwError>
 
-		<!-- Set the default value of installdir if it is not found in registry and installer
-		    ui is not unattended. -->
+		<!-- Set the default value of installdir if it is not found in registry -->
 		<actionGroup>
 		    <actionList>
 			<!-- Set the default installation directory -->
@@ -377,18 +366,185 @@
 		    </actionList>
 		    <ruleList>
 			<compareText logic="equals" text="${pginstalldir}" value=""/>
-			<compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
 		    </ruleList>
 		</actionGroup>
 
-		<!-- Set the default value of installdir if it is set as default_installdir -->
+		<setInstallerVariable name="installdir" value="${default_installdir}">
+		    <ruleList>
+			 <stringTest text="${installdir}" type="empty"/>
+		    </ruleList>
+		</setInstallerVariable>
+
+		<!-- In case of unattended mode raise error if default_installdir is not valid -->
+		<!-- LIN | MAC : show error if the default_installdir is not valid -->
+		<actionGroup>
+		    <actionList>
+			<throwError text="${msg(plpgsqlo.installdir.pgerror)}"/>
+		    </actionList>
+		    <ruleList>
+			<ruleGroup>
+			    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+			    <ruleList>
+				<fileTest>
+				    <path>${default_installdir}/bin/psql</path>
+				    <condition>not_exists</condition>
+				</fileTest>
+				<fileTest>
+				    <path>${default_installdir}/bin/createdb</path>
+				    <condition>not_exists</condition>
+				</fileTest>
+				<fileTest>
+				    <path>${default_installdir}/bin/createlang</path>
+				    <condition>not_exists</condition>
+				</fileTest>
+				<fileTest>
+				    <path>${default_installdir}/bin/pg_config</path>
+				    <condition>not_exists</condition>
+				</fileTest>
+			    </ruleList>
+			</ruleGroup>
+			<ruleGroup>
+			    <ruleList>
+				<compareText>
+				    <text>${platform_name}</text>
+				    <logic>does_not_equal</logic>
+				    <value>windows</value>
+				</compareText>
+			    </ruleList>
+			</ruleGroup>
+			<compareText>
+			    <text>${installer_ui}</text>
+			    <logic>equals</logic>
+			    <value>unattended</value>
+			</compareText>
+		    </ruleList>
+		</actionGroup>
+		<!-- WIN: show error if the default_installdir is not valid -->
+		<actionGroup>
+		    <actionList>
+			<throwError text="${msg(plpgsqlo.installdir.pgerror)}"/>
+		    </actionList>
+		    <ruleList>
+			<ruleGroup>
+			    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+			    <ruleList>
+				<fileTest>
+				    <path>${default_installdir}\bin\psql.exe</path>
+				    <condition>not_exists</condition>
+				</fileTest>
+				<fileTest>
+				    <path>${default_installdir}\bin\createdb.exe</path>
+				    <condition>not_exists</condition>
+				</fileTest>
+				<fileTest>
+				    <path>${default_installdir}\bin\createlang.exe</path>
+				    <condition>not_exists</condition>
+				</fileTest>
+				<fileTest>
+				    <path>${default_installdir}\bin\pg_config.exe</path>
+				    <condition>not_exists</condition>
+				</fileTest>
+			    </ruleList>
+			</ruleGroup>
+			<ruleGroup>
+			    <ruleList>
+				<compareText>
+				    <text>${platform_name}</text>
+				    <logic>equals</logic>
+				    <value>windows</value>
+				</compareText>
+			    </ruleList>
+			</ruleGroup>
+			<compareText>
+			    <text>${installer_ui}</text>
+			    <logic>equals</logic>
+			    <value>unattended</value>
+			</compareText>
+		    </ruleList>
+		</actionGroup>
+		<actionGroup>
+		    <actionList>
+			<setInstallerVariableFromScriptOutput>
+			    <name>pg_version_str</name>
+			    <exec>${default_installdir}/bin/pg_config</exec>
+			    <execArgs>--version</execArgs>
+			    <workingDirectory>${default_installdir}\bin</workingDirectory>
+			    <ruleList>
+				<compareText>
+				   <text>${platform_name}</text>
+				   <logic>does_not_equal</logic>
+				   <value>windows</value>
+				</compareText>
+				<fileTest>  
+				    <path>${default_installdir}/bin/pg_config</path>
+				    <condition>exists</condition>
+				</fileTest>
+			    </ruleList>
+			</setInstallerVariableFromScriptOutput>
+			<setInstallerVariableFromScriptOutput>
+			    <name>pg_version_str</name>
+			    <exec>${default_installdir}\bin\pg_config.exe</exec>
+			    <execArgs>--version</execArgs>
+			    <workingDirectory>${default_installdir}\bin</workingDirectory>
+			    <ruleList>
+				<compareText>
+				   <text>${platform_name}</text>
+				   <logic>equals</logic>
+				   <value>windows</value>
+				</compareText>
+				<fileTest>  
+				    <path>${default_installdir}\bin\pg_config</path>
+				    <condition>exists</condition>
+				</fileTest>
+			    </ruleList>
+			</setInstallerVariableFromScriptOutput>
+			<setInstallerVariableFromRegEx>
+			      <name>pg_version</name>
+			      <text>${pg_version_str}</text>
+			      <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
+			      <substitution>\1</substitution>
+			      <ruleList>
+				 <compareText>
+				     <logic>does_not_equal</logic>
+				     <text>${pg_version_str}</text>
+				     <value/>
+				</compareText>
+			      </ruleList>
+			</setInstallerVariableFromRegEx>
+		   </actionList>
+	       </actionGroup>
+	       <actionGroup>
+		   <actionList>
+			<throwError text="${msg(plpgsqlo.incompatible.pg.error)}"/>
+		   </actionList>
+		   <ruleList>
+			<compareText>
+			      <logic>does_not_equal</logic>
+			      <text>${pg_version}</text>
+			      <value>PG_MAJOR_VERSION</value>            
+			</compareText>
+		    </ruleList>
+		    <ruleList>
+			<compareText>
+			    <text>${installer_ui}</text>
+			    <logic>equals</logic>
+			    <value>"unattended"</value>
+			</compareText>
+		    </ruleList>
+	       </actionGroup>
+
+
+		<!-- Set the default value of installdir if it is not an upgrade -->
 		<actionGroup>
 		    <actionList>
 			<setInstallerVariable name="installdir" value="${default_installdir}"/>
 		    </actionList>
 		    <ruleList>
-			<compareText logic="equals" text="${pginstalldir}" value=""/>
-			<compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${plpgsqloVersion}</text>
+                            <value/>
+                        </compareText>
 		    </ruleList>
 		</actionGroup>
 
@@ -430,8 +586,11 @@
 			</setInstallerVariable>
 		    </actionList>
 		    <ruleList>
-			<compareText logic="equals" text="${pginstalldir}" value=""/>
-			<compareText logic="does_not_equal" text="${default_installdir}" value=""/>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${plpgsqloVersion}</text>
+                            <value/>
+                        </compareText>
 		    </ruleList>
 		</actionGroup>
 
@@ -729,7 +888,7 @@
                     <name>installdir</name>
                     <value>${default_installdir}</value>
                     <default/>
-                    <allowEmptyValue>0</allowEmptyValue>
+                    <allowEmptyValue>1</allowEmptyValue>
                     <ask>yes</ask>
                     <cliOptionName>prefix</cliOptionName>
                     <mustBeWritable>yes</mustBeWritable>
