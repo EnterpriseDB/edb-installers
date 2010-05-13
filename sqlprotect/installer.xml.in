@@ -93,8 +93,6 @@
                 <compareText text="${originalplatform}" value="linux-x32"/>
             </ruleList>
         </throwError>
-        <!-- Set the sqlprotect version(if exists) -->
-        <setInstallerVariable name="sqlprotectVersion" value=""/>
 
         <!-- WIN: Set the pghome default value -->
         <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\PG_MAJOR_VERSION">
@@ -117,8 +115,11 @@
             </ruleList>
         </setInstallerVariable>
 
+        <!-- Set the sqlprotect version(if exists) -->
+        <setInstallerVariable name="sqlprotectVersion" value=""/>
         <setInstallerVariable name="pglibdir" value=""/>
         <setInstallerVariable name="installdir" value=""/>
+        <setInstallerVariable name="default_installdir" value=""/>
 
         <!-- Custome Page for Registration -->
         <include file="staging/registration_initialization.xml"/>
@@ -220,74 +221,69 @@
            </ruleList>
        </actionGroup>
 
+        <!-- Get the installation directory from previous pg installation -->
+        <!--    Postgres Installation would have set these values -->
+        <registryGet>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
+            <name>Base Directory</name>
+            <variable>pginstalldir</variable>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </registryGet>
+
+        <!-- LIN & MAC: Set the installation Directory from registry. -->
+        <!--    sqlprotect Installation would have set these values -->
+        <iniFileGet>
+            <file>/etc/postgres-reg.ini</file>
+            <section>PostgreSQL/PG_MAJOR_VERSION</section>
+            <key>InstallationDirectory</key>
+            <variable>pginstalldir</variable>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </iniFileGet>
+
+        <!-- Set the default value of installdir as found in registry if it is found there -->
+        <setInstallerVariable name="default_installdir" value="${pginstalldir}">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${pginstalldir}" value=""/>
+            </ruleList>
+        </setInstallerVariable>
+
         <actionGroup>
             <actionList>
-                <!-- Get the installation directory from previous pg installation -->
-                <!--    Postgres Installation would have set these values -->
-                <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
-                    <name>Base Directory</name>
-                    <variable>pginstalldir</variable>
+                <!-- WIN: Set the pghome default value -->
+                <setInstallerVariable name="default_installdir" value="${platform_install_prefix}\PostgreSQL\PG_MAJOR_VERSION">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
-                </registryGet>
-
-                <!-- LIN & MAC: Set the installation Directory from registry. -->
-                <!--    sqlprotect Installation would have set these values -->
-                <iniFileGet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>PostgreSQL/PG_MAJOR_VERSION</section>
-                    <key>InstallationDirectory</key>
-                    <variable>pginstalldir</variable>
+                </setInstallerVariable>
+                <!-- LIN: Set the pghome default value  -->
+                <setInstallerVariable name="default_installdir" value="${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION">
                     <ruleList>
-                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </iniFileGet>
-
-                <!-- Set the default value of installdir as found in registry if it is found there -->
-                <setInstallerVariable name="default_installdir" value="${pginstalldir}">
-                    <ruleList>
-                        <compareText logic="does_not_equal" text="${pginstalldir}" value=""/>
+                        <compareText logic="contains" text="${platform_name}" value="linux"/>
                     </ruleList>
                 </setInstallerVariable>
-
-                <actionGroup>
-                    <actionList>
-                        <!-- WIN: Set the pghome default value -->
-                        <setInstallerVariable name="default_installdir" value="${platform_install_prefix}\PostgreSQL\PG_MAJOR_VERSION">
-                            <ruleList>
-                                <compareText logic="equals" text="${platform_name}" value="windows"/>
-                            </ruleList>
-                        </setInstallerVariable>
-                        <!-- LIN: Set the pghome default value  -->
-                        <setInstallerVariable name="default_installdir" value="${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION">
-                            <ruleList>
-                                <compareText logic="contains" text="${platform_name}" value="linux"/>
-                            </ruleList>
-                        </setInstallerVariable>
-                        <!-- MAC: Set the  pghome default value  -->
-                        <setInstallerVariable name="default_installdir" value="/Library/PostgreSQL/PG_VERSION_SQLPROTECT">
-                            <ruleList>
-                                <compareText logic="equals" text="${platform_name}" value="osx"/>
-                            </ruleList>
-                        </setInstallerVariable>
-                    </actionList>
+                <!-- MAC: Set the  pghome default value  -->
+                <setInstallerVariable name="default_installdir" value="/Library/PostgreSQL/PG_VERSION_SQLPROTECT">
                     <ruleList>
-                        <compareText logic="equals" text="${default_installdir}" value=""/>
-                    </ruleList>
-                </actionGroup>
-
-                <setInstallerVariable name="installdir" value="${default_installdir}">
-                    <ruleList>
-                         <stringTest text="${installdir}" type="empty"/>
+                        <compareText logic="equals" text="${platform_name}" value="osx"/>
                     </ruleList>
                 </setInstallerVariable>
             </actionList>
             <ruleList>
-                <stringTest text="${sqlprotectVersion}" type="empty"/>
+                <compareText logic="equals" text="${default_installdir}" value=""/>
             </ruleList>
         </actionGroup>
+
+        <setInstallerVariable name="installdir" value="${default_installdir}">
+            <ruleList>
+                 <stringTest text="${installdir}" type="empty"/>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- Unattended mode: Check valid PostgreSQL directory -->
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="pg_version_str" value=""/>
