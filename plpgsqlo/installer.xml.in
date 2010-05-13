@@ -375,8 +375,8 @@
 		    </ruleList>
 		</setInstallerVariable>
 
-		<!-- In case of unattended mode raise error if default_installdir is not valid -->
-		<!-- LIN | MAC : show error if the default_installdir is not valid -->
+		<!-- In case of unattended mode raise error if installdir is not valid -->
+		<!-- LIN | MAC : show error if the installdir is not valid -->
 		<actionGroup>
 		    <actionList>
 			<throwError text="${msg(plpgsqlo.installdir.pgerror)}"/>
@@ -386,19 +386,19 @@
 			    <ruleEvaluationLogic>or</ruleEvaluationLogic>
 			    <ruleList>
 				<fileTest>
-				    <path>${default_installdir}/bin/psql</path>
+				    <path>${installdir}/bin/psql</path>
 				    <condition>not_exists</condition>
 				</fileTest>
 				<fileTest>
-				    <path>${default_installdir}/bin/createdb</path>
+				    <path>${installdir}/bin/createdb</path>
 				    <condition>not_exists</condition>
 				</fileTest>
 				<fileTest>
-				    <path>${default_installdir}/bin/createlang</path>
+				    <path>${installdir}/bin/createlang</path>
 				    <condition>not_exists</condition>
 				</fileTest>
 				<fileTest>
-				    <path>${default_installdir}/bin/pg_config</path>
+				    <path>${installdir}/bin/pg_config</path>
 				    <condition>not_exists</condition>
 				</fileTest>
 			    </ruleList>
@@ -419,7 +419,7 @@
 			</compareText>
 		    </ruleList>
 		</actionGroup>
-		<!-- WIN: show error if the default_installdir is not valid -->
+		<!-- WIN: show error if the installdir is not valid -->
 		<actionGroup>
 		    <actionList>
 			<throwError text="${msg(plpgsqlo.installdir.pgerror)}"/>
@@ -429,19 +429,19 @@
 			    <ruleEvaluationLogic>or</ruleEvaluationLogic>
 			    <ruleList>
 				<fileTest>
-				    <path>${default_installdir}\bin\psql.exe</path>
+				    <path>${installdir}\bin\psql.exe</path>
 				    <condition>not_exists</condition>
 				</fileTest>
 				<fileTest>
-				    <path>${default_installdir}\bin\createdb.exe</path>
+				    <path>${installdir}\bin\createdb.exe</path>
 				    <condition>not_exists</condition>
 				</fileTest>
 				<fileTest>
-				    <path>${default_installdir}\bin\createlang.exe</path>
+				    <path>${installdir}\bin\createlang.exe</path>
 				    <condition>not_exists</condition>
 				</fileTest>
 				<fileTest>
-				    <path>${default_installdir}\bin\pg_config.exe</path>
+				    <path>${installdir}\bin\pg_config.exe</path>
 				    <condition>not_exists</condition>
 				</fileTest>
 			    </ruleList>
@@ -466,9 +466,9 @@
 		    <actionList>
 			<setInstallerVariableFromScriptOutput>
 			    <name>pg_version_str</name>
-			    <exec>${default_installdir}/bin/pg_config</exec>
+			    <exec>${installdir}/bin/pg_config</exec>
 			    <execArgs>--version</execArgs>
-			    <workingDirectory>${default_installdir}\bin</workingDirectory>
+			    <workingDirectory>${installdir}\bin</workingDirectory>
 			    <ruleList>
 				<compareText>
 				   <text>${platform_name}</text>
@@ -476,16 +476,16 @@
 				   <value>windows</value>
 				</compareText>
 				<fileTest>  
-				    <path>${default_installdir}/bin/pg_config</path>
+				    <path>${installdir}/bin/pg_config</path>
 				    <condition>exists</condition>
 				</fileTest>
 			    </ruleList>
 			</setInstallerVariableFromScriptOutput>
 			<setInstallerVariableFromScriptOutput>
 			    <name>pg_version_str</name>
-			    <exec>${default_installdir}\bin\pg_config.exe</exec>
+			    <exec>${installdir}\bin\pg_config.exe</exec>
 			    <execArgs>--version</execArgs>
-			    <workingDirectory>${default_installdir}\bin</workingDirectory>
+			    <workingDirectory>${installdir}\bin</workingDirectory>
 			    <ruleList>
 				<compareText>
 				   <text>${platform_name}</text>
@@ -493,7 +493,7 @@
 				   <value>windows</value>
 				</compareText>
 				<fileTest>  
-				    <path>${default_installdir}\bin\pg_config</path>
+				    <path>${installdir}\bin\pg_config</path>
 				    <condition>exists</condition>
 				</fileTest>
 			    </ruleList>
