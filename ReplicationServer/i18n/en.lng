@@ -13,7 +13,7 @@ platform.not.match=You are trying to run a 32bit installer in a 64bit machine. T
 progress.text.creating.shortcuts=Creating menu shortcuts
 progress.text.creating.user=Creating user account
 
-Installer.Installation.Finished.Title=Completed the Postgres Plus xDB Replication Server Setup Wizard
+Installer.Installation.Finished.Title=Completed the xDB Replication Server Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
