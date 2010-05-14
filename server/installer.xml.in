@@ -27,6 +27,7 @@
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
     <overrideGtkButtonText>1</overrideGtkButtonText>
     <windowsSoftwareRegistryPrefix></windowsSoftwareRegistryPrefix>
+    <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
 
     <!-- Images -->
     <leftImage>../resources/pg-side.png</leftImage>
