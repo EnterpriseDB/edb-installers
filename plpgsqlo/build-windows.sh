@@ -57,6 +57,12 @@ _prep_plpgsqlo_windows() {
     echo "Copying plpgsqlo.sql to staging share directory"
     cp $WD/plpgsqlo/resources/plpgsqlo.sql $WD/plpgsqlo/staging/windows/share || _die "Couldn't copy plpgsqlo.sql to staging share directory"
 
+    echo "Creating staging doc directory ($WD/plpgsqlo/staging/windows/doc)"
+    mkdir -p $WD/plpgsqlo/staging/windows/doc || _die "Couldn't create the staging doc directory"
+    chmod ugo+w $WD/plpgsqlo/staging/windows/doc || _die "Couldn't set the permissions on the staging doc directory"
+    echo "Copying readme.sqlprotect to staging doc directory"
+    cp $WD/plpgsqlo/resources/README.plsecure $WD/plpgsqlo/staging/windows/doc || _die "Couldn't copy README.plsecure to staging doc directory"
+
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST plpgsqlo.zip del /S /Q plpgsqlo.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\plpgsqlo.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST plpgsqlo.staging rd /S /Q plpgsqlo.staging" || _die "Couldn't remove the $PG_PATH_WINDOWS\\plpgsqlo.staging directory on Windows VM"
 

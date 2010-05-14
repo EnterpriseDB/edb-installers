@@ -807,6 +807,17 @@
                             <distributionFile origin="staging/windows/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
+               <!-- WIN: README -->
+                <folder>
+                    <description>README</description>
+                    <destination>${installdir}/doc</destination>
+                    <name>programfilesdocwindows</name>
+                    <platforms>windows</platforms>
+		    <distributionFileList>
+                            <distributionFile origin="staging/windows/doc/README.plsecure"/>
+                    </distributionFileList>
+                </folder>
+
 
                 <!-- LIN: Program files -->
                 <folder>
@@ -828,6 +839,17 @@
                             <distributionFile origin="staging/linux/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
+              <!-- WIN: README -->
+                <folder>
+                    <description>README</description>
+                    <destination>${installdir}/doc</destination>
+                    <name>programfilesdoclinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                            <distributionFile origin="staging/linux/doc/README.plsecure"/>
+                    </distributionFileList>
+                </folder>
+
 
                 <!-- LIN-X64: Program files -->
                 <folder>
@@ -849,6 +871,17 @@
                             <distributionFile origin="staging/linux-x64/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
+                <!-- WIN: README -->
+                <folder>
+                    <description>README</description>
+                    <destination>${installdir}/doc</destination>
+                    <name>programfilesdoclinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                            <distributionFile origin="staging/linux-x64/doc/README.plsecure"/>
+                    </distributionFileList>
+                </folder>
+
 
                 <!-- MAC: Program files -->
                 <folder>
@@ -870,6 +903,18 @@
                             <distributionFile origin="staging/osx/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
+                <!-- WIN: README -->
+                <folder>
+                    <description>README</description>
+                    <destination>${installdir}/doc</destination>
+                    <name>programfilesdocosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                            <distributionFile origin="staging/osx/doc/README.plsecure"/>
+                    </distributionFileList>
+                </folder>
+
+
 
             </folderList>
         </component>

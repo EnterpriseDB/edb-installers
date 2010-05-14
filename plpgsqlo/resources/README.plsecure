@@ -1,0 +1,301 @@
+                        EnterpriseDB Corporation
+
+                         PL/Secure for PL/pgSQL
+
+                               2010-04-28
+
+
+
+PL/Secure for PL/pgSQL is a module that allows you to write functions
+
+in the Postgres Plus(R) procedural language called PL/pgSQL, but store
+
+the source code in obfuscated (encrypted) form so it cannot be read by
+
+querying the system catalog.
+
+
+
+PL/Secure functions, as well as PL/pgSQL functions, are stored in the
+
+database. The default method for creating PL/pgSQL functions leaves the
+
+source code in clear text form in the system catalog.
+
+
+
+Using PL/Secure, functions are coded, saved, and called in the same
+
+manner as any other PL/pgSQL function except the stored code is obfuscated
+
+in the system catalog, and thus, cannot be read by anyone who queries the
+
+catalog.
+
+
+
+PL/Secure provides another level of security should it be necessary to
+
+prevent unauthorized persons from seeing the PL/pgSQL source code.
+
+
+
+Obfuscating procedural language source code in the database has practical
+
+applications for protecting proprietary algorithms and intellectual
+
+property, embedded applications, protecting personal and organizational
+
+privacy, and increasing security in general.
+
+
+
+========================================================================
+
+                           SUPPORTED PRODUCTS
+
+========================================================================
+
+
+
+PL/Secure can be used with the following products:
+
+
+
+For Linux:
+
+  Postgres Plus Standard Server 8.4.0 and above
+
+  PostgreSQL 8.4.0 and above
+
+
+
+For Windows:
+
+  Postgres Plus Standard Server 8.4.3 and above
+
+  PostgreSQL 8.4.3 and above
+
+
+
+For Mac OS X:
+
+  Postgres Plus Standard Server 8.4.0 and above
+
+  PostgreSQL 8.4.0 and above
+
+
+
+Note: For Postgres Plus Advanced Server, the EDB*Wrap utility serves the
+
+      same purpose as PL/Secure.
+
+
+
+========================================================================
+
+                              INSTALLATION
+
+========================================================================
+
+
+
+When you install PL/Secure, you are adding another library ('plpgsqlo.so'
+
+on Linux, 'plpgsqlo.dll' on Windows) to Postgres Plus.
+
+
+
+The PL/Secure library allows you to add and use a new language that is
+
+defined as, and referenced with the name 'plpgsqlo'.
+
+
+
+This new language is equivalent to using 'plpgsql' in all respects except
+
+that it will save to an obfuscated format.
+
+
+
+Steps to Install PL/Secure
+
+==========================
+
+
+
+1. Make sure Postgres Plus Standard Server or PostgreSQL is installed on
+
+   the computer on which you want to install the PL/Secure module.
+
+
+
+2. From StackBuilder Plus, run the option to install PL/Secure. The
+
+   installer automatically detects the location of your Postgres Plus
+
+   product. Databases in any database server instance initiated from your
+
+   Postgres Plus installation can now be configured to use PL/Secure.
+
+
+
+3. For each database on which you want to use PL/Secure to store
+
+   obfuscated functions:
+
+
+
+  a) Connect to the database using the superuser name 'postgres'. You
+
+     can use pgAdmin if you prefer a graphical user interface, or you
+
+     can use psql if you prefer a command line utility.
+
+
+
+     The following example uses psql:
+
+
+
+       $ /opt/PostgresPlus/8.4SS/bin/psql -d postgres -U postgres
+
+       Password for user postgres:
+
+       psql (8.4.1)
+
+       Type "help" for help.
+
+
+
+       postgres=#
+
+
+
+  b) Run the script 'plpgsqlo.sql' located in the 'share' subdirectory
+
+     of the Postgres Plus home directory.
+
+
+
+       postgres=# \i /opt/PostgresPlus/8.4SS/share/plpgsqlo.sql
+
+       CREATE FUNCTION
+
+       ALTER FUNCTION
+
+       CREATE FUNCTION
+
+       ALTER FUNCTION
+
+       CREATE LANGUAGE
+
+       ALTER LANGUAGE
+
+
+
+========================================================================
+
+                                 USAGE
+
+========================================================================
+
+
+
+PL/Secure functions are written in exactly the same manner as any other
+
+PL/pgSQL function with the only difference being the language name given
+
+in the LANGUAGE clause of the CREATE FUNCTION statement.
+
+
+
+To create a PL/Secure function, specify 'plpgsqlo' in the LANGUAGE clause
+
+of the CREATE FUNCTION statement instead of 'plpgsql' as shown by the
+
+following:
+
+
+
+  CREATE FUNCTION
+
+          .
+
+          .
+
+          .
+
+  LANGUAGE 'plpgsqlo';
+
+
+
+Example
+
+=======
+
+
+
+The following is an example of a simple, PL/Secure function:
+
+
+
+  CREATE OR REPLACE FUNCTION secure ()
+
+  RETURNS VARCHAR AS $$
+
+  BEGIN
+
+      RETURN 'This is a PL/Secure function';
+
+  END;
+
+  $$ LANGUAGE 'plpgsqlo';
+
+
+
+The following query shows that the source code is stored in the system
+
+catalog in obfuscated form:
+
+
+
+postgres=# SELECT proname, prosrc FROM pg_proc WHERE proname = 'secure';
+
+ proname |                                    prosrc
+
+---------+------------------------------------------------------------------------------
+
+ secure  | ^o^
+
+         : UTF8
+
+         : dwb1N6unrTBAp9mq4UPtRw9LYkf2QYndmG5Kn4hNZi3e+yoaRp8dYayvT4bg85Nc27Bw2bdbldnk
+
+         : wb3r1ikGWw32yJ7dNhZqE/lFqCq3B7mvqx6Qp1VXVWrGSWjVvN9iem8=
+
+         :
+
+
+
+Note: The function name and argument names are not obfuscated in the
+
+      system catalog.
+
+
+
+========================================================================
+
+                                NOTICES
+
+========================================================================
+
+
+
+Copyright (c) 2010 EnterpriseDB Corporation,
+
+235 Littleton Road, Westford, MA 01866, USA
+
+T +1 978 589 5700 F +1 978 589 5701 E info@enterprisedb.com www.enterprisedb.com
+
+All Rights Reserved.
