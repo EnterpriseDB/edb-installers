@@ -25,6 +25,7 @@
     <defaultUnixGroup>daemon</defaultUnixGroup>
     <defaultUnixOwner>root</defaultUnixOwner>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+    <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
     
     <!-- Images -->
     <leftImage>../resources/pg-side.png</leftImage>
