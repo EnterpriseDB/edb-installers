@@ -548,53 +548,6 @@
 		    </ruleList>
 		</actionGroup>
 
-
-		<!-- Set libdir and sharedir value if postgres installation is not found in registry -->
-		<actionGroup>
-		    <actionList>
-			<!-- Set the default installation directory -->
-			<setInstallerVariable>
-			    <name>libdir</name>
-			    <persist>1</persist>
-			    <value>${default_installdir}/lib/postgresql</value>
-			    <ruleList>
-				<compareText>
-				    <logic>does_not_equal</logic>
-				    <text>${platform_name}</text>
-				    <value>windows</value>
-				</compareText>
-			    </ruleList>
-			</setInstallerVariable>
-
-			<setInstallerVariable>
-			    <name>libdir</name>
-			    <persist>1</persist>
-			    <value>${default_installdir}/lib</value>
-			    <ruleList>
-				<compareText>
-				    <logic>equals</logic>
-				    <text>${platform_name}</text>
-				    <value>windows</value>
-				</compareText>
-			    </ruleList>
-			</setInstallerVariable>
-
-			<setInstallerVariable>
-			    <name>sharedir</name>
-			    <persist>1</persist>
-			    <value>${default_installdir}/share</value>
-			</setInstallerVariable>
-		    </actionList>
-		    <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${plpgsqloVersion}</text>
-                            <value/>
-                        </compareText>
-		    </ruleList>
-		</actionGroup>
-
-
                 <actionGroup>
 		    <actionList>
 			<setInstallerVariable name="superuser" value="postgres"/>
@@ -636,45 +589,6 @@
             </ruleList>
         </setInstallerVariable>
 
-        <!-- Get libdir and sharedir to copy plpgsqlo.so-->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariableFromScriptOutput>
-                    <name>libdir</name>
-                    <exec>${pg_config}</exec>
-                    <execArgs>--pkglibdir</execArgs>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                    <onErrorActionList>
-                        <setInstallerVariable name="libdir" value="${installdir}/lib"/>
-                    </onErrorActionList>
-                </setInstallerVariableFromScriptOutput>
-
-                <setInstallerVariable name="sharedir" value="${installdir}/share"/>
-            </actionList>
-            <ruleList>
-                <fileExists path="${pg_config}"/>
-            </ruleList>
-        </actionGroup>
-        <actionGroup>
-            <actionList>
-                <!-- change "C:\" to "C:/" in case of Windows -->
-                <setInstallerVariableFromRegEx>
-                    <name>libdir</name>
-                    <text>${libdir}</text>
-                    <pattern>\\</pattern>
-                    <substitution>/</substitution>
-                </setInstallerVariableFromRegEx>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
- 
 	<include file="staging/registration_preinstallation.xml"/>
 
     </preInstallationActionList>
@@ -724,19 +638,47 @@
                 </actionGroup>
             </actionList>
         </actionGroup>
-        <substitute>
-            <files>${sharedir}/plpgsqlo.sql</files>
-            <substitutionList>
-                <substitution>
-                    <pattern>\$libdir</pattern>
-                    <value>${libdir}</value>
-                </substitution>
-                <substitution>
-                    <pattern>\$SUPERUSER</pattern>
-                    <value>${superuser}</value>
-                </substitution>
-            </substitutionList>
-        </substitute>
+        <actionGroup>
+	    <actionList>
+		<substitute>
+		    <files>${installdir}/share/plpgsqlo.sql</files>
+		    <substitutionList>
+			<substitution>
+			    <pattern>\$libdir</pattern>
+			    <value>${installdir}/lib/postgresql</value>
+			</substitution>
+			<substitution>
+			    <pattern>\$SUPERUSER</pattern>
+			    <value>${superuser}</value>
+			</substitution>
+		    </substitutionList>
+		</substitute>
+	    </actionList>
+	    <ruleList>
+		<compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	    </ruleList>
+	</actionGroup>
+        <actionGroup>
+	    <actionList>
+		<substitute>
+		    <files>${installdir}/share/plpgsqlo.sql</files>
+		    <substitutionList>
+			<substitution>
+			    <pattern>\$libdir</pattern>
+			    <value>${installdir}\lib</value>
+			</substitution>
+			<substitution>
+			    <pattern>\$SUPERUSER</pattern>
+			    <value>${superuser}</value>
+			</substitution>
+		    </substitutionList>
+		</substitute>
+	    </actionList>
+	    <ruleList>
+		<compareText logic="equals" text="${platform_name}" value="windows"/>
+	    </ruleList>
+	</actionGroup>
+
 
 	<include file="staging/registration_postinstallation.xml"/>
 
@@ -790,7 +732,7 @@
                 <!-- WIN: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${libdir}</destination>
+                    <destination>${installdir}\lib</destination>
                     <name>programfileslibwindows</name>
                     <platforms>windows</platforms>
 		    <distributionFileList>
@@ -800,7 +742,7 @@
                <!-- WIN: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
-                    <destination>${sharedir}</destination>
+                    <destination>${installdir}\share</destination>
                     <name>programfilessharewindows</name>
                     <platforms>windows</platforms>
 		    <distributionFileList>
@@ -810,7 +752,7 @@
                <!-- WIN: README -->
                 <folder>
                     <description>README</description>
-                    <destination>${installdir}/doc</destination>
+                    <destination>${installdir}\doc</destination>
                     <name>programfilesdocwindows</name>
                     <platforms>windows</platforms>
 		    <distributionFileList>
@@ -822,7 +764,7 @@
                 <!-- LIN: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${libdir}</destination>
+                    <destination>${installdir}/lib/postgresql</destination>
                     <name>programfilesliblinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
@@ -832,7 +774,7 @@
                <!-- LIN: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
-                    <destination>${sharedir}</destination>
+                    <destination>${installdir}/share</destination>
                     <name>programfilessharelinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
@@ -854,7 +796,7 @@
                 <!-- LIN-X64: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${libdir}</destination>
+                    <destination>${installdir}/lib/postgresql</destination>
                     <name>programfilesliblinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
@@ -864,7 +806,7 @@
                <!-- LIN-X64: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
-                    <destination>${sharedir}</destination>
+                    <destination>${installdir}/share</destination>
                     <name>programfilessharelinux-x64</name>
                     <platforms>linux-x64</platforms>
 		    <distributionFileList>
@@ -886,7 +828,7 @@
                 <!-- MAC: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${libdir}</destination>
+                    <destination>${installdir}/lib/postgresql</destination>
                     <name>programfileslibosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
@@ -896,7 +838,7 @@
                <!-- MAC: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
-                    <destination>${sharedir}</destination>
+                    <destination>${installdir}/share</destination>
                     <name>programfilesshareosx</name>
                     <platforms>osx</platforms>
 		    <distributionFileList>
@@ -933,11 +875,11 @@
                     <name>installdir</name>
                     <value>${default_installdir}</value>
                     <default/>
-                    <allowEmptyValue>1</allowEmptyValue>
-                    <ask>yes</ask>
+                    <allowEmptyValue>0</allowEmptyValue>
+                    <ask>1</ask>
                     <cliOptionName>prefix</cliOptionName>
                     <mustBeWritable>yes</mustBeWritable>
-                    <mustExist>0</mustExist>
+                    <mustExist>1</mustExist>
                     <width>40</width>
 
 		    <!-- Validating whether installdir is empty -->
