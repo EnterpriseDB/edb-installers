@@ -189,7 +189,7 @@ _logfile()
 
 _save_options_file ()
 {
-  locale LRAR_COMPS=
+  local LRAR_COMPS=
 
   if [ ${RAR_INSTALL_POSTGIS} = y -o ${RAR_INSTALL_POSTGIS} = Y ]
   then
