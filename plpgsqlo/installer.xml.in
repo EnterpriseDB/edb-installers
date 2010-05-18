@@ -875,11 +875,11 @@
                     <name>installdir</name>
                     <value>${default_installdir}</value>
                     <default/>
-                    <allowEmptyValue>0</allowEmptyValue>
-                    <ask>1</ask>
+                    <allowEmptyValue>1</allowEmptyValue>
+                    <ask>yes</ask>
                     <cliOptionName>prefix</cliOptionName>
                     <mustBeWritable>yes</mustBeWritable>
-                    <mustExist>1</mustExist>
+                    <mustExist>0</mustExist>
                     <width>40</width>
 
 		    <!-- Validating whether installdir is empty -->
