@@ -224,8 +224,8 @@ EOT
     do 
         install_name_tool -change "libpq.5.dylib" "@loader_path/../../php/lib/libpq.5.dylib" $file
         install_name_tool -change "/usr/local/lib/libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" $file
-        install_name_tool -change "/usr/local/lib/libpng14.0.dylib" "@loader_path/../../php/lib/libpng12.0.dylib" $file
-        install_name_tool -change "/usr/local/lib/libjpeg.7.dylib" "@loader_path/../../php/lib/libjpeg.7.dylib" $file
+        install_name_tool -change "/usr/local/lib/libpng12.0.dylib" "@loader_path/../../php/lib/libpng12.0.dylib" $file
+        install_name_tool -change "/usr/local/lib/libjpeg.8.dylib" "@loader_path/../../php/lib/libjpeg.8.dylib" $file
         install_name_tool -change "/usr/local/lib/libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" $file
         install_name_tool -change "/usr/local/lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
     done
