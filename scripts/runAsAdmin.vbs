@@ -2547,8 +2547,8 @@ objpgEnvFile.WriteLine _
 objpgEnvFile.Close
 Set objpgEnvFile = Nothing
 
-'WshSystemEnv("PGDATABASE") = "template1"
-'WshSystemEnv("PGPASSWORD") = objDevServer.SuperPassword
+WshSystemEnv("PGDATABASE") = "template1"
+WshSystemEnv("PGPASSWORD") = objDevServer.SuperPassword
 
 If IsPostGISPresent Then
   If AskYesNo("PostGIS Found. Do you want to configure? (Y/N) ", bInstallPostGIS) Then
