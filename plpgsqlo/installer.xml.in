@@ -660,12 +660,30 @@
 	</actionGroup>
         <actionGroup>
 	    <actionList>
+		<!-- change in C:\ to C:/ does not happen directly so need to use pg_config to get short name-->
+		<setInstallerVariableFromScriptOutput>
+                    <name>libdir</name>
+                    <exec>${installdir}\bin\pg_config.exe</exec>
+                    <execArgs>--pkglibdir</execArgs>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+		    <onErrorActionList>
+                        <setInstallerVariable name="libdir" value="${installdir}/lib"/>
+                    </onErrorActionList>
+		</setInstallerVariableFromScriptOutput>
+		<!-- change "C:\" to "C:/" in case of Windows -->
+                <setInstallerVariableFromRegEx>
+                    <name>libdir</name>
+                    <text>${libdir}</text>
+                    <pattern>\\</pattern>
+                    <substitution>/</substitution>
+                </setInstallerVariableFromRegEx>
 		<substitute>
 		    <files>${installdir}/share/plpgsqlo.sql</files>
 		    <substitutionList>
 			<substitution>
 			    <pattern>\$libdir</pattern>
-			    <value>${installdir}\lib</value>
+			    <value>${libdir}</value>
 			</substitution>
 			<substitution>
 			    <pattern>\$SUPERUSER</pattern>
