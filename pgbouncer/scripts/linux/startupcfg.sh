@@ -75,11 +75,11 @@ status()
 {
     PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`
 
-    if [ "x$PID" = "x" ];
+    if [ "x\$PID" = "x" ];
     then
         echo "pgbouncer not running"
     else
-        echo "pgbouncer is running (PID: $PID)"
+        echo "pgbouncer is running (PID: \$PID)"
     fi
     exit 0
 }
@@ -96,6 +96,9 @@ case "\$1" in
         stop
         sleep 3
         start
+        ;;
+  status)
+        status
         ;;
   *)
         echo \$"Usage: \$0 {start|stop|restart}"
