@@ -61,25 +61,6 @@ privacy, and increasing security in general.
 PL/Secure can be used with the following products:
 
 
-
-For Linux:
-
-  Postgres Plus Standard Server 8.4.0 and above
-
-  PostgreSQL 8.4.0 and above
-
-
-
-For Windows:
-
-  Postgres Plus Standard Server 8.4.3 and above
-
-  PostgreSQL 8.4.3 and above
-
-
-
-For Mac OS X:
-
   Postgres Plus Standard Server 8.4.0 and above
 
   PostgreSQL 8.4.0 and above
