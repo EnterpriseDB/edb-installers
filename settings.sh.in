@@ -95,7 +95,7 @@ PG_SIGNTOOL_WINDOWS="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v6.0A\\
 
 PG_SSH_WINDOWS_X64=buildfarm@bf-windows-x64.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS_X64=C:\\\\pginstaller-repo
-PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 8"
+PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 9.0"
 PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild"
 
 PG_PATH_OSX=`pwd`
