@@ -1349,44 +1349,48 @@
                     <origin>installer/installruntimes.vbs</origin>
                     <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
                 </unpackFile>
-                <runProgram>
-                    <program>cscript</program>
-                    <programArguments>//NoLogo "${system_temp_directory}\postgresql_installer\installruntimes.vbs" "${system_temp_directory}\postgresql_installer\vcredist_x86.exe"</programArguments>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
+                <actionGroup>
+                    <actionList>
+                        <runProgram>
+                            <program>cscript</program>
+                            <programArguments>//NoLogo "${system_temp_directory}\postgresql_installer\installruntimes.vbs" "${system_temp_directory}\postgresql_installer\vcredist_x86.exe"</programArguments>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+                        <throwError>
+                            <text>${msg(script.command.line.error)}</text>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>127</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                            </ruleList>
+                        </throwError>
+                        <throwError>
+                            <text>${msg(error.installing.runtimes)}</text>
+                            <ruleList>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>3010</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>0</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                            </ruleList>
+                        </throwError>
+                    </actionList>
                     <ruleList>
                         <compareText>
                             <logic>equals</logic>
                             <text>1</text>
                             <value>${install_runtimes}</value>
-                        </compareText>
+                            </compareText>
                     </ruleList>
-                </runProgram>
-                <throwError>
-                    <text>${msg(script.command.line.error)}</text>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>127</text>
-                            <value>${program_exit_code}</value>
-                        </compareText>
-                    </ruleList>
-                </throwError>
-                <throwError>
-                    <text>${msg(error.installing.runtimes)}</text>
-                    <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>3010</text>
-                            <value>${program_exit_code}</value>
-                        </compareText>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>0</text>
-                            <value>${program_exit_code}</value>
-                        </compareText>
-                    </ruleList>
-                </throwError>
+                </actionGroup>
             </actionList>
 
             <ruleList>
