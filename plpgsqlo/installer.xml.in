@@ -533,21 +533,6 @@
 		    </ruleList>
 	       </actionGroup>
 
-
-		<!-- Set the default value of installdir if it is not an upgrade -->
-		<actionGroup>
-		    <actionList>
-			<setInstallerVariable name="installdir" value="${default_installdir}"/>
-		    </actionList>
-		    <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${plpgsqloVersion}</text>
-                            <value/>
-                        </compareText>
-		    </ruleList>
-		</actionGroup>
-
                 <actionGroup>
 		    <actionList>
 			<setInstallerVariable name="superuser" value="postgres"/>
@@ -738,6 +723,7 @@
 	<include file="staging/registration_preuninstallation.xml"/>
 
     </preUninstallationActionList>
+
     <!-- Components -->
     <componentList>
         <component>
