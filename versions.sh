@@ -24,7 +24,7 @@ PG_MINOR_VERSION=11.1
 
 # Other package versions
 PG_VERSION_POSTGIS=1.3.6
-PG_VERSION_SLONY=1.2.20
+PG_VERSION_SLONY=1.2.21
 
 # Miscellaneous options
 
