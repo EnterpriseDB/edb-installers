@@ -50,7 +50,7 @@ jre.invalid.version.error=Java version inside jrehome should be >=1.5.
 
 jre.invalid.error.windows=Invalid --jrehome specified.\n\nCould not find '${jrehome}\bin\java.exe'.
 
-pphq.port.invalid=This port number must be a valid integer between 1024 and 65535.
+pphq.port.invalid=The port number must be a valid integer between 1024 and 65535.
 
 pgplus.blank.error=Values must be entered for all fields.
 

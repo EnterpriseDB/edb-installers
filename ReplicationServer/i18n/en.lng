@@ -57,7 +57,7 @@ script.command.line.error=The script was called with an invalid command line.
 pubport.details.title=Publication server details
 pubport.details.explanation=Please specify a port on which publication server will run.
 pubport.blank.error=Values must be entered for port field.
-pubport.port.error=Invalid port specified.
+pubport.port.error=The port number must be an integer between 1024 and 65535.
 
 port.pubsub.equal.error=Publication Server port and Subscription Server port cannot be same.
 pubport.offset.pubsub.equal.error=Publication Server offset port (i.e. specified port + 2) and Subscription Server port cannot be same.
@@ -66,7 +66,7 @@ subport.offset.pubsub.equal.error=Subscription Server offset port (i.e. specifie
 subport.details.title=Subscription server details
 subport.details.explanation=Please specify a port on which subscription server will run.
 subport.blank.error=Values must be entered for port field.
-subport.port.error=Invalid port specified.
+subport.port.error=The port number must be an integer between 1024 and 65535.
 
 port.bind.error=The specified port number is not available. Please enter a different port.
 port.offset.bind.error=The offset port (i.e specified port + 2) number is not available. Please enter a different port.
