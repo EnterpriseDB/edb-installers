@@ -159,7 +159,7 @@ EOT
     for ARCH in ${ARCHS}
     do
       echo "Configuring the php source tree for ${ARCH}"
-      CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ${ARCH}" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf || _die "Failed to configure PHP for ${ARCH}"
+      CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ${ARCH}" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr/local --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf || _die "Failed to configure PHP for ${ARCH}"
       for configFile in ${CONFIG_FILES}
       do
            if [ -f "${configFile}.h" ]; then
@@ -169,7 +169,7 @@ EOT
     done
  
     echo "Configuring the php source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf || _die "Failed to configure PHP for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-iconv-dir=/usr/local --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf || _die "Failed to configure PHP for Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     for configFile in ${CONFIG_FILES}
@@ -227,6 +227,7 @@ EOT
         install_name_tool -change "/usr/local/lib/libpng12.0.dylib" "@loader_path/../../php/lib/libpng12.0.dylib" $file
         install_name_tool -change "/usr/local/lib/libjpeg.8.dylib" "@loader_path/../../php/lib/libjpeg.8.dylib" $file
         install_name_tool -change "/usr/local/lib/libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" $file
+        install_name_tool -change "/usr/local/lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" $file
         install_name_tool -change "/usr/local/lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
     done
 
@@ -242,6 +243,7 @@ EOT
     cp -R /usr/local/lib/libfreetype*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -R /usr/local/lib/libxml*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -R /usr/local/lib/libexpat*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -R /usr/local/lib/libiconv*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -R /usr/local/lib/libexpat*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
 
     files=`ls $WD/ApachePhp/staging/osx/apache/lib/*`
