@@ -3041,7 +3041,7 @@ database=${controldb}
                         <compareValues>
                             <value1>${pgport}</value1>
                             <logic>less_or_equal</logic>
-                            <value2>0</value2>
+                            <value2>1023</value2>
                         </compareValues>
                         <compareValues>
                             <value1>${pgport}</value1>
@@ -3184,7 +3184,7 @@ database=${controldb}
                         <compareValues>
                             <value1>${pubport}</value1>
                             <logic>less_or_equal</logic>
-                            <value2>0</value2>
+                            <value2>1023</value2>
                         </compareValues>
                         <compareValues>
                             <value1>${pubport}</value1>
@@ -3295,7 +3295,7 @@ database=${controldb}
                         <compareValues>
                             <value1>${subport}</value1>
                             <logic>less_or_equal</logic>
-                            <value2>0</value2>
+                            <value2>1023</value2>
                         </compareValues>
                         <compareValues>
                             <value1>${subport}</value1>

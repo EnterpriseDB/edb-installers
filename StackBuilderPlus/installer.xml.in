@@ -278,7 +278,7 @@
           <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
             <compareText logic="does_not_equal" text="${iMonitorServer}" value=""/>
-            <compareText logic="equals" text="${installMonitoring}" value="1"/>
+            <isTrue value="${installMonitoring}" />
           </ruleList>
         </componentSelection>
 
@@ -322,7 +322,7 @@
             </actionList>
             <ruleList>
                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-               <compareText logic="equals" text="${installMonitoring}" value="1"/>
+               <isTrue value="${installMonitoring}" />
                <compareText logic="does_not_equal" text="${monitorServer}" value=""/>
             </ruleList>
         </actionGroup>
@@ -331,7 +331,7 @@
           <select>updatemanager</select>
           <ruleList>
             <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-            <compareText logic="equals" text="${installMonitoring}" value="1"/>
+            <isTrue value="${installMonitoring}" />
             <compareText logic="does_not_equal" text="${monitorServer}" value=""/>
           </ruleList>
         </componentSelection>
@@ -873,7 +873,7 @@
     <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
     <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
     <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
-    <stringParameter name="installMonitoring" cliOptionName="install-monitoring" ask="0" cliOptionShow="0" default="0"/>
+    <booleanParameter name="installMonitoring" cliOptionName="install-monitoring" ask="0" cliOptionShow="0" default="0"/>
     <parameterGroup>
        <name>monitorServerSelection</name>
        <title>${msg(monitor.server.title)}</title>
@@ -893,7 +893,7 @@
           </stringParameter>
        </parameterList>
        <ruleList>
-            <compareText logic="equals" text="${installMonitoring}" value="1"/>
+            <isTrue value="${installMonitoring}" />
             <compareText logic="equals" text="${iSBPVersion}" value=""/>
        </ruleList>
        <validationActionList>
