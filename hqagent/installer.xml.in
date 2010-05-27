@@ -23,7 +23,7 @@
 
     <!-- Misc options -->
     <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
-    <wrapLicenseFileText>0</wrapLicenseFileText>
+    <wrapLicenseFileText>1</wrapLicenseFileText>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <unattendedModeUI>minimal</unattendedModeUI>
     <enableRollback>0</enableRollback>
