@@ -3,21 +3,26 @@
     <shortName>plsecure</shortName>
     <fullName>PL/Secure</fullName>
     <version>PG_VERSION_PLPGSQLO-PG_BUILDNUM_PLPGSQLO</version>
+
     <!-- These options are used on Windows -->
     <startMenuGroupName/>
+
     <!-- Product Specific Options -->
     <productDisplayName>PL/Secure ${productVersion}</productDisplayName>
     <productComments>${product_fullname} ${productVersion}</productComments>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
+
     <!-- The options are used for RPM registration -->
     <description>PL/Secure for PL/pgSQL</description>
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
+
     <!-- Installer Size -->
     <width>550</width>
     <height>400</height>
+
     <!-- Misc package options -->
     <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
     <enableRollback>0</enableRollback>
@@ -30,9 +35,13 @@
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
     <windowsSoftwareRegistryPrefix/>
+    <wrapLicenseFileText>1</wrapLicenseFileText>
+    <licenseFile>resources/licence.txt</licenseFile>
+
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
     <leftImage>../resources/pg-side.png</leftImage>
+
     <!-- i18n files for the UI -->
     <allowedLanguages>en</allowedLanguages>
     <customLanguageFileList>
@@ -42,6 +51,7 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+
     <!-- Prebuild Actons-->
     <preBuildActionList>
         <setInstallerVariable name="originalplatform" value="${platform_name}"/>
