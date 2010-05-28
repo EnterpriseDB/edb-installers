@@ -61,7 +61,7 @@ _prep_plpgsqlo_linux() {
     echo "Creating staging doc directory ($WD/plpgsqlo/staging/linux/doc)"
     mkdir -p $WD/plpgsqlo/staging/linux/doc || _die "Couldn't create the staging doc directory"
     chmod ugo+w $WD/plpgsqlo/staging/linux/doc || _die "Couldn't set the permissions on the staging doc directory"
-    echo "Copying readme.sqlprotect to staging doc directory"
+    echo "Copying README.plsecure to staging doc directory"
     cp $WD/plpgsqlo/resources/README.plsecure $WD/plpgsqlo/staging/linux/doc || _die "Couldn't copy README.plsecure to staging doc directory"
 
 }
