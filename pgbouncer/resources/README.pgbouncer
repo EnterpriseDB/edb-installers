@@ -1,0 +1,230 @@
+PgBouncer
+=========
+
+PgBouncer is a lightweight connection pooler distributed with, and installed
+by, the Postgres Plus installer.  To include PgBouncer in a Postgres Plus 
+installation, confirm that the box next to PgBouncer on the Select Components 
+installer window is checked.  You can add PgBouncer to an existing
+Postgres Plus installation at a later time with StackBuilder Plus.
+
+
+Controlling the pgbouncer Service
+---------------------------------
+By default, the PgBouncer service is configured to autostart at system 
+startup and listen for connections on port 6432.  You can confirm that the 
+pgbouncer service is running through the Windows service manager, or at the Linux 
+command line.
+
+On Windows, select Run from the Start menu; when the Run dialog opens, enter: 
+
+    services.msc 
+
+and click OK to open the Services window.  Scroll through the list of 
+services to view status information about the pgbouncer service.  To change 
+the state of the pgbouncer daemon, select the service from the list, and use 
+the Start and Stop service links on the Services window.  
+
+To view the status of the pgbouncer daemon on Linux, open a terminal window, 
+and enter:
+
+    service pgbouncer status
+
+If the PgBouncer service is running, Linux echoes back:
+
+    pgbouncer is running (PID:29618) 
+ 
+If the service is not running, Linux echoes:
+
+    pgbouncer not running
+    
+You can also use the service command to stop or start the pgbouncer service 
+at the command line.  To start the pgbouncer daemon, enter:
+
+    service pgbouncer start
+    
+  To stop the pgbouncer daemon, enter:
+
+    service pgbouncer stop 
+
+
+Configuring PgBouncer
+---------------------
+When the PgBouncer service is running, any Postgres client connecting to the 
+PgBouncer listener port specified in the configuration file will 
+automatically use connection pooling.  PgBouncer connection and configuration 
+information is stored in the pgbouncer.ini file, located under your 
+installation of Postgres Plus:  
+
+  If you are using Postgres Plus Advanced Server, the 
+  configuration file is located in:
+    <INSTALLATION_DIRECTORY>/PostgresPlus/8.4AS/share
+
+  If you are using Postgres Plus Standard Server, the configuration 
+  file is located in:
+    <INSTALLATION_DIRECTORY>/PostgresPlus/8.4SS/pgbouncer/share
+
+The configuration file is divided into two sections: [databases] and 
+[pgbouncer].
+
+The [databases] section contains a list of databases and the associated 
+connection information; after a Postgres Plus installation, the configuration 
+file contains an entry for the installation of Postgres Plus that installed 
+PgBouncer:
+
+    postgres = host=127.0.0.1 port=5444 
+
+You can specify additional database connection information in the 
+configuration file in the form of keyword=value pairs.  Specify the 
+following parameters:
+
+  * name - The name of the database to which the client application connects
+  * host - The host IP address
+  * port - The port that the host is listening on
+  * dbname - The (optional) database name 
+  * user - A username (if different than the information specified by the 
+           client connecting to PgBouncer)
+  * password - A password (if different than the information specified by 
+           the client connecting to PgBouncer)
+
+The following example demonstrates the syntax allowed in the [databases] 
+section of the configuration file:
+
+    [databases] 
+    postgres = host=127.0.0.1 port=5444 
+    acctg = host=192.168.10.101 port=5432 
+            user=lola password=1safe_pwd! 
+
+Include the dbname parameter to map the connection name to an alternate 
+database name.  For example:
+
+    hr = host=127.0.0.1 port=5432 dbname=humanresources 
+
+Please note that the connection information will vary according to the platform, client software and identity you are connecting with.  If you do not specify a user name and password in the configuration file, PgBouncer will connect to the database server using the credentials provided by the client. 
+
+The [pgbouncer] section of the configuration file contains configuration 
+details specific to PgBouncer:
+
+  * auth_type - The authentication method used by PgBouncer.  May be: md5, 
+    crypt, plain, trust or any.  The default value is md5.
+    
+  * auth_file - The path to the authentication file that contains 
+    username and passwords of clients that may connect to PgBouncer.  
+    
+    The authentication file (userlist.txt) is located in pgbouncer/etc 
+    directory under your Postgres Plus installation, and contains username/
+    password pairs that specify the identities that clients may use to access 
+    PgBouncer.  Within the authentication file, the username and password 
+    must be specified within double-quotes:  
+    
+    "user_name" "password"
+    
+    To make changes to the identities that can access PgBouncer, you can edit 
+    the existing authentication file, or specify an alternate authentication 
+    file with the auth_file parameter.     
+
+  * listen_addr - The IP address on which PgBouncer listens for client 
+    connections.  
+    
+    If omitted, only Unix socket connections are allowed; the 
+    client must also reside on the same host as PgBouncer and may not specify 
+    a host IP address when connecting to PgBouncer.
+    
+  * listen_port - The port that PgBouncer monitors for client connections.  
+    By default, PgBouncer listens on port 6432.
+  
+  * logfile - The path to the PgBouncer log file.
+  
+  * pidfile - The path to the process ID file.
+  
+  * admin_users - A comma-delimited list of users that are allowed to access 
+    the Admin Console (for management and monitoring purposes).  By default, 
+    PgBouncer is installed with an admin_user named postgres.   
+   
+  * pool_mode - The value of pool_mode specifies when the server connection 
+    can be made available to the connection pool.  May be: session, 
+    transaction or statement.  The default value is session.   
+
+The following example demonstrates the syntax allowed in the [pgbouncer] 
+section of the configuration file:
+    
+    [pgbouncer] 
+    logfile = /var/log/pgbouncer/pgbouncer.log 
+    pidfile = /var/run/pgbouncer/pgbouncer.pid 
+    listen_addr = * 
+    listen_port = 6432 
+    auth_type = md5 
+    auth_file = /opt/PostgresPlus/8.4SS/pgbouncer/etc/userlist.txt 
+    admin_users = postgres 
+    pool_mode = session 
+
+After editing the PgBouncer configuration file, you must restart the 
+PgBouncer service for the changes to take effect.
+
+
+Using the PgBouncer Admin Console
+-------------------------------------------
+You can access the PgBouncer Admin Console by connecting to the pgbouncer 
+database.  The Admin Console allows you to retrieve statistical information
+about PgBouncer activity, and to control the PgBouncer process.  
+
+The following example connects to the pgbouncer database with a psql client on 
+a Linux system.  PgBouncer is listening on port 6432, with a user name of 
+postgres:
+
+    # ./psql -p 6432 -U postgres pgbouncer
+
+  Please note that the connection information will vary according to the   
+  platform, client software and identity you are connecting with.
+
+After connecting to the pgbouncer database, use the SHOW CLIENTS command to 
+retrieve client-related information:
+
+    # SHOW CLIENTS; 
+
+The SHOW CLIENTS command returns:
+
+  --[ RECORD 1]-+--------------------
+   type         | C
+   user         | postgres
+   database     | pgbouncer
+   state        | active
+   addr         | unix
+   port         | 6432
+   local_addr   | unix
+   local_port   | 6432
+   connect_time | 2010-05-25 05:26:20
+   request_time | 2010-05-25 05:39:46
+   ptr          | 0x8655d20
+   link         | 
+
+The other variations of the SHOW command are:
+
+  * SHOW STATS;
+  * SHOW SERVERS;
+  * SHOW POOLS;
+  * SHOW LISTS;
+  * SHOW USERS;
+  * SHOW DATABASES;
+  * SHOW FDS;
+  * SHOW CONFIG;
+
+The Admin Console also offers commands that control the PgBouncer process:
+
+  * PAUSE    Use the PAUSE command to disconnect all servers after waiting for   
+             current queries to complete.
+
+  * SUSPEND  Use the SUSPEND command to flush the socket buffers and suspend the 
+             PgBouncer process.
+
+  * RESUME   Use the RESUME command to resume work after a PAUSE or SUSPEND 
+             command.
+
+  * SHUTDOWN Use the SHUTDOWN command to stop the PgBouncer process and exit.
+
+  * RELOAD   Use the RELOAD command to reload the PgBouncer configuration files.
+
+
+For more information about the PgBouncer project and official documentation, 
+visit: 
+
+    https://developer.skype.com/SkypeGarage/DbProjects/PgBouncer

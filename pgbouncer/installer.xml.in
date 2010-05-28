@@ -1211,6 +1211,9 @@
                         <distributionDirectory>
                             <origin>staging/linux/pgbouncer/share</origin>
                         </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/pgbouncer/doc</origin>
+                        </distributionDirectory>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1227,6 +1230,7 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+
                 <!-- LIN-X64 - Program files -->
                 <folder>
                     <description>Program Files</description>
@@ -1245,6 +1249,9 @@
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/linux-x64/pgbouncer/share</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/pgbouncer/doc</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1281,6 +1288,9 @@
                         <distributionDirectory>
                             <origin>staging/osx/pgbouncer/share</origin>
                         </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/osx/pgbouncer/doc</origin>
+                        </distributionDirectory>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1309,6 +1319,9 @@
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/windows/share</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/windows/pgbouncer/doc</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
