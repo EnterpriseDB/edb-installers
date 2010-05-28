@@ -52,10 +52,10 @@ _prep_server_windows_x64() {
         echo "Removing existing scripts archive"
         rm -rf $WD/server/scripts/windows/scripts.zip || _die "Couldn't remove the existing scripts archive"
     fi
-    if [ -f $WD/server/staging/windows_x64/output.zip ];
+    if [ -f $WD/server/staging/windows-x64/output.zip ];
     then
         echo "Removing existing output archive"
-        rm -rf $WD/server/staging/windows_x64/output.zip || _die "Couldn't remove the existing output archive"
+        rm -rf $WD/server/staging/windows-x64/output.zip || _die "Couldn't remove the existing output archive"
     fi
 	
     # Cleanup the build host
@@ -102,14 +102,14 @@ _prep_server_windows_x64() {
     tar -xvf docs.tar || _die "Failed to extract the pljava docs"
 	
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/server/staging/windows_x64 ];
+    if [ -e $WD/server/staging/windows-x64 ];
     then
         echo "Removing existing staging directory"
-        rm -rf $WD/server/staging/windows_x64 || _die "Couldn't remove the existing staging directory"
+        rm -rf $WD/server/staging/windows-x64 || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/server/staging/windows_x64)"
-    mkdir -p $WD/server/staging/windows_x64 || _die "Couldn't create the staging directory"
+    echo "Creating staging directory ($WD/server/staging/windows-x64)"
+    mkdir -p $WD/server/staging/windows-x64 || _die "Couldn't create the staging directory"
 
 }
 
@@ -393,8 +393,8 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\OpenSSL\\\\bin\\\\ssleay32.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows_x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\OpenSSL\\\\bin\\\\libeay32.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows_x64 build host"
 #    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\iconv\\\\bin\\\\iconv.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows_x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\gettext\\\\bin\\\\libintl-8.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows_x64 build host"
-#    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\gettext\\\\bin\\\\libiconv-2.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows_x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\gettext\\\\bin\\\\libintl.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows_x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cp /cygdrive/c/pgBuild/libiconv/bin/libiconv.dll /cygdrive/c/pginstaller.pune-repo/output/bin/."
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\libxml2\\\\bin\\\\libxml2.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows_x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\libxslt\\\\bin\\\\libxslt.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows_x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\zlib\\\\bin\\\\zlib1.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows_x64 build host"
@@ -404,30 +404,30 @@ EOT
     # Zip up the installed code, copy it back here, and unpack.
     echo "Copying built tree to Unix host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\output; zip -r ..\\\\output.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output)"
-    scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output.zip $WD/server/staging/windows_x64 || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output.zip)"
-    unzip $WD/server/staging/windows_x64/output.zip -d $WD/server/staging/windows_x64/ || _die "Failed to unpack the built source tree ($WD/staging/windows_x64/output.zip)"
-    rm $WD/server/staging/windows_x64/output.zip
+    scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output.zip $WD/server/staging/windows-x64 || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output.zip)"
+    unzip $WD/server/staging/windows-x64/output.zip -d $WD/server/staging/windows-x64/ || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/output.zip)"
+    rm $WD/server/staging/windows-x64/output.zip
 	
 	# Install the PostgreSQL docs
-	mkdir -p $WD/server/staging/windows_x64/doc/postgresql/html || _die "Failed to create the doc directory"
-	cd $WD/server/staging/windows_x64/doc/postgresql/html || _die "Failed to change to the doc directory"
+	mkdir -p $WD/server/staging/windows-x64/doc/postgresql/html || _die "Failed to create the doc directory"
+	cd $WD/server/staging/windows-x64/doc/postgresql/html || _die "Failed to change to the doc directory"
 	cp -R $WD/server/source/postgres.windows_x64/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
 	
 	# Copy in the plDebugger docs & SQL script
-	cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/README.pldebugger $WD/server/staging/windows_x64/doc
-	cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi.sql $WD/server/staging/windows_x64/share/contrib
+	cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/README.pldebugger $WD/server/staging/windows-x64/doc
+	cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi.sql $WD/server/staging/windows-x64/share/contrib
 	 
 	# Copy in the pljava binaries/docs
 	cd $WD/server/source/
 	echo "Installing pl/java"
-	cp pljava.windows_x64/deploy.jar $WD/server/staging/windows_x64/lib || _die "Failed to install the deploy.jar files."
-	cp pljava.windows_x64/examples.jar $WD/server/staging/windows_x64/lib || _die "Failed to install the examples.jar files."
-	cp pljava.windows_x64/pljava.jar $WD/server/staging/windows_x64/lib || _die "Failed to install the pljava.jar files."
-	cp pljava.windows_x64/*.dll $WD/server/staging/windows_x64/lib || _die "Failed to install the pljava dll files."
-	mkdir -p $WD/server/staging/windows_x64/share/pljava || _die "Failed to create a directory for the pljava SQL scripts."
-	cp pljava.windows_x64/install.sql $WD/server/staging/windows_x64/share/pljava || _die "Failed to install the install.sql SQL scripts."
-	cp pljava.windows_x64/uninstall.sql $WD/server/staging/windows_x64/share/pljava || _die "Failed to install the uninstall.sql SQL scripts."
-	cp -R pljava.windows_x64/docs $WD/server/staging/windows_x64/doc/pljava || _die "Failed to install the pljava docs."
+	cp pljava.windows_x64/deploy.jar $WD/server/staging/windows-x64/lib || _die "Failed to install the deploy.jar files."
+	cp pljava.windows_x64/examples.jar $WD/server/staging/windows-x64/lib || _die "Failed to install the examples.jar files."
+	cp pljava.windows_x64/pljava.jar $WD/server/staging/windows-x64/lib || _die "Failed to install the pljava.jar files."
+	cp pljava.windows_x64/*.dll $WD/server/staging/windows-x64/lib || _die "Failed to install the pljava dll files."
+	mkdir -p $WD/server/staging/windows-x64/share/pljava || _die "Failed to create a directory for the pljava SQL scripts."
+	cp pljava.windows_x64/install.sql $WD/server/staging/windows-x64/share/pljava || _die "Failed to install the install.sql SQL scripts."
+	cp pljava.windows_x64/uninstall.sql $WD/server/staging/windows-x64/share/pljava || _die "Failed to install the uninstall.sql SQL scripts."
+	cp -R pljava.windows_x64/docs $WD/server/staging/windows-x64/doc/pljava || _die "Failed to install the pljava docs."
     
     cd $WD
 }
@@ -442,13 +442,13 @@ _postprocess_server_windows_x64() {
     cd $WD/server
 
     # Welcome doc
-    cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/windows_x64/doc/" || _die "Failed to install the welcome document"
-    cp "$WD/server/resources/enterprisedb.gif" "$WD/server/staging/windows_x64/doc/" || _die "Failed to install the welcome logo"
-    cp "$WD/scripts/runAsAdmin.vbs" "$WD/server/staging/windows_x64" || _die "Failed to copy the runAsRoot script"
+    cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/windows-x64/doc/" || _die "Failed to install the welcome document"
+    cp "$WD/server/resources/enterprisedb.gif" "$WD/server/staging/windows-x64/doc/" || _die "Failed to install the welcome logo"
+    cp "$WD/scripts/runAsAdmin.vbs" "$WD/server/staging/windows-x64" || _die "Failed to copy the runAsRoot script"
 
     #Creating a archive of the binaries
-    mkdir -p $WD/server/staging/windows_x64/pgsql || _die "Failed to create the directory for binaries "
-    cd $WD/server/staging/windows_x64
+    mkdir -p $WD/server/staging/windows-x64/pgsql || _die "Failed to create the directory for binaries "
+    cd $WD/server/staging/windows-x64
     cp -R bin doc include lib pgAdmin* share StackBuilder symbols pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
 
     zip -rq postgresql-$PG_PACKAGE_VERSION-windows_x64-binaries.zip pgsql || _die "Failed to archive the postgresql binaries"
@@ -459,23 +459,23 @@ _postprocess_server_windows_x64() {
     cd $WD/server
 
     # Setup the installer scripts. 
-    mkdir -p staging/windows_x64/installer/server || _die "Failed to create a directory for the install scripts"
-    cp scripts/windows/installruntimes.vbs staging/windows_x64/installer/installruntimes.vbs || _die "Failed to copy the installruntimes script ($WD/scripts/windows/installruntimes.vbs)"
-	cp scripts/windows/initcluster.vbs staging/windows_x64/installer/server/initcluster.vbs || _die "Failed to copy the loadmodules script (scripts/windows/initcluster.vbs)"
-	cp scripts/windows/startupcfg.vbs staging/windows_x64/installer/server/startupcfg.vbs || _die "Failed to copy the startupcfg script (scripts/windows/startupcfg.vbs)"
-	cp scripts/windows/createshortcuts.vbs staging/windows_x64/installer/server/createshortcuts.vbs || _die "Failed to copy the createshortcuts script (scripts/windows/createshortcuts.vbs)"
-	cp scripts/windows/startserver.vbs staging/windows_x64/installer/server/startserver.vbs || _die "Failed to copy the startserver script (scripts/windows/startserver.vbs)"
-	cp scripts/windows/loadmodules.vbs staging/windows_x64/installer/server/loadmodules.vbs || _die "Failed to copy the loadmodules script (scripts/windows/loadmodules.vbs)"
+    mkdir -p staging/windows-x64/installer/server || _die "Failed to create a directory for the install scripts"
+    cp scripts/windows/installruntimes.vbs staging/windows-x64/installer/installruntimes.vbs || _die "Failed to copy the installruntimes script ($WD/scripts/windows/installruntimes.vbs)"
+	cp scripts/windows/initcluster.vbs staging/windows-x64/installer/server/initcluster.vbs || _die "Failed to copy the loadmodules script (scripts/windows/initcluster.vbs)"
+	cp scripts/windows/startupcfg.vbs staging/windows-x64/installer/server/startupcfg.vbs || _die "Failed to copy the startupcfg script (scripts/windows/startupcfg.vbs)"
+	cp scripts/windows/createshortcuts.vbs staging/windows-x64/installer/server/createshortcuts.vbs || _die "Failed to copy the createshortcuts script (scripts/windows/createshortcuts.vbs)"
+	cp scripts/windows/startserver.vbs staging/windows-x64/installer/server/startserver.vbs || _die "Failed to copy the startserver script (scripts/windows/startserver.vbs)"
+	cp scripts/windows/loadmodules.vbs staging/windows-x64/installer/server/loadmodules.vbs || _die "Failed to copy the loadmodules script (scripts/windows/loadmodules.vbs)"
 	
     # Copy in the menu pick images and XDG items
-    mkdir -p staging/windows_x64/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/*.ico staging/windows_x64/scripts/images || _die "Failed to copy the menu pick images (resources/*.ico)"
+    mkdir -p staging/windows-x64/scripts/images || _die "Failed to create a directory for the menu pick images"
+    cp resources/*.ico staging/windows-x64/scripts/images || _die "Failed to copy the menu pick images (resources/*.ico)"
 	
     # Copy the launch scripts
-    cp scripts/windows/serverctl.vbs staging/windows_x64/scripts/serverctl.vbs || _die "Failed to copy the serverctl script (scripts/windows/serverctl.vbs)"
-	cp scripts/windows/runpsql.bat staging/windows_x64/scripts/runpsql.bat || _die "Failed to copy the runpsql script (scripts/windows/runpsql.bat)"
+    cp scripts/windows/serverctl.vbs staging/windows-x64/scripts/serverctl.vbs || _die "Failed to copy the serverctl script (scripts/windows/serverctl.vbs)"
+	cp scripts/windows/runpsql.bat staging/windows-x64/scripts/runpsql.bat || _die "Failed to copy the runpsql script (scripts/windows/runpsql.bat)"
 	
-    PG_DATETIME_SETTING_WINDOWS=`cat staging/windows_x64/include/pg_config.h | grep "#define USE_INTEGER_DATETIMES 1"`
+    PG_DATETIME_SETTING_WINDOWS=`cat staging/windows-x64/include/pg_config.h | grep "#define USE_INTEGER_DATETIMES 1"`
 
     if [ "x$PG_DATETIME_SETTING_WINDOWS" = "x" ]
     then
@@ -485,13 +485,15 @@ _postprocess_server_windows_x64() {
     fi
 
     _replace @@PG_DATETIME_SETTING_WINDOWS@@ "$PG_DATETIME_SETTING_WINDOWS" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"
+    
+    _replace @@WIN64MODE@@ "1" installer.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
 
 	
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 	
 	# Rename the installer
-	mv $WD/output/postgresql-$PG_MAJOR_VERSION-windows_x64-installer.exe $WD/output/postgresql-$PG_PACKAGE_VERSION-windows_x64.exe || _die "Failed to rename the installer"
+	mv $WD/output/postgresql-$PG_MAJOR_VERSION-windows-installer.exe $WD/output/postgresql-$PG_PACKAGE_VERSION-windows_x64.exe || _die "Failed to rename the installer"
 
 	# Sign the installer
 	win32_sign "postgresql-$PG_PACKAGE_VERSION-windows_x64.exe"
