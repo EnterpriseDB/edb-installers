@@ -538,7 +538,7 @@
 			<compareText>
 			    <text>${installer_ui}</text>
 			    <logic>equals</logic>
-			    <value>"unattended"</value>
+			    <value>unattended</value>
 			</compareText>
 		    </ruleList>
 	       </actionGroup>
