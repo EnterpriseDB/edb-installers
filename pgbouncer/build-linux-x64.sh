@@ -26,10 +26,6 @@ _prep_pgbouncer_linux_x64() {
     cp -R pgbouncer-$PG_VERSION_PGBOUNCER/* pgbouncer.linux-x64 || _die "Failed to copy the source code (source/pgbouncer-$PG_VERSION_PGBOUNCER)"
     chmod -R ugo+w pgbouncer.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
-    # Grab a copy of the source tree
-    cp -R libevent-$PG_TARBALL_LIBEVENT/* libevent.linux-x64 || _die "Failed to copy the source code (source/libevent-$PG_TARBALL_LIBEVENT)"
-    chmod -R ugo+w libevent.linux-x64 || _die "Couldn't set the permissions on the source directory"
-
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/pgbouncer/staging/linux-x64 ];
     then
@@ -55,16 +51,19 @@ _prep_pgbouncer_linux_x64() {
 
 _build_pgbouncer_linux_x64() {
 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/libevent.linux-x64/; ./configure --prefix=$PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer" || _die "Failed to configure libevent"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/libevent.linux-x64/; make" || _die "Failed to build libevent"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/libevent.linux-x64/; make install" || _die "Failed to install libevent"
 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; ./configure --prefix=$PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer --with-libevent=$PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer" || _die "Failed to configure pgbouncer"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; ./configure --prefix=$PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer --with-libevent=/usr/local" || _die "Failed to configure pgbouncer"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; make" || _die "Failed to build pgbouncer"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; make install" || _die "Failed to install pgbouncer"
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/share/doc/pgbouncer/pgbouncer.ini $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/share/" || _die "Failed to copy pgbouncer ini to share folder"
 
-	mkdir -p $WD/pgbouncer/staging/linux-x64/instscripts || _die "Failed to create the instscripts directory"
+
+    mkdir -p $WD/pgbouncer/staging/linux-x64/instscripts || _die "Failed to create the instscripts directory"
+    mkdir -p $WD/pgbouncer/staging/linux-x64/pgbouncer/lib || _die "Failed to create the pgbouncer lib directory"
+    PG_LIBEVENT_MAJOR_VERSION=`echo $PG_TARBALL_LIBEVENT | cut -f1,2 '.'`
+
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
+
 
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/lib/libpq* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy libpq in instscripts"
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/bin/psql $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy psql in instscripts"

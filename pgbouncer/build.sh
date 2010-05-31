@@ -41,16 +41,6 @@ _prep_pgbouncer() {
     # Enter the source directory and cleanup if required
     cd $WD/pgbouncer/source
 
-    # libevent
-    if [ -e libevent-$PG_TARBALL_LIBEVENT ];
-    then
-      echo "Removing existing libevent-$PG_TARBALL_LIBEVENT source directory"
-      rm -rf libevent-$PG_TARBALL_LIBEVENT  || _die "Couldn't remove the existing libevent-$PG_TARBALL_LIBEVENT source directory (source/libevent-$PG_TARBALL_LIBEVENT)"
-    fi
-
-    echo "Unpacking libevent source..."
-    extract_file ../../tarballs/libevent-$PG_TARBALL_LIBEVENT || exit 1
-
     # pgbouncer
     if [ -e pgbouncer-$PG_VERSION_PGBOUNCER ];
     then

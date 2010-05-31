@@ -1203,9 +1203,6 @@
                             <origin>staging/linux/pgbouncer/lib</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux/pgbouncer/include</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
                             <origin>staging/linux/pgbouncer/bin</origin>
                         </distributionDirectory>
                         <distributionDirectory>
@@ -1242,9 +1239,6 @@
                             <origin>staging/linux-x64/pgbouncer/lib</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/pgbouncer/include</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
                             <origin>staging/linux-x64/pgbouncer/bin</origin>
                         </distributionDirectory>
                         <distributionDirectory>
@@ -1278,9 +1272,6 @@
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/osx/pgbouncer/lib</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/osx/pgbouncer/include</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/osx/pgbouncer/bin</origin>
