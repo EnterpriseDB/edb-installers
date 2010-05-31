@@ -254,6 +254,11 @@ The Windows VM is the most tricky to setup:
 - vcredist in c:\pgBuild
 - apache ANT in c:\pgBuild
 - wxWidgets in c:\pgBuild
+
+Note: In case of Windows-64 setup you may get errors related to: 
+LINK : fatal error LNK1181: cannot open input file 'bufferoverflowU.lib'^M
+Main reason of this issue is bufferoverflowU.lib file missing in parallel directory structures of VC installation. To reslove this copy said file into parallel structure e.g.:
+cp /cygdrive/c/Program\ Files\ \(x86\)/Microsoft\ SDKs/Windows/v5.0/Lib/IA64/bufferoverflowu.lib  /cygdrive/c/Program\ Files/Microsoft\ SDKs/Windows/v6.0A/Lib/x64/.
  
 Build Machines as external machines
 -----------------------------------
