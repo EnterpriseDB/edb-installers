@@ -24,20 +24,13 @@ _prep_pgbouncer_windows() {
       rm -f libevent.zip  || _die "Couldn't remove the existing libevent.zip file (source/libevent.zip)"
     fi
 
-    echo "Creating source directory ($WD/pgbouncer/source/libevent.windows)"
-    mkdir -p $WD/pgbouncer/source/libevent.windows || _die "Couldn't create the libevent.windows directory"
-
     echo "Creating source directory ($WD/pgbouncer/source/pgbouncer.windows)"
     mkdir -p $WD/pgbouncer/source/pgbouncer.windows || _die "Couldn't create the pgbouncer.windows directory"
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c del /S /Q pgbouncer.zip"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c del /S /Q pgbouncer-staging.zip"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c del /S /Q libevent.zip"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c del /S /Q build-pgbouncer.bat"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c del /S /Q build-libevent.bat"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q libevent.windows"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q pgbouncer.windows"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q libevent.staging"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q pgbouncer.staging"
 
     # Grab a copy of the source tree
@@ -47,13 +40,7 @@ _prep_pgbouncer_windows() {
     cd $WD/pgbouncer/source 
     chmod -R ugo+w pgbouncer.windows || _die "Couldn't set the permissions on the source directory"
 
-    # Grab a copy of the source tree
-    cp -R libevent-$PG_TARBALL_LIBEVENT/* libevent.windows || _die "Failed to copy the source code (source/libevent-$PG_TARBALL_LIBEVENT)"
-    chmod -R ugo+w libevent.windows || _die "Couldn't set the permissions on the source directory"
-
-    zip -r libevent.zip libevent.windows || _die "Failed to zip the libevent source" 
     zip -r pgbouncer.zip pgbouncer.windows || _die "Failed to zip the pgbouncer source" 
-
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/pgbouncer/staging/windows ];
@@ -69,10 +56,6 @@ _prep_pgbouncer_windows() {
     echo "Copying pgbouncer sources to Windows VM"
     scp pgbouncer.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the pgbouncer archieve to windows VM (pgbouncer.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip pgbouncer.zip" || _die "Couldn't extract pgbouncer archieve on windows VM (pgbouncer.zip)"
-    
-    echo "Copying libevent sources to Windows VM"
-    scp libevent.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the libevent archieve to windows VM (libevent.zip)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip libevent.zip" || _die "Couldn't extract libevent archieve on windows VM (libevent.zip)"
 }
 
 ################################################################################
@@ -83,27 +66,17 @@ _build_pgbouncer_windows() {
 
     PG_PGBUILD_MINGW_WINDOWS=`echo $PG_PGBUILD_WINDOWS | sed -e 's/://g' -e 's:\\\\:/:g' -e 's:^:/:g'`
 
-    cat <<EOT > "build-libevent.bat"
-
-@SET PATH=$PG_MSYS_WINDOWS\bin;C:\Perl\bin;C:\Python25;C:\Tcl\bin;%PATH%
-
-REM Configuring, building the libevent source tree
-@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD;cd libevent.windows;./configure --prefix=\$COMMONDIR/libevent.staging; make; make install  | $PG_MSYS_WINDOWS\bin\sh --login -i
-
-EOT
-
     cat <<EOT > "build-pgbouncer.bat"
 
 @SET PATH=%PATH%;$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;$PG_PGBUILD_WINDOWS\flex\bin;$PG_PGBUILD_WINDOWS\bison\bin;$PG_PGBUILD_WINDOWS\regex\bin
 
 REM Configuring, building the pgbouncer source tree
-@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD; cd pgbouncer.windows; CPPFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS/regex/include" LDFLAGS="-L$PG_PGBUILD_MINGW_WINDOWS/regex/lib" ./configure --prefix=\$COMMONDIR/pgbouncer.staging --with-libevent=\$COMMONDIR/libevent.staging; make; make install  | $PG_MSYS_WINDOWS\bin\sh --login -i
+@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD; cd pgbouncer.windows; CPPFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS/regex/include" LDFLAGS="-L$PG_PGBUILD_MINGW_WINDOWS/regex/lib" ./configure --prefix=\$COMMONDIR/pgbouncer.staging --with-libevent=$PG_PGBUILD_MINGW_WINDOWS/libevent; make; make install  | $PG_MSYS_WINDOWS\bin\sh --login -i
 
 EOT
 
-    scp build-pgbouncer.bat build-libevent.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the scripts source tree to the windows build host (scripts.zip)"
+    scp build-pgbouncer.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the scripts source tree to the windows build host (scripts.zip)"
     # Build the code and install into a temporary directory
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-libevent.bat " || _die "Failed to build libevent on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-pgbouncer.bat " || _die "Failed to build pgbouncer on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\regex\\\\bin\\\\regex2.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\bin" || _die "Failed to build pgbouncer on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\share\\\\doc\\\\pgbouncer\\\\pgbouncer.ini $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\share" || _die "Failed to copy  pgbouncer ini to share dir"
