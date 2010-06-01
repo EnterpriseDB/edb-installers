@@ -409,6 +409,7 @@ y a menu pick image"
     fi
 
     _replace @@PG_DATETIME_SETTING_LINUX_X64@@ "$PG_DATETIME_SETTING_LINUX_X64" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"
+    _replace @@WIN64MODE@@ "0" installer.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
 
 		
     # Build the installer

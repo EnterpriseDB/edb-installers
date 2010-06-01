@@ -299,6 +299,8 @@ _postprocess_server_osx() {
 
     _replace @@PG_DATETIME_SETTING_OSX@@ "$PG_DATETIME_SETTING_OSX" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"
 
+    _replace @@WIN64MODE@@ "0" installer.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
+
     if [ -f installer_1.xml ]; then
       rm -f installer_1.xml
     fi
