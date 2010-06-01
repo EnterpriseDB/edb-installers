@@ -502,10 +502,6 @@
 				   <logic>equals</logic>
 				   <value>windows</value>
 				</compareText>
-				<fileTest>  
-				    <path>${installdir}\bin\pg_config</path>
-				    <condition>exists</condition>
-				</fileTest>
 			    </ruleList>
 			</setInstallerVariableFromScriptOutput>
 			<setInstallerVariableFromRegEx>
