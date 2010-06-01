@@ -1,29 +1,63 @@
 PgBouncer
 =========
-
-PgBouncer is a lightweight connection pooler distributed with, and installed
-by, the Postgres Plus installer.  To include PgBouncer in a Postgres Plus 
-installation, confirm that the box next to PgBouncer on the Select Components 
-installer window is checked.  You can add PgBouncer to an existing
-Postgres Plus installation at a later time with StackBuilder Plus.
+PgBouncer is a lightweight connection pooler for Postgres.  
 
 
 Controlling the pgbouncer Service
 ---------------------------------
 By default, the PgBouncer service is configured to autostart at system 
 startup and listen for connections on port 6432.  You can confirm that the 
-pgbouncer service is running through the Windows service manager, or at the Linux 
-command line.
+pgbouncer service is running through the Windows service manager, or through 
+the Mac or Linux command line.
 
+Windows
+-------
 On Windows, select Run from the Start menu; when the Run dialog opens, enter: 
 
     services.msc 
 
-and click OK to open the Services window.  Scroll through the list of 
-services to view status information about the pgbouncer service.  To change 
-the state of the pgbouncer daemon, select the service from the list, and use 
-the Start and Stop service links on the Services window.  
+and click OK to open the Services window.  Scroll through the list of services 
+to view status information about the pgbouncer service.  To change the state of 
+the pgbouncer daemon, select the service from the list, and use the Start and 
+Stop service links on the Services window.  
 
+Mac
+---
+You can control or review the status of the pgbouncer service on a Mac with the 
+launchd daemon; use the launchctl command to control the launchd daemon.
+
+  To load the configuration files associated with launchd, and start the 
+  pgbouncer service enter:
+
+    $ sudo launchctl load \
+    /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist
+
+  To list the jobs currently loaded into launched:
+
+    $ sudo launchctl list | grep com.edb.launchd.pgbouncer
+    5723 - com.edb.launchd.pgbouncer
+
+  The value in the first column of the list output is the process ID of the 
+  pgbouncer daemon.
+
+  To unload the service configuration files and stop the pgbouncer service:
+
+    $ sudo launchctl unload \
+    /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist
+
+  To list all of the jobs currently running under launchd:
+
+    $ sudo launchctl list | grep com.edb.launchd.pgbouncer
+
+For more information about the options that work with the launchctl command, 
+enter:
+ 
+    man launchctl 
+
+at the Mac command line.  
+
+Linux
+-----
 To view the status of the pgbouncer daemon on Linux, open a terminal window, 
 and enter:
 
@@ -37,8 +71,8 @@ If the service is not running, Linux echoes:
 
     pgbouncer not running
     
-You can also use the service command to stop or start the pgbouncer service 
-at the command line.  To start the pgbouncer daemon, enter:
+You can also use the service command to stop or start the pgbouncer service at 
+the command line.  To start the pgbouncer daemon, enter:
 
     service pgbouncer start
     
@@ -50,32 +84,25 @@ at the command line.  To start the pgbouncer daemon, enter:
 Configuring PgBouncer
 ---------------------
 When the PgBouncer service is running, any Postgres client connecting to the 
-PgBouncer listener port specified in the configuration file will 
-automatically use connection pooling.  PgBouncer connection and configuration 
-information is stored in the pgbouncer.ini file, located under your 
-installation of Postgres Plus:  
+PgBouncer listener port specified in the configuration file will automatically use 
+connection pooling.  PgBouncer connection and configuration information is stored 
+in the pgbouncer.ini file, located under:  
 
-  If you are using Postgres Plus Advanced Server, the 
-  configuration file is located in:
-    <INSTALLATION_DIRECTORY>/PostgresPlus/8.4AS/share
-
-  If you are using Postgres Plus Standard Server, the configuration 
-  file is located in:
-    <INSTALLATION_DIRECTORY>/PostgresPlus/8.4SS/pgbouncer/share
+      <INSTALLATION_DIRECTORY>/share
+  OR
+      <INSTALLATION_DIRECTORY>/pgbouncer/share
 
 The configuration file is divided into two sections: [databases] and 
 [pgbouncer].
 
-The [databases] section contains a list of databases and the associated 
-connection information; after a Postgres Plus installation, the configuration 
-file contains an entry for the installation of Postgres Plus that installed 
-PgBouncer:
+The [databases] section contains a list of databases and the associated connection 
+information; after a Postgres Plus installation, the configuration file contains 
+an entry for the installation of Postgres Plus that installed PgBouncer:
 
     postgres = host=127.0.0.1 port=5444 
 
-You can specify additional database connection information in the 
-configuration file in the form of keyword=value pairs.  Specify the 
-following parameters:
+You can specify additional database connection information in the configuration 
+file in the form of keyword=value pairs.  Specify the following parameters:
 
   * name - The name of the database to which the client application connects
   * host - The host IP address
@@ -91,15 +118,29 @@ section of the configuration file:
 
     [databases] 
     postgres = host=127.0.0.1 port=5444 
-    acctg = host=192.168.10.101 port=5432 
-            user=lola password=1safe_pwd! 
+    acctg = host=192.168.10.101 port=5432 user=lola password=1safe_pwd! 
 
 Include the dbname parameter to map the connection name to an alternate 
 database name.  For example:
 
     hr = host=127.0.0.1 port=5432 dbname=humanresources 
 
-Please note that the connection information will vary according to the platform, client software and identity you are connecting with.  If you do not specify a user name and password in the configuration file, PgBouncer will connect to the database server using the credentials provided by the client. 
+Please note that the connection information will vary according to the platform, 
+client software and identity you are connecting with. 
+
+PgBouncer uses the information provided in the connection string to connect to 
+the database server.  Specifying a user in the pgbouncer.ini file overrides user 
+details supplied by the client.
+
+If the client provides user information, that information is used to connect to 
+PgBouncer, which in turn uses the information specified in the PgBouncer 
+configuration file to connect to the server.  The details of the user specified 
+in the pgbouncer configuration file must be defined in the database cluster.
+
+Note: If you do not specify user details in pgbouncer.ini, the username and 
+password will be authenticated by the database server and PgBouncer.  As such, the 
+username and password should be included in the PgBouncer userlist.txt file and 
+the database cluster.
 
 The [pgbouncer] section of the configuration file contains configuration 
 details specific to PgBouncer:
@@ -224,7 +265,7 @@ The Admin Console also offers commands that control the PgBouncer process:
   * RELOAD   Use the RELOAD command to reload the PgBouncer configuration files.
 
 
-For more information about the PgBouncer project and official documentation, 
-visit: 
+===================================================================================
+For more information about the PgBouncer project and official documentation, visit: 
 
     https://developer.skype.com/SkypeGarage/DbProjects/PgBouncer
