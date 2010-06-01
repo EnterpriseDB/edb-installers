@@ -96,7 +96,13 @@ PG_SIGNTOOL_WINDOWS="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v6.0A\\
 PG_SSH_WINDOWS_X64=buildfarm@bf-windows-x64.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS_X64=C:\\\\pginstaller-repo
 PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 9.0"
+PG_FRAMEWORKDIR_WINDOWS_X64="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework64"
+PG_FRAMEWORKVERSION_WINDOWS_X64=v2.0.50727
+PG_FRAMEWORKSDKDIR_WINDOWS_X64="C:\\\\Program Files(x86)\\\\Microsoft Visual Studio 9.0\\\\SDK\\\\v2.0"
+PG_DEVENVDIR_WINDOWS_X64="C:\\\\Program Files(x86)\\\\Microsoft Visual Studio 9.0\\\\Common7\\\\IDE"
 PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild"
+PG_WXWIN_WINDOWS_X64="$PG_PGBUILD_WINDOWS_X64\\\\wxWidgets"
+PG_CMAKE_WINDOWS_X64="C:\\\\pgBuild\\\\CMake2.8"
 
 PG_PATH_OSX=`pwd`
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging/osx
