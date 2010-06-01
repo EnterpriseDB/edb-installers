@@ -51,6 +51,10 @@ _prep_phpPgAdmin() {
     echo "Unpacking phpPgAdmin source..."
     extract_file  ../../tarballs/phpPgAdmin-$PG_VERSION_PHPPGADMIN || exit 1
 
+    if [ ! -f "$WD/phpPgAdmin/source/phpPgAdmin-$PG_VERSION_PHPPGADMIN/conf/config.inc.php" -a -f "$WD/phpPgAdmin/source/phpPgAdmin-$PG_VERSION_PHPPGADMIN/conf/config.inc.php-dist" ]; then
+        cp "$WD/phpPgAdmin/source/phpPgAdmin-$PG_VERSION_PHPPGADMIN/conf/config.inc.php-dist" "$WD/phpPgAdmin/source/phpPgAdmin-$PG_VERSION_PHPPGADMIN/conf/config.inc.php"
+    fi
+
     # Per-platform prep
     cd $WD
     
