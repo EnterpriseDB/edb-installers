@@ -48,7 +48,7 @@ _prep_server_linux() {
 
     # Grab a copy of the stackbuilder source tree
     cp -R stackbuilder stackbuilder.linux || _die "Failed to copy the source code (source/stackbuilder)"	
-	chmod -R ugo+w stackbuilder.linux || _die "Couldn't set the permissions on the source directory"
+    chmod -R ugo+w stackbuilder.linux || _die "Couldn't set the permissions on the source directory"
 	
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/linux ];
@@ -60,6 +60,10 @@ _prep_server_linux() {
     echo "Creating staging directory ($WD/server/staging/linux)"
     mkdir -p $WD/server/staging/linux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/server/staging/linux || _die "Couldn't set the permissions on the staging directory"
+
+    if [ -f $WD/server/scripts/linux/getlocales/getlocales.linux ]; then
+      rm -f $WD/server/scripts/linux/getlocales/getlocales.linux
+    fi
 
 }
 
@@ -159,7 +163,7 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/;PATH=$PG_PERL_LINUX/bin:$PG_PYTHON_LINUX/bin:$PG_TCL_LINUX/bin:\$PATH ./configure --prefix=$PG_STAGING --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX/lib --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; make" || _die "Failed to build postgres" 
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; make -j4" || _die "Failed to build postgres" 
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; make install" || _die "Failed to install postgres"
 
     echo "Building contrib modules"
@@ -183,7 +187,14 @@ _build_server_linux() {
     mkdir -p $WD/server/staging/linux/doc/postgresql/html || _die "Failed to create the doc directory"
     cd $WD/server/staging/linux/doc/postgresql/html || _die "Failed to change to the doc directory"
     cp -R $WD/server/source/postgres.linux/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
-	
+
+    # Install the PostgreSQL man pages
+    mkdir -p $WD/server/staging/linux/share/man || _die "Failed to create the man directory"
+    cd $WD/server/staging/linux/share/man || _die "Failed to change to the man directory"
+    cp -R $WD/server/source/postgres.linux/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
+    cp -R $WD/server/source/postgres.linux/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
+    cp -R $WD/server/source/postgres.linux/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
+
     # Copy in the dependency libraries
     ssh $PG_SSH_LINUX "cp -R /lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
@@ -201,7 +212,6 @@ _build_server_linux() {
     _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libxml2.so"  
     _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libxslt.so"  
 
-	
     # Now build pgAdmin
 
     # Bootstrap
@@ -276,8 +286,7 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cd $PG_STAGING/lib; chmod a+r *"
     
  
-	# Stackbuilder
-	
+    # Stackbuilder
     # Configure
     echo "Configuring the StackBuilder source tree"
 	ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_STAGING/stackbuilder ."
@@ -287,10 +296,11 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; make all" || _die "Failed to build StackBuilder"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; make install" || _die "Failed to install StackBuilder"
 
-
     echo "Changing the rpath for the StackBuilder"
     ssh $PG_SSH_LINUX "cd $PG_STAGING/stackbuilder/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../../lib:\\\\${ORIGIN}/../../pgAdmin3/lib\" \$f; done"
-	
+
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/scripts/linux/getlocales/; gcc -o getlocales.linux -O0 getlocales.c" || _die "Failed to build getlocales utility"
+
     cd $WD
 }
 
@@ -321,8 +331,8 @@ _postprocess_server_linux() {
 
     # Setup the installer scripts. 
     mkdir -p staging/linux/installer/server || _die "Failed to create a directory for the install scripts"
-    cp scripts/linux/getlocales.sh staging/linux/installer/server/getlocales.sh || _die "Failed to copy the getlocales script (scripts/linux/getlocales.sh)"
-    chmod ugo+x staging/linux/installer/server/getlocales.sh
+    cp $WD/server/scripts/linux/getlocales/getlocales.linux $WD/server/staging/linux/installer/server/getlocales || _die "Failed to copy getlocales utility in the staging directory"
+    chmod ugo+x $WD/server/staging/linux/installer/server/getlocales
     cp scripts/linux/runpgcontroldata.sh staging/linux/installer/server/runpgcontroldata.sh || _die "Failed to copy the runpgcontroldata script (scripts/linux/runpgcontroldata.sh)"
     chmod ugo+x staging/linux/installer/server/runpgcontroldata.sh
     cp scripts/linux/createuser.sh staging/linux/installer/server/createuser.sh || _die "Failed to copy the createuser script (scripts/linux/createuser.sh)"

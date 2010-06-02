@@ -1176,9 +1176,9 @@
         </unpackFile>
        <unpackFile>
             <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer/getlocales.sh</destination>
+            <destination>${system_temp_directory}/postgresql_installer/getlocales</destination>
             <folder>programfileslinux</folder>
-            <origin>installer/server/getlocales.sh</origin>
+            <origin>installer/server/getlocales</origin>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -1190,9 +1190,9 @@
         </unpackFile>
        <unpackFile>
             <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer/getlocales.sh</destination>
+            <destination>${system_temp_directory}/postgresql_installer/getlocales</destination>
             <folder>programfileslinux-x64</folder>
-            <origin>installer/server/getlocales.sh</origin>
+            <origin>installer/server/getlocales</origin>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -1787,10 +1787,16 @@
                     <program>${system_temp_directory}/postgresql_installer/getlocales.sh</program>
                     <ruleList>
                         <compareText>
-                            <logic>does_not_equal</logic>
+                            <logic>equals</logic>
                             <text>${platform_name}</text>
-                            <value>windows</value>
+                            <value>osx</value>
                         </compareText>
+                    </ruleList>
+                </runProgram>
+
+                <runProgram program="${system_temp_directory}/postgresql_installer/getlocales">
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="osx"/>
                     </ruleList>
                 </runProgram>
 
@@ -3279,6 +3285,7 @@ export PGDATABASE=postgres
 export PGUSER=${superaccount}
 export PGPORT=${serverport}
 export PGLOCALEDIR=${installdir}/share/locale
+export MANPATH=$MANPATH:${installdir}/share/man
 
                           </text>
                        </writeFile>
