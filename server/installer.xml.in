@@ -3754,7 +3754,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     </distributionFileList>
 		    <ruleList>
 			<compareText logic="equals" text="${platform_name}" value="windows"/>
-			<compareText logic="equals" text="${win64_platform}" value="0"/>
+                        <isFalse value="${project.windows64bitMode}"/>
       		    </ruleList>
                 </folder>
 	        <folder>
@@ -3768,7 +3768,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     </distributionFileList>
 		    <ruleList>
 			<compareText logic="equals" text="${platform_name}" value="windows"/>
-			<compareText logic="equals" text="${win64_platform}" value="1"/>
+                        <isTrue value="${project.windows64bitMode}"/>
       		    </ruleList>
                 </folder>
 
@@ -3940,7 +3940,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     </distributionFileList>
 		    <ruleList>
 			<compareText logic="equals" text="${platform_name}" value="windows"/>
-			<compareText logic="equals" text="${win64_platform}" value="0"/>
+                        <isFalse value="${project.windows64bitMode}"/>
       		    </ruleList>
 		</folder>
                 <!-- WIN-x64: Program files -->
@@ -3983,7 +3983,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     </distributionFileList>
 		    <ruleList>
 			<compareText logic="equals" text="${platform_name}" value="windows"/>
-			<compareText logic="equals" text="${win64_platform}" value="1"/>
+                        <isTrue value="${project.windows64bitMode}"/>
       		    </ruleList>
 		</folder>
            </folderList>

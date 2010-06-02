@@ -281,15 +281,15 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip scripts.zip" || _die "Failed to unpack the scripts source tree on the windows-x64 build host (scripts.zip)"	
 	
     # Build the code and install into a temporary directory
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\createuser; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build.bat createuser.vcproj" || _die "Failed to build createuser on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\getlocales; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build.bat getlocales.vcproj" || _die "Failed to build getlocales on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\validateuser; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build.bat validateuser.vcproj" || _die "Failed to build validateuser on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\createuser; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build.bat /platform:x64 createuser.vcproj RELEASE" || _die "Failed to build createuser on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\getlocales; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build.bat /platform:x64 getlocales.vcproj Release" || _die "Failed to build getlocales on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\validateuser; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build.bat /platform:x64 validateuser.vcproj" || _die "Failed to build validateuser on the windows-x64 build host"
 	
     # Move the resulting binaries into place
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\output\\\\installer\\\\server" || _die "Failed to create the server directory on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\createuser\\\\release\\\\createuser.exe $PG_PATH_WINDOWS_X64\\\\output\\\\installer\\\\server" || _die "Failed to copy the createuser proglet on the windows-x64 build host" 
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\getlocales\\\\release\\\\getlocales.exe $PG_PATH_WINDOWS_X64\\\\output\\\\installer\\\\server" || _die "Failed to copy the getlocales proglet on the windows-x64 build host" 
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\validateuser\\\\release\\\\validateuser.exe $PG_PATH_WINDOWS_X64\\\\output\\\\installer\\\\server" || _die "Failed to copy the validateuser proglet on the windows-x64 build host" 
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\createuser\\\\x64\\\\release\\\\createuser.exe $PG_PATH_WINDOWS_X64\\\\output\\\\installer\\\\server" || _die "Failed to copy the createuser proglet on the windows-x64 build host" 
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\getlocales\\\\x64\\\\release\\\\getlocales.exe $PG_PATH_WINDOWS_X64\\\\output\\\\installer\\\\server" || _die "Failed to copy the getlocales proglet on the windows-x64 build host" 
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\validateuser\\\\x64\\\\release\\\\validateuser.exe $PG_PATH_WINDOWS_X64\\\\output\\\\installer\\\\server" || _die "Failed to copy the validateuser proglet on the windows-x64 build host" 
 	
     # Zip up the source directory and copy it to the build host, then unzip
     cd $WD/server/source/
