@@ -67,7 +67,7 @@ config.superpassword.format.error.windows=The password specified does not meet t
 
 config.port.description=Port
 config.port.explanation=Please select the port number the server should listen on.
-config.port.invalid=This port number must be a valid integer between 1024 and 65535.
+config.port.invalid=The port number must be an integer between 1024 and 65535.
 config.port.in.use=The specified port number is not available. Please enter a different port.
 
 config.advancedoption.title=Advanced Options

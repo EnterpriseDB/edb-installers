@@ -349,7 +349,11 @@
   <!-- finalPage actions -->
   <finalPageActionList>
     <launchBrowser url="http://www.enterprisedb.com/installer/tuning.do"
-                   progressText="${msg(Installer.Installation.Finished.Visit.Us)}"/>
+                   progressText="${msg(Installer.Installation.Finished.Visit.Us)}">
+        <ruleList>
+            <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
+        </ruleList>
+    </launchBrowser>
   </finalPageActionList>
 
   <!-- Components -->

@@ -39,9 +39,9 @@ _warn() {
 }
 
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
-	"$INSTALLDIR/scripts/xdg/hqagent-$BRANDING_STR.directory" \
-	"$INSTALLDIR/scripts/xdg/hqagent-start.desktop"\
-	"$INSTALLDIR/scripts/xdg/hqagent-stop.desktop" || _warn "Failed to remove the top level menu"
+	"$INSTALLDIR/scripts/xdg/pphq-$BRANDING_STR.directory" \
+	"$INSTALLDIR/scripts/xdg/pphq-agent-start.desktop"\
+	"$INSTALLDIR/scripts/xdg/pphq-agent-stop.desktop" || _warn "Failed to remove the top level menu"
 
 # Remove the icon resources
 cd "$INSTALLDIR/scripts/images"
@@ -50,7 +50,7 @@ do
     "$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 $i
 done
 
-rm "$INSTALLDIR/scripts/xdg/hqagent-$BRANDING_STR.directory"
+rm "$INSTALLDIR/scripts/xdg/pphq-$BRANDING_STR.directory"
 
 xdg_dir_name=menus
 
@@ -66,8 +66,8 @@ done
 xdg_global_dir="$xdg_global_dir/applications-merged"
 
 # Hack up the XDG menu files to make sure everything really does go.
-_replace "<Filename>hqagent-start.desktop</Filename>" "" "$xdg_global_dir/hqagent-$BRANDING_STR.menu"
-_replace "<Filename>hqagent-stop.desktop</Filename>" "" "$xdg_global_dir/hqagent-$BRANDING_STR.menu"
+_replace "<Filename>pphq-agent-start.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
+_replace "<Filename>pphq-agent-stop.desktop</Filename>" "" "$xdg_global_dir/pphq-$BRANDING_STR.menu"
 
 echo "$0 ran to completion"
 exit 0

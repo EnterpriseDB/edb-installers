@@ -57,6 +57,11 @@ _prep_plpgsqlo_osx() {
     echo "Copying plpgsqlo.sql to staging share directory"
     cp $WD/plpgsqlo/resources/plpgsqlo.sql $WD/plpgsqlo/staging/osx/share || _die "Couldn't copy plpgsqlo.sql to staging share directory"
 
+    echo "Creating staging doc directory ($WD/plpgsqlo/staging/osx/doc)"
+    mkdir -p $WD/plpgsqlo/staging/osx/doc || _die "Couldn't create the staging doc directory"
+    chmod ugo+w $WD/plpgsqlo/staging/osx/doc || _die "Couldn't set the permissions on the staging doc directory"
+    echo "Copying readme.sqlprotect to staging doc directory"
+    cp $WD/plpgsqlo/resources/README.plsecure $WD/plpgsqlo/staging/osx/doc || _die "Couldn't copy README.plsecure to staging doc directory"
 
 }
 

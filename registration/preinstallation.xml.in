@@ -30,7 +30,7 @@
     </setInstallerVariable>
 
     <!-- dummy value for existingEmail, if registration_required set to 0 -->
-    <setInstallerVariable name="existingEmail" value="dummy@mail.edb.com">
+    <setInstallerVariable name="existingEmail" value="dummy@nonexists.edb.com">
       <ruleList>
         <isFalse value="${registration_required}"/>
         <compareText logic="equals" text="${iExistingEmail}" value=""/>

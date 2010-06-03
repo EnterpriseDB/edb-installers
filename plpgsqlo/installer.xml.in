@@ -3,21 +3,26 @@
     <shortName>plsecure</shortName>
     <fullName>PL/Secure</fullName>
     <version>PG_VERSION_PLPGSQLO-PG_BUILDNUM_PLPGSQLO</version>
+
     <!-- These options are used on Windows -->
     <startMenuGroupName/>
+
     <!-- Product Specific Options -->
     <productDisplayName>PL/Secure ${productVersion}</productDisplayName>
     <productComments>${product_fullname} ${productVersion}</productComments>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
+
     <!-- The options are used for RPM registration -->
     <description>PL/Secure for PL/pgSQL</description>
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
+
     <!-- Installer Size -->
     <width>550</width>
     <height>400</height>
+
     <!-- Misc package options -->
     <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
     <enableRollback>0</enableRollback>
@@ -30,9 +35,13 @@
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
     <windowsSoftwareRegistryPrefix/>
+    <wrapLicenseFileText>1</wrapLicenseFileText>
+    <licenseFile encoding="utf-8">resources/licence.txt</licenseFile>
+
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
     <leftImage>../resources/pg-side.png</leftImage>
+
     <!-- i18n files for the UI -->
     <allowedLanguages>en</allowedLanguages>
     <customLanguageFileList>
@@ -42,6 +51,7 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+
     <!-- Prebuild Actons-->
     <preBuildActionList>
         <setInstallerVariable name="originalplatform" value="${platform_name}"/>
@@ -98,6 +108,7 @@
     <initializationActionList>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PLPGSQLO"/>
         <setInstallerVariable name="superuser" persist="0" value=""/>
+        <setInstallerVariable name="installdir" persist="0" value=""/>
         <!-- Abort Installation as trying to    run a 32-bit installer on 64-bit machine -->
         <throwError>
             <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -367,6 +378,72 @@
 			<compareText logic="equals" text="${pginstalldir}" value=""/>
 		    </ruleList>
 		</actionGroup>
+		<actionGroup>
+		    <actionList>
+			<setInstallerVariableFromScriptOutput>
+			    <name>pg_version_str</name>
+			    <exec>${installdir}/bin/pg_config</exec>
+			    <execArgs>--version</execArgs>
+			    <workingDirectory>${installdir}\bin</workingDirectory>
+			    <ruleList>
+				<compareText>
+				   <text>${platform_name}</text>
+				   <logic>does_not_equal</logic>
+				   <value>windows</value>
+				</compareText>
+				<fileTest>  
+				    <path>${installdir}/bin/pg_config</path>
+				    <condition>exists</condition>
+				</fileTest>
+			    </ruleList>
+			</setInstallerVariableFromScriptOutput>
+			<setInstallerVariableFromScriptOutput>
+			    <name>pg_version_str</name>
+			    <exec>${installdir}\bin\pg_config.exe</exec>
+			    <execArgs>--version</execArgs>
+			    <workingDirectory>${installdir}\bin</workingDirectory>
+			    <ruleList>
+				<compareText>
+				   <text>${platform_name}</text>
+				   <logic>equals</logic>
+				   <value>windows</value>
+				</compareText>
+			    </ruleList>
+			</setInstallerVariableFromScriptOutput>
+			<setInstallerVariableFromRegEx>
+			      <name>pg_version</name>
+			      <text>${pg_version_str}</text>
+			      <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
+			      <substitution>\1</substitution>
+			      <ruleList>
+				 <compareText>
+				     <logic>does_not_equal</logic>
+				     <text>${pg_version_str}</text>
+				     <value/>
+				</compareText>
+			      </ruleList>
+			</setInstallerVariableFromRegEx>
+		   </actionList>
+	       </actionGroup>
+	       <actionGroup>
+		   <actionList>
+			<throwError text="${msg(plpgsqlo.incompatible.pg.error)}"/>
+		   </actionList>
+		   <ruleList>
+			<compareText>
+			      <logic>does_not_equal</logic>
+			      <text>${pg_version}</text>
+			      <value>PG_MAJOR_VERSION</value>            
+			</compareText>
+		    </ruleList>
+		    <ruleList>
+			<compareText>
+			    <text>${installer_ui}</text>
+			    <logic>equals</logic>
+			    <value>unattended</value>
+			</compareText>
+		    </ruleList>
+	       </actionGroup>
 
                 <actionGroup>
 		    <actionList>
@@ -498,19 +575,65 @@
                 </actionGroup>
             </actionList>
         </actionGroup>
-        <substitute>
-            <files>${sharedir}/plpgsqlo.sql</files>
-            <substitutionList>
-                <substitution>
-                    <pattern>\$libdir</pattern>
-                    <value>${libdir}</value>
-                </substitution>
-                <substitution>
-                    <pattern>\$SUPERUSER</pattern>
-                    <value>${superuser}</value>
-                </substitution>
-            </substitutionList>
-        </substitute>
+        <actionGroup>
+	    <actionList>
+		<substitute>
+		    <files>${installdir}/share/plpgsqlo.sql</files>
+		    <substitutionList>
+			<substitution>
+			    <pattern>\$libdir</pattern>
+			    <value>${installdir}/lib/postgresql</value>
+			</substitution>
+			<substitution>
+			    <pattern>\$SUPERUSER</pattern>
+			    <value>${superuser}</value>
+			</substitution>
+		    </substitutionList>
+		</substitute>
+	    </actionList>
+	    <ruleList>
+		<compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	    </ruleList>
+	</actionGroup>
+        <actionGroup>
+	    <actionList>
+		<!-- change in C:\ to C:/ does not happen directly so need to use pg_config to get short name-->
+		<setInstallerVariableFromScriptOutput>
+                    <name>libdir</name>
+                    <exec>${installdir}\bin\pg_config.exe</exec>
+                    <execArgs>--pkglibdir</execArgs>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+		    <onErrorActionList>
+                        <setInstallerVariable name="libdir" value="${installdir}/lib"/>
+                    </onErrorActionList>
+		</setInstallerVariableFromScriptOutput>
+		<!-- change "C:\" to "C:/" in case of Windows -->
+                <setInstallerVariableFromRegEx>
+                    <name>libdir</name>
+                    <text>${libdir}</text>
+                    <pattern>\\</pattern>
+                    <substitution>/</substitution>
+                </setInstallerVariableFromRegEx>
+		<substitute>
+		    <files>${installdir}/share/plpgsqlo.sql</files>
+		    <substitutionList>
+			<substitution>
+			    <pattern>\$libdir</pattern>
+			    <value>${libdir}</value>
+			</substitution>
+			<substitution>
+			    <pattern>\$SUPERUSER</pattern>
+			    <value>${superuser}</value>
+			</substitution>
+		    </substitutionList>
+		</substitute>
+	    </actionList>
+	    <ruleList>
+		<compareText logic="equals" text="${platform_name}" value="windows"/>
+	    </ruleList>
+	</actionGroup>
+
 
 	<include file="staging/registration_postinstallation.xml"/>
 
@@ -552,6 +675,7 @@
 	<include file="staging/registration_preuninstallation.xml"/>
 
     </preUninstallationActionList>
+
     <!-- Components -->
     <componentList>
         <component>
@@ -564,7 +688,7 @@
                 <!-- WIN: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${libdir}</destination>
+                    <destination>${installdir}\lib</destination>
                     <name>programfileslibwindows</name>
                     <platforms>windows</platforms>
 		    <distributionFileList>
@@ -574,18 +698,29 @@
                <!-- WIN: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
-                    <destination>${sharedir}</destination>
+                    <destination>${installdir}\share</destination>
                     <name>programfilessharewindows</name>
                     <platforms>windows</platforms>
 		    <distributionFileList>
                             <distributionFile origin="staging/windows/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
+               <!-- WIN: README -->
+                <folder>
+                    <description>README</description>
+                    <destination>${installdir}\doc</destination>
+                    <name>programfilesdocwindows</name>
+                    <platforms>windows</platforms>
+		    <distributionFileList>
+                            <distributionFile origin="staging/windows/doc/README.plsecure"/>
+                    </distributionFileList>
+                </folder>
+
 
                 <!-- LIN: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${libdir}</destination>
+                    <destination>${installdir}/lib/postgresql</destination>
                     <name>programfilesliblinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
@@ -595,18 +730,29 @@
                <!-- LIN: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
-                    <destination>${sharedir}</destination>
+                    <destination>${installdir}/share</destination>
                     <name>programfilessharelinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
                             <distributionFile origin="staging/linux/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
+              <!-- WIN: README -->
+                <folder>
+                    <description>README</description>
+                    <destination>${installdir}/doc</destination>
+                    <name>programfilesdoclinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                            <distributionFile origin="staging/linux/doc/README.plsecure"/>
+                    </distributionFileList>
+                </folder>
+
 
                 <!-- LIN-X64: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${libdir}</destination>
+                    <destination>${installdir}/lib/postgresql</destination>
                     <name>programfilesliblinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
@@ -616,18 +762,29 @@
                <!-- LIN-X64: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
-                    <destination>${sharedir}</destination>
+                    <destination>${installdir}/share</destination>
                     <name>programfilessharelinux-x64</name>
                     <platforms>linux-x64</platforms>
 		    <distributionFileList>
                             <distributionFile origin="staging/linux-x64/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
+                <!-- WIN: README -->
+                <folder>
+                    <description>README</description>
+                    <destination>${installdir}/doc</destination>
+                    <name>programfilesdoclinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                            <distributionFile origin="staging/linux-x64/doc/README.plsecure"/>
+                    </distributionFileList>
+                </folder>
+
 
                 <!-- MAC: Program files -->
                 <folder>
                     <description>Program Files</description>
-                    <destination>${libdir}</destination>
+                    <destination>${installdir}/lib/postgresql</destination>
                     <name>programfileslibosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
@@ -637,13 +794,25 @@
                <!-- MAC: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
-                    <destination>${sharedir}</destination>
+                    <destination>${installdir}/share</destination>
                     <name>programfilesshareosx</name>
                     <platforms>osx</platforms>
 		    <distributionFileList>
                             <distributionFile origin="staging/osx/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
+                <!-- WIN: README -->
+                <folder>
+                    <description>README</description>
+                    <destination>${installdir}/doc</destination>
+                    <name>programfilesdocosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                            <distributionFile origin="staging/osx/doc/README.plsecure"/>
+                    </distributionFileList>
+                </folder>
+
+
 
             </folderList>
         </component>
@@ -662,7 +831,7 @@
                     <name>installdir</name>
                     <value>${default_installdir}</value>
                     <default/>
-                    <allowEmptyValue>0</allowEmptyValue>
+                    <allowEmptyValue>1</allowEmptyValue>
                     <ask>yes</ask>
                     <cliOptionName>prefix</cliOptionName>
                     <mustBeWritable>yes</mustBeWritable>
@@ -830,7 +999,7 @@
 			<actionGroup>
 			    <actionList>
 				<setInstallerVariable name="installdir" value="${default_installdir}" />
-				<showWarning text="${msg(hqagent.installdir.error)}"/>
+				<showWarning text="${msg(plpgsqlo.installdir.error)}"/>
 				<setInstallerVariable name="next_page" value="installdir"/>
 			    </actionList>
 			    <ruleList>

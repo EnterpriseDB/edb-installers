@@ -23,7 +23,7 @@
 
     <!-- Misc options -->
     <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
-    <wrapLicenseFileText>0</wrapLicenseFileText>
+    <wrapLicenseFileText>1</wrapLicenseFileText>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <unattendedModeUI>minimal</unattendedModeUI>
     <enableRollback>0</enableRollback>
@@ -31,7 +31,7 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
-    <licenseFile>../pphq/resources/licence.txt</licenseFile>
+    <licenseFile encoding="utf-8">../pphq/resources/licence.txt</licenseFile>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
@@ -43,22 +43,36 @@
         <language code="en" encoding="iso8859-1" file="i18n/en.lng"/>
     </customLanguageFileList>
     <preShowHelpActionList>
-        <setInstallerVariable name="agenthost" persist="1" value="localhost"/>
-        <setInstallerVariable name="pphqdefaultpassword" persist="1" value="hqadmin"/>
+	<setInstallerVariable name="project.parameter(serviceaccount).ask" value="0" >
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="agenthost" value="localhost"/>
+        <setInstallerVariable name="defaultagenthost" value="localhost"/>
+        <setInstallerVariable name="pphqdefaultpassword" value="hqadmin"/>
+	<!-- We do not want to provide service-user option to the user in case of windows
+	    because hq itself runs the service as local user and doesn't allow it to be run
+	    as a customozed user where as in case of non windows platforms, it allows to change the user -->
+	<setInstallerVariable name="defaultserviceaccount" value="root" >
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariable>
         <!-- MAC : Set the default installation directory -->
-        <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/HQ">
+        <setInstallerVariable name="default_installdir" value="/Library/PostgresPlus/HQ">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="osx"/>
             </ruleList>
         </setInstallerVariable>
         <!-- LIN : Set the default installation directory -->
-        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgresPlus/HQ">
+        <setInstallerVariable name="default_installdir" value="${platform_install_prefix}/PostgresPlus/HQ">
             <ruleList>
                 <compareText logic="contains" text="${platform_name}" value="linux"/>
             </ruleList>
         </setInstallerVariable>
         <!-- WIN : Set the default installation directory -->
-        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgresPlus\HQ">
+        <setInstallerVariable name="default_installdir" value="${platform_install_prefix}\PostgresPlus\HQ">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
@@ -73,18 +87,29 @@
                 <compareText text="${platform_name}" value="linux"/>
             </ruleList>
         </setInstallerVariable>
-        <setInstallerVariable name="project.parameter(serviceaccount).ask" value="0">
+	<setInstallerVariable name="project.parameter(serviceaccount).ask" value="0" >
             <ruleList>
-                <compareText text="${platform_name}" value="windows" logic="equals"/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </setInstallerVariable>
     </preBuildActionList>
 
     <initializationActionList>
-        <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_HQAGENT"/>
+        <setInstallerVariable name="productVersion" value="PG_VERSION_HQAGENT"/>
         <setInstallerVariable name="project.parameter(jrehome).ask" value="0"/>
-        <setInstallerVariable name="project.parameter(serviceaccount).ask" value="0"/>
+	<setInstallerVariable name="project.parameter(serviceaccount).ask" value="0" />
+	<!-- We do not want to provide service-user option to the user in case of windows
+	    because hq itself runs the service as local user and doesn't allow it to be run
+	    as a customozed user where as in case of non windows platforms, it allows to change the user -->
+	<setInstallerVariable name="defaultserviceaccount" value="root" >
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariable>
+
         <setInstallerVariable name="agentport" value=""/>
+        <setInstallerVariable name="agenthost" value=""/>
+        <setInstallerVariable name="defaultagenthost" value=""/>
         <setInstallerVariable name="configure" value="false"/>
 
         <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
@@ -145,6 +170,7 @@
         <setInstallerVariable name="pphqAgentVersion" value=""/>
     </initializationActionList>
     <preInstallationActionList>
+	<setInstallerVariable name="iagenthost" value=""/>
 	<setInstallerVariable>
             <name>pphqdefaultpassword</name>
             <value>hqadmin</value>
@@ -231,15 +257,16 @@
 
         <actionGroup>
             <actionList>
+                <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="Serviceaccount" variable="serviceaccount"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqhost" variable="pphqhost"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqport" variable="pphqport"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" variable="pphqsecureconn"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" variable="pphquser"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" variable="agentport"/>
-		<iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" variable="agenthost"/>
+		<iniFileGet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" variable="iagenthost"/>
             </actionList>
             <ruleList>
-                <stringTest text="${pphqAgentVersion}" type="not_empty"/>
+		<compareText text="${pphqAgentVersion}" logic="does_not_equal" value=""/>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
@@ -251,13 +278,15 @@
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="secure-connection" name="${pphqsecureconn}"/>
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="pphquser" name="pphquser"/>
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="agentport" name="agentport"/>
-				<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="agenthost" name="agenthost"/>
+		<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" variable="iagenthost" name="agenthost"/>
             </actionList>
             <ruleList>
-                <stringTest text="${pphqAgentVersion}" type="not_empty"/>
+		<compareText text="${pphqAgentVersion}" logic="does_not_equal" value=""/>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
+        
+
 
         <setInstallerVariable name="configure" value="true">
             <ruleEvaluationLogic>or</ruleEvaluationLogic>
@@ -267,7 +296,7 @@
                 <stringTest text="${pphqport}" type="empty"/>
                 <stringTest text="${pphquser}" type="empty"/>
                 <stringTest text="${agentport}" type="empty"/>
-				<stringTest text="${agenthost}" type="empty"/>
+		<stringTest text="${iagenthost}" type="empty"/>
             </ruleList>
         </setInstallerVariable>
 
@@ -302,6 +331,50 @@
                 <fileExists path="${jrehome}\bin\java.exe" />
             </ruleList>
         </setInstallerVariable>
+
+        <!-- check the version of java. It should be >=1.5.0 -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="javaVersionInfo" value=""/>
+                <setInstallerVariableFromScriptOutput
+                    exec="${java_executable}"
+                    execArgs="-version"
+                    name="javaVersionInfo"
+                    workingDirectory="${installdir}"/>
+                <!-- In case of java -version, output comes into program_stderr
+                     check program_stderr if it was not there in standard output
+                -->
+                <setInstallerVariable  name="javaVersionInfo" value="${program_stderr}">
+                    <ruleList>
+                    <compareText text="${javaVersionInfo}" logic="equals" value="" />
+                            <compareText logic="does_not_contain" text="${program_stderr}" value="error"/>
+                            <compareText logic="equals" text="${javaVersionInfo}" value=""/>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <setInstallerVariableFromRegEx name="javaVersion"  text="${javaVersionInfo}">
+                    <pattern>^.*java\sversion\s"([0-9]\.[0-9]).*$</pattern>
+                    <substitution>\1</substitution>
+                    <ruleList>
+                        <stringTest text="${javaVersionInfo}" type="not_empty"/>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+
+                <throwError>
+                    <text>${msg(jre.invalid.version.error)}</text>
+                    <ruleList>
+                    <compareValues>
+                        <value1>${javaVersion}</value1>
+                        <logic>less_or_equal</logic>
+                        <value2>1.5</value2>
+                    </compareValues>
+                    </ruleList>
+                </throwError>
+                </actionList>
+            <ruleList>
+                <compareText text="${jrehome}" logic="does_not_equal" value="" />
+            </ruleList>
+        </actionGroup>
 
         <!-- If there appears to be an existing installation, with no Branding value. -->
         <!-- force the default value. Otherwise, set the branding to whatever we read, -->
@@ -353,6 +426,15 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
+	<actionGroup>
+	    <actionList>
+		<setInstallerVariable name="agenthost" value="${iagenthost}">
+		</setInstallerVariable>
+	    </actionList>
+	    <ruleList>
+			<compareText text="${pphqAgentVersion}" logic="does_not_equal" value=""/>
+	    </ruleList>
+	</actionGroup>
 
     </preInstallationActionList>
     <readyToInstallActionList>
@@ -451,10 +533,21 @@
 
         <actionGroup>
             <actionList>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Serviceaccount" value="${serviceaccount}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Description" value="${msg(install.summary)}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="InstallationDirectory" value="${installdir}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Version" value="${product_version}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Branding" value="${branding}"/>
+		<!-- Set agent configuration relaed properties to empty. They should be empty if user cancels 
+		installation at agent configration string and then again runs them in update mode    
+		-->
+		<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqhost" value=""/>
+		<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqport" value=""/>
+		<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="secure-connection" value=""/>
+		<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value=""/>
+		<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value=""/>
+		<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value=""/>
+
                 <!-- Create user (serviceaccount) for the server, if does not exists -->
                 <runProgram program="${installdir}/installer/pphqagent/createuser.sh"
                     programArguments="${serviceaccount} &quot;${installdir}/agent-PG_VERSION_HQAGENT&quot;"
@@ -482,6 +575,13 @@
 
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="Branding" value="${branding}"/>
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="Description" value="${msg(install.summary)}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphqhost" value=""/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphqport" value=""/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="secure-connection" value=""/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="pphquser" value=""/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agentport" value=""/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Postgres Plus HQ Agent" name="agenthost" value=""/>
+
 
         <!-- We need to install the agent service in order to start it -->
         <runProgram program="cscript.exe"
@@ -509,15 +609,9 @@
                 name="machineNetInfo"
                 workingDirectory="${installdir}"/>
 
-	<!-- do not reset agent host in case of upgrade. It will be picked up from registry.
-	-->
-        <setInstallerVariable name="agenthost" value="localhost">
-            <ruleList>
-                <compareText text="${pphqAgentVersion}" logic="equals" value=""/>
-            </ruleList>
-	</setInstallerVariable>
 
-        <setInstallerVariableFromRegEx name="agenthost"  text="${machineNetInfo}">
+
+        <setInstallerVariableFromRegEx name="defaultagenthost"  text="${machineNetInfo}">
             <pattern>^.*host\sname\.*([a-zA-Z0-9\.\-]*).*$</pattern>
             <substitution>\1</substitution>
             <ruleList>
@@ -527,11 +621,11 @@
         </setInstallerVariableFromRegEx>
 
         <!-- switch to ip-address, if host-name does not contain '.' (dot) -->
-        <setInstallerVariableFromRegEx name="agenthost" text="${machineNetInfo}">
+        <setInstallerVariableFromRegEx name="defaultagenthost" text="${machineNetInfo}">
             <pattern>^.*primary\sip\saddress\.*([0-9\.]*).*$</pattern>
             <substitution>\1</substitution>
             <ruleList>
-                <compareText logic="does_not_contain" text="${agenthost}" value="."/>
+                <compareText logic="does_not_contain" text="${defaultagenthost}" value="."/>
                 <stringTest text="${machineNetInfo}" type="not_empty"/>
                 <compareText text="${pphqAgentVersion}" logic="equals" value=""/>
             </ruleList>
@@ -544,7 +638,7 @@
                 <stringTest text="${pphquser}" type="empty"/>
             </ruleList>
         </setInstallerVariable>
-        <setInstallerVariable name="pphqhost" value="${agenthost}">
+        <setInstallerVariable name="pphqhost" value="${defaultagenthost}">
             <ruleList>
                 <stringTest text="${pphqhost}" type="empty"/>
             </ruleList>
@@ -735,6 +829,7 @@
 		<deleteFile path="${installdir}/agent-PG_VERSION_HQAGENT/bundles/agent-PG_VERSION_HQAGENT-PPHQ_BUILD/pdk/work"
                       abortOnError="0" showMessageOnError="0"
                       progressText="${msg(pphqagent.work.directory.removing)}"/>
+		<deleteFile path="/Applications/${branding}" abortOnError="0" showMessageOnError="0"/>
                 <deleteFile path="/Applications/${branding}/Start Postgres Plus HQ Agent.app"
                       abortOnError="0" showMessageOnError="0"/>
                 <deleteFile path="/Applications/${branding}/Stop Postgres Plus HQ Agent.app"
@@ -907,10 +1002,15 @@
             </startMenuShortcutList>
         </component>
     </componentList>
+    
     <parameterList>
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
-        <stringParameter name="serviceaccount" cliOptionName="service-user" ask="1" cliOptionShow="1" default="root"/>
+        <stringParameter name="serviceaccount" cliOptionName="service-user" ask="1" cliOptionShow="1" default="${defaultserviceaccount}">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+	</stringParameter>
         <stringParameter name="jrehome" cliOptionName="jrehome" default="" ask="1" cliOptionShow="1"/>
 
         <!-- Install Directory -->
@@ -973,11 +1073,12 @@
         </labelParameter>
 
         <!-- PPHQ Agent Configuration Page -->
+
         <parameterGroup name="pphqserverdetails" title="${msg(pphq.server.title)}" insertAfter="installation"
               explanation="${pphqServerDetailsExplaination}">
             <parameterList>
                 <!-- Postgres Plus HQ server Host -->
-                <stringParameter name="pphqhost" explanation="" value="" default="${agenthost}"
+                <stringParameter name="pphqhost" explanation="" value="" default="${defaultagenthost}"
                     description="${msg(pphqagent.config.pphqhost)}" cliOptionName="pphqhost"
                     allowEmptyValue="1" width="40">
                     <ruleList>
@@ -1005,7 +1106,7 @@
                     </ruleList>
                 </booleanParameter>
                 <!-- Postgres Plus HQ agent Host -->
-                <stringParameter name="agenthost" explanation="" value="" default="${agenthost}"
+                <stringParameter name="agenthost" explanation="" value="" default="${defaultagenthost}"
                     description="${msg(pphqagent.config.agenthost)}" cliOptionName="agenthost"
                     allowEmptyValue="1" width="40">
                     <ruleList>
@@ -1014,6 +1115,10 @@
                 </stringParameter>
             </parameterList>
             <preShowPageActionList>
+		 <setInstallerVariable>
+		      <name>installation_finished</name>
+		      <value>0</value>
+		 </setInstallerVariable>
                 <setInstallerVariable name="pphqServerDetailsExplaination"
                       value="${msg(pphqagent.server.details.explanation)}"/>
                 <setInstallerVariable name="pphqServerDetailsExplaination"
@@ -1144,8 +1249,15 @@
                                         <stringTest text="${strmsg}" type="not_empty"/>
                                     </ruleList>
                                 </throwError>
+                                <setInstallerVariable name="errMessage" value="${msg(pphqagent.server.secure.connection.fail)}">
+                                    <ruleList>
+					<isTrue value="${pphqsecureconn}"/>
+                                        <compareText logic="contains" text="${errMessage}" value="Unable to connect"/>
+                                    </ruleList>
+                                </setInstallerVariable>
                                 <setInstallerVariable name="errMessage" value="${msg(pphqagent.server.connection.fail)}">
                                     <ruleList>
+					<isFalse value="${pphqsecureconn}"/>
                                         <compareText logic="contains" text="${errMessage}" value="Unable to connect"/>
                                     </ruleList>
                                 </setInstallerVariable>
@@ -1164,6 +1276,10 @@
                 </showProgressDialog>
             </validationActionList>
             <postShowPageActionList>
+		<setInstallerVariable>
+		     <name>installation_finished</name>
+		     <value>1</value>
+		</setInstallerVariable>
                 <actionGroup>
                     <actionList>
                         <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphqhost" value="${pphqhost}"/>

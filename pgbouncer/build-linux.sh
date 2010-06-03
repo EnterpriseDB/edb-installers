@@ -36,7 +36,13 @@ _prep_pgbouncer_linux() {
     echo "Creating staging directory ($WD/pgbouncer/staging/linux)"
     mkdir -p $WD/pgbouncer/staging/linux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/pgbouncer/staging/linux || _die "Couldn't set the permissions on the staging directory"
-    
+
+    echo "Creating staging doc directory ($WD/pgbouncer/staging/linux/pgbouncer/doc)"
+    mkdir -p $WD/pgbouncer/staging/linux/pgbouncer/doc || _die "Couldn't create the staging doc directory"
+    chmod ugo+w $WD/pgbouncer/staging/linux/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
+    echo "Copying README.pgbouncer to staging doc directory"
+    cp $WD/pgbouncer/resources/README.pgbouncer $WD/pgbouncer/staging/linux/pgbouncer/doc || _die "Couldn't copy README.pgbouncer to staging doc directory"
+   
 
 }
 

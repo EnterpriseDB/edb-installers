@@ -230,6 +230,14 @@
         <autodetectJava>
             <promptUser>0</promptUser>
             <abortOnError>1</abortOnError>
+            <validVersionList>
+                <validVersion>
+                    <vendor>sun</vendor>
+                    <maxVersion/>
+                    <minVersion>1.5.0</minVersion>
+                    <requireJDK>0</requireJDK>
+                </validVersion> 
+            </validVersionList>
             <showMessageOnError>1</showMessageOnError>
             <customErrorMessage>${msg(java.error)}</customErrorMessage>
             <ruleList>

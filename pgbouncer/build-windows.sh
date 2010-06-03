@@ -53,6 +53,12 @@ _prep_pgbouncer_windows() {
     mkdir -p $WD/pgbouncer/staging/windows || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/pgbouncer/staging/windows || _die "Couldn't set the permissions on the staging directory"
 
+    echo "Creating staging doc directory ($WD/pgbouncer/staging/windows/pgbouncer/doc)"
+    mkdir -p $WD/pgbouncer/staging/windows/pgbouncer/doc || _die "Couldn't create the staging doc directory"
+    chmod ugo+w $WD/pgbouncer/staging/windows/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
+    echo "Copying README.pgbouncer to staging doc directory"
+    cp $WD/pgbouncer/resources/README.pgbouncer $WD/pgbouncer/staging/windows/pgbouncer/doc || _die "Couldn't copy README.pgbouncer to staging doc directory"
+
     echo "Copying pgbouncer sources to Windows VM"
     scp pgbouncer.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the pgbouncer archieve to windows VM (pgbouncer.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip pgbouncer.zip" || _die "Couldn't extract pgbouncer archieve on windows VM (pgbouncer.zip)"
@@ -137,7 +143,7 @@ _postprocess_pgbouncer_windows() {
     _replace "auth_file = etc/userlist.txt" "auth_file = @@AUTHFILE@@" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "admin_users = user2, someadmin, otheradmin" "admin_users = @@ADMINUSERS@@" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "stats_users = stats, root" "stats_users = @@STATSUSERS@@" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"
-    _replace "auth_type = trust" "auth_type = md5" staging/osx/pgbouncer/share/pgbouncer.ini || _die "Failed to change the auth type"  
+    _replace "auth_type = trust" "auth_type = md5" staging/windows/share/pgbouncer.ini || _die "Failed to change the auth type"  
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"

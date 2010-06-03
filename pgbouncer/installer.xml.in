@@ -455,8 +455,190 @@
                 <fileExists path="/tmp/pgbouncer.pid"/>
             </ruleList>
         </deleteFile>
+        <!-- Validate the PostgreSQL Server Details -->
+        <actionGroup>
+          <actionList>
 
- 
+              <!-- Extract file --> 
+              <unpackDirectory>
+                  <origin>instscripts</origin>
+                  <destination>${system_temp_directory}</destination>
+                  <component>default</component>
+                  <folder>installfileslinux</folder>
+                  <ruleList>
+                      <compareText>
+                          <logic>equals</logic>
+                          <text>${platform_name}</text>
+                          <value>linux</value>
+                      </compareText>
+                  </ruleList>
+              </unpackDirectory>
+              <unpackDirectory>
+                  <origin>instscripts</origin>
+                  <destination>${system_temp_directory}</destination>
+                  <component>default</component>
+                  <folder>installfileslinux-x64</folder>
+                  <ruleList>
+                      <compareText>
+                          <logic>equals</logic>
+                          <text>${platform_name}</text>
+                          <value>linux-x64</value>
+                      </compareText>
+                  </ruleList>
+              </unpackDirectory>
+              <unpackDirectory>
+                  <origin>instscripts</origin>
+                  <destination>${system_temp_directory}</destination>
+                  <component>default</component>
+                  <folder>installfileswindows</folder>
+                  <ruleList>
+                      <compareText>
+                          <logic>equals</logic>
+                          <text>${platform_name}</text>
+                          <value>windows</value>
+                      </compareText>
+                  </ruleList>
+              </unpackDirectory>
+              <unpackFile>
+                  <origin>installer/pgbouncer/check-connection.bat</origin>
+                  <destination>${system_temp_directory}/instscripts/check-connection.bat</destination>
+                  <component>default</component>
+                  <folder>installfileswindows</folder>
+                  <ruleList>
+                      <compareText>
+                          <logic>equals</logic>
+                          <text>${platform_name}</text>
+                          <value>windows</value>
+                      </compareText>
+                  </ruleList>
+              </unpackFile>
+              <unpackDirectory>
+                  <origin>instscripts</origin>
+                  <destination>${system_temp_directory}</destination>
+                  <component>default</component>
+                  <folder>installfilesosx</folder>
+                  <ruleList>
+                      <compareText>
+                          <logic>equals</logic>
+                          <text>${platform_name}</text>
+                          <value>osx</value>
+                      </compareText>
+                  </ruleList>
+              </unpackDirectory>
+            
+            <!-- Running the Script to validate the PostgreSQL Server Details -->
+            <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+            <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+            <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+            <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+            <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts"/>
+
+            <setInstallerVariableFromScriptOutput>
+              <exec>${system_temp_directory}/instscripts/psql</exec>
+              <execArgs>-d ${pgdbname} -l </execArgs>
+              <name>connection</name>
+              <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError> 
+              <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+            <setInstallerVariable name="pgdbname" value="edb" >
+              <ruleList>
+                <compareText logic="equals" text="${connection}" value=""/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariableFromScriptOutput>
+              <exec>${system_temp_directory}/instscripts/psql</exec>
+              <execArgs>-d ${pgdbname} -l </execArgs>
+              <name>connection</name>
+              <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError> 
+              <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${connection}" value=""/>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+            <setInstallerVariable name="pgdbname" value="template1" >
+              <ruleList>
+                <compareText logic="equals" text="${connection}" value=""/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariableFromScriptOutput>
+              <exec>${system_temp_directory}/instscripts/psql</exec>
+              <execArgs>-d ${pgdbname} -l </execArgs>
+              <name>connection</name>
+              <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError> 
+              <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${connection}" value=""/>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+            <setInstallerVariableFromScriptOutput>
+              <exec>${system_temp_directory}\instscripts\check-connection.bat</exec>
+              <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
+              <name>connection</name>
+              <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError> 
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+            <setInstallerVariable name="pgdbname" value="edb" >
+              <ruleList>
+                <compareText logic="equals" text="${connection}" value=""/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariableFromScriptOutput>
+              <exec>${system_temp_directory}\instscripts\check-connection.bat</exec>
+              <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
+              <name>connection</name>
+              <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError> 
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+            <setInstallerVariable name="pgdbname" value="template1" >
+              <ruleList>
+                <compareText logic="equals" text="${connection}" value=""/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariableFromScriptOutput>
+              <exec>${system_temp_directory}\instscripts\check-connection.bat</exec>
+              <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
+              <name>connection</name>
+              <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError> 
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+            <stringModify text="${connection}" variable="connection" logic="trim"/>
+            <throwError>
+                <text>${program_stderr}</text>
+                <ruleList>
+                    <compareText>
+                        <logic>equals</logic>
+                        <text>${connection}</text>
+                        <value/>
+                    </compareText>
+                </ruleList>
+            </throwError> 
+          </actionList>
+          <ruleList>
+            <compareText text="${pgbouncerVersion}" logic="equals" value="" /> 
+            <compareText text="${installer_ui}" logic="equals" value="unattended" />
+            <isFalse value="${extract_mode}" />
+          </ruleList>    
+         </actionGroup> 
   
     </preInstallationActionList>
     <postInstallationActionList>
@@ -1026,6 +1208,9 @@
                         <distributionDirectory>
                             <origin>staging/linux/pgbouncer/share</origin>
                         </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/pgbouncer/doc</origin>
+                        </distributionDirectory>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1042,6 +1227,7 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+
                 <!-- LIN-X64 - Program files -->
                 <folder>
                     <description>Program Files</description>
@@ -1057,6 +1243,9 @@
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/linux-x64/pgbouncer/share</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/pgbouncer/doc</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1090,6 +1279,9 @@
                         <distributionDirectory>
                             <origin>staging/osx/pgbouncer/share</origin>
                         </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/osx/pgbouncer/doc</origin>
+                        </distributionDirectory>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1118,6 +1310,9 @@
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/windows/share</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/windows/pgbouncer/doc</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1337,6 +1532,7 @@
                 <setInstallerVariable name="pgdbname" value="edb" >
                   <ruleList>
                     <compareText logic="equals" text="${connection}" value=""/>
+                    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                   </ruleList>
                 </setInstallerVariable>
                 <setInstallerVariableFromScriptOutput>
@@ -1354,6 +1550,7 @@
                 <setInstallerVariable name="pgdbname" value="template1" >
                   <ruleList>
                     <compareText logic="equals" text="${connection}" value=""/>
+                    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                   </ruleList>
                 </setInstallerVariable>
                 <setInstallerVariableFromScriptOutput>
@@ -1382,6 +1579,7 @@
                 <setInstallerVariable name="pgdbname" value="edb" >
                   <ruleList>
                     <compareText logic="equals" text="${connection}" value=""/>
+                    <compareText logic="equals" text="${platform_name}" value="windows"/>
                   </ruleList>
                 </setInstallerVariable>
                 <setInstallerVariableFromScriptOutput>
@@ -1398,6 +1596,7 @@
                 <setInstallerVariable name="pgdbname" value="template1" >
                   <ruleList>
                     <compareText logic="equals" text="${connection}" value=""/>
+                    <compareText logic="equals" text="${platform_name}" value="windows"/>
                   </ruleList>
                 </setInstallerVariable>
                 <setInstallerVariableFromScriptOutput>
