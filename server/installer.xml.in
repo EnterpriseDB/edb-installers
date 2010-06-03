@@ -180,7 +180,6 @@
 		<platformTest type="windows-x64"/>
             </ruleList>
         </setInstallerVariable>
-	<logMessage text="win64_platform=${win64_platform}"/>
         <setInstallerVariable name="project.parameter(create_shortcuts).ask" value="0"/>
         <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>
         <setInstallerVariable name="project.parameter(superaccount).ask" value="0" />
@@ -782,12 +781,21 @@
         <!-- If there appears to be an existing installation, with no Branding value. -->
         <!-- force the default value. Otherwise, set the branding to whatever we read, -->
         <!-- or, set the default -->
+	
+	<!-- In case of 32 bit installation on win64 append (x86) in the branding-->
+	<setInstallerVariable name="branding_suffix" value=""/>
+	<setInstallerVariable name="branding_suffix" value=" (x86)">
+	    <ruleList>
+                <isTrue value="${win64_platform}"/>
+                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+	    </ruleList>
+	</setInstallerVariable>
 
         <!-- Existing, old install (version, but no branding) -->
         <setInstallerVariable>
             <name>branding</name>
             <persist>0</persist>
-            <value>PostgreSQL ${product_version}</value>
+            <value>PostgreSQL ${product_version}${branding_suffix}</value>
             <ruleList>
                 <isTrue value="${create_shortcuts}"/>
                 <isFalse value="${extract_mode}"/>
@@ -824,7 +832,7 @@
         <setInstallerVariable>
             <name>branding</name>
             <persist>0</persist>
-            <value>PostgreSQL ${product_version}</value>
+            <value>PostgreSQL ${product_version}${branding_suffix}</value>
             <ruleList>
                 <isTrue value="${create_shortcuts}"/>
                 <isFalse value="${extract_mode}"/>
@@ -1008,7 +1016,7 @@
                         </getUniqueWindowsServiceName>
                         <throwError>
                             <customErrorMessage>${msg(servicename.already.exists.windows)}</customErrorMessage>
-                            <text>Duplicate Service Exists</text>
+                            <text>Duplicate Service Exists:${temp_service_name}</text>
                             <ruleList>
                                 <compareText text="${servicename}" logic="does_not_equal" value="${temp_service_name}" />
                             </ruleList>
@@ -1057,11 +1065,20 @@
             </ruleList>
         </setInstallerVariable>
 
+	<!-- In case of 32 bit installation on win64 append x(86) in the service name-->
+	<setInstallerVariable name="service_suffix" value=""/>
+	<setInstallerVariable name="service_suffix" value="-x64">
+	    <ruleList>
+                <isTrue value="${win64_platform}"/>
+                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+	    </ruleList>
+	</setInstallerVariable>
+
         <!-- Existing install, without servicename. Ignore command line. -->
         <setInstallerVariable>
             <name>servicename</name>
             <persist>1</persist>
-            <value>postgresql-PG_MAJOR_VERSION</value>
+            <value>postgresql{service_suffix}-PG_MAJOR_VERSION$</value>
             <ruleList>
                <compareText text="${iServiceName}" logic="equals" value="" />
                <compareText text="${brandingVer}" logic="does_not_equal" value="" />
@@ -1072,7 +1089,7 @@
         <setInstallerVariable>
             <name>servicename</name>
             <persist>1</persist>
-            <value>postgresql-PG_MAJOR_VERSION</value>
+            <value>postgresql${service_suffix}-PG_MAJOR_VERSION</value>
             <ruleList>
                <compareText text="${servicename}" logic="equals" value="" />
             </ruleList>
