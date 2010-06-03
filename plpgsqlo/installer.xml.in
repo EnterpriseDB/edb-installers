@@ -36,7 +36,7 @@
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
     <windowsSoftwareRegistryPrefix/>
     <wrapLicenseFileText>1</wrapLicenseFileText>
-    <licenseFile>resources/licence.txt</licenseFile>
+    <licenseFile encoding="utf-8">resources/licence.txt</licenseFile>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>

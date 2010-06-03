@@ -31,7 +31,7 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
-    <licenseFile>resources/licence.txt</licenseFile>
+    <licenseFile encoding="utf-8">resources/licence.txt</licenseFile>
 
     <!-- Images -->
     <leftImage>../resources/edb-side.png</leftImage>
