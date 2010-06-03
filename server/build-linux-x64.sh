@@ -422,13 +422,18 @@ y a menu pick image"
     else
           PG_DATETIME_SETTING_LINUX_X64="64-bit integers"
     fi
+    if [ -f installer-lin64.xml ]; then
+        rm -f installer-lin64.xml
+    fi
+    cp installer.xml installer-lin64.xml
 
-    _replace @@PG_DATETIME_SETTING_LINUX_X64@@ "$PG_DATETIME_SETTING_LINUX_X64" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"
-    _replace @@WIN64MODE@@ "0" installer.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
+    _replace @@PG_DATETIME_SETTING_LINUX_X64@@ "$PG_DATETIME_SETTING_LINUX_X64" installer-lin64.xml || _die "Failed to replace the date-time setting in the installer.xml"
+    _replace @@WIN64MODE@@ "0" installer-lin64.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
+    _replace @@SERVICE_SUFFIX@@ "" installer-lin64.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
 
 		
     # Build the installer
-    "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
+    "$PG_INSTALLBUILDER_BIN" build installer-lin64.xml linux-x64 || _die "Failed to build the installer"
 
 	# Rename the installer
 	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-x64-installer.bin $WD/output/postgresql-$PG_PACKAGE_VERSION-linux-x64.bin || _die "Failed to rename the installer"

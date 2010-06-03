@@ -180,6 +180,15 @@
 		<platformTest type="windows-x64"/>
             </ruleList>
         </setInstallerVariable>
+	<!-- In case of 32 bit installation on win64 append '-x64' in the service name-->
+	<setInstallerVariable name="service_suffix" persist="1" value=""/>
+        <setInstallerVariable name="service_suffix" persist="1" value="-x64">
+	    <ruleList>
+                <isTrue value="${win64_platform}"/>
+                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+	    </ruleList>
+	</setInstallerVariable>
+
         <setInstallerVariable name="project.parameter(create_shortcuts).ask" value="0"/>
         <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>
         <setInstallerVariable name="project.parameter(superaccount).ask" value="0" />
@@ -663,62 +672,62 @@
                 <!-- Get the existing data directory. -->
                 <registryGet>
                     <name>Data Directory</name>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <variable>iDataDirectory</variable>
                 </registryGet>
 
                 <!-- Get the existing installation directory. -->
                 <registryGet>
                     <name>Base Directory</name>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <variable>iBaseDirectory</variable>
                 </registryGet>
 
                 <!-- Get the ServiceName -->
                 <registryGet>
                     <name>Service ID</name>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <variable>iServiceName</variable>
                 </registryGet>
 
 		<!-- Get the Serviceaccount (OS User) -->
                 <registryGet>
                     <name>Service Account</name>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <variable>iServiceAccount</variable>
                 </registryGet>
 
 		<!-- Get the Superuser -->
                 <registryGet>
                     <name>Super User</name>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <variable>iSuperuser</variable>
                 </registryGet>
 
                 <!-- Get the branding -->
                 <registryGet>
                     <name>Branding</name>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <variable>iBranding</variable>
                 </registryGet>
 
                 <!-- Get the version installed. We use this to figure out if we have a pre-branding installation -->
                 <registryGet>
                     <name>Version</name>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <variable>brandingVer</variable>
                 </registryGet>
 
                 <!-- Check whether menus were created, if its a re-install/upgrade -->
                 <registryGet>
                     <name>Shortcuts</name>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <variable>iShortcut</variable>
                 </registryGet>
 
                 <registryGet>
                     <name>DisableStackBuilder</name>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <variable>iDisableStackBuilder</variable>
                 </registryGet>
 
@@ -1064,15 +1073,6 @@
                <compareText text="${iServiceName}" logic="does_not_equal" value="" />
             </ruleList>
         </setInstallerVariable>
-
-	<!-- In case of 32 bit installation on win64 append x(86) in the service name-->
-	<setInstallerVariable name="service_suffix" value=""/>
-	<setInstallerVariable name="service_suffix" value="-x64">
-	    <ruleList>
-                <isTrue value="${win64_platform}"/>
-                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
-	    </ruleList>
-	</setInstallerVariable>
 
         <!-- Existing install, without servicename. Ignore command line. -->
         <setInstallerVariable>
@@ -2085,7 +2085,7 @@
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <name>Base Directory</name>
                     <value>${installdir}</value>
                 </registrySet>
@@ -2108,7 +2108,7 @@
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <name>Version</name>
                     <value>PG_MAJOR_VERSION.PG_MINOR_VERSION</value>
                 </registrySet>
@@ -2127,7 +2127,7 @@
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <name>Shortcuts</name>
                     <value>${create_shortcuts}</value>
                 </registrySet>
@@ -2902,7 +2902,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <name>Data Directory</name>
                     <value>${datadir}</value>
                     <ruleList>
@@ -2913,7 +2913,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                      </ruleList>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
                     <name>Data Directory</name>
                     <value>${datadir}</value>
                     <ruleList>
@@ -2946,7 +2946,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
                     <name>Port</name>
                     <value>${serverport}</value>
                     <type>REG_DWORD</type>
@@ -2978,7 +2978,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <name>Service ID</name>
                     <value>${servicename}</value>
                 </registrySet>
@@ -3009,7 +3009,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
                     <name>Locale</name>
                     <value>${actuallocale}</value>
                 </registrySet>
@@ -3034,7 +3034,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
                     <name>Database Superuser</name>
                     <value>${superaccount}</value>
                     <ruleList>
@@ -3064,7 +3064,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
                     <name>Service Account</name>
                     <value>${serviceaccount}</value>
                     <ruleEvaluationLogic>and</ruleEvaluationLogic>
@@ -3082,7 +3082,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                 </registrySet>
                 <!-- if serviceaccount does not contain domain name, then append .\ before writing it to registry -->
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
                     <name>Service Account</name>
                     <value>.\${serviceaccount}</value>
                     <ruleEvaluationLogic>and</ruleEvaluationLogic>
@@ -3101,12 +3101,12 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
 
                 <!-- the following enteries are required for update mode -->
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <name>Service Account</name>
                     <value>${serviceaccount}</value>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <name>Super User</name>
                     <value>${superaccount}</value>
                 </registrySet>
@@ -3130,7 +3130,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
                     <name>Display Name</name>
                     <value>${branding}</value>
                 </registrySet>
@@ -3153,7 +3153,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <name>Branding</name>
                     <value>${branding}</value>
                 </registrySet>
@@ -3172,16 +3172,16 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <name>DisableStackBuilder</name>
                     <value>${disableStackBuilder}</value>
                 </registrySet>
 
                 <!-- The Windows product code, used to link to the installation -->
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
                     <name>Product Code</name>
-                    <value>postgresql-${product_version}</value>
+                    <value>postgresql${service_suffix}-${product_version}</value>
                 </registrySet>
 
                 <!-- Write a environment variable scripts -->
@@ -3269,7 +3269,7 @@ REM The script sets environment variables helpful for PostgreSQL
         </actionGroup>
 
         <!-- Add description to the service -->
-        <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\postgresql-${product_version}" name="Description" value="${msg(pg.service.description)}" >
+        <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\postgresql${service_suffix}-${product_version}" name="Description" value="${msg(pg.service.description)}" >
             <ruleList>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
@@ -3601,11 +3601,11 @@ REM The script sets environment variables helpful for PostgreSQL
         </registryDelete>
 
         <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${product_version}</key>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
         </registryDelete>
 
         <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-${product_version}</key>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
         </registryDelete>
 
         <!-- Removing the environment variable script -->
@@ -4007,7 +4007,7 @@ REM The script sets environment variables helpful for PostgreSQL
 
         <stringParameter name="superaccount" ask="1" cliOptionShow="1" cliOptionName="superaccount" default="postgres"
             description="${msg(superaccount.description)}" />
-        <stringParameter name="servicename" ask="1" cliOptionShow="1" cliOptionName="servicename" default="postgresql-PG_MAJOR_VERSION"
+        <stringParameter name="servicename" ask="1" cliOptionShow="1" cliOptionName="servicename" default="postgresql@@SERVICE_SUFFIX@@-PG_MAJOR_VERSION"
             description="${msg(servicename.description)}" />
         <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default="postgres"
             description="${msg(serviceaccount.description)}"/>

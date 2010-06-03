@@ -305,14 +305,19 @@ _postprocess_server_osx() {
           PG_DATETIME_SETTING_OSX="64-bit integers"
     fi
 
-    _replace @@PG_DATETIME_SETTING_OSX@@ "$PG_DATETIME_SETTING_OSX" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"
+    if [ -f installer-osx.xml ]; then
+        rm -f installer-osx.xml
+    fi
+    cp installer.xml installer-osx.xml
 
-    _replace @@WIN64MODE@@ "0" installer.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
+    _replace @@PG_DATETIME_SETTING_OSX@@ "$PG_DATETIME_SETTING_OSX" installer-osx.xml || _die "Failed to replace the date-time setting in the installer.xml"
+    _replace @@WIN64MODE@@ "0" installer-osx.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
+    _replace @@SERVICE_SUFFIX@@ "" installer-osx.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
 
     if [ -f installer_1.xml ]; then
       rm -f installer_1.xml
     fi
-    cp installer.xml installer_1.xml
+    cp installer-osx.xml installer_1.xml
     _replace "<requireInstallationByRootUser>\${admin_rights}</requireInstallationByRootUser>" "<requireInstallationByRootUser>1</requireInstallationByRootUser>" installer_1.xml
 
     # Build the installer (for the root privileges required)
@@ -326,7 +331,7 @@ _postprocess_server_osx() {
 
     # Build the installer (for the root privileges not required)
     echo "Building the installer with the root privileges not required"
-    "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
+    "$PG_INSTALLBUILDER_BIN" build installer-osx.xml osx || _die "Failed to build the installer"
 
     # Use the risePrivileges utility created in the first installer
     cp $WD/scripts/risePrivileges $WD/output/postgresql-$PG_MAJOR_VERSION-osx-installer.app/Contents/MacOS/PostgreSQL

@@ -408,14 +408,20 @@ _postprocess_server_linux() {
           PG_DATETIME_SETTING_LINUX="floating-point numbers"
     else
           PG_DATETIME_SETTING_LINUX="64-bit integers"
-    fi  
+    fi
 
-    _replace @@PG_DATETIME_SETTING_LINUX@@ "$PG_DATETIME_SETTING_LINUX" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"     
-    _replace @@WIN64MODE@@ "0" installer.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
+    if [ -f installer-linux.xml ]; then
+        rm -f installer-linux.xml
+    fi
+    cp installer.xml installer-linux.xml
+
+    _replace @@PG_DATETIME_SETTING_LINUX@@ "$PG_DATETIME_SETTING_LINUX" installer-linux.xml || _die "Failed to replace the date-time setting in the installer.xml"     
+    _replace @@WIN64MODE@@ "0" installer-linux.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
+    _replace @@SERVICE_SUFFIX@@ "" installer-linux.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
 
 
     # Build the installer
-    "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
+    "$PG_INSTALLBUILDER_BIN" build installer-linux.xml linux || _die "Failed to build the installer"
 	
 	# Rename the installer
 	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-installer.bin $WD/output/postgresql-$PG_PACKAGE_VERSION-linux.bin || _die "Failed to rename the installer"

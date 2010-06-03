@@ -496,6 +496,7 @@ _postprocess_server_windows_x64() {
     
     _replace @@WIN64MODE@@ "1" installer-win64.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
     _replace @@WINDIR@@ windows-x64 installer-win64.xml || _die "Failed to replace the WINDIR setting in the installer.xml"
+    _replace @@SERVICE_SUFFIX@@ "-x64" installer-win64.xml || _die "Failed to replace the SERVICE_SUFFIX setting in the installer.xml"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-win64.xml windows || _die "Failed to build the installer"
