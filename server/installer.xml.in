@@ -1333,7 +1333,7 @@
                     <origin>bin/${libintl_dll}</origin>
                 </unpackFile>
                 <setInstallerVariable name="libiconv_dll" value="libiconv-2.dll"/>
-                <setInstallerVariable name="libiconv_dll" value="libintl.dll">
+                <setInstallerVariable name="libiconv_dll" value="libiconv.dll">
                     <ruleList>
                         <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
                     </ruleList>
