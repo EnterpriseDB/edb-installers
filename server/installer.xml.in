@@ -199,6 +199,13 @@
           </ruleList>
         </throwError>
 
+        <throwError customErrorMessage="${msg(platform.not.match)}" text="Unknown Error">
+          <ruleList>
+            <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+            <isFalse value="${win64_platform}"/>
+          </ruleList>
+        </throwError>
+
         <setInstallerVariable name="create_shortcuts" value="1" persist="1"/>
         <setInstallerVariable name="iShortcut" value="" />
 
@@ -1214,22 +1221,6 @@
                     <value>windows</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
-		<compareText logic="equals" text="${win64_platform}" value="0"/>
-            </ruleList>
-        </unpackFile>
-       <unpackFile>
-            <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer/getlocales.exe</destination>
-            <folder>programfileswindows-x64</folder>
-            <origin>installer/server/getlocales.exe</origin>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-		<compareText logic="equals" text="${win64_platform}" value="1"/>
             </ruleList>
         </unpackFile>
 
@@ -1329,17 +1320,29 @@
                     <folder>programfileswindows</folder>
                     <origin>bin/pg_controldata.exe</origin>
                 </unpackFile>
+                <setInstallerVariable name="libintl_dll" value="libintl-8.dll"/>
+                <setInstallerVariable name="libintl_dll" value="libintl.dll">
+                    <ruleList>
+                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                    </ruleList>
+                </setInstallerVariable>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\libintl-8.dll</destination>
+                    <destination>${system_temp_directory}\postgresql_installer\${libintl_dll}</destination>
                     <folder>programfileswindows</folder>
-                    <origin>bin/libintl-8.dll</origin>
+                    <origin>bin/${libintl_dll}</origin>
                 </unpackFile>
+                <setInstallerVariable name="libiconv_dll" value="libiconv-2.dll"/>
+                <setInstallerVariable name="libiconv_dll" value="libintl.dll">
+                    <ruleList>
+                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                    </ruleList>
+                </setInstallerVariable>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\libiconv-2.dll</destination>
+                    <destination>${system_temp_directory}\postgresql_installer\${libiconv_dll}</destination>
                     <folder>programfileswindows</folder>
-                    <origin>bin/libiconv-2.dll</origin>
+                    <origin>bin/${libiconv_dll}</origin>
                 </unpackFile>
                 <!-- Validate user binary -->
                 <unpackFile>
@@ -1349,7 +1352,7 @@
                     <origin>installer/server/validateuser.exe</origin>
                 </unpackFile>
 
-                <!-- Create user binary   -->
+                <!-- Create user binary -->
                 <unpackFile>
                     <component>default</component>
                     <destination>${system_temp_directory}\postgresql_installer\createuser.exe</destination>
@@ -1358,11 +1361,17 @@
                 </unpackFile>
 
                 <!-- We will also need to get the VC++ runtimes installed on Windows, before we do anything with binaries -->
+                <setInstallerVariable name="vcredist_executable" value="vcredist_x86.exe"/>
+                <setInstallerVariable name="vcredist_executable" value="vcredist_x64.exe">
+                    <ruleList>
+                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                    </ruleList>
+                </setInstallerVariable>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\vcredist_x86.exe</destination>
+                    <destination>${system_temp_directory}\postgresql_installer\${vcredist_executable}</destination>
                     <folder>programfileswindows</folder>
-                    <origin>installer/vcredist_x86.exe</origin>
+                    <origin>installer/${vcredist_executable}</origin>
                     <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
                 </unpackFile>
                 <unpackFile>
@@ -1376,7 +1385,7 @@
                     <actionList>
                         <runProgram>
                             <program>cscript</program>
-                            <programArguments>//NoLogo "${system_temp_directory}\postgresql_installer\installruntimes.vbs" "${system_temp_directory}\postgresql_installer\vcredist_x86.exe"</programArguments>
+                            <programArguments>//NoLogo "${system_temp_directory}\postgresql_installer\installruntimes.vbs" "${system_temp_directory}\postgresql_installer\${vcredist_executable}"</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
@@ -1419,112 +1428,6 @@
                     <value>windows</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
-		<compareText logic="equals" text="${win64_platform}" value="0"/>
-            </ruleList>
-        </actionGroup>
-        <actionGroup>
-            <actionList>
-                <unpackFile>
-                    <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\pg_controldata.exe</destination>
-                    <folder>programfileswindows-x64</folder>
-                    <origin>bin/pg_controldata.exe</origin>
-                </unpackFile>
-                <unpackFile>
-                    <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\libintl.dll</destination>
-                    <folder>programfileswindows-x64</folder>
-                    <origin>bin/libintl.dll</origin>
-                </unpackFile>
-                <unpackFile>
-                    <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\libiconv.dll</destination>
-                    <folder>programfileswindows-x64</folder>
-                    <origin>bin/libiconv.dll</origin>
-                </unpackFile>
-                <!-- Validate user binary -->
-                <unpackFile>
-                    <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\validateuser.exe</destination>
-                    <folder>programfileswindows-x64</folder>
-                    <origin>installer/server/validateuser.exe</origin>
-                </unpackFile>
-
-                <!-- Create user binary   -->
-                <unpackFile>
-                    <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\createuser.exe</destination>
-                    <folder>programfileswindows-x64</folder>
-                    <origin>installer/server/createuser.exe</origin>
-                </unpackFile>
-
-                <!-- We will also need to get the VC++ runtimes installed on Windows, before we do anything with binaries -->
-                <unpackFile>
-                    <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\vcredist_x64.exe</destination>
-                    <folder>programfileswindows-x64</folder>
-                    <origin>installer/vcredist_x64.exe</origin>
-                    <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
-                </unpackFile>
-                <unpackFile>
-                    <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer/installruntimes.vbs</destination>
-                    <folder>programfileswindows-x64</folder>
-                    <origin>installer/installruntimes.vbs</origin>
-                    <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
-                </unpackFile>
-                <actionGroup>
-                    <actionList>
-                        <runProgram>
-                            <program>cscript</program>
-                            <programArguments>//NoLogo "${system_temp_directory}\postgresql_installer\installruntimes.vbs" "${system_temp_directory}\postgresql_installer\vcredist_x64.exe"</programArguments>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </runProgram>
-                        <throwError>
-                            <text>${msg(script.command.line.error)}</text>
-                            <ruleList>
-                                <compareText>
-                                    <logic>equals</logic>
-                                    <text>127</text>
-                                    <value>${program_exit_code}</value>
-                                </compareText>
-                            </ruleList>
-                        </throwError>
-                        <throwError>
-                            <text>${msg(error.installing.runtimes)}</text>
-                            <ruleList>
-                                <compareText>
-                                    <logic>does_not_equal</logic>
-                                    <text>3010</text>
-                                    <value>${program_exit_code}</value>
-                                </compareText>
-                                <compareText>
-                                    <logic>does_not_equal</logic>
-                                    <text>0</text>
-                                    <value>${program_exit_code}</value>
-                                </compareText>
-                            </ruleList>
-                        </throwError>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>1</text>
-                            <value>${install_runtimes}</value>
-                            </compareText>
-                    </ruleList>
-                </actionGroup>
-            </actionList>
-
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-		<compareText logic="equals" text="${win64_platform}" value="1"/>
             </ruleList>
         </actionGroup>
         <!-- If we have an existing data directory location and it's not empty, check it looks sane -->
@@ -3756,29 +3659,13 @@ REM The script sets environment variables helpful for PostgreSQL
                     <destination>${installdir}/scripts</destination>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/windows/runAsAdmin.vbs</origin>
+                            <origin>staging/@@WINDIR@@/runAsAdmin.vbs</origin>
                         </distributionFile>
                     </distributionFileList>
 		    <ruleList>
 			<compareText logic="equals" text="${platform_name}" value="windows"/>
-                        <isFalse value="${project.windows64bitMode}"/>
       		    </ruleList>
                 </folder>
-	        <folder>
-                    <name>extractonlywindows-x64</name>
-                    <platforms>windows</platforms>
-                    <destination>${installdir}/scripts</destination>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/windows-x64/runAsAdmin.vbs</origin>
-                        </distributionFile>
-                    </distributionFileList>
-		    <ruleList>
-			<compareText logic="equals" text="${platform_name}" value="windows"/>
-                        <isTrue value="${project.windows64bitMode}"/>
-      		    </ruleList>
-                </folder>
-
             </folderList>
         </component>
         <component>
@@ -3915,83 +3802,36 @@ REM The script sets environment variables helpful for PostgreSQL
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/windows/bin</origin>
+                            <origin>staging/@@WINDIR@@/bin</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/windows/doc</origin>
+                            <origin>staging/@@WINDIR@@/doc</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/windows/include</origin>
+                            <origin>staging/@@WINDIR@@/include</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/windows/installer</origin>
+                            <origin>staging/@@WINDIR@@/installer</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/windows/lib</origin>
+                            <origin>staging/@@WINDIR@@/lib</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/windows/pgAdmin III</origin>
+                            <origin>staging/@@WINDIR@@/pgAdmin III</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/windows/scripts</origin>
+                            <origin>staging/@@WINDIR@@/scripts</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/windows/share</origin>
+                            <origin>staging/@@WINDIR@@/share</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/windows/StackBuilder</origin>
+                            <origin>staging/@@WINDIR@@/StackBuilder</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/windows/symbols</origin>
+                            <origin>staging/@@WINDIR@@/symbols</origin>
                         </distributionDirectory>
                     </distributionFileList>
-		    <ruleList>
-			<compareText logic="equals" text="${platform_name}" value="windows"/>
-                        <isFalse value="${project.windows64bitMode}"/>
-      		    </ruleList>
-		</folder>
-                <!-- WIN-x64: Program files -->
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}</destination>
-                    <name>programfileswindows-x64</name>
-                    <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/windows-x64/bin</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/windows-x64/doc</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/windows-x64/include</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/windows-x64/installer</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/windows-x64/lib</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/windows-x64/pgAdmin III</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/windows-x64/scripts</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/windows-x64/share</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/windows-x64/StackBuilder</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/windows-x64/symbols</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-		    <ruleList>
-			<compareText logic="equals" text="${platform_name}" value="windows"/>
-                        <isTrue value="${project.windows64bitMode}"/>
-      		    </ruleList>
 		</folder>
            </folderList>
 

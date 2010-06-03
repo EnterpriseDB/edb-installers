@@ -487,13 +487,18 @@ _postprocess_server_windows_x64() {
           PG_DATETIME_SETTING_WINDOWS="64-bit integers"
     fi
 
-    _replace @@PG_DATETIME_SETTING_WINDOWS@@ "$PG_DATETIME_SETTING_WINDOWS" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"
-    
-    _replace @@WIN64MODE@@ "1" installer.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
+    if [ -f installer-win64.xml ]; then
+        rm -f installer-win64.xml
+    fi
+    cp installer.xml installer-win64.xml
 
-	
+    _replace @@PG_DATETIME_SETTING_WINDOWS@@ "$PG_DATETIME_SETTING_WINDOWS" installer-win64.xml || _die "Failed to replace the date-time setting in the installer.xml"
+    
+    _replace @@WIN64MODE@@ "1" installer-win64.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
+    _replace @@WINDIR@@ windows-x64 installer-win64.xml || _die "Failed to replace the WINDIR setting in the installer.xml"
+
     # Build the installer
-    "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
+    "$PG_INSTALLBUILDER_BIN" build installer-win64.xml windows || _die "Failed to build the installer"
 	
 	# Rename the installer
 	mv $WD/output/postgresql-$PG_MAJOR_VERSION-windows-installer.exe $WD/output/postgresql-$PG_PACKAGE_VERSION-windows_x64.exe || _die "Failed to rename the installer"
