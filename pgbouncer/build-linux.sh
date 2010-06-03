@@ -26,10 +26,6 @@ _prep_pgbouncer_linux() {
     cp -R pgbouncer-$PG_VERSION_PGBOUNCER/* pgbouncer.linux || _die "Failed to copy the source code (source/pgbouncer-$PG_VERSION_PGBOUNCER)"
     chmod -R ugo+w pgbouncer.linux || _die "Couldn't set the permissions on the source directory"
 
-    # Grab a copy of the source tree
-    cp -R libevent-$PG_TARBALL_LIBEVENT/* libevent.linux || _die "Failed to copy the source code (source/libevent-$PG_TARBALL_LIBEVENT)"
-    chmod -R ugo+w libevent.linux || _die "Couldn't set the permissions on the source directory"
-
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/pgbouncer/staging/linux ];
     then
@@ -40,7 +36,13 @@ _prep_pgbouncer_linux() {
     echo "Creating staging directory ($WD/pgbouncer/staging/linux)"
     mkdir -p $WD/pgbouncer/staging/linux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/pgbouncer/staging/linux || _die "Couldn't set the permissions on the staging directory"
-    
+
+    echo "Creating staging doc directory ($WD/pgbouncer/staging/linux/pgbouncer/doc)"
+    mkdir -p $WD/pgbouncer/staging/linux/pgbouncer/doc || _die "Couldn't create the staging doc directory"
+    chmod ugo+w $WD/pgbouncer/staging/linux/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
+    echo "Copying README.pgbouncer to staging doc directory"
+    cp $WD/pgbouncer/resources/README.pgbouncer $WD/pgbouncer/staging/linux/pgbouncer/doc || _die "Couldn't copy README.pgbouncer to staging doc directory"
+   
 
 }
 
@@ -50,17 +52,17 @@ _prep_pgbouncer_linux() {
 
 _build_pgbouncer_linux() {
 
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/libevent.linux/; ./configure --prefix=$PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer" || _die "Failed to configure libevent"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/libevent.linux/; make" || _die "Failed to build libevent"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/libevent.linux/; make install" || _die "Failed to install libevent"
-
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; ./configure --prefix=$PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer --with-libevent=$PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer" || _die "Failed to configure pgbouncer"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; ./configure --prefix=$PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer --with-libevent=/usr/local" || _die "Failed to configure pgbouncer"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; make" || _die "Failed to build pgbouncer"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; make install" || _die "Failed to install pgbouncer"
 
     ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/share/doc/pgbouncer/pgbouncer.ini $PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/share" || _die "Failed to copy pgbouncer ini to share directory"
 
     mkdir -p $WD/pgbouncer/staging/linux/instscripts || _die "Failed to create the instscripts directory"
+    mkdir -p $WD/pgbouncer/staging/linux/pgbouncer/lib || _die "Failed to create the pgbouncer lib directory"
+    PG_LIBEVENT_MAJOR_VERSION=`echo $PG_TARBALL_LIBEVENT | cut -f1,2 '.'`  
+  
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
     ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/server/staging/linux/lib/libpq* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy libpq in instscripts"
     ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/server/staging/linux/bin/psql $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy psql in instscripts"
     ssh $PG_SSH_LINUX "cp -R /lib/libssl.so* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy the dependency library"

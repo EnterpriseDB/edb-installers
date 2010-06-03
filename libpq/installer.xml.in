@@ -30,9 +30,6 @@
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
     <startMenuGroupName></startMenuGroupName>
 
-    <!-- Make the installer behave like a native 64bit installer -->
-    <windows64bitMode>1</windows64bitMode>
-
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
     <leftImage>../resources/pg-side.png</leftImage>
@@ -82,11 +79,21 @@
         </throwError>
 
 	<setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>  
+    </initializationActionList>
 	
+    <preInstallationActionList>
+
+        <setInstallerVariable name="programfiles" value="${env(programw6432)}" >
+           <ruleList>
+               <platformTest type="windows-x64" />
+               <compareText text="${env(programw6432)}" logic="does_not_equal" value=""/>
+           </ruleList> 
+        </setInstallerVariable>
+
         <!-- WIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="${env(ProgramFiles)}\PostgreSQL\libpq64"/>
+                <setInstallerVariable name="installdir" value="${programfiles}\PostgreSQL\libpq64"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -105,7 +112,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${env(ProgramFiles)}\PostgreSQL\libpq64</value>
+            <value>${programfiles}\PostgreSQL\libpq64</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -114,9 +121,6 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
-    </initializationActionList>
-	
-    <preInstallationActionList>
 
         <setInstallerVariable name="libpqVersion" value="" />
         <setInstallerVariable name="iLocation" value="" />
@@ -127,7 +131,7 @@
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\libpq64</key>
             <name>Version</name>
             <variable>libpqVersion</variable>
-            <wowMode>32</wowMode>
+            <wowMode>64</wowMode>
         </registryGet>
         <setInstallerVariable name="IsOldInstall" value="1">
             <ruleList>
@@ -138,7 +142,7 @@
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\libpq64</key>
             <name>Location</name>
             <variable>iLocation</variable>
-            <wowMode>32</wowMode>
+            <wowMode>64</wowMode>
             <ruleList>
                 <isTrue value="${IsOldInstall}" />
             </ruleList> 
@@ -187,13 +191,13 @@
             </ruleList>
         </actionGroup>
 
-        <!-- Delete the old registry entry -->
-        <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\EnterpriseDB\libpq64" >
-            <ruleList>
-                <isTrue value="${IsOldInstall}" />
-            </ruleList>
-        </registryDelete> 
-		
+        <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\libpq64" >
+            <wowMode>64</wowMode> 
+        </registryDelete>
+        <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\libpq">
+            <wowMode>64</wowMode> 
+        </registryDelete>
+ 
         <setInstallerVariable name="installdir" value="${iLocation}" >
             <ruleList>
                 <compareText text="${iLocation}" logic="does_not_equal" value="" />

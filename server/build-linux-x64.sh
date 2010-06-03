@@ -61,6 +61,10 @@ _prep_server_linux_x64() {
     mkdir -p $WD/server/staging/linux-x64 || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/server/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
 
+    if [ -f $WD/server/scripts/linux/getlocales/getlocales.linux-x64 ]; then
+      rm -f $WD/server/scripts/linux/getlocales/getlocales.linux-x64
+    fi
+
 }
 
 
@@ -160,7 +164,7 @@ _build_server_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/;PATH=$PG_PERL_LINUX_X64/bin:$PG_PYTHON_LINUX_X64/bin:$PG_TCL_LINUX_X64/bin:\$PATH ./configure --prefix=$PG_STAGING --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX_X64/lib --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64; make" || _die "Failed to build postgres" 
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64; make -j4" || _die "Failed to build postgres" 
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64; make install" || _die "Failed to install postgres"
 
     echo "Building contrib modules"
@@ -184,6 +188,13 @@ _build_server_linux_x64() {
     mkdir -p $WD/server/staging/linux-x64/doc/postgresql/html || _die "Failed to create the doc directory"
     cd $WD/server/staging/linux-x64/doc/postgresql/html || _die "Failed to change to the doc directory"
     cp -R $WD/server/source/postgres.linux-x64/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
+
+    # Install the PostgreSQL man pages
+    mkdir -p $WD/server/staging/linux-x64/share/man || _die "Failed to create the man directory"
+    cd $WD/server/staging/linux-x64/share/man || _die "Failed to change to the man directory"
+    cp -R $WD/server/source/postgres.linux-x64/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
+    cp -R $WD/server/source/postgres.linux-x64/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
+    cp -R $WD/server/source/postgres.linux-x64/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
 
     # Copy in the dependency libraries
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
@@ -290,6 +301,8 @@ _build_server_linux_x64() {
     echo "Changing the rpath for the StackBuilder"
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/stackbuilder/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../../lib:\\\\${ORIGIN}/../../pgAdmin3/lib\" \$f; done"
 
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/scripts/linux/getlocales; gcc -o getlocales.linux-x64 -O0 getlocales.c" || _die "Failed to build getlocale utility"
+
     cd $WD
 }
 
@@ -321,10 +334,12 @@ _postprocess_server_linux_x64() {
 
     # Setup the installer scripts. 
     mkdir -p staging/linux-x64/installer/server || _die "Failed to create a directory for the install scripts"
-    cp scripts/linux/getlocales.sh staging/linux-x64/installer/server/getlocales.sh || _die "Failed to copy the getlocales script (scripts/linux/getlocales.sh)"
-    chmod ugo+x staging/linux-x64/installer/server/getlocales.sh
+    cp $WD/server/scripts/linux/getlocales/getlocales.linux-x64 $WD/server/staging/linux-x64/installer/server/getlocales || _die "Failed ot copy getlocales utility to staging directory"
+    chmod ugo+x $WD/server/staging/linux-x64/installer/server/getlocales
+
     cp scripts/linux/runpgcontroldata.sh staging/linux-x64/installer/server/runpgcontroldata.sh || _die "Failed to copy the runpgcontroldata script (scripts/linux/runpgcontroldata.sh)"
     chmod ugo+x staging/linux-x64/installer/server/runpgcontroldata.sh
+
     cp scripts/linux/createuser.sh staging/linux-x64/installer/server/createuser.sh || _die "Failed to copy the createuser script (scripts/linux/createuser.sh)"
     chmod ugo+x staging/linux-x64/installer/server/createuser.sh
     cp scripts/linux/initcluster.sh staging/linux-x64/installer/server/initcluster.sh || _die "Failed to copy the initcluster script (scripts/linux/initcluster.sh)"
@@ -409,6 +424,7 @@ y a menu pick image"
     fi
 
     _replace @@PG_DATETIME_SETTING_LINUX_X64@@ "$PG_DATETIME_SETTING_LINUX_X64" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"
+    _replace @@WIN64MODE@@ "0" installer.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
 
 		
     # Build the installer

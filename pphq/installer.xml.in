@@ -23,7 +23,7 @@
 
     <!-- Misc options -->
     <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
-    <wrapLicenseFileText>0</wrapLicenseFileText>
+    <wrapLicenseFileText>1</wrapLicenseFileText>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <unattendedModeUI>minimal</unattendedModeUI>
     <enableRollback>0</enableRollback>
@@ -31,7 +31,7 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
-    <licenseFile>resources/licence.txt</licenseFile>
+    <licenseFile encoding="utf-8">resources/licence.txt</licenseFile>
 
     <!-- Images -->
     <leftImage>../resources/edb-side.png</leftImage>
@@ -72,15 +72,20 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </setInstallerVariable>
+        <!-- We do not want to provide service-user option to the user in case of windows
+            because hq itself runs the service as local user and doesn't allow it to be run
+            as a customozed user where as in case of non windows platforms, it allows to change the user -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="project.parameter(serviceAccount).ask" value="0"/>
-                <setInstallerVariable name="project.parameter(agentServiceAccount).ask" value="0"/>
+                <setInstallerVariable name="project.parameter(serviceaccount).ask" value="0"/>
+                <setInstallerVariable name="project.parameter(agentserviceaccount).ask" value="0"/>
             </actionList>
             <ruleList>
                 <compareText text="${platform_name}" value="windows" logic="equals"/>
             </ruleList>
         </actionGroup>
+        <setInstallerVariable name="defaultserviceaccount" value="pphq"/>
+        <setInstallerVariable name="defaultagentserviceaccount" value="root"/>
     </preShowHelpActionList>
 
     <!-- Prebuild Actons-->
@@ -96,8 +101,29 @@
                 <compareText text="${platform_name}" value="windows" logic="does_not_equal"/>
             </ruleList>
         </setInstallerVariable>
+        <setInstallerVariable name="project.parameter(serviceaccount).ask" value="0">
+            <ruleList>
+                <compareText text="${platform_name}" value="windows" logic="equals"/>
+            </ruleList>
+	</setInstallerVariable>
+        <setInstallerVariable name="project.parameter(agentserviceaccount).ask" value="0">
+            <ruleList>
+                <compareText text="${platform_name}" value="windows" logic="equals"/>
+            </ruleList>
+	</setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
+        <!-- We do not want to provide service-user option to the user in case of windows
+            because hq itself runs the service as local user and doesn't allow it to be run
+            as a customozed user where as in case of non windows platforms, it allows to change the user -->
+	<setInstallerVariable name="project.parameter(serviceaccount).ask" value="0" />
+        <!-- We do not want to provide service-user option to the user in case of windows
+            because hq itself runs the service as local user and doesn't allow it to be run
+            as a customozed user where as in case of non windows platforms, it allows to change the user -->
+	<setInstallerVariable name="project.parameter(agentserviceaccount).ask" value="0" />
+        <setInstallerVariable name="defaultserviceaccount" value="pphq"/>
+        <setInstallerVariable name="defaultagentserviceaccount" value="root"/>
+
         <setInstallerVariable name="pphqServer" value="pphq-server"/>
         <setInstallerVariable name="pphqAgent" value="pphq-agent"/>
         <setInstallerVariable name="pphqVersion" value=""/>
@@ -216,18 +242,17 @@
         <setInstallerVariable name="pphq_secure_port" value=""/>
         <setInstallerVariable name="pphq_jrpm_port" value=""/>
         <setInstallerVariable name="defaultpphqadmindb" value="pphq"/>
-        <setInstallerVariable name="agentServiceAccount" value=""/>
-        <setInstallerVariable name="serviceAccount" value=""/>
+
+        <setInstallerVariable name="project.parameter(jrehome).ask" value="0"/>
+        <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>
 
         <!-- Registration Pre-Installation Action List -->
         <include file="staging/registration_initialization.xml"/>
 
     </initializationActionList>
     <preInstallationActionList>
-        <setInstallerVariable name="project.parameter(jrehome).ask" value="0"/>
-        <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>
-        <setInstallerVariable name="project.parameter(serviceAccount).ask" value="0"/>
-        <setInstallerVariable name="project.parameter(agentServiceAccount).ask" value="0"/>
+	<setInstallerVariable name="iserviceaccount" value=""/>
+	<setInstallerVariable name="iagentserviceaccount" value=""/>
         <setInstallerVariable name="create_database" value="Yes"/>
         <setInstallerVariable name="upgrade_database" value="No"/>
         <setInstallerVariable name="overwrite" value="Yes" />
@@ -289,6 +314,50 @@
                 <fileExists path="${jrehome}\bin\java.exe" />
             </ruleList>
         </setInstallerVariable>
+
+        <!-- check the version of java. It should be >=1.5.0 -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable  name="javaVersionInfo" value=""/>
+                <setInstallerVariableFromScriptOutput
+                        exec="${java_executable}"
+                        execArgs="-version"
+                        name="javaVersionInfo"
+                        workingDirectory="${installdir}"/>
+                <!-- In case of java -version, output comes into program_stderr
+                     check program_stderr if it was not there in standard output
+                -->
+                <setInstallerVariable  name="javaVersionInfo" value="${program_stderr}">
+                    <ruleList>
+                        <compareText text="${javaVersionInfo}" logic="equals" value="" />
+                        <compareText logic="does_not_contain" text="${program_stderr}" value="error"/>
+                        <compareText logic="equals" text="${javaVersionInfo}" value=""/>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <setInstallerVariableFromRegEx name="javaVersion"  text="${javaVersionInfo}">
+                    <pattern>^.*java\sversion\s"([0-9]\.[0-9]).*$</pattern>
+                    <substitution>\1</substitution>
+                    <ruleList>
+                        <stringTest text="${javaVersionInfo}" type="not_empty"/>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+
+                <throwError>
+                    <text>${msg(jre.invalid.version.error)}</text>
+                    <ruleList>
+                        <compareValues>
+                            <value1>${javaVersion}</value1>
+                            <logic>less_or_equal</logic>
+                            <value2>1.5</value2>
+                        </compareValues>
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <compareText text="${jrehome}" logic="does_not_equal" value="" />
+            </ruleList>
+        </actionGroup>
 
         <!-- LIN & MAC : Get the branding & check Previous Installation of PPHQ -->
         <actionGroup>
@@ -370,9 +439,9 @@
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
                             key="PPHQ_JRPM_PORT" variable="pphq_jrpm_port"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
-                            key="ServerServiceAccount" variable="${serviceAccount}"/>
+                            key="ServerServiceAccount" variable="iserviceaccount"/>
                 <iniFileGet file="/etc/postgres-reg.ini" section="pphq"
-                            key="AgentServiceAccount" variable="${agentServiceAccount}"/>
+                            key="AgentServiceAccount" variable="iagentserviceaccount"/>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${pphqVersion}" value=""/>
@@ -409,16 +478,28 @@
             </ruleList>
         </actionGroup>
 
-        <setInstallerVariable name="serviceAccount" value="pphq">
+	<actionGroup>
+	    <actionList>
+		<setInstallerVariable name="serviceaccount" value="${iserviceaccount}"/>
+		<setInstallerVariable name="agentserviceaccount" value="${iagentserviceaccount}"/>
+	    </actionList>
+	    <ruleList>
+			<compareText text="${pphqVersion}" logic="does_not_equal" value=""/>
+			<compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	    </ruleList>
+	</actionGroup>
+	<!--
+        <setInstallerVariable name="serviceaccount" value="pphq">
             <ruleList>
-                <stringTest text="${serviceAccount}" type="empty"/>
+                <stringTest text="${serviceaccount}" type="empty"/>
             </ruleList>
         </setInstallerVariable>
-        <setInstallerVariable name="agentServiceAccount" value="root">
+        <setInstallerVariable name="agentserviceaccount" value="root">
             <ruleList>
-                <stringTest text="${agentServiceAccount}" type="empty"/>
+                <stringTest text="${agentserviceaccount}" type="empty"/>
             </ruleList>
         </setInstallerVariable>
+	-->
 
         <throwError text="Not a valid port (${pphqport}) ...">
             <ruleList>
@@ -578,11 +659,18 @@
                 <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
                 <setEnvironmentVariable name="PGDATABASE" value="postgres"/>
                 <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${pphqTempDir}/instscripts/lib"/>
+                <setInstallerVariable name="recheck_connection" value="0"/>
                 <runProgram program="${psql_path}" abortOnError="0"
                       programArguments="-l &quot;${env(PGDATABASE)}&quot;"
                       workingDirectory="${pphqTempDir}/instscripts"
                       showMessageOnError="0">
                     <onErrorActionList>
+                        <setInstallerVariable name="recheck_connection" value="1"/>
+                    </onErrorActionList>
+                </runProgram>
+
+                <actionGroup>
+                    <actionList>
                         <logMessage text="It fails for postgres database, fall back to edb"/>
                         <setEnvironmentVariable name="PGDATABASE" value="edb"/>
                         <runProgram program="${psql_path}" abortOnError="0"
@@ -597,8 +685,11 @@
                                       workingDirectory="${pphqTempDir}/instscripts"/>
                             </onErrorActionList>
                         </runProgram>
-                    </onErrorActionList>
-                </runProgram>
+                    </actionList>
+                    <ruleList>
+                        <isTrue value="${recheck_connection}"/>
+                    </ruleList>
+                </actionGroup>
 
                 <setInstallerVariable name="admin_db_exists" value="0"/>
                 <setInstallerVariable name="admin_db_owner" value="hqadmin"/>
@@ -805,7 +896,7 @@
                 <!-- Stopping pphq service on windows -->
                 <stopWindowsService serviceName="${serviceName}" abortOnError="0" showMessageOnError="0"/>
                 <stopWindowsService serviceName="Postgres Plus HQ Agent" abortOnError="0" showMessageOnError="0"/>
-                <runProgram program="${installdir}/scripts/agentctl.sh" runAs="${agentServiceAccount}"
+                <runProgram program="${installdir}/scripts/agentctl.sh" runAs="${agentserviceaccount}"
                       programArguments="--no-wait stop" workingDirectory="${installdir}/agent-${pphqVersion}/bin"
                       progressText="${msg(pphq.agent.stopping)}" abortOnError="1" showMessageOnError="1">
                     <ruleList>
@@ -1044,46 +1135,46 @@
                 <logMessage text=" JRPM PORT:${pphq_jrpm_port}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
                             key="PPHQ_JRPM_PORT" value="${pphq_jrpm_port}"/>
-                <logMessage text=" Server Service Account:${serviceAccount}"/>
+                <logMessage text=" Server Service Account:${serviceaccount}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
-                            key="ServerServiceAccount" value="${serviceAccount}"/>
-                <logMessage text=" Agent Service Account:${agentServiceAccount}"/>
+                            key="ServerServiceAccount" value="${serviceaccount}"/>
+                <logMessage text=" Agent Service Account:${agentserviceaccount}"/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphq"
-                            key="AgentServiceAccount" value="${agentServiceAccount}"/>
-                <!-- Create user (serviceAccount) for the server -->
+                            key="AgentServiceAccount" value="${agentserviceaccount}"/>
+                <!-- Create user (serviceaccount) for the server -->
                 <runProgram program="${installdir}/installer/pphq/createuser.sh"
-                      programArguments="${serviceAccount} &quot;${installdir}/server-PG_VERSION_PPHQ&quot;"
+                      programArguments="${serviceaccount} &quot;${installdir}/server-PG_VERSION_PPHQ&quot;"
                       workingDirectory="${installdir}/installer/pphq"
                       abortOnError="0" showMessageOnError="0">
                     <ruleList>
                         <fileExists path="${installdir}/installer/pphq/createuser.sh"/>
-                        <compareText logic="does_not_equal" text="${serviceAccount}" value="root"/>
+                        <compareText logic="does_not_equal" text="${serviceaccount}" value="root"/>
                     </ruleList>
                 </runProgram>
-                <!-- Create user (agentServiceAccount) for the agent -->
+                <!-- Create user (agentserviceaccount) for the agent -->
                 <runProgram program="${installdir}/installer/pphq/createuser.sh"
-                      programArguments="${agentServiceAccount} &quot;${installdir}/agent-PG_VERSION_PPHQ&quot;"
+                      programArguments="${agentserviceaccount} &quot;${installdir}/agent-PG_VERSION_PPHQ&quot;"
                       workingDirectory="${installdir}/installer/pphq"
                       abortOnError="0" showMessageOnError="0">
                     <ruleList>
                         <fileExists path="${installdir}/installer/pphq/createuser.sh"/>
-                        <compareText logic="does_not_equal" text="${agentServiceAccount}" value="root"/>
+                        <compareText logic="does_not_equal" text="${agentserviceaccount}" value="root"/>
                     </ruleList>
                 </runProgram>
                 <runProgram program="${installdir}/installer/pphq/startupcfg.sh"
-                      programArguments="1 1 PG_VERSION_PPHQ &quot;${installdir}&quot; &quot;${serviceName}&quot; &quot;${agentServiceName}&quot; &quot;${serviceAccount}&quot; &quot;${agentServiceAccount}&quot;"
+                      programArguments="1 1 PG_VERSION_PPHQ &quot;${installdir}&quot; &quot;${serviceName}&quot; &quot;${agentServiceName}&quot; &quot;${serviceaccount}&quot; &quot;${agentserviceaccount}&quot;"
                       progressText="${msg(progress.text.startup.config)}"
                       workingDirectory="${installdir}/installer/pphq"
                       abortOnError="0" showMessageOnError="0">
                 </runProgram>
                 <runProgram program="${installdir}/installer/pphq/createshortcuts.sh"
-                      programArguments="&quot;${productVersion}&quot; &quot;${branding}&quot; &quot;${installdir}&quot; ${pphqport} &quot;${jrehome}&quot; &quot;${serviceAccount}&quot; &quot;${agentServiceAccount}&quot;"
+                      programArguments="&quot;${productVersion}&quot; &quot;${branding}&quot; &quot;${installdir}&quot; ${pphqport} &quot;${jrehome}&quot; &quot;${serviceaccount}&quot; &quot;${agentserviceaccount}&quot;"
                       progressText="${msg(progress.text.creating.shortcuts)}"
                       workingDirectory="${installdir}/installer/pphq" abortOnError="0" showMessageOnError="0"/>
                 <actionGroup>
                     <actionList>
                         <runProgram program="${installdir}/scripts/serverctl.sh"
-                              programArguments="--no-wait start" runAs="${serviceAccount}"
+                              programArguments="--no-wait start" runAs="${serviceaccount}"
                               workingDirectory="${pphqTempDir}/server-PG_VERSION_PPHQ"
                               progressText="${msg(pphq.server.starting)}"
                               abortOnError="0" showMessageOnError="1"/>
@@ -1661,8 +1752,16 @@
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <stringParameter name="jrehome" cliOptionName="jrehome" default="" ask="1" cliOptionShow="1"/>
-        <stringParameter name="agentServiceAccount" cliOptionName="agent-service-account" ask="1" cliOptionShow="0" default="root"/>
-        <stringParameter name="serviceAccount" cliOptionName="service-account" ask="1" cliOptionShow="0" default="pphq"/>
+        <stringParameter name="agentserviceaccount" cliOptionName="agent-service-account" ask="1" cliOptionShow="1" default="${defaultagentserviceaccount}">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+	</stringParameter>
+        <stringParameter name="serviceaccount" cliOptionName="service-account" ask="1" cliOptionShow="1" default="${defaultserviceaccount}">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+	</stringParameter>
 
         <!-- Whether to install runtimes -->
         <booleanParameter name="install_runtimes"
@@ -1869,11 +1968,18 @@
                 <setEnvironmentVariable name="PGDATABASE" value="postgres"/>
                 <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${pphqTempDir}/instscripts/lib"/>
 
+                <setInstallerVariable name="recheck_connection" value="0"/>
                 <runProgram program="${psql_path}" abortOnError="0"
                       programArguments="-l &quot;${env(PGDATABASE)}&quot;"
                       workingDirectory="${pphqTempDir}/instscripts"
                       showMessageOnError="0">
                     <onErrorActionList>
+                        <setInstallerVariable name="recheck_connection" value="1"/>
+                    </onErrorActionList>
+                </runProgram>
+
+                <actionGroup>
+                    <actionList>
                         <logMessage text="It fails for postgres database, fall back to edb"/>
                         <setEnvironmentVariable name="PGDATABASE" value="edb"/>
                         <runProgram program="${psql_path}" abortOnError="0"
@@ -1888,8 +1994,11 @@
                                       workingDirectory="${pphqTempDir}/instscripts"/>
                             </onErrorActionList>
                         </runProgram>
-                    </onErrorActionList>
-                </runProgram>
+                    </actionList>
+                    <ruleList>
+                        <isTrue value="${recheck_connection}"/>
+                    </ruleList>
+                </actionGroup>
 
                 <setInstallerVariable name="admin_db_exists" value="0"/>
                 <setInstallerVariableFromScriptOutput
@@ -1963,6 +2072,22 @@
                         <compareText text="${pphqport}" logic="equals" value=""/>
                         <compareText text="${pphquser}" logic="equals" value=""/>
                         <compareText text="${pphqpassword}" logic="equals" value=""/>
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(pphq.port.invalid)}</text>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareValues>
+                            <value1>${pphqport}</value1>
+                            <logic>less</logic>
+                            <value2>1024</value2>
+                        </compareValues>
+                        <compareValues>
+                            <value1>${pphqport}</value1>
+                            <logic>greater</logic>
+                            <value2>65535</value2>
+                        </compareValues>
                     </ruleList>
                 </throwError>
                 <throwError text="${msg(pphq.port.not.free)}">

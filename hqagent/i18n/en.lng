@@ -40,7 +40,9 @@ pphqagent.server.validating=Validating server details...
 
 pphqagent.update.configuration=Upgrading configuration files...
 
-pphqagent.server.connection.fail=A connection couldn't be established with the Postgres Plus HQ Server.\nPlease make sure the Postgres Plus HQ Server is running.
+pphqagent.server.secure.connection.fail=A connection couldn't be established with the Postgres Plus HQ Server.\nPlease ensure that Postgres Plus HQ Server is running and correct PPHQ host and secure port number has been specified.
+
+pphqagent.server.connection.fail=A connection couldn't be established with the Postgres Plus HQ Server.\nPlease make sure the Postgres Plus HQ Server is running and correct PPHQ host and port number has been specified.
 
 pphqagent.start.error.question=An error occured starting the agent:\n\n${errMessage}\n\nThis may be caused by incorrect settings, or a firewall on the agent or server machine. Do you wish to try again?
 
@@ -73,3 +75,10 @@ pphqagent.server.details.explanation.upgrade=Please enter the username and passw
 pphqagent.work.directory.removing=Removing HQ Agent work directory...
 
 pphq.agent.host.error=The Agent Hostname/Address is used by the PPHQ Server to connect to the agent. It must be a network address or hostname that the server can reach, and may not be a loopback address or 'localhost'.
+
+jre.invalid.error=Invalid --jrehome specified.\n\nCould not find '${jrehome}/bin/java'.
+
+jre.invalid.version.error=Java version inside jrehome should be >=1.5.
+
+jre.invalid.error.windows=Invalid --jrehome specified.\n\nCould not find '${jrehome}\bin\java.exe'.
+

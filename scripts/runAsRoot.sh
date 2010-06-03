@@ -189,7 +189,7 @@ _logfile()
 
 _save_options_file ()
 {
-  locale LRAR_COMPS=
+  local LRAR_COMPS=
 
   if [ ${RAR_INSTALL_POSTGIS} = y -o ${RAR_INSTALL_POSTGIS} = Y ]
   then
@@ -219,7 +219,7 @@ _save_options_file ()
   then
     LRAR_COMPS="${LRAR_COMPS},pgmemcache"
   fi
-  LRAR_COMPS=`echo ${LRAR_COMPS} | sed -e 's/^,\+//g'`
+  LRAR_COMPS=`echo ${LRAR_COMPS} | sed -e 's/^,//g'`
 
   cat <<EOT > $PWD/.rar_options_$$
 superuser=${PG_RAR_SUPERUSER}
@@ -309,7 +309,9 @@ _component_selection ()
       RAR_INSTALL_PGMEMCACHE=Y
       ;;
     *)
-      _die "'${LRAR_COMPONENT}' is not a valid component."
+      if [ x"${LRAR_COMPONENT}" != x"" ]; then
+        _die "'${LRAR_COMPONENT}' is not a valid component."
+      fi
       ;;
     esac
   done
@@ -329,7 +331,7 @@ readIniSection ()
       -e 's/;.*$//' \
       -e 's/[[:space:]]*$//' \
       -e 's/^[[:space:]]*//' \
-      -e "s/^\(.*\)=\([^\"']*\)$/\1=\"\2\"\n/" \
+      -e "s/^\(.*\)=\([^\"']*\)$/\1=\"\2\"/" \
      < "${LRAR_INI_FILE}" \
       | sed -n -e "1,/^\s*\[/{/^[^;].*\=.*/p;}" | sed -n -e "/^${LRAR_INI_VARIABLE}=/p" | sed -e "s/^${LRAR_INI_VARIABLE}=//"`
   elif [ ${#} -eq 4 ]

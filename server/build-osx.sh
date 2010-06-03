@@ -125,13 +125,14 @@ EOT
     echo "Building postgres"
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" make -j4 || _die "Failed to build postgres"
     make install || _die "Failed to install postgres"
+
     cp src/include/pg_config_i386.h $WD/server/staging/osx/include/
     cp src/include/pg_config_ppc.h $WD/server/staging/osx/include/
     cp src/include/pg_config_ppc64.h $WD/server/staging/osx/include/
     cp src/include/pg_config_x86_64.h $WD/server/staging/osx/include/
 
     echo "Adding ppc64 arch to libpq"
-    cd src/interfaces/libpq
+    cd $WD/server/source/postgres.osx/src/interfaces/libpq
     make clean
     make CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc -arch ppc64 -arch x86_64"
     make install
@@ -161,6 +162,13 @@ EOT
     mkdir -p $WD/server/staging/osx/doc/postgresql/html || _die "Failed to create the doc directory"
     cd $WD/server/staging/osx/doc/postgresql/html || _die "Failed to change to the doc directory"
     cp -R $WD/server/source/postgres.osx/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
+
+    # Install the PostgreSQL man pages
+    mkdir -p $WD/server/staging/osx/share/man || _die "Failed to create the man directory"
+    cd $WD/server/staging/linux/osx/share/man || _die "Failed to change to the man directory"
+    cp -R $WD/server/source/postgres.osx/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
+    cp -R $WD/server/source/postgres.osx/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
+    cp -R $WD/server/source/postgres.osx/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
 
     # Now, build pgAdmin
 
@@ -298,6 +306,8 @@ _postprocess_server_osx() {
     fi
 
     _replace @@PG_DATETIME_SETTING_OSX@@ "$PG_DATETIME_SETTING_OSX" installer.xml || _die "Failed to replace the date-time setting in the installer.xml"
+
+    _replace @@WIN64MODE@@ "0" installer.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
 
     if [ -f installer_1.xml ]; then
       rm -f installer_1.xml

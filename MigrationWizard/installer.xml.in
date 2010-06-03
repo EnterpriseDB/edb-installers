@@ -1,7 +1,7 @@
 <project>
     <!-- Package details -->
     <shortName>migrationwizard</shortName>
-    <fullName>MigrationWizard</fullName>
+    <fullName>Migration Wizard</fullName>
     <version>PG_VERSION_MIGRATIONWIZARD-PG_BUILDNUM_MIGRATIONWIZARD</version>
 	
     <!-- These options are used on Windows -->
@@ -311,12 +311,12 @@
         <actionGroup>
             <actionList>
                 <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationWizard</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Migration Wizard</key>
                     <name>Branding</name>
                     <variable>iBranding</variable>
                 </registryGet>
                 <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationWizard</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Migration Wizard</key>
                     <name>Version</name>
                     <variable>MigrationWizardVersion</variable>
                 </registryGet>
@@ -334,11 +334,11 @@
         <actionGroup>
             <actionList>
                 <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationWizard</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Migration Wizard</key>
                     <name>Location</name>
                     <variable>installdir</variable>
                 </registryGet>
-                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationWizard" name="Username" variable="iExistingEmail"/>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Migration Wizard" name="Username" variable="iExistingEmail"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -832,7 +832,7 @@
             </ruleList>
         </actionGroup>
         <registrySet>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationWizard</key>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Migration Wizard</key>
             <name>Branding</name>
             <value>${branding}</value>
             <ruleList>
@@ -840,7 +840,7 @@
             </ruleList>
         </registrySet>
         <registrySet>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\MigrationWizard</key>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Migration Wizard</key>
             <name>Username</name>
             <value>${existingEmail}</value>
             <ruleList>
