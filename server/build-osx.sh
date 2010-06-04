@@ -230,7 +230,8 @@ EOT
     _rewrite_so_refs $WD/server/staging/osx lib/postgresql @loader_path/../..
     _rewrite_so_refs $WD/server/staging/osx lib/postgresql/plugins @loader_path/../../..
 
-    cd $WD/server/scripts/osx/getlocales/; gcc -o getlocales.osx -O0 getlocales.c || _die "Failed to build getlocales utility"
+    cd $WD/server/scripts/osx/getlocales/; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64 -o getlocales.osx -O0 getlocales.c  || _die "Failed to build getlocales utility"
+    
 
     cd $WD
 }
