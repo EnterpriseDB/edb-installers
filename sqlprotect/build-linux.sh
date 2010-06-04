@@ -47,7 +47,7 @@ _build_sqlprotect_linux() {
 
     ssh $PG_SSH_LINUX "cp $PG_PATH_LINUX/server/source/postgres.linux/contrib/SQLPROTECT/sqlprotect.so $PG_PATH_LINUX/sqlprotect/staging/linux/lib/postgresql/" || _die "Failed to copy sqlprotect.so to staging directory"
 	ssh $PG_SSH_LINUX "cp $PG_PATH_LINUX/server/source/postgres.linux/contrib/SQLPROTECT/sqlprotect.sql $PG_PATH_LINUX/sqlprotect/staging/linux/share/" || _die "Failed to copy sqlprotect.sql to staging directory"
-	ssh $PG_SSH_LINUX "cp $PG_PATH_LINUX/server/source/postgres.linux/contrib/SQLPROTECT/README.sqlprotect $PG_PATH_LINUX/sqlprotect/staging/linux/doc/" || _die "Failed to copy README.sqlprotect to staging directory"
+	ssh $PG_SSH_LINUX "cp $PG_PATH_LINUX/server/source/postgres.linux/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_LINUX/sqlprotect/staging/linux/doc/" || _die "Failed to copy README-sqlprotect.txt to staging directory"
     chmod -R ugo+r $WD/sqlprotect/staging/linux
 
 }

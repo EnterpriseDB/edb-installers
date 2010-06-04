@@ -70,7 +70,7 @@ _build_sqlprotect_windows() {
    
    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/postgres.windows/release/sqlprotect/sqlprotect.dll $PG_PATH_WINDOWS/sqlprotect.staging/lib/postgresql" || _die "Failed to copy sqlprotect.dll to staging directory"
    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/postgres.windows/contrib/SQLPROTECT/sqlprotect.sql $PG_PATH_WINDOWS/sqlprotect.staging/share" || _die "Failed to copy sqlprotect.sql to staging directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/postgres.windows/contrib/SQLPROTECT/README.sqlprotect $PG_PATH_WINDOWS/sqlprotect.staging/doc" || _die "Failed to copy README.sqlprotect to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/postgres.windows/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_WINDOWS/sqlprotect.staging/doc" || _die "Failed to copy README-sqlprotect.txt to staging directory"
    
    # Zip up the installed code, copy it back here, and unpack.
    echo "Copying sqlprotect build tree to Unix host"

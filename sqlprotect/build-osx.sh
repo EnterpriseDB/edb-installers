@@ -47,7 +47,7 @@ _build_sqlprotect_osx() {
 
     cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/sqlprotect.so $PG_PATH_OSX/sqlprotect/staging/osx/lib/postgresql/ || _die "Failed to copy sqlprotect.so to staging directory"
 	cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/sqlprotect.sql $PG_PATH_OSX/sqlprotect/staging/osx/share/ || _die "Failed to copy sqlprotect.sql to staging directory"
-	cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/README.sqlprotect $PG_PATH_OSX/sqlprotect/staging/osx/doc/ || _die "Failed to copy README.sqlprotect to staging directory"
+	cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_OSX/sqlprotect/staging/osx/doc/ || _die "Failed to copy README-sqlprotect.txt to staging directory"
     chmod -R ugo+r $WD/sqlprotect/staging/osx
 
 }
