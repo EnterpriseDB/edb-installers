@@ -32,20 +32,20 @@ _prep_server_windows_x64() {
     fi
 	
     # Remove any existing zip files
-    if [ -f $WD/server/source/postgres.zip ];
+    if [ -f $WD/server/source/postgres-win64.zip ];
     then
         echo "Removing existing source archive"
-        rm -rf $WD/server/source/postgres.zip || _die "Couldn't remove the existing source archive"
+        rm -rf $WD/server/source/postgres-win64.zip || _die "Couldn't remove the existing source archive"
     fi
-    if [ -f $WD/server/source/pgadmin.zip ];
+    if [ -f $WD/server/source/pgadmin-win64.zip ];
     then
         echo "Removing existing pgadmin archive"
-        rm -rf $WD/server/source/pgadmin.zip || _die "Couldn't remove the existing pgadmin archive"
+        rm -rf $WD/server/source/pgadmin-win64.zip || _die "Couldn't remove the existing pgadmin archive"
     fi
-    if [ -f $WD/server/source/stackbuilder.zip ];
+    if [ -f $WD/server/source/stackbuilder-win64.zip ];
     then
         echo "Removing existing stackbuilder archive"
-        rm -rf $WD/server/source/stackbuilder.zip || _die "Couldn't remove the existing stackbuilder archive"
+        rm -rf $WD/server/source/stackbuilder-win64.zip || _die "Couldn't remove the existing stackbuilder archive"
     fi
     if [ -f $WD/server/scripts/windows/scripts.zip ];
     then
@@ -59,9 +59,9 @@ _prep_server_windows_x64() {
     fi
 	
     # Cleanup the build host
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q postgres.zip"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q pgadmin.zip"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q stackbuilder.zip"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q postgres-win64.zip"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q pgadmin-win64.zip"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q stackbuilder-win64.zip"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q scripts.zip"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q output.zip"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build.bat"
@@ -295,9 +295,9 @@ EOT
     cd $WD/server/source/
     echo "Copying source tree to Windows build VM"
     rm postgres.windows-x64/contrib/pldebugger/Makefile # Remove the unix makefile so that the build scripts don't try to parse it - we have our own.
-    zip -r postgres.zip postgres.windows-x64 || _die "Failed to pack the source tree (postgres.windows-x64)"
-    scp postgres.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (postgres.zip)"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip postgres.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (postgres.zip)"
+    zip -r postgres-win64.zip postgres.windows-x64 || _die "Failed to pack the source tree (postgres.windows-x64)"
+    scp postgres-win64.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (postgres-win64.zip)"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip postgres-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (postgres-win64.zip)"
    
     # Build the code and install into a temporary directory
     ssh $PG_SSH_WINDOWS_X64 "set; cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; ./build.bat RELEASE" || _die "Failed to build postgres on the windows-x64 build host"
@@ -317,9 +317,9 @@ EOT
 	# pgAdmin
 	#####################
 	echo "Copying pgAdmin source tree to Windows build VM"
-    zip -r pgadmin.zip pgadmin.windows-x64 || _die "Failed to pack the source tree (pgadmin.windows-x64)"
-    scp pgadmin.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (pgadmin.zip)"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip pgadmin.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (pgadmin.zip)"
+    zip -r pgadmin-win64.zip pgadmin.windows-x64 || _die "Failed to pack the source tree (pgadmin.windows-x64)"
+    scp pgadmin-win64.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (pgadmin-win64.zip)"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip pgadmin-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (pgadmin-win64.zip)"
    
     # Build the code
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/pgadmin; cmd /c ver_svn.bat"
@@ -380,9 +380,9 @@ EOT
 	# StackBuilder
 	#####################
 	echo "Copying StackBuilder source tree to Windows build VM"
-    zip -r stackbuilder.zip stackbuilder.windows-x64 || _die "Failed to pack the source tree (stackbuilder.windows-x64)"
-    scp stackbuilder.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (stackbuilder.zip)"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip stackbuilder.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (stackbuilder.zip)"
+    zip -r stackbuilder-win64.zip stackbuilder.windows-x64 || _die "Failed to pack the source tree (stackbuilder.windows-x64)"
+    scp stackbuilder-win64.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (stackbuilder-win64.zip)"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip stackbuilder-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (stackbuilder-win64.zip)"
   
     # Build the code
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c "C:\\\\pgBuild\\\\CMake2.8\\\\bin\\\\cmake" -G Visual\ Studio\ 9\ 2008\ Win64 -D WX_ROOT_DIR=C:\\\\pgBuild\\\\wxWidgets -D MSGFMT_EXECUTABLE=C:\\\\pgBuild\\\\gettext\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS_X64\\\\output\\\\StackBuilder ." || _die "Failed to configure pgAdmin on the build host"

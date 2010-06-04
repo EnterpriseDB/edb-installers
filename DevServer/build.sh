@@ -288,6 +288,7 @@ _postprocess_DevServer() {
 
     # Get the catalog version number
     PG_CATALOG_VERSION=`cat source/postgresql-$PG_VERSION_DEVSERVER/src/include/catalog/catversion.h |grep "#define CATALOG_VERSION_NO" | awk '{print $3}'`
+    PG_CONTROL_VERSION=`cat source/postgresql-$PG_VERSION_DEVSERVER/src/include/catalog/pg_control.h |grep "#define PG_CONTROL_VERSION" | awk '{print $3}'`
 
     # Prepare the installer XML file
     if [ -f installer.xml ];
@@ -302,6 +303,7 @@ _postprocess_DevServer() {
     _replace PG_MINOR_VERSION "" installer.xml || _die "Failed to set the minor version in the installer project file (server/installer.xml)"
     _replace PG_STAGING_DIR $WD/DevServer/staging installer.xml || _die "Failed to set the staging directory in the installer project file (server/installer.xml)"
     _replace PG_CATALOG_VERSION $PG_CATALOG_VERSION installer.xml || _die "Failed to set the catalog version number in the installer project file (server/installer.xml)"
+    _replace PG_CONTROL_VERSION $PG_CONTROL_VERSION installer.xml || _die "Failed to set the pg_control version number in the installer project file (server/installer.xml)"
    
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

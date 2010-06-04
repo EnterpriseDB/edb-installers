@@ -334,6 +334,9 @@
             <value>PG_CATALOG_VERSION</value>
         </setInstallerVariable>
 
+        <!-- pg_control version number -->
+        <setInstallerVariable name="PgControlVersion" value="PG_CONTROL_VERSION"/>
+
         <!-- Date/Time Setting -->
         <setInstallerVariable>
             <name>DateTimeSetting</name>
@@ -1519,6 +1522,11 @@
                     <substitution>\1</substitution>
                 </setInstallerVariableFromRegEx>
 
+                <setInstallerVariableFromRegEx name="CurrentPgControlVersion" text="${program_stdout}">
+                    <pattern>^.*pg_control version number:\s+([\d]+).*$</pattern>
+                    <substitution>\1</substitution>
+                </setInstallerVariableFromRegEx>
+
                 <logMessage>
                     <text>Existing cluster catalog version: ${CurrentCatalogVersion}, installer catalog version: ${CatalogVersion}</text>
                 </logMessage>
@@ -1527,13 +1535,21 @@
                     <text>Existing cluster Date/time settings: ${CurrentDateTimeSettings}, installer Date/time settings: ${DateTimeSetting}</text>
                 </logMessage>
 
+                <logMessage text="Existing cluster pg_control version number: ${CurrentPgControlVersion}, installer pg_control version number: ${PgControlVersion}"/>
+
                 <throwError>
                     <text>${msg(error.data.directory.incompatible)}</text>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                         <compareText>
                             <value>${CurrentCatalogVersion}</value>
                             <logic>does_not_equal</logic>
                             <text>${CatalogVersion}</text>
+                        </compareText>
+                        <compareText>
+                            <value>${CurrentPgControlVersion}</value>
+                            <logic>does_not_equal</logic>
+                            <text>${PgControlVersion}</text>
                         </compareText>
                     </ruleList>
                 </throwError>
