@@ -165,7 +165,7 @@ EOT
 
     # Install the PostgreSQL man pages
     mkdir -p $WD/server/staging/osx/share/man || _die "Failed to create the man directory"
-    cd $WD/server/staging/linux/osx/share/man || _die "Failed to change to the man directory"
+    cd $WD/server/staging/osx/share/man || _die "Failed to change to the man directory"
     cp -R $WD/server/source/postgres.osx/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
     cp -R $WD/server/source/postgres.osx/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
     cp -R $WD/server/source/postgres.osx/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
