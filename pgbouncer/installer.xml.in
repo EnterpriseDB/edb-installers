@@ -35,12 +35,19 @@
     <leftImage>../resources/pg-side.png</leftImage>
 
     <!-- i18n files for the UI -->
-    <allowedLanguages>en</allowedLanguages>
+    <allowLanguageSelection>1</allowLanguageSelection>
+    <defaultLanguage>auto</defaultLanguage>
+    <allowedLanguages>en zh_CN</allowedLanguages>
     <customLanguageFileList>
         <language>
             <code>en</code>
             <encoding>iso8859-1</encoding>
             <file>i18n/en.lng</file>
+        </language>
+        <language>
+            <code>zh_CN</code>
+            <encoding>utf-8</encoding>
+            <file>i18n/zh_CN.lng</file>
         </language>
     </customLanguageFileList>
     <preShowHelpActionList>
