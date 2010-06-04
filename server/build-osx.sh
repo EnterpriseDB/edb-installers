@@ -182,7 +182,7 @@ EOT
     PATH=/opt/local/bin:$PATH sh bootstrap
 
     # Configure
-    ./configure --enable-appbundle --disable-dependency-tracking --with-pgsql=$WD/server/staging/osx --with-wx=/usr/local --with-libxml2=/usr/local --with-libxslt=/usr/local --disable-debug || _die "Failed to configure pgAdmin"
+    CPPFLAGS="$PG_ARCH_OSX_CPPFLAGS" ./configure --enable-appbundle --disable-dependency-tracking --with-pgsql=$WD/server/staging/osx --with-wx=/usr/local --with-libxml2=/usr/local --with-libxslt=/usr/local --disable-debug --disable-static || _die "Failed to configure pgAdmin"
 
     # Build the app bundle
     make -j4 all || _die "Failed to build pgAdmin"
