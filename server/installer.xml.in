@@ -1186,9 +1186,9 @@
         <!-- Getlocales script -->
         <unpackFile>
             <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer/getlocales.sh</destination>
+            <destination>${system_temp_directory}/postgresql_installer/getlocales</destination>
             <folder>programfilesmacosx</folder>
-            <origin>installer/server/getlocales.sh</origin>
+            <origin>installer/server/getlocales</origin>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -1703,20 +1703,9 @@
                     </ruleList>
                 </addChoiceOptions>
 
-                <runProgram>
-                    <program>${system_temp_directory}/postgresql_installer/getlocales.sh</program>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>osx</value>
-                        </compareText>
-                    </ruleList>
-                </runProgram>
-
                 <runProgram program="${system_temp_directory}/postgresql_installer/getlocales">
                     <ruleList>
-                        <compareText logic="contains" text="${platform_name}" value="osx"/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
 

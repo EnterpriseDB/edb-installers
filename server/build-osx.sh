@@ -60,6 +60,10 @@ _prep_server_osx() {
     echo "Creating staging directory ($WD/server/staging/osx)"
     mkdir -p $WD/server/staging/osx || _die "Couldn't create the staging directory"
 
+    if [ -f $WD/server/scripts/osx/getlocales/getlocales.osx ]; then
+      rm -f $WD/server/scripts/osx/getlocales/getlocales.osx
+    fi
+
 }
 
 ################################################################################
@@ -166,9 +170,9 @@ EOT
     # Install the PostgreSQL man pages
     mkdir -p $WD/server/staging/osx/share/man || _die "Failed to create the man directory"
     cd $WD/server/staging/osx/share/man || _die "Failed to change to the man directory"
-    cp -R $WD/server/source/postgres.osx/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
-    cp -R $WD/server/source/postgres.osx/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
-    cp -R $WD/server/source/postgres.osx/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
+    cp -R $WD/server/source/postgres.osx/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (osx)"
+    cp -R $WD/server/source/postgres.osx/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (osx)"
+    cp -R $WD/server/source/postgres.osx/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (osx)"
 
     # Now, build pgAdmin
 
@@ -226,6 +230,8 @@ EOT
     _rewrite_so_refs $WD/server/staging/osx lib/postgresql @loader_path/../..
     _rewrite_so_refs $WD/server/staging/osx lib/postgresql/plugins @loader_path/../../..
 
+    cd $WD/server/scripts/osx/getlocales/; gcc -o getlocales.osx -O0 getlocales.c || _die "Failed to build getlocales utility"
+
     cd $WD
 }
 
@@ -262,8 +268,8 @@ _postprocess_server_osx() {
     mkdir -p staging/osx/installer/server || _die "Failed to create a directory for the install scripts"
     cp scripts/osx/preinstall.sh staging/osx/installer/server/preinstall.sh || _die "Failed to copy the preinstall script (scripts/osx/preinstall.sh)"
     chmod ugo+x staging/osx/installer/server/preinstall.sh
-    cp scripts/osx/getlocales.sh staging/osx/installer/server/getlocales.sh || _die "Failed to copy the getlocales script (scripts/osx/getlocales.sh)"
-    chmod ugo+x staging/osx/installer/server/getlocales.sh
+    cp $WD/server/scripts/osx/getlocales/getlocales.osx $WD/server/staging/osx/installer/server/getlocales || _die "Failed to copy getlocales utility in the staging directory"
+    chmod ugo+x staging/osx/installer/server/getlocales
     cp scripts/osx/createuser.sh staging/osx/installer/server/createuser.sh || _die "Failed to copy the createuser script (scripts/osx/createuser.sh)"
     chmod ugo+x staging/osx/installer/server/createuser.sh
     cp scripts/osx/initcluster.sh staging/osx/installer/server/initcluster.sh || _die "Failed to copy the initcluster script (scripts/osx/initcluster.sh)"
