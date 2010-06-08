@@ -35,7 +35,7 @@ echo "Updating build system" >> autobuild.log
 
 # Make sure, we always do a full build
 if [ -f settings.sh.full ]; then
-   cp -f setttings.sh.full settings.sh
+   cp -f settings.sh.full settings.sh
 fi
 
 # Run the build, and dump the output to a log file
