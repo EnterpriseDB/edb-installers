@@ -29,6 +29,8 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <uninstallerDirectory>${installdir}</uninstallerDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+    <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
+    <allowWindowResize>1</allowWindowResize>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>

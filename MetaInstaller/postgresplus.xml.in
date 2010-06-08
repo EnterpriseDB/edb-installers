@@ -9,6 +9,8 @@
     <preUninstallationScript>${installdir}/uninstall.sh</preUninstallationScript>
     <preUninstallationScriptArguments>${uninstall_dbserver1} ${uninstall_slony1} ${uninstall_pgJdbc1} ${uninstall_postgis1} ${uninstall_psqlOdbc1} ${installdir}</preUninstallationScriptArguments>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+    <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
+    <allowWindowResize>1</allowWindowResize>
     <outputDirectory>../output</outputDirectory>
 
 
