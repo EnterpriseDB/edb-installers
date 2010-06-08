@@ -85,6 +85,8 @@
 
   <!-- Initialisation actions -->
   <initializationActionList>
+    <setInstallerVariable name="pgAgentVersion" persist="0" value=""/>
+
     <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
     <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PGAGENT"/>
 
@@ -1391,8 +1393,10 @@
           <allowEmptyValue>1</allowEmptyValue>
           <width>40</width>
         </stringParameter>
-
       </parameterList>
+      <ruleList>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
 
       <preShowPageActionList>
         <setInstallerVariable name="pgagent_schema_exist" value="0"/>
@@ -1813,10 +1817,15 @@
           </ruleList>
         </passwordParameter>
       </parameterList>
-      <ruleEvaluationLogic>OR</ruleEvaluationLogic>
       <ruleList>
-        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
-        <compareText logic="equals" text="${platform_name}" value="windows"/>
+        <isFalse value="${extract_mode}"/>
+	<ruleGroup>
+	     <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+	    <ruleList>
+	        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
+		<compareText logic="equals" text="${platform_name}" value="windows"/>
+	    </ruleList>
+	</ruleGroup>
       </ruleList>
       <validationActionList>
         <actionGroup>
