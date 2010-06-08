@@ -31,6 +31,8 @@
     <uninstallerName>uninstall-${product_shortname}</uninstallerName>
     <outputDirectory>../output</outputDirectory>
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+    <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
+    <allowWindowResize>1</allowWindowResize>
     <licenseFile encoding="utf-8">resources/licence.txt</licenseFile>
 
     <!-- Images -->

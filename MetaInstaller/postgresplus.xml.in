@@ -8,6 +8,8 @@
   <!--<logoImage>resources/enterprisedb.gif</logoImage>-->
   <splashImage>../resources/splash_screen.png</splashImage>
   <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+  <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
+  <allowWindowResize>1</allowWindowResize>
   <outputDirectory>../output</outputDirectory>
   <vendor>EnterpriseDB</vendor>
   <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
