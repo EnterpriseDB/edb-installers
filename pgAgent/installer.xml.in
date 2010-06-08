@@ -34,7 +34,7 @@
   <uninstallerDirectory>${installdir}</uninstallerDirectory>
   <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
   <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
-  <allowWindowResize>1</allowWindowResize>
+  <allowWindowResize>1</allowWindowResize> 
   <windowsSoftwareRegistryPrefix/>
   <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
 
@@ -85,6 +85,7 @@
 
   <!-- Initialisation actions -->
   <initializationActionList>
+    <setInstallerVariable name="pgAgentVersion" persist="0" value=""/>
     <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
     <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PGAGENT"/>
 
@@ -1393,6 +1394,9 @@
         </stringParameter>
 
       </parameterList>
+      <ruleList>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
 
       <preShowPageActionList>
         <setInstallerVariable name="pgagent_schema_exist" value="0"/>
@@ -1813,10 +1817,15 @@
           </ruleList>
         </passwordParameter>
       </parameterList>
-      <ruleEvaluationLogic>OR</ruleEvaluationLogic>
       <ruleList>
-        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
-        <compareText logic="equals" text="${platform_name}" value="windows"/>
+        <isFalse value="${extract_mode}"/>
+        <ruleGroup>
+            <ruleEvaluationLogic>OR</ruleEvaluationLogic>
+            <ruleList>
+               <compareText logic="equals" text="${pgAgentVersion}" value=""/>
+               <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </ruleGroup>
       </ruleList>
       <validationActionList>
         <actionGroup>
