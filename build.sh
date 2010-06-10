@@ -172,22 +172,6 @@ then
     _postprocess_mediaWiki || exit 1
 fi
 
-# Package: phpWiki
-if [ $PG_PACKAGE_PHPWIKI = 1 ];
-then
-    echo "### Package: phpWiki"
-    cd $WD
-    source ./phpWiki/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_phpWiki || exit 1
-        _build_phpWiki || exit 1
-    fi
-
-    _postprocess_phpWiki || exit 1
-fi
-
 # Package: phpBB
 if [ $PG_PACKAGE_PHPBB = 1 ];
 then
