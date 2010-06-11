@@ -118,6 +118,9 @@ libuuid will typically link only in the primary architecture of the build
 machine. To fix this, remove the library (libuuid.16.dylib) from .libs/ and
 re-run the final link command, with the addition of appropriate -arch flags.
 
+- Install unix2dos utility:
+$sudo port install unix2dos
+
 - Set up DocBook SGML
 
 Configuring DocBook SGML on Mac OS X with MacPorts.
@@ -153,7 +156,7 @@ and then unpack the archive in /opt/local/share/sgml
 
 CATALOG "openjade/catalog"    
 CATALOG "docbook-4.2/docbook.cat"
-CATALOG "docbook-dsssl-1.79/catalog"  
+CATALOG "docbook-dsssl-1.79/catalog"
 
 8) Make sure that settings.sh is updated with docbook installation path.
 
