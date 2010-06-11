@@ -105,7 +105,7 @@ export PATH=$PATH:/opt/local/bin:/opt/local/sbin
 
 $ sudo port install bison
 $ sudo port install wget
-$ sudo port ossp-uuid
+$ sudo port install ossp-uuid
 
 Dependency libraries must be built with a little more control to ensure they 
 use the correct SDK to allow them to be used on Tiger and above. We manually
@@ -127,6 +127,9 @@ sudo make install
 Note that we must make sure all additional libraries link against these
 libraries, and not the older, system copies. In the case of libxslt, we can
 do this by configuring with --with-libxml-prefix=/usr/local
+
+- Install unix2dos utility:
+$sudo port install unix2dos
 
 - Set up DocBook SGML
 
@@ -168,7 +171,7 @@ and then unpack the archive in /opt/local/share/sgml
 
 CATALOG "openjade/catalog"    
 CATALOG "docbook-4.2/docbook.cat"
-CATALOG "docbook-dsssl-1.79/catalog"  
+CATALOG "docbook-dsssl-1.79/catalog"
 
 8) Make sure that settings.sh is updated with docbook installation path.
 
