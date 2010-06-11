@@ -310,7 +310,20 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
-        
+     
+		<actionGroup>
+		    <actionList>
+			<setInstallerVariable name="installationType" value="upgrade" />
+		    </actionList>
+		    <ruleList>
+			<compareText>
+			    <text>${pgbouncerVersion}</text>
+			    <logic>does_not_equal</logic>
+			    <value/>
+			</compareText>
+		    </ruleList>
+		</actionGroup>
+   
                 <actionGroup>
                     <actionList>
                         <!-- LIN & MAC: Set the system_user in case of re-install/upgrade -->

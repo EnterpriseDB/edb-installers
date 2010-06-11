@@ -552,6 +552,20 @@
         <logMessage>
             <text>Using branding: ${branding}</text>
         </logMessage> 
+
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installationType" value="upgrade" />
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${mediaWikiVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
         <unpackDirectory>
             <origin>instscripts</origin>
             <folder>installfileslinux</folder>

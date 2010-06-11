@@ -163,6 +163,19 @@
            </ruleList>
         </iniFileGet> 
 
+	<actionGroup>
+	    <actionList>
+		<setInstallerVariable name="installationType" value="upgrade" />
+	    </actionList>
+	    <ruleList>
+		<compareText>
+		    <text>${pgphonehomeVersion}</text>
+		    <logic>does_not_equal</logic>
+		    <value/>
+		</compareText>
+	    </ruleList>
+	</actionGroup>
+
         <!-- WIN : Set the Apache Home , Php Home and Port(default 8080) from registry. ApachePhp Installation would have set these values -->
         <actionGroup>
             <actionList>

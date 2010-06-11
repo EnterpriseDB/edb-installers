@@ -254,6 +254,19 @@
           </ruleList>
         </actionGroup>
 
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installationType" value="upgrade" />
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${pgAgentVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
         <!-- LIN : Stop the pgAgent Service -->
         <runProgram>
           <program>/etc/init.d/pgagent</program>

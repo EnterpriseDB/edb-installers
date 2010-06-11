@@ -193,6 +193,20 @@
             </ruleList>
         </actionGroup>
 
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installationType" value="upgrade" />
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${libpqVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+
         <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\libpq64" >
             <wowMode>64</wowMode> 
         </registryDelete>

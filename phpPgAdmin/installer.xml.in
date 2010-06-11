@@ -211,6 +211,20 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installationType" value="upgrade" />
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${phpPgAdminVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
         <!-- WIN: Set the Apache Home , Php Home and Apache Port(default 8080), ApachePhp Installation Directory from registry. -->
         <!--    ApachePhp Installation would have set these values -->
         <actionGroup>
