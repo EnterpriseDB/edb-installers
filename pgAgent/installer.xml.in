@@ -85,6 +85,12 @@
 
   <!-- Initialisation actions -->
   <initializationActionList>
+    <setInstallerVariable name="systempassword" value="postgres" >
+      <ruleList>
+	  <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+      </ruleList>
+    </setInstallerVariable>
+
     <setInstallerVariable name="pgAgentVersion" persist="0" value=""/>
     <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
     <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PGAGENT"/>
@@ -156,8 +162,7 @@
 
   <!-- Preinstallation actions -->
   <preInstallationActionList>
-
-    <actionGroup>
+       <actionGroup>
       <actionList>
         <setInstallerVariable name="branding" value=""/>
         <!-- Do not create uninstaller in case of extract-only mode -->
@@ -253,6 +258,20 @@
             <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
           </ruleList>
         </actionGroup>
+	 
+	<setInstallerVariable name="optionRequired" value="systempassword" />
+	<throwError text="${msg(Installer.CustomError.Upgrade.CommandLineOptionsNotPresent)}" >
+	  <ruleList>
+	       <compareText text="${installer_ui}" logic="equals" value="unattended" />
+	       <compareText text="${systempassword}" logic="equals" value="" />
+	       <isFalse value="${extract_mode}" />
+               <compareText>
+                    <text>${pgAgentVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+               </compareText>
+	  </ruleList>
+	</throwError>
 
         <actionGroup>
             <actionList>
@@ -1820,7 +1839,6 @@
           <description>${msg(config.syspassword.description)}</description>
           <explanation/>
           <value/>
-          <default>${defaultsyspassword}</default>
           <allowEmptyValue>1</allowEmptyValue>
           <cliOptionName>systempassword</cliOptionName>
           <cliOptionShow>yes</cliOptionShow>

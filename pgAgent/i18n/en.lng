@@ -10,6 +10,8 @@ ask.user.name=Do you want to run pgAgent under the 'postgres' user account?
 
 upgrade.existing.installation.title=Existing installation
 
+Installer.CustomError.Upgrade.CommandLineOptionsNotPresent=The following options was not specified and is required: ${optionRequired} for user: ${systemuser}
+
 upgrade.existing.installation.description=An existing pgAgent installation has been found at ${installdir}. This installation will be upgraded.
 
 progress.text.creating.user=Creating user account
