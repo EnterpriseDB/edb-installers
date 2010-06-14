@@ -206,14 +206,6 @@
             </ruleList>
         </actionGroup>
 
-
-        <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\libpq64" >
-            <wowMode>64</wowMode> 
-        </registryDelete>
-        <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\libpq">
-            <wowMode>64</wowMode> 
-        </registryDelete>
- 
         <setInstallerVariable name="installdir" value="${iLocation}" >
             <ruleList>
                 <compareText text="${iLocation}" logic="does_not_equal" value="" />
