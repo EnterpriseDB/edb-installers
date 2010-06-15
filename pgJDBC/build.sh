@@ -20,6 +20,12 @@ then
     source $WD/pgJDBC/build-linux-x64.sh
 fi
 
+# Linux ppc64
+if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+then
+    source $WD/pgJDBC/build-linux-ppc64.sh
+fi
+
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
@@ -72,6 +78,12 @@ _prep_pgJDBC() {
         _prep_pgJDBC_linux_x64 || exit 1
     fi
 
+    # Linux ppc64
+    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+    then
+        _prep_pgJDBC_linux_ppc64 || exit 1
+    fi
+
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
@@ -102,6 +114,12 @@ _build_pgJDBC() {
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
        _build_pgJDBC_linux_x64 || exit 1
+    fi
+
+    # Linux ppc64
+    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+    then
+       _build_pgJDBC_linux_ppc64 || exit 1
     fi
 
     # Windows
@@ -148,6 +166,12 @@ _postprocess_pgJDBC() {
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
         _postprocess_pgJDBC_linux_x64 || exit 1
+    fi
+    
+    # Linux ppc64
+    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+    then
+        _postprocess_pgJDBC_linux_ppc64 || exit 1
     fi
     
     # Windows

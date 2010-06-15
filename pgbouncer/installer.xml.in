@@ -499,6 +499,19 @@
                   <origin>instscripts</origin>
                   <destination>${system_temp_directory}</destination>
                   <component>default</component>
+                  <folder>installfileslinux-ppc64</folder>
+                  <ruleList>
+                      <compareText>
+                          <logic>equals</logic>
+                          <text>${platform_name}</text>
+                          <value>linux-ppc</value>
+                      </compareText>
+                  </ruleList>
+              </unpackDirectory>
+              <unpackDirectory>
+                  <origin>instscripts</origin>
+                  <destination>${system_temp_directory}</destination>
+                  <component>default</component>
                   <folder>installfileswindows</folder>
                   <ruleList>
                       <compareText>
@@ -1272,7 +1285,42 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
-                <!-- MAC Program Files -->
+                <!-- LIN-PPC64 - Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/pgbouncer/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/pgbouncer/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/pgbouncer/share</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/pgbouncer/doc</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>installfileslinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/instscripts</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+               <!-- MAC Program Files -->
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}</destination>
@@ -1477,6 +1525,19 @@
                               <logic>equals</logic>
                               <text>${platform_name}</text>
                               <value>linux-x64</value>
+                          </compareText>
+                      </ruleList>
+                  </unpackDirectory>
+                  <unpackDirectory>
+                      <origin>instscripts</origin>
+                      <destination>${system_temp_directory}</destination>
+                      <component>default</component>
+                      <folder>installfileslinux-ppc64</folder>
+                      <ruleList>
+                          <compareText>
+                              <logic>equals</logic>
+                              <text>${platform_name}</text>
+                              <value>linux-ppc</value>
                           </compareText>
                       </ruleList>
                   </unpackDirectory>

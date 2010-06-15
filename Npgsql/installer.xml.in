@@ -650,6 +650,43 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+               <!-- LIN-PPC64 - Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+			<distributionDirectory>
+                            <origin>staging/linux-ppc64/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/docs</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>installscriptslinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuscriptslinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
                 <!-- MAC Program Files -->
                 <folder>
                     <description>Program Files</description>

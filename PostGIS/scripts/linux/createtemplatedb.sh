@@ -7,6 +7,7 @@ export PGPASSWORD=$4
 PGHOME=$5
 INSTALLDIR=$5
 SHAREDIR=$6
+POSTGIS_MAJOR_VERSION=$7
 export LD_LIBRARY_PATH=$PGHOME/lib:$LD_LIBRARY_PATH
 
 # Creating template postgis database
@@ -19,8 +20,8 @@ export LD_LIBRARY_PATH=$PGHOME/lib:$LD_LIBRARY_PATH
 "$PGHOME/bin/psql" -c "UPDATE pg_database SET datistemplate='t' WHERE datname='template_postgis'" 
 
 # Creating template postgis functions
-"$PGHOME/bin/psql" -f "$SHAREDIR/contrib/postgis.sql" -d template_postgis
-"$PGHOME/bin/psql" -f "$SHAREDIR/contrib/spatial_ref_sys.sql" -d template_postgis
+"$PGHOME/bin/psql" -f "$SHAREDIR/contrib/postgis-$POSTGIS_MAJOR_VERSION/postgis.sql" -d template_postgis
+"$PGHOME/bin/psql" -f "$SHAREDIR/contrib/postgis-$POSTGIS_MAJOR_VERSION/spatial_ref_sys.sql" -d template_postgis
 "$PGHOME/bin/psql" -f "$SHAREDIR/contrib/postgis_comments.sql" -d template_postgis
 
 

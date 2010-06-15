@@ -20,6 +20,12 @@ then
     source $WD/Npgsql/build-linux-x64.sh
 fi
 
+# Linux ppc64
+if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+then
+    source $WD/Npgsql/build-linux-ppc64.sh
+fi
+
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
@@ -55,7 +61,7 @@ _prep_Npgsql() {
     fi
     
     # non-Windows
-    if [ $PG_ARCH_LINUX = 1 ] || [ $PG_ARCH_LINUX_X64 = 1 ] || [ $PG_ARCH_OSX = 1 ];
+    if [ $PG_ARCH_LINUX = 1 ] || [ $PG_ARCH_LINUX_X64 = 1 ] || [ $PG_ARCH_OSX = 1 ] || [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
 	if [ -e Mono2.0 ];
         then
@@ -88,6 +94,12 @@ _prep_Npgsql() {
         _prep_Npgsql_linux_x64 || exit 1
     fi
 
+    # Linux ppc64
+    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+    then
+        _prep_Npgsql_linux_ppc64 || exit 1
+    fi
+
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
@@ -118,6 +130,12 @@ _build_Npgsql() {
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
        _build_Npgsql_linux_x64 || exit 1
+    fi
+
+    # Linux ppc64
+    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+    then
+       _build_Npgsql_linux_ppc64 || exit 1
     fi
 
     # Windows
@@ -163,6 +181,12 @@ _postprocess_Npgsql() {
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
         _postprocess_Npgsql_linux_x64 || exit 1
+    fi
+    
+    # Linux ppc64
+    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+    then
+        _postprocess_Npgsql_linux_ppc64 || exit 1
     fi
     
     # Windows

@@ -20,6 +20,12 @@ then
    source $WD/pgAgent/build-linux-x64.sh
 fi
 
+# Linux ppc64
+if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+then
+   source $WD/pgAgent/build-linux-ppc64.sh
+fi
+
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
@@ -72,6 +78,13 @@ _prep_pgAgent() {
        _prep_pgAgent_linux_x64 || exit 1
     fi
 
+    # Linux ppc64
+    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+    then
+       #_prep_pgAgent_linux_ppc64 || exit 1
+       echo "Linux-PPC64 build pre-process is not part of build framework yet."
+    fi
+
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
@@ -102,6 +115,13 @@ _build_pgAgent() {
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
       _build_pgAgent_linux_x64 || exit 1
+    fi
+
+    # Linux ppc64
+    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+    then
+      #_build_pgAgent_linux_ppc64 || exit 1
+      echo "Linux-PPC64 build process is not part of build framework yet."
     fi
 
     # Windows
@@ -149,6 +169,12 @@ _postprocess_pgAgent() {
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
       _postprocess_pgAgent_linux_x64 || exit 1
+    fi
+    
+    # Linux ppc64
+    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+    then
+      _postprocess_pgAgent_linux_ppc64 || exit 1
     fi
     
     # Windows

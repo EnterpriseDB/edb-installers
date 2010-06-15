@@ -127,6 +127,9 @@
         <setInstallerVariable name="PGCurrentVersion" value="PG_CURRENT_VERSION">
             <persist>1</persist>
         </setInstallerVariable>
+        <setInstallerVariable name="PostGISMajorVersion" value="POSTGIS_MAJOR_VERSION">
+            <persist>1</persist>
+        </setInstallerVariable>
         <!-- Set the PostGIS version(if exists) -->
         <setInstallerVariable name="PostGISVersion" value="">
             <persist>0</persist>
@@ -894,11 +897,11 @@
 
                 <substitute>
                     <files>
-                           ${sharedir}/contrib/postgis.sql
-                           ${sharedir}/contrib/postgis_upgrade.sql
-                           ${sharedir}/contrib/postgis_upgrade_12_to_14.sql
-                           ${sharedir}/contrib/postgis_upgrade_13_to_14.sql
-                           ${sharedir}/contrib/postgis_upgrade_14_minor.sql
+                           ${sharedir}/contrib/postgis-${PostGISMajorVersion}/postgis.sql
+                           ${sharedir}/contrib/postgis-${PostGISMajorVersion}/postgis_upgrade.sql
+                           ${sharedir}/contrib/postgis-${PostGISMajorVersion}/postgis_upgrade_13_to_15.sql
+                           ${sharedir}/contrib/postgis-${PostGISMajorVersion}/postgis_upgrade_14_to_15.sql
+                           ${sharedir}/contrib/postgis-${PostGISMajorVersion}/postgis_upgrade_15_minor.sql
                     </files>
                     <substitutionList>
                         <substitution>
@@ -918,7 +921,7 @@
                 <!-- Create Template Spatial Database -->
                 <runProgram>
                     <program>${installdir}/PostGIS/installer/PostGIS/createtemplatedb.sh</program>
-                    <programArguments>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${pghome}" ${sharedir}</programArguments>
+                    <programArguments>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${pghome}" ${sharedir} ${PostGISMajorVersion}</programArguments>
                     <progressText>${msg(progress.text.creating.templatedb)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -962,11 +965,11 @@
 
                 <substitute>
                    <files>
-                          ${installdir}\share\contrib\postgis.sql
-                          ${installdir}\share\contrib\postgis_upgrade.sql
-                          ${installdir}\share\contrib\postgis_upgrade_12_to_14.sql
-                          ${installdir}\share\contrib\postgis_upgrade_13_to_14.sql
-                          ${installdir}\share\contrib\postgis_upgrade_14_minor.sql
+                          ${installdir}\share\contrib\postgis-${PostGISMajorVersion}\postgis.sql
+                          ${installdir}\share\contrib\postgis-${PostGISMajorVersion}\postgis_upgrade.sql
+                          ${installdir}\share\contrib\postgis-${PostGISMajorVersion}\postgis_upgrade_13_to_15.sql
+                          ${installdir}\share\contrib\postgis-${PostGISMajorVersion}\postgis_upgrade_14_to_15.sql
+                          ${installdir}\share\contrib\postgis-${PostGISMajorVersion}\postgis_upgrade_15_minor.sql
                    </files>
                    <substitutionList>
                       <substitution>
@@ -1017,7 +1020,7 @@
                         </runProgram>
                         <runProgram>
                             <program>${pghome}\bin\psql.exe</program>
-                            <programArguments>-f "${sharedir}\contrib\postgis.sql" -d template_postgis</programArguments>
+                            <programArguments>-f "${sharedir}\contrib\postgis-${PostGISMajorVersion}\postgis.sql" -d template_postgis</programArguments>
                             <progressText>${msg(progress.text.creating.templatedb)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>1</showMessageOnError>
@@ -1025,7 +1028,7 @@
                         </runProgram>
                         <runProgram>
                             <program>${pghome}\bin\psql.exe</program>
-                            <programArguments>-f "${sharedir}\contrib\spatial_ref_sys.sql" -d template_postgis</programArguments>
+                            <programArguments>-f "${sharedir}\contrib\postgis-${PostGISMajorVersion}\spatial_ref_sys.sql" -d template_postgis</programArguments>
                             <progressText>${msg(progress.text.creating.templatedb)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>1</showMessageOnError>
@@ -1376,7 +1379,7 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
-	        <!-- LINUX-X64: Program files -->
+    	        <!-- LINUX-X64: Program files -->
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}</destination>
@@ -1465,6 +1468,98 @@
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/linux-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- LINUX-PPC64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesbinlinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/PostGIS/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${parentlibdir}</destination>
+                    <name>programfilesliblinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/PostGIS/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}</destination>
+                    <name>programfilessharelinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/PostGIS/share/contrib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${mandir}</destination>
+                    <name>programfilesmanlinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/PostGIS/man/man1</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${docdir}</destination>
+                    <name>programfilesdoclinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/PostGIS/doc/postgis</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/PostGIS</destination>
+                    <name>programfilesutilsjavalinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/PostGIS/utils</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/PostGIS/java</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installation Files</description>
+                    <destination>${installdir}/PostGIS</destination>
+                    <name>installfileslinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Launch And Menu Scripts</description>
+                    <destination>${installdir}/PostGIS</destination>
+                    <name>menuandlaunchfileslinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/scripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -2047,6 +2142,19 @@
                                    <text>${platform_name}</text>
                                    <logic>equals</logic>
                                    <value>linux-x64</value>
+                                </compareText>
+                            </ruleList>
+                        </unpackFile>
+                        <unpackFile>
+                            <component>PostGIS</component>
+                            <destination>${system_temp_directory}/${product_fullname}/check-pgversion.sh</destination>
+                            <folder>installfileslinux-ppc64</folder>
+                            <origin>installer/PostGIS/check-pgversion.sh</origin>
+                            <ruleList>
+                                <compareText>
+                                   <text>${platform_name}</text>
+                                   <logic>equals</logic>
+                                   <value>linux-ppc</value>
                                 </compareText>
                             </ruleList>
                         </unpackFile>

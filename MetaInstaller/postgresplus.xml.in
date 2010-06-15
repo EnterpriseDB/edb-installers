@@ -775,6 +775,19 @@
         <unpackFile>
           <component>dbserver</component>
           <destination>${ppss_temp_directory}/validateUserClient.o</destination>
+          <folder>programfileslinux-ppc64</folder>
+          <origin>validateUserClient.o</origin>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
+            </compareText>
+          </ruleList>
+        </unpackFile>
+        <unpackFile>
+          <component>dbserver</component>
+          <destination>${ppss_temp_directory}/validateUserClient.o</destination>
           <folder>programfileslinux-x64</folder>
           <origin>validateUserClient.o</origin>
           <ruleList>
@@ -801,6 +814,19 @@
         <unpackFile>
           <component>dbserver</component>
           <destination>${ppss_temp_directory}/runvalidateUserClient.sh</destination>
+          <folder>programfileslinux-ppc64</folder>
+          <origin>runvalidateUserClient.sh</origin>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
+            </compareText>
+          </ruleList>
+        </unpackFile>
+        <unpackFile>
+          <component>dbserver</component>
+          <destination>${ppss_temp_directory}/runvalidateUserClient.sh</destination>
           <folder>programfileslinux-x64</folder>
           <origin>runvalidateUserClient.sh</origin>
           <ruleList>
@@ -828,6 +854,19 @@
         <unpackFile>
           <component>dbserver</component>
           <destination>${ppss_temp_directory}/dynaTuneClient.o</destination>
+          <folder>programfileslinux-ppc64</folder>
+          <origin>dynaTuneClient.o</origin>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
+            </compareText>
+          </ruleList>
+        </unpackFile>
+        <unpackFile>
+          <component>dbserver</component>
+          <destination>${ppss_temp_directory}/dynaTuneClient.o</destination>
           <folder>programfileslinux-x64</folder>
           <origin>dynaTuneClient.o</origin>
           <ruleList>
@@ -855,6 +894,19 @@
         <unpackFile>
           <component>dbserver</component>
           <destination>${ppss_temp_directory}/rundynaTuneClient.sh</destination>
+          <folder>programfileslinux-ppc64</folder>
+          <origin>rundynaTuneClient.sh</origin>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
+            </compareText>
+          </ruleList>
+        </unpackFile>
+        <unpackFile>
+          <component>dbserver</component>
+          <destination>${ppss_temp_directory}/rundynaTuneClient.sh</destination>
           <folder>programfileslinux-x64</folder>
           <origin>rundynaTuneClient.sh</origin>
           <ruleList>
@@ -882,6 +934,19 @@
         <unpackFile>
           <component>dbserver</component>
           <destination>${ppss_temp_directory}/isUserValidated.o</destination>
+          <folder>programfileslinux-ppc64</folder>
+          <origin>isUserValidated.o</origin>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
+            </compareText>
+          </ruleList>
+        </unpackFile>
+       <unpackFile>
+          <component>dbserver</component>
+          <destination>${ppss_temp_directory}/isUserValidated.o</destination>
           <folder>programfileslinux-x64</folder>
           <origin>isUserValidated.o</origin>
           <ruleList>
@@ -902,6 +967,19 @@
               <logic>equals</logic>
               <text>${platform_name}</text>
               <value>linux</value>
+            </compareText>
+          </ruleList>
+        </unpackFile>
+        <unpackFile>
+          <component>dbserver</component>
+          <destination>${ppss_temp_directory}/runisUserValidated.sh</destination>
+          <folder>programfileslinux-ppc64</folder>
+          <origin>runisUserValidated.sh</origin>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
             </compareText>
           </ruleList>
         </unpackFile>
@@ -929,6 +1007,19 @@
               <logic>equals</logic>
               <text>${platform_name}</text>
               <value>linux</value>
+            </compareText>
+          </ruleList>
+        </unpackDirectory>
+        <unpackDirectory>
+          <component>dbserver</component>
+          <destination>${ppss_temp_directory}/</destination>
+          <folder>programfileslinux-ppc64</folder>
+          <origin>lib</origin>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
             </compareText>
           </ruleList>
         </unpackDirectory>
@@ -956,6 +1047,19 @@
               <logic>equals</logic>
               <text>${platform_name}</text>
               <value>linux</value>
+            </compareText>
+          </ruleList>
+        </unpackFile>
+        <unpackFile>
+          <component>dbserver</component>
+          <destination>${ppss_temp_directory}/modifyPostgresql.o</destination>
+          <folder>programfileslinux-ppc64</folder>
+          <origin>modifyPostgresql.o</origin>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
             </compareText>
           </ruleList>
         </unpackFile>
@@ -984,6 +1088,19 @@
               <logic>equals</logic>
               <text>${platform_name}</text>
               <value>linux</value>
+            </compareText>
+          </ruleList>
+        </unpackFile>
+        <unpackFile>
+          <component>dbserver</component>
+          <destination>${ppss_temp_directory}/generate_uuid.sh</destination>
+          <folder>programfileslinux-ppc64</folder>
+          <origin>generate_uuid.sh</origin>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
             </compareText>
           </ruleList>
         </unpackFile>
@@ -1037,6 +1154,19 @@
         <unpackFile>
           <component>dbserver</component>
           <destination>${ppss_temp_directory}/sysinfo.sh</destination>
+          <folder>programfileslinux-ppc64</folder>
+          <origin>sysinfo.sh</origin>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
+            </compareText>
+          </ruleList>
+        </unpackFile>
+        <unpackFile>
+          <component>dbserver</component>
+          <destination>${ppss_temp_directory}/sysinfo.sh</destination>
           <folder>programfileslinux-x64</folder>
           <origin>sysinfo.sh</origin>
           <ruleList>
@@ -1082,6 +1212,19 @@
           </ruleList>
         </unpackFile>
     
+        <unpackFile>
+          <component>dbserver</component>
+          <destination>${ppss_temp_directory}/getlocales.sh</destination>
+          <folder>programfileslinux-ppc64</folder>
+          <origin>getlocales.sh</origin>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
+            </compareText>
+          </ruleList>
+        </unpackFile>
         <unpackFile>
           <component>dbserver</component>
           <destination>${ppss_temp_directory}/getlocales.sh</destination>
@@ -1408,6 +1551,29 @@
           </ruleList>
         </actionGroup>
     
+        <actionGroup>
+          <actionList>
+            <unpackDirectory>
+              <component>dbserver</component>
+              <destination>${ppss_temp_directory}/</destination>
+              <folder>programfileslinux-ppc64</folder>
+              <origin>pgcontrol</origin>
+            </unpackDirectory>
+            <unpackFile>
+              <component>dbserver</component>
+              <destination>${ppss_temp_directory}/runpgcontroldata.sh</destination>
+              <folder>programfileslinux-ppc64</folder>
+              <origin>runpgcontroldata.sh</origin>
+            </unpackFile>
+          </actionList>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
+            </compareText>
+          </ruleList>
+        </actionGroup>
         <actionGroup>
           <actionList>
             <unpackDirectory>
@@ -3019,6 +3185,21 @@
                 </compareText>
               </ruleList>
             </runProgram>
+           <!-- linux-ppc64 -->
+            <runProgram>
+              <abortOnError>0</abortOnError>
+              <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux-ppc64.bin</program>
+              <programArguments>--mode unattended --disable-stackbuilder 1 --installdir "${installdir}" --datadir "${datadir}" --serviceaccount "${serviceaccount}" --superaccount "${supername}" --superpassword "${superpassword.password}" --serverport ${serverport} --locale "${locale}" --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
+              <progressText>Installing Database Server ... </progressText>
+              <showMessageOnError>0</showMessageOnError>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>linux-ppc</value>
+                </compareText>
+              </ruleList>
+            </runProgram>
             <setInstallerVariable>
               <name>didError</name>
               <value>1</value>
@@ -3071,7 +3252,7 @@
                 </compareText>
               </ruleList>
             </runProgram>
-            <!-- linux-x64 -->
+             <!-- linux-x64 -->
             <runProgram>
               <abortOnError>0</abortOnError>
               <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</program>
@@ -3083,6 +3264,21 @@
                   <logic>equals</logic>
                   <text>${platform_name}</text>
                   <value>linux-x64</value>
+                </compareText>
+              </ruleList>
+            </runProgram>
+            <!-- linux-ppc64 -->
+            <runProgram>
+              <abortOnError>0</abortOnError>
+              <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux-ppc64.bin</program>
+              <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword.password}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+              <progressText>Installing Database Server ... </progressText>
+              <showMessageOnError>0</showMessageOnError>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>linux-ppc</value>
                 </compareText>
               </ruleList>
             </runProgram>
@@ -3174,6 +3370,28 @@
             </compareText>
           </ruleList>
         </runProgram>
+
+        <!-- linux-ppc64-->
+    
+        <runProgram>
+          <abortOnError>0</abortOnError>
+          <program>${ppss_temp_directory}/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux-ppc64.bin</program>
+          <programArguments>--mode unattended --installdir ${installdir} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <progressText>Installing Slony ... </progressText>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${component(slony).selected}</text>
+              <value>1</value>
+            </compareText>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
+            </compareText>
+          </ruleList>
+        </runProgram>
         
         <logMessage>
           <text>Installing pgJDBC in ${installdir}/pgJDBC</text>
@@ -3229,6 +3447,28 @@
               <logic>equals</logic>
               <text>${platform_name}</text>
               <value>linux-x64</value>
+            </compareText>
+          </ruleList>
+        </runProgram>
+
+        <!-- linux-ppc64-->
+    
+        <runProgram>
+          <abortOnError>0</abortOnError>
+          <program>${ppss_temp_directory}/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux-ppc64.bin</program>
+          <programArguments>--mode unattended --installdir ${installdir}/pgJDBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <progressText>Installing pgJDBC ... </progressText>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${component(pgJdbc).selected}</text>
+              <value>1</value>
+            </compareText>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
             </compareText>
           </ruleList>
         </runProgram>
@@ -3290,6 +3530,28 @@
             </compareText>
           </ruleList>
         </runProgram>
+
+        <!-- linux-ppc64 -->
+    
+        <runProgram>
+          <abortOnError>0</abortOnError>
+          <program>${ppss_temp_directory}/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux-ppc64.bin</program>
+          <programArguments>--mode unattended --installdir ${installdir}/psqlODBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <progressText>Installing psqlODBC ... </progressText>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${component(psqlOdbc).selected}</text>
+              <value>1</value>
+            </compareText>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
+            </compareText>
+          </ruleList>
+        </runProgram>
     
         <logMessage>
           <text>Installing Npgsql in ${installdir}/Npgsql</text>
@@ -3343,6 +3605,26 @@
               <logic>equals</logic>
               <text>${platform_name}</text>
               <value>linux-x64</value>
+            </compareText>
+          </ruleList>
+       </runProgram>
+
+       <runProgram>
+          <abortOnError>0</abortOnError>
+          <program>${ppss_temp_directory}/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux-ppc64.bin</program>
+          <programArguments>--mode unattended --prefix "${installdir}/Npgsql" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <progressText>Installing NpgSQL ... </progressText>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${component(npgsql).selected}</text>
+              <value>1</value>
+            </compareText>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
             </compareText>
           </ruleList>
         </runProgram>
@@ -3404,6 +3686,28 @@
             </compareText>
           </ruleList>
         </runProgram>
+
+        <!-- linux-ppc64 -->
+    
+        <runProgram>
+          <abortOnError>0</abortOnError>
+          <program>${ppss_temp_directory}/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-ppc64.bin</program>
+          <programArguments>--mode unattended --installdir ${installdir} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
+          <progressText>Installing PostGIS ... </progressText>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${component(postgis).selected}</text>
+              <value>1</value>
+            </compareText>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
+            </compareText>
+          </ruleList>
+        </runProgram>
     
         <logMessage>
           <text>Installing pgbouncer in ${installdir}/pgbouncer</text>
@@ -3462,6 +3766,28 @@
             </compareText>
           </ruleList>
         </runProgram>
+
+        <!-- linux-ppc64 -->
+    
+        <runProgram>
+          <abortOnError>0</abortOnError>
+          <program>${ppss_temp_directory}/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux-ppc64.bin</program>
+          <programArguments>--mode unattended --prefix ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
+          <progressText>Installing pgbouncer ... </progressText>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${component(pgbouncer).selected}</text>
+              <value>1</value>
+            </compareText>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
+            </compareText>
+          </ruleList>
+        </runProgram>
     
         <logMessage>
           <text>Installing pgmemcache in ${installdir}</text>
@@ -3515,6 +3841,26 @@
               <logic>equals</logic>
               <text>${platform_name}</text>
               <value>linux-x64</value>
+            </compareText>
+          </ruleList>
+        </runProgram>
+
+        <runProgram>
+          <abortOnError>0</abortOnError>
+          <program>${ppss_temp_directory}/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux-ppc64.bin</program>
+          <programArguments>--mode unattended --installdir ${installdir}</programArguments>
+          <progressText>Installing pgmemcache ... </progressText>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${component(pgmemcache).selected}</text>
+              <value>1</value>
+            </compareText>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
             </compareText>
           </ruleList>
         </runProgram>
@@ -3575,6 +3921,26 @@
             </compareText>
           </ruleList>
         </runProgram>
+
+        <runProgram>
+          <abortOnError>0</abortOnError>
+          <program>${ppss_temp_directory}/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux-ppc64.bin</program>
+          <programArguments>--mode unattended --installdir ${installdir}/pgAgent --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --systemuser "${serviceaccount}" --schema ${schema} --autostart no</programArguments>
+          <progressText>Installing pgAgent ... </progressText>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${component(pgagent).selected}</text>
+              <value>1</value>
+            </compareText>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>linux-ppc</value>
+            </compareText>
+          </ruleList>
+        </runProgram>
         
         <!-- Always install StackBuilderPlus as the last component -->
         <actionGroup>
@@ -3598,6 +3964,16 @@
                         programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot;  ${monitor_server} --install-monitoring ${installMonitoring}">
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
+              </ruleList>
+            </runProgram>
+           <!-- Linux-ppc64 -->
+            <runProgram abortOnError="0"
+                        progressText="Installing StackBuilderPlus ... "
+                        showMessageOnError="1"
+                        program="${ppss_temp_directory}/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-ppc64.bin"
+                        programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot;  ${monitor_server} --install-monitoring ${installMonitoring}">
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
               </ruleList>
             </runProgram>
           </actionList>
@@ -4739,6 +5115,11 @@
       <actionList>
         <!-- DevServer -->
         <setInstallerVariable name="devserver_installer" value="${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-${platform_name}.${platform_exec_suffix}"/>
+        <setInstallerVariable name="devserver_installer" value="${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-${platform_name}64.${platform_exec_suffix}">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
+          </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="devserver_installer" value="${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-${platform_name}.${platform_exec_suffix}/Contents/MacOS/installbuilder.sh">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="osx"/>
@@ -4762,6 +5143,11 @@
 
         <!-- StackBuilder Plus -->
         <setInstallerVariable name="sbp_installer" value="${ppss_temp_directory}/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-${platform_name}.${platform_exec_suffix}"/>
+        <setInstallerVariable name="sbp_installer" value="${ppss_temp_directory}/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-${platform_name}64.${platform_exec_suffix}">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
+          </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="sbp_installer" value="${ppss_temp_directory}/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-${platform_name}.${platform_exec_suffix}/Contents/MacOS/installbuilder.sh">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="osx"/>
@@ -4785,6 +5171,11 @@
 
         <!-- Slony -->
         <setInstallerVariable name="slony_installer" value="${ppss_temp_directory}/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-${platform_name}.${platform_exec_suffix}"/>
+        <setInstallerVariable name="slony_installer" value="${ppss_temp_directory}/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-${platform_name}64.${platform_exec_suffix}">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
+          </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="slony_installer" value="${ppss_temp_directory}/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-${platform_name}.${platform_exec_suffix}/Contents/MacOS/installbuilder.sh">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="osx"/>
@@ -4808,6 +5199,11 @@
 
         <!-- pgJDBC -->
         <setInstallerVariable name="pgjdbc_installer" value="${ppss_temp_directory}/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-${platform_name}.${platform_exec_suffix}"/>
+        <setInstallerVariable name="pgjdbc_installer" value="${ppss_temp_directory}/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-${platform_name}64.${platform_exec_suffix}">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
+          </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="pgjdbc_installer" value="${ppss_temp_directory}/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-${platform_name}.${platform_exec_suffix}/Contents/MacOS/installbuilder.sh">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="osx"/>
@@ -4831,6 +5227,11 @@
 
         <!-- PostGIS -->
         <setInstallerVariable name="postgis_installer" value="${ppss_temp_directory}/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-${platform_name}.${platform_exec_suffix}"/>
+        <setInstallerVariable name="postgis_installer" value="${ppss_temp_directory}/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-${platform_name}64.${platform_exec_suffix}">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
+          </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="postgis_installer" value="${ppss_temp_directory}/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-${platform_name}.${platform_exec_suffix}/Contents/MacOS/installbuilder.sh">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="osx"/>
@@ -4854,6 +5255,11 @@
 
         <!-- psqlODBC -->
         <setInstallerVariable name="psqlodbc_installer" value="${ppss_temp_directory}/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-${platform_name}.${platform_exec_suffix}"/>
+        <setInstallerVariable name="psqlodbc_installer" value="${ppss_temp_directory}/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-${platform_name}64.${platform_exec_suffix}">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
+          </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="psqlodbc_installer" value="${ppss_temp_directory}/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-${platform_name}.${platform_exec_suffix}/Contents/MacOS/installbuilder.sh">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="osx"/>
@@ -4877,6 +5283,11 @@
 
         <!-- Npgsql -->
         <setInstallerVariable name="npgsql_installer" value="${ppss_temp_directory}/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-${platform_name}.${platform_exec_suffix}"/>
+        <setInstallerVariable name="npgsql_installer" value="${ppss_temp_directory}/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-${platform_name}64.${platform_exec_suffix}">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
+          </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="npgsql_installer" value="${ppss_temp_directory}/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-${platform_name}.${platform_exec_suffix}/Contents/MacOS/installbuilder.sh">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="osx"/>
@@ -4900,6 +5311,11 @@
 
         <!-- pgbouncer -->
         <setInstallerVariable name="pgbouncer_installer" value="${ppss_temp_directory}/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-${platform_name}.${platform_exec_suffix}"/>
+        <setInstallerVariable name="pgbouncer_installer" value="${ppss_temp_directory}/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-${platform_name}64.${platform_exec_suffix}">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
+          </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="pgbouncer_installer" value="${ppss_temp_directory}/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-${platform_name}.${platform_exec_suffix}/Contents/MacOS/installbuilder.sh">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="osx"/>
@@ -4923,6 +5339,11 @@
 
         <!-- pgmemcache -->
         <setInstallerVariable name="pgmemcache_installer" value="${ppss_temp_directory}/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-${platform_name}.${platform_exec_suffix}"/>
+        <setInstallerVariable name="pgmemcache_installer" value="${ppss_temp_directory}/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-${platform_name}64.${platform_exec_suffix}">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
+          </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="pgmemcache_installer" value="${ppss_temp_directory}/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-${platform_name}.${platform_exec_suffix}/Contents/MacOS/installbuilder.sh">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="osx"/>
@@ -4946,6 +5367,11 @@
 
         <!-- pgAgent -->
         <setInstallerVariable name="pgagent_installer" value="${ppss_temp_directory}/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-${platform_name}.${platform_exec_suffix}"/>
+        <setInstallerVariable name="pgagent_installer" value="${ppss_temp_directory}/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-${platform_name}64.${platform_exec_suffix}">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
+          </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="pgagent_installer" value="${ppss_temp_directory}/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-${platform_name}.${platform_exec_suffix}/Contents/MacOS/installbuilder.sh">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="osx"/>
@@ -5231,6 +5657,7 @@
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="linux"/>
             <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
+            <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
           </ruleList>
         </actionGroup>
 
@@ -5849,6 +6276,114 @@
           </distributionFileList>
         </folder>
 
+       <!-- linux-ppc64 -->
+
+        <folder>
+          <description>Program Files</description>
+          <destination>${ppss_temp_directory}</destination>
+          <name>programfileslinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux-ppc64/postgresql-PG_PACKAGE_VERSION-linux-ppc64.bin</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/getlocales.sh</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/generate_uuid.sh</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/sysinfo.sh</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/validateUserClient.o</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/isUserValidated.o</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/dynaTuneClient.o</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/runvalidateUserClient.sh</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/runisUserValidated.sh</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/rundynaTuneClient.sh</origin>
+            </distributionFile>
+            <distributionDirectory>
+              <origin>staging/linux-ppc64/scripts/lib</origin>
+            </distributionDirectory>
+
+            <!-- starts here -->
+            <distributionDirectory>
+              <origin>staging/linux-ppc64/scripts/pgcontrol</origin>
+            </distributionDirectory>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/runpgcontroldata.sh</origin>
+            </distributionFile>
+
+            <!-- ends here -->
+
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/modifyPostgresql.o</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+
+        <folder>
+          <description>Program Files</description>
+          <destination>${ppss_temp_directory}</destination>
+          <name>dbserverlinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/generate_uuid.sh</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/sysinfo.sh</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/validateUserClient.o</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/isUserValidated.o</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/dynaTuneClient.o</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/runvalidateUserClient.sh</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/runisUserValidated.sh</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/rundynaTuneClient.sh</origin>
+            </distributionFile>
+            <distributionDirectory>
+              <origin>staging/linux-ppc64/scripts/lib</origin>
+            </distributionDirectory>
+
+            <!-- starts here -->
+            <distributionDirectory>
+              <origin>staging/linux-ppc64/scripts/pgcontrol</origin>
+            </distributionDirectory>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/runpgcontroldata.sh</origin>
+            </distributionFile>
+
+            <!-- ends here -->
+
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/modifyPostgresql.o</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+
         <!-- Windows -->
         <folder>
           <description>Program Files</description>
@@ -6000,6 +6535,19 @@
           </distributionFileList>
         </folder>
 
+        <!-- linux-ppc64 -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${ppss_temp_directory}</destination>
+          <name>stackbuilderpluslinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux-ppc64/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-ppc64.bin</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+
         <!-- MAC: Program files -->
         <folder>
           <description>Program Files</description>
@@ -6063,6 +6611,21 @@
             </distributionFile>
           </distributionFileList>
         </folder>
+
+        <!-- linux-ppc64 -->
+
+        <folder>
+          <description>Program Files</description>
+          <destination>${ppss_temp_directory}</destination>
+          <name>programfileslinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux-ppc64/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux-ppc64.bin</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+
 
         <!-- MAC: Program files -->
         <folder>
@@ -6159,7 +6722,21 @@
           </distributionFileList>
         </folder>
 
-        <!-- linux-x64-->
+        <!-- linux-ppc64-->
+
+        <folder>
+          <description>Program Files</description>
+          <destination>${ppss_temp_directory}</destination>
+          <name>programfileslinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux-ppc64/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux-ppc64.bin</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+
+       <!-- linux-x64-->
 
         <folder>
           <description>Program Files</description>
@@ -6285,7 +6862,41 @@
           </distributionFileList>
         </folder>
 
-        <!-- linux-x64-->
+        <!-- linux-ppc64-->
+
+        <folder>
+          <description>Program Files</description>
+          <destination>${ppss_temp_directory}</destination>
+          <name>programfileslinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux-ppc64/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-ppc64.bin</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/check-connection.sh</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/check-db.sh</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+        <folder>
+          <description>Program Files</description>
+          <destination>${ppss_temp_directory}</destination>
+          <name>postgislinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/check-connection.sh</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-ppc64/scripts/check-db.sh</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+
+       <!-- linux-x64-->
 
         <folder>
           <description>Program Files</description>
@@ -6429,7 +7040,21 @@
           </distributionFileList>
         </folder>
 
-        <!-- linux-x64-->
+        <!-- linux-ppc64-->
+
+        <folder>
+          <description>Program Files</description>
+          <destination>${ppss_temp_directory}</destination>
+          <name>programfileslinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux-ppc64/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux-ppc64.bin</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+
+       <!-- linux-x64-->
 
         <folder>
           <description>Program Files</description>
@@ -6550,7 +7175,19 @@
             </distributionFile>
           </distributionFileList>
         </folder>
-        <!-- linux-x64 -->
+        <!-- linux-ppc64 -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${ppss_temp_directory}</destination>
+          <name>npgsqllinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux-ppc64/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux-ppc64.bin</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+       <!-- linux-x64 -->
         <folder>
           <description>Program Files</description>
           <destination>${ppss_temp_directory}</destination>
@@ -6643,7 +7280,21 @@
           </distributionFileList>
         </folder>
 
-        <!-- linux-x64-->
+        <!-- linux-ppc64-->
+
+        <folder>
+          <description>Program Files</description>
+          <destination>${ppss_temp_directory}</destination>
+          <name>pgbouncerlinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux-ppc64/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux-ppc64.bin</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+
+       <!-- linux-x64-->
 
         <folder>
           <description>Program Files</description>
@@ -6751,7 +7402,21 @@
           </distributionFileList>
         </folder>
 
-        <!-- linux-x64-->
+        <!-- linux-ppc64-->
+
+        <folder>
+          <description>Program Files</description>
+          <destination>${ppss_temp_directory}</destination>
+          <name>pgmemcachelinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux-ppc64/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux-ppc64.bin</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+
+       <!-- linux-x64-->
 
         <folder>
           <description>Program Files</description>
@@ -6847,7 +7512,21 @@
           </distributionFileList>
         </folder>
 
-        <!-- linux-x64-->
+        <!-- linux-ppc64-->
+
+        <folder>
+          <description>Program Files</description>
+          <destination>${ppss_temp_directory}</destination>
+          <name>pgagentlinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux-ppc64/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux-ppc64.bin</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+
+       <!-- linux-x64-->
 
         <folder>
           <description>Program Files</description>

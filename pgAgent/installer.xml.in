@@ -1001,7 +1001,6 @@
             </distributionFile>
           </distributionFileList>
         </folder>
-
         <!-- LIN-X64 : Program files -->
         <folder>
           <description>Program Files</description>
@@ -1058,6 +1057,66 @@
             </distributionFile>
 	    <distributionFile>
               <origin>staging/linux-x64/README</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+
+        <!-- LIN-PPC64 : Program files -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${installdir}</destination>
+          <name>programfileslinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionDirectory>
+              <origin>staging/linux-ppc64/bin</origin>
+            </distributionDirectory>
+          </distributionFileList>
+        </folder>
+        <folder>
+          <description>Library Files</description>
+          <destination>${installdir}</destination>
+          <name>libfileslinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionDirectory>
+                <origin>staging/linux-ppc64/lib</origin>
+            </distributionDirectory>
+          </distributionFileList>
+        </folder>
+        <folder>
+          <description>Configure Files</description>
+          <destination>${installdir}</destination>
+          <name>configurefileslinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionDirectory>
+              <origin>staging/linux-ppc64/share</origin>
+            </distributionDirectory>
+          </distributionFileList>
+        </folder>
+        <folder>
+          <description>Installer Files</description>
+          <destination>${installdir}</destination>
+          <name>installfileslinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionDirectory>
+              <origin>staging/linux-ppc64/installer</origin>
+            </distributionDirectory>
+          </distributionFileList>
+        </folder>
+        <folder>
+          <description>Other Files</description>
+          <destination>${installdir}</destination>
+          <name>otherfileslinux-ppc64</name>
+          <platforms>linux-ppc</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>staging/linux-ppc64/LICENSE</origin>
+            </distributionFile>
+	    <distributionFile>
+              <origin>staging/linux-ppc64/README</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -1485,6 +1544,27 @@
                 <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
               </ruleList>
             </unpackDirectory>
+
+            <!-- LIN-ppc64: Unpack psql and its shared libraries -->
+            <unpackFile>
+              <component>pgAgent</component>
+              <destination>${system_temp_directory}/${product_fullname}/bin/psql</destination>
+              <folder>programfileslinux-ppc64</folder>
+              <origin>bin/psql</origin>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
+              </ruleList>
+            </unpackFile>
+            <unpackDirectory>
+              <component>pgAgent</component>
+              <destination>${system_temp_directory}/${product_fullname}/lib</destination>
+              <folder>libfileslinux-ppc64</folder>
+              <origin>lib</origin>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
+              </ruleList>
+            </unpackDirectory>
+
 
             <!-- MAC: Unpack psql and its shared libraries -->
             <unpackFile>

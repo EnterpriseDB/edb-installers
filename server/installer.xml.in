@@ -353,6 +353,17 @@
         </setInstallerVariable>
         <setInstallerVariable>
             <name>DateTimeSetting</name>
+            <value>@@PG_DATETIME_SETTING_LINUX_PPC64@@</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-ppc</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+       <setInstallerVariable>
+            <name>DateTimeSetting</name>
             <value>@@PG_DATETIME_SETTING_LINUX_X64@@</value>
             <ruleList>
                 <compareText>
@@ -1221,7 +1232,7 @@
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </unpackFile>
-       <unpackFile>
+        <unpackFile>
             <component>default</component>
             <destination>${system_temp_directory}/postgresql_installer/getlocales</destination>
             <folder>programfileslinux-x64</folder>
@@ -1231,6 +1242,20 @@
                     <logic>equals</logic>
                     <text>${platform_name}</text>
                     <value>linux-x64</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+       </unpackFile>
+       <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer/getlocales</destination>
+            <folder>programfileslinux-ppc64</folder>
+            <origin>installer/server/getlocales</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-ppc</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
@@ -1337,6 +1362,38 @@
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
+
+        <actionGroup>
+            <actionList>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/pg_controldata</destination>
+                    <folder>programfileslinux-ppc64</folder>
+                    <origin>bin/pg_controldata</origin>
+                </unpackFile>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</destination>
+                    <folder>programfileslinux-ppc64</folder>
+                    <origin>installer/server/runpgcontroldata.sh</origin>
+                </unpackFile>
+                <unpackDirectory>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/</destination>
+                    <folder>programfileslinux-ppc64</folder>
+                    <origin>lib</origin>
+                </unpackDirectory>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-ppc</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
 
         <actionGroup>
             <actionList>
@@ -2651,29 +2708,12 @@ PostgreSQLHelpPath=file://${installdir}/doc/postgresql/html
                     </text>
                     <ruleList>
                         <compareText>
-                            <logic>equals</logic>
+                            <logic>contains</logic>
                             <text>linux</text>
                             <value>${platform_name}</value>
                         </compareText>
                     </ruleList>
                 </addTextToFile>
-
-                <!-- LINUX-X64: Adding configuration to the global config file -->
-                <addTextToFile>
-                    <file>${installdir}/pgAdmin3/share/pgadmin3/settings.ini</file>
-                    <text>
-PostgreSQLPath=${installdir}/bin
-PostgreSQLHelpPath=file://${installdir}/doc/postgresql/html
-                    </text>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>linux-x64</text>
-                            <value>${platform_name}</value>
-                        </compareText>
-                    </ruleList>
-                </addTextToFile>
-
 
                 <!--MAC: Adding configuration to the global config file -->
                 <addTextToFile>
@@ -3784,6 +3824,44 @@ REM The script sets environment variables helpful for PostgreSQL
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+
+                <!-- LINUX_PPC64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/doc</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/include</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/installer</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/pgAdmin3</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/scripts</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/stackbuilder</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/share</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+
 
                 <!-- MAC: Program files -->
                 <folder>

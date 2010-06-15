@@ -20,6 +20,12 @@ then
     source $WD/pgbouncer/build-linux-x64.sh
 fi
 
+# Linux ppc64
+if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+then
+    source $WD/pgbouncer/build-linux-ppc64.sh
+fi
+
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
@@ -69,7 +75,14 @@ _prep_pgbouncer() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _prep_pgbouncer_linux_x64 || exit 1
+        #_prep_pgbouncer_linux_x64 || exit 1
+        echo "Linux-PPC64 build pre-process is not part of build framework yet."
+    fi
+
+    # Linux ppc64
+    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+    then
+        _prep_pgbouncer_linux_ppc64 || exit 1
     fi
 
     # Windows
@@ -102,6 +115,13 @@ _build_pgbouncer() {
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
        _build_pgbouncer_linux_x64 || exit 1
+    fi
+
+    # Linux ppc64
+    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+    then
+       #_build_pgbouncer_linux_ppc64 || exit 1
+       echo "Linux-PPC64 build process is not part of build framework yet."
     fi
 
     # Windows
@@ -148,6 +168,12 @@ _postprocess_pgbouncer() {
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
         _postprocess_pgbouncer_linux_x64 || exit 1
+    fi
+    
+    # Linux ppc64
+    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+    then
+        _postprocess_pgbouncer_linux_ppc64 || exit 1
     fi
     
     # Windows

@@ -647,7 +647,25 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
-                <!-- MAC: Program files -->
+                <!-- LIN-PPC64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesliblinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/include</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/share</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+               <!-- MAC: Program files -->
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}</destination>

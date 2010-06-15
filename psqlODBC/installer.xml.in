@@ -473,6 +473,38 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
+                <!-- LIN-PPC64: Set the unixODBC Path -->
+                <actionGroup>
+                    <actionList>
+                        <unpackFile>
+                            <component>psqlODBC</component>
+                            <destination>${system_temp_directory}/${product_shortname}/getodbcinstpath.sh</destination>
+                            <folder>programfileslinux-ppc64</folder>
+                            <origin>installer/psqlODBC/getodbcinstpath.sh</origin>
+                        </unpackFile>
+                        <runProgram>
+                            <program>${system_temp_directory}/${product_shortname}/getodbcinstpath.sh</program>
+                            <workingDirectory>${system_temp_directory}/${product_shortname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+                        <setInstallerVariableFromScriptOutput>
+                            <name>odbcinstpath</name>
+                            <exec>cat</exec>
+                            <execArgs>odbcinstfilepath</execArgs>
+                            <workingDirectory>${system_temp_directory}/${product_shortname}</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </setInstallerVariableFromScriptOutput>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-ppc</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
                 <!-- MAC: Set the unixODBC Path -->
                 <actionGroup>
                     <actionList>
@@ -1166,6 +1198,24 @@
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/linux-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+        	<!--LIN-PPC64: Program Files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/installer</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/scripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>

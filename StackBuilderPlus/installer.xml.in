@@ -799,6 +799,16 @@
             <distributionDirectory origin="staging/linux-x64/scripts"/>
           </distributionFileList>
         </folder>
+        <!-- LIN-PPC64 - Program files -->
+        <folder description="Program Files" destination="${installdir}" name="programfileslinux-ppc64" platforms="linux-ppc">
+          <distributionFileList>
+            <distributionDirectory origin="staging/linux-ppc64/bin"/>
+            <distributionDirectory origin="staging/linux-ppc64/share"/>
+            <distributionDirectory origin="staging/linux-ppc64/lib"/>
+            <distributionDirectory origin="staging/linux-ppc64/installer"/>
+            <distributionDirectory origin="staging/linux-ppc64/scripts"/>
+          </distributionFileList>
+        </folder>
         <!-- MAC Program Files -->
         <folder description="Program Files" destination="${installdir}" name="programfilesosx" platforms="osx">
           <distributionFileList>
@@ -849,6 +859,14 @@
             <distributionDirectory origin="staging/linux-x64/UpdateManager/bin"/>
             <distributionDirectory origin="staging/linux-x64/UpdateManager/lib"/>
             <distributionDirectory origin="staging/linux-x64/UpdateManager/scripts"/>
+          </distributionFileList>
+        </folder>
+        <!-- LIN-PPC64 - Program files -->
+        <folder description="Program Files" destination="${installdir}" name="updatemanagerfileslinux-ppc64" platforms="linux-ppc">
+          <distributionFileList>
+            <distributionDirectory origin="staging/linux-ppc64/UpdateManager/bin"/>
+            <distributionDirectory origin="staging/linux-ppc64/UpdateManager/lib"/>
+            <distributionDirectory origin="staging/linux-ppc64/UpdateManager/scripts"/>
           </distributionFileList>
         </folder>
         <!-- MAC Program Files -->
