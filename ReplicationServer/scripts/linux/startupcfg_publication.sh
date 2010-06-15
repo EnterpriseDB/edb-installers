@@ -72,6 +72,21 @@ stop()
     fi
 }
 
+status()
+{
+    PID=\`ps -aef | grep 'java -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+
+    if [ "x\$PID" = "x" ];
+    then
+        echo "Publication Service not running"
+        exit 2
+    else
+        echo "Publication Service (PID:\$PID) is running" 
+        exit 2
+    fi
+
+}
+
 # See how we were called.
 case "\$1" in
   start)
@@ -85,6 +100,9 @@ case "\$1" in
         sleep 3
         start
         ;;
+  status)
+       status
+       ;;
   *)
         echo \$"Usage: \$0 {start|stop|restart}"
         exit 1
