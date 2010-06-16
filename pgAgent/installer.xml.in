@@ -384,7 +384,7 @@
               abortOnError="0" showMessageOnError="0"
               workingDirectory="${installdir}/bin">
             <exec>${psql_executable}</exec>
-            <execArgs>-t -A -c "select CASE WHEN has_database_privilege(oid, 'CREATE') THEN 1 ELSE 0 END FROM pg_database WHERE datname=current_database()"</execArgs>
+            <execArgs>-t -A -c "select CASE WHEN has_database_privilege(d.oid, 'CREATE') THEN 1 ELSE 0 END FROM pg_catalog.pg_database d WHERE d.datname=current_database()"</execArgs>
           </setInstallerVariableFromScriptOutput>
           <stringModify text="${user_has_permission}" variable="user_has_permission" logic="trim"/>
 
@@ -1627,7 +1627,7 @@
                 showMessageOnError="0" abortOnError="0"
                 workingDirectory="${system_temp_directory}/${product_fullname}">
               <exec>${psql_executable}</exec>
-              <execArgs>-t -A -c "select CASE WHEN has_database_privilege(oid, 'CREATE') THEN 1 ELSE 0 END FROM pg_database WHERE datname=current_database()"</execArgs>
+              <execArgs>-t -A -c "select CASE WHEN has_database_privilege(d.oid, 'CREATE') THEN 1 ELSE 0 END FROM pg_catalog.pg_database d WHERE d.datname=current_database()"</execArgs>
             </setInstallerVariableFromScriptOutput>
             <stringModify text="${user_has_permission}" variable="user_has_permission" logic="trim"/>
 
