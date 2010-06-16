@@ -52,6 +52,8 @@
         </language>
     </customLanguageFileList>
     <preShowHelpActionList>
+	<!-- Set the PG Major Version -->
+        <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION"/>
         <!-- WIN: Set the pghome default value when pghome not set -->
         <actionGroup>
             <actionList>
