@@ -71,8 +71,9 @@
       </ruleList>
     </setInstallerVariable>
     <setInstallerVariable name="defaultsyspassword" value=""/>
+    <setInstallerVariable name="defaultpgpassword" value=""/>
+  </preShowHelpActionList>
 
- </preShowHelpActionList>
   <!-- Prebuild Actions -->
   <preBuildActionList>
     <setInstallerVariable name="originalplatform" value="${platform_name}"/>
@@ -81,6 +82,7 @@
         <compareText text="${platform_name}" value="linux"/>
       </ruleList>
     </setInstallerVariable>
+    <setInstallerVariable name="defaultpgpassword" value=""/>
   </preBuildActionList>
 
   <!-- Initialisation actions -->
@@ -258,7 +260,7 @@
             <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
           </ruleList>
         </actionGroup>
-	 
+
 	<setInstallerVariable name="optionRequired" value="systempassword" />
 	<throwError text="${msg(Installer.CustomError.Upgrade.CommandLineOptionsNotPresent)}" >
 	  <ruleList>
@@ -341,30 +343,24 @@
           <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
           <setInstallerVariable name="pgdbname" value="" />
           <setInstallerVariable name="connection" value="" />
+
+          <setInstallerVariable name="psql_executable" value="${installdir}/bin/psql"/>
+          <setInstallerVariable name="psql_executable" value="${installdir}\bin\psql.exe">
+           <ruleList>
+             <compareText logic="equals" text="${platform_name}" value="windows"/>
+           </ruleList>
+          </setInstallerVariable>
           <foreach variables="dbname">
             <values>postgres edb template1</values>
             <actionList>
               <setInstallerVariableFromScriptOutput>
-                <exec>${installdir}/bin/psql</exec>
+                <exec>${psql_executable}</exec>
                 <execArgs>-l -d ${dbname}</execArgs>
                 <name>connection</name>
                 <workingDirectory>${installdir}/bin</workingDirectory>
                 <abortOnError>0</abortOnError>
                 <showMessageOnError>0</showMessageOnError>
                 <ruleList>
-                  <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                  <compareText logic="equals" text="${connection}" value=""/>
-                </ruleList>
-              </setInstallerVariableFromScriptOutput>
-              <setInstallerVariableFromScriptOutput>
-                <exec>${installdir}\bin\psql.exe</exec>
-                <execArgs>-t -c "SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${dbname}'" -d ${dbname}</execArgs>
-                <name>connection</name>
-                <workingDirectory>${installdir}/bin</workingDirectory>
-                <abortOnError>0</abortOnError>
-                <showMessageOnError>0</showMessageOnError>
-                <ruleList>
-                  <compareText logic="equals" text="${platform_name}" value="windows"/>
                   <compareText logic="equals" text="${connection}" value=""/>
                 </ruleList>
               </setInstallerVariableFromScriptOutput>
@@ -377,17 +373,26 @@
               </setInstallerVariable>
             </actionList>
           </foreach>
-          <actionGroup>
-            <actionList>
-              <throwError>
-                  <text>${program_stderr}</text>
-              </throwError>
-            </actionList>
+          <throwError text="${program_stderr}">
             <ruleList>
               <compareText logic="equals" text="${connection}" value=""/>
             </ruleList>
-          </actionGroup>
-          <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}" />
+          </throwError>
+          <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
+
+          <setInstallerVariableFromScriptOutput name="user_has_permission"
+              abortOnError="0" showMessageOnError="0"
+              workingDirectory="${installdir}/bin">
+            <exec>${psql_executable}</exec>
+            <execArgs>-t -A -c "select CASE WHEN has_database_privilege(oid, 'CREATE') THEN 1 ELSE 0 END FROM pg_database WHERE datname=current_database()"</execArgs>
+          </setInstallerVariableFromScriptOutput>
+          <stringModify text="${user_has_permission}" variable="user_has_permission" logic="trim"/>
+
+          <throwError text="${msg(pgagent.user.not.have.permission)}">
+            <ruleList>
+              <isFalse value="${user_has_permission}"/>
+            </ruleList>
+          </throwError>
        </actionList>
        <ruleList>
           <compareText logic="equals" text="${installer_ui}" value="unattended"/>
@@ -1605,93 +1610,64 @@
                 </setInstallerVariable>
               </actionList>
             </foreach>
-            <actionGroup>
-              <actionList>
-                <showWarning>
-                    <text>${program_stderr}</text>
-                </showWarning>
-                <setInstallerVariable>
-                    <name>next_page</name>
-                    <value>pgdetails</value>
-                </setInstallerVariable>
-              </actionList>
+            <throwError text="${program_stderr}">
               <ruleList>
                 <compareText logic="equals" text="${connection}" value=""/>
               </ruleList>
-            </actionGroup>
+            </throwError>
             <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}" />
+            <setInstallerVariable name="psql_executable" value="${system_temp_directory}/${product_fullname}/bin/psql"/>
+            <setInstallerVariable name="psql_executable" value="${system_temp_directory}\${product_fullname}\bin\psql.exe">
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+              </ruleList>
+            </setInstallerVariable>
+
+            <setInstallerVariableFromScriptOutput name="user_has_permission"
+                showMessageOnError="0" abortOnError="0"
+                workingDirectory="${system_temp_directory}/${product_fullname}">
+              <exec>${psql_executable}</exec>
+              <execArgs>-t -A -c "select CASE WHEN has_database_privilege(oid, 'CREATE') THEN 1 ELSE 0 END FROM pg_database WHERE datname=current_database()"</execArgs>
+            </setInstallerVariableFromScriptOutput>
+            <stringModify text="${user_has_permission}" variable="user_has_permission" logic="trim"/>
+
+            <throwError text="${msg(pgagent.user.not.have.permission)}">
+              <ruleList>
+                <isFalse value="${user_has_permission}"/>
+              </ruleList>
+            </throwError>
+
             <!-- Check if plpgsql exists -->
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
+              <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "SELECT lanname FROM pg_language WHERE lanname='plpgsql'"</execArgs>
               <name>plpgsql_exist</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
-              <ruleList>
-                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-              </ruleList>
-            </setInstallerVariableFromScriptOutput>
-            <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}\${product_fullname}\bin\psql.exe</exec>
-              <execArgs>-t -A -c "SELECT lanname FROM pg_language WHERE lanname='plpgsql'"</execArgs>
-              <name>plpgsql_exist</name>
-              <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
-              <showMessageOnError>0</showMessageOnError>
-              <abortOnError>0</abortOnError>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
-              </ruleList>
             </setInstallerVariableFromScriptOutput>
             <stringModify text="${plpgsql_exist}" variable="plpgsql_exist" logic="trim"/>
 
             <!-- Check for existing pgagent schema -->
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
+              <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "SELECT has_schema_privilege('pgagent', 'USAGE')"</execArgs>
               <name>pgagent_schema_exist</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
-              <ruleList>
-                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-              </ruleList>
-            </setInstallerVariableFromScriptOutput>
-            <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}\${product_fullname}\bin\psql.exe</exec>
-              <execArgs>-t -A -c "SELECT has_schema_privilege('pgagent', 'USAGE')"</execArgs>
-              <name>pgagent_schema_exist</name>
-              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-              <showMessageOnError>0</showMessageOnError>
-              <abortOnError>0</abortOnError>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
-              </ruleList>
             </setInstallerVariableFromScriptOutput>
             <stringModify text="${pgagent_schema_exist}" variable="pgagent_schema_exist" logic="trim"/>
 
             <!-- Check for pgagent_schema_version function exist -->
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
+              <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "SELECT COUNT(*) FROM pg_proc WHERE proname = 'pgagent_schema_version' AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'pgagent') AND prorettype = (SELECT oid FROM pg_type WHERE typname = 'int2') AND proargtypes = ''"</execArgs>
               <name>pgagent_schema_version_function_exist</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
               <ruleList>
-                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
-              </ruleList>
-            </setInstallerVariableFromScriptOutput>
-            <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}\${product_fullname}\bin\psql.exe</exec>
-              <execArgs>-t -A -c "SELECT COUNT(*) FROM pg_proc WHERE proname = 'pgagent_schema_version' AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'pgagent') AND prorettype = (SELECT oid FROM pg_type WHERE typname = 'int2') AND proargtypes = ''"</execArgs>
-              <name>pgagent_schema_version_function_exist</name>
-              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-              <showMessageOnError>0</showMessageOnError>
-              <abortOnError>0</abortOnError>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
                 <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
               </ruleList>
             </setInstallerVariableFromScriptOutput>
@@ -1699,27 +1675,13 @@
 
             <!-- Check for the current version of the pgagent schema -->
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
+              <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "SELECT pgagent.pgagent_schema_version()"</execArgs>
               <name>pgagent_current_schema_version</name>
               <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
               <ruleList>
-                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
-                <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
-              </ruleList>
-            </setInstallerVariableFromScriptOutput>
-            <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}\${product_fullname}\bin\psql.exe</exec>
-              <execArgs>-t -A -c "SELECT pgagent.pgagent_schema_version()"</execArgs>
-              <name>pgagent_current_schema_version</name>
-              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-              <showMessageOnError>0</showMessageOnError>
-              <abortOnError>0</abortOnError>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
                 <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
                 <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
               </ruleList>

@@ -101,3 +101,6 @@ pgagent.schema.older.exist=An older version of the 'pgagent' schema was found.\n
 pgagent.schema.older.version.exist=An older version (${pgagent_current_schema_version}) of the 'pgagent' schema was found.\nDo you want to upgrade the schema to version ${pgagent_installer_schema_version}?
 
 pgagent.service.description=Provides the ability to schedule tasks within a Postgres database server.
+
+pgagent.user.not.have.permission=The given user does not have 'CREATE' permission on database '${pgdbname}'.\nPlease provide the information for the user, who has permissions to create schema, tables and functions.
+
