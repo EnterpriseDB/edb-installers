@@ -1477,12 +1477,11 @@
             <validationActionList>
                 <actionGroup>
                     <actionList>
+			<setInstallerVariable name="installdir" value="${defaultpghome}" />
                         <showWarning>
                             <text>${msg(slony.incompatible.pg.error)}</text>
                         </showWarning>
-                        <exit>
-                            <exitCode>0</exitCode>
-                        </exit>
+			<setInstallerVariable name="next_page" value="installdir"/>
                     </actionList>
                     <ruleList>
                         <compareText>
