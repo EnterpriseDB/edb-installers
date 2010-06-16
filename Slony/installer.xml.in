@@ -527,7 +527,7 @@
                       </ruleList>
                 </setInstallerVariableFromRegEx>
                 <showWarning>
-                    <text>${msg(slony.installdir.pgerror)}</text>
+                    <text>${msg(slony.incompatible.pg.error)}</text>
                     <ruleList>
                       <compareText>
                           <logic>does_not_equal</logic>
