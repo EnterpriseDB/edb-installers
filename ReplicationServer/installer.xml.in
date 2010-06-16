@@ -1799,6 +1799,13 @@ database=${controldb}
         <!-- Making sure this variable is available in uninstaller -->
         <setInstallerVariable name="EnterpriseDBEmail" value="${existingEmail}" persist="1"/>
 
+        <!-- Remove the temporary folder -->
+        <deleteFile path="${system_temp_directory}/${product_fullname}" >
+            <ruleList>
+                <fileExists path="${system_temp_directory}/${product_fullname}" />
+            </ruleList>
+        </deleteFile>
+
     </postInstallationActionList>
 
     <readyToInstallActionList>
