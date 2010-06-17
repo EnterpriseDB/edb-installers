@@ -94,7 +94,7 @@ info.pgagent.schema.manual.upgrade.windows=pgAgent will not be able to start unt
 
 pgagent.schema.found=A 'pgagent' schema of the correct version was found in the '${pgdbname}' database and will be reused by this installation.
 
-pgagent.schema.newer.version.exist=A newer version of the 'pgagent' schema was found on your postgres database.\nPlease download the latest version of the pgAgent installer.\nIf you want to use the same installer, than remove the 'pgagent' schema from your postgres database.
+pgagent.schema.newer.version.exist=A newer version of the 'pgagent' schema was found on your '${pgdbname}' database.\nPlease download the latest version of the pgAgent installer.\nIf you want to use the same installer, than remove the 'pgagent' schema from your '${pgdbname}' database.
 
 pgagent.schema.older.exist=An older version of the 'pgagent' schema was found.\nDo you want to upgrade the schema to version ${pgagent_installer_schema_version}?
 
