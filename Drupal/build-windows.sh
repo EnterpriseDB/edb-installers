@@ -76,17 +76,6 @@ _postprocess_Drupal_windows() {
 
     cd $WD/Drupal
 
-    # Setup the installer scripts.
-    mkdir -p staging/windows/installer/Drupal || _die "Failed to create a directory for the install scripts"
-    cp scripts/windows/check-connection.bat staging/windows/installer/Drupal/check-connection.bat || _die "Failed to copy the check-connection script (scripts/windows/check-connection.bat)"
-    chmod ugo+x staging/windows/installer/Drupal/check-connection.bat
-
-    cp scripts/windows/check-db.bat staging/windows/installer/Drupal/check-db.bat || _die "Failed to copy the check-db.bat script (scripts/windows/check-db.bat)"
-    chmod ugo+x staging/windows/installer/Drupal/check-db.bat
-
-    cp scripts/windows/install.bat staging/windows/installer/Drupal/install.bat || _die "Failed to copy the install.bat script (scripts/windows/install.bat)"
-    chmod ugo+x staging/windows/installer/Drupal/install.bat
-
     # Setup the Drupal launch Files
     mkdir -p staging/windows/scripts || _die "Failed to create a directory for the Drupal Launch Files"
     cp scripts/windows/launchDrupal.vbs staging/windows/scripts/launchDrupal.vbs || _die "Failed to copy the launchDrupal.vbs  script (scripts/windows/launchDrupal.vbs)"

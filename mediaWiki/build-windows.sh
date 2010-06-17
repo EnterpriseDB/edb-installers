@@ -79,18 +79,6 @@ _postprocess_mediaWiki_windows() {
 
     cd $WD/mediaWiki
 
-    # Setup the installer scripts.
-    mkdir -p staging/windows/installer/mediaWiki || _die "Failed to create a directory for the install scripts"
-
-    cp scripts/windows/check-connection.bat staging/windows/installer/mediaWiki/check-connection.bat || _die "Failed to copy the check-connection script (scripts/windows/check-connection.bat)"
-    chmod ugo+x staging/windows/installer/mediaWiki/check-connection.bat
-   
-    cp scripts/windows/check-db.bat staging/windows/installer/mediaWiki/check-db.bat || _die "Failed to copy the check-db.bat script (scripts/windows/check-db.bat)"
-    chmod ugo+x staging/windows/installer/mediaWiki/check-db.bat
-
-    cp scripts/windows/install.bat staging/windows/installer/mediaWiki/install.bat || _die "Failed to copy the install.bat script (scripts/windows/install.bat)"
-    chmod ugo+x staging/windows/installer/mediaWiki/install.bat
-
     # Setup the mediaWiki launch Files
     mkdir -p staging/windows/scripts || _die "Failed to create a directory for the mediaWiki Launch Files"
 

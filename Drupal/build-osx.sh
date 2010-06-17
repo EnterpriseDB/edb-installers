@@ -46,6 +46,7 @@ _build_Drupal_osx() {
     mkdir -p $PG_PATH_OSX/Drupal/staging/osx/instscripts || _die "Failed to create the instscripts directory"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libxml2* $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -R $PG_PATH_OSX/server/staging/osx/lib/libxslt* $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy psql in instscripts"
 
     # Change the referenced libraries
@@ -72,17 +73,8 @@ _postprocess_Drupal_osx() {
 
     # Setup the installer scripts.
     mkdir -p staging/osx/installer/Drupal || _die "Failed to create a directory for the install scripts"
-    cp scripts/osx/check-connection.sh staging/osx/installer/Drupal/check-connection.sh || _die "Failed to copy the check-connection script (scripts/osx/check-connection.sh)"
-    chmod ugo+x staging/osx/installer/Drupal/check-connection.sh
-
-    cp scripts/osx/check-db.sh staging/osx/installer/Drupal/check-db.sh || _die "Failed to copy the check-db.sh script (scripts/osx/check-db.sh)"
-    chmod ugo+x staging/osx/installer/Drupal/check-db.sh
-
     cp scripts/osx/createshortcuts.sh staging/osx/installer/Drupal/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/osx/createshortcuts.sh)"
     chmod ugo+x staging/osx/installer/Drupal/createshortcuts.sh
-
-    cp scripts/osx/install.sh staging/osx/installer/Drupal/install.sh || _die "Failed to copy the install.sh script (scripts/osx/install.sh)"
-    chmod ugo+x staging/osx/installer/Drupal/install.sh
 
     # Setup the Drupal launch Files
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the Drupal Launch Files"

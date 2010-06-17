@@ -56,7 +56,7 @@
         <setInstallerVariable name="defaultuser" value="postgres"/>
         <setInstallerVariable name="defaultpassword" value=""/>
     </preShowHelpActionList>
-  
+
     <!-- Prebuild Actions -->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>
@@ -180,7 +180,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-	
+
 	<actionGroup>
 	    <actionList>
 		<setInstallerVariable name="installationType" value="upgrade" />
@@ -297,27 +297,207 @@
             </ruleList>
         </actionGroup>
 
+	<!-- If there appears to be an existing installation, with no Branding value. -->
+	<!-- force the default value. Otherwise, set the branding to whatever we read, -->
+	<!-- or, set the default -->
+
+	<!-- Existing, old install (version, but no branding) -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>PostgreSQL</value>
+		<ruleList>
+			<compareText>
+				<logic>does_not_equal</logic>
+				<text>${phpBBVersion}</text>
+				<value></value>
+			</compareText>
+			<compareText>
+				<logic>equals</logic>
+				<text>${iBranding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+
+	<!-- Existing install, with branding -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>${iBranding}</value>
+		<ruleList>
+			<compareText>
+				<logic>does_not_equal</logic>
+				<text>${iBranding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+
+	<!-- New install, nothing set on the command line -->
+	<setInstallerVariable>
+		<name>branding</name>
+		<persist>0</persist>
+		<value>Postgres Plus Add-ons</value>
+		<ruleList>
+			<compareText>
+				<logic>equals</logic>
+				<text>${branding}</text>
+				<value></value>
+			</compareText>
+		</ruleList>
+	</setInstallerVariable>
+
+        <logMessage>
+            <text>Using branding: ${branding}</text>
+        </logMessage>
+        <unpackDirectory>
+            <origin>instscripts</origin>
+            <folder>installfileslinux</folder>
+            <destination>${system_temp_directory}</destination>
+            <component>phpBB</component>
+            <ruleList>
+                <compareText>
+                     <text>${platform_name}</text>
+                     <logic>equals</logic>
+                     <value>linux</value>
+                </compareText>
+            </ruleList>
+        </unpackDirectory>
+        <unpackDirectory>
+            <origin>instscripts</origin>
+            <folder>installfileslinux-x64</folder>
+            <destination>${system_temp_directory}</destination>
+            <component>phpBB</component>
+            <ruleList>
+                <compareText>
+                     <text>${platform_name}</text>
+                     <logic>equals</logic>
+                     <value>linux-x64</value>
+                </compareText>
+            </ruleList>
+        </unpackDirectory>
+        <unpackDirectory>
+            <origin>instscripts</origin>
+            <folder>installfilesosx</folder>
+            <destination>${system_temp_directory}</destination>
+            <component>phpBB</component>
+            <ruleList>
+                <compareText>
+                     <text>${platform_name}</text>
+                     <logic>equals</logic>
+                     <value>osx</value>
+                </compareText>
+            </ruleList>
+        </unpackDirectory>
+        <unpackDirectory>
+            <origin>instscripts</origin>
+            <folder>installfileswindows</folder>
+            <destination>${system_temp_directory}</destination>
+            <component>phpBB</component>
+            <ruleList>
+                <compareText>
+                     <text>${platform_name}</text>
+                     <logic>equals</logic>
+                     <value>windows</value>
+                </compareText>
+            </ruleList>
+        </unpackDirectory>
+
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="connection" value=""/>
+
+                <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+                <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+                <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+                <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+                <setEnvironmentVariable name="PGDATABASE" value="" />
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/"/>
+                <setInstallerVariable name="pgdatabase" value="" />
+
+                <setInstallerVariable name="psql_executable" value="${system_temp_directory}/instscripts/psql"/>
+                <setInstallerVariable name="psql_executable" value="${system_temp_directory}\instscripts\psql.exe">
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariable>
+                <foreach variables="dbname">
+                    <values>postgres edb template1</values>
+                    <actionList>
+                        <setInstallerVariableFromScriptOutput name="connection"
+                                workingDirectory="${system_temp_directory}/instscripts"
+                                abortOnError="0" showMessageOnError="0">
+                            <exec>${psql_executable}</exec>
+                            <execArgs>-l -d ${dbname}</execArgs>
+                            <ruleList>
+                                <compareText logic="equals" text="${connection}" value=""/>
+                            </ruleList>
+                        </setInstallerVariableFromScriptOutput>
+                        <stringModify text="${connection}" variable="connection" logic="trim"/>
+                        <setInstallerVariable name="pgdatabase" value="${dbname}">
+                            <ruleList>
+                                <compareText logic="does_not_equal" text="${connection}" value=""/>
+                                <compareText logic="equals" text="${pgdatabase}" value=""/>
+                            </ruleList>
+                        </setInstallerVariable>
+                    </actionList>
+                </foreach>
+                <throwError text="${program_stderr}">
+                    <ruleList>
+                        <compareText logic="equals" text="${connection}" value=""/>
+                    </ruleList>
+                </throwError>
+                <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
+
+                <!-- Check the user permissions -->
+                <setInstallerVariableFromScriptOutput name="is_superuser"
+                        workingDirectory="${system_temp_directory}/instscripts"
+                        abortOnError="0" showMessageOnError="0">
+                    <exec>${psql_executable}</exec>
+                    <execArgs>-t -A -c "select CASE WHEN u.usesuper THEN 1 ELSE 0 END FROM pg_catalog.pg_user u WHERE u.usename=current_user"</execArgs>
+                </setInstallerVariableFromScriptOutput>
+                <throwError text="${msg(phpbb.user.not.superuser)}">
+                    <ruleList>
+                        <isFalse value="${is_superuser}"/>
+                    </ruleList>
+                </throwError>
+
+                <!-- Check db exists -->
+                <setInstallerVariable name="dbexist" value=""/>
+                <setInstallerVariableFromScriptOutput name="dbexist"
+                        workingDirectory="${system_temp_directory}/instscripts"
+                        abortOnError="0" showMessageOnError="0">
+                    <exec>${psql_executable}</exec>
+                    <execArgs>-t -A -c "SELECT count(*) FROM pg_catalog.pg_database d WHERE d.datname='phpbb'"</execArgs>
+                </setInstallerVariableFromScriptOutput>
+
+                <!-- Check user exists -->
+                <setInstallerVariable name="userexist" value=""/>
+                <setInstallerVariableFromScriptOutput name="userexist"
+                        workingDirectory="${system_temp_directory}/instscripts"
+                        abortOnError="0" showMessageOnError="0">
+                    <exec>${psql_executable}</exec>
+                    <execArgs>-t -A -c "SELECT count(*) FROM pg_catalog.pg_user u WHERE u.usename='phpbbuser'"</execArgs>
+                </setInstallerVariableFromScriptOutput>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${phpBBVersion}" value=""/>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            </ruleList>
+        </actionGroup>
+
         <!-- Ask user whether he wants to stop apache and continue -->
-        <showQuestion>
-           <text>${msg(apache.restart.question)}</text>
-           <variable>response</variable>
+        <showQuestion text="${msg(apache.restart.question)}" variable="response">
            <ruleList>
-              <fileTest>
-                 <path>${apachehome}/conf/addons/application_secure.conf</path>
-                 <condition>not_exists</condition>
-              </fileTest>
+              <fileTest path="${apachehome}/conf/addons/application_secure.conf" condition="not_exists"/>
            </ruleList>
         </showQuestion>
 
         <!-- Exit the installation if the user selects 'no' -->
-        <exit>
-          <exitCode>0</exitCode>
+        <exit exitCode="0">
           <ruleList>
-              <compareText>
-                 <logic>equals</logic>
-                 <text>${response}</text>
-                 <value>no</value>
-              </compareText>
+              <compareText logic="equals" text="${response}" value="no"/>
            </ruleList>
         </exit>
 
@@ -500,7 +680,7 @@
                 </fileExists>
             </ruleList>
         </actionGroup>
- 
+
         <!-- WIN: Deleting the uninstaller from www context -->
         <actionGroup>
             <actionList>
@@ -524,343 +704,6 @@
                 </fileExists>
             </ruleList>
         </actionGroup>
-
-	<!-- If there appears to be an existing installation, with no Branding value. --> 
-	<!-- force the default value. Otherwise, set the branding to whatever we read, -->
-	<!-- or, set the default -->
-	
-	<!-- Existing, old install (version, but no branding) -->
-	<setInstallerVariable>
-		<name>branding</name>
-		<persist>0</persist>
-		<value>PostgreSQL</value>
-		<ruleList>
-			<compareText>
-				<logic>does_not_equal</logic>
-				<text>${phpBBVersion}</text>
-				<value></value>
-			</compareText>
-			<compareText>
-				<logic>equals</logic>
-				<text>${iBranding}</text>
-				<value></value>
-			</compareText>
-		</ruleList>
-	</setInstallerVariable>
-	
-	<!-- Existing install, with branding -->
-	<setInstallerVariable>
-		<name>branding</name>
-		<persist>0</persist>
-		<value>${iBranding}</value>
-		<ruleList>
-			<compareText>
-				<logic>does_not_equal</logic>
-				<text>${iBranding}</text>
-				<value></value>
-			</compareText>
-		</ruleList>
-	</setInstallerVariable>
-	
-	<!-- New install, nothing set on the command line -->
-	<setInstallerVariable>
-		<name>branding</name>
-		<persist>0</persist>
-		<value>Postgres Plus Add-ons</value>
-		<ruleList>
-			<compareText>
-				<logic>equals</logic>
-				<text>${branding}</text>
-				<value></value>
-			</compareText>
-		</ruleList>
-	</setInstallerVariable>
-	
-        <logMessage>
-            <text>Using branding: ${branding}</text>
-        </logMessage> 
-        <unpackDirectory>
-            <origin>instscripts</origin>
-            <folder>installfileslinux</folder>
-            <destination>${system_temp_directory}</destination>
-            <component>phpBB</component>
-            <ruleList>
-                <compareText>
-                     <text>${platform_name}</text>
-                     <logic>equals</logic>
-                     <value>linux</value>
-                </compareText>
-            </ruleList>
-        </unpackDirectory>
-        <unpackDirectory>
-            <origin>instscripts</origin>
-            <folder>installfileslinux-x64</folder>
-            <destination>${system_temp_directory}</destination>
-            <component>phpBB</component>
-            <ruleList>
-                <compareText>
-                     <text>${platform_name}</text>
-                     <logic>equals</logic>
-                     <value>linux-x64</value>
-                </compareText>
-            </ruleList>
-        </unpackDirectory>
-        <unpackDirectory>
-            <origin>instscripts</origin>
-            <folder>installfilesosx</folder>
-            <destination>${system_temp_directory}</destination>
-            <component>phpBB</component>
-            <ruleList>
-                <compareText>
-                     <text>${platform_name}</text>
-                     <logic>equals</logic>
-                     <value>osx</value>
-                </compareText>
-            </ruleList>
-        </unpackDirectory>
-        <unpackDirectory>
-            <origin>instscripts</origin>
-            <folder>installfileswindows</folder>
-            <destination>${system_temp_directory}</destination>
-            <component>phpBB</component>
-            <ruleList>
-                <compareText>
-                     <text>${platform_name}</text>
-                     <logic>equals</logic>
-                     <value>windows</value>
-                </compareText>
-            </ruleList>
-        </unpackDirectory>
-        
-        <actionGroup>
-            <actionList>
-                <!-- Creating a temporary directory -->
-                <createDirectory path="${system_temp_directory}/${product_fullname}"/>
-                <!-- WIN: Unpacking the Script file to temporary directory -->
-                <unpackFile>
-                    <component>phpBB</component>
-                    <destination>${system_temp_directory}/${product_fullname}/check-connection.bat</destination>
-                    <folder>installfileswindows</folder>
-                    <origin>installer/phpBB/check-connection.bat</origin>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>		    
-                </unpackFile>
-
-                <!-- Linux: Unpacking the Script file to temporary directory -->
-                <unpackFile>
-                    <component>phpBB</component>
-                    <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
-                    <folder>installfileslinux</folder>
-                    <origin>installer/phpBB/check-connection.sh</origin>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>linux</value>
-                        </compareText>
-                    </ruleList>
-                </unpackFile>
-
-                <!-- Linux-x64: Unpacking the Script file to temporary directory -->
-                <unpackFile>
-                    <component>phpBB</component>
-                    <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
-                    <folder>installfileslinux-x64</folder>
-                    <origin>installer/phpBB/check-connection.sh</origin>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>linux-x64</value>
-                        </compareText>
-                    </ruleList>
-                </unpackFile>
-
-                <!-- MAC: Unpacking the Script file to temporary directory -->
-                <unpackFile>
-                    <component>phpBB</component>
-                    <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
-                    <folder>installfilesosx</folder>
-                    <origin>installer/phpBB/check-connection.sh</origin>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>osx</value>
-                        </compareText>
-                    </ruleList>
-                </unpackFile>  
-
-                <setInstallerVariable name="connection" value="" /> 
-
-                <!-- WIN: Running the Script to validate the PostgreSQL Server Details -->
-                <setInstallerVariableFromScriptOutput>
-                        <exec>${system_temp_directory}\${product_fullname}\check-connection.bat</exec>
-                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
-                        <name>connection</name>
-                        <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
-                        <abortOnError>0</abortOnError>
-                        <showMessageOnError>0</showMessageOnError>
-                        <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </setInstallerVariableFromScriptOutput>
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="pgdatabase" value="edb" />
-                        <!-- Running the Script to validate the PostgreSQL Server Details -->
-                        <setInstallerVariableFromScriptOutput>
-                            <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
-                            <name>connection</name>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${connection}</text>
-                            <value/>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="pgdatabase" value="template1" />
-                        <!-- Running the Script to validate the PostgreSQL Server Details -->
-                        <setInstallerVariableFromScriptOutput>
-                            <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
-                            <name>connection</name>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${connection}</text>
-                            <value/>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-       
-                <!-- Linux | MAC: Running the Script to validate the PostgreSQL Server Details -->
-                <setInstallerVariableFromScriptOutput>
-                        <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
-                        <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
-                        <name>connection</name>
-                        <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                        <abortOnError>0</abortOnError>
-                        <showMessageOnError>0</showMessageOnError>
-                        <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </setInstallerVariableFromScriptOutput>
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="pgdatabase" value="edb" />
-                        <!-- Running the Script to validate the PostgreSQL Server Details -->
-                        <setInstallerVariableFromScriptOutput>
-                            <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
-                            <name>connection</name>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${connection}</text>
-                            <value/>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="pgdatabase" value="template1" />
-                        <!-- Running the Script to validate the PostgreSQL Server Details -->
-                        <setInstallerVariableFromScriptOutput>
-                            <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
-                            <name>connection</name>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${connection}</text>
-                            <value/>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-
-                <throwError>
-                    <text>${program_stderr}</text>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${connection}</text>
-                            <value/>
-                        </compareText>
-                    </ruleList>
-                </throwError>
-
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${phpBBVersion}</text>
-                    <value></value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
-            </ruleList>
-         </actionGroup>
     </preInstallationActionList>
     <!-- Post installation actions -->
     <postInstallationActionList>
@@ -1012,85 +855,42 @@
         </actionGroup>
         <registrySet>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\phpBB</key>
-            <name>Branding</name> 
+            <name>Branding</name>
             <value>${branding}</value>
         </registrySet>
+
+        <setInstallerVariable name="psql_executable" value="${system_temp_directory}/instscripts/psql"/>
+        <setInstallerVariable name="psql_executable" value="${system_temp_directory}\instscripts\psql.exe">
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariable>
+
+        <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+        <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+        <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+        <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+        <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
+        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/"/>
+
         <!-- WIN: Run the post-installation script -->
         <actionGroup>
             <actionList>
-                <setEnvironmentVariable name="PGHOST" value="${pghost}" />
-                <setEnvironmentVariable name="PGUSER" value="${pguser}" />
-                <setEnvironmentVariable name="PGPORT" value="${pgport}" />
-                <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}" />
-                <runProgram>
-                    <customErrorMessage>${msg(post.install.error)}</customErrorMessage>
-                    <program>${installdir}\phpBB\installer\phpBB\install.bat</program>
-                    <programArguments>"${system_temp_directory}\instscripts" "${pgdatabase}"</programArguments>
-                </runProgram>
+                <runProgram program="${psql_executable}"
+                      programArguments="-t -A -c &quot;CREATE ROLE phpbbuser PASSWORD 'phpbbuser' NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN&quot;"/>
+                <runProgram program="${psql_executable}"
+                      programArguments="-t -A -c &quot;CREATE DATABASE phpbb OWNER phpbbuser ENCODING 'utf8'&quot;"/>
+
                 <!-- Inform user about the database and role creation -->
-                <showInfo>
-                    <text>${msg(db.create.info)}</text>
-                </showInfo>
+                <showInfo text="${msg(db.create.info)}"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-                <compareText>
-                    <text>${dbexist}</text>
-                    <logic>equals</logic>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <text>${userexist}</text>
-                    <logic>equals</logic>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <text>${phpBBVersion}</text>
-                    <logic>equals</logic>
-                    <value/>
-                </compareText>
+                <isFalse value="${dbexist}"/>
+                <isFalse value="${userexist}"/>
+                <compareText text="${phpBBVersion}" logic="equals" value=""/>
             </ruleList>
         </actionGroup>
-        <!-- LIN & MAC: Run Script to create Role and database -->
-        <actionGroup>
-            <actionList>
-                <runProgram>
-                    <program>${installdir}/phpBB/installer/phpBB/install.sh</program>
-                    <programArguments> "${pghost}" "${pgport}" "${pguser}" "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</programArguments>
-                    <workingDirectory>${installdir}/phpBB/installer/phpBB</workingDirectory>
-                </runProgram>
-                <!-- Inform user about the database and role creation -->
-                <showInfo>
-                    <text>${msg(db.create.info)}</text>
-                </showInfo>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-                <compareText>
-                    <text>${dbexist}</text>
-                    <logic>equals</logic>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <text>${userexist}</text>
-                    <logic>equals</logic>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <text>${phpBBVersion}</text>
-                    <logic>equals</logic>
-                    <value/>
-                </compareText>
-            </ruleList>
-        </actionGroup>
+
         <!-- LIN & MAC: Create Menu Shortcuts -->
         <actionGroup>
             <actionList>
@@ -1111,6 +911,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
         <!-- Substituting PGPORT and PGHOST Values in install/install.php -->
         <substitute>
             <files>${installdir}/phpBB/install/install_install.php</files>
@@ -1132,7 +933,7 @@
                 </compareText>
             </ruleList>
         </substitute>
- 
+
         <!-- Getting the Version Installed minus the buildnum -->
         <setInstallerVariableFromRegEx>
             <name>phpBBVersionInstalled</name>
@@ -1548,9 +1349,6 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/windows/installer</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
                             <origin>staging/windows/instscripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
@@ -1750,486 +1548,132 @@
                         </compareValues>
                     </ruleList>
                 </throwError>
-                <!-- Creating a temporary directory -->
-                <createDirectory path="${system_temp_directory}/${product_fullname}"/>
-                <!-- WIN - Unpack Script Files -->
-                <actionGroup>
-                    <actionList>
-                        <!-- Unpacking the Script file to temporary directory -->
-                        <unpackFile>
-                            <component>phpBB</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-connection.bat</destination>
-                            <folder>installfileswindows</folder>
-                            <origin>installer/phpBB/check-connection.bat</origin>
-                        </unpackFile>
-                        <unpackFile>
-                            <component>phpBB</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-db.bat</destination>
-                            <folder>installfileswindows</folder>
-                            <origin>installer/phpBB/check-db.bat</origin>
-                        </unpackFile>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <!-- LIN: Unpack Script Files -->
-                <actionGroup>
-                    <actionList>
-                        <!-- Unpacking the Script file to temporary directory -->
-                        <unpackFile>
-                            <component>phpBB</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
-                            <folder>installfileslinux</folder>
-                            <origin>installer/phpBB/check-connection.sh</origin>
-                        </unpackFile>
-                        <unpackFile>
-                            <component>phpBB</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-db.sh</destination>
-                            <folder>installfileslinux</folder>
-                            <origin>installer/phpBB/check-db.sh</origin>
-                        </unpackFile>
-                        <unpackFile>
-                            <component>phpBB</component>
-                            <destination>${system_temp_directory}/${product_fullname}/getserverlocale.sh</destination>
-                            <folder>installfileslinux</folder>
-                            <origin>installer/phpBB/getserverlocale.sh</origin>
-                        </unpackFile>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>linux</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <!-- LIN-X64: Unpack Script Files -->
-                <actionGroup>
-                    <actionList>
-                        <!-- Unpacking the Script file to temporary directory -->
-                        <unpackFile>
-                            <component>phpBB</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
-                            <folder>installfileslinux-x64</folder>
-                            <origin>installer/phpBB/check-connection.sh</origin>
-                        </unpackFile>
-                        <unpackFile>
-                            <component>phpBB</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-db.sh</destination>
-                            <folder>installfileslinux-x64</folder>
-                            <origin>installer/phpBB/check-db.sh</origin>
-                        </unpackFile>
-                        <unpackFile>
-                            <component>phpBB</component>
-                            <destination>${system_temp_directory}/${product_fullname}/getserverlocale.sh</destination>
-                            <folder>installfileslinux-x64</folder>
-                            <origin>installer/phpBB/getserverlocale.sh</origin>
-                        </unpackFile>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>linux-x64</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <!-- MAC: Unpack Script Files -->
-                <actionGroup>
-                    <actionList>
-                        <!-- Unpacking the Script file to temporary directory -->
-                        <unpackFile>
-                            <component>phpBB</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
-                            <folder>installfilesosx</folder>
-                            <origin>installer/phpBB/check-connection.sh</origin>
-                        </unpackFile>
-                        <unpackFile>
-                            <component>phpBB</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-db.sh</destination>
-                            <folder>installfilesosx</folder>
-                            <origin>installer/phpBB/check-db.sh</origin>
-                        </unpackFile>
-                        <unpackFile>
-                            <component>phpBB</component>
-                            <destination>${system_temp_directory}/${product_fullname}/getserverlocale.sh</destination>
-                            <folder>installfilesosx</folder>
-                            <origin>installer/phpBB/getserverlocale.sh</origin>
-                        </unpackFile>
 
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>osx</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <!-- WIN: validate the PostgreSQL Server Details -->
-                <actionGroup>
-                    <actionList>
-                        <!-- Running the Script to validate the PostgreSQL Server Details -->
-                        <setInstallerVariableFromScriptOutput>
-                            <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
-                            <name>connection</name>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>  
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="pgdatabase" value="edb" />
-                        <!-- Running the Script to validate the PostgreSQL Server Details -->
-                        <setInstallerVariableFromScriptOutput>
-                            <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
-                            <name>connection</name>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${connection}</text>
-                            <value/>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="pgdatabase" value="template1" />
-                        <!-- Running the Script to validate the PostgreSQL Server Details -->
-                        <setInstallerVariableFromScriptOutput>
-                            <exec>${system_temp_directory}/${product_fullname}/check-connection.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "${pgdatabase}"</execArgs>
-                            <name>connection</name>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${connection}</text>
-                            <value/>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
+                <setInstallerVariable name="connection" value=""/>
 
+                <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+                <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+                <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+                <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+                <setEnvironmentVariable name="PGDATABASE" value="" />
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/"/>
+                <setInstallerVariable name="pgdatabase" value="" />
 
-                <!-- LIN & MAC: validate the PostgreSQL Server Details -->
-                <actionGroup>
-                    <actionList>
-                        <!-- Running the Script to validate the PostgreSQL Server Details -->
-                        <setInstallerVariableFromScriptOutput>
-                            <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
-                            <name>connection</name>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
+                <setInstallerVariable name="psql_executable" value="${system_temp_directory}/instscripts/psql"/>
+                <setInstallerVariable name="psql_executable" value="${system_temp_directory}\instscripts\psql.exe">
                     <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
-                </actionGroup>
-                <actionGroup>
+                </setInstallerVariable>
+                <foreach variables="dbname">
+                    <values>postgres edb template1</values>
                     <actionList>
-                        <setInstallerVariable name="pgdatabase" value="edb" />
-                        <!-- Running the Script to validate the PostgreSQL Server Details -->
-                        <setInstallerVariableFromScriptOutput>
-                            <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
-                            <name>connection</name>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
+                        <setInstallerVariableFromScriptOutput name="connection"
+                                workingDirectory="${system_temp_directory}/instscripts"
+                                abortOnError="0" showMessageOnError="0">
+                            <exec>${psql_executable}</exec>
+                            <execArgs>-l -d ${dbname}</execArgs>
+                            <ruleList>
+                                <compareText logic="equals" text="${connection}" value=""/>
+                            </ruleList>
                         </setInstallerVariableFromScriptOutput>
+                        <stringModify text="${connection}" variable="connection" logic="trim"/>
+                        <setInstallerVariable name="pgdatabase" value="${dbname}">
+                            <ruleList>
+                                <compareText logic="does_not_equal" text="${connection}" value=""/>
+                                <compareText logic="equals" text="${pgdatabase}" value=""/>
+                            </ruleList>
+                        </setInstallerVariable>
                     </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${connection}</text>
-                            <value/>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="pgdatabase" value="template1" />
-                        <!-- Running the Script to validate the PostgreSQL Server Details -->
-                        <setInstallerVariableFromScriptOutput>
-                            <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
-                            <name>connection</name>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${connection}</text>
-                            <value/>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
+                </foreach>
 
- 
                 <actionGroup>
                     <actionList>
                         <setInstallerVariable name="pgdatabase" value="postgres" />
-                        <showWarning>
-                             <text>${program_stderr}</text>
-                        </showWarning> 
-                        <setInstallerVariable>
-                             <name>next_page</name>
-                             <value>pgdetails</value>
-                        </setInstallerVariable> 
+                        <throwError text="${program_stderr}"/>
                     </actionList>
                     <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${connection}</text>
-                            <value/>
-                        </compareText>
+                        <compareText logic="equals" text="${connection}" value=""/>
                     </ruleList>
                 </actionGroup>
 
+                <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
+
+                <!-- Check the user permissions -->
+                <setInstallerVariableFromScriptOutput name="is_superuser"
+                        workingDirectory="${system_temp_directory}/instscripts"
+                        abortOnError="0" showMessageOnError="0">
+                    <exec>${psql_executable}</exec>
+                    <execArgs>-t -A -c "select CASE WHEN u.usesuper THEN 1 ELSE 0 END FROM pg_catalog.pg_user u WHERE u.usename=current_user"</execArgs>
+                </setInstallerVariableFromScriptOutput>
+                <throwError text="${msg(phpbb.user.not.superuser)}">
+                    <ruleList>
+                        <isFalse value="${is_superuser}"/>
+                    </ruleList>
+                </throwError>
+
+                <!-- Check db exists -->
                 <setInstallerVariable name="dbexist" value=""/>
+                <setInstallerVariableFromScriptOutput name="dbexist"
+                        workingDirectory="${system_temp_directory}/instscripts"
+                        abortOnError="0" showMessageOnError="0">
+                    <exec>${psql_executable}</exec>
+                    <execArgs>-t -A -c "SELECT count(*) FROM pg_catalog.pg_database d WHERE d.datname='phpbb'"</execArgs>
+                </setInstallerVariableFromScriptOutput>
+
+                <!-- Check user exists -->
                 <setInstallerVariable name="userexist" value=""/>
-                <!-- WIN - Check whether the database and user already exists -->
-                <actionGroup>
-                    <actionList>
-                        <!-- WIN - Check whether the database already exists -->
-                        <setInstallerVariableFromScriptOutput>
-                            <name>dbexist</name>
-                            <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "phpbb" "${pgdatabase}"</execArgs>
-                            <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                        <!-- WIN - Check whether the user already exists -->
-                        <setInstallerVariableFromScriptOutput>
-                            <name>userexist</name>
-                            <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}\instscripts" "phpbbuser" "${pgdatabase}"</execArgs>
-                            <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <text>${phpBBVersion}</text>
-                            <logic>equals</logic>
-                            <value/>
-                        </compareText>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <!-- LIN & MAC: Check whether the database and user already exists -->
-                <actionGroup>
-                    <actionList>
-                        <!-- LIN & MAC: Check whether the database already exists -->
-                        <setInstallerVariableFromScriptOutput>
-                            <name>dbexist</name>
-                            <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "phpbb" "${pgdatabase}"</execArgs>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                        <!-- LIN & MAC: Check whether the user already exists -->
-                        <setInstallerVariableFromScriptOutput>
-                            <name>userexist</name>
-                            <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "phpbbuser" "${pgdatabase}"</execArgs>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <text>${phpBBVersion}</text>
-                            <logic>equals</logic>
-                            <value/>
-                        </compareText>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-                <!-- Inform user about the Existance of database and user    -->
-                <actionGroup>
-                    <actionList>
-                        <showQuestion>
-                            <text>${msg(db.found.info)}</text>
-                            <variable>response</variable>
-                        </showQuestion>
-                    </actionList>
+                <setInstallerVariableFromScriptOutput name="userexist"
+                        workingDirectory="${system_temp_directory}/instscripts"
+                        abortOnError="0" showMessageOnError="0">
+                    <exec>${psql_executable}</exec>
+                    <execArgs>-t -A -c "SELECT count(*) FROM pg_catalog.pg_user u WHERE u.usename='phpbbuser'"</execArgs>
+                </setInstallerVariableFromScriptOutput>
+
+                <!-- Inform user about the Existance of database and user -->
+                <showQuestion text="${msg(db.found.info)}" variable="response">
                     <ruleEvaluationLogic>OR</ruleEvaluationLogic>
                     <ruleList>
-                        <compareText>
-                            <text>${dbexist}</text>
-                            <logic>does_not_equal</logic>
-                            <value/>
-                        </compareText>
-                        <compareText>
-                            <text>${userexist}</text>
-                            <logic>does_not_equal</logic>
-                            <value/>
-                        </compareText>
-                        <compareText>
-                            <text>${phpBBVersion}</text>
-                            <logic>does_not_equal</logic>
-                            <value/>
-                        </compareText>
+                        <isTrue value="${dbexist}"/>
+                        <isTrue value="${userexist}"/>
+                        <compareText text="${phpBBVersion}" logic="does_not_equal" value=""/>
                     </ruleList>
-                </actionGroup>
+                </showQuestion>
+
                 <!-- Exit the installation if the user wants to quit -->
-                <actionGroup>
-                    <actionList>
-                        <exit>
-                            <exitCode>0</exitCode>
-                        </exit>
-                    </actionList>
+                <exit exitCode="0">
                     <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <value>no</value>
-                            <text>${response}</text>
-                        </compareText>
+                        <compareText logic="equals" value="no" text="${response}"/>
                     </ruleList>
-                </actionGroup>
+                </exit>
+
                 <setInstallerVariable name="server_locale" value=""/>
-                <actionGroup>
-                    <actionList>
-                        <!-- LIN & MAC: Check whether the servers locales is utf8 -->
-                        <setInstallerVariableFromScriptOutput>
-                            <name>server_locale</name>
-                            <exec>${system_temp_directory}/${product_fullname}/getserverlocale.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</execArgs>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </setInstallerVariableFromScriptOutput>
-                    </actionList>
+                <!-- LIN & MAC: Check whether the servers locales is utf8 -->
+                <setInstallerVariableFromScriptOutput name="server_locale"
+                      exec="${psql_executable}"
+                      execArgs="-t -A -c &quot;SHOW LC_CTYPE&quot;"
+                      workingDirectory="${system_temp_directory}/${product_fullname}"
+                      abortOnError="0" showMessageOnError="0">
                     <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                        <compareText>
-                            <text>${dbexist}</text>
-                            <logic>equals</logic>
-                            <value/>
-                        </compareText> 
-                        <compareText>
-                            <text>${userexist}</text>
-                            <logic>equals</logic>
-                            <value/>
-                        </compareText>
-                        <compareText>
-                            <text>${phpBBVersion}</text>
-                            <logic>equals</logic>
-                            <value/>
-                        </compareText>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                        <isFalse value="${dbexist}"/>
+                        <isFalse value="${userexist}"/>
+                        <compareText text="${phpBBVersion}" logic="equals" value=""/>
                     </ruleList>
-                </actionGroup>
+                </setInstallerVariableFromScriptOutput>
+
                 <!-- Exit the installation if the locale does not match -->
                 <actionGroup>
                     <actionList>
-                        <showWarning>
-                            <text>${msg(server.locale.error)}</text>
-                        </showWarning>
-                        <exit>
-                            <exitCode>0</exitCode>
-                        </exit>
+                        <showWarning text="${msg(server.locale.error)}"/>
+                        <exit exitCode="0"/>
                     </actionList>
                     <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <value/>
-                            <text>${server_locale}</text>
-                        </compareText>
-                        <compareText>
-                            <logic>does_not_contain</logic>
-                            <value>UTF-8</value>
-                            <nocase>1</nocase>
-                            <text>${server_locale}</text>
-                        </compareText>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <value>C</value>
-                            <nocase>1</nocase>
-                            <text>${server_locale}</text>
-                        </compareText>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <value>POSIX</value>
-                            <nocase>1</nocase>
-                            <text>${server_locale}</text>
-                        </compareText>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
+                        <compareText logic="does_not_equal" value="" text="${server_locale}"/>
+                        <compareText logic="does_not_contain" value="UTF-8" nocase="1" text="${server_locale}"/>
+                        <compareText logic="does_not_equal" value="C" nocase="1" text="${server_locale}"/>
+                        <compareText logic="does_not_equal" value="POSIX" nocase="1" text="${server_locale}"/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </actionGroup>
             </validationActionList>
