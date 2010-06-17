@@ -1789,7 +1789,7 @@
           <value/>
           <default/>
           <allowEmptyValue>1</allowEmptyValue>
-          <width>40</width>
+          <width>20</width>
           <cliOptionName>systemuser</cliOptionName>
           <cliOptionShow>yes</cliOptionShow>
           <ruleList>
@@ -1805,7 +1805,7 @@
           <cliOptionName>systempassword</cliOptionName>
           <cliOptionShow>yes</cliOptionShow>
           <descriptionRetype>${msg(config.syspassword.confirm)}</descriptionRetype>
-          <width>40</width>
+          <width>128</width>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
