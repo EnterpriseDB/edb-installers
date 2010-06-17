@@ -533,6 +533,15 @@
                     </ruleList>
                 </actionGroup>
 
+                <!-- Creating a temporary directory -->
+                <createDirectory path="${system_temp_directory}/${product_fullname}"/>
+
+                <!-- Extracting installation scripts -->
+                <unpackDirectory origin="instscripts"
+                    destination="${system_temp_directory}/${product_fullname}"
+                    folder="instscripts${platform_name}" component="psql"/>
+
+
                 <!-- Disable the components which are being upgraded -->
                 <actionGroup>
                     <actionList>
@@ -813,6 +822,14 @@
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
 
+                <setInstallerVariableFromRegEx name="uuid_val" text="${uuid_val}" pattern="^dbser_guid=([^\S]*)$"
+                                 substitution="\1"  abortOnError="0" showMessageOnError="0">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${uuid_val}" value=""/>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+
                 <!-- Use predefined value, if uuid could not be determined -->
                 <setInstallerVariable name="uuid_val" value="a172352a-20a4-11df-a5a3-000c29a2e41e">
                     <ruleList>
@@ -896,14 +913,6 @@
                 <isFalse value="${extract_mode}"/>
            </ruleList>
         </actionGroup> 
-
-        <!-- Creating a temporary directory -->
-        <createDirectory path="${system_temp_directory}/${product_fullname}"/>
-
-        <!-- Extracting installation scripts -->
-        <unpackDirectory origin="instscripts"
-              destination="${system_temp_directory}/${product_fullname}"
-              folder="instscripts${platform_name}" component="psql"/>
 
         <!-- Set Proxy values from environement variables if any -->
         <setInstallerVariable name="proxyHost" value="${env(PROXY_HOST)}" />
