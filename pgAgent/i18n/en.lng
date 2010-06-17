@@ -92,7 +92,7 @@ info.pgagent.schema.manual.upgrade=pgAgent will not be able to start until you m
 
 info.pgagent.schema.manual.upgrade.windows=pgAgent will not be able to start until you manually upgrade the pgagent schema.\nYou will be able to find the upgrade script at "${installdir}\share\pgagent_upgrade.sql"
 
-pgagent.schema.found=A 'pgagent' schema of the correct version was found in the 'postgres' database and will be reused by this installation.
+pgagent.schema.found=A 'pgagent' schema of the correct version was found in the '${pgdbname}' database and will be reused by this installation.
 
 pgagent.schema.newer.version.exist=A newer version of the 'pgagent' schema was found on your postgres database.\nPlease download the latest version of the pgAgent installer.\nIf you want to use the same installer, than remove the 'pgagent' schema from your postgres database.
 
