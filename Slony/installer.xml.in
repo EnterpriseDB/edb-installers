@@ -474,7 +474,7 @@
             </ruleList>
         </actionGroup>
 		
-        <!-- LIN | MAC : Exit the installation if the installdir is not valid (Unattended mode) -->
+        <!-- LIN | MAC : Exit the installation if the installdir is not valid (Unattended mode/Upgrade mode) -->
         <actionGroup>
             <actionList>
                 <showWarning>
@@ -494,15 +494,25 @@
                     <logic>does_not_equal</logic>
                     <value>windows</value>
                 </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
+                <ruleGroup>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${installer_ui}</text>
+                            <value>unattended</value>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${SlonyMajorVersionInstalled}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </ruleGroup>
             </ruleList>
         </actionGroup>
 		
-        <!-- WIN: Exit the installation if the installdir is not valid (Unattended mode) -->
+        <!-- WIN: Exit the installation if the installdir is not valid (Unattended mode/Upgrade mode) -->
         <actionGroup>
             <actionList>
                 <showWarning>
@@ -522,11 +532,21 @@
                     <logic>equals</logic>
                     <value>windows</value>
                 </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
+                <ruleGroup>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${installer_ui}</text>
+                            <value>unattended</value>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${SlonyMajorVersionInstalled}</text>
+                            <value/>
+                        </compareText>
+                    </ruleList>
+                </ruleGroup>
             </ruleList>
         </actionGroup>
 		
