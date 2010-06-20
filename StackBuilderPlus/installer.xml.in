@@ -40,10 +40,11 @@
   <!-- i18n files for the UI -->
   <allowLanguageSelection>1</allowLanguageSelection> 
   <defaultLanguage>auto</defaultLanguage>
-  <allowedLanguages>en zh_CN</allowedLanguages>
+  <allowedLanguages>en zh_CN jp</allowedLanguages>
   <customLanguageFileList>
     <language code="en" encoding="iso8859-1" file="i18n/en.lng"/>
     <language code="zh_CN" encoding="utf-8" file="i18n/zh_CN.lng"/>
+    <language code="jp" encoding="utf-8" file="i18n/jp.lng"/>
   </customLanguageFileList>
 
   <preShowHelpActionList>
