@@ -16,7 +16,7 @@ char *convertToHexString(char *str);
 * returns NULL in case of NULL/invalid input parameter.
 * Caller should call free on returned string after its been used.
 */
-char *HexStrToStr(char *str);
+char *HexStrToStr(const char *str);
 
 
 
@@ -63,7 +63,7 @@ char *convertToHexString(char *str) {
 * returns NULL in case of NULL/invalid input parameter.
 * Caller should call free on returned string after its been used.
 */
-char *HexStrToStr(char *str) {
+char *HexStrToStr(const char *str) {
 
 	int stringLen; //this must be even value
 	char hex[3];
@@ -168,14 +168,23 @@ int main(int argcounter, char **args)
 	{
 		dynatuneArrayofArray = dynatuneResponse._getDynaTuneInfoReturn;
 		if(dynatuneArrayofArray->__size != 17)
+		{
 			fprintf(stderr, "Error, invalid arguments recieved");
+		}
 		else
+		{
 			//obtain parameters list
-			for (int index = 0; index < 17; index++)
+			int index = 0;
+			for (; index < 17; index++)
+			{
 				printHexedKeyValuePair(dynatuneArrayofArray->__ptr[index].__ptr[0], dynatuneArrayofArray->__ptr[index].__ptr[1]);
+			}
+		}
 	}
 	else
+	{
 		soap_print_fault(&soap, stderr); // display the SOAP fault message on the stderr stream
+	}
 
 	//free resources
 	free(hexedUUID);

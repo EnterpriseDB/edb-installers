@@ -17,7 +17,7 @@ char *convertToHexString(char *str);
 * returns NULL in case of NULL/invalid input parameter.
 * Caller should call free on returned string after its been used.
 */
-char *HexStrToStr(char *str);
+char *HexStrToStr(const char *str);
 
 /*
 * Returns total system memory in GB in String format (floating point)
@@ -72,7 +72,7 @@ char *convertToHexString(char *str) {
 * returns NULL in case of NULL/invalid input parameter.
 * Caller should call free on returned string after its been used.
 */
-char *HexStrToStr(char *str) {
+char *HexStrToStr(const char *str) {
 
 	int stringLen; //this must be even value
 	char hex[3];
@@ -145,10 +145,10 @@ void printHexedKeyValuePair(const char* hexedKey, const char* hexedVal)
 	free(val);
 }
 
-bool isRunningOn64bitWindows()
+BOOL isRunningOn64bitWindows()
 {
 #if defined(__WIN64__)
-	 return true; //64 bit application running on 64 bit windows.
+	 return TRUE; //64 bit application running on 64 bit windows.
 #else
 	 typedef BOOL (WINAPI *IW64PFP)(HANDLE, BOOL *);
 
@@ -218,12 +218,19 @@ int main(int argcounter, char **args)
 		if(dynatuneArrayofArray->__size != 17)
 			fprintf(stderr, "Error, Invalid arguments recieved");
 		else
+		{
 			//obtain parameters list
-			for( int index = 0; index < 17; index++ )
+			int index = 0;
+			for( ;index < 17; index++ )
+			{
 				printHexedKeyValuePair(dynatuneArrayofArray->__ptr[0].__ptr[0],dynatuneArrayofArray->__ptr[0].__ptr[1]);
+			}
+		}
 	}
 	else
+	{
 		soap_print_fault(&soap, stderr); // display the SOAP fault message on the stderr stream
+	}
 
 	free(ram_gb);
 	free(ram_mb);

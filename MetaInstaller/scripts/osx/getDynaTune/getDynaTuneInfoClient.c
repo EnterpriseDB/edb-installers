@@ -16,7 +16,7 @@ char *convertToHexString(char *str);
 * returns NULL in case of NULL/invalid input parameter.
 * Caller should call free on returned string after its been used.
 */
-char *HexStrToStr(char *str);
+char *HexStrToStr(const char *str);
 
 
 
@@ -63,7 +63,7 @@ char *convertToHexString(char *str) {
 * returns NULL in case of NULL/invalid input parameter.
 * Caller should call free on returned string after its been used.
 */
-char *HexStrToStr(char *str) {
+char *HexStrToStr(const char *str) {
 
 	int stringLen; //this must be even value
 	char hex[3];
@@ -106,7 +106,8 @@ void printHexedKeyValuePair(const char* hexedKey, const char* hexedVal)
     free(val);
 }
 
-int main(int argcounter, char **args){
+int main(int argcounter, char **args)
+{
 	struct soap soap;
 #ifndef STAGING_SERVER
         const char *soap_endpoint = "https://services.enterprisedb.com/authws/services/AuthenticationService?wsdl";
@@ -135,9 +136,8 @@ int main(int argcounter, char **args){
 	char *proxyHost=args[6];
 	char *proxyPort=args[7];
 
-	char *dynatuneParams[] = {hexedUUID,hexedSU,hexedRAMMB,hexedRAMGB,hexedWP,os_arch,pg_arch};
+	char *dynatuneParams[] = {hexedUUID, hexedSU, hexedRAMMB, hexedRAMGB, hexedWP, hexedOSArch, hexedPGArch};
 
-	//contains returned parameters
 	struct ArrayOf_USCORExsd_USCOREstring dynaParamList;
 	struct ns2__getDynaTuneInfoResponse dynatuneResponse;
 	struct ArrayOfArrayOf_USCORExsd_USCOREstring * dynatuneArrayofArray;
@@ -167,14 +167,23 @@ int main(int argcounter, char **args){
 	{
 		dynatuneArrayofArray = dynatuneResponse._getDynaTuneInfoReturn;
 		if(dynatuneArrayofArray->__size != 17)
+		{
 			fprintf(stderr, "Error, invalid arguments recieved");
+		}
 		else
+		{
 			//obtain parameters list
-			for (int index = 0; index < 17; index++)
+			int index = 0;
+			for (; index < 17; index++)
+			{
 				printHexedKeyValuePair(dynatuneArrayofArray->__ptr[index].__ptr[0], dynatuneArrayofArray->__ptr[index].__ptr[1]);
+			}
+		}
 	}
 	else
+	{
 		soap_print_fault(&soap, stderr); // display the SOAP fault message on the stderr stream
+	}
 
 	free(hexedUUID);
 	free(hexedSU);
