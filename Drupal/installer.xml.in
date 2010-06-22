@@ -94,7 +94,8 @@
             <persist>0</persist>
         </setInstallerVariable>
         <!-- Set the default values -->
-        <setInstallerVariable name="pgdatabase" value="postgres"/>
+        <setInstallerVariable name="pgdatabase" value=""/>
+        <setInstallerVariable name="pgtempdbname" value=""/>
         <setInstallerVariable name="defaultuser" value="postgres"/>
         <setInstallerVariable name="defaultpassword" value=""/>
         <setInstallerVariable name="dbexist" value=""/>
@@ -639,10 +640,10 @@
                 <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
                 <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
                 <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-                <setEnvironmentVariable name="PGDATABASE" value="" />
+                <setEnvironmentVariable name="PGDATABASE" value=""/>
                 <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/"/>
-                <setInstallerVariable name="pgdbname" value="" />
-                <setInstallerVariable name="connection" value="" />
+                <setInstallerVariable name="connection" value=""/>
+                <setInstallerVariable name="pgtempdbname" value=""/>
 
                 <setInstallerVariable name="psql_executable" value="${system_temp_directory}/instscripts/psql"/>
                 <setInstallerVariable name="psql_executable" value="${system_temp_directory}\instscripts\psql.exe">
@@ -650,6 +651,22 @@
                      <compareText logic="equals" text="${platform_name}" value="windows"/>
                  </ruleList>
                 </setInstallerVariable>
+
+                <!-- Check connection against the database, if given as the command-line argument -->
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariableFromScriptOutput name="connection"
+                                workingDirectory="${system_temp_directory}/instscripts"
+                                abortOnError="0" showMessageOnError="0"
+                                exec="${psql_executable}"
+                                execArgs="-l -d &quot;${pgdatabase}&quot;"/>
+                        <stringModify text="${connection}" variable="connection" logic="trim"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${pgdatabase}" value=""/>
+                    </ruleList>
+                </actionGroup>
+
                 <foreach variables="dbname">
                     <values>postgres edb template1</values>
                     <actionList>
@@ -663,20 +680,30 @@
                             </ruleList>
                         </setInstallerVariableFromScriptOutput>
                         <stringModify text="${connection}" variable="connection" logic="trim"/>
-                        <setInstallerVariable name="pgdbname" value="${dbname}">
+                        <setInstallerVariable name="pgtempdbname" value="${dbname}">
                             <ruleList>
                                 <compareText logic="does_not_equal" text="${connection}" value=""/>
-                                <compareText logic="equals" text="${pgdbname}" value=""/>
+                                <compareText logic="equals" text="${pgtempdbname}" value=""/>
                             </ruleList>
                         </setInstallerVariable>
                     </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${pgdatabase}" value=""/>
+                    </ruleList>
                 </foreach>
+
                 <throwError text="${program_stderr}">
                     <ruleList>
                         <compareText logic="equals" text="${connection}" value=""/>
                     </ruleList>
                 </throwError>
-                <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
+
+                <setEnvironmentVariable name="PGDATABASE" value="${pgtempdbname}"/>
+                <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${pgdatabase}" value=""/>
+                    </ruleList>
+                </setEnvironmentVariable>
 
                 <!-- Check the user permissions -->
                 <setInstallerVariableFromScriptOutput name="is_superuser"
@@ -715,6 +742,16 @@
         </actionGroup>
 
     </preInstallationActionList>
+
+    <readyToInstallActionList>
+        <setInstallerVariable name="pgdatabase" value="${pgtempdbname}">
+            <ruleList>
+                <compareText logic="equals" text="${pgdatabase}" value=""/>
+            </ruleList>
+        </setInstallerVariable>
+        <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
+    </readyToInstallActionList>
+
     <!-- Postinstallation actions -->
     <postInstallationActionList>
 
@@ -834,7 +871,7 @@
         <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
         <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
         <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-        <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
+        <setEnvironmentVariable name="PGDATABASE" value=""/>
         <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/"/>
 
         <!-- Create Role and database -->
@@ -1432,7 +1469,7 @@
                     <explanation/>
                     <value/>
                     <cliOptionName>dbname</cliOptionName>
-                    <default>postgres</default>
+                    <default></default>
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                     <ask>0</ask>
@@ -1510,15 +1547,31 @@
                 <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
                 <setEnvironmentVariable name="PGDATABASE" value="" />
                 <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/"/>
-                <setInstallerVariable name="pgdbname" value="" />
                 <setInstallerVariable name="connection" value="" />
+                <setInstallerVariable name="pgtempdbname" value="" />
 
                 <setInstallerVariable name="psql_executable" value="${system_temp_directory}/instscripts/psql"/>
                 <setInstallerVariable name="psql_executable" value="${system_temp_directory}\instscripts\psql.exe">
-                 <ruleList>
-                     <compareText logic="equals" text="${platform_name}" value="windows"/>
-                 </ruleList>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
                 </setInstallerVariable>
+
+                <!-- Check connection against the database, if given as the command-line argument -->
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariableFromScriptOutput name="connection"
+                                workingDirectory="${system_temp_directory}/instscripts"
+                                abortOnError="0" showMessageOnError="0"
+                                exec="${psql_executable}"
+                                execArgs="-l -d &quot;${pgdatabase}&quot;"/>
+                        <stringModify text="${connection}" variable="connection" logic="trim"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${pgdatabase}" value=""/>
+                    </ruleList>
+                </actionGroup>
+
                 <foreach variables="dbname">
                     <values>postgres edb template1</values>
                     <actionList>
@@ -1532,22 +1585,33 @@
                             </ruleList>
                         </setInstallerVariableFromScriptOutput>
                         <stringModify text="${connection}" variable="connection" logic="trim"/>
-                        <setInstallerVariable name="pgdbname" value="${dbname}">
+                        <setInstallerVariable name="pgtempdbname" value="${dbname}">
                             <ruleList>
                                 <compareText logic="does_not_equal" text="${connection}" value=""/>
-                                <compareText logic="equals" text="${pgdbname}" value=""/>
+                                <compareText logic="equals" text="${pgtempdbname}" value=""/>
                             </ruleList>
                         </setInstallerVariable>
                     </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${pgdatabase}" value=""/>
+                    </ruleList>
                 </foreach>
+
                 <throwError text="${program_stderr}">
                     <ruleList>
                         <compareText logic="equals" text="${connection}" value=""/>
                     </ruleList>
                 </throwError>
-                <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
+
+                <setEnvironmentVariable name="PGDATABASE" value="${pgtempdbname}"/>
+                <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${pgdatabase}" value=""/>
+                    </ruleList>
+                </setEnvironmentVariable>
 
                 <!-- Check the user permissions -->
+                <setInstallerVariable name="is_superuser" value=""/>
                 <setInstallerVariableFromScriptOutput name="is_superuser"
                         workingDirectory="${system_temp_directory}/instscripts"
                         abortOnError="0" showMessageOnError="0">
@@ -1579,6 +1643,7 @@
                 </setInstallerVariableFromScriptOutput>
 
                 <!-- Inform user about the Existance of database and user -->
+                <setInstallerVariable name="response" value=""/>
                 <showQuestion text="${msg(db.found.info)}" variable="response">
                     <ruleEvaluationLogic>OR</ruleEvaluationLogic>
                     <ruleList>
@@ -1588,11 +1653,11 @@
                     </ruleList>
                 </showQuestion>
                 <!-- Exit the installation if the user wants to quit -->
-                <exit>
+                <setInstallerVariable name="next_page" value="pgdetails">
                     <ruleList>
                         <compareText logic="equals" value="no" text="${response}"/>
                     </ruleList>
-                </exit>
+                </setInstallerVariable>
             </validationActionList>
         </parameterGroup>
     </parameterList>
