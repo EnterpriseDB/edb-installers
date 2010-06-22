@@ -1239,6 +1239,21 @@
             <text>${msg(db.drop.info)}</text>
         </showInfo>
     </postUninstallationActionList>
+
+    <!-- finalPage actions -->
+    <finalPageActionList>
+        <launchBrowser url="http://127.0.0.1:${apacheport}/Drupal/update.php">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
+                <compareText>
+                    <text>${drupalVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </launchBrowser>
+    </finalPageActionList>
+
     <!-- Components -->
     <componentList>
         <component>
