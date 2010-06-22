@@ -913,10 +913,6 @@
                     <programArguments>"${system_temp_directory}\instscripts" "${pgdatabase}"</programArguments>
                     <workingDirectory>${installdir}\mediaWiki\installer\mediaWiki</workingDirectory>
                 </runProgram>
-                <!-- Inform user about the database and role creation -->
-                <showInfo>
-                    <text>${msg(db.create.info)}</text>
-                </showInfo>
             </actionList>
             <ruleList>
                 <compareText>
@@ -950,10 +946,6 @@
                     <programArguments> "${pghost}" "${pgport}" "${pguser}" "${pgpassword.password}" "${system_temp_directory}/instscripts" "${pgdatabase}"</programArguments>
                     <workingDirectory>${installdir}/mediaWiki/installer/mediaWiki</workingDirectory>
                 </runProgram>
-                <!-- Inform user about the database and role creation -->
-                <showInfo>
-                    <text>${msg(db.create.info)}</text>
-                </showInfo>
             </actionList>
             <ruleList>
                 <compareText>
@@ -1230,6 +1222,35 @@
         </deleteFile>
 
     </postInstallationActionList>
+
+    <postUninstallerCreationActionList>
+        <actionGroup>
+	    <actionList>
+                <!-- Inform user about the database and role creation -->
+                <showInfo>
+                    <text>${msg(db.create.info)}</text>
+                </showInfo>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${dbexist}</text>
+                    <logic>equals</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${userexist}</text>
+                    <logic>equals</logic>
+                    <value/>
+                </compareText>
+                <compareText>
+                    <text>${mediaWikiVersion}</text>
+                    <logic>equals</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </postUninstallerCreationActionList>
+
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
         <!-- Deleting the config file -->
