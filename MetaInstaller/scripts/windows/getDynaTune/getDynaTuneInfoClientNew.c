@@ -136,10 +136,42 @@ char *getTotalMemoryInMB() {
 	return cAns;
 }
 
+void printHexedKeyValuePair(const char* hexedKey, const char* hexedVal)
+{
+	char    *key=HexStrToStr(hexedKey),
+        	*val=HexStrToStr(hexedVal);
+	fprintf(stdout, "%s=%s\n", key, val);
+	free(key);
+	free(val);
+}
 
-int main(int argcounter, char **args){
+bool isRunningOn64bitWindows()
+{
+#if defined(__WIN64__)
+	 return true; //64 bit application running on 64 bit windows.
+#else
+	 typedef BOOL (WINAPI *IW64PFP)(HANDLE, BOOL *);
+
+	 BOOL res = FALSE;
+
+	 IW64PFP IW64P = (IW64PFP)GetProcAddress(GetModuleHandle(L"kernel32"), "IsWow64Process");
+
+	 if(IW64P != NULL)
+		 IW64P(GetCurrentProcess(), &res);
+
+	 return res != FALSE;  // 32 bit application running on 64 bit windows.
+#endif
+}
+
+
+int main(int argcounter, char **args)
+{
 	struct soap soap;
-	const char *soap_endpoint = "https://services.enterprisedb.com/authws/services/AuthenticationService";
+#ifndef STAGING_SERVER
+        const char *soap_endpoint = "https://services.enterprisedb.com/authws/services/AuthenticationService?wsdl";
+#else
+        const char *soap_endpoint = "http://services.staging.enterprisedb.com/authws/services/AuthenticationService?wsdl";
+#endif /* STAGING_SERVER */
 	char *hexedUUID=convertToHexString(args[1]);
 	char *hexedSU=convertToHexString(args[2]);
 	char *hexedWP=convertToHexString(args[3]);
@@ -149,14 +181,15 @@ int main(int argcounter, char **args){
 	char *hexedRAMMB=convertToHexString(ram_mb);
         char *proxyHost=args[4];
         char *proxyPort=args[5];
+#ifdef __WIN64__
+        char *hexedPgArch = convertToHexString("64");
+        char *hexedOsArch = convertToHexString("64");
+#else
+        char *hexedPgArch = convertToHexString("32");
+        char *hexedOsArch = isRunningOn64bitWindows() ? convertToHexString("64") : convertToHexString("32");
+#endif
 
-	char *dynatuneParams[] = {hexedUUID,hexedSU,hexedRAMMB,hexedRAMGB,hexedWP};
-
-	//contains returned parameters
-	char **dynatune=(char **)malloc(sizeof(char *)*17);
-	char *param;
-	char *key;
-	char *val;
+	char *dynatuneParams[] = {hexedUUID, hexedSU, hexedRAMMB, hexedRAMGB, hexedWP, hexedOsArch, hexedPgArch};
 
 	struct ArrayOf_USCORExsd_USCOREstring dynaParamList;
 	struct ns2__getDynaTuneInfoResponse dynatuneResponse;
@@ -164,194 +197,34 @@ int main(int argcounter, char **args){
 
 	//parameters list for dynatune
 	dynaParamList.__ptr = dynatuneParams;
-	dynaParamList.__size = 5;
+	dynaParamList.__size = 7;
 
+	soap_init(&soap); // initialize runtime environment (only once)
 
-
-    soap_init(&soap); // initialize runtime environment (only once)
-
-    if (strcmp(proxyHost, "") && strcmp(proxyPort, ""))
-    {
-        soap.proxy_host = proxyHost;
-        soap.proxy_port = strtol(proxyPort, NULL, 10);
-        soap.proxy_userid = "anonymous";
-        soap.proxy_passwd = "";
-    }
-
-    soap_register_plugin( &soap, wininet_plugin );//SSL support plugin
-
-   if(soap_call_ns2__getDynaTuneInfo(&soap, soap_endpoint, NULL, &dynaParamList,&dynatuneResponse) == SOAP_OK) {
-		dynatuneArrayofArray = dynatuneResponse._getDynaTuneInfoReturn;
-		if(dynatuneArrayofArray->__size != 17) {
-			//MsgBox(0,NULL,L"Dynatune variables list has been modified, please contact support for this error");
-			free(dynatune);
-			dynatune = NULL;
-			printf("Error, invalid arguments recieved");
-		}else {
-			//obtain parameters list
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[0].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[0].__ptr[1]));
-			dynatune[0] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[1].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[1].__ptr[1]));
-			dynatune[1] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[2].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[2].__ptr[1]));
-			dynatune[2] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[3].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[3].__ptr[1]));
-			dynatune[3] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[4].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[4].__ptr[1]));
-			dynatune[4] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[5].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[5].__ptr[1]));
-			dynatune[5] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[6].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[6].__ptr[1]));
-			dynatune[6] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[7].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[7].__ptr[1]));
-			dynatune[7] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[8].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[8].__ptr[1]));
-			dynatune[8] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[9].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[9].__ptr[1]));
-			dynatune[9] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[10].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[10].__ptr[1]));
-			dynatune[10] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[11].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[11].__ptr[1]));
-			dynatune[11] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[12].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[12].__ptr[1]));
-			dynatune[12] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[13].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[13].__ptr[1]));
-			dynatune[13] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[14].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[14].__ptr[1]));
-			dynatune[14] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[15].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[15].__ptr[1]));
-			dynatune[15] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-
-			param = (char *)malloc(sizeof(char)*200);
-
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[16].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[16].__ptr[1]));
-			dynatune[16] = param;
-			printf("%s\n",param);
-			ZeroMemory(param,sizeof(param));
-			//free(param);
-			free(key);
-			free(val);
-		}//else 17
-	}else {
-		soap_print_fault(&soap, stderr); // display the SOAP fault message on the stderr stream
-		//MsgBox(0,NULL,L"Error in calling Dynatune web service");
-		ZeroMemory(dynatune,sizeof(dynatune));
-		//free(dynatune);
-		//dynatune = NULL;
+	if (strcmp(proxyHost, "") && strcmp(proxyPort, ""))
+	{
+		soap.proxy_host = proxyHost;
+		soap.proxy_port = strtol(proxyPort, NULL, 10);
+		soap.proxy_userid = "anonymous";
+		soap.proxy_passwd = "";
 	}
 
-	//printf("Dynatune[0]=%s", dynatune[0]);
-	//free resources
+	//SSL support plugin
+	soap_register_plugin( &soap, wininet_plugin );
+
+	if(soap_call_ns2__getDynaTuneInfo(&soap, soap_endpoint, NULL, &dynaParamList,&dynatuneResponse) == SOAP_OK)
+        {
+		dynatuneArrayofArray = dynatuneResponse._getDynaTuneInfoReturn;
+		if(dynatuneArrayofArray->__size != 17)
+			fprintf(stderr, "Error, Invalid arguments recieved");
+		else
+			//obtain parameters list
+			for( int index = 0; index < 17; index++ )
+				printHexedKeyValuePair(dynatuneArrayofArray->__ptr[0].__ptr[0],dynatuneArrayofArray->__ptr[0].__ptr[1]);
+	}
+	else
+		soap_print_fault(&soap, stderr); // display the SOAP fault message on the stderr stream
+
 	free(ram_gb);
 	free(ram_mb);
 	free(hexedUUID);
@@ -359,9 +232,11 @@ int main(int argcounter, char **args){
 	free(hexedWP);
 	free(hexedRAMGB);
 	free(hexedRAMMB);
-	//cleanWebService();
+	free(hexedPgArch);
+	free(hexedOsArch);
    	soap_destroy(&soap); // delete deserialized class instances (for C++ only)
    	soap_end(&soap); // remove deserialized data and clean up
    	soap_done(&soap); // detach the gSOAP environment
+
    	return 0;
 }

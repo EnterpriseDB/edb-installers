@@ -41,7 +41,7 @@ char *convertToHexString(char *str) {
     char *cpnew;
 
 	if(str == NULL) {
-		fprintf(stderr,"StrToHexStr: NULL Input String\n");
+		fprintf(stderr, "StrToHexStr: NULL Input String\n");
 		return NULL;
 	}
 
@@ -69,262 +69,124 @@ char *HexStrToStr(char *str) {
 	char hex[3];
 	char *newstr;
 	int i,j;
-	
-	hex[0] = hex[1] = hex[2] = '\0';
-	
+	hex[0] = hex[1] = hex[2] ='\0';
+
 	if(str == NULL) {
-		fprintf(stderr,"Invalid Hex String:%s\n", str);
+		fprintf(stderr, "Invalid Hex String:%s\n", str);
 		return NULL;
 	}
 
 	stringLen=strlen(str);
-	
+
 	//check if its not odd and valid characters
 	if(((stringLen & 0x1) != 0) && !IsAllHex(str)) {
-		fprintf(stderr,"Invalid Hex String:%s\n", str);
+		fprintf(stderr, "Invalid Hex String:%s\n", str);
 		return NULL;
 	}
 
 	newstr = (char *)malloc((stringLen/2)+1);
-   
-	
+
+
 	for(i=0,j=0; i<stringLen; i+=2,j++) {
-       hex[0] = str[i];
+           hex[0] = str[i];
 	   hex[1] = str[i+1];
 	   newstr[j] = strtol(hex, NULL,16);
-	   hex[0] = hex[1] = hex[2] = '\0';
+	   hex[0] = hex[1] = hex[2] ='\0';
 	}
     newstr[stringLen/2] = '\0';
-	
-	return(newstr);
+    return(newstr);
 }
 
+void printHexedKeyValuePair(const char* hexedKey, const char* hexedVal)
+{
+    char *key=HexStrToStr(hexedKey),
+         *val=HexStrToStr(hexedVal);
+    fprintf(stdout, "%s=%s\n", key, val);
+    free(key);
+    free(val);
+}
 
-
-
-int main(int argcounter, char **args){ 
+int main(int argcounter, char **args){
 	struct soap soap;
-	const char *soap_endpoint = "https://services.enterprisedb.com/authws/services/AuthenticationService";
+#ifndef STAGING_SERVER
+        const char *soap_endpoint = "https://services.enterprisedb.com/authws/services/AuthenticationService?wsdl";
+#else
+        const char *soap_endpoint = "http://services.staging.enterprisedb.com/authws/services/AuthenticationService?wsdl";
+#endif /* STAGING_SERVER */
 	char *hexedUUID=convertToHexString(args[1]);
 	char *hexedSU=convertToHexString(args[2]);
 	char *hexedWP=convertToHexString(args[3]);
 	char *ram_gb=args[4];
 	char *ram_mb=args[5];
+#if defined(__alpha__)\
+   ||defined(__ia64__)\
+   ||defined(__ia64)\
+   ||defined(__s390x__)\
+   ||defined(__x86_64__)
+	char *hexedOSArch=convertToHexString("64");
+	char *hexedPGArch=convertToHexString("64");
+#else
+	char *hexedOSArch=convertToHexString("32");
+	char *hexedPGArch=convertToHexString("32");
+#endif
+
 	char *hexedRAMGB=convertToHexString(ram_gb);
 	char *hexedRAMMB=convertToHexString(ram_mb);
 	char *proxyHost=args[6];
 	char *proxyPort=args[7];
-	
-	char *dynatuneParams[] = {hexedUUID,hexedSU,hexedRAMMB,hexedRAMGB,hexedWP};
-	
+
+	char *dynatuneParams[] = {hexedUUID,hexedSU,hexedRAMMB,hexedRAMGB,hexedWP,os_arch,pg_arch};
+
 	//contains returned parameters
-	char **dynatune=(char **)malloc(sizeof(char *)*17);
-	char *param;
-	char *key;
-	char *val;
-	
 	struct ArrayOf_USCORExsd_USCOREstring dynaParamList;
 	struct ns2__getDynaTuneInfoResponse dynatuneResponse;
 	struct ArrayOfArrayOf_USCORExsd_USCOREstring * dynatuneArrayofArray;
-	
+
 	//parameters list for dynatune
 	dynaParamList.__ptr = dynatuneParams;
-	dynaParamList.__size = 5;
-	 
-     
-    
-    soap_init(&soap); // initialize runtime environment (only once)
+	dynaParamList.__size = 7;
 
-    if (strcmp(proxyHost, "") && strcmp(proxyPort, ""))
-    {
-        soap.proxy_host = proxyHost;
-        soap.proxy_port = strtol(proxyPort, NULL, 10);
-        soap.proxy_userid = "anonymous";
-        soap.proxy_passwd = "";
-    }
+	soap_init(&soap); // initialize runtime environment (only once)
 
-    soap_ssl_init(); /* init OpenSSL (just once) */
-    if (soap_ssl_client_context(&soap,
-            SOAP_SSL_NO_AUTHENTICATION,	/* use SOAP_SSL_DEFAULT in production code, we don't want the host name checks since these will change from machine to machine */
-            NULL, 		/* keyfile: required only when client must authenticate to server (see SSL docs on how to obtain this file) */
-            NULL, 		/* password to read the keyfile */
-            NULL,	/* optional cacert file to store trusted certificates, use cacerts.pem for all public certificates issued by common CAs */
-            NULL,		/* optional capath to directory with trusted certificates */
-            NULL		/* if randfile!=NULL: use a file with random data to seed randomness */ 
-    ))
-      { soap_print_fault(&soap, stderr);
-           exit(1);
-      }
-
-   if(soap_call_ns2__getDynaTuneInfo(&soap, soap_endpoint, NULL, &dynaParamList,&dynatuneResponse) == SOAP_OK) {
-		dynatuneArrayofArray = dynatuneResponse._getDynaTuneInfoReturn;
-		if(dynatuneArrayofArray->__size != 17) {
-			//MsgBox(0,NULL,L"Dynatune variables list has been modified, please contact support for this error");
-			free(dynatune);
-			dynatune = NULL;
-			printf("Error, invalid arguments recieved");
-		}else {
-			//obtain parameters list
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[0].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[0].__ptr[1]));
-			dynatune[0] = param;
-			printf("%s\n",dynatune[0]);
-			
-			free(key);
-			free(val);
-			
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[1].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[1].__ptr[1]));
-			dynatune[1] = param;
-			printf("%s\n",dynatune[1]);
-			
-			free(key);
-			free(val);
-			
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[2].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[2].__ptr[1]));
-			dynatune[2] = param;
-			printf("%s\n",dynatune[2]);
-			
-			free(key);
-			free(val);
-			
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[3].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[3].__ptr[1]));
-			dynatune[3] = param;
-			printf("%s\n",dynatune[3]);
-			//free(param);
-			free(key);
-			free(val);
-			
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[4].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[4].__ptr[1]));
-			dynatune[4] = param;
-			printf("%s\n",dynatune[4]);
-			//free(param);
-			free(key);
-			free(val);
-			
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[5].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[5].__ptr[1]));
-			dynatune[5] = param;
-			printf("%s\n",param);
-			//free(param);
-			free(key);
-			free(val);
-			
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[6].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[6].__ptr[1]));
-			dynatune[6] = param;
-			printf("%s\n",param);
-			//free(param);
-			free(key);
-			free(val);
-			
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[7].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[7].__ptr[1]));
-			dynatune[7] = param;
-			printf("%s\n",param);
-			//free(param);
-			free(key);
-			free(val);
-			
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[8].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[8].__ptr[1]));
-			dynatune[8] = param;
-			printf("%s\n",param);
-			//free(param);
-			free(key);
-			free(val);
-			
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[9].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[9].__ptr[1]));
-			dynatune[9] = param;
-			printf("%s\n",param);
-			//free(param);
-			free(key);
-			free(val);
-			//free(param);
-
-
-			param = (char *)malloc(sizeof(char)*300);
-			key=HexStrToStr(dynatuneArrayofArray->__ptr[10].__ptr[0]);
-			val=HexStrToStr(dynatuneArrayofArray->__ptr[10].__ptr[1]);
-			sprintf(param,"%s=%s",key,val);
-			dynatune[10] = param;
-			printf("%s\n",param);
-			//free(param);
-			free(key);
-			free(val);
-			
-			
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[11].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[11].__ptr[1]));
-			dynatune[11] = param;
-			printf("%s\n",param);
-			//free(param);
-			free(key);
-			free(val);
-			
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[12].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[12].__ptr[1]));
-			dynatune[12] = param;
-			printf("%s\n",param);
-			//free(param);
-			free(key);
-			free(val);
-			
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[13].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[13].__ptr[1]));
-			dynatune[13] = param;
-			printf("%s\n",param);
-			//free(param);
-			free(key);
-			free(val);
-			
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[14].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[14].__ptr[1]));
-			dynatune[14] = param;
-			printf("%s\n",param);
-			free(key);
-			free(val);
-			
-			param = (char *)malloc(sizeof(char)*200);
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[15].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[15].__ptr[1]));
-			dynatune[15] = param;
-			printf("%s\n",param);
-			//free(param);
-			free(key);
-			free(val);
-			
-			param = (char *)malloc(sizeof(char)*200);
-			
-			sprintf(param,"%s=%s",key=HexStrToStr(dynatuneArrayofArray->__ptr[16].__ptr[0]),val=HexStrToStr(dynatuneArrayofArray->__ptr[16].__ptr[1]));
-			dynatune[16] = param;
-			printf("%s\n",param);
-			//free(param);
-			free(key);
-			free(val);
-		}//else 17
-	}else {
-		soap_print_fault(&soap, stderr); // display the SOAP fault message on the stderr stream
-		//MsgBox(0,NULL,L"Error in calling Dynatune web service");
-		free(dynatune);
-		dynatune = NULL;	
+	if (strcmp(proxyHost, "") && strcmp(proxyPort, ""))
+	{
+		soap.proxy_host = proxyHost;
+		soap.proxy_port = strtol(proxyPort, NULL, 10);
+		soap.proxy_userid = "anonymous";
+		soap.proxy_passwd = "";
 	}
-	
-	//printf("Dynatune[0]=%s", dynatune[0]);
-	//free resources
-	//free(ram_gb);
-	//free(ram_mb);
-	//free(hexedUUID);
-	//free(hexedSU);
-	//free(hexedWP);
-	//free(hexedRAMGB);
-	//free(hexedRAMMB);
-	//cleanWebService();
-   	soap_destroy(&soap); // delete deserialized class instances (for C++ only)
-   	soap_end(&soap); // remove deserialized data and clean up
-   	soap_done(&soap); // detach the gSOAP environment 
+
+	soap_ssl_init(); /* init OpenSSL (just once) */
+	if (soap_ssl_client_context(&soap, SOAP_SSL_NO_AUTHENTICATION, NULL, NULL, NULL, NULL, NULL))
+	{
+		soap_print_fault(&soap, stderr);
+		exit(1);
+	}
+
+	if(soap_call_ns2__getDynaTuneInfo(&soap, soap_endpoint, NULL, &dynaParamList,&dynatuneResponse) == SOAP_OK)
+	{
+		dynatuneArrayofArray = dynatuneResponse._getDynaTuneInfoReturn;
+		if(dynatuneArrayofArray->__size != 17)
+			fprintf(stderr, "Error, invalid arguments recieved");
+		else
+			//obtain parameters list
+			for (int index = 0; index < 17; index++)
+				printHexedKeyValuePair(dynatuneArrayofArray->__ptr[index].__ptr[0], dynatuneArrayofArray->__ptr[index].__ptr[1]);
+	}
+	else
+		soap_print_fault(&soap, stderr); // display the SOAP fault message on the stderr stream
+
+	free(hexedUUID);
+	free(hexedSU);
+	free(hexedWP);
+	free(hexedRAMGB);
+	free(hexedRAMMB);
+	free(hexedOSArch);
+	free(hexedPGArch);
+	soap_destroy(&soap); // delete deserialized class instances (for C++ only)
+	soap_end(&soap); // remove deserialized data and clean up
+	soap_done(&soap); // detach the gSOAP environment
+
    	return 0;
 }
+
