@@ -833,7 +833,6 @@
                       program="${psql_executable}">
                     <programArguments>-t -A -c "CREATE DATABASE mediawiki OWNER mediawikiuser"</programArguments>
                 </runProgram>
-                <showInfo text="${msg(db.create.info)}"/>
             </actionList>
             <ruleList>
                 <isFalse value="${dbexist}"/>
@@ -1094,6 +1093,20 @@
         </deleteFile>
 
     </postInstallationActionList>
+
+    <postUninstallerCreationActionList>
+        <actionGroup>
+            <actionList>
+		<showInfo text="${msg(db.create.info)}"/>
+            </actionList>
+            <ruleList>
+                <isFalse value="${dbexist}"/>
+                <isFalse value="${userexist}"/>
+                <compareText text="${mediaWikiVersion}" logic="equals" value=""/>
+            </ruleList>
+        </actionGroup>
+    </postUninstallerCreationActionList>
+
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
         <!-- Deleting the config file -->
