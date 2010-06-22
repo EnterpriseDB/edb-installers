@@ -1,6 +1,6 @@
-Installer.Welcome.Title=Setup EnterpriseDB %1$s
+Installer.Welcome.Title=Setup %1$s
 
-Installer.Welcome.Text=Welcome to the EnterpriseDB %1$s Setup Wizard.
+Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
 
 Installer.Installing.Title=Installing ${product_fullname}
 
@@ -40,6 +40,6 @@ apachephp.installdir.error=The installation directory must be an absolute path, 
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 
-Installer.Installation.Finished.Title=Completed the EnterpriseDB %1$s Setup Wizard
+Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
