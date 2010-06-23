@@ -83,6 +83,13 @@ xdg_global_dir="$xdg_global_dir/applications-merged"
 _replace "<Filename>pg-launchDocsAPI.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR-pg-npgsql.menu"
 _replace "<Filename>pg-launchUserManual.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR-pg-npgsql.menu"
 
+#Ubuntu 10.04 and greater require menu cache update
+
+if [ -f /usr/share/gnome-menus/update-gnome-menus-cache ];
+then
+   echo "Rebuilding /usr/share/applications/desktop.${LANG}.cache"
+   /usr/share/gnome-menus/update-gnome-menus-cache /usr/share/applications/ > /usr/share/applications/desktop.${LANG}.cache
+fi
 echo "$0 ran to completion"
 exit 0
 

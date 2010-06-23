@@ -87,5 +87,12 @@ fi
     "$INSTALLDIR/scripts/xdg/pg-stopApache.desktop" \
     "$INSTALLDIR/scripts/xdg/pg-restartApache.desktop"  || _warn "Failed to create the ApachePhp menu"
 
+#Ubuntu 10.04 and greater require menu cache update
+
+if [ -f /usr/share/gnome-menus/update-gnome-menus-cache ];
+then
+   echo "Rebuilding /usr/share/applications/desktop.${LANG}.cache"
+   /usr/share/gnome-menus/update-gnome-menus-cache /usr/share/applications/ > /usr/share/applications/desktop.${LANG}.cache
+fi
 echo "$0 ran to completion"
 exit 0

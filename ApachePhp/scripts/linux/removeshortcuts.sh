@@ -86,6 +86,13 @@ _replace "<Filename>pg-startApache.desktop</Filename>" "" "$xdg_global_dir/pg-ap
 _replace "<Filename>pg-stopApache.desktop</Filename>" "" "$xdg_global_dir/pg-apachephp.menu"
 _replace "<Filename>pg-restartApache.desktop</Filename>" "" "$xdg_global_dir/pg-apachephp.menu"
 
+#Ubuntu 10.04 and greater require menu cache update
+
+if [ -f /usr/share/gnome-menus/update-gnome-menus-cache ];
+then
+   echo "Rebuilding /usr/share/applications/desktop.${LANG}.cache"
+   /usr/share/gnome-menus/update-gnome-menus-cache /usr/share/applications/ > /usr/share/applications/desktop.${LANG}.cache
+fi
 echo "$0 ran to completion"
 exit 0
 

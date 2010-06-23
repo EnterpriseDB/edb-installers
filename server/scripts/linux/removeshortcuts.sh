@@ -114,5 +114,12 @@ _replace "<Filename>pg-doc-pgadmin-$VERSION_STR.desktop</Filename>" "" "$xdg_glo
 _replace "<Filename>pg-doc-pljava-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR-pg-$DOC_BRANDING_STR.menu"
 _replace "<Filename>pg-doc-pljava-readme-$VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR-pg-$DOC_BRANDING_STR.menu"
 
+#Ubuntu 10.04 and greater require menu cache update
+
+if [ -f /usr/share/gnome-menus/update-gnome-menus-cache ];
+then
+   echo "Rebuilding /usr/share/applications/desktop.${LANG}.cache"
+   /usr/share/gnome-menus/update-gnome-menus-cache /usr/share/applications/ > /usr/share/applications/desktop.${LANG}.cache
+fi
 echo "$0 ran to completion"
 exit 0
