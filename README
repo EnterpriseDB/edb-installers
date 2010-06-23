@@ -92,6 +92,7 @@ $ sudo port install wget
 $ sudo port install apache-ant
 $ sudo port install bison
 $ sudo port install flex
+$ sudo port install ossp-uuid
 
 Dependency libraries must be built with a little more control to ensure they 
 use the correct SDK to allow them to be used on Tiger and above. We manually

@@ -51,6 +51,7 @@ _build_mediaWiki_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libreadline.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libreadline.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libtermcap.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libtermcap.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxml2.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libxml2.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxslt.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libxslt.so"
 
 }
 
@@ -68,17 +69,8 @@ _postprocess_mediaWiki_linux_x64() {
 
     # Setup the installer scripts.
     mkdir -p staging/linux-x64/installer/mediaWiki || _die "Failed to create a directory for the install scripts"
-    cp scripts/linux/check-connection.sh staging/linux-x64/installer/mediaWiki/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux/check-connection.sh)"
-    chmod ugo+x staging/linux-x64/installer/mediaWiki/check-connection.sh    
-   
-    cp scripts/linux/check-db.sh staging/linux-x64/installer/mediaWiki/check-db.sh || _die "Failed to copy the check-db.sh script (scripts/linux/check-db.sh)"
-    chmod ugo+x staging/linux-x64/installer/mediaWiki/check-db.sh
-
     cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/mediaWiki/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/mediaWiki/createshortcuts.sh
-
-    cp scripts/linux/install.sh staging/linux-x64/installer/mediaWiki/install.sh || _die "Failed to copy the install.sh script (scripts/linux/install.sh)"
-    chmod ugo+x staging/linux-x64/installer/mediaWiki/install.sh
 
     cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/mediaWiki/removeshortcuts.sh || _die "Failed to copy the removeshortcuts.sh (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/mediaWiki/removeshortcuts.sh

@@ -42,7 +42,7 @@
     <!-- i18n files for the UI -->
     <allowLanguageSelection>1</allowLanguageSelection>
     <defaultLanguage>auto</defaultLanguage>
-    <allowedLanguages>en zh_CN</allowedLanguages>
+    <allowedLanguages>en zh_CN jp</allowedLanguages>
     <customLanguageFileList>
         <language>
             <code>en</code>
@@ -53,6 +53,11 @@
             <code>zh_CN</code>
             <encoding>utf-8</encoding>
             <file>i18n/zh_CN.lng</file>
+        </language>
+        <language>
+            <code>jp</code>
+            <encoding>utf-8</encoding>
+            <file>i18n/jp.lng</file>
         </language>
     </customLanguageFileList>
     <preShowHelpActionList>
@@ -533,6 +538,15 @@
                     </ruleList>
                 </actionGroup>
 
+                <!-- Creating a temporary directory -->
+                <createDirectory path="${system_temp_directory}/${product_fullname}"/>
+
+                <!-- Extracting installation scripts -->
+                <unpackDirectory origin="instscripts"
+                    destination="${system_temp_directory}/${product_fullname}"
+                    folder="instscripts${platform_name}" component="psql"/>
+
+
                 <!-- Disable the components which are being upgraded -->
                 <actionGroup>
                     <actionList>
@@ -654,6 +668,20 @@
                 <logMessage>
                     <text>Using branding: ${branding}</text>
                 </logMessage>
+
+		<actionGroup>
+		    <actionList>
+			<setInstallerVariable name="installationType" value="upgrade" />
+		    </actionList>
+		    <ruleList>
+			<compareText>
+			    <text>${xDBReplicationServerVersion}</text>
+			    <logic>does_not_equal</logic>
+			    <value/>
+			</compareText>
+		    </ruleList>
+		</actionGroup>
+
                 <!-- Set the installation directory in case of re-install/upgrade -->
                 <actionGroup>
                     <actionList>
@@ -799,6 +827,14 @@
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
 
+                <setInstallerVariableFromRegEx name="uuid_val" text="${uuid_val}" pattern="^dbser_guid=([^\S]*)$"
+                                 substitution="\1"  abortOnError="0" showMessageOnError="0">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${uuid_val}" value=""/>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+
                 <!-- Use predefined value, if uuid could not be determined -->
                 <setInstallerVariable name="uuid_val" value="a172352a-20a4-11df-a5a3-000c29a2e41e">
                     <ruleList>
@@ -882,14 +918,6 @@
                 <isFalse value="${extract_mode}"/>
            </ruleList>
         </actionGroup> 
-
-        <!-- Creating a temporary directory -->
-        <createDirectory path="${system_temp_directory}/${product_fullname}"/>
-
-        <!-- Extracting installation scripts -->
-        <unpackDirectory origin="instscripts"
-              destination="${system_temp_directory}/${product_fullname}"
-              folder="instscripts${platform_name}" component="psql"/>
 
         <!-- Set Proxy values from environement variables if any -->
         <setInstallerVariable name="proxyHost" value="${env(PROXY_HOST)}" />
@@ -1784,6 +1812,13 @@ database=${controldb}
 
         <!-- Making sure this variable is available in uninstaller -->
         <setInstallerVariable name="EnterpriseDBEmail" value="${existingEmail}" persist="1"/>
+
+        <!-- Remove the temporary folder -->
+        <deleteFile path="${system_temp_directory}/${product_fullname}" >
+            <ruleList>
+                <fileExists path="${system_temp_directory}/${product_fullname}" />
+            </ruleList>
+        </deleteFile>
 
     </postInstallationActionList>
 

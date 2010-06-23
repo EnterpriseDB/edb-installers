@@ -73,6 +73,13 @@ xdg_global_dir="$xdg_global_dir/applications-merged"
 # Hack up the XDG menu files to make sure everything really does go.
 _replace "<Filename>pg-launchReplicationServer.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
 
+#Ubuntu 10.04 and greater require menu cache update
+
+if [ -f /usr/share/gnome-menus/update-gnome-menus-cache ];
+then
+   echo "Rebuilding /usr/share/applications/desktop.${LANG}.cache"
+   /usr/share/gnome-menus/update-gnome-menus-cache /usr/share/applications/ > /usr/share/applications/desktop.${LANG}.cache
+fi
 echo "$0 ran to completion"
 exit 0
 

@@ -72,11 +72,6 @@ _postprocess_pgphonehome_windows() {
 
     cd $WD/pgphonehome
 
-    # Setup the installer scripts.
-    mkdir -p staging/windows/installer/pgph || _die "Failed to create a directory for the install scripts"
-    cp scripts/windows/check-connection.bat staging/windows/installer/pgph/check-connection.bat || _die "Failed to copy the check-connection script (scripts/windows/check-connection.bat)"
-    chmod ugo+x staging/windows/installer/pgph/check-connection.bat
-
     cp staging/windows/pgph/config.php.in staging/windows/pgph/config.php || _die "Failed to copy the config file"
     rm -f staging/windows/pgph/config.php.in  || _die "Failed to remove the template config file"
 

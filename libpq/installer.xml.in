@@ -193,13 +193,19 @@
             </ruleList>
         </actionGroup>
 
-        <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\libpq64" >
-            <wowMode>64</wowMode> 
-        </registryDelete>
-        <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\libpq">
-            <wowMode>64</wowMode> 
-        </registryDelete>
- 
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installationType" value="upgrade" />
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${libpqVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
         <setInstallerVariable name="installdir" value="${iLocation}" >
             <ruleList>
                 <compareText text="${iLocation}" logic="does_not_equal" value="" />

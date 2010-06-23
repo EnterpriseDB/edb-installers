@@ -10,6 +10,8 @@ ask.user.name=Do you want to run pgAgent under the 'postgres' user account?
 
 upgrade.existing.installation.title=Existing installation
 
+Installer.CustomError.Upgrade.CommandLineOptionsNotPresent=The following options was not specified and is required: ${optionRequired} for user: ${systemuser}
+
 upgrade.existing.installation.description=An existing pgAgent installation has been found at ${installdir}. This installation will be upgraded.
 
 progress.text.creating.user=Creating user account
@@ -90,12 +92,15 @@ info.pgagent.schema.manual.upgrade=pgAgent will not be able to start until you m
 
 info.pgagent.schema.manual.upgrade.windows=pgAgent will not be able to start until you manually upgrade the pgagent schema.\nYou will be able to find the upgrade script at "${installdir}\share\pgagent_upgrade.sql"
 
-pgagent.schema.found=A 'pgagent' schema of the correct version was found in the 'postgres' database and will be reused by this installation.
+pgagent.schema.found=A 'pgagent' schema of the correct version was found in the '${pgdbname}' database and will be reused by this installation.
 
-pgagent.schema.newer.version.exist=A newer version of the 'pgagent' schema was found on your postgres database.\nPlease download the latest version of the pgAgent installer.\nIf you want to use the same installer, than remove the 'pgagent' schema from your postgres database.
+pgagent.schema.newer.version.exist=A newer version of the 'pgagent' schema was found on your '${pgdbname}' database.\nPlease download the latest version of the pgAgent installer.\nIf you want to use the same installer, than remove the 'pgagent' schema from your '${pgdbname}' database.
 
 pgagent.schema.older.exist=An older version of the 'pgagent' schema was found.\nDo you want to upgrade the schema to version ${pgagent_installer_schema_version}?
 
 pgagent.schema.older.version.exist=An older version (${pgagent_current_schema_version}) of the 'pgagent' schema was found.\nDo you want to upgrade the schema to version ${pgagent_installer_schema_version}?
 
 pgagent.service.description=Provides the ability to schedule tasks within a Postgres database server.
+
+pgagent.user.not.have.permission=The given user does not have 'CREATE' permission on database '${pgdbname}'.\nPlease provide the information for the user, who has permissions to create schema, tables and functions.
+

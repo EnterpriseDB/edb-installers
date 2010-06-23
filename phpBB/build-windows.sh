@@ -72,17 +72,6 @@ _postprocess_phpBB_windows() {
 
     cd $WD/phpBB
 
-    # Setup the installer scripts.
-    mkdir -p staging/windows/installer/phpBB || _die "Failed to create a directory for the install scripts"
-    cp scripts/windows/check-connection.bat staging/windows/installer/phpBB/check-connection.bat || _die "Failed to copy the check-connection script (scripts/windows/check-connection.bat)"
-    chmod ugo+x staging/windows/installer/phpBB/check-connection.bat
-
-    cp scripts/windows/check-db.bat staging/windows/installer/phpBB/check-db.bat || _die "Failed to copy the check-db.bat script (scripts/windows/check-db.bat)"
-    chmod ugo+x staging/windows/installer/phpBB/check-db.bat
-
-    cp scripts/windows/install.bat staging/windows/installer/phpBB/install.bat || _die "Failed to copy the install.bat script (scripts/windows/install.bat)"
-    chmod ugo+x staging/windows/installer/phpBB/install.bat
-
     # Setup the phpBB Launch Scripts
     mkdir -p staging/windows/scripts || _die "Failed to create a directory for the phpBB Launch Scripts"
 

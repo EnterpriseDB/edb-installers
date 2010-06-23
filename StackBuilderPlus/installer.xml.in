@@ -38,9 +38,13 @@
   <leftImage>../resources/pg-side.png</leftImage>
 
   <!-- i18n files for the UI -->
-  <allowedLanguages>en</allowedLanguages>
+  <allowLanguageSelection>1</allowLanguageSelection> 
+  <defaultLanguage>auto</defaultLanguage>
+  <allowedLanguages>en zh_CN jp</allowedLanguages>
   <customLanguageFileList>
     <language code="en" encoding="iso8859-1" file="i18n/en.lng"/>
+    <language code="zh_CN" encoding="utf-8" file="i18n/zh_CN.lng"/>
+    <language code="jp" encoding="utf-8" file="i18n/jp.lng"/>
   </customLanguageFileList>
 
   <preShowHelpActionList>
@@ -179,6 +183,20 @@
         </setInstallerVariable>
 
         <logMessage text="Using branding: ${branding}"/>
+
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installationType" value="upgrade" />
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${iSBPVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
         <!-- Set the installation directory in case of re-install/upgrade -->
         <actionGroup>
           <actionList>

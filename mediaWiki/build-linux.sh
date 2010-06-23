@@ -51,6 +51,7 @@ _build_mediaWiki_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libreadline.so* mediaWiki/staging/linux/instscripts" || _die "Failed to copy libreadline.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libtermcap.so* mediaWiki/staging/linux/instscripts" || _die "Failed to copy libtermcap.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libxml2.so* mediaWiki/staging/linux/instscripts" || _die "Failed to copy libxml2.so"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libxslt.so* mediaWiki/staging/linux/instscripts" || _die "Failed to copy libxslt.so"
 
 
 }
@@ -69,17 +70,8 @@ _postprocess_mediaWiki_linux() {
 
     # Setup the installer scripts.
     mkdir -p staging/linux/installer/mediaWiki || _die "Failed to create a directory for the install scripts"
-    cp scripts/linux/check-connection.sh staging/linux/installer/mediaWiki/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux/check-connection.sh)"
-    chmod ugo+x staging/linux/installer/mediaWiki/check-connection.sh    
-   
-    cp scripts/linux/check-db.sh staging/linux/installer/mediaWiki/check-db.sh || _die "Failed to copy the check-db.sh script (scripts/linux/check-db.sh)"
-    chmod ugo+x staging/linux/installer/mediaWiki/check-db.sh
-
     cp scripts/linux/createshortcuts.sh staging/linux/installer/mediaWiki/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux/installer/mediaWiki/createshortcuts.sh
-
-    cp scripts/linux/install.sh staging/linux/installer/mediaWiki/install.sh || _die "Failed to copy the install.sh script (scripts/linux/install.sh)"
-    chmod ugo+x staging/linux/installer/mediaWiki/install.sh
 
     cp scripts/linux/removeshortcuts.sh staging/linux/installer/mediaWiki/removeshortcuts.sh || _die "Failed to copy the removeshortcuts.sh (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux/installer/mediaWiki/removeshortcuts.sh

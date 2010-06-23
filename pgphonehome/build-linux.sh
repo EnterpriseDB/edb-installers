@@ -65,11 +65,6 @@ _postprocess_pgphonehome_linux() {
 
     cd $WD/pgphonehome
 
-    # Setup the installer scripts.
-    mkdir -p staging/linux/installer/pgph || _die "Failed to create a directory for the install scripts"
-    cp scripts/linux/check-connection.sh staging/linux/installer/pgph/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux/check-connection.sh)"
-    chmod ugo+x staging/linux/installer/pgph/check-connection.sh
-
     cp staging/linux/pgph/config.php.in staging/linux/pgph/config.php || _die "Failed to copy the config file"
     rm -f staging/linux/pgph/config.php.in  || _die "Failed to remove the template config file"
 

@@ -40,4 +40,9 @@ progress.text.creating.shortcuts=Creating Menu Shortcuts
 
 Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
-Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
+Installer.Installation.Finished.Text=Please finish the installation process after following steps on the URL (http://127.0.0.1:${apacheport}/Drupal/update.php) in your browser. \n\n EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
+
+run.update.php=Please finish the installation process after following steps after opening URL http://127.0.0.1:${apacheport}/Drupal/update.php in your browser.
+
+drupal.user.not.superuser=The user '${pguser}' does not have super-user privileges.\nPlease provide the details about the user, who has super-user privileges.
+

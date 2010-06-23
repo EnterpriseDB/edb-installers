@@ -52,6 +52,8 @@
         </language>
     </customLanguageFileList>
     <preShowHelpActionList>
+	<!-- Set the PG Major Version -->
+        <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION"/>
         <!-- WIN: Set the pghome default value when pghome not set -->
         <actionGroup>
             <actionList>
@@ -483,7 +485,7 @@
                     </ruleList>
                 </actionGroup>
 
-                <!-- LIN | MAC : Exit the installation if the installdir is not valid (Unattended mode) -->
+                <!-- LIN | MAC : Exit the installation if the installdir is not valid (Unattended mode/Upgrade mode) -->
                 <actionGroup>
                     <actionList>
                         <showWarning>
@@ -503,15 +505,25 @@
                             <logic>does_not_equal</logic>
                             <value>windows</value>
                         </compareText>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${installer_ui}</text>
-                            <value>unattended</value>
-                        </compareText>
+                        <ruleGroup>
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                            <ruleList>   
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>${installer_ui}</text>
+                                    <value>unattended</value>
+                                </compareText>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>${SlonyMajorVersionInstalled}</text>
+                                    <value/>
+                                </compareText>
+                            </ruleList>   
+                        </ruleGroup>
                     </ruleList>
                 </actionGroup>
 
-                <!-- WIN: Exit the installation if the installdir is not valid (Unattended mode) -->
+                <!-- WIN: Exit the installation if the installdir is not valid (Unattended mode/Upgrade mode) -->
                 <actionGroup>
                     <actionList>
                         <showWarning>
@@ -531,11 +543,21 @@
                             <logic>equals</logic>
                             <value>windows</value>
                         </compareText>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${installer_ui}</text>
-                            <value>unattended</value>
-                        </compareText>
+                        <ruleGroup>
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                            <ruleList>   
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>${installer_ui}</text>
+                                    <value>unattended</value>
+                                </compareText>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>${SlonyMajorVersionInstalled}</text>
+                                    <value/>
+                                </compareText>
+                            </ruleList>   
+                        </ruleGroup>
                     </ruleList>
                 </actionGroup>
 
@@ -1645,12 +1667,11 @@
             <validationActionList>
                 <actionGroup>
                     <actionList>
+                        <setInstallerVariable name="installdir" value="${defaultpghome}" />
                         <showWarning>
                             <text>${msg(slony.incompatible.pg.error)}</text>
                         </showWarning>
-                        <exit>
-                            <exitCode>0</exitCode>
-                        </exit>
+                        <setInstallerVariable name="next_page" value="installdir"/>
                     </actionList>
                     <ruleList>
                         <compareText>

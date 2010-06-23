@@ -74,5 +74,12 @@ cp "$INSTALLDIR/scripts/xdg/pphq-pphq.directory" "$INSTALLDIR/scripts/xdg/pphq-$
         "$INSTALLDIR/scripts/xdg/pphq-agent-start.desktop" \
         "$INSTALLDIR/scripts/xdg/pphq-agent-stop.desktop" || _warn "Failed to create the top level menu for Postgres Plus HQ agent"
 
+#Ubuntu 10.04 and greater require menu cache update
+
+if [ -f /usr/share/gnome-menus/update-gnome-menus-cache ];
+then
+   echo "Rebuilding /usr/share/applications/desktop.${LANG}.cache"
+   /usr/share/gnome-menus/update-gnome-menus-cache /usr/share/applications/ > /usr/share/applications/desktop.${LANG}.cache
+fi
 echo "$0 ran to completion"
 exit 0

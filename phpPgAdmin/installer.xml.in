@@ -53,7 +53,48 @@
         </language>
     </customLanguageFileList>
     <preShowHelpActionList>
-         <setInstallerVariable name="defaultpghome" value=""/>
+        <!-- Set the PG Major Version -->
+        <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION"/>
+        <!-- WIN: Set the pghome default value when pghome not set -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\${PGMajorVersion}"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+        <!-- LIN & LIN64: Set the pghome default value when pghome not set -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/${PGMajorVersion}"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- MAC: Set the pghome default value when pghome not set -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/${PGMajorVersion}"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
     </preShowHelpActionList>
 
     <!-- Prebuild Actions -->
@@ -211,6 +252,20 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installationType" value="upgrade" />
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${phpPgAdminVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
         <!-- WIN: Set the Apache Home , Php Home and Apache Port(default 8080), ApachePhp Installation Directory from registry. -->
         <!--    ApachePhp Installation would have set these values -->
         <actionGroup>

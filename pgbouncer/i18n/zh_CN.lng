@@ -1,4 +1,4 @@
-﻿nstaller.Welcome.Title=安装 %1$s
+Installer.Welcome.Title=安装 %1$s
 Installer.Welcome.Text=欢迎来到$1安装向导。
 Installer.Installing.Title=正在安装${product_fullname}
 upgrade.existing.installation.title=正在退出安装程序

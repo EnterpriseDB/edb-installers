@@ -395,6 +395,20 @@
         <setInstallerVariableFromRegEx name="pphqVersion" text="${pphqVersion}"
               pattern="^(.*)-.*$" substitution="\1"/>
 
+	<actionGroup>
+	    <actionList>
+		<setInstallerVariable name="installationType" value="upgrade" />
+	    </actionList>
+	    <ruleList>
+		<compareText>
+		    <text>${pphqVersion}</text>
+		    <logic>does_not_equal</logic>
+		    <value/>
+		</compareText>
+	    </ruleList>
+	</actionGroup>
+
+
         <!-- If there appears to be an existing installation, with no Branding value. -->
         <!-- force the default value. Otherwise, set the branding to whatever we read, -->
         <!-- or, set the default -->

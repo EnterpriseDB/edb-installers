@@ -406,6 +406,20 @@
 
         <logMessage text="Using branding: ${branding}"/>
 
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installationType" value="upgrade" />
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${pphqAgentVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+
         <!-- Set the installation directory in case of re-install/upgrade -->
         <actionGroup>
             <actionList>

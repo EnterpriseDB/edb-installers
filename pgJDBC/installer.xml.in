@@ -340,6 +340,20 @@
                 <logMessage>
                     <text>Using branding: ${branding}</text>
                 </logMessage>
+
+		<actionGroup>
+		    <actionList>
+			<setInstallerVariable name="installationType" value="upgrade" />
+		    </actionList>
+		    <ruleList>
+			<compareText>
+			    <text>${pgJdbcVersion}</text>
+			    <logic>does_not_equal</logic>
+			    <value/>
+			</compareText>
+		    </ruleList>
+		</actionGroup>
+
                 <!-- Set the installation directory in case of re-install/upgrade -->
                 <actionGroup>
                     <actionList>
