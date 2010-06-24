@@ -1359,6 +1359,9 @@
           <default>${defaultpghost}</default>
           <allowEmptyValue>1</allowEmptyValue>
           <width>40</width>
+	    <ruleList>
+                <compareText logic="equals" text="${pgAgentVersion}" value=""/>
+            </ruleList>
         </stringParameter>
 
         <!-- Postgres User -->
@@ -1370,6 +1373,9 @@
           <default>${defaultpguser}</default>
           <allowEmptyValue>1</allowEmptyValue>
           <width>40</width>
+	    <ruleList>
+                <compareText logic="equals" text="${pgAgentVersion}" value=""/>
+            </ruleList>
         </stringParameter>
 
         <!-- Postgres User Password -->
@@ -1395,6 +1401,9 @@
           <default>${defaultpgport}</default>
           <allowEmptyValue>1</allowEmptyValue>
           <width>40</width>
+	    <ruleList>
+                <compareText logic="equals" text="${pgAgentVersion}" value=""/>
+            </ruleList>
         </stringParameter>
 
         <stringParameter cliOptionName="dbname" ask="0" cliOptionShow="0">
@@ -1405,6 +1414,9 @@
           <default></default>
           <allowEmptyValue>1</allowEmptyValue>
           <width>40</width>
+	    <ruleList>
+                <compareText logic="equals" text="${pgAgentVersion}" value=""/>
+            </ruleList>
         </stringParameter>
 
         <choiceParameter cliOptionName="schema" ask="0" cliOptionShow="1">
