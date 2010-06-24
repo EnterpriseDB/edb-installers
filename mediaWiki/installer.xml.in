@@ -827,7 +827,7 @@
             <actionList>
                 <runProgram workingDirectory="${system_temp_directory}/instscripts"
                       program="${psql_executable}">
-                    <programArguments>-t -A -c "CREATE ROLE mediawikiuser PASSWORD 'drupaluser' NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN"</programArguments>
+                    <programArguments>-t -A -c "CREATE ROLE mediawikiuser PASSWORD 'mediawikiuser' NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN"</programArguments>
                 </runProgram>
                 <runProgram workingDirectory="${system_temp_directory}/instscripts"
                       program="${psql_executable}">
