@@ -2,7 +2,7 @@ Installer.Welcome.Title=%1$s Setup Wizard
 
 Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
 
-install.summary=SQL Protect
+install.summary=SQL/Protect
 
 Installer.Installing.Title=Installing ${product_fullname}
 
@@ -10,7 +10,7 @@ platform.not.match=You are trying to run a 32bit installer in a 64bit machine. T
 
 sqlprotect.installdir.pgerror=The Postgres installation directory: ${installdir} is not valid.
 
-sqlprotect.incompatible.pg.error=The Postgres server installation is incompatible with this version of SQL Protect, which requires Postgres ${pgmajorversion}.
+sqlprotect.incompatible.pg.error=The Postgres server installation is incompatible with this version of SQL/Protect, which requires Postgres ${pgmajorversion}.
 
 sqlprotect.installdir.empty=The installation directory cannot be empty.
 
@@ -28,7 +28,7 @@ Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of val
 
 upgrade.existing.installation.title=Existing installation
 
-upgrade.existing.installation.description=An existing SQL Protect installation has been found at ${installdir}. This installation will be upgraded.
+upgrade.existing.installation.description=An existing SQL/Protect installation has been found at ${installdir}. This installation will be upgraded.
 
 registration.error.invalid.email.value=Invalid email address. You must provide a valid email address.  Please try again.
 
