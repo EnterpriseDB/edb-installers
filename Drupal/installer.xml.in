@@ -905,8 +905,10 @@
         <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
         <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
         <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-        <setEnvironmentVariable name="PGDATABASE" value="template1"/>
+        <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
         <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/"/>
+
+        <logMessage text="HOST:${pghost},USER:${pguser},PORT:${pgport},DB:${pgdatabase}"/>
 
         <!-- Create Role and database -->
         <actionGroup>
@@ -1276,7 +1278,8 @@
 
     <!-- finalPage actions -->
     <finalPageActionList>
-        <launchBrowser url="http://127.0.0.1:${apacheport}/Drupal/update.php" progressText="${msg(Installer.Installation.Finished.Visit.Us)}">
+        <launchBrowser url="http://127.0.0.1:${apacheport}/Drupal/update.php"
+            progressText="Open http://127.0.0.1:${apacheport}/Drupal/update.php">
             <ruleList>
                 <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
                 <compareText>
@@ -1284,6 +1287,13 @@
                     <logic>does_not_equal</logic>
                     <value/>
                 </compareText>
+            </ruleList>
+        </launchBrowser>
+        <launchBrowser url="http://127.0.0.1:${apacheport}/Drupal/install.php"
+            progressText="Open http://127.0.0.1:${apacheport}/Drupal/install.php">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
+                <compareText text="${drupalVersion}" logic="equals" value=""/>
             </ruleList>
         </launchBrowser>
     </finalPageActionList>
