@@ -414,19 +414,6 @@ then
         _postprocess_metainstaller || exit 1
 fi
 
-#Package: libpq
-if [ $PG_PACKAGE_LIBPQ = 1 ];
-then
-    cd $WD
-    source ./libpq/build.sh
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_libpq || exit 1
-        _build_libpq || exit 1
-    fi
-        _postprocess_libpq || exit 1
-fi
-
 #Package: MigrationToolKitA
 #The replication server always needs the latest build of MTK...
 if [ $PG_PACKAGE_MIGRATIONTOOLKIT = 1 -o $PG_PACKAGE_REPLICATIONSERVER = 1 ]; 
