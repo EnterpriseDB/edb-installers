@@ -104,3 +104,5 @@ pgagent.service.description=Provides the ability to schedule tasks within a Post
 
 pgagent.user.not.have.permission=The given user does not have 'CREATE' permission on database '${pgdbname}'.\nPlease provide the information for the user, who has permissions to create schema, tables and functions.
 
+systempassword.length.error=Length of the password is more that 128 characters.
+

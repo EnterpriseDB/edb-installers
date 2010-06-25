@@ -1801,7 +1801,7 @@
           <value/>
           <default/>
           <allowEmptyValue>1</allowEmptyValue>
-          <width>20</width>
+          <width>40</width>
           <cliOptionName>systemuser</cliOptionName>
           <cliOptionShow>yes</cliOptionShow>
           <ruleList>
@@ -1817,7 +1817,7 @@
           <cliOptionName>systempassword</cliOptionName>
           <cliOptionShow>yes</cliOptionShow>
           <descriptionRetype>${msg(config.syspassword.confirm)}</descriptionRetype>
-          <width>128</width>
+          <width>40</width>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
@@ -1834,27 +1834,24 @@
         </ruleGroup>
       </ruleList>
       <validationActionList>
-        <actionGroup>
-          <actionList>
-            <throwError>
-              <text>${msg(systemuser.blank.error)}</text>
-            </throwError>
-          </actionList>
+        <throwError text="${msg(systemuser.blank.error)}">
           <ruleList>
             <compareText logic="equals" text="${systemuser}" value=""/>
           </ruleList>
-        </actionGroup>
-        <actionGroup>
-          <actionList>
-            <throwError>
-              <text>${msg(systempassword.blank.error)}</text>
-            </throwError>
-          </actionList>
+        </throwError>
+        <throwError text="${msg(systempassword.blank.error)}">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
             <compareText logic="equals" text="${systempassword}" value=""/>
           </ruleList>
-        </actionGroup>
+        </throwError>
+        <throwError text="${msg(systempassword.length.error)}">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <compareTextLength logic="greater" text="${systempassword}" value="128"/>
+          </ruleList>
+        </throwError>
+
         <!-- WIN : Create user  -->
         <actionGroup>
           <actionList>
