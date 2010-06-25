@@ -10,7 +10,7 @@ script.command.line.error=The script was called with an invalid command line
 
 upgrade.existing.installation.title=Existing installation
 
-upgrade.existing.installation.description=An existing libpq installation has been found at ${installdir}. This installation will be upgraded.
+upgrade.existing.installation.description=An existing libpq64 installation has been found at ${installdir}. This installation will be upgraded.
 
 Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
