@@ -4,7 +4,7 @@ Installer.Welcome.Text=Welcome to the Postgres Plus xDB Replication Server Setup
 
 Installer.Installing.Title=Installing ${product_fullname}
 
-upgrade.existing.installation.title=Existing installation
+upgrade.existing.installation.title=Existing Installation
 
 upgrade.existing.installation.description=An existing xDB Replication Server installation has been found at ${installdir}. This installation will be upgraded.
 
@@ -45,7 +45,7 @@ config.syspassword.confirm=Retype password
 
 config.syspassword.description=System user password
 
-sysuser.details.title=Publication/Subscription service account
+sysuser.details.title=Publication/Subscription Service Account
 
 sysuser.details.explanation=Please provide the user name of the account under which the publication/subscription service will run.
 
@@ -54,7 +54,7 @@ sysuser.details.explanation.withuser.windows=Please provide the password for the
 
 script.command.line.error=The script was called with an invalid command line.
 
-pubport.details.title=Publication server details
+pubport.details.title=Publication Server Details
 pubport.details.explanation=Please specify a port on which publication server will run.
 pubport.blank.error=Values must be entered for port field.
 pubport.port.error=The port number must be an integer between 1024 and 65535.
@@ -63,7 +63,7 @@ port.pubsub.equal.error=Publication Server port and Subscription Server port can
 pubport.offset.pubsub.equal.error=Publication Server offset port (i.e. specified port + 2) and Subscription Server port cannot be same.
 subport.offset.pubsub.equal.error=Subscription Server offset port (i.e. specified port + 2) and Publication Server port cannot be same.
 
-subport.details.title=Subscription server details
+subport.details.title=Subscription Server Details
 subport.details.explanation=Please specify a port on which subscription server will run.
 subport.blank.error=Values must be entered for port field.
 subport.port.error=The port number must be an integer between 1024 and 65535.
