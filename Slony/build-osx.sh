@@ -143,9 +143,6 @@ _postprocess_Slony_osx() {
     cp scripts/osx/createshortcuts.sh staging/osx/installer/Slony/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/osx/createshortcuts.sh)"
     chmod ugo+x staging/osx/installer/Slony/createshortcuts.sh
 
-    cp scripts/osx/check-pgversion.sh staging/osx/installer/Slony/check-pgversion.sh || _die "Failed to copy the check-pgversion script (scripts/osx/check-pgversion.sh)"
-    chmod ugo+x staging/osx/installer/Slony/check-pgversion.sh
-
     cp scripts/osx/configureslony.sh staging/osx/installer/Slony/configureslony.sh || _die "Failed to copy the configureSlony script (scripts/osx/configureslony.sh)"
     chmod ugo+x staging/osx/installer/Slony/configureslony.sh
 

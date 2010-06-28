@@ -93,9 +93,6 @@ _postprocess_Slony_linux() {
     cp scripts/linux/createshortcuts.sh staging/linux/installer/Slony/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux/installer/Slony/createshortcuts.sh
 
-    cp scripts/linux/check-pgversion.sh staging/linux/installer/Slony/check-pgversion.sh || _die "Failed to copy the check-pgversion script (scripts/linux/check-pgversion.sh)"
-    chmod ugo+x staging/linux/installer/Slony/check-pgversion.sh
- 
     cp scripts/linux/removeshortcuts.sh staging/linux/installer/Slony/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux/installer/Slony/removeshortcuts.sh
 
