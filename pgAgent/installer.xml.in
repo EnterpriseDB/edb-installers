@@ -530,12 +530,6 @@
               </ruleList>
             </runProgram>
 
-            <!-- Inform user about configuring pgagent Schema -->
-            <showInfo text="${msg(configure.pgagent.schema)}">
-              <ruleList>
-                <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
-              </ruleList>
-            </showInfo>
 
             <!-- Upgrade schema pgagent -->
             <runProgram>
@@ -832,6 +826,15 @@
         </ruleList>
     </registrySet>
   </postInstallationActionList>
+
+  <postUninstallerCreationActionList>
+    <!-- Inform user about configuring pgagent Schema -->
+    <showInfo text="${msg(configure.pgagent.schema)}">
+      <ruleList>
+	<compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
+      </ruleList>
+    </showInfo>
+  </postUninstallerCreationActionList>
 
   <!-- preUninstallation actions -->
   <preUninstallationActionList>
