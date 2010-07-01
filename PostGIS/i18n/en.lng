@@ -51,7 +51,10 @@ postgis.installdir.pgerror=The installation directory path is not a valid Postgr
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 progress.text.configure.postgis=Configuring PostGIS Scripts
 progress.text.creating.templatedb=Creating Template Database
-progress.text.creating.spatialdb=Creating Spatial Database
+progress.text.creating.plpgsql=Creating plpgsql language in the template database
+progress.text.installing.postgis.sql=Installing postgis sql in the template database
+progress.text.installing.spatial.ref_sys=Installing spatial system references in the template database
+progress.text.installing.postgis.comments=Installing postgis comment in the template database
 
 templatedb.found.info=A database called 'template_postgis' already exists on your server. If you continue with this installation, this database will be reused. \n\nDo you wish to continue?
 
@@ -64,4 +67,7 @@ postgis.incompatible.install.error=An incomaptible version of PostGIS is already
 
 postgis.incompatible.pg.error=The PostgreSQL Server Installation is incompatible with this version of PostGIS.
 
-postgis.upgrade.info=To complete the upgrade process, you need to run the upgrade sql scripts on your spatial databases.\nThe upgrade scripts are located under:\n${installdir}/share/postgresql/contrib)\n
+postgis.upgrade.info=To complete the upgrade process, you need to run the upgrade sql scripts on your spatial databases.\nThe upgrade scripts are located under:\n${sharedir}/postgresql/contrib\n
+
+postgis.user.not.superuser=The user '${pguser}' does not have super-user privileges.\nPlease provide the details about the user, who has super-user privileges.
+

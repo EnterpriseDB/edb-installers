@@ -438,21 +438,6 @@ _postprocess_PostGIS_osx() {
     cp $PG_PATH_OSX/PostGIS/scripts/osx/createshortcuts.sh $PG_STAGING/installer/PostGIS/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/osx/createshortcuts.sh)"
     chmod ugo+x $PG_STAGING/installer/PostGIS/createshortcuts.sh
 
-    cp $PG_PATH_OSX/PostGIS/scripts/osx/createtemplatedb.sh $PG_STAGING/installer/PostGIS/createtemplatedb.sh || _die "Failed to copy the createtemplatedb script (scripts/osx/createtemplatedb.sh)"
-    chmod ugo+x $PG_STAGING/installer/PostGIS/createtemplatedb.sh
-
-    cp $PG_PATH_OSX/PostGIS/scripts/osx/createpostgisdb.sh $PG_STAGING/installer/PostGIS/createpostgisdb.sh || _die "Failed to copy the createpostgisdb script (scripts/osx/createpostgisdb.sh)"
-    chmod ugo+x $PG_STAGING/installer/PostGIS/createpostgisdb.sh
-
-    cp $PG_PATH_OSX/PostGIS/scripts/osx/check-connection.sh $PG_STAGING/installer/PostGIS/check-connection.sh || _die "Failed to copy the check-connection script (scripts/osx/check-connection.sh)"
-    chmod ugo+x $PG_STAGING/installer/PostGIS/check-connection.sh
-
-    cp $PG_PATH_OSX/PostGIS/scripts/osx/check-pgversion.sh $PG_STAGING/installer/PostGIS/check-pgversion.sh || _die "Failed to copy the check-pgversion script (scripts/osx/check-pgversion.sh)"
-    chmod ugo+x $PG_STAGING/installer/PostGIS/check-pgversion.sh
-
-    cp $PG_PATH_OSX/PostGIS/scripts/osx/check-db.sh $PG_STAGING/installer/PostGIS/check-db.sh || _die "Failed to copy the check-db script (scripts/osx/check-db.sh)"
-    chmod ugo+x $PG_STAGING/installer/PostGIS/check-db.sh
-
     mkdir -p $PG_STAGING/scripts || _die "Failed to create a directory for the launch scripts"
     cp -R $PG_PATH_OSX/PostGIS/scripts/osx/pg-launchJdbcDocs.applescript.in $PG_STAGING/scripts/pg-launchJdbcDocs.applescript || _die "Failed to copy the launch script (scripts/osx/pg-launchJdbcDocs.applescript.in)"
     cp -R $PG_PATH_OSX/PostGIS/scripts/osx/pg-launchPostGISDocs.applescript.in $PG_STAGING/scripts/pg-launchPostGISDocs.applescript || _die "Failed to copy the launch script (scripts/osx/pg-launchPostGISDocs.applescript.in)"

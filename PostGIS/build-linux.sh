@@ -231,23 +231,8 @@ _postprocess_PostGIS_linux() {
     cp scripts/linux/createshortcuts.sh staging/linux/installer/PostGIS/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux/installer/PostGIS/createshortcuts.sh
 
-    cp scripts/linux/createtemplatedb.sh staging/linux/installer/PostGIS/createtemplatedb.sh || _die "Failed to copy the createtemplatedb script (scripts/linux/createtemplatedb.sh)"
-    chmod ugo+x staging/linux/installer/PostGIS/createtemplatedb.sh
-
-    cp scripts/linux/createpostgisdb.sh staging/linux/installer/PostGIS/createpostgisdb.sh || _die "Failed to copy the createpostgisdb script (scripts/linux/createpostgisdb.sh)"
-    chmod ugo+x staging/linux/installer/PostGIS/createpostgisdb.sh
-
     cp scripts/linux/removeshortcuts.sh staging/linux/installer/PostGIS/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux/installer/PostGIS/removeshortcuts.sh    
-
-    cp scripts/linux/check-connection.sh staging/linux/installer/PostGIS/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux/check-connection.sh)"
-    chmod ugo+x staging/linux/installer/PostGIS/check-connection.sh
-
-    cp scripts/linux/check-pgversion.sh staging/linux/installer/PostGIS/check-pgversion.sh || _die "Failed to copy the check-pgversion script (scripts/linux/check-pgversion.sh)"
-    chmod ugo+x staging/linux/installer/PostGIS/check-pgversion.sh
- 
-    cp scripts/linux/check-db.sh staging/linux/installer/PostGIS/check-db.sh || _die "Failed to copy the check-db script (scripts/linux/check-db.sh)"
-    chmod ugo+x staging/linux/installer/PostGIS/check-db.sh
 
     mkdir -p staging/linux/scripts || _die "Failed to create a directory for the launch scripts"
     cp -R scripts/linux/launchbrowser.sh staging/linux/scripts/launchbrowser.sh || _die "Failed to copy the launch scripts (scripts/linux)"
