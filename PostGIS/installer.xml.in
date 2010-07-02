@@ -1844,6 +1844,7 @@
                         </setEnvironmentVariable>
 
                         <!-- Check the user permissions -->
+			<setInstallerVariable name="is_superuser" value=""/>
                         <setInstallerVariableFromScriptOutput name="is_superuser"
                                 workingDirectory="${pghome}/bin"
                                 abortOnError="0" showMessageOnError="0"
