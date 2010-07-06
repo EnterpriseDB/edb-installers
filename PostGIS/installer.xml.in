@@ -735,7 +735,7 @@
                 </actionGroup>
                 <actionGroup>
                     <actionList>
-                        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
+                        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib:${env(LD_LIBRARY_PATH)}"/>
                         <setInstallerVariableFromScriptOutput>
                             <name>libdir</name>
                             <exec>${installdir}/bin/pg_config</exec>
@@ -786,7 +786,7 @@
                         <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
                         <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
                         <setEnvironmentVariable name="PGDATABASE" value=""/>
-                        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
+                        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib:${env(LD_LIBRARY_PATH)}"/>
                         <setInstallerVariable name="pgtempdbname" value=""/>
                         <setInstallerVariable name="connection" value=""/>
 
@@ -1066,7 +1066,14 @@
                 <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
                 <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
                 <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib:${env(LD_LIBRARY_PATH)}"/>
+
+                <setInstallerVariable name="psql_executable" value="${installdir}/bin/psql"/>
+                <setInstallerVariable name="psql_executable" value="${installdir}\bin\psql.exe">
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </setInstallerVariable>
 
                 <actionGroup>
                     <actionList>
@@ -1778,7 +1785,7 @@
                         <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
                         <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
                         <setEnvironmentVariable name="PGDATABASE" value=""/>
-                        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
+                        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib:${env(LD_LIBRARY_PATH)}"/>
                         <setInstallerVariable name="pgtempdbname" value=""/>
                         <setInstallerVariable name="connection" value=""/>
 
@@ -2093,7 +2100,7 @@
             </validationActionList>
 
             <postShowPageActionList>
-                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib:${env(LD_LIBRARY_PATH)}"/>
                 <setInstallerVariableFromScriptOutput>
                     <name>libdir</name>
                     <exec>${installdir}/bin/pg_config</exec>
