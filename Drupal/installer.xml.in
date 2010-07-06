@@ -750,7 +750,7 @@
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-                <compareText text="${drupalVersion}" logic="does_not_equal" value=""/>
+                <compareText text="${drupalVersion}" logic="equals" value=""/>
             </ruleList>
         </actionGroup>
 
