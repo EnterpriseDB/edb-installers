@@ -75,14 +75,14 @@ _prep_pgbouncer() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        #_prep_pgbouncer_linux_x64 || exit 1
-        echo "Linux-PPC64 build pre-process is not part of build framework yet."
+        _prep_pgbouncer_linux_x64 || exit 1
     fi
 
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-        _prep_pgbouncer_linux_ppc64 || exit 1
+        #_prep_pgbouncer_linux_ppc64 || exit 1
+        echo "Linux-PPC64 build pre-process is not part of build framework yet."
     fi
 
     # Windows
