@@ -1111,9 +1111,9 @@
                     <ruleList>
                         <isFalse value="${dbexist}"/>
 			<compareText>
-			    <logic>does_not_equal</logic>
+			    <logic>equals</logic>
 			    <text>${PostGISVersionInstalled}</text>
-			    <value>PG_VERSION_POSTGIS</value>
+			    <value></value>
 			</compareText>
                     </ruleList>
                 </actionGroup>
@@ -1723,15 +1723,15 @@
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
-            </parameterList>
-            <ruleList>
-                <compareValues>
-                    <logic>does_not_equal</logic>
-                    <value1>${PostGISVersionInstalled}</value1>
-                    <value2>${productVersion}</value2>
-                </compareValues>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
+	    </parameterList>
+	    <ruleList>
+		<compareText>
+		    <logic>equals</logic>
+		    <text>${PostGISVersionInstalled}</text>
+		    <value></value>
+		</compareText>
+		<isFalse value="${extract_mode}"/>
+	    </ruleList>
             <!-- Checking the validity of PostgreSQL Server Details -->
             <validationActionList>
                 <actionGroup>
@@ -1910,9 +1910,9 @@
             <width>40</width>
             <ruleList>
                 <compareText>
-                    <logic>does_not_equal</logic>
+                    <logic>equals</logic>
                     <text>${PostGISVersionInstalled}</text>
-                    <value>PG_VERSION_POSTGIS</value>
+                    <value></value>
                 </compareText>
             </ruleList>
             <!-- Validating whether installdir is empty -->
