@@ -1110,6 +1110,7 @@
                     </actionList>
                     <ruleList>
                         <isFalse value="${dbexist}"/>
+                        <compareText logic="equals" text="${PostGISVersionInstalled}" value=""/>
                     </ruleList>
                 </actionGroup>
 
