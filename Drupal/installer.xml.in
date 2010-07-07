@@ -1280,7 +1280,7 @@
     <!-- finalPage actions -->
     <finalPageActionList>
         <launchBrowser url="http://127.0.0.1:${apacheport}/Drupal/update.php"
-            progressText="Open http://127.0.0.1:${apacheport}/Drupal/update.php">
+            progressText="${msg(Installer.Installation.Finished.Visit.Us)}">
             <ruleList>
                 <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
                 <compareText>
@@ -1291,7 +1291,7 @@
             </ruleList>
         </launchBrowser>
         <launchBrowser url="http://127.0.0.1:${apacheport}/Drupal/install.php"
-            progressText="Open http://127.0.0.1:${apacheport}/Drupal/install.php">
+            progressText="${msg(Installer.Installation.Finished.Visit.Us)}">
             <ruleList>
                 <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
                 <compareText text="${drupalVersion}" logic="equals" value=""/>
