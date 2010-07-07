@@ -818,7 +818,7 @@
 
        <!-- In case of 32 bit installer being run on 64 bit machine, change display name to
        have suffix x86 for example in case of add or remove programs menu --> 
-       <setInstallerVariable name="project.productDisplayName" value="${product_fullname}${branding_suffix} ${product_version}"/>
+       <setInstallerVariable name="project.productDisplayName" value="${product_fullname} ${product_version} ${branding_suffix}"/>
 
         <!-- Existing, old install (version, but no branding) -->
         <setInstallerVariable>
