@@ -1,6 +1,6 @@
 Installer.Welcome.Title=Setup %1$s
 
-Installer.Welcome.Text=Welcome to the %1$s Setup.
+Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
 
 Installer.Installing.Title=Installing ${product_fullname}
 

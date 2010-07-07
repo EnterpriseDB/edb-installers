@@ -1,6 +1,6 @@
 Installer.Welcome.Title=Setup PostGIS
 
-Installer.Welcome.Text=Welcome to the PostGIS Setup.
+Installer.Welcome.Text=Welcome to the PostGIS Setup Wizard.
 
 Installer.Installing.Title=Installing PostGIS ${product_version}
 

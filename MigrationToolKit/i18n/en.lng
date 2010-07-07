@@ -1,6 +1,6 @@
 Installer.Welcome.Title=Setup EnterpriseDB Migration Toolkit
 
-Installer.Welcome.Text=Welcome to the EnterpriseDB Migration Toolkit Setup.
+Installer.Welcome.Text=Welcome to the EnterpriseDB Migration Toolkit Setup Wizard.
 
 Installer.Installing.Title=Installing ${product_fullname}
 

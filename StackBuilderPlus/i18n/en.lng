@@ -1,6 +1,6 @@
 Installer.Welcome.Title=Setup StackBuilder Plus
 
-Installer.Welcome.Text=Welcome to the StackBuilder Plus Setup.
+Installer.Welcome.Text=Welcome to the StackBuilder Plus Setup Wizard.
 
 Installer.Installing.Title=Installing StackBuilder Plus ${product_version}
 
