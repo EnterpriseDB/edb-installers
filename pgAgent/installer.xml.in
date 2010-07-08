@@ -1884,7 +1884,7 @@
         <throwError text="${msg(systempassword.length.error)}">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
-            <compareTextLength logic="greater" text="${systempassword}" length="128"/>
+            <compareTextLength logic="greater" text="${systempassword}" length="40"/>
           </ruleList>
         </throwError>
 
