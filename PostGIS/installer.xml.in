@@ -1699,7 +1699,7 @@
                     <description>PostgreSQL Database</description>
                     <explanation/>
                     <value/>
-                    <default>postgres</default>
+                    <default></default>
                     <ask>0</ask>
                 </directoryParameter>
 	        <!-- PostgreSQL Server Installed? -->
