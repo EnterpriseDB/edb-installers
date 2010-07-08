@@ -1427,7 +1427,7 @@
           <description/>
           <explanation/>
           <value/>
-          <default>install</default>
+          <default></default>
           <optionList>
             <option value="none"/>
             <option value="exists"/>
@@ -1753,6 +1753,39 @@
             <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
           </ruleList>
         </actionGroup>
+
+	<!-- In case of unattended mode change value of pgagent_schema_exist to install
+	1. If it is unattended mode.
+	2. If this varriable is not passwed through command line.
+	3. If pgagent_schema does not exist.
+	-->
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="schema_in_unattended" value="install" persist="1"/>
+          </actionList>
+          <ruleList>
+	    <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            <compareText logic="equals" text="${schema_in_unattended}" value=""/>
+            <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
+          </ruleList>
+        </actionGroup>
+
+	<!-- In case of unattended mode change value of pgagent_schema_exist to upgrade
+	1. If it is unattended mode.
+	2. If this varriable is not passwed through command line.
+	3. If pgagent_schema exists.
+	-->
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="schema_in_unattended" value="upgrade" persist="1"/>
+          </actionList>
+          <ruleList>
+	    <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            <compareText logic="equals" text="${schema_in_unattended}" value=""/>
+            <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+          </ruleList>
+        </actionGroup>
+
 
         <!-- Set systemuser as postgres -->
         <actionGroup>
