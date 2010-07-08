@@ -494,9 +494,9 @@
                     </actionList>
                     <ruleList>
                         <compareText>
-                            <logic>equals</logic>
+                            <logic>does_not_equal</logic>
                             <text>${PostGISVersionInstalled}</text>
-                            <value>PG_VERSION_POSTGIS</value>
+                            <value></value>
                         </compareText>
                         <compareText>
                             <logic>equals</logic>
@@ -517,9 +517,9 @@
                     </actionList>
                     <ruleList>
                         <compareText>
-                            <logic>equals</logic>
+                            <logic>does_not_equal</logic>
                             <text>${PostGISVersionInstalled}</text>
-                            <value>PG_VERSION_POSTGIS</value>
+                            <value></value>
                         </compareText>
                         <compareText>
                             <logic>does_not_equal</logic>
@@ -727,9 +727,9 @@
                     </actionList>
                     <ruleList>
                         <compareText>
-                            <logic>equals</logic>
+                            <logic>does_not_equal</logic>
                             <text>${PostGISVersionInstalled}</text>
-                            <value>PG_VERSION_POSTGIS</value>
+                            <value></value>
                         </compareText>
                     </ruleList>
                 </actionGroup>
@@ -2162,9 +2162,9 @@
             <description>${msg(upgrade.existing.installation.description)}</description>
             <ruleList>
 		<compareText>
-                    <logic>equals</logic>
+                    <logic>does_not_equal</logic>
                     <text>${PostGISVersionInstalled}</text>
-                    <value>PG_VERSION_POSTGIS</value>
+                    <value></value>
                 </compareText>
             </ruleList>
         </labelParameter>
