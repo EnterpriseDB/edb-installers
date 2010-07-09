@@ -69,7 +69,7 @@ postgis.incompatible.install.error=An incomaptible version of PostGIS is already
 
 postgis.incompatible.pg.error=The PostgreSQL Server Installation is incompatible with this version of PostGIS.
 
-postgis.upgrade.info=To complete the upgrade process, you need to run the upgrade sql scripts on your spatial databases.\nThe upgrade scripts are located under:\n${sharedir}/postgresql/contrib\n
+postgis.upgrade.info=To complete the upgrade process, you need to run the upgrade sql scripts on your spatial databases.\nThe upgrade scripts are located under:\n${sharedir}/contrib\n
 
 postgis.user.not.superuser=The user '${pguser}' does not have super-user privileges.\nPlease provide the details about the user, who has super-user privileges.
 
