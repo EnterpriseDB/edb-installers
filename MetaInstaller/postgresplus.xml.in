@@ -6276,26 +6276,6 @@
             <distributionFile>
               <origin>staging/linux/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux.bin</origin>
             </distributionFile>
-            <distributionFile>
-              <origin>staging/linux/scripts/check-connection.sh</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/linux/scripts/check-db.sh</origin>
-            </distributionFile>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Program Files</description>
-          <destination>${ppss_temp_directory}</destination>
-          <name>postgislinux</name>
-          <platforms>linux</platforms>
-          <distributionFileList>
-            <distributionFile>
-              <origin>staging/linux/scripts/check-connection.sh</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/linux/scripts/check-db.sh</origin>
-            </distributionFile>
           </distributionFileList>
         </folder>
 
@@ -6310,26 +6290,6 @@
             <distributionFile>
               <origin>staging/linux-x64/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-x64.bin</origin>
             </distributionFile>
-            <distributionFile>
-              <origin>staging/linux-x64/scripts/check-connection.sh</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/linux-x64/scripts/check-db.sh</origin>
-            </distributionFile>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Program Files</description>
-          <destination>${ppss_temp_directory}</destination>
-          <name>postgislinux-x64</name>
-          <platforms>linux-x64</platforms>
-          <distributionFileList>
-            <distributionFile>
-              <origin>staging/linux-x64/scripts/check-connection.sh</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/linux-x64/scripts/check-db.sh</origin>
-            </distributionFile>
           </distributionFileList>
         </folder>
 
@@ -6343,12 +6303,6 @@
             <distributionDirectory>
               <origin>staging/osx/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-osx.app</origin>
             </distributionDirectory>
-            <distributionFile>
-              <origin>staging/osx/scripts/check-connection.sh</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/osx/scripts/check-db.sh</origin>
-            </distributionFile>
           </distributionFileList>
         </folder>
 
@@ -6367,12 +6321,6 @@
             </distributionFile>
             <distributionFile>
               <origin>staging/windows/scripts/validateuser.exe</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/windows/scripts/check-connection.bat</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/windows/scripts/check-db.bat</origin>
             </distributionFile>
           </distributionFileList>
         </folder>

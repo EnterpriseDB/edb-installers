@@ -90,13 +90,6 @@ _prep_metainstaller_windows() {
     echo "copying vcredist_x86.exe in staging directory..."
     cp vcredist_x86.exe  $WD/MetaInstaller/staging/windows/scripts || _die "Failed to copy the vcredist_x86.exe  (MetaInstaller/staging/windows/scripts)"
 
-    cd $WD/PostGIS/scripts/windows
-    echo "copying check-connection.bat in staging directory..."
-    cp check-connection.bat  $WD/MetaInstaller/staging/windows/scripts || _die "Failed to copy the check-connection.bat  (MetaInstaller/staging/windows/scripts)"
-
-    echo "copying check-db.bat in staging directory..."
-    cp check-db.bat  $WD/MetaInstaller/staging/windows/scripts || _die "Failed to copy the check-db.bat  (MetaInstaller/staging/windows/scripts)"
-   
     cd $WD/server/staging/windows/installer/server
     echo "copying getlocales.exe in staging directory..."
     cp getlocales.exe  $WD/MetaInstaller/staging/windows/scripts || _die "Failed to copy the getlocales.exe  (MetaInstaller/staging/windows/scripts)"

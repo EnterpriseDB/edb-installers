@@ -114,8 +114,6 @@ _prep_metainstaller_osx() {
     cp -R $WD/server/staging/osx/lib/libxml2.2.dylib  staging/osx/scripts/pgcontrol/lib || _die "Failed to copy the libxml2  (staging/osx/scripts/pgcontrol/lib)"
     cp -R $WD/server/staging/osx/installer/server/getlocales.sh  staging/osx/scripts/ || _die "Failed to copy the getlocales.sh"
     cp -R $WD/server/staging/osx/installer/server/preinstall.sh  staging/osx/scripts/ || _die "Failed to copy the preinstall.sh"
-    cp -R $WD/PostGIS/staging/osx/installer/PostGIS/check-connection.sh  staging/osx/scripts/ || _die "Failed to copy the check-connection.sh"
-    cp -R $WD/PostGIS/staging/osx/installer/PostGIS/check-db.sh  staging/osx/scripts/ || _die "Failed to copy the check-db.sh"
 
     cp -R $WD/MetaInstaller/scripts/osx/*.sh  staging/osx/scripts/ || _die "Failed to copy the scripts"
 

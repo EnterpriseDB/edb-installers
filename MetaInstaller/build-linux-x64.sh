@@ -64,8 +64,6 @@ _prep_metainstaller_linux_x64() {
     cp -R $WD/server/staging/linux-x64/bin/pg_controldata  $WD/MetaInstaller/staging/linux-x64/scripts/pgcontrol || _die "Failed to copy the pg_controldata  (MetaInstaller/staging/linux-x64/scripts/pgcontrol)"
     cd $WD/server/staging/linux-x64
     cp -R lib  $WD/MetaInstaller/staging/linux-x64/scripts/pgcontrol || _die "Failed to copy the lib/  (MetaInstaller/staging/linux-x64/scripts/pgcontrol)"
-    cp -R $WD/PostGIS/scripts/linux/check-connection.sh  $WD/MetaInstaller/staging/linux-x64/scripts || _die "Failed to copy the check-connection.sh  (MetaInstaller/staging/linux-x64/scripts)"
-    cp -R $WD/PostGIS/scripts/linux/check-db.sh  $WD/MetaInstaller/staging/linux-x64/scripts || _die "Failed to copy the check-db.sh  (MetaInstaller/staging/linux-x64/scripts)"
     cp -R $WD/server/scripts/linux/getlocales.sh  $WD/MetaInstaller/staging/linux-x64/scripts || _die "Failed to copy the getlocales.sh  (MetaInstaller/staging/linux-x64/scripts)"
     cp -R $WD/server/scripts/linux/runpgcontroldata.sh  $WD/MetaInstaller/staging/linux-x64/scripts || _die "Failed to copy the runpgcontroldata.sh  (MetaInstaller/staging/linux-x64/scripts)"
     cp -R $WD/server/scripts/linux/startserver.sh  $WD/MetaInstaller/staging/linux-x64/scripts || _die "Failed to copy the startserver.sh  (MetaInstaller/staging/linux-x64/scripts)"
