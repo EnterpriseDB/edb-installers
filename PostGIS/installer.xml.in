@@ -843,6 +843,31 @@
                                 <compareText logic="equals" text="${connection}" value=""/>
                             </ruleList>
                         </throwError>
+			
+			<!-- Raise error if postgis installer is being used against edbas db server
+			-->
+			<actionGroup>
+                            <actionList>
+                                <setInstallerVariableFromScriptOutput name="version_string"
+                                        workingDirectory="${installdir}/bin"
+                                        abortOnError="0" showMessageOnError="0"
+                                        exec="${psql_executable}"
+					execArgs="-d ${dbname} -t -A -c &quot;select version()&quot;">
+                                </setInstallerVariableFromScriptOutput>
+
+                                <stringModify text="${version_string}" variable="version_string" logic="trim"/>
+                            </actionList>
+                            <ruleList>
+                                <compareText logic="equals" text="${pgdatabase}" value=""/>
+                            </ruleList>
+			</actionGroup>
+
+                        <throwError text="${msg(edb.server.not.supported)}">
+                            <ruleList>
+				<compareText logic="contains" text="${version_string}" value="EnterpriseDB"/>
+                            </ruleList>
+                        </throwError>
+
 
                         <setEnvironmentVariable name="PGDATABASE" value="${pgtempdbname}"/>
                         <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}">
@@ -1847,6 +1872,31 @@
                                 <compareText logic="equals" text="${connection}" value=""/>
                             </ruleList>
                         </throwError>
+
+			<!-- Raise error if postgis installer is being used against edbas db server
+			-->
+			<actionGroup>
+                            <actionList>
+                                <setInstallerVariableFromScriptOutput name="version_string"
+                                        workingDirectory="${installdir}/bin"
+                                        abortOnError="0" showMessageOnError="0"
+                                        exec="${psql_executable}"
+					execArgs="-d ${dbname} -t -A -c &quot;select version()&quot;">
+                                </setInstallerVariableFromScriptOutput>
+
+                                <stringModify text="${version_string}" variable="version_string" logic="trim"/>
+                            </actionList>
+                            <ruleList>
+                                <compareText logic="equals" text="${pgdatabase}" value=""/>
+                            </ruleList>
+			</actionGroup>
+
+                        <throwError text="${msg(edb.server.not.supported)}">
+                            <ruleList>
+				<compareText logic="contains" text="${version_string}" value="EnterpriseDB"/>
+                            </ruleList>
+                        </throwError>
+
 
                         <setEnvironmentVariable name="PGDATABASE" value="${pgtempdbname}"/>
                         <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}">
