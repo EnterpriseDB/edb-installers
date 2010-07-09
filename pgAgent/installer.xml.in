@@ -288,6 +288,72 @@
             </ruleList>
         </actionGroup>
 
+        <actionGroup>
+           <actionList>
+              <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
+              <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
+              <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+              <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
+              <setEnvironmentVariable name="PGDATABASE" value="" />
+              <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
+              <setInstallerVariable name="pgdbname" value="" />
+              <setInstallerVariable name="connection" value="" />
+
+              <setInstallerVariable name="psql_executable" value="${installdir}/bin/psql"/>
+              <setInstallerVariable name="psql_executable" value="${installdir}\bin\psql.exe">
+               <ruleList>
+                 <compareText logic="equals" text="${platform_name}" value="windows"/>
+               </ruleList>
+              </setInstallerVariable>
+              <foreach variables="dbname">
+                <values>postgres edb template1</values>
+                <actionList>
+                  <setInstallerVariableFromScriptOutput>
+                    <exec>${psql_executable}</exec>
+                    <execArgs>-l -d ${dbname}</execArgs>
+                    <name>connection</name>
+                    <workingDirectory>${installdir}/bin</workingDirectory>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                      <compareText logic="equals" text="${connection}" value=""/>
+                    </ruleList>
+                  </setInstallerVariableFromScriptOutput>
+                  <stringModify text="${connection}" variable="connection" logic="trim"/>
+                  <setInstallerVariable name="pgdbname" value="${dbname}">
+                    <ruleList>
+                      <compareText logic="does_not_equal" text="${connection}" value=""/>
+                      <compareText logic="equals" text="${pgdbname}" value=""/>
+                    </ruleList>
+                  </setInstallerVariable>
+                </actionList>
+              </foreach>
+              <throwError text="${program_stderr}">
+                <ruleList>
+                  <compareText logic="equals" text="${connection}" value=""/>
+                </ruleList>
+              </throwError>
+              <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
+
+              <setInstallerVariableFromScriptOutput name="user_has_permission"
+                  abortOnError="0" showMessageOnError="0"
+                  workingDirectory="${installdir}/bin">
+                <exec>${psql_executable}</exec>
+                <execArgs>-t -A -c "select CASE WHEN has_database_privilege(d.oid, 'CREATE') THEN 1 ELSE 0 END FROM pg_catalog.pg_database d WHERE d.datname=current_database()"</execArgs>
+              </setInstallerVariableFromScriptOutput>
+              <stringModify text="${user_has_permission}" variable="user_has_permission" logic="trim"/>
+
+              <throwError text="${msg(pgagent.user.not.have.permission)}">
+                <ruleList>
+                  <isFalse value="${user_has_permission}"/>
+                </ruleList>
+              </throwError>
+           </actionList>
+           <ruleList>
+              <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+           </ruleList>
+        </actionGroup>
+
         <!-- LIN : Stop the pgAgent Service -->
         <runProgram>
           <program>/etc/init.d/pgagent</program>
@@ -323,6 +389,7 @@
             <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
           </ruleList>
         </runProgram>
+
       </actionList>
       <ruleList>
         <isFalse value="${extract_mode}"/>
@@ -332,73 +399,6 @@
 
   <!-- Postinstallation actions -->
   <postInstallationActionList>
-
-    <actionGroup>
-       <actionList>
-          <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
-          <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
-          <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
-          <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-          <setEnvironmentVariable name="PGDATABASE" value="" />
-          <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
-          <setInstallerVariable name="pgdbname" value="" />
-          <setInstallerVariable name="connection" value="" />
-
-          <setInstallerVariable name="psql_executable" value="${installdir}/bin/psql"/>
-          <setInstallerVariable name="psql_executable" value="${installdir}\bin\psql.exe">
-           <ruleList>
-             <compareText logic="equals" text="${platform_name}" value="windows"/>
-           </ruleList>
-          </setInstallerVariable>
-          <foreach variables="dbname">
-            <values>postgres edb template1</values>
-            <actionList>
-              <setInstallerVariableFromScriptOutput>
-                <exec>${psql_executable}</exec>
-                <execArgs>-l -d ${dbname}</execArgs>
-                <name>connection</name>
-                <workingDirectory>${installdir}/bin</workingDirectory>
-                <abortOnError>0</abortOnError>
-                <showMessageOnError>0</showMessageOnError>
-                <ruleList>
-                  <compareText logic="equals" text="${connection}" value=""/>
-                </ruleList>
-              </setInstallerVariableFromScriptOutput>
-              <stringModify text="${connection}" variable="connection" logic="trim"/>
-              <setInstallerVariable name="pgdbname" value="${dbname}">
-                <ruleList>
-                  <compareText logic="does_not_equal" text="${connection}" value=""/>
-                  <compareText logic="equals" text="${pgdbname}" value=""/>
-                </ruleList>
-              </setInstallerVariable>
-            </actionList>
-          </foreach>
-          <throwError text="${program_stderr}">
-            <ruleList>
-              <compareText logic="equals" text="${connection}" value=""/>
-            </ruleList>
-          </throwError>
-          <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}"/>
-
-          <setInstallerVariableFromScriptOutput name="user_has_permission"
-              abortOnError="0" showMessageOnError="0"
-              workingDirectory="${installdir}/bin">
-            <exec>${psql_executable}</exec>
-            <execArgs>-t -A -c "select CASE WHEN has_database_privilege(d.oid, 'CREATE') THEN 1 ELSE 0 END FROM pg_catalog.pg_database d WHERE d.datname=current_database()"</execArgs>
-          </setInstallerVariableFromScriptOutput>
-          <stringModify text="${user_has_permission}" variable="user_has_permission" logic="trim"/>
-
-          <throwError text="${msg(pgagent.user.not.have.permission)}">
-            <ruleList>
-              <isFalse value="${user_has_permission}"/>
-            </ruleList>
-          </throwError>
-       </actionList>
-       <ruleList>
-          <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-          <isFalse value="${extract_mode}"/>
-       </ruleList>
-    </actionGroup>
 
     <!-- Do not perform the below actions in case of extract-only mode -->
     <actionGroup>
