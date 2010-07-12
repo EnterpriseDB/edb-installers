@@ -299,8 +299,8 @@
               <setInstallerVariable name="pgdbname" value="" />
               <setInstallerVariable name="connection" value="" />
 
-              <setInstallerVariable name="psql_executable" value="${installdir}/bin/psql"/>
-              <setInstallerVariable name="psql_executable" value="${installdir}\bin\psql.exe">
+              <setInstallerVariable name="psql_executable" value="${system_temp_directory}/${product_fullname}/bin/psql"/>
+              <setInstallerVariable name="psql_executable" value="${system_temp_directory}\${product_fullname}\bin\psql.exe">
                <ruleList>
                  <compareText logic="equals" text="${platform_name}" value="windows"/>
                </ruleList>
