@@ -14,6 +14,7 @@ error.install.directory.invalid.linux=The installation directory cannot not be '
 error.install.directory.not.writable=Permission denied to read/write to the installation directory.
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
+platform.not.match64=You are trying to run a 64bit installer in a 32bit machine. The installer will exit now
 error.data.directory.invalid=The data directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.', and '_', and must be writable.
 error.data.directory.matches.install=The data directory must not be a parent of or the same as the installation directory.
 error.data.directory.registered.broken=A data directory is registered in ${PostgreSqlIni} but is neither empty, or a recognisable data directory.

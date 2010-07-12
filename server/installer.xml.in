@@ -209,7 +209,7 @@
           </ruleList>
         </throwError>
 
-        <throwError customErrorMessage="${msg(platform.not.match)}" text="Unknown Error">
+        <throwError customErrorMessage="${msg(platform.not.match64)}" text="Unknown Error">
           <ruleList>
             <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
             <isFalse value="${win64_platform}"/>
