@@ -443,11 +443,149 @@
                   <isFalse value="${user_has_permission}"/>
                 </ruleList>
               </throwError>
+
+        <actionGroup>
+          <actionList>
+            <!-- Check if plpgsql exists -->
+            <setInstallerVariableFromScriptOutput>
+              <exec>${psql_executable}</exec>
+              <execArgs>-t -A -c "SELECT lanname FROM pg_language WHERE lanname='plpgsql'"</execArgs>
+              <name>plpgsql_exist</name>
+              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+              <showMessageOnError>0</showMessageOnError>
+              <abortOnError>0</abortOnError>
+            </setInstallerVariableFromScriptOutput>
+            <stringModify text="${plpgsql_exist}" variable="plpgsql_exist" logic="trim"/>
+
+            <!-- Check for existing pgagent schema -->
+            <setInstallerVariableFromScriptOutput>
+              <exec>${psql_executable}</exec>
+              <execArgs>-t -A -c "SELECT has_schema_privilege('pgagent', 'USAGE')"</execArgs>
+              <name>pgagent_schema_exist</name>
+              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+              <showMessageOnError>0</showMessageOnError>
+              <abortOnError>0</abortOnError>
+            </setInstallerVariableFromScriptOutput>
+            <stringModify text="${pgagent_schema_exist}" variable="pgagent_schema_exist" logic="trim"/>
+
+            <!-- Check for pgagent_schema_version function exist -->
+            <setInstallerVariableFromScriptOutput>
+              <exec>${psql_executable}</exec>
+              <execArgs>-t -A -c "SELECT COUNT(*) FROM pg_proc WHERE proname = 'pgagent_schema_version' AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'pgagent') AND prorettype = (SELECT oid FROM pg_type WHERE typname = 'int2') AND proargtypes = ''"</execArgs>
+              <name>pgagent_schema_version_function_exist</name>
+              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+              <showMessageOnError>0</showMessageOnError>
+              <abortOnError>0</abortOnError>
+              <ruleList>
+                <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+            <stringModify text="${pgagent_schema_version_function_exist}" variable="pgagent_schema_version_function_exist" logic="trim"/>
+
+            <!-- Check for the current version of the pgagent schema -->
+            <setInstallerVariableFromScriptOutput>
+              <exec>${psql_executable}</exec>
+              <execArgs>-t -A -c "SELECT pgagent.pgagent_schema_version()"</execArgs>
+              <name>pgagent_current_schema_version</name>
+              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+              <showMessageOnError>0</showMessageOnError>
+              <abortOnError>0</abortOnError>
+              <ruleList>
+                <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+                <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+            <stringModify text="${pgagent_current_schema_version}" variable="pgagent_current_schema_version" logic="trim"/>
+
+          </actionList>
+        </actionGroup>
+
+        <!-- For pgagent schema already exists -->
+        <actionGroup>
+          <actionList>
+
+            <!-- 1. pgagent schema exist and pgagent_schema_version function does not exist -->
+            <showQuestion text="${msg(pgagent.schema.older.exist)}" variable="upgrade_schema">
+              <ruleList>
+                <compareText logic="does_not_equal" text="${pgagent_schema_version_function_exist}" value="1"/>
+              </ruleList>
+            </showQuestion>
+
+            <!-- 2. pgagnet schema exist and pgagent_schema_version function exists,
+                    but current_schema_version less than the installer_schema_version -->
+            <showQuestion text="${msg(pgagent.schema.older.version.exist)}" variable="upgrade_schema">
+              <ruleList>
+                <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
+                <compareValues logic="less" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
+              </ruleList>
+            </showQuestion>
+
+            <!-- 3. pgagnet schema exist and pgagent_schema_version function exists,
+                    and current_schema_version matches the installer_schema_version -->
+            <showInfo text="${msg(pgagent.schema.found)}">
+              <ruleList>
+                <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
+                <compareValues logic="equals" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
+              </ruleList>
+            </showInfo>
+
+            <!-- 4. pgagnet schema exist and pgagent_schema_version function exists,
+                    but current_schema_version greater than the installer_schema_version -->
+            <actionGroup>
+              <actionList>
+                <throwError text="${msg(pgagent.schema.newer.version.exist)}"/>
+                <setInstallerVariable name="next_page" value="pgdetails"/>
+              </actionList>
+              <ruleList>
+                <compareText logic="equals" text="${pgagent_schema_version_function_exist}" value="1"/>
+                <compareValues logic="greater" value1="${pgagent_current_schema_version}" value2="${pgagent_installer_schema_version}"/>
+              </ruleList>
+            </actionGroup>
+
+          </actionList>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+          </ruleList>
+        </actionGroup>
+
            </actionList>
            <ruleList>
               <compareText logic="equals" text="${installer_ui}" value="unattended"/>
            </ruleList>
         </actionGroup>
+
+	<!-- In case of unattended mode change value of pgagent_schema_exist to install
+	1. If it is unattended mode.
+	2. If this varriable is not passwed through command line.
+	3. If pgagent_schema does not exist.
+	-->
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="schema_in_unattended" value="install" persist="1"/>
+          </actionList>
+          <ruleList>
+	    <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            <compareText logic="equals" text="${schema_in_unattended}" value=""/>
+            <compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
+          </ruleList>
+        </actionGroup>
+
+	<!-- In case of unattended mode change value of pgagent_schema_exist to upgrade
+	1. If it is unattended mode.
+	2. If this varriable is not passwed through command line.
+	3. If pgagent_schema exists.
+	-->
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="schema_in_unattended" value="upgrade" persist="1"/>
+          </actionList>
+          <ruleList>
+	    <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            <compareText logic="equals" text="${schema_in_unattended}" value=""/>
+            <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
+          </ruleList>
+        </actionGroup>
+
 
         <!-- LIN : Stop the pgAgent Service -->
         <runProgram>
@@ -1826,6 +1964,7 @@
               </ruleList>
             </throwError>
 
+	    <logMessage text="test=yes"/>
             <!-- Check if plpgsql exists -->
             <setInstallerVariableFromScriptOutput>
               <exec>${psql_executable}</exec>
