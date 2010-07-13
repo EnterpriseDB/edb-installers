@@ -25,9 +25,9 @@ DATE=`date +'%Y-%m-%d'`
 echo "Cleaning up old output" >> autobuild.log
 rm -rf output/* >> autobuild.log 2>&1
 
-# Switch to REL-9_0_DEV branch
-echo "Switching to REL-9_0_DEV branch" >> autobuild.log
-/opt/local/bin/git checkout REL-9_0_DEV >> autobuild.log 2>&1
+# Switch to REL-9_0 branch
+echo "Switching to REL-9_0 branch" >> autobuild.log
+/opt/local/bin/git checkout REL-9_0 >> autobuild.log 2>&1
 
 # Self update
 echo "Updating build system" >> autobuild.log
