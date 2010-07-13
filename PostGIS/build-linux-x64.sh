@@ -232,23 +232,8 @@ _postprocess_PostGIS_linux_x64() {
     cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/PostGIS/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux-x64/createshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/createshortcuts.sh
 
-    cp scripts/linux/createtemplatedb.sh staging/linux-x64/installer/PostGIS/createtemplatedb.sh || _die "Failed to copy the createtemplatedb script (scripts/linux-x64/createtemplatedb.sh)"
-    chmod ugo+x staging/linux-x64/installer/PostGIS/createtemplatedb.sh
-
-    cp scripts/linux/createpostgisdb.sh staging/linux-x64/installer/PostGIS/createpostgisdb.sh || _die "Failed to copy the createpostgisdb script (scripts/linux-x64/createpostgisdb.sh)"
-    chmod ugo+x staging/linux-x64/installer/PostGIS/createpostgisdb.sh
-
     cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/PostGIS/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux-x64/removeshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/PostGIS/removeshortcuts.sh    
-
-    cp scripts/linux/check-connection.sh staging/linux-x64/installer/PostGIS/check-connection.sh || _die "Failed to copy the check-connection script (scripts/linux-x64/check-connection.sh)"
-    chmod ugo+x staging/linux-x64/installer/PostGIS/check-connection.sh
-
-    cp scripts/linux/check-pgversion.sh staging/linux-x64/installer/PostGIS/check-pgversion.sh || _die "Failed to copy the check-pgversion script (scripts/linux-x64/check-pgversion.sh)"
-    chmod ugo+x staging/linux-x64/installer/PostGIS/check-pgversion.sh
- 
-    cp scripts/linux/check-db.sh staging/linux-x64/installer/PostGIS/check-db.sh || _die "Failed to copy the check-db script (scripts/linux-x64/check-db.sh)"
-    chmod ugo+x staging/linux-x64/installer/PostGIS/check-db.sh
 
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the launch scripts"
     cp -R scripts/linux/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launch scripts (scripts/linux-x64)"

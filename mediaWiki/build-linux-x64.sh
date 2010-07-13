@@ -107,6 +107,7 @@ _postprocess_mediaWiki_linux_x64() {
     _replace "\$conf->DBuser = importPost( \"DBuser\", \"wikiuser\" );" "\$conf->DBuser = importPost( \"DBuser\", \"mediawikiuser\" );" "$WD/mediaWiki/staging/linux-x64/mediaWiki/config/index.php"
     _replace "\$conf->DBpassword = importPost( \"DBpassword\" );" "\$conf->DBpassword = importPost( \"DBpassword\",\"mediawikiuser\" );" "$WD/mediaWiki/staging/linux-x64/mediaWiki/config/index.php"
     _replace "\$conf->DBpassword2 = importPost( \"DBpassword2\" );" "\$conf->DBpassword2 = importPost( \"DBpassword2\",\"mediawikiuser\" );" "$WD/mediaWiki/staging/linux-x64/mediaWiki/config/index.php"
+    _replace "\$wgDatabase = \$dbc->newFromParams(\$wgDBserver, \$wgDBsuperuser, \$conf->RootPW, \"postgres\", 1);" "\$wgDatabase = \$dbc->newFromParams(\$wgDBserver, \$wgDBsuperuser, \$conf->RootPW, \"template1\", 1);" "$WD/mediaWiki/staging/linux-x64/mediaWiki/config/index.php"
 
     chmod a+w staging/linux-x64/mediaWiki/config || _die "Couldn't set the permissions on the config directory"
 

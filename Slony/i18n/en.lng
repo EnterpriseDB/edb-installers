@@ -1,6 +1,6 @@
 Installer.Welcome.Title=Setup Slony
 
-Installer.Welcome.Text=Welcome to the Slony Setup.
+Installer.Welcome.Text=Welcome to the Slony Setup Wizard.
 
 Installer.Installing.Title=Installing Slony ${product_version}
 

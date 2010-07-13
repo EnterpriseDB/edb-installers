@@ -20,6 +20,12 @@ _prep_pgAgent_windows() {
       rm -rf pgAgent.windows  || _die "Couldn't remove the existing pgAgent.windows source directory (source/pgAgent.windows)"
     fi
 
+    if [ -f pgAgent.zip ];
+    then
+      echo "Removing the existing pgAgent achieve from the build machine"
+      rm -f pgAgent.zip
+    fi
+
     echo "Creating staging directory ($WD/pgAgent/source/pgAgent.windows)"
     mkdir -p $WD/pgAgent/source/pgAgent.windows || _die "Couldn't create the pgAgent.windows directory"
     

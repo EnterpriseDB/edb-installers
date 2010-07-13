@@ -488,6 +488,12 @@
                 <deleteFile>
                     <path>${installdir}/Drupal/sites/default/settings.php</path>
                 </deleteFile>
+                <createBackupFile>
+                    <path>${installdir}/Drupal/install.php</path>
+                </createBackupFile>
+                <deleteFile>
+                    <path>${installdir}/Drupal/install.php</path>
+                </deleteFile>
             </actionList>
             <ruleList>
                 <compareText>
@@ -510,6 +516,12 @@
                 </createBackupFile>
                 <deleteFile>
                     <path>${installdir}\Drupal\sites\default\settings.php</path>
+                </deleteFile>
+	        <createBackupFile>
+                    <path>${installdir}\Drupal\install.php</path>
+                </createBackupFile>
+                <deleteFile>
+                    <path>${installdir}\Drupal\install.php</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -738,6 +750,7 @@
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+                <compareText text="${drupalVersion}" logic="equals" value=""/>
             </ruleList>
         </actionGroup>
 
@@ -768,6 +781,16 @@
                 <deleteFile>
                     <path>${installdir}/Drupal/sites/default/settings.php.bak0</path>
                 </deleteFile>
+                <deleteFile>
+                    <path>${installdir}/Drupal/install.php</path>
+                </deleteFile>
+                <renameFile>
+                    <origin>${installdir}/Drupal/install.php.bak0</origin>
+                    <destination>${installdir}/Drupal/install.php</destination>
+                </renameFile>
+                <deleteFile>
+                    <path>${installdir}/Drupal/install.php.bak0</path>
+                </deleteFile>
             </actionList>
             <ruleList>
                 <compareText>
@@ -782,6 +805,7 @@
                 </compareText>
                 <fileExists>
                     <path>${installdir}/Drupal/sites/default/settings.php.bak0</path>
+                    <path>${installdir}/Drupal/install.php.bak0</path>
                 </fileExists>
             </ruleList>
         </actionGroup>
@@ -798,6 +822,16 @@
                 <deleteFile>
                     <path>${installdir}\Drupal\sites\default\settings.php.bak0</path>
                 </deleteFile>
+	        <deleteFile>
+                    <path>${installdir}\Drupal\install.php</path>
+                </deleteFile>
+                <renameFile>
+                    <origin>${installdir}\Drupal\install.php.bak0</origin>
+                    <destination>${installdir}\Drupal\install.php</destination>
+                </renameFile>
+                <deleteFile>
+                    <path>${installdir}\Drupal\install.php.bak0</path>
+                </deleteFile>
             </actionList>
             <ruleList>
                 <compareText>
@@ -811,7 +845,8 @@
                     <value>windows</value>
                 </compareText>
                 <fileExists>
-                    <path>${installdir}/Drupal/sites/default/settings.php.bak0</path>
+                    <path>${installdir}\Drupal\sites\default\settings.php.bak0</path>
+                    <path>${installdir}\Drupal\install.php.bak0</path>
                 </fileExists>
             </ruleList>
         </actionGroup>
@@ -871,8 +906,10 @@
         <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
         <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
         <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-        <setEnvironmentVariable name="PGDATABASE" value=""/>
+        <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
         <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/"/>
+
+        <logMessage text="HOST:${pghost},USER:${pguser},PORT:${pgport},DB:${pgdatabase}"/>
 
         <!-- Create Role and database -->
         <actionGroup>
@@ -1242,7 +1279,8 @@
 
     <!-- finalPage actions -->
     <finalPageActionList>
-        <launchBrowser url="http://127.0.0.1:${apacheport}/Drupal/update.php">
+        <launchBrowser url="http://127.0.0.1:${apacheport}/Drupal/update.php"
+            progressText="${msg(Installer.Installation.Finished.Visit.Us)}">
             <ruleList>
                 <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
                 <compareText>
@@ -1250,6 +1288,13 @@
                     <logic>does_not_equal</logic>
                     <value/>
                 </compareText>
+            </ruleList>
+        </launchBrowser>
+        <launchBrowser url="http://127.0.0.1:${apacheport}/Drupal/install.php"
+            progressText="${msg(Installer.Installation.Finished.Visit.Us)}">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
+                <compareText text="${drupalVersion}" logic="equals" value=""/>
             </ruleList>
         </launchBrowser>
     </finalPageActionList>

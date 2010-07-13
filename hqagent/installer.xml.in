@@ -900,6 +900,7 @@
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="pphquser" value=""/>
                 <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agentport" value=""/>
 		<iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="agenthost" value=""/>
+                <iniFileSet file="/etc/postgres-reg.ini" section="pphqagent" key="Serviceaccount" value=""/>
             </actionList>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>

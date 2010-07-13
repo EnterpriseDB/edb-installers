@@ -242,10 +242,6 @@ _postprocess_PostGIS_windows() {
 
     mkdir -p staging/windows/installer/PostGIS || _die "Failed to create a directory for the install scripts"
 
-    cp scripts/windows/check-connection.bat staging/windows/installer/PostGIS/check-connection.bat || _die "Failed to copy the check-connection script (scripts/windows/check-connection.bat)"
-    cp scripts/windows/check-db.bat staging/windows/installer/PostGIS/check-db.bat || _die "Failed to copy the check-db script (scripts/windows/check-db.bat)"
-    cp scripts/windows/createtemplatedb.bat staging/windows/installer/PostGIS/createtemplatedb.bat || _die "Failed to copy the createtemplatedb script (scripts/windows/createtemplatedb.bat)"
-
     # Copy in the menu pick images
     mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.ico staging/windows/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
