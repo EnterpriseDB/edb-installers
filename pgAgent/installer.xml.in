@@ -288,6 +288,96 @@
             </ruleList>
         </actionGroup>
 
+        <!-- Creating a temporary directory -->
+        <createDirectory path="${system_temp_directory}/${product_fullname}"/>
+
+        <!-- Create temporary directory -->
+        <createDirectory path="${system_temp_directory}/${product_fullname}/bin"/>
+
+        <actionGroup>
+           <actionList>
+            <!-- LIN: Unpack psql and its shared libraries -->
+            <unpackFile>
+              <component>pgAgent</component>
+              <destination>${system_temp_directory}/${product_fullname}/bin/psql</destination>
+              <folder>programfileslinux</folder>
+              <origin>bin/psql</origin>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="linux"/>
+              </ruleList>
+            </unpackFile>
+            <unpackDirectory>
+              <component>pgAgent</component>
+              <destination>${system_temp_directory}/${product_fullname}/lib</destination>
+              <folder>libfileslinux</folder>
+              <origin>lib</origin>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="linux"/>
+              </ruleList>
+            </unpackDirectory>
+
+            <!-- LIN-x64: Unpack psql and its shared libraries -->
+            <unpackFile>
+              <component>pgAgent</component>
+              <destination>${system_temp_directory}/${product_fullname}/bin/psql</destination>
+              <folder>programfileslinux-x64</folder>
+              <origin>bin/psql</origin>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
+              </ruleList>
+            </unpackFile>
+            <unpackDirectory>
+              <component>pgAgent</component>
+              <destination>${system_temp_directory}/${product_fullname}/lib</destination>
+              <folder>libfileslinux-x64</folder>
+              <origin>lib</origin>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
+              </ruleList>
+            </unpackDirectory>
+
+            <!-- MAC: Unpack psql and its shared libraries -->
+            <unpackFile>
+              <component>pgAgent</component>
+              <destination>${system_temp_directory}/${product_fullname}/bin/psql</destination>
+              <folder>programfilesosx</folder>
+              <origin>bin/psql</origin>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
+              </ruleList>
+            </unpackFile>
+            <unpackDirectory>
+              <component>pgAgent</component>
+              <destination>${system_temp_directory}/${product_fullname}/lib</destination>
+              <folder>libfilesosx</folder>
+              <origin>lib</origin>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
+              </ruleList>
+            </unpackDirectory>
+
+            <!-- WIN: Unpack psql and its shared libraries -->
+            <unpackFile>
+              <component>pgAgent</component>
+              <destination>${system_temp_directory}\${product_fullname}\bin\psql.exe</destination>
+              <folder>libfileswindows</folder>
+              <origin>bin\psql.exe</origin>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+              </ruleList>
+            </unpackFile>
+            <unpackDirectory>
+              <component>pgAgent</component>
+              <destination>${system_temp_directory}\${product_fullname}</destination>
+              <folder>libfileswindows</folder>
+              <origin>bin</origin>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+              </ruleList>
+            </unpackDirectory>
+           </actionList>
+	</actionGroup>
+
         <actionGroup>
            <actionList>
               <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
