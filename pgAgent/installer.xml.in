@@ -87,10 +87,6 @@
 
   <!-- Initialisation actions -->
   <initializationActionList>
-<<<<<<< HEAD
-    <setInstallerVariable name="pgAgentVersion" persist="0" value=""/>
-
-=======
     <setInstallerVariable name="systempassword" value="postgres" >
       <ruleList>
 	  <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
@@ -98,7 +94,6 @@
     </setInstallerVariable>
 
     <setInstallerVariable name="pgAgentVersion" persist="0" value=""/>
->>>>>>> master
     <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
     <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PGAGENT"/>
 
@@ -2174,15 +2169,6 @@
       </parameterList>
       <ruleList>
         <isFalse value="${extract_mode}"/>
-<<<<<<< HEAD
-	<ruleGroup>
-	     <ruleEvaluationLogic>OR</ruleEvaluationLogic>
-	    <ruleList>
-	        <compareText logic="equals" text="${pgAgentVersion}" value=""/>
-		<compareText logic="equals" text="${platform_name}" value="windows"/>
-	    </ruleList>
-	</ruleGroup>
-=======
         <ruleGroup>
             <ruleEvaluationLogic>OR</ruleEvaluationLogic>
             <ruleList>
@@ -2190,7 +2176,6 @@
                <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </ruleGroup>
->>>>>>> master
       </ruleList>
       <validationActionList>
         <throwError text="${msg(systemuser.blank.error)}">
