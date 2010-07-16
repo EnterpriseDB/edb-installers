@@ -114,7 +114,7 @@ _build_PostGIS_linux() {
 
     echo "Building postgis"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux; make; make comments" || _die "Failed to build postgis"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux; make install; make comments-install" || _die "Failed to install postgis"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux; make PGXSOVERRIDE=0 install; make comments-install" || _die "Failed to install postgis"
     
     echo "Building postgis-jdbc"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/java/jdbc ;CLASSPATH=$PG_PATH_LINUX/PostGIS/source/postgresql-$PG_JAR_POSTGRESQL.jar:$CLASSPATH JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX/bin/ant" || _die "Failed to build postgis-jdbc"
@@ -137,7 +137,8 @@ _build_PostGIS_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/staging/linux/PostGIS; cp $PG_PGHOME_LINUX/lib/postgresql/postgis-$POSTGIS_MAJOR_VERSION.so lib/" || _die "Failed to copy PostGIS library" 
  
     mkdir -p share/contrib
-  
+ 
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/staging/linux/PostGIS; cp $PG_PGHOME_LINUX/share/postgresql/contrib/postgis-$POSTGIS_MAJOR_VERSION/* $PG_PGHOME_LINUX/share/postgresql/contrib/" || _die "Failed to copy PostGIS share files to contrib folder" 
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/staging/linux/PostGIS; cp $PG_PGHOME_LINUX/share/postgresql/contrib/postgis.sql share/contrib/" || _die "Failed to copy PostGIS share files" 
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/staging/linux/PostGIS; cp $PG_PGHOME_LINUX/share/postgresql/contrib/uninstall_postgis.sql share/contrib/" || _die "Failed to copy PostGIS share files" 
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/staging/linux/PostGIS; cp $PG_PGHOME_LINUX/share/postgresql/contrib/postgis_upgrade*.sql share/contrib/" || _die "Failed to copy PostGIS share files" 

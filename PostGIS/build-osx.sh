@@ -307,7 +307,7 @@ _build_postgis() {
     echo "Building PostGIS"
     MACOSX_DEPLOYMENT_TARGET=10.5 make || _die "Failed to build PostGIS"
     make comments || _die "Failed to build comments"
-    make install || _die "Failed to install PostGIS"
+    make PGXSOVERRIDE=0 install || _die "Failed to install PostGIS"
     make comments-install || _die "Failed to install PostGIS comments"
 
     cd $WD
@@ -367,7 +367,7 @@ _build_PostGIS_osx() {
     cp $PG_PGHOME_OSX/lib/postgresql/postgis-$POSTGIS_MAJOR_VERSION.so lib/ || _die "Failed to copy PostGIS library" 
  
     mkdir -p share/contrib
-  
+    cp $PG_PGHOME_OSX/share/postgresql/contrib/postgis-$POSTGIS_MAJOR_VERSION/* $PG_PGHOME_OSX/share/postgresql/contrib/ || _die "Failed to copy PostGIS share files to contrib folder" 
     cp $PG_PGHOME_OSX/share/postgresql/contrib/postgis.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
     cp $PG_PGHOME_OSX/share/postgresql/contrib/uninstall_postgis.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
     cp $PG_PGHOME_OSX/share/postgresql/contrib/postgis_upgrade*.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
