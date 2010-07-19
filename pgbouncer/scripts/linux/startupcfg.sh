@@ -43,15 +43,13 @@ cat <<EOT > "/etc/init.d/pgbouncer"
 # Description:       pgbouncer
 ### END INIT INFO
 
-export LD_LIBRARY_PATH=$INSTALL_DIR/lib:$LD_LIBRARY_PATH
-
 start()
 {
     PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini " 
+       su $SYSTEM_USER -c "LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH $INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini " 
        exit 0
     else
        echo "pgbouncer already running"
