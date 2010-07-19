@@ -106,7 +106,7 @@ _build_ReplicationServer_solaris_x64() {
 
    # Build the validateUserClient binary
     if [ ! -f $WD/MetaInstaller/source/MetaInstaller.solaris-x64/validateUser/validateUserClient.o ]; then
-        scp -r $WD/MetaInstaller/scripts/solaris-x64/validateUser $PG_SSH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/ReplicationServer/source/ReplicationServer.solaris-x64/ || _die "Failed to copy validateUser source files"
+        scp -r $WD/MetaInstaller/scripts/linux/validateUser $PG_SSH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/ReplicationServer/source/ReplicationServer.solaris-x64/ || _die "Failed to copy validateUser source files"
         ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64/ReplicationServer/source/ReplicationServer.solaris-x64/validateUser; PATH=/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/local/bin:/usr/ucb:\$PATH gcc -m64 -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto -lnsl -lsocket" || _die "Failed to build the validateUserClient utility"
         ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp ReplicationServer/source/ReplicationServer.solaris-x64/validateUser/validateUserClient.o ReplicationServer/staging/solaris-x64/instscripts/" || _die "Failed to copy validateUserClient.o"
     else
