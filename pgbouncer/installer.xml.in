@@ -83,7 +83,13 @@
             <name>default_installdir</name>
             <persist>1</persist>
             <value>${platform_install_prefix}/PgBouncer</value>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
                 <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
@@ -170,6 +176,25 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+
+        <!-- Solaris : Set the default values for unattended mode -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PgBouncer"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
         <!-- WIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
@@ -224,7 +249,13 @@
             <name>default_installdir</name>
             <persist>1</persist>
             <value>${platform_install_prefix}/PgBouncer</value>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
                 <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
@@ -439,6 +470,30 @@
                                 </compareText>
                             </ruleList>
                         </runProgram>
+                        <!-- Solaris Stop the pgbouncer service -->  
+                        <actionGroup>
+                            <actionList>  
+                                <runProgram>
+                                    <program>svcadm</program>
+                                    <programArguments>-v disable svc:/application/pgbouncer:default</programArguments>
+                                    <abortOnError>0</abortOnError>
+                                    <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+                                </runProgram>
+                                <runProgram>
+                                    <program>svccfg</program>
+                                    <programArguments>-v delete -f svc:/application/pgbouncer:default</programArguments>
+                                    <abortOnError>0</abortOnError>
+                                    <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+                                </runProgram>
+                            </actionList> 
+                            <ruleList>
+                                <compareText>
+                                    <logic>contains</logic>
+                                    <text>${platform_name}</text>
+                                    <value>solaris</value>
+                                </compareText>
+                            </ruleList>
+                        </actionGroup>>
                         <copyFile>
                             <origin>${installdir}/share/pgbouncer.ini</origin>
                             <destination>${installdir}/share/pgbouncer.ini.bak1</destination>
@@ -536,6 +591,32 @@
                           <logic>equals</logic>
                           <text>${platform_name}</text>
                           <value>windows</value>
+                      </compareText>
+                  </ruleList>
+              </unpackDirectory>
+              <unpackDirectory>
+                  <origin>instscripts</origin>
+                  <destination>${system_temp_directory}</destination>
+                  <component>default</component>
+                  <folder>installfilessolaris-x64</folder>
+                  <ruleList>
+                      <compareText>
+                          <logic>equals</logic>
+                          <text>${platform_name}</text>
+                          <value>solaris-intel</value>
+                      </compareText>
+                  </ruleList>
+              </unpackDirectory>
+              <unpackDirectory>
+                  <origin>instscripts</origin>
+                  <destination>${system_temp_directory}</destination>
+                  <component>default</component>
+                  <folder>installfilessolaris-sparc</folder>
+                  <ruleList>
+                      <compareText>
+                          <logic>equals</logic>
+                          <text>${platform_name}</text>
+                          <value>solaris-sparc</value>
                       </compareText>
                   </ruleList>
               </unpackDirectory>
@@ -961,7 +1042,7 @@
                         </compareText>
                     </ruleList>
                 </startWindowsService>  
-        
+ 
                 <!-- Linux: Start the pgbouncer service -->    
                 <runProgram>
                     <program>/etc/init.d/pgbouncer</program>
@@ -973,6 +1054,26 @@
                             <logic>contains</logic>
                             <text>${platform_name}</text>
                             <value>linux</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${autostart}</text>
+                            <value>yes</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+       
+                <!-- Solaris: Start the pgbouncer service -->    
+                <runProgram>
+                    <program>svcadm</program>
+                    <programArguments>-v enable svc:/application/pgbouncer:default</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>solaris</value>
                         </compareText>
                         <compareText>
                             <logic>equals</logic>
@@ -1140,6 +1241,33 @@
             </ruleList>
         </runProgram>
 
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>svcadm</program>
+                    <programArguments>-v disable svc:/application/pgbouncer:default</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+                </runProgram>
+                <runProgram>
+                    <program>svccfg</program>
+                    <programArguments>-v delete -f svc:/application/pgbouncer:default</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+                </runProgram>
+                <deleteFile path="/var/svc/manifest/application/pgbouncer.xml" />
+                <deleteFile path="/lib/svc/method/pgbouncer" />
+            </actionList> 
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+         
+   
         <deleteFile>
             <path>/etc/init.d/pgbouncer</path>
             <ruleList>
@@ -1405,7 +1533,79 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
-            </folderList>
+
+                <!-- SOLARIS-X64 - Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilessolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/pgbouncer/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/pgbouncer/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/pgbouncer/share</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/pgbouncer/doc</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>installfilessolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/instscripts</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+
+                <!-- SOLARIS-SPARC - Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilessolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/pgbouncer/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/pgbouncer/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/pgbouncer/share</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/pgbouncer/doc</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>installfilessolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/instscripts</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+           </folderList>
         </component>
     </componentList>
     <parameterList>
@@ -1569,6 +1769,32 @@
                               <logic>equals</logic>
                               <text>${platform_name}</text>
                               <value>windows</value>
+                          </compareText>
+                      </ruleList>
+                  </unpackDirectory>
+                  <unpackDirectory>
+                      <origin>instscripts</origin>
+                      <destination>${system_temp_directory}</destination>
+                      <component>default</component>
+                      <folder>installfilessolaris-x64</folder>
+                      <ruleList>
+                          <compareText>
+                              <logic>equals</logic>
+                              <text>${platform_name}</text>
+                              <value>solaris-intel</value>
+                          </compareText>
+                      </ruleList>
+                  </unpackDirectory>
+                  <unpackDirectory>
+                      <origin>instscripts</origin>
+                      <destination>${system_temp_directory}</destination>
+                      <component>default</component>
+                      <folder>installfilessolaris-sparc</folder>
+                      <ruleList>
+                          <compareText>
+                              <logic>equals</logic>
+                              <text>${platform_name}</text>
+                              <value>solaris-sparc</value>
                           </compareText>
                       </ruleList>
                   </unpackDirectory>

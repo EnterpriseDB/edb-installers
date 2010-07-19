@@ -26,6 +26,12 @@ then
     source $WD/MigrationToolKit/build-windows.sh
 fi
     
+# Solaris x64
+if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+then
+    source $WD/MigrationToolKit/build-solaris-x64.sh
+fi
+
 ################################################################################
 # Build preparation
 ################################################################################
@@ -89,6 +95,12 @@ _prep_MigrationToolKit() {
         _prep_MigrationToolKit_windows || exit 1
     fi
     
+    # Solaris x64
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+        _prep_MigrationToolKit_solaris_x64 || exit 1
+    fi
+
 }
 
 ################################################################################
@@ -120,6 +132,13 @@ _build_MigrationToolKit() {
     then
         _build_MigrationToolKit_windows || exit 1
     fi
+
+    # Solaris x64
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+        _build_MigrationToolKit_solaris_x64 || exit 1
+    fi
+
 }
 
 ################################################################################
@@ -169,4 +188,11 @@ _postprocess_MigrationToolKit() {
     then
         _postprocess_MigrationToolKit_windows || exit 1
     fi
+
+    # Solaris x64
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+        _postprocess_MigrationToolKit_solaris_x64 || exit 1
+    fi
+    
 }

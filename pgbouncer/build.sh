@@ -32,6 +32,12 @@ then
     source $WD/pgbouncer/build-windows.sh
 fi
     
+# Solaris x64
+if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+then
+    source $WD/pgbouncer/build-solaris-x64.sh
+fi
+
 ################################################################################
 # Build preparation
 ################################################################################
@@ -91,6 +97,11 @@ _prep_pgbouncer() {
         _prep_pgbouncer_windows || exit 1
     fi
     
+    # Solaris x64
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+        _prep_pgbouncer_solaris_x64 || exit 1
+    fi
 }
 
 ################################################################################
@@ -129,7 +140,14 @@ _build_pgbouncer() {
     then
         _build_pgbouncer_windows || exit 1
     fi
+
+    # Solaris x64
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+       _build_pgbouncer_solaris_x64 || exit 1
+    fi
 }
+
 
 ################################################################################
 # Postprocess pgbouncer
@@ -180,5 +198,11 @@ _postprocess_pgbouncer() {
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
        _postprocess_pgbouncer_windows || exit 1
+    fi
+
+    # Solaris x64
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+        _postprocess_pgbouncer_solaris_x64 || exit 1
     fi
 }

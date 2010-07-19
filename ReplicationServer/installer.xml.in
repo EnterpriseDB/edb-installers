@@ -91,7 +91,13 @@
             <name>default_installdir</name>
             <persist>1</persist>
             <value>${platform_install_prefix}/PostgresPlus/EnterpriseDB-xDBReplicationServer</value>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
                 <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
@@ -172,6 +178,24 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+        <!-- SOLARIS : Set the default values for unattended mode -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/EnterpriseDB-xDBReplicationServer"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
         <!-- WIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
@@ -226,7 +250,13 @@
             <name>default_installdir</name>
             <persist>1</persist>
             <value>${platform_install_prefix}/PostgresPlus/EnterpriseDB-xDBReplicationServer</value>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
                 <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
@@ -849,7 +879,26 @@
 
         <!-- Stop the publication service, if installed -->
         <actionGroup>
-            <actionList> 
+            <actionList>
+                 <actionGroup>
+                     <actionList> 
+                         <runProgram>
+                             <program>svcadm</program>
+                             <programArguments>-v disable svc:/application/edb-xdbpubserver:default</programArguments> 
+                             <abortOnError>0</abortOnError>
+                             <showMessageOnError>0</showMessageOnError>
+                         </runProgram>  
+                         <runProgram>
+                             <program>svccfg</program>
+                             <programArguments>-v delete -f svc:/application/edb-xdbpubserver:default</programArguments> 
+                             <abortOnError>0</abortOnError>
+                             <showMessageOnError>0</showMessageOnError>
+                         </runProgram>  
+                     </actionList>
+                     <ruleList>
+                         <compareText text="${platform_name}" logic="contains" value="solaris" />
+                     </ruleList>
+                 </actionGroup>
                  <runProgram>
                      <program>/etc/init.d/edb-xdbpubserver</program>
                      <programArguments>stop &amp;</programArguments> 
@@ -886,6 +935,25 @@
         <!-- Stop the subscription service, if installed -->
         <actionGroup>
             <actionList> 
+                 <actionGroup>
+                     <actionList> 
+                         <runProgram>
+                             <program>svcadm</program>
+                             <programArguments>-v disable svc:/application/edb-xdbsubserver:default</programArguments> 
+                             <abortOnError>0</abortOnError>
+                             <showMessageOnError>0</showMessageOnError>
+                         </runProgram>  
+                         <runProgram>
+                             <program>svccfg</program>
+                             <programArguments>-v delete -f svc:/application/edb-xdbsubserver:default</programArguments> 
+                             <abortOnError>0</abortOnError>
+                             <showMessageOnError>0</showMessageOnError>
+                         </runProgram>  
+                     </actionList>
+                     <ruleList>
+                         <compareText text="${platform_name}" logic="contains" value="solaris" />
+                     </ruleList>
+                 </actionGroup>
                  <runProgram>
                      <program>/etc/init.d/edb-xdbsubserver</program>
                      <programArguments>stop &amp;</programArguments> 
@@ -1726,9 +1794,30 @@ database=${controldb}
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </startWindowsService>
+       <runProgram>
+            <program>/etc/init.d/edb-xdbpubserver</program>
+            <programArguments>start &amp;</programArguments> 
+            <workingDirectory>/etc/init.d</workingDirectory>
+            <progressText>${msg(progress.text.starting.pubservice)}</progressText>
+            <ruleList>
+                <isTrue value="${component(pubserver).selected}" />
+                <compareText logic="contains" text="${platform_name}" value="linux" />
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </runProgram> 
+        <runProgram>
+            <program>svcadm</program>
+            <programArguments>-v enable svc:/application/edb-xdbpubserver:default</programArguments> 
+            <progressText>${msg(progress.text.starting.pubservice)}</progressText>
+            <ruleList>
+                <isTrue value="${component(pubserver).selected}" />
+                <compareText logic="contains" text="${platform_name}" value="solaris" />
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </runProgram> 
+        <!-- Pause for 10 sec between publication/subscription startup. -->
         <wait ms="10000" >
             <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(subserver).selected}" />
                 <isTrue value="${component(pubserver).selected}" />
                 <isFalse value="${extract_mode}"/>
@@ -1743,26 +1832,6 @@ database=${controldb}
             </ruleList>
         </startWindowsService>
         <runProgram>
-            <program>/etc/init.d/edb-xdbpubserver</program>
-            <programArguments>start &amp;</programArguments> 
-            <workingDirectory>/etc/init.d</workingDirectory>
-            <progressText>${msg(progress.text.starting.pubservice)}</progressText>
-            <ruleList>
-                <isTrue value="${component(pubserver).selected}" />
-                <compareText logic="contains" text="${platform_name}" value="linux" />
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </runProgram> 
-        <!-- Pause for 10 sec between publication/subscription startup. -->
-        <wait ms="10000" >
-            <ruleList>
-                <compareText logic="contains" text="${platform_name}" value="linux" />
-                <isTrue value="${component(subserver).selected}" />
-                <isTrue value="${component(pubserver).selected}" />
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </wait>
-        <runProgram>
             <program>/etc/init.d/edb-xdbsubserver</program>
             <programArguments>start &amp;</programArguments> 
             <workingDirectory>/etc/init.d</workingDirectory>
@@ -1773,7 +1842,17 @@ database=${controldb}
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram>
-
+        <runProgram>
+            <program>svcadm</program>
+            <programArguments>-v enable svc:/application/edb-xdbsubserver:default</programArguments> 
+            <progressText>${msg(progress.text.starting.subservice)}</progressText>
+            <ruleList>
+                <isTrue value="${component(subserver).selected}" />
+                <compareText logic="contains" text="${platform_name}" value="solaris" />
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </runProgram> 
+ 
         <!-- Add description to the services -->
         <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Publication Service" name="Description" value="${msg(pub.service.description)}" >
             <ruleList>
@@ -2053,6 +2132,58 @@ database=${controldb}
             </ruleList>
         </deleteFile>    
  
+        <actionGroup>
+            <actionList>
+               <runProgram>
+                  <program>svcadm</program>
+                  <programArguments>-v disable svc:/application/edb-xdbpubserver:default</programArguments>
+                   <abortOnError>0</abortOnError>
+                   <showMessageOnError>0</showMessageOnError>
+               </runProgram>
+               <runProgram>
+                  <program>svccfg</program>
+                  <programArguments>-v delete -f svc:/application/edb-xdbpubserver:default</programArguments>
+                   <abortOnError>0</abortOnError>
+                   <showMessageOnError>0</showMessageOnError>
+               </runProgram>
+               <deleteFile path="/lib/svc/method/edb-xdbpubserver" />
+               <deleteFile path="/var/svc/manifest/application/edb-xdbpubserver.xml" />
+               <deleteFile path="/etc/edb-repl.conf" >
+                  <ruleList>
+                     <fileExists path="/etc/edb-repl.conf" />
+                  </ruleList>
+               </deleteFile>
+             </actionList>
+             <ruleList>
+                <fileExists path="/lib/svc/method/edb-xdbpubserver" />
+                <compareText text="${platform_name}" logic="contains" value="solaris" />
+            </ruleList>
+        </actionGroup>>
+
+        <actionGroup>
+            <actionList>
+               <runProgram>
+                  <program>svcadm</program>
+                  <programArguments>-v disable svc:/application/edb-xdbsubserver:default</programArguments>
+                   <abortOnError>0</abortOnError>
+                   <showMessageOnError>0</showMessageOnError>
+               </runProgram>
+               <runProgram>
+                  <program>svccfg</program>
+                  <programArguments>-v delete -f svc:/application/edb-xdbsubserver:default</programArguments>
+                   <abortOnError>0</abortOnError>
+                   <showMessageOnError>0</showMessageOnError>
+               </runProgram>
+               <deleteFile path="/lib/svc/method/edb-xdbsubserver" />
+               <deleteFile path="/var/svc/manifest/application/edb-xdbsubserver.xml" />
+             </actionList>
+             <ruleList>
+                <fileExists path="/lib/svc/method/edb-xdbsubserver" />
+                <compareText text="${platform_name}" logic="contains" value="solaris" />
+            </ruleList>
+        </actionGroup>>
+                
+ 
         <!-- LIN : Remove Menu shortcuts -->
         <actionGroup>
             <actionList>
@@ -2064,7 +2195,13 @@ database=${controldb}
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
             </actionList>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic> 
             <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
                 <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
@@ -2222,6 +2359,124 @@ database=${controldb}
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/linux-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- SOLARIS-X64- Program files -->
+                <folder>
+                    <description>RepConsole GUI Files</description>
+                    <destination>${installdir}</destination>
+                    <name>repconsoleguifilessolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/repconsole/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>RepConsole lib Files</description>
+                    <destination>${installdir}</destination>
+                    <name>repconsolelibfilessolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/repconsole/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>DataValidatorFiles</description>
+                    <destination>${installdir}</destination>
+                    <name>datavalidatorfilessolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/repconsole/doc</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/repconsole/etc</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>installscriptssolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuscriptssolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- SOLARIS-SPARC - Program files -->
+                <folder>
+                    <description>RepConsole GUI Files</description>
+                    <destination>${installdir}</destination>
+                    <name>repconsoleguifilessolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/repconsole/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>RepConsole lib Files</description>
+                    <destination>${installdir}</destination>
+                    <name>repconsolelibfilessolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/repconsole/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>DataValidatorFiles</description>
+                    <destination>${installdir}</destination>
+                    <name>datavalidatorfilessolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/repconsole/doc</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/repconsole/etc</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>installscriptssolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuscriptssolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/scripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -2460,6 +2715,102 @@ database=${controldb}
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+                <!-- SOLARIS-X64- Program files -->
+                <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}/bin</destination>
+                    <name>pubserverfilessolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/solaris-x64/repserver/bin/edb-repserver.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/solaris-x64/repserver/bin/runPubServer.sh</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverlibfilessolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/repserver/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverinstallscriptssolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>pubservermenuscriptssolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- SOLARIS-SPARC - Program files -->
+                <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}/bin</destination>
+                    <name>pubserverfilessolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/solaris-sparc/repserver/bin/edb-repserver.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/solaris-sparc/repserver/bin/runPubServer.sh</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverlibfilessolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/repserver/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverinstallscriptssolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>pubservermenuscriptssolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
                 <!-- OSX- Program files -->
                 <folder>
                     <description>PubServer Files</description>
@@ -2661,6 +3012,102 @@ database=${controldb}
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+                <!-- SOLARIS-X64 - Program files -->
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}/bin</destination>
+                    <name>subserverfilessolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/solaris-x64/repserver/bin/edb-repserver.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/solaris-x64/repserver/bin/runSubServer.sh</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverlibfilessolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/repserver/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverinstallscriptssolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>subservermenuscriptssolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- SOLARIS-SPARC - Program files -->
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}/bin</destination>
+                    <name>subserverfilessolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/solaris-sparc/repserver/bin/edb-repserver.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/solaris-sparc/repserver/bin/runSubServer.sh</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverlibfilessolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/repserver/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverinstallscriptssolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>subservermenuscriptssolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
                 <!-- OSX- Program files -->
                 <folder>
                     <description>SubServer Files</description>
@@ -2787,6 +3234,30 @@ database=${controldb}
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/linux-x64/instscripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- SOLARIS-X64- Program files -->
+                <folder>
+                    <description>Installation Scripts</description>
+                    <destination>${system_temp_directory}</destination>
+                    <name>instscriptssolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/instscripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- SOLARIS_SPARC - Program files -->
+                <folder>
+                    <description>Installation Scripts</description>
+                    <destination>${system_temp_directory}</destination>
+                    <name>instscriptssolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/instscripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>

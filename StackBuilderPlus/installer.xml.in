@@ -232,6 +232,14 @@
           </ruleList>
         </setInstallerVariable>
 
+        <!-- SOLARIS : Set the default installation directory -->
+        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgresPlus/PG_MAJOR_VERSION/StackBuilderPlus">
+          <ruleList>
+            <compareText logic="contains" text="${platform_name}" value="solaris"/>
+            <compareText logic="equals" text="${iSBPVersion}" value=""/>
+          </ruleList>
+        </setInstallerVariable>
+
         <!-- WIN : Set the default installation directory -->
         <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgresPlus\PG_MAJOR_VERSION\StackBuilderPlus">
           <ruleList>
@@ -291,6 +299,19 @@
           </actionList>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="osx"/>
+            <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <runProgram program="kill">
+               <programArguments>-9 `ps -ef | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+               <abortOnError>0</abortOnError>
+               <showMessageOnError>0</showMessageOnError>
+            </runProgram>
+          </actionList>
+          <ruleList>
+            <compareText logic="contains" text="${platform_name}" value="solaris"/>
             <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
           </ruleList>
         </actionGroup>
@@ -466,8 +487,10 @@
                         progressText="${msg(progress.text.fixing.libs)}"
                         abortOnError="0"
                         showMessageOnError="0">
+                <ruleEvaluationLogic>or</ruleEvaluationLogic>
                 <ruleList>
                   <compareText logic="contains" text="${platform_name}" value="linux"/>
+                  <compareText logic="contains" text="${platform_name}" value="solaris"/>
                 </ruleList>
             </runProgram>
     
@@ -561,8 +584,10 @@
                 <copyFile origin="${installdir}/scripts/xdg/edb-sbp-update-monitor.desktop"
                           destination="${xdg_config_dir}/autostart/zzz-edb-sbp-pg_PG_VERSION_STR-update-monitor.desktop"/>
               </actionList>
+              <ruleEvaluationLogic>or</ruleEvaluationLogic>
               <ruleList>
                 <compareText text="${platform_name}" logic="contains" value="linux"/>
+                <compareText text="${platform_name}" logic="contains" value="solaris"/>
               </ruleList>
             </actionGroup>
     
@@ -580,6 +605,16 @@
                     abortOnError="0">
           <ruleList>
             <compareText text="${platform_name}" logic="contains" value="linux"/>
+            <compareText text="${monitorServer}" logic="does_not_equal" value=""/>
+          </ruleList>
+       </runProgram>
+       <runProgram program="${installdir}/scripts/launchSBPUpdateMonitor.sh"
+                    programArguments=""
+                    runAs="${system_user}"
+                    showMessageOnError="0"
+                    abortOnError="0">
+          <ruleList>
+            <compareText text="${platform_name}" logic="contains" value="solaris"/>
             <compareText text="${monitorServer}" logic="does_not_equal" value=""/>
           </ruleList>
         </runProgram>
@@ -687,7 +722,20 @@
       </ruleList>
     </actionGroup>
 
-  <actionGroup>
+    <actionGroup>
+      <actionList>
+        <runProgram program="kill">
+           <programArguments>-9 `ps -ef | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+           <abortOnError>0</abortOnError>
+           <showMessageOnError>0</showMessageOnError>
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="solaris"/>
+      </ruleList>
+    </actionGroup>
+
+    <actionGroup>
       <actionList>
         <runProgram program="kill">
            <programArguments>-9 `ps awx | grep "${installdir}/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
@@ -766,8 +814,10 @@
                     abortOnError="0"
                     showMessageOnError="0"/>
       </actionList>
+      <ruleEvaluationLogic>or</ruleEvaluationLogic>
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
+        <compareText logic="contains" text="${platform_name}" value="solaris"/>
       </ruleList>
     </actionGroup>
 
@@ -817,6 +867,26 @@
             <distributionDirectory origin="staging/linux-x64/lib"/>
             <distributionDirectory origin="staging/linux-x64/installer"/>
             <distributionDirectory origin="staging/linux-x64/scripts"/>
+          </distributionFileList>
+        </folder>
+        <!-- SOLARIS-X64 - Program files -->
+        <folder description="Program Files" destination="${installdir}" name="programfilessolaris-x64" platforms="solaris-intel">
+          <distributionFileList>
+            <distributionDirectory origin="staging/solaris-x64/bin"/>
+            <distributionDirectory origin="staging/solaris-x64/share"/>
+            <distributionDirectory origin="staging/solaris-x64/lib"/>
+            <distributionDirectory origin="staging/solaris-x64/installer"/>
+            <distributionDirectory origin="staging/solaris-x64/scripts"/>
+          </distributionFileList>
+        </folder>
+        <!-- SOLARIS-SPARC - Program files -->
+        <folder description="Program Files" destination="${installdir}" name="programfilessolaris-sparc" platforms="solaris-sparc">
+          <distributionFileList>
+            <distributionDirectory origin="staging/solaris-sparc/bin"/>
+            <distributionDirectory origin="staging/solaris-sparc/share"/>
+            <distributionDirectory origin="staging/solaris-sparc/lib"/>
+            <distributionDirectory origin="staging/solaris-sparc/installer"/>
+            <distributionDirectory origin="staging/solaris-sparc/scripts"/>
           </distributionFileList>
         </folder>
         <!-- LIN-PPC64 - Program files -->
@@ -879,6 +949,22 @@
             <distributionDirectory origin="staging/linux-x64/UpdateManager/bin"/>
             <distributionDirectory origin="staging/linux-x64/UpdateManager/lib"/>
             <distributionDirectory origin="staging/linux-x64/UpdateManager/scripts"/>
+          </distributionFileList>
+        </folder>
+        <!-- SOLARIS-X64 - Program files -->
+        <folder description="Program Files" destination="${installdir}" name="updatemanagerfilessolaris-x64" platforms="solaris-intel">
+          <distributionFileList>
+            <distributionDirectory origin="staging/solaris-x64/UpdateManager/bin"/>
+            <distributionDirectory origin="staging/solaris-x64/UpdateManager/lib"/>
+            <distributionDirectory origin="staging/solaris-x64/UpdateManager/scripts"/>
+          </distributionFileList>
+        </folder>
+        <!-- SOLARIS-SPARC - Program files -->
+        <folder description="Program Files" destination="${installdir}" name="updatemanagerfilessolaris-sparc" platforms="solaris-sparc">
+          <distributionFileList>
+            <distributionDirectory origin="staging/solaris-sparc/UpdateManager/bin"/>
+            <distributionDirectory origin="staging/solaris-sparc/UpdateManager/lib"/>
+            <distributionDirectory origin="staging/solaris-sparc/UpdateManager/scripts"/>
           </distributionFileList>
         </folder>
         <!-- LIN-PPC64 - Program files -->

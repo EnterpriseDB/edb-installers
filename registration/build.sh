@@ -27,6 +27,12 @@ then
     source $PG_REGISTRATION_PATH/build-windows.sh
 fi
 
+# Solaris x64
+if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+then
+    source $PG_REGISTRATION_PATH/build-solaris-x64.sh
+fi
+
 _registration_component_build()
 {
     # Mac OS X
@@ -57,6 +63,12 @@ _registration_component_build()
         _registration_build_windows      || exit 1
     fi
 
+    # Solaris x64
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+        _registration_preprocess_solaris_x64 || exit 1
+        _registration_build_solaris_x64      || exit 1
+    fi
 }
 
 _registration_postprocess()
@@ -128,6 +140,12 @@ _registration_postprocess()
   if [ $PG_ARCH_WINDOWS = 1 ];
   then
     _registration_postprocess_windows $1
+  fi
+
+  # Solaris x64
+  if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+  then
+    _registration_postprocess_solaris_x64 $1
   fi
 
 }

@@ -106,7 +106,13 @@
             <name>default_installdir</name>
             <persist>1</persist>
             <value>${platform_install_prefix}/PostgreSQL/${product_version}</value>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
                 <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
@@ -259,7 +265,13 @@
             <name>default_installdir</name>
             <persist>1</persist>
             <value>${platform_install_prefix}/PostgreSQL/${product_version}</value>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
                 <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
@@ -385,6 +397,28 @@
             </ruleList>
         </setInstallerVariable>
         <setInstallerVariable>
+            <name>DateTimeSetting</name>
+            <value>@@PG_DATETIME_SETTING_SOLARIS_X64@@</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris-intel</value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable>
+            <name>DateTimeSetting</name>
+            <value>@@PG_DATETIME_SETTING_SOLARIS_SPARC@@</value>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris-sparc</value>
+                </compareText>
+            </ruleList>
+       </setInstallerVariable>
+       <setInstallerVariable>
             <name>DateTimeSetting</name>
             <value>@@PG_DATETIME_SETTING_OSX@@</value>
             <ruleList>
@@ -1021,6 +1055,9 @@
                   * - (hyphen), . (dot), _ (underscore) are allowed characters
                   i.e. postgresql-8.4, pg_8_4, pgsql-8.3.8_1
                   -->
+
+                <!-- . (dot) is not valid for a servicename in solaris -->
+
                 <throwError>
                   <customErrorMessage>${msg(servicename.not.valid)}</customErrorMessage>
                   <text>Unknown Error</text>
@@ -1030,8 +1067,23 @@
                           <logic>does_not_match</logic>
                           <pattern>^([a-zA-Z]{1})([0-9a-zA-Z_\.\-]{4,48})([0-9a-zA-Z]{1})$</pattern>
                       </regExMatch>
+                      <compareText text="${platform_name}" logic="does_not_contain" value="solaris" />
                   </ruleList>
                 </throwError>
+
+                <throwError>
+                  <customErrorMessage>${msg(servicename.not.valid)}</customErrorMessage>
+                  <text>Unknown Error</text>
+                  <ruleList>
+                      <regExMatch>
+                          <text>${servicename}</text>
+                          <logic>does_not_match</logic>
+                          <pattern>^([a-zA-Z]{1})([0-9a-zA-Z_\-]{4,48})([0-9a-zA-Z]{1})$</pattern>
+                      </regExMatch>
+                      <compareText text="${platform_name}" logic="contains" value="solaris" />
+                  </ruleList>
+                </throwError>
+
 
                 <!--
                   2. Check if service already exists with the same name
@@ -1056,15 +1108,16 @@
                     </ruleList>
                 </actionGroup>
 
-                <!-- LIN/LIN-X64 -->
+                <!-- lin/lin-x64 -->
                 <throwError>
                     <customErrorMessage>${msg(servicename.already.exists.linux)}</customErrorMessage>
-                    <text>Duplicate Service Exists</text>
+                    <text>duplicate service exists</text>
                     <ruleList>
                         <compareText logic="contains" text="${platform_name}" value="linux"/>
                         <fileExists path="/etc/init.d/${servicename}"/>
                     </ruleList>
                 </throwError>
+
 
                 <!-- OSX -->
                 <throwError>
@@ -1075,6 +1128,26 @@
                         <fileExists path="/Library/LaunchDaemons/com.edb.launchd.${servicename}.plist"/>
                     </ruleList>
                 </throwError>
+
+                <!-- solaris-x64 | solaris-sparc -->
+                <runProgram>
+                    <program>svcs</program>
+                    <programArguments>${servicename}</programArguments>
+                    <showMessageOnError>0</showMessageOnError>
+                    <abortOnError>0</abortOnError>
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="solaris"/>
+                    </ruleList>
+                </runProgram>   
+                <throwError>
+                    <customErrorMessage>${msg(servicename.already.exists.solaris)}</customErrorMessage>
+                    <text>duplicate service exists</text>
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="solaris"/>
+                        <stringTest text="${program_stderr}" type="empty"/>
+                    </ruleList>
+                </throwError>
+
             </actionList>
             <!-- New installation and got the service-name through the command-line -->
             <ruleList>
@@ -1114,6 +1187,19 @@
                <compareText text="${servicename}" logic="equals" value="" />
             </ruleList>
         </setInstallerVariable>
+
+        <setInstallerVariableFromRegEx>
+            <name>servicename</name>
+            <pattern>\.</pattern>
+            <substitution>_</substitution>
+            <text>${servicename}</text>
+            <ruleList>
+               <compareText text="${servicename}" logic="does_not_equal" value="" />
+               <compareText text="${platform_name}" logic="contains" value="solaris" />
+            </ruleList>
+        </setInstallerVariableFromRegEx> 
+
+        <setInstallerVariable name="servicename" value="${servicename}" persist="1" />
 
         <!-- SECTION: END: ServiceName -->
 
@@ -1274,6 +1360,35 @@
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </unpackFile>
+        <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer/getlocales</destination>
+            <folder>programfilessolaris-x64</folder>
+            <origin>installer/server/getlocales</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris-intel</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+       </unpackFile>
+       <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer/getlocales</destination>
+            <folder>programfilessolaris-sparc</folder>
+            <origin>installer/server/getlocales</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris-sparc</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+       </unpackFile>
+
 
         <!-- pg_controldata (used to check existing clusters) -->
         <actionGroup>
@@ -1389,6 +1504,68 @@
                     <logic>equals</logic>
                     <text>${platform_name}</text>
                     <value>linux-ppc</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+            <actionList>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/pg_controldata</destination>
+                    <folder>programfilessolaris-x64</folder>
+                    <origin>bin/pg_controldata</origin>
+                </unpackFile>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</destination>
+                    <folder>programfilessolaris-x64</folder>
+                    <origin>installer/server/runpgcontroldata.sh</origin>
+                </unpackFile>
+                <unpackDirectory>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/</destination>
+                    <folder>programfilessolaris-x64</folder>
+                    <origin>lib</origin>
+                </unpackDirectory>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris-intel</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+            <actionList>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/pg_controldata</destination>
+                    <folder>programfilessolaris-sparc</folder>
+                    <origin>bin/pg_controldata</origin>
+                </unpackFile>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</destination>
+                    <folder>programfilessolaris-sparc</folder>
+                    <origin>installer/server/runpgcontroldata.sh</origin>
+                </unpackFile>
+                <unpackDirectory>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/</destination>
+                    <folder>programfilessolaris-sparc</folder>
+                    <origin>lib</origin>
+                </unpackDirectory>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris-sparc</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
@@ -1548,7 +1725,13 @@
                     <programArguments>${system_temp_directory}/postgresql_installer "${iDataDirectory}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>solaris</value>
+                        </compareText>
                         <compareText>
                             <logic>contains</logic>
                             <text>${platform_name}</text>
@@ -1995,7 +2178,34 @@
                <isFalse value="${extract_mode}"/>
             </ruleList>
         </deleteWindowsService>
-        <!-- 
+
+        <!-- Solaris: Stop the server -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>svcadm</program>
+                    <programArguments>-v disable svc:/application/database/${servicename}:default</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+                <runProgram>
+                    <program>svccfg</program>
+                    <programArguments>-v delete -f svc:/application/database/${servicename}:default</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+            </actionList> 
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
+               <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+            <!-- 
              In case of upgrade,
              Delete the dependent libraries from the existing installation
              The current installer will put only the required version of these libraries
@@ -2339,11 +2549,11 @@
                         </setInstallerVariable>
 
                         <runProgram>
-                        <program>${installdir}\installer\server\createuser.exe</program>
-                        <!-- The dot at the beginning of the arguments is the domain -->
-                        <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
-                        <abortOnError>0</abortOnError>
-                        <showMessageOnError>0</showMessageOnError>
+                            <program>${installdir}\installer\server\createuser.exe</program>
+                            <!-- The dot at the beginning of the arguments is the domain -->
+                            <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
                         </runProgram>
 
                         <throwError>
@@ -2706,7 +2916,13 @@
 PostgreSQLPath=${installdir}/bin
 PostgreSQLHelpPath=file://${installdir}/doc/postgresql/html
                     </text>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>solaris</text>
+                            <value>${platform_name}</value>
+                        </compareText>
                         <compareText>
                             <logic>contains</logic>
                             <text>linux</text>
@@ -2792,6 +3008,22 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                         </compareText>
                     </ruleList>
                 </runProgram>
+
+                <runProgram>
+                    <program>svcadm</program>
+                    <programArguments>-v enable svc:/application/database/${servicename}:default</programArguments>
+                    <progressText>${msg(progress.text.starting.server)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>solaris</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+
 
                 <setInstallerVariable>
                     <name>didError</name>
@@ -3353,7 +3585,13 @@ REM The script sets environment variables helpful for PostgreSQL
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
-                <compareText logic="contains" text="${platform_name}" value="linux"/>
+                <ruleGroup>
+                   <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                   <ruleList>  
+                       <compareText logic="contains" text="${platform_name}" value="linux"/>
+                       <compareText logic="contains" text="${platform_name}" value="solaris"/>
+                   </ruleList>
+                </ruleGroup>
                 <compareText logic="does_not_equal" text="${didError}" value="1"/>
                 <isFalse value="${disableStackBuilder}"/>
                 <isFalse value="${extract_mode}"/>
@@ -3423,6 +3661,34 @@ REM The script sets environment variables helpful for PostgreSQL
             <showMessageOnError>1</showMessageOnError>
         </stopWindowsService>
 
+        <!-- Solaris: Stop the server -->
+        <runProgram>
+            <program>svcadm</program>
+            <programArguments>-v disable svc:/application/database/${servicename}:default</programArguments>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>1</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+        <runProgram>
+            <program>svccfg</program>
+            <programArguments>-v delete -f svc:/application/database/${servicename}:default</programArguments>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>1</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+
         <!-- MAC: Remove menu shortcuts -->
         <deleteFile>
             <path>/Applications/${branding}</path>
@@ -3457,6 +3723,25 @@ REM The script sets environment variables helpful for PostgreSQL
                 </compareText>
             </ruleList>
         </runProgram>
+
+        <!-- Solaris: Remove menu shortcuts -->
+        <runProgram>
+            <program>${installdir}/installer/server/removeshortcuts.sh</program>
+            <programArguments>"${installdir}" ${product_version} "${branding}"</programArguments>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${create_shortcuts}</text>
+                    <value>1</value>
+                </compareText>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+
 
         <actionGroup>
             <actionList>
@@ -3673,6 +3958,18 @@ REM The script sets environment variables helpful for PostgreSQL
                  <fileExists path="${installdir}\pg_env.bat" />
             </ruleList>
         </deleteFile>
+
+        <deleteFile path="/lib/svc/method/${servicename}" >
+            <ruleList>
+                 <compareText text="${platform_name}" logic="contains" value="solaris" />
+            </ruleList>
+        </deleteFile>
+        <deleteFile path="/var/svc/manifest/application/database/${servicename}.xml" >
+            <ruleList>
+                 <compareText text="${platform_name}" logic="contains" value="solaris" />
+            </ruleList>
+        </deleteFile>
+
     </preUninstallationActionList>
 
     <!-- Post-uninstall actions -->
@@ -3718,6 +4015,26 @@ REM The script sets environment variables helpful for PostgreSQL
                     <distributionFileList>
                         <distributionFile>
                             <origin>staging/osx/runAsRoot.sh</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <name>extractonlysolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <destination>${installdir}/scripts</destination>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/solaris-x64/runAsRoot.sh</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <name>extractonlysolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <destination>${installdir}/scripts</destination>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/solaris-sparc/runAsRoot.sh</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -3862,7 +4179,6 @@ REM The script sets environment variables helpful for PostgreSQL
                     </distributionFileList>
                 </folder>
 
-
                 <!-- MAC: Program files -->
                 <folder>
                     <description>Program Files</description>
@@ -3939,7 +4255,82 @@ REM The script sets environment variables helpful for PostgreSQL
                         </distributionDirectory>
                     </distributionFileList>
 		</folder>
-           </folderList>
+
+                <!-- SOLARIS_X64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilessolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/doc</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/include</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/installer</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/pgAdmin3</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/scripts</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/stackbuilder</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/share</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+
+                <!-- SOLARIS_SPARC: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilessolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/doc</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/include</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/installer</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/pgAdmin3</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/scripts</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/stackbuilder</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/share</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+
+          </folderList>
 
             <!-- WIN: Start Menu -->
             <startMenuShortcutList>
@@ -4096,7 +4487,7 @@ REM The script sets environment variables helpful for PostgreSQL
 
         <stringParameter name="superaccount" ask="1" cliOptionShow="1" cliOptionName="superaccount" default="postgres"
             description="${msg(superaccount.description)}" />
-        <stringParameter name="servicename" ask="1" cliOptionShow="1" cliOptionName="servicename" default="postgresql@@SERVICE_SUFFIX@@-PG_MAJOR_VERSION"
+        <stringParameter name="servicename" ask="1" cliOptionShow="1" cliOptionName="servicename" default=""
             description="${msg(servicename.description)}" />
         <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default="postgres"
             description="${msg(serviceaccount.description)}"/>
@@ -4585,7 +4976,13 @@ REM The script sets environment variables helpful for PostgreSQL
                             <programArguments>${system_temp_directory}/postgresql_installer "${datadir}"</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
                             <ruleList>
+                                <compareText>
+                                    <logic>contains</logic>
+                                    <text>${platform_name}</text>
+                                    <value>solaris</value>
+                                </compareText>
                                 <compareText>
                                     <logic>contains</logic>
                                     <text>${platform_name}</text>

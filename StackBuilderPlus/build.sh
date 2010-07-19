@@ -32,6 +32,12 @@ then
     source $WD/StackBuilderPlus/build-windows.sh
 fi
     
+# Solaris x64
+if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+then
+    source $WD/StackBuilderPlus/build-solaris-x64.sh
+fi
+
 ################################################################################
 # Build preparation
 ################################################################################
@@ -98,6 +104,12 @@ _prep_stackbuilderplus() {
         _prep_stackbuilderplus_windows || exit 1
     fi
     
+    # Solaris x64
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+        _prep_stackbuilderplus_solaris_x64 || exit 1
+    fi
+
 }
 
 ################################################################################
@@ -135,6 +147,13 @@ _build_stackbuilderplus() {
     then
         _build_stackbuilderplus_windows || exit 1
     fi
+    
+    # Solaris x64
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+       _build_stackbuilderplus_solaris_x64 || exit 1
+    fi
+
 }
 
 ################################################################################
@@ -192,6 +211,12 @@ _postprocess_stackbuilderplus() {
        _postprocess_stackbuilderplus_windows || exit 1
     fi
 
+    # Solaris x64
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+        _postprocess_stackbuilderplus_solaris_x64 || exit 1
+    fi
+    
     cd $WD
 
 }
