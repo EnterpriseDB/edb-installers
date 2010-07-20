@@ -269,7 +269,7 @@ _build_server_linux_x64() {
      
     # And now, pl/java
 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pljava.linux-x64/; JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 PATH=$PATH:$PG_EXEC_PATH_LINUX_X64:$PG_PATH_LINUX_X64/server/staging/linux-x64/bin make" || _die "Failed to build pl/java"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pljava.linux-x64/; JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 PATH=$PG_JAVA_HOME_LINUX_X64/bin:$PATH:$PG_EXEC_PATH_LINUX_X64:$PG_PATH_LINUX_X64/server/staging/linux-x64/bin make USE_JDK6=1" || _die "Failed to build pl/java"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pljava.linux-x64/; JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 PATH=$PATH:$PG_EXEC_PATH_LINUX_X64:$PG_PATH_LINUX_X64/server/staging/linux-x64/bin make prefix=$PG_PATH_LINUX_X64/server/staging/linux-x64 install" || _die "Failed to install pl/java"
 
     mkdir -p "$WD/server/staging/linux-x64/share/pljava" || _die "Failed to create the pl/java share directory"

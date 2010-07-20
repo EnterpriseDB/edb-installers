@@ -95,10 +95,11 @@ _prep_server() {
     echo "Unpacking pljava source..."
     tar -zxvf ../../tarballs/pljava-src-$PG_TARBALL_PLJAVA.tar.gz
     cd pljava-$PG_TARBALL_PLJAVA 
-    patch -p0 < ../../../tarballs/pljava-fix.patch  
-    patch -p1 < ../../../tarballs/pljava-fix2.patch  
-    patch -p1 < ../../../tarballs/pljava-fix3.patch  
-    patch -p1 < ../../../tarballs/pljava-fix4.patch  
+#    patch -p0 < ../../../tarballs/pljava-fix.patch
+#    patch -p1 < ../../../tarballs/pljava-fix2.patch
+#    patch -p1 < ../../../tarballs/pljava-fix3.patch
+#    patch -p1 < ../../../tarballs/pljava-fix4.patch
+    patch -p1 < ../../../tarballs/pljava_pg90_jdk5_jdk6.patch
 
     # Debugger
     cd $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib

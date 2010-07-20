@@ -198,7 +198,7 @@ EOT
 
     cd $WD/server/source/pljava.osx
 
-    PATH=$PATH:$WD/server/staging/osx/bin JAVA_HOME=$PG_JAVA_HOME_OSX make || _die "Failed to build pl/java"
+    PATH=$PG_JAVA_HOME_OSX/bin:$PATH:$WD/server/staging/osx/bin JAVA_HOME=$PG_JAVA_HOME_OSX make USE_JDK6=1|| _die "Failed to build pl/java"
     PATH=$PATH:$WD/server/staging/osx/bin JAVA_HOME=$PG_JAVA_HOME_OSX make prefix=$STAGING install || _die "Failed to install pl/java"
 
     mkdir -p "$WD/server/staging/osx/share/pljava" || _die "Failed to create the pl/java share directory"
