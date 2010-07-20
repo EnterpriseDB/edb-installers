@@ -220,7 +220,7 @@ EOT
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/server/source/postgres.solaris-sparc/;./configure --prefix=$PG_STAGING --with-openssl --with-python --with-tcl --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/server/source/postgres.solaris-sparc/;./configure --prefix=$PG_STAGING --with-openssl --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
     ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/server/source/postgres.solaris-sparc; gmake -j4" || _die "Failed to build postgres" 
@@ -504,7 +504,7 @@ y a menu pick image"
     "$PG_INSTALLBUILDER_BIN" build installer-solaris-sparc.xml solaris-sparc || _die "Failed to build the installer"
 
     # Rename the installer
-    mv $WD/output/postgresql-$PG_MAJOR_VERSION-solaris-intel-installer.bin $WD/output/postgresql-$PG_PACKAGE_VERSION-solaris-sparc.bin || _die "Failed to rename the installer"
+    mv $WD/output/postgresql-$PG_MAJOR_VERSION-solaris-sparc-installer.bin $WD/output/postgresql-$PG_PACKAGE_VERSION-solaris-sparc.bin || _die "Failed to rename the installer"
 
     cd $WD
 }
