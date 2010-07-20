@@ -100,7 +100,7 @@ export CXXFLAGS="-m64"
 export CPPFLAGS="-m64"
 export LDFLAGS="-m64"
 export LD_LIBRARY_PATH=/usr/local/lib
-export PATH=/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/local/bin:/usr/ucb:\$PATH
+export PATH=/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/ucb:\$PATH
 
 EOT
     scp setenv.sh $PG_SSH_SOLARIS_SPARC: || _die "Failed to scp the setenv.sh file"
