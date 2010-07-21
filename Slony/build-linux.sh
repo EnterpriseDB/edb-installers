@@ -81,9 +81,11 @@ _postprocess_Slony_linux() {
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/bin/slon $PG_STAGING/bin" || _die "Failed to copy slon binary to staging directory"
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/bin/slonik $PG_STAGING/bin" || _die "Failed to copy slonik binary to staging directory"
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/bin/slony_logshipper $PG_STAGING/bin" || _die "Failed to copy slony_logshipper binary to staging directory"
-    
+    chmod +rx $WD/Slony/staging/linux/bin/*   
+ 
     mkdir -p $WD/Slony/staging/linux/lib
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/lib/postgresql/slony1_funcs.so $PG_STAGING/lib" || _die "Failed to copy slony_funs.so to staging directory"
+    chmod +r $WD/Slony/staging/linux/lib/*
 
     mkdir -p $WD/Slony/staging/linux/Slony
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/share/postgresql/slony*.sql $PG_STAGING/Slony" || _die "Failed to share files to staging directory"

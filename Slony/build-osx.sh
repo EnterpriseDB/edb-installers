@@ -140,9 +140,11 @@ EOT
     cp $PG_PGHOME_OSX/bin/slon $PG_STAGING/bin || _die "Failed to copy slon binary to staging directory"
     cp $PG_PGHOME_OSX/bin/slonik $PG_STAGING/bin || _die "Failed to copy slonik binary to staging directory"
     cp $PG_PGHOME_OSX/bin/slony_logshipper $PG_STAGING/bin || _die "Failed to copy slony_logshipper binary to staging directory"
+    chmod +rx $WD/Slony/staging/osx/bin/*
 
     mkdir -p $WD/Slony/staging/osx/lib
     cp $PG_PGHOME_OSX/lib/postgresql/slony1_funcs.so $PG_STAGING/lib || _die "Failed to copy slony_funcs.so to staging directory"
+    chmod +r $WD/Slony/staging/osx/lib/*
 
     mkdir -p $WD/Slony/staging/osx/Slony
     cp $PG_PGHOME_OSX/share/postgresql/slony*.sql $PG_STAGING/Slony || _die "Failed to share files to staging directory"

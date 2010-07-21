@@ -34,6 +34,9 @@ _prep_Slony_windows() {
     chmod ugo+w Slony.windows || _die "Couldn't set the permissions on the source directory"
     # Grab a copy of the Slony source tree
     cp -R slony1-$PG_VERSION_SLONY/* Slony.windows || _die "Failed to copy the source code (source/Slony-$PG_VERSION_Slony)"
+    cd Slony.windows
+    patch -p1 < $WD/tarballs/slony1-$PG_VERSION_SLONY-windows.patch
+    cd .. 
     echo "Archieving Slony sources"
     zip -r Slony.zip Slony.windows/ || _die "Couldn't create archieve of the Slony sources (Slony.zip)"
     chmod -R ugo+w Slony.windows || _die "Couldn't set the permissions on the source directory"
