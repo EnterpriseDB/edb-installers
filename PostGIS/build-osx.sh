@@ -439,6 +439,10 @@ _build_PostGIS_osx() {
     _change_so_refs $WD/PostGIS/staging/osx/PostGIS bin @loader_path/..
     _change_so_refs $WD/PostGIS/staging/osx/PostGIS lib @loader_path/..
 
+    chmod +r $WD/PostGIS/staging/osx/PostGIS/lib/*
+    chmod +rx $WD/PostGIS/staging/osx/PostGIS/bin/*
+    
+
     cd $WD
  
 }

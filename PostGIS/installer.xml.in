@@ -907,7 +907,8 @@
                             <logic>equals</logic>
                             <text>${PostGISVersionInstalled}</text>
                             <value></value>
-                        </compareText>
+                        </compareText> 
+                        <isFalse value="${upgrade_mode}" />
                     </ruleList>
                 </actionGroup>
             </actionList>
@@ -1142,6 +1143,7 @@
                     </actionList>
                     <ruleList>
                         <isFalse value="${dbexist}"/>
+                        <isFalse value="${upgrade_mode}"/>
 			<compareText>
 			    <logic>equals</logic>
 			    <text>${PostGISVersionInstalled}</text>
@@ -1162,7 +1164,7 @@
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-
+  
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
@@ -1764,6 +1766,23 @@
         <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
 	<stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
 	<stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
+        <booleanParameter>
+             <name>upgrade_mode</name>
+             <displayStyle>checkbox-left</displayStyle>
+             <title>${msg(upgrade.mode.title)}</title>
+             <description>${msg(upgrade.mode.description)}</description>
+             <explanation>${msg(upgrade.mode.explanation)}</explanation>
+             <ask>yes</ask>
+             <default>0</default> 
+             <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${PostGISVersionInstalled}</text>
+                    <value></value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+             </ruleList>
+        </booleanParameter>
         <!-- PostgreSQL Server Details Verification Page -->
         <parameterGroup>
             <name>pgdetails</name>
@@ -1855,6 +1874,7 @@
                     <value></value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
+                <isFalse value="${upgrade_mode}"/>
             </ruleList>
             <!-- Checking the validity of PostgreSQL Server Details -->
             <validationActionList>

@@ -75,6 +75,9 @@ _build_pgAgent_osx() {
     _rewrite_so_refs $WD/pgAgent/staging/osx lib @loader_path/..
     install_name_tool -change "libpq.5.dylib" "@loader_path/libpq.5.dylib" "$PG_STAGING/bin/psql"
 
+    chmod +r $PG_STAGING/lib/*
+    chmod +rx $PG_STAGING/bin/* 
+
 }
 
 

@@ -229,6 +229,7 @@
             <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" variable="pgport"/>
             <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" variable="pghost"/>
             <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGDATABASE" variable="pgdbname"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="UpgradeMode" variable="iUpgradeMode"/>
           </actionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
@@ -254,12 +255,19 @@
             <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGUSER" variable="pguser"/>
             <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGHOST" variable="pghost"/>
             <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGPORT" variable="pgport"/>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="UpgradeMode" variable="iUpgradeMode"/>
           </actionList>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
             <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
           </ruleList>
         </actionGroup>
+
+        <setInstallerVariable name="upgrade_mode" value="1">
+          <ruleList>
+             <compareText logic="equals" text="${iUpgradeMode}" value="1" />   
+          </ruleList>
+         </setInstallerVariable>      
 
 	<setInstallerVariable name="optionRequired" value="systempassword" />
 	<throwError text="${msg(Installer.CustomError.Upgrade.CommandLineOptionsNotPresent)}" >
@@ -642,6 +650,7 @@
             <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" value="${pghost}"/>
             <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" value="${pgport}"/>
             <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGDATABASE" value="${pgdbname}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="UpgradeMode" value="${upgrade_mode}"/>
           </actionList>
           <ruleList>
             <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
@@ -656,6 +665,7 @@
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGHOST" value="${pghost}"/>
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGPORT" value="${pgport}"/>
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGDATABASE" value="${pgdbname}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="UpgradeMode" value="${upgrade_mode}"/>
 
         <!-- Create the user account with which pgAgent will run-->
         <runProgram>
@@ -812,6 +822,9 @@
             </showInfo>
 
           </actionList>
+          <ruleList>
+              <isFalse value="${upgrade_mode}" />
+          </ruleList>   
         </actionGroup>
 
         <!-- Create pgagent schema in unattended mode -->
@@ -902,6 +915,7 @@
           </actionList>
           <ruleList>
             <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            <isFalse value="${upgrade_mode}" /> 
           </ruleList>
         </actionGroup>
         <substitute>
@@ -1002,6 +1016,7 @@
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <isFalse value="${upgrade_mode}" />
           </ruleList>
         </startWindowsService>
 
@@ -1019,6 +1034,7 @@
             </runProgram>
           </actionList>
           <ruleList>
+            <isFalse value="${upgrade_mode}" />
             <compareText logic="contains" text="${platform_name}" value="linux"/>
             <compareText logic="equals" text="${autostart}" value="yes"/>
           </ruleList>
@@ -1034,6 +1050,7 @@
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="osx"/>
             <compareText logic="equals" text="${autostart}" value="yes"/>
+            <isFalse value="${upgrade_mode}" />
           </ruleList>
         </runProgram>
 
@@ -1060,6 +1077,7 @@
     <showInfo text="${msg(configure.pgagent.schema)}">
       <ruleList>
 	<compareText logic="equals" text="${pgagent_schema_exist}" value=""/>
+        <isFalse value="${upgrade_mode}" />
       </ruleList>
     </showInfo>
   </postUninstallerCreationActionList>
@@ -1555,6 +1573,19 @@
     <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
     <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
     <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+    <booleanParameter>
+         <name>upgrade_mode</name>
+         <displayStyle>checkbox-left</displayStyle>
+         <title>${msg(upgrade.mode.title)}</title>
+         <description>${msg(upgrade.mode.description)}</description>
+         <explanation>${msg(upgrade.mode.explanation)}</explanation>
+         <ask>yes</ask>
+         <default>0</default> 
+         <ruleList>
+            <compareText logic="equals" text="${pgAgentVersion}" value=""/>
+            <isFalse value="${extract_mode}"/>
+         </ruleList>
+    </booleanParameter>
 
     <!-- Install Directory -->
     <directoryParameter>

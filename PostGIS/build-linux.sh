@@ -184,8 +184,10 @@ _build_PostGIS_linux() {
     ssh $PG_SSH_LINUX "cp $PG_CACHING/geos-$PG_TARBALL_GEOS.linux/lib/libgeos* $PG_STAGING/PostGIS/lib" || _die "Failed to copy the geos libraries"
 
     echo "Changing the rpath for the PostGIS executables and libraries"
-    ssh $PG_SSH_LINUX "cd $PG_STAGING/PostGIS/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
-    ssh $PG_SSH_LINUX "cd $PG_STAGING/PostGIS/lib; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}\" \$f; done"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/PostGIS/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\$ORIGIN/../lib\" \$f; done"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/PostGIS/lib; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\$ORIGIN:\\\$ORIGIN/..\" \$f; done"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/PostGIS/lib; chmod +r *" 
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/PostGIS/bin; chmod +rx *" 
 
     echo "Creating wrapper script for pgsql2shp and shp2pgsql"
     ssh $PG_SSH_LINUX "cd $PG_STAGING/PostGIS/bin; for f in pgsql2shp shp2pgsql ; do mv \$f \$f.bin; done"
