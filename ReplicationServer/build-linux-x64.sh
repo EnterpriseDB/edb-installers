@@ -83,6 +83,11 @@ _build_ReplicationServer_linux_x64() {
     _replace "java -jar edb-repserver.jar pubserver 9011" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar pubserver @@PUBPORT@@" "$WD/ReplicationServer/staging/linux-x64/repserver/bin/runPubServer.sh" || _die "Failed to put the placehoder in runPubServer.sh file"
     _replace "java -jar edb-repserver.jar subserver 9012" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar subserver @@SUBPORT@@" "$WD/ReplicationServer/staging/linux-x64/repserver/bin/runSubServer.sh" || _die "Failed to put the placehoder in runSubServer.sh file"
 
+    chmod +rx $WD/ReplicationServer/staging/linux-x64/repconsole/bin/*
+    chmod +rx $WD/ReplicationServer/staging/linux-x64/repserver/bin/*
+    chmod +r $WD/ReplicationServer/staging/linux-x64/repconsole/lib/*
+    chmod +r $WD/ReplicationServer/staging/linux-x64/repserver/lib/* 
+
     # Build the validateUserClient binary
     if [ ! -f $WD/MetaInstaller/source/MetaInstaller.linux-x64/validateUser/validateUserClient.o ]; then
         cp -R $WD/MetaInstaller/scripts/linux-x64/validateUser $WD/ReplicationServer/source/ReplicationServer.linux-x64/validateUser || _die "Failed to copy validateUser source files"

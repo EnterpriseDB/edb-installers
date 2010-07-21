@@ -83,6 +83,11 @@ _build_ReplicationServer_osx() {
     _replace "java -jar edb-repserver.jar pubserver 9011" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar pubserver @@PUBPORT@@" "$WD/ReplicationServer/staging/osx/repserver/bin/runPubServer.sh" || _die "Failed to put the placehoder in runPubServer.sh file"
     _replace "java -jar edb-repserver.jar subserver 9012" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar subserver @@SUBPORT@@" "$WD/ReplicationServer/staging/osx/repserver/bin/runSubServer.sh" || _die "Failed to put the placehoder in runSubServer.sh file"
 
+    chmod +rx $WD/ReplicationServer/staging/osx/repconsole/bin/*
+    chmod +rx $WD/ReplicationServer/staging/osx/repserver/bin/*
+    chmod +r $WD/ReplicationServer/staging/osx/repconsole/lib/*
+    chmod +r $WD/ReplicationServer/staging/osx/repserver/lib/*
+
     if [ ! -f $WD/MetaInstaller/source/MetaInstaller.osx/validateUser/validateUserClient.o ];
     then
       echo "Building validateUserClient utility"
