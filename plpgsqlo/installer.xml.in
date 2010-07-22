@@ -646,6 +646,10 @@
 			</substitution>
 		    </substitutionList>
 		</substitute>
+		<changePermissions>
+		    <files>${installdir}/lib/postgresql/plpgsqlo.so</files>
+		    <permissions>755</permissions>
+                </changePermissions>
 	    </actionList>
 	    <ruleList>
 		<compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
