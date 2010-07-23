@@ -287,6 +287,9 @@ _build_server_linux_x64() {
     #Fix permission in the staging/linux-x64/lib
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/lib; chmod a+r *"
 
+    #Fix permission in the staging/linux/share
+    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/share; chmod o+r *"
+
     # Stackbuilder
 	
     # Configure

@@ -285,6 +285,8 @@ _build_server_linux() {
     #Fix permission in the staging/linux/lib
     ssh $PG_SSH_LINUX "cd $PG_STAGING/lib; chmod a+r *"
     
+    #Fix permission in the staging/linux/share
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/share; chmod o+r *"
  
     # Stackbuilder
     # Configure
