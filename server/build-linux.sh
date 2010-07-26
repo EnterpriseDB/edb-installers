@@ -286,7 +286,7 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cd $PG_STAGING/lib; chmod a+r *"
     
     #Fix permission in the staging/linux/share
-    ssh $PG_SSH_LINUX "cd $PG_STAGING/share; chmod o+r *"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/share/postgresql/timezone; chmod o+r *"
  
     # Stackbuilder
     # Configure
