@@ -159,6 +159,7 @@ IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 @cd $PG_PATH_WINDOWS
 @SET APACHE_STAGING=%CD%\apache.staging
 @SET PHP_STAGING=%CD%\php.staging
+@SET BISON_SIMPLE=%PHPBUILD%\bin\bison.simple
 
 
 @IF NOT EXIST "php.zip" GOTO phpzip-not-found
