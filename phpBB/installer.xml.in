@@ -448,7 +448,7 @@
                         <compareText logic="equals" text="${connection}" value=""/>
                     </ruleList>
                 </throwError>
-                <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
+               <setEnvironmentVariable name="PGDATABASE" value="${dbname}"/>
 
                 <!-- Check the user permissions -->
                 <setInstallerVariableFromScriptOutput name="is_superuser"
@@ -1568,6 +1568,7 @@
                 <foreach variables="dbname">
                     <values>postgres edb template1</values>
                     <actionList>
+                       <setEnvironmentVariable name="PGDATABASE" value="${dbname}"/>
                         <setInstallerVariableFromScriptOutput name="connection"
                                 workingDirectory="${system_temp_directory}/instscripts"
                                 abortOnError="0" showMessageOnError="0">
@@ -1596,8 +1597,7 @@
                         <compareText logic="equals" text="${connection}" value=""/>
                     </ruleList>
                 </actionGroup>
-
-                <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
+               <setEnvironmentVariable name="PGDATABASE" value="${dbname}"/>
 
                 <!-- Check the user permissions -->
                 <setInstallerVariableFromScriptOutput name="is_superuser"
