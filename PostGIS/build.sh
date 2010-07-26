@@ -113,7 +113,8 @@ _prep_PostGIS() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _prep_PostGIS_linux_x64 || exit 1
+        #_prep_PostGIS_linux_x64 || exit 1
+        echo "Disabled for now:linux-x64"
     fi
 
     # Linux ppc64
@@ -150,10 +151,10 @@ _build_PostGIS() {
     fi
 
     # Linux x64
-    if [ $PG_ARCH_LINUX_X64 = 1 ];
-    then
-        _build_PostGIS_linux_x64 || exit 1
-    fi
+#    if [ $PG_ARCH_LINUX_X64 = 1 ];
+#    then
+#        _build_PostGIS_linux_x64 || exit 1
+#    fi
 
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
@@ -218,10 +219,10 @@ _postprocess_PostGIS() {
     fi
 
     # Linux x64
-    if [ $PG_ARCH_LINUX_X64 = 1 ];
-    then
-        _postprocess_PostGIS_linux_x64 || exit 1
-    fi
+#    if [ $PG_ARCH_LINUX_X64 = 1 ];
+#    then
+#        _postprocess_PostGIS_linux_x64 || exit 1
+#    fi
     
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
