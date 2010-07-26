@@ -1590,7 +1590,9 @@ database=${controldb}
         </changePermissions> 
 
          <changePermissions>
-            <files>${installdir}/bin/runRepConsole.sh</files>
+            <files>${installdir}/bin/runRepConsole.sh
+                   ${installdir}/bin/runValidation.sh
+            </files>
             <permissions>755</permissions>
             <ruleList>
                 <isTrue value="${component(repconsole).selected}" />
@@ -1790,10 +1792,22 @@ database=${controldb}
             
 
         <!-- Remove different platform specific launch file runRepConsole.sh or runRepConsole.bat -->
+        <deleteFile path="${installdir}/bin/runValidation.bat" >
+            <ruleList>
+                <fileExists path="${installdir}/bin/runValidation.bat" />
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows" />
+            </ruleList>
+        </deleteFile> 
         <deleteFile path="${installdir}/bin/runRepConsole.bat" >
             <ruleList>
                 <fileExists path="${installdir}/bin/runRepConsole.bat" />
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows" />
+            </ruleList>
+        </deleteFile> 
+        <deleteFile path="${installdir}/bin/runValidation.sh" >
+            <ruleList>
+                <fileExists path="${installdir}/bin/runValidation.sh" />
+                <compareText logic="equals" text="${platform_name}" value="windows" />
             </ruleList>
         </deleteFile> 
         <deleteFile path="${installdir}/bin/runRepConsole.sh" >
