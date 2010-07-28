@@ -745,7 +745,13 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
 			<distributionDirectory>
-                            <origin>staging/windows/bin</origin>
+                            <origin>staging/windows/ms.net</origin>
+                        </distributionDirectory>
+			<distributionDirectory>
+                            <origin>staging/windows/ms.net3.5sp1</origin>
+                        </distributionDirectory>
+			<distributionDirectory>
+                            <origin>staging/windows/ms.net4.0</origin>
                         </distributionDirectory>
 			<distributionDirectory>
                             <origin>staging/windows/docs</origin>

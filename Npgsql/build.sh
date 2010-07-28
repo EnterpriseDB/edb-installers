@@ -58,20 +58,19 @@ _prep_Npgsql() {
     
 	echo "Unpacking Npgsql source..."
         extract_file ../../tarballs/Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net || exit 1
+        extract_file ../../tarballs/Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net3.5sp1 || exit 1
+        extract_file ../../tarballs/Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net4.0 || exit 1
     fi
     
     # non-Windows
-    if [ $PG_ARCH_LINUX = 1 ] || [ $PG_ARCH_LINUX_X64 = 1 ] || [ $PG_ARCH_OSX = 1 ] || [ $PG_ARCH_LINUX_PPC64 = 1 ];
+    if [ -e Mono2.0 ];
     then
-	if [ -e Mono2.0 ];
-        then
-	  echo "Removing existing Mono"$PG_VERSION_NPGSQL" source directory"
-          rm -rf Mono2.0  || _die "Couldn't remove the existing Mono"$PG_VERSION_NPGSQL" source directory (source/Mono"$PG_VERSION_NPGSQL")"
-        fi
-
-	echo "Unpacking Npgsql source..."
-        extract_file ../../tarballs/Npgsql"$PG_VERSION_NPGSQL"-bin-mono2.0 || exit 1
+        echo "Removing existing NpgSQL"$PG_VERSION_NPGSQL" (Mono2.0) source directory"
+        rm -rf Mono2.0  || _die "Couldn't remove the existing Mono"$PG_VERSION_NPGSQL" source directory (source/Mono"$PG_VERSION_NPGSQL")"
     fi
+
+    echo "Unpacking Npgsql (Mono2.0) source..."
+    extract_file ../../tarballs/Npgsql"$PG_VERSION_NPGSQL"-bin-mono2.0 || exit 1
 
     # Per-platform prep
     cd $WD
