@@ -66,6 +66,21 @@ stop()
 	su - $USERNAME -c "$INSTALLDIR/bin/pg_ctl stop -m fast -w -D \"$DATADIR\""
 }
 
+restart()
+{
+	echo \$"Restarting PostgreSQL $VERSION: "
+	su - $USERNAME -c "$INSTALLDIR/bin/pg_ctl -w restart -D \"$DATADIR\" -l \"$DATADIR/pg_log/startup.log\" -m fast"
+	
+	if [ \$? -eq 0 ];
+	then
+		echo "PostgreSQL $VERSION restarted successfully"
+                exit 0
+	else
+		echo "PostgreSQL $VERSION did not start in a timely fashion, please see $DATADIR/pg_log/startup.log for details"
+                exit 1
+	fi
+}
+
 # See how we were called.
 case "\$1" in
   start)
@@ -75,15 +90,11 @@ case "\$1" in
         stop
         ;;
   restart|reload)
-        stop
-        sleep 3
-        start
+        restart
         ;;
   condrestart)
         if [ -f "$DATADIR/postmaster.pid" ]; then
-            stop
-            sleep 3
-            start
+            restart
         fi
         ;;
   status)
