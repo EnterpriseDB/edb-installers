@@ -688,9 +688,9 @@ validateDevInstallDir () {
   then
      LRAR_DBG_INFO="Not valid PostgreSQL/PostgresPlus installer path. Couldn't find '${LRAR_INSTALLDIR}/installer/server/createuser.sh'."
      LRAR_RET_VAL=0
-  elif [ ! -f "${LRAR_INSTALLDIR}/installer/server/getlocales.sh" ]
+  elif [ ! -f "${LRAR_INSTALLDIR}/installer/server/getlocales" ]
   then
-     LRAR_DBG_INFO="Not valid PostgreSQL/PostgresPlus installer path. Couldn't find '${LRAR_INSTALLDIR}/installer/server/getlocales.sh'."
+     LRAR_DBG_INFO="Not valid PostgreSQL/PostgresPlus installer path. Couldn't find '${LRAR_INSTALLDIR}/installer/server/getlocales'."
      LRAR_RET_VAL=0
   elif [ ! -f "${LRAR_INSTALLDIR}/installer/server/initcluster.sh" ]
   then
