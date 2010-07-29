@@ -1712,7 +1712,7 @@ Class DevServer
        IsFileExists(p_strInstallDir, "installer\server\startserver.vbs", p_strErrMsg) AND _
        IsFileExists(p_strInstallDir, "installer\server\loadmodules.vbs", p_strErrMsg) AND _
        IsFileExists(p_strInstallDir, "installer\server\initcluster.vbs", p_strErrMsg) AND _
-       IsFileExists(p_strInstallDir, "installer\vcredist_x86.exe", p_strErrMsg) AND _
+       IsFileExists(p_strInstallDir, "installer\vcredist_@@SERVER_SUFFIX@@.exe", p_strErrMsg) AND _
        IsFileExists(p_strInstallDir, "scripts\serverctl.vbs", p_strErrMsg) Then
       validateServerPath = true
       m_strInstallDir = p_strInstallDir
