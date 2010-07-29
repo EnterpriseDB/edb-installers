@@ -29,7 +29,7 @@ strTempName = FSO.GetTempName
 strLogFile = TempFolder.Path & "\" & Left(strTempName, Len(strTempName) - 4) & "_rar.log"
 
 ' TODO: We need to take care about 64 bit windows too in future.
-strVCRedistFile = "\installer\vcredist_x86.exe"
+strVCRedistFile = "\installer\vcredist_@@SERVER_SUFFIX@@.exe"
 
 strInstallDir      = FSO.GetAbsolutePathName(".")
 strSuperUser       = "postgres"
