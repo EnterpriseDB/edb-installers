@@ -763,7 +763,8 @@ validateDevInstallDir () {
      PG_RAR_MINOR_VERSION=`echo ${PG_RAR_VERSION} | cut -d. -f 3,4`
      if [ x"${PG_RAR_SERVICENAME}" = x"" ]
      then
-       PG_RAR_SERVICENAME=pgsql-${PG_RAR_MAJOR_VERSION}
+       PG_RAR_MAJOR_VERSION_NUM=`${PG_RAR_DEV_INSTALL_DIR}/bin/pg_config --version | cut -d' ' -f 2| grep -o -P [0-9]+.[0-9]+`
+       PG_RAR_SERVICENAME=postgresql-${PG_RAR_MAJOR_VERSION_NUM}
      fi
      PG_RAR_BRANDING="Postgres Plus ${PG_RAR_MAJOR_VERSION}"
   fi
