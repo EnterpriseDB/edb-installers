@@ -154,6 +154,14 @@
                 <isTrue value="${installer_is_root_install}"/>
            </ruleList>
         </getFreePort>
+
+        <!-- Set the default port value for non-root user -->   
+        <setInstallerVariable name="defaultport" value="5432" >
+            <ruleList>
+                <isFalse value="${installer_is_root_install}"/>
+           </ruleList>
+        </setInstallerVariable> 
+
         <!-- Set the default password, to be used only in unnattended mode -->
         <setInstallerVariable>
             <name>defaultpassword</name>
