@@ -445,6 +445,9 @@ _postprocess_server_windows_x64() {
     # Welcome doc
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/windows-x64/doc/" || _die "Failed to install the welcome document"
     cp "$WD/server/resources/enterprisedb.gif" "$WD/server/staging/windows-x64/doc/" || _die "Failed to install the welcome logo"
+
+    _replace @@SERVER_SUFFIX@@ "x64" $WD/scripts/runAsAdmin.vbs || _die "Failed to replace the SERVER_SUFFIX setting in the runAsAdmin.vbs"
+
     cp "$WD/scripts/runAsAdmin.vbs" "$WD/server/staging/windows-x64" || _die "Failed to copy the runAsRoot script"
 
     #Creating a archive of the binaries
