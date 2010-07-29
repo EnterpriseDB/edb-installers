@@ -85,6 +85,7 @@ locale.error=La locale indiquée n'est pas supportée.
 superaccount.description=Configure le nom utilisateur du super-utilisateur de la base de données. Par défaut, « postgres ».
 serviceaccount.description=Configure le compte utilisateur du système d'exploitation qui possède le processus serveur. Par défaut, « postgres ».
 servicepassword.description=Configure le mot de passe pour le compte utilisateur du système d'exploitation qui possède le processus serveur. Par défaut, le mot de passe du super-utilisateur.
+servicename.description=Définit le nom du service de base de données.
 
 servicename.not.valid=« ${servicename} » n'est pas un nom de service valide.\n\nIl doit correspondre aux critères suivants :\n* commence avec un caractère alphabétique\n* Finit avec un caractère alphanumérique\n* Les caractères spéciaux autorisés sont _ (tiret bas), . (point) et - (tiret)\n* Longueur minimum : 6 caractères & Longueur maximum : 50 caractères
 servicename.already.exists.linux=Un service (${servicename}) existe déjà dans le répertoire « /etc/init.d ».\nMerci d'indiquer un autre nom.

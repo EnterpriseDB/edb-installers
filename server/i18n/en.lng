@@ -87,6 +87,7 @@ locale.error=Locale specified is not supported.
 superaccount.description=Sets the user name of the database superuser. Defaults to 'postgres'.
 serviceaccount.description=Sets the operating system user account that owns the server process. Defaults to 'postgres'.
 servicepassword.description=Sets the password for the operating system user account that owns server process. Defaults to superuser password.
+servicename.description=Sets the name of the database service.
 
 servicename.not.valid='${servicename}' is not a valid service name.\n\nIt must match the following criteria:\n* Starts with an alphabet\n* Ends with alphanumeric\n* Allowed special characters are _(underscore), .(dot) and -(hyphen)\n* Minimum length: 6 characters & Maximum length: 50 characters
 servicename.already.exists.linux=A service (${servicename}) already exists in the '/etc/init.d' directory.\nPlease specify another name.

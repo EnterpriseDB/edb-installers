@@ -63,6 +63,7 @@ locale.error=La configuración regional especificada no está soportada.
 superaccount.description=Establece el nombre de usuario de la base de datos de superusuario. Por defecto es 'postgres'.
 serviceaccount.description=Establece la cuenta de usuario del sistema operativo que posee el proceso de servidor. Por defecto es 'postgres'.
 servicepassword.description=Establece la contraseÃ±a de la cuenta de usuario del sistema operativo que posee proceso de servidor. Por defecto es la contraseÃ±a de superusuario
+servicename.description=Establece el nombre del servicio de base de datos.
 
 servicename.not.valid='${servicename}' no es un nombre de servicio válido.\n\nDebe coincidir con los criterios siguientes:\n* Empieza con un alfabeto\n* Termina con alfanuméricos\n* Los caracteres permitidos especiales _(subrayado),.(Punto) y -(guión)\n* Duración mínima: 6 caracteres y longitud máxima: 50 caracteres
 servicename.already.exists.linux=Un servicio (${servicename}) ya existe en el '/etc/init.d' directorio.\nPor favor, especifique otro nombre.
