@@ -2516,7 +2516,7 @@ ShowMessage "Loading Modules..."
 RunProgram WScript.FullName, _
            array("//nologo", objDevServer.InstallDir & "\installer\server\loadmodules.vbs", _
                  objDevServer.SuperUser, objDevServer.SuperPassword, objDevServer.InstallDir, _
-                 objDevServer.DataDir, objDevServer.Port, "1"), _
+                 objDevServer.DataDir, objDevServer.Port), _
            strScriptOutput, strScriptError, iStatus
 Select Case iStatus
   Case 0
