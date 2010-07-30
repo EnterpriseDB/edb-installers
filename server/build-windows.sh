@@ -86,7 +86,7 @@ _prep_server_windows() {
     cp -R stackbuilder stackbuilder.windows || _die "Failed to copy the source code (source/stackbuilder.windows)"
 	mkdir pljava.windows || _die "Failed to create a directory for the plJava binaries"
 	cd pljava.windows
-	tar -zxvf $WD/tarballs/pljava-i686-pc-mingw32-pg8.4-$PG_TARBALL_PLJAVA.tar.gz || _die "Failed to extract the pljava binaries"	
+	tar -zxvf $WD/tarballs/pljava-i686-pc-mingw32-pg$PG_MAJOR_VERSION-$PG_TARBALL_PLJAVA.tar.gz || _die "Failed to extract the pljava binaries"	
 	tar -xvf docs.tar || _die "Failed to extract the pljava docs"
 	
     # Remove any existing staging directory that might exist, and create a clean one
