@@ -404,14 +404,14 @@ _process_command_line()
        usage 2
      fi
      PG_RAR_SERVICENAME=${2}
-     echo $PG_RAR_SERVICENAME | grep -P "^([a-zA-Z]{1})([0-9a-zA-Z_\.\-]{4,48})([0-9a-zA-Z]{1})$"
+     echo $PG_RAR_SERVICENAME | grep -P "^([a-zA-Z]{1})([0-9a-zA-Z_\.\-]{4,48})([0-9a-zA-Z]{1})$" > /dev/null
      if [[ $? -eq 1 ]] ; then
-	echo "service name has following constraints:"
+	echo "Invalid service name. Service name has following constraints:"
 	echo "* Starts with an alphabet"
  	echo "* Ends with alphanumeric"
  	echo "* Allowed special characters are _(underscore), .(dot) and -(hyphen)"
  	echo "* Minimum length: 6 characters & Maximum length: 50 characters"
- 	usage 2
+     	exit
      fi
      RAR_NO_PROCD_CMD=2
      ;;
