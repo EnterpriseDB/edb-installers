@@ -25,11 +25,11 @@ _prep_server_windows_x64() {
         echo "Removing existing stackbuilder.windows-x64 source directory"
         rm -rf stackbuilder.windows-x64  || _die "Couldn't remove the existing stackbuilder.windows-x64 source directory (source/stackbuilder.windows-x64)"
     fi
-    if [ -e pljava.windows-x64 ];
-    then
-        echo "Removing existing pljava.windows-x64 source directory"
-        rm -rf pljava.windows-x64  || _die "Couldn't remove the existing pljava.windows-x64 source directory (source/pljava.windows-x64)"
-    fi
+    #if [ -e pljava.windows-x64 ];
+    #then
+    #    echo "Removing existing pljava.windows-x64 source directory"
+    #    rm -rf pljava.windows-x64  || _die "Couldn't remove the existing pljava.windows-x64 source directory (source/pljava.windows-x64)"
+    #fi
 	
     # Remove any existing zip files
     if [ -f $WD/server/source/postgres-win64.zip ];
@@ -94,10 +94,10 @@ _prep_server_windows_x64() {
     patch -p0 < ../../tarballs/plpython_pg9.0_win64.patch || _die "Couldn't apply the patch tarballs/plpython_pg9.0_win64.patch"
     cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.windows-x64 || _die "Failed to copy the source code (source/pgadmin.windows-x64)"
     cp -R stackbuilder stackbuilder.windows-x64 || _die "Failed to copy the source code (source/stackbuilder.windows-x64)"
-    mkdir pljava.windows-x64 || _die "Failed to create a directory for the plJava binaries"
-    cd pljava.windows-x64
-    tar -zxvf $WD/tarballs/pljava-i686-pc-mingw32-pg8.4-$PG_TARBALL_PLJAVA.tar.gz || _die "Failed to extract the pljava binaries"	
-    tar -xvf docs.tar || _die "Failed to extract the pljava docs"
+    #mkdir pljava.windows-x64 || _die "Failed to create a directory for the plJava binaries"
+    #cd pljava.windows-x64
+    #tar -zxvf $WD/tarballs/pljava-i686-pc-mingw32-pg8.4-$PG_TARBALL_PLJAVA.tar.gz || _die "Failed to extract the pljava binaries"	
+    #tar -xvf docs.tar || _die "Failed to extract the pljava docs"
 	
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/windows-x64 ];
@@ -419,16 +419,16 @@ EOT
 	cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi.sql $WD/server/staging/windows-x64/share/contrib
 	 
 	# Copy in the pljava binaries/docs
-	cd $WD/server/source/
-	echo "Installing pl/java"
-	cp pljava.windows-x64/deploy.jar $WD/server/staging/windows-x64/lib || _die "Failed to install the deploy.jar files."
-	cp pljava.windows-x64/examples.jar $WD/server/staging/windows-x64/lib || _die "Failed to install the examples.jar files."
-	cp pljava.windows-x64/pljava.jar $WD/server/staging/windows-x64/lib || _die "Failed to install the pljava.jar files."
-	cp pljava.windows-x64/*.dll $WD/server/staging/windows-x64/lib || _die "Failed to install the pljava dll files."
-	mkdir -p $WD/server/staging/windows-x64/share/pljava || _die "Failed to create a directory for the pljava SQL scripts."
-	cp pljava.windows-x64/install.sql $WD/server/staging/windows-x64/share/pljava || _die "Failed to install the install.sql SQL scripts."
-	cp pljava.windows-x64/uninstall.sql $WD/server/staging/windows-x64/share/pljava || _die "Failed to install the uninstall.sql SQL scripts."
-	cp -R pljava.windows-x64/docs $WD/server/staging/windows-x64/doc/pljava || _die "Failed to install the pljava docs."
+	#cd $WD/server/source/
+	#echo "Installing pl/java"
+	#cp pljava.windows-x64/deploy.jar $WD/server/staging/windows-x64/lib || _die "Failed to install the deploy.jar files."
+	#cp pljava.windows-x64/examples.jar $WD/server/staging/windows-x64/lib || _die "Failed to install the examples.jar files."
+	#cp pljava.windows-x64/pljava.jar $WD/server/staging/windows-x64/lib || _die "Failed to install the pljava.jar files."
+	#cp pljava.windows-x64/*.dll $WD/server/staging/windows-x64/lib || _die "Failed to install the pljava dll files."
+	#mkdir -p $WD/server/staging/windows-x64/share/pljava || _die "Failed to create a directory for the pljava SQL scripts."
+	#cp pljava.windows-x64/install.sql $WD/server/staging/windows-x64/share/pljava || _die "Failed to install the install.sql SQL scripts."
+	#cp pljava.windows-x64/uninstall.sql $WD/server/staging/windows-x64/share/pljava || _die "Failed to install the uninstall.sql SQL scripts."
+	#cp -R pljava.windows-x64/docs $WD/server/staging/windows-x64/doc/pljava || _die "Failed to install the pljava docs."
     
     cd $WD
 }

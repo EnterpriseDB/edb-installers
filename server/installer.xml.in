@@ -4415,6 +4415,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
                             <ruleList>
                                 <isTrue value="${create_shortcuts}" />
+                                <isFalse value="${win64_platform}" />
                             </ruleList>
                         </startMenuLinkShortcut>
 
@@ -4426,6 +4427,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
                             <ruleList>
                                 <isTrue value="${create_shortcuts}" />
+                                <isFalse value="${win64_platform}" />
                             </ruleList>
                         </startMenuLinkShortcut>
 
