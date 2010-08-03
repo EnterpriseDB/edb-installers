@@ -40,6 +40,9 @@ _prep_server_solaris_sparc() {
     fi
     # Grab a copy of the source tree
     cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.solaris-sparc || _die "Failed to copy the source code (source/pgadmin-$PG_TARBALL_PGADMIN)"
+    cd pgadmin.solaris-sparc/pgadmin
+    patch -c -p0 < $WD/tarballs/pgadmin_solaris.patch
+    cd ../..
     chmod -R ugo+w pgadmin.solaris-sparc || _die "Couldn't set the permissions on the source directory"
     zip -r pgadmin.solaris-sparc.zip pgadmin.solaris-sparc
 
@@ -334,7 +337,7 @@ EOT
      
     # And now, pl/java
 
-    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/server/source/pljava.solaris-sparc/; JAVA_HOME=$PG_JAVA_HOME_SOLARIS_SPARC PATH=$PG_EXEC_PATH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin:\$PATH LD_LIBRARY_PATH=$PG_JAVA_HOME_SOLARIS_SPARC/jre/lib/sparcv9/server:$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/lib:\$LD_LIBRARY_PATH gmake" || _die "Failed to build pl/java"
+    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/server/source/pljava.solaris-sparc/; JAVA_HOME=$PG_JAVA_HOME_SOLARIS_SPARC PATH=$PG_EXEC_PATH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin:\$PATH LD_LIBRARY_PATH=$PG_JAVA_HOME_SOLARIS_SPARC/jre/lib/sparcv9/server:$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/lib:\$LD_LIBRARY_PATH gmake USE_JDK6=1 all" || _die "Failed to build pl/java"
     ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/server/source/pljava.solaris-sparc/; JAVA_HOME=$PG_JAVA_HOME_SOLARIS_SPARC PATH=$PG_EXEC_PATH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin:\$PATH LD_LIBRARY_PATH=$PG_JAVA_HOME_SOLARIS_SPARC/jre/lib/sparcv9/server:$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/lib:\$LD_LIBRARY_PATH gmake prefix=$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc install" || _die "Failed to install pl/java" 
 
     mkdir -p "$WD/server/staging/solaris-sparc/share/pljava" || _die "Failed to create the pl/java share directory"

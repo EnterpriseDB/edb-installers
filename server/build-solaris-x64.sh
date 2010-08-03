@@ -40,6 +40,9 @@ _prep_server_solaris_x64() {
     fi
     # Grab a copy of the source tree
     cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.solaris-x64 || _die "Failed to copy the source code (source/pgadmin-$PG_TARBALL_PGADMIN)"
+    cd pgadmin.solaris-x64/pgadmin
+    patch -c -p0 < $WD/tarballs/pgadmin_solaris.patch
+    cd ../..
     chmod -R ugo+w pgadmin.solaris-x64 || _die "Couldn't set the permissions on the source directory"
     zip -r pgadmin.solaris-x64.zip pgadmin.solaris-x64
 
@@ -335,7 +338,7 @@ EOT
      
     # And now, pl/java
 
-    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/pljava.solaris-x64/; JAVA_HOME=$PG_JAVA_HOME_SOLARIS_X64 PATH=$PG_EXEC_PATH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/server/staging/solaris-x64/bin:\$PATH LD_LIBRARY_PATH=$PG_JAVA_HOME_SOLARIS_X64/jre/lib/amd64/server:$PG_PATH_SOLARIS_X64/server/staging/solaris-x64/lib:\$LD_LIBRARY_PATH gmake" || _die "Failed to build pl/java"
+    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/pljava.solaris-x64/; JAVA_HOME=$PG_JAVA_HOME_SOLARIS_X64 PATH=$PG_EXEC_PATH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/server/staging/solaris-x64/bin:\$PATH LD_LIBRARY_PATH=$PG_JAVA_HOME_SOLARIS_X64/jre/lib/amd64/server:$PG_PATH_SOLARIS_X64/server/staging/solaris-x64/lib:\$LD_LIBRARY_PATH gmake USE_JDK6=1 all" || _die "Failed to build pl/java"
     ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/pljava.solaris-x64/; JAVA_HOME=$PG_JAVA_HOME_SOLARIS_X64 PATH=$PG_EXEC_PATH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/server/staging/solaris-x64/bin:\$PATH LD_LIBRARY_PATH=$PG_JAVA_HOME_SOLARIS_X64/jre/lib/amd64/server:$PG_PATH_SOLARIS_X64/server/staging/solaris-x64/lib:\$LD_LIBRARY_PATH gmake prefix=$PG_PATH_SOLARIS_X64/server/staging/solaris-x64 install" || _die "Failed to install pl/java" 
 
     mkdir -p "$WD/server/staging/solaris-x64/share/pljava" || _die "Failed to create the pl/java share directory"
