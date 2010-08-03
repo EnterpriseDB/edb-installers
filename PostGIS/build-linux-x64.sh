@@ -146,23 +146,9 @@ _build_PostGIS_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/postgresql/contrib/spatial_ref_sys.sql share/contrib/" || _die "Failed to copy PostGIS share files" 
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/postgresql/contrib/postgis_comments.sql share/contrib/" || _die "Failed to copy PostGIS share files" 
   
-    mkdir -p doc/postgis
-
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/doc/postgresql/postgis/postgis.html doc/postgis/" || _die "Failed to copy documentation"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/doc/postgresql/postgis/README.postgis doc/postgis/" || _die "Failed to copy documentation"
-
-    mkdir -p man/man1
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/man/man1/pgsql2shp.1 man/man1/" || _die "Failed to copy the man pages"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/man/man1/shp2pgsql.1 man/man1/" || _die "Failed to copy the man pages"
-
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64; cp loader/README.shp2pgsql $PG_STAGING/PostGIS/doc/postgis" || _die "Failed to copy README.shp2pgsql "
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64; cp loader/README.pgsql2shp $PG_STAGING/PostGIS/doc/postgis" || _die "Failed to copy README.shp2pgsql "
-
-    mkdir -p doc/postgis/jdbc/
-
-    echo "Copying jdbc docs"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java/jdbc; cp postgis-jdbc-javadoc.zip $PG_STAGING/PostGIS/doc/postgis/jdbc" || _die "Failed to copy jdbc docs "
-    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/PostGIS/doc/postgis/jdbc; unzip postgis-jdbc-javadoc.zip; rm postgis-jdbc-javadoc.zip" || _die "Failed to remove jdbc docs zip file"
+    #Copy the docs and man pages from osx build.
+    cp -R $WD/PostGIS/staging/osx/PostGIS/doc . || _die "Failed to copy the doc folder from staging directory"
+    cp -R $WD/PostGIS/staging/osx/PostGIS/man . || _die "Failed to copy the man folder from staging directory"
 
     cd $WD/PostGIS
 
