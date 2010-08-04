@@ -68,7 +68,7 @@ _prep_server_linux_ppc64() {
 }
 
 
-_process_dependent_libs() {
+_process_dependent_libs_linux_ppc64() {
 
    bin_dir=$1
    lib_dir=$2
@@ -206,12 +206,12 @@ _build_server_linux_ppc64() {
     ssh $PG_SSH_LINUX_PPC64 "cp -R /usr/local/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
 
     # Process Dependent libs
-    _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl.so"  
-    _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libcrypto.so"  
-    _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libreadline.so"  
-    _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libtermcap.so"  
-    _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libxml2.so"  
-    _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libxslt.so"  
+    _process_dependent_libs_linux_ppc64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl.so"  
+    _process_dependent_libs_linux_ppc64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libcrypto.so"  
+    _process_dependent_libs_linux_ppc64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libreadline.so"  
+    _process_dependent_libs_linux_ppc64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libtermcap.so"  
+    _process_dependent_libs_linux_ppc64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libxml2.so"  
+    _process_dependent_libs_linux_ppc64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libxslt.so"  
 
 	
     # Now build pgAdmin
