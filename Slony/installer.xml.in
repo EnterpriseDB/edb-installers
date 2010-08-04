@@ -8,8 +8,8 @@
     <startMenuGroupName>${branding}</startMenuGroupName>
 
     <!-- Product Specific Options -->
-    <productDisplayName>Slony ${productVersion}</productDisplayName>
-    <productComments>Slony ${productVersion}, packaged by EnterpriseDB</productComments>
+    <productDisplayName>Slony ${productVersion} for Postgres ${PGMajorVersion}.${PG_MINOR_VERSION}</productDisplayName>
+    <productComments>Slony ${productVersion} for Postgres ${PGMajorVersion}.${PG_MINOR_VERSION}, packaged by EnterpriseDB</productComments>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
 
