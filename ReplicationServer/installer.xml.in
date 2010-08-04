@@ -574,8 +574,18 @@
                 <!-- Extracting installation scripts -->
                 <unpackDirectory origin="instscripts"
                     destination="${system_temp_directory}/${product_fullname}"
-                    folder="instscripts${platform_name}" component="psql"/>
-
+                    folder="instscripts${platform_name}" component="psql">
+                    <ruleList>
+                       <compareText text="${platform_name}" logic="does_not_equal" value="solaris-intel" />
+                    </ruleList>
+                </unpackDirectory>  
+                <unpackDirectory origin="instscripts"
+                    destination="${system_temp_directory}/${product_fullname}"
+                    folder="instscriptssolaris-x64" component="psql">
+                    <ruleList>
+                       <compareText text="${platform_name}" logic="equals" value="solaris-intel" />
+                    </ruleList>
+                </unpackDirectory>  
 
                 <!-- Disable the components which are being upgraded -->
                 <actionGroup>
