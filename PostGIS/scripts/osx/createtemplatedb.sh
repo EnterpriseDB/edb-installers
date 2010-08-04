@@ -19,8 +19,8 @@ POSTGIS_MAJOR_VERSION=$7
 "$PGHOME/bin/psql" -c "UPDATE pg_database SET datistemplate='t' WHERE datname='template_postgis'" 
 
 # Creating template postgis functions
-"$PGHOME/bin/psql" -f "$SHAREDIR/contrib/postgis-$POSTGIS_MAJOR_VERSION/postgis.sql" -d template_postgis
-"$PGHOME/bin/psql" -f "$SHAREDIR/contrib/postgis-$POSTGIS_MAJOR_VERSION/spatial_ref_sys.sql" -d template_postgis
+"$PGHOME/bin/psql" -f "$SHAREDIR/contrib/postgis.sql" -d template_postgis
+"$PGHOME/bin/psql" -f "$SHAREDIR/contrib/spatial_ref_sys.sql" -d template_postgis
 "$PGHOME/bin/psql" -f "$SHAREDIR/contrib/postgis_comments.sql" -d template_postgis
 
 
