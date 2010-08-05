@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Check the command line
 if [ $# -ne 4 ]; 
@@ -98,7 +98,7 @@ EOT
 # Fixup the permissions on the StartupItems
 chmod 0755 "/lib/svc/method/edb-xdbsubserver" || _warn "Failed to set the permissions on the startup script (/etc/init.d/edb-xdbsubserver)"
 
-cat <<EOT > "/var/svc/manifest/applicationedb-xdbsubserver.xml"
+cat <<EOT > "/var/svc/manifest/application/edb-xdbsubserver.xml"
 <?xml version="1.0"?>
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
 
@@ -143,6 +143,8 @@ cat <<EOT > "/var/svc/manifest/applicationedb-xdbsubserver.xml"
                 type='method'
                 name='stop'
                 exec='/lib/svc/method/edb-xdbsubserver stop'
+                timeout_seconds='60' />
+
         <exec_method
                 type='method'
                 name='restart'

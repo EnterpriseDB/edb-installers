@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Check the command line
 if [ $# -ne 4 ]; 
@@ -99,7 +99,7 @@ EOT
 chmod 0755 "/lib/svc/method/edb-xdbpubserver" || _warn "Failed to set the permissions on the startup script (/lib/svc/method/xdbpubserver)"
 
 
-cat <<EOT > "/var/svc/manifest/applicationedb-xdbpubserver.xml"
+cat <<EOT > "/var/svc/manifest/application/edb-xdbpubserver.xml"
 <?xml version="1.0"?>
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
 
@@ -144,6 +144,8 @@ cat <<EOT > "/var/svc/manifest/applicationedb-xdbpubserver.xml"
                 type='method'
                 name='stop'
                 exec='/lib/svc/method/edb-xdbpubserver stop'
+                timeout_seconds='60' />
+
         <exec_method
                 type='method'
                 name='restart'

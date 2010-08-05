@@ -96,13 +96,18 @@ _build_ReplicationServer_solaris_x64() {
     ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; mkdir -p ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to create instscripts directory"
     ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/bin/psql ReplicationServer/staging/solaris-x64/instscripts/bin" || _die "Failed to copy psql binary"
     ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libpq.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libpq.so"
-    #ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libcrypto.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libcrypto.so"
-    #ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libssl.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libssl.so"
-    #ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libreadline.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libreadline.so"
-    #ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libtermcap.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libtermcap.so"
+    ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libcrypto.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libcrypto.so"
+    ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libssl.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libssl.so"
+    ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libreadline.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libreadline.so"
     ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libxml2.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libxml2.so"
+    ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libk5crypto.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libk5crypto.so"
+    ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libcom_err.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libcom_errso"
+    ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libkrb5.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libkrb5.so"
+    ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libkrb5support.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libkrb5support.so"
     ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp MigrationToolKit/staging/solaris-x64/MigrationToolKit/lib/edb-migrationtoolkit.jar ReplicationServer/staging/solaris-x64/repserver/lib/repl-mtk" || _die "Failed to copy edb-migrationtoolkit.jar"
     ssh $PG_SSH_SOLARIS_X64 "cp $PG_PATH_SOLARIS_X64/ReplicationServer/source/ReplicationServer.solaris-x64/lib/postgresql-$PG_JAR_POSTGRESQL.jar $PG_PATH_SOLARIS_X64/ReplicationServer/staging/solaris-x64/repconsole/lib/jdbc/" || _die "Failed to copy pg jdbc drivers" 
+    ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libuuid.so* $PG_PATH_SOLARIS_X64/ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libuuid2.so"
+    ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/bin/uuid $PG_PATH_SOLARIS_X64/ReplicationServer/staging/solaris-x64/instscripts/bin" || _die "Failed to copy uuid"
 
    # Build the validateUserClient binary
     if [ ! -f $WD/MetaInstaller/source/MetaInstaller.solaris-x64/validateUser/validateUserClient.o ]; then

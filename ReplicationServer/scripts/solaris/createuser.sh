@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # xDB Replication service user creation script for Linux
 # Dave Page, EnterpriseDB

@@ -96,13 +96,18 @@ _build_ReplicationServer_solaris_sparc() {
     ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; mkdir -p ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to create instscripts directory"
     ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/bin/psql ReplicationServer/staging/solaris-sparc/instscripts/bin" || _die "Failed to copy psql binary"
     ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libpq.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libpq.so"
-    #ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libcrypto.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libcrypto.so"
-    #ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libssl.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libssl.so"
-    #ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libreadline.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libreadline.so"
-    #ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libtermcap.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libtermcap.so"
+    ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libcrypto.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libcrypto.so"
+    ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libssl.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libssl.so"
+    ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libreadline.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libreadline.so"
     ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libxml2.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libxml2.so"
+    ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libk5crypto.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libk5crypto.so"
+    ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libcom_err.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libcom_err.so"
+    ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libkrb5.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libkrb5.so"
+    ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libkrb5support.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libkrb5support.so"
     ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp MigrationToolKit/staging/solaris-sparc/MigrationToolKit/lib/edb-migrationtoolkit.jar ReplicationServer/staging/solaris-sparc/repserver/lib/repl-mtk" || _die "Failed to copy edb-migrationtoolkit.jar"
     ssh $PG_SSH_SOLARIS_SPARC "cp $PG_PATH_SOLARIS_SPARC/ReplicationServer/source/ReplicationServer.solaris-sparc/lib/postgresql-$PG_JAR_POSTGRESQL.jar $PG_PATH_SOLARIS_SPARC/ReplicationServer/staging/solaris-sparc/repconsole/lib/jdbc/" || _die "Failed to copy pg jdbc drivers" 
+    ssh $PG_SSH_SOLARIS_SPARC "cp /usr/local/lib/libuuid.so* $PG_PATH_SOLARIS_SPARC/ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libuuid2.so"
+    ssh $PG_SSH_SOLARIS_SPARC "cp /usr/local/bin/uuid $PG_PATH_SOLARIS_SPARC/ReplicationServer/staging/solaris-sparc/instscripts/bin" || _die "Failed to copy uuid"
 
    # Build the validateUserClient binary
     if [ ! -f $WD/MetaInstaller/source/MetaInstaller.solaris-sparc/validateUser/validateUserClient.o ]; then

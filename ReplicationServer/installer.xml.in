@@ -339,6 +339,17 @@
             </ruleList>
         </throwError>
 
+        <!-- Set the correct lib path for 64 bit binaries -->
+        <runProgram>
+            <program>crle</program>
+            <programArguments>-64 -u -l /usr/sfw/lib/64</programArguments>
+            <showMessageOnError>0</showMessageOnError>
+            <abortOnError>0</abortOnError>
+            <ruleList>
+                <compareText text="${platform_name}" logic="contains" value="solaris" />
+            </ruleList>
+        </runProgram>
+                  
         <!-- Check for AS84 installed jre -->
         <registryGet>
           <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\AS\8.4\jre</key>
@@ -857,6 +868,14 @@
                 <setInstallerVariableFromScriptOutput name="uuid_val" showMessageOnError="0" exec="uuidgen" abortOnError="0">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                        <compareText logic="does_not_contain" text="${platform_name}" value="solaris"/>
+                    </ruleList>
+                </setInstallerVariableFromScriptOutput>
+
+                <setInstallerVariableFromScriptOutput name="uuid_val" showMessageOnError="0" abortOnError="0"
+                      exec="${system_temp_directory}/${product_fullname}/instscripts/bin/uuid">
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="solaris"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
 
@@ -2670,6 +2689,17 @@ database=${controldb}
                     </distributionFileList>
                 </folder>
                 <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>pubserveretcfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux/repserver/etc/xdb_pubserver.conf</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
                     <description>Installer Scripts</description>
                     <destination>${installdir}</destination>
                     <name>pubserverinstallscriptslinux</name>
@@ -2715,6 +2745,17 @@ database=${controldb}
                         <distributionDirectory>
                             <origin>staging/linux-x64/repserver/lib</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>pubserveretcfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux-x64/repserver/etc/xdb_pubserver.conf</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -2766,6 +2807,17 @@ database=${controldb}
                     </distributionFileList>
                 </folder>
                 <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>pubserveretcfilessolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/solaris-x64/repserver/etc/xdb_pubserver.conf</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
                     <description>Installer Scripts</description>
                     <destination>${installdir}</destination>
                     <name>pubserverinstallscriptssolaris-x64</name>
@@ -2811,6 +2863,17 @@ database=${controldb}
                         <distributionDirectory>
                             <origin>staging/solaris-sparc/repserver/lib</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>pubserveretcfilessolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/solaris-sparc/repserver/etc/xdb_pubserver.conf</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -2862,6 +2925,17 @@ database=${controldb}
                     </distributionFileList>
                 </folder>
                 <folder>
+                    <description>PubServer lib Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>pubserveretcfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/osx/repserver/etc/xdb_pubserver.conf</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
                     <description>Installer Scripts</description>
                     <destination>${installdir}</destination>
                     <name>pubserverinstallscriptsosx</name>
@@ -2907,6 +2981,17 @@ database=${controldb}
                         <distributionDirectory>
                             <origin>staging/windows/repserver/lib</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>PubServer lib Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>pubserveretcfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/windows/repserver/etc/xdb_pubserver.conf</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -2967,6 +3052,17 @@ database=${controldb}
                     </distributionFileList>
                 </folder>
                 <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>subserveretcfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux/repserver/etc/xdb_subserver.conf</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
                     <description>Installer Scripts</description>
                     <destination>${installdir}</destination>
                     <name>subserverinstallscriptslinux</name>
@@ -3012,6 +3108,17 @@ database=${controldb}
                         <distributionDirectory>
                             <origin>staging/linux-x64/repserver/lib</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>subserveretcfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux-x64/repserver/etc/xdb_subserver.conf</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -3063,6 +3170,17 @@ database=${controldb}
                     </distributionFileList>
                 </folder>
                 <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>subserveretcfilessolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/solaris-x64/repserver/etc/xdb_subserver.conf</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
                     <description>Installer Scripts</description>
                     <destination>${installdir}</destination>
                     <name>subserverinstallscriptssolaris-x64</name>
@@ -3108,6 +3226,17 @@ database=${controldb}
                         <distributionDirectory>
                             <origin>staging/solaris-sparc/repserver/lib</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>subserveretcfilessolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/solaris-sparc/repserver/etc/xdb_subserver.conf</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -3159,6 +3288,17 @@ database=${controldb}
                     </distributionFileList>
                 </folder>
                 <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>subserveretcfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/osx/repserver/etc/xdb_subserver.conf</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
                     <description>Installer Scripts</description>
                     <destination>${installdir}</destination>
                     <name>subserverinstallscriptsosx</name>
@@ -3204,6 +3344,17 @@ database=${controldb}
                         <distributionDirectory>
                             <origin>staging/windows/repserver/lib</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>subserveretcfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/windows/repserver/etc/xdb_subserver.conf</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>

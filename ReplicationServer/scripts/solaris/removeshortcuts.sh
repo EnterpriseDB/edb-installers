@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Check the command line
 if [ $# -ne 2 ]; 
