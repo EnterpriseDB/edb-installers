@@ -92,14 +92,14 @@ _build_Slony_windows() {
     PG_PATH_MINGW_WINDOWS=`echo $PG_MINGW_WINDOWS | sed -e 's/://g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/:g'`
     PG_PGBUILD_MINGW_WINDOWS=`echo $PG_PGBUILD_WINDOWS | sed -e 's/://g' -e 's:\\\\:/:g' -e 's:^:/:g'`
 
-
     cat <<EOT > "build-postgresql_mingw.bat"
 
 @ECHO OFF
 
-@SET PATH=$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;C:\Perl\bin;C:\Python25;C:\Tcl\bin
+@SET PATH=%PATH%;$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;$PG_MINGW_WINDOWS\bison\bin;$PG_MINGW_WINDOWS\flex\bin
 
-@ECHO cd $PG_PATH_WINDOWS\\\\postgresql_mingw-$PG_MAJOR_VERSION.$PG_MINOR_VERSION.windows; ./configure --prefix=$PG_PGHOME_MINGW_WINDOWS --with-libs=$PG_PGBUILD_MINGW_WINDOWS/krb5/lib/i386:$PG_PGBUILD_MINGW_WINDOWS/OpenSSL/lib; make; make install | $PG_MSYS_WINDOWS\bin\sh --login -i
+
+@ECHO cd $PG_PATH_WINDOWS\\\\postgresql_mingw-$PG_MAJOR_VERSION.$PG_MINOR_VERSION.windows; ./configure --prefix=$PG_PGHOME_MINGW_WINDOWS --with-includes=$PG_PGBUILD_MINGW_WINDOWS/OpenSSL/include:$PG_PGBUILD_MINGW_WINDOWS/zlib/include --with-libs=$PG_PGBUILD_MINGW_WINDOWS/krb5/lib/i386:$PG_PGBUILD_MINGW_WINDOWS/OpenSSL/lib:$PG_PGBUILD_MINGW_WINDOWS/zlib/lib --without-zlib; make; make install | $PG_MSYS_WINDOWS\bin\bash --login -i
 
 
 EOT
