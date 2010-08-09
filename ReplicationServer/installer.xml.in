@@ -1669,6 +1669,42 @@ database=${controldb}
         </substitute> 
 
         <changePermissions>
+            <files>${installdir}/etc/xdb_pubserver.conf</files>
+            <permissions>644</permissions>
+            <ruleList>
+                <fileExists path="${installdir}/etc/xdb_pubserver.conf" />
+                <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+            </ruleList>
+        </changePermissions> 
+
+        <changePermissions>
+            <files>${installdir}/etc/xdb_subserver.conf</files>
+            <permissions>644</permissions>
+            <ruleList>
+                <fileExists path="${installdir}/etc/xdb_subserver.conf" />
+                <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+            </ruleList>
+        </changePermissions> 
+
+        <changeOwnerAndGroup>
+            <files>${installdir}/etc/xdb_pubserver.conf</files>
+            <owner>${serviceaccount}</owner>
+            <ruleList>
+                <fileExists path="${installdir}/etc/xdb_pubserver.conf" />
+                <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+            </ruleList>
+        </changeOwnerAndGroup> 
+
+        <changeOwnerAndGroup>
+            <files>${installdir}/etc/xdb_subserver.conf</files>
+            <owner>${serviceaccount}</owner>
+            <ruleList>
+                <fileExists path="${installdir}/etc/xdb_subserver.conf" />
+                <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+            </ruleList>
+        </changeOwnerAndGroup> 
+
+        <changePermissions>
             <files>${installdir}/bin/runPubServer.sh</files>
             <permissions>755</permissions>
             <ruleList>
