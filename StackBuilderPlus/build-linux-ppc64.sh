@@ -62,16 +62,16 @@ _build_stackbuilderplus_linux_ppc64() {
 
     # Configure
     echo "Configuring the StackBuilder Plus source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/StackBuilderPlus/source/StackBuilderPlus.linux-ppc64/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64 ."
+    ssh $PG_SSH_LINUX_PPC64 "cd $PG_PATH_LINUX_PPC64/StackBuilderPlus/source/StackBuilderPlus.linux-ppc64/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64 ."
 
     # Build the app
     echo "Building & installing StackBuilderPlus"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/StackBuilderPlus/source/StackBuilderPlus.linux-ppc64/; make all" || _die "Failed to build StackBuilderPlus"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/StackBuilderPlus/source/StackBuilderPlus.linux-ppc64/; make install" || _die "Failed to install StackBuilderPlus"
+    ssh $PG_SSH_LINUX_PPC64 "cd $PG_PATH_LINUX_PPC64/StackBuilderPlus/source/StackBuilderPlus.linux-ppc64/; make all" || _die "Failed to build StackBuilderPlus"
+    ssh $PG_SSH_LINUX_PPC64 "cd $PG_PATH_LINUX_PPC64/StackBuilderPlus/source/StackBuilderPlus.linux-ppc64/; make install" || _die "Failed to install StackBuilderPlus"
 
     echo "Building & installing UpdateManager"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/StackBuilderPlus/source/updatemanager.linux-ppc64; $PG_QMAKE_LINUX_X64 UpdateManager.pro" || _die "Failed to configure UpdateManager on linux-ppc64"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/StackBuilderPlus/source/updatemanager.linux-ppc64; make" || _die "Failed to build UpdateManger on linux-ppc64"
+    ssh $PG_SSH_LINUX_PPC64 "cd $PG_PATH_LINUX_PPC64/StackBuilderPlus/source/updatemanager.linux-ppc64; $PG_QMAKE_LINUX_PPC64 UpdateManager.pro" || _die "Failed to configure UpdateManager on linux-ppc64"
+    ssh $PG_SSH_LINUX_PPC64 "cd $PG_PATH_LINUX_PPC64/StackBuilderPlus/source/updatemanager.linux-ppc64; make" || _die "Failed to build UpdateManger on linux-ppc64"
       
     mkdir -p $WD/StackBuilderPlus/staging/linux-ppc64/UpdateManager/bin
     mkdir -p $WD/StackBuilderPlus/staging/linux-ppc64/UpdateManager/lib
@@ -80,24 +80,28 @@ _build_stackbuilderplus_linux_ppc64() {
     cp $WD/StackBuilderPlus/source/updatemanager.linux-ppc64/UpdateManager $WD/StackBuilderPlus/staging/linux-ppc64/UpdateManager/bin
 
     echo "Copying dependent libraries to staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libQtXml.so.* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/UpdateManager/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libQtNetwork.so.* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/UpdateManager/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libQtCore.so.* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/UpdateManager/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libQtGui.so.* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/UpdateManager/lib" || _die "Failed to copy dependent library (libQtGui.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libpng12.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libpng12.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /lib64/libssl.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libssl.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /lib64/libcrypto.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libcrypto.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libexpat.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libexpat.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libgssapi_krb5.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libgssapi_krb5.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libkrb5.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libkrb5.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /lib64/libcom_err.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libcom_err.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libk5crypto.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libk5crypto.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libjpeg.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libjpeg.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libtiff.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libtiff.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libz.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libz.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libfreetype.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libfreetype.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libfontconfig.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libfontconfig.so) in staging directory (linux-ppc64)"
-    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libpango* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /usr/lib64/libQtXml.so.* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/UpdateManager/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /usr/lib64/libQtNetwork.so.* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/UpdateManager/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /usr/lib64/libQtCore.so.* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/UpdateManager/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /usr/lib64/libQtGui.so.* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/UpdateManager/lib" || _die "Failed to copy dependent library (libQtGui.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /usr/lib64/libpng12.so* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libpng12.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /lib64/libssl.so* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libssl.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /lib64/libcrypto.so* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libcrypto.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /usr/lib64/libexpat.so* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libexpat.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /usr/lib64/libgssapi_krb5.so* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libgssapi_krb5.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /usr/lib64/libkrb5.so* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libkrb5.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /lib64/libcom_err.so* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libcom_err.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /usr/lib64/libk5crypto.so* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libk5crypto.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /usr/lib64/libjpeg.so* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libjpeg.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /usr/lib64/libtiff.so* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libtiff.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /usr/lib64/libz.so* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libz.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /usr/lib64/libfreetype.so* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libfreetype.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /usr/lib64/libfontconfig.so* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libfontconfig.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /usr/lib64/libpango-* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (linux-ppc64)"
+    ssh $PG_SSH_LINUX_PPC64 "cp /usr/lib64/libpangoft2* $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (linux-ppc64)"
+
+    ssh $PG_SSH_LINUX_PPC64 "chmod a+r $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/lib/*" || _die "Failed to set the permission to the lib directory"
+    ssh $PG_SSH_LINUX_PPC64 "chmod a+r $PG_PATH_LINUX_PPC64/StackBuilderPlus/staging/linux-ppc64/UpdateManager/lib/*" || _die "Failed to set the permission to the lib directory"
 
     cd $WD
 }
@@ -133,23 +137,20 @@ _postprocess_stackbuilderplus_linux_ppc64() {
     cp $WD/scripts/xdg/xdg* staging/linux-ppc64/installer/xdg || _die "Failed to copy the xdg scripts (scripts/xdg/*)"
     chmod ugo+x staging/linux-ppc64/installer/xdg/xdg*
 
-    # Version string, for the xdg filenames
-    PG_VERSION_STR=`echo $PG_MAJOR_VERSION | sed 's/\./_/g'`
-
     mkdir -p staging/linux-ppc64/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/edb-stackbuilderplus.png staging/linux-ppc64/scripts/images/edb-stackbuilderplus-$PG_VERSION_STR.png  || _die "Failed to copy the menu pick images (resources/edb-stackbuilderplus.png)"
-    cp resources/pg-postgresql.png staging/linux-ppc64/scripts/images/pg-postgresql-$PG_VERSION_STR.png  || _die "Failed to copy the menu pick images (pg-postgresql.png)"
+    cp resources/edb-stackbuilderplus.png staging/linux-ppc64/scripts/images/  || _die "Failed to copy the menu pick images (resources/edb-stackbuilderplus.png)"
+    cp resources/pg-postgresql.png staging/linux-ppc64/scripts/images/  || _die "Failed to copy the menu pick images (pg-postgresql.png)"
 
     mkdir -p staging/linux-ppc64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
     mkdir -p staging/linux-ppc64/UpdateManager/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp resources/xdg/pg-postgresql.directory staging/linux-ppc64/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/edb-stackbuilderplus.desktop staging/linux-ppc64/scripts/xdg/edb-stackbuilderplus-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
-    cp resources/xdg/edb-sbp-update-monitor.desktop staging/linux-ppc64/UpdateManager/scripts/xdg/edb-sbp-update-monitor.desktop || _die "Failed to copy the startup pick desktop"
+    cp resources/xdg/pg-postgresql.directory staging/linux-ppc64/scripts/xdg/ || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/edb-stackbuilderplus.desktop staging/linux-ppc64/scripts/xdg/ || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/edb-sbp-update-monitor.desktop staging/linux-ppc64/UpdateManager/scripts/xdg/ || _die "Failed to copy the startup pick desktop"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-ppc || _die "Failed to build the installer for linux-ppc64"
 
-    mv $WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-linux-ppc.bin $WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-linux-ppc64.bin 
+    mv $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-linux-ppc.bin $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-linux-ppc64.bin 
 
     cd $WD
 }

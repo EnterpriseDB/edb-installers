@@ -1,13 +1,13 @@
 <project>
   <!-- Package details -->
   <shortName>stackbuilderplus</shortName>
-  <fullName>StackBuilderPlus_PG_PG_VERSION_STR</fullName>
+  <fullName>StackBuilderPlus</fullName>
   <version>PG_VERSION_SBP-PG_BUILDNUM_SBP</version>
   <!-- These options are used on Windows -->
   <startMenuGroupName>${branding}</startMenuGroupName>
   <!-- Product Specific Options -->
   <productComments>Application Stack Builder Plus for the PostgreSQL</productComments>
-  <productDisplayName>StackBuilder Plus (PG PG_MAJOR_VERSION) ${productVersion}</productDisplayName>
+  <productDisplayName>StackBuilder Plus ${productVersion}</productDisplayName>
   <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
   <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
   <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
@@ -21,7 +21,7 @@
   <height>400</height>
 
   <!-- Misc options -->
-  <installerFilename>${product_shortname}-pg_PG_VERSION_STR-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+  <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
   <windowsSoftwareRegistryPrefix/>
   <wrapLicenseFileText>0</wrapLicenseFileText>
   <compressionAlgorithm>lzma</compressionAlgorithm>
@@ -51,19 +51,19 @@
 
   <preShowHelpActionList>
     <!-- MAC : Set the default installation directory -->
-    <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/PG_MAJOR_VERSION/StackBuilderPlus">
+    <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/Shared/StackBuilderPlus">
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </setInstallerVariable>
     <!-- LIN : Set the default installation directory -->
-    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgresPlus/PG_MAJOR_VERSION/StackBuilderPlus">
+    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgresPlus/Shared/StackBuilderPlus">
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
       </ruleList>
     </setInstallerVariable>
     <!-- WIN : Set the default installation directory -->
-    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgresPlus\PG_MAJOR_VERSION\StackBuilderPlus">
+    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgresPlus\Shared\StackBuilderPlus">
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
@@ -135,18 +135,110 @@
             </ruleList>
         </setInstallerVariable>
 
-        <setInstallerVariable name="iMonitorServer" value="" />
-
+        <!-- Check if UpdateMonitoring is installed for PPSS 8.4 version, disable it if found -->
+         <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_8_4" key="InstallationDirectory" variable="oldinstalldir">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </iniFileGet>
+        <registryGet name="InstallationDirectory" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_PG_8_4" variable="oldinstalldir">
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </registryGet>
+        <actionGroup>
+            <actionList>
+                <!-- Stop the montioring if installed, before UM exe name change -->
+                 <kill path="${oldinstalldir}\bin\UpdateManager.exe" >
+                   <abortOnError>0</abortOnError>
+                   <showMessageOnError>0</showMessageOnError>
+                   <ruleList>
+                     <compareText logic="equals" text="${platform_name}" value="windows"/>
+                     <fileExists path="${oldinstalldir}\bin\UpdateManager.exe" />
+                   </ruleList>
+                 </kill>
+                 <!-- Delete the UpdateManager.exe as the new name is UpdManager.exe -->
+                 <deleteFile path="${oldinstalldir}\bin\UpdateManager.exe">
+                   <ruleList>
+                     <fileExists path="${oldinstalldir}\bin\UpdateManager.exe" />
+                   </ruleList>
+                 </deleteFile>
+         
+                 <!-- Stop the montioring if installed, after UM exe name change -->
+                 <kill path="${oldinstalldir}\bin\UpdManager.exe" >
+                   <abortOnError>0</abortOnError>
+                   <showMessageOnError>0</showMessageOnError>
+                   <ruleList>
+                     <compareText logic="equals" text="${platform_name}" value="windows"/>
+                     <fileExists path="${oldinstalldir}\bin\UpdManager.exe" />
+                   </ruleList>
+                 </kill>
+                 <actionGroup>
+                   <actionList>
+                     <runProgram program="kill">
+                        <programArguments>-9 `ps ax | grep "${oldinstalldir}/bin/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+                        <abortOnError>0</abortOnError>
+                        <showMessageOnError>0</showMessageOnError>
+                     </runProgram>
+                   </actionList>
+                   <ruleList>
+                     <compareText logic="contains" text="${platform_name}" value="linux"/>
+                   </ruleList>
+                 </actionGroup>
+                 <actionGroup>
+                   <actionList>
+                     <runProgram program="kill">
+                        <programArguments>-9 `ps awx | grep "${oldinstalldir}/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+                        <abortOnError>0</abortOnError>
+                        <showMessageOnError>0</showMessageOnError>
+                     </runProgram>
+                   </actionList>
+                   <ruleList>
+                     <compareText logic="equals" text="${platform_name}" value="osx"/>
+                   </ruleList>
+                 </actionGroup>
+                 <actionGroup>
+                   <actionList>
+                     <!-- OSX: Remove the scripts from the startup items, if installed -->
+                     <deleteFile path="/Library/LaunchAgents/com.edb.launchd.stackbuilderplus.plist"
+                             showMessageOnError="0"
+                             abortOnError="0">
+                       <ruleList>
+                         <compareText text="${platform_name}" logic="equals" value="osx"/>
+                       </ruleList>
+                     </deleteFile>
+             
+                     <!-- WIN: Remove the UpdateMonitor Entry from the Registry as the Startup program -->
+                     <registryDelete key="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+                                     name="StackBuilderPlus8_4 Update Monitor"
+                                     showMessageOnError="0"
+                                     abortOnError="0"/>
+             
+                     <!-- LIN/LIN-X64: Remove UpdateMonitor Entry from the startup items, if installed -->
+                     <setInstallerVariable name="xdg_config_dir" value="${env(XDG_CONFIG_DIRS)}"/>
+                     <setInstallerVariable name="xdg_config_dir" value="/etc/xdg">
+                       <ruleList>
+                         <compareText text="${xdg_config_dir}" logic="equals" value=""/>
+                       </ruleList>
+                     </setInstallerVariable>
+                     <deleteFile path="${xdg_config_dir}/autostart/zzz-edb-sbp-pg_8_4-update-monitor.desktop">
+                       <ruleList>
+                         <fileExists path="${xdg_config_dir}/autostart/zzz-edb-sbp-pg_8_4-update-monitor.desktop"/>
+                       </ruleList>
+                     </deleteFile>
+                   </actionList>
+                 </actionGroup>          
+             </actionList>
+             <ruleList>
+                  <compareText logic="does_not_equal" text="${oldinstalldir}" value=""/>
+             </ruleList>
+        </actionGroup> 
+                    
         <!-- LIN & MAC : Get the branding & check Previous Installation of -->
         <actionGroup>
           <actionList>
-            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Branding" variable="iBranding"/>
-            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Version" variable="iSBPVersion"/>
-            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="MonitorServer" variable="iMonitorServer">
-                <ruleList>
-                   <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
-                </ruleList>
-            </iniFileGet>
+            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Branding" variable="iBranding"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Version" variable="iSBPVersion"/>
           </actionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -157,9 +249,8 @@
         <actionGroup>
           <actionList>
             <!-- Get the branding -->
-            <registryGet name="Branding" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" variable="iBranding"/>
-            <registryGet name="Version" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" variable="iSBPVersion"/>
-            <registryGet name="MonitorServer" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" variable="iMonitorServer"/>
+            <registryGet name="Branding" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus" variable="iBranding"/>
+            <registryGet name="Version" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus" variable="iSBPVersion"/>
           </actionList>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -178,7 +269,7 @@
         </setInstallerVariable>
 
         <!-- New install, nothing set on the command line -->
-        <setInstallerVariable name="branding" persist="1" value="Postgres Plus Standard Server PG_MAJOR_VERSION">
+        <setInstallerVariable name="branding" persist="1" value="Postgres Plus Addons">
           <ruleList>
             <compareText logic="equals" text="${branding}" value=""/>
           </ruleList>
@@ -202,7 +293,7 @@
         <!-- Set the installation directory in case of re-install/upgrade -->
         <actionGroup>
           <actionList>
-            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="InstallationDirectory" variable="installdir"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="InstallationDirectory" variable="installdir"/>
           </actionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
@@ -210,14 +301,14 @@
           </ruleList>
         </actionGroup>
 
-        <registryGet name="InstallationDirectory" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" variable="installdir">
+        <registryGet name="InstallationDirectory" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus" variable="installdir">
           <ruleList>
             <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
         </registryGet>
         <!-- MAC : Set the default installation directory -->
-        <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/PG_MAJOR_VERSION/StackBuilderPlus">
+        <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/Shared/StackBuilderPlus">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="osx"/>
             <compareText logic="equals" text="${iSBPVersion}" value=""/>
@@ -225,7 +316,7 @@
         </setInstallerVariable>
 
         <!-- LIN : Set the default installation directory -->
-        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgresPlus/PG_MAJOR_VERSION/StackBuilderPlus">
+        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgresPlus/Shared/StackBuilderPlus">
           <ruleList>
             <compareText logic="contains" text="${platform_name}" value="linux"/>
             <compareText logic="equals" text="${iSBPVersion}" value=""/>
@@ -233,7 +324,7 @@
         </setInstallerVariable>
 
         <!-- SOLARIS : Set the default installation directory -->
-        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgresPlus/PG_MAJOR_VERSION/StackBuilderPlus">
+        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgresPlus/Shared/StackBuilderPlus">
           <ruleList>
             <compareText logic="contains" text="${platform_name}" value="solaris"/>
             <compareText logic="equals" text="${iSBPVersion}" value=""/>
@@ -241,7 +332,7 @@
         </setInstallerVariable>
 
         <!-- WIN : Set the default installation directory -->
-        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgresPlus\PG_MAJOR_VERSION\StackBuilderPlus">
+        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgresPlus\Shared\StackBuilderPlus">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
             <compareText logic="equals" text="${iSBPVersion}" value=""/>
@@ -305,7 +396,7 @@
         <actionGroup>
           <actionList>
             <runProgram program="kill">
-               <programArguments>-9 `ps -ef | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+               <programArguments>-9 `ps -ef | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $2}'`</programArguments>
                <abortOnError>0</abortOnError>
                <showMessageOnError>0</showMessageOnError>
             </runProgram>
@@ -318,66 +409,31 @@
 
         <componentSelection>
           <select>updatemanager</select>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
           <ruleList>
-            <compareText logic="does_not_equal" text="${iMonitorServer}" value=""/>
-            <isTrue value="${installMonitoring}" />
+            <ruleGroup>
+                <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                <ruleList>
+                    <fileExists path="${installdir}/bin/UpdateManager" />
+                    <isTrue value="${installMonitoring}" />
+                </ruleList>
+            </ruleGroup>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
           </ruleList>
         </componentSelection>
-
-        <actionGroup>
-           <actionList>
-               <setInstallerVariable name="chkVersion" value="" />  
-               <iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${monitorServer}" key="Version" variable="chkVersion">
-                  <ruleList>
-                     <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                  </ruleList>
-               </iniFileGet>
-               <iniFileGet file="/etc/postgres-reg.ini" section="EnterpriseDB/${monitorServer}AS" key="Version" variable="chkVersion">
-                  <ruleList>
-                     <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                     <compareText logic="equals" text="${chkVersion}" value=""/>
-                  </ruleList>
-               </iniFileGet>
-               <registryGet name="Version" key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${monitorServer}" variable="chkVersion">
-                  <ruleList>
-                     <compareText logic="equals" text="${platform_name}" value="windows"/>
-                  </ruleList>
-               </registryGet>
-               <registryGet name="Version" key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\pgplusas-${monitorServer}" variable="chkVersion">
-                  <ruleList>
-                     <compareText logic="equals" text="${platform_name}" value="windows"/>
-                     <compareText logic="equals" text="${chkVersion}" value=""/>
-                  </ruleList>
-               </registryGet>
-
-               <showWarning text="${msg(monitor.server.version.warning)}" >
-                  <ruleList>
-                     <compareText logic="equals" text="${chkVersion}" value=""/>
-                  </ruleList>
-               </showWarning>
-
-               <setInstallerVariable name="monitorServer" value="">
-                  <ruleList>
-                     <compareText logic="equals" text="${chkVersion}" value=""/>
-                  </ruleList>
-               </setInstallerVariable>
-            </actionList>
-            <ruleList>
-               <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-               <isTrue value="${installMonitoring}" />
-               <compareText logic="does_not_equal" text="${monitorServer}" value=""/>
-            </ruleList>
-        </actionGroup>
-
         <componentSelection>
           <select>updatemanager</select>
           <ruleList>
-            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-            <isTrue value="${installMonitoring}" />
-            <compareText logic="does_not_equal" text="${monitorServer}" value=""/>
+            <ruleGroup>
+                <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                <ruleList>
+                    <fileExists path="${installdir}\bin\UpdManager.exe" />
+                    <isTrue value="${installMonitoring}" />
+                </ruleList>
+            </ruleGroup>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
         </componentSelection>
+
       </actionList>
       <ruleList>
         <isFalse value="${extract_mode}"/>
@@ -399,11 +455,10 @@
     
         <actionGroup>
           <actionList>
-            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Description" value="${msg(install.summary)}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="InstallationDirectory" value="${installdir}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Version" value="${product_version}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="MonitorServer" value="${monitorServer}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="InstallationDate" value="${installDate}">
+            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Description" value="${msg(install.summary)}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="InstallationDirectory" value="${installdir}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Version" value="${product_version}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="InstallationDate" value="${installDate}">
               <ruleList>
                 <compareText logic="equals" text="${iSBPVersion}" value=""/>
               </ruleList>
@@ -417,17 +472,16 @@
         <!-- Branding info -->
         <logMessage text="Write the branding to the ini file..."/>
     
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Branding" value="${branding}">
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Branding" value="${branding}">
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
           </ruleList>
         </iniFileSet>
-        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" name="Description" value="${msg(install.summary)}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" name="InstallationDirectory" value="${installdir}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" name="Version" value="${product_version}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" name="Branding" value="${branding}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" name="MonitorServer" value="${monitorServer}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_PG_PG_VERSION_STR" name="InstallationDate" value="${installDate}">
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus" name="Description" value="${msg(install.summary)}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus" name="InstallationDirectory" value="${installdir}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus" name="Version" value="${product_version}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus" name="Branding" value="${branding}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus" name="InstallationDate" value="${installDate}">
             <ruleList>
               <compareText logic="equals" text="${iSBPVersion}" value=""/>
             </ruleList>
@@ -436,7 +490,6 @@
           <files>${installdir}/scripts/launchSBPUpdateMonitor.vbs</files>
           <substitutionList>
              <substitution pattern="INSTALL_DIR" value="${installdir}"/>
-             <substitution pattern="MONITOR_SERVER" value="${monitorServer}"/>
           </substitutionList>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -447,7 +500,6 @@
           <files>${installdir}/scripts/launchSBPUpdateMonitor.sh</files>
           <substitutionList>
              <substitution pattern="INSTALL_DIR" value="${installdir}"/>
-             <substitution pattern="MONITOR_SERVER" value="${monitorServer}"/>
              <substitution pattern="BRANDING" value="${branding}"/>
           </substitutionList>
           <ruleList>
@@ -462,15 +514,13 @@
               <files>${installdir}/installer/StackBuilderPlus/createshortcuts.sh</files>
               <substitutionList>
                 <substitution pattern="@@INSTALL_DIR@@" value="${installdir}"/>
-                <substitution pattern="@@PG_VERSION@@" value="PG_MAJOR_VERSION"/>
                 <substitution pattern="@@BRANDING@@" value="${branding}"/>
               </substitutionList>
             </substitute>
             <substitute>
-              <files>${installdir}/scripts/xdg/edb-stackbuilderplus-pg_PG_VERSION_STR-update-monitor.desktop</files>
+              <files>${installdir}/scripts/xdg/edb-stackbuilderplus-update-monitor.desktop</files>
               <substitutionList>
                 <substitution pattern="@@INSTALL_DIR@@" value="${installdir}"/>
-                <substitution pattern="@@PG_VERSION@@" value="PG_MAJOR_VERSION"/>
               </substitutionList>
             </substitute>
     
@@ -515,13 +565,13 @@
           <actionList>
             <!-- WIN: Register launchSBPUpdateMonitor script as a startup script -->
             <registrySet key="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
-                         name="StackBuilderPlusPG_VERSION_STR Update Monitor"
-                         value="&quot;${installdir}\bin\UpdManager.exe&quot; --server ${monitorServer} --execute  &quot;${installdir}\bin\stackbuilderplus.exe&quot;"/>
+                         name="StackBuilderPlus Update Monitor"
+                         value="&quot;${installdir}\bin\UpdManager.exe&quot; --execute  &quot;${installdir}\bin\stackbuilderplus.exe&quot;"/>
     
             <actionGroup>
                <actionList>
                    <runProgram program="${installdir}/installer/StackBuilderPlus/startupcfg.sh"
-                               programArguments="${installdir} ${monitorServer} &quot;${branding}&quot;"
+                               programArguments="${installdir} &quot;${branding}&quot;"
                                abortOnError="0"
                                showMessageOnError="0"/>
                    <substitute>
@@ -576,24 +626,60 @@
                   <files>${installdir}/scripts/xdg/edb-sbp-update-monitor.desktop</files>
                   <substitutionList>
                     <substitution pattern="@@INSTALL_DIR@@" value="${installdir}"/>
-                    <substitution pattern="@@PG_VERSION@@" value="PG_MAJOR_VERSION"/>
                   </substitutionList>
                 </substitute>
     
                 <!-- Make sure, this will start after the gnome/kde system tray get initialized -->
                 <copyFile origin="${installdir}/scripts/xdg/edb-sbp-update-monitor.desktop"
-                          destination="${xdg_config_dir}/autostart/zzz-edb-sbp-pg_PG_VERSION_STR-update-monitor.desktop"/>
+                          destination="${xdg_config_dir}/autostart/zzz-edb-sbp-update-monitor.desktop"/>
               </actionList>
-              <ruleEvaluationLogic>or</ruleEvaluationLogic>
               <ruleList>
                 <compareText text="${platform_name}" logic="contains" value="linux"/>
+              </ruleList>
+            </actionGroup>
+
+            <!-- Add SBP UM launch script to gnome/default.session for autostart on user login -->    
+            <actionGroup>
+              <actionList>
+                 <readFile path="/usr/share/gnome/default.session" name="conf_file" />
+                 <setInstallerVariableFromRegEx>
+                    <name>num_client</name>
+                    <text>${conf_file}</text>
+                    <pattern>^.*num_clients\s*=\s*([\d]+)\s*.*$</pattern>
+                    <substitution>\1</substitution>
+                 </setInstallerVariableFromRegEx>
+                 <!-- Make it available in the uninstaller as well -->  
+                 <setInstallerVariable name="num_client" value="${num_client}" persist="1" />
+
+                 <mathExpression text="${num_client} + 1" variable="new_num_client" >
+                    <ruleList>
+                       <compareText text="${num_client}" logic="does_not_equal" value="" />
+                    </ruleList>
+                 </mathExpression>
+                 <substitute>
+                    <files>/usr/share/gnome/default.session</files>
+                    <substitutionList>
+                        <substitution>
+                             <pattern>num_clients=[\d]+</pattern> 
+                             <value>num_clients=${new_num_client}</value>
+                        </substitution>
+                    </substitutionList>
+                 </substitute>    
+                 <addTextToFile>
+                    <file>/usr/share/gnome/default.session</file>
+                    <text>${num_client},id=default${num_client}
+${num_client},Priority=50
+${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &amp;
+</text> 
+                 </addTextToFile>
+              </actionList>
+              <ruleList>
                 <compareText text="${platform_name}" logic="contains" value="solaris"/>
               </ruleList>
             </actionGroup>
-    
           </actionList>
           <ruleList>
-            <compareText text="${monitorServer}" logic="does_not_equal" value=""/>
+            <isTrue value="${component(updatemanager).selected}"/> 
           </ruleList>
         </actionGroup>
     
@@ -605,7 +691,7 @@
                     abortOnError="0">
           <ruleList>
             <compareText text="${platform_name}" logic="contains" value="linux"/>
-            <compareText text="${monitorServer}" logic="does_not_equal" value=""/>
+            <fileExists path="${installdir}/scripts/launchSBPUpdateMonitor.sh" />
           </ruleList>
        </runProgram>
        <runProgram program="${installdir}/scripts/launchSBPUpdateMonitor.sh"
@@ -615,7 +701,7 @@
                     abortOnError="0">
           <ruleList>
             <compareText text="${platform_name}" logic="contains" value="solaris"/>
-            <compareText text="${monitorServer}" logic="does_not_equal" value=""/>
+            <fileExists path="${installdir}/scripts/launchSBPUpdateMonitor.sh" />
           </ruleList>
         </runProgram>
         <runProgram program="${installdir}/scripts/LaunchUpdateManager.app/Contents/MacOS/applet"
@@ -625,7 +711,7 @@
                     abortOnError="0">
           <ruleList>
             <compareText text="${platform_name}" logic="equals" value="osx"/>
-            <compareText text="${monitorServer}" logic="does_not_equal" value=""/>
+            <fileExists path="${installdir}/scripts/LaunchUpdateManager.app/Contents/MacOS/applet" />
           </ruleList>
         </runProgram>
     
@@ -637,7 +723,7 @@
             <abortOnError>0</abortOnError>
             <ruleList>
                <compareText text="${platform_name}" logic="equals" value="windows"/>
-               <compareText text="${monitorServer}" logic="does_not_equal" value=""/>
+               <fileExists path="${installdir}\scripts\launchSBPUpdateMonitor.vbs" />
             </ruleList>
         </runProgram>
       </actionList>
@@ -651,7 +737,6 @@
           <files>${installdir}/scripts/launchSBPUpdateMonitor.vbs</files>
           <substitutionList>
              <substitution pattern="INSTALL_DIR" value="${installdir}"/>
-             <substitution pattern="MONITOR_SERVER" value="PG_MAJOR_VERSION"/>
           </substitutionList>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -662,7 +747,6 @@
           <files>${installdir}/scripts/launchSBPUpdateMonitor.sh</files>
           <substitutionList>
              <substitution pattern="INSTALL_DIR" value="${installdir}"/>
-             <substitution pattern="MONITOR_SERVER" value="PG_MAJOR_VERSION"/>
           </substitutionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -725,7 +809,7 @@
     <actionGroup>
       <actionList>
         <runProgram program="kill">
-           <programArguments>-9 `ps -ef | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+           <programArguments>-9 `ps -ef | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $2}'`</programArguments>
            <abortOnError>0</abortOnError>
            <showMessageOnError>0</showMessageOnError>
         </runProgram>
@@ -750,12 +834,11 @@
 
     <actionGroup>
       <actionList>
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Description" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="InstallationDirectory" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Version" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="Branding" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="MonitorServer" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_PG_VERSION_STR" key="InstallationDate" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Description" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="InstallationDirectory" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Version" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Branding" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="InstallationDate" value=""/>
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -775,7 +858,7 @@
 
         <!-- WIN: Remove the UpdateMonitor Entry from the Registry as the Startup program -->
         <registryDelete key="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
-                        name="StackBuilderPlusPG_VERSION_STR Update Monitor"
+                        name="StackBuilderPlus Update Monitor"
                         showMessageOnError="0"
                         abortOnError="0"/>
 
@@ -786,25 +869,60 @@
             <compareText text="${xdg_config_dir}" logic="equals" value=""/>
           </ruleList>
         </setInstallerVariable>
-        <deleteFile path="${xdg_config_dir}/autostart/zzz-edb-sbp-pg_PG_VERSION_STR-update-monitor.desktop">
+        <deleteFile path="${xdg_config_dir}/autostart/zzz-edb-sbp-update-monitor.desktop">
           <ruleList>
-            <fileExists path="${xdg_config_dir}/autostart/zzz-edb-sbp-pg_PG_VERSION_STR-update-monitor.desktop"/>
+            <fileExists path="${xdg_config_dir}/autostart/zzz-edb-sbp-update-monitor.desktop"/>
           </ruleList>
         </deleteFile>
 
       </actionList>
-      <ruleList>
-        <compareText text="${monitorServer}" logic="does_not_equal" value=""/>
-      </ruleList>
     </actionGroup>
-
+    <readFile path="/usr/share/gnome/default.session" name="conf_file" >
+       <ruleList>
+         <compareText logic="contains" text="${platform_name}" value="solaris"/>
+       </ruleList>
+    </readFile>
+    <actionGroup>
+      <actionList>
+          <setInstallerVariableFromRegEx>
+             <name>current_num_client</name>
+             <text>${conf_file}</text>
+             <pattern>^.*num_clients\s*=\s*([\d]+)\s*.*$</pattern>
+             <substitution>\1</substitution>
+          </setInstallerVariableFromRegEx>
+          <mathExpression text="${current_num_client} - 1" variable="new_num_client" >
+             <ruleList>
+                <compareText text="${current_num_client}" logic="does_not_equal" value="" />
+             </ruleList>
+          </mathExpression>
+          <substitute>
+             <files>/usr/share/gnome/default.session</files>
+             <substitutionList>
+                 <substitution>
+                      <pattern>num_clients=[\d]+</pattern>
+                      <value>num_clients=${new_num_client}</value>
+                 </substitution>
+                 <substitution>
+                      <pattern>${num_client},id=default${num_client}
+${num_client},Priority=50
+${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &amp;
+</pattern>
+                      <value/>
+                 </substitution>
+             </substitutionList>
+          </substitute>
+       </actionList>
+       <ruleList>
+         <regExMatch text="${conf_file}" pattern="${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &amp;" />
+         <compareText logic="contains" text="${platform_name}" value="solaris"/>
+       </ruleList>
+    </actionGroup>
     <actionGroup>
       <actionList>
         <substitute>
           <files>${installdir}/installer/StackBuilderPlus/removeshortcuts.sh</files>
           <substitutionList>
             <substitution pattern="@@INSTALL_DIR@@" value="${installdir}"/>
-            <substitution pattern="@@PG_VERSION@@" value="PG_MAJOR_VERSION"/>
             <substitution pattern="@@BRANDING@@" value="${branding}"/>
           </substitutionList>
         </substitute>
@@ -1000,60 +1118,6 @@
     <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
     <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
     <booleanParameter name="installMonitoring" cliOptionName="install-monitoring" ask="0" cliOptionShow="0" default="0"/>
-    <parameterGroup>
-       <name>monitorServerSelection</name>
-       <title>${msg(monitor.server.title)}</title>
-       <description/>
-       <explanation>${msg(monitor.server.explanation)}</explanation>
-       <default/>
-       <parameterList>
-          <!-- Ask for which server to monitor -->
-          <stringParameter>
-              <name>monitorServer</name>
-              <description>Server Version</description>
-              <allowEmptyValue>0</allowEmptyValue>
-              <default>${iMonitorServer}</default>
-              <value/>
-              <cliOptionName>server</cliOptionName>
-              <cliOptionShow>0</cliOptionShow>
-          </stringParameter>
-       </parameterList>
-       <ruleList>
-            <isTrue value="${installMonitoring}" />
-            <compareText logic="equals" text="${iSBPVersion}" value=""/>
-       </ruleList>
-       <validationActionList>
-            <setInstallerVariable name="chkVersion" value="" />
-            <iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${monitorServer}" key="Version" variable="chkVersion">
-              <ruleList>
-                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-              </ruleList>
-            </iniFileGet>
-            <iniFileGet file="/etc/postgres-reg.ini" section="EnterpriseDB/${monitorServer}AS" key="Version" variable="chkVersion">
-              <ruleList>
-                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                 <compareText logic="equals" text="${chkVersion}" value=""/>
-              </ruleList>
-            </iniFileGet>
-            <registryGet name="Version" key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${monitorServer}" variable="chkVersion">
-              <ruleList>
-                 <compareText logic="equals" text="${platform_name}" value="windows"/>
-              </ruleList>
-            </registryGet>
-            <registryGet name="Version" key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\pgplusas-${monitorServer}" variable="chkVersion">
-              <ruleList>
-                 <compareText logic="equals" text="${platform_name}" value="windows"/>
-                 <compareText logic="equals" text="${chkVersion}" value=""/>
-              </ruleList>
-            </registryGet>
-
-            <throwError text="${msg(monitor.server.version.invalid)}" >
-              <ruleList>
-                 <compareText logic="equals" text="${chkVersion}" value=""/>
-              </ruleList>
-            </throwError>
-       </validationActionList>
-    </parameterGroup>
 
     <directoryParameter>
       <name>installdir</name>

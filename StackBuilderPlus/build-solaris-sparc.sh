@@ -144,7 +144,8 @@ EOT
     ssh $PG_SSH_SOLARIS_SPARC "cp /usr/lib/64/libz.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libz.so) in staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "cp /usr/sfw/lib/64/libfreetype.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libfreetype.so) in staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "cp /usr/lib/64/libfontconfig.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libfontconfig.so) in staging directory (solaris-sparc)"
-    ssh $PG_SSH_SOLARIS_SPARC "cp /usr/lib/64/libpango* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp /usr/lib/64/libpango-* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp /usr/lib/64/libpangoft2* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (solaris-sparc)"
 
     scp -r $PG_SSH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/* $WD/StackBuilderPlus/staging/solaris-sparc/ || _die "Failed to copy back the staging directory from Solaris VM"
 
@@ -182,18 +183,15 @@ _postprocess_stackbuilderplus_solaris_sparc() {
     cp $WD/scripts/xdg/xdg* staging/solaris-sparc/installer/xdg || _die "Failed to copy the xdg scripts (scripts/xdg/*)"
     chmod ugo+x staging/solaris-sparc/installer/xdg/xdg*
 
-    # Version string, for the xdg filenames
-    PG_VERSION_STR=`echo $PG_MAJOR_VERSION | sed 's/\./_/g'`
-
     mkdir -p staging/solaris-sparc/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/edb-stackbuilderplus.png staging/solaris-sparc/scripts/images/edb-stackbuilderplus-$PG_VERSION_STR.png  || _die "Failed to copy the menu pick images (resources/edb-stackbuilderplus.png)"
-    cp resources/pg-postgresql.png staging/solaris-sparc/scripts/images/pg-postgresql-$PG_VERSION_STR.png  || _die "Failed to copy the menu pick images (pg-postgresql.png)"
+    cp resources/edb-stackbuilderplus.png staging/solaris-sparc/scripts/images/ || _die "Failed to copy the menu pick images (resources/edb-stackbuilderplus.png)"
+    cp resources/pg-postgresql.png staging/solaris-sparc/scripts/images/ || _die "Failed to copy the menu pick images (pg-postgresql.png)"
 
     mkdir -p staging/solaris-sparc/scripts/xdg || _die "Failed to create a directory for the menu pick items"
     mkdir -p staging/solaris-sparc/UpdateManager/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp resources/xdg/pg-postgresql.directory staging/solaris-sparc/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/edb-stackbuilderplus.desktop staging/solaris-sparc/scripts/xdg/edb-stackbuilderplus-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
-    cp resources/xdg/edb-sbp-update-monitor.desktop staging/solaris-sparc/UpdateManager/scripts/xdg/edb-sbp-update-monitor.desktop || _die "Failed to copy the startup pick desktop"
+    cp resources/xdg/pg-postgresql.directory staging/solaris-sparc/scripts/xdg/ || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/edb-stackbuilderplus.desktop staging/solaris-sparc/scripts/xdg/ || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/edb-sbp-update-monitor.desktop staging/solaris-sparc/UpdateManager/scripts/xdg/ || _die "Failed to copy the startup pick desktop"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-sparc || _die "Failed to build the installer for solaris-sparc"

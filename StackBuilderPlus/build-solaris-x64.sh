@@ -144,7 +144,8 @@ EOT
     ssh $PG_SSH_SOLARIS_X64 "cp /usr/lib/64/libz.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libz.so) in staging directory (solaris-x64)"
     ssh $PG_SSH_SOLARIS_X64 "cp /usr/sfw/lib/64/libfreetype.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libfreetype.so) in staging directory (solaris-x64)"
     ssh $PG_SSH_SOLARIS_X64 "cp /usr/lib/64/libfontconfig.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libfontconfig.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/lib/64/libpango* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp /usr/lib/64/libpango-* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp /usr/lib/64/libpangoft2* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (solaris-x64)"
 
     scp -r $PG_SSH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/* $WD/StackBuilderPlus/staging/solaris-x64/ || _die "Failed to copy back the staging directory from Solaris VM"
 
@@ -182,22 +183,19 @@ _postprocess_stackbuilderplus_solaris_x64() {
     cp $WD/scripts/xdg/xdg* staging/solaris-x64/installer/xdg || _die "Failed to copy the xdg scripts (scripts/xdg/*)"
     chmod ugo+x staging/solaris-x64/installer/xdg/xdg*
 
-    # Version string, for the xdg filenames
-    PG_VERSION_STR=`echo $PG_MAJOR_VERSION | sed 's/\./_/g'`
-
     mkdir -p staging/solaris-x64/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/edb-stackbuilderplus.png staging/solaris-x64/scripts/images/edb-stackbuilderplus-$PG_VERSION_STR.png  || _die "Failed to copy the menu pick images (resources/edb-stackbuilderplus.png)"
-    cp resources/pg-postgresql.png staging/solaris-x64/scripts/images/pg-postgresql-$PG_VERSION_STR.png  || _die "Failed to copy the menu pick images (pg-postgresql.png)"
+    cp resources/edb-stackbuilderplus.png staging/solaris-x64/scripts/images/  || _die "Failed to copy the menu pick images (resources/edb-stackbuilderplus.png)"
+    cp resources/pg-postgresql.png staging/solaris-x64/scripts/images/  || _die "Failed to copy the menu pick images (pg-postgresql.png)"
 
     mkdir -p staging/solaris-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
     mkdir -p staging/solaris-x64/UpdateManager/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp resources/xdg/pg-postgresql.directory staging/solaris-x64/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/edb-stackbuilderplus.desktop staging/solaris-x64/scripts/xdg/edb-stackbuilderplus-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
-    cp resources/xdg/edb-sbp-update-monitor.desktop staging/solaris-x64/UpdateManager/scripts/xdg/edb-sbp-update-monitor.desktop || _die "Failed to copy the startup pick desktop"
+    cp resources/xdg/pg-postgresql.directory staging/solaris-x64/scripts/xdg/ || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/edb-stackbuilderplus.desktop staging/solaris-x64/scripts/xdg/ || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/edb-sbp-update-monitor.desktop staging/solaris-x64/UpdateManager/scripts/xdg/ || _die "Failed to copy the startup pick desktop"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-intel || _die "Failed to build the installer for solaris-x64"
-    mv $WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-solaris-intel.bin  $WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-solaris-x64.bin
+    mv $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-solaris-intel.bin  $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-solaris-x64.bin
    
     cd $WD
 }

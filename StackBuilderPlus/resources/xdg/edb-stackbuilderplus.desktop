@@ -3,6 +3,6 @@ Version=1.0
 Encoding=UTF-8
 Name=StackBuilder Plus
 Exec="INSTALL_DIR/scripts/launchStackBuilderPlus.sh"
-Icon=edb-stackbuilderplus-PG_VERSION_STR.png
+Icon=edb-stackbuilderplus.png
 Terminal=false
 Type=Application

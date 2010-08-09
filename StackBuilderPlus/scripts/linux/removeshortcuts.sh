@@ -1,21 +1,17 @@
 #!/bin/sh
 
 INSTALLDIR="@@INSTALL_DIR@@"
-PG_VERSION=@@PG_VERSION@@
 BRANDING="@@BRANDING@@"
-
-# Version string, for the xdg filenames
-PG_VERSION_STR=`echo $PG_VERSION | sed 's/\./_/g'`
 
 # Branding string, for the xdg filenames. If the branding is 'PostgreSQL X.Y',
 # Don't do anything to ensure we remain backwards compatible.
-if [ "x$BRANDING" = "xPostgreSQL $PG_VERSION" ];
+if [ "x$BRANDING" = "xPostgres Plus Addons" ];
 then
-    BRANDING_STR="postgresql-$PG_VERSION_STR"
+    BRANDING_STR="postgresql"
     BRANDED=0
 else
     BRANDING_STR=`echo $BRANDING | sed 's/\./_/g' | sed 's/ /_/g'`
-	BRANDED=1
+    BRANDED=1
 fi
 
 # Exit code
@@ -43,10 +39,10 @@ _replace() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system   \
-    "$INSTALLDIR/scripts/xdg/edb-stackbuilderplus-$PG_VERSION_STR.desktop" || _warn "Failed to remove the StackBuilderPlus item"
+    "$INSTALLDIR/scripts/xdg/edb-stackbuilderplus.desktop" || _warn "Failed to remove the StackBuilderPlus item"
       
 # Remove the icon resources
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/edb-stackbuilderplus-$PG_VERSION_STR.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/edb-stackbuilderplus.png"
 
 # Only remove the directory file if it's branded
 if [ $BRANDED -ne 0 ];
@@ -67,7 +63,7 @@ done
 xdg_global_dir="$xdg_global_dir/applications-merged"
 
 # Hack up the XDG menu files to make sure everything really does go.
-_replace "<Filename>edb-stackbuilderplus-$PG_VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
+_replace "<Filename>edb-stackbuilderplus.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
 
 #Ubuntu 10.04 and greater require menu cache update
 

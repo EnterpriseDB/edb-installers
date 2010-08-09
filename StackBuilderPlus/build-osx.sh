@@ -158,24 +158,24 @@ _postprocess_stackbuilderplus_osx() {
         # Build the installer (for the root privileges required)
         echo Building the installer with the root privileges required
         "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
-        cp $WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/Contents/MacOS/psqlODBC $WD/scripts/risePrivileges || _die "Failed to copy privileges escalation applet"
-        rm -rf $WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app
+        cp $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/Contents/MacOS/psqlODBC $WD/scripts/risePrivileges || _die "Failed to copy privileges escalation applet"
+        rm -rf $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app
     fi
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer (StackBuilderPlus)"
 
     # Using own scripts for extract-only mode
-    cp -f $WD/scripts/risePrivileges $WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/Contents/MacOS/StackBuilderPlus
-    chmod a+x $WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/Contents/MacOS/StackBuilderPlus
-    cp -f $WD/resources/extract_installbuilder.osx $WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/Contents/MacOS/installbuilder.sh
-    _replace @@PROJECTNAME@@ StackBuilderPlus $WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/Contents/MacOS/installbuilder.sh
-    chmod a+x $WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/Contents/MacOS/installbuilder.sh
+    cp -f $WD/scripts/risePrivileges $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/Contents/MacOS/StackBuilderPlus
+    chmod a+x $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/Contents/MacOS/StackBuilderPlus
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ StackBuilderPlus $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/Contents/MacOS/installbuilder.sh
+    chmod a+x $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/Contents/MacOS/installbuilder.sh
 
     # Zip up the output
     cd $WD/output
-    zip -r stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.zip stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/ || _die "Failed to zip the installer bundle"
-    rm -rf stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/ || _die "Failed to remove the unpacked installer bundle"
+    zip -r stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.zip stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/ || _die "Failed to remove the unpacked installer bundle"
     
 }
 

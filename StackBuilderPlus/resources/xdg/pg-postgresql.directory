@@ -2,6 +2,6 @@
 Version=1.0
 Type=Directory
 Name=PG_BRANDING
-Comment=PostgreSQL PG_MAJOR_VERSION, packaged by EnterpriseDB
+Comment=PostgresPlus , packaged by EnterpriseDB
 Encoding=UTF-8
-Icon=pg-postgresql-PG_VERSION_STR.png
+Icon=pg-postgresql.png

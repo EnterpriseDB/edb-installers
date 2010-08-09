@@ -184,7 +184,7 @@ _postprocess_stackbuilderplus_windows() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
 	# Sign the installer
-	win32_sign "stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-windows.exe"
+	win32_sign "stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-windows.exe"
 	
     cd $WD
 }

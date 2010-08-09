@@ -192,12 +192,9 @@ _postprocess_stackbuilderplus() {
     fi
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (StackBuilderPlus/installer.xml.in)"
 
-    PG_VERSION_STR=`echo $PG_MAJOR_VERSION | sed -e 's/\./_/'`
     
     _replace PG_VERSION_SBP $PG_VERSION_SBP installer.xml || _die "Failed to set the version in the installer project file (StackBuilderPlus/installer.xml)"
     _replace PG_BUILDNUM_SBP $PG_BUILDNUM_SBP installer.xml || _die "Failed to set the Build Number in the installer project file (StackBuilderPlus/installer.xml)"
-    _replace PG_VERSION_STR $PG_VERSION_STR installer.xml || _die "Failed to set the Build Number in the installer project file (StackBuilderPlus/installer.xml)"
-    _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION installer.xml || _die "Failed to set the Build Number in the installer project file (StackBuilderPlus/installer.xml)"
    
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

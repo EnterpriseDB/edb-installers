@@ -1,15 +1,14 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 3 ]; 
+if [ $# -ne 2 ]; 
 then
-echo "Usage: $0 <Install dir> <Monitor_Version> <Branding>"
+echo "Usage: $0 <Install dir> <Branding>"
     exit 127
 fi
 
 INSTALLDIR=$1
-MONITOR_VERSION=$2
-BRANDING="$3"
+BRANDING="$2"
 
 # Exit code
 WARN=0
@@ -34,7 +33,6 @@ _replace() {
 # Compile a script - _compile_script($in.applescript, $out.app)
 _compile_script() {
     _replace INSTALL_DIR $INSTALLDIR $1
-    _replace MONITOR_VERSION $MONITOR_VERSION $1
     _replace BRANDING "$BRANDING" $1
     osacompile -x -o "$2" "$1" || _die "Failed to compile the script ($1)"
 }

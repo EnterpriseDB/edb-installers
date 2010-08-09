@@ -97,8 +97,11 @@ _build_stackbuilderplus_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libz.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib" || _die "Failed to copy dependent library (libz.so) in staging directory (linux-x64)"
     ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libfreetype.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib" || _die "Failed to copy dependent library (libfreetype.so) in staging directory (linux-x64)"
     ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libfontconfig.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib" || _die "Failed to copy dependent library (libfontconfig.so) in staging directory (linux-x64)"
-    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libpango* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (linux-x64)"
+    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libpango-* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (linux-x64)"
+    ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libpangoft2* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (linux-x64)"
 
+   ssh $PG_SSH_LINUX_X64 "chmod a+r $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib/*" || _die "Failed to set the permissions on the lib directory"
+   ssh $PG_SSH_LINUX_X64 "chmod a+r $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/UpdateManager/lib/*" || _die "Failed to set the permissions on the lib directory"
     cd $WD
 }
 
@@ -133,18 +136,15 @@ _postprocess_stackbuilderplus_linux_x64() {
     cp $WD/scripts/xdg/xdg* staging/linux-x64/installer/xdg || _die "Failed to copy the xdg scripts (scripts/xdg/*)"
     chmod ugo+x staging/linux-x64/installer/xdg/xdg*
 
-    # Version string, for the xdg filenames
-    PG_VERSION_STR=`echo $PG_MAJOR_VERSION | sed 's/\./_/g'`
-
     mkdir -p staging/linux-x64/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/edb-stackbuilderplus.png staging/linux-x64/scripts/images/edb-stackbuilderplus-$PG_VERSION_STR.png  || _die "Failed to copy the menu pick images (resources/edb-stackbuilderplus.png)"
-    cp resources/pg-postgresql.png staging/linux-x64/scripts/images/pg-postgresql-$PG_VERSION_STR.png  || _die "Failed to copy the menu pick images (pg-postgresql.png)"
+    cp resources/edb-stackbuilderplus.png staging/linux-x64/scripts/images/ || _die "Failed to copy the menu pick images (resources/edb-stackbuilderplus.png)"
+    cp resources/pg-postgresql.png staging/linux-x64/scripts/images/  || _die "Failed to copy the menu pick images (pg-postgresql.png)"
 
     mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
     mkdir -p staging/linux-x64/UpdateManager/scripts/xdg || _die "Failed to create a directory for the menu pick items"
-    cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/edb-stackbuilderplus.desktop staging/linux-x64/scripts/xdg/edb-stackbuilderplus-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
-    cp resources/xdg/edb-sbp-update-monitor.desktop staging/linux-x64/UpdateManager/scripts/xdg/edb-sbp-update-monitor.desktop || _die "Failed to copy the startup pick desktop"
+    cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/ || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/edb-stackbuilderplus.desktop staging/linux-x64/scripts/xdg/ || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/edb-sbp-update-monitor.desktop staging/linux-x64/UpdateManager/scripts/xdg/ || _die "Failed to copy the startup pick desktop"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer for linux-x64"
