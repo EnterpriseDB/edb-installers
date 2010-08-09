@@ -184,11 +184,17 @@ cat <<EOT > "/var/svc/manifest/application/edb-xdbsubserver.xml"
 </service_bundle>
 EOT
 
-#Create directory for logs
+#Create directories for logs
 if [ ! -e $INSTALL_DIR/bin/logs ];
 then
     mkdir -p $INSTALL_DIR/bin/logs
     chown $SYSTEM_USER $INSTALL_DIR/bin/logs
+fi
+
+if [ ! -e /var/log/xdb ];
+then
+    mkdir -p /var/log/xdb
+    chown $SYSTEM_USER /var/log/xdb
 fi
 
 svccfg import /var/svc/manifest/application/edb-xdbsubserver.xml
