@@ -2110,6 +2110,14 @@ database=${controldb}
             </ruleList>
         </deleteFile> 
 
+        <!-- Delete the /var/log/xdb directory in *nix/Solaris -->
+        <deleteFile path="/var/log/xdb" >
+            <ruleList>
+                <fileExists path="/var/log/xdb" />
+                <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+            </ruleList>
+        </deleteFile> 
+
     </preUninstallationActionList>
     <allowComponentSelection>1</allowComponentSelection>
     <!-- Components -->

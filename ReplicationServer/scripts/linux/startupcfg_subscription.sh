@@ -113,13 +113,18 @@ EOT
 # Fixup the permissions on the StartupItems
 chmod 0755 "/etc/init.d/edb-xdbsubserver" || _warn "Failed to set the permissions on the startup script (/etc/init.d/edb-xdbsubserver)"
 
-#Create directory for logs
+#Create directories for logs
 if [ ! -e $INSTALL_DIR/bin/logs ];
 then
     mkdir -p $INSTALL_DIR/bin/logs
     chown $SYSTEM_USER $INSTALL_DIR/bin/logs
 fi
 
+if [ ! -e /var/log/xdb ];
+then
+    mkdir -p /var/log/xdb
+    chown $SYSTEM_USER /var/log/xdb
+fi
 
 # Configure the startup. On Redhat and friends we use chkconfig. On Debian, update-rc.d
 # These utilities aren't entirely standard, so use both from their standard locations on
