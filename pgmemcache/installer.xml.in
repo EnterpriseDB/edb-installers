@@ -814,6 +814,7 @@
                                 </compareText>
                             </ruleList>
                         </ruleGroup>
+                        <isFalse value="${extract_mode}"/>
                     </ruleList>
                 </actionGroup>
                 <actionGroup>
@@ -854,6 +855,7 @@
                                 </compareText>
                             </ruleList>
                         </ruleGroup>
+                        <isFalse value="${extract_mode}"/>
                     </ruleList>
                 </actionGroup>
             </validationActionList>
