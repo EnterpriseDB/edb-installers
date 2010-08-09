@@ -70,9 +70,13 @@ _build_pgmemcache_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgmemcache/source/pgmemcache.linux; PATH=\$PATH:$PG_PGHOME_LINUX/bin make " || _die "Failed to build pgmemcache"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgmemcache/source/pgmemcache.linux; PATH=\$PATH:$PG_PGHOME_LINUX/bin make install " || _die "Failed to install pgmemcache"
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/lib/postgresql/pgmemcache.so $PG_PATH_LINUX/pgmemcache/staging/linux/lib/; rm -f $PG_PGHOME_LINUX/lib/postgresql/pgmemcache.so" || _die "Failed to copy pgmemcache to staging directory"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgmemcache/staging/linux/lib/; chmod 755 pgmemcache.so"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgmemcache/staging/linux/lib/; for f in \`file pgmemcache.so | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/share/postgresql/contrib/pgmemcache.sql $PG_PATH_LINUX/pgmemcache/staging/linux/share/; rm -f $PG_PGHOME_LINUX/share/postgresql/contrib/pgmemcache.sql" || _die "Failed to copy pgmemcache sql to staging directory"
 
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/lib/libmemcached* $PG_PATH_LINUX/pgmemcache/staging/linux/lib/ ; rm -f $PG_PGHOME_LINUX/lib/libmemcached* " || _die "Failed to copy libmemcached to staging directory"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgmemcache/staging/linux/lib/; chmod 755 libmemcached*"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgmemcache/staging/linux/lib/; for f in \`file libmemcached* | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/lib/libhashkit* $PG_PATH_LINUX/pgmemcache/staging/linux/lib/ ; rm -f $PG_PGHOME_LINUX/lib/libhashkit* " || _die "Failed to copy libhashkit to staging directory"
     ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/include/postgresql/server/libmemcached $PG_PATH_LINUX/pgmemcache/staging/linux/include/; rm -rf $PG_PGHOME_LINUX/include/postgresql/server/libmemcached" || _die "Failed to copy libmemcached folder to staging directory"
     ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/include/postgresql/server/libhashkit $PG_PATH_LINUX/pgmemcache/staging/linux/include/; rm -rf $PG_PGHOME_LINUX/include/postgresql/server/libhashkit" || _die "Failed to copy libhashkit folder to staging directory"
