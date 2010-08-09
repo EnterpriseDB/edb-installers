@@ -796,6 +796,7 @@
                                 </compareText>
                             </ruleList>
                         </ruleGroup>
+			<isFalse value="${extract_mode}"/>
                     </ruleList>
                 </actionGroup>
                 <actionGroup>
@@ -836,6 +837,7 @@
                                 </compareText>
                             </ruleList>
                         </ruleGroup>
+			<isFalse value="${extract_mode}"/>
                     </ruleList>
                 </actionGroup>
             </validationActionList>
@@ -851,6 +853,7 @@
                            <logic>does_not_equal</logic>
                            <value>windows</value>
                         </compareText>
+			<isFalse value="${extract_mode}"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
                 <setInstallerVariableFromScriptOutput>
@@ -864,6 +867,7 @@
                            <logic>equals</logic>
                            <value>windows</value>
                         </compareText>
+			<isFalse value="${extract_mode}"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
                 <setInstallerVariableFromRegEx>
@@ -877,6 +881,7 @@
                              <text>${pg_version_str}</text>
                              <value/>
                         </compareText>
+			<isFalse value="${extract_mode}"/>
                       </ruleList>
                 </setInstallerVariableFromRegEx>
             </validationActionList>
@@ -896,6 +901,7 @@
                             <text>${pg_version}</text>
                             <value>PG_MAJOR_VERSION</value>            
                         </compareText>
+			<isFalse value="${extract_mode}"/>
                     </ruleList>
                 </actionGroup>
             </validationActionList>
