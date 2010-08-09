@@ -2405,6 +2405,17 @@ database=${controldb}
                     </distributionFileList>
                 </folder>
                 <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>pubserveretcfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux/repserver/etc/xdb_pubserver.conf</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
                     <description>Installer Scripts</description>
                     <destination>${installdir}</destination>
                     <name>pubserverinstallscriptslinux</name>
@@ -2450,6 +2461,17 @@ database=${controldb}
                         <distributionDirectory>
                             <origin>staging/linux-x64/repserver/lib</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>pubserveretcfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux-x64/repserver/etc/xdb_pubserver.conf</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -2501,6 +2523,17 @@ database=${controldb}
                     </distributionFileList>
                 </folder>
                 <folder>
+                    <description>PubServer lib Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>pubserveretcfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/osx/repserver/etc/xdb_pubserver.conf</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
                     <description>Installer Scripts</description>
                     <destination>${installdir}</destination>
                     <name>pubserverinstallscriptsosx</name>
@@ -2546,6 +2579,17 @@ database=${controldb}
                         <distributionDirectory>
                             <origin>staging/windows/repserver/lib</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>PubServer lib Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>pubserveretcfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/windows/repserver/etc/xdb_pubserver.conf</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -2606,6 +2650,17 @@ database=${controldb}
                     </distributionFileList>
                 </folder>
                 <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>subserveretcfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux/repserver/etc/xdb_subserver.conf</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
                     <description>Installer Scripts</description>
                     <destination>${installdir}</destination>
                     <name>subserverinstallscriptslinux</name>
@@ -2651,6 +2706,17 @@ database=${controldb}
                         <distributionDirectory>
                             <origin>staging/linux-x64/repserver/lib</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>subserveretcfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux-x64/repserver/etc/xdb_subserver.conf</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -2702,6 +2768,17 @@ database=${controldb}
                     </distributionFileList>
                 </folder>
                 <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>subserveretcfilesosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/osx/repserver/etc/xdb_subserver.conf</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
                     <description>Installer Scripts</description>
                     <destination>${installdir}</destination>
                     <name>subserverinstallscriptsosx</name>
@@ -2747,6 +2824,17 @@ database=${controldb}
                         <distributionDirectory>
                             <origin>staging/windows/repserver/lib</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>subserveretcfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/windows/repserver/etc/xdb_subserver.conf</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
