@@ -288,9 +288,7 @@
                 <!-- LIN | MAC : Exit the installation if the installdir is not valid (Unattended mode) -->
                 <actionGroup>
                     <actionList>
-                        <showWarning>
-                            <text>${msg(pgmemcache.installdir.pgerror)}</text>
-                        </showWarning>
+			<throwError text="${msg(pgmemcache.installdir.pgerror)}" />
                         <exit>
                             <exitCode>0</exitCode>
                         </exit>
@@ -336,9 +334,7 @@
                 <!-- WIN: Exit the installation if the installdir is not valid (Unattended mode) -->
                 <actionGroup>
                     <actionList>
-                        <showWarning>
-                            <text>${msg(pgmemcache.installdir.pgerror)}</text>
-                        </showWarning>
+			<throwError text="${msg(pgmemcache.installdir.pgerror)}" />
                         <exit>
                             <exitCode>0</exitCode>
                         </exit>
@@ -433,9 +429,7 @@
                </actionGroup>
                <actionGroup>
                    <actionList>
-                        <showWarning>
-                              <text>${msg(pgmemcache.incompatible.pg.error)}</text>
-                        </showWarning>
+			<throwError text="${msg(pgmemcache.incompatible.pg.error)}"/>
                         <exit>
                               <exitCode>0</exitCode>
                         </exit>
@@ -905,9 +899,7 @@
             <validationActionList>
                 <actionGroup>
                     <actionList>
-                        <showWarning>
-                            <text>${msg(pgmemcache.incompatible.pg.error)}</text>
-                        </showWarning>
+			<throwError text="${msg(pgmemcache.incompatible.pg.error)}"/>
                         <exit>
                             <exitCode>0</exitCode>
                         </exit>
