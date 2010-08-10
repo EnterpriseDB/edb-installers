@@ -120,10 +120,6 @@ _build_PostGIS_linux_ppc64() {
     echo "Building postgis-jdbc"
     ssh $PG_SSH_LINUX_PPC64 "cd $PG_PATH_LINUX_PPC64/PostGIS/source/postgis.linux-ppc64/java/jdbc ;CLASSPATH=$PG_PATH_LINUX_PPC64/PostGIS/source/postgresql-$PG_JAR_POSTGRESQL.jar:$CLASSPATH JAVA_HOME=$PG_JAVA_HOME_LINUX_PPC64 $PG_ANT_HOME_LINUX_PPC64/bin/ant" || _die "Failed to build postgis-jdbc"
    
-    echo "Building postgis-doc"
-    ssh $PG_SSH_LINUX_PPC64 "cd $PG_PATH_LINUX_PPC64/PostGIS/source/postgis.linux-ppc64/doc; make html" || _die "Failed to build postgis-doc"
-    ssh $PG_SSH_LINUX_PPC64 "cd $PG_PATH_LINUX_PPC64/PostGIS/source/postgis.linux-ppc64/doc; make install" || _die "Failed to install postgis-doc"
-    
     cd $WD/PostGIS
 
     mkdir -p staging/linux-ppc64/PostGIS
