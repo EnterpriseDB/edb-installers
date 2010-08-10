@@ -89,7 +89,7 @@ _postprocess_Slony_linux_x64() {
     chmod +r $WD/Slony/staging/linux-x64/lib/*
 
     mkdir -p $WD/Slony/staging/linux-x64/Slony
-    ssh $PG_SSH_LINUX_X64 "cp $PG_PGHOME_LINUX_X64/share/postgresql/slony*.sql $PG_STAGING/Slony" || _die "Failed to share files to staging directory"
+    ssh $PG_SSH_LINUX_X64 "cp $PG_PGHOME_LINUX_X64/share/postgresql/slony*.sql $PG_STAGING/Slony; chmod 755 $PG_STAGING/Slony/slony*.sql" || _die "Failed to share files to staging directory"
 
     mkdir -p staging/linux-x64/installer/Slony || _die "Failed to create a directory for the install scripts"
 
