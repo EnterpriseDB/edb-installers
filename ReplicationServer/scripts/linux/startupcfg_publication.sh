@@ -35,8 +35,8 @@ cat <<EOT > "/etc/init.d/edb-xdbpubserver"
 
 ### BEGIN INIT INFO
 # Provides:          edb-xdbpubserver
-# Required-Start:    $syslog
-# Required-Stop:     $syslog
+# Required-Start:    \$syslog 
+# Required-Stop:     \$syslog
 # Should-Start:  
 # Should-Stop:  
 # Default-Start:     2 3 4 5
@@ -47,11 +47,11 @@ cat <<EOT > "/etc/init.d/edb-xdbpubserver"
 
 start()
 {
-    PID=\`ps -aef | grep 'java -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
+       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
        exit 0
     else
        echo "Publication Service already running"
@@ -61,7 +61,7 @@ start()
 
 stop()
 {
-    PID=\`ps -aef | grep 'java -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -74,7 +74,7 @@ stop()
 
 status()
 {
-    PID=\`ps -aef | grep 'java -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -113,13 +113,7 @@ EOT
 # Fixup the permissions on the StartupItems
 chmod 0755 "/etc/init.d/edb-xdbpubserver" || _warn "Failed to set the permissions on the startup script (/etc/init.d/xdbpubserver)"
 
-#Create directories for logs
-if [ ! -e $INSTALL_DIR/bin/logs ]; 
-then
-    mkdir -p $INSTALL_DIR/bin/logs
-    chown $SYSTEM_USER $INSTALL_DIR/bin/logs
-fi
-
+#Create directory for logs
 if [ ! -e /var/log/xdb ]; 
 then
     mkdir -p /var/log/xdb

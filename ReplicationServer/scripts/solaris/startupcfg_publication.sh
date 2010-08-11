@@ -32,11 +32,11 @@ cat <<EOT > "/lib/svc/method/edb-xdbpubserver"
 
 start()
 {
-    PID=\`ps -aef | grep 'java -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
+       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
        exit 0
     else
        echo "Publication Service already running"
@@ -59,7 +59,7 @@ stop()
 
 status()
 {
-    PID=\`ps -aef | grep 'java -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -186,13 +186,7 @@ cat <<EOT > "/var/svc/manifest/application/edb-xdbpubserver.xml"
 EOT
 
 
-#Create directories for logs
-if [ ! -e $INSTALL_DIR/bin/logs ]; 
-then
-    mkdir -p $INSTALL_DIR/bin/logs
-    chown $SYSTEM_USER $INSTALL_DIR/bin/logs
-fi
-
+#Create directory for logs
 if [ ! -e /var/log/xdb ]; 
 then
     mkdir -p /var/log/xdb
