@@ -100,6 +100,7 @@ _build_ReplicationServer_solaris_sparc() {
     ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libssl.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libssl.so"
     ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libreadline.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libreadline.so"
     ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libxml2.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libxml2.so"
+    ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libxslt.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libxml2.so"
     ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libk5crypto.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libk5crypto.so"
     ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libcom_err.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libcom_err.so"
     ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp server/staging/solaris-sparc/lib/libkrb5.so* ReplicationServer/staging/solaris-sparc/instscripts/lib" || _die "Failed to copy libkrb5.so"

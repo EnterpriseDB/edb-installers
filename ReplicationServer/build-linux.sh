@@ -74,6 +74,7 @@ _build_ReplicationServer_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libreadline.so* ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy libreadline.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libtermcap.so* ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy libtermcap.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libxml2.so* ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy libxml2.so"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libxslt.so* ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy libxml2.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp MigrationToolKit/staging/linux/MigrationToolKit/lib/edb-migrationtoolkit.jar ReplicationServer/staging/linux/repserver/lib/repl-mtk" || _die "Failed to copy edb-migrationtoolkit.jar"
     cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/staging/linux/repconsole/lib/jdbc/ || _die "Failed to copy pg jdbc drivers" 
     cd $WD
