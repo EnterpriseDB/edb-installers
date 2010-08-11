@@ -8,8 +8,8 @@
     <startMenuGroupName>${branding}</startMenuGroupName>
 
     <!-- Product Specific Options -->
-    <productDisplayName>Slony ${productVersion} for Postgres ${PGMajorVersion}.${PG_MINOR_VERSION}</productDisplayName>
-    <productComments>Slony ${productVersion} for Postgres ${PGMajorVersion}.${PG_MINOR_VERSION}, packaged by EnterpriseDB</productComments>
+    <productDisplayName>Slony ${productVersion} for Postgres ${PGMajorVersion}.${PGMinorVersion}</productDisplayName>
+    <productComments>Slony ${productVersion} for Postgres ${PGMajorVersion}.${PGMinorVersion}, packaged by EnterpriseDB</productComments>
     <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
     <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
 
@@ -54,6 +54,7 @@
     <preShowHelpActionList>
 	<!-- Set the PG Major Version -->
         <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION"/>
+        <setInstallerVariable name="PGMinorVersion" value="PG_MINOR_VERSION"/>
         <!-- WIN: Set the pghome default value when pghome not set -->
         <actionGroup>
             <actionList>
@@ -131,6 +132,7 @@
 
         <!-- Set the PG Major Version -->
         <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION" persist="1"/>
+        <setInstallerVariable name="PGMinorVersion" value="PG_MINOR_VERSION" persist="1"/>
 
         <!-- WIN: Set the pghome default value for unattended mode -->
         <actionGroup>
