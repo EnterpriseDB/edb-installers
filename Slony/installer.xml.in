@@ -1625,6 +1625,39 @@
                     </ruleList>
                 </actionGroup>
             </validationActionList>
+	    <!-- Check if 32 bit Slony installer is being tried out aginst PG x64 bit -->
+            <validationActionList>
+		<actionGroup>	
+		    <actionList>
+			<registryGet>
+			    <wowMode>64</wowMode>
+			    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
+			    <name>Base Directory</name>
+			    <variable>pginstalldir</variable>
+			</registryGet>
+			<logMessage text="pginstalldir=${pginstalldir}"/>
+			<logMessage text="installdir=${installdir}"/>
+		    </actionList>
+		</actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="installdir" value="${defaultpghome}" />
+		        <showWarning>
+                            <text>${msg(slony.incompatible.pg64.error)}</text>
+                        </showWarning>
+                        <setInstallerVariable name="next_page" value="installdir"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${installdir}</text>
+                            <value>${pginstalldir}</value>
+                        </compareText>
+                        <isFalse value="${extract_mode}"/>
+                    </ruleList>
+                </actionGroup>
+            </validationActionList>
+
         </directoryParameter>
         <!-- Explain that we're using an existing installation directory -->
         <labelParameter>
