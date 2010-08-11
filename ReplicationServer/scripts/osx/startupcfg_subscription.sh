@@ -42,6 +42,7 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.xdbsubserver.plist"
         <key>ProgramArguments</key>
         <array>
                 <string>$JAVA</string>
+                <string>-Djava.awt.headless=true</string>
                 <string>-jar</string>
                 <string>$INSTALL_DIR/bin/edb-repserver.jar</string>
                 <string>subserver</string>
@@ -65,13 +66,7 @@ EOT
 # Fixup the permissions on the launchDaemon
 chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.xdbsubserver.plist" || _warn "Failed to set the ownership of the launchd daemon for xdbsubserver (/Library/LaunchDaemons/com.edb.launchd.xdbsubserver.plist)"
 
-#Create directories for logs
-if [ ! -e $INSTALL_DIR/bin/logs ];
-then
-    mkdir -p $INSTALL_DIR/bin/logs
-    chown $SYSTEM_USER $INSTALL_DIR/bin/logs
-fi
-
+#Create directory for logs
 if [ ! -e /var/log/xdb ];
 then
     mkdir -p /var/log/xdb
