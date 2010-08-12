@@ -87,7 +87,10 @@ _build_ReplicationServer_linux_x64() {
     chmod +rx $WD/ReplicationServer/staging/linux-x64/repconsole/bin/*
     chmod +rx $WD/ReplicationServer/staging/linux-x64/repserver/bin/*
     chmod +r $WD/ReplicationServer/staging/linux-x64/repconsole/lib/*
+    chmod +r $WD/ReplicationServer/staging/linux-x64/repconsole/lib/jdbc/*
     chmod +r $WD/ReplicationServer/staging/linux-x64/repserver/lib/* 
+    chmod +r $WD/ReplicationServer/staging/linux-x64/repserver/lib/jdbc/* 
+    chmod +r $WD/ReplicationServer/staging/linux-x64/repserver/lib/repl-mtk/* 
 
     # Build the validateUserClient binary
     if [ ! -f $WD/MetaInstaller/source/MetaInstaller.linux-x64/validateUser/validateUserClient.o ]; then
