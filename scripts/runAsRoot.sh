@@ -1462,7 +1462,7 @@ _title DATA DIRECTORY
 _title ===============
 if [ x"${RAR_DEV_DATA_DIR}" = x"" ]
 then
-  PG_RAR_DEV_DATA_DIR=${PG_RAR_DEV_INSTALL_DIR}/data
+  PG_RAR_DEV_DATA_DIR=${PG_RAR_DEV_DATA_DIR}/data
 fi
 _note "If data directory exists and postgresql.conf file exists in that directory, we will not
       initial the cluster."
