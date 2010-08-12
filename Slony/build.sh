@@ -171,6 +171,7 @@ _postprocess_Slony() {
     _replace PG_CURRENT_VERSION $PG_CURRENT_VERSION installer.xml || _die "Failed to set the Major Number in the installer project file (Slony/installer.xml)"
     _replace SLONY_MAJOR_VERSION $SLONY_MAJOR_VERSION installer.xml || _die "Failed to set the Slony Major Number in the installer project file (Slony/installer.xml)"
     _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION installer.xml || _die "Failed to set the PG Major Number in the installer project file (Slony/installer.xml)"
+    _replace PG_MINOR_VERSION $PG_MINOR_VERSION installer.xml || _die "Failed to set the PG Minor Number in the installer project file (Slony/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
