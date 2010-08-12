@@ -1203,7 +1203,7 @@
             <ruleList>
                 <isFalse value="${dbexist}"/>
                 <isFalse value="${userexist}"/>
-                <compareText text="${mediaWikiVersion}" logic="equals" value=""/>
+                <compareText text="${drupalVersion}" logic="equals" value=""/>
             </ruleList>
         </actionGroup>
     </postUninstallerCreationActionList>
