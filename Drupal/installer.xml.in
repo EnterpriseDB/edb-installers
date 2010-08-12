@@ -922,10 +922,6 @@
                       program="${psql_executable}">
                     <programArguments>-t -A -c "CREATE DATABASE drupal OWNER drupaluser"</programArguments>
                 </runProgram>
-                <!-- Inform user about the database and role creation -->
-                <showInfo>
-                    <text>${msg(db.create.info)}</text>
-                </showInfo>
             </actionList>
             <ruleList>
                 <isFalse value="${dbexist}"/>
@@ -1198,6 +1194,20 @@
         </deleteFile>
 
     </postInstallationActionList>
+
+    <postUninstallerCreationActionList>
+        <actionGroup>
+            <actionList>
+               <showInfo text="${msg(db.create.info)}"/>
+            </actionList>
+            <ruleList>
+                <isFalse value="${dbexist}"/>
+                <isFalse value="${userexist}"/>
+                <compareText text="${mediaWikiVersion}" logic="equals" value=""/>
+            </ruleList>
+        </actionGroup>
+    </postUninstallerCreationActionList>
+
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
         <!-- LIN & MAC: Unset the Drupal Info from the ini file -->
