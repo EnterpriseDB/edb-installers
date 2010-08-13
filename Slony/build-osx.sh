@@ -154,6 +154,9 @@ EOT
     _rewrite_so_refs $WD/Slony/staging/osx lib @loader_path/..
     _rewrite_so_refs $WD/Slony/staging/osx bin @loader_path/..
 
+    sudo install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$WD/Slony/staging/osx/bin/slon"
+    sudo install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$WD/Slony/staging/osx/bin/slonik"
+    sudo install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$WD/Slony/staging/osx/bin/slony_logshipper"
 }
 
 ################################################################################

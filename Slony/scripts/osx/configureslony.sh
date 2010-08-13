@@ -24,8 +24,4 @@ chmod ugo+x $PGHOME/Slony/installer/Slony/removeFiles.sh
 mv -f $PGHOME/share/Slony/* $sharedir/
 rm -rf $PGHOME/share/Slony
 
-#Rewriting the slony binaries references
-sudo install_name_tool -change "libpq.5.dylib" "$1/lib/libpq.5.dylib" "$1/bin/slon"
-sudo install_name_tool -change "libpq.5.dylib" "$1/lib/libpq.5.dylib" "$1/bin/slonik"
-sudo install_name_tool -change "libpq.5.dylib" "$1/lib/libpq.5.dylib" "$1/bin/slony_logshipper"
 
