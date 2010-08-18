@@ -2240,7 +2240,7 @@
 		</setInstallerVariable>
 
 		<runProgram>
-		    <program>${installdir}\installer\server\createuser.exe</program>
+		    <program>${system_temp_directory}\postgresql_installer\createuser.exe</program>
 		    <!-- The dot at the beginning of the arguments is the domain -->
 		    <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
 		    <abortOnError>0</abortOnError>
