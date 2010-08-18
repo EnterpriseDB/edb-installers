@@ -1654,12 +1654,10 @@
 		    <actionList>
 			<registryGet>
 			    <wowMode>64</wowMode>
-			    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
+			    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION</key>
 			    <name>Base Directory</name>
 			    <variable>pginstalldir</variable>
 			</registryGet>
-			<logMessage text="pginstalldir=${pginstalldir}"/>
-			<logMessage text="installdir=${installdir}"/>
 		    </actionList>
 		</actionGroup>
                 <actionGroup>
