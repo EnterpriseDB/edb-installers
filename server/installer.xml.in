@@ -2169,7 +2169,118 @@
             </ruleList>
         </runProgram>
 
-        <!-- WINDOWS: Stop the server -->
+     
+	<!-- Check user validation in case of unattended mode -->
+	<!-- On Windows we need to validate the password if the user account exists -->
+	<actionGroup>
+	    <actionList>
+		<!-- seperate out domain name from ${serviceaccount} and assign it to ${servicedomain}-->
+		<setInstallerVariable>
+		    <name>servicedomain</name>
+		    <value>.</value>
+		</setInstallerVariable>
+
+		<setInstallerVariableFromRegEx>
+		    <name>servicedomain</name>
+		    <text>${serviceaccount}</text>
+		    <pattern>\\.*</pattern>
+		    <substitution></substitution>
+		    <ruleList>
+			<compareText>
+			    <text>${serviceaccount}</text>
+			    <logic>contains</logic>
+			    <value>\</value>
+			</compareText>
+		    </ruleList>
+		</setInstallerVariableFromRegEx>
+
+		<!--we need serviceaccount without domain details -->
+		<setInstallerVariable>
+		    <name>serviceaccount_wo_domain</name>
+		    <value>${serviceaccount}</value>
+		    <ruleList>
+			<compareText>
+			    <text>${servieaccount}</text>
+			    <logic>does_not_contain</logic>
+			    <value>\</value>
+			</compareText>
+		    </ruleList>
+		</setInstallerVariable>
+
+		<setInstallerVariableFromRegEx>
+		    <name>serviceaccount_wo_domain</name>
+		    <text>${serviceaccount}</text>
+		    <pattern>^.*?\\</pattern>
+		    <substitution></substitution>
+		    <ruleList>
+			<compareText>
+			    <text>${serviceaccount}</text>
+			    <logic>contains</logic>
+			    <value>\</value>
+			</compareText>
+		    </ruleList>
+		</setInstallerVariableFromRegEx>
+
+		<!-- If upgrading, set the servicepassword to password which user has entered on this page -->
+		<setInstallerVariable name="servicepassword" value="${superpassword}">
+		    <ruleList>
+			<isTrue value="${IsUpgrade}"/>
+		    </ruleList>
+		</setInstallerVariable>
+
+		<!-- If not upgrading and servicepassword is not provided through command-line, set the servicepassword
+		to password, which user has entered on this page -->
+		<setInstallerVariable name="servicepassword" value="${superpassword}">
+		    <ruleList>
+			<compareText logic="equals" text="${cliServicePassword}" value=""/>
+			<isFalse value="${IsUpgrade}"/>
+		    </ruleList>
+		</setInstallerVariable>
+
+		<runProgram>
+		    <program>${system_temp_directory}\postgresql_installer\validateuser.exe</program>
+		    <!-- The dot at the beginning of the arguments is the domain -->
+		    <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
+		    <abortOnError>1</abortOnError>
+		    <showMessageOnError>1</showMessageOnError>
+		</runProgram>
+
+		<throwError>
+		    <text>${msg(script.command.line.error)}</text>
+		    <ruleList>
+			<compareText>
+			    <logic>equals</logic>
+			    <text>127</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+		    </ruleList>
+		</throwError>
+		<throwError>
+		    <text>${msg(config.superpassword.incorrect.windows)}</text>
+		    <ruleList>
+			<compareText>
+			    <logic>equals</logic>
+			    <text>1</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+		    </ruleList>
+		</throwError>
+	    </actionList>
+	    <ruleList>
+		<compareText>
+		    <logic>equals</logic>
+		    <text>${platform_name}</text>
+		    <value>windows</value>
+		</compareText>
+		<compareText>
+		    <logic>equals</logic>
+		    <text>${installer_ui}</text>
+		    <value>unattended</value>
+		</compareText>
+	    </ruleList>
+	</actionGroup>
+    
+       <!-- WINDOWS: Stop the server -->
         <stopWindowsService>
             <serviceName>${servicename}</serviceName>
             <abortOnError>0</abortOnError>
@@ -2178,6 +2289,7 @@
                <isFalse value="${extract_mode}"/>
             </ruleList>
         </stopWindowsService>
+
         <deleteWindowsService>
             <serviceName>${servicename}</serviceName>
             <abortOnError>0</abortOnError>
@@ -2611,99 +2723,6 @@
                                 <compareText>
                                     <logic>equals</logic>
                                     <text>2245</text>
-                                    <value>${program_exit_code}</value>
-                                </compareText>
-                            </ruleList>
-                        </throwError>
-
-	                <!-- On Windows we need to validate the password if the user account exists -->
-                        <!-- seperate out domain name from ${serviceaccount} and assign it to ${servicedomain}-->
-                        <setInstallerVariable>
-                            <name>servicedomain</name>
-                            <value>.</value>
-                        </setInstallerVariable>
-
-                        <setInstallerVariableFromRegEx>
-                            <name>servicedomain</name>
-                            <text>${serviceaccount}</text>
-                            <pattern>\\.*</pattern>
-                            <substitution></substitution>
-                            <ruleList>
-                                <compareText>
-                                    <text>${serviceaccount}</text>
-                                    <logic>contains</logic>
-                                    <value>\</value>
-                                </compareText>
-                            </ruleList>
-                        </setInstallerVariableFromRegEx>
-
-                        <!--we need serviceaccount without domain details -->
-                        <setInstallerVariable>
-                            <name>serviceaccount_wo_domain</name>
-                            <value>${serviceaccount}</value>
-                            <ruleList>
-                                <compareText>
-                                    <text>${servieaccount}</text>
-                                    <logic>does_not_contain</logic>
-                                    <value>\</value>
-                                </compareText>
-                            </ruleList>
-                        </setInstallerVariable>
-
-                        <setInstallerVariableFromRegEx>
-                            <name>serviceaccount_wo_domain</name>
-                            <text>${serviceaccount}</text>
-                            <pattern>^.*?\\</pattern>
-                            <substitution></substitution>
-                            <ruleList>
-                                <compareText>
-                                    <text>${serviceaccount}</text>
-                                    <logic>contains</logic>
-                                    <value>\</value>
-                                </compareText>
-                            </ruleList>
-                        </setInstallerVariableFromRegEx>
-
-                        <!-- If upgrading, set the servicepassword to password which user has entered on this page -->
-                        <setInstallerVariable name="servicepassword" value="${superpassword}">
-                            <ruleList>
-                                <isTrue value="${IsUpgrade}"/>
-                            </ruleList>
-                        </setInstallerVariable>
-
-                        <!-- If not upgrading and servicepassword is not provided through command-line, set the servicepassword
-                        to password, which user has entered on this page -->
-                        <setInstallerVariable name="servicepassword" value="${superpassword}">
-                            <ruleList>
-                                <compareText logic="equals" text="${cliServicePassword}" value=""/>
-                                <isFalse value="${IsUpgrade}"/>
-                            </ruleList>
-                        </setInstallerVariable>
-
-                        <runProgram>
-                            <program>${system_temp_directory}\postgresql_installer\validateuser.exe</program>
-                            <!-- The dot at the beginning of the arguments is the domain -->
-                            <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
-                            <abortOnError>1</abortOnError>
-                            <showMessageOnError>1</showMessageOnError>
-                        </runProgram>
-
-                        <throwError>
-                            <text>${msg(script.command.line.error)}</text>
-                            <ruleList>
-                                <compareText>
-                                    <logic>equals</logic>
-                                    <text>127</text>
-                                    <value>${program_exit_code}</value>
-                                </compareText>
-                            </ruleList>
-                        </throwError>
-                        <throwError>
-                            <text>${msg(config.superpassword.incorrect.windows)}</text>
-                            <ruleList>
-                                <compareText>
-                                    <logic>equals</logic>
-                                    <text>1</text>
                                     <value>${program_exit_code}</value>
                                 </compareText>
                             </ruleList>
