@@ -2170,7 +2170,150 @@
         </runProgram>
 
      
-	<!-- Check user validation in case of unattended mode -->
+	<!-- Check user validation in case of unattended mode. It works after createuser. -->
+	<actionGroup>
+	    <actionList>
+		<!-- seperate out domain name from ${serviceaccount} and assign it to ${servicedomain}-->
+		 <setInstallerVariable>
+		       <name>servicedomain</name>
+		       <value>.</value>
+		 </setInstallerVariable>
+
+		<setInstallerVariableFromRegEx>
+		    <name>servicedomain</name>
+		    <text>${serviceaccount}</text>
+		    <pattern>\\.*</pattern>
+		    <substitution></substitution>
+		    <ruleList>
+			<compareText>
+			   <text>${serviceaccount}</text>
+			   <logic>contains</logic>
+			   <value>\</value>
+			</compareText>
+		    </ruleList>
+		</setInstallerVariableFromRegEx>
+
+		<!--we need serviceaccount without domain details -->
+		<setInstallerVariable>
+		      <name>serviceaccount_wo_domain</name>
+		      <value>${serviceaccount}</value>
+		      <ruleList>
+			  <compareText>
+			   <text>${serviceaccount}</text>
+			   <logic>does_not_contain</logic>
+			   <value>\</value>
+			 </compareText>
+		     </ruleList>
+		</setInstallerVariable>
+
+		<setInstallerVariableFromRegEx>
+		    <name>serviceaccount_wo_domain</name>
+		    <text>${serviceaccount}</text>
+		    <pattern>^.*?\\</pattern>
+		    <substitution></substitution>
+		    <ruleList>
+			<compareText>
+			    <text>${serviceaccount}</text>
+			    <logic>contains</logic>
+			    <value>\</value>
+			</compareText>
+		    </ruleList>
+		</setInstallerVariableFromRegEx>
+
+		<!-- if servicepassword is not set, set it to superpassword -->
+		<setInstallerVariable>
+		    <name>servicepassword</name>
+		    <value>${superpassword}</value>
+		    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+		    <ruleList>
+			<compareText>
+			    <logic>equals</logic>
+			    <text>${IsUpgrade}</text>
+			    <value>1</value>
+			</compareText>
+			<compareText>
+			    <logic>equals</logic>
+			    <text>${servicepassword}</text>
+			    <value></value>
+			</compareText>
+		    </ruleList>
+		</setInstallerVariable>
+
+		<runProgram>
+		    <program>${installdir}\installer\server\createuser.exe</program>
+		    <!-- The dot at the beginning of the arguments is the domain -->
+		    <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
+		    <abortOnError>0</abortOnError>
+		    <showMessageOnError>0</showMessageOnError>
+		</runProgram>
+
+		<throwError>
+		    <text>${msg(script.command.line.error)}</text>
+		    <ruleList>
+			<compareText>
+			    <logic>equals</logic>
+			    <text>127</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+		    </ruleList>
+		</throwError>
+		<throwError>
+		    <text>${msg(error.could.not.create.user)}</text>
+		    <ruleList>
+			<compareText>
+			    <logic>does_not_equal</logic>
+			    <text>2224</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+			<compareText>
+			    <logic>does_not_equal</logic>
+			    <text>2203</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+			<compareText>
+			    <logic>does_not_equal</logic>
+			    <text>2245</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+			<compareText>
+			    <logic>does_not_equal</logic>
+			    <text>0</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+		    </ruleList>
+		</throwError>
+		<throwError>
+		    <text>${msg(config.superpassword.format.error.windows)}</text>
+		    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+		    <ruleList>
+			<compareText>
+			    <logic>equals</logic>
+			    <text>2203</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+			<compareText>
+			    <logic>equals</logic>
+			    <text>2245</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+		    </ruleList>
+		</throwError>
+	    </actionList>
+	    <ruleList>
+		<compareText>
+		    <logic>equals</logic>
+		    <text>${platform_name}</text>
+		    <value>windows</value>
+		</compareText>
+		<compareText>
+		    <logic>equals</logic>
+		    <text>${installer_ui}</text>
+		    <value>unattended</value>
+		</compareText>
+	    </ruleList>
+	</actionGroup>
+
+
 	<!-- On Windows we need to validate the password if the user account exists -->
 	<actionGroup>
 	    <actionList>
@@ -2600,147 +2743,6 @@
                     </ruleList>
                 </throwError>
 
-                <actionGroup>
-                    <actionList>
-                        <!-- seperate out domain name from ${serviceaccount} and assign it to ${servicedomain}-->
-                         <setInstallerVariable>
-                               <name>servicedomain</name>
-                               <value>.</value>
-                         </setInstallerVariable>
-
-                        <setInstallerVariableFromRegEx>
-                            <name>servicedomain</name>
-                            <text>${serviceaccount}</text>
-                            <pattern>\\.*</pattern>
-                            <substitution></substitution>
-                            <ruleList>
-                                <compareText>
-                                   <text>${serviceaccount}</text>
-                                   <logic>contains</logic>
-                                   <value>\</value>
-                                </compareText>
-                            </ruleList>
-                        </setInstallerVariableFromRegEx>
-
-                        <!--we need serviceaccount without domain details -->
-                        <setInstallerVariable>
-                              <name>serviceaccount_wo_domain</name>
-                              <value>${serviceaccount}</value>
-                              <ruleList>
-                                  <compareText>
-                                   <text>${serviceaccount}</text>
-                                   <logic>does_not_contain</logic>
-                                   <value>\</value>
-                                 </compareText>
-                             </ruleList>
-                        </setInstallerVariable>
-
-                        <setInstallerVariableFromRegEx>
-                            <name>serviceaccount_wo_domain</name>
-                            <text>${serviceaccount}</text>
-                            <pattern>^.*?\\</pattern>
-                            <substitution></substitution>
-                            <ruleList>
-                                <compareText>
-                                    <text>${serviceaccount}</text>
-                                    <logic>contains</logic>
-                                    <value>\</value>
-                                </compareText>
-                            </ruleList>
-                        </setInstallerVariableFromRegEx>
-
-                        <!-- if servicepassword is not set, set it to superpassword -->
-                        <setInstallerVariable>
-                            <name>servicepassword</name>
-                            <value>${superpassword}</value>
-                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                            <ruleList>
-                                <compareText>
-                                    <logic>equals</logic>
-                                    <text>${IsUpgrade}</text>
-                                    <value>1</value>
-                                </compareText>
-                                <compareText>
-                                    <logic>equals</logic>
-                                    <text>${servicepassword}</text>
-                                    <value></value>
-                                </compareText>
-                            </ruleList>
-                        </setInstallerVariable>
-
-                        <runProgram>
-                            <program>${installdir}\installer\server\createuser.exe</program>
-                            <!-- The dot at the beginning of the arguments is the domain -->
-                            <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                        </runProgram>
-
-                        <throwError>
-                            <text>${msg(script.command.line.error)}</text>
-                            <ruleList>
-                                <compareText>
-                                    <logic>equals</logic>
-                                    <text>127</text>
-                                    <value>${program_exit_code}</value>
-                                </compareText>
-                            </ruleList>
-                        </throwError>
-                        <throwError>
-                            <text>${msg(error.could.not.create.user)}</text>
-                            <ruleList>
-                                <compareText>
-                                    <logic>does_not_equal</logic>
-                                    <text>2224</text>
-                                    <value>${program_exit_code}</value>
-                                </compareText>
-                                <compareText>
-                                    <logic>does_not_equal</logic>
-                                    <text>2203</text>
-                                    <value>${program_exit_code}</value>
-                                </compareText>
-                                <compareText>
-                                    <logic>does_not_equal</logic>
-                                    <text>2245</text>
-                                    <value>${program_exit_code}</value>
-                                </compareText>
-                                <compareText>
-                                    <logic>does_not_equal</logic>
-                                    <text>0</text>
-                                    <value>${program_exit_code}</value>
-                                </compareText>
-                            </ruleList>
-                        </throwError>
-                        <throwError>
-                            <text>${msg(config.superpassword.format.error.windows)}</text>
-                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                            <ruleList>
-                                <compareText>
-                                    <logic>equals</logic>
-                                    <text>2203</text>
-                                    <value>${program_exit_code}</value>
-                                </compareText>
-                                <compareText>
-                                    <logic>equals</logic>
-                                    <text>2245</text>
-                                    <value>${program_exit_code}</value>
-                                </compareText>
-                            </ruleList>
-                        </throwError>
-                    </actionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${installer_ui}</text>
-                            <value>unattended</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
 
                 <!-- Initialise the cluster if this is an installation -->
                 <actionGroup>
