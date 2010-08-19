@@ -1,0 +1,43 @@
+﻿Installer.Welcome.Title=%1$s 설치
+
+Installer.Welcome.Text=%1$s 설치 마법사를 시작합니다.
+
+Installer.Installing.Title=${product_fullname} 설치
+
+upgrade.existing.installation.title=기존 설치
+
+upgrade.existing.installation.description=${installdir}에서 기존 PgBouncer 설치를 발견했습니다. 이 설치가 업그레이드됩니다.
+
+platform.not.match=64비트 컴퓨터에서 32비트 설치 관리자를 실행하려고 합니다. 지금 설치 관리자가 종료됩니다.
+
+Installer.Installation.Finished.Title=%1$s 설치 마법사 완료
+
+Installer.Installation.Finished.Text=EnterpriseDB는 Postgres 커뮤니티를 위한 최고의 제품과 서비스를 제공하는 선두 기업입니다.\n\n회사 웹 사이트(www.enterprisedb.com)를 방문해 주십시오.
+
+install.summary=EnterpriseDB 제공 PostgreSQL Server용 연결 풀러
+
+pgbouncer.installdir.empty=설치 디렉터리를 비워 둘 수 없음
+
+pgbouncer.installdir.error=설치 디렉터리는 문자, 숫자, '-', '/', '.' 및 '_' 문자를 포함하고 쓰기 가능한 절대 경로여야 합니다.
+
+pgbouncer.install.service.error=pgbouncer 서비스를 설치하지 못했습니다.
+pgbouncer.service.description=PostgreSQL Server용 연결 풀링 서비스
+pgbouncer.osx.service.error=pgbouncer LaunchDaemon을 만들지 못했습니다.
+pgbouncer.service.start.error=pgbouncer 서비스를 시작하지 못했습니다.
+pgbouncer.service.stop.error=pgbouncer 서비스를 중지하지 못했습니다.
+pgbouncer.linux.service.error=pgbouncer 서비스를 설치하지 못했습니다.
+pgbouncer.uninstall.service.error=pgbouncer 서비스를 제거하지 못했습니다.
+
+pg.details.title=PostgreSQL 설치 정보
+pg.details.explanation=PostgreSQL 설치 정보를 확인하십시오.
+pg.details.error=PostgreSQL Server에 연결하지 못했습니다. 제공된 상세 정보를 다시 확인하십시오.
+pg.blank.error=모든 필드의 값을 입력해야 합니다.
+
+pgbouncer.details.title=PgBouncer 구성
+pgbouncer.details.explanation=PgBouncer 구성을 위해 다음 정보를 제공하십시오.
+pgbouncer.port.error=지정된 포트에 바인딩할 수 없습니다. 다른 값을 지정하십시오.
+pgbouncer.blank.error=모든 필드의 값을 입력해야 합니다.
+pgbouncer.user.error=지정된 사용자가 시스템에 없습니다.
+
+error.file.notsecure={installdir}\etc\userlist.txt 파일을 보호할 수 없습니다.
+pgbouncer.system.user.error=pgBouncer를 루트 사용자로 실행할 수 없습니다. 다른 사용자 이름을 지정하십시오.
