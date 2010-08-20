@@ -245,6 +245,9 @@ EOT
     _replace "java -jar edb-repserver.jar subserver 9012" "\"@@JAVA@@\" -jar \"@@INSTALL_DIR@@\\\\bin\\\\edb-repserver.jar\" subserver @@SUBPORT@@ \"@@CONFPATH@@\"" "$WD/ReplicationServer/staging/windows/repserver/bin/runSubServer.bat" || _die "Failed to put the placehoder in runSubServer.bat file"
 
     unix2dos $WD/ReplicationServer/staging/windows/repconsole/doc/README-datavalidator.txt || _die "Failed to convert datavalidator readme in dos readable format."
+    unix2dos $WD/ReplicationServer/staging/windows/repserver/etc/xdb_pubserver.conf || _die "Failed to convert xdb_pubserver conf in dos readable format."
+    unix2dos $WD/ReplicationServer/staging/windows/repserver/etc/xdb_subserver.conf || _die "Failed to convert xdb_subserver conf in dos readable format."
+    unix2dos $WD/ReplicationServer/staging/windows/repconsole/etc/datavalidator.properties || _die "Failed to convert datavalidator properties in dos readable format."
 
 }
 
