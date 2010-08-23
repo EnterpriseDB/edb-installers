@@ -42,7 +42,7 @@
     <!-- i18n files for the UI -->
     <allowLanguageSelection>1</allowLanguageSelection>
     <defaultLanguage>auto</defaultLanguage>
-    <allowedLanguages>en zh_CN ja ko</allowedLanguages>
+    <allowedLanguages>en zh_CN zh_TW ja ko</allowedLanguages>
     <customLanguageFileList>
         <language>
             <code>en</code>
@@ -53,6 +53,11 @@
             <code>zh_CN</code>
             <encoding>utf-8</encoding>
             <file>i18n/zh_CN.lng</file>
+        </language>
+        <language>
+            <code>zh_TW</code>
+            <encoding>utf-8</encoding>
+            <file>i18n/zh_TW.lng</file>
         </language>
         <language>
             <code>ja</code>
