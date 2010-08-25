@@ -318,8 +318,6 @@ _postprocess_server_linux_ppc64() {
     # Welcome doc
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/linux-ppc64/doc/" || _die "Failed to install the welcome document"
     cp "$WD/server/resources/enterprisedb.gif" "$WD/server/staging/linux-ppc64/doc/" || _die "Failed to install the welcome logo"
-    #cp "$WD/scripts/runAsRoot.sh" "$WD/server/staging/linux-ppc64" || _die "Failed to copy the runAsRoot script"
-
     #Creating a archive of the binaries
     mkdir -p $WD/server/staging/linux-ppc64/pgsql || _die "Failed to create the directory for binaries "
     cd $WD/server/staging/linux-ppc64

@@ -21,6 +21,8 @@ _prep_metainstaller_windows() {
     mkdir -p  $WD/MetaInstaller/staging/windows/scripts || _die "Couldn't create the staging/windows/script directory"
     chmod ugo+w $WD/MetaInstaller/staging/windows/scripts || _die "Couldn't set the permissions on the staging/windows/script directory"
 
+    cp "$WD/scripts/runAsAdmin.vbs" "$WD/MetaInstaller/staging/windows" || _die "Failed to copy the runAsAdmin script"
+
     # Grab a copy of the stackbuilderplus installer
     echo "Grab StackBuilderPlus installer..."
     cp -R "$WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-windows.exe"  $WD/MetaInstaller/staging/windows || _die "Failed to copy the stackbuilderplus installer (staging/linux/stackbuilderplus-pg_$PG_VERSION_STR-$PG_PACKAGE_SBP-$PG_BUILDNUM_SBP-windows.exe)"
