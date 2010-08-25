@@ -801,26 +801,6 @@
             </ruleList>
         </actionGroup>
 
-        <!-- Set the iDataDirectory value to CLI datadir if no registry/ini value of dataDirectory is found -->
-        <setInstallerVariable>
-            <name>iDataDirectory</name>
-            <persist>0</persist>
-            <value>${datadir}</value>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${iDataDirectory}</text>
-                    <value/>
-                </compareText>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${datadir}</text>
-                    <value/>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </setInstallerVariable>
-
         <!-- On older version of Installers, we may not have DisableStackBuilder set in registry or PostgreSqlIni file -->
         <setInstallerVariable>
             <name>iDisableStackBuilder</name>
@@ -936,6 +916,32 @@
                <compareText text="${superaccount}" logic="equals" value="" />
             </ruleList>
         </setInstallerVariable>
+
+        <!-- Set installdir if an existing installation is found -->
+        <setInstallerVariable>
+            <name>installdir</name>
+            <value>${iBaseDirectory}</value>
+            <ruleList>
+                <stringTest>
+                    <text>${iBaseDirectory}</text>
+                    <type>not_empty</type>
+                </stringTest>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </setInstallerVariable> 
+
+        <!-- Set datadir if an existing installation is found -->
+        <setInstallerVariable>
+            <name>datadir</name>
+            <value>${iDataDirectory}</value>
+            <ruleList>
+                <stringTest>
+                    <text>${iDataDirectory}</text>
+                    <type>not_empty</type>
+                </stringTest>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </setInstallerVariable> 
 
         <!-- Validate installdir & datadir in unattended mode -->
         <actionGroup>
@@ -1179,7 +1185,7 @@
         <setInstallerVariable>
             <name>servicename</name>
             <persist>1</persist>
-            <value>postgresql{service_suffix}-PG_MAJOR_VERSION$</value>
+            <value>postgresql${service_suffix}-PG_MAJOR_VERSION</value>
             <ruleList>
                <compareText text="${iServiceName}" logic="equals" value="" />
                <compareText text="${brandingVer}" logic="does_not_equal" value="" />
@@ -1244,25 +1250,6 @@
         <logMessage text="Using Super User: ${superaccount} and Service Account: ${serviceaccount}" />
         <logMessage text="Using Service Name: ${servicename}"/>
 
-        <!-- In unattended mode, set installdir to iBaseDirectory,
-             if an already existing base directory value is found in the ini/registry. 
-        -->
-        <setInstallerVariable>
-            <name>installdir</name>
-            <value>${iBaseDirectory}</value>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic> 
-                    <text>${installer_ui}</text>
-                    <value>unattended</value> 
-                </compareText>
-                <stringTest>
-                    <text>${iBaseDirectory}</text>
-                    <type>not_empty</type>
-                </stringTest>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </setInstallerVariable> 
 
         <!-- Temp directory for preflight scripts -->
         <createDirectory path="${system_temp_directory}/postgresql_installer"/>
@@ -1698,16 +1685,16 @@
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
+
         <!-- If we have an existing data directory location and it's not empty, check it looks sane -->
         <actionGroup>
             <actionList>
-
                 <!-- Do we have a pg_control file? -->
                 <throwError>
                     <text>${msg(error.data.directory.registered.broken)}</text>
                     <ruleList>
                         <fileTest>
-                            <path>${iDataDirectory}/global/pg_control</path>
+                            <path>${datadir}/global/pg_control</path>
                             <condition>not_exists</condition>
                         </fileTest>
                     </ruleList>
@@ -1716,7 +1703,7 @@
                 <!-- Do we have a valid catalog version? -->
                 <runProgram>
                     <program>${system_temp_directory}/postgresql_installer/bin/pg_controldata</program>
-                    <programArguments>"${iDataDirectory}"</programArguments>
+                    <programArguments>"${datadir}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                     <ruleList>
@@ -1730,7 +1717,7 @@
 
                 <runProgram>
                     <program>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</program>
-                    <programArguments>${system_temp_directory}/postgresql_installer "${iDataDirectory}"</programArguments>
+                    <programArguments>${system_temp_directory}/postgresql_installer "${datadir}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
@@ -1750,7 +1737,7 @@
 
                 <runProgram>
                     <program>${system_temp_directory}\postgresql_installer\pg_controldata.exe</program>
-                    <programArguments>"${iDataDirectory}"</programArguments>
+                    <programArguments>"${datadir}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                     <ruleList>
@@ -1823,14 +1810,10 @@
             <ruleList>
                 <isFalse value="${extract_mode}"/>
                 <fileExists>
-                    <path>${iDataDirectory}</path>
+                    <path>${datadir}</path>
                 </fileExists>
-                <stringTest>
-                    <text>${iDataDirectory}</text>
-                    <type>not_empty</type>
-                </stringTest>
-                <fileTest>
-                    <path>${iDataDirectory}</path>
+               <fileTest>
+                    <path>${datadir}</path>
                     <condition>is_not_empty</condition>
                 </fileTest>
             </ruleList>
@@ -1843,10 +1826,6 @@
                 <setInstallerVariable>
                     <name>IsUpgrade</name>
                     <value>1</value>
-                </setInstallerVariable>
-                <setInstallerVariable>
-                    <name>datadir</name>
-                    <value>${iDataDirectory}</value>
                 </setInstallerVariable>
                 <logMessage>
                     <text>Switching to upgrade mode with cluster: ${datadir}</text>
@@ -1867,12 +1846,9 @@
 
             <ruleList>
                 <isFalse value="${extract_mode}"/>
-                <stringTest>
-                    <text>${iDataDirectory}</text>
-                    <type>not_empty</type>
-                </stringTest>
+                <fileExists path="${datadir}" />
                 <fileTest>
-                    <path>${iDataDirectory}</path>
+                    <path>${datadir}</path>
                     <condition>is_not_empty</condition>
                 </fileTest>
             </ruleList>
@@ -4790,12 +4766,14 @@ REM The script sets environment variables helpful for PostgreSQL
                 </actionGroup>
                 <setInstallerVariable name="datadir" value="${installdir}/data" >
                     <ruleList>
-                        <compareText logic="does_not_equal" text="{platform_name}" value="windows"/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                        <compareText logic="equals" text="${datadir}" value=""/>
                     </ruleList>
                 </setInstallerVariable>
                 <setInstallerVariable name="datadir" value="${installdir}\data" >
                     <ruleList>
-                        <compareText logic="equals" text="{platform_name}" value="windows"/>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                        <compareText logic="equals" text="${datadir}" value=""/>
                     </ruleList>
                 </setInstallerVariable>
             </postShowPageActionList>
