@@ -21,6 +21,8 @@ _prep_metainstaller_windows() {
     mkdir -p  $WD/MetaInstaller/staging/windows/scripts || _die "Couldn't create the staging/windows/script directory"
     chmod ugo+w $WD/MetaInstaller/staging/windows/scripts || _die "Couldn't set the permissions on the staging/windows/script directory"
 
+    _replace @@SERVER_SUFFIX@@ "x86" $WD/scripts/runAsAdmin.vbs || _die "Failed to replace the SERVER_SUFFIX setting in the runAsAdmin.vbs"
+
     cp "$WD/scripts/runAsAdmin.vbs" "$WD/MetaInstaller/staging/windows" || _die "Failed to copy the runAsAdmin script"
 
     # Grab a copy of the stackbuilderplus installer
