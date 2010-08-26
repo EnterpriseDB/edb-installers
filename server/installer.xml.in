@@ -5492,6 +5492,7 @@ REM The script sets environment variables helpful for PostgreSQL
                 <ruleGroup>
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
+			<isFalse value="${IsUpgrade}"/>
                         <compareText>
                             <logic>equals</logic>
                             <text>${platform_name}</text>
