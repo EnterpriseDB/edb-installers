@@ -112,6 +112,28 @@
       </ruleList>
     </actionGroup>
 
+    <!-- MAC : Set the default installation directory -->
+    <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/PG_MAJOR_VERSION/StackBuilderPlus">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <!-- LIN : Set the default installation directory -->
+    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgresPlus/PG_MAJOR_VERSION/StackBuilderPlus">
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <!-- WIN : Set the default installation directory -->
+    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgresPlus\PG_MAJOR_VERSION\StackBuilderPlus">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </setInstallerVariable>
+
+
     <!-- Do not perform the below actions in case of extract-only mode -->
     <actionGroup>
       <actionList>
@@ -218,30 +240,6 @@
             <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
         </registryGet>
-        <!-- MAC : Set the default installation directory -->
-        <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/PG_MAJOR_VERSION/StackBuilderPlus">
-          <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="osx"/>
-            <compareText logic="equals" text="${iSBPVersion}" value=""/>
-          </ruleList>
-        </setInstallerVariable>
-
-        <!-- LIN : Set the default installation directory -->
-        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgresPlus/PG_MAJOR_VERSION/StackBuilderPlus">
-          <ruleList>
-            <compareText logic="contains" text="${platform_name}" value="linux"/>
-            <compareText logic="equals" text="${iSBPVersion}" value=""/>
-          </ruleList>
-        </setInstallerVariable>
-
-        <!-- WIN : Set the default installation directory -->
-        <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgresPlus\PG_MAJOR_VERSION\StackBuilderPlus">
-          <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="windows"/>
-            <compareText logic="equals" text="${iSBPVersion}" value=""/>
-          </ruleList>
-        </setInstallerVariable>
-
         <!-- Stop the montioring if installed, before UM exe name change -->
         <kill path="${installdir}\bin\UpdateManager.exe" >
           <abortOnError>0</abortOnError>
@@ -1014,6 +1012,7 @@
       <description>${msg(upgrade.existing.installation.description)}</description>
       <ruleList>
         <compareText text="${iSBPVersion}" logic="does_not_equal" value=""/>
+        <isFalse value="${extract_mode}" />
       </ruleList>
     </labelParameter>
   </parameterList>
