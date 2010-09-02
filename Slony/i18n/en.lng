@@ -42,4 +42,4 @@ slony.incompatible.install.error=An incompatible version of Slony already instal
 
 slony.incompatible.pg.error=The PostgreSQL Server is incompatible with this version of Slony.
 
-slony.incompatible.pg64.error=The PostgreSQL Server is incompatible with this version of Slony. You are trying 32 bit slony against 64 but PostgreSQL server.
+slony.incompatible.pg64.error=The PostgreSQL Server is incompatible with this version of Slony. You are trying 32 bit slony against 64 bit PostgreSQL server.
