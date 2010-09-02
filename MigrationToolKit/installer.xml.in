@@ -71,7 +71,13 @@
             <name>default_installdir</name>
             <persist>1</persist>
             <value>${platform_install_prefix}/PostgresPlus/EnterpriseDB-MigrationToolkit</value>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
                 <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
@@ -143,7 +149,13 @@
             <name>default_installdir</name>
             <persist>1</persist>
             <value>${platform_install_prefix}/PostgresPlus/EnterpriseDB-MigrationToolkit</value>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
                 <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
@@ -656,7 +668,28 @@
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
-            </folderList>
+                <!-- SOLARIS-X64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesbinsolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/solaris-x64/MigrationToolkit/toolkit.properties</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/solaris-x64/MigrationToolkit/runMTK.sh</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/solaris-x64/MigrationToolkit/MigrationToolKit_PPSS_README.txt</origin>
+                        </distributionFile>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/MigrationToolkit/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+           </folderList>
         </component>
 
         <!-- Custome Page for Registration -->

@@ -76,6 +76,7 @@ _build_ReplicationServer_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libreadline.so* ReplicationServer/staging/linux-x64/instscripts/lib" || _die "Failed to copy libreadline.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libtermcap.so* ReplicationServer/staging/linux-x64/instscripts/lib" || _die "Failed to copy libtermcap.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxml2.so* ReplicationServer/staging/linux-x64/instscripts/lib" || _die "Failed to copy libxml2.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxslt.so* ReplicationServer/staging/linux-x64/instscripts/lib" || _die "Failed to copy libxml2.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp MigrationToolKit/staging/linux-x64/MigrationToolKit/lib/edb-migrationtoolkit.jar ReplicationServer/staging/linux-x64/repserver/lib/repl-mtk" || _die "Failed to copy edb-migrationtoolkit.jar"
     cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/staging/linux-x64/repconsole/lib/jdbc/ || _die "Failed to copy pg jdbc drivers" 
     cd $WD
@@ -83,9 +84,17 @@ _build_ReplicationServer_linux_x64() {
     _replace "java -jar edb-repserver.jar pubserver 9011" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar pubserver @@PUBPORT@@" "$WD/ReplicationServer/staging/linux-x64/repserver/bin/runPubServer.sh" || _die "Failed to put the placehoder in runPubServer.sh file"
     _replace "java -jar edb-repserver.jar subserver 9012" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar subserver @@SUBPORT@@" "$WD/ReplicationServer/staging/linux-x64/repserver/bin/runSubServer.sh" || _die "Failed to put the placehoder in runSubServer.sh file"
 
+    chmod +rx $WD/ReplicationServer/staging/linux-x64/repconsole/bin/*
+    chmod +rx $WD/ReplicationServer/staging/linux-x64/repserver/bin/*
+    chmod +r $WD/ReplicationServer/staging/linux-x64/repconsole/lib/*
+    chmod +r $WD/ReplicationServer/staging/linux-x64/repconsole/lib/jdbc/*
+    chmod +r $WD/ReplicationServer/staging/linux-x64/repserver/lib/* 
+    chmod +r $WD/ReplicationServer/staging/linux-x64/repserver/lib/jdbc/* 
+    chmod +r $WD/ReplicationServer/staging/linux-x64/repserver/lib/repl-mtk/* 
+
     # Build the validateUserClient binary
     if [ ! -f $WD/MetaInstaller/source/MetaInstaller.linux-x64/validateUser/validateUserClient.o ]; then
-        cp -R $WD/MetaInstaller/scripts/linux/validateUser $WD/ReplicationServer/source/ReplicationServer.linux-x64/validateUser || _die "Failed to copy validateUser source files"
+        cp -R $WD/MetaInstaller/scripts/linux-x64/validateUser $WD/ReplicationServer/source/ReplicationServer.linux-x64/validateUser || _die "Failed to copy validateUser source files"
         ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux-x64/validateUser; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
         ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp ReplicationServer/source/ReplicationServer.linux-x64/validateUser/validateUserClient.o ReplicationServer/staging/linux-x64/instscripts/" || _die "Failed to copy validateUserClient.o"
     else

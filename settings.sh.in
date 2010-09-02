@@ -11,6 +11,8 @@ PG_ARCH_LINUX=1
 PG_ARCH_LINUX_X64=1
 PG_ARCH_WINDOWS=1
 PG_ARCH_WINDOWS_X64=1
+PG_ARCH_SOLARIS_X64=1
+PG_ARCH_SOLARIS_SPARC=1
 
 # Packages. Set to 1 to enable a specific packages. Note that many packages will be interdependent
 #           so you must ensure that all the required dependencies are enabled.
@@ -90,6 +92,22 @@ PG_SSH_WINDOWS_X64=buildfarm@bf-windows-x64.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS_X64=C:\\\\pginstaller-repo
 PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 8"
 PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild"
+
+PG_SSH_SOLARIS_X64=buildfarm@bf-solaris-x64.ox.uk.enterprisedb.com
+PG_PATH_SOLARIS_X64=/export/home/buildfarm/pginstaller-repo
+PG_PGHOME_SOLARIS_X64=$PG_PATH_SOLARIS_X64/server/staging/solaris-x64
+PG_EXEC_PATH_SOLARIS_X64=/usr/jdk/jdk1.5.0_16/bin/amd64
+PG_JAVA_HOME_SOLARIS_X64=/usr/jdk/jdk1.5.0_16
+PG_ANT_HOME_SOLARIS_X64=/opt/apache-ant-1.8.1
+PG_QMAKE_SOLARIS_X64=qmake
+
+PG_SSH_SOLARIS_SPARC=buildfarm@suzuka.ox.uk.enterprisedb.com
+PG_PATH_SOLARIS_SPARC=/mnt/buildfarm/pginstaller-tanaka
+PG_PGHOME_SOLARIS_SPARC=$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc
+PG_EXEC_PATH_SOLARIS_SPARC=/usr/jdk/jdk1.5.0_07/bin/sparcv9
+PG_JAVA_HOME_SOLARIS_SPARC=/usr/jdk/jdk1.5.0_07
+PG_ANT_HOME_SOLARIS_SPARC=/opt/apache-ant-1.8.1
+PG_QMAKE_SOLARIS_SPARC=qmake
 
 PG_PATH_OSX=`pwd`
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging/osx

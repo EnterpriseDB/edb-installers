@@ -26,6 +26,18 @@ then
     source $WD/ReplicationServer/build-windows.sh
 fi
     
+# Solaris x64
+if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+then
+    source $WD/ReplicationServer/build-solaris-x64.sh
+fi
+    
+# Solaris sparc
+if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
+then
+    source $WD/ReplicationServer/build-solaris-sparc.sh
+fi
+
 ################################################################################
 # Build preparation
 ################################################################################
@@ -100,6 +112,18 @@ _prep_ReplicationServer() {
         _prep_ReplicationServer_windows || exit 1
     fi
     
+    # Solaris x64
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+        _prep_ReplicationServer_solaris_x64 || exit 1
+    fi
+    
+    # Solaris sparc
+    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
+    then
+        _prep_ReplicationServer_solaris_sparc || exit 1
+    fi
+
 }
 
 ################################################################################
@@ -131,6 +155,19 @@ _build_ReplicationServer() {
     then
         _build_ReplicationServer_windows || exit 1
     fi
+
+    # Solaris x64
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+       _build_ReplicationServer_solaris_x64 || exit 1
+    fi
+
+    # Solaris sparc
+    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
+    then
+       _build_ReplicationServer_solaris_sparc || exit 1
+    fi
+
 }
 
 ################################################################################
@@ -177,4 +214,17 @@ _postprocess_ReplicationServer() {
     then
        _postprocess_ReplicationServer_windows || exit 1
     fi
+
+    # Solaris x64
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+        _postprocess_ReplicationServer_solaris_x64 || exit 1
+    fi
+
+    # Solaris sparc
+    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
+    then
+        _postprocess_ReplicationServer_solaris_sparc || exit 1
+    fi
+    
 }

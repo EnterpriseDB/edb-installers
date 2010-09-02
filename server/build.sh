@@ -26,6 +26,18 @@ then
     source $WD/server/build-windows.sh
 fi
     
+# Solaris x64
+if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+then
+    source $WD/server/build-solaris-x64.sh
+fi
+
+# Solaris sparc
+if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
+then
+    source $WD/server/build-solaris-sparc.sh
+fi
+
 ################################################################################
 # Build preparation
 ################################################################################
@@ -71,7 +83,7 @@ _prep_server() {
     echo "Unpacking pljava source..."
     tar -zxvf ../../tarballs/pljava-src-$PG_TARBALL_PLJAVA.tar.gz
     cd pljava-$PG_TARBALL_PLJAVA 
-    patch -p0 < ../../../tarballs/pljava-fix.patch  
+    patch -p0 < ../../../tarballs/pljava-fix.patch
 
     # Debugger
     cd $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib
@@ -117,6 +129,18 @@ _prep_server() {
     then
         _prep_server_windows || exit 1
     fi
+
+    # Solaris x64
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+        _prep_server_solaris_x64 || exit 1
+    fi
+
+    # Solaris sparc
+    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
+    then
+        _prep_server_solaris_sparc || exit 1
+    fi
 }
 
 ################################################################################
@@ -147,6 +171,18 @@ _build_server() {
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
         _build_server_windows || exit 1
+    fi
+
+    # Solaris x64
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+        _build_server_solaris_x64 || exit 1
+    fi
+
+    # Solaris sparc
+    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
+    then
+        _build_server_solaris_sparc || exit 1
     fi
 }
 
@@ -196,5 +232,17 @@ _postprocess_server() {
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
         _postprocess_server_windows || exit 1
+    fi
+
+    # Solaris x64
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+        _postprocess_server_solaris_x64 || exit 1
+    fi
+
+    # Solaris sparc
+    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
+    then
+        _postprocess_server_solaris_sparc || exit 1
     fi
 }
