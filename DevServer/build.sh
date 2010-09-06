@@ -155,7 +155,7 @@ _prep_DevServer() {
     # pgadmin
     echo "Updating the pgadmin source tree..."
     cd $WD/DevServer/source/pgadmin3
-    svn update
+    git pull
 
     # Debugger
     echo "Checkout the Debugger source tree..."
