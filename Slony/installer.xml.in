@@ -546,6 +546,40 @@
                     </ruleList>
                 </actionGroup>
 
+		<actionGroup>
+		    <actionList>
+			<logMessage text="Check if 32 bit Slony installer is being tried out aginst PG x64 bit. This condition will be hit in case of unattended mode and prefix specified"/>
+			<registryGet>
+			    <wowMode>64</wowMode>
+			    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION</key>
+			    <name>Base Directory</name>
+			    <variable>pginstalldir</variable>
+			</registryGet>
+			<throwError text="${msg(slony.incompatible.pg64.error)}">
+			    <ruleList>
+				<compareText>
+				    <nocase>1</nocase>
+				    <logic>equals</logic>
+				    <text>${installdir}</text>
+				    <value>${pginstalldir}</value>
+				</compareText>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>${installer_ui}</text>
+                                    <value>unattended</value>
+                                </compareText>
+			    </ruleList>
+			</throwError>
+    		    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <text>${platform_name}</text>
+                            <logic>equals</logic>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+		</actionGroup>
+
                 <!-- WIN: Exit the installation if the installdir is not valid (Unattended mode/Upgrade mode) -->
                 <actionGroup>
                     <actionList>
@@ -1648,28 +1682,30 @@
                     </ruleList>
                 </actionGroup>
             </validationActionList>
-	    <!-- Check if 32 bit Slony installer is being tried out aginst PG x64 bit -->
+
+           <!-- Check if 32 bit Slony installer is being tried out aginst PG x64 bit -->
             <validationActionList>
-		<actionGroup>	
-		    <actionList>
-			<registryGet>
-			    <wowMode>64</wowMode>
-			    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION</key>
-			    <name>Base Directory</name>
-			    <variable>pginstalldir</variable>
-			</registryGet>
-		    </actionList>
-		</actionGroup>
+               <actionGroup>   
+                   <actionList>
+                       <registryGet>
+                           <wowMode>64</wowMode>
+                           <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION</key>
+                           <name>Base Directory</name>
+                           <variable>pginstalldir</variable>
+                       </registryGet>
+                   </actionList>
+               </actionGroup>
                 <actionGroup>
                     <actionList>
                         <setInstallerVariable name="installdir" value="${defaultpghome}" />
-		        <showWarning>
+                       <showWarning>
                             <text>${msg(slony.incompatible.pg64.error)}</text>
                         </showWarning>
                         <setInstallerVariable name="next_page" value="installdir"/>
                     </actionList>
                     <ruleList>
                         <compareText>
+			    <nocase>1</nocase>
                             <logic>equals</logic>
                             <text>${installdir}</text>
                             <value>${pginstalldir}</value>
@@ -1678,7 +1714,6 @@
                     </ruleList>
                 </actionGroup>
             </validationActionList>
-
         </directoryParameter>
         <!-- Explain that we're using an existing installation directory -->
         <labelParameter>

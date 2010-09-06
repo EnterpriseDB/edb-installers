@@ -5234,6 +5234,23 @@ REM The script sets environment variables helpful for PostgreSQL
                     </ruleList>
                 </setInstallerVariable>
 
+	        <!-- On Windows, in unattended update mode, service password has to be specified. If it is 
+		     not specified then we should raise an error. set defaultpassword to '' in this case
+		     so that error comes. Refer FB 16503 for more details -->
+                <setInstallerVariable>
+                    <name>defaultpassword</name>
+                    <value></value>
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows" />
+                        <compareValues value1="${IsUpgrade}" logic="equals" value2="1" />
+			<compareText>
+	                    <logic>equals</logic>
+        	            <text>${installer_ui}</text>
+                	    <value>unattended</value>
+	                </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+
             </preShowPageActionList>
 
             <validationActionList>
