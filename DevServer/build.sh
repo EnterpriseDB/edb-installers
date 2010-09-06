@@ -180,10 +180,11 @@ _prep_DevServer() {
 
     echo "Patching pl/java source..."
     cd pljava-1.4.0
-    patch -p0 < ../../../tarballs/pljava-fix.patch
-    patch -p1 < ../../../tarballs/pljava-fix2.patch
-    patch -p1 < ../../../tarballs/pljava-fix3.patch
-    patch -p1 < ../../../tarballs/pljava-fix4.patch
+    # patch -p0 < ../../../tarballs/pljava-fix.patch
+    # patch -p1 < ../../../tarballs/pljava-fix2.patch
+    # patch -p1 < ../../../tarballs/pljava-fix3.patch
+    # patch -p1 < ../../../tarballs/pljava-fix4.patch
+    patch -p1 < ../../../tarballs/pljava_pg90_jdk5_jdk6.patch
 
     echo "making another source tree for building postgres Docs"
     cd $WD/DevServer/source
