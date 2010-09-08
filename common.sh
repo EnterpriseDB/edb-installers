@@ -9,6 +9,12 @@ _die() {
     exit 1
 }
 
+_warn() {
+    echo ""
+    echo "WARNING: $*"
+    echo ""
+}
+
 # Search & replace in a file - _replace($find, $replace, $file) 
 _replace() {
         sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
@@ -130,6 +136,9 @@ extract_file()
     elif [ -e $FILENAME.tar.bz2 ]; then
        # This is a tar.bz2 tarball
        tar -jxvf $FILENAME.tar.bz2
+    elif [ -e $FILENAME.bz2 ]; then
+       # This is a bz2 tarball
+       tar -jxvf $FILENAME.bz2
     elif [ -e $FILENAME.tgz ]; then
        # This is a tgz tarball
        tar -zxvf $FILENAME.tgz
@@ -138,3 +147,33 @@ extract_file()
        exit 1
     fi
 }
+
+# Sign a Win32 package
+win32_sign()
+{
+    FILENAME=$1
+    NOT_SIGNED=1
+    COUNT=0
+
+    if [ "$PG_SIGNTOOL_WINDOWS" != "" ];
+    then
+        echo "Signing $FILENAME..."
+        scp $WD/output/$FILENAME $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the installer to the windows host for signing ($FILENAME)"
+
+        while [ $NOT_SIGNED == 1 ]; do
+            # We will stop trying, if the count is more than 3
+            if [ $COUNT -gt 2 ];
+            then
+               _warn "Failed to sign the installer ($FILENAME)"
+               return
+            fi
+            NOT_SIGNED=0
+            ssh $PG_SSH_WINDOWS "cmd /c \"$PG_SIGNTOOL_WINDOWS\" sign /a /t http://tsa.starfieldtech.com $PG_PATH_WINDOWS/$FILENAME" || NOT_SIGNED=1
+            COUNT=`expr $COUNT + 1`
+        done
+        scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/$FILENAME $WD/output/$FILENAME || _die "Failed to copy the installer from the windows host after signing ($FILENAME)"
+        echo "Removing the singed installer ($FILENAME) from the windows VM..."
+        ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; rm -f $FILENAME" || _die "Failed to remove the signed installer ($FILENAME) on the windows host"
+    fi
+}
+
