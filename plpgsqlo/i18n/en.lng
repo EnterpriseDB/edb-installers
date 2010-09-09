@@ -50,6 +50,8 @@ plpgsqlo.installdir.error=The installation directory must be an absolute path, c
 
 plpgsqlo.incompatible.pg.error=The PostgreSQL Server Installation is incompatible with this version of PL/Secure.
 
+plpgsqlo.incompatible.pg64.error=The PostgreSQL Server Installation is incompatible with this version of PL/Secure. You are trying 32 bit PL/Secure against 64 bit PostgreSQL server.
+
 pg.server.title=Postgres Installation Directory
 
 Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
