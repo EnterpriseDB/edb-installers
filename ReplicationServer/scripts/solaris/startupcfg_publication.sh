@@ -32,7 +32,7 @@ cat <<EOT > "/lib/svc/method/edb-xdbpubserver"
 
 start()
 {
-    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`/usr/ucb/ps awwx | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$1}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -46,20 +46,20 @@ start()
 
 stop()
 {
-    PID=\`ps -aef | grep 'java -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`/usr/ucb/ps awwx | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$1}'\`
 
     if [ "x\$PID" = "x" ];
     then
         echo "Publication Service not running"
         exit 2
     else
-        kill -9 \$PID 
+        kill \$PID 
     fi
 }
 
 status()
 {
-    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`/usr/ucb/ps awwx | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$1}'\`
 
     if [ "x\$PID" = "x" ];
     then

@@ -32,7 +32,7 @@ cat <<EOT > "/lib/svc/method/edb-xdbsubserver"
 
 start()
 {
-    PID=\`ps -aef | grep 'java -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`/usr/ucb/ps awwx | grep 'java -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$1}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -46,7 +46,7 @@ start()
 
 stop()
 {
-    PID=\`ps -aef | grep 'java -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`/usr/ucb/ps awwx | grep 'java -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$1}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -59,7 +59,7 @@ stop()
 
 status()
 {
-    PID=\`ps -aef | grep 'java -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`/usr/ucb/ps awwx | grep 'java -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$1}'\`
 
     if [ "x\$PID" = "x" ];
     then

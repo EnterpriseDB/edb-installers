@@ -874,7 +874,10 @@
                     </ruleList>
                 </setInstallerVariable>
 
+                <setEnvironmentVariable name="LD_LIBRARY_PATH"
+                      value="${env(LD_LIBRARY_PATH)}:${system_temp_directory}/${product_fullname}/instscripts/lib"/>
                 <setInstallerVariable name="uuid_val" value=""/>
+
                 <setInstallerVariableFromScriptOutput name="uuid_val" showMessageOnError="0" exec="uuidgen" abortOnError="0">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
