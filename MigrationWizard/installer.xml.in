@@ -854,10 +854,11 @@
 	
 	<!-- final page actions -->
     <finalPageActionList>
-        <launchBrowser>
-            <url>http://www.enterprisedb.com/products/postgres_plus_as/overview.do</url>
-            <progressText>${msg(Installer.Installation.Finished.Visit.Us)}</progressText>
-        </launchBrowser>
+        <launchBrowser url="http://www.enterprisedb.com/products/postgres_plus_as/overview.do" progressText="${msg(Installer.Installation.Finished.Visit.Us)}">
+        <ruleList>
+        	<compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
+        </ruleList>
+       </launchBrowser>
     </finalPageActionList>
 	
     <!-- preUninstallation actions -->
