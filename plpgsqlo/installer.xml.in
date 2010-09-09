@@ -520,6 +520,13 @@
 			      </ruleList>
 			</setInstallerVariableFromRegEx>
 		   </actionList>
+		    <ruleList>
+			<compareText>
+			    <text>${installer_ui}</text>
+			    <logic>equals</logic>
+			    <value>unattended</value>
+			</compareText>
+		    </ruleList>
 	       </actionGroup>
 	       <actionGroup>
 		   <actionList>
