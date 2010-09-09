@@ -5,6 +5,8 @@
 
 CMD=""
 
+LD_LIBRARY_PATH=PG_INSTALLDIR/lib:$LD_LIBRARY_PATH
+
 # KDESU
 if [ x"$KDE_FULL_SESSION" = x"true" ];
 then
