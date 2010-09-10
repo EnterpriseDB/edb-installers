@@ -33,7 +33,7 @@ _prep_ApachePhp_windows() {
     echo "Grab copy of the clean php sources"
     cp -R php-$PG_VERSION_PHP php.windows || _die "Couldn't copy sources for php (php-$PG_VERSION_PHP to php.windows)"
     if [ x"$PG_VERSION_PHP" = x"5.3.3" -a -f "$WD/tarballs/php-$PG_VERSION_PHP-win32.patch" ]; then
-        cp php.windows/win32/readdir.c php.windows/ext/mcrypt/readdirc
+        cp php.windows/win32/readdir.c php.windows/ext/mcrypt/readdir.c
         cd php.windows
         patch -p1 < $WD/tarballs/php-$PG_VERSION_PHP-win32.patch
     fi
