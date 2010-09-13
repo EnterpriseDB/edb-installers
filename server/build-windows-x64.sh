@@ -205,7 +205,7 @@ use warnings;
     '$PG_PGBUILD_WINDOWS_X64\libxml2\bin',
     '$PG_PGBUILD_WINDOWS_X64\zlib\bin',
     'C:\Perl-5.10\bin',
-    'C:\Python26,
+    'C:\Python26',
     'C:\msys\1.0\bin',
     \$ENV{PATH}
 );
