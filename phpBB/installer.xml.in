@@ -1641,11 +1641,11 @@
                 </showQuestion>
 
                 <!-- Exit the installation if the user wants to quit -->
-                <exit exitCode="0">
-                    <ruleList>
+                <setInstallerVariable name="next_page" value="pgdetails">
+		    <ruleList>
                         <compareText logic="equals" value="no" text="${response}"/>
                     </ruleList>
-                </exit>
+                </setInstallerVariable>
 
                 <setInstallerVariable name="server_locale" value=""/>
                 <!-- LIN & MAC: Check whether the servers locales is utf8 -->
