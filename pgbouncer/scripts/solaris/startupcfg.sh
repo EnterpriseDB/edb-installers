@@ -30,7 +30,7 @@ cat <<EOT > "/lib/svc/method/pgbouncer"
 
 start()
 {
-    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`
+    PID=\`/usr/ucb/ps awwx | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$1}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -44,7 +44,7 @@ start()
 
 stop()
 {
-    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`
+    PID=\`/usr/ucb/ps awwx | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$1}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -56,7 +56,7 @@ stop()
 }
 status()
 {
-    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`
+    PID=\`/usr/ucb/ps awwx | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$1}'\`
 
     if [ "x\$PID" = "x" ];
     then
