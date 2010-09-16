@@ -870,7 +870,6 @@
         <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
         <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
         <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-        <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
         <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/"/>
 
         <!-- WIN: Run the post-installation script -->
