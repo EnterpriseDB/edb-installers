@@ -109,7 +109,7 @@ EOT
 
     # Configure
     echo "Configuring the StackBuilder Plus source tree"
-    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/StackBuilderPlus/source/StackBuilderPlus.solaris-x64/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF -D CMAKE_INSTALL_PREFIX:PATH=$PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64 -D CMAKE_CXX_FLAGS:STRING=\"-m64\" ."
+    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/StackBuilderPlus/source/StackBuilderPlus.solaris-x64/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64 -D CMAKE_CXX_FLAGS:STRING=\"-m64\" ."
 
     # Build the app
     echo "Building & installing StackBuilderPlus"

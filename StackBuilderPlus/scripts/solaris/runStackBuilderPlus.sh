@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # PostgreSQL stackbuilder runner script for Linux
 # Dave Page, EnterpriseDB
@@ -34,13 +34,13 @@ then
 
     if [ $USE_SUDO = "1" ];
     then
-        sudo su - -c "LD_LIBRARY_PATH="INSTALL_DIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALL_DIR/bin/stackbuilderplus" $*"
+        sudo su - -c "LD_LIBRARY_PATH="INSTALL_DIR/lib":/usr/sfw/lib/64:$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALL_DIR/bin/stackbuilderplus" $*"
     else
-        su root -c "LD_LIBRARY_PATH="INSTALL_DIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALL_DIR/bin/stackbuilderplus" $*"
+        su root -c "LD_LIBRARY_PATH="INSTALL_DIR/lib":/usr/sfw/lib/64:$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALL_DIR/bin/stackbuilderplus" $*"
     fi
 
 else
-    LD_LIBRARY_PATH="INSTALL_DIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALL_DIR/bin/stackbuilderplus" $*
+    LD_LIBRARY_PATH="INSTALL_DIR/lib":/usr/sfw/lib/64:$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALL_DIR/bin/stackbuilderplus" $*
 fi
 
 # Wait a while to display su or sudo invalid password error if any

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 INSTALLDIR="@@INSTALL_DIR@@"
 BRANDING="@@BRANDING@@"

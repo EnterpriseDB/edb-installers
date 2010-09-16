@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # PostgreSQL startup configuration script for Linux
 # Ashesh Vashi, EnterpriseDB
