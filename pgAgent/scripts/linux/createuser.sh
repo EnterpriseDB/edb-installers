@@ -18,14 +18,14 @@ _die() {
 
 
 # Create the user account if required
-if [ "x`cat /etc/passwd|cut -f1 -d':'|grep $1`" != "x" ];
+if [ "x`cat /etc/passwd|cut -f1 -d':'|grep ^$1$`" != "x" ];
 then
     echo "User account '$1' already exists"
     exit 0
 else
 
     # Create the group if required
-    if [ "x`cat /etc/group|cut -f1 -d':'|grep $1`" = "x" ];
+    if [ "x`cat /etc/group|cut -f1 -d':'|grep ^$1$`" = "x" ];
     then
         groupadd $1 || _die $1
     fi

@@ -17,7 +17,7 @@ _die() {
 }
 
 # Create the user account if required
-if [ "x`dscl . -list /users|cut -f2 -d' '|grep $1`" != "x" ];
+if [ "x`dscl . -list /users|cut -f2 -d' '|grep ^$1$`" != "x" ];
 then
     echo "User account '$1' already exists"
     exit 0
