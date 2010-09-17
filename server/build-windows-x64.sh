@@ -399,7 +399,6 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\libxml2\\\\bin\\\\libxml2.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\libxslt\\\\bin\\\\libxslt.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\zlib\\\\bin\\\\zlib1.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\Windows\\\\SysWOW64\\\\msvcr71.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
 	
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\gettext\\\\include\\\\*.h $PG_PATH_WINDOWS_X64\\\\output\\\\include" || _die "Failed to copy a third party include files on the windows-x64 build host"
     # Zip up the installed code, copy it back here, and unpack.
