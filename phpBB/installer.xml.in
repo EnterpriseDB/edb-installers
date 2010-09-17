@@ -878,7 +878,7 @@
                 <runProgram program="${psql_executable}"
                       programArguments="-t -A -c &quot;CREATE ROLE phpbbuser PASSWORD 'phpbbuser' NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN&quot;"/>
                 <runProgram program="${psql_executable}"
-                      programArguments="-t -A -c &quot;CREATE DATABASE phpbb OWNER phpbbuser ENCODING 'utf8'&quot;"/>
+                      programArguments="-t -A -c &quot;CREATE DATABASE phpbb OWNER phpbbuser ENCODING 'utf8' TEMPLATE template0&quot;"/>
 
                 <!-- Inform user about the database and role creation -->
                 <showInfo text="${msg(db.create.info)}"/>
@@ -1645,35 +1645,6 @@
                     </ruleList>
                 </setInstallerVariable>
 
-                <setInstallerVariable name="server_locale" value=""/>
-                <!-- LIN & MAC: Check whether the servers locales is utf8 -->
-                <setInstallerVariableFromScriptOutput name="server_locale"
-                      exec="${psql_executable}"
-                      execArgs="-t -A -c &quot;SHOW LC_CTYPE&quot;"
-                      workingDirectory="${system_temp_directory}/${product_fullname}"
-                      abortOnError="0" showMessageOnError="0">
-                    <ruleList>
-                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                        <isFalse value="${dbexist}"/>
-                        <isFalse value="${userexist}"/>
-                        <compareText text="${phpBBVersion}" logic="equals" value=""/>
-                    </ruleList>
-                </setInstallerVariableFromScriptOutput>
-
-                <!-- Exit the installation if the locale does not match -->
-                <actionGroup>
-                    <actionList>
-                        <showWarning text="${msg(server.locale.error)}"/>
-                        <exit exitCode="0"/>
-                    </actionList>
-                    <ruleList>
-                        <compareText logic="does_not_equal" value="" text="${server_locale}"/>
-                        <compareText logic="does_not_contain" value="UTF-8" nocase="1" text="${server_locale}"/>
-                        <compareText logic="does_not_equal" value="C" nocase="1" text="${server_locale}"/>
-                        <compareText logic="does_not_equal" value="POSIX" nocase="1" text="${server_locale}"/>
-                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </actionGroup>
             </validationActionList>
         </parameterGroup>
     </parameterList>
