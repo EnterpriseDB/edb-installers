@@ -20,7 +20,7 @@ db.create.info=Created a database role with the name "drupaluser" and password "
 
 db.drop.info=The Drupal database and user account have not been removed from your PostgreSQL server.
 
-db.found.info=A database called 'drupal' and user called 'drupaluser' already exist on your server. If you continue with this installation, this database will be reused, however Drupal may require additional manual reconfiguration for correct operation. \n\nDo you wish to continue?
+db.found.info=A database called 'drupal' and/or user called 'drupaluser' already exist on your server. If you continue with this installation, this database and/or user will be reused, however Drupal may require additional manual reconfiguration for correct operation. \n\nDo you wish to continue?
 
 install.summary=Drupal is a popular content management system for building websites.
 
