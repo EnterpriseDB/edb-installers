@@ -236,7 +236,6 @@ EOT
     cp -R server/staging/windows/bin/libxml2.dll ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/libxslt.dll ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/zlib1.dll ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/msvcr71.dll ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy dependent libs"
     cp -R MigrationToolKit/staging/windows/MigrationToolKit/lib/edb-migrationtoolkit.jar ReplicationServer/staging/windows/repserver/lib/repl-mtk || _die "Failed to copy edb-migrationtoolkit.jar"
     cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/staging/windows/repconsole/lib/jdbc/ || _die "Failed to copy pg jdbc drivers"
 

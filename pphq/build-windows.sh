@@ -57,7 +57,6 @@ _build_pphq_windows() {
     cp $SERVER_STAGING/bin/libxml2.dll $PPHQ_STAGING/instscripts/ || _die "Failed to copy dependent libs"
     cp $SERVER_STAGING/bin/libxslt.dll $PPHQ_STAGING/instscripts/ || _die "Failed to copy dependent libs"
     cp $SERVER_STAGING/bin/zlib1.dll $PPHQ_STAGING/instscripts/ || _die "Failed to copy dependent libs"
-    cp $SERVER_STAGING/bin/msvcr71.dll $PPHQ_STAGING/instscripts/ || _die "Failed to copy dependent libs"
     cp $SERVER_STAGING/installer/vcredist_x86.exe $PPHQ_STAGING/ || _die "Failed to copy the VC++ runtimes"
     cp $WD/pphq/scripts/windows/installruntimes.vbs $PPHQ_STAGING/ || _die "Failed to copy the installruntimes script ($PPHQ_STAGING)"
 

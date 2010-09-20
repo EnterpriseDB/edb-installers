@@ -223,7 +223,6 @@ IF NOT EXIST php.staging/php.exe @GOTO installation-failed
 @COPY "%PHPBUILD%\bin\zlib.dll" php.staging || echo Failed to copy zlib.dll && EXIT -1
 @COPY "%PG_HOME_PATH%\bin\libpq.dll" php.staging || echo Failed to copy libpq.dll && EXIT -1
 
-@COPY "%SYSTEMROOT%\System32\msvcr71.dll" php.staging || echo Failed to copy %SYSTEMROOT%\System32\msvcr71.dll && EXIT -1
 @GOTO end
 
 :configure-not-build

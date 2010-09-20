@@ -1086,8 +1086,6 @@
                     <actionList>
                         <!-- copy the msvcr71.dll and msvcrt.dll in the server-4.2.0\bin directory,
                              otherwise it fails to load Java Runtime while runing the server -->
-                        <copyFile origin="${installdir}\jre6\bin\msvcr71.dll"
-                                  destination="${installdir}\server-PG_VERSION_PPHQ\bin\"/>
                         <copyFile origin="${installdir}\jre6\bin\msvcrt.dll"
                                   destination="${installdir}\server-PG_VERSION_PPHQ\bin\"/>
                         <!-- Register PPHQ windows service -->

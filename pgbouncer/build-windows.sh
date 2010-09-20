@@ -105,7 +105,6 @@ EOT
     ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\libxml2\\\\bin\\\\libxml2.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\libxslt\\\\bin\\\\libxslt.dll $PG_PATH_WINDOWS\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\zlib\\\\zlib1.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\Windows\\\\System32\\\\msvcr71.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
     
 
     # Zip up the installed code, copy it back here, and unpack.

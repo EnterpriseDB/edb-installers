@@ -57,7 +57,6 @@ _build_Drupal_windows() {
     cp -R server/staging/windows/bin/libxml2.dll Drupal/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/libxslt.dll Drupal/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/zlib1.dll Drupal/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/msvcr71.dll Drupal/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
 
 }
 
