@@ -137,6 +137,7 @@ EOT
     ssh $PG_SSH_SOLARIS_X64 "cp /usr/sfw/lib/64/libexpat.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libexpat.so) in staging directory (solaris-x64)"
     ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libgssapi_krb5.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libgssapi_krb5.so) in staging directory (solaris-x64)"
     ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libkrb5.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libkrb5.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libkrb5support.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libkrb5.so) in staging directory (solaris-x64)"
     ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libcom_err.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libcom_err.so) in staging directory (solaris-x64)"
     ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libk5crypto.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libk5crypto.so) in staging directory (solaris-x64)"
     ssh $PG_SSH_SOLARIS_X64 "cp /usr/lib/64/libjpeg.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libjpeg.so) in staging directory (solaris-x64)"
