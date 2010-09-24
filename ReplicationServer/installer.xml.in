@@ -1714,6 +1714,7 @@ database=${controldb}
             <ruleList>
                 <fileExists path="${installdir}/etc/xdb_pubserver.conf" />
                 <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </changeOwnerAndGroup> 
 
@@ -1723,6 +1724,7 @@ database=${controldb}
             <ruleList>
                 <fileExists path="${installdir}/etc/xdb_subserver.conf" />
                 <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </changeOwnerAndGroup> 
 
