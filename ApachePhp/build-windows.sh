@@ -286,7 +286,6 @@ EOT
     unzip $WD/ApachePhp/staging/windows/php/php-staging.zip -d $WD/ApachePhp/staging/windows/php || _die "Failed to unpack the built source tree ($WD/staging/windows/php-staging.zip)"
     rm $WD/ApachePhp/staging/windows/php/php-staging.zip
 
-
 }
 
 
@@ -304,6 +303,7 @@ _postprocess_ApachePhp_windows() {
     mkdir -p staging/windows/installer/ApachePhp || _die "Failed to create a directory for the install scripts"
     mkdir -p staging/windows/apache/www/images || _die "Failed to create a directory for the images"
 
+    cp -R $WD/server/staging/windows/bin/libintl-8.dll $WD/ApachePhp/staging/windows/php || _die "Failed to copy dependent libs"
     cp scripts/windows/start-apache.bat staging/windows/installer/ApachePhp/start-apache.bat || _die "Failed to copy the start-apache script (scripts/windows/start-apache.bat)"
     cp scripts/windows/install-apache.bat staging/windows/installer/ApachePhp/install-apache.bat || _die "Failed to copy the install-apache script (scripts/windows/install-apache.bat)"
     cp scripts/windows/uninstall-apache.bat staging/windows/installer/ApachePhp/uninstall-apache.bat || _die "Failed to copy the uninstall-apache script (scripts/windows/uninstall-apache.bat)"
