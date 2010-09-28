@@ -96,7 +96,7 @@ _build_ApachePhp_linux() {
     ssh $PG_SSH_LINUX "cp -R /lib/libcrypt* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libcom_err.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libkeyutils* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /usr/lib/libexpat.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /lib/libexpat.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libgssapi_krb5.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libkrb5.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libk5crypto.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
