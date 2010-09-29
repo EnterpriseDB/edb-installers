@@ -270,7 +270,7 @@ EOT
     unzip $WD/ApachePhp/staging/windows/apache/apache-staging.zip -d $WD/ApachePhp/staging/windows/apache || _die "Failed to unpack the built source tree ($WD/staging/windows/apache-staging.zip)"
     rm $WD/ApachePhp/staging/windows/apache/apache-staging.zip
 
-    TEMP_PATH=`echo $PG_PATH_WINDOWS | sed -e 's:\\\\\\\\:/:g'`
+    TEMP_PATH=`echo $PG_PATH_WINDOWS | sed -e 's:\\\\:/:g'`
 
     # Configure the httpd.conf file
     _replace "$TEMP_PATH/apache.staging" "@@INSTALL_DIR@@" "$WD/ApachePhp/staging/windows/apache/conf/httpd.conf"
@@ -304,6 +304,7 @@ _postprocess_ApachePhp_windows() {
     mkdir -p staging/windows/apache/www/images || _die "Failed to create a directory for the images"
 
     cp -R $WD/server/staging/windows/bin/libintl-8.dll $WD/ApachePhp/staging/windows/php || _die "Failed to copy dependent libs"
+    cp -R $WD/server/staging/windows/bin/libiconv-2.dll $WD/ApachePhp/staging/windows/php || _die "Failed to copy dependent libs"
     cp scripts/windows/start-apache.bat staging/windows/installer/ApachePhp/start-apache.bat || _die "Failed to copy the start-apache script (scripts/windows/start-apache.bat)"
     cp scripts/windows/install-apache.bat staging/windows/installer/ApachePhp/install-apache.bat || _die "Failed to copy the install-apache script (scripts/windows/install-apache.bat)"
     cp scripts/windows/uninstall-apache.bat staging/windows/installer/ApachePhp/uninstall-apache.bat || _die "Failed to copy the uninstall-apache script (scripts/windows/uninstall-apache.bat)"
