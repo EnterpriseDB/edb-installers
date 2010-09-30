@@ -410,7 +410,7 @@
                 <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
                 <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
                 <setEnvironmentVariable name="PGDATABASE" value=""/>
-                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts"/>
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${env(LD_LIBRARY_PATH)}:${system_temp_directory}/instscripts"/>
                 <setInstallerVariable name="pgtempdbname" value=""/>
                 <setInstallerVariable name="connection" value=""/>
 
@@ -864,7 +864,7 @@
         <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
         <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
         <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
-        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/"/>
+        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${env(LD_LIBRARY_PATH)}:${system_temp_directory}/instscripts/"/>
 
         <!-- Create Role and database -->
         <actionGroup>
@@ -1562,7 +1562,7 @@
                 <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
                 <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
                 <setEnvironmentVariable name="PGDATABASE" value=""/>
-                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts/"/>
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${env(LD_LIBRARY_PATH)}:${system_temp_directory}/instscripts/"/>
                 <setInstallerVariable name="connection" value=""/>
                 <setInstallerVariable name="pgtempdbname" value=""/>
 

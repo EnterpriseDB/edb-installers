@@ -42,6 +42,8 @@ Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
+Installer.Installation.Finished.Visit.Us=Please finish the installation process by following steps on http://127.0.0.1:${apacheport}/phpBB/install/database_update.php in your browser.
+
 server.locale.error=The PostgreSQL Server locale does not allow creation of databases with UTF-8 encoding.\n\nAborting Installation.
 
 phpbb.user.not.superuser=The user '${pguser}' does not have super-user privileges.\nPlease provide the details about the user, who has super-user privileges.

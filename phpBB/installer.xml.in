@@ -1246,6 +1246,22 @@
             <text>${msg(db.drop.info)}</text>
         </showInfo>
     </postUninstallationActionList>
+
+    <!-- finalPage actions -->
+    <finalPageActionList>
+        <launchBrowser url="http://localhost:${apacheport}/phpBB/install/database_update.php"
+            progressText="${msg(Installer.Installation.Finished.Visit.Us)}">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
+                <compareText>
+                    <text>${phpBBVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </launchBrowser>
+    </finalPageActionList>
+
     <!-- Components -->
     <componentList>
         <component>
