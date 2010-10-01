@@ -1136,6 +1136,15 @@
             <path>${system_temp_directory}/instscripts</path>
         </deleteFile>
 
+        <actionGroup>
+            <actionList>
+		<showInfo text="${msg(run.maintenance.info)}"/>
+            </actionList>
+            <ruleList>
+                <compareText text="${mediaWikiVersion}" logic="does_not_equal" value=""/>
+            </ruleList>
+        </actionGroup>
+
     </postInstallationActionList>
 
     <postUninstallerCreationActionList>
