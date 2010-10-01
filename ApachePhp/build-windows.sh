@@ -270,7 +270,7 @@ EOT
     unzip $WD/ApachePhp/staging/windows/apache/apache-staging.zip -d $WD/ApachePhp/staging/windows/apache || _die "Failed to unpack the built source tree ($WD/staging/windows/apache-staging.zip)"
     rm $WD/ApachePhp/staging/windows/apache/apache-staging.zip
 
-    TEMP_PATH=`echo $PG_PATH_WINDOWS | sed -e 's:\\\\:/:g'`
+    TEMP_PATH=`echo $PG_PATH_WINDOWS | sed -e 's:\\\\\\\\:/:g'`
 
     # Configure the httpd.conf file
     _replace "$TEMP_PATH/apache.staging" "@@INSTALL_DIR@@" "$WD/ApachePhp/staging/windows/apache/conf/httpd.conf"
