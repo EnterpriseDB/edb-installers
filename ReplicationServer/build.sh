@@ -68,21 +68,41 @@ _prep_ReplicationServer() {
     then
       cd replicator 
       echo "Updating xDB Replication Server source directory"
-      CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -PdC
+      if  [ x$PG_TAG_REPLICATIONSERVER = x ];
+      then
+      	  CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -PdC
+      else
+      	  CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -r $PG_TAG_REPLICATIONSERVER -PdC
+      fi
     else
       echo "Fetching xDB Replication Server source directory"
-      cvs -d:ext:pginstaller@cvs.enterprisedb.com/cvs/EDB-RREP co replicator
+      if  [ x$PG_TAG_REPLICATIONSERVER = x ];
+      then
+          cvs -d:ext:pginstaller@cvs.enterprisedb.com/cvs/EDB-RREP co replicator
+      else
+          cvs -d:ext:pginstaller@cvs.enterprisedb.com/cvs/EDB-RREP co -r $PG_TAG_REPLICATIONSERVER replicator
+      fi
     fi
     cd $WD/ReplicationServer/source
     # DataValidator
-    if [ -e DataValidator ];
+    if [ -e DataValidator ]; 
     then
       cd DataValidator
       echo "Updating DataValidator source directory"
-      CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -PdC
+      if  [ x$PG_TAG_REPLICATIONSERVER = x ];
+      then
+          CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -PdC
+      else
+          CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -r $PG_TAG_REPLICATIONSERVER -PdC
+      fi
     else
       echo "Fetching xDB DataValidator source directory"
-      cvs -d:ext:pginstaller@cvs.enterprisedb.com/cvs/EDB-RREP co DataValidator
+      if  [ x$PG_TAG_REPLICATIONSERVER = x ];
+      then
+          cvs -d:ext:pginstaller@cvs.enterprisedb.com/cvs/EDB-RREP co DataValidator
+      else
+          cvs -d:ext:pginstaller@cvs.enterprisedb.com/cvs/EDB-RREP co -r $PG_TAG_REPLICATIONSERVER DataValidator
+      fi
     fi
 
     # Per-platform prep

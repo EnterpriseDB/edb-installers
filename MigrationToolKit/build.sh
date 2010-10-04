@@ -59,11 +59,21 @@ _prep_MigrationToolKit() {
       echo "Fetching MigrationToolKit sources from the cvs..."
       mkdir -p EDB-MTK
       cd EDB-MTK
-      cvs -d:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK co . 
+      if  [ x$PG_TAG_MIGRATIONTOOLKIT = x ];
+      then
+          cvs -d:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK co . 
+      else
+          cvs -d:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK co -r $PG_TAG_MIGRATIONTOOLKIT . 
+      fi
     else  
       cd $WD/MigrationToolKit/source/EDB-MTK
       echo "Updating MigrationToolKit sources from the cvs..."
-      CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK cvs update -dPC
+      if  [ x$PG_TAG_MIGRATIONTOOLKIT = x ];
+      then
+          CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK cvs update -dPC
+      else
+          CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK cvs update -r $PG_TAG_MIGRATIONTOOLKIT -dPC
+      fi
     fi
 
     if [ -e $WD/MigrationToolKit/source/pgJDBC-$PG_VERSION_PGJDBC ];
