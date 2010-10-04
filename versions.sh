@@ -41,8 +41,8 @@ PG_BUILDNUM_PLPGSQLO=1
 PG_BUILDNUM_SQLPROTECT=1
 
 # Tags for source checkout
-PG_TAG_REPLICATIONSERVER='Build50'
-PG_TAG_MIGRATIONTOOLKIT='XDB-Build50'
+PG_TAG_REPLICATIONSERVER=''
+PG_TAG_MIGRATIONTOOLKIT=''
 
 # PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
 #                     Minor version is revision.build.
