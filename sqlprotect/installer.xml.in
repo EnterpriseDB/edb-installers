@@ -26,6 +26,7 @@
 
     <!-- Misc package options -->
     <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <wrapLicenseFileText>1</wrapLicenseFileText>
     <enableRollback>0</enableRollback>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <saveRelativePaths>1</saveRelativePaths>
@@ -37,6 +38,7 @@
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
     <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
     <allowWindowResize>1</allowWindowResize>
+    <licenseFile encoding="utf-8">resources/licence.txt</licenseFile>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
