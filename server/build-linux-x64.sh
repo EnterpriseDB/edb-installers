@@ -202,6 +202,7 @@ _build_server_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libreadline.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libtermcap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libpng12.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
