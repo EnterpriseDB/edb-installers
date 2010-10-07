@@ -670,6 +670,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
               </actionList>
               <ruleList>
                 <compareText text="${platform_name}" logic="contains" value="solaris"/>
+                <compareText text="${iSBPVersion}" logic="equals" value=""/>
               </ruleList>
             </actionGroup>
           </actionList>
