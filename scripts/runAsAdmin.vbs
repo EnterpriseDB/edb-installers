@@ -1848,6 +1848,12 @@ Class DevServer
     If UCase(p_strLocale) = "DEFAULT" Then
       m_strLocale = "DEFAULT" : validateLocale = true : Exit Function
     End If
+    If UCase(p_strLocale) = "C" Then
+      m_strLocale = "C" : validateLocale = true : Exit Function
+    End If
+    If UCase(p_strLocale) = "POSIX" Then
+      m_strLocale = "POSIX" : validateLocale = true : Exit Function
+    End If
     If p_strLocale = NULL OR Trim(p_strLocale) = "" Then
       p_strErrMsg = "Not a valid locale." : Exit Function
     End If
