@@ -122,8 +122,8 @@ xdb.registration.email.empty=Please provide the email address registered www.ent
 
 xdb.registration.password.empty=Please provide the password, set while registring with www.enterprisedb.com, using the '--existing-password' command-line option.
 
-pub.service.description=Provides data replication services from Oracle (tm) to Postgres Plus.
-sub.service.description=Provides data replication services from Oracle (tm) to Postgres Plus.
+pub.service.description=Provides data replication services from Oracle (tm) to Postgres Plus and vice-versa.
+sub.service.description=Provides data replication services from Oracle (tm) to Postgres Plus and vice-versa.
 
 Installer.CustomError.CommandLineOptionsNotPresent=The following options was not specified and is required: ${optionRequired}
 
