@@ -159,7 +159,7 @@ EOT
     
         # Configure the source tree
         echo "Configuring the postgres source tree"
-        ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/postgres.solaris-x64/;./configure --prefix=$PG_STAGING --with-openssl --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt"  || _die "Failed to configure postgres"
+        ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/postgres.solaris-x64/;./configure --prefix=$PG_STAGING --with-openssl --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred"  || _die "Failed to configure postgres"
     
         echo "Building postgres"
         ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/postgres.solaris-x64; gmake -j4" || _die "Failed to build postgres"
@@ -172,7 +172,7 @@ EOT
         # Copy in the dependency libraries
         ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
         ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-        ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libreadline.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+        ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
         ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
         ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
         ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
@@ -184,7 +184,7 @@ EOT
         # Process Dependent libs
         _process_dependent_libs_solaris_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl.so"
         _process_dependent_libs_solaris_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libcrypto.so"
-        _process_dependent_libs_solaris_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libreadline.so"
+        _process_dependent_libs_solaris_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libedit.so"
         _process_dependent_libs_solaris_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libxml2.so"
         _process_dependent_libs_solaris_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libxslt.so"
         _process_dependent_libs_solaris_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libkrb5.so"

@@ -118,7 +118,7 @@ _build_ReplicationServer_solaris_x64() {
     cp $PG_CACHE_PATH/lib/libpq.so* $XDB_STAGING/instscripts/lib || _die "Failed to copy libpq.so ($XDB_PLATFORM)"
     cp $PG_CACHE_PATH/lib/libcrypto.so* $XDB_STAGING/instscripts/lib || _die "Failed to copy libcrypto.so ($XDB_PLATFORM)"
     cp $PG_CACHE_PATH/lib/libssl.so* $XDB_STAGING/instscripts/lib || _die "Failed to copy libssl.so ($XDB_PLATFORM)"
-    cp $PG_CACHE_PATH/lib/libreadline.so* $XDB_STAGING/instscripts/lib || _die "Failed to copy libreadline.so ($XDB_PLATFORM)"
+    cp $PG_CACHE_PATH/lib/libedit.so* $XDB_STAGING/instscripts/lib || _die "Failed to copy libedit.so ($XDB_PLATFORM)"
     cp $PG_CACHE_PATH/lib/libxml2.so* $XDB_STAGING/instscripts/lib || _die "Failed to copy libxml2.so ($XDB_PLATFORM)"
     cp $PG_CACHE_PATH/lib/libxslt.so* $XDB_STAGING/instscripts/lib || _die "Failed to copy libxml2.so ($XDB_PLATFORM)"
     cp $PG_CACHE_PATH/lib/libk5crypto.so* $XDB_STAGING/instscripts/lib || _die "Failed to copy libk5crypto.so ($XDB_PLATFORM)"
