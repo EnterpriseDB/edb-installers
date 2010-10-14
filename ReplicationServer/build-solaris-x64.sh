@@ -98,7 +98,7 @@ _build_ReplicationServer_solaris_x64() {
     ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libpq.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libpq.so"
     ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libcrypto.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libcrypto.so"
     ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libssl.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libssl.so"
-    ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libreadline.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libreadline.so"
+    ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libedit.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libedit.so"
     ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libxml2.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libxml2.so"
     ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libxslt.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libxml2.so"
     ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp server/staging/solaris-x64/lib/libk5crypto.so* ReplicationServer/staging/solaris-x64/instscripts/lib" || _die "Failed to copy libk5crypto.so"
