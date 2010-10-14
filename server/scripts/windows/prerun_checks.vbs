@@ -14,7 +14,6 @@ End If
 isWritable = IsPathWriteable(strSystemRoot)
 If isWritable = False Then
    WScript.Echo "Unable to write inside TEMP environment variable path."
-   MsgBox "Unable to write inside TEMP environment variable path."
    WScript.Quit 1
 End If
 
@@ -32,8 +31,7 @@ fso.DeleteFile Temp_Path
 
 If canExecute <> 0 Then
    WScript.Echo "Unable to execute from TEMP environment variable path."
-   MsgBox "Unable to execute from TEMP environment variable path."
-   WScript.Quit 1
+   WScript.Quit 2
 End If
 
 WScript.Echo "The scripting host appears to be functional."

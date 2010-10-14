@@ -1250,6 +1250,54 @@
         <logMessage text="Using Super User: ${superaccount} and Service Account: ${serviceaccount}" />
         <logMessage text="Using Service Name: ${servicename}"/>
 
+        <!-- prerun_check script -->
+	<unpackFile>
+	    <component>default</component>
+	    <destination>${system_temp_directory}</destination>
+	    <folder>programfileswindows</folder>
+	    <origin>installer/prerun_checks.vbs</origin>
+	    <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+	</unpackFile>
+
+	<actionGroup>
+	    <actionList>
+		<runProgram>
+		    <program>cscript</program>
+		    <programArguments>//NoLogo "${system_temp_directory}\prerun_checks.vbs"</programArguments>
+		    <abortOnError>0</abortOnError>
+		    <showMessageOnError>0</showMessageOnError>
+		</runProgram>
+		<throwError>
+		    <text>${msg(prerunscript.command.line.error)}</text>
+		    <ruleList>
+			<compareText>
+			    <logic>equals</logic>
+			    <text>1</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+		    </ruleList>
+		</throwError>
+		<throwError>
+		    <text>${msg(prerunscript.command.line.execute.error)}</text>
+		    <ruleList>
+			<compareText>
+			    <logic>equals</logic>
+			    <text>2</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+		    </ruleList>
+		</throwError>
+	    </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
 
         <!-- Temp directory for preflight scripts -->
         <createDirectory path="${system_temp_directory}/postgresql_installer"/>
