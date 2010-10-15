@@ -97,7 +97,7 @@ EOT
     ssh $PG_SSH_SOLARIS_X64 "cp -R $PG_PATH_SOLARIS_X64/server/staging/solaris-x64/bin/psql $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy psql in instscripts"
     ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libssl.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libcrypto.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libreadline.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libedit.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libxml2.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libxslt.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libkrb5.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
