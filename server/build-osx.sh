@@ -270,6 +270,9 @@ _postprocess_server_osx() {
     chmod ugo+x staging/osx/installer/server/preinstall.sh
     cp $WD/server/scripts/osx/getlocales/getlocales.osx $WD/server/staging/osx/installer/server/getlocales || _die "Failed to copy getlocales utility in the staging directory"
     chmod ugo+x staging/osx/installer/server/getlocales
+    cp $WD/server/scripts/osx/prerun_checks.sh $WD/server/staging/osx/installer/server/prerun_checks.sh || _die "Failed to copy the prerun_checks.sh script"
+    chmod ugo+x $WD/server/staging/osx/installer/server/prerun_checks.sh
+
     cp scripts/osx/createuser.sh staging/osx/installer/server/createuser.sh || _die "Failed to copy the createuser script (scripts/osx/createuser.sh)"
     chmod ugo+x staging/osx/installer/server/createuser.sh
     cp scripts/osx/initcluster.sh staging/osx/installer/server/initcluster.sh || _die "Failed to copy the initcluster script (scripts/osx/initcluster.sh)"

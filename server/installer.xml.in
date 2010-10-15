@@ -1257,6 +1257,59 @@
 	    <folder>programfileswindows</folder>
 	    <origin>installer/prerun_checks.vbs</origin>
 	    <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+	     <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+             </ruleList>
+	</unpackFile>
+	<unpackFile>
+	    <component>default</component>
+	    <destination>${system_temp_directory}</destination>
+	    <folder>programfileslinux</folder>
+	    <origin>installer/server/prerun_checks.sh</origin>
+	    <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+	     <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+             </ruleList>
+	</unpackFile>
+	<unpackFile>
+	    <component>default</component>
+	    <destination>${system_temp_directory}</destination>
+	    <folder>programfileslinux-x64</folder>
+	    <origin>installer/server/prerun_checks.sh</origin>
+	    <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+	     <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+             </ruleList>
+	</unpackFile>
+	<unpackFile>
+	    <component>default</component>
+	    <destination>${system_temp_directory}</destination>
+	    <folder>programfilesmacosx</folder>
+	    <origin>installer/server/prerun_checks.sh</origin>
+	    <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+	     <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+             </ruleList>
 	</unpackFile>
 
 	<actionGroup>
@@ -1266,7 +1319,16 @@
 		    <programArguments>//NoLogo "${system_temp_directory}\prerun_checks.vbs"</programArguments>
 		    <abortOnError>0</abortOnError>
 		    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
 		</runProgram>
+                <runProgram program="${system_temp_directory}/prerun_checks.sh">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </runProgram>
+
 		<throwError>
 		    <text>${msg(prerunscript.command.line.error)}</text>
 		    <ruleList>
@@ -1289,11 +1351,6 @@
 		</throwError>
 	    </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>

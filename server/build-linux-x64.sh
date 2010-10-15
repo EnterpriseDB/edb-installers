@@ -340,6 +340,8 @@ _postprocess_server_linux_x64() {
     mkdir -p staging/linux-x64/installer/server || _die "Failed to create a directory for the install scripts"
     cp $WD/server/scripts/linux/getlocales/getlocales.linux-x64 $WD/server/staging/linux-x64/installer/server/getlocales || _die "Failed ot copy getlocales utility to staging directory"
     chmod ugo+x $WD/server/staging/linux-x64/installer/server/getlocales
+    cp $WD/server/scripts/linux/prerun_checks.sh $WD/server/staging/linux-x64/installer/server/prerun_checks.sh || _die "Failed to copy the prerun_checks.sh script"
+    chmod ugo+x $WD/server/staging/linux-x64/installer/server/prerun_checks.sh
 
     cp scripts/linux/runpgcontroldata.sh staging/linux-x64/installer/server/runpgcontroldata.sh || _die "Failed to copy the runpgcontroldata script (scripts/linux/runpgcontroldata.sh)"
     chmod ugo+x staging/linux-x64/installer/server/runpgcontroldata.sh

@@ -337,6 +337,8 @@ _postprocess_server_linux() {
     mkdir -p staging/linux/installer/server || _die "Failed to create a directory for the install scripts"
     cp $WD/server/scripts/linux/getlocales/getlocales.linux $WD/server/staging/linux/installer/server/getlocales || _die "Failed to copy getlocales utility in the staging directory"
     chmod ugo+x $WD/server/staging/linux/installer/server/getlocales
+    cp $WD/server/scripts/linux/prerun_checks.sh $WD/server/staging/linux/installer/server/prerun_checks.sh || _die "Failed to copy the prerun_checks.sh script"
+    chmod ugo+x $WD/server/staging/linux/installer/server/prerun_checks.sh
     cp scripts/linux/runpgcontroldata.sh staging/linux/installer/server/runpgcontroldata.sh || _die "Failed to copy the runpgcontroldata script (scripts/linux/runpgcontroldata.sh)"
     chmod ugo+x staging/linux/installer/server/runpgcontroldata.sh
     cp scripts/linux/createuser.sh staging/linux/installer/server/createuser.sh || _die "Failed to copy the createuser script (scripts/linux/createuser.sh)"
