@@ -31,6 +31,7 @@ echo "Switching to REL-9_0 branch" >> autobuild.log
 
 # Self update
 echo "Updating build system" >> autobuild.log
+/opt/local/bin/git reset --hard >> autobuild.log 2>&1
 /opt/local/bin/git pull >> autobuild.log 2>&1
 
 # Make sure, we always do a full build
