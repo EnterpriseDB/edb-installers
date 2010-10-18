@@ -27,7 +27,7 @@ _prep_metainstaller_windows() {
 
     # Grab a copy of the stackbuilderplus installer
     echo "Grab StackBuilderPlus installer..."
-    cp -R "$WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-windows.exe"  $WD/MetaInstaller/staging/windows || _die "Failed to copy the stackbuilderplus installer (staging/linux/stackbuilderplus-pg_$PG_VERSION_STR-$PG_PACKAGE_SBP-$PG_BUILDNUM_SBP-windows.exe)"
+    cp -R "$WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-windows.exe"  $WD/MetaInstaller/staging/windows || _die "Failed to copy the stackbuilderplus installer (staging/linux/stackbuilderplus-$PG_PACKAGE_SBP-$PG_BUILDNUM_SBP-windows.exe)"
     # Grab a copy of the postgresql installer
     echo "Grab PostgreSQL installer..."
     cp -R "$WD/output/postgresql-$PG_PACKAGE_VERSION-windows.exe"  $WD/MetaInstaller/staging/windows || _die "Failed to copy the postgresql installer (staging/windows/postgresql-$PG_PACKAGE_VERSION-windows.exe)"
@@ -107,6 +107,8 @@ _prep_metainstaller_windows() {
     cd $WD/server/scripts/windows
     echo "copying installruntimes.vbs in staging directory..."
     cp -R installruntimes.vbs  $WD/MetaInstaller/staging/windows/scripts || _die "Failed to copy the installruntimes.vbs  (MetaInstaller/staging/windows/scripts)"
+    echo "copying prerun_checks.vbs in staging directory..."
+    cp -R prerun_checks.vbs  $WD/MetaInstaller/staging/windows/scripts || _die "Failed to copy the prerun_checks.vbs  (MetaInstaller/staging/windows/scripts)"
 
 }
 

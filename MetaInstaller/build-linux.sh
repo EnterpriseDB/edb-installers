@@ -34,7 +34,7 @@ _prep_metainstaller_linux() {
     cp "$WD/scripts/runAsRoot.sh" "$WD/MetaInstaller/staging/linux" || _die "Failed to copy the runAsRoot script"
 
     # Grab a copy of the stackbuilderplus installer
-    cp -R "$WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the stackbuilderplus installer (staging/linux/stackbuilderplus-pg_$PG_VERSION_STR-$PG_PACKAGE_SBP-$PG_BUILDNUM_SBP-linux.bin)"
+    cp -R "$WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the stackbuilderplus installer (staging/linux/stackbuilderplus-$PG_PACKAGE_SBP-$PG_BUILDNUM_SBP-linux.bin)"
     # Grab a copy of the postgresql installer
     cp -R "$WD/output/postgresql-$PG_PACKAGE_VERSION-linux.bin"  $WD/MetaInstaller/staging/linux || _die "Failed to copy the postgresql installer (staging/linux/postgresql-$PG_PACKAGE_VERSION-linux.bin)"
     # Grab a copy of the slony installer
@@ -66,6 +66,7 @@ _prep_metainstaller_linux() {
     cd $WD/server/staging/linux
     cp -R lib  $WD/MetaInstaller/staging/linux/scripts/pgcontrol || _die "Failed to copy the lib/  (MetaInstaller/staging/linux/scripts/pgcontrol)"
     cp -R $WD/server/scripts/linux/getlocales.sh  $WD/MetaInstaller/staging/linux/scripts || _die "Failed to copy the getlocales.sh  (MetaInstaller/staging/linux/scripts)"
+    cp -R $WD/server/scripts/linux/prerun_checks.sh  $WD/MetaInstaller/staging/linux/scripts || _die "Failed to copy the prerun_checks.sh  (MetaInstaller/staging/linux/scripts)"
     cp -R $WD/server/scripts/linux/runpgcontroldata.sh  $WD/MetaInstaller/staging/linux/scripts || _die "Failed to copy the runpgcontroldata.sh  (MetaInstaller/staging/linux/scripts)"
     cp -R $WD/server/scripts/linux/startserver.sh  $WD/MetaInstaller/staging/linux/scripts || _die "Failed to copy the startserver.sh  (MetaInstaller/staging/linux/scripts)"
     cp -R $WD/MetaInstaller/scripts/linux/*.sh  $WD/MetaInstaller/staging/linux/scripts/ || _die "Failed to copy the scripts"

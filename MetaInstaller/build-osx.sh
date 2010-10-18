@@ -35,7 +35,7 @@ _prep_metainstaller_osx() {
     cp "$WD/scripts/runAsRoot.sh" "$WD/MetaInstaller/staging/osx" || _die "Failed to copy the runAsRoot script"
 
     # Grab a copy of the stackbuilderplus installer
-    cp -R "$WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the stackbuilderplus installer (staging/linux/stackbuilderplus-pg_$PG_VERSION_STR-$PG_PACKAGE_SBP-$PG_BUILDNUM_SBP-osx.zip)"
+    cp -R "$WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.zip"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the stackbuilderplus installer (staging/linux/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.zip)"
     # Grab a copy of the postgresql installer
     cp -R "$WD/output/postgresql-$PG_PACKAGE_VERSION-osx.dmg"  $WD/MetaInstaller/staging/osx || _die "Failed to copy the postgresql installer (staging/osx/postgresql-$PG_PACKAGE_VERSION-osx.zip)"
     # Grab a copy of the slony installer
@@ -74,8 +74,8 @@ _prep_metainstaller_osx() {
     rm -f postgresql-$PG_PACKAGE_VERSION-osx.dmg
 
     # unzip stackbuilderplus
-    unzip stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.zip
-    rm -f stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.zip
+    unzip stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.zip
+    rm -f stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.zip
 
     # unzip slony    
     unzip slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.zip
@@ -114,7 +114,8 @@ _prep_metainstaller_osx() {
     mkdir -p staging/osx/scripts/pgcontrol/lib
     cp -R $WD/server/staging/osx/bin/pg_controldata  staging/osx/scripts/pgcontrol/bin || _die "Failed to copy the pg_controldata  (staging/osx/scripts/pgcontrol/bin)"
     cp -R $WD/server/staging/osx/lib/libxml2.2.dylib  staging/osx/scripts/pgcontrol/lib || _die "Failed to copy the libxml2  (staging/osx/scripts/pgcontrol/lib)"
-    cp -R $WD/server/staging/osx/installer/server/getlocales.sh  staging/osx/scripts/ || _die "Failed to copy the getlocales.sh"
+    cp -R $WD/server/scripts/osx/getlocales.sh staging/osx/scripts/ || _die "Failed to copy the getlocales.sh"
+    cp -R $WD/server/scripts/osx/prerun_checks.sh  $WD/MetaInstaller/staging/osx/scripts || _die "Failed to copy the prerun_checks.sh"
     cp -R $WD/server/staging/osx/installer/server/preinstall.sh  staging/osx/scripts/ || _die "Failed to copy the preinstall.sh"
 
     cp -R $WD/MetaInstaller/scripts/osx/*.sh  staging/osx/scripts/ || _die "Failed to copy the scripts"

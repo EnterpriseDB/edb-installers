@@ -457,7 +457,111 @@
 
   <!-- Test code Preinstallation actions -->
   <preInstallationActionList>
- 
+    <!-- prerun_check script -->
+	<unpackFile>
+	    <component>default</component>
+	    <destination>${system_temp_directory}</destination>
+	    <folder>programfileswindows</folder>
+	    <origin>prerun_checks.vbs</origin>
+	    <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+	     <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+         </ruleList>
+	</unpackFile>
+	<unpackFile>
+	    <component>default</component>
+	    <destination>${system_temp_directory}</destination>
+	    <folder>programfileslinux</folder>
+	    <origin>server/prerun_checks.sh</origin>
+	    <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+	     <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+         </ruleList>
+	</unpackFile>
+	<unpackFile>
+	    <component>default</component>
+	    <destination>${system_temp_directory}</destination>
+	    <folder>programfileslinux-x64</folder>
+	    <origin>server/prerun_checks.sh</origin>
+	    <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+	     <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+         </ruleList>
+	</unpackFile>
+	<unpackFile>
+	    <component>default</component>
+	    <destination>${system_temp_directory}</destination>
+	    <folder>programfilesmacosx</folder>
+	    <origin>server/prerun_checks.sh</origin>
+	    <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+	     <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+         </ruleList>
+	</unpackFile>
+
+	<actionGroup>
+	    <actionList>
+		<runProgram>
+		    <program>cscript</program>
+		    <programArguments>//NoLogo "${system_temp_directory}\prerun_checks.vbs"</programArguments>
+		    <abortOnError>0</abortOnError>
+		    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+		</runProgram>
+		<runProgram program="${system_temp_directory}/prerun_checks.sh">
+			<ruleList>
+				<compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+			</ruleList>
+		</runProgram>
+
+		<throwError>
+		    <text>${msg(prerunscript.command.line.error)}</text>
+		    <ruleList>
+			<compareText>
+			    <logic>equals</logic>
+			    <text>1</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+		    </ruleList>
+		</throwError>
+		<throwError>
+		    <text>${msg(prerunscript.command.line.execute.error)}</text>
+		    <ruleList>
+			<compareText>
+			    <logic>equals</logic>
+			    <text>2</text>
+			    <value>${program_exit_code}</value>
+			</compareText>
+		    </ruleList>
+		</throwError>
+	  </actionList>
+      <ruleList>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
+    </actionGroup>
+
     <setInstallerVariable name="iDataDirectory" value=""/>
     <setInstallerVariable name="iBaseDirectory" value=""/>
     <setInstallerVariable name="iMonitorServer" value=""/>
@@ -3964,7 +4068,7 @@
             <runProgram abortOnError="0"
                         progressText="Installing StackBuilderPlus ... "
                         showMessageOnError="1"
-                        program="${ppss_temp_directory}/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux.bin"
+                        program="${ppss_temp_directory}/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux.bin"
                         programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot;  ${monitor_server} --install-monitoring ${installMonitoring}">
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="linux"/>
@@ -3974,7 +4078,7 @@
             <runProgram abortOnError="0"
                         progressText="Installing StackBuilderPlus ... "
                         showMessageOnError="1"
-                        program="${ppss_temp_directory}/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-x64.bin"
+                        program="${ppss_temp_directory}/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-x64.bin"
                         programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot;  ${monitor_server} --install-monitoring ${installMonitoring}">
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
@@ -3984,7 +4088,7 @@
             <runProgram abortOnError="0"
                         progressText="Installing StackBuilderPlus ... "
                         showMessageOnError="1"
-                        program="${ppss_temp_directory}/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-ppc64.bin"
+                        program="${ppss_temp_directory}/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-ppc64.bin"
                         programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot;  ${monitor_server} --install-monitoring ${installMonitoring}">
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
@@ -4331,7 +4435,7 @@
             <runProgram abortOnError="0"
                         progressText="Installing StackBuilderPlus ... "
                         showMessageOnError="0"
-                        program="${ppss_temp_directory}\stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-windows.exe"
+                        program="${ppss_temp_directory}\stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-windows.exe"
                         programArguments="--mode unattended --prefix &quot;${installdir}\StackBuilderPlus&quot; --branding &quot;Postgres Plus Standard Server ${product_version}&quot; ${monitor_server} --install-monitoring ${installMonitoring}"/>
           </actionList>
           <ruleList>
@@ -4737,7 +4841,7 @@
             <runProgram abortOnError="0"
                         progressText="Installing StackBuilderPlus ... "
                         showMessageOnError="0"
-                        program="${ppss_temp_directory}/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-osx.app/Contents/MacOS/installbuilder.sh"
+                        program="${ppss_temp_directory}/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-osx.app/Contents/MacOS/installbuilder.sh"
                         programArguments="--mode unattended --prefix &quot;${installdir}/StackBuilderPlus&quot; --branding &quot;Postgres Plus Standard Server ${product_version}&quot; ${monitor_server} --install-monitoring ${installMonitoring}"/>
           </actionList>
           <ruleList>
@@ -5156,13 +5260,13 @@
         </logMessage>
 
         <!-- StackBuilder Plus -->
-        <setInstallerVariable name="sbp_installer" value="${ppss_temp_directory}/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-${platform_name}.${platform_exec_suffix}"/>
-        <setInstallerVariable name="sbp_installer" value="${ppss_temp_directory}/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-${platform_name}64.${platform_exec_suffix}">
+        <setInstallerVariable name="sbp_installer" value="${ppss_temp_directory}/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-${platform_name}.${platform_exec_suffix}"/>
+        <setInstallerVariable name="sbp_installer" value="${ppss_temp_directory}/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-${platform_name}64.${platform_exec_suffix}">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
           </ruleList>
         </setInstallerVariable>
-        <setInstallerVariable name="sbp_installer" value="${ppss_temp_directory}/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-${platform_name}.${platform_exec_suffix}/Contents/MacOS/installbuilder.sh">
+        <setInstallerVariable name="sbp_installer" value="${ppss_temp_directory}/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-${platform_name}.${platform_exec_suffix}/Contents/MacOS/installbuilder.sh">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="osx"/>
           </ruleList>
@@ -6582,7 +6686,7 @@
           <platforms>linux</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux.bin</origin>
+              <origin>staging/linux/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux.bin</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -6595,7 +6699,7 @@
           <platforms>linux-x64</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-x64/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-x64.bin</origin>
+              <origin>staging/linux-x64/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-x64.bin</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -6608,7 +6712,7 @@
           <platforms>linux-ppc</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-ppc64/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-ppc64.bin</origin>
+              <origin>staging/linux-ppc64/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-ppc64.bin</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -6621,7 +6725,7 @@
           <platforms>osx</platforms>
           <distributionFileList>
             <distributionDirectory>
-              <origin>staging/osx/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-osx.app</origin>
+              <origin>staging/osx/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-osx.app</origin>
             </distributionDirectory>
           </distributionFileList>
         </folder>
@@ -6634,7 +6738,7 @@
           <platforms>windows</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/windows/stackbuilderplus-pg_PG_VERSION_STR-PG_VERSION_SBP-PG_BUILDNUM_SBP-windows.exe</origin>
+              <origin>staging/windows/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-windows.exe</origin>
             </distributionFile>
           </distributionFileList>
         </folder>

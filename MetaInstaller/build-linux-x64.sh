@@ -34,7 +34,7 @@ _prep_metainstaller_linux_x64() {
     cp "$WD/scripts/runAsRoot.sh" "$WD/MetaInstaller/staging/linux-x64" || _die "Failed to copy the runAsRoot script"      
 
     # Grab a copy of the stackbuilderplus installer
-    cp -R "$WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the stackbuilderplus installer (staging/linux/stackbuilderplus-pg_$PG_VERSION_STR-$PG_PACKAGE_SBP-$PG_BUILDNUM_SBP-linux-x64.bin)"
+    cp -R "$WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the stackbuilderplus installer (staging/linux/stackbuilderplus-$PG_PACKAGE_SBP-$PG_BUILDNUM_SBP-linux-x64.bin)"
 
     # Grab a copy of the postgresql installer
     cp -R "$WD/output/postgresql-$PG_PACKAGE_VERSION-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the postgresql installer (staging/linux-x64/postgresql-$PG_PACKAGE_VERSION-linux-x64.bin)"
@@ -67,6 +67,7 @@ _prep_metainstaller_linux_x64() {
     cd $WD/server/staging/linux-x64
     cp -R lib  $WD/MetaInstaller/staging/linux-x64/scripts/pgcontrol || _die "Failed to copy the lib/  (MetaInstaller/staging/linux-x64/scripts/pgcontrol)"
     cp -R $WD/server/scripts/linux/getlocales.sh  $WD/MetaInstaller/staging/linux-x64/scripts || _die "Failed to copy the getlocales.sh  (MetaInstaller/staging/linux-x64/scripts)"
+    cp -R $WD/server/scripts/linux/prerun_checks.sh  $WD/MetaInstaller/staging/linux-x64/scripts || _die "Failed to copy the prerun_checks.sh  (MetaInstaller/staging/linux-x64/scripts)"
     cp -R $WD/server/scripts/linux/runpgcontroldata.sh  $WD/MetaInstaller/staging/linux-x64/scripts || _die "Failed to copy the runpgcontroldata.sh  (MetaInstaller/staging/linux-x64/scripts)"
     cp -R $WD/server/scripts/linux/startserver.sh  $WD/MetaInstaller/staging/linux-x64/scripts || _die "Failed to copy the startserver.sh  (MetaInstaller/staging/linux-x64/scripts)"
     cp -R $WD/MetaInstaller/scripts/linux-x64/*.sh  $WD/MetaInstaller/staging/linux-x64/scripts/ || _die "Failed to copy the scripts"
