@@ -457,7 +457,7 @@
 
   <!-- Test code Preinstallation actions -->
   <preInstallationActionList>
-    <!-- prerun_check script -->
+        <!-- prerun_check script -->
 	<unpackFile>
 	    <component>default</component>
 	    <destination>${system_temp_directory}</destination>
@@ -471,7 +471,7 @@
                     <value>windows</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
-         </ruleList>
+             </ruleList>
 	</unpackFile>
 	<unpackFile>
 	    <component>default</component>
@@ -486,7 +486,7 @@
                     <value>linux</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
-         </ruleList>
+             </ruleList>
 	</unpackFile>
 	<unpackFile>
 	    <component>default</component>
@@ -501,7 +501,7 @@
                     <value>linux-x64</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
-         </ruleList>
+             </ruleList>
 	</unpackFile>
 	<unpackFile>
 	    <component>default</component>
@@ -516,7 +516,7 @@
                     <value>osx</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
-         </ruleList>
+             </ruleList>
 	</unpackFile>
 
 	<actionGroup>
@@ -659,12 +659,6 @@
 
     <actionGroup>
       <actionList>
-        <!-- Abort installation if not super-user and not running in extract-only mode-->
-        <throwError text="${msg(Installer.Warning.RootPrivileges)}">
-          <ruleList>
-            <isFalse value="${installer_is_root_install}"/>
-          </ruleList>
-        </throwError>
         <setInstallerVariable name="windowsSoftwareRegistryPrefix" value="EnterpriseDB\PostgresPlus\Installations\postgresplus-${product_version}" persist="1"/>
 
         <actionGroup>
@@ -6267,6 +6261,9 @@
             <distributionFile>
               <origin>staging/linux/scripts/rundynaTuneClient.sh</origin>
             </distributionFile>
+            <distributionFile>
+              <origin>staging/linux/scripts/prerun_checks.sh</origin>
+            </distributionFile>
             <distributionDirectory>
               <origin>staging/linux/scripts/lib</origin>
             </distributionDirectory>
@@ -6374,6 +6371,9 @@
             </distributionFile>
             <distributionFile>
               <origin>staging/linux-x64/scripts/rundynaTuneClient.sh</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/linux-x64/scripts/prerun_checks.sh</origin>
             </distributionFile>
             <distributionDirectory>
               <origin>staging/linux-x64/scripts/lib</origin>
@@ -6587,6 +6587,9 @@
             <distributionFile>
               <origin>staging/windows/scripts/modifyPostgresql.exe</origin>
             </distributionFile>
+            <distributionFile>
+              <origin>staging/windows/scripts/prerun_checks.vbs</origin>
+            </distributionFile>
 
             <!-- starts here -->
             <distributionDirectory>
@@ -6629,6 +6632,9 @@
             </distributionFile>
             <distributionFile>
               <origin>staging/osx/scripts/getlocales.sh</origin>
+            </distributionFile>
+            <distributionFile>
+              <origin>staging/osx/scripts/prerun_checks.sh</origin>
             </distributionFile>
             <distributionFile>
               <origin>staging/osx/scripts/preinstall.sh</origin>
