@@ -459,7 +459,7 @@
   <preInstallationActionList>
         <!-- prerun_check script -->
 	<unpackFile>
-	    <component>default</component>
+	    <component>dbserver</component>
 	    <destination>${system_temp_directory}</destination>
 	    <folder>programfileswindows</folder>
 	    <origin>prerun_checks.vbs</origin>
@@ -474,10 +474,10 @@
              </ruleList>
 	</unpackFile>
 	<unpackFile>
-	    <component>default</component>
+	    <component>dbserver</component>
 	    <destination>${system_temp_directory}</destination>
 	    <folder>programfileslinux</folder>
-	    <origin>server/prerun_checks.sh</origin>
+	    <origin>prerun_checks.sh</origin>
 	    <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
 	     <ruleList>
                 <compareText>
@@ -489,10 +489,10 @@
              </ruleList>
 	</unpackFile>
 	<unpackFile>
-	    <component>default</component>
+	    <component>dbserver</component>
 	    <destination>${system_temp_directory}</destination>
 	    <folder>programfileslinux-x64</folder>
-	    <origin>server/prerun_checks.sh</origin>
+	    <origin>prerun_checks.sh</origin>
 	    <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
 	     <ruleList>
                 <compareText>
@@ -504,10 +504,10 @@
              </ruleList>
 	</unpackFile>
 	<unpackFile>
-	    <component>default</component>
+	    <component>dbserver</component>
 	    <destination>${system_temp_directory}</destination>
 	    <folder>programfilesmacosx</folder>
-	    <origin>server/prerun_checks.sh</origin>
+	    <origin>prerun_checks.sh</origin>
 	    <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
 	     <ruleList>
                 <compareText>
