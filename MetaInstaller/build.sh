@@ -29,7 +29,8 @@ fi
 # Windows
 if [ "$PG_ARCH_WINDOWS" = 1 ];
 then
-    source $WD/MetaInstaller/build-windows.sh
+    echo "test"
+#    source $WD/MetaInstaller/build-windows.sh
 fi
 
 PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
@@ -86,7 +87,8 @@ _prep_metainstaller() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _prep_metainstaller_windows || exit 1
+        echo "test"
+#        _prep_metainstaller_windows || exit 1
     fi
 }
 
@@ -123,7 +125,8 @@ _build_metainstaller() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _build_metainstaller_windows || exit 1
+        echo "test"
+#        _build_metainstaller_windows || exit 1
     fi
 }
 
@@ -211,6 +214,7 @@ _postprocess_metainstaller() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _postprocess_metainstaller_windows || exit 1
+        echo "test"
+#        _postprocess_metainstaller_windows || exit 1
     fi
 }
