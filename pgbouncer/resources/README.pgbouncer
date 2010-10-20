@@ -80,6 +80,20 @@ the command line.  To start the pgbouncer daemon, enter:
 
     service pgbouncer stop 
 
+Solaris
+-----
+To start the pgbouncer daemon on Solaris, open a terminal window, 
+and enter:
+
+    svcadm enable pgbouncer
+
+  To stop the pgbouncer daemon, enter:
+
+    svcadm disable pgbouncer 
+  
+  To restart the pgbouncer daemon, enter:
+
+    svcadm restart pgbouncer 
 
 Configuring PgBouncer
 ---------------------
