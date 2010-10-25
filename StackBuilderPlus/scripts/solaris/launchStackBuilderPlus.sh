@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# PostgreSQL stackbuilderplus launch script for Linux
+# PostgreSQL stackbuilderplus launch script for Solaris
 # Ashesh Vashi, EnterpriseDB
 
-XTERM = `which xterm`
+XTERM=`which xterm`
 
 if [ -e "$XTERM" ];
 then
