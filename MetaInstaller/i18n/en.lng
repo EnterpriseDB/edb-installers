@@ -1,7 +1,7 @@
 Installer.Setup.Title=Setup Postgres Plus
 Installer.Welcome.Title=Setup Postgres Plus
 Installer.Welcome.Text=Welcome to the Postgres Plus Setup Wizard.\n\nThis program will install Postgres Plus Standard Server version ${pg_full_version}.
-Installer.Ready.Text1=Setup is ready to begin installating Postgres Plus Standard Server on your computer.
+Installer.Ready.Text1=Setup is ready to begin installing Postgres Plus Standard Server on your computer.
 Installer.Installation.Finished.Text=Setup has finished installing Postgres Plus Standard Server on your computer.
 
 error.writing.temp=system's temp folder is not writable by the current user.
