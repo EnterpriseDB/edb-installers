@@ -126,7 +126,7 @@ _prep_PostGIS() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_prep_PostGIS_windows || exit 1
+        _prep_PostGIS_windows || exit 1
         echo "PostGIS:Disabled for now:windows"
     fi
     
@@ -164,10 +164,10 @@ _build_PostGIS() {
     fi
 
     # Windows
-#    if [ $PG_ARCH_WINDOWS = 1 ];
-#    then
-#        _build_PostGIS_windows || exit 1
-#    fi
+    if [ $PG_ARCH_WINDOWS = 1 ];
+    then
+        _build_PostGIS_windows || exit 1
+    fi
 }
 
 ################################################################################
@@ -231,9 +231,9 @@ _postprocess_PostGIS() {
     fi
     
     # Windows
-#    if [ $PG_ARCH_WINDOWS = 1 ];
-#    then
-#        _postprocess_PostGIS_windows || exit 1
-#    fi
+    if [ $PG_ARCH_WINDOWS = 1 ];
+    then
+        _postprocess_PostGIS_windows || exit 1
+    fi
 }
 

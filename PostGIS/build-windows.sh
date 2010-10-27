@@ -34,6 +34,9 @@ _prep_PostGIS_windows() {
     chmod ugo+w postgis.windows || _die "Couldn't set the permissions on the source directory"
     # Grab a copy of the postgis source tree
     cp -R postgis-$PG_VERSION_POSTGIS/* postgis.windows || _die "Failed to copy the source code (source/postgis-$PG_VERSION_POSTGIS)"
+    cd postgis.windows
+    patch -p1 < ../../../tarballs/postgis_mingw_1_5_2.patch || _die "Failed to apply the patch (postgis_mingw_1_5_2.patch)"
+    cd ..
     cp -R postgresql-$PG_JAR_POSTGRESQL.jar postgis.windows || _die "Failed to copy the postgresql jar file "
  
     echo "Archieving postgis sources"
@@ -60,6 +63,9 @@ _prep_PostGIS_windows() {
       # Grab a copy of the proj source tree
       cp -R proj-$PG_TARBALL_PROJ/* proj-$PG_TARBALL_PROJ.windows || _die "Failed to copy the source code (source/proj-$PG_TARBALL_PROJ)"
       chmod -R ugo+w proj-$PG_TARBALL_PROJ.windows || _die "Couldn't set the permissions on the source directory"
+      cd proj-$PG_TARBALL_PROJ.windows
+      patch -p0 < ../../../tarballs/proj_4_7_0_mingw.patch || _die "Failed to apply the patch (proj_4_7_0_mingw.patch)"
+      cd ..
       echo "Archieving proj sources"
       zip -r proj-$PG_TARBALL_PROJ.zip proj-$PG_TARBALL_PROJ.windows/ || _die "Couldn't create archieve of the proj sources (proj.zip)"
     fi
@@ -149,14 +155,11 @@ EOT
      
 
     cat <<EOT > "build-postgis.bat"
-REM Setting Visual Studio Environment
-CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
 
 IF EXIST "$PG_PATH_WINDOWS\\proj-$PG_TARBALL_PROJ.staging" GOTO skip-proj
-cd $PG_PATH_WINDOWS\proj-$PG_TARBALL_PROJ.windows
-nmake /f makefile.vc
-nmake /f makefile.vc install-all
-move C:\PROJ $PG_PATH_WINDOWS\proj-$PG_TARBALL_PROJ.staging
+@SET PATH=%PATH%;$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;$PG_PGBUILD_WINDOWS\flex\bin;$PG_PGBUILD_WINDOWS\bison\bin
+REM Configuring the proj source tree
+@echo cd $PG_PATH_WINDOWS/proj-$PG_TARBALL_PROJ.windows; ./configure --prefix=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging; make; make install | $PG_MSYS_WINDOWS\bin\sh --login -i
 
 :skip-proj
 
@@ -169,7 +172,7 @@ REM Configuring the geos source tree
 
 @SET PATH=%PATH%;$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;$PG_PGBUILD_WINDOWS\flex\bin;$PG_PGBUILD_WINDOWS\bison\bin
 REM Configuring the postgis source tree
-@echo cd $PG_PATH_WINDOWS/postgis.windows/; export PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.staging:\$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.staging:\$LD_LIBRARY_PATH; ./configure --with-pgconfig=$PG_PGHOME_MINGW_WINDOWS/bin/pg_config  --with-projdir=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging --with-geosconfig=$PG_STAGING/geos-$PG_TARBALL_GEOS.staging/bin/geos-config --with-xml2config=$PG_PGBUILD_MINGW_WINDOWS/libxml2_mingw/bin/xml2-config --with-libiconv=$PG_PGBUILD_MINGW_WINDOWS/iconv; make; make comments; make PGXSOVERRIDE=0 install; make comments-install | $PG_MSYS_WINDOWS\bin\sh --login -i
+@echo cd $PG_PATH_WINDOWS/postgis.windows/; export PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.staging:\$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.staging:\$LD_LIBRARY_PATH; ./configure --with-pgconfig=$PG_PGHOME_MINGW_WINDOWS/bin/pg_config  --with-projdir=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging --with-geosconfig=$PG_STAGING/geos-$PG_TARBALL_GEOS.staging/bin/geos-config --with-xml2config=$PG_PGBUILD_MINGW_WINDOWS/libxml2_mingw/bin/xml2-config --with-libiconv=$PG_PGBUILD_MINGW_WINDOWS/iconv; make; make PGXSOVERRIDE=0 install | $PG_MSYS_WINDOWS\bin\sh --login -i
 
 REM Building postgis-jdbc
 @echo cd $PG_PATH_WINDOWS/postgis.windows/java/jdbc; export CLASSPATH=$PG_STAGING/postgis.windows/postgresql-$PG_JAR_POSTGRESQL.jar; export JAVA_HOME=$PG_JAVA_HOME_MINGW_WINDOWS; $PG_ANT_HOME_MINGW_WINDOWS/bin/ant | $PG_MSYS_WINDOWS\bin\sh --login -i
