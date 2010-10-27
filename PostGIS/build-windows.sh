@@ -119,7 +119,7 @@ _prep_PostGIS_windows() {
     #Clear postgis file in the pgsql folder
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/bin; cmd /c del /S /Q pgsql2shp.exe shp2pgsql.exe" || _die "Failed to clear postgis bin files"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/lib; cmd /c del /S /Q postgis-$POSTGIS_MAJOR_VERSION.dll" || _die "Failed to clear postgis lib files"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/share/contrib; cmd /c del /S /Q spatial_ref_sys.sql postgis.sql postgis_upgrade*.sql postgis_comments.sql uninstall_postgis.sql" || _die "Failed to clear postgis lib files"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/share/contrib; cmd /c del /S /Q spatial_ref_sys.sql postgis.sql postgis_upgrade*.sql uninstall_postgis.sql" || _die "Failed to clear postgis lib files"
          
 }
 
@@ -160,6 +160,9 @@ IF EXIST "$PG_PATH_WINDOWS\\proj-$PG_TARBALL_PROJ.staging" GOTO skip-proj
 @SET PATH=%PATH%;$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;$PG_PGBUILD_WINDOWS\flex\bin;$PG_PGBUILD_WINDOWS\bison\bin
 REM Configuring the proj source tree
 @echo cd $PG_PATH_WINDOWS/proj-$PG_TARBALL_PROJ.windows; ./configure --prefix=$PG_STAGING/proj-$PG_TARBALL_PROJ.staging; make; make install | $PG_MSYS_WINDOWS\bin\sh --login -i
+
+REM Creating libproj.dll
+@echo cd $PG_PATH_WINDOWS/proj-$PG_TARBALL_PROJ.staging/lib; gcc -shared -o libproj.dll -Wl,--out-implib=libproj.dll.a -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--whole-archive libproj.a -Wl,--no-whole-archive $PG_PATH_MINGW_WINDOWS/lib/libmingw32.a | $PG_MSYS_WINDOWS\bin\sh --login -i
 
 :skip-proj
 
