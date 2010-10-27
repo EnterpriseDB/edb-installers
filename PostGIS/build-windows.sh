@@ -191,7 +191,7 @@ EOT
    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; mkdir -p postgis.staging/share/contrib" || _die "Failed to create doc directory"
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/share/contrib; cp postgis-$POSTGIS_MAJOR_VERSION/* ." || _die "Failed to copy PostGIS share files to contrib folder"
-   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/share/contrib; cp spatial_ref_sys.sql postgis.sql uninstall_postgis.sql postgis_upgrade*.sql postgis_comments.sql $PG_PATH_WINDOWS/postgis.staging/share/contrib" || _die "Failed to create doc directory"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/share/contrib; cp spatial_ref_sys.sql postgis.sql uninstall_postgis.sql postgis_upgrade*.sql $PG_PATH_WINDOWS/postgis.staging/share/contrib" || _die "Failed to create doc directory"
 
    echo "Copying Readme files"
    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.staging; mkdir -p doc/postgis" || _die "Failed to create doc directory"
