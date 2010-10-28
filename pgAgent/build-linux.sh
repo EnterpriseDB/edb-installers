@@ -72,6 +72,7 @@ _build_pgAgent_linux() {
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libk5crypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libk5crypto)"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libreadline.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libk5crypto)"
     ssh $PG_SSH_LINUX "cp -R /lib/libtermcap.so* $PG_STAGING/lib" || _dme "Failed to copy the dependency library (libtermcap)"
+    ssh $PG_SSH_LINUX "cp -R /lib/libkeyutils* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libkeyutils)"
     ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libpq.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libpq)"
     ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/bin/psql $PG_STAGING/bin" || _die "Failed to copy psql"
     ssh $PG_SSH_LINUX "chmod +rx $PG_STAGING/bin/*" || _die "Failed to set permissions"
