@@ -583,6 +583,11 @@
                                     <text>${installer_ui}</text>
                                     <value>unattended</value>
                                 </compareText>
+				<compareText>
+				    <text>${platform_name}</text>
+				    <logic>equals</logic>
+				    <value>windows</value>
+				</compareText>
 			    </ruleList>
 			</throwError>
     		    </actionList>
@@ -1109,6 +1114,11 @@
 				    <value>${pginstalldir}</value>
 				</compareText>
 				<isFalse value="${extract_mode}"/>
+				<compareText>
+				    <text>${platform_name}</text>
+				    <logic>equals</logic>
+				    <value>windows</value>
+				</compareText>
 			    </ruleList>
 			</actionGroup>
 		    </validationActionList>
