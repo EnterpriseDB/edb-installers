@@ -641,7 +641,7 @@
         <componentSelection select="dbserver,slony,pgJdbc,postgis,psqlOdbc,npgsql,pgbouncer,pgmemcache,pgagent"/>
       </actionList>
       <ruleList>
-        <isTrue value="${extract_mode}"/>
+        <isFalse value="${extract_mode}"/>
       </ruleList>
     </actionGroup>
 
