@@ -137,6 +137,7 @@ workload_profile.explaination.lbl.value=Please select the type of workload this 
 
 ws.email.notification.value=An email has been sent to the provided email address.
 ws.email.not.authenticated=The email and/or password are not valid. Please try again.
+ws.email.not.provided=The email and/or password are not provided. Please provide them to start the installation.
 ws.email.not.valid=The email address has not been validated. An email has been sent to the email address that you provided. Please follow the directions in the email to validate your email address.
 ws.email.already.exists=This email address already exists.  Please use Existing User fields or enter a new email address to continue.
 ws.exception.from.server=An error occured. Please try again.

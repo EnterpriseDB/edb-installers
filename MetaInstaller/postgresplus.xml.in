@@ -562,6 +562,23 @@
       </ruleList>
     </actionGroup>
 
+    <actionGroup>
+    	<actionList>
+	    <throwError text="${msg(ws.email.not.provided)}">
+	    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+	    <ruleList>
+		<stringTest text="${existingEmail}" type="empty"/>
+	    </ruleList>
+	    <ruleList>
+		<stringTest text="${existingpassword.password}" type="empty"/>
+	    </ruleList>
+	    </throwError>
+    	</actionList>
+	<ruleList>
+	    <compareText text="${installer_ui}" value="unattended" logic="equals" />
+	</ruleList>
+    </actionGroup>
+    
     <setInstallerVariable name="iDataDirectory" value=""/>
     <setInstallerVariable name="iBaseDirectory" value=""/>
     <setInstallerVariable name="iMonitorServer" value=""/>
