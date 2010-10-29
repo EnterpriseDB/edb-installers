@@ -631,6 +631,7 @@
         <throwError text="${msg(Installer.Warning.RootPrivileges)}">
           <ruleList>
             <isFalse value="${installer_is_root_install}"/>
+            <isFalse value="${extract_mode}"/>
           </ruleList>
         </throwError>
         <!-- Do not allow component-selection in extract-only mode -->
@@ -641,7 +642,7 @@
         <componentSelection select="dbserver,slony,pgJdbc,postgis,psqlOdbc,npgsql,pgbouncer,pgmemcache,pgagent"/>
       </actionList>
       <ruleList>
-        <isFalse value="${extract_mode}"/>
+        <isTrue value="${extract_mode}"/>
       </ruleList>
     </actionGroup>
 
