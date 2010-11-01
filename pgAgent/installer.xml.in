@@ -393,7 +393,7 @@
               <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
               <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
               <setEnvironmentVariable name="PGDATABASE" value="" />
-              <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
+              <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/${product_fullname}/lib:${installdir}/lib"/>
               <setInstallerVariable name="pgdbname" value="" />
               <setInstallerVariable name="connection" value="" />
 
