@@ -639,7 +639,7 @@
         <setInstallerVariable name="branding" value=""/>
         <!-- Do not create uninstaller in case of extract-only mode -->
         <setInstallerVariable name="createUninstaller" value="0" persist="1"/>
-        <componentSelection select="dbserver,slony,pgJdbc,postgis,psqlOdbc,npgsql,pgbouncer,pgmemcache,pgagent"/>
+        <componentSelection select="extractonly,dbserver,slony,pgJdbc,postgis,psqlOdbc,npgsql,pgbouncer,pgmemcache,pgagent"/>
       </actionList>
       <ruleList>
         <isTrue value="${extract_mode}"/>
