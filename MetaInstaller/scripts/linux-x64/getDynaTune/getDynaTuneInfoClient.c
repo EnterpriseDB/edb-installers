@@ -136,7 +136,15 @@ int main(int argcounter, char **args)
 	char *proxyHost=args[6];
 	char *proxyPort=args[7];
 
+	/*
+	 * Remove this STAGING_SERVER (#if-#else-#endif) once the 64 bit support
+	 * (FB#14846) is added to production server.
+	 */
+#ifndef STAGING_SERVER
+	char *dynatuneParams[] = {hexedUUID, hexedSU, hexedRAMMB, hexedRAMGB, hexedWP};
+#else
 	char *dynatuneParams[] = {hexedUUID, hexedSU, hexedRAMMB, hexedRAMGB, hexedWP, hexedOSArch, hexedPGArch};
+#endif
 
 	struct ArrayOf_USCORExsd_USCOREstring dynaParamList;
 	struct ns2__getDynaTuneInfoResponse dynatuneResponse;
@@ -144,7 +152,15 @@ int main(int argcounter, char **args)
 
 	//parameters list for dynatune
 	dynaParamList.__ptr = dynatuneParams;
+	/*
+	 * Remove this STAGING_SERVER (#if-#else-#endif) once the 64 bit support
+	 * (FB#14846) is added to production server.
+	 */
+#ifndef STAGING_SERVER
+	dynaParamList.__size = 5;
+#else
 	dynaParamList.__size = 7;
+#endif
 
 	soap_init(&soap); // initialize runtime environment (only once)
 
