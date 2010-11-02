@@ -505,10 +505,6 @@
                                 </compareText>
                             </ruleList>
                         </actionGroup>>
-                        <copyFile>
-                            <origin>${installdir}/share/pgbouncer.ini</origin>
-                            <destination>${installdir}/share/pgbouncer.ini.bak1</destination>
-                        </copyFile>
                     </actionList>
                     <ruleList>
                         <compareText>
@@ -774,6 +770,21 @@
   
     </preInstallationActionList>
     <postInstallationActionList>
+        <actionGroup>
+            <actionList>
+               <copyFile>
+                   <origin>${installdir}/share/pgbouncer.ini</origin>
+                   <destination>${installdir}/share/pgbouncer.ini.bak1</destination>
+               </copyFile>
+            </actionList>
+           <ruleList>
+               <compareText>
+                   <logic>does_not_equal</logic>
+                   <text>${pgbouncerVersion}</text>
+                   <value/>
+               </compareText>
+           </ruleList>
+        </actionGroup>
 
         <!-- Do not perform the below actions in case of extract-only mode -->
         <actionGroup>
