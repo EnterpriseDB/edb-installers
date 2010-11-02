@@ -576,6 +576,7 @@
     	</actionList>
 	<ruleList>
 	    <compareText text="${installer_ui}" value="unattended" logic="equals" />
+            <isFalse value="${extract_mode}"/>
 	</ruleList>
     </actionGroup>
     
