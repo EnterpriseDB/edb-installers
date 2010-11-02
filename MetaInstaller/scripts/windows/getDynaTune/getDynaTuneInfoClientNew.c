@@ -231,7 +231,7 @@ int main(int argcounter, char **args)
 			int index = 0;
 			for( ;index < 17; index++ )
 			{
-				printHexedKeyValuePair(dynatuneArrayofArray->__ptr[0].__ptr[0],dynatuneArrayofArray->__ptr[0].__ptr[1]);
+				printHexedKeyValuePair(dynatuneArrayofArray->__ptr[index].__ptr[0], dynatuneArrayofArray->__ptr[index].__ptr[1]);
 			}
 		}
 	}
