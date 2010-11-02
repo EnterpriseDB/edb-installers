@@ -168,9 +168,9 @@ int main(int argcounter, char **args)
 {
 	struct soap soap;
 #ifndef STAGING_SERVER
-        const char *soap_endpoint = "https://services.enterprisedb.com/authws/services/AuthenticationService?wsdl";
+    const char *soap_endpoint = "https://services.enterprisedb.com/authws/services/AuthenticationService?wsdl";
 #else
-        const char *soap_endpoint = "http://services.staging.enterprisedb.com/authws/services/AuthenticationService?wsdl";
+    const char *soap_endpoint = "http://services.staging.enterprisedb.com/authws/services/AuthenticationService?wsdl";
 #endif /* STAGING_SERVER */
 	char *hexedUUID=convertToHexString(args[1]);
 	char *hexedSU=convertToHexString(args[2]);
@@ -179,17 +179,21 @@ int main(int argcounter, char **args)
 	char *ram_mb=getTotalMemoryInMB();
 	char *hexedRAMGB=convertToHexString(ram_gb);
 	char *hexedRAMMB=convertToHexString(ram_mb);
-        char *proxyHost=args[4];
-        char *proxyPort=args[5];
+    char *proxyHost=args[4];
+    char *proxyPort=args[5];
 #ifdef __WIN64__
-        char *hexedPgArch = convertToHexString("64");
-        char *hexedOsArch = convertToHexString("64");
+    char *hexedPgArch = convertToHexString("64");
+    char *hexedOsArch = convertToHexString("64");
 #else
-        char *hexedPgArch = convertToHexString("32");
-        char *hexedOsArch = isRunningOn64bitWindows() ? convertToHexString("64") : convertToHexString("32");
+    char *hexedPgArch = convertToHexString("32");
+    char *hexedOsArch = isRunningOn64bitWindows() ? convertToHexString("64") : convertToHexString("32");
 #endif
 
-	char *dynatuneParams[] = {hexedUUID, hexedSU, hexedRAMMB, hexedRAMGB, hexedWP, hexedOsArch, hexedPgArch};
+#ifndef STAGING_SERVER
+    char *dynatuneParams[] = {hexedUUID, hexedSU, hexedRAMMB, hexedRAMGB, hexedWP};
+#else
+    char *dynatuneParams[] = {hexedUUID, hexedSU, hexedRAMMB, hexedRAMGB, hexedWP, hexedOSArch, hexedPGArch};
+#endif
 
 	struct ArrayOf_USCORExsd_USCOREstring dynaParamList;
 	struct ns2__getDynaTuneInfoResponse dynatuneResponse;
@@ -197,7 +201,11 @@ int main(int argcounter, char **args)
 
 	//parameters list for dynatune
 	dynaParamList.__ptr = dynatuneParams;
+#ifndef STAGING_SERVER
+	dynaParamList.__size = 5;
+#else
 	dynaParamList.__size = 7;
+#endif
 
 	soap_init(&soap); // initialize runtime environment (only once)
 
