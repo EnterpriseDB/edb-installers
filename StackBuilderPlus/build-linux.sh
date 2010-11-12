@@ -122,6 +122,7 @@ _postprocess_stackbuilderplus_linux() {
     cp scripts/linux/createshortcuts.sh staging/linux/installer/StackBuilderPlus/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
     cp scripts/linux/removeshortcuts.sh staging/linux/installer/StackBuilderPlus/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
     cp scripts/linux/configlibs.sh staging/linux/installer/StackBuilderPlus/configlibs.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/configlibs.sh)"
+    _replace @@PLATFORM@@ "linux32" staging/linux/installer/StackBuilderPlus/configlibs.sh || _die "Failed to replace the platform placeholder value"
     chmod ugo+x staging/linux/installer/StackBuilderPlus/*.sh
 
     mkdir -p staging/linux/scripts || _die "Failed to create a directory for the launch scripts"
