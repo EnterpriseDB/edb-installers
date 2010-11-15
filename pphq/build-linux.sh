@@ -55,7 +55,7 @@ _build_pphq_linux() {
     cp $SERVER_STAGING/lib/libcrypto.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
     cp $SERVER_STAGING/lib/libtermcap.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
     cp $SERVER_STAGING/lib/libxml2.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
-    cp $SERVER_STAGING/lib/libreadline.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
+    cp $SERVER_STAGING/lib/libedit.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
 
     echo "Copying JRE to staging directory"
 	cd $PPHQ_STAGING/
