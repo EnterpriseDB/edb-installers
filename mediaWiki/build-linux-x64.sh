@@ -48,7 +48,7 @@ _build_mediaWiki_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libpq.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libpq.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libcrypto.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libcrypto.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libssl.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libssl.so"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libreadline.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libreadline.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libedit.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libedit.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libtermcap.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libtermcap.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxml2.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libxml2.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxslt.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libxslt.so"

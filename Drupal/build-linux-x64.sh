@@ -48,7 +48,7 @@ _build_Drupal_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libpq.so* Drupal/staging/linux-x64/instscripts" || _die "Failed to copy libpq.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libcrypto.so* Drupal/staging/linux-x64/instscripts" || _die "Failed to copy libcrypto.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libssl.so* Drupal/staging/linux-x64/instscripts" || _die "Failed to copy libssl.so"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libreadline.so* Drupal/staging/linux-x64/instscripts" || _die "Failed to copy libreadline.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libedit.so* Drupal/staging/linux-x64/instscripts" || _die "Failed to copy libedit.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libtermcap.so* Drupal/staging/linux-x64/instscripts" || _die "Failed to copy libtermcap.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxml2.so* Drupal/staging/linux-x64/instscripts" || _die "Failed to copy libxml2.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxslt.so* Drupal/staging/linux-x64/instscripts" || _die "Failed to copy libxslt.so"
