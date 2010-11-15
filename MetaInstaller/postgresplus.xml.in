@@ -820,11 +820,7 @@
                 <setInstallerVariable name="installationType" value="upgrade" />
             </actionList>
             <ruleList>
-                <compareText>
-                    <text>IsUpgrade</text>
-                    <logic>does_not_equal</logic>
-                    <value/>
-                </compareText>
+                <isTrue value="${IsUpgrade}"/>
             </ruleList>
         </actionGroup>
 
@@ -5160,6 +5156,7 @@
           </ruleList>
         </startWindowsService>
     
+
         <runProgram>
           <abortOnError>0</abortOnError>
           <program>/etc/init.d/pgbouncer</program>
@@ -5180,7 +5177,7 @@
           </ruleList>
         </runProgram>
     
-        <runProgram>
+	<runProgram>
           <abortOnError>0</abortOnError>
           <program>launchctl</program>
           <programArguments>load /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist</programArguments>
