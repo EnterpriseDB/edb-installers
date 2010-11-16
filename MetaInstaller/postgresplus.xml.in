@@ -752,7 +752,7 @@
             </logMessage>
           </actionList>
         </actionGroup>
-    
+
         <!-- Creates the ini file if not exists -->
         <touchFile path="/etc/postgres-reg.ini">
           <ruleList>
@@ -2812,6 +2812,351 @@
            </ruleList>
         </setInstallerVariable>
 
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable>
+              <name>dbInstallTune</name>
+              <persist>1</persist>
+              <value>0</value>
+            </setInstallerVariable>
+          </actionList>
+          <ruleList>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${component(dbserver).selected}</text>
+              <value>1</value>
+            </compareText>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/a.properties</file>
+              <key>dbser_guid</key>
+              <variable>dbserver_guid</variable>
+            </propertiesFileGet>
+          </actionList>
+          <ruleList>
+	    <stringTest text="${existingEmail}" type="not_empty"/>
+  	    <stringTest text="${existingpassword.password}" type="not_empty"/>
+	    <compareText text="${installer_ui}" value="unattended" logic="equals" />
+            <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/sysinfo.properties</file>
+              <key>PROCESSOR_ARCH</key>
+              <variable>processor_arch</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/sysinfo.properties</file>
+              <key>TOTAL_MEM_IN_GB</key>
+              <variable>total_mem_in_gb</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/sysinfo.properties</file>
+              <key>OS</key>
+              <variable>os</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/sysinfo.properties</file>
+              <key>NUMBER_OF_PROCESSORS</key>
+              <variable>number_of_processors</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/sysinfo.properties</file>
+              <key>PROCESSOR_TYPE</key>
+              <variable>processor_type</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/sysinfo.properties</file>
+              <key>LANGUAGE</key>
+              <variable>language</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/sysinfo.properties</file>
+              <key>SHARED_MEMORY_IN_MB</key>
+              <variable>shared_memory_in_mb</variable>
+            </propertiesFileGet>
+          </actionList>
+          <ruleList>
+	    <stringTest text="${existingEmail}" type="not_empty"/>
+  	    <stringTest text="${existingpassword.password}" type="not_empty"/>
+	    <compareText text="${installer_ui}" value="unattended" logic="equals" />
+            <isFalse value="${extract_mode}"/>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </actionGroup>
+	<!-- In case of unattended mode verify email id and password and call dynatune service-->    
+        <actionGroup>
+          <actionList>
+            <setInstallerVariableFromScriptOutput>
+              <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
+              <exec>${ppss_temp_directory}/isUserValidated.o</exec>
+              <execArgs>"${existingEmail}" "${proxyHost}" "${proxyPort}"</execArgs>
+              <name>ws_validated_result</name>
+              <workingDirectory>${ppss_temp_directory}</workingDirectory>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>osx</value>
+                </compareText>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+            <setInstallerVariableFromScriptOutput>
+              <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
+              <exec>${ppss_temp_directory}/runisUserValidated.sh</exec>
+              <execArgs>"${ppss_temp_directory}" "${existingEmail}" "${proxyHost}" "${proxyPort}"</execArgs>
+              <name>ws_validated_result</name>
+              <workingDirectory>${ppss_temp_directory}</workingDirectory>
+              <ruleList>
+                <compareText>
+                  <logic>contains</logic>
+                  <text>${platform_name}</text>
+                  <value>linux</value>
+                </compareText>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+
+            <!--Windows scripts -->
+            <setInstallerVariableFromScriptOutput>
+              <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
+              <exec>${ppss_temp_directory}\isUserValidated.exe</exec>
+              <execArgs>"${existingEmail}" "${proxyHost}" "${proxyPort}"</execArgs>
+              <name>ws_validated_result</name>
+              <workingDirectory>${ppss_temp_directory}</workingDirectory>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+                </compareText>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+            <throwError>
+              <abortOnError>0</abortOnError>
+              <text>${msg(ws.email.not.valid.dynatune)}</text>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${ws_validated_result}</text>
+                  <value>false</value>
+                </compareText>
+              </ruleList>
+            </throwError>
+            <logMessage>
+              <text>Calling DynaTune WebService ...</text>
+              <ruleList>
+                <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+                </compareText>
+              </ruleList>
+            </logMessage>
+
+            <logMessage>
+              <text>Passing values:"${dbserver_guid}" "${rbServerUtil}" "${rbWorkload}" "${total_mem_in_gb}" "${shared_memory_in_mb}"</text>
+              <ruleList>
+                <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+                </compareText>
+              </ruleList>
+            </logMessage>
+
+            <setInstallerVariableFromScriptOutput>
+              <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
+              <exec>${ppss_temp_directory}/dynaTuneClient.o</exec>
+              <execArgs>"${dbserver_guid}" "${rbServerUtil}" "${rbWorkload}" "${total_mem_in_gb}" "${shared_memory_in_mb}" "${proxyHost}" "${proxyPort}"</execArgs>
+              <name>ws_dynatune_result</name>
+              <workingDirectory>${ppss_temp_directory}</workingDirectory>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>osx</value>
+                </compareText>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+
+            <setInstallerVariableFromScriptOutput>
+              <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
+              <exec>${ppss_temp_directory}/rundynaTuneClient.sh</exec>
+              <execArgs>"${ppss_temp_directory}" "${dbserver_guid}" "${rbServerUtil}" "${rbWorkload}" "${total_mem_in_gb}" "${shared_memory_in_mb}" "${proxyHost}" "${proxyPort}"</execArgs>
+              <name>ws_dynatune_result</name>
+              <workingDirectory>${ppss_temp_directory}</workingDirectory>
+              <ruleList>
+                <compareText>
+                  <logic>contains</logic>
+                  <text>${platform_name}</text>
+                  <value>linux</value>
+                </compareText>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+
+            <logMessage>
+              <text>Calling DynaTune WebService ...</text>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+                </compareText>
+              </ruleList>
+            </logMessage>
+
+            <logMessage>
+              <text>Passing values:"${dbserver_guid}" "${rbServerUtil}" "${rbWorkload}"</text>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+                </compareText>
+              </ruleList>
+            </logMessage>
+
+            <setInstallerVariableFromScriptOutput>
+              <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
+              <exec>${ppss_temp_directory}\getDynaTune.exe</exec>
+              <execArgs>"${dbserver_guid}" "${rbServerUtil}" "${rbWorkload}" "${proxyHost}" "${proxyPort}"</execArgs>
+              <name>ws_dynatune_result</name>
+              <workingDirectory>${ppss_temp_directory}</workingDirectory>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+                </compareText>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+            <throwError>
+              <abortOnError>0</abortOnError>
+              <text>${msg(ws.internet.not.connected)}</text>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${ws_dynatune_result}</text>
+                  <value></value>
+                </compareText>
+              </ruleList>
+            </throwError>
+
+            <logMessage>
+              <text>writing returned values to ${ppss_temp_directory}/dynaTune.properties</text>
+            </logMessage>
+
+            <writeFile>
+              <path>${ppss_temp_directory}/dynaTune.properties</path>
+              <text>${ws_dynatune_result}</text>
+            </writeFile>
+
+            <!--Read properties from dynaTune.properties -->
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>max_connections</key>
+              <variable>max_connections_var</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>work_mem</key>
+              <variable>work_mem_var</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>maintenance_work_mem</key>
+              <variable>maintenance_work_mem_var</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>shared_buffers</key>
+              <variable>shared_buffers_var</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>max_fsm_relations</key>
+              <variable>max_fsm_relations_var</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>max_fsm_pages</key>
+              <variable>max_fsm_pages_var</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>wal_buffers</key>
+              <variable>wal_buffers_var</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>effective_cache_size</key>
+              <variable>effective_cache_size_var</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>random_page_cost</key>
+              <variable>random_page_cost_var</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>checkpoint_segments</key>
+              <variable>checkpoint_segments_var</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>autovacuum_vacuum_threshold</key>
+              <variable>autovacuum_vacuum_threshold_var</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>autovacuum_vacuum_scale_factor</key>
+              <variable>autovacuum_vacuum_scale_factor_var</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>autovacuum_analyze_threshold</key>
+              <variable>autovacuum_analyze_threshold_var</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>autovacuum_analyze_scale_factor</key>
+              <variable>autovacuum_analyze_scale_factor_var</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>autovacuum_naptime</key>
+              <variable>autovacuum_naptime_var</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>stats_row_level</key>
+              <variable>stats_row_level_var</variable>
+            </propertiesFileGet>
+            <propertiesFileGet>
+              <file>${ppss_temp_directory}/dynaTune.properties</file>
+              <key>autovacuum</key>
+              <variable>autovacuum_var</variable>
+            </propertiesFileGet>
+
+	  </actionList>
+   	  <ruleList>
+	  	<stringTest text="${existingEmail}" type="not_empty"/>
+  	  	<stringTest text="${existingpassword.password}" type="not_empty"/>
+	        <compareText text="${installer_ui}" value="unattended" logic="equals" />
+                <isFalse value="${extract_mode}"/>
+	        <compareText text="${IsUpgrade}" value="1" logic="does_not_equal" />
+	  	<isTrue value="${dbInstallTune}" />
+          </ruleList>
+        </actionGroup>
       </actionList>
       <ruleList>
         <isFalse value="${extract_mode}"/>
