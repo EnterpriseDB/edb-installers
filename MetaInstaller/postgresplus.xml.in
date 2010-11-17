@@ -3437,6 +3437,44 @@
 	  	<isTrue value="${dbInstallTune}" />
           </ruleList>
         </actionGroup>
+        <actionGroup>
+          <actionList>
+		<setInstallerVariableFromRegEx>
+		  <name>_re</name>
+		  <pattern>\\$</pattern>
+		  <substitution></substitution>
+		  <text>${datadir}</text>
+		  <ruleList>
+		    <compareText>
+		      <logic>equals</logic>
+		      <text>${platform_name}</text>
+		      <value>windows</value>
+		    </compareText>
+		  </ruleList>
+		</setInstallerVariableFromRegEx>
+		<!-- Replace / with \/ or \ with \\ on windows -->
+		<setInstallerVariableFromRegEx>
+		  <name>_re</name>
+		  <pattern>\\</pattern>
+		  <substitution>\\\\</substitution>
+		  <text>${_re}</text>
+		  <ruleList>
+		    <compareText>
+		      <logic>equals</logic>
+		      <text>${platform_name}</text>
+		      <value>windows</value>
+		    </compareText>
+		  </ruleList>
+		</setInstallerVariableFromRegEx>
+          </actionList>
+   	  <ruleList>
+	  	<stringTest text="${existingEmail}" type="not_empty"/>
+  	  	<stringTest text="${existingpassword.password}" type="not_empty"/>
+	        <compareText text="${installer_ui}" value="unattended" logic="equals" />
+                <isFalse value="${extract_mode}"/>
+	        <compareText text="${IsUpgrade}" value="1" logic="does_not_equal" />
+          </ruleList>
+        </actionGroup>
       </actionList>
       <ruleList>
         <isFalse value="${extract_mode}"/>
