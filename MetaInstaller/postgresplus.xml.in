@@ -2896,6 +2896,286 @@
 	<!-- In case of unattended mode verify email id and password and call dynatune service-->    
         <actionGroup>
           <actionList>
+   	    <!-- authenticateUser variable is created to check whether we should call webservice to authenticate user or not-->
+	    <setInstallerVariable name="authenticateUser" value="0" />
+	    <setInstallerVariable>
+		  <name>authenticateUser</name>
+		  <persist>1</persist>
+		  <value>1</value>
+		  <ruleEvaluationLogic>or</ruleEvaluationLogic>
+		  <ruleList>
+		    <isTrue value="${dbInstallTune}" />
+		    <isTrue value="${updateNotification}" />
+		  </ruleList>
+	    </setInstallerVariable>
+            <setInstallerVariable name="features" value="DBServer">
+              <ruleList>
+                <isTrue value="${component(dbserver).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},StackBuilderPlus">
+              <ruleList>
+                <isTrue value="${component(stackbuilderplus).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},Slony">
+              <ruleList>
+                <isTrue value="${component(slony).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},pgJdbc">
+              <ruleList>
+                <isTrue value="${component(pgJdbc).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},postGIS">
+              <ruleList>
+                <isTrue value="${component(postgis).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},psqlODBC">
+              <ruleList>
+                <isTrue value="${component(psqlOdbc).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},Npgsql">
+              <ruleList>
+                <isTrue value="${component(npgsql).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},pgbouncer">
+              <ruleList>
+                <isTrue value="${component(pgbouncer).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},pgmemcache">
+              <ruleList>
+                <isTrue value="${component(pgmemcache).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="features" value="${features},pgAgent">
+              <ruleList>
+                <isTrue value="${component(pgagent).selected}"/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariableFromRegEx name="features" pattern="^," substitution="" text="${features}">
+              <ruleList>
+                  <regExMatch logic="matches" pattern="^,([0-9a-zA-Z_/\.\-]*)$" text="${features}"/>
+              </ruleList>
+            </setInstallerVariableFromRegEx>
+
+            <logMessage>
+              <text>Validating Existing User ...</text>
+              <ruleList>
+                <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+                </compareText>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${authenticateUser}</text>
+                  <value>1</value>
+                </compareText>
+              </ruleList>
+            </logMessage>
+
+            <logMessage>
+              <text>Passing values:"${dbserver_guid}" "${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${language}" "${os}" "${number_of_processors}" "${processor_arch}" "${processor_type}" "${total_mem_in_gb}" "${shared_memory_in_mb}" "${existingEmail}" "password"</text>
+              <ruleList>
+                <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+                </compareText>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${authenticateUser}</text>
+                  <value>1</value>
+                </compareText>
+              </ruleList>
+            </logMessage>
+
+            <setInstallerVariableFromScriptOutput>
+              <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
+              <exec>${ppss_temp_directory}/validateUserClient.o</exec>
+              <execArgs>"${dbserver_guid}" "${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${language}" "${os}" "${number_of_processors}" "${processor_arch}" "${processor_type}" "${total_mem_in_gb}" "${shared_memory_in_mb}" "${existingEmail}" "${existingpassword.password}" "${proxyHost}" "${proxyPort}"</execArgs>
+              <name>ws_existing_result</name>
+              <workingDirectory>${ppss_temp_directory}</workingDirectory>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>osx</value>
+                </compareText>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${authenticateUser}</text>
+                  <value>1</value>
+                </compareText>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+
+            <setInstallerVariableFromScriptOutput>
+              <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
+              <exec>${ppss_temp_directory}/runvalidateUserClient.sh</exec>
+              <execArgs>"${ppss_temp_directory}" "${dbserver_guid}" "${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${language}" "${os}" "${number_of_processors}" "${processor_arch}" "${processor_type}" "${total_mem_in_gb}" "${shared_memory_in_mb}" "${existingEmail}" "${existingpassword.password}" "${proxyHost}" "${proxyPort}"</execArgs>
+              <name>ws_existing_result</name>
+              <workingDirectory>${ppss_temp_directory}</workingDirectory>
+              <ruleList>
+                <compareText>
+                  <logic>contains</logic>
+                  <text>${platform_name}</text>
+                  <value>linux</value>
+                </compareText>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${authenticateUser}</text>
+                  <value>1</value>
+                </compareText>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+
+            <logMessage>
+              <text>Validating Existing User ...</text>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+                </compareText>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${authenticateUser}</text>
+                  <value>1</value>
+                </compareText>
+              </ruleList>
+            </logMessage>
+
+            <logMessage>
+              <text>Passing values:"${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${existingEmail}" "password" "${dbserver_guid}"</text>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+                </compareText>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${authenticateUser}</text>
+                  <value>1</value>
+                </compareText>
+              </ruleList>
+            </logMessage>
+
+            <setInstallerVariableFromScriptOutput>
+              <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
+              <exec>${ppss_temp_directory}\validateUserClient.exe</exec>
+              <execArgs>"${features}" "${dbInstallTuneBool}" "${updateNotificationBool}" "${existingEmail}" "${existingpassword.password}" "${dbserver_guid}" "${proxyHost}" "${proxyPort}"</execArgs>
+              <name>ws_existing_result</name>
+              <workingDirectory>${ppss_temp_directory}</workingDirectory>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+                </compareText>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${authenticateUser}</text>
+                  <value>1</value>
+                </compareText>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+
+            <logMessage>
+              <text>Returned value=${ws_existing_result}</text>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${authenticateUser}</text>
+                  <value>1</value>
+                </compareText>
+              </ruleList>
+            </logMessage>
+            <throwError text="${msg(ws.email.not.authenticated)}">
+              <abortOnError>1</abortOnError>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${ws_existing_result}</text>
+                  <value>1</value>
+                </compareText>
+              </ruleList>
+            </throwError>
+            <throwError>
+              <abortOnError>1</abortOnError>
+              <text>${msg(ws.email.not.valid)}</text>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${ws_existing_result}</text>
+                  <value>2</value>
+                </compareText>
+              </ruleList>
+            </throwError>
+            <throwError>
+              <abortOnError>1</abortOnError>
+              <text>${msg(ws.email.already.exists)}</text>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${ws_existing_result}</text>
+                  <value>3</value>
+                </compareText>
+              </ruleList>
+            </throwError>
+            <throwError>
+              <abortOnError>1</abortOnError>
+              <text>${msg(ws.exception.from.server)}</text>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${ws_existing_result}</text>
+                  <value>4</value>
+                </compareText>
+              </ruleList>
+            </throwError>
+            <throwError>
+              <abortOnError>0</abortOnError>
+              <text>${msg(ws.internet.not.connected)}</text>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>${ws_existing_result}</text>
+                  <value></value>
+                </compareText>
+              </ruleList>
+            </throwError>
+
+            <!-- User is authenticated so we will install SBP with monitoring -->
+            <setInstallerVariable name="installMonitoring" value="1">
+              <persist>0</persist>
+              <ruleList>
+                <ruleGroup>
+                  <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                  <ruleList>
+                    <compareText>
+                      <logic>equals</logic>
+                      <text>${ws_existing_result}</text>
+                      <value>0</value>
+                    </compareText>
+                    <compareText>
+                      <logic>equals</logic>
+                      <text>${ws_existing_result}</text>
+                      <value>00</value>
+                    </compareText>
+                  </ruleList>
+                </ruleGroup>
+                <isTrue value="${updateNotification}"/>
+              </ruleList>
+            </setInstallerVariable>
+
             <setInstallerVariableFromScriptOutput>
               <customErrorMessage>${msg(pgplus.ws.error)}</customErrorMessage>
               <exec>${ppss_temp_directory}/isUserValidated.o</exec>
