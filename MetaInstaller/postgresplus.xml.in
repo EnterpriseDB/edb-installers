@@ -8543,7 +8543,18 @@
           </ruleList>
         </actionGroup>
         <!-- End of data directory check -->
-
+	<setInstallerVariable name="datadir" value="${installdir}/data" >
+	    <ruleList>
+		<compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+		<compareText logic="equals" text="${datadir}" value=""/>
+	    </ruleList>
+	</setInstallerVariable>
+	<setInstallerVariable name="datadir" value="${installdir}\data" >
+	    <ruleList>
+		<compareText logic="equals" text="${platform_name}" value="windows"/>
+		<compareText logic="equals" text="${datadir}" value=""/>
+	    </ruleList>
+	</setInstallerVariable>
       </postShowPageActionList>
       <ruleList>
         <stringTest>
