@@ -88,6 +88,21 @@
       </ruleList>
     </setInstallerVariable>
 
+    <setInstallerVariable name="default_datadir" value="" />
+
+    <setInstallerVariable name="default_datadir" value="${default_installdir}/data" >
+        <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+        </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="default_datadir" value="${default_installdir}\data" >
+        <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+        </ruleList>
+    </setInstallerVariable>
+
     <!-- Get a default port number - ideally 5432 -->
     <getFreePort>
       <variable>defaultport</variable>
@@ -624,6 +639,21 @@
           <value>windows</value>
         </compareText>
       </ruleList>
+    </setInstallerVariable>
+
+    <setInstallerVariable name="default_datadir" value="" />
+
+    <setInstallerVariable name="default_datadir" value="${default_installdir}/data" >
+        <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+        </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="default_datadir" value="${default_installdir}\data" >
+        <ruleList>
+             <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+        </ruleList>
     </setInstallerVariable>
 
     <actionGroup>
@@ -3435,44 +3465,6 @@
                 <isFalse value="${extract_mode}"/>
 	        <compareText text="${IsUpgrade}" value="1" logic="does_not_equal" />
 	  	<isTrue value="${dbInstallTune}" />
-          </ruleList>
-        </actionGroup>
-        <actionGroup>
-          <actionList>
-		<setInstallerVariableFromRegEx>
-		  <name>_re</name>
-		  <pattern>\\$</pattern>
-		  <substitution></substitution>
-		  <text>${datadir}</text>
-		  <ruleList>
-		    <compareText>
-		      <logic>equals</logic>
-		      <text>${platform_name}</text>
-		      <value>windows</value>
-		    </compareText>
-		  </ruleList>
-		</setInstallerVariableFromRegEx>
-		<!-- Replace / with \/ or \ with \\ on windows -->
-		<setInstallerVariableFromRegEx>
-		  <name>_re</name>
-		  <pattern>\\</pattern>
-		  <substitution>\\\\</substitution>
-		  <text>${_re}</text>
-		  <ruleList>
-		    <compareText>
-		      <logic>equals</logic>
-		      <text>${platform_name}</text>
-		      <value>windows</value>
-		    </compareText>
-		  </ruleList>
-		</setInstallerVariableFromRegEx>
-          </actionList>
-   	  <ruleList>
-	  	<stringTest text="${existingEmail}" type="not_empty"/>
-  	  	<stringTest text="${existingpassword.password}" type="not_empty"/>
-	        <compareText text="${installer_ui}" value="unattended" logic="equals" />
-                <isFalse value="${extract_mode}"/>
-	        <compareText text="${IsUpgrade}" value="1" logic="does_not_equal" />
           </ruleList>
         </actionGroup>
       </actionList>
@@ -9641,7 +9633,7 @@
       <description>${msg(config.datadir.description)}</description>
       <explanation>${msg(config.datadir.explanation)}</explanation>
       <value></value>
-      <default>${installdir}/data</default>
+      <default>${default_datadir}</default>
       <allowEmptyValue>0</allowEmptyValue>
       <ask>yes</ask>
       <cliOptionName>datadir</cliOptionName>
