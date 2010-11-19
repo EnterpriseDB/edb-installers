@@ -14,7 +14,9 @@ strPackage = WScript.Arguments.Item(0)
 Dim objShell
 Set objShell = WScript.CreateObject("WScript.Shell")
 WScript.Echo "Executing the runtime installer: " & strPackage
-iRet = objShell.Run("""" & strPackage & """ /q:a /c:""msiexec /i vcredist.msi /qb!""", 0, True)
+Set WshSysEnv = WshShell.Environment("PROCESS")
+strSystemRoot = WshSysEnv("COMSPEC")
+iRet = objShell.Run(strSystemRoot & " /c "  & """" & strPackage & """ /q:a /c:""msiexec /i vcredist.msi /qb!""", 0, True)
 
 If iRet <> 0 Then
     WScript.Echo "The runtime package exited with error code: " & iRet
