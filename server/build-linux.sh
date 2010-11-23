@@ -156,11 +156,11 @@ _build_server_linux() {
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/;sh ./configure --prefix=$PG_STAGING --with-openssl --with-perl --with-python --with-tcl --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/;export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH;sh ./configure -with-libs=/usr/local/lib --with-includes=/usr/local/include --prefix=$PG_STAGING --with-openssl --with-perl --with-python --with-tcl --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; make" || _die "Failed to build postgres" 
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; make install" || _die "Failed to install postgres"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH; make" || _die "Failed to build postgres" 
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH; make install" || _die "Failed to install postgres"
 
     echo "Building contrib modules"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib; make" || _die "Failed to build the postgres contrib modules"
