@@ -120,6 +120,24 @@ _process_dependent_libs() {
            fi
         done
     done
+   
+   # This for loop will copy original libs in case dependent_libs is empty.
+   for lib in \$liblist
+   do
+	if [ -L \$lib ]
+	then
+	    # Resolve the symlink
+	    ref_lib=\`stat -c %N \$lib | cut -f2 -d ">"  | cut -f1 -d "'" | sed -e 's:\\\`::g'\`
+	    # Remove the symlink
+	    rm -f \$lib   || _die "Failed to remove the symlink"
+	    # Copy the original lib to the name of the symlink in a temp directory.
+	    cp \$ref_lib /tmp/templibs/\$lib  || _die "Failed to copy the original lib"
+	else
+	    # Copy the original lib in a temp directory.
+	    cp \$lib /tmp/templibs/\$lib
+	fi
+   done
+
 
     # Remove all the remaining \$libname versions (that are not symlinks) in the lib directory
     for lib in \$liblist
