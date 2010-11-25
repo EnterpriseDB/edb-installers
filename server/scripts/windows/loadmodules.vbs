@@ -27,8 +27,6 @@ iWarn = 0
 
 ' Get a temporary filenames
 Set objShell = WScript.CreateObject("WScript.Shell")
-Set WshSysEnv = WshShell.Environment("PROCESS")
-strSystemRoot = WshSysEnv("COMSPEC")
 Set objFso = CreateObject("Scripting.FileSystemObject")
 Set objTempFolder = objFso.GetSpecialFolder(2)
 strBatchFile = Replace(objFso.GetTempName, ".tmp", ".bat")
@@ -47,7 +45,7 @@ Function DoCmd(strCmd)
 	objBatchFile.WriteLine "EXIT /B %ERRORLEVEL%"
     objBatchFile.Close
     WScript.Echo "    Executing '" & objTempFolder.Path & "\" & strBatchFile & "'..."
-    DoCmd = objShell.Run(strSystemRoot & " /c "  & objTempFolder.Path & "\" & strBatchFile, 0, True)
+    DoCmd = objShell.Run(objTempFolder.Path & "\" & strBatchFile, 0, True)
     If objFso.FileExists(objTempFolder.Path & "\" & strBatchFile) = True Then
         objFso.DeleteFile objTempFolder.Path & "\" & strBatchFile, True
     End If

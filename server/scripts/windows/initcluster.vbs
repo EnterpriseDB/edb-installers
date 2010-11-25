@@ -43,9 +43,6 @@ Else
   WScript.Echo "WScript.Shell not initialized..."
 End If
 
-Set WshSysEnv = WshShell.Environment("PROCESS")
-strSystemRoot = WshSysEnv("COMSPEC")
-
 Set objFso = CreateObject("Scripting.FileSystemObject")
 If objFso Is Nothing Then
   WScript.Echo "Couldn't create Scripting.FileSystemObject object..."
@@ -110,7 +107,7 @@ Function DoCmd(strCmd)
 	objBatchFile.WriteLine "EXIT /B %ERRORLEVEL%"
     objBatchFile.Close
     WScript.Echo "    Executing batch file '" & strBatchFile & "'..."
-    DoCmd = objShell.Run(strSystemRoot & " /c "  & objTempFolder.Path & "\" & strBatchFile, 0, True)
+    DoCmd = objShell.Run(objTempFolder.Path & "\" & strBatchFile, 0, True)
     If objFso.FileExists(objTempFolder.Path & "\" & strBatchFile) = True Then
         'objFso.DeleteFile objTempFolder.Path & "\" & strBatchFile, True
     Else
