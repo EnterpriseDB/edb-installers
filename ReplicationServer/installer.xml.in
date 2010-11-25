@@ -338,17 +338,6 @@
           </ruleList>
         </throwError>
         
-        <!-- Check if all components are deselected in unattended mode -->
-        <throwError>
-            <text>${msg(error.select.component)}</text>
-            <ruleList>
-                <compareText text="${component(repconsole).selected}" value="0" logic="equals"/>
-                <compareText text="${component(pubserver).selected}" value="0" logic="equals"/>
-                <compareText text="${component(subserver).selected}" value="0" logic="equals"/>
-                <compareText text="${installer_ui}" value="unattended" logic="equals" /> 
-            </ruleList>
-        </throwError>
-
         <!-- Set the correct lib path for 64 bit binaries -->
         <runProgram>
             <program>crle</program>
@@ -669,6 +658,16 @@
                     </ruleList>
                 </actionGroup>  
 
+               <!-- Check if atleast one component is selected in unattended mode -->
+               <throwError>
+                   <text>${msg(error.select.component)}</text>
+                   <ruleList>
+                       <compareText text="${component(repconsole).selected}" value="0" logic="equals"/>
+                       <compareText text="${component(pubserver).selected}" value="0" logic="equals"/>
+                       <compareText text="${component(subserver).selected}" value="0" logic="equals"/>
+                       <compareText text="${installer_ui}" value="unattended" logic="equals" />
+                   </ruleList>
+               </throwError>
 
                 <!-- If there appears to be an existing installation, with no Branding value. -->
                 <!-- force the default value. Otherwise, set the branding to whatever we read, -->
