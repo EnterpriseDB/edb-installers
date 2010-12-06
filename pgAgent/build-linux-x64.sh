@@ -103,8 +103,6 @@ _postprocess_pgAgent_linux_x64() {
     cp -f $WD/pgAgent/scripts/linux/pgpass $WD/pgAgent/staging/linux-x64/installer/pgAgent || _die "Failed to copy the pgpass file (scripts/linux/pgpass)"
     chmod ugo+x $WD/pgAgent/staging/linux-x64/installer/pgAgent/*
 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
-    
     cd $WD/pgAgent
 
     # Build the installer

@@ -417,6 +417,8 @@ _postprocess_server_windows() {
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/windows/doc/" || _die "Failed to install the welcome document"
     cp "$WD/server/resources/enterprisedb.gif" "$WD/server/staging/windows/doc/" || _die "Failed to install the welcome logo"
 
+    cp "$WD/scripts/runAsAdmin.vbs" "$WD/server/staging/windows" || _die "Failed to copy the runAsRoot script"
+    _replace @@SERVER_SUFFIX@@ "x86" $WD/server/staging/windows/runAsAdmin.vbs || _die "Failed to replace the SERVER_SUFFIX setting in the runAsAdmin.vbs"
     #Creating a archive of the binaries
     mkdir -p $WD/server/staging/windows/pgsql || _die "Failed to create the directory for binaries "
     cd $WD/server/staging/windows
