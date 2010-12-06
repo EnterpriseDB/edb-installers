@@ -2502,6 +2502,7 @@
 		    <text>${installer_ui}</text>
 		    <value>unattended</value>
 		</compareText>
+		<isFalse value="${extract_mode}"/>
 	    </ruleList>
 	</actionGroup>
     
@@ -5609,6 +5610,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+			<isFalse value="${extract_mode}"/>
                     </ruleList>
                 </actionGroup>
             </validationActionList>

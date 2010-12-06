@@ -3541,6 +3541,7 @@
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
                 <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+		<isFalse value="${extract_mode}"/>
               </ruleList>
             </actionGroup>
             <deleteFile>
@@ -10411,6 +10412,9 @@
                   </ruleList>
                 </actionGroup>
               </actionList>
+              <ruleList>
+		<isFalse value="${extract_mode}"/>
+              </ruleList>
             </actionGroup>
     
             <!-- On Windows we need to validate the password if the user account exists -->
@@ -10440,6 +10444,7 @@
                 </setInstallerVariable>
               </actionList>
               <ruleList>
+		<isFalse value="${extract_mode}"/>
                 <stringTest type="empty" text="${user_authentication_error}"/>
               </ruleList>
             </actionGroup>
@@ -10565,6 +10570,7 @@
           </actionList>
           <ruleList>
             <compareText text="${platform_name}" logic="equals" value="windows"/>
+	    <isFalse value="${extract_mode}"/>
           </ruleList>
         </actionGroup>
         <!-- START: System user authention -->
