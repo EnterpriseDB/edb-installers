@@ -67,7 +67,7 @@ start()
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "$INSTALL_DIR/bin/pgagent -l1 -s /var/log/pgagent.log host=$PG_HOST port=$PG_PORT dbname=$PG_DATABASE user=$PG_USER " &
+       su $SYSTEM_USER -c "export LD_LIBRARY_PATH=$INSTALL_DIR/lib;$INSTALL_DIR/bin/pgagent -l1 -s /var/log/pgagent.log host=$PG_HOST port=$PG_PORT dbname=$PG_DATABASE user=$PG_USER " &
        exit 0
     else
        echo "pgAgent already running"
