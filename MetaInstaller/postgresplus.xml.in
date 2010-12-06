@@ -141,6 +141,22 @@
 
   <initializationActionList>
     <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
+	
+    <!-- Abort installation if SELinux is enabled -->
+    <throwError>
+    <customErrorMessage>${msg(selinux.not.permissive)}</customErrorMessage>
+    <text>SELinux Error</text>
+      <ruleList>
+        <compareText>
+        <logic>contains</logic>
+        <text>${platform_name}</text>
+        <value>linux</value>
+        </compareText>
+        <fileContentTest text="1" path="/selinux/enforce" logic="contains"/>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
+    </throwError>
+
     <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
     <throwError>
       <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>

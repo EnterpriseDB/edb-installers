@@ -8,6 +8,8 @@ error.writing.temp=system's temp folder is not writable by the current user.
 prerunscript.command.line.error=Unable to write inside TEMP environment variable path.
 prerunscript.command.line.execute.error=Unable to execute from TEMP environment variable path.
 
+selinux.not.permissive=SELinux mode is not set to Permissive. Please set it to Permissive and run the installer again.
+
 default.locale=Default locale
 
 upgrade.existing.installation.title=Existing installation
