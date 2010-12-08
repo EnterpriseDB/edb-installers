@@ -102,7 +102,7 @@ _postprocess_pgAgent_linux_x64() {
     cp -f $WD/pgAgent/scripts/linux/*.sh $WD/pgAgent/staging/linux-x64/installer/pgAgent  || _die "Failed to copy installer scripts (scripts/linux/*.sh)"
     cp -f $WD/pgAgent/scripts/linux/pgpass $WD/pgAgent/staging/linux-x64/installer/pgAgent || _die "Failed to copy the pgpass file (scripts/linux/pgpass)"
     chmod ugo+x $WD/pgAgent/staging/linux-x64/installer/pgAgent/*
-
+    chmod o+rx $WD/pgAgent/staging/linux-x64/lib/*
     cd $WD/pgAgent
 
     # Build the installer
