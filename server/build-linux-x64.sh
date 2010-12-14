@@ -157,7 +157,7 @@ _build_server_linux_x64() {
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/; sh ./configure --prefix=$PG_STAGING --with-openssl --with-perl --with-python --with-tcl --with-pam --with-krb5 --enable-thread-safety --with-libxml"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/; sh ./configure --prefix=$PG_STAGING --with-openssl --with-perl --with-python --with-tcl --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-libedit-preferred"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64; make" || _die "Failed to build postgres" 
@@ -179,13 +179,13 @@ _build_server_linux_x64() {
     # Copy in the dependency libraries
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libreadline.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libtermcap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
 
     # Process Dependent libs
     _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl.so"  
     _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libcrypto.so"  
-    _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libreadline.so"  
+    _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libedit.so"  
     _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libtermcap.so"  
 
 	
