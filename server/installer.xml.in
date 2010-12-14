@@ -1189,7 +1189,7 @@
                 </runProgram> 
                 <runProgram>
                     <program>rm</program>
-                    <programArguments>-f ${installdir}/lib/libreadline.so*</programArguments>
+                    <programArguments>-f ${installdir}/lib/libedit.so*</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram> 
