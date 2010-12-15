@@ -553,8 +553,8 @@
 	<actionGroup>
 	    <actionList>
 		<runProgram>
-		    <program>${env(COMSPEC)}</program>
-		    <programArguments>/c cscript //NoLogo "${system_temp_directory}\prerun_checks.vbs"</programArguments>
+		    <program>cscript</program>
+		    <programArguments>//NoLogo "${system_temp_directory}\prerun_checks.vbs"</programArguments>
 		    <abortOnError>0</abortOnError>
 		    <showMessageOnError>0</showMessageOnError>
                     <ruleList>
@@ -897,8 +897,8 @@
               <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
             </unpackFile>
             <runProgram>
-              <program>${env(COMSPEC)}</program>
-              <programArguments>/c cscript //NoLogo "${ppss_temp_directory}\installruntimes.vbs" "${ppss_temp_directory}\vcredist_x86.exe"</programArguments>
+              <program>cscript</program>
+              <programArguments>//NoLogo "${ppss_temp_directory}\installruntimes.vbs" "${ppss_temp_directory}\vcredist_x86.exe"</programArguments>
               <abortOnError>1</abortOnError>
               <showMessageOnError>1</showMessageOnError>
               <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>

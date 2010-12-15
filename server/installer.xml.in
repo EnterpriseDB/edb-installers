@@ -1315,8 +1315,8 @@
 	<actionGroup>
 	    <actionList>
 		<runProgram>
-		    <program>${env(COMSPEC)}</program>
-		    <programArguments>/c cscript //NoLogo "${system_temp_directory}\prerun_checks.vbs"</programArguments>
+		    <program>cscript</program>
+		    <programArguments>//NoLogo "${system_temp_directory}\prerun_checks.vbs"</programArguments>
 		    <abortOnError>0</abortOnError>
 		    <showMessageOnError>0</showMessageOnError>
                     <ruleList>
@@ -1744,8 +1744,8 @@
                 <actionGroup>
                     <actionList>
                         <runProgram>
-                            <program>${env(COMSPEC)}</program>
-                            <programArguments>/c cscript //NoLogo "${system_temp_directory}\postgresql_installer\installruntimes.vbs" "${system_temp_directory}\postgresql_installer\${vcredist_executable}"</programArguments>
+                            <program>cscript</program>
+                            <programArguments>//NoLogo "${system_temp_directory}\postgresql_installer\installruntimes.vbs" "${system_temp_directory}\postgresql_installer\${vcredist_executable}"</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
@@ -2897,8 +2897,8 @@
                         </runProgram>
 
                         <runProgram>
-                            <program>${env(COMSPEC)}</program>
-                            <programArguments>/c cscript //NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport} "${reallocale}"</programArguments>
+                            <program>cscript</program>
+                            <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport} "${reallocale}"</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -2982,8 +2982,8 @@
                 </runProgram>
 
                 <runProgram>
-                    <program>${env(COMSPEC)}</program>
-                    <programArguments>/c cscript //NoLogo "${installdir}\installer\server\startupcfg.vbs" ${product_version} "${serviceaccount}" "${servicepassword.password}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
+                    <program>cscript</program>
+                    <programArguments>//NoLogo "${installdir}\installer\server\startupcfg.vbs" ${product_version} "${serviceaccount}" "${servicepassword.password}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
                     <progressText>${msg(progress.text.configuring.startup)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -3062,8 +3062,8 @@
 
                 <!-- we aren't require to pass ${serviceaccount} to createshortcuts in windows -->
                 <runProgram>
-                    <program>${env(COMSPEC)}</program>
-                    <programArguments>/c cscript //NoLogo "${installdir}\installer\server\createshortcuts.vbs" ${product_version} "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
+                    <program>cscript</program>
+                    <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts.vbs" ${product_version} "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -3200,8 +3200,8 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                 </runProgram>
 
                 <runProgram>
-                    <program>${env(COMSPEC)}</program>
-                    <programArguments>/c cscript //NoLogo "${installdir}\installer\server\startserver.vbs" "${servicename}"</programArguments>
+                    <program>cscript</program>
+                    <programArguments>//NoLogo "${installdir}\installer\server\startserver.vbs" ${servicename}</programArguments>
                     <progressText>${msg(progress.text.starting.server)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -3282,8 +3282,8 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                         </runProgram>
 
                         <runProgram>
-                            <program>${env(COMSPEC)}</program>
-                            <programArguments>/c cscript //NoLogo "${installdir}\installer\server\loadmodules.vbs" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport}</programArguments>
+                            <program>cscript</program>
+                            <programArguments>//NoLogo "${installdir}\installer\server\loadmodules.vbs" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport}</programArguments>
                             <progressText>${msg(progress.text.loading.modules)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -4598,8 +4598,8 @@ REM The script sets environment variables helpful for PostgreSQL
                 <startMenuShortcut>
                     <name>Reload Configuration</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${env(COMSPEC)}</windowsExec>
-                    <windowsExecArgs>/c cscript //NoLogo "${installdir}\scripts\serverctl.vbs" reload wait</windowsExecArgs>
+                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" reload wait</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pg-reload.ico</windowsIcon>
                     <ruleList>
                         <isTrue value="${create_shortcuts}" />
