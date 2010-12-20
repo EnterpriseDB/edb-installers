@@ -438,6 +438,7 @@ _build_PostGIS_osx() {
     _rewrite_so_refs $WD/PostGIS/staging/osx/PostGIS lib @loader_path/..
     _change_so_refs $WD/PostGIS/staging/osx/PostGIS bin @loader_path/..
     _change_so_refs $WD/PostGIS/staging/osx/PostGIS lib @loader_path/..
+    install_name_tool -change "libxml2.2.dylib" "@loader_path/../lib/libxml2.2.dylib" $WD/PostGIS/staging/osx/PostGIS/lib/postgis-*.so
 
     chmod +r $WD/PostGIS/staging/osx/PostGIS/lib/*
     chmod +rx $WD/PostGIS/staging/osx/PostGIS/bin/*
