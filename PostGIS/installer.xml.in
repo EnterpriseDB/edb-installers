@@ -1132,7 +1132,21 @@
                               progressText="${msg(progress.text.installing.spatial.ref_sys)}"
                               abortOnError="0" showMessageOnError="1"
                               workingDirectory="${installdir}/bin"/>
-                        <runProgram program="${psql_executable}"
+                    </actionList>
+                    <ruleList>
+                        <isFalse value="${dbexist}"/>
+                        <isFalse value="${upgrade_mode}"/>
+			<compareText>
+			    <logic>equals</logic>
+			    <text>${PostGISVersionInstalled}</text>
+			    <value></value>
+			</compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <actionGroup>
+                    <actionList>
+		        <runProgram program="${psql_executable}"
                               programArguments="-f &quot;${sharedir}/contrib/postgis_comments.sql&quot; -d template_postgis"
                               progressText="${msg(progress.text.installing.postgis.comments)}"
                               abortOnError="0" showMessageOnError="1"
@@ -1146,6 +1160,7 @@
 			    <text>${PostGISVersionInstalled}</text>
 			    <value></value>
 			</compareText>
+                	<compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </actionGroup>
 
