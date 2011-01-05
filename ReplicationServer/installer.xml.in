@@ -349,10 +349,12 @@
                 <compareText text="${platform_name}" logic="contains" value="solaris" />
             </ruleList>
         </runProgram>
+        
+        <setInstallerVariable name="pg_version" value="PG_MAJOR_VERSION" />
                   
         <!-- Check for AS84 installed jre -->
         <registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\AS\8.4\jre</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\AS\${pg_version}\jre</key>
           <name>Base Directory</name>
           <variable>jrehome</variable>
           <ruleList>
@@ -362,7 +364,7 @@
 
         <iniFileGet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ppas_jre_8.4</section>
+          <section>ppas_jre_${pg_version}</section>
           <key>InstallationDirectory</key>
           <variable>jrehome</variable>
           <ruleList>
