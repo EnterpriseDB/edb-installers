@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Check the command line
-if [ $# -ne 4 ]; 
+if [ $# -ne 5 ]; 
 then
-echo "Usage: $0 <Installdir> <SystemUser> <PubPort> <Java Executable>"
+echo "Usage: $0 <Installdir> <SystemUser> <PubPort> <Java Executable> <DBSERVER_VER>"
     exit 127
 fi
 
@@ -11,6 +11,7 @@ INSTALL_DIR=$1
 SYSTEM_USER=$2
 PUBPORT=$3
 JAVA=$4
+XDB_SERVICE_VER=$5
 
 # Exit code
 WARN=0
@@ -27,7 +28,7 @@ _warn() {
 }
 
 # Write the startup script
-cat <<EOT > "/lib/svc/method/edb-xdbpubserver"
+cat <<EOT > "/lib/svc/method/edb-xdbpubserver-$XDB_SERVICE_VER"
 #!/bin/bash
 
 start()
@@ -39,7 +40,7 @@ start()
        su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
        exit 0
     else
-       echo "Publication Service already running"
+       echo "Publication Service $XDB_SERVICE_VER already running"
        exit 1
     fi
 }
@@ -50,7 +51,7 @@ stop()
 
     if [ "x\$PID" = "x" ];
     then
-        echo "Publication Service not running"
+        echo "Publication Service $XDB_SERVICE_VER not running"
         exit 2
     else
         kill \$PID 
@@ -63,10 +64,10 @@ status()
 
     if [ "x\$PID" = "x" ];
     then
-        echo "Publication Service not running"
+        echo "Publication Service $XDB_SERVICE_VER not running"
         exit 2
     else
-        echo "Publication Service (PID:\$PID) is running" 
+        echo "Publication Service $XDB_SERVICE_VER (PID:\$PID) is running" 
         exit 2
     fi
 
@@ -96,17 +97,17 @@ esac
 EOT
 
 # Fixup the permissions on the StartupItems
-chmod 0755 "/lib/svc/method/edb-xdbpubserver" || _warn "Failed to set the permissions on the startup script (/lib/svc/method/xdbpubserver)"
+chmod 0755 "/lib/svc/method/edb-xdbpubserver-$XDB_SERVICE_VER" || _warn "Failed to set the permissions on the startup script (/lib/svc/method/xdbpubserver-$XDB_SERVICE_VER)"
 
 
-cat <<EOT > "/var/svc/manifest/application/edb-xdbpubserver.xml"
+cat <<EOT > "/var/svc/manifest/application/edb-xdbpubserver-$XDB_SERVICE_VER.xml"
 <?xml version="1.0"?>
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
 
-<service_bundle type='manifest' name='edb-xdbpubserver'>
+<service_bundle type='manifest' name='edb-xdbpubserver-$XDB_SERVICE_VER'>
 
 <service
-        name='application/edb-xdbpubserver'
+        name='application/edb-xdbpubserver-$XDB_SERVICE_VER'
         type='service'
         version='1'>
 
@@ -137,25 +138,25 @@ cat <<EOT > "/var/svc/manifest/application/edb-xdbpubserver.xml"
         <exec_method
                 type='method'
                 name='start'
-                exec='/lib/svc/method/edb-xdbpubserver start'
+                exec='/lib/svc/method/edb-xdbpubserver-$XDB_SERVICE_VER start'
                 timeout_seconds='60' />
 
         <exec_method
                 type='method'
                 name='stop'
-                exec='/lib/svc/method/edb-xdbpubserver stop'
+                exec='/lib/svc/method/edb-xdbpubserver-$XDB_SERVICE_VER stop'
                 timeout_seconds='60' />
 
         <exec_method
                 type='method'
                 name='restart'
-                exec='/lib/svc/method/edb-xdbpubserver restart'
+                exec='/lib/svc/method/edb-xdbpubserver-$XDB_SERVICE_VER restart'
                 timeout_seconds='60' />
 
         <exec_method
                 type='method'
                 name='status'
-                exec='/lib/svc/method/edb-xdbpubserver status'
+                exec='/lib/svc/method/edb-xdbpubserver-$XDB_SERVICE_VER status'
                 timeout_seconds='60' />
 
         <!--
@@ -175,7 +176,7 @@ cat <<EOT > "/var/svc/manifest/application/edb-xdbpubserver.xml"
         <template>
                 <common_name>
                         <loctext xml:lang='C'>
-                           Publication Service for xDB Replication Server     
+                           Publication Service $XDB_SERVICE_VER for xDB Replication Server     
                         </loctext>
                 </common_name>
         </template>
@@ -187,13 +188,13 @@ EOT
 
 
 #Create directory for logs
-if [ ! -e /var/log/xdb ]; 
+if [ ! -e /var/log/xdb-$XDB_SERVICE_VER ]; 
 then
-    mkdir -p /var/log/xdb
-    chown $SYSTEM_USER /var/log/xdb
+    mkdir -p /var/log/xdb-$XDB_SERVICE_VER
+    chown $SYSTEM_USER /var/log/xdb-$XDB_SERVICE_VER
 fi
 
-svccfg import /var/svc/manifest/application/edb-xdbpubserver.xml
+svccfg import /var/svc/manifest/application/edb-xdbpubserver-$XDB_SERVICE_VER.xml
 
 echo "$0 ran to completion"
 exit $WARN

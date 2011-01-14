@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 4 ]; 
+if [ $# -ne 5 ]; 
 then
-echo "Usage: $0 <Installdir> <SystemUser> <SubPort> <Java Executable>"
+echo "Usage: $0 <Installdir> <SystemUser> <SubPort> <Java Executable> <DBSERVER_VER>"
     exit 127
 fi
 
@@ -11,6 +11,7 @@ INSTALL_DIR=$1
 SYSTEM_USER=$2
 SUBPORT=$3
 JAVA=$4
+XDB_SERVICE_VER=$5
 
 # Exit code
 WARN=0
@@ -27,22 +28,22 @@ _warn() {
 }
 
 # Write the startup script
-cat <<EOT > "/etc/init.d/edb-xdbsubserver"
+cat <<EOT > "/etc/init.d/edb-xdbsubserver-$XDB_SERVICE_VER"
 #!/bin/bash
 #
 # chkconfig: 2345 90 10
 # description: Subscription Server Service script for Linux
 
 ### BEGIN INIT INFO
-# Provides:          edb-xdbsubserver
+# Provides:          edb-xdbsubserver-$XDB_SERVICE_VER
 # Required-Start:    \$syslog 
 # Required-Stop:     \$syslog
 # Should-Start:  
 # Should-Stop:  
 # Default-Start:     2 3 4 5
 # Default-Stop:      1 6
-# Short-Description: edb-xdbsubserver 
-# Description:       edb-xdbsubserver
+# Short-Description: edb-xdbsubserver-$XDB_SERVICE_VER 
+# Description:       edb-xdbsubserver-$XDB_SERVICE_VER
 ### END INIT INFO
 
 start()
@@ -54,7 +55,7 @@ start()
        su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT > /dev/null 2>&1 &"
        exit 0
     else
-       echo "Subscription Service already running"
+       echo "Subscription Service $XDB_SERVICE_VER already running"
        exit 1
     fi
 }
@@ -65,7 +66,7 @@ stop()
 
     if [ "x\$PID" = "x" ];
     then
-        echo "Subscription Service not running"
+        echo "Subscription Service $XDB_SERVICE_VER not running"
         exit 2
     else
         kill -9 \$PID
@@ -78,10 +79,10 @@ status()
 
     if [ "x\$PID" = "x" ];
     then
-        echo "Subscription Service not running"
+        echo "Subscription Service $XDB_SERVICE_VER not running"
         exit 2
     else
-        echo "Subscription Service (PID:\$PID) is running"
+        echo "Subscription Service $XDB_SERVICE_VER (PID:\$PID) is running"
         exit 2
     fi
 
@@ -111,13 +112,13 @@ esac
 EOT
 
 # Fixup the permissions on the StartupItems
-chmod 0755 "/etc/init.d/edb-xdbsubserver" || _warn "Failed to set the permissions on the startup script (/etc/init.d/edb-xdbsubserver)"
+chmod 0755 "/etc/init.d/edb-xdbsubserver-$XDB_SERVICE_VER" || _warn "Failed to set the permissions on the startup script (/etc/init.d/edb-xdbsubserver-$XDB_SERVICE_VER)"
 
 #Create directory for logs
-if [ ! -e /var/log/xdb ];
+if [ ! -e /var/log/xdb-$XDB_SERVICE_VER ];
 then
-    mkdir -p /var/log/xdb
-    chown $SYSTEM_USER /var/log/xdb
+    mkdir -p /var/log/xdb-$XDB_SERVICE_VER
+    chown $SYSTEM_USER /var/log/xdb-$XDB_SERVICE_VER
 fi
 
 # Configure the startup. On Redhat and friends we use chkconfig. On Debian, update-rc.d
@@ -126,7 +127,7 @@ fi
 CHKCONFIG=`type /sbin/chkconfig > /dev/null 2>&1 || echo fail`
 if [ ! $CHKCONFIG ];
 then
-    /sbin/chkconfig --add edb-xdbsubserver
+    /sbin/chkconfig --add edb-xdbsubserver-$XDB_SERVICE_VER
     if [ $? -ne 0 ]; then
         _warn "Failed to configure the service startup with chkconfig"
     fi
@@ -135,7 +136,7 @@ fi
 UPDATECONFIG=`type /usr/sbin/update-rc.d > /dev/null 2>&1 || echo fail`
 if [ ! $UPDATECONFIG ];
 then
-    /usr/sbin/update-rc.d edb-xdbsubserver defaults
+    /usr/sbin/update-rc.d edb-xdbsubserver-$XDB_SERVICE_VER defaults
     if [ $? -ne 0 ]; then
         _warn "Failed to configure the service startup with update-rc.d"
     fi

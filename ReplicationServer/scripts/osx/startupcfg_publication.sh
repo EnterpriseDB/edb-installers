@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 4 ]; 
+if [ $# -ne 5 ]; 
 then
-echo "Usage: $0 <Install dir> <System User> <PubPort> <Java Executable>"
+echo "Usage: $0 <Install dir> <System User> <PubPort> <Java Executable> <DBSERVER_VER>"
     exit 127
 fi
 
@@ -11,6 +11,7 @@ INSTALL_DIR=$1
 SYSTEM_USER=$2
 PUBPORT=$3
 JAVA=$4
+XDB_SERVICE_VER=$5
 
 # Error handlers
 _die() {
@@ -29,7 +30,7 @@ if [ ! -e /Library/LaunchDaemons ]; then
 fi
 
 # Write the plist file
-cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist"
+cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.xdbpubserver-$XDB_SERVICE_VER.plist"
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
         "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -38,7 +39,7 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist"
 	<key>Disabled</key>
 	<false/>
         <key>Label</key>
-        <string>com.edb.launchd.xdbpubserver</string>
+        <string>com.edb.launchd.xdbpubserver-$XDB_SERVICE_VER</string>
         <key>ProgramArguments</key>
         <array>
                 <string>$JAVA</string>
@@ -64,17 +65,17 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist"
 EOT
 
 # Fixup the permissions on the launchDaemon
-chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist" || _warn "Failed to set the ownership of the launchd daemon for xdbpubserver (/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist)"
+chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.xdbpubserver-$XDB_SERVICE_VER.plist" || _warn "Failed to set the ownership of the launchd daemon for xdbpubserver-$XDB_SERVICE_VER (/Library/LaunchDaemons/com.edb.launchd.xdbpubserver-$XDB_SERVICE_VER.plist)"
 
 #Create directory for logs
-if [ ! -e /var/log/xdb ];
+if [ ! -e /var/log/xdb-$XDB_SERVICE_VER ];
 then
-    mkdir -p /var/log/xdb
-    chown $SYSTEM_USER /var/log/xdb
+    mkdir -p /var/log/xdb-$XDB_SERVICE_VER
+    chown $SYSTEM_USER /var/log/xdb-$XDB_SERVICE_VER
 fi
 
 # Load the plist.
-launchctl load /Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist || _warn "Failed to load the xdbpubserver launchd plist"
+launchctl load /Library/LaunchDaemons/com.edb.launchd.xdbpubserver-$XDB_SERVICE_VER.plist || _warn "Failed to load the xdbpubserver-$XDB_SERVICE_VER launchd plist"
 
 echo "$0 ran to completion"
 exit $WARN
