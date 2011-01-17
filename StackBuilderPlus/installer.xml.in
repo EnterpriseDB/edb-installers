@@ -162,7 +162,7 @@
         </setInstallerVariable>
 
         <!-- Check if UpdateMonitoring is installed for PPSS 8.4 version, disable it if found -->
-         <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_8_4" key="InstallationDirectory" variable="oldinstalldir">
+        <!--<iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_PG_8_4" key="InstallationDirectory" variable="oldinstalldir">
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
@@ -173,25 +173,25 @@
             </ruleList>
         </registryGet>
         <actionGroup>
-            <actionList>
+            <actionList>-->
                 <!-- Stop the montioring if installed, before UM exe name change -->
-                 <kill path="${oldinstalldir}\bin\UpdateManager.exe" >
+                <!-- <kill path="${oldinstalldir}\bin\UpdateManager.exe" >
                    <abortOnError>0</abortOnError>
                    <showMessageOnError>0</showMessageOnError>
                    <ruleList>
                      <compareText logic="equals" text="${platform_name}" value="windows"/>
                      <fileExists path="${oldinstalldir}\bin\UpdateManager.exe" />
                    </ruleList>
-                 </kill>
+                 </kill>-->
                  <!-- Delete the UpdateManager.exe as the new name is UpdManager.exe -->
-                 <deleteFile path="${oldinstalldir}\bin\UpdateManager.exe">
+                <!-- <deleteFile path="${oldinstalldir}\bin\UpdateManager.exe">
                    <ruleList>
                      <fileExists path="${oldinstalldir}\bin\UpdateManager.exe" />
                    </ruleList>
-                 </deleteFile>
+                 </deleteFile>-->
          
                  <!-- Stop the montioring if installed, after UM exe name change -->
-                 <kill path="${oldinstalldir}\bin\UpdManager.exe" >
+                 <!--<kill path="${oldinstalldir}\bin\UpdManager.exe" >
                    <abortOnError>0</abortOnError>
                    <showMessageOnError>0</showMessageOnError>
                    <ruleList>
@@ -224,24 +224,24 @@
                    </ruleList>
                  </actionGroup>
                  <actionGroup>
-                   <actionList>
+                   <actionList>-->
                      <!-- OSX: Remove the scripts from the startup items, if installed -->
-                     <deleteFile path="/Library/LaunchAgents/com.edb.launchd.stackbuilderplus.plist"
+                    <!--<deleteFile path="/Library/LaunchAgents/com.edb.launchd.stackbuilderplus.plist"
                              showMessageOnError="0"
                              abortOnError="0">
                        <ruleList>
                          <compareText text="${platform_name}" logic="equals" value="osx"/>
                        </ruleList>
-                     </deleteFile>
+                     </deleteFile>-->
              
                      <!-- WIN: Remove the UpdateMonitor Entry from the Registry as the Startup program -->
-                     <registryDelete key="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+                     <!--<registryDelete key="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
                                      name="StackBuilderPlus8_4 Update Monitor"
                                      showMessageOnError="0"
-                                     abortOnError="0"/>
+                                     abortOnError="0"/>-->
              
                      <!-- LIN/LIN-X64: Remove UpdateMonitor Entry from the startup items, if installed -->
-                     <setInstallerVariable name="xdg_config_dir" value="${env(XDG_CONFIG_DIRS)}"/>
+                     <!--<setInstallerVariable name="xdg_config_dir" value="${env(XDG_CONFIG_DIRS)}"/>
                      <setInstallerVariable name="xdg_config_dir" value="/etc/xdg">
                        <ruleList>
                          <compareText text="${xdg_config_dir}" logic="equals" value=""/>
@@ -258,7 +258,7 @@
              <ruleList>
                   <compareText logic="does_not_equal" text="${oldinstalldir}" value=""/>
              </ruleList>
-        </actionGroup> 
+        </actionGroup>-->
                     
         <!-- LIN & MAC : Get the branding & check Previous Installation of -->
         <actionGroup>
