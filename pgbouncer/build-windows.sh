@@ -125,6 +125,8 @@ _postprocess_pgbouncer_windows() {
 
     cd $WD/pgbouncer
 
+    PGBOUNCER_SERVICE_VER=`echo $PG_MAJOR_VERSION | sed 's/\.//'`
+    
     mkdir -p staging/windows/installer/pgbouncer || _die "Failed to create directory for installer scripts"
     cp -R scripts/windows/check-connection.bat staging/windows/installer/pgbouncer/ || _die "Failed to copy the installer script"
     cp -R scripts/windows/startupcfg.bat staging/windows/installer/pgbouncer/ || _die "Failed to copy the installer script"
@@ -145,6 +147,10 @@ _postprocess_pgbouncer_windows() {
     _replace "stats_users = stats, root" "stats_users = @@STATSUSERS@@" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "auth_type = trust" "auth_type = md5" staging/windows/share/pgbouncer.ini || _die "Failed to change the auth type"  
     _replace ";ignore_startup_parameters = extra_float_digits" "ignore_startup_parameters = application_name" staging/windows/share/pgbouncer.ini || _die "Failed to uncomment the ignore startup parameters config line"
+    cp staging/windows/share/pgbouncer.ini staging/windows/share/pgbouncer.ini.org
+    awk '{if($0=="\[pgbouncer\]"){print $0;print "service_name=pgbouncer-'$PGBOUNCER_SERVICE_VER'"}else{print $0}}' staging/windows/share/pgbouncer.ini.org >staging/windows/share/pgbouncer.ini || _die "Failed to change service name in pgbouncer.ini"
+
+    rm -f staging/windows/share/pgbouncer.ini.org
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
