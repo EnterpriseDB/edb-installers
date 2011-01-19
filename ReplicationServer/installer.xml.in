@@ -1845,6 +1845,14 @@ database=${controldb}
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram>
+	<!-- Delay before deleting file -->
+	<wait ms="10000" >
+            <ruleList>
+                <isTrue value="${component(subserver).selected}" />
+                <isTrue value="${component(pubserver).selected}" />
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </wait>
         <deleteFile path="${system_temp_directory}/servicewrapper.bat" >          
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
