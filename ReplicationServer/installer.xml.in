@@ -453,6 +453,8 @@
                     </ruleList>
                 </throwError>
 
+		<setInstallerVariable name="project.windowsSoftwareRegistryPrefix" value="${project.vendor}\${project.fullName} XDB_SERVICE_VER" persist="1"/>
+
                 <!-- Creates the ini file if not exits -->
                 <touchFile path="/etc/postgres-reg.ini">
                     <ruleList>
