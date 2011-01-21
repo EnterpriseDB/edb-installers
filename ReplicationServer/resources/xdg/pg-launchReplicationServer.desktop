@@ -3,7 +3,7 @@ Version=1.0
 Encoding=UTF-8
 Name=xDB Replication Console
 Exec="INSTALL_DIR/bin/runRepConsole.sh"
-Icon=pg-launchReplicationConsole.png
+Icon=pg-launchReplicationConsole-PG_VERSION_STR.png
 Terminal=false
 Type=Application
 

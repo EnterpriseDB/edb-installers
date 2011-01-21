@@ -1279,14 +1279,39 @@
                         </iniFileSet>
                         <runProgram>
                             <program>${installdir}/installer/xDBReplicationServer/createshortcuts.sh</program>
+                            <programArguments>"${installdir}" "${branding}" "XDB_SERVICE_VER"</programArguments>
+                            <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                            <workingDirectory>${installdir}/installer/xDBReplicationServer</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                            <ruleList>
+				<compareText logic="contains" text="${platform_name}" value="linux" />
+                                <isTrue value="${component(repconsole).selected}" />
+                            </ruleList>  
+                        </runProgram>
+			<runProgram>
+                            <program>${installdir}/installer/xDBReplicationServer/createshortcuts.sh</program>
+                            <programArguments>"${installdir}" "${branding}" "XDB_SERVICE_VER"</programArguments>
+                            <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                            <workingDirectory>${installdir}/installer/xDBReplicationServer</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                            <ruleList>
+                                <compareText logic="contains" text="${platform_name}" value="solaris" />
+                                <isTrue value="${component(repconsole).selected}" />
+                            </ruleList>
+                        </runProgram>
+			<runProgram>
+                            <program>${installdir}/installer/xDBReplicationServer/createshortcuts.sh</program>
                             <programArguments>"${installdir}" "${branding}"</programArguments>
                             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                             <workingDirectory>${installdir}/installer/xDBReplicationServer</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                             <ruleList>
+				<compareText logic="equals" text="${platform_name}" value="osx" />
                                 <isTrue value="${component(repconsole).selected}" />
-                            </ruleList>  
+                            </ruleList>
                         </runProgram>
                     </actionList>
                     <ruleList>
@@ -2304,7 +2329,7 @@ database=${controldb}
             <actionList>
                 <runProgram>
                     <program>${installdir}/installer/xDBReplicationServer/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${branding}"</programArguments>
+                    <programArguments>"${installdir}" "${branding}" "XDB_SERVICE_VER"</programArguments>
                     <workingDirectory>${installdir}/installer/xDBReplicationServer</workingDirectory>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>

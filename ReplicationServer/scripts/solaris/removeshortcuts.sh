@@ -1,14 +1,15 @@
 #!/bin/bash
 
 # Check the command line
-if [ $# -ne 2 ]; 
+if [ $# -ne 3 ]; 
 then
-    echo "Usage: $0 <Install dir> <Branding>"
+    echo "Usage: $0 <Install dir> <Branding> <PG MAJOR VERSION>"
     exit 127
 fi
 
 INSTALLDIR=$1
 BRANDING=$2
+PG_VERSION_STR=$3
 
 # Branding string, for the xdg filenames. If the branding is 'PostgreSQL',
 # Don't do anything to ensure we remain backwards compatible.
@@ -47,10 +48,10 @@ _replace() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
-        "$INSTALLDIR/scripts/xdg/pg-launchReplicationServer.desktop"  || _warn "Failed to Remove the ReplicationServer menu"
+        "$INSTALLDIR/scripts/xdg/pg-launchReplicationServer_$PG_VERSION_STR.desktop"  || _warn "Failed to Remove the ReplicationServer menu"
       
 # Remove the icon resources
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-launchReplicationServer.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-launchReplicationServer-$PG_VERSION_STR.png"
 # Only remove the directory file if it's branded
 if [ $BRANDED -ne 0 ];
 then
@@ -71,7 +72,7 @@ done
 xdg_global_dir="$xdg_global_dir/applications-merged"
 
 # Hack up the XDG menu files to make sure everything really does go.
-_replace "<Filename>pg-launchReplicationServer.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
+_replace "<Filename>pg-launchReplicationServer_$PG_VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
 
 #Ubuntu 10.04 and greater require menu cache update
 
