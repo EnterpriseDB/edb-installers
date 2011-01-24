@@ -827,7 +827,28 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </actionGroup>
-
+    <!-- Remove shortcuts -->
+    <actionGroup>
+      <actionList>
+        <substitute>
+          <files>${installdir}/installer/StackBuilderPlus/removeshortcuts.sh</files>
+          <substitutionList>
+            <substitution pattern="@@INSTALL_DIR@@" value="${installdir}"/>
+            <substitution pattern="@@BRANDING@@" value="${branding}"/>
+          </substitutionList>
+        </substitute>
+        <runProgram program="${installdir}/installer/StackBuilderPlus/removeshortcuts.sh"
+                    programArguments=""
+                    progressText="${msg(progress.text.removing.shortcuts)}"
+                    abortOnError="0"
+                    showMessageOnError="0"/>
+      </actionList>
+      <ruleEvaluationLogic>or</ruleEvaluationLogic>
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+        <compareText logic="contains" text="${platform_name}" value="solaris"/>
+      </ruleList>
+    </actionGroup>
     <actionGroup>
       <actionList>
         <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Description" value=""/>
@@ -912,27 +933,6 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
          <regExMatch text="${conf_file}" pattern="${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &amp;" />
          <compareText logic="contains" text="${platform_name}" value="solaris"/>
        </ruleList>
-    </actionGroup>
-    <actionGroup>
-      <actionList>
-        <substitute>
-          <files>${installdir}/installer/StackBuilderPlus/removeshortcuts.sh</files>
-          <substitutionList>
-            <substitution pattern="@@INSTALL_DIR@@" value="${installdir}"/>
-            <substitution pattern="@@BRANDING@@" value="${branding}"/>
-          </substitutionList>
-        </substitute>
-        <runProgram program="${installdir}/installer/StackBuilderPlus/removeshortcuts.sh"
-                    programArguments=""
-                    progressText="${msg(progress.text.removing.shortcuts)}"
-                    abortOnError="0"
-                    showMessageOnError="0"/>
-      </actionList>
-      <ruleEvaluationLogic>or</ruleEvaluationLogic>
-      <ruleList>
-        <compareText logic="contains" text="${platform_name}" value="linux"/>
-        <compareText logic="contains" text="${platform_name}" value="solaris"/>
-      </ruleList>
     </actionGroup>
 
     <!-- MAC: Remove Stack Builder Plus shortcut -->
