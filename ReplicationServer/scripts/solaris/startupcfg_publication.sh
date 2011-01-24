@@ -188,10 +188,10 @@ EOT
 
 
 #Create directory for logs
-if [ ! -e /var/log/xdb-$XDB_SERVICE_VER ]; 
+if [ ! -e /var/log/xdb-rep ]; 
 then
-    mkdir -p /var/log/xdb-$XDB_SERVICE_VER
-    chown $SYSTEM_USER /var/log/xdb-$XDB_SERVICE_VER
+    mkdir -p /var/log/xdb-rep
+    chown $SYSTEM_USER /var/log/xdb-rep
 fi
 
 svccfg import /var/svc/manifest/application/edb-xdbpubserver-$XDB_SERVICE_VER.xml
