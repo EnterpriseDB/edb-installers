@@ -489,7 +489,24 @@
             <program>${system_temp_directory}\vcredist_x86.exe</program>
             <programArguments>"/Q"</programArguments>
             <workingDirectory>${system_temp_directory}</workingDirectory>
+            <showMessageOnError>0</showMessageOnError>
+            <abortOnError>0</abortOnError>	
          </runProgram>
+         <throwError>
+            <text>${msg(error.installing.runtimes)}</text>
+            <ruleList>
+               <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>3010</text>
+                  <value>${program_exit_code}</value>
+               </compareText>
+               <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>0</text>
+                  <value>${program_exit_code}</value>
+               </compareText>
+            </ruleList>
+         </throwError>	
       </actionList>
       <ruleList>
          <compareText>
