@@ -32,10 +32,12 @@ _prep_ApachePhp_windows() {
     # Grab a copy of PHP
     echo "Grab copy of the clean php sources"
     cp -R php-$PG_VERSION_PHP php.windows || _die "Couldn't copy sources for php (php-$PG_VERSION_PHP to php.windows)"
-    if [ x"$PG_VERSION_PHP" = x"5.3.3" -a -f "$WD/tarballs/php-$PG_VERSION_PHP-win32.patch" ]; then
-        cp php.windows/win32/readdir.c php.windows/ext/mcrypt/readdir.c
-        cd php.windows
-        patch -p1 < $WD/tarballs/php-$PG_VERSION_PHP-win32.patch
+    if [ x"$PG_VERSION_PHP" = x"5.3.3" -o x"$PG_VERSION_PHP" = x"5.3.5" ]; then
+        if [ -f "$WD/tarballs/php-$PG_VERSION_PHP-win32.patch" ]; then
+            cp $WD/ApachePhp/source/php.windows/win32/readdir.c $WD/ApachePhp/source/php.windows/ext/mcrypt/readdir.c
+            cd php.windows
+            patch -p1 < $WD/tarballs/php-$PG_VERSION_PHP-win32.patch
+        fi
     fi
 
     cd $WD/ApachePhp/source
@@ -85,10 +87,12 @@ _prep_ApachePhp_windows() {
     echo "Copying apache sources to Windows VM"
     scp apache.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the apache archieve to windows VM (apache.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip apache.zip" || _die "Couldn't extract apache archieve on windows VM (apache.zip)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; mkdir apache.staging; chmod -R a+wrx apache.staging" || _die "Couldn't give full rights to apache windows directory on windows VM (apache.windows)"
 
     echo "Copying php sources to Windows VM"
     scp php.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the php archieve to windows VM (php.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip php.zip" || _die "Couldn't extract php archieve on windows VM (php.zip)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; chmod -R a+wrx php.windows" || _die "Couldn't give full rights to php windows directory on windows VM (php.windows)"
 
 }
 
@@ -133,19 +137,28 @@ perl srclib\apr\build\cvtdsp.pl -2005
 perl srclib\apr\build\fixwin32mak.pl
 
 REM Compiling Apache with Standard configuration
-nmake -f Makefile.win _apacher PORT=8080 NO_EXTERNAL_DEPS=1
+nmake -f Makefile.win _apacher PORT=8080 NO_EXTERNAL_DEPS=1 || exit 1
 
-nmake -f Makefile.win installr INSTDIR="%STAGING_DIR%\apache.staging" NO_EXTERNAL_DEPS=1
+nmake -f Makefile.win installr INSTDIR="%STAGING_DIR%\apache.staging" NO_EXTERNAL_DEPS=1 || exit 1
 
 EOT
 
     #ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; if [ \"x`which awk`\" != \"x\" ]; then cp `which awk` awk.exe; fi"
-    
     scp build-apache.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
-	ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-apache.bat"
+    APACHE_BUILT=0
+    APACHE_WIN_BUILT_COUNT=0
+    while [ $APACHE_BUILT == 0 ]; do
+        # We will stop trying, if the count is more than 3
+        if [ $APACHE_WIN_BUILT_COUNT -gt 9 ];
+        then
+            _die "Failed to build Apache on Windows VM"
+        fi
+        APACHE_BUILT=1
+	ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-apache.bat" || APACHE_BUILT=0
+        APACHE_WIN_BUILT_COUNT=`expr $APACHE_WIN_BUILT_COUNT + 1`
+    done
 
     #Building php
-
     cat <<EOT > "build-php.bat"
 
 @ECHO OFF
