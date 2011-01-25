@@ -12,6 +12,8 @@ install.summary=ApachePHP is a preconfigured Apache webserver with PHP, compiled
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 
+error.installing.runtimes=An error occured executing the Microsoft VC++ runtime installer.
+
 error.install.apache=Error Installing Apache
 
 error.configure.apachephp=Error Configuring Apache
