@@ -128,7 +128,10 @@ _process_dependent_libs() {
     done            
 
     # Copy libs from the tmp/templibs directory
-    cp /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
+	NUMBER_LIBS=`ls /tmp/templibs/* | wc -l`
+    if [ x"$NUMBER_LIBS" != x"0" ]; then
+        cp /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
+    fi
 
     # Remove the temporary directory 
     rm -rf /tmp/templibs  
