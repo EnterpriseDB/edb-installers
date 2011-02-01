@@ -141,7 +141,11 @@ _postprocess_pgbouncer_solaris_x64() {
     _replace ";ignore_startup_parameters = extra_float_digits" "ignore_startup_parameters = application_name" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to uncomment the ignore startup parameters config line"
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-intel || _die "Failed to build the installer"
-    mv $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-solaris-intel.bin  $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-solaris-x64.bin
+
+    # Rename the installer
+    mv $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-solaris-intel.bin $WD/output/pgbouncer-$PG_MAJOR_VERSION.$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-solaris-intel.bin  || _die "Failed to rename the installer"
+
+    mv $WD/output/pgbouncer-$PG_MAJOR_VERSION.$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-solaris-intel.bin  $WD/output/pgbouncer-$PG_MAJOR_VERSION.$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-solaris-x64.bin
     cd $WD
 }
 

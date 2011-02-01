@@ -110,6 +110,9 @@ _postprocess_pgbouncer_linux() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
 
+    # Rename the installer
+    mv $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-linux.bin $WD/output/pgbouncer-$PG_MAJOR_VERSION.$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-linux.bin  || _die "Failed to rename the installer"
+
     cd $WD
 }
 
