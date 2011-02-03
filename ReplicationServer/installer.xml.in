@@ -631,38 +631,6 @@
                     </ruleList>
                 </actionGroup>  
 
-                <!-- Unselect the components which are not installed previously during upgradation -->
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="component(repconsole).selected" value="0" />
-                        <setInstallerVariable name="component(repconsole).canBeEdited" value="1" />
-                    </actionList>
-                    <ruleList>
-                        <isFalse value="${IsRepConsoleUpgrade}" />
-                        <compareText text="${xDBReplicationServerVersion}" logic="does_not_equal" value="" />
-                    </ruleList>
-                </actionGroup>  
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="component(pubserver).selected" value="0" />
-                        <setInstallerVariable name="component(pubserver).canBeEdited" value="1" />
-                    </actionList>
-                    <ruleList>
-                        <isFalse value="${IsPubServerUpgrade}" />
-                        <compareText text="${xDBReplicationServerVersion}" logic="does_not_equal" value="" />
-                    </ruleList>
-                </actionGroup>  
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariable name="component(subserver).selected" value="0" />
-                        <setInstallerVariable name="component(subserver).canBeEdited" value="1" />
-                    </actionList>
-                    <ruleList>
-                        <isFalse value="${IsSubServerUpgrade}" />
-                        <compareText text="${xDBReplicationServerVersion}" logic="does_not_equal" value="" />
-                    </ruleList>
-                </actionGroup>  
-
 		<!-- Check if atleast one component is selected in unattended mode -->
 		<throwError>
 		    <text>${msg(error.select.component)}</text>
@@ -1398,8 +1366,7 @@
             <ruleList>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
-        </actionGroup>
-   
+        </actionGroup> 
         <actionGroup>
             <actionList>
                 <!-- Encrypt the password -->
