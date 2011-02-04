@@ -115,10 +115,10 @@ EOT
 chmod 0755 "/etc/init.d/edb-xdbsubserver-$XDB_SERVICE_VER" || _warn "Failed to set the permissions on the startup script (/etc/init.d/edb-xdbsubserver-$XDB_SERVICE_VER)"
 
 #Create directory for logs
-if [ ! -e /var/log/xdb-rep ];
+if [ ! -e /var/log/xdb-$XDB_SERVICE_VER ];
 then
-    mkdir -p /var/log/xdb-rep
-    chown $SYSTEM_USER /var/log/xdb-rep
+    mkdir -p /var/log/xdb-$XDB_SERVICE_VER
+    chown $SYSTEM_USER /var/log/xdb-$XDB_SERVICE_VER
 fi
 
 # Configure the startup. On Redhat and friends we use chkconfig. On Debian, update-rc.d

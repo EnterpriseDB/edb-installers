@@ -2373,14 +2373,13 @@ database=${controldb}
             </ruleList>
         </deleteFile> 
 
-	<!-- Dont delete this directory because if is deleted it can delete logs of other versions as well. e.g. 90 uninstall can delete logs of 91. -->
         <!-- Delete the /var/log/xdb directory in *nix/Solaris -->
-        <!--<deleteFile path="/var/log/xdb-rep" >
+        <deleteFile path="/var/log/xdb" >
             <ruleList>
-                <fileExists path="/var/log/xdb-rep" />
+                <fileExists path="/var/log/xdb" />
                 <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
             </ruleList>
-        </deleteFile>--> 
+        </deleteFile> 
 
     </preUninstallationActionList>
     <allowComponentSelection>1</allowComponentSelection>

@@ -186,10 +186,10 @@ cat <<EOT > "/var/svc/manifest/application/edb-xdbsubserver-$XDB_SERVICE_VER.xml
 EOT
 
 #Create directory for logs
-if [ ! -e /var/log/xdb-rep ];
+if [ ! -e /var/log/xdb-$XDB_SERVICE_VER ];
 then
-    mkdir -p /var/log/xdb-rep
-    chown $SYSTEM_USER /var/log/xdb-rep
+    mkdir -p /var/log/xdb-$XDB_SERVICE_VER
+    chown $SYSTEM_USER /var/log/xdb-$XDB_SERVICE_VER
 fi
 
 svccfg import /var/svc/manifest/application/edb-xdbsubserver-$XDB_SERVICE_VER.xml
