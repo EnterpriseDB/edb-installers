@@ -3,5 +3,5 @@ Version=1.0
 Type=Directory
 Name=PG_BRANDING
 Comment=PostgreSQL, packaged by EnterpriseDB
-Icon=pg-postgresql-PG_VERSION_STR.png
+Icon=pg-postgresql.png
 Encoding=UTF-8

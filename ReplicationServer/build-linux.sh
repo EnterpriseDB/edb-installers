@@ -112,7 +112,6 @@ _postprocess_ReplicationServer_linux() {
 
     cd $WD/ReplicationServer
 
-    PG_VERSION_STR=`echo $PG_MAJOR_VERSION | sed 's/\.//g'`
     # Setup the installer scripts.
     mkdir -p staging/linux/installer/xDBReplicationServer || _die "Failed to create a directory for the install scripts"
     cp scripts/linux/removeshortcuts.sh staging/linux/installer/xDBReplicationServer/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
@@ -135,13 +134,12 @@ _postprocess_ReplicationServer_linux() {
 
     # Setup the ReplicationServer xdg Files
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the launch scripts"
-    cp resources/xdg/pg-launchReplicationServer.desktop staging/linux/scripts/xdg/pg-launchReplicationServer_$PG_VERSION_STR.desktop || _die "Failed to copy the xdg files "
-    cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql_$PG_VERSION_STR.directory || _die "Failed to copy the xdg files "
+    cp resources/xdg/pg-launchReplicationServer.desktop staging/linux/scripts/xdg/pg-launchReplicationServer.desktop || _die "Failed to copy the xdg files "
+    cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql.directory || _die "Failed to copy the xdg files "
 
     # Copy in the menu pick images
     mkdir -p staging/linux/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/pg-launchReplicationConsole.png staging/linux/scripts/images/pg-launchReplicationConsole-$PG_VERSION_STR.png || _die "Failed to copy the menu pick images (resources/pg-launchReplicationConsole.png)"
-    cp resources/pg-postgresql.png staging/linux/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy the menu pick images (resources/pg-postgresql.png)"
+    cp resources/*.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
     mkdir -p staging/linux/installer/xdg || _die "Failed to create a directory for the menu pick xdg files"
     
