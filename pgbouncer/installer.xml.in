@@ -19,7 +19,7 @@
     <height>400</height>
 
     <!-- Misc options -->
-    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>${product_shortname}-PG_MAJOR_VERSION.${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
     <wrapLicenseFileText>0</wrapLicenseFileText>
     <compressionAlgorithm>lzma</compressionAlgorithm>
     <unattendedModeUI>minimal</unattendedModeUI>

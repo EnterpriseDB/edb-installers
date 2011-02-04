@@ -142,9 +142,6 @@ _postprocess_pgbouncer_solaris_sparc() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-sparc || _die "Failed to build the installer"
 
-    # Rename the installer
-    mv $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-solaris-sparc.bin $WD/output/pgbouncer-$PG_MAJOR_VERSION.$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-solaris-sparc.bin  || _die "Failed to rename the installer"
-
     cd $WD
 }
 

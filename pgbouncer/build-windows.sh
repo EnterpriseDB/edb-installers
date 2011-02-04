@@ -155,9 +155,6 @@ _postprocess_pgbouncer_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
-    # Rename the installer   
-    mv $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-windows.exe $WD/output/pgbouncer-$PG_MAJOR_VERSION.$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-windows.exe  || _die "Failed to rename the installer"
-
 	# Sign the installer
 	win32_sign "pgbouncer-$PG_MAJOR_VERSION.$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-windows.exe"
 	
