@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Check the command line
-if [ $# -ne 5 ]; 
+if [ $# -ne 4 ]; 
 then
-echo "Usage: $0 <Installdir> <SystemUser> <SubPort> <Java Executable> <DBSERVER_VER>"
+echo "Usage: $0 <Installdir> <SystemUser> <SubPort> <Java Executable>"
     exit 127
 fi
 
@@ -11,7 +11,6 @@ INSTALL_DIR=$1
 SYSTEM_USER=$2
 SUBPORT=$3
 JAVA=$4
-XDB_SERVICE_VER=$5
 
 # Exit code
 WARN=0
@@ -28,7 +27,7 @@ _warn() {
 }
 
 # Write the startup script
-cat <<EOT > "/lib/svc/method/edb-xdbsubserver-$XDB_SERVICE_VER"
+cat <<EOT > "/lib/svc/method/edb-xdbsubserver"
 #!/bin/bash
 
 start()
@@ -40,7 +39,7 @@ start()
        su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -jar edb-repserver.jar subserver $SUBPORT > /dev/null 2>&1 &"
        exit 0
     else
-       echo "Subscription Service $XDB_SERVICE_VER already running"
+       echo "Subscription Service already running"
        exit 1
     fi
 }
@@ -51,7 +50,7 @@ stop()
 
     if [ "x\$PID" = "x" ];
     then
-        echo "Subscription Service $XDB_SERVICE_VER not running"
+        echo "Subscription Service not running"
         exit 2
     else
         kill -9 \$PID
@@ -64,10 +63,10 @@ status()
 
     if [ "x\$PID" = "x" ];
     then
-        echo "Subscription Service $XDB_SERVICE_VER not running"
+        echo "Subscription Service not running"
         exit 2
     else
-        echo "Subscription Service $XDB_SERVICE_VER (PID:\$PID) is running"
+        echo "Subscription Service (PID:\$PID) is running"
         exit 2
     fi
 
@@ -97,16 +96,16 @@ esac
 EOT
 
 # Fixup the permissions on the StartupItems
-chmod 0755 "/lib/svc/method/edb-xdbsubserver-$XDB_SERVICE_VER" || _warn "Failed to set the permissions on the startup script (/etc/init.d/edb-xdbsubserver-$XDB_SERVICE_VER)"
+chmod 0755 "/lib/svc/method/edb-xdbsubserver" || _warn "Failed to set the permissions on the startup script (/etc/init.d/edb-xdbsubserver)"
 
-cat <<EOT > "/var/svc/manifest/application/edb-xdbsubserver-$XDB_SERVICE_VER.xml"
+cat <<EOT > "/var/svc/manifest/application/edb-xdbsubserver.xml"
 <?xml version="1.0"?>
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
 
-<service_bundle type='manifest' name='edb-xdbsubserver-$XDB_SERVICE_VER'>
+<service_bundle type='manifest' name='edb-xdbsubserver'>
 
 <service
-        name='application/edb-xdbsubserver-$XDB_SERVICE_VER'
+        name='application/edb-xdbsubserver'
         type='service'
         version='1'>
 
@@ -137,25 +136,25 @@ cat <<EOT > "/var/svc/manifest/application/edb-xdbsubserver-$XDB_SERVICE_VER.xml
         <exec_method
                 type='method'
                 name='start'
-                exec='/lib/svc/method/edb-xdbsubserver-$XDB_SERVICE_VER start'
+                exec='/lib/svc/method/edb-xdbsubserver start'
                 timeout_seconds='60' />
 
         <exec_method
                 type='method'
                 name='stop'
-                exec='/lib/svc/method/edb-xdbsubserver-$XDB_SERVICE_VER stop'
+                exec='/lib/svc/method/edb-xdbsubserver stop'
                 timeout_seconds='60' />
 
         <exec_method
                 type='method'
                 name='restart'
-                exec='/lib/svc/method/edb-xdbsubserver-$XDB_SERVICE_VER restart'
+                exec='/lib/svc/method/edb-xdbsubserver restart'
                 timeout_seconds='60' />
 
         <exec_method
                 type='method'
                 name='status'
-                exec='/lib/svc/method/edb-xdbsubserver-$XDB_SERVICE_VER status'
+                exec='/lib/svc/method/edb-xdbsubserver status'
                 timeout_seconds='60' />
 
         <!--
@@ -175,7 +174,7 @@ cat <<EOT > "/var/svc/manifest/application/edb-xdbsubserver-$XDB_SERVICE_VER.xml
         <template>
                 <common_name>
                         <loctext xml:lang='C'>
-                           Subscription Service $XDB_SERVICE_VER for xDB Replication Server     
+                           Subscription Service for xDB Replication Server     
                         </loctext>
                 </common_name>
         </template>
@@ -186,13 +185,13 @@ cat <<EOT > "/var/svc/manifest/application/edb-xdbsubserver-$XDB_SERVICE_VER.xml
 EOT
 
 #Create directory for logs
-if [ ! -e /var/log/xdb-$XDB_SERVICE_VER ];
+if [ ! -e /var/log/xdb ];
 then
-    mkdir -p /var/log/xdb-$XDB_SERVICE_VER
-    chown $SYSTEM_USER /var/log/xdb-$XDB_SERVICE_VER
+    mkdir -p /var/log/xdb
+    chown $SYSTEM_USER /var/log/xdb
 fi
 
-svccfg import /var/svc/manifest/application/edb-xdbsubserver-$XDB_SERVICE_VER.xml
+svccfg import /var/svc/manifest/application/edb-xdbsubserver.xml
 
 echo "$0 ran to completion"
 exit $WARN

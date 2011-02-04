@@ -200,7 +200,7 @@ _postprocess_ReplicationServer() {
 
     cd $WD/ReplicationServer
 
-    XDB_SERVICE_VER=`echo $PG_MAJOR_VERSION | sed 's/\.//'`
+
     # Prepare the installer XML file
     if [ -f installer.xml ];
     then
@@ -211,8 +211,6 @@ _postprocess_ReplicationServer() {
     _replace PG_VERSION_REPLICATIONSERVER $PG_VERSION_REPLICATIONSERVER installer.xml || _die "Failed to set the version in the installer project file (ReplicationServer/installer.xml)"
     _replace PG_BUILDNUM_REPLICATIONSERVER $PG_BUILDNUM_REPLICATIONSERVER installer.xml || _die "Failed to set the Build Number in the installer project file (ReplicationServer/installer.xml)"
     _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION installer.xml || _die "Failed to set the pg version string in the installer project file ($WD/ReplicationServer/installer.xml)"
-    _replace XDB_SERVICE_VER $XDB_SERVICE_VER installer.xml || _die "Failed to set the xdb service version string in the installer project file ($WD/ReplicationServer/installer.xml)"
-
    
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

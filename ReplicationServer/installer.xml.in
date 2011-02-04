@@ -471,49 +471,49 @@
                     <actionList>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>Branding</key>
                             <variable>iBranding</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>Version</key>
                             <variable>xDBReplicationServerVersion</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>RepConsole</key>
                             <variable>IsRepConsoleUpgrade</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>PubServer</key>
                             <variable>IsPubServerUpgrade</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>SubServer</key>
                             <variable>IsSubServerUpgrade</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>ServiceAccount</key>
                             <variable>iServiceaccount</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>SubPort</key>
                             <variable>iSubport</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>PubPort</key>
                             <variable>iPubport</variable>
                         </iniFileGet>
@@ -533,41 +533,41 @@
                         <!-- Get the branding -->
                         <registryGet>
                             <name>Branding</name>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <variable>iBranding</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>Version</name>
                             <variable>xDBReplicationServerVersion</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>RepConsole</name>
                             <variable>IsRepConsoleUpgrade</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>PubServer</name>
                             <variable>IsPubServerUpgrade</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>SubServer</name>
                             <variable>IsSubServerUpgrade</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>ServiceAccount</name>
                             <variable>iServiceaccount</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>SubPort</name>
                             <variable>iSubport</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>PubPort</name>
                             <variable>iPubport</variable>
                         </registryGet>
@@ -750,13 +750,13 @@
                     <actionList>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>InstallationDirectory</key>
                             <variable>installdir</variable>
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>EnterpriseDBEmail</key>
                             <variable>iExistingEmail</variable>
                         </iniFileGet>
@@ -779,12 +779,12 @@
                 <actionGroup>
                     <actionList>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>Location</name>
                             <variable>installdir</variable>
                         </registryGet>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>EnterpriseDBEmail</name>
                             <variable>iExistingEmail</variable>
                         </registryGet>
@@ -928,13 +928,13 @@
                      <actionList> 
                          <runProgram>
                              <program>svcadm</program>
-                             <programArguments>-v disable svc:/application/edb-xdbpubserver-XDB_SERVICE_VER:default</programArguments> 
+                             <programArguments>-v disable svc:/application/edb-xdbpubserver:default</programArguments> 
                              <abortOnError>0</abortOnError>
                              <showMessageOnError>0</showMessageOnError>
                          </runProgram>  
                          <runProgram>
                              <program>svccfg</program>
-                             <programArguments>-v delete -f svc:/application/edb-xdbpubserver-XDB_SERVICE_VER:default</programArguments> 
+                             <programArguments>-v delete -f svc:/application/edb-xdbpubserver:default</programArguments> 
                              <abortOnError>0</abortOnError>
                              <showMessageOnError>0</showMessageOnError>
                          </runProgram>  
@@ -944,7 +944,7 @@
                      </ruleList>
                  </actionGroup>
                  <runProgram>
-                     <program>/etc/init.d/edb-xdbpubserver-XDB_SERVICE_VER</program>
+                     <program>/etc/init.d/edb-xdbpubserver</program>
                      <programArguments>stop &amp;</programArguments> 
                      <workingDirectory>/etc/initd.d</workingDirectory>
                      <abortOnError>0</abortOnError>
@@ -955,7 +955,7 @@
                  </runProgram>  
                  <runProgram>
                      <program>launchctl</program>
-                     <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.xdbpubserver-XDB_SERVICE_VER.plist</programArguments> 
+                     <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist</programArguments> 
                      <workingDirectory/>
                      <abortOnError>0</abortOnError>
                      <showMessageOnError>0</showMessageOnError>
@@ -964,8 +964,8 @@
                      </ruleList>
                  </runProgram>  
                  <stopWindowsService>
-                     <serviceName>Publication Service XDB_SERVICE_VER</serviceName>
-                     <displayName>Publication Service XDB_SERVICE_VER</displayName>
+                     <serviceName>Publication Service</serviceName>
+                     <displayName>Publication Service</displayName>
                      <abortOnError>0</abortOnError>
                      <showMessageOnError>0</showMessageOnError>
                  </stopWindowsService>
@@ -983,13 +983,13 @@
                      <actionList> 
                          <runProgram>
                              <program>svcadm</program>
-                             <programArguments>-v disable svc:/application/edb-xdbsubserver-XDB_SERVICE_VER:default</programArguments> 
+                             <programArguments>-v disable svc:/application/edb-xdbsubserver:default</programArguments> 
                              <abortOnError>0</abortOnError>
                              <showMessageOnError>0</showMessageOnError>
                          </runProgram>  
                          <runProgram>
                              <program>svccfg</program>
-                             <programArguments>-v delete -f svc:/application/edb-xdbsubserver-XDB_SERVICE_VER:default</programArguments> 
+                             <programArguments>-v delete -f svc:/application/edb-xdbsubserver:default</programArguments> 
                              <abortOnError>0</abortOnError>
                              <showMessageOnError>0</showMessageOnError>
                          </runProgram>  
@@ -999,7 +999,7 @@
                      </ruleList>
                  </actionGroup>
                  <runProgram>
-                     <program>/etc/init.d/edb-xdbsubserver-XDB_SERVICE_VER</program>
+                     <program>/etc/init.d/edb-xdbsubserver</program>
                      <programArguments>stop &amp;</programArguments> 
                      <workingDirectory>/etc/initd.d</workingDirectory>
                      <abortOnError>0</abortOnError>
@@ -1010,7 +1010,7 @@
                  </runProgram>  
                  <runProgram>
                      <program>launchctl</program>
-                     <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.xdbsubserver-XDB_SERVICE_VER.plist</programArguments> 
+                     <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.xdbsubserver.plist</programArguments> 
                      <workingDirectory/>
                      <abortOnError>0</abortOnError>
                      <showMessageOnError>0</showMessageOnError>
@@ -1019,8 +1019,8 @@
                      </ruleList>
                  </runProgram>  
                  <stopWindowsService>
-                     <serviceName>Subscription Service XDB_SERVICE_VER</serviceName>
-                     <displayName>Subscription Service XDB_SERVICE_VER</displayName>
+                     <serviceName>Subscription Service</serviceName>
+                     <displayName>Subscription Service</displayName>
                      <abortOnError>0</abortOnError>
                      <showMessageOnError>0</showMessageOnError>
                  </stopWindowsService>
@@ -1203,43 +1203,43 @@
                     <actionList>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>Description</key>
                             <value>${msg(install.summary)}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>InstallationDirectory</key>
                             <value>${installdir}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>Version</key>
                             <value>${product_version}</value>
                         </iniFileSet>
                          <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>RepConsole</key>
                             <value>${component(repconsole).selected}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>PubServer</key>
                             <value>${component(pubserver).selected}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>SubServer</key>
                             <value>${component(subserver).selected}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>ServiceAccount</key>
                             <value>${serviceaccount}</value>
                             <ruleEvaluationLogic>or</ruleEvaluationLogic>
@@ -1250,7 +1250,7 @@
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>SubPort</key>
                             <value>${subport}</value>
                             <ruleList>
@@ -1259,7 +1259,7 @@
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>PubPort</key>
                             <value>${pubport}</value>
                             <ruleList>
@@ -1268,7 +1268,7 @@
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                            <section>xDBReplicationServer</section>
                             <key>EnterpriseDBEmail</key>
                             <value>${existingEmail}</value>
                             <ruleList>
@@ -1302,7 +1302,7 @@
                 </logMessage>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                    <section>xDBReplicationServer</section>
                     <key>Branding</key>
                     <value>${branding}</value>
                     <ruleList>
@@ -1314,27 +1314,27 @@
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                     <name>Branding</name>
                     <value>${branding}</value>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                     <name>RepConsole</name>
                     <value>${component(repconsole).selected}</value>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                     <name>PubServer</name>
                     <value>${component(pubserver).selected}</value>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                     <name>SubServer</name>
                     <value>${component(subserver).selected}</value>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                     <name>ServiceAccount</name>
                     <value>${serviceaccount}</value>
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
@@ -1344,7 +1344,7 @@
                     </ruleList>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                     <name>SubPort</name>
                     <value>${subport}</value>
                     <ruleList>
@@ -1352,7 +1352,7 @@
                     </ruleList>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                     <name>PubPort</name>
                     <value>${pubport}</value>
                     <ruleList>
@@ -1360,7 +1360,7 @@
                     </ruleList>
                 </registrySet>
                 <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                     <name>EnterpriseDBEmail</name>
                     <value>${existingEmail}</value>
                     <ruleList>
@@ -1763,7 +1763,7 @@ database=${controldb}
          <!-- Install Pub/Sub servers as service -->
          <runProgram>
             <program>${installdir}/scripts/startupcfg_publication.sh</program>
-            <programArguments>"${installdir}" "${serviceaccount}" "${pubport}" "${java_executable}" "XDB_SERVICE_VER"</programArguments>
+            <programArguments>"${installdir}" "${serviceaccount}" "${pubport}" "${java_executable}"</programArguments>
             <workingDirectory>${installdir}/scripts</workingDirectory>
             <progressText>${msg(progress.text.installing.pubservice)}</progressText>  
             <abortOnError>0</abortOnError>            
@@ -1786,7 +1786,7 @@ database=${controldb}
         </wait>
         <runProgram>
             <program>${installdir}/scripts/startupcfg_subscription.sh</program>
-            <programArguments>"${installdir}" "${serviceaccount}" "${subport}" "${java_executable}" "XDB_SERVICE_VER"</programArguments>
+            <programArguments>"${installdir}" "${serviceaccount}" "${subport}" "${java_executable}"</programArguments>
             <workingDirectory>${installdir}/scripts</workingDirectory>
             <progressText>${msg(progress.text.installing.subservice)}</progressText>  
             <abortOnError>0</abortOnError>            
@@ -1798,7 +1798,7 @@ database=${controldb}
         </runProgram>
         <runProgram>
             <program>${installdir}\scripts\ServiceWrapper.exe</program>
-            <programArguments>unregister -n "Publication Service XDB_SERVICE_VER"</programArguments>
+            <programArguments>unregister -n "Publication Service"</programArguments>
             <workingDirectory>${installdir}\scripts</workingDirectory>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -1810,7 +1810,7 @@ database=${controldb}
         </runProgram>
         <runProgram>
             <program>${installdir}\scripts\ServiceWrapper.exe</program>
-            <programArguments>unregister -n "Subscription Service XDB_SERVICE_VER"</programArguments>
+            <programArguments>unregister -n "Subscription Service"</programArguments>
             <workingDirectory>${installdir}\scripts</workingDirectory>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -1823,7 +1823,7 @@ database=${controldb}
 
        <writeFile>
             <path>${system_temp_directory}/servicewrapper.bat</path>
-            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Publication Service XDB_SERVICE_VER" -d "Publication Service XDB_SERVICE_VER for xDB Replication Server." -c "${java_executable_windows}" -o "-Djava.awt.headless=true -jar """"${installdir}\bin\edb-repserver.jar"""" pubserver ${pubport} """"${installdir}\etc""""" -u "${serviceaccount}" -p "${servicepassword.password}" -w "${installdir}\bin"</text>
+            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Publication Service" -d "Publication Service for xDB Replication Server." -c "${java_executable_windows}" -o "-Djava.awt.headless=true -jar """"${installdir}\bin\edb-repserver.jar"""" pubserver ${pubport} """"${installdir}\etc""""" -u "${serviceaccount}" -p "${servicepassword.password}" -w "${installdir}\bin"</text>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(pubserver).selected}" />
@@ -1860,7 +1860,7 @@ database=${controldb}
         </deleteFile>
         <writeFile>
             <path>${system_temp_directory}/servicewrapper.bat</path>
-            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Subscription Service XDB_SERVICE_VER" -d "Subscription Service XDB_SERVICE_VER for xDB Replication Server." -c "${java_executable_windows}" -o "-Djava.awt.headless=true -jar """"${installdir}\bin\edb-repserver.jar"""" subserver ${subport} """"${installdir}\etc""""" -u "${serviceaccount}" -p "${servicepassword.password}" -w "${installdir}\bin"</text>
+            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Subscription Service" -d "Subscription Service for xDB Replication Server." -c "${java_executable_windows}" -o "-Djava.awt.headless=true -jar """"${installdir}\bin\edb-repserver.jar"""" subserver ${subport} """"${installdir}\etc""""" -u "${serviceaccount}" -p "${servicepassword.password}" -w "${installdir}\bin"</text>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(subserver).selected}" />
@@ -1888,15 +1888,15 @@ database=${controldb}
             </ruleList>
         </deleteFile>
         <startWindowsService>
-            <serviceName>Publication Service XDB_SERVICE_VER</serviceName>
-            <displayName>Publication Service XDB_SERVICE_VER</displayName>
+            <serviceName>Publication Service</serviceName>
+            <displayName>Publication Service</displayName>
             <ruleList>
                 <isTrue value="${component(pubserver).selected}" />                  
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </startWindowsService>
        <runProgram>
-            <program>/etc/init.d/edb-xdbpubserver-XDB_SERVICE_VER</program>
+            <program>/etc/init.d/edb-xdbpubserver</program>
             <programArguments>start &amp;</programArguments> 
             <workingDirectory>/etc/init.d</workingDirectory>
             <progressText>${msg(progress.text.starting.pubservice)}</progressText>
@@ -1908,7 +1908,7 @@ database=${controldb}
         </runProgram> 
         <runProgram>
             <program>svcadm</program>
-            <programArguments>-v enable svc:/application/edb-xdbpubserver-XDB_SERVICE_VER:default</programArguments> 
+            <programArguments>-v enable svc:/application/edb-xdbpubserver:default</programArguments> 
             <progressText>${msg(progress.text.starting.pubservice)}</progressText>
             <ruleList>
                 <isTrue value="${component(pubserver).selected}" />
@@ -1925,15 +1925,15 @@ database=${controldb}
             </ruleList>
         </wait>
         <startWindowsService>
-            <serviceName>Subscription Service XDB_SERVICE_VER</serviceName>
-            <displayName>Subscription Service XDB_SERVICE_VER</displayName>
+            <serviceName>Subscription Service</serviceName>
+            <displayName>Subscription Service</displayName>
             <ruleList>
                 <isTrue value="${component(subserver).selected}" />                  
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </startWindowsService>
         <runProgram>
-            <program>/etc/init.d/edb-xdbsubserver-XDB_SERVICE_VER</program>
+            <program>/etc/init.d/edb-xdbsubserver</program>
             <programArguments>start &amp;</programArguments> 
             <workingDirectory>/etc/init.d</workingDirectory>
             <progressText>${msg(progress.text.starting.subservice)}</progressText>
@@ -1945,7 +1945,7 @@ database=${controldb}
         </runProgram>
         <runProgram>
             <program>svcadm</program>
-            <programArguments>-v enable svc:/application/edb-xdbsubserver-XDB_SERVICE_VER:default</programArguments> 
+            <programArguments>-v enable svc:/application/edb-xdbsubserver:default</programArguments> 
             <progressText>${msg(progress.text.starting.subservice)}</progressText>
             <ruleList>
                 <isTrue value="${component(subserver).selected}" />
@@ -1955,13 +1955,13 @@ database=${controldb}
         </runProgram> 
  
         <!-- Add description to the services -->
-        <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Publication Service XDB_SERVICE_VER" name="Description" value="${msg(pub.service.description)}" >
+        <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Publication Service" name="Description" value="${msg(pub.service.description)}" >
             <ruleList>
                 <isTrue value="${component(pubserver).selected}" />
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </registrySet>
-        <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Subscription Service XDB_SERVICE_VER" name="Description" value="${msg(sub.service.description)}" >
+        <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Subscription Service" name="Description" value="${msg(sub.service.description)}" >
             <ruleList>
                 <isTrue value="${component(subserver).selected}" />
                 <isFalse value="${extract_mode}"/>
@@ -2051,67 +2051,67 @@ database=${controldb}
             <actionList>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                    <section>xDBReplicationServer</section>
                     <key>Description</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                    <section>xDBReplicationServer</section>
                     <key>InstallationDirectory</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                    <section>xDBReplicationServer</section>
                     <key>Version</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                    <section>xDBReplicationServer</section>
                     <key>Branding</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                    <section>xDBReplicationServer</section>
                     <key>RepConsole</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                    <section>xDBReplicationServer</section>
                     <key>PubServer</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                    <section>xDBReplicationServer</section>
                     <key>SubServer</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                    <section>xDBReplicationServer</section>
                     <key>ServiceAccount</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                    <section>xDBReplicationServer</section>
                     <key>SubPort</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                    <section>xDBReplicationServer</section>
                     <key>PubPort</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>xDBReplicationServer_XDB_SERVICE_VER</section>
+                    <section>xDBReplicationServer</section>
                     <key>EnterpriseDBEmail</key>
                     <value/>
                     <ruleList>
@@ -2129,24 +2129,24 @@ database=${controldb}
         </actionGroup>
 
         <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER</key>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
         </registryDelete> 
 
         <stopWindowsService>
-            <serviceName>Publication Service XDB_SERVICE_VER</serviceName>
-            <displayName>Publication Service XDB_SERVICE_VER</displayName>
+            <serviceName>Publication Service</serviceName>
+            <displayName>Publication Service</displayName>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
         </stopWindowsService>
         <stopWindowsService>
-            <serviceName>Subscription Service XDB_SERVICE_VER</serviceName>
-            <displayName>Subscription Service XDB_SERVICE_VER</displayName>
+            <serviceName>Subscription Service</serviceName>
+            <displayName>Subscription Service</displayName>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
         </stopWindowsService>
         <runProgram>
             <program>${installdir}\scripts\ServiceWrapper.exe</program>
-            <programArguments>unregister -n "Publication Service XDB_SERVICE_VER"</programArguments>
+            <programArguments>unregister -n "Publication Service"</programArguments>
             <workingDirectory>${installdir}\scripts</workingDirectory>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -2156,7 +2156,7 @@ database=${controldb}
         </runProgram>
         <runProgram>
             <program>${installdir}\scripts\ServiceWrapper.exe</program>
-            <programArguments>unregister -n "Subscription Service XDB_SERVICE_VER"</programArguments>
+            <programArguments>unregister -n "Subscription Service"</programArguments>
             <workingDirectory>${installdir}\scripts</workingDirectory>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -2167,73 +2167,73 @@ database=${controldb}
 
 
         <runProgram>
-            <program>/etc/init.d/edb-xdbpubserver-XDB_SERVICE_VER</program>
+            <program>/etc/init.d/edb-xdbpubserver</program>
             <programArguments>stop</programArguments>
             <workingDirectory>/etc/init.d</workingDirectory>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
-                <fileExists path="/etc/init.d/edb-xdbpubserver-XDB_SERVICE_VER" />
+                <fileExists path="/etc/init.d/edb-xdbpubserver" />
                 <compareText text="${platform_name}" logic="contains" value="linux" />
             </ruleList>
         </runProgram>
         <runProgram>
-            <program>/etc/init.d/edb-xdbsubserver-XDB_SERVICE_VER</program>
+            <program>/etc/init.d/edb-xdbsubserver</program>
             <programArguments>stop</programArguments>
             <workingDirectory>/etc/init.d</workingDirectory>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
-                <fileExists path="/etc/init.d/edb-xdbsubserver-XDB_SERVICE_VER" />
+                <fileExists path="/etc/init.d/edb-xdbsubserver" />
                 <compareText text="${platform_name}" logic="contains" value="linux" />
             </ruleList>
         </runProgram>
 
         <runProgram>
             <program>launchctl</program>
-            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.xdbpubserver-XDB_SERVICE_VER.plist</programArguments>
+            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist</programArguments>
             <workingDirectory/>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
-                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.xdbpubserver-XDB_SERVICE_VER.plist" />
+                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist" />
                 <compareText text="${platform_name}" logic="equals" value="osx" />
             </ruleList>
         </runProgram>
         <runProgram>
             <program>launchctl</program>
-            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.xdbsubserver-XDB_SERVICE_VER.plist</programArguments>
+            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.xdbsubserver.plist</programArguments>
             <workingDirectory/>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
-                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.xdbsubserver-XDB_SERVICE_VER.plist" />
+                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.xdbsubserver.plist" />
                 <compareText text="${platform_name}" logic="equals" value="osx" />
             </ruleList>
         </runProgram>
-        <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.xdbpubserver-XDB_SERVICE_VER.plist" >
+        <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist" >
             <ruleList>
-                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.xdbpubserver-XDB_SERVICE_VER.plist" />
+                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.xdbpubserver.plist" />
                 <compareText text="${platform_name}" logic="equals" value="osx" />
             </ruleList>
         </deleteFile>    
-         <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.xdbsubserver-XDB_SERVICE_VER.plist" >
+         <deleteFile path="/Library/LaunchDaemons/com.edb.launchd.xdbsubserver.plist" >
             <ruleList>
-                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.xdbsubserver-XDB_SERVICE_VER.plist" />
+                <fileExists path="/Library/LaunchDaemons/com.edb.launchd.xdbsubserver.plist" />
                 <compareText text="${platform_name}" logic="equals" value="osx" />
             </ruleList>
         </deleteFile>    
  
-        <deleteFile path="/etc/init.d/edb-xdbpubserver-XDB_SERVICE_VER" >
+        <deleteFile path="/etc/init.d/edb-xdbpubserver" >
             <ruleList>
-                <fileExists path="/etc/init.d/edb-xdbpubserver-XDB_SERVICE_VER" />
+                <fileExists path="/etc/init.d/edb-xdbpubserver" />
                 <compareText text="${platform_name}" logic="contains" value="linux" />
             </ruleList>
         </deleteFile>    
  
-        <deleteFile path="/etc/init.d/edb-xdbsubserver-XDB_SERVICE_VER" >
+        <deleteFile path="/etc/init.d/edb-xdbsubserver" >
             <ruleList>
-                <fileExists path="/etc/init.d/edb-xdbsubserver-XDB_SERVICE_VER" />
+                <fileExists path="/etc/init.d/edb-xdbsubserver" />
                 <compareText text="${platform_name}" logic="contains" value="linux" />
             </ruleList>
         </deleteFile>    
@@ -2249,18 +2249,18 @@ database=${controldb}
             <actionList>
                <runProgram>
                   <program>svcadm</program>
-                  <programArguments>-v disable svc:/application/edb-xdbpubserver-XDB_SERVICE_VER:default</programArguments>
+                  <programArguments>-v disable svc:/application/edb-xdbpubserver:default</programArguments>
                    <abortOnError>0</abortOnError>
                    <showMessageOnError>0</showMessageOnError>
                </runProgram>
                <runProgram>
                   <program>svccfg</program>
-                  <programArguments>-v delete -f svc:/application/edb-xdbpubserver-XDB_SERVICE_VER:default</programArguments>
+                  <programArguments>-v delete -f svc:/application/edb-xdbpubserver:default</programArguments>
                    <abortOnError>0</abortOnError>
                    <showMessageOnError>0</showMessageOnError>
                </runProgram>
-               <deleteFile path="/lib/svc/method/edb-xdbpubserver-XDB_SERVICE_VER" />
-               <deleteFile path="/var/svc/manifest/application/edb-xdbpubserver-XDB_SERVICE_VER.xml" />
+               <deleteFile path="/lib/svc/method/edb-xdbpubserver" />
+               <deleteFile path="/var/svc/manifest/application/edb-xdbpubserver.xml" />
                <deleteFile path="/etc/edb-repl.conf" >
                   <ruleList>
                      <fileExists path="/etc/edb-repl.conf" />
@@ -2268,7 +2268,7 @@ database=${controldb}
                </deleteFile>
              </actionList>
              <ruleList>
-                <fileExists path="/lib/svc/method/edb-xdbpubserver-XDB_SERVICE_VER" />
+                <fileExists path="/lib/svc/method/edb-xdbpubserver" />
                 <compareText text="${platform_name}" logic="contains" value="solaris" />
             </ruleList>
         </actionGroup>>
@@ -2277,21 +2277,21 @@ database=${controldb}
             <actionList>
                <runProgram>
                   <program>svcadm</program>
-                  <programArguments>-v disable svc:/application/edb-xdbsubserver-XDB_SERVICE_VER:default</programArguments>
+                  <programArguments>-v disable svc:/application/edb-xdbsubserver:default</programArguments>
                    <abortOnError>0</abortOnError>
                    <showMessageOnError>0</showMessageOnError>
                </runProgram>
                <runProgram>
                   <program>svccfg</program>
-                  <programArguments>-v delete -f svc:/application/edb-xdbsubserver-XDB_SERVICE_VER:default</programArguments>
+                  <programArguments>-v delete -f svc:/application/edb-xdbsubserver:default</programArguments>
                    <abortOnError>0</abortOnError>
                    <showMessageOnError>0</showMessageOnError>
                </runProgram>
-               <deleteFile path="/lib/svc/method/edb-xdbsubserver-XDB_SERVICE_VER" />
-               <deleteFile path="/var/svc/manifest/application/edb-xdbsubserver-XDB_SERVICE_VER.xml" />
+               <deleteFile path="/lib/svc/method/edb-xdbsubserver" />
+               <deleteFile path="/var/svc/manifest/application/edb-xdbsubserver.xml" />
              </actionList>
              <ruleList>
-                <fileExists path="/lib/svc/method/edb-xdbsubserver-XDB_SERVICE_VER" />
+                <fileExists path="/lib/svc/method/edb-xdbsubserver" />
                 <compareText text="${platform_name}" logic="contains" value="solaris" />
             </ruleList>
         </actionGroup>>
