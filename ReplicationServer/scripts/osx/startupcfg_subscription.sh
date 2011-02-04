@@ -67,10 +67,10 @@ EOT
 chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.xdbsubserver.plist" || _warn "Failed to set the ownership of the launchd daemon for xdbsubserver (/Library/LaunchDaemons/com.edb.launchd.xdbsubserver.plist)"
 
 #Create directory for logs
-if [ ! -e /var/log/xdb ];
+if [ ! -e /var/log/xdb-rep ];
 then
-    mkdir -p /var/log/xdb
-    chown $SYSTEM_USER /var/log/xdb
+    mkdir -p /var/log/xdb-rep
+    chown $SYSTEM_USER /var/log/xdb-rep
 fi
 
 # Load the plist.
