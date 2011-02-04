@@ -309,7 +309,7 @@
                        <isFalse value="${installer_is_root_install}"/>
                     </ruleList>
                 </throwError>
-                <setInstallerVariable name="project.windowsSoftwareRegistryPrefix" value="${project.vendor}\${project.fullName}_PGBOUNCER_SERVICE_VER"/>
+                <setInstallerVariable name="project.windowsSoftwareRegistryPrefix" value="${project.vendor}\${project.fullName}"/>
 
                 <!-- Creates the ini file if not exits -->
                 <touchFile path="/etc/postgres-reg.ini">
@@ -326,7 +326,7 @@
                     <actionList>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>pgbouncer_PGBOUNCER_SERVICE_VER</section>
+                            <section>pgbouncer</section>
                             <key>Version</key>
                             <variable>pgbouncerVersion</variable>
                         </iniFileGet>
@@ -344,7 +344,7 @@
                 <actionGroup>
                     <actionList>
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgbouncer_PGBOUNCER_SERVICE_VER</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgbouncer</key>
                             <name>Version</name>
                             <variable>pgbouncerVersion</variable>
                         </registryGet>
@@ -378,7 +378,7 @@
                              For consistency, we renamed System_User to SystemUser -->
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>pgbouncer_PGBOUNCER_SERVICE_VER</section>
+                            <section>pgbouncer</section>
                             <key>System_User</key>
                             <variable>iSystem_User</variable>
                             <ruleList>
@@ -391,7 +391,7 @@
                         </iniFileGet>
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>pgbouncer_PGBOUNCER_SERVICE_VER</section>
+                            <section>pgbouncer</section>
                             <key>SystemUser</key>
                             <variable>iSystem_User</variable>
                             <ruleList>
@@ -415,7 +415,7 @@
                         <!-- LIN & MAC: Set the installation directory in case of re-install/upgrade -->
                         <iniFileGet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>pgbouncer_PGBOUNCER_SERVICE_VER</section>
+                            <section>pgbouncer</section>
                             <key>InstallationDirectory</key>
                             <variable>installdir</variable>
                             <ruleList>
@@ -428,7 +428,7 @@
                         </iniFileGet>
                         <!-- WIN: Set the installation directory in case of re-install/upgrade -->
                         <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgbouncer_PGBOUNCER_SERVICE_VER</key>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgbouncer</key>
                             <name>Location</name>
                             <variable>installdir</variable>
                             <ruleList>
@@ -441,8 +441,8 @@
                         </registryGet> 
                         <!-- WIN: Stop the pgbouncer service -->    
                         <stopWindowsService>
-                            <serviceName>pgbouncer-PGBOUNCER_SERVICE_VER</serviceName>
-                            <displayName>pgbouncer-PGBOUNCER_SERVICE_VER</displayName>
+                            <serviceName>pgbouncer</serviceName>
+                            <displayName>pgbouncer</displayName>
                             <abortOnError>0</abortOnError>
                             <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
                             <ruleList>
@@ -456,7 +456,7 @@
                         <!-- Mac: Stop the pgbouncer service -->    
                         <runProgram>
                             <program>launchctl</program>
-                            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgbouncer-PGBOUNCER_SERVICE_VER.plist</programArguments>
+                            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist</programArguments>
                             <abortOnError>0</abortOnError>
                             <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
                             <ruleList>
@@ -469,7 +469,7 @@
                         </runProgram>
                         <!-- Linux: Stop the pgbouncer service -->    
                         <runProgram>
-                            <program>/etc/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</program>
+                            <program>/etc/init.d/pgbouncer</program>
                             <programArguments>stop</programArguments>
                             <abortOnError>0</abortOnError>
                             <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
@@ -486,13 +486,13 @@
                             <actionList>  
                                 <runProgram>
                                     <program>svcadm</program>
-                                    <programArguments>-v disable svc:/application/pgbouncer-PGBOUNCER_SERVICE_VER:default</programArguments>
+                                    <programArguments>-v disable svc:/application/pgbouncer:default</programArguments>
                                     <abortOnError>0</abortOnError>
                                     <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
                                 </runProgram>
                                 <runProgram>
                                     <program>svccfg</program>
-                                    <programArguments>-v delete -f svc:/application/pgbouncer-PGBOUNCER_SERVICE_VER:default</programArguments>
+                                    <programArguments>-v delete -f svc:/application/pgbouncer:default</programArguments>
                                     <abortOnError>0</abortOnError>
                                     <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
                                 </runProgram>
@@ -843,7 +843,7 @@
                             <substitutionList>
                                 <substitution>
                                     <pattern>@@LOGFILE@@</pattern>
-                                    <value>/var/log/pgbouncer-PGBOUNCER_SERVICE_VER/pgbouncer.log</value>
+                                    <value>/var/log/pgbouncer/pgbouncer.log</value>
                                 </substitution>
                                 <substitution>
                                     <pattern>@@PIDFILE@@</pattern>
@@ -930,25 +930,25 @@
                     <actionList>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>pgbouncer_PGBOUNCER_SERVICE_VER</section>
+                            <section>pgbouncer</section>
                             <key>Description</key>
                             <value>${msg(install.summary)}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>pgbouncer_PGBOUNCER_SERVICE_VER</section>
+                            <section>pgbouncer</section>
                             <key>InstallationDirectory</key>
                             <value>${installdir}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>pgbouncer_PGBOUNCER_SERVICE_VER</section>
+                            <section>pgbouncer</section>
                             <key>Version</key>
                             <value>${product_version}</value>
                         </iniFileSet>
                         <iniFileSet>
                             <file>/etc/postgres-reg.ini</file>
-                            <section>pgbouncer_PGBOUNCER_SERVICE_VER</section>
+                            <section>pgbouncer</section>
                             <key>SystemUser</key>
                             <value>${system_user}</value>
                         </iniFileSet>
@@ -1001,7 +1001,7 @@
                 <!-- LINUX | MAC: Install pgbouncer service -->
                 <runProgram>
                     <program>${installdir}/installer/pgbouncer/startupcfg.sh</program>
-                    <programArguments>"${installdir}" "${system_user}" "PGBOUNCER_SERVICE_VER"</programArguments>
+                    <programArguments>"${installdir}" "${system_user}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.linux.service.error)}</customErrorMessage>
                     <ruleList>
@@ -1015,7 +1015,7 @@
                 <!-- Win : Disable pgbouncer Service if autostart is no-->
                 <runProgram>
                     <program>sc</program>
-                    <programArguments>config pgbouncer-PGBOUNCER_SERVICE_VER start= demand</programArguments>
+                    <programArguments>config pgbouncer start= demand</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                     <ruleList>
@@ -1028,13 +1028,13 @@
                     <actionList>
                         <runProgram>
                            <program>/sbin/chkconfig</program>
-                           <programArguments>pgbouncer-PGBOUNCER_SERVICE_VER off</programArguments>
+                           <programArguments>pgbouncer off</programArguments>
                            <abortOnError>0</abortOnError>
                            <showMessageOnError>0</showMessageOnError>
                         </runProgram>
                         <runProgram>
                            <program>/usr/sbin/update-rc.d</program>
-                           <programArguments>pgbouncer-PGBOUNCER_SERVICE_VER disable</programArguments>
+                           <programArguments>pgbouncer disable</programArguments>
                            <abortOnError>0</abortOnError>
                            <showMessageOnError>0</showMessageOnError>
                         </runProgram>
@@ -1047,8 +1047,8 @@
 
                 <!-- WIN: Start the pgbouncer service -->    
                 <startWindowsService>
-                    <serviceName>pgbouncer-PGBOUNCER_SERVICE_VER</serviceName>
-                    <displayName>pgbouncer-PGBOUNCER_SERVICE_VER</displayName>
+                    <serviceName>pgbouncer</serviceName>
+                    <displayName>pgbouncer</displayName>
                     <abortOnError>0</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
                     <ruleList>
@@ -1067,7 +1067,7 @@
  
                 <!-- Linux: Start the pgbouncer service -->    
                 <runProgram>
-                    <program>/etc/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</program>
+                    <program>/etc/init.d/pgbouncer</program>
                     <programArguments>start</programArguments>
                     <abortOnError>0</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
@@ -1088,7 +1088,7 @@
                 <!-- Solaris: Start the pgbouncer service -->    
                 <runProgram>
                     <program>svcadm</program>
-                    <programArguments>-v enable svc:/application/pgbouncer-PGBOUNCER_SERVICE_VER:default</programArguments>
+                    <programArguments>-v enable svc:/application/pgbouncer:default</programArguments>
                     <abortOnError>0</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
                     <ruleList>
@@ -1108,7 +1108,7 @@
                <!-- MAC: Start the pgbouncer service -->    
                 <runProgram>
                     <program>launchctl</program>
-                    <programArguments>load /Library/LaunchDaemons/com.edb.launchd.pgbouncer-PGBOUNCER_SERVICE_VER.plist</programArguments>
+                    <programArguments>load /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist</programArguments>
                     <abortOnError>0</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
                     <ruleList>
@@ -1196,7 +1196,7 @@
         <!-- MAC: Stop the pgbouncer service -->    
          <runProgram>
             <program>launchctl</program>
-            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgbouncer-PGBOUNCER_SERVICE_VER.plist</programArguments>
+            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist</programArguments>
             <abortOnError>0</abortOnError>
             <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
             <ruleList>
@@ -1209,7 +1209,7 @@
         </runProgram>
 
        <deleteFile>
-            <path>/Library/LaunchDaemons/com.edb.launchd.pgbouncer-PGBOUNCER_SERVICE_VER.plist</path>
+            <path>/Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist</path>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -1221,8 +1221,8 @@
 
         <!-- WIN: Stop the pgbouncer service -->    
         <stopWindowsService>
-            <serviceName>pgbouncer-PGBOUNCER_SERVICE_VER</serviceName>
-            <displayName>pgbouncer-PGBOUNCER_SERVICE_VER</displayName>
+            <serviceName>pgbouncer</serviceName>
+            <displayName>pgbouncer</displayName>
             <abortOnError>0</abortOnError>
             <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
             <ruleList>
@@ -1250,7 +1250,7 @@
         </runProgram>
 
         <runProgram>
-            <program>/etc/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</program>
+            <program>/etc/init.d/pgbouncer</program>
             <programArguments>stop</programArguments>
             <abortOnError>0</abortOnError>
             <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
@@ -1267,18 +1267,18 @@
             <actionList>
                 <runProgram>
                     <program>svcadm</program>
-                    <programArguments>-v disable svc:/application/pgbouncer-PGBOUNCER_SERVICE_VER:default</programArguments>
+                    <programArguments>-v disable svc:/application/pgbouncer:default</programArguments>
                     <abortOnError>0</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
                 </runProgram>
                 <runProgram>
                     <program>svccfg</program>
-                    <programArguments>-v delete -f svc:/application/pgbouncer-PGBOUNCER_SERVICE_VER:default</programArguments>
+                    <programArguments>-v delete -f svc:/application/pgbouncer:default</programArguments>
                     <abortOnError>0</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
                 </runProgram>
-                <deleteFile path="/var/svc/manifest/application/pgbouncer-PGBOUNCER_SERVICE_VER.xml" />
-                <deleteFile path="/lib/svc/method/pgbouncer-PGBOUNCER_SERVICE_VER" />
+                <deleteFile path="/var/svc/manifest/application/pgbouncer.xml" />
+                <deleteFile path="/lib/svc/method/pgbouncer" />
             </actionList> 
             <ruleList>
                 <compareText>
@@ -1291,7 +1291,7 @@
          
    
         <deleteFile>
-            <path>/etc/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</path>
+            <path>/etc/init.d/pgbouncer</path>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
@@ -1316,7 +1316,7 @@
             </ruleList>
         </deleteFile>
         <deleteFile>
-            <path>/var/log/pgbouncer-PGBOUNCER_SERVICE_VER</path>
+            <path>/var/log/pgbouncer</path>
             <ruleList>
                 <compareText>
                     <logic>does_not_equal</logic>
@@ -1340,25 +1340,25 @@
             <actionList>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgbouncer_PGBOUNCER_SERVICE_VER</section>
+                    <section>pgbouncer</section>
                     <key>Description</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgbouncer_PGBOUNCER_SERVICE_VER</section>
+                    <section>pgbouncer</section>
                     <key>InstallationDirectory</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgbouncer_PGBOUNCER_SERVICE_VER</section>
+                    <section>pgbouncer</section>
                     <key>Version</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>pgbouncer_PGBOUNCER_SERVICE_VER</section>
+                    <section>pgbouncer</section>
                     <key>SystemUser</key>
                     <value/>
                 </iniFileSet>

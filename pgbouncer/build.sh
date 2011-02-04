@@ -177,7 +177,7 @@ _postprocess_pgbouncer() {
 
     cd $WD/pgbouncer
 
-    PGBOUNCER_SERVICE_VER=`echo $PG_MAJOR_VERSION | sed 's/\.//'`
+
     # Prepare the installer XML file
     if [ -f installer.xml ];
     then
@@ -187,7 +187,6 @@ _postprocess_pgbouncer() {
     
     _replace PG_VERSION_PGBOUNCER $PG_VERSION_PGBOUNCER installer.xml || _die "Failed to set the version in the installer project file (pgbouncer/installer.xml)"
     _replace PG_BUILDNUM_PGBOUNCER $PG_BUILDNUM_PGBOUNCER installer.xml || _die "Failed to set the Build Number in the installer project file (pgbouncer/installer.xml)"
-    _replace PGBOUNCER_SERVICE_VER $PGBOUNCER_SERVICE_VER installer.xml || _die "Failed to set the service version in the installer project file (pgbouncer/installer.xml)"
    
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

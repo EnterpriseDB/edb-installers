@@ -1,15 +1,14 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 3 ]; 
+if [ $# -ne 2 ]; 
 then
-echo "Usage: $0 <Install dir> <System User> <DBSERVER_VER>"
+echo "Usage: $0 <Install dir> <System User>"
     exit 127
 fi
 
 INSTALL_DIR=$1
 SYSTEM_USER=$2
-PGBOUNCER_SERVICE_VER=$3
 
 # Error handlers
 _die() {
@@ -28,7 +27,7 @@ if [ ! -e /Library/LaunchDaemons ]; then
 fi
 
 # Write the plist file
-cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pgbouncer-$PGBOUNCER_SERVICE_VER.plist"
+cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist"
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
         "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -37,7 +36,7 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pgbouncer-$PGBOUNCER_SERVICE
 	<key>Disabled</key>
 	<false/>
         <key>Label</key>
-        <string>com.edb.launchd.pgbouncer-$PGBOUNCER_SERVICE_VER</string>
+        <string>com.edb.launchd.pgbouncer</string>
         <key>ProgramArguments</key>
         <array>
                 <string>$INSTALL_DIR/bin/pgbouncer</string>
@@ -56,11 +55,11 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pgbouncer-$PGBOUNCER_SERVICE
 </plist>
 EOT
 
-mkdir /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
-chown $SYSTEM_USER /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
+mkdir /var/log/pgbouncer
+chown $SYSTEM_USER /var/log/pgbouncer
 
 # Fixup the permissions on the launchDaemon
-chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.pgbouncer-$PGBOUNCER_SERVICE_VER.plist" || _warn "Failed to set the ownership of the launchd daemon for pgbouncer (/Library/LaunchDaemons/com.edb.launchd.pgbouncer-$PGBOUNCER_SERVICE_VER.plist)"
+chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist" || _warn "Failed to set the ownership of the launchd daemon for pgbouncer (/Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist)"
 
 echo "$0 ran to completion"
 exit $WARN

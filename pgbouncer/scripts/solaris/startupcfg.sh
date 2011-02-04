@@ -1,15 +1,14 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 3 ]; 
+if [ $# -ne 2 ]; 
 then
-echo "Usage: $0 <Installdir> <SystemUser> <DBSERVER_VER>"
+echo "Usage: $0 <Installdir> <SystemUser>"
     exit 127
 fi
 
 INSTALL_DIR=$1
 SYSTEM_USER=$2
-PGBOUNCER_SERVICE_VER=$3
 
 # Exit code
 WARN=0
@@ -26,7 +25,7 @@ _warn() {
 }
 
 # Write the startup script
-cat <<EOT > "/lib/svc/method/pgbouncer-$PGBOUNCER_SERVICE_VER"
+cat <<EOT > "/lib/svc/method/pgbouncer"
 #!/bin/bash
 
 start()
@@ -38,7 +37,7 @@ start()
        su $SYSTEM_USER -c "LD_LIBRARY_PATH=$INSTALL_DIR/lib:/usr/sfw/lib/64:$LD_LIBRARY_PATH $INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini " 
        exit 0
     else
-       echo "pgbouncer-$PGBOUNCER_SERVICE_VER already running"
+       echo "pgbouncer already running"
        exit 1
     fi
 }
@@ -49,7 +48,7 @@ stop()
 
     if [ "x\$PID" = "x" ];
     then
-        echo "pgbouncer-$PGBOUNCER_SERVICE_VER not running"
+        echo "pgbouncer not running"
         exit 2
     else
         kill \$PID
@@ -61,9 +60,9 @@ status()
 
     if [ "x\$PID" = "x" ];
     then
-        echo "pgbouncer-$PGBOUNCER_SERVICE_VER not running"
+        echo "pgbouncer not running"
     else
-        echo "pgbouncer-$PGBOUNCER_SERVICE_VER is running (PID: \$PID)"
+        echo "pgbouncer is running (PID: \$PID)"
     fi
     exit 0
 }
@@ -92,17 +91,17 @@ esac
 EOT
 
 # Fixup the permissions on the StartupItems
-chmod 0755 "/lib/svc/method/pgbouncer-$PGBOUNCER_SERVICE_VER" || _warn "Failed to set the permissions on the startup script (/lib/svc/method/pgbouncer-$PGBOUNCER_SERVICE_VER)"
+chmod 0755 "/lib/svc/method/pgbouncer" || _warn "Failed to set the permissions on the startup script (/etc/init.d/pgbouncer/)"
 
 
-cat <<EOT > "/var/svc/manifest/application/pgbouncer-$PGBOUNCER_SERVICE_VER.xml"
+cat <<EOT > "/var/svc/manifest/application/pgbouncer.xml"
 <?xml version="1.0"?>
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
 
-<service_bundle type='manifest' name='pgbouncer-$PGBOUNCER_SERVICE_VER'>
+<service_bundle type='manifest' name='pgbouncer'>
 
 <service
-        name='application/pgbouncer-$PGBOUNCER_SERVICE_VER'
+        name='application/pgbouncer'
         type='service'
         version='1'>
 
@@ -133,24 +132,24 @@ cat <<EOT > "/var/svc/manifest/application/pgbouncer-$PGBOUNCER_SERVICE_VER.xml"
         <exec_method
                 type='method'
                 name='start'
-                exec='/lib/svc/method/pgbouncer-$PGBOUNCER_SERVICE_VER start'
+                exec='/lib/svc/method/pgbouncer start'
                 timeout_seconds='60' />
         <exec_method
                 type='method'
                 name='stop'
-                exec='/lib/svc/method/pgbouncer-$PGBOUNCER_SERVICE_VER stop'
+                exec='/lib/svc/method/pgbouncer stop'
                 timeout_seconds='60' />
 
         <exec_method
                 type='method'
                 name='restart'
-                exec='/lib/svc/method/pgbouncer-$PGBOUNCER_SERVICE_VER restart'
+                exec='/lib/svc/method/pgbouncer restart'
                 timeout_seconds='60' />
 
         <exec_method
                 type='method'
                 name='status'
-                exec='/lib/svc/method/pgbouncer-$PGBOUNCER_SERVICE_VER status'
+                exec='/lib/svc/method/pgbouncer status'
                 timeout_seconds='60' />
 
         <!--
@@ -170,7 +169,7 @@ cat <<EOT > "/var/svc/manifest/application/pgbouncer-$PGBOUNCER_SERVICE_VER.xml"
         <template>
                 <common_name>
                         <loctext xml:lang='C'>
-                           PgBouncer-$PGBOUNCER_SERVICE_VER: Connection Pooler for PostgreSQL RDBMS     
+                           PgBouncer: Connection Pooler for PostgreSQL RDBMS     
                         </loctext>
                 </common_name>
         </template>
@@ -179,10 +178,10 @@ cat <<EOT > "/var/svc/manifest/application/pgbouncer-$PGBOUNCER_SERVICE_VER.xml"
 </service_bundle>
 EOT
 
-mkdir /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
-chown $SYSTEM_USER /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
+mkdir /var/log/pgbouncer
+chown $SYSTEM_USER /var/log/pgbouncer
 
-svccfg import /var/svc/manifest/application/pgbouncer-$PGBOUNCER_SERVICE_VER.xml
+svccfg import /var/svc/manifest/application/pgbouncer.xml
 
 echo "$0 ran to completion"
 exit $WARN

@@ -1,15 +1,14 @@
 #!/bin/sh
 
 # Check the command line
-if [ $# -ne 3 ]; 
+if [ $# -ne 2 ]; 
 then
-echo "Usage: $0 <Installdir> <SystemUser> <DBSERVER_VER>"
+echo "Usage: $0 <Installdir> <SystemUser>"
     exit 127
 fi
 
 INSTALL_DIR=$1
 SYSTEM_USER=$2
-PGBOUNCER_SERVICE_VER=$3
 
 # Exit code
 WARN=0
@@ -26,7 +25,7 @@ _warn() {
 }
 
 # Write the startup script
-cat <<EOT > "/etc/init.d/pgbouncer-$PGBOUNCER_SERVICE_VER"
+cat <<EOT > "/etc/init.d/pgbouncer"
 #!/bin/bash
 #
 # chkconfig: 2345 85 15
@@ -59,7 +58,7 @@ start()
        fi
        exit 0
     else
-       echo "pgbouncer-$PGBOUNCER_SERVICE_VER already running"
+       echo "pgbouncer already running"
        exit 1
     fi
 }
@@ -70,7 +69,7 @@ stop()
 
     if [ "x\$PID" = "x" ];
     then
-        echo "pgbouncer-$PGBOUNCER_SERVICE_VER not running"
+        echo "pgbouncer not running"
         exit 2
     else
         kill \$PID
@@ -82,9 +81,9 @@ status()
 
     if [ "x\$PID" = "x" ];
     then
-        echo "pgbouncer-$PGBOUNCER_SERVICE_VER not running"
+        echo "pgbouncer not running"
     else
-        echo "pgbouncer-$PGBOUNCER_SERVICE_VER is running (PID: \$PID)"
+        echo "pgbouncer is running (PID: \$PID)"
     fi
     exit 0
 }
@@ -113,10 +112,10 @@ esac
 EOT
 
 # Fixup the permissions on the StartupItems
-chmod 0755 "/etc/init.d/pgbouncer-$PGBOUNCER_SERVICE_VER" || _warn "Failed to set the permissions on the startup script (/etc/init.d/pgbouncer-$PGBOUNCER_SERVICE_VER)"
+chmod 0755 "/etc/init.d/pgbouncer" || _warn "Failed to set the permissions on the startup script (/etc/init.d/pgbouncer/)"
 
-mkdir /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
-chown $SYSTEM_USER /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
+mkdir /var/log/pgbouncer
+chown $SYSTEM_USER /var/log/pgbouncer
 
 # Configure the startup. On Redhat and friends we use chkconfig. On Debian, update-rc.d
 # These utilities aren't entirely standard, so use both from their standard locations on
@@ -124,7 +123,7 @@ chown $SYSTEM_USER /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
 CHKCONFIG=`type /sbin/chkconfig > /dev/null 2>&1 || echo fail`
 if [ ! $CHKCONFIG ];
 then
-    /sbin/chkconfig --add pgbouncer-$PGBOUNCER_SERVICE_VER
+    /sbin/chkconfig --add pgbouncer
     if [ $? -ne 0 ]; then
         _warn "Failed to configure the service startup with chkconfig"
     fi
@@ -133,7 +132,7 @@ fi
 UPDATECONFIG=`type /usr/sbin/update-rc.d > /dev/null 2>&1 || echo fail`
 if [ ! $UPDATECONFIG ];
 then
-    /usr/sbin/update-rc.d pgbouncer-$PGBOUNCER_SERVICE_VER defaults
+    /usr/sbin/update-rc.d pgbouncer defaults
     if [ $? -ne 0 ]; then
         _warn "Failed to configure the service startup with update-rc.d"
     fi
