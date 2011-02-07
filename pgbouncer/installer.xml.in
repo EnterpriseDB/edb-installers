@@ -767,10 +767,7 @@
             <isFalse value="${extract_mode}" />
           </ruleList>    
          </actionGroup> 
-  
-    </preInstallationActionList>
-    <postInstallationActionList>
-        <actionGroup>
+         <actionGroup>
             <actionList>
                <copyFile>
                    <origin>${installdir}/share/pgbouncer.ini</origin>
@@ -784,7 +781,9 @@
                    <value/>
                </compareText>
            </ruleList>
-        </actionGroup>
+        </actionGroup> 
+    </preInstallationActionList>
+    <postInstallationActionList>
 
         <!-- Do not perform the below actions in case of extract-only mode -->
         <actionGroup>
