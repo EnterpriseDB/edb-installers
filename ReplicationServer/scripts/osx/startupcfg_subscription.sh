@@ -71,6 +71,7 @@ if [ ! -e /var/log/xdb-rep ];
 then
     mkdir -p /var/log/xdb-rep
     chown $SYSTEM_USER /var/log/xdb-rep
+    chmod 777 /var/log/xdb-rep
 fi
 
 # Load the plist.
