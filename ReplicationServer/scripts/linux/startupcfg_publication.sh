@@ -119,6 +119,7 @@ if [ ! -e /var/log/xdb-rep ];
 then
     mkdir -p /var/log/xdb-rep
     chown $SYSTEM_USER /var/log/xdb-rep
+    chmod 777 /var/log/xdb-rep
 fi
 
 # Configure the startup. On Redhat and friends we use chkconfig. On Debian, update-rc.d
