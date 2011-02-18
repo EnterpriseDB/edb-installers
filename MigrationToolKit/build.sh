@@ -70,7 +70,7 @@ _prep_MigrationToolKit() {
       echo "Updating MigrationToolKit sources from the cvs..."
       if  [ x$PG_TAG_MIGRATIONTOOLKIT = x ];
       then
-          CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK cvs update -dPC
+          CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK cvs update -dPCA
       else
           CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK cvs update -r $PG_TAG_MIGRATIONTOOLKIT -dPC
       fi
