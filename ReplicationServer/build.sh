@@ -70,7 +70,7 @@ _prep_ReplicationServer() {
       echo "Updating xDB Replication Server source directory"
       if  [ x$PG_TAG_REPLICATIONSERVER = x ];
       then
-      	  CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -PdC
+      	  CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -PdCA
       else
       	  CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -r $PG_TAG_REPLICATIONSERVER -PdC
       fi
@@ -91,7 +91,7 @@ _prep_ReplicationServer() {
       echo "Updating DataValidator source directory"
       if  [ x$PG_TAG_REPLICATIONSERVER = x ];
       then
-          CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -PdC
+          CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -PdCA
       else
           CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -r $PG_TAG_REPLICATIONSERVER -PdC
       fi
