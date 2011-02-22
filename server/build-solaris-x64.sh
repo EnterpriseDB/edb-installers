@@ -356,6 +356,9 @@ EOT
     #Fix permission in the staging/solaris-x64/lib
     ssh $PG_SSH_SOLARIS_X64 "cd $PG_STAGING/lib; chmod a+r *"
 
+    #Fix permission in the staging/solaris-x64/share
+    ssh $PG_SSH_SOLARIS_X64 "cd $PG_STAGING/share/postgresql/timezone; chmod -R a+r *"
+
     # Stackbuilder
 	
     # Configure

@@ -287,6 +287,9 @@ _build_server_linux_ppc64() {
     #Fix permission in the staging/linux-ppc64/lib
     ssh $PG_SSH_LINUX_PPC64 "cd $PG_STAGING/lib; chmod a+r *"
 
+    #Fix permission in the staging/linux-ppc64/share
+    ssh $PG_SSH_LINUX_PPC64 "cd $PG_STAGING/share/postgresql/timezone; chmod -R a+r *"
+
     # Stackbuilder
 	
     # Configure

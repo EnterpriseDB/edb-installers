@@ -208,6 +208,10 @@ EOT
     mkdir -p "$WD/server/staging/osx/doc/pljava" || _die "Failed to create the pl/java doc directory"
     cp docs/* "$WD/server/staging/osx/doc/pljava/" || _die "Failed to install the pl/java documentation"
 
+
+    #Fix permission in the staging/osx/share
+    chmod -R a+r $WD/server/staging/osx/share/postgresql/timezone/*
+
     # Stackbuilder
 
     cd $WD/server/source/stackbuilder.osx

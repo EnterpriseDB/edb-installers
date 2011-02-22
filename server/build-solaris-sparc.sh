@@ -355,6 +355,9 @@ EOT
     #Fix permission in the staging/solaris-sparc/lib
     ssh $PG_SSH_SOLARIS_SPARC "cd $PG_STAGING/lib; chmod a+r *"
 
+    #Fix permission in the staging/solaris-sparc/share
+    ssh $PG_SSH_SOLARIS_SPARC "cd $PG_STAGING/share/postgresql/timezone; chmod -R a+r *"
+
     # Stackbuilder
 	
     # Configure
