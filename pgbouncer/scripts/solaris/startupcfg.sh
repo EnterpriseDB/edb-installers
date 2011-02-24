@@ -180,7 +180,7 @@ cat <<EOT > "/var/svc/manifest/application/pgbouncer-$PGBOUNCER_SERVICE_VER.xml"
 EOT
 
 mkdir /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
-chown $SYSTEM_USER /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
+chown -R $SYSTEM_USER /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
 
 svccfg import /var/svc/manifest/application/pgbouncer-$PGBOUNCER_SERVICE_VER.xml
 

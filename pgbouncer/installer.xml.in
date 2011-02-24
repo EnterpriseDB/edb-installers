@@ -1315,16 +1315,6 @@
             </ruleList>
         </deleteFile>
         <deleteFile>
-            <path>/var/log/pgbouncer-PGBOUNCER_SERVICE_VER</path>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </deleteFile>
-        <deleteFile>
             <path>/var/run/pgbouncer</path>
             <ruleList>
                 <compareText>

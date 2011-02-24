@@ -116,7 +116,7 @@ EOT
 chmod 0755 "/etc/init.d/pgbouncer-$PGBOUNCER_SERVICE_VER" || _warn "Failed to set the permissions on the startup script (/etc/init.d/pgbouncer-$PGBOUNCER_SERVICE_VER)"
 
 mkdir /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
-chown $SYSTEM_USER /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
+chown -R $SYSTEM_USER /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
 
 # Configure the startup. On Redhat and friends we use chkconfig. On Debian, update-rc.d
 # These utilities aren't entirely standard, so use both from their standard locations on
