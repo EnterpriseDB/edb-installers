@@ -83,7 +83,7 @@ PG_VERSION_SQLPROTECT=$PG_TARBALL_POSTGRESQL
 # Miscellaneous options
 
 # PostgreSQL jdbc jar version used by PostGIS
-PG_JAR_POSTGRESQL=8.4-701.jdbc3
+PG_JAR_POSTGRESQL=8.4-702.jdbc3
 
 # Dependent Packages for Postgres Plus HQ
 PPHQ_JBOSS_VERSION=4.2.3.GA
