@@ -67,20 +67,11 @@ _build_TuningWizard_windows() {
     
     cat <<EOT > "build-tuningwizard.bat"
 
-@SET VSINSTALLDIR=$PG_VSINSTALLDIR_WINDOWS
-@SET VCINSTALLDIR=$PG_VSINSTALLDIR_WINDOWS\VC
-@SET FrameworkDir=$PG_FRAMEWORKDIR_WINDOWS
-@SET FrameworkVersion=$PG_FRAMEWORKVERSION_WINDOWS
-@SET FrameworkSDKDir=$PG_FRAMEWORKSDKDIR_WINDOWS
-@set DevEnvDir=$PG_DEVENVDIR_WINDOWS
-@set INCLUDE=%VCINSTALLDIR%\ATLMFC\INCLUDE;%VCINSTALLDIR%\INCLUDE;%VCINSTALLDIR%\PlatformSDK\include;%FrameworkSDKDir%\include;%INCLUDE%
-@set LIB=%VCINSTALLDIR%\ATLMFC\LIB;%VCINSTALLDIR%\LIB;%VCINSTALLDIR%\PlatformSDK\lib;%FrameworkSDKDir%\lib;%LIB%
-@set LIBPATH=$PG_FRAMEWORKDIR_WINDOWS\$PG_FRAMEWORKVERSION_WINDOWS;%VCINSTALLDIR%\ATLMFC\LIB
+REM Setting Visual Studio Environment
+CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
 
-@SET PGBUILD=C:\pgBuild
+@SET PGBUILD=$PG_PGBUILD_WINDOWS
 @SET WXWIN=%PGBUILD%\wxWidgets
-
-@set PATH=%WXWIN%;%WXWIN%\include;%WXWIN%\lib\vc_lib;$PG_CMAKE_WINDOWS\bin;%VSINSTALLDIR%\Common7\IDE;%VCINSTALLDIR%\BIN;%VSINSTALLDIR%\Common7\Tools;%VSINSTALLDIR%\Common7\Tools\bin;%VCINSTALLDIR%\PlatformSDK\bin;%FrameworkSDKDir%\bin;$PG_FRAMEWORKDIR_WINDOWS\$PG_FRAMEWORKVERSION_WINDOWS;%VCINSTALLDIR%\VCPackages;%PATH%
 
 cd "$PG_PATH_WINDOWS"
 SET SOURCE_PATH=%CD%
@@ -91,7 +82,7 @@ unzip tuningwizard.zip
 
 cd tuningwizard.windows
 REM Configure TuningWizard
-cmake -D wxWidgets_CONFIGURATION=mswu CMakeLists.txt
+cmake -D WX_LIB_DIR=%WXWIN%\lib\vc_lib -D wxWidgets_CONFIGURATION=mswu CMakeLists.txt
 
 REM Compiling TuningWizard
 devenv TuningWizard.vcproj /build release
