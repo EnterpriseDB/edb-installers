@@ -32,8 +32,9 @@ then
 		git pull
 	    fi
 	    # Copy the installer source to proper location.
+	    C_PKG_INSTALLER_NAME=PVT_$PKG"_INSTALLER_NAME"
 	    C_PKG_INSTALLER_DIR=PVT_$PKG"_INSTALLER_DIR"
-	    cp -R pvt_packages/${!C_PKG_NAME}/${!C_PKG_INSTALLER_DIR} $WD/ || _die "Failed to copy the installer source"
+	    cp -R pvt_packages/${!C_PKG_NAME}/${!C_PKG_INSTALLER_DIR} $WD/${!C_PKG_INSTALLER_NAME} || _die "Failed to copy the installer source"
 	    #Start the build
 	    source $WD/${!C_PKG_NAME}/build.sh
 	    if [ $SKIPBUILD = 0 ];
