@@ -179,7 +179,7 @@ _postprocess_ReplicationServer_solaris_x64() {
      
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-intel || _die "Failed to build the installer"
-    mv $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-solaris-intel.bin $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-solaris-x64.bin
+    mv $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-solaris-intel.run $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-solaris-x64.run
      
     cd $WD
 }

@@ -142,7 +142,7 @@ _postprocess_pgbouncer_solaris_x64() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-intel || _die "Failed to build the installer"
 
-    mv $WD/output/pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-solaris-intel.bin  $WD/output/pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-solaris-x64.bin
+    mv $WD/output/pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-solaris-intel.run  $WD/output/pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-solaris-x64.run
     cd $WD
 }
 

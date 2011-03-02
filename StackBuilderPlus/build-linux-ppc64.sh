@@ -150,7 +150,7 @@ _postprocess_stackbuilderplus_linux_ppc64() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-ppc || _die "Failed to build the installer for linux-ppc64"
 
-    mv $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-linux-ppc.bin $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-linux-ppc64.bin 
+    mv $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-linux-ppc.run $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-linux-ppc64.run 
 
     cd $WD
 }

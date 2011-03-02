@@ -196,7 +196,7 @@ _postprocess_stackbuilderplus_solaris_x64() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-intel || _die "Failed to build the installer for solaris-x64"
-    mv $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-solaris-intel.bin  $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-solaris-x64.bin
+    mv $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-solaris-intel.run  $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-solaris-x64.run
    
     cd $WD
 }
