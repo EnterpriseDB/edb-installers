@@ -524,8 +524,8 @@ then
 fi
 
 # Check for private builds
-if [ -e pvt_build.sh ];
+if [ -e $WD/pvt_build.sh ];
 then
-    source pvt_build.sh
+    source $WD/pvt_build.sh
 fi
 
