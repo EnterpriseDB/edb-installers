@@ -69,7 +69,19 @@ validate_port $PORT
 
 if [ $? = 0 ];
 then
-    "PG_INSTALLDIR/bin/psql" -h $SERVER -p $PORT -U $USERNAME $DATABASE
+    # If there's an OS supplied version of libreadline, try to make use of it,
+    # as it's more reliable than libedit, which we link with.
+    PLL=""
+    if [ -f /lib64/libreadline.so.6 ];
+    then
+        PLL=$PLL/lib64/libreadline.so.6:
+    fi
+    if [ -f /lib/libreadline.so.6 ];
+    then
+        PLL=$PLL/lib/libreadline.so.6:
+    fi
+
+    LD_PRELOAD=$PLL "PG_INSTALLDIR/bin/psql" -h $SERVER -p $PORT -U $USERNAME $DATABASE
     RET=$?
 else
     RET=1
