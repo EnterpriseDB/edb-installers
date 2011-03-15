@@ -782,8 +782,8 @@
                 </compareText>
                 <compareText>
                     <text>${phpBBVersion}</text>
-                    <logic>does_not_equal</logic>
-                    <value/>
+                    <logic>equals</logic>
+                    <value>PG_VERSION_PHPBB-PG_BUILDNUM_PHPBB</value>
                 </compareText>
                 <compareText>
                     <text>${platform_name}</text>
@@ -807,8 +807,8 @@
                 </compareText>
                 <compareText>
                     <text>${phpBBVersion}</text>
-                    <logic>does_not_equal</logic>
-                    <value/>
+                    <logic>equals</logic>
+                    <value>PG_VERSION_PHPBB-PG_BUILDNUM_PHPBB</value>
                 </compareText>
                 <compareText>
                     <text>${platform_name}</text>
