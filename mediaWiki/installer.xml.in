@@ -1138,7 +1138,16 @@
 
         <actionGroup>
             <actionList>
-		<showInfo text="${msg(run.maintenance.info)}"/>
+                <showInfo text="${msg(run.maintenance.info)}">
+                    <ruleList>
+                       <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </showInfo>
+                <showInfo text="${msg(run.maintenance.info.windows)}">
+                    <ruleList>
+                       <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </showInfo>
             </actionList>
             <ruleList>
                 <compareText text="${mediaWikiVersion}" logic="does_not_equal" value=""/>

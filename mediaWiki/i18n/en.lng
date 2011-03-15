@@ -45,3 +45,5 @@ Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of val
 mediawiki.user.not.superuser=The user '${pguser}' does not have super-user privileges.\nPlease provide the details about the user, who has super-user privileges.
 
 run.maintenance.info=To finish the mediawiki upgrade process you need to run following steps.\n1. Add mediawiki postgres database admin user id and password in your ${apachephpinstalldir}/apache/www/mediaWiki/LocalSettings.php file. Ex: $wgDBadminuser = 'mediawikiuser'; $wgDBadminpassword = 'mediawikiuser';\n2. Run ${apachephpinstalldir}/php/bin/php ${apachephpinstalldir}/apache/www/mediaWiki/maintenance/update.php in your console.
+
+run.maintenance.info.windows=To finish the mediawiki upgrade process you need to run following steps.\n1. Add mediawiki postgres database admin user id and password in your ${apachephpinstalldir}\apache\www\mediaWiki\LocalSettings.php file. Ex: $wgDBadminuser = 'mediawikiuser'; $wgDBadminpassword = 'mediawikiuser';\n2. Run ${apachephpinstalldir}\php\php.exe ${apachephpinstalldir}\apache\www\mediaWiki\maintenance\update.php in your console.
