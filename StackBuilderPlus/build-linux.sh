@@ -100,6 +100,7 @@ _build_stackbuilderplus_linux() {
     ssh $PG_SSH_LINUX "cp /usr/lib/libfontconfig.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libfontconfig.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp /usr/lib/libpango-* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp /usr/lib/libpangoft2* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp /usr/local/lib/libuuid.so.16 $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libuuid.so.16) in staging directory (linux)"
 
    ssh $PG_SSH_LINUX "chmod a+r $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib/*" || _die "Failed to set the read permissions on the lib directory"
    ssh $PG_SSH_LINUX "chmod a+r $PG_PATH_LINUX/StackBuilderPlus/staging/linux/UpdateManager/lib/*" || _die "Failed to set the read permissions on the lib directory"
