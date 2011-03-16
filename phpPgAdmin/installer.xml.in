@@ -56,45 +56,23 @@
         <!-- Set the PG Major Version -->
         <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION"/>
         <!-- WIN: Set the pghome default value when pghome not set -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\${PGMajorVersion}"/>
-            </actionList>
+        <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\${PGMajorVersion}">
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
-        </actionGroup>
-
+        </setInstallerVariable>
         <!-- LIN & LIN64: Set the pghome default value when pghome not set -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/${PGMajorVersion}"/>
-            </actionList>
+        <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/${PGMajorVersion}">
             <ruleList>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
+                <compareText logic="contains" text="${platform_name}" value="linux"/>
             </ruleList>
-        </actionGroup>
+        </setInstallerVariable>
         <!-- MAC: Set the pghome default value when pghome not set -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/${PGMajorVersion}"/>
-            </actionList>
+        <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/${PGMajorVersion}">
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
             </ruleList>
-        </actionGroup>
+        </setInstallerVariable>
     </preShowHelpActionList>
 
     <!-- Prebuild Actions -->
@@ -108,91 +86,45 @@
      </preBuildActionList>
     <!-- Initialisation actions -->
     <initializationActionList>
-	<setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PHPPGADMIN" />
-	<!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
+        <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
-          <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
-          <text>Unknown Error</text>
-          <ruleList>
-            <platformTest type="linux-x64"/>
-            <compareText text="${originalplatform}" value="linux-x32"/>
-          </ruleList>
+            <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
+            <text>Unknown Error</text>
+            <ruleList>
+                <platformTest type="linux-x64"/>
+                <compareText text="${originalplatform}" value="linux-x32"/>
+            </ruleList>
         </throwError>
+        <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PHPPGADMIN" />
         <!-- Set the Apache Home -->
-        <setInstallerVariable name="apachehome" value="">
-            <persist>0</persist>
-        </setInstallerVariable>
-        <setInstallerVariable name="apacheport" value="8080">
-            <persist>0</persist>
-        </setInstallerVariable>
+        <setInstallerVariable name="apachehome" value="" persist="0"/>
+        <setInstallerVariable name="apacheport" value="8080" persist="0"/>
         <!-- Set the php Home -->
-        <setInstallerVariable name="phphome" value="">
-            <persist>0</persist>
-        </setInstallerVariable>
+        <setInstallerVariable name="phphome" value="" persist="0"/>
         <!-- Set the pghost varaible to localhost -->
-        <setInstallerVariable name="pghost" value="localhost">
-            <persist>0</persist>
-        </setInstallerVariable>
+        <setInstallerVariable name="pghost" value="localhost" persist="0"/>
         <!-- Set the phpPgAdmin version(if exists) -->
-        <setInstallerVariable name="phpPgAdminVersion" value="">
-            <persist>0</persist>
+        <setInstallerVariable name="phpPgAdminVersion" value="" persist="0"/>
+        <!-- Set the PG Major Version -->
+        <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION"/>
+        <!-- WIN: Set the pghome default value when pghome not set -->
+        <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\${PGMajorVersion}">
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
         </setInstallerVariable>
-        <!-- Set the default values -->
-        <setInstallerVariable name="defaultpghome" value=""/>
-        <!-- WIN: Set the default values for unattended mode -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\PG_MAJOR_VERSION"/>
-            </actionList>
+        <!-- LIN & LIN64: Set the pghome default value when pghome not set -->
+        <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/${PGMajorVersion}">
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
+                <compareText logic="contains" text="${platform_name}" value="linux"/>
             </ruleList>
-        </actionGroup>
-        <!-- LIN: Set the default values for unattended mode -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION"/>
-            </actionList>
+        </setInstallerVariable>
+        <!-- MAC: Set the pghome default value when pghome not set -->
+        <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/${PGMajorVersion}">
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
             </ruleList>
-        </actionGroup>
-        <!-- MAC : Set the    pghome default value for unattended mode -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/PG_MAJOR_VERSION"/>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
+        </setInstallerVariable>
     </initializationActionList>
     <!-- Preinstallation actions -->
     <preInstallationActionList>
