@@ -73,6 +73,10 @@ _build_ApachePhp_osx() {
     echo " Build : ApachePHP (OSX)"
     echo "*******************************************************"
 
+	OLDPATH=$PATH
+    PATH=/bin:/sbin:/usr/bin:/usr/sbin
+    export PATH
+
     # build apache
     PG_PATH_OSX=$WD
     PG_STAGING=$PG_PATH_OSX/ApachePhp/staging/osx
@@ -91,7 +95,7 @@ _build_ApachePhp_osx() {
     for ARCH in ${ARCHS}
     do
       echo "Configuring the apache source tree for ${ARCH}"
-      CFLAGS="-mmacosx-version-min=10.5 -headerpad_max_install_names -arch ${ARCH}" ./configure --prefix=$PG_STAGING/apache --with-included-apr --with-ssl=/usr --with-z=/usr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for ${ARCH}"
+      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch ${ARCH}"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -arch ${ARCH}" ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for ${ARCH}"
       ARCH_FLAGS="${ARCH_FLAGS} -arch ${ARCH}"
       for configFile in ${CONFIG_FILES}
       do
@@ -102,7 +106,7 @@ _build_ApachePhp_osx() {
     done
 
     echo "Configuring the apache source tree for Universal"
-    CFLAGS="-mmacosx-version-min=10.5 -headerpad_max_install_names ${ARCH_FLAGS}" ./configure --prefix=$PG_STAGING/apache --with-included-apr --with-ssl=/usr --with-z=/usr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache  || _die "Failed to configure apache for 32 bit Universal"
+    CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS}"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS}" ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache  || _die "Failed to configure apache for 32 bit Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     for configFile in ${CONFIG_FILES}
@@ -133,7 +137,7 @@ EOT
     _replace "#define HTTPD_ROOT \"$PG_STAGING/apache\"" "#define HTTPD_ROOT \"/Library/EnterpriseDB-ApachePhp/apache\"" include/ap_config_auto.h
 
     echo "Building apache"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" make || _die "Failed to build apache"
+    CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS}"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS}" make || _die "Failed to build apache"
     make install || _die "Failed to install apache"
 
     #Configure the httpd.conf file
@@ -159,7 +163,7 @@ EOT
     for ARCH in ${ARCHS}
     do
       echo "Configuring the php source tree for ${ARCH}"
-      CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ${ARCH}" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for ${ARCH}"
+      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch ${ARCH}"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -arch ${ARCH}" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for ${ARCH}"
       for configFile in ${CONFIG_FILES}
       do
            if [ -f "${configFile}.h" ]; then
@@ -169,7 +173,7 @@ EOT
     done
  
     echo "Configuring the php source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for Universal"
+    CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS}"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS}" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     for configFile in ${CONFIG_FILES}
@@ -196,6 +200,9 @@ EOT
       fi
     done
 
+    PATH=OLDPATH
+    export PATH
+
     echo "Building php"
     cd $PG_PATH_OSX/ApachePhp/source/php.osx
     #Remove the -L/usr/lib LDFLAG as it links to the system libxml2.
@@ -203,7 +210,7 @@ EOT
     line=`grep "EXTRA_LDFLAGS =" Makefile | sed -e 's:-L/usr/lib ::g'`
     sed -e "s:EXTRA_LDFLAGS = .*:$line:g" Makefile > /tmp/Makefile.tmp
     mv  /tmp/Makefile.tmp Makefile
-    CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" LDFLAGS="-lresolv" make -j2 || _die "Failed to build php"
+    CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS}"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS} -lresolv" make -j4 || _die "Failed to build php"
     
     install_name_tool -change "libpq.5.dylib" "$PG_PGHOME_OSX/lib/libpq.5.dylib" "$PG_PATH_OSX/ApachePhp/source/php.osx/sapi/cli/php"
 
