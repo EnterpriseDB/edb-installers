@@ -140,6 +140,9 @@ EOT
     CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS}"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS}" make || _die "Failed to build apache"
     make install || _die "Failed to install apache"
 
+    PATH=OLDPATH
+    export PATH
+
     #Configure the httpd.conf file
     _replace "$PG_STAGING/apache" "@@INSTALL_DIR@@" "$WD/ApachePhp/staging/osx/apache/conf/httpd.conf"
     _replace "Listen 80" "Listen @@PORT@@" "$WD/ApachePhp/staging/osx/apache/conf/httpd.conf"
@@ -155,7 +158,10 @@ EOT
     #Configure the apachectl script file
     _replace "\$HTTPD -k \$ARGV" "\"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/osx/apache/bin/apachectl"
     _replace "\$HTTPD -t" "\"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/osx/apache/bin/apachectl"
-    _replace "\$HTTPD \$ARGV" "\"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/osx/apache/bin/apachectl"   chmod ugo+x "$PG_STAGING/apache/bin/apachectl" 
+    _replace "\$HTTPD \$ARGV" "\"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/osx/apache/bin/apachectl"   chmod ugo+x "$PG_STAGING/apache/bin/apachectl"
+
+    PATH=/bin:/sbin:/usr/bin:/usr/sbin
+    export PATH
 
     CONFIG_FILES="acconfig main/build-defs main/php_config"
     cd $PG_PATH_OSX/ApachePhp/source/php.osx
