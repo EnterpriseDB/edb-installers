@@ -99,7 +99,6 @@ End Function
 
 ' Execute a command
 Function DoCmd(strCmd)
-    WScript.Echo "Start DoCmd(" & strCmd & ")..."
     Dim objBatchFile
     Set objBatchFile = objTempFolder.CreateTextFile(strBatchFile, True)
     objBatchFile.WriteLine "@ECHO OFF"
@@ -122,7 +121,6 @@ Function DoCmd(strCmd)
     Else
         WScript.Echo "    Output file does not exists..."
     End If
-    WScript.Echo "Ending DoCmd()..."
 End Function
 
 Sub Die(msg)

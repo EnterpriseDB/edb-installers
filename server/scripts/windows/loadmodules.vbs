@@ -35,7 +35,6 @@ strOutputFile = objTempFolder.Path & "\" & objFso.GetTempName
 ' Execute a command. Note that we use Shell.Run here to prevent spawning DOS boxes.
 ' Unfortunately that means we have to hack things about to get the command output
 Function DoCmd(strCmd)
-    WScript.Echo "Start DoCmd(" & strCmd &")..."
     Dim objBatchFile
     Set objBatchFile = objTempFolder.CreateTextFile(strBatchFile, True)
     objBatchFile.WriteLine "@ECHO OFF"
@@ -57,7 +56,6 @@ Function DoCmd(strCmd)
     Else
         WScript.Echo "    Couldn't find the output file..."
     End If
-    WScript.Echo "    End DoCmd()"
 End Function
 
 Sub Warn(msg)

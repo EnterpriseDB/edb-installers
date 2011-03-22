@@ -33,7 +33,6 @@ strOutputFile = objTempFolder.Path & "\" & objFso.GetTempName
 
 ' Execute a command
 Function DoCmd(strCmd)
-    WScript.Echo "Start DoCmd(" & strCmd & ")..."
     Dim objBatchFile
     Set objBatchFile = objTempFolder.CreateTextFile(strBatchFile, True)
     objBatchFile.WriteLine "@ECHO OFF"
@@ -50,7 +49,6 @@ Function DoCmd(strCmd)
         objOutputFile.Close
         objFso.DeleteFile strOutputFile, True
     End If
-    WScript.Echo "End DoCmd(" & strCmd & ")..."
 End Function
 
 Sub Die(msg)
