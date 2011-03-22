@@ -722,6 +722,13 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
                <fileExists path="${installdir}\scripts\launchSBPUpdateMonitor.vbs" />
             </ruleList>
         </runProgram>
+	<logMessage text="${msg(sbp.reboot.required)}">
+          <ruleList>
+            <compareText text="${platform_name}" logic="equals" value="windows"/>
+            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            <isTrue value="${project.rebootRequired}"/>
+          </ruleList>
+	</logMessage>
       </actionList>
       <ruleList>
         <isFalse value="${extract_mode}"/>

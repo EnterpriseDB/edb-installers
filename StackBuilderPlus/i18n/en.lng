@@ -45,4 +45,4 @@ progress.text.fixing.libs=Fixing libraries
 progress.text.creating.loginHook.osx=Creating login hooks
 progress.text.removing.loginHook.osx=Removing login hooks
 progress.text.removing.shortcuts=Removing menu shortcuts
-
+sbp.reboot.required=To complete the installation, you must need to restart your computer.

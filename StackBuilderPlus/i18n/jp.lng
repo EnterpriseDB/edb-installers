@@ -45,4 +45,4 @@ progress.text.fixing.libs=ライブラリを修復しています
 progress.text.creating.loginHook.osx=ログインフックを作成しています
 progress.text.removing.loginHook.osx=ログインフックを削除しています
 progress.text.removing.shortcuts=メニューショートカットを削除しています
-
+sbp.reboot.required=To complete the installation, you must need to restart your computer.
