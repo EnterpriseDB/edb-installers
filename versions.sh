@@ -48,7 +48,7 @@ PG_TAG_MIGRATIONTOOLKIT=''
 #                     Minor version is revision.build. 
 
 PG_MAJOR_VERSION=8.4
-PG_MINOR_VERSION=7.1
+PG_MINOR_VERSION=7.2
 
 # Other package versions
 PG_VERSION_APACHE=2.2.15
