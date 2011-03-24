@@ -99,7 +99,7 @@ _build_stackbuilderplus_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libfontconfig.so* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib" || _die "Failed to copy dependent library (libfontconfig.so) in staging directory (linux-x64)"
     ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libpango-* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (linux-x64)"
     ssh $PG_SSH_LINUX_X64 "cp /usr/lib64/libpangoft2* $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (linux-x64)"
-    ssh $PG_SSH_LINUX "cp /usr/local/lib/libuuid.so.16 $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libuuid.so.16) in staging directory (linux)"
+    ssh $PG_SSH_LINUX_X64 "cp /usr/local/lib/libuuid.so.16 $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib" || _die "Failed to copy dependent library (libuuid.so.16) in staging directory (linux)"
 
    ssh $PG_SSH_LINUX_X64 "chmod a+r $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib/*" || _die "Failed to set the permissions on the lib directory"
    ssh $PG_SSH_LINUX_X64 "chmod a+r $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/UpdateManager/lib/*" || _die "Failed to set the permissions on the lib directory"
