@@ -140,7 +140,7 @@ EOT
     CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS}"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS}" make || _die "Failed to build apache"
     make install || _die "Failed to install apache"
 
-    PATH=OLDPATH
+    PATH=$OLDPATH
     export PATH
 
     #Configure the httpd.conf file
@@ -206,7 +206,7 @@ EOT
       fi
     done
 
-    PATH=OLDPATH
+    PATH=$OLDPATH
     export PATH
 
     echo "Building php"
