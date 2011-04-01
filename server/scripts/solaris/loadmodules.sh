@@ -42,7 +42,7 @@ chown $OSUSERNAME:daemon /tmp/pgpass.$$ || _die "Failed to set the ownership of 
 
 # Install adminpack in the postgres database
 echo "Installing the adminpack module in the postgres database..."
-su - $OSUSERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib:/usr/sfw/lib/64  PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -U $SUPERUSERNAME -p $PORT postgres < $INSTALLDIR/share/postgresql/contrib/adminpack.sql" || _warn "Failed to install the 'adminpack' module in the 'postgres' database"
+su - $OSUSERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib:/usr/sfw/lib/64  PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -U $SUPERUSERNAME -p $PORT -c \"CREATE EXTENSION adminpack;\" postgres" || _warn "Failed to install the 'adminpack' module in the 'postgres' database"
 
 # Cleanup
 if [ -f /tmp/pgpass.$$ ];

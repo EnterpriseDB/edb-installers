@@ -65,7 +65,7 @@ End Sub
 
 ' Install adminpack in the postgres database
 WScript.Echo "Installing the adminpack module in the postgres database..."
-iRet = DoCmd("""" & strInstallDir & "\bin\psql.exe"" -p " & iPort & " -U " & strUsername & " -f """ & strInstallDir & "\share\contrib\adminpack.sql"" postgres")
+iRet = DoCmd("""" & strInstallDir & "\bin\psql.exe"" -p " & iPort & " -U " & strUsername & " -c ""CREATE EXTENSION adminpack;"" postgres")
 if iRet <> 0 Then warn "Failed to install the 'adminpack' module in the 'postgres' database"
 
 ' All done!!
