@@ -98,7 +98,7 @@
             <persist>0</persist>
         </setInstallerVariable>
         <!-- Set a temp variable -->
-        <setInstallerVariable name="previnstall" value="">
+        <setInstallerVariable name="prevconfig" value="1">
             <persist>0</persist>
         </setInstallerVariable>
         <!-- Set the default values -->
@@ -577,13 +577,13 @@
         <actionGroup>
             <actionList>
                 <setInstallerVariable>
-                    <name>previnstall</name>
-                    <value>1</value>
+                    <name>prevconfig</name>
+                    <value>0</value>
                 </setInstallerVariable>
             </actionList>
             <ruleList>
                 <fileExists>
-                    <path>${installdir}/phpBB/install/index.php</path>
+                    <path>${installdir}/phpBB/install</path>
                 </fileExists>
             </ruleList>
         </actionGroup>
@@ -767,53 +767,19 @@
                 </fileExists>
             </ruleList>
         </actionGroup>
-        <!-- LIN & MAC: Delete Install Directory if previously configured -->
+        <!-- Create a backup directory of 'install' directory, remove the original 'install' directory
+             if previously configured for the same version -->
         <actionGroup>
             <actionList>
-                <deleteFile>
-                    <path>${installdir}/phpBB/install</path>
-                </deleteFile>
+                <createBackupFile path="${installdir}/phpBB/install"/>
+                <deleteFile path="${installdir}/phpBB/install"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <text>${previnstall}</text>
-                    <logic>does_not_equal</logic>
-                    <value>1</value>
-                </compareText>
+                <isTrue value="${prevconfig}"/>
                 <compareText>
                     <text>${phpBBVersion}</text>
                     <logic>equals</logic>
                     <value>PG_VERSION_PHPBB-PG_BUILDNUM_PHPBB</value>
-                </compareText>
-                <compareText>
-                    <text>${platform_name}</text>
-                    <logic>does_not_equal</logic>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- WIN: Delete Install Directory if previously configured -->
-        <actionGroup>
-            <actionList>
-                <deleteFile>
-                    <path>${installdir}\phpBB\install</path>
-                </deleteFile>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <text>${previnstall}</text>
-                    <logic>does_not_equal</logic>
-                    <value>1</value>
-                </compareText>
-                <compareText>
-                    <text>${phpBBVersion}</text>
-                    <logic>equals</logic>
-                    <value>PG_VERSION_PHPBB-PG_BUILDNUM_PHPBB</value>
-                </compareText>
-                <compareText>
-                    <text>${platform_name}</text>
-                    <logic>equals</logic>
-                    <value>windows</value>
                 </compareText>
             </ruleList>
         </actionGroup>
