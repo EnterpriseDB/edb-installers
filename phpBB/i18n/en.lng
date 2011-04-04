@@ -48,3 +48,4 @@ server.locale.error=The PostgreSQL Server locale does not allow creation of data
 
 phpbb.user.not.superuser=The user '${pguser}' does not have super-user privileges.\nPlease provide the details about the user, who has super-user privileges.
 
+run.maintenance.info=Please finish the installation process by following steps on http://127.0.0.1:${apacheport}/phpBB/install/database_update.php in your browser.

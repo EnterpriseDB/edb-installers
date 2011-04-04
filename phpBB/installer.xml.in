@@ -1129,6 +1129,13 @@
             <path>${system_temp_directory}/instscripts</path>
         </deleteFile>
 
+        <showInfo text="${msg(run.maintenance.info)}">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <compareText text="${mediaWikiVersion}" logic="does_not_equal" value=""/>
+                <compareText text="${installer_ui}" logic="equals" value="unattended"/>
+            </ruleList>
+        </showInfo>
     </postInstallationActionList>
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
