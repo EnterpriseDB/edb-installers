@@ -72,8 +72,8 @@
     </customLanguageFileList>
     <preShowHelpActionList>
 
-        <setInstallerVariable name="defaultpubport" value="9011" />
-        <setInstallerVariable name="defaultsubport" value="9012" />
+        <setInstallerVariable name="defaultpubport" value="9051" />
+        <setInstallerVariable name="defaultsubport" value="9052" />
         <setInstallerVariable name="defaultserviceaccount" value="postgres" />
         <setInstallerVariable name="defaultdbtype" value="postgresql" />
         <setInstallerVariable name="defaultcontroldb" value="postgres" />
@@ -144,8 +144,8 @@
         <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_REPLICATIONSERVER" />
         <setInstallerVariable name="xDBReplicationServerVersion"  persist="1" value=""/>
-        <setInstallerVariable name="defaultpubport" value="9011" />
-        <setInstallerVariable name="defaultsubport" value="9012" />
+        <setInstallerVariable name="defaultpubport" value="9051" />
+        <setInstallerVariable name="defaultsubport" value="9052" />
         <setInstallerVariable name="defaultserviceaccount" value="postgres" />
         <setInstallerVariable name="defaultdbtype" value="postgresql" />
         <setInstallerVariable name="defaultcontroldb" value="postgres" />
@@ -290,7 +290,90 @@
 
     </initializationActionList>
     <preInstallationActionList>
-         
+        <actionGroup>
+          <actionList>
+            <while>
+              <actionList>
+                <!-- Get Free Port for xdb publication service. The next alternate port should be free as well -->
+                <getFreePort variable="defaultpubport" initialPort="${defaultpubport}" finalPort="65535" />
+                <mathExpression text="${defaultpubport} % 2" variable="pubport_odd" />
+                <mathExpression text="${defaultpubport} + 2" variable="offset_pubport"/>
+                <if>  
+                  <actionList>
+                    <setInstallerVariable name="defaultpubport" value="${defaultpubport}"/>
+                    <break/>
+                  </actionList>
+                  <conditionRuleList>
+                    <compareText>
+                      <logic>equals</logic>
+                      <text>${pubport_odd}</text>
+                      <value>1</value>
+                    </compareText>
+                    <portTest>
+                      <port>${offset_pubport}</port>
+                      <condition>can_bind</condition>
+                    </portTest>  
+                  </conditionRuleList>
+                  <elseActionList>
+                    <mathExpression text="${defaultpubport} + 1" variable="defaultpubport"/>
+                  </elseActionList>
+                </if> 
+              </actionList>
+              <ruleList>
+                <isTrue value="${installer_is_root_install}"/>
+              </ruleList>
+            </while>
+            <setInstallerVariable name="pubport" value="${defaultpubport}" />
+          </actionList>
+          <ruleList>
+  	    <stringTest>
+              <text>${pubport}</text>
+              <type>empty</type>
+            </stringTest>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <while>
+              <actionList>
+                <!-- Get Free Port for xdb subscription service. The next alternate port should be free as well -->
+                <getFreePort variable="defaultsubport" initialPort="${defaultsubport}" finalPort="65535" />
+                <mathExpression text="${defaultsubport} % 2" variable="subport_even" />
+                <mathExpression text="${defaultsubport} + 2" variable="offset_subport"/>
+                <if>
+                  <actionList>
+                    <setInstallerVariable name="defaultsubport" value="${defaultsubport}"/>
+                    <break/>
+                  </actionList>
+                  <conditionRuleList>
+                    <compareText>
+                      <logic>equals</logic>
+                      <text>${subport_even}</text>
+                      <value>0</value>
+                    </compareText>
+                    <portTest>
+                      <port>${offset_subport}</port>
+                      <condition>can_bind</condition>
+                    </portTest>
+                  </conditionRuleList>
+                  <elseActionList>
+                    <mathExpression text="${defaultsubport} + 1" variable="defaultsubport"/>
+                  </elseActionList>
+                </if>
+              </actionList>
+              <ruleList>
+                <isTrue value="${installer_is_root_install}"/>
+              </ruleList>
+            </while>
+            <setInstallerVariable name="subport" value="${defaultsubport}"/>
+          </actionList>
+          <ruleList>
+            <stringTest>
+              <text>${subport}</text>
+              <type>empty</type>
+            </stringTest>
+          </ruleList>
+        </actionGroup>
         <setInstallerVariable name="optionRequired" value="servicepassword" />
         <throwError text="${msg(Installer.CustomError.CommandLineOptionsNotPresent)}" >
           <ruleList>
@@ -791,23 +874,13 @@
                     </ruleList>
                 </setInstallerVariable>
  
-                <!-- Set the serviceaccount, subport, pubport values to default values
+                <!-- Set the serviceaccount value to default value
                      if nothing set on command line and its a fresh install -->
                 <setInstallerVariable name="serviceaccount" value="${defaultserviceaccount}" >
                     <ruleList>
                         <compareText logic="equals" text="${serviceaccount}" value="" />
                     </ruleList>
-                </setInstallerVariable> 
-                <setInstallerVariable name="subport" value="${defaultsubport}" >
-                    <ruleList>
-                        <compareText logic="equals" text="${subport}" value="" />
-                    </ruleList>
-                </setInstallerVariable> 
-                <setInstallerVariable name="pubport" value="${defaultpubport}" >
-                    <ruleList>
-                        <compareText logic="equals" text="${pubport}" value="" />
-                    </ruleList>
-                </setInstallerVariable> 
+                </setInstallerVariable>
                 
                 <!-- Set pghost, pguser, pgpassword, pgport and controldb
                      for unattended mode and nothing set on commandline -->
