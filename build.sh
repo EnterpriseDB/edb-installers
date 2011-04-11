@@ -506,6 +506,12 @@ then
     _postprocess_sqlprotect || exit 1
 fi
 
+# Check for private builds
+if [ -e $WD/pvt_build.sh ];
+then
+    source $WD/pvt_build.sh
+fi
+
 # Package: DevServer
 # ALWAYS BUILD THIS LAST!!
 if [ $PG_PACKAGE_DEVSERVER = 1 ];
@@ -523,9 +529,4 @@ then
     _postprocess_DevServer || exit 1
 fi
 
-# Check for private builds
-if [ -e $WD/pvt_build.sh ];
-then
-    source $WD/pvt_build.sh
-fi
 
