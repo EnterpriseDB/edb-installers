@@ -1147,6 +1147,52 @@
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
+        <actionGroup>
+          <actionList>
+             <!-- WIN : Create user, if not exists -->
+	     <runProgram>
+               <program>${installdir}\installer\xDBReplicationServer\createuser.exe</program>
+               <!-- The dot at the beginning of the arguments is the domain -->
+               <programArguments>. "${serviceaccount}" "${servicepassword.password}"</programArguments>
+               <progressText>${msg(progress.text.creating.user)}</progressText>
+               <abortOnError>0</abortOnError>
+               <showMessageOnError>0</showMessageOnError>
+             </runProgram>
+             <!-- WIN : Validate user, if not exists -->
+             <runProgram>
+                <program>${installdir}\installer\xDBReplicationServer\validateuser.exe</program>
+                <!-- The dot at the beginning of the arguments is the domain -->
+                <programArguments>. "${serviceaccount}" "${servicepassword.password}"</programArguments>
+                <progressText>${msg(progress.text.creating.user)}</progressText>
+                <abortOnError>0</abortOnError>
+                <showMessageOnError>0</showMessageOnError>
+             </runProgram>
+             <throwError>
+                <text>${msg(script.command.line.error)}</text>
+                <ruleList>
+                    <compareText logic="equals" text="${program_exit_code}" value="127"/>
+                </ruleList>
+             </throwError>
+             <throwError>
+                <text>${msg(config.servicepassword.incorrect.windows)}</text>
+                <ruleList>
+                    <compareText logic="equals" text="${program_exit_code}" value="1"/>
+                </ruleList>
+             </throwError>
+          </actionList>
+          <ruleList>
+             <isFalse value="${extract_mode}"/>
+             <compareText text="${platform_name}" logic="equals" value="windows"/>
+             <compareText text="${installer_ui}" logic="equals" value="unattended" />
+             <ruleGroup>
+                 <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                 <ruleList>
+                    <isTrue value="${component(pubserver).selected}" />
+                    <isTrue value="${component(subserver).selected}" />
+                 </ruleList>
+             </ruleGroup>
+          </ruleList>
+        </actionGroup>
     </preInstallationActionList>
     <postInstallationActionList>
 
@@ -1194,53 +1240,6 @@
         </runProgram>
 
         <actionGroup>
-          <actionList>
-             <!-- WIN : Create user, if not exists -->
-             <runProgram>
-               <program>${installdir}\installer\xDBReplicationServer\createuser.exe</program>
-               <!-- The dot at the beginning of the arguments is the domain -->
-               <programArguments>. "${serviceaccount}" "${servicepassword.password}"</programArguments>
-               <progressText>${msg(progress.text.creating.user)}</progressText>
-               <abortOnError>0</abortOnError>
-               <showMessageOnError>0</showMessageOnError>
-             </runProgram>
-             <!-- WIN : Validate user, if not exists -->
-             <runProgram>
-                <program>${installdir}\installer\xDBReplicationServer\validateuser.exe</program>
-                <!-- The dot at the beginning of the arguments is the domain -->
-                <programArguments>. "${serviceaccount}" "${servicepassword.password}"</programArguments>
-                <progressText>${msg(progress.text.creating.user)}</progressText>
-                <abortOnError>0</abortOnError>
-                <showMessageOnError>0</showMessageOnError>
-             </runProgram>
-             <throwError>
-                <text>${msg(script.command.line.error)}</text>
-                <ruleList>
-                    <compareText logic="equals" text="${program_exit_code}" value="127"/>
-                </ruleList>
-             </throwError>
-             <throwError>
-                <text>${msg(config.servicepassword.incorrect.windows)}</text>
-                <ruleList>
-                    <compareText logic="equals" text="${program_exit_code}" value="1"/>
-                </ruleList>
-             </throwError>
-          </actionList>
-          <ruleList>            
-             <isFalse value="${extract_mode}"/>
-             <compareText text="${platform_name}" logic="equals" value="windows"/>
-             <compareText text="${installer_ui}" logic="equals" value="unattended" />
-             <ruleGroup>
-                 <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                 <ruleList>
-                    <isTrue value="${component(pubserver).selected}" />
-                    <isTrue value="${component(subserver).selected}" />
-                 </ruleList>
-             </ruleGroup> 
-          </ruleList>
-       </actionGroup>
-
-       <actionGroup>
             <actionList>
                 <actionGroup>
                     <actionList>
