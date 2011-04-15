@@ -159,6 +159,7 @@ our \$config = {
     nls=>'$PG_PGBUILD_WINDOWS_X64\gettext',        # --enable-nls=<path>
     perl=>'C:\Perl-5.10',             # --with-perl
     python=>'C:\Python26',         # --with-python=<path>
+    tcl=>'C:\Tcl-8.5',            # --with-tls=<path>
     ldap=>1,                # --with-ldap
     openssl=>'$PG_PGBUILD_WINDOWS_X64\OpenSSL',     # --with-ssl=<path>
     xml=>'$PG_PGBUILD_WINDOWS_X64\libxml2',
