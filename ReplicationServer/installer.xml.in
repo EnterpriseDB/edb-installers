@@ -377,6 +377,9 @@
               </ruleList>
             </throwError>
 	  </actionList>
+          <ruleList>
+            <isTrue value="${installer_is_root_install}"/>
+          </ruleList>
 	</actionGroup>
         <actionGroup>
           <actionList>
