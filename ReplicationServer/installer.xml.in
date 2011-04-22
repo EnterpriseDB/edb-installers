@@ -2017,7 +2017,12 @@ database=${controldb}
                 <fileExists path="${system_temp_directory}/${product_fullname}" />
             </ruleList>
         </deleteFile>
-
+	<!-- Remove the instscripts folder -->
+        <deleteFile path="${system_temp_directory}/instscripts" >
+            <ruleList>
+                <fileExists path="${system_temp_directory}/instscripts" />
+            </ruleList>
+        </deleteFile>
     </postInstallationActionList>
 
     <readyToInstallActionList>

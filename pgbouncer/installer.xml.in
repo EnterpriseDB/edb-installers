@@ -1164,7 +1164,12 @@
                 <isTrue value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-
+	<!-- Remove the temporary folder -->
+        <deleteFile path="${system_temp_directory}/instscripts" >
+            <ruleList>
+                <fileExists path="${system_temp_directory}/instscripts" />
+            </ruleList>
+        </deleteFile>
     </postInstallationActionList>
 
     <!-- preUninstallation actions -->
