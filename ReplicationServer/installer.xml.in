@@ -74,13 +74,13 @@
 
         <setInstallerVariable name="defaultpubport" value="9051" />
         <setInstallerVariable name="defaultsubport" value="9052" />
-        <setInstallerVariable name="defaultserviceaccount" value="postgres" />
-        <setInstallerVariable name="defaultdbtype" value="postgresql" />
-        <setInstallerVariable name="defaultcontroldb" value="postgres" />
+        <setInstallerVariable name="defaultserviceaccount" value="enterprisedb" />
+        <setInstallerVariable name="defaultdbtype" value="enterprisedb" />
+        <setInstallerVariable name="defaultcontroldb" value="edb" />
         <setInstallerVariable name="defaultpghost" value="localhost" />
-        <setInstallerVariable name="defaultpgport" value="5432" />
-        <setInstallerVariable name="defaultpguser" value="postgres" />
-        <setInstallerVariable name="defaultpgpassword" value="postgres" />
+        <setInstallerVariable name="defaultpgport" value="5444" />
+        <setInstallerVariable name="defaultpguser" value="enterprisedb" />
+        <setInstallerVariable name="defaultpgpassword" value="enterprisedb" />
 
         <!-- MAC : Set the default installation directory -->
         <setInstallerVariable>
@@ -144,14 +144,14 @@
         <setInstallerVariable name="xDBReplicationServerVersion"  persist="1" value=""/>
         <setInstallerVariable name="defaultpubport" value="9051" />
         <setInstallerVariable name="defaultsubport" value="9052" />
-        <setInstallerVariable name="defaultserviceaccount" value="postgres" />
-        <setInstallerVariable name="defaultdbtype" value="postgresql" />
-        <setInstallerVariable name="defaultcontroldb" value="postgres" />
+        <setInstallerVariable name="defaultserviceaccount" value="enterprisedb" />
+        <setInstallerVariable name="defaultdbtype" value="enterprisedb" />
+        <setInstallerVariable name="defaultcontroldb" value="edb" />
         <setInstallerVariable name="defaultpghost" value="localhost" />
-        <setInstallerVariable name="defaultpgport" value="5432" />
-        <setInstallerVariable name="defaultpguser" value="postgres" />
-        <setInstallerVariable name="defaultpgpassword" value="postgres" />
-        <setInstallerVariable name="servicepassword" value="postgres" >
+        <setInstallerVariable name="defaultpgport" value="5444" />
+        <setInstallerVariable name="defaultpguser" value="enterprisedb" />
+        <setInstallerVariable name="defaultpgpassword" value="enterprisedb" />
+        <setInstallerVariable name="servicepassword" value="enterprisedb" >
           <ruleList>
               <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
           </ruleList>
@@ -3588,7 +3588,7 @@ database=${controldb}
                     <allowEmptyValue>1</allowEmptyValue>
                     <width>40</width>
                 </stringParameter>
-                <!-- Postgres Port(Default 5432) -->
+                <!-- Postgres Port(Default 5444) -->
                 <stringParameter>
                     <name>pgport</name>
                     <description>Port</description>
