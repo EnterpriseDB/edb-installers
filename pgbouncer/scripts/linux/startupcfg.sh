@@ -51,7 +51,7 @@ start()
     if [ "x\$PID" = "x" ];
     then
        # Service Owner should be able to start the service without root password.
-       if [ "\$USER" = "$SYSTEM_USER" ];
+       if [ "\`id -un\`" = "$SYSTEM_USER" ];
        then
            LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH $INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini 
        else
