@@ -86,20 +86,16 @@ _prep_server() {
     tar -zxvf ../../tarballs/pgadmin3-$PG_TARBALL_PGADMIN.tar.gz
 
     # pl/Java
-    if [ -e pljava-$PG_TARBALL_PLJAVA ];
-    then
-      echo "Removing existing pljava-$PG_TARBALL_PLJAVA source directory"
-      rm -rf pljava-$PG_TARBALL_PLJAVA || _die "Couldn't remove the existing pljava-$PG_TARBALL_PLJAVA source directory (source/pljava-$PG_TARBALL_PLJAVA)"
-    fi
+#    if [ -e pljava-$PG_TARBALL_PLJAVA ];
+#    then
+#      echo "Removing existing pljava-$PG_TARBALL_PLJAVA source directory"
+#      rm -rf pljava-$PG_TARBALL_PLJAVA || _die "Couldn't remove the existing pljava-$PG_TARBALL_PLJAVA source directory (source/pljava-$PG_TARBALL_PLJAVA)"
+#    fi
 
-    echo "Unpacking pljava source..."
-    tar -zxvf ../../tarballs/pljava-src-$PG_TARBALL_PLJAVA.tar.gz
-    cd pljava-$PG_TARBALL_PLJAVA 
-#    patch -p0 < ../../../tarballs/pljava-fix.patch
-#    patch -p1 < ../../../tarballs/pljava-fix2.patch
-#    patch -p1 < ../../../tarballs/pljava-fix3.patch
-#    patch -p1 < ../../../tarballs/pljava-fix4.patch
-    patch -p1 < ../../../tarballs/pljava_pg90_jdk5_jdk6.patch
+#    echo "Unpacking pljava source..."
+#    tar -zxvf ../../tarballs/pljava-src-$PG_TARBALL_PLJAVA.tar.gz
+#    cd pljava-$PG_TARBALL_PLJAVA 
+#    patch -p1 < ../../../tarballs/pljava_pg90_jdk5_jdk6.patch
 
     # Debugger
     cd $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib

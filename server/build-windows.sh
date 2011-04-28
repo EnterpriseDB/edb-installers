@@ -25,11 +25,11 @@ _prep_server_windows() {
         echo "Removing existing stackbuilder.windows source directory"
         rm -rf stackbuilder.windows  || _die "Couldn't remove the existing stackbuilder.windows source directory (source/stackbuilder.windows)"
     fi
-    if [ -e pljava.windows ];
-    then
-        echo "Removing existing pljava.windows source directory"
-        rm -rf pljava.windows  || _die "Couldn't remove the existing pljava.windows source directory (source/pljava.windows)"
-    fi
+#    if [ -e pljava.windows ];
+#    then
+#        echo "Removing existing pljava.windows source directory"
+#        rm -rf pljava.windows  || _die "Couldn't remove the existing pljava.windows source directory (source/pljava.windows)"
+#    fi
     
     # Remove any existing zip files
     if [ -f $WD/server/source/postgres.zip ];
@@ -84,10 +84,10 @@ _prep_server_windows() {
     cp -R postgresql-$PG_TARBALL_POSTGRESQL postgres.windows || _die "Failed to copy the source code (source/postgres.windows)"
     cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.windows || _die "Failed to copy the source code (source/pgadmin.windows)"
     cp -R stackbuilder stackbuilder.windows || _die "Failed to copy the source code (source/stackbuilder.windows)"
-    mkdir pljava.windows || _die "Failed to create a directory for the plJava binaries"
-    cd pljava.windows
-    tar -zxvf $WD/tarballs/pljava-i686-pc-mingw32-pg$PG_MAJOR_VERSION-$PG_TARBALL_PLJAVA.tar.gz || _die "Failed to extract the pljava binaries"    
-    tar -xvf docs.tar || _die "Failed to extract the pljava docs"
+#    mkdir pljava.windows || _die "Failed to create a directory for the plJava binaries"
+#    cd pljava.windows
+#    tar -zxvf $WD/tarballs/pljava-i686-pc-mingw32-pg$PG_MAJOR_VERSION-$PG_TARBALL_PLJAVA.tar.gz || _die "Failed to extract the pljava binaries"    
+#    tar -xvf docs.tar || _die "Failed to extract the pljava docs"
     
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/windows ];
@@ -413,13 +413,13 @@ a dependency DLL on the windows build host"
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi.sql $WD/server/staging/windows/share/contrib
      
     # Copy in the pljava binaries/docs
-    cd $WD/server/source/
-    echo "Installing pl/java"
-    cp pljava.windows/*.jar $WD/server/staging/windows/lib || _die "Failed to install the pljava jar files."
-    cp pljava.windows/*.dll $WD/server/staging/windows/lib || _die "Failed to install the pljava dll files."
-    mkdir $WD/server/staging/windows/share/pljava || _die "Failed to create a directory for the pljava SQL scripts."
-    cp pljava.windows/*.sql $WD/server/staging/windows/share/pljava || _die "Failed to install the pljava SQL scripts."
-    cp -R pljava.windows/docs $WD/server/staging/windows/doc/pljava || _die "Failed to install the pljava docs."
+#    cd $WD/server/source/
+#    echo "Installing pl/java"
+#    cp pljava.windows/*.jar $WD/server/staging/windows/lib || _die "Failed to install the pljava jar files."
+#    cp pljava.windows/*.dll $WD/server/staging/windows/lib || _die "Failed to install the pljava dll files."
+#    mkdir $WD/server/staging/windows/share/pljava || _die "Failed to create a directory for the pljava SQL scripts."
+#    cp pljava.windows/*.sql $WD/server/staging/windows/share/pljava || _die "Failed to install the pljava SQL scripts."
+#    cp -R pljava.windows/docs $WD/server/staging/windows/doc/pljava || _die "Failed to install the pljava docs."
     
     cd $WD
 }

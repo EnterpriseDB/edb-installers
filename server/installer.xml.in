@@ -4532,8 +4532,8 @@ REM The script sets environment variables helpful for PostgreSQL
                             </ruleList>
                         </startMenuShortcut>
 
-                        <!-- PL Java users guild -->
-                        <startMenuLinkShortcut>
+                        <!-- PL Java users guide -->
+                        <!-- <startMenuLinkShortcut>
                             <name>PL Java users guide</name>
                             <runInTerminal>0</runInTerminal>
                             <url>file://${installdir}/doc/pljava/userguide.html</url>
@@ -4542,10 +4542,10 @@ REM The script sets environment variables helpful for PostgreSQL
                                 <isTrue value="${create_shortcuts}" />
                                 <isFalse value="${win64_platform}" />
                             </ruleList>
-                        </startMenuLinkShortcut>
+                        </startMenuLinkShortcut> -->
 
                         <!-- PL Java README -->
-                        <startMenuLinkShortcut>
+                        <!-- <startMenuLinkShortcut>
                             <name>PL Java README</name>
                             <runInTerminal>0</runInTerminal>
                             <url>file://${installdir}/doc/pljava/readme.html</url>
@@ -4554,7 +4554,7 @@ REM The script sets environment variables helpful for PostgreSQL
                                 <isTrue value="${create_shortcuts}" />
                                 <isFalse value="${win64_platform}" />
                             </ruleList>
-                        </startMenuLinkShortcut>
+                        </startMenuLinkShortcut> -->
 
 
                         <!-- TODO: Rest of the docs -->
