@@ -99,9 +99,9 @@ then
           "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION.desktop" 
+          "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION.desktop"
+#          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION.desktop" \
+#          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION.desktop" 
 
    "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
           "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
@@ -144,8 +144,8 @@ _fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION_STR.deskt
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION_STR.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION_STR.desktop"
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION_STR.desktop"
+# _fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION_STR.desktop"
+# _fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-psql-$VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION_STR.desktop"
@@ -180,9 +180,9 @@ fi
           "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION_STR.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION_STR.desktop" \
           "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION_STR.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION_STR.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION_STR.desktop" \
-          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION_STR.desktop" || _warn "Failed to create the documentation menu"
+          "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION_STR.desktop" || _warn "Failed to create the documentation menu"
+#          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION_STR.desktop" \
+#          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION_STR.desktop" || _warn "Failed to create the documentation menu"
 
 #Ubuntu 10.04 and greater require menu cache update
 
