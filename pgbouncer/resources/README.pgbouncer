@@ -208,7 +208,7 @@ section of the configuration file:
     listen_addr = * 
     listen_port = 6432 
     auth_type = md5 
-    auth_file = /opt/PostgresPlus/8.4SS/pgbouncer/etc/userlist.txt 
+    auth_file = /opt/PostgresPlus/9.0SS/pgbouncer/etc/userlist.txt 
     admin_users = postgres 
     pool_mode = session 
 
