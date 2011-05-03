@@ -176,6 +176,13 @@ _postprocess_ReplicationServer_solaris_sparc() {
     
     # Copy in installation xdg Files
     cp -R $WD/scripts/xdg/xdg* staging/solaris-sparc/installer/xdg || _die "Failed to copy the xdg files "
+
+     # copy edb-commons.jar to repl-mtk
+    mkdir $WD/ReplicationServer/staging/solaris-sparc/repconsole/lib/repl-mtk || _die "Failed to create directory $WD/ReplicationServer/staging/solaris-sparc/repconsole/lib/repl-mtk"
+    mv $WD/ReplicationServer/staging/solaris-sparc/repconsole/lib/edb-commons.jar $WD/ReplicationServer/staging/solaris-sparc/repconsole/lib/repl-mtk || _die "Failed to copy edb-commons.jar"
+    mv $WD/ReplicationServer/staging/solaris-sparc/repserver/lib/edb-commons.jar $WD/ReplicationServer/staging/solaris-sparc/repserver/lib/repl-mtk || _die "Failed to copy edb-commons.jar"
+    chmod +r $WD/ReplicationServer/staging/solaris-sparc/repconsole/lib/repl-mtk/* || _die "Failed to set permissions on directory $WD/ReplicationServer/staging/solaris-sparc/repconsole/lib/repl-mtk"
+    chmod +r $WD/ReplicationServer/staging/solaris-sparc/repserver/lib/repl-mtk/* || _die "Failed to set permissions on directory $WD/ReplicationServer/staging/solaris-sparc/repserver/lib/repl-mtk"
      
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-sparc || _die "Failed to build the installer"

@@ -144,10 +144,17 @@ _postprocess_ReplicationServer_linux() {
     cp resources/pg-postgresql.png staging/linux/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy the menu pick images (resources/pg-postgresql.png)"
 
     mkdir -p staging/linux/installer/xdg || _die "Failed to create a directory for the menu pick xdg files"
-    
+
     # Copy in installation xdg Files
     cp -R $WD/scripts/xdg/xdg* staging/linux/installer/xdg || _die "Failed to copy the xdg files "
-     
+ 
+    # copy edb-commons.jar to repl-mtk
+    mkdir $WD/ReplicationServer/staging/linux/repconsole/lib/repl-mtk || _die "Failed to create directory $WD/ReplicationServer/staging/linux/repconsole/lib/repl-mtk"
+    mv $WD/ReplicationServer/staging/linux/repconsole/lib/edb-commons.jar $WD/ReplicationServer/staging/linux/repconsole/lib/repl-mtk || _die "Failed to copy edb-commons.jar"
+    mv $WD/ReplicationServer/staging/linux/repserver/lib/edb-commons.jar $WD/ReplicationServer/staging/linux/repserver/lib/repl-mtk || _die "Failed to copy edb-commons.jar"
+    chmod +r $WD/ReplicationServer/staging/linux/repconsole/lib/repl-mtk/* || _die "Failed to set permissions on directory $WD/ReplicationServer/staging/linux/repconsole/lib/repl-mtk"
+    chmod +r $WD/ReplicationServer/staging/linux/repserver/lib/repl-mtk/* || _die "Failed to set permissions on directory $WD/ReplicationServer/staging/linux/repserver/lib/repl-mtk"
+
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
 

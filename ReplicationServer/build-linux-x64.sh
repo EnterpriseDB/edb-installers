@@ -149,6 +149,13 @@ _postprocess_ReplicationServer_linux_x64() {
     
     # Copy in installation xdg Files
     cp -R $WD/scripts/xdg/xdg* staging/linux-x64/installer/xdg || _die "Failed to copy the xdg files "
+
+     # copy edb-commons.jar to repl-mtk
+    mkdir $WD/ReplicationServer/staging/linux-x64/repconsole/lib/repl-mtk || _die "Failed to create directory $WD/ReplicationServer/staging/linux-x64/repconsole/lib/repl-mtk"
+    mv $WD/ReplicationServer/staging/linux-x64/repconsole/lib/edb-commons.jar $WD/ReplicationServer/staging/linux-x64/repconsole/lib/repl-mtk || _die "Failed to copy edb-commons.jar"
+    mv $WD/ReplicationServer/staging/linux-x64/repserver/lib/edb-commons.jar $WD/ReplicationServer/staging/linux-x64/repserver/lib/repl-mtk || _die "Failed to copy edb-commons.jar"
+    chmod +r $WD/ReplicationServer/staging/linux-x64/repconsole/lib/repl-mtk/* || _die "Failed to set permissions on directory $WD/ReplicationServer/staging/linux-x64/repconsole/lib/repl-mtk"
+    chmod +r $WD/ReplicationServer/staging/linux-x64/repserver/lib/repl-mtk/* || _die "Failed to set permissions on directory $WD/ReplicationServer/staging/linux-x64/repserver/lib/repl-mtk"
      
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"

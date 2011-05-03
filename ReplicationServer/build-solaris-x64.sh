@@ -176,7 +176,14 @@ _postprocess_ReplicationServer_solaris_x64() {
     
     # Copy in installation xdg Files
     cp -R $WD/scripts/xdg/xdg* staging/solaris-x64/installer/xdg || _die "Failed to copy the xdg files "
-     
+
+    # copy edb-commons.jar to repl-mtk
+    mkdir $WD/ReplicationServer/staging/solaris-x64/repconsole/lib/repl-mtk || _die "Failed to create directory $WD/ReplicationServer/staging/solaris-x64/repconsole/lib/repl-mtk"
+    mv $WD/ReplicationServer/staging/solaris-x64/repconsole/lib/edb-commons.jar $WD/ReplicationServer/staging/solaris-x64/repconsole/lib/repl-mtk || _die "Failed to copy edb-commons.jar"
+    mv $WD/ReplicationServer/staging/solaris-x64/repserver/lib/edb-commons.jar $WD/ReplicationServer/staging/solaris-x64/repserver/lib/repl-mtk || _die "Failed to copy edb-commons.jar"
+    chmod +r $WD/ReplicationServer/staging/solaris-x64/repconsole/lib/repl-mtk/* || _die "Failed to set permissions on directory $WD/ReplicationServer/staging/solaris-x64/repconsole/lib/repl-mtk"
+    chmod +r $WD/ReplicationServer/staging/solaris-x64/repserver/lib/repl-mtk/* || _die "Failed to set permissions on directory $WD/ReplicationServer/staging/solaris-x64/repserver/lib/repl-mtk"
+ 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-intel || _die "Failed to build the installer"
     mv $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-solaris-intel.run $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-solaris-x64.run

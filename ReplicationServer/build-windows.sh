@@ -270,7 +270,14 @@ _postprocess_ReplicationServer_windows() {
     # Copy in the menu pick images
     mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.ico staging/windows/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
-     
+    
+    # copy edb-commons.jar to repl-mtk
+    mkdir $WD/ReplicationServer/staging/windows/repconsole/lib/repl-mtk || _die "Failed to create directory $WD/ReplicationServer/staging/windows/repconsole/lib/repl-mtk"
+    mv $WD/ReplicationServer/staging/windows/repconsole/lib/edb-commons.jar $WD/ReplicationServer/staging/windows/repconsole/lib/repl-mtk || _die "Failed to copy edb-commons.jar"
+    mv $WD/ReplicationServer/staging/windows/repserver/lib/edb-commons.jar $WD/ReplicationServer/staging/windows/repserver/lib/repl-mtk || _die "Failed to copy edb-commons.jar"
+    chmod +r $WD/ReplicationServer/staging/windows/repconsole/lib/repl-mtk/* || _die "Failed to set permissions on directory $WD/ReplicationServer/staging/windows/repconsole/lib/repl-mtk"
+    chmod +r $WD/ReplicationServer/staging/windows/repserver/lib/repl-mtk/* || _die "Failed to set permissions on directory $WD/ReplicationServer/staging/windows/repserver/lib/repl-mtk"
+ 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 

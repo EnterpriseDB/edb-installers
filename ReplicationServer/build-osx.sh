@@ -136,6 +136,13 @@ _postprocess_ReplicationServer_osx() {
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
+     # copy edb-commons.jar to repl-mtk
+    mkdir $WD/ReplicationServer/staging/osx/repconsole/lib/repl-mtk || _die "Failed to create directory $WD/ReplicationServer/staging/osx/repconsole/lib/repl-mtk"
+    mv $WD/ReplicationServer/staging/osx/repconsole/lib/edb-commons.jar $WD/ReplicationServer/staging/osx/repconsole/lib/repl-mtk || _die "Failed to copy edb-commons.jar"
+    mv $WD/ReplicationServer/staging/osx/repserver/lib/edb-commons.jar $WD/ReplicationServer/staging/osx/repserver/lib/repl-mtk || _die "Failed to copy edb-commons.jar"
+    chmod +r $WD/ReplicationServer/staging/osx/repconsole/lib/repl-mtk/* || _die "Failed to set permissions on directory $WD/ReplicationServer/staging/osx/repconsole/lib/repl-mtk"
+    chmod +r $WD/ReplicationServer/staging/osx/repserver/lib/repl-mtk/* || _die "Failed to set permissions on directory $WD/ReplicationServer/staging/osx/repserver/lib/repl-mtk"
+
     if [ -f installer_1.xml ]; then
         rm -f installer_1.xml
     fi
