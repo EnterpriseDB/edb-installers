@@ -285,10 +285,27 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
-
+        <actionGroup>
+          <actionList>
+            <iniFileGet file="/etc/postgres-reg.ini" section="xDBReplicationServer_XDB_SERVICE_VER" key="PubServer" variable="IsPubServerUpgrade"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="xDBReplicationServer_XDB_SERVICE_VER" key="SubServer" variable="IsSubServerUpgrade"/>
+          </actionList>
+	   <ruleList>
+             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+           </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER" name="PubServer" variable="IsPubServerUpgrade"/>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER" name="SubServer" variable="IsSubServerUpgrade"/>            
+          </actionList>
+          <ruleList> 
+	    <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
     </initializationActionList>
     <preInstallationActionList>
-	<actionGroup>
+       <actionGroup>
 	  <actionList>
 	    <throwError>
               <text>${msg(pubport.port.error)}</text>
@@ -304,6 +321,7 @@
                 <ruleGroup>
                   <ruleList>
             	    <stringTest text="${pubport}" type="not_empty"/>
+		    <isFalse value="${IsPubServerUpgrade}" />
                   </ruleList>
                 </ruleGroup>
               </ruleList>
@@ -322,6 +340,7 @@
                 <ruleGroup>
                   <ruleList>
                     <stringTest text="${subport}" type="not_empty"/>
+  		    <isFalse value="${IsSubServerUpgrade}" />
                   </ruleList>
                 </ruleGroup>
               </ruleList>
@@ -329,6 +348,7 @@
             <throwError>
               <text>${msg(port.bind.error)}</text>
               <ruleList>
+                <isFalse value="${IsPubServerUpgrade}" />
                 <stringTest text="${pubport}" type="not_empty"/>
                 <portTest>
                   <port>${pubport}</port>
@@ -338,12 +358,14 @@
             </throwError>
             <mathExpression text="${pubport} + 2" variable="offset_pubport">
               <ruleList>
+		<isFalse value="${IsPubServerUpgrade}" />
                 <stringTest text="${pubport}" type="not_empty"/>
               </ruleList>
             </mathExpression>
             <throwError>
               <text>${msg(port.offset.bind.error)}</text>
               <ruleList>
+                <isFalse value="${IsPubServerUpgrade}" />
                 <stringTest text="${pubport}" type="not_empty"/>
                 <portTest>
                   <port>${offset_pubport}</port>
@@ -354,6 +376,7 @@
             <throwError>
               <text>${msg(port.bind.error)}</text>
               <ruleList>
+                <isFalse value="${IsSubServerUpgrade}" />
                 <stringTest text="${subport}" type="not_empty"/>
                 <portTest>
                   <port>${subport}</port>
@@ -363,12 +386,14 @@
             </throwError>
             <mathExpression text="${subport} + 2" variable="offset_subport">
               <ruleList>
+                <isFalse value="${IsSubServerUpgrade}" />
                 <stringTest text="${subport}" type="not_empty"/>
               </ruleList>
             </mathExpression>
             <throwError>
               <text>${msg(port.offset.bind.error)}</text>
               <ruleList>
+		<isFalse value="${IsSubServerUpgrade}" />
                 <stringTest text="${subport}" type="not_empty"/>
                 <portTest>
                   <port>${offset_subport}</port>
