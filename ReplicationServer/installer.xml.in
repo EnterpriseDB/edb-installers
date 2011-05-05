@@ -292,6 +292,7 @@
           </actionList>
 	   <ruleList>
              <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	     <isTrue value="${installer_is_root_install}"/>
            </ruleList>
         </actionGroup>
         <actionGroup>
@@ -301,6 +302,7 @@
           </actionList>
           <ruleList> 
 	    <compareText logic="equals" text="${platform_name}" value="windows"/>
+	    <isTrue value="${installer_is_root_install}"/>
           </ruleList>
         </actionGroup>
     </initializationActionList>
