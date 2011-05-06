@@ -511,6 +511,12 @@ then
     _postprocess_plpgsqlo || exit 1
 fi
 
+# Check for private builds
+if [ -e $WD/pvt_build.sh ];
+then
+    source $WD/pvt_build.sh
+fi
+
 # Package: DevServer
 # ALWAYS BUILD THIS LAST!!
 if [ $PG_PACKAGE_DEVSERVER = 1 ];
