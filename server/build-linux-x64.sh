@@ -201,6 +201,7 @@ _build_server_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libtermcap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libncurses.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
@@ -215,6 +216,40 @@ _build_server_linux_x64() {
     _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libtermcap.so"  
     _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libxml2.so"  
     _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libxslt.so"  
+
+    # Hack for bypassing dependency on the deprecated libtermcap
+    # As libnucurses is API compatible with the termcap so we copy libtermcap and then just
+    # create a symlink libtermcap.so pointing to libncurses.
+    cd $WD/server/staging/linux-x64/lib
+
+    termcap_lib=`ls libtermcap*`
+    rm -f $termcap_lib
+    ln -s libncurses.so $termcap_lib
+
+    # Copying psql to psql.bin and the creating a caller script psql
+    # which will set the LD_PRELOAD to libreadline if found on the system.
+    cd $WD/server/staging/linux-x64/bin
+    mv psql psql.bin
+    cat <<EOT > psql
+#!/bin/bash
+
+# If there's an OS supplied version of libreadline, try to make use of it,
+# as it's more reliable than libedit, which we link with.
+PLL=""
+if [ -f /lib64/libreadline.so.6 ];
+then
+    PLL=\$PLL/lib64/libreadline.so.6:
+fi
+if [ -f /lib/libreadline.so.6 ];
+then
+    PLL=\$PLL/lib/libreadline.so.6:fi
+# Get the PG bin directory path relative to psql caller script.
+PG_BIN_PATH=\`echo \$0 | sed 's:\(.*/\).*:\1:'\`        
+
+LD_PRELOAD=\$PLL "\$PG_BIN_PATH/./psql.bin" \$*
+EOT
+    chmod +x psql || _die "Failed to grant execute permission to psql script"
+
 
 	
     # Now build pgAdmin
