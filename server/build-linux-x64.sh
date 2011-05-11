@@ -246,7 +246,7 @@ then
 # Get the PG bin directory path relative to psql caller script.
 PG_BIN_PATH=\`echo \$0 | sed 's:\(.*/\).*:\1:'\`        
 
-LD_PRELOAD=\$PLL "\$PG_BIN_PATH/./psql.bin" \$*
+LD_PRELOAD=\$PLL "\$PG_BIN_PATH/./psql.bin" "\$@"
 EOT
     chmod +x psql || _die "Failed to grant execute permission to psql script"
 
