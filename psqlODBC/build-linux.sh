@@ -153,6 +153,7 @@ _build_psqlODBC_linux() {
     _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libkrb5.so"  
     _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libk5crypto.so"  
 
+    chmod a+rx $PG_STAGING/lib/*.so* || _die "Failed to change mode of all the libraries"
     
 }
 
