@@ -148,17 +148,21 @@ extract_file()
     fi
 }
 
-# Sign a Win32 package
+# Sign a Win32 package/binaries
 win32_sign()
 {
     FILENAME=$1
+    FILEPATH=$2
+	if [ x"$FILEPATH" == x"" ]; then
+        FILEPATH=$WD/output/
+	fi
     NOT_SIGNED=1
     COUNT=0
 
     if [ "$PG_SIGNTOOL_WINDOWS" != "" ];
     then
-        echo "Signing $FILENAME..."
-        scp $WD/output/$FILENAME $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the installer to the windows host for signing ($FILENAME)"
+        echo "Signing $FILEPATH/$FILENAME..."
+        scp $FILEPATH/$FILENAME $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the executable to the windows host for signing ($FILEPATH/$FILENAME)"
 
         while [ $NOT_SIGNED == 1 ]; do
             # We will stop trying, if the count is more than 3
@@ -171,9 +175,9 @@ win32_sign()
             ssh $PG_SSH_WINDOWS "cmd /c \"$PG_SIGNTOOL_WINDOWS\" sign /a /t http://tsa.starfieldtech.com $PG_PATH_WINDOWS/$FILENAME" || NOT_SIGNED=1
             COUNT=`expr $COUNT + 1`
         done
-        scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/$FILENAME $WD/output/$FILENAME || _die "Failed to copy the installer from the windows host after signing ($FILENAME)"
-        echo "Removing the signed installer ($FILENAME) from the windows VM..."
-        ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; rm -f $FILENAME" || _die "Failed to remove the signed installer ($FILENAME) on the windows host"
+        scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/$FILENAME $FILEPATH/$FILENAME || _die "Failed to copy the executable from the windows host after signing ($FILENAME)"
+        echo "Removing the signed executable ($FILENAME) from the windows VM..."
+        ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; rm -f $FILENAME" || _die "Failed to remove the signed executable ($FILENAME) on the windows host"
     fi
 }
 
