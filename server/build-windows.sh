@@ -382,6 +382,9 @@ EOT
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output.zip $WD/server/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output.zip)"
     unzip $WD/server/staging/windows/output.zip -d $WD/server/staging/windows/ || _die "Failed to unpack the built source tree ($WD/staging/windows/output.zip)"
     rm $WD/server/staging/windows/output.zip
+
+	# sign stackbuilder
+	win32_sign "stackbuilder.exe" "$WD/server/staging/windows/StackBuilder/bin"
 	
 	# Install the PostgreSQL docs
 	mkdir -p $WD/server/staging/windows/doc/postgresql/html || _die "Failed to create the doc directory"
