@@ -166,6 +166,8 @@ EOT
     unzip sbp_output.zip
     rm -f sbp_output.zip
 
+    win32_sign "stackbuilderplus.exe" "$WD/StackBuilderPlus/staging/windows/bin"
+
 }
 
 
