@@ -88,7 +88,7 @@ _build_stackbuilderplus_linux() {
     ssh $PG_SSH_LINUX "cp /usr/lib/libpng12.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libpng12.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp /lib/libssl.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libssl.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp /lib/libcrypto.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libcrypto.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp /usr/lib/libexpat.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libexpat.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp /lib/libexpat.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libexpat.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp /usr/lib/libgssapi_krb5.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libgssapi_krb5.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp /usr/lib/libkrb5.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libkrb5.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp /lib/libcom_err.so* $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib" || _die "Failed to copy dependent library (libcom_err.so) in staging directory (linux)"
