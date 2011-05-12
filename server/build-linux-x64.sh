@@ -242,7 +242,8 @@ then
 fi
 if [ -f /lib/libreadline.so.6 ];
 then
-    PLL=\$PLL/lib/libreadline.so.6:fi
+    PLL=\$PLL/lib/libreadline.so.6:
+fi
 # Get the PG bin directory path relative to psql caller script.
 PG_BIN_PATH=\`echo \$0 | sed 's:\(.*/\).*:\1:'\`        
 
