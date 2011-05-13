@@ -52,14 +52,15 @@ _prep_pgbouncer_linux() {
 
 _build_pgbouncer_linux() {
 
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; LDFLAGS="-Wl,-rpath,$PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/lib" ./configure --prefix=$PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer --with-libevent=/usr/local" || _die "Failed to configure pgbouncer"
+    mkdir -p $WD/pgbouncer/staging/linux/instscripts || _die "Failed to create the instscripts directory"
+    mkdir -p $WD/pgbouncer/staging/linux/pgbouncer/lib || _die "Failed to create the pgbouncer lib directory"
+ 
+   ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; LDFLAGS="-Wl,-rpath,$PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/lib" ./configure --prefix=$PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer --with-libevent=/usr/local" || _die "Failed to configure pgbouncer"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; make" || _die "Failed to build pgbouncer"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; make install" || _die "Failed to install pgbouncer"
 
     ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/share/doc/pgbouncer/pgbouncer.ini $PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/share" || _die "Failed to copy pgbouncer ini to share directory"
 
-    mkdir -p $WD/pgbouncer/staging/linux/instscripts || _die "Failed to create the instscripts directory"
-    mkdir -p $WD/pgbouncer/staging/linux/pgbouncer/lib || _die "Failed to create the pgbouncer lib directory"
     PG_LIBEVENT_MAJOR_VERSION=`echo $PG_TARBALL_LIBEVENT | cut -f1,2 '.'`  
   
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
