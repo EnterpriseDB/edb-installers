@@ -401,7 +401,7 @@ EOT
     rm $WD/server/staging/windows/output.zip
 
 	# sign stackbuilder
-	win32_sign "stackbuilder.exe" "$WD/server/staging/windows/StackBuilder/bin"
+	win32_sign "stackbuilder.exe" "$WD/server/staging/windows/bin"
 	
 	# Install the PostgreSQL docs
 	mkdir -p $WD/server/staging/windows/doc/postgresql/html || _die "Failed to create the doc directory"
