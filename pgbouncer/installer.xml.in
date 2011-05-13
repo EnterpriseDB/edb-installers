@@ -444,7 +444,7 @@
                             <serviceName>pgbouncer-PGBOUNCER_SERVICE_VER</serviceName>
                             <displayName>pgbouncer-PGBOUNCER_SERVICE_VER</displayName>
                             <abortOnError>0</abortOnError>
-                            <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+                            <showMessageOnError>0</showMessageOnError>
                             <ruleList>
                                 <compareText>
                                     <logic>equals</logic>
@@ -458,7 +458,7 @@
                             <program>launchctl</program>
                             <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgbouncer-PGBOUNCER_SERVICE_VER.plist</programArguments>
                             <abortOnError>0</abortOnError>
-                            <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+                            <showMessageOnError>0</showMessageOnError>
                             <ruleList>
                                 <compareText>
                                     <logic>equals</logic>
@@ -472,7 +472,7 @@
                             <program>/etc/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</program>
                             <programArguments>stop</programArguments>
                             <abortOnError>0</abortOnError>
-                            <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+                            <showMessageOnError>0</showMessageOnError>
                             <ruleList>
                                 <compareText>
                                     <logic>contains</logic>
