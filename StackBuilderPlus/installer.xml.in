@@ -34,7 +34,8 @@
   <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
   <allowWindowResize>1</allowWindowResize>
   <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
-
+  <defaultUnixGroup>daemon</defaultUnixGroup>
+  <defaultUnixOwner>root</defaultUnixOwner>
   <!-- Images -->
   <disableSplashScreen>1</disableSplashScreen>
   <leftImage>../resources/pg-side.png</leftImage>
@@ -437,7 +438,6 @@
 
   </preInstallationActionList>
   <postInstallationActionList>
-
     <!-- Do not perform the below actions in case of extract-only mode -->
     <actionGroup>
       <actionList>
@@ -760,6 +760,22 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
         <isTrue value="${extract_mode}"/>
       </ruleList>
     </actionGroup>
+    <!-- Change group/owner -->
+    <changeOwnerAndGroup>
+      <files>${installdir}/scripts/*</files>
+      <group>daemon</group>
+      <owner>root</owner>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
+    </changeOwnerAndGroup>
+    <changeOwnerAndGroup files="${installdir}/installer/StackBuilderPlus/*" group="daemon" owner="root">
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
+    </changeOwnerAndGroup>
   </postInstallationActionList>
 
   <!-- preUninstallation actions -->

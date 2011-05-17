@@ -34,7 +34,8 @@
     <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
     <allowWindowResize>1</allowWindowResize>
     <licenseFile encoding="utf-8">resources/licence.txt</licenseFile>
-    
+    <defaultUnixGroup>daemon</defaultUnixGroup>
+    <defaultUnixOwner>root</defaultUnixOwner>    
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
     <leftImage>../resources/pg-side.png</leftImage>

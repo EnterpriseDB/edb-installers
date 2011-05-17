@@ -31,7 +31,8 @@
     <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
     <allowWindowResize>1</allowWindowResize>
     <windowsSoftwareRegistryPrefix/>
-
+    <defaultUnixGroup>daemon</defaultUnixGroup>
+    <defaultUnixOwner>root</defaultUnixOwner>
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
     <leftImage>../resources/pg-side.png</leftImage>
@@ -784,7 +785,6 @@
         </actionGroup> 
     </preInstallationActionList>
     <postInstallationActionList>
-
         <!-- Do not perform the below actions in case of extract-only mode -->
         <actionGroup>
             <actionList>
