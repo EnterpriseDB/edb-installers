@@ -1,9 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Encoding=UTF-8
-Name=Drupal
-Exec="INSTALL_DIR/Drupal/scripts/launchDrupal.sh" INSTALL_DIR
-Icon=pg-launchDrupal.png
-Terminal=false
-Type=Application
-

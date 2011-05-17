@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Encoding=UTF-8
-Name=Start Postgres Plus HQ server
-Exec=@@INSTALLDIR@@/scripts/launchsvrctl.sh start
-Icon=pphq-start.png
-Terminal=false
-Type=Application

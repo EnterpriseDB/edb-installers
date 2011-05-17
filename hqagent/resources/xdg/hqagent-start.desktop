@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Encoding=UTF-8
-Name=Start Postgres Plus HQ agent
-Exec=HQAGENT_INSTALLDIR/scripts/launchagentctl.sh start
-Icon=hqagent-start.png
-Terminal=false
-Type=Application
