@@ -34,7 +34,7 @@
     <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
     <allowWindowResize>1</allowWindowResize>
     <licenseFile encoding="utf-8">resources/licence.txt</licenseFile>
-
+    
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
     <leftImage>../resources/pg-side.png</leftImage>
@@ -2049,6 +2049,15 @@ database=${controldb}
                 <fileExists path="${system_temp_directory}/instscripts" />
             </ruleList>
         </deleteFile>
+       <!-- Set permissions of doc files -->
+       <changePermissions>
+         <files>${installdir}/doc/README-datavalidator.txt</files>
+         <permissions>644</permissions>
+         <ruleList>
+           <fileExists path="${installdir}/doc/README-datavalidator.txt" />
+           <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+         </ruleList>
+       </changePermissions>
     </postInstallationActionList>
 
     <readyToInstallActionList>
