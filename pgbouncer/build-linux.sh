@@ -55,15 +55,15 @@ _build_pgbouncer_linux() {
     mkdir -p $WD/pgbouncer/staging/linux/instscripts || _die "Failed to create the instscripts directory"
     mkdir -p $WD/pgbouncer/staging/linux/pgbouncer/lib || _die "Failed to create the pgbouncer lib directory"
  
-   ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; LDFLAGS="-Wl,-rpath,$PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/lib" ./configure --prefix=$PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer --with-libevent=/usr/local" || _die "Failed to configure pgbouncer"
+   ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; LDFLAGS="-Wl,-rpath,$PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/lib" ./configure --prefix=$PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer --with-libevent=/home/buildfarm/packages/libevent-2.0.11-stable/inst" || _die "Failed to configure pgbouncer"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; make" || _die "Failed to build pgbouncer"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; make install" || _die "Failed to install pgbouncer"
 
     ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/share/doc/pgbouncer/pgbouncer.ini $PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/share" || _die "Failed to copy pgbouncer ini to share directory"
 
-    PG_LIBEVENT_MAJOR_VERSION=`echo $PG_TARBALL_LIBEVENT | cut -f1,2 '.'`  
+    PG_LIBEVENT_MAJOR_VERSION=`echo $PG_TARBALL_LIBEVENT | cut -f1,2 -d'.'`  
   
-    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
+    ssh $PG_SSH_LINUX "cp -R /home/buildfarm/packages/libevent-2.0.11-stable/inst/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
     ssh $PG_SSH_LINUX "chmod o+rx $PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/lib/*" || _die "Failed to change permission of libevent libs in pgbouncer lib folder"
     ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/server/staging/linux/lib/libpq* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy libpq in instscripts"
     ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/server/staging/linux/bin/psql $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy psql in instscripts"
