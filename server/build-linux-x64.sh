@@ -111,12 +111,18 @@ _process_dependent_libs() {
                     ref_lib=\`stat -c %N \$lib | cut -f2 -d ">"  | cut -f1 -d "'" | sed -e 's:\\\`::g'\` 
                     # Remove the symlink
                     rm -f \$lib   || _die "Failed to remove the symlink"
-                    # Copy the original lib to the name of the symlink in a temp directory.
-                    cp \$ref_lib /tmp/templibs/\$lib  || _die "Failed to copy the original lib"
+		    if [ -e \$ref_lib ];
+		    then
+                        # Copy the original lib to the name of the symlink in a temp directory.
+                        cp \$ref_lib /tmp/templibs/\$lib  || _die "Failed to copy the original lib"
+		    fi
                 else
-                    # Copy the original lib in a temp directory.
-                    cp \$lib /tmp/templibs/\$lib || _die "Failed to copy the original lib" 
+		    if [ -e \$lib ];
+		        then
+                        # Copy the original lib in a temp directory.
+                        cp \$lib /tmp/templibs/\$lib || _die "Failed to copy the original lib" 
                 fi     
+           fi
            fi
         done
     done
@@ -131,7 +137,10 @@ _process_dependent_libs() {
 	    # Remove the symlink
 	    rm -f \$lib   || _die "Failed to remove the symlink"
 	    # Copy the original lib to the name of the symlink in a temp directory.
-	    cp \$ref_lib /tmp/templibs/\$lib  || _die "Failed to copy the original lib"
+	    if [ -e \$ref_lib ];
+            then
+	        cp \$ref_lib /tmp/templibs/\$lib  || _die "Failed to copy the original lib"
+	    fi
 	else
 	    # Copy the original lib in a temp directory.
 	    cp \$lib /tmp/templibs/\$lib
@@ -146,7 +155,7 @@ _process_dependent_libs() {
     done            
 
     # Copy libs from the tmp/templibs directory
-    cp /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
+    cp /tmp/templibs/* $lib_dir/     
 
     # Remove the temporary directory 
     rm -rf /tmp/templibs  
