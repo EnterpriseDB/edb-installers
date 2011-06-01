@@ -128,11 +128,11 @@ _process_dependent_libs() {
     done            
 
     # Copy libs from the tmp/templibs directory
-    NUMBER_LIBS=`ls /tmp/templibs/ | wc -l`
+    NUMBER_LIBS=\`ls /tmp/templibs/ | wc -l\`
     #\t is there in the output of above in case of 0 file in templibs
-    NUMBER_LIBS2=`echo $NUMBER_LIBS | sed 's/\t//g'`
+    NUMBER_LIBS2=\`echo \$NUMBER_LIBS | sed -e 's:\\\s+::g'\`
 
-    if [ x"$NUMBER_LIBS2" != x"0" ]; then
+    if [ x"\$NUMBER_LIBS2" != x"0" ]; then
         cp /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
     fi
 
