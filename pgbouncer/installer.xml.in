@@ -31,8 +31,6 @@
     <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
     <allowWindowResize>1</allowWindowResize>
     <windowsSoftwareRegistryPrefix/>
-    <defaultUnixGroup>daemon</defaultUnixGroup>
-    <defaultUnixOwner>root</defaultUnixOwner>
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
     <leftImage>../resources/pg-side.png</leftImage>
@@ -290,6 +288,16 @@
         </setInstallerVariable>
     </initializationActionList>
     <preInstallationActionList>
+        <!-- Setting defaultUnixGroup and defaultUnixOwner -->
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="project.defaultUnixGroup" value="daemon"/>
+            <setInstallerVariable name="project.defaultUnixOwner" value="root"/>
+          </actionList>
+          <ruleList>
+            <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </actionGroup>
         <actionGroup>
              <actionList>
                  <setInstallerVariable name="branding" value=""/>
