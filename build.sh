@@ -134,86 +134,6 @@ then
     _postprocess_server || exit 1
 fi
 
-# Package: ApachePhp
-if [ $PG_PACKAGE_APACHEPHP = 1 ];
-then
-    echo "### Package: ApachePhp"
-    cd $WD
-    source ./ApachePhp/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_ApachePhp || exit 1
-        _build_ApachePhp || exit 1
-    fi
-
-    _postprocess_ApachePhp || exit 1
-fi
-
-# Package: mediaWiki
-if [ $PG_PACKAGE_MEDIAWIKI = 1 ];
-then
-    echo "### Package: mediaWiki"
-    cd $WD
-    source ./mediaWiki/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_mediaWiki || exit 1
-        _build_mediaWiki || exit 1
-    fi
-
-    _postprocess_mediaWiki || exit 1
-fi
-
-# Package: phpBB
-if [ $PG_PACKAGE_PHPBB = 1 ];
-then
-    echo "### Package: phpBB"
-    cd $WD
-    source ./phpBB/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_phpBB || exit 1
-        _build_phpBB || exit 1
-    fi
-
-    _postprocess_phpBB || exit 1
-fi
-
-# Package: Drupal
-if [ $PG_PACKAGE_DRUPAL = 1 ];
-then
-    echo "### Package: Drupal"
-    cd $WD
-    source ./Drupal/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_Drupal || exit 1
-        _build_Drupal || exit 1
-    fi
-
-    _postprocess_Drupal || exit 1
-fi
-
-# Package: phppgadmin
-if [ $PG_PACKAGE_PHPPGADMIN = 1 ];
-then
-    echo "### Package: phppgadmin"
-    cd $WD
-    source ./phpPgAdmin/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_phpPgAdmin || exit 1
-        _build_phpPgAdmin || exit 1
-    fi
-
-    _postprocess_phpPgAdmin || exit 1
-fi
-
 # Package: pgJDBC
 if [ $PG_PACKAGE_PGJDBC = 1 ];
 then
@@ -305,21 +225,6 @@ then
         _build_MigrationWizard || exit 1
     fi
     _postprocess_MigrationWizard || exit 1
-fi
-
-# Package: pgphonehome
-if [ $PG_PACKAGE_PGPHONEHOME = 1 ];
-then
-    echo "### Package: pgphonehome"
-    cd $WD
-    source ./pgphonehome/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_pgphonehome || exit 1
-        _build_pgphonehome || exit 1
-    fi
-    _postprocess_pgphonehome || exit 1
 fi
 
 # Package: Npgsql
@@ -462,38 +367,6 @@ then
     fi
 
     _postprocess_ReplicationServer || exit 1
-fi
-
-# Package: PPHQ
-if [ $PG_PACKAGE_PPHQ = 1 ];
-then
-    echo "### Package: PPHQ"
-    cd $WD
-    source ./pphq/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_pphq || exit 1
-        _build_pphq || exit 1
-    fi
-
-    _postprocess_pphq || exit 1
-fi
-
-# Package: HQAGENT
-if [ $PG_PACKAGE_HQAGENT = 1 ];
-then
-    echo "### Package: HQAGENT"
-    cd $WD
-    source ./hqagent/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_hqagent || exit 1
-        _build_hqagent || exit 1
-    fi
-
-    _postprocess_hqagent || exit 1
 fi
 
 # Package: PLPGSQLO
