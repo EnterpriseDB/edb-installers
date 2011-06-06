@@ -8,6 +8,7 @@
     <!-- Product Specific Options -->
     <productComments>PgBouncer: Connection pooler for PostgreSQL, packaged by EnterpriseDB</productComments>
     <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
+    <requestedExecutionLevel>asInvoker</requestedExecutionLevel>
     <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
     <!-- The options are used for RPM registration -->
     <description>PgBouncer: Connection pooler for PostgreSQL </description>

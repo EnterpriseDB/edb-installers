@@ -10,6 +10,7 @@
   <productDisplayName>StackBuilder Plus ${productVersion}</productDisplayName>
   <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
   <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
+  <requestedExecutionLevel>asInvoker</requestedExecutionLevel>
   <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
   <!-- The options are used for RPM registration -->
   <description>Advanced Application Stack Builder for the PostgreSQL server</description>
