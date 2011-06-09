@@ -36,7 +36,7 @@ _prep_pgbouncer_windows() {
     # Grab a copy of the source tree
     cp -R pgbouncer-$PG_VERSION_PGBOUNCER/* pgbouncer.windows || _die "Failed to copy the source code (source/pgbouncer-$PG_VERSION_PGBOUNCER)"
     cd pgbouncer.windows
-    patch -p1 < $WD/tarballs/pgbouncer-141_windows.patch
+    patch -p0 < $WD/tarballs/pgbouncer_windows.patch
     cd $WD/pgbouncer/source 
     chmod -R ugo+w pgbouncer.windows || _die "Couldn't set the permissions on the source directory"
 
@@ -78,7 +78,7 @@ _build_pgbouncer_windows() {
 @SET PATH=%PATH%;$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;$PG_PGBUILD_WINDOWS\flex\bin;$PG_PGBUILD_WINDOWS\bison\bin;$PG_PGBUILD_WINDOWS\regex\bin
 
 REM Configuring, building the pgbouncer source tree
-@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD; cd pgbouncer.windows; CPPFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS/regex/include" LDFLAGS="-L$PG_PGBUILD_MINGW_WINDOWS/regex/lib" ./configure --prefix=\$COMMONDIR/pgbouncer.staging --with-libevent=$PG_PGBUILD_MINGW_WINDOWS/libevent-2.0.11-stable; make; make install  | $PG_MSYS_WINDOWS\bin\sh --login -i
+@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD; cd pgbouncer.windows; CPPFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS/regex/include" LDFLAGS="-L$PG_PGBUILD_MINGW_WINDOWS/regex/lib" ./configure --prefix=\$COMMONDIR/pgbouncer.staging --with-libevent=$PG_PGBUILD_MINGW_WINDOWS/libevent; make; make install  | $PG_MSYS_WINDOWS\bin\sh --login -i
 
 EOT
 
