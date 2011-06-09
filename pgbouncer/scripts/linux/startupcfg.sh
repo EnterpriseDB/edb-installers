@@ -57,7 +57,6 @@ start()
        else
            su $SYSTEM_USER -c "LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH $INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini " 
        fi
-       exit 0
     else
        echo "pgbouncer-$PGBOUNCER_SERVICE_VER already running"
        exit 0
