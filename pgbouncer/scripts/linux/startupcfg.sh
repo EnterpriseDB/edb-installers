@@ -60,7 +60,7 @@ start()
        exit 0
     else
        echo "pgbouncer-$PGBOUNCER_SERVICE_VER already running"
-       exit 1
+       exit 0
     fi
 }
 
@@ -71,9 +71,10 @@ stop()
     if [ "x\$PID" = "x" ];
     then
         echo "pgbouncer-$PGBOUNCER_SERVICE_VER not running"
-        exit 2
+        exit 0
     else
         kill \$PID
+	exit 0
     fi
 }
 status()
@@ -83,10 +84,11 @@ status()
     if [ "x\$PID" = "x" ];
     then
         echo "pgbouncer-$PGBOUNCER_SERVICE_VER not running"
+	exit 1
     else
         echo "pgbouncer-$PGBOUNCER_SERVICE_VER is running (PID: \$PID)"
+	exit 0
     fi
-    exit 0
 }
 
 # See how we were called.

@@ -56,7 +56,7 @@ start()
        exit 0
     else
        echo "Publication Service $XDB_SERVICE_VER already running"
-       exit 1
+       exit 0
     fi
 }
 
@@ -67,9 +67,10 @@ stop()
     if [ "x\$PID" = "x" ];
     then
         echo "Publication Service $XDB_SERVICE_VER not running"
-        exit 2
+        exit 0
     else
         kill -9 \$PID 
+	exit 0
     fi
 }
 
@@ -80,10 +81,10 @@ status()
     if [ "x\$PID" = "x" ];
     then
         echo "Publication Service $XDB_SERVICE_VER not running"
-        exit 2
+        exit 1
     else
         echo "Publication Service $XDB_SERVICE_VER (PID:\$PID) is running" 
-        exit 2
+        exit 0
     fi
 
 }
