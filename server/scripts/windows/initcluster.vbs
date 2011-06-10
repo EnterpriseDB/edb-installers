@@ -265,6 +265,12 @@ End If
 objConfFile.WriteLine strConfig
 objConfFile.Close
 
+' Create the <DATA_DIR>\pg_log directory (if not exists)
+' Create it before updating the permissions, so that it will also get affected
+If  Not objFso.FolderExists(strDataDir & "\pg_log") Then
+    newfolder = objFso.CreateFolder (strDataDir & "\pg_log")
+End If
+
 ' Secure the data directory
 If IsVistaOrNewer() = True Then
     WScript.Echo "Granting service account access to the data directory (using icacls) to " & strOSUsername & ":"
