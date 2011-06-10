@@ -189,7 +189,10 @@ fi
 if [ -f /usr/share/gnome-menus/update-gnome-menus-cache ];
 then
    echo "Rebuilding /usr/share/applications/desktop.${LANG}.cache"
-   /usr/share/gnome-menus/update-gnome-menus-cache /usr/share/applications/ > /usr/share/applications/desktop.${LANG}.cache
+   find /usr/share/applications -iname \*${LANG}\*cache | while read filename; do
+      /usr/share/gnome-menus/update-gnome-menus-cache /usr/share/applications/ > $filename
+   done
 fi
+
 echo "$0 ran to completion"
 exit 0
