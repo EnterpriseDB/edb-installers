@@ -88,5 +88,5 @@ PG_JAR_POSTGRESQL=9.0-801.jdbc3
 # Dependent Packages for Postgres Plus HQ
 PPHQ_JBOSS_VERSION=4.2.3.GA
 PPHQ_ANT_VERSION=1.7.1
-
+BASE_URL=http://sbp.enterprisedb.com
 
