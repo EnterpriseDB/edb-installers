@@ -1,0 +1,116 @@
+<!-- Authentication Page -->
+<parameterGroup
+  name="userAuthenticationPage"
+  title="${msg(registration_plus.existingemail.authentication.title.value)}">
+  <parameterList>
+    <!-- Hidden parameter to check, if registration required or not -->
+    <booleanParameter name="registration_plus_required" cliOptionName="register" default="1" ask="0" cliOptionShow="0"/>
+
+    <labelParameter name="existingemail_authentication_lbl"
+          explanation="${msg(registration_plus.existingemail.authentication.explanation.value)}"/>
+    <stringParameter name="existingEmail" allowEmptyValue="1" ask="1"
+      cliOptionName="existing-user" cliOptionShow="1"
+      width="30"
+      description="${msg(registration_plus.userAuth.email.value)}">
+      <validationActionList>
+        <throwError text="${msg(registration_plus.error.invalid.email.value)}">
+          <ruleList>
+            <regExMatch logic="does_not_match" text="${existingEmail}">
+              <pattern>^([\w]+)(([-\.][\w]+)?)*@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)</pattern>
+            </regExMatch>
+          </ruleList>
+        </throwError>
+      </validationActionList>
+    </stringParameter>
+
+    <passwordParameter name="existingPassword" ask="1" cliOptionShow="1"
+      width="30" allowEmptyValue="1" askForConfirmation="0"
+      cliOptionName="existing-password"
+      description="${msg(registration_plus.userAuth.password.value)}">
+      <validationActionList>
+        <throwError text="${msg(registration_plus.error.invalid.password.value)}">
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <stringTest text="${existingPassword}" type="empty"/>
+            <regExMatch logic="matches" pattern="\s+" text="${existingPassword}"/>
+          </ruleList>
+        </throwError>
+      </validationActionList>
+    </passwordParameter>
+
+  </parameterList>
+
+  <!-- Validate entered email & password -->
+  <postShowPageActionList>
+    <actionGroup>
+      <actionList>
+
+	<!-- Calling authentication-hb.jsp page -->
+        <logMessage text="Authenticating user ${existingEmail}:MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PG_MAJOR_VERSION&amp;Version=PG_MAJOR_VERSION.PG_MINOR_VERSION"/>
+        <httpGet>
+          <filename>${system_temp_directory}/auth.html</filename>
+          <username>${existingEmail}</username>
+          <password>${existingPassword}</password>
+          <url>BASE_URL/authentication-hb.jsp?MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PG_MAJOR_VERSION&amp;Version=PG_MAJOR_VERSION.PG_MINOR_VERSION</url>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </httpGet>
+        <readFile>
+          <name>auth_result</name>
+          <path>${system_temp_directory}/auth.html</path>
+        </readFile>
+        <setInstallerVariableFromRegEx>
+          <name>statusCode</name>
+          <pattern>.*StatusCode=([\d]+).*</pattern>
+          <substitution>\1</substitution>
+          <text>${auth_result}</text>
+        </setInstallerVariableFromRegEx>
+        <logMessage text="Status Code: ${statusCode}"/>
+	<actionGroup>
+          <actionList>
+            <logMessage text="Retrieving error message: MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PG_MAJOR_VERSION&amp;Version=PG_MAJOR_VERSION.PG_MINOR_VERSION&amp;InstallerLang=${installation_language_code}&amp;File="/>
+            <httpGet>
+              <filename>${system_temp_directory}/error.html</filename>
+              <username>${existingEmail}</username>
+              <password>${existingPassword}</password>
+              <url>BASE_URL/geterror-hb.jsp?MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PG_MAJOR_VERSION&amp;Version=PG_MAJOR_VERSION.PG_MINOR_VERSION&amp;InstallerLang=${installation_language_code}&amp;File=</url>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+            </httpGet>
+            <readFile>
+              <name>error_message</name>
+              <path>${system_temp_directory}/error.html</path>
+            </readFile>
+            <stringModify text="${error_message}" variable="error_message" logic="trim"/>
+            <throwError>
+              <text>${error_message}</text>
+              <ruleList>
+                <stringTest text="${error_message}" type="not_empty"/>
+              </ruleList>
+            </throwError>
+            <throwError>
+              <text>${msg(registration_plus.ws.internet.not.connected)}</text>
+              <abortOnError>0</abortOnError>
+              <ruleList>
+                <stringTest text="${error_message}" type="empty"/>
+              </ruleList>
+            </throwError>
+            <logMessage text="Error message returned: ${error_message}"/>
+          </actionList>
+            <ruleList>
+              <compareText value="${statusCode}" text="401" logic="equals"/>
+            </ruleList>
+        </actionGroup>
+      </actionList>
+    </actionGroup>
+
+  </postShowPageActionList>
+  <!-- Check if upgradation is done on older version of @@COMPONENT@@,
+       which does not have this authentication process -->
+  <ruleList>
+    <compareText logic="equals" text="${iExistingEmail}" value=""/>
+    <isTrue value="${registration_plus_required}"/>
+  </ruleList>
+
+</parameterGroup>
+

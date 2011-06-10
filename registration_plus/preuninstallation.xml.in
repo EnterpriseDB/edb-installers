@@ -1,0 +1,10 @@
+<actionGroup>
+  <actionList>
+    <iniFileSet file="@@REGISTRY_INI@@" section="@@REGISTRY_PREFIX@@" key="Username" value="" />
+    <iniFileSet file="@@REGISTRY_INI@@" section="@@REGISTRY_PREFIX@@" key="MachineID" value="" />
+    <iniFileSet file="@@REGISTRY_INI@@" section="@@REGISTRY_PREFIX@@" key="InstallationID" value="" />
+  </actionList>
+  <ruleList>
+    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+  </ruleList>
+</actionGroup>

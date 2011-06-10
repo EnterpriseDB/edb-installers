@@ -1,0 +1,114 @@
+MODULE (Registration):
+---------------------
+- An easy to use plug & play module for the enterprisedb registration_plus for its installers.
+- Enables the installer to act as an registration_plus required installer.
+- Introduces the following parameters in the installer:
+  --existing-user <existing-user> Email address
+  --existing-password <existing-password> Password
+  --register 1|0 (HIDDEN)
+
+CONTENTS:
+--------
+* build scripts (shell scripts - Build utilities used by this module)
+  i.e. dbserver_guid(windows)
+* bitrock installer scripts (XMLs)
+  1. initialization.xml.in
+    - Initialize the proxyHost and proxyPort from the environment variable
+
+  2. preinstallation.xml.in
+    - Read registry/ini (in case of upgrade mode) for registration_plus done or not.
+    - Check if given value for existing-email and existing-password are valid (in case of unattended mode)
+
+  3. postinstallation.xml.in
+    - Set the existing-email in registry/ini
+
+  4. preuninstallation.xml.in
+    - Unset the exising-email from registry/ini
+
+  5. component.xml.in
+    - User validation component to be used by the registration_plus
+
+  6. already_registered_parameter.xml.in
+    - Custom page to check, if the user is registered with enterprisedb or not, otherwise open browser the promotional create user url
+
+  7. authentication_parameter.xml.in
+    - Page for the registration_plus validation
+
+HOW TO USE:
+----------
+
+1. Call _registration_plus_postprocess function before calling platform specific post-process functions from component's build.sh
+
+  - Provide following parameter while calling this function:
+    STAGING_DIRECTORY  : Staging directory of the component
+    COMPONENT_NAME     : Name of the component
+    VERSION_VARIABLE   : Version Variable through which we check the upgrade mode
+    INI                : Ini file name for linux, linux-x64 & osx
+    REGISTRY_PREFIX    : INI Section name
+    REGISTRY_PREFIX_WIN: Windows registry prefix
+    TEMP_DIRECTORY     : Temporary Directory to be used during installation for unpack the user-validation scripts & executables
+    PG_MAJOR_VERSION   : PostgreSQL Major Version
+    PG_MINOR_VERSION   : PostgreSQL Minor Version
+
+    i.e. _registration_plus_postprocess "$WD/pphq/staging" "PPHQ" "pphqVersion" "/etc/postgres-reg.ini" "pphq" "Postgres Plus HQ" "pphq_installer" "9.0" "0.1"
+
+  - Creates UserValidation directory in selected platform and copies the userValidation executables and script into them.
+  - Generates few intermediate xmls used by the installer's xml for registration_plus.
+      i.e. registration_plus_already_registered_parameter.xml
+           registration_plus_authentication_parameter.xml
+           registration_plus_component.xml
+           registration_plus_initialization.xml
+           registration_plus_postinstallation.xml
+           registration_plus_preinstallation.xml
+           registration_plus_preuninstallation.xml
+
+2. Add the xmls at proper places in the component's installer xml.
+     i.e. Add registration_plus_initialization.xml  in the          <initializationActionList>
+          Add registration_plus_preinstallation.xml at the end of   <preInstallationActionList>
+          Add registration_plus_postinstallation.xml at the end of  <postInstallationActionList>
+          Add registration_plus_preuninstallation.xml at the end of <preUninstallationActionList>
+          Add registration_plus_component.xml in the                <componentList>
+          Add registration_plus_already_registered_parameter.xml in <parameterList>
+          Add registration_plus_authentication_parameter.xml in the <parameterList>
+
+3. Put installdir directoryParameter under parameterGroup (if you want to make sure that - the registration_plus pages will be asked ahead of the installation directory)
+  i.e. <parameterGroup name="installationDirectory"
+                        description="Installer.Parameter.installdir.description"
+                        explanation="Installer.Parameter.installdir.explanation"
+                        title="${msg(pphq.installation.dir)}">
+            <parameterList>
+                <directoryParameter>
+                    <name>installdir</name>
+                    <value>${default_installdir}</value>
+                    <default/>
+                    <allowEmptyValue>0</allowEmptyValue>
+                    <ask>yes</ask>
+                    <cliOptionName>prefix</cliOptionName>
+                    <mustBeWritable>yes</mustBeWritable>
+                    <mustExist>0</mustExist>
+                    ...
+                <directoryParameter>
+            </parameterList>
+        </parameterGroup>
+
+4. Set custom translation messages for the registration_plus in the language files.
+  (NOTE: You can use the following values. Top management may be interested in changing the 'registration_plus.explanation.value' message for each installers.)
+
+  i.e.
+  registration_plus.error.invalid.email.value=Invalid email address. You must provide a valid email address.  Please try again.
+  registration_plus.error.invalid.password.value=Password is empty or contains invalid characters. Please enter valid password.
+  registration_plus.existingemail.authentication.explanation.value=Please enter the email address and password for your enterprisedb.com user account.
+  registration_plus.existingemail.authentication.title.value=EnterpriseDB User Account Information
+  registration_plus.existingemail.no=I do not have an enterprisedb.com user account.
+  registration_plus.existingemail.yes=I already have an enterprisedb.com user account.
+  registration_plus.explanation.value=If you do not have an account, click 'Next' to register at the EnterpriseDB website.  Registration will also give you access to many free assets at\nEnterpriseDB including:\n\n- PostgreSQL Performance Tuning (Bruce Momjian On-Demand Webcasts)\n- Top 5 Ways to Supercharge your Database (On-Demand Webcast)\n- Data Processing Inside PostgreSQL (Bruce Momjian On-Demand Webcasts)
+  registration_plus.title.value=Registration required at www.enterprisedb.com
+  registration_plus.userAuth.email.value=Email address
+  registration_plus.userAuth.password.value=Password
+  registration_plus.ws.internet.not.connected=Error in calling web service. Please check the internet connection and try again.
+  registration_plus.emailpassword.not.provided=Please provide the email address and password for your EnterpriseDB user account.
+
+That's it...
+Done...
+
+-- Ashesh (Modified by Sachin)
