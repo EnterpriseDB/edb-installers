@@ -7,7 +7,7 @@ _registration_plus_preprocess_windows_x64()
   PG_REG_COMP_STAGING=$WD/registration_plus/staging/$PG_REG_COMP_PLATFORM
   PG_REG_COMP_HOST_PATH=$PG_PATH_WINDOWS_X64\\\\registration_plus
 
-  if [ x"$PG_REGISTRATION_PLUS_COMP_BUILT_WIN" = x"" ]; then
+  if [ x"$PG_REGISTRATION_PLUS_COMP_BUILT_WIN_X64" = x"" ]; then
     echo "Removing registration_plus source directory ($PG_REG_COMP_PATH)"
     if [ -d $PG_REG_COMP_PATH ]; then
       rm -rf $PG_REG_COMP_PATH
@@ -56,7 +56,7 @@ _registration_plus_build_windows_x64()
 
   cd $PG_REG_COMP_PATH
 
-  if [ x"$PG_REGISTRATION_PLUS_COMP_BUILT_WIN" = x"" ]; then
+  if [ x"$PG_REGISTRATION_PLUS_COMP_BUILT_WIN_X64" = x"" ]; then
     cat<<EOT > build-reg-comp.bat
 @ECHO OFF
 REM Setting Visual Studio Environment
@@ -85,7 +85,7 @@ EOT
 
     scp $PG_SSH_WINDOWS_X64:$PG_REG_COMP_HOST_PATH\\\\dbserver_guid\\\\release\\\\dbserver_guid.exe     $PG_REG_COMP_STAGING/dbserver_guid.exe || _die "Failed to get dbserver_guid utility from the windows-x64 VM"
 
-    PG_REGISTRATION_PLUS_COMP_BUILT_WIN=Done
+    PG_REGISTRATION_PLUS_COMP_BUILT_WIN_X64=Done
   fi
 }
 
