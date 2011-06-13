@@ -3,6 +3,7 @@
   <shortName>stackbuilderplus</shortName>
   <fullName>StackBuilderPlus</fullName>
   <version>PG_VERSION_SBP-PG_BUILDNUM_SBP</version>
+  <windowsResourceProductVersion>PG_VERSION_SBP</windowsResourceProductVersion>
   <!-- These options are used on Windows -->
   <startMenuGroupName>${branding}</startMenuGroupName>
   <!-- Product Specific Options -->

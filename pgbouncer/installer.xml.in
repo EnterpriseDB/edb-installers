@@ -3,6 +3,7 @@
     <shortName>pgbouncer</shortName>
     <fullName>PgBouncer</fullName>
     <version>PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER</version>
+    <windowsResourceProductVersion>PG_VERSION_PGBOUNCER</windowsResourceProductVersion>
     <!-- These options are used on Windows -->
     <startMenuGroupName/>
     <!-- Product Specific Options -->

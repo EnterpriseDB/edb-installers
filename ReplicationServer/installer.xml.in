@@ -3,7 +3,7 @@
     <shortName>xdbreplicationserver</shortName>
     <fullName>xDB Replication Server</fullName>
     <version>PG_VERSION_REPLICATIONSERVER-PG_BUILDNUM_REPLICATIONSERVER</version>
-
+    <windowsResourceProductVersion>PG_VERSION_REPLICATIONSERVER</windowsResourceProductVersion>
     <!-- These options are used on Windows -->
     <startMenuGroupName>${branding}</startMenuGroupName>
 
