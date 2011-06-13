@@ -171,17 +171,6 @@ Else
     WScript.Echo "WScript.Network not initialized..."
 End If
 
-If IsVistaOrNewer() = True Then
-    WScript.Echo "Ensuring we can write to the data directory (using icacls) to  " & objNetwork.Username & ":"
-    iRet = DoCmd("icacls """ & strDataDir & """ /T /grant:r """ & objNetwork.Username & """:F")
-Else
-    WScript.Echo "Ensuring we can write to the data directory (using cacls):"
-    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /G """ & objNetwork.Username & """:F")
-End If
-if iRet <> 0 Then
-    WScript.Echo "Failed to ensure the data directory is accessible (" & strDataDir & ")"
-End If
-
 ' Loop up the directory path, and ensure we have read permissions
 ' on the entire path leading to the data directory
 arrDirs = Split(strDataDir, "\")
@@ -214,6 +203,18 @@ For d = 0 To nDirs
 
     strThisDir = strThisDir & "\"
 Next
+
+If IsVistaOrNewer() = True Then
+    WScript.Echo "Ensuring we can write to the data directory (using icacls) to  " & objNetwork.Username & ":"
+    iRet = DoCmd("icacls """ & strDataDir & """ /T /grant:r """ & objNetwork.Username & """:(OI)(CI)F")
+Else
+    WScript.Echo "Ensuring we can write to the data directory (using cacls):"
+    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /G """ & objNetwork.Username & """:F")
+End If
+if iRet <> 0 Then
+    WScript.Echo "Failed to ensure the data directory is accessible (" & strDataDir & ")"
+End If
+
 
 ' Initialise the database cluster, and set the appropriate permissions/ownership
 if strLocale = "DEFAULT" Then
@@ -265,18 +266,6 @@ End If
 objConfFile.WriteLine strConfig
 objConfFile.Close
 
-' Secure the data directory
-If IsVistaOrNewer() = True Then
-    WScript.Echo "Granting service account access to the data directory (using icacls) to " & strOSUsername & ":"
-    iRet = DoCmd("icacls """ & strDataDir & """ /T /C /grant """ & strOSUsername & """:M")
-Else
-    WScript.Echo "Granting service account access to the data directory (using cacls):"
-    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /C /G """ & strOSUsername & """:F")
-End If
-if iRet <> 0 Then
-    Warn "Failed to grant service account access to the data directory (" & strDataDir & ")"
-End If
-
 ' Loop up the directory path, and ensure the service account has read permissions
 ' on the entire path leading to the data directory
 arrDirs = Split(strDataDir, "\")
@@ -308,6 +297,24 @@ For d = 0 To nDirs
     End If
     strThisDir = strThisDir & "\"
 Next
+
+' Create the <DATA_DIR>\pg_log directory (if not exists)
+' Create it before updating the permissions, so that it will also get affected
+If  Not objFso.FolderExists(strDataDir & "\pg_log") Then
+    newfolder = objFso.CreateFolder (strDataDir & "\pg_log")
+End If
+
+' Secure the data directory
+If IsVistaOrNewer() = True Then
+    WScript.Echo "Granting service account access to the data directory (using icacls) to " & strOSUsername & ":"
+    iRet = DoCmd("icacls """ & strDataDir & """ /T /C /grant """ & strOSUsername & """:(OI)(CI)(F)")
+Else
+    WScript.Echo "Granting service account access to the data directory (using cacls):"
+    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /C /G """ & strOSUsername & """:F")
+End If
+if iRet <> 0 Then
+    Warn "Failed to grant service account access to the data directory (" & strDataDir & ")"
+End If
 
 WScript.Echo "initcluster.vbs ran to completion"
 WScript.Quit iWarn
