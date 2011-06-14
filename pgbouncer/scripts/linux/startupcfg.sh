@@ -53,9 +53,11 @@ start()
        # Service Owner should be able to start the service without root password.
        if [ "\`id -un\`" = "$SYSTEM_USER" ];
        then
-           LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH $INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini 
+           LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH $INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini
+	   echo "pgbouncer-$PGBOUNCER_SERVICE_VER started" 
        else
            su $SYSTEM_USER -c "LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH $INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini " 
+	   echo "pgbouncer-$PGBOUNCER_SERVICE_VER started" 
        fi
     else
        echo "pgbouncer-$PGBOUNCER_SERVICE_VER already running"
@@ -70,10 +72,9 @@ stop()
     if [ "x\$PID" = "x" ];
     then
         echo "pgbouncer-$PGBOUNCER_SERVICE_VER not running"
-        exit 0
     else
         kill \$PID
-	exit 0
+	echo "pgbouncer-$PGBOUNCER_SERVICE_VER stopped" 
     fi
 }
 status()

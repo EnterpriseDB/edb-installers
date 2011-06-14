@@ -53,6 +53,7 @@ start()
     if [ "x\$PID" = "x" ];
     then
        su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT > /dev/null 2>&1 &"
+       echo "Subscription Service $XDB_SERVICE_VER started"
     else
        echo "Subscription Service $XDB_SERVICE_VER already running"
        exit 0
@@ -66,10 +67,9 @@ stop()
     if [ "x\$PID" = "x" ];
     then
         echo "Subscription Service $XDB_SERVICE_VER not running"
-        exit 0
     else
         kill -9 \$PID
-	exit 0
+	echo "Subscription Service $XDB_SERVICE_VER stopped"
     fi
 }
 
