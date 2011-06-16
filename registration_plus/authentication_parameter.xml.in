@@ -82,20 +82,21 @@
               <path>${system_temp_directory}/error.html</path>
             </readFile>
             <stringModify text="${error_message}" variable="error_message" logic="trim"/>
-            <throwError>
+            <showWarning>
               <text>${error_message}</text>
               <ruleList>
                 <stringTest text="${error_message}" type="not_empty"/>
               </ruleList>
-            </throwError>
-            <throwError>
+            </showWarning>
+            <showWarning>
               <text>${msg(registration_plus.ws.internet.not.connected)}</text>
               <abortOnError>0</abortOnError>
               <ruleList>
                 <stringTest text="${error_message}" type="empty"/>
               </ruleList>
-            </throwError>
+            </showWarning>
             <logMessage text="Error message returned: ${error_message}"/>
+	    <setInstallerVariable name="next_page" value="userAuthenticationPage" />
           </actionList>
             <ruleList>
               <compareText value="${statusCode}" text="401" logic="equals"/>
