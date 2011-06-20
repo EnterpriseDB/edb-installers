@@ -8,73 +8,84 @@
 _prep_plpgsqlo_linux() {
 
     cd $WD/server/source
+
+    PGSOURECEDIR=$WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL
+    PGPLATFORMDIR=$WD/server/source/postgres.linux
+    PLPGSQLOSTAGING=$WD/plpgsqlo/staging/linux
+
     # Remove any existing plpgsqlo directory that might exist, in server
-    if [ -e postgres.linux/src/pl/plpgsqlo ];
+    if [ -e $PGPLATFORMDIR/src/pl/plpgsqlo ];
     then
+      patch -p1 -f -c -R < $WD/plpgsqlo/resources/plpgsqlo.patch
+
       echo "Removing existing plpgsqlo directory"
-      rm -rf postgres.linux/src/pl/plpgsqlo || _die "Couldn't remove the existing plpgsqlo directory"
+      rm -rf $PGPLATFORMDIR/src/pl/plpgsqlo || _die "Couldn't remove the existing plpgsqlo directory"
     fi
 
     # create a copy of the plpgsql tree
-    cp -R postgresql-$PG_TARBALL_POSTGRESQL/src/pl/plpgsql postgres.linux/src/pl/plpgsqlo || _die "Failed to create copy of plpgsql tree (postgresql-$PG_TARBALL_POSTGRESQL/src/pl/plpgsql)"
-    grep -irl plpgsql postgres.linux/src/pl/plpgsqlo |xargs sed -i .bak 's/\([pP][lL][pP][gG][sS][qQ][lL]\)/\1o/g'
-    grep -rl PLPGSQLo_ postgres.linux/src/pl/plpgsqlo |xargs sed -i .bak 's/\(PLPGSQL\)o/\1/g'
-    mv postgres.linux/src/pl/plpgsqlo/src/plpgsql.h postgres.linux/src/pl/plpgsqlo/src/plpgsqlo.h || _die "Failed to move plpgsql.h to plpgsqlo.h"
+    cp -R $PGSOURECEDIR/src/pl/plpgsql $PGPLATFORMDIR/src/pl/plpgsqlo || _die "Failed to create copy of plpgsql tree ($PGSOURECEDIR/src/pl/plpgsql)"
+    grep -irl plpgsql $PGPLATFORMDIR/src/pl/plpgsqlo |xargs sed -i .bak 's/\([pP][lL][pP][gG][sS][qQ][lL]\)/\1o/g'
+    grep -rl PLPGSQLo_ $PGPLATFORMDIR/src/pl/plpgsqlo |xargs sed -i .bak 's/\(PLPGSQL\)o/\1/g'
+    mv $PGPLATFORMDIR/src/pl/plpgsqlo/src/plpgsql.h $PGPLATFORMDIR/src/pl/plpgsqlo/src/plpgsqlo.h || _die "Failed to move plpgsql.h to plpgsqlo.h"
+    mv $PGPLATFORMDIR/src/pl/plpgsqlo/src/plpgsql.control $PGPLATFORMDIR/src/pl/plpgsqlo/src/plpgsqlo.control || _die "Failed to move plpgsql.control to plpgsqlo.control"
     # Copy files from pg-sources into plpgsqlo
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/backend/utils/adt/encode.c $WD/server/source/postgres.linux/src/pl/plpgsqlo/src || _die "Failed to copy encode.c"
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pgcrypto/md5.c $WD/server/source/postgres.linux/src/pl/plpgsqlo/src || _die "Failed to copy md5.c"
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pgcrypto/md5.h $WD/server/source/postgres.linux/src/pl/plpgsqlo/src || _die "Failed to copy md5.h"
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pgcrypto/px.h $WD/server/source/postgres.linux/src/pl/plpgsqlo/src || _die "Failed to copy px.h"
+    cp $PGSOURECEDIR/src/backend/utils/adt/encode.c $PGPLATFORMDIR/src/pl/plpgsqlo/src || _die "Failed to copy encode.c"
+    cp $PGSOURECEDIR/contrib/pgcrypto/md5.c $PGPLATFORMDIR/src/pl/plpgsqlo/src || _die "Failed to copy md5.c"
+    cp $PGSOURECEDIR/contrib/pgcrypto/md5.h $PGPLATFORMDIR/src/pl/plpgsqlo/src || _die "Failed to copy md5.h"
+    cp $PGSOURECEDIR/contrib/pgcrypto/px.h $PGPLATFORMDIR/src/pl/plpgsqlo/src || _die "Failed to copy px.h"
     # copy wrap.c and wrap.h in plpgsqlo. These 2 files are taken from edb sources.
-    cp $WD/plpgsqlo/resources/wrap.c $WD/server/source/postgres.linux/src/pl/plpgsqlo/src || _die "Failed to copy wrap.c file for plpgsqlo obfuscation"
-    cp $WD/plpgsqlo/resources/wrap.h $WD/server/source/postgres.linux/src/pl/plpgsqlo/src || _die "Failed to copy wrap.h file for plpgsqlo obfuscation"
+    cp $WD/plpgsqlo/resources/wrap.c $PGPLATFORMDIR/src/pl/plpgsqlo/src || _die "Failed to copy wrap.c file for plpgsqlo obfuscation"
+    cp $WD/plpgsqlo/resources/wrap.h $PGPLATFORMDIR/src/pl/plpgsqlo/src || _die "Failed to copy wrap.h file for plpgsqlo obfuscation"
     # Copy files from pg-sources into plpgsqlo which are required for windows build
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Project.pm $WD/server/source/postgres.linux/src/tools/msvc/. || _die "Failed to copy Project.pm"
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Mkvcbuild.pm $WD/server/source/postgres.linux/src/tools/msvc/. || _die "Failed to copy Mkvcbuild.pm"
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/pgbison.bat $WD/server/source/postgres.linux/src/tools/msvc/. || _die "Failed to copy pgbison.bat"
-     
+    cp $PGSOURECEDIR/src/tools/msvc/Project.pm   $PGPLATFORMDIR/src/tools/msvc/. || _die "Failed to copy Project.pm"
+    cp $PGSOURECEDIR/src/tools/msvc/Mkvcbuild.pm $PGPLATFORMDIR/src/tools/msvc/. || _die "Failed to copy Mkvcbuild.pm"
+    cp $PGSOURECEDIR/src/tools/msvc/pgbison.bat  $PGPLATFORMDIR/src/tools/msvc/. || _die "Failed to copy pgbison.bat"
 
-    cd postgres.linux
-    patch -p0 < $WD/plpgsqlo/resources/plpgsqlo.patch || _die "Failed to apply patch on plpgsqlo tree (plpgsqlo.patch)"
+    cd $PGPLATFORMDIR
+    patch -p1 < $WD/plpgsqlo/resources/plpgsqlo.patch || _die "Failed to apply patch on plpgsqlo tree (plpgsqlo.patch)"
 
     cd $WD/server/source
-    chmod -R ugo+w postgres.linux || _die "Couldn't set the permissions on the source directory"
+    chmod -R ugo+w $PGPLATFORMDIR || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/plpgsqlo/staging/linux ];
+    if [ -e $PLPGSQLOSTAGING ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/plpgsqlo/staging/linux || _die "Couldn't remove the existing staging directory"
+      rm -rf $PLPGSQLOSTAGING || _die "Couldn't remove the existing staging directory ($PLPGSQLOSTAGING)"
     fi
 
-    ssh $PG_SSH_LINUX "rm -rf $PG_PATH_LINUX/plpgsqlo/staging/linux/lib/plpgsqlo.so" || _die "Failed to remove plpgsqlo.so from server staging directory"
-    echo "Creating staging directory ($WD/plpgsqlo/staging/linux)"
-    mkdir -p $WD/plpgsqlo/staging/linux || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/plpgsqlo/staging/linux || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($PLPGSQLOSTAGING)"
+    mkdir -p $PLPGSQLOSTAGING || _die "Couldn't create the staging directory"
+    chmod ugo+w $PLPGSQLOSTAGING || _die "Couldn't set the permissions on the staging directory"
 
-    echo "Creating staging share directory ($WD/plpgsqlo/staging/linux/share)"
-    mkdir -p $WD/plpgsqlo/staging/linux/share || _die "Couldn't create the staging share directory"
-    chmod ugo+w $WD/plpgsqlo/staging/linux/share || _die "Couldn't set the permissions on the staging share directory"
+    echo "Creating staging share directory ($PLPGSQLOSTAGING/share)"
+    mkdir -p $PLPGSQLOSTAGING/share || _die "Couldn't create the staging share directory"
+    chmod ugo+w $PLPGSQLOSTAGING/share || _die "Couldn't set the permissions on the staging share directory"
     echo "Copying plpgsqlo.sql to staging share directory"
-    cp $WD/plpgsqlo/resources/plpgsqlo.sql $WD/plpgsqlo/staging/linux/share || _die "Couldn't copy plpgsqlo.sql to staging share directory"
+    cp $WD/plpgsqlo/resources/plpgsqlo.sql $PLPGSQLOSTAGING/share/ || _die "Couldn't copy plpgsqlo.sql to staging share directory"
 
-    echo "Creating staging doc directory ($WD/plpgsqlo/staging/linux/doc)"
-    mkdir -p $WD/plpgsqlo/staging/linux/doc || _die "Couldn't create the staging doc directory"
-    chmod ugo+w $WD/plpgsqlo/staging/linux/doc || _die "Couldn't set the permissions on the staging doc directory"
-    echo "Copying README.plsecure to staging doc directory"
-    cp $WD/plpgsqlo/resources/README.plsecure $WD/plpgsqlo/staging/linux/doc || _die "Couldn't copy README.plsecure to staging doc directory"
+    echo "Creating staging doc directory ($PLPGSQLOSTAGING/doc)"
+    mkdir -p $PLPGSQLOSTAGING/doc || _die "Couldn't create the staging doc directory"
+    chmod ugo+w $PLPGSQLOSTAGING/doc || _die "Couldn't set the permissions on the staging doc directory"
+    echo "Copying readme.sqlprotect to staging doc directory"
+    cp $WD/plpgsqlo/resources/README.plsecure $PLPGSQLOSTAGING/doc/ || _die "Couldn't copy README.plsecure to staging doc directory"
 
 }
 
 ################################################################################
-# PG Build
+# plsecure Build
 ################################################################################
 
 _build_plpgsqlo_linux() {
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/src/pl/plpgsqlo/; make clean ; make " || _die "Failed to build plpgsqlo"
-    ssh $PG_SSH_LINUX "mkdir -p $PG_PATH_LINUX/plpgsqlo/staging/linux/lib " || _die "Failed to create staging/linux/lib "
 
-    ssh $PG_SSH_LINUX "rm -f $PG_PATH_LINUX/plpgsqlo/staging/linux/lib/plpgsqlo.so; cp $PG_PATH_LINUX/server/source/postgres.linux/src/pl/plpgsqlo/src/plpgsqlo.so $PG_PATH_LINUX/plpgsqlo/staging/linux/lib/" || _die "Failed to copy plpgsqlo.so to staging directory"
+    PGBUILDSSH=$PG_SSH_LINUX
+    PGSERVERREMOTEPATH=$PG_PATH_LINUX/server/source/postgres.linux
+    PGREMOTESTAGINGPATH=$PG_PATH_LINUX/plpgsqlo/staging/linux
+
+    ssh $PGBUILDSSH "cd $PGSERVERREMOTEPATH/src/pl/plpgsqlo/; make clean ; make " || _die "Failed to build plpgsqlo"
+    ssh $PGBUILDSSH "mkdir -p $PGREMOTESTAGINGPATH/lib " || _die "Failed to create staging lib directory"
+
+    ssh $PGBUILDSSH "rm -f $PGREMOTESTAGINGPATH/lib/plpgsqlo.so; cp $PGSERVERREMOTEPATH/src/pl/plpgsqlo/src/plpgsqlo.so $PGREMOTESTAGINGPATH/lib/" || _die "Failed to copy plpgsqlo.so to staging directory"
 
 }
 
@@ -89,11 +100,13 @@ _postprocess_plpgsqlo_linux() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
+
     # Restoring postgres.platform_name files which were changed by plpgsqlo.patch
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Project.pm $WD/server/source/postgres.linux/src/tools/msvc/. || _die "Failed to copy Project.pm"
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Mkvcbuild.pm $WD/server/source/postgres.linux/src/tools/msvc/. || _die "Failed to copy Mkvcbuild.pm"
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/pgbison.bat $WD/server/source/postgres.linux/src/tools/msvc/. || _die "Failed to copy pgbison.bat"
 
     cd $WD
+
 }
 

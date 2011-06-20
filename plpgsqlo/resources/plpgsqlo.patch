@@ -1,111 +1,57 @@
-*** src/pl/plpgsqlo/src/Makefile	2010-04-12 12:24:05.000000000 +0530
---- src/pl/plpgsqlo_final_working/src/Makefile	2010-04-07 17:30:34.000000000 +0530
+diff -rc postgresql-9.1beta2/src/pl/plpgsqlo/src/Makefile pg91beta2/src/pl/plpgsqlo/src/Makefile
+*** postgresql-9.1beta2/src/pl/plpgsqlo/src/Makefile	Tue Jun 14 13:41:49 2011
+--- pg91beta2/src/pl/plpgsqlo/src/Makefile	Tue Jun 14 11:28:54 2011
 ***************
-*** 8,26 ****
-  
-  subdir = src/pl/plpgsqlo/src
-  top_builddir = ../../../..
-  include $(top_builddir)/src/Makefile.global
-  
+*** 13,26 ****
   # Shared library parameters
   NAME= plpgsqlo
   
 ! override CPPFLAGS := -I. -I$(srcdir) $(CPPFLAGS)
 ! SHLIB_LINK = $(filter -lintl, $(LIBS))
-! rpath =
+  rpath =
   
 ! OBJS = pl_gram.o pl_handler.o pl_comp.o pl_exec.o pl_funcs.o pl_scanner.o
+  
+  DATA = plpgsqlo.control plpgsqlo--1.0.sql plpgsqlo--unpackaged--1.0.sql
   
   all: all-lib
   
   # Shared library stuff
-  include $(top_srcdir)/src/Makefile.shlib
-  
---- 8,46 ----
-  
-  subdir = src/pl/plpgsqlo/src
-  top_builddir = ../../../..
-+ 
-  include $(top_builddir)/src/Makefile.global
-  
+--- 13,41 ----
   # Shared library parameters
   NAME= plpgsqlo
   
+! # XXX: We should make sure that "wrap.c" is compiled with all
+! # optimizations and without -g, to make reverse engineering a bit harder.
+! #override CPPFLAGS := -I. -I$(srcdir) $(CPPFLAGS)
+! override CPPFLAGS := -I. -I$(pgcrypto_dir) -I$(srcdir) $(CPPFLAGS)
+! SHLIB_LINK = $(filter -lintl, $(LIBS)) -lz
+  rpath =
+  
+! # This location might depend on the installation directories. Therefore
+! # we can't subsitute it into pg_config.h.
+! ifdef krb_srvtab
+! override CPPFLAGS += -DPG_KRB_SRVTAB='"$(krb_srvtab)"'
+! endif
+! 
+! include $(top_srcdir)/src/backend/common.mk
+! 
 ! LINKED_SOURCES= wrap.c md5.c encode.c
 ! 
 ! OBJS = pl_gram.o pl_handler.o pl_comp.o pl_exec.o pl_funcs.o pl_scanner.o encode.o wrap.o md5.o
   
-! PLPGSQLO_OBJS=   wrap.o md5.o encode.o
+  DATA = plpgsqlo.control plpgsqlo--1.0.sql plpgsqlo--unpackaged--1.0.sql
   
++ PLPGSQLO_OBJS = wrap.o md5.o encode.o
++ 
   all: all-lib
   
-+ # XXX: We should make sure that "wrap.c" is compiled with all
-+ # optimizations and without -g, to make reverse engineering a bit harder.
-+ #override CPPFLAGS := -I. -I$(srcdir) $(CPPFLAGS)
-+ override CPPFLAGS := -I. -I$(pgcrypto_dir) -I$(srcdir) $(CPPFLAGS)
-+ 
-+ 
-+ SHLIB_LINK = $(filter -lintl, $(LIBS)) -lz
-+ rpath =
-+ 
-+ 
-+ # This location might depend on the installation directories. Therefore
-+ # we can't subsitute it into pg_config.h.
-+ ifdef krb_srvtab
-+ override CPPFLAGS += -DPG_KRB_SRVTAB='"$(krb_srvtab)"'
-+ endif
-+ 
-+ include $(top_srcdir)/src/backend/common.mk
-+ 
-+ 
   # Shared library stuff
-  include $(top_srcdir)/src/Makefile.shlib
-  
-*** src/tools/msvc/Mkvcbuild.pm	Wed Apr 14 15:23:02 2010
---- src/tools/msvc/Mkvcbuild.pm_modified	Wed Apr 14 19:02:17 2010
+diff -rc postgresql-9.1beta2/src/pl/plpgsqlo/src/encode.c pg91beta2/src/pl/plpgsqlo/src/encode.c
+*** postgresql-9.1beta2/src/pl/plpgsqlo/src/encode.c	Tue Jun 14 13:45:10 2011
+--- pg91beta2/src/pl/plpgsqlo/src/encode.c	Tue Jun 14 11:41:58 2011
 ***************
-*** 85,90 ****
---- 85,99 ----
-      $plpgsql->AddFiles('src\pl\plpgsql\src', 'gram.y');
-      $plpgsql->AddReference($postgres);
-  
-+     my $plpgsqlo =  $solution->AddProject('plpgsqlo','dll','PLs','src\pl\plpgsqlo\src');
-+     $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'gram.y');
-+     $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'encode.c');
-+     $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'wrap.c');
-+     $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'md5.c');
-+     $plpgsqlo->AddReference($postgres);
-+     $plpgsqlo->AddLibrary('ws2_32.lib');
-+ 
-+ 
-      if ($solution->{options}->{perl})
-      {
-  		my $plperlsrc = "src\\pl\\plperl\\";
-*** src/tools/msvc/Project.pm	Wed Apr 14 12:27:06 2010
---- src/tools/msvc/Project.pm_modified	Wed Apr 14 12:26:54 2010
-***************
-*** 395,400 ****
---- 395,401 ----
-              my $of = $f;
-              $of =~ s/\.y$/.c/;
-              $of =~ s{^src\\pl\\plpgsql\\src\\gram.c$}{src\\pl\\plpgsql\\src\\pl_gram.c};
-+             $of =~ s{^src\\pl\\plpgsqlo\\src\\gram.c$}{src\\pl\\plpgsqlo\\src\\pl_gram.c};
-              print F '>'
-                . $self->GenerateCustomTool('Running bison on ' . $f,
-                  'cmd /V:ON /c src\tools\msvc\pgbison.bat ' . $f, $of)
-*** src/pl/plpgsqlo/src/encode.c	2010-04-13 17:07:43.000000000 +0530
---- src/pl/plpgsqlo/src/encode_working.c	2010-04-13 17:07:06.000000000 +0530
-***************
-*** 3,22 ****
-   * encode.c
-   *	  Various data encoding/decoding things.
-   *
-!  * Copyright (c) 2001-2010, PostgreSQL Global Development Group
-   *
-   *
-   * IDENTIFICATION
-!  *	  $PostgreSQL: pgsql/src/backend/utils/adt/encode.c,v 1.26 2010/01/02 16:57:53 momjian Exp $
-   *
+*** 12,22 ****
    *-------------------------------------------------------------------------
    */
   #include "postgres.h"
@@ -117,16 +63,7 @@
   
   struct pg_encoding
   {
---- 3,43 ----
-   * encode.c
-   *	  Various data encoding/decoding things.
-   *
-!  * Copyright (c) 2001-2009, PostgreSQL Global Development Group
-   *
-   *
-   * IDENTIFICATION
-!  *	  $PostgreSQL$
-   *
+--- 12,44 ----
    *-------------------------------------------------------------------------
    */
   #include "postgres.h"
@@ -156,12 +93,13 @@
 + extern void * fe_palloc(int size);
 + 
 + #endif /* ifdef FRONTEND */
++ 
   
   struct pg_encoding
   {
 ***************
 *** 26,34 ****
---- 47,110 ----
+--- 48,111 ----
   	unsigned	(*decode) (const char *data, unsigned dlen, char *res);
   };
   
@@ -173,8 +111,8 @@
 + static unsigned b64_enc_len(const char *src, unsigned srclen);
 + static unsigned b64_decode(const char *src, unsigned len, char *dst);
 + static unsigned b64_dec_len(const char *src, unsigned srclen);
-+ 
-+ /*
+  
+  /*
 +  * Base64 encode 'data', of length 'datalen'. Returns a palloc'd,
 +  * null-terminated string.
 +  */
@@ -197,8 +135,8 @@
 + 
 + 	return result;
 + }
-  
-  /*
++ 
++ /*
 +  * Decodes a base64 encoded, null-terminated string 'data'. The returned
 +  * piece of memory is palloc'd, and its length is stored in *resultlen.
 +  */
@@ -235,7 +173,7 @@
   
   static const int8 hexlookup[128] = {
   	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
---- 185,191 ----
+--- 186,192 ----
    * HEX
    */
   
@@ -252,7 +190,7 @@
   get_hex(char c)
   {
   	int			res = -1;
---- 212,218 ----
+--- 213,219 ----
   	return len * 2;
   }
   
@@ -269,7 +207,7 @@
   
   	srcend = src + len;
   	s = src;
---- 235,241 ----
+--- 236,242 ----
   			   *srcend;
   	char		v1,
   				v2,
@@ -279,7 +217,7 @@
   	s = src;
 ***************
 *** 196,201 ****
---- 272,279 ----
+--- 273,280 ----
   	return srclen >> 1;
   }
   
@@ -290,7 +228,7 @@
    */
 ***************
 *** 343,348 ****
---- 421,428 ----
+--- 422,429 ----
   	return (srclen * 3) >> 2;
   }
   
@@ -301,26 +239,15 @@
    * Minimally escape bytea to text.
 ***************
 *** 559,561 ****
---- 639,643 ----
+--- 640,644 ----
   
   	return NULL;
   }
 + 
 + #endif /* #ifndef FRONTEND */
-*** src/tools/msvc/pgbison.bat	Wed Apr 14 15:12:04 2010
---- src/tools/msvc/pgbison.bat_modified	Wed Apr 14 15:28:57 2010
-***************
-*** 18,23 ****
---- 18,24 ----
-  if "%1" == "src\backend\parser\gram.y" call :generate %1 src\backend\parser\gram.c src\backend\parser\gram.h
-  if "%1" == "src\backend\bootstrap\bootparse.y" call :generate %1 src\backend\bootstrap\bootparse.c
-  if "%1" == "src\pl\plpgsql\src\gram.y" call :generate %1 src\pl\plpgsql\src\pl_gram.c src\pl\plpgsql\src\pl_gram.h
-+ if "%1" == "src\pl\plpgsqlo\src\gram.y" call :generate %1 src\pl\plpgsqlo\src\pl_gram.c src\pl\plpgsqlo\src\pl_gram.h
-  if "%1" == "src\interfaces\ecpg\preproc\preproc.y" call :generate %1 src\interfaces\ecpg\preproc\preproc.c src\interfaces\ecpg\preproc\preproc.h
-  if "%1" == "contrib\cube\cubeparse.y" call :generate %1 contrib\cube\cubeparse.c
-  if "%1" == "contrib\seg\segparse.y" call :generate %1 contrib\seg\segparse.c
-*** src/pl/plpgsqlo/src/pl_comp.c	2010-04-12 12:24:38.000000000 +0530
---- src/pl/plpgsqlo_final_working/src/pl_comp.c	2010-04-07 17:30:34.000000000 +0530
+diff -rc postgresql-9.1beta2/src/pl/plpgsqlo/src/pl_comp.c pg91beta2/src/pl/plpgsqlo/src/pl_comp.c
+*** postgresql-9.1beta2/src/pl/plpgsqlo/src/pl_comp.c	Tue Jun 14 13:42:09 2011
+--- pg91beta2/src/pl/plpgsqlo/src/pl_comp.c	Tue Jun 14 11:39:28 2011
 ***************
 *** 14,21 ****
 --- 14,23 ----
@@ -335,8 +262,8 @@
   #include "catalog/namespace.h"
   #include "catalog/pg_attrdef.h"
 ***************
-*** 296,301 ****
---- 298,309 ----
+*** 298,303 ****
+--- 300,311 ----
   	if (isnull)
   		elog(ERROR, "null prosrc");
   	proc_source = TextDatumGetCString(prosrcdatum);
@@ -349,8 +276,9 @@
   	plpgsqlo_scanner_init(proc_source);
   
   	plpgsqlo_error_funcname = pstrdup(NameStr(procStruct->proname));
-*** src/pl/plpgsqlo/src/pl_handler.c	2010-04-12 12:24:38.000000000 +0530
---- src/pl/plpgsqlo_final_working/src/pl_handler.c	2010-04-07 17:30:34.000000000 +0530
+diff -rc postgresql-9.1beta2/src/pl/plpgsqlo/src/pl_handler.c pg91beta2/src/pl/plpgsqlo/src/pl_handler.c
+*** postgresql-9.1beta2/src/pl/plpgsqlo/src/pl_handler.c	Tue Jun 14 13:42:09 2011
+--- pg91beta2/src/pl/plpgsqlo/src/pl_handler.c	Tue Jun 14 11:43:39 2011
 ***************
 *** 14,20 ****
 --- 14,22 ----
@@ -364,7 +292,7 @@
   #include "catalog/pg_type.h"
   #include "funcapi.h"
 ***************
-*** 144,200 ****
+*** 144,210 ****
   }
   
   /* ----------
@@ -396,6 +324,9 @@
 - 	/* Compile the anonymous code block */
 - 	func = plpgsqlo_compile_inline(codeblock->source_text);
 - 
+- 	/* Mark the function as busy, just pro forma */
+- 	func->use_count++;
+- 
 - 	/*
 - 	 * Set up a fake fcinfo with just enough info to satisfy
 - 	 * plpgsqlo_exec_function().  In particular note that this sets things up
@@ -408,6 +339,13 @@
 - 	flinfo.fn_mcxt = CurrentMemoryContext;
 - 
 - 	retval = plpgsqlo_exec_function(func, &fake_fcinfo);
+- 
+- 	/* Function should now have no remaining use-counts ... */
+- 	func->use_count--;
+- 	Assert(func->use_count == 0);
+- 
+- 	/* ... so we can free subsidiary storage */
+- 	plpgsqlo_free_function_memory(func);
 - 
 - 	/*
 - 	 * Disconnect from SPI manager
@@ -424,7 +362,7 @@
    * This function attempts to validate a PL/pgSQL function at
 --- 146,151 ----
 ***************
-*** 216,221 ****
+*** 226,231 ****
 --- 167,252 ----
   	char	   *argmodes;
   	bool		istrigger = false;
@@ -513,7 +451,7 @@
   	/* Get the new function's pg_proc entry */
   	tuple = SearchSysCache1(PROCOID, ObjectIdGetDatum(funcoid));
 ***************
-*** 259,270 ****
+*** 269,280 ****
   	}
   
   	/* Postpone body checks if !check_function_bodies */
@@ -538,3 +476,42 @@
   
   		/*
   		 * Connect to SPI manager (is this needed for compilation?)
+Only in pg91beta2/src/pl/plpgsqlo/src: plpgsql.control
+Only in postgresql-9.1beta2/src/pl/plpgsqlo/src: plpgsqlo.control
+Only in pg91beta2/src/pl/plpgsqlo/src: wrap.c
+Only in pg91beta2/src/pl/plpgsqlo/src: wrap.h
+diff -rc postgresql-9.1beta2/src/tools/msvc/Mkvcbuild.pm pg91beta2/src/tools/msvc/Mkvcbuild.pm
+*** postgresql-9.1beta2/src/tools/msvc/Mkvcbuild.pm	Fri Jun 10 00:40:42 2011
+--- pg91beta2/src/tools/msvc/Mkvcbuild.pm	Tue Jun 14 11:31:27 2011
+***************
+*** 95,100 ****
+--- 95,108 ----
+      $plpgsql->AddFiles('src\pl\plpgsql\src', 'gram.y');
+      $plpgsql->AddReference($postgres);
+  
++     my $plpgsqlo =  $solution->AddProject('plpgsqlo','dll','PLs','src\pl\plpgsqlo\src');
++     $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'gram.y');
++     $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'encode.c');
++     $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'wrap.c');
++     $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'md5.c');
++     $plpgsqlo->AddReference($postgres);
++     $plpgsqlo->AddLibrary('ws2_32.lib');
++ 
+      if ($solution->{options}->{perl})
+      {
+          my $plperlsrc = "src\\pl\\plperl\\";
+diff -rc postgresql-9.1beta2/src/tools/msvc/Project.pm pg91beta2/src/tools/msvc/Project.pm
+*** postgresql-9.1beta2/src/tools/msvc/Project.pm	Fri Jun 10 00:40:42 2011
+--- pg91beta2/src/tools/msvc/Project.pm	Tue Jun 14 11:33:32 2011
+***************
+*** 397,402 ****
+--- 397,403 ----
+              my $of = $f;
+              $of =~ s/\.y$/.c/;
+              $of =~ s{^src\\pl\\plpgsql\\src\\gram.c$}{src\\pl\\plpgsql\\src\\pl_gram.c};
++             $of =~ s{^src\\pl\\plpgsqlo\\src\\gram.c$}{src\\pl\\plpgsqlo\\src\\pl_gram.c};
+              print F '>'
+                . $self->GenerateCustomTool('Running bison on ' . $f,
+                  'cmd /V:ON /c src\tools\msvc\pgbison.bat ' . $f, $of)
+Only in pg91beta2/src/tools/msvc: pgbison.bat.orig
+Only in pg91beta2/src/tools/msvc: pgbison.bat.rej
