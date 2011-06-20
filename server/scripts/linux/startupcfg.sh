@@ -81,6 +81,12 @@ restart()
 	fi
 }
 
+reload()
+{
+	echo \$"Reloading PostgreSQL $VERSION: "
+	su - $USERNAME -c "$INSTALLDIR/bin/pg_ctl reload -D \"$DATADIR\""
+}
+
 # See how we were called.
 case "\$1" in
   start)
@@ -89,9 +95,12 @@ case "\$1" in
   stop)
         stop
         ;;
-  restart|reload)
+  restart)
         restart
         ;;
+  reload)
+	reload
+	;;
   condrestart)
         if [ -f "$DATADIR/postmaster.pid" ]; then
             restart
