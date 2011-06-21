@@ -238,21 +238,19 @@ _build_server_linux_x64() {
 PLL=""
 if [ -f /lib64/libreadline.so.6 ];
 then
-    PLL=\$PLL/lib64/libreadline.so.6:
+    PLL=/lib64/libreadline.so.6
 fi
 if [ -f /lib/libreadline.so.6 ];
 then
-    PLL=\$PLL/lib/libreadline.so.6:
+    PLL=\$PLL:/lib/libreadline.so.6
 fi
 # Get the PG bin directory path relative to psql caller script.
-PG_BIN_PATH=\`echo \$0 | sed 's:\(.*/\).*:\1:'\`        
+PG_BIN_PATH=\`dirname $0\`
 
-LD_PRELOAD=\$PLL "\$PG_BIN_PATH/./psql.bin" "\$@"
+LD_PRELOAD=\$PLL "\$PG_BIN_PATH/psql.bin" "\$@"
 EOT
     chmod +x psql || _die "Failed to grant execute permission to psql script"
 
-
-	
     # Now build pgAdmin
 
     # Bootstrap

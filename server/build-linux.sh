@@ -236,18 +236,20 @@ _build_server_linux() {
 # If there's an OS supplied version of libreadline, try to make use of it,
 # as it's more reliable than libedit, which we link with.
 PLL=""
-if [ -f /lib64/libreadline.so.6 ];
-then
-    PLL=\$PLL/lib64/libreadline.so.6:
-fi
+
 if [ -f /lib/libreadline.so.6 ];
 then
-    PLL=\$PLL/lib/libreadline.so.6:
+    PLL=/lib/libreadline.so.6
 fi
-# Get the PG bin directory path relative to psql caller script.
-PG_BIN_PATH=\`echo \$0 | sed 's:\(.*/\).*:\1:'\`	
+if [ -f /lib64/libreadline.so.6 ];
+then
+    PLL=/lib64/libreadline.so.6:\$PLL
+fi
 
-LD_PRELOAD=\$PLL "\$PG_BIN_PATH/./psql.bin" "\$@"
+# Get the PG bin directory path relative to psql caller script.
+PG_BIN_PATH=\`dirname \$0\`
+
+LD_PRELOAD=\$PLL "\$PG_BIN_PATH/psql.bin" "\$@"
 EOT
     chmod +x psql || _die "Failed to grant execute permission to psql script"
 
