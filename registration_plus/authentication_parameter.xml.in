@@ -8,7 +8,7 @@
 
     <labelParameter name="existingemail_authentication_lbl"
           explanation="${msg(registration_plus.existingemail.authentication.explanation.value)}"/>
-    <stringParameter name="existingEmail" allowEmptyValue="1" ask="1"
+    <stringParameter name="existingEmail" allowEmptyValue="0" ask="1"
       cliOptionName="existing-user" cliOptionShow="1"
       width="30"
       description="${msg(registration_plus.userAuth.email.value)}">
@@ -24,7 +24,7 @@
     </stringParameter>
 
     <passwordParameter name="existingPassword" ask="1" cliOptionShow="1"
-      width="30" allowEmptyValue="1" askForConfirmation="0"
+      width="30" allowEmptyValue="0" askForConfirmation="0"
       cliOptionName="existing-password"
       description="${msg(registration_plus.userAuth.password.value)}">
       <validationActionList>
