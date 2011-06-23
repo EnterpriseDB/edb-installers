@@ -88,7 +88,7 @@
 		<setInstallerVariableFromRegEx
 		    name="machine_id"
 		    text="${machine_id}"
-		    pattern="^dbser_guid=([^\S]*)$"
+		    pattern="^dbser_guid=([A-Fa-f0-9\-]*)$"
 		    substitution="\1"
 		    abortOnError="0"
 		    showMessageOnError="0">
@@ -132,7 +132,7 @@
 		<setInstallerVariableFromRegEx
 		    name="installation_id"
 		    text="${installation_id}"
-		    pattern="^dbser_guid=([^\S]*)$"
+		    pattern="^dbser_guid=([A-Fa-f0-9\-]*)$"
 		    substitution="\1"
 		    abortOnError="0"
 		    showMessageOnError="0">
