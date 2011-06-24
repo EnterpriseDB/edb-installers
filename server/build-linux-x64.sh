@@ -245,7 +245,7 @@ then
     PLL=\$PLL:/lib/libreadline.so.6
 fi
 # Get the PG bin directory path relative to psql caller script.
-PG_BIN_PATH=\`dirname \$0\`
+PG_BIN_PATH=\`dirname "\$0"\`
 
 LD_PRELOAD=\$PLL "\$PG_BIN_PATH/psql.bin" "\$@"
 EOT
