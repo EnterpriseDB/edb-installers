@@ -165,6 +165,7 @@ our \$config = {
     xslt=>'$PG_PGBUILD_WINDOWS_X64\libxslt',
     iconv=>'$PG_PGBUILD_WINDOWS_X64\iconv',
     zlib=>'$PG_PGBUILD_WINDOWS_X64\zlib',        # --with-zlib=<path>
+    uuid=>'$PG_PGBUILD_WINDOWS_X64\uuid-ossp'       # --with-uuid-ossp
 };
 
 1;
