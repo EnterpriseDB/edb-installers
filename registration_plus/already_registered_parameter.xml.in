@@ -1,0 +1,40 @@
+<!-- Open create promotional user account page on enterpriesdb, if user is not registerd -->
+<parameterGroup
+  name="registration_plus"
+  title="${msg(registration_plus.title.value)}"
+  explanation="${msg(registration_plus.explanation.value)}">
+  <parameterList>
+    <choiceParameter
+      name="alreadyRegistered"
+      default="0"
+      width="30"
+      allowEmptyValue="0"
+      cliOptionShow="0"
+      displayType="radiobuttons">
+      <optionList>
+        <option
+          text="${msg(registration_plus.existingemail.no)}"
+          value="0"/>
+        <option
+          text="${msg(registration_plus.existingemail.yes)}"
+          value="1"/>
+      </optionList>
+    </choiceParameter>
+  </parameterList>
+  <!-- Open registration_plus page, if not already registered user -->
+  <postShowPageActionList>
+    <launchBrowser url="https://www.enterprisedb.com/user-login-registration"
+                   abortOnError="1">
+      <ruleList>
+          <isFalse value="${alreadyRegistered}"/>
+      </ruleList>
+    </launchBrowser>
+  </postShowPageActionList>
+  <!-- Check if upgradation is done on older version of @@COMPONENT@@,
+       which does not have this authentication process -->
+  <ruleList>
+    <compareText logic="equals" text="${iExistingEmail}" value=""/>
+    <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
+    <isTrue value="${registration_plus_required}"/>
+  </ruleList>
+</parameterGroup>

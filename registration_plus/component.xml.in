@@ -1,0 +1,20 @@
+<component>
+  <name>userValidation</name>
+  <description>User Validation Scripts</description>
+  <canBeEdited>0</canBeEdited>
+  <selected>0</selected>
+  <show>0</show>
+  <folderList>
+
+    <!-- WIN: Program files -->
+    <folder>
+      <description>UserValidateScripts</description>
+      <destination>${system_temp_directory}/@@TEMPDIR@@</destination>
+      <name>registration_pluswindows</name>
+      <platforms>windows</platforms>
+      <distributionFileList>
+        <distributionDirectory origin="staging/@@WINDIR@@/UserValidation"/>
+      </distributionFileList>
+    </folder>
+  </folderList>
+</component>

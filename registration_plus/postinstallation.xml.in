@@ -1,0 +1,27 @@
+<actionGroup>
+  <actionList>
+    <!-- Write the registered user-name to INI File -->
+    <actionGroup>
+	<actionList>
+	    <iniFileSet file="@@REGISTRY_INI@@" section="@@REGISTRY_PREFIX@@" key="Username" value="${existingEmail}" />
+	    <iniFileSet file="@@REGISTRY_INI@@" section="@@REGISTRY_PREFIX@@" key="MachineID" value="${machine_id}" />
+	    <iniFileSet file="@@REGISTRY_INI@@" section="@@REGISTRY_PREFIX@@" key="InstallationID" value="${installation_id}" />
+	</actionList>
+	<ruleList>
+	    <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+	</ruleList>
+    </actionGroup>
+
+    <actionGroup>
+	<actionList>
+	    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\@@REGISTRY_PREFIX_WIN@@" name="Username" value="${existingEmail}" />
+	    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\@@REGISTRY_PREFIX_WIN@@" name="MachineID" value="${machine_id}" />
+	    <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\@@REGISTRY_PREFIX_WIN@@" name="InstallationID" value="${installation_id}" />
+	</actionList>
+        <ruleList>
+	    <compareText text="${platform_name}" logic="equals" value="windows"/>
+	</ruleList>
+    </actionGroup>
+    <deleteFile path="@@TEMPDIR@@" abortOnError="0" showMessageOnError="0"/>
+  </actionList>
+</actionGroup>

@@ -1,0 +1,239 @@
+<actionGroup>
+  <actionList>
+    <setInstallerVariable name="iExistingEmail" persist="0" value=""/>
+
+    <!-- Set the Installation Directory in case of re-install/upgrade -->
+    <actionGroup>
+      <actionList>
+        <iniFileGet file="@@REGISTRY_INI@@" section="@@REGISTRY_PREFIX@@" key="Username" variable="iExistingEmail">
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </iniFileGet>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\@@REGISTRY_PREFIX_WIN@@" name="Username" variable="iExistingEmail">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </registryGet>
+      </actionList>
+      <ruleList>
+        <stringTest type="not_empty" text="${@@COMPONENT_VERSION@@}"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- Existing install with Username (ignore command-line) -->
+    <setInstallerVariable name="existingEmail" persist="0" value="${iExistingEmail}">
+      <ruleList>
+        <compareText logic="does_not_equal" text="${@@COMPONENT_VERSION@@}" value=""/>
+        <compareText logic="does_not_equal" text="${iExistingEmail}" value=""/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <!-- dummy value for existingEmail, if registration_plus_required set to 0 -->
+    <setInstallerVariable name="existingEmail" value="dummy@nonexists.edb.com">
+      <ruleList>
+        <isFalse value="${registration_plus_required}"/>
+        <compareText logic="equals" text="${iExistingEmail}" value=""/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <throwError text="${msg(registration_plus.emailpassword.not.provided)}" abortOnError="1">
+      <ruleList>
+        <ruleGroup>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <compareText logic="equals" text="${existingEmail}" value=""/>
+            <compareText logic="equals" text="${existingPassword}" value=""/>
+          </ruleList>
+        </ruleGroup>
+        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+        <compareText logic="equals" text="${iExistingEmail}" value=""/>
+        <isTrue value="${registration_plus_required}"/>
+      </ruleList>
+    </throwError>
+
+    <throwError text="${msg(registration_plus.error.invalid.email.value)}">
+      <ruleList>
+        <regExMatch logic="does_not_match" text="${existingEmail}">
+          <pattern>^([\w]+)(([-\.][\w]+)?)*@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)</pattern>
+        </regExMatch>
+        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+        <isTrue value="${registration_plus_required}"/>
+        <compareText logic="equals" text="${iExistingEmail}" value=""/>
+      </ruleList>
+    </throwError>
+
+    <createDirectory path="${system_temp_directory}/@@TEMPDIR@@"/>
+
+    <actionGroup>
+      <actionList>
+
+	<actionGroup>
+	    <actionList>
+	        <!-- Unpack scripts and required libraries -->
+		<unpackDirectory
+		    component="userValidation"
+		    destination="${system_temp_directory}/@@TEMPDIR@@/"
+		    folder="registration_plus${platform_name}"
+		    origin="UserValidation"/>
+
+    
+		<!-- Generate UUID -->
+		<setInstallerVariableFromScriptOutput
+		    name="machine_id"
+		    showMessageOnError="0"
+		    exec="${system_temp_directory}\@@TEMPDIR@@\UserValidation\dbserver_guid.exe"
+		    abortOnError="0"/>
+
+		<setInstallerVariableFromRegEx
+		    name="machine_id"
+		    text="${machine_id}"
+		    pattern="^dbser_guid=([A-Fa-f0-9\-]*)$"
+		    substitution="\1"
+		    abortOnError="0"
+		    showMessageOnError="0">
+		    <ruleList>
+			<compareText logic="does_not_equal" text="${machine_id}" value=""/>
+		    </ruleList>
+		</setInstallerVariableFromRegEx>
+		<setInstallerVariable name="machine_id" value="16a874e6-241e-44ae-b27e-74aecded209a">
+		    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+		    <ruleList>
+			<compareText text="${machine_id}" logic="equals" value=""/>
+			<regExMatch text="${machine_id}" logic="does_not_match" pattern="^([A-Fa-f0-9\-]*)$"/>
+		    </ruleList>
+		</setInstallerVariable>
+	    </actionList>
+	    <ruleList>
+		<compareText logic="equals" text="${platform_name}" value="windows" />
+	    </ruleList>
+	</actionGroup>
+
+        <setInstallerVariableFromScriptOutput name="machine_id" showMessageOnError="0" exec="uuidgen" abortOnError="0">
+           <onErrorActionList>
+              <!-- User predefined value, if uuidgen does not exist/could not generate the uuid -->
+              <setInstallerVariable name="machine_id" value="16a874e6-241e-44ae-b27e-74aecded209a"/>
+           </onErrorActionList>
+	   <ruleList>
+		<compareText logic="does_not_equal" text="${platform_name}" value="windows" />
+	   </ruleList>
+        </setInstallerVariableFromScriptOutput>
+
+	<actionGroup>
+	    <actionList>
+	    
+		<!-- Generate UUID -->
+		<setInstallerVariableFromScriptOutput
+		    name="installation_id"
+		    showMessageOnError="0"
+		    exec="${system_temp_directory}\@@TEMPDIR@@\UserValidation\dbserver_guid.exe"
+		    abortOnError="0"/>
+
+		<setInstallerVariableFromRegEx
+		    name="installation_id"
+		    text="${installation_id}"
+		    pattern="^dbser_guid=([A-Fa-f0-9\-]*)$"
+		    substitution="\1"
+		    abortOnError="0"
+		    showMessageOnError="0">
+		    <ruleList>
+			<compareText logic="does_not_equal" text="${installation_id}" value=""/>
+		    </ruleList>
+		</setInstallerVariableFromRegEx>
+		<setInstallerVariable name="installation_id" value="16a874e6-241e-44ae-b27e-74aecded209b">
+		    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+		    <ruleList>
+			<compareText text="${installation_id}" logic="equals" value=""/>
+			<regExMatch text="${installation_id}" logic="does_not_match" pattern="^([A-Fa-f0-9\-]*)$"/>
+		    </ruleList>
+		</setInstallerVariable>
+	    </actionList>
+	    <ruleList>
+		<compareText logic="equals" text="${platform_name}" value="windows" />
+	    </ruleList>
+	</actionGroup>
+
+        <setInstallerVariableFromScriptOutput name="installation_id" showMessageOnError="0" exec="uuidgen" abortOnError="0">
+           <onErrorActionList>
+              <!-- User predefined value, if uuidgen does not exist/could not generate the uuid -->
+              <setInstallerVariable name="installation_id" value="16a874e6-241e-44ae-b27e-74aecded209b"/>
+           </onErrorActionList>
+	   <ruleList>
+		<compareText logic="does_not_equal" text="${platform_name}" value="windows" />
+	   </ruleList>
+        </setInstallerVariableFromScriptOutput>
+
+        <!-- LIN/LIN-X64/MAC: Unpack existing-enterprisedb-mail authentication scripts -->
+        <actionGroup>
+          <actionList>
+
+	    <!-- Calling authentication-hb.jsp page -->
+            <logMessage text="Authenticating user ${existingEmail}:MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PG_MAJOR_VERSION&amp;Version=PG_MAJOR_VERSION.PG_MINOR_VERSION"/>
+	    <httpGet>
+		<filename>${system_temp_directory}/auth.html</filename>
+		<username>${existingEmail}</username>
+		<password>${existingPassword}</password>
+		<url>BASE_URL/authentication-hb.jsp?MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PG_MAJOR_VERSION&amp;Versi
+on=PG_MAJOR_VERSION.PG_MINOR_VERSION</url>
+		<abortOnError>0</abortOnError>
+		<showMessageOnError>0</showMessageOnError>
+	    </httpGet>
+	    <readFile>
+		<name>auth_result</name>
+		<path>${system_temp_directory}/auth.html</path>
+	    </readFile>
+	    <setInstallerVariableFromRegEx>
+		<name>statusCode</name>
+		<pattern>.*StatusCode=([\d]+).*</pattern>
+		<substitution>\1</substitution>
+		<text>${auth_result}</text>
+	    </setInstallerVariableFromRegEx>
+	    <logMessage text="Status Code: ${statusCode}"/>
+	    <actionGroup>
+	        <actionList>
+		    <logMessage text="Retrieving error message: MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PG_MAJOR_VERSION&amp;Version=PG_MAJOR_VERSION.PG_MINOR_VERSION&amp;InstallerLang=${installation_language_code}&amp;File="/>
+		    <httpGet>
+			<filename>${system_temp_directory}/error.html</filename>
+			<username>${existingEmail}</username>
+			<password>${existingPassword}</password>
+			<url>BASE_URL/geterror-hb.jsp?MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PG_MAJOR_VERSION&amp;Version=PG_MAJOR_VERSION.PG_MINOR_VERSION&amp;InstallerLang=${installation_language_code}&amp;File=</url>
+			<abortOnError>0</abortOnError>
+			<showMessageOnError>0</showMessageOnError>
+		    </httpGet>
+		    <readFile>
+			<name>error_message</name>
+			<path>${system_temp_directory}/error.html</path>
+		    </readFile>
+		    <stringModify text="${error_message}" variable="error_message" logic="trim"/>
+		    <throwError>
+			<text>${error_message}</text>
+			<ruleList>
+			    <stringTest text="${error_message}" type="not_empty"/>
+			</ruleList>
+		    </throwError>
+		    <throwError>
+			<text>${msg(registration_plus.ws.internet.not.connected)}</text>
+			<abortOnError>0</abortOnError>
+			<ruleList>
+			    <stringTest text="${error_message}" type="empty"/>
+			</ruleList>
+		    </throwError>
+		    <logMessage text="Error message returned: ${error_message}"/>
+		</actionList>
+		<ruleList>
+		    <compareText value="${statusCode}" text="401" logic="equals"/>
+		</ruleList>
+	    </actionGroup>
+          </actionList>
+          <ruleList>
+            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+          </ruleList>
+        </actionGroup>
+      </actionList>
+      <ruleList>
+        <isTrue value="${registration_plus_required}"/>
+        <compareText logic="equals" text="${iExistingEmail}" value=""/>
+      </ruleList>
+    </actionGroup>
+  </actionList>
+</actionGroup>
