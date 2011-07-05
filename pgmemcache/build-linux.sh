@@ -1,101 +1,128 @@
 #!/bin/bash
 
-    
 ################################################################################
-# Build preparation
+# pgmemcache Build preparation
 ################################################################################
 
 _prep_pgmemcache_linux() {
 
-    # Enter the source directory and cleanup if required
-    cd $WD/pgmemcache/source
+    echo "############################################"
+    echo "# pgmemcache : LINUX : Build preparation #"
+    echo "############################################"
 
-    if [ -e pgmemcache.linux ];
-    then
-      echo "Removing existing pgmemcache.linux source directory"
-      rm -rf pgmemcache.linux  || _die "Couldn't remove the existing pgmemcache.linux source directory (source/pgmemcache.linux)"
+    PGMEM_PACKAGE_PATH=$WD/pgmemcache
+    PGMEM_PLATFORM=linux
+    PGMEM_STAGING=$PGMEM_PACKAGE_PATH/staging/$PGMEM_PLATFORM
+    PGMEM_SOURCE=$PGMEM_PACKAGE_PATH/source
+
+    # Remove any existing source directory that might exists, and create a clean one
+    if [ -e $PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM ]; then
+        echo "Removing existing source directory (pgmemcache.$PGMEM_PLATFORM/pgmemcache.$PGMEM_PLATFORM)"
+        rm -rf $PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM || _die "Couldn't remove the existing source directory ($PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM)"
     fi
-    if [ -e libmemcached.linux ];
-    then
-      echo "Removing existing libmemcached.linux source directory"
-      rm -rf libmemcached.linux  || _die "Couldn't remove the existing libmemcached.linux source directory (source/libmemcached.linux)"
-    fi
-   
-    echo "Creating source directory ($WD/pgmemcache/source/pgmemcache.linux)"
-    mkdir -p $WD/pgmemcache/source/pgmemcache.linux || _die "Couldn't create the pgmemcache.linux directory"
-    echo "Creating source directory ($WD/pgmemcache/source/libmemcached.linux)"
-    mkdir -p $WD/pgmemcache/source/libmemcached.linux || _die "Couldn't create the libmemcached.linux directory"
-
-    # Grab a copy of the source tree
-    cp -R pgmemcache_$PG_VERSION_PGMEMCACHE/* pgmemcache.linux || _die "Failed to copy the source code (source/pgmemcache_$PG_VERSION_PGMEMCACHE)"
-    chmod -R ugo+w pgmemcache.linux || _die "Couldn't set the permissions on the source directory"
-
-    cp -R libmemcached-$PG_TARBALL_LIBMEMCACHED/* libmemcached.linux || _die "Failed to copy the source code (source/libmemcached-$PG_VERSION_LIBMEMCACHED)"
-    chmod -R ugo+w libmemcached.linux || _die "Couldn't set the permissions on the source directory"
+    cp -r $PGMEM_SOURCE/pgmemcache_$PG_VERSION_PGMEMCACHE $PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM || _die "Couldn't copy the source directory (pgmemcache.$PGMEM_PLATFORM)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/pgmemcache/staging/linux ];
+    if [ -e $PGMEM_STAGING ];
     then
-      echo "Removing existing staging directory"
-      rm -rf $WD/pgmemcache/staging/linux || _die "Couldn't remove the existing staging directory"
+        echo "Removing existing staging directory"
+        rm -rf $PGMEM_STAGING || _die "Couldn't remove the existing staging directory ($PGMEM_STAGING)"
     fi
 
-    ssh $PG_SSH_LINUX "rm -rf $PG_PGHOME_LINUX/include/libmemcached $PG_PGHOME_LINUX/include/postgresql/server/libmemcached" || _die "Failed to remove libmemcached from server staging directory"
-    echo "Creating staging directory ($WD/pgmemcache/staging/linux)"
-    mkdir -p $WD/pgmemcache/staging/linux || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/pgmemcache/staging/linux || _die "Couldn't set the permissions on the staging directory"
-    
+    echo "Creating staging directory ($PGMEM_STAGING)"
+    mkdir -p $PGMEM_STAGING || _die "Couldn't create the staging directory"
+
+    if [ $BUILD_LIBMEMCACHED_LINUX -eq 1 ]; then
+        LIBMEMCACHED_SOURCE=$PGMEM_SOURCE/libmemcached.$PGMEM_PLATFORM
+
+        cp -r $PGMEM_SOURCE/libmemcached-$PG_TARBALL_LIBMEMCACHED $LIBMEMCACHED_SOURCE
+    fi
 
 }
 
 ################################################################################
-# PG Build
+# pgmemcache Build
 ################################################################################
 
 _build_pgmemcache_linux() {
 
-    # Note: Make sure the linux VM contain memcached binary in the PATH.  
+    echo "##############################"
+    echo "# pgmemcache : LINUX : Build #"
+    echo "##############################"
 
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgmemcache/source/libmemcached.linux; CFLAGS=\"-O3 -march=i686\" ./configure prefix=$PG_PGHOME_LINUX --disable-64bit" || _die "Failed to configure libmemcache"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgmemcache/source/libmemcached.linux; make " || _die "Failed to build libmemcached"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgmemcache/source/libmemcached.linux; make install " || _die "Failed to install libmemcached"
+    PGMEM_PACKAGE_PATH=$WD/pgmemcache
+    PGMEM_PLATFORM=linux
+    PGMEM_STAGING=$PGMEM_PACKAGE_PATH/staging/$PGMEM_PLATFORM
+    PGMEM_SOURCE=$PGMEM_PACKAGE_PATH/source/pgmemcache.$PGMEM_PLATFORM
+    PG_PATH=$PG_PGHOME_LINUX
+    PVT_SSH=$PG_SSH_LINUX
+    PVT_REPO=$PG_PATH_LINUX
+    PGMEM_PACKAGE_VM_PATH=$PVT_REPO/pgmemcache/source/pgmemcache.$PGMEM_PLATFORM
+    LIBMEMCACHED_CACHING=$PGMEM_PACKAGE_PATH/cache/libmemcached-$PG_TARBALL_LIBMEMCACHED/$PGMEM_PLATFORM
+    LIBMEMCACHED_CACHING_VM_PATH=$PVT_REPO/pgmemcache/cache/libmemcached-$PG_TARBALL_LIBMEMCACHED/$PGMEM_PLATFORM
 
-    ssh $PG_SSH_LINUX "mv $PG_PGHOME_LINUX/include/libmemcached $PG_PGHOME_LINUX/include/postgresql/server/" || _die "Failed to copy libmemcached to staging directory"
-    ssh $PG_SSH_LINUX "mv $PG_PGHOME_LINUX/include/libhashkit $PG_PGHOME_LINUX/include/postgresql/server/" || _die "Failed to copy libhashkit to staging directory"
- 
-    ssh $PG_SSH_LINUX "mkdir -p $PG_PATH_LINUX/pgmemcache/staging/linux/lib " || _die "Failed to create staging/linux/lib "
-    ssh $PG_SSH_LINUX "mkdir -p $PG_PATH_LINUX/pgmemcache/staging/linux/include " || _die "Failed to create staging/linux/include "
-    ssh $PG_SSH_LINUX "mkdir -p $PG_PATH_LINUX/pgmemcache/staging/linux/share " || _die "Failed to create staging/linux/share "
+    if [ $BUILD_LIBMEMCACHED_LINUX -eq 1 ]; then
+        LIBMEMCACHED_SOURCE=$PVT_REPO/pgmemcache/source/libmemcached.$PGMEM_PLATFORM
 
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgmemcache/source/pgmemcache.linux; PATH=\$PATH:$PG_PGHOME_LINUX/bin make " || _die "Failed to build pgmemcache"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgmemcache/source/pgmemcache.linux; PATH=\$PATH:$PG_PGHOME_LINUX/bin make install " || _die "Failed to install pgmemcache"
-    ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/lib/postgresql/pgmemcache.so $PG_PATH_LINUX/pgmemcache/staging/linux/lib/; rm -f $PG_PGHOME_LINUX/lib/postgresql/pgmemcache.so" || _die "Failed to copy pgmemcache to staging directory"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgmemcache/staging/linux/lib/; chmod 755 pgmemcache.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgmemcache/staging/linux/lib/; for f in \`file pgmemcache.so | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
-    ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/share/postgresql/contrib/pgmemcache.sql $PG_PATH_LINUX/pgmemcache/staging/linux/share/; rm -f $PG_PGHOME_LINUX/share/postgresql/contrib/pgmemcache.sql" || _die "Failed to copy pgmemcache sql to staging directory"
+        ssh $PVT_SSH "cd $LIBMEMCACHED_SOURCE; ./configure --prefix=$LIBMEMCACHED_CACHING_VM_PATH --disable-static && make && make install" || _die "Failed to configure/make/install libmemcached ($PGMEM_PLATFORM)"
 
-    ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/lib/libmemcached* $PG_PATH_LINUX/pgmemcache/staging/linux/lib/ ; rm -f $PG_PGHOME_LINUX/lib/libmemcached* " || _die "Failed to copy libmemcached to staging directory"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgmemcache/staging/linux/lib/; chmod 755 libmemcached*"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgmemcache/staging/linux/lib/; for f in \`file libmemcached* | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
-    ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/lib/libhashkit* $PG_PATH_LINUX/pgmemcache/staging/linux/lib/ ; rm -f $PG_PGHOME_LINUX/lib/libhashkit* " || _die "Failed to copy libhashkit to staging directory"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/include/postgresql/server/libmemcached $PG_PATH_LINUX/pgmemcache/staging/linux/include/; rm -rf $PG_PGHOME_LINUX/include/postgresql/server/libmemcached" || _die "Failed to copy libmemcached folder to staging directory"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/include/postgresql/server/libhashkit $PG_PATH_LINUX/pgmemcache/staging/linux/include/; rm -rf $PG_PGHOME_LINUX/include/postgresql/server/libhashkit" || _die "Failed to copy libhashkit folder to staging directory"
-    
+        # Make all the files readable under the given directory
+        find "$LIBMEMCACHED_CACHING" -exec chmod a+r {} \;
+        # Make all the directories readable, writable and executable under the given directory
+        find "$LIBMEMCACHED_CACHING" -type d -exec chmod a+wrx {} \;
+        # Make all the shared objects readable and executable under the given directory
+        find "$LIBMEMCACHED_CACHING" -name "*.so" -exec chmod a+rx {} \;
+
+    fi
+
+    cd $PGMEM_SOURCE
+    ssh $PVT_SSH "cd $PGMEM_PACKAGE_VM_PATH; PATH=$PG_PATH/bin:$PATH make CFLAGS=\" -I$LIBMEMCACHED_CACHING_VM_PATH/include \" LDFLAGS=\" -L$LIBMEMCACHED_CACHING_VM_PATH/lib \"" || _die "Failed to build the pgmemcache for $PGMEM_PLATFORM"
+
+    cd $PGMEM_SOURCE
+
+    # Copying the binaries
+    mkdir -p $PGMEM_STAGING/include || _die "Failed to create include directory"
+    mkdir -p $PGMEM_STAGING/lib || _die "Failed to create lib directory"
+    mkdir -p $PGMEM_STAGING/share || _die "Failed to create share directory"
+
+    cp $LIBMEMCACHED_CACHING/lib/libmemcached.so* $PGMEM_STAGING/lib || _die "Failed to copy the libmemcached binaries"
+    cp -R $PGMEM_SOURCE/pgmemcache.so $PGMEM_STAGING/lib || _die "Failed to copy the pgmemcache binary"
+    cp -R $PGMEM_SOURCE/*.sql $PGMEM_STAGING/share || _die "Failed to copy the share files for the pgmemcache"
+    cp -R $LIBMEMCACHED_CACHING/include/* $PGMEM_STAGING/include || _die "Failed to copy the header files for the libmemcached"
+
+    chmod a+rx $PGMEM_STAGING/lib/* || _die "Failed to set permissions"
+    chmod a+r $PGMEM_STAGING/share/* || _die "Failed to set permissions"
+
 }
 
 
 ################################################################################
-# PG Build
+# pgmemcache Post Process
 ################################################################################
 
 _postprocess_pgmemcache_linux() {
- 
 
-    cd $WD/pgmemcache
+    echo "#######################################"
+    echo "# pgmemcache : LINUX : Post Process #"
+    echo "#######################################"
+
+    PGMEM_PACKAGE_PATH=$WD/pgmemcache
+    PGMEM_PLATFORM=linux
+    PGMEM_STAGING=$PGMEM_PACKAGE_PATH/staging/$PGMEM_PLATFORM
+
+    cd $PGMEM_PACKAGE_PATH
+
+    # Make all the files readable under the given directory
+    find "$PGMEM_PACKAGE_PATH" -exec chmod a+r {} \;
+    # Make all the directories readable, writable and executable under the given directory
+    find "$PGMEM_PACKAGE_PATH" -type d -exec chmod a+wrx {} \;
+    # Make all the shared objects readable and executable under the given directory
+    find "$PGMEM_PACKAGE_PATH" -name "*.so*" -exec chmod a+rx {} \;
 
     # Build the installer
-    "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
+    "$PG_INSTALLBUILDER_BIN" build installer.xml ${PGMEM_PLATFORM} || _die "Failed to build the installer (${PGMEM_PLATFORM})"
 
     cd $WD
+
 }
 
