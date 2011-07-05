@@ -6,18 +6,36 @@
 if [ $PG_ARCH_OSX = 1 ]; 
 then
     source $WD/pgmemcache/build-osx.sh
+
+    if [ -d $WD/pgmemcache/cache/libmemcached-$PG_TARBALL_LIBMEMCACHED/osx ]; then
+        BUILD_LIBMEMCACHED_OSX=0
+    else
+        BUILD_LIBMEMCACHED_OSX=1
+    fi
 fi
 
 # Linux
 if [ $PG_ARCH_LINUX = 1 ];
 then
     source $WD/pgmemcache/build-linux.sh
+
+    if [ -d $WD/pgmemcache/cache/libmemcached-$PG_TARBALL_LIBMEMCACHED/linux ]; then
+        BUILD_LIBMEMCACHED_LINUX=0
+    else
+        BUILD_LIBMEMCACHED_LINUX=1
+    fi
 fi
 
 # Linux x64
 if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
     source $WD/pgmemcache/build-linux-x64.sh
+
+    if [ -d $WD/pgmemcache/cache/libmemcached-$PG_TARBALL_LIBMEMCACHED/linux-x64 ]; then
+        BUILD_LIBMEMCACHED_LINUX_X64=0
+    else
+        BUILD_LIBMEMCACHED_LINUX_X64=1
+    fi
 fi
 
 # Linux ppc64

@@ -1,115 +1,125 @@
 #!/bin/bash
 
-    
 ################################################################################
-# Build preparation
+# pgmemcache Build preparation
 ################################################################################
 
 _prep_pgmemcache_osx() {
 
-    # Enter the source directory and cleanup if required
-    cd $WD/pgmemcache/source
+    echo "########################################"
+    echo "# pgmemcache : OSX : Build preparation #"
+    echo "########################################"
 
-    if [ -e pgmemcache.osx ];
-    then
-      echo "Removing existing pgmemcache.osx source directory"
-      rm -rf pgmemcache.osx  || _die "Couldn't remove the existing pgmemcache.osx source directory (source/pgmemcache.osx)"
+    PGMEM_PACKAGE_PATH=$WD/pgmemcache
+    PGMEM_PLATFORM=osx
+    PGMEM_STAGING=$PGMEM_PACKAGE_PATH/staging/$PGMEM_PLATFORM
+    PGMEM_SOURCE=$PGMEM_PACKAGE_PATH/source
+
+    # Remove any existing source directory that might exists, and create a clean one
+    if [ -e $PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM ]; then
+        echo "Removing existing source directory (pgmemcache.$PGMEM_PLATFORM/pgmemcache.$PGMEM_PLATFORM)"
+        rm -rf $PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM || _die "Couldn't remove the existing source directory ($PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM)"
     fi
-    if [ -e libmemcachedd.osx ];
-    then
-      echo "Removing existing libmemcachedd.osx source directory"
-      rm -rf libmemcachedd.osx  || _die "Couldn't remove the existing libmemcachedd.osx source directory (source/libmemcachedd.osx)"
-    fi
-   
-    echo "Creating staging directory ($WD/pgmemcache/source/pgmemcache.osx)"
-    mkdir -p $WD/pgmemcache/source/pgmemcache.osx || _die "Couldn't create the pgmemcache.osx directory"
-    echo "Creating staging directory ($WD/pgmemcache/source/libmemcached.osx)"
-    mkdir -p $WD/pgmemcache/source/libmemcached.osx || _die "Couldn't create the libmemcached.osx directory"
-
-    # Grab a copy of the source tree
-    cp -R pgmemcache_$PG_VERSION_PGMEMCACHE/* pgmemcache.osx || _die "Failed to copy the source code (source/pgmemcache_$PG_VERSION_PGMEMCACHE)"
-    chmod -R ugo+w pgmemcache.osx || _die "Couldn't set the permissions on the source directory"
-
-    cp -R libmemcached-$PG_TARBALL_LIBMEMCACHED/* libmemcached.osx || _die "Failed to copy the source code (source/libmemcached-$PG_VERSION_LIBMEMCACHED)"
-    chmod -R ugo+w libmemcached.osx || _die "Couldn't set the permissions on the source directory"
+    cp -r $PGMEM_SOURCE/pgmemcache_$PG_VERSION_PGMEMCACHE $PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM || _die "Couldn't copy the source directory (pgmemcache.$PGMEM_PLATFORM)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/pgmemcache/staging/osx ];
+    if [ -e $PGMEM_STAGING ];
     then
-      echo "Removing existing staging directory"
-      rm -rf $WD/pgmemcache/staging/osx || _die "Couldn't remove the existing staging directory"
+        echo "Removing existing staging directory"
+        rm -rf $PGMEM_STAGING || _die "Couldn't remove the existing staging directory ($PGMEM_STAGING)"
     fi
-   
-    # Remove the libmemcached from server staging directory if left behind.
-    if [ -e $PG_PGHOME_OSX/include/libmemcached ]
-    then 
-       rm -rf $PG_PGHOME_OSX/include/libmemcached || _die "Couldn't remove the libmemcached directory from server staging directory"
-    fi 
-    if [ -e $PG_PGHOME_OSX/include/postgresql/server/libmemcached ]
-    then 
-       rm -rf $PG_PGHOME_OSX/include/postgresql/server/libmemcached || _die "Couldn't remove the libmemcached directory from server staging directory"
-    fi 
-    echo "Creating staging directory ($WD/pgmemcache/staging/osx)"
-    mkdir -p $WD/pgmemcache/staging/osx || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/pgmemcache/staging/osx || _die "Couldn't set the permissions on the staging directory"
-    
+
+    echo "Creating staging directory ($PGMEM_STAGING)"
+    mkdir -p $PGMEM_STAGING || _die "Couldn't create the staging directory"
+
+    if [ $BUILD_LIBMEMCACHED_OSX -eq 1 ]; then
+        LIBMEMCACHED_SOURCE=$PGMEM_SOURCE/libmemcached.$PGMEM_PLATFORM
+
+        cp -r $PGMEM_SOURCE/libmemcached-$PG_TARBALL_LIBMEMCACHED $LIBMEMCACHED_SOURCE
+    fi
 
 }
 
 ################################################################################
-# PG Build
+# pgmemcache Build
 ################################################################################
 
 _build_pgmemcache_osx() {
 
-    cd $PG_PATH_OSX/pgmemcache/source/libmemcached.osx
+    echo "############################"
+    echo "# pgmemcache : OSX : Build #"
+    echo "############################"
 
-    MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PGHOME_OSX  --disable-static --disable-dependency-tracking --enable-fat-binaries || _die "Failed to configure libmemcached"
+    PGMEM_PACKAGE_PATH=$WD/pgmemcache
+    PGMEM_PLATFORM=osx
+    PGMEM_STAGING=$PGMEM_PACKAGE_PATH/staging/$PGMEM_PLATFORM
+    PGMEM_SOURCE=$PGMEM_PACKAGE_PATH/source/pgmemcache.$PGMEM_PLATFORM
+    PG_PATH=$WD/server/staging/$PGMEM_PLATFORM
+    LIBMEMCACHED_CACHING=$PGMEM_PACKAGE_PATH/cache/libmemcached-$PG_TARBALL_LIBMEMCACHED/$PGMEM_PLATFORM
 
-    MACOSX_DEPLOYMENT_TARGET=10.5 make  || _die "Failed to build libmemcached"
-    make install  || _die "Failed to install libmemcached"
+    if [ $BUILD_LIBMEMCACHED_OSX -eq 1 ]; then
+        LIBMEMCACHED_SOURCE=$PGMEM_PACKAGE_PATH/source/libmemcached.$PGMEM_PLATFORM
 
-    mv $PG_PGHOME_OSX/include/libmemcached $PG_PGHOME_OSX/include/postgresql/server/ || _die "Failed to copy libmemcached folder to staging directory"
-    mv $PG_PGHOME_OSX/include/libhashkit $PG_PGHOME_OSX/include/postgresql/server/ || _die "Failed to copy libhashkit folder to staging directory"
- 
-    mkdir -p $PG_PATH_OSX/pgmemcache/staging/osx/lib  || _die "Failed to create staging/osx/lib "
-    mkdir -p $PG_PATH_OSX/pgmemcache/staging/osx/include  || _die "Failed to create staging/osx/include "
-    mkdir -p $PG_PATH_OSX/pgmemcache/staging/osx/share  || _die "Failed to create staging/osx/share "
+        cd $LIBMEMCACHED_SOURCE
 
-    cd $PG_PATH_OSX/pgmemcache/source/pgmemcache.osx; 
-    MACOSX_DEPLOYMENT_TARGET=10.5 PATH=$PATH:$PG_PGHOME_OSX/bin make  || _die "Failed to build pgmemcache"
-    PATH=$PATH:$PG_PGHOME_OSX/bin make install  || _die "Failed to install pgmemcache"
+        MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$LIBMEMCACHED_CACHING --disable-static --disable-dependency-tracking --enable-fat-binaries || _die "Failed to configure libmemcached ($PGMEM_PLATFORM)"
 
-    cp $PG_PGHOME_OSX/lib/postgresql/pgmemcache.so $PG_PATH_OSX/pgmemcache/staging/osx/lib/; rm -f $PG_PGHOME_OSX/lib/postgresql/pgmemcache.so || _die "Failed to copy libpgmemcache to staging directory"
-    cp $PG_PGHOME_OSX/share/postgresql/contrib/pgmemcache.sql $PG_PATH_OSX/pgmemcache/staging/osx/share/; rm -f $PG_PGHOME_OSX/share/postgresql/contrib/pgmemcache.sql || _die "Failed to copy pgmemcache sql to staging directory"
+        MACOSX_DEPLOYMENT_TARGET=10.4 make || _die "Failed to build libmemcached ($PGMEM_PLATFORM)"
+        make install  || _die "Failed to install libmemcached ($PGMEM_PLATFORM)"
 
+    fi
 
-    cp $PG_PGHOME_OSX/lib/libmemcached* $PG_PATH_OSX/pgmemcache/staging/osx/lib/ ; rm -f $PG_PGHOME_OSX/lib/libmemcached*  || _die "Failed to copy libmemcached to staging directory"
-    cp $PG_PGHOME_OSX/lib/libhashkit* $PG_PATH_OSX/pgmemcache/staging/osx/lib/ ; rm -f $PG_PGHOME_OSX/lib/libhashkit*  || _die "Failed to copy libhashkit to staging directory"
-    cp -R $PG_PGHOME_OSX/include/postgresql/server/libmemcached $PG_PATH_OSX/pgmemcache/staging/osx/include/; rm -rf $PG_PGHOME_OSX/include/postgresql/server/libmemcached || _die "Failed to copy memcache folder to staging directory"
-    cp -R $PG_PGHOME_OSX/include/postgresql/server/libhashkit $PG_PATH_OSX/pgmemcache/staging/osx/include/; rm -rf $PG_PGHOME_OSX/include/postgresql/server/libhashkit || _die "Failed to copy hashkit folder to staging directory"
+    cd $PGMEM_SOURCE
+    PATH=$PG_PATH/bin:$PATH make CFLAGS=" -I$LIBMEMCACHED_CACHING/include " LDFLAGS=" -L$LIBMEMCACHED_CACHING/lib " || _die "Failed to build the pgmemcache for $PGMEM_PLATFORM"
 
-    cd $PG_PATH_OSX/pgmemcache/staging/osx/lib
+    # Copying the binaries
+    mkdir -p $PGMEM_STAGING/include || _die "Failed to create include directory"
+    mkdir -p $PGMEM_STAGING/lib || _die "Failed to create lib directory"
+    mkdir -p $PGMEM_STAGING/share || _die "Failed to create share directory"
 
+    cp $LIBMEMCACHED_CACHING/lib/libmemcached.*.dylib $PGMEM_STAGING/lib || _die "Failed to copy the libmemcached binaries"
+    cp -R $PGMEM_SOURCE/pgmemcache.so $PGMEM_STAGING/lib || _die "Failed to copy the pgmemcache binary"
+    cp -R $PGMEM_SOURCE/*.sql $PGMEM_STAGING/share || _die "Failed to copy the share files for the pgmemcache"
+    cp -R $LIBMEMCACHED_CACHING/include/* $PGMEM_STAGING/include || _die "Failed to copy the header files for the libmemcached"
+
+    chmod a+rx $PGMEM_STAGING/lib/* || _die "Failed to set permissions"
+    chmod a+r $PGMEM_STAGING/share/* || _die "Failed to set permissions"
+
+    cd $PGMEM_STAGING/lib
     filelist=`ls *.dylib`
     for file in $filelist
     do
-        new_id=`otool -D $file | grep -v : | sed -e "s:$PG_PGHOME_OSX/lib/::g"`  
+        new_id=`otool -D $file | grep -v : | sed -e "s:$LIBMEMCACHED_CACHING/lib/::g"`
         install_name_tool -id $new_id $file
     done
-    
-    install_name_tool -change $PG_PGHOME_OSX/lib/libmemcached.2.dylib @loader_path/../lib/libmemcached.2.dylib pgmemcache.so
+
+    install_name_tool -change $LIBMEMCACHED_CACHING/lib/libmemcached.8.dylib @loader_path/../lib/libmemcached.8.dylib pgmemcache.so
+
 }
 
 
 ################################################################################
-# PG Build
+# pgmemcache Post Process
 ################################################################################
 
 _postprocess_pgmemcache_osx() {
- 
 
-    cd $WD/pgmemcache
+    echo "###################################"
+    echo "# pgmemcache : OSX : Post Process #"
+    echo "###################################"
+
+    PGMEM_PACKAGE_PATH=$WD/pgmemcache
+    PGMEM_PLATFORM=osx
+    PGMEM_STAGING=$PGMEM_PACKAGE_PATH/staging/$PGMEM_PLATFORM
+
+    cd $PGMEM_PACKAGE_PATH
+
+    # Make all the files readable under the given directory
+    find "$PGMEM_PACKAGE_PATH" -exec chmod a+r {} \;
+    # Make all the directories readable, writable and executable under the given directory
+    find "$PGMEM_PACKAGE_PATH" -type d -exec chmod a+wrx {} \;
+    # Make all the shared objects readable and executable under the given directory
+    find "$PGMEM_PACKAGE_PATH" -name "*.dylib" -exec chmod a+rx {} \;
 
     if [ -f installer_1.xml ]; then
         rm -f installer_1.xml
@@ -121,28 +131,31 @@ _postprocess_pgmemcache_osx() {
 
         # Build the installer (for the root privileges required)
         echo Building the installer with the root privileges required
-        "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
-        cp $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/Contents/MacOS/psqlODBC $WD/scripts/risePrivileges || _die "Failed to copy privileges escalation applet"
+        "$PG_INSTALLBUILDER_BIN" build installer_1.xml $PGMEM_PLATFORM || _die "Failed to build the installer"
+        cp $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/Contents/MacOS/pgmemcache-pg$PG_CURRENT_VERSION $WD/scripts/risePrivileges || _die "Failed to copy privileges escalation applet"
         rm -rf $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app
+
+        if [ -f installer_1.xml ]; then
+            rm -f installer_1.xml
+        fi
     fi
 
     # Build the installer
-    "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
+    "$PG_INSTALLBUILDER_BIN" build installer.xml $PGMEM_PLATFORM || _die "Failed to build the installer"
 
     # Using own scripts for extract-only mode
     cp -f $WD/scripts/risePrivileges $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/Contents/MacOS/pgmemcache-pg$PG_CURRENT_VERSION
     chmod a+x $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/Contents/MacOS/pgmemcache-pg$PG_CURRENT_VERSION
     cp -f $WD/resources/extract_installbuilder.osx $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/Contents/MacOS/installbuilder.sh
     _replace @@PROJECTNAME@@ pgmemcache-pg$PG_CURRENT_VERSION $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/Contents/MacOS/installbuilder.sh
-    chmod a+x $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/Contents/MacOS/installbuilder.sh
+    chmod a+rwx $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/Contents/MacOS/installbuilder.sh
 
     # Zip up the output
     cd $WD/output
     zip -r pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.zip pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/ || _die "Failed to zip the installer bundle"
     rm -rf pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
-
-
     cd $WD
+
 }
 
