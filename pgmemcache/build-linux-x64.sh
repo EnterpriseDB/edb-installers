@@ -32,9 +32,12 @@ _prep_pgmemcache_linux_x64() {
     echo "Creating staging directory ($PGMEM_STAGING)"
     mkdir -p $PGMEM_STAGING || _die "Couldn't create the staging directory"
 
-    if [ $BUILD_LIBMEMCACHED_LINUX_X64 -eq 1 ]; then
-        LIBMEMCACHED_SOURCE=$PGMEM_SOURCE/libmemcached.$PGMEM_PLATFORM
+    LIBMEMCACHED_SOURCE=$PGMEM_SOURCE/libmemcached.$PGMEM_PLATFORM
+    if [ -d $LIBMEMCACHED_SOURCE ]; then
+        rm -rf $LIBMEMCACHED_SOURCE
+    fi
 
+    if [ $BUILD_LIBMEMCACHED_LINUX_X64 -eq 1 ]; then
         cp -r $PGMEM_SOURCE/libmemcached-$PG_TARBALL_LIBMEMCACHED $LIBMEMCACHED_SOURCE
     fi
 
