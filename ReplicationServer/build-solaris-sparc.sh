@@ -174,6 +174,8 @@ _postprocess_ReplicationServer_solaris_sparc() {
     
     # Copy in installation xdg Files
     cp -R $WD/scripts/xdg/xdg* staging/solaris-sparc/installer/xdg || _die "Failed to copy the xdg files "
+    
+    _replace @@COMPONENT_FILE@@ "component.xml" installer.xml || _die "Failed to replace the registration_plus component file name"
      
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-sparc || _die "Failed to build the installer"

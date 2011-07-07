@@ -83,6 +83,9 @@ _prep_MigrationToolKit() {
 
     cd $WD/MigrationToolKit/source 
     extract_file $WD/tarballs/pgJDBC-$PG_VERSION_PGJDBC
+
+    # Clean up the registration plus xmls
+    rm -f $WD/MigrationToolKit/staging/*.xml
     
     # Per-platform prep
     cd $WD
@@ -190,8 +193,8 @@ _postprocess_MigrationToolKit() {
     _replace PG_VERSION_MIGRATIONTOOLKIT $PG_VERSION_MIGRATIONTOOLKIT installer.xml || _die "Failed to set the major version in the installer project file (MigrationToolKit/installer.xml)"
     _replace PG_BUILDNUM_MIGRATIONTOOLKIT $PG_BUILDNUM_MIGRATIONTOOLKIT installer.xml || _die "Failed to set the Build Number in the installer project file (MigrationToolKit/installer.xml)"
 
-    #_registration_postprocess(STAGING DIRECTORY, COMPONENT NAME, VERSION VARIABLE, INI, REGISTRY_PREFIX, REGISTRY_PREFIX_WIN, TEMP DIRECTORY, COMONENT TYPE)
-    _registration_postprocess "$WD/MigrationToolKit/staging"  "MigrationToolKit"         "MigrationToolkitVersion" "/etc/postgres-reg.ini" "MigrationToolkit" "MigrationToolkit" "mtk" "mtk"
+    #_registration_postprocess(STAGING DIRECTORY, COMPONENT NAME, VERSION VARIABLE, INI, REGISTRY_PREFIX, REGISTRY_PREFIX_WIN, TEMP DIRECTORY, PG_MAJOR_VERSIONm PG_MINOR_VERSION)
+    _registration_plus_postprocess "$WD/MigrationToolKit/staging"  "MigrationToolKit" "MigrationToolkitVersion" "/etc/postgres-reg.ini" "MigrationToolkit" "MigrationToolkit" "mtk" "$PG_MAJOR_VERSION" "$PG_MINOR_VERSION"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

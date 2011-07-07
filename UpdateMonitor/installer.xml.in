@@ -1,0 +1,918 @@
+<project>
+  <!-- Package details -->
+  <shortName>updatemonitor</shortName>
+  <fullName>UpdateMonitor</fullName>
+  <version>PG_VERSION_UPDATE_MONITOR-PG_BUILDNUM_UPDATE_MONITOR</version>
+  <!-- These options are used on Windows -->
+  <startMenuGroupName>${branding}</startMenuGroupName>
+  <!-- Product Specific Options -->
+  <productComments>Update Monitor for the PostgreSQL</productComments>
+  <productDisplayName>Update Monitor ${productVersion}</productDisplayName>
+  <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
+  <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
+  <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
+  <!-- The options are used for RPM registration -->
+  <description>Update Monitor for the PostgreSQL server</description>
+  <summary>Update Monitor for the PostgreSQL server, by EnterpriseDB</summary>
+  <vendor>EnterpriseDB</vendor>
+
+  <!-- Installer Size -->
+  <width>550</width>
+  <height>400</height>
+
+  <!-- Misc options -->
+  <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+  <windowsSoftwareRegistryPrefix/>
+  <compressionAlgorithm>lzma</compressionAlgorithm>
+  <unattendedModeUI>minimal</unattendedModeUI>
+  <enableRollback>0</enableRollback>
+  <saveRelativePaths>1</saveRelativePaths>
+  <uninstallerName>uninstall-${product_shortname}</uninstallerName>
+  <outputDirectory>../output</outputDirectory>
+  <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+  <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
+  <allowWindowResize>1</allowWindowResize>
+  <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
+  <wrapLicenseFileText>1</wrapLicenseFileText>
+  <licenseFile encoding="utf-8">resources/licence.txt</licenseFile>
+  <!-- Images -->
+  <disableSplashScreen>1</disableSplashScreen>
+  <leftImage>../resources/edb-side.png</leftImage>
+
+  <!-- i18n files for the UI -->
+  <allowedLanguages>en</allowedLanguages>
+  <customLanguageFileList>
+    <language code="en" encoding="iso8859-1" file="i18n/en.lng"/>
+  </customLanguageFileList>
+
+  <preShowHelpActionList>
+    <!-- MAC : Set the default installation directory -->
+    <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgreSQL/UpdateMonitor">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
+      </ruleList>
+    </setInstallerVariable>
+    <!-- LIN : Set the default installation directory -->
+    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgreSQL/UpdateMonitor">
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </setInstallerVariable>
+    <!-- WIN : Set the default installation directory -->
+    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgreSQL\UpdateMonitor">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </setInstallerVariable>
+  </preShowHelpActionList>
+
+  <!-- Prebuild Actons-->
+  <preBuildActionList>
+    <setInstallerVariable name="originalplatform" value="${platform_name}"/>
+    <setInstallerVariable name="originalplatform" value="linux-x32">
+      <ruleList>
+        <compareText text="${platform_name}" value="linux"/>
+      </ruleList>
+    </setInstallerVariable>
+  </preBuildActionList>
+
+  <initializationActionList>
+    <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
+    <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_UPDATE_MONITOR"/>
+
+    <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
+    <throwError customErrorMessage="${msg(platform.not.match)}" text="Unknown Error">
+      <ruleList>
+      <platformTest type="linux-x64"/>
+      <compareText text="${originalplatform}" value="linux-x32"/>
+      </ruleList>
+    </throwError>
+    <!-- Custom Page for Registration -->
+    <include file="staging/registration_plus_initialization.xml"/>
+
+  </initializationActionList>
+
+  <preInstallationActionList>
+
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="branding" value=""/>
+        <!-- Do not create uninstaller in case of extract-only mode -->
+        <setInstallerVariable name="createUninstaller" value="0" persist="1"/>
+      </actionList>
+      <ruleList>
+        <isTrue value="${extract_mode}"/>
+      </ruleList>
+    </actionGroup>
+
+    <setInstallerVariable name="pgMajorVersion" value="PG_MAJOR_VERSION" />
+    <setInstallerVariable name="iUMVersion" value="" />
+
+    <!-- Do not perform the below actions in case of extract-only mode -->
+    <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgreSQL/UpdateMonitor">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <!-- LIN | Solaris : Set the default installation directory -->
+    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgreSQL/UpdateMonitor">
+      <ruleEvaluationLogic>or</ruleEvaluationLogic>
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+        <compareText logic="contains" text="${platform_name}" value="solaris"/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <!-- WIN : Set the default installation directory -->
+    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgreSQL\UpdateMonitor">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </setInstallerVariable>
+
+    <actionGroup>
+      <actionList>
+        <!-- Abort installation if not super-user and not running in extract-only mode-->
+        <throwError text="${msg(Installer.Warning.RootPrivileges)}">
+          <ruleList>
+            <isFalse value="${installer_is_root_install}"/>
+          </ruleList>
+        </throwError>
+        <setInstallerVariable name="project.windowsSoftwareRegistryPrefix" value="${project.vendor}\${project.fullName}"/>
+
+        <!-- Creates the ini file if not exits -->
+        <touchFile path="/etc/postgres-reg.ini">
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </touchFile>
+
+        <setInstallerVariable name="system_user" value="${env(SUDO_USER)}" />
+        <setInstallerVariable name="system_user" value="${env(USER)}" >
+            <ruleList>
+                <compareText logic="equals" text="${system_user}" value=""/>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- LIN & MAC : Get the branding & check Previous Installation of -->
+        <actionGroup>
+          <actionList>
+            <iniFileGet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="InstallationDirectory" variable="iInstalldir"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="Branding" variable="iBranding"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="Version" variable="iUMVersion"/>
+          </actionList>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+
+        <!-- WIN : Check Previous Installation of UpdateMonitor-->
+        <actionGroup>
+          <actionList>
+            <!-- Get the branding -->
+            <registryGet name="InstallationDirectory" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\UpdateMonitor" variable="iInstalldir"/>
+            <registryGet name="Branding" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\UpdateMonitor" variable="iBranding"/>
+            <registryGet name="Version" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\UpdateMonitor" variable="iUMVersion"/>
+          </actionList>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+
+        <!-- If there appears to be an existing installation, with no Branding value. -->
+        <!-- force the default value. Otherwise, set the branding to whatever we read, -->
+        <!-- or, set the default -->
+
+        <!-- Existing install, with branding -->
+        <setInstallerVariable name="branding" persist="1" value="${iBranding}">
+          <ruleList>
+            <compareText logic="does_not_equal" text="${iBranding}" value=""/>
+          </ruleList>
+        </setInstallerVariable>
+
+        <!-- New install, nothing set on the command line -->
+        <setInstallerVariable name="branding" persist="1" value="PostgreSQL">
+          <ruleList>
+            <compareText logic="equals" text="${branding}" value=""/>
+          </ruleList>
+        </setInstallerVariable>
+
+        <logMessage text="Using branding: ${branding}"/>
+
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installationType" value="upgrade" />
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${iUMVersion}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+        <!-- Set the installation directory in case of re-install/upgrade -->
+	<setInstallerVariable name="installdir" value="${iInstalldir}">
+	    <ruleList>
+		<compareText text="${iInstalldir}" logic="does_not_equal" value="" />
+	    </ruleList>
+	</setInstallerVariable>
+
+	<actionGroup>
+	    <actionList>
+		<iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/PG_MAJOR_VERSION" key="InstallationDirectory" variable="pg_home">
+		    <ruleList>
+			<compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+		    </ruleList>
+		</iniFileGet>
+    		<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION" 
+			name="Base Directory" variable="pg_home" wowMode="64">
+		    <ruleList>
+			<compareText text="${platform_name}" logic="equals" value="windows" />
+			<platformTest type="windows-x64" />
+		    </ruleList>
+		</registryGet>
+		<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION" 
+			name="Base Directory" variable="pg_home" wowMode="32">
+		    <ruleList>
+			<compareText text="${platform_name}" logic="equals" value="windows" />
+			<compareText text="${pg_home}" logic="equals" value="" />
+		    </ruleList>
+		</registryGet>
+
+		<throwError text="${msg(error.pg.not.found)}" >
+		    <ruleList>
+			<compareText text="${pg_home}" logic="equals" value="" />
+		    </ruleList>
+		</throwError>
+	    </actionList>
+	    <ruleList>
+		<compareText text="${iUMVersion}" logic="equals" value="" />
+	    </ruleList>
+	</actionGroup>
+      </actionList>
+      <ruleList>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- Custom Page for Registration -->
+    <include file="staging/registration_plus_preinstallation.xml"/>
+  </preInstallationActionList>
+
+  <readyToInstallActionList>
+    <actionGroup>
+      <actionList>
+        <!-- Stop the montioring if installed, after UM exe name change -->
+        <kill path="${installdir}\bin\UpdManager.exe" >
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+            <compareText logic="does_not_equal" text="${iUMVersion}" value=""/>
+            <fileExists path="${installdir}\bin\UpdManager.exe" />
+          </ruleList>
+        </kill>
+        <runProgram program="kill">
+           <programArguments>-9 `ps ax | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+           <abortOnError>0</abortOnError>
+           <showMessageOnError>0</showMessageOnError>
+           <ruleList>
+             <compareText logic="contains" text="${platform_name}" value="linux"/>
+             <compareText logic="does_not_equal" text="${iUMVersion}" value=""/>
+           </ruleList>
+        </runProgram>
+        <runProgram program="kill">
+           <programArguments>-9 `ps awx | grep "${installdir}/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+           <abortOnError>0</abortOnError>
+           <showMessageOnError>0</showMessageOnError>
+           <ruleList>
+             <compareText logic="equals" text="${platform_name}" value="osx"/>
+             <compareText logic="does_not_equal" text="${iUMVersion}" value=""/>
+           </ruleList>
+        </runProgram>
+        <runProgram program="kill">
+           <programArguments>-9 `ps -ef | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $2}'`</programArguments>
+           <abortOnError>0</abortOnError>
+           <showMessageOnError>0</showMessageOnError>
+           <ruleList>
+             <compareText logic="contains" text="${platform_name}" value="solaris"/>
+             <compareText logic="does_not_equal" text="${iUMVersion}" value=""/>
+           </ruleList>
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
+    </actionGroup>
+  </readyToInstallActionList>
+
+  <postInstallationActionList>
+
+    <!-- Do not perform the below actions in case of extract-only mode -->
+    <actionGroup>
+      <actionList>
+        <!-- Set the installation date -->
+        <createTimeStamp format="%Y-%m-%d" variable="installDate"></createTimeStamp>
+    
+        <!-- Remember it for the uninstaller -->
+        <setInstallerVariable name="monitorServer" persist="1" value="${monitorServer}"/>
+        <setInstallerVariable name="installdir" persist="1" value="${installdir}"/>
+    
+        <actionGroup>
+          <actionList>
+            <iniFileSet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="Description" value="${msg(install.summary)}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="InstallationDirectory" value="${installdir}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="Version" value="${product_version}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="InstallationDate" value="${installDate}">
+              <ruleList>
+                <compareText logic="equals" text="${iUMVersion}" value=""/>
+              </ruleList>
+            </iniFileSet>
+          </actionList>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+    
+        <!-- Branding info -->
+        <logMessage text="Write the branding to the ini file..."/>
+    
+        <iniFileSet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="Branding" value="${branding}">
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </iniFileSet>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\UpdateMonitor" name="Description" value="${msg(install.summary)}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\UpdateMonitor" name="InstallationDirectory" value="${installdir}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\UpdateMonitor" name="Version" value="${product_version}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\UpdateMonitor" name="Branding" value="${branding}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\UpdateMonitor" name="InstallationDate" value="${installDate}">
+            <ruleList>
+              <compareText logic="equals" text="${iUMVersion}" value=""/>
+            </ruleList>
+        </registrySet>
+        <substitute>
+          <files>${installdir}/scripts/launchUpdateMonitor.vbs</files>
+          <substitutionList>
+             <substitution pattern="INSTALL_DIR" value="${installdir}"/>
+             <substitution pattern="STACKBUILDER_DIR" value="${pg_home}"/>
+          </substitutionList>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </substitute>
+    
+        <substitute>
+          <files>${installdir}/scripts/launchUpdateMonitor.sh</files>
+          <substitutionList>
+             <substitution pattern="INSTALL_DIR" value="${installdir}"/>
+             <substitution pattern="STACKBUILDER_DIR" value="${pg_home}"/>
+             <substitution pattern="BRANDING" value="${branding}"/>
+          </substitutionList>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </substitute>
+    
+        <actionGroup>
+          <actionList>
+            <substitute>
+              <files>${installdir}/scripts/xdg/edb-updatemonitor-update-monitor.desktop</files>
+              <substitutionList>
+                <substitution pattern="@@INSTALL_DIR@@" value="${installdir}"/>
+              </substitutionList>
+            </substitute>
+    
+            <!-- Create shourtcuts for linux/linux-x64/osx -->
+            <runProgram program="${installdir}/installer/UpdateMonitor/configlibs.sh"
+                        programArguments=""
+                        progressText="${msg(progress.text.fixing.libs)}"
+                        abortOnError="0"
+                        showMessageOnError="0">
+                <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                <ruleList>
+                  <compareText logic="contains" text="${platform_name}" value="linux"/>
+                  <compareText logic="contains" text="${platform_name}" value="solaris"/>
+                </ruleList>
+            </runProgram>
+    
+          </actionList>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+    
+        <actionGroup>
+          <actionList>
+            <!-- WIN: Register launchUpdateMonitor script as a startup script -->
+            <registrySet key="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+                         name="UpdateMonitor"
+                         value="&quot;${installdir}\bin\UpdManager.exe&quot; --execute  &quot;${installdir}\bin\updatemonitor.exe&quot;"/>
+    
+            <actionGroup>
+               <actionList>
+                   <runProgram program="${installdir}/installer/UpdateMonitor/startupcfg.sh"
+                               programArguments="${installdir} &quot;${branding}&quot;"
+                               abortOnError="0"
+                               showMessageOnError="0"/>
+                   <substitute>
+                      <files>${installdir}/scripts/LaunchUpdateManager.app/Contents/Info.plist</files>
+                      <substitutionList>
+                          <substitution pattern="&lt;/dict&gt;" value="        &lt;key&gt;LSUIElement&lt;/key&gt; &lt;string&gt;1&lt;/string&gt; &lt;/dict&gt;"/>
+                      </substitutionList>
+                   </substitute>
+    
+                   <runProgram program="/usr/bin/defaults"
+                               programArguments="read loginwindow AutoLaunchedApplicationDictionary"
+                               runAs="${system_user}"
+                               abortOnError="0"
+                               showMessageOnError="0"/>
+                   <runProgram program="/usr/bin/defaults"
+                               programArguments="write loginwindow AutoLaunchedApplicationDictionary -array-add &quot;&lt;dict&gt;&lt;key&gt;Hide&lt;/key&gt;&lt;true/&gt;&lt;key&gt;Path&lt;/key&gt;&lt;string&gt;${installdir}/scripts/LaunchUpdateManager.app&lt;/string&gt;&lt;/dict&gt;&quot;"
+                               runAs="${system_user}"
+                               abortOnError="0"
+                               showMessageOnError="0">
+                               <ruleList>
+                                    <regExMatch text="${program_stdout}" logic="does_not_match" pattern="^.*${installdir}/scripts/LaunchUpdateManager.*$"/>
+                               </ruleList>
+                   </runProgram>
+               </actionList>
+               <ruleList>
+                   <compareText logic="equals" text="${platform_name}" value="osx"/>
+               </ruleList>
+            </actionGroup>
+    
+            <!-- LIN/LIN-X64: Register Update Monitor as a startup script -->
+            <actionGroup>
+              <actionList>
+                <setInstallerVariable name="xdg_config_dir_str" value="${env(XDG_CONFIG_DIRS)}"/>
+                <setInstallerVariable name="xdg_config_dir_str" value="/etc/xdg">
+                  <ruleList>
+                    <compareText text="${xdg_config_dir_str}" logic="equals" value=""/>
+                  </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariableFromRegEx>
+                  <name>xdg_config_dir</name>
+                  <text>${xdg_config_dir_str}</text>
+                  <pattern>^[:]*(.*)[:]*$</pattern>
+                  <substitution>\1</substitution>
+                </setInstallerVariableFromRegEx>
+    
+                <createDirectory path="${xdg_config_dir}/autostart">
+                  <ruleList>
+                    <fileTest condition="not_exists" path="${xdg_config_dir}/autostart"/>
+                  </ruleList>
+                </createDirectory>
+                <substitute>
+                  <files>${installdir}/scripts/xdg/edb-um-update-monitor.desktop</files>
+                  <substitutionList>
+                    <substitution pattern="@@INSTALL_DIR@@" value="${installdir}"/>
+                  </substitutionList>
+                </substitute>
+    
+                <!-- Make sure, this will start after the gnome/kde system tray get initialized -->
+                <copyFile origin="${installdir}/scripts/xdg/edb-um-update-monitor.desktop"
+                          destination="${xdg_config_dir}/autostart/zzz-edb-um-update-monitor.desktop"/>
+              </actionList>
+              <ruleList>
+                <compareText text="${platform_name}" logic="contains" value="linux"/>
+              </ruleList>
+            </actionGroup>
+
+            <!-- Add UM launch script to gnome/default.session for autostart on user login -->    
+            <actionGroup>
+              <actionList>
+                 <readFile path="/usr/share/gnome/default.session" name="conf_file" />
+                 <setInstallerVariableFromRegEx>
+                    <name>num_client</name>
+                    <text>${conf_file}</text>
+                    <pattern>^.*num_clients\s*=\s*([\d]+)\s*.*$</pattern>
+                    <substitution>\1</substitution>
+                 </setInstallerVariableFromRegEx>
+                 <!-- Make it available in the uninstaller as well -->  
+                 <setInstallerVariable name="num_client" value="${num_client}" persist="1" />
+
+                 <mathExpression text="${num_client} + 1" variable="new_num_client" >
+                    <ruleList>
+                       <compareText text="${num_client}" logic="does_not_equal" value="" />
+                    </ruleList>
+                 </mathExpression>
+                 <substitute>
+                    <files>/usr/share/gnome/default.session</files>
+                    <substitutionList>
+                        <substitution>
+                             <pattern>num_clients=[\d]+</pattern> 
+                             <value>num_clients=${new_num_client}</value>
+                        </substitution>
+                    </substitutionList>
+                 </substitute>    
+                 <addTextToFile>
+                    <file>/usr/share/gnome/default.session</file>
+                    <text>${num_client},id=default${num_client}
+${num_client},Priority=50
+${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
+</text> 
+                 </addTextToFile>
+              </actionList>
+              <ruleList>
+                <compareText text="${platform_name}" logic="contains" value="solaris"/>
+                <compareText text="${iUMVersion}" logic="equals" value=""/>
+              </ruleList>
+            </actionGroup>
+          </actionList>
+        </actionGroup>
+    
+        <!-- Start Monitoring Service if installed -->
+        <runProgram program="${installdir}/scripts/launchUpdateMonitor.sh"
+                    programArguments=""
+                    runAs="${system_user}"
+                    showMessageOnError="0"
+                    abortOnError="0">
+          <ruleList>
+            <compareText text="${platform_name}" logic="contains" value="linux"/>
+            <fileExists path="${installdir}/scripts/launchUpdateMonitor.sh" />
+          </ruleList>
+       </runProgram>
+       <runProgram program="${installdir}/scripts/launchUpdateMonitor.sh"
+                    programArguments=""
+                    runAs="${system_user}"
+                    showMessageOnError="0"
+                    abortOnError="0">
+          <ruleList>
+            <compareText text="${platform_name}" logic="contains" value="solaris"/>
+            <fileExists path="${installdir}/scripts/launchUpdateMonitor.sh" />
+          </ruleList>
+        </runProgram>
+        <runProgram program="${installdir}/scripts/LaunchUpdateManager.app/Contents/MacOS/applet"
+                    programArguments=""
+                    runAs="${system_user}"
+                    showMessageOnError="0"
+                    abortOnError="0">
+          <ruleList>
+            <compareText text="${platform_name}" logic="equals" value="osx"/>
+            <fileExists path="${installdir}/scripts/LaunchUpdateManager.app/Contents/MacOS/applet" />
+          </ruleList>
+        </runProgram>
+    
+        <runProgram>
+            <program>wscript</program>
+            <programArguments>//NOLOGO "${installdir}\scripts\launchUpdateMonitor.vbs"</programArguments>
+            <workingDirectory>"${installdir}\scripts"</workingDirectory>
+            <showMessageOnError>1</showMessageOnError>
+            <abortOnError>0</abortOnError>
+            <ruleList>
+               <compareText text="${platform_name}" logic="equals" value="windows"/>
+               <fileExists path="${installdir}\scripts\launchUpdateMonitor.vbs" />
+            </ruleList>
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
+    </actionGroup>
+    <actionGroup>
+      <actionList>
+        <substitute>
+          <files>${installdir}/scripts/launchUpdateMonitor.vbs</files>
+          <substitutionList>
+             <substitution pattern="INSTALL_DIR" value="${installdir}"/>
+             <substitution pattern="STACKBUILDER_DIR" value="${pg_home}"/>
+          </substitutionList>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </substitute>
+    
+        <substitute>
+          <files>${installdir}/scripts/launchUpdateMonitor.sh</files>
+          <substitutionList>
+             <substitution pattern="INSTALL_DIR" value="${installdir}"/>
+             <substitution pattern="STACKBUILDER_DIR" value="${pg_home}"/>
+          </substitutionList>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </substitute>
+      </actionList>
+      <ruleList>
+        <isTrue value="${extract_mode}"/>
+      </ruleList>
+    </actionGroup>
+    
+    <!-- Custom Page for Registration -->
+    <include file="staging/registration_plus_postinstallation.xml"/>
+
+  </postInstallationActionList>
+
+  <!-- preUninstallation actions -->
+  <preUninstallationActionList>
+
+    <!-- Abort uninstallation if not super-user/Administrator -->
+    <actionGroup>
+      <actionList>
+        <showWarning text="${msg(Installer.Warning.UninstallerAdministratorPrivileges)}"/>
+        <exit/>
+      </actionList>
+      <ruleList>
+        <isFalse value="${installer_is_root_install}"/>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+    <actionGroup>
+      <actionList>
+        <showWarning text="${msg(Installer.Warning.UninstallerRootPrivileges)}"/>
+        <exit/>
+      </actionList>
+      <ruleList>
+        <isFalse value="${installer_is_root_install}"/>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- Stop the montioring if installed -->
+    <kill path="${installdir}\bin\UpdManager.exe" >
+      <abortOnError>0</abortOnError>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </kill>
+
+    <actionGroup>
+      <actionList>
+        <runProgram program="kill">
+           <programArguments>-9 `ps ax | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+           <abortOnError>0</abortOnError>
+           <showMessageOnError>0</showMessageOnError>
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </actionGroup>
+
+    <actionGroup>
+      <actionList>
+        <runProgram program="kill">
+           <programArguments>-9 `ps -ef | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $2}'`</programArguments>
+           <abortOnError>0</abortOnError>
+           <showMessageOnError>0</showMessageOnError>
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="solaris"/>
+      </ruleList>
+    </actionGroup>
+
+    <actionGroup>
+      <actionList>
+        <runProgram program="kill">
+           <programArguments>-9 `ps awx | grep "${installdir}/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+           <abortOnError>0</abortOnError>
+           <showMessageOnError>0</showMessageOnError>
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
+      </ruleList>
+    </actionGroup>
+    <actionGroup>
+      <actionList>
+        <iniFileSet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="Description" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="InstallationDirectory" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="Version" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="Branding" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="InstallationDate" value=""/>
+      </actionList>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+    <actionGroup>
+      <actionList>
+        <!-- OSX: Remove the scripts from the startup items, if installed -->
+        <deleteFile path="/Library/LaunchAgents/com.edb.launchd.updatemonitor.plist"
+                showMessageOnError="0"
+                abortOnError="0">
+          <ruleList>
+            <compareText text="${platform_name}" logic="equals" value="osx"/>
+          </ruleList>
+        </deleteFile>
+
+        <!-- WIN: Remove the UpdateMonitor Entry from the Registry as the Startup program -->
+        <registryDelete key="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+                        name="UpdateMonitor Update Monitor"
+                        showMessageOnError="0"
+                        abortOnError="0"/>
+
+        <!-- LIN/LIN-X64: Remove UpdateMonitor Entry from the startup items, if installed -->
+        <setInstallerVariable name="xdg_config_dir" value="${env(XDG_CONFIG_DIRS)}"/>
+        <setInstallerVariable name="xdg_config_dir" value="/etc/xdg">
+          <ruleList>
+            <compareText text="${xdg_config_dir}" logic="equals" value=""/>
+          </ruleList>
+        </setInstallerVariable>
+        <deleteFile path="${xdg_config_dir}/autostart/zzz-edb-um-update-monitor.desktop">
+          <ruleList>
+            <fileExists path="${xdg_config_dir}/autostart/zzz-edb-um-update-monitor.desktop"/>
+          </ruleList>
+        </deleteFile>
+
+      </actionList>
+    </actionGroup>
+    <readFile path="/usr/share/gnome/default.session" name="conf_file" >
+       <ruleList>
+         <compareText logic="contains" text="${platform_name}" value="solaris"/>
+       </ruleList>
+    </readFile>
+    <actionGroup>
+      <actionList>
+          <setInstallerVariableFromRegEx>
+             <name>current_num_client</name>
+             <text>${conf_file}</text>
+             <pattern>^.*num_clients\s*=\s*([\d]+)\s*.*$</pattern>
+             <substitution>\1</substitution>
+          </setInstallerVariableFromRegEx>
+          <mathExpression text="${current_num_client} - 1" variable="new_num_client" >
+             <ruleList>
+                <compareText text="${current_num_client}" logic="does_not_equal" value="" />
+             </ruleList>
+          </mathExpression>
+          <substitute>
+             <files>/usr/share/gnome/default.session</files>
+             <substitutionList>
+                 <substitution>
+                      <pattern>num_clients=[\d]+</pattern>
+                      <value>num_clients=${new_num_client}</value>
+                 </substitution>
+                 <substitution>
+                      <pattern>${num_client},id=default${num_client}
+${num_client},Priority=50
+${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
+</pattern>
+                      <value/>
+                 </substitution>
+             </substitutionList>
+          </substitute>
+       </actionList>
+       <ruleList>
+         <regExMatch text="${conf_file}" pattern="${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;" />
+         <compareText logic="contains" text="${platform_name}" value="solaris"/>
+       </ruleList>
+    </actionGroup>
+
+    <!-- MAC: Remove LaunchUpdateManager  -->
+    <deleteFile path="${installdir}/scripts/LaunchUpdateManager.app">
+      <ruleList>
+        <fileExists path="${installdir}/scripts/LaunchUpdateManager.app"/>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
+      </ruleList>
+    </deleteFile>
+
+    <!-- Custom Page for Registration -->
+    <include file="staging/registration_plus_preuninstallation.xml" />
+
+  </preUninstallationActionList>
+
+  <!-- Components -->
+  <componentList>
+    <component>
+      <name>updatemanager</name>
+      <description>UpdateManager</description>
+      <canBeEdited>0</canBeEdited>
+      <selected>1</selected>
+      <show>1</show>
+      <folderList>
+        <!-- LIN- Program files -->
+        <folder description="Program Files" destination="${installdir}" name="updatemonitorfileslinux" platforms="linux">
+          <distributionFileList>
+            <distributionDirectory origin="staging/linux/UpdateMonitor/bin"/>
+            <distributionDirectory origin="staging/linux/UpdateMonitor/lib"/>
+            <distributionDirectory origin="staging/linux/UpdateMonitor/scripts"/>
+          </distributionFileList>
+        </folder>
+        <!-- LIN-X64 - Program files -->
+        <folder description="Program Files" destination="${installdir}" name="updatemonitorfileslinux-x64" platforms="linux-x64">
+          <distributionFileList>
+            <distributionDirectory origin="staging/linux-x64/UpdateMonitor/bin"/>
+            <distributionDirectory origin="staging/linux-x64/UpdateMonitor/lib"/>
+            <distributionDirectory origin="staging/linux-x64/UpdateMonitor/scripts"/>
+          </distributionFileList>
+        </folder>
+        <!-- SOLARIS-X64 - Program files -->
+        <folder description="Program Files" destination="${installdir}" name="updatemonitorfilessolaris-x64" platforms="solaris-intel">
+          <distributionFileList>
+            <distributionDirectory origin="staging/solaris-x64/UpdateMonitor/bin"/>
+            <distributionDirectory origin="staging/solaris-x64/UpdateMonitor/lib"/>
+            <distributionDirectory origin="staging/solaris-x64/UpdateMonitor/scripts"/>
+          </distributionFileList>
+        </folder>
+        <!-- SOLARIS-SPARC - Program files -->
+        <folder description="Program Files" destination="${installdir}" name="updatemonitorfilessolaris-sparc" platforms="solaris-sparc">
+          <distributionFileList>
+            <distributionDirectory origin="staging/solaris-sparc/UpdateMonitor/bin"/>
+            <distributionDirectory origin="staging/solaris-sparc/UpdateMonitor/lib"/>
+            <distributionDirectory origin="staging/solaris-sparc/UpdateMonitor/scripts"/>
+          </distributionFileList>
+        </folder>
+        <!-- MAC Program Files -->
+        <folder description="Program Files" destination="${installdir}" name="updatemonitorfilesosx" platforms="osx">
+          <distributionFileList>
+            <distributionDirectory origin="staging/osx/UpdateMonitor.app"/>
+            <distributionDirectory origin="staging/osx/UpdateMonitor/scripts"/>
+            <distributionDirectory origin="staging/osx/UpdateMonitor/installer"/>
+          </distributionFileList>
+        </folder>
+        <!-- WIN - Program files -->
+        <folder description="Program Files" destination="${installdir}" name="updatemonitorfileswindows" platforms="windows">
+          <distributionFileList>
+            <distributionDirectory origin="staging/windows/UpdateMonitor/bin"/>
+            <distributionDirectory origin="staging/windows/scripts"/>
+          </distributionFileList>
+        </folder>
+      </folderList>
+   </component>  
+   <!-- Custom Page for Registration -->
+   <include file="staging/registration_plus_@@COMPONENT_FILE@@"/> 
+  </componentList>
+  <!-- Install Directory -->
+  <parameterList>
+
+    <!-- Custom Page for Registration -->
+    <include file="staging/registration_plus_already_registered_parameter.xml"/>
+    <include file="staging/registration_plus_authentication_parameter.xml"/>
+    <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
+    <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
+    <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+    <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
+
+    <directoryParameter>
+      <name>installdir</name>
+      <description>Installer.Parameter.installdir.description</description>
+      <explanation>Installer.Parameter.installdir.explanation</explanation>
+      <value>${default_installdir}</value>
+      <default/>
+      <allowEmptyValue>0</allowEmptyValue>
+      <ask>yes</ask>
+      <cliOptionName>prefix</cliOptionName>
+      <mustBeWritable>yes</mustBeWritable>
+      <mustExist>0</mustExist>
+      <width>40</width>
+      <ruleList>
+        <compareText text="${iUMVersion}" logic="equals" value=""/>
+      </ruleList>
+
+      <!-- Validating whether installdir is empty -->
+      <validationActionList>
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="installdir" value="${default_installdir}" />
+            <throwError text="${msg(um.installdir.empty)}"/>
+          </actionList>
+          <ruleList>
+            <compareText text="${installdir}" logic="equals" value=""/>
+          </ruleList>
+        </actionGroup>
+      </validationActionList>
+      <!-- Validating whether installdir contains whitespaces (Linux) -->
+      <postShowPageActionList>
+        <actionGroup>
+          <actionList>
+            <showWarning text="${msg(um.installdir.error)}"/>
+            <setInstallerVariable name="next_page" value="installdir"/>
+          </actionList>
+          <ruleList>
+             <regExMatch text="${installdir}" logic="does_not_match" pattern="^/([0-9a-zA-Z_/\.\-]*)$"/>
+             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+        <!-- Validating whether installdir is valid (Windows) -->
+        <actionGroup>
+          <actionList>
+          <setInstallerVariable name="installdir" value="${default_installdir}" />
+          <showWarning text="${msg(um.installdir.error)}"/>
+          <setInstallerVariable name="next_page" value="installdir"/>
+          </actionList>
+          <ruleList>
+            <regExMatch text="${installdir}" logic="does_not_match" pattern="^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$"/>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+      </postShowPageActionList>
+    </directoryParameter>
+   <!-- Explain that we're using an existing installation directory -->
+    <labelParameter>
+      <name>upgrade</name>
+      <title>${msg(upgrade.existing.installation.title)}</title>
+      <description>${msg(upgrade.existing.installation.description)}</description>
+      <ruleList>
+        <compareText text="${iUMVersion}" logic="does_not_equal" value=""/>
+        <isFalse value="${extract_mode}" />
+      </ruleList>
+    </labelParameter>
+  </parameterList>
+</project>

@@ -306,21 +306,6 @@ then
     _postprocess_TuningWizard || exit 1
 fi
 
-# Package: MigrationWizard
-if [ $PG_PACKAGE_MIGRATIONWIZARD = 1 ];
-then
-    echo "### Package: MigrationWizard"
-    cd $WD
-    source ./MigrationWizard/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_MigrationWizard || exit 1
-        _build_MigrationWizard || exit 1
-    fi
-    _postprocess_MigrationWizard || exit 1
-fi
-
 # Package: pgphonehome
 if [ $PG_PACKAGE_PGPHONEHOME = 1 ];
 then
@@ -512,6 +497,21 @@ then
     fi
 
     _postprocess_sqlprotect || exit 1
+fi
+
+# Package: UPDATE_MONITOR
+if [ $PG_PACKAGE_UPDATE_MONITOR = 1 ];
+then
+    cd $WD
+    source ./UpdateMonitor/build.sh
+
+    if [ $SKIPBUILD = 0 ];
+    then
+        _prep_updatemonitor || exit 1
+        _build_updatemonitor || exit 1
+    fi
+
+    _postprocess_updatemonitor || exit 1
 fi
 
 # Package: DevServer

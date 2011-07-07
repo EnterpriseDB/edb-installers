@@ -37,7 +37,7 @@
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
-    <leftImage>../resources/pg-side.png</leftImage>
+    <leftImage>../resources/edb-side.png</leftImage>
 
     <!-- i18n files for the UI -->
     <allowLanguageSelection>1</allowLanguageSelection>
@@ -140,7 +140,6 @@
       </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
-        <setInstallerVariable name="existingEmail" value=""/>
         <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_REPLICATIONSERVER" />
         <setInstallerVariable name="xDBReplicationServerVersion"  persist="1" value=""/>
@@ -288,6 +287,8 @@
             </ruleList>
         </setInstallerVariable>
 
+	<!-- Custom Page for Registration -->
+	<include file="staging/registration_plus_initialization.xml"/>
     </initializationActionList>
     <preInstallationActionList>
          
@@ -463,8 +464,6 @@
                         </compareText>
                     </ruleList>
                 </touchFile>
-
-                <setInstallerVariable name="iExistingEmail" value=""/>
 
                 <!-- LIN & MAC : Get the branding & check Previous Installation of xDBReplicationServer-->
                 <actionGroup>
@@ -754,12 +753,6 @@
                             <key>InstallationDirectory</key>
                             <variable>installdir</variable>
                         </iniFileGet>
-                        <iniFileGet>
-                            <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer</section>
-                            <key>EnterpriseDBEmail</key>
-                            <variable>iExistingEmail</variable>
-                        </iniFileGet>
                     </actionList>
                     <ruleList>
                         <compareText>
@@ -782,11 +775,6 @@
                             <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
                             <name>Location</name>
                             <variable>installdir</variable>
-                        </registryGet>
-                        <registryGet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
-                            <name>EnterpriseDBEmail</name>
-                            <variable>iExistingEmail</variable>
                         </registryGet>
                     </actionList>
                     <ruleList>
@@ -865,54 +853,6 @@
                 <setInstallerVariable name="controldb" value="${defaultcontroldb}" >
                     <ruleList>
                         <compareText logic="equals" text="${controldb}" value="" /> 
-                    </ruleList>
-                </setInstallerVariable>
-
-                <!-- Use already register user in case of upgrade mode -->
-                <setInstallerVariable name="existingEmail" value="${iExistingEmail}">
-                    <ruleList>
-                        <stringTest text="${iExistingEmail}" type="not_empty"/>
-                        <stringTest text="${xDBReplicationServerVersion}" type="not_empty"/>
-                    </ruleList>
-                </setInstallerVariable>
-
-                <setEnvironmentVariable name="LD_LIBRARY_PATH"
-                      value="${env(LD_LIBRARY_PATH)}:${system_temp_directory}/${product_fullname}/instscripts/lib"/>
-                <setInstallerVariable name="uuid_val" value=""/>
-
-                <setInstallerVariableFromScriptOutput name="uuid_val" showMessageOnError="0" exec="uuidgen" abortOnError="0">
-                    <ruleList>
-                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                        <compareText logic="does_not_contain" text="${platform_name}" value="solaris"/>
-                    </ruleList>
-                </setInstallerVariableFromScriptOutput>
-
-                <setInstallerVariableFromScriptOutput name="uuid_val" showMessageOnError="0" abortOnError="0"
-                      exec="${system_temp_directory}/${product_fullname}/instscripts/bin/uuid">
-                    <ruleList>
-                        <compareText logic="contains" text="${platform_name}" value="solaris"/>
-                    </ruleList>
-                </setInstallerVariableFromScriptOutput>
-
-                <setInstallerVariableFromScriptOutput name="uuid_val" showMessageOnError="0" abortOnError="0"
-                      exec="${system_temp_directory}\${product_fullname}\instscripts\bin\uuid.exe">
-                    <ruleList>
-                        <compareText logic="equals" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </setInstallerVariableFromScriptOutput>
-
-                <setInstallerVariableFromRegEx name="uuid_val" text="${uuid_val}" pattern="^dbser_guid=([^\S]*)$"
-                                 substitution="\1"  abortOnError="0" showMessageOnError="0">
-                    <ruleList>
-                        <compareText logic="does_not_equal" text="${uuid_val}" value=""/>
-                        <compareText logic="equals" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </setInstallerVariableFromRegEx>
-
-                <!-- Use predefined value, if uuid could not be determined -->
-                <setInstallerVariable name="uuid_val" value="a172352a-20a4-11df-a5a3-000c29a2e41e">
-                    <ruleList>
-                        <stringTest text="${uuid_val}" type="empty"/>
                     </ruleList>
                 </setInstallerVariable>
             </actionList>
@@ -1031,79 +971,8 @@
            </ruleList>
         </actionGroup> 
 
-        <!-- Set Proxy values from environement variables if any -->
-        <setInstallerVariable name="proxyHost" value="${env(PROXY_HOST)}" />
-        <setInstallerVariable name="proxyPort" value="${env(PROXY_PORT)}" />
-
-        <!-- Validate edb-user and password in unattended mode for the fresh installation -->
-        <actionGroup>
-            <actionList>
-                <throwError text="${msg(xdb.registration.email.empty)}">
-                    <ruleList>
-                        <stringTest text="${existingEmail}" type="empty"/>
-                    </ruleList>
-                </throwError>
-                <throwError text="${msg(xdb.registration.password.empty)}">
-                    <ruleList>
-                        <stringTest text="${existingPassword}" type="empty"/>
-                    </ruleList>
-                </throwError>
-                <setEnvironmentVariable name="LD_LIBRARY_PATH"
-                      value="${env(LD_LIBRARY_PATH)}:${system_temp_directory}/${product_fullname}/instscripts/lib"/>
-                <!-- Email/Password Validation -->
-                <setInstallerVariableFromScriptOutput name="registered"
-                      exec="${system_temp_directory}/${product_fullname}/instscripts/validateUserClient.o"
-                      execArgs="&quot;${uuid_val}&quot; &quot;xdb&quot; &quot;false&quot; &quot;false&quot; &quot;&quot; &quot;&quot; &quot;1&quot; &quot;&quot; &quot;&quot; &quot;0&quot; &quot;0&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
-                      abortOnError="1" showMessageOnError="1"
-                      customErrorMessage="${msg(validatinguser.ws.error)}">
-                    <ruleList>
-                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </setInstallerVariableFromScriptOutput>
-                <setInstallerVariableFromScriptOutput name="registered"
-                      exec="${system_temp_directory}\${product_fullname}\instscripts\bin\validateUserClient.exe"
-                      execArgs="&quot;xdb&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${uuid_val}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
-                      abortOnError="1" showMessageOnError="1"
-                      customErrorMessage="${msg(validatinguser.ws.error)}">
-                    <ruleList>
-                        <compareText logic="equals" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </setInstallerVariableFromScriptOutput>
-                <stringModify text="${registered}" variable="registered" logic="trim"/>
-
-                <throwError text="${msg(ws.email.not.authenticated)}">
-                    <ruleList>
-                        <compareText logic="equals" text="${registered}" value="1"/>
-                  </ruleList>
-                </throwError>
-                <throwError text="${msg(ws.email.not.validated)}">
-                  <ruleList>
-                    <compareText logic="equals" text="${registered}" value="2"/>
-                  </ruleList>
-                </throwError>
-                <throwError text="${msg(ws.email.already.exists)}">
-                  <ruleList>
-                    <compareText logic="equals" text="${registered}" value="3"/>
-                  </ruleList>
-                </throwError>
-                <throwError text="${msg(ws.exception.from.server)}">
-                  <ruleList>
-                    <compareText logic="equals" text="${registered}" value="4"/>
-                  </ruleList>
-                </throwError>
-                <throwError text="${msg(ws.internet.not.connected)}">
-                  <ruleList>
-                    <compareText logic="equals" text="${registered}" value=""/>
-                  </ruleList>
-                </throwError>
-            </actionList>
-            <ruleList>
-                <isTrue value="${validateEmail}"/>
-                <compareText logic="equals" text="${installer_ui}" value="unattended"/> 
-                <stringTest text="${xDBReplicationServerVersion}" type="empty"/>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </actionGroup>
+	<!-- Custom Page for Registration -->
+        <include file="staging/registration_plus_preinstallation.xml"/>
     </preInstallationActionList>
     <postInstallationActionList>
 
@@ -1266,15 +1135,6 @@
                                <isTrue value="${component(pubserver).selected}"/>
                             </ruleList>
                         </iniFileSet>
-                        <iniFileSet>
-                            <file>/etc/postgres-reg.ini</file>
-                            <section>xDBReplicationServer</section>
-                            <key>EnterpriseDBEmail</key>
-                            <value>${existingEmail}</value>
-                            <ruleList>
-                               <stringTest text="${existingEmail}" type="not_empty"/>
-                            </ruleList>
-                        </iniFileSet>
                         <runProgram>
                             <program>${installdir}/installer/xDBReplicationServer/createshortcuts.sh</program>
                             <programArguments>"${installdir}" "${branding}"</programArguments>
@@ -1357,14 +1217,6 @@
                     <value>${pubport}</value>
                     <ruleList>
                         <isTrue value="${component(pubserver).selected}"/>
-                    </ruleList>
-                </registrySet>
-                <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server</key>
-                    <name>EnterpriseDBEmail</name>
-                    <value>${existingEmail}</value>
-                    <ruleList>
-                        <stringTest text="${existingEmail}" type="not_empty"/>
                     </ruleList>
                 </registrySet>
             </actionList>
@@ -2002,9 +1854,6 @@ database=${controldb}
             </ruleList>
         </deleteFile> 
 
-        <!-- Making sure this variable is available in uninstaller -->
-        <setInstallerVariable name="EnterpriseDBEmail" value="${existingEmail}" persist="1"/>
-
         <!-- Remove the temporary folder -->
         <deleteFile path="${system_temp_directory}/${product_fullname}" >
             <ruleList>
@@ -2012,6 +1861,8 @@ database=${controldb}
             </ruleList>
         </deleteFile>
 
+	<!-- Custom Page for Registration -->
+	<include file="staging/registration_plus_postinstallation.xml"/>
     </postInstallationActionList>
 
     <readyToInstallActionList>
@@ -2108,15 +1959,6 @@ database=${controldb}
                     <section>xDBReplicationServer</section>
                     <key>PubPort</key>
                     <value/>
-                </iniFileSet>
-                <iniFileSet>
-                    <file>/etc/postgres-reg.ini</file>
-                    <section>xDBReplicationServer</section>
-                    <key>EnterpriseDBEmail</key>
-                    <value/>
-                    <ruleList>
-                        <stringTest text="${existingEmail}" type="not_empty"/>
-                    </ruleList>
                 </iniFileSet>
             </actionList>
             <ruleList>
@@ -2355,6 +2197,8 @@ database=${controldb}
             </ruleList>
         </deleteFile> -->
 
+	<!-- Custom Page for Registration -->
+	<include file="staging/registration_plus_preuninstallation.xml" />
     </preUninstallationActionList>
     <allowComponentSelection>1</allowComponentSelection>
     <!-- Components -->
@@ -3558,149 +3402,16 @@ database=${controldb}
               </throwError>
            </componentSelectionValidationActionList>
         </component>
+	<!-- Custom Page for Registration -->
+	<include file="staging/registration_plus_@@COMPONENT_FILE@@"/>
    </componentList>
     <!-- Install Directory -->
     <parameterList>
-        <parameterGroup name="registration"
-              title="${msg(registration.title.value)}"
-              explanation="${msg(registration.explanation.value)}">
-            <parameterList>
-                <choiceParameter name="alreadyRegistered" default="0"
-                    width="30" allowEmptyValue="0" cliOptionShow="0"
-                    displayType="radiobuttons">
-                    <optionList>
-                        <option text="${msg(registration.existingemail.no)}" value="0"/>
-                        <option text="${msg(registration.existingemail.yes)}" value="1"/>
-                    </optionList>
-                </choiceParameter>
-            </parameterList>
-            <!-- Open registration page, if not already registered user -->
-            <postShowPageActionList>
-                <launchBrowser url="http://www.enterprisedb.com/create-promo-account.do?type=xdb"
-                      abortOnError="1">
-                    <ruleList>
-                            <isFalse value="${alreadyRegistered}"/>
-                    </ruleList>
-                </launchBrowser>
-            </postShowPageActionList>
-            <!-- Check if upgradation is done on older version of xDBReplicationServer,
-                 which does not have this authentication process -->
-            <ruleList>
-                <isTrue value="${validateEmail}"/>
-                <stringTest text="${xDBReplicationServerVersion}" type="empty"/>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </parameterGroup>
-        <parameterGroup name="userAuthenticationPage"
-            title="${msg(existingemail.authentication.title.value)}">
-            <parameterList>
-                <labelParameter name="existingemail_authentication_lbl"
-                    explanation="${msg(existingemail.authentication.explanation.value)}"/>
-                <stringParameter name="existingEmail" cliOptionName="existing-email"
-                    width="30" ask="1" description="${msg(userAuth.email.value)}"
-                    allowEmptyValue="1" cliOptionShow="1">
-                    <validationActionList>
-                        <throwError text="${msg(error.invalid.email.value)}">
-                            <ruleList>
-                                <regExMatch logic="does_not_match" text="${existingEmail}">
-                                    <pattern>^([\w]+)(([-\.][\w]+)?)*@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)</pattern>
-                                </regExMatch>
-                            </ruleList>
-                        </throwError>
-                    </validationActionList>
-                </stringParameter>
-                <passwordParameter name="existingPassword" width="30" cliOptionName="existing-password"
-                    ask="1" description="${msg(userAuth.password.value)}" allowEmptyValue="1"
-                    askForConfirmation="0" cliOptionShow="1">
-                    <validationActionList>
-                        <throwError text="${msg(error.invalid.password.value)}">
-                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                            <ruleList>
-                                <stringTest text="${existingPassword}" type="empty"/>
-                                <regExMatch logic="matches" pattern="\s+" text="${existingPassword}"/>
-                            </ruleList>
-                        </throwError>
-                    </validationActionList>
-                </passwordParameter>
-            </parameterList>
-            <!-- Validate entered email & password -->
-            <postShowPageActionList>
-                <setEnvironmentVariable name="LD_LIBRARY_PATH"
-                      value="${env(LD_LIBRARY_PATH)}:${system_temp_directory}/${product_fullname}/instscripts/lib"/>
-                <setInstallerVariableFromScriptOutput name="ws_existinguser_result"
-                    customErrorMessage="${msg(validatinguser.ws.error)}" abortOnError="0"
-                    exec="${system_temp_directory}/${product_fullname}/instscripts/validateUserClient.o"
-                    execArgs="&quot;${uuid_val}&quot; &quot;xdb&quot; &quot;false&quot; &quot;false&quot; &quot;&quot; &quot;&quot; &quot;1&quot; &quot;&quot; &quot;&quot; &quot;0&quot; &quot;0&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
-                    workingDirectory="${system_temp_directory}/${product_fullname}/instscripts">
-                    <ruleList>
-                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </setInstallerVariableFromScriptOutput>
-                <setInstallerVariableFromScriptOutput name="ws_existinguser_result"
-                    customErrorMessage="${msg(validatinguser.ws.error)}" abortOnError="0"
-                    exec="${system_temp_directory}\${product_fullname}\instscripts\bin\validateUserClient.exe"
-                    execArgs="&quot;xdb&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${uuid_val}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
-                    workingDirectory="${system_temp_directory}\${product_fullname}\instscripts\bin">
-                    <ruleList>
-                        <compareText logic="equals" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </setInstallerVariableFromScriptOutput>
-                <throwError abortOnError="0" text="${msg(ws.email.not.authenticated)}">
-                    <ruleList>
-                        <compareText logic="equals" text="${ws_existinguser_result}" value="1"/>
-                    </ruleList>
-                </throwError>
-                <throwError abortOnError="0" text="${msg(ws.email.not.validated)}">
-                    <ruleList>
-                        <compareText logic="equals" text="${ws_existinguser_result}" value="2"/>
-                    </ruleList>
-                </throwError>
-                <throwError abortOnError="0" text="${msg(ws.email.already.exists)}">
-                    <ruleList>
-                        <compareText logic="equals" text="${ws_existinguser_result}" value="3"/>
-                    </ruleList>
-                </throwError>
-                <throwError abortOnError="0" text="${msg(ws.exception.from.server)}">
-                    <ruleList>
-                        <compareText logic="equals" text="${ws_existinguser_result}" value="4"/>
-                    </ruleList>
-                </throwError>
-                <throwError abortOnError="0" text="${msg(ws.internet.not.connected)}">
-                    <ruleList>
-                        <compareText logic="equals" text="${ws_existinguser_result}" value=""/>
-                    </ruleList>
-                </throwError>
-        
-                <setInstallerVariable name="stay_on_this_page" value="true"/>
-                <setInstallerVariable name="stay_on_this_page" value="false">
-                    <ruleList>
-                        <compareText logic="equals" text="${ws_existinguser_result}" value="0"/>
-                    </ruleList>
-                </setInstallerVariable>
-                 <setInstallerVariable name="stay_on_this_page" value="false">
-                    <ruleList>
-                        <compareText logic="equals" text="${ws_existinguser_result}" value="00"/>
-                        <isTrue value="${ws_existinguser_result}"/>
-                    </ruleList>
-                </setInstallerVariable>
-        
-                <setInstallerVariable name="next_page" value="userAuthenticationPage">
-                    <ruleList>
-                        <isTrue value="${stay_on_this_page}"/>
-                    </ruleList>
-                </setInstallerVariable>
-            </postShowPageActionList>
-            <!-- Check if upgradation is done on older version of xDBReplicationServer,
-                 which does not have this authentication process -->
-            <ruleList>
-                <isTrue value="${validateEmail}"/>
-                <stringTest text="${xDBReplicationServerVersion}" type="empty"/>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </parameterGroup>
+	<!-- Custom Page for Registration -->
+	<include file="staging/registration_plus_already_registered_parameter.xml"/>
+	<include file="staging/registration_plus_authentication_parameter.xml"/>
         <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
         <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
-        <booleanParameter name="validateEmail" cliOptionName="validate" default="1" ask="0" cliOptionShow="0"/>
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <stringParameter name="dbtype" cliOptionName="dbtype" default="${defaultdbtype}" ask="0" cliOptionShow="0"/>

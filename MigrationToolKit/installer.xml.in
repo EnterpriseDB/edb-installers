@@ -36,6 +36,8 @@
     <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
     <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
     <allowWindowResize>1</allowWindowResize>
+    <wrapLicenseFileText>1</wrapLicenseFileText>
+    <licenseFile encoding="utf-8">resources/licence.txt</licenseFile>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
@@ -179,7 +181,7 @@
         </setInstallerVariable>
 
         <!-- Registration Pre-Installation Action List -->
-        <include file="staging/registration_initialization.xml"/>
+        <include file="staging/registration_plus_initialization.xml"/>
 
     </initializationActionList>
 	
@@ -435,7 +437,7 @@
         </actionGroup>
 
         <!-- Custome Page for Registration -->
-        <include file="staging/registration_preinstallation.xml"/>
+        <include file="staging/registration_plus_preinstallation.xml"/>
 
     </preInstallationActionList>
 	
@@ -525,7 +527,7 @@
         </registrySet>
 
         <!-- Custome Page for Registration -->
-        <include file="staging/registration_postinstallation.xml"/>
+        <include file="staging/registration_plus_postinstallation.xml"/>
 
     </postInstallationActionList>
 	
@@ -570,7 +572,7 @@
         </actionGroup>
 
         <!-- Custome Page for Registration -->
-        <include file="staging/registration_preuninstallation.xml"/>
+        <include file="staging/registration_plus_preuninstallation.xml"/>
 
     </preUninstallationActionList>
 	
@@ -693,15 +695,15 @@
         </component>
 
         <!-- Custome Page for Registration -->
-        <include file="staging/registration_component.xml"/>
+        <include file="staging/registration_plus_@@COMPONENT_FILE@@"/>
 
     </componentList>
 	
     <parameterList>
 
         <!-- Custome Page for Registration -->
-        <include file="staging/registration_already_registered_parameter.xml"/>
-        <include file="staging/registration_authentication_parameter.xml"/>
+        <include file="staging/registration_plus_already_registered_parameter.xml"/>
+        <include file="staging/registration_plus_authentication_parameter.xml"/>
 
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>

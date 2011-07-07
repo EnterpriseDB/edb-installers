@@ -84,6 +84,8 @@ _build_MigrationToolKit_solaris_sparc() {
 _postprocess_MigrationToolKit_solaris_sparc() {
 
     cd $WD/MigrationToolKit
+    
+    _replace @@COMPONENT_FILE@@ "component.xml" installer.xml || _die "Failed to replace the registration_plus component file name"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-sparc || _die "Failed to build the installer"

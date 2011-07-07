@@ -166,7 +166,7 @@
         </actionGroup>
     
         <!-- Registration Pre-Installation Action List -->
-        <include file="staging/registration_initialization.xml"/>
+        <include file="staging/registration_plus_initialization.xml"/>
 
     </initializationActionList>
     <!-- Preinstallation actions -->
@@ -627,7 +627,7 @@
             </ruleList>
         </setInstallerVariable>
 
-	<include file="staging/registration_preinstallation.xml"/>
+	<include file="staging/registration_plus_preinstallation.xml"/>
 
     </preInstallationActionList>
     <!-- Post installation actions -->
@@ -740,7 +740,7 @@
 	</actionGroup>
 
 
-	<include file="staging/registration_postinstallation.xml"/>
+	<include file="staging/registration_plus_postinstallation.xml"/>
 
     </postInstallationActionList>
     <!-- preUninstallation actions -->
@@ -777,7 +777,7 @@
         </actionGroup>
 	<registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION"/>
 
-	<include file="staging/registration_preuninstallation.xml"/>
+	<include file="staging/registration_plus_preuninstallation.xml"/>
 
     </preUninstallationActionList>
 
@@ -921,12 +921,12 @@
 
             </folderList>
         </component>
-	<include file="staging/registration_component.xml"/>
+	<include file="staging/registration_plus_@@COMPONENT_FILE@@"/>
     </componentList>
     <parameterList>
         <!-- Registration Parameters -->
-        <include file="staging/registration_already_registered_parameter.xml"/>
-        <include file="staging/registration_authentication_parameter.xml"/>
+        <include file="staging/registration_plus_already_registered_parameter.xml"/>
+        <include file="staging/registration_plus_authentication_parameter.xml"/>
 
         <!-- Install Directory -->
         <parameterGroup name="PostgresInstallationDetails" title="${msg(pg.server.title)}" description="Installer.Parameter.pg.installdir"

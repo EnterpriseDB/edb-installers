@@ -174,6 +174,8 @@ _postprocess_ReplicationServer_solaris_x64() {
     
     # Copy in installation xdg Files
     cp -R $WD/scripts/xdg/xdg* staging/solaris-x64/installer/xdg || _die "Failed to copy the xdg files "
+
+    _replace @@COMPONENT_FILE@@ "component.xml" installer.xml || _die "Failed to replace the registration_plus component file name"
      
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-intel || _die "Failed to build the installer"

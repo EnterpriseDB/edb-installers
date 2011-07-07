@@ -270,6 +270,8 @@ _postprocess_ReplicationServer_windows() {
     # Copy in the menu pick images
     mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.ico staging/windows/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
+
+    _replace @@COMPONENT_FILE@@ "component_processed.xml" installer.xml || _die "Failed to replace the registration_plus component file name"
      
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"

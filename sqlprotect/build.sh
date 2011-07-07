@@ -67,6 +67,9 @@ _prep_sqlprotect() {
 
 _build_sqlprotect() {
 
+    # Clean up the registration plus xmls
+    rm -f $WD/sqlprotect/staging/*.xml
+
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
@@ -114,8 +117,8 @@ _postprocess_sqlprotect() {
     _replace PG_BUILDNUM_SQLPROTECT $PG_BUILDNUM_SQLPROTECT installer.xml || _die "Failed to set the Build Number in the installer project file (sqlprotect/installer.xml)"
     _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION installer.xml || _die "Failed to set the version in the installer project file (sqlprotect/installer.xml)"
 
-    #_registration_postprocess(STAGING DIRECTORY, COMPONENT NAME, VERSION VARIABLE, INI, REGISTRY_PREFIX, REGISTRY_PREFIX_WIN, TEMP DIRECTORY, COMONENT TYPE)
-    _registration_postprocess "$WD/sqlprotect/staging"  "SQL Protect" "sqlprotectVersion" "/etc/postgres-reg.ini" "sqlprotect-PG_$PG_MAJOR_VERSION" "sqlprotect-PG_$PG_MAJOR_VERSION" "sqlprotect" "sqlprotect"
+    #_registration_plus_postprocess(STAGING DIRECTORY, COMPONENT NAME, VERSION VARIABLE, INI, REGISTRY_PREFIX, REGISTRY_PREFIX_WIN, TEMP DIRECTORY, PG_MAJOR_VERSION, PG_MINOR_VERSION)
+    _registration_plus_postprocess "$WD/sqlprotect/staging"  "SQL Protect" "sqlprotectVersion" "/etc/postgres-reg.ini" "sqlprotect-PG_$PG_MAJOR_VERSION" "sqlprotect-PG_$PG_MAJOR_VERSION" "sqlprotect" "$PG_MAJOR_VERSION" "$PG_MINOR_VERSION"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

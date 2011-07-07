@@ -105,6 +105,9 @@ _prep_ReplicationServer() {
       fi
     fi
 
+    # Clean up the registration plus xmls
+    rm -f $WD/ReplicationServer/staging/*.xml
+
     # Per-platform prep
     cd $WD
     
@@ -211,7 +214,10 @@ _postprocess_ReplicationServer() {
     _replace PG_VERSION_REPLICATIONSERVER $PG_VERSION_REPLICATIONSERVER installer.xml || _die "Failed to set the version in the installer project file (ReplicationServer/installer.xml)"
     _replace PG_BUILDNUM_REPLICATIONSERVER $PG_BUILDNUM_REPLICATIONSERVER installer.xml || _die "Failed to set the Build Number in the installer project file (ReplicationServer/installer.xml)"
     _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION installer.xml || _die "Failed to set the pg version string in the installer project file ($WD/ReplicationServer/installer.xml)"
-   
+  
+    #_registration_plus_postprocess(STAGING DIRECTORY, COMPONENT NAME, VERSION VARIABLE, INI, REGISTRY_PREFIX, REGISTRY_PREFIX_WIN, TEMP DIRECTORY, COMONENT TYPE PG_MAJOR_VERSION PG_MINOR_VERSION)
+    _registration_plus_postprocess "$WD/ReplicationServer/staging"  "xDBReplicationServer" "xDBReplicationServerVersion" "/etc/postgres-reg.ini" "xDBReplicationServer" "xDB Replication Server" "xDBReplicationServer" "$PG_MAJOR_VERSION" "$PG_MINOR_VERSION"
+ 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then

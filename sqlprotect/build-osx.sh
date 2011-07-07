@@ -62,6 +62,8 @@ _postprocess_sqlprotect_osx() {
 
     cd $WD/sqlprotect
 
+    _replace @@COMPONENT_FILE@@ "component.xml" installer.xml || _die "Failed to replace the registration_plus component file name"
+
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 

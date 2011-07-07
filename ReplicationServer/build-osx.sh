@@ -136,6 +136,8 @@ _postprocess_ReplicationServer_osx() {
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
+    _replace @@COMPONENT_FILE@@ "component.xml" installer.xml || _die "Failed to replace the registration_plus component file name"
+
     if [ -f installer_1.xml ]; then
         rm -f installer_1.xml
     fi
