@@ -285,26 +285,6 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
-        <actionGroup>
-          <actionList>
-            <iniFileGet file="/etc/postgres-reg.ini" section="xDBReplicationServer_XDB_SERVICE_VER" key="PubServer" variable="IsPubServerUpgrade"/>
-            <iniFileGet file="/etc/postgres-reg.ini" section="xDBReplicationServer_XDB_SERVICE_VER" key="SubServer" variable="IsSubServerUpgrade"/>
-          </actionList>
-	   <ruleList>
-             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-	     <isTrue value="${installer_is_root_install}"/>
-           </ruleList>
-        </actionGroup>
-        <actionGroup>
-          <actionList>
-            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER" name="PubServer" variable="IsPubServerUpgrade"/>
-            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER" name="SubServer" variable="IsSubServerUpgrade"/>            
-          </actionList>
-          <ruleList> 
-	    <compareText logic="equals" text="${platform_name}" value="windows"/>
-	    <isTrue value="${installer_is_root_install}"/>
-          </ruleList>
-        </actionGroup>
     </initializationActionList>
     <preInstallationActionList>
        <!-- Setting defaultUnixGroup and defaultUnixOwner -->
@@ -316,6 +296,26 @@
          <ruleList>
            <isFalse value="${extract_mode}"/>
          </ruleList>
+       </actionGroup>
+       <actionGroup>
+         <actionList>
+           <iniFileGet file="/etc/postgres-reg.ini" section="xDBReplicationServer_XDB_SERVICE_VER" key="PubServer" variable="IsPubServerUpgrade"/>
+           <iniFileGet file="/etc/postgres-reg.ini" section="xDBReplicationServer_XDB_SERVICE_VER" key="SubServer" variable="IsSubServerUpgrade"/>
+         </actionList>
+         <ruleList>
+           <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	   <isFalse value="${extract_mode}"/>
+         </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER" name="PubServer" variable="IsPubServerUpgrade"/>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\xDB Replication Server XDB_SERVICE_VER" name="SubServer" variable="IsSubServerUpgrade"/>
+          </actionList>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+	    <isFalse value="${extract_mode}"/>
+          </ruleList>
        </actionGroup>
        <actionGroup>
 	  <actionList>
