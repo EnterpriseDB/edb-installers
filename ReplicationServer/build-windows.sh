@@ -271,11 +271,16 @@ _postprocess_ReplicationServer_windows() {
     mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.ico staging/windows/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
-    _replace @@COMPONENT_FILE@@ "component_processed.xml" installer.xml || _die "Failed to replace the registration_plus component file name"
-    _replace @@WINDIR@@ windows installer.xml || _die "Failed to replace the WINDIR setting in the installer.xml"
+    if [ -f installer-win.xml ];    
+    then
+        rm -f installer-win.xml
+    fi
+    cp installer.xml installer-win.xml
+    _replace "registration_plus_component" "registration_plus_component_processed" installer-win.xml || _die "Failed to replace the registration_plus compon
+ent file name"
      
     # Build the installer
-    "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
+    "$PG_INSTALLBUILDER_BIN" build installer-win.xml windows || _die "Failed to build the installer"
 
     # Sign the installer
     win32_sign "xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-windows.exe"

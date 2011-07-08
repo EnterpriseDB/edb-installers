@@ -165,10 +165,16 @@ _postprocess_updatemonitor_windows() {
     mkdir -p staging/windows/scripts || _die "Failed to create a directory for the install scripts"
     cp scripts/windows/launchUpdateMonitor.vbs staging/windows/scripts/launchUpdateMonitor.vbs || _die "Failed to copy the start-up script (launchUpdateMonitor.vbs)"
 
-    _replace @@COMPONENT_FILE@@ "component_processed.xml" installer.xml || _die "Failed to replace the registration_plus component file name"
+    if [ -f installer-win.xml ];    
+    then
+        rm -f installer-win.xml
+    fi
+    cp installer.xml installer-win.xml
+    _replace "registration_plus_component" "registration_plus_component_processed" installer-win.xml || _die "Failed to replace the registration_plus compon
+ent file name"
 
     # Build the installer
-    "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
+    "$PG_INSTALLBUILDER_BIN" build installer-win.xml windows || _die "Failed to build the installer"
 
     # Sign the installer
     win32_sign "updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-windows.exe"

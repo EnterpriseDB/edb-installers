@@ -3403,7 +3403,7 @@ database=${controldb}
            </componentSelectionValidationActionList>
         </component>
 	<!-- Custom Page for Registration -->
-	<include file="staging/registration_plus_@@COMPONENT_FILE@@"/>
+	<include file="staging/registration_plus_component.xml"/>
    </componentList>
     <!-- Install Directory -->
     <parameterList>

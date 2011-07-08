@@ -131,10 +131,15 @@ _postprocess_plpgsqlo_windows() {
 
     cd $WD/plpgsqlo
 
-    _replace @@COMPONENT_FILE@@ "component_processed.xml" installer.xml || _die "Failed to replace the registration_plus component file name"
-    _replace @@WINDIR@@ windows installer.xml || _die "Failed to replace the WINDIR setting in the installer.xml"
+    if [ -f installer-win.xml ];
+    then
+	rm -f installer-win.xml
+    fi
+    cp installer.xml installer-win.xml
+
+    _replace "registration_plus_component" "registration_plus_component_processed" installer-win.xml || _die "Failed to replace the registration_plus component file name"
     # Build the installer
-    "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
+    "$PG_INSTALLBUILDER_BIN" build installer-win.xml windows || _die "Failed to build the installer"
 
     # Sign the installer
     win32_sign "plsecure-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-windows.exe"

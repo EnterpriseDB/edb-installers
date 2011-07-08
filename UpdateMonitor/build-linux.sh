@@ -97,8 +97,6 @@ _postprocess_updatemonitor_linux() {
     mkdir -p staging/linux/UpdateMonitor/scripts/xdg || _die "Failed to create a directory for the menu pick items"
     cp resources/xdg/edb-um-update-monitor.desktop staging/linux/UpdateMonitor/scripts/xdg/ || _die "Failed to copy the startup pick desktop"
 
-    _replace @@COMPONENT_FILE@@ "component.xml" installer.xml || _die "Failed to replace the registration_plus component file name" 
-    
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer for linux"
 

@@ -98,8 +98,6 @@ _postprocess_plpgsqlo_linux_x64() {
 
     cd $WD/plpgsqlo
 
-    _replace @@COMPONENT_FILE@@ "component.xml" installer.xml || _die "Failed to replace the registration_plus component file name"
-
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 
