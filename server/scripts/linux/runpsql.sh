@@ -74,14 +74,19 @@ then
     PLL=""
     if [ -f /lib64/libreadline.so.6 ];
     then
-        PLL=$PLL/lib64/libreadline.so.6:
+        PLL=/lib64/libreadline.so.6:
     fi
     if [ -f /lib/libreadline.so.6 ];
     then
-        PLL=$PLL/lib/libreadline.so.6:
+        PLL=$PLL:/lib/libreadline.so.6:
     fi
 
-    LD_PRELOAD=$PLL "PG_INSTALLDIR/bin/psql" -h $SERVER -p $PORT -U $USERNAME $DATABASE
+    if [ -z "$LD_PRELOAD" ];
+    then
+        "PG_INSTALLDIR/bin/psql" -h $SERVER -p $PORT -U $USERNAME $DATABASE
+    else
+        LD_PRELOAD=$PLL "PG_INSTALLDIR/bin/psql" -h $SERVER -p $PORT -U $USERNAME $DATABASE
+	fi
     RET=$?
 else
     RET=1
