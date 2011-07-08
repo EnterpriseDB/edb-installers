@@ -272,6 +272,7 @@ _postprocess_ReplicationServer_windows() {
     cp resources/*.ico staging/windows/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
     _replace @@COMPONENT_FILE@@ "component_processed.xml" installer.xml || _die "Failed to replace the registration_plus component file name"
+    _replace @@WINDIR@@ windows installer.xml || _die "Failed to replace the WINDIR setting in the installer.xml"
      
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
