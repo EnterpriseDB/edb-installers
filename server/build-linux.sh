@@ -241,15 +241,16 @@ if [ -f /lib/libreadline.so.6 ];
 then
     PLL=/lib/libreadline.so.6
 fi
-if [ -f /lib64/libreadline.so.6 ];
-then
-    PLL=/lib64/libreadline.so.6:\$PLL
-fi
 
 # Get the PG bin directory path relative to psql caller script.
 PG_BIN_PATH=\`dirname "\$0"\`
 
-LD_PRELOAD=\$PLL "\$PG_BIN_PATH/psql.bin" "\$@"
+if [ -z "\$PLL" ];
+then
+	"\$PG_BIN_PATH/psql.bin" "\$@"
+else
+	LD_PRELOAD=\$PLL "\$PG_BIN_PATH/psql.bin" "\$@"
+fi
 EOT
     chmod +x psql || _die "Failed to grant execute permission to psql script"
 
