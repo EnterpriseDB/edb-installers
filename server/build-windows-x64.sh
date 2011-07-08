@@ -457,8 +457,8 @@ _postprocess_server_windows_x64() {
     cd $WD/server/staging/windows-x64
     cp -R bin doc include lib pgAdmin* share StackBuilder symbols pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
 
-    zip -rq postgresql-$PG_PACKAGE_VERSION-windows_x64-binaries.zip pgsql || _die "Failed to archive the postgresql binaries"
-    mv postgresql-$PG_PACKAGE_VERSION-windows_x64-binaries.zip $WD/output/ || _die "Failed to move the archive to output folder"
+    zip -rq postgresql-$PG_PACKAGE_VERSION-windows-x64-binaries.zip pgsql || _die "Failed to archive the postgresql binaries"
+    mv postgresql-$PG_PACKAGE_VERSION-windows-x64-binaries.zip $WD/output/ || _die "Failed to move the archive to output folder"
 
     rm -rf pgsql || _die "Failed to remove the binaries directory" 
 
@@ -505,11 +505,11 @@ _postprocess_server_windows_x64() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-win64.xml windows || _die "Failed to build the installer"
 	
-	# Rename the installer
-	mv $WD/output/postgresql-$PG_MAJOR_VERSION-windows-installer.exe $WD/output/postgresql-$PG_PACKAGE_VERSION-windows_x64.exe || _die "Failed to rename the installer"
+    # Rename the installer
+    mv $WD/output/postgresql-$PG_MAJOR_VERSION-windows-installer.exe $WD/output/postgresql-$PG_PACKAGE_VERSION-windows-x64.exe || _die "Failed to rename the installer"
 
-	# Sign the installer
-	win32_sign "postgresql-$PG_PACKAGE_VERSION-windows_x64.exe"
+    # Sign the installer
+    win32_sign "postgresql-$PG_PACKAGE_VERSION-windows-x64.exe"
     
     cd $WD
 }
