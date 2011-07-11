@@ -83,8 +83,10 @@ _prep_PostGIS_windows() {
 
     # Remove any existing staging directory that might exist, and create a clean one
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST proj-$PG_TARBALL_PROJ.zip del /S /Q proj-$PG_TARBALL_PROJ.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\proj.zip on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST proj-$PG_TARBALL_PROJ.windows rd /S /Q proj-$PG_TARBALL_PROJ.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\proj.zip on Windows VM"
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST geos-$PG_TARBALL_GEOS.zip del /S /Q geos-$PG_TARBALL_GEOS.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\geos.zip on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST geos-$PG_TARBALL_GEOS.windows rd /S /Q geos-$PG_TARBALL_GEOS.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\geos.zip on Windows VM"
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST postgis.zip del /S /Q postgis.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\postgis.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST postgis.windows rd /S /Q postgis.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\postgis.windows directory on Windows VM"
