@@ -105,15 +105,14 @@ _postprocess_sqlprotect_windows_x64() {
     fi
     cp installer.xml installer-windows.xml
 
-    _replace @@WIN64MODE@@ "0" installer-windows.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
-    _replace @@WINDIR@@ "windows" installer-windows.xml || _die "Failed to replace the WINDIR setting in the installer.xml"
+    _replace @@WIN64MODE@@ "1" installer-windows.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
+    _replace @@WINDIR@@ "windows-x64" installer-windows.xml || _die "Failed to replace the WINDIR setting in the installer.xml"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-windows.xml windows || _die "Failed to build the installer"
 
     # Sign the installer
-    win32_sign
-	"sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-windows-x64.exe"
+    win32_sign "sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-windows-x64.exe"
 
     cd $WD
 
