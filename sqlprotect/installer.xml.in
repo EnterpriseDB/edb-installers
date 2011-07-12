@@ -18,7 +18,10 @@
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
-    <windowsSoftwareRegistryPrefix>${project.vendor}\sqlprotect-PG_PG_MAJOR_VERSION</windowsSoftwareRegistryPrefix>
+	<windowsSoftwareRegistryPrefix>${project.vendor}\sqlprotect-PG_PG_MAJOR_VERSION</windowsSoftwareRegistryPrefix>
+
+    <!-- set if it is a native windows 64 bit-->
+    <windows64bitMode>@@WIN64MODE@@</windows64bitMode>
 
     <!-- Installer Size -->
     <width>550</width>
@@ -76,6 +79,12 @@
 
     <!-- Prebuild Actons-->
     <preBuildActionList>
+        <setInstallerVariable name="project.installerFilename" value="${product_shortname}-${product_version}-${platform_name}-x64.${platform_exec_suffix}">
+            <ruleList>
+                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+            </ruleList>
+        </setInstallerVariable>
+
         <setInstallerVariable name="originalplatform" value="${platform_name}"/>
         <setInstallerVariable name="originalplatform" value="linux-x32">
             <ruleList>
@@ -491,10 +500,10 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
 					    <distributionDirectory>
-                            <origin>staging/windows/doc</origin>
+                            <origin>staging/@@WINDIR@@/doc</origin>
                         </distributionDirectory>
 		                <distributionDirectory>
-                            <origin>staging/windows/share</origin>
+                            <origin>staging/@@WINDIR@@/share</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -504,7 +513,7 @@
                     <name>libfileswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
-                        <distributionFile origin="staging/windows/lib/postgresql/sqlprotect.dll"/>
+                        <distributionFile origin="staging/@@WINDIR@@/lib/postgresql/sqlprotect.dll"/>
                     </distributionFileList>
                 </folder>
                 <!-- LIN: Program files -->
