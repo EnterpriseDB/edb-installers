@@ -3,7 +3,7 @@
 # Read the various build scripts
 
 # Mac OS X
-if [ $PG_ARCH_OSX = 1 ]; 
+if [ $PG_ARCH_OSX = 1 ];
 then
     source $WD/sqlprotect/build-osx.sh
 fi
@@ -25,7 +25,13 @@ if [ $PG_ARCH_WINDOWS = 1 ];
 then
     source $WD/sqlprotect/build-windows.sh
 fi
-    
+
+# Windows x64
+if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+then
+    source $WD/sqlprotect/build-windows-x64.sh
+fi
+
 ################################################################################
 # Build preparation
 ################################################################################
@@ -34,9 +40,9 @@ _prep_sqlprotect() {
 
     # Per-platform prep
     cd $WD
-    
+
     # Mac OS X
-    if [ $PG_ARCH_OSX = 1 ]; 
+    if [ $PG_ARCH_OSX = 1 ];
     then
         _prep_sqlprotect_osx || exit 1
     fi
@@ -58,7 +64,13 @@ _prep_sqlprotect() {
     then
         _prep_sqlprotect_windows || exit 1
     fi
-    
+
+    # Windows x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _prep_sqlprotect_windows_x64 || exit 1
+    fi
+
 }
 
 ################################################################################
@@ -68,12 +80,12 @@ _prep_sqlprotect() {
 _build_sqlprotect() {
 
     # Mac OSX
-    if [ $PG_ARCH_OSX = 1 ]; 
+    if [ $PG_ARCH_OSX = 1 ];
     then
         _build_sqlprotect_osx || exit 1
     fi
 
-    # Linux 
+    # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
         _build_sqlprotect_linux || exit 1
@@ -90,6 +102,13 @@ _build_sqlprotect() {
     then
         _build_sqlprotect_windows || exit 1
     fi
+
+    # Windows x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _build_sqlprotect_windows_x64 || exit 1
+    fi
+
 }
 
 ################################################################################
@@ -118,7 +137,7 @@ _postprocess_sqlprotect() {
     _registration_postprocess "$WD/sqlprotect/staging"  "SQL Protect" "sqlprotectVersion" "/etc/postgres-reg.ini" "sqlprotect-PG_$PG_MAJOR_VERSION" "sqlprotect-PG_$PG_MAJOR_VERSION" "sqlprotect" "sqlprotect"
 
     # Mac OSX
-    if [ $PG_ARCH_OSX = 1 ]; 
+    if [ $PG_ARCH_OSX = 1 ];
     then
         _postprocess_sqlprotect_osx || exit 1
     fi
@@ -134,10 +153,17 @@ _postprocess_sqlprotect() {
     then
         _postprocess_sqlprotect_linux_x64 || exit 1
     fi
-    
+
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
         _postprocess_sqlprotect_windows || exit 1
     fi
+
+    # Windows x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _postprocess_sqlprotect_windows_x64 || exit 1
+    fi
+
 }

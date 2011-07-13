@@ -17,7 +17,7 @@ _prep_sqlprotect_windows_x64() {
     fi
 	
     # create a copy of the sqlprotect tree
-	cd postgres.windows-x64/contrib
+    cd postgres.windows-x64/contrib
     git clone ssh://pginstaller@cvs.enterprisedb.com/git/SQLPROTECT
 	
     # Remove any existing staging directory that might exist, and create a clean one
@@ -32,7 +32,7 @@ _prep_sqlprotect_windows_x64() {
     chmod ugo+w $WD/sqlprotect/staging/windows-x64 || _die "Couldn't set the permissions on the staging directory"
 	
     echo "Archiving sqlprotect sources"
-	cd $WD/server/source
+    cd $WD/server/source
     if [ -e sqlprotect.zip ];
     then
       echo "Removing existing source archive"
@@ -75,17 +75,17 @@ _build_sqlprotect_windows_x64() {
    
    # Zip up the installed code, copy it back here, and unpack.
    echo "Copying sqlprotect build tree to Unix host"
-   ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\sqlprotect.staging; cmd /c zip -r ..\\\\sqlprotect-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/sqlprotect.staging)"
+   ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\sqlprotect.staging; zip -r ..\\\\sqlprotect-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/sqlprotect.staging)"
    scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/sqlprotect-staging.zip $WD/sqlprotect/staging/windows-x64 || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/sqlprotect-staging.zip)"
    unzip $WD/sqlprotect/staging/windows-x64/sqlprotect-staging.zip -d $WD/sqlprotect/staging/windows-x64 || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/sqlprotect-staging.zip)"
    rm $WD/sqlprotect/staging/windows-x64/sqlprotect-staging.zip
 
-    # Remove the existing sqlprotect directory in server
-    if [ -e postgres.windows-x64/contrib/SQLPROTECT ];
-    then
+   # Remove the existing sqlprotect directory in server
+   if [ -e postgres.windows-x64/contrib/SQLPROTECT ];
+   then
       echo "Removing existing sqlprotect directory"
       rm -rf postgres.windows-x64/contrib/SQLPROTECT || _die "Couldn't remove the existing sqlprotect directory"
-    fi
+   fi
 
 }
 
