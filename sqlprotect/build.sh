@@ -25,6 +25,12 @@ if [ $PG_ARCH_WINDOWS = 1 ];
 then
     source $WD/sqlprotect/build-windows.sh
 fi
+
+# Windows x64
+if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+then
+    source $WD/sqlprotect/build-windows-x64.sh
+fi
     
 ################################################################################
 # Build preparation
@@ -58,7 +64,13 @@ _prep_sqlprotect() {
     then
         _prep_sqlprotect_windows || exit 1
     fi
-    
+  
+    # Windows x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _prep_sqlprotect_windows_x64 || exit 1
+    fi
+
 }
 
 ################################################################################
@@ -93,6 +105,13 @@ _build_sqlprotect() {
     then
         _build_sqlprotect_windows || exit 1
     fi
+
+    # Windows x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _build_sqlprotect_windows_x64 || exit 1
+    fi
+
 }
 
 ################################################################################
@@ -143,4 +162,11 @@ _postprocess_sqlprotect() {
     then
         _postprocess_sqlprotect_windows || exit 1
     fi
+
+    # Windows x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _postprocess_sqlprotect_windows_x64 || exit 1
+    fi
+
 }
