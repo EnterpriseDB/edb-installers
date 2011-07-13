@@ -307,8 +307,54 @@ _build_postgis() {
     echo "Building PostGIS"
     MACOSX_DEPLOYMENT_TARGET=10.5 make || _die "Failed to build PostGIS"
     make comments || _die "Failed to build comments"
-    make PGXSOVERRIDE=0 install || _die "Failed to install PostGIS"
-    make comments-install || _die "Failed to install PostGIS comments"
+    make install DESTDIR=$WD/PostGIS/staging/osx/PostGIS bindir=/bin pkglibdir=/lib datadir=/share PGSQL_DOCDIR=$WD/PostGIS/staging/osx/PostGIS/doc PGSQL_MANDIR=$WD/PostGIS/staging/osx/PostGIS/man PGSQL_SHAREDIR=$WD/PostGIS/staging/osx/PostGIS/share/postgresql || _die "Failed to install PostGIS"
+    make comments-install DESTDIR=$WD/PostGIS/staging/osx/PostGIS bindir=/bin pkglibdir=/lib datadir=/share PGSQL_DOCDIR=$WD/PostGIS/staging/osx/PostGIS/doc PGSQL_MANDIR=$WD/PostGIS/staging/osx/PostGIS/man PGSQL_SHAREDIR=$WD/PostGIS/staging/osx/PostGIS/share/postgresql || _die "Failed to install PostGIS"
+
+    echo "Building postgis-jdbc"
+    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java/jdbc 
+    export CLASSPATH=$PG_PATH_OSX/PostGIS/source/postgresql-$PG_JAR_POSTGRESQL.jar:$CLASSPATH 
+    $PG_ANT_HOME_OSX/bin/ant || _die "Failed to build postgis-jdbc"
+   
+    echo "Building postgis-doc"
+    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/doc; 
+    make html || _die "Failed to build postgis-doc"
+    make install DESTDIR=$WD/PostGIS/staging/osx/PostGIS bindir=/bin pkglibdir=/lib datadir=/share PGSQL_DOCDIR=$WD/PostGIS/staging/osx/PostGIS/doc/ PGSQL_MANDIR=$WD/PostGIS/staging/osx/PostGIS/man PGSQL_SHAREDIR=$WD/PostGIS/staging/osx/PostGIS/share/postgresql || _die "Failed to install PostGIS-doc"
+    
+    cd $WD/PostGIS
+
+    cd staging/osx/PostGIS
+
+    mkdir -p $PG_STAGING/PostGIS/doc/postgis/jdbc/
+
+    echo "Copying jdbc docs"
+    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java/jdbc
+    if [ -e postgis-jdbc-javadoc.zip ];
+    then
+        cp postgis-jdbc-javadoc.zip $PG_STAGING/PostGIS/doc/postgis/jdbc || _die "Failed to copy jdbc docs "
+        cd $PG_STAGING/PostGIS/doc/postgis/jdbc
+        extract_file postgis-jdbc-javadoc || exit 1
+        rm postgis-jdbc-javadoc.zip  || echo "Failed to remove jdbc docs zip file"
+    else
+        echo "Couldn't find the jdbc docs zip file"
+    fi
+
+    cd $WD/PostGIS
+
+    mkdir -p staging/osx/PostGIS/utils
+    echo "Copying postgis-utils"
+    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/utils
+    cp *.pl $PG_STAGING/PostGIS/utils || _die "Failed to copy the utilities "
+    
+    cd $WD/PostGIS
+
+    mkdir -p staging/osx/PostGIS/java/jdbc
+ 
+    echo "Copying postgis-jdbc"
+    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java
+    cp jdbc/postgis*.jar $PG_STAGING/PostGIS/java/jdbc/ || _die "Failed to copy postgis jars into postgis-jdbc directory "
+    cp -R ejb2 $PG_STAGING/PostGIS/java/ || _die "Failed to copy ejb2 into postgis-jdbc directory "
+    cp -R ejb3 $PG_STAGING/PostGIS/java/ || _die "Failed to copy ejb3 into postgis-jdbc directory "
+    cp -R pljava $PG_STAGING/PostGIS/java/ || _die "Failed to copy pljava into postgis-jdbc directory "
 
     cd $WD
 }
@@ -343,85 +389,10 @@ _build_PostGIS_osx() {
     # Building PostGIS
     _build_postgis
 
-    echo "Building postgis-jdbc"
-    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java/jdbc 
-    export CLASSPATH=$PG_PATH_OSX/PostGIS/source/postgresql-$PG_JAR_POSTGRESQL.jar:$CLASSPATH 
-    $PG_ANT_HOME_OSX/bin/ant || _die "Failed to build postgis-jdbc"
-   
-    echo "Building postgis-doc"
-    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/doc; 
-    make html || _die "Failed to build postgis-doc"
-    make install || _die "Failed to install postgis-doc"
-    
-    cd $WD/PostGIS
-
-    mkdir -p staging/osx/PostGIS
-    cd staging/osx/PostGIS
-
-    echo "Copying Postgis files from PG directory"
-    mkdir bin
-    cp $PG_PGHOME_OSX/bin/shp2pgsql bin/ || _die "Failed to copy PostGIS binaries" 
-    cp $PG_PGHOME_OSX/bin/pgsql2shp bin/ || _die "Failed to copy PostGIS binaries"
-
-    mkdir lib
-    cp $PG_PGHOME_OSX/lib/postgresql/postgis-$POSTGIS_MAJOR_VERSION.so lib/ || _die "Failed to copy PostGIS library" 
- 
-    mkdir -p share/contrib
-    cp $PG_PGHOME_OSX/share/postgresql/contrib/postgis-$POSTGIS_MAJOR_VERSION/* $PG_PGHOME_OSX/share/postgresql/contrib/ || _die "Failed to copy PostGIS share files to contrib folder" 
-    cp $PG_PGHOME_OSX/share/postgresql/contrib/postgis.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
-    cp $PG_PGHOME_OSX/share/postgresql/contrib/uninstall_postgis.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
-    cp $PG_PGHOME_OSX/share/postgresql/contrib/postgis_upgrade*.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
-    cp $PG_PGHOME_OSX/share/postgresql/contrib/spatial_ref_sys.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
-    cp $PG_PGHOME_OSX/share/postgresql/contrib/postgis_comments.sql share/contrib/ || _die "Failed to copy PostGIS share files" 
-  
-    mkdir -p doc/postgis
-
-    cp $PG_PGHOME_OSX/doc/postgresql/postgis/postgis.html doc/postgis || _die "Failed to copy documentation"
-    cp $PG_PGHOME_OSX/doc/postgresql/postgis/README.postgis doc/postgis || _die "Failed to copy documentation"
-
-    mkdir -p man/man1
-    cp $PG_PGHOME_OSX/share/man/man1/pgsql2shp.1 man/man1/ || _die "Failed to copy the man pages"
-    cp $PG_PGHOME_OSX/share/man/man1/shp2pgsql.1 man/man1/ || _die "Failed to copy the man pages"
-
-    cd $PG_PATH_OSX/PostGIS/source/postgis.osx
-    cp loader/README.shp2pgsql $PG_STAGING/PostGIS/doc/postgis || _die "Failed to copy README.shp2pgsql "
-    cp loader/README.pgsql2shp $PG_STAGING/PostGIS/doc/postgis || _die "Failed to copy README.pgsql2shp "
-
-    mkdir -p $PG_STAGING/PostGIS/doc/postgis/jdbc/
-
-    echo "Copying jdbc docs"
-    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java/jdbc
-    if [ -e postgis-jdbc-javadoc.zip ];
-    then
-        cp postgis-jdbc-javadoc.zip $PG_STAGING/PostGIS/doc/postgis/jdbc || _die "Failed to copy jdbc docs "
-        cd $PG_STAGING/PostGIS/doc/postgis/jdbc
-        extract_file postgis-jdbc-javadoc || exit 1
-        rm postgis-jdbc-javadoc.zip  || echo "Failed to remove jdbc docs zip file"
-    else
-        echo "Couldn't find the jdbc docs zip file"
-    fi
-
-    cd $WD/PostGIS
-
-    mkdir -p staging/osx/PostGIS/utils
-    echo "Copying postgis-utils"
-    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/utils
-    cp *.pl $PG_STAGING/PostGIS/utils || _die "Failed to copy the utilities "
-    
-    cd $WD/PostGIS
-
-    mkdir -p staging/osx/PostGIS/java/jdbc
- 
-    echo "Copying postgis-jdbc"
-    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java
-    cp jdbc/postgis*.jar $PG_STAGING/PostGIS/java/jdbc/ || _die "Failed to copy postgis jars into postgis-jdbc directory "
-    cp -R ejb2 $PG_STAGING/PostGIS/java/ || _die "Failed to copy ejb2 into postgis-jdbc directory "
-    cp -R ejb3 $PG_STAGING/PostGIS/java/ || _die "Failed to copy ejb3 into postgis-jdbc directory "
-    cp -R pljava $PG_STAGING/PostGIS/java/ || _die "Failed to copy pljava into postgis-jdbc directory "
-
     # Copy proj and geos from staging for re-writing its dylib reference"
     cp -R $PG_CACHING/proj-$PG_TARBALL_PROJ.osx $PG_STAGING/proj || _die "Failed to copy the cached proj"
     cp -R $PG_CACHING/geos-$PG_TARBALL_GEOS.osx $PG_STAGING/geos || _die "Failed to copy the cached geos"
+
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     _change_so_refs $WD/PostGIS/staging/osx/geos lib @loader_path/..
     _change_so_refs $WD/PostGIS/staging/osx/proj lib @loader_path/..
