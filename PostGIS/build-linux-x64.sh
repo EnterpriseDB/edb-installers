@@ -74,8 +74,8 @@ _prep_PostGIS_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f share/postgresql/contrib/postgis_comments.sql"  || _die "Failed to remove postgis share files"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f doc/postgresql/postgis/postgis.html doc/postgresql/postgis/README.postgis" || _die "Failed to remove documentation"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f share/man/man1/pgsql2shp.1 share/man/man1/shp2pgsql.1" || _die "Failed to remove man pages"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; rm -f build-postgis-linux-x64.sh" || _die "Failed to remove build-postgis-linux-x64.sh script"
 
-         
 }
 
 
@@ -86,95 +86,123 @@ _prep_PostGIS_linux_x64() {
 _build_PostGIS_linux_x64() {
 
     # build postgis    
-    PG_STAGING=$PG_PATH_LINUX_X64/PostGIS/staging/linux-x64    
-    PG_CACHING=$PG_PATH_LINUX_X64/PostGIS/caching/linux-x64    
 
-    if [ ! -e $WD/PostGIS/caching/linux-x64/proj-$PG_TARBALL_PROJ.linux-x64 ];
-    then 
-      # Configure the source tree
-      echo "Configuring the proj source tree"
-      ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/proj.linux-x64/; sh ./configure --prefix=$PG_CACHING/proj-$PG_TARBALL_PROJ.linux-x64"  || _die "Failed to configure postgis"
-  
-      echo "Building proj"
-      ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/proj.linux-x64; make" || _die "Failed to build proj"
-      ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/proj.linux-x64; make install" || _die "Failed to install proj"
+    PLATFORM=linux-x64
+    PLATFORM_SSH=$PG_SSH_LINUX_X64
+    POSTGRES_REMOTE_PATH=$PG_PGHOME_LINUX_X64
+    BLD_REMOTE_PATH=$PG_PATH_LINUX_X64
+    PACKAGE_SOURCE=$WD/PostGIS/source
+    PACKAGE_SOURCE_REMOTE=$BLD_REMOTE_PATH/PostGIS/source
+    PACKAGE_STAGING=$BLD_REMOTE_PATH/PostGIS/staging/$PLATFORM
+    PACKAGE_CACHING=$BLD_REMOTE_PATH/PostGIS/caching/$PLATFORM
+
+    POSTGIS_SOURCE=$WD/PostGIS/source/postgis.$PLATFORM
+    POSTGIS_SOURCE_REMOTE=$PACKAGE_SOURCE_REMOTE/postgis.$PLATFORM
+    POSTGIS_STAGING=$WD/PostGIS/staging/$PLATFORM
+    POSTGIS_STAGING_REMOTE=$BLD_REMOTE_PATH/PostGIS/staging/$PLATFORM
+
+    BUILD_PROJ=1
+    PROJ_SOURCE_REMOTE=$PACKAGE_SOURCE_REMOTE/proj.$PLATFORM
+    PROJ_CACHE=$WD/PostGIS/caching/$PLATFORM/proj-$PG_TARBALL_PROJ.$PLATFORM
+    PROJ_CACHHE_REMOTE=$BLD_REMOTE_PATH/PostGIS/caching/$PLATFORM/proj-$PG_TARBALL_PROJ.$PLATFORM
+
+    BUILD_GEOS=1
+    GEOS_SOURCE_REMOTE=$PACKAGE_SOURCE_REMOTE/geos.$PLATFORM
+    GEOS_CACHE=$WD/PostGIS/caching/$PLATFORM/geos-$PG_TARBALL_GEOS.$PLATFORM
+    GEOS_CACHE_REMOTE=$BLD_REMOTE_PATH/PostGIS/caching/$PLATFORM/geos-$PG_TARBALL_GEOS.$PLATFORM
+
+    if [ -e $PROJ_CACHE ]; then
+        BUILD_PROJ=0
     fi
-   
-    if [ ! -e $WD/PostGIS/caching/linux-x64/geos-$PG_TARBALL_GEOS.linux-x64 ];
-    then
-      echo "Configuring the geos source tree"
-      ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/geos.linux-x64/; sh ./configure --prefix=$PG_CACHING/geos-$PG_TARBALL_GEOS.linux-x64" || _die "Failed to configure geos"
 
-      echo "Building geos"
-      ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/geos.linux-x64; make" || _die "Failed to build geos"
-      ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/geos.linux-x64; make install" || _die "Failed to install geos"
+    if [ -e $GEOS_CACHE ]; then
+        BUILD_GEOS=0
     fi
 
-    echo "Configuring the postgis source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/; eX/Port PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.linux-x64/bin:$PG_CACHING/geos-$PG_TARBALL_GEOS.linux-x64/bin:\$PATH; LD_LIBRARY_PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.linux-x64/lib:$PG_CACHING/geos-$PG_TARBALL_GEOS.linux-x64/lib:\$LD_LIBRARY_PATH; ./configure --prefix=$PG_CACHING/PostGIS --with-pgconfig=$PG_PGHOME_LINUX_X64/bin/pg_config --with-geosconfig=$PG_CACHING/geos-$PG_TARBALL_GEOS.linux-x64/bin/geos-config --with-projdir=$PG_CACHING/proj-$PG_TARBALL_PROJ.linux-x64"  || _die "Failed to configure postgis"
+    cd $PACKAGE_SOURCE
 
-    echo "Building postgis"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64; make; make comments" || _die "Failed to build postgis"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64; make PGXSOVERRIDE=0 install; make comments-install" || _die "Failed to install postgis"
-    
-    echo "Building postgis-jdbc"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java/jdbc ;CLASSPATH=$PG_PATH_LINUX_X64/PostGIS/source/postgresql-$PG_JAR_POSTGRESQL.jar:$CLASSPATH JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 $PG_ANT_HOME_LINUX_X64/bin/ant" || _die "Failed to build postgis-jdbc"
-   
-    cd $WD/PostGIS
+cat <<EOT > "build-postgis-$PLATFORM.sh"
+#!/bin/bash
 
-    mkdir -p staging/linux-x64/PostGIS
-    cd staging/linux-x64/PostGIS
+_die() {
+    echo ""
+    echo "FATAL ERROR: \$1"
+    echo ""
+    exit 1
+}
 
-    echo "Copying Postgis files from PG directory"
-    mkdir bin
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/bin/shp2pgsql bin/" || _die "Failed to copy PostGIS binaries" 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/bin/pgsql2shp bin/" || _die "Failed to copy PostGIS binaries" 
+# Build proj
+if [ \$1 -eq 1 ]; then
+    cd $PROJ_SOURCE_REMOTE
 
-    mkdir lib
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/lib/postgresql/postgis-$POSTGIS_MAJOR_VERSION.so lib/" || _die "Failed to copy PostGIS library" 
+    # Configure the source tree
+    echo "Configuring the proj source tree"
+    sh ./configure --prefix=$PROJ_CACHHE_REMOTE  || _die "Failed to configure proj"
+
+    echo "Building proj"
+    make || _die "Failed to build proj"
+    make install || _die "Failed to install proj"
+fi
+
+if [ \$2 -eq 1 ]; then
+    cd $GEOS_SOURCE_REMOTE
+
+    # Configure the source tree
+    echo "Configuring the geos source tree"
+    sh ./configure --prefix=$GEOS_CACHE_REMOTE  || _die "Failed to configure geos"
+
+    echo "Building geos"
+    make || _die "Failed to build geos"
+    make install || _die "Failed to install geos"
+fi
+
+cd $POSTGIS_SOURCE_REMOTE
+export PATH=$PROJ_CACHHE_REMOTE/bin:$GEOS_CACHE_REMOTE/bin:\$PATH
+export LD_LIBRARY_PATH=$PROJ_CACHHE_REMOTE/lib:$GEOS_CACHE_REMOTE/lib:\$LD_LIBRARY_PATH
+export LDFLAGS=-Wl,--rpath,'\\\$ORIGIN/../lib'
+
+echo "Configuring the postgis source tree"
+./configure --with-pgconfig=$POSTGRES_REMOTE_PATH/bin/pg_config --with-geosconfig=$GEOS_CACHE_REMOTE/bin/geos-config --with-projdir=$PROJ_CACHHE_REMOTE  || _die "Failed to configure postgis"
+
+echo "Building postgis ($PLATFORM)"
+make || _die "Failed to build postgis (make on $PLATFORM)"
+make comments || _die "Failed to build postgis ('make comments' on $PLATFORM)"
+make install PGXSOVERRIDE=0 DESTDIR=$POSTGIS_STAGING_REMOTE/PostGIS bindir=/bin pkglibdir=/lib datadir=/share PGSQL_DOCDIR=$POSTGIS_STAGING_REMOTE/PostGIS/doc PGSQL_MANDIR=$POSTGIS_STAGING_REMOTE/PostGIS/man PGSQL_SHAREDIR=$POSTGIS_STAGING_REMOTE/PostGIS/share/postgresql || _die "Failed to install postgis ($PLATFORM)"
+make comments-install PGXSOVERRIDE=0 DESTDIR=$POSTGIS_STAGING_REMOTE/PostGIS bindir=/bin pkglibdir=/lib datadir=/share PGSQL_DOCDIR=$POSTGIS_STAGING_REMOTE/PostGIS/doc PGSQL_MANDIR=$POSTGIS_STAGING_REMOTE/PostGIS/man PGSQL_SHAREDIR=$POSTGIS_STAGING_REMOTE/PostGIS/share/postgresql || _die "Failed to install comments postgis ($PLATFORM)"
+
+echo "Copying the utils"
+mkdir -p $POSTGIS_STAGING_REMOTE/PostGIS/utils
+cp $POSTGIS_SOURCE_REMOTE/utils/*.pl $POSTGIS_STAGING_REMOTE/PostGIS/utils/  || _die "Failed to copy the utilities"
+
+echo "Building postgis-jdbc"
+cd $POSTGIS_SOURCE_REMOTE/java/jdbc
+CLASSPATH=$PACKAGE_SOURCE_REMOTE/postgresql-$PG_VERSION_PGJDBC.jdbc3.jar:\$CLASSPATH JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX/bin/ant
+
+mkdir -p $POSTGIS_STAGING_REMOTE/PostGIS/java/jdbc
  
-    mkdir -p share/contrib
- 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/postgresql/contrib/postgis-$POSTGIS_MAJOR_VERSION/* $PG_PGHOME_LINUX_X64/share/postgresql/contrib/" || _die "Failed to copy PostGIS share files to contrib folder" 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/postgresql/contrib/postgis.sql share/contrib/" || _die "Failed to copy PostGIS share files" 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/postgresql/contrib/uninstall_postgis.sql share/contrib/" || _die "Failed to copy PostGIS share files" 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/postgresql/contrib/postgis_upgrade*.sql share/contrib/" || _die "Failed to copy PostGIS share files" 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/postgresql/contrib/spatial_ref_sys.sql share/contrib/" || _die "Failed to copy PostGIS share files" 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/staging/linux-x64/PostGIS; cp $PG_PGHOME_LINUX_X64/share/postgresql/contrib/postgis_comments.sql share/contrib/" || _die "Failed to copy PostGIS share files" 
-  
-    #Copy the docs and man pages from osx build.
-    cp -R $WD/PostGIS/staging/osx/PostGIS/doc . || _die "Failed to copy the doc folder from staging directory"
-    cp -R $WD/PostGIS/staging/osx/PostGIS/man . || _die "Failed to copy the man folder from staging directory"
+echo "Copying postgis-jdbc"
+cd $POSTGIS_SOURCE_REMOTE/java
+cp jdbc/postgis*.jar $POSTGIS_STAGING_REMOTE/PostGIS/java/jdbc/ || _die "Failed to copy postgis jars into postgis-jdbc"
+cp -R ejb2 ejb3 pljava $POSTGIS_STAGING_REMOTE/PostGIS/java/ || _die "Failed to copy ejb2, ejb3 & pljava into postgis-java"
 
-    cd $WD/PostGIS
+echo "Copy dependent libraries"
+cd $POSTGIS_STAGING_REMOTE/PostGIS/lib
+cp $PROJ_CACHHE_REMOTE/lib/libproj* . || _die "Failed to copy the proj libraries"
+cp $GEOS_CACHE_REMOTE/lib/libgeos* . || _die "Failed to copy the geos libraries"
 
-    mkdir -p staging/linux-x64/PostGIS/utils
-    echo "Copying postgis-utils"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/utils; cp *.pl $PG_STAGING/PostGIS/utils" || _die "Failed to copy the utilities "
-    
-    cd $WD/PostGIS
+echo "Changing the rpath for the PostGIS executables and libraries"
+cd $POSTGIS_STAGING_REMOTE/PostGIS/bin
+for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \"\\\$ORIGIN/../lib\" \$f; done
 
-    mkdir -p staging/linux-x64/PostGIS/java/jdbc
- 
-    echo "Copying postgis-jdbc"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java; cp jdbc/postgis*.jar $PG_STAGING/PostGIS/java/jdbc/" || _die "Failed to copy postgis jars into postgis-jdbc directory "
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java; cp -R ejb2 $PG_STAGING/PostGIS/java/" || _die "Failed to copy ejb2 into postgis-jdbc directory "
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java; cp -R ejb3 $PG_STAGING/PostGIS/java/" || _die "Failed to copy ejb3 into postgis-jdbc directory "
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PostGIS/source/postgis.linux-x64/java; cp -R pljava $PG_STAGING/PostGIS/java/" || _die "Failed to copy pljava into postgis-jdbc directory "
+cd $POSTGIS_STAGING_REMOTE/PostGIS/lib
+for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \"\\\$ORIGIN:\\\$ORIGIN/..\" \$f; done
+chmod a+rx *
 
-    # Copy dependent libraries
-    ssh $PG_SSH_LINUX_X64 "cp $PG_CACHING/proj-$PG_TARBALL_PROJ.linux-x64/lib/libproj* $PG_STAGING/PostGIS/lib" || _die "Failed to copy the proj libraries"
-    ssh $PG_SSH_LINUX_X64 "cp $PG_CACHING/geos-$PG_TARBALL_GEOS.linux-x64/lib/libgeos* $PG_STAGING/PostGIS/lib" || _die "Failed to copy the geos libraries"
+echo "Creating wrapper script for pgsql2shp and shp2pgsql"
+cd $POSTGIS_STAGING_REMOTE/PostGIS/bin
+for f in pgsql2shp shp2pgsql ; do mv \$f \$f.bin; done
 
-    echo "Changing the rpath for the PostGIS executables and libraries"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/PostGIS/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\$ORIGIN/../lib\" \$f; done"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/PostGIS/lib; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\$ORIGIN:\\\$ORIGIN/..\" \$f; done"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/PostGIS/lib; chmod +r *" 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/PostGIS/bin; chmod +rx *" 
-
-    echo "Creating wrapper script for pgsql2shp and shp2pgsql"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/PostGIS/bin; for f in pgsql2shp shp2pgsql ; do mv \$f \$f.bin; done"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/PostGIS/bin; cat <<EOT > pgsql2shp
+cat <<EOS > pgsql2shp
 #!/bin/sh
 
 CURRENTWD=\\\$PWD
@@ -184,10 +212,9 @@ cd \\\$WD/../lib
 LD_LIBRARY_PATH=\\\$PWD:\\\$LD_LIBRARY_PATH \\\$WD/pgsql2shp.bin $*
 
 cd \\\$CURRENTWD
-EOT
-"
+EOS
 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/PostGIS/bin; cat <<EOT > shp2pgsql
+cat <<EOS > shp2pgsql
 #!/bin/sh
 
 CURRENTWD=\\\$PWD
@@ -197,11 +224,22 @@ cd \\\$WD/../lib
 LD_LIBRARY_PATH=\\\$PWD:\\\$LD_LIBRARY_PATH \\\$WD/shp2pgsql.bin $*
 
 cd \\\$CURRENTWD
+EOS
+chmod a+rx *
+
 EOT
-"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/PostGIS/bin; chmod +x *"
+
+    scp build-postgis-$PLATFORM.sh $PLATFORM_SSH:$BLD_REMOTE_PATH || _die "Failed to copy build script on $PLATFORM VM"
+    ssh $PLATFORM_SSH "cd $BLD_REMOTE_PATH; bash ./build-postgis-$PLATFORM.sh $BUILD_PROJ $BUILD_GEOS" || _die "Failed to execution of build script on $PLATFORM"
+
+    cd $POSTGIS_STAGING/PostGIS
+
+    echo "Copying Postgis docs from osx staging build"
+    cp -R $WD/PostGIS/staging/osx/PostGIS/doc . || _die "Failed to copy the doc folder from staging directory"
+    cp -R $WD/PostGIS/staging/osx/PostGIS/man . || _die "Failed to copy the man folder from staging directory"
 
     cd $WD/PostGIS
+
 } 
 
 
