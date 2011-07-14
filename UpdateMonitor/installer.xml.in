@@ -3,8 +3,6 @@
   <shortName>updatemonitor</shortName>
   <fullName>UpdateMonitor</fullName>
   <version>PG_VERSION_UPDATE_MONITOR-PG_BUILDNUM_UPDATE_MONITOR</version>
-  <!-- These options are used on Windows -->
-  <startMenuGroupName>${branding}</startMenuGroupName>
   <!-- Product Specific Options -->
   <productComments>Update Monitor for the PostgreSQL</productComments>
   <productDisplayName>Update Monitor ${productVersion}</productDisplayName>
@@ -96,7 +94,6 @@
 
     <actionGroup>
       <actionList>
-        <setInstallerVariable name="branding" value=""/>
         <!-- Do not create uninstaller in case of extract-only mode -->
         <setInstallerVariable name="createUninstaller" value="0" persist="1"/>
       </actionList>
@@ -105,7 +102,6 @@
       </ruleList>
     </actionGroup>
 
-    <setInstallerVariable name="pgMajorVersion" value="PG_MAJOR_VERSION" />
     <setInstallerVariable name="iUMVersion" value="" />
 
     <!-- Do not perform the below actions in case of extract-only mode -->
@@ -155,11 +151,10 @@
             </ruleList>
         </setInstallerVariable>
 
-        <!-- LIN & MAC : Get the branding & check Previous Installation of -->
+        <!-- LIN & MAC : Check Previous Installation of -->
         <actionGroup>
           <actionList>
             <iniFileGet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="InstallationDirectory" variable="iInstalldir"/>
-            <iniFileGet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="Branding" variable="iBranding"/>
             <iniFileGet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="Version" variable="iUMVersion"/>
           </actionList>
           <ruleList>
@@ -170,35 +165,13 @@
         <!-- WIN : Check Previous Installation of UpdateMonitor-->
         <actionGroup>
           <actionList>
-            <!-- Get the branding -->
             <registryGet name="InstallationDirectory" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\UpdateMonitor" variable="iInstalldir"/>
-            <registryGet name="Branding" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\UpdateMonitor" variable="iBranding"/>
             <registryGet name="Version" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\UpdateMonitor" variable="iUMVersion"/>
           </actionList>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
         </actionGroup>
-
-        <!-- If there appears to be an existing installation, with no Branding value. -->
-        <!-- force the default value. Otherwise, set the branding to whatever we read, -->
-        <!-- or, set the default -->
-
-        <!-- Existing install, with branding -->
-        <setInstallerVariable name="branding" persist="1" value="${iBranding}">
-          <ruleList>
-            <compareText logic="does_not_equal" text="${iBranding}" value=""/>
-          </ruleList>
-        </setInstallerVariable>
-
-        <!-- New install, nothing set on the command line -->
-        <setInstallerVariable name="branding" persist="1" value="PostgreSQL">
-          <ruleList>
-            <compareText logic="equals" text="${branding}" value=""/>
-          </ruleList>
-        </setInstallerVariable>
-
-        <logMessage text="Using branding: ${branding}"/>
 
         <actionGroup>
             <actionList>
@@ -220,27 +193,101 @@
 	    </ruleList>
 	</setInstallerVariable>
 
+        <unpackDirectory>
+            <component>updatemanager</component>
+            <destination>${system_temp_directory}/${product_shortname}</destination>
+            <folder>updatemonitorfileslinux</folder>
+            <origin>instscripts</origin>
+             <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+             </ruleList>
+        </unpackDirectory>	
+        <unpackDirectory>
+            <component>updatemanager</component>
+            <destination>${system_temp_directory}/${product_shortname}</destination>
+            <folder>updatemonitorfileslinux-x64</folder>
+            <origin>instscripts</origin>
+             <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+             </ruleList>
+        </unpackDirectory>	
+        <unpackDirectory>
+            <component>updatemanager</component>
+            <destination>${system_temp_directory}/${product_shortname}</destination>
+            <folder>updatemonitorfilesosx</folder>
+            <origin>instscripts</origin>
+             <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+             </ruleList>
+        </unpackDirectory>	
+
+	<setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/${product_shortname}/lib" />
+
+	<runProgram>	
+	    <program>${system_temp_directory}/${product_shortname}/bin/GetLatestPGInstalled</program>
+	    <programArguments/>
+	    <workingDirectory>${system_temp_directory}/${product_shortname}/bin</workingDirectory>
+	    <showMessageOnError>0</showMessageOnError>
+	    <abortOnError>0</abortOnError>
+	</runProgram>
+
+	<setInstallerVariable name="PGLatestVersion" value="${program_stdout}" >
+	    <ruleList>
+		<compareText text="${program_exit_code}" logic="equals" value="0" />
+	    </ruleList>
+	</setInstallerVariable>
+
+
 	<actionGroup>
 	    <actionList>
-		<iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/PG_MAJOR_VERSION" key="InstallationDirectory" variable="pg_home">
+		<actionGroup>
+		    <actionList>
+			<iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${PGLatestVersion}" key="InstallationDirectory" variable="pg_home" />
+			<iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${PGLatestVersion}" key="Branding" variable="pg_branding" />
+		    </actionList>
 		    <ruleList>
 			<compareText text="${platform_name}" logic="does_not_equal" value="windows" />
 		    </ruleList>
-		</iniFileGet>
-    		<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION" 
-			name="Base Directory" variable="pg_home" wowMode="64">
+		</actionGroup>
+		<actionGroup>
+		    <actionList>
+			<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-${PGLatestVersion}" 
+			    name="Base Directory" variable="pg_home" wowMode="64" />
+			<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-${PGLatestVersion}" 
+			    name="Branding" variable="pg_branding" wowMode="64" />
+		    </actionList>
 		    <ruleList>
 			<compareText text="${platform_name}" logic="equals" value="windows" />
 			<platformTest type="windows-x64" />
 		    </ruleList>
-		</registryGet>
-		<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION" 
-			name="Base Directory" variable="pg_home" wowMode="32">
+		</actionGroup>
+		<actionGroup>
+		    <actionList>
+			<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${PGLatestVersion}" 
+			    name="Base Directory" variable="pg_home" wowMode="32" />
+			<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${PGLatestVersion}" 
+			    name="Branding" variable="pg_branding" wowMode="32" />
+		    </actionList>
 		    <ruleList>
 			<compareText text="${platform_name}" logic="equals" value="windows" />
 			<compareText text="${pg_home}" logic="equals" value="" />
 		    </ruleList>
-		</registryGet>
+		</actionGroup>
 
 		<throwError text="${msg(error.pg.not.found)}" >
 		    <ruleList>
@@ -337,18 +384,9 @@
           </ruleList>
         </actionGroup>
     
-        <!-- Branding info -->
-        <logMessage text="Write the branding to the ini file..."/>
-    
-        <iniFileSet file="/etc/postgres-reg.ini" section="UpdateMonitor" key="Branding" value="${branding}">
-          <ruleList>
-            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-          </ruleList>
-        </iniFileSet>
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\UpdateMonitor" name="Description" value="${msg(install.summary)}"/>
         <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\UpdateMonitor" name="InstallationDirectory" value="${installdir}"/>
         <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\UpdateMonitor" name="Version" value="${product_version}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\UpdateMonitor" name="Branding" value="${branding}"/>
         <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\UpdateMonitor" name="InstallationDate" value="${installDate}">
             <ruleList>
               <compareText logic="equals" text="${iUMVersion}" value=""/>
@@ -370,7 +408,6 @@
           <substitutionList>
              <substitution pattern="INSTALL_DIR" value="${installdir}"/>
              <substitution pattern="STACKBUILDER_DIR" value="${pg_home}"/>
-             <substitution pattern="BRANDING" value="${branding}"/>
           </substitutionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -415,11 +452,11 @@
             <actionGroup>
                <actionList>
                    <runProgram program="${installdir}/installer/UpdateMonitor/startupcfg.sh"
-                               programArguments="${installdir} &quot;${branding}&quot;"
+                               programArguments="${installdir} &quot;${pg_branding}&quot;"
                                abortOnError="0"
                                showMessageOnError="0"/>
                    <substitute>
-                      <files>${installdir}/scripts/LaunchUpdateManager.app/Contents/Info.plist</files>
+                      <files>${installdir}/scripts/LaunchUpdateMonitor.app/Contents/Info.plist</files>
                       <substitutionList>
                           <substitution pattern="&lt;/dict&gt;" value="        &lt;key&gt;LSUIElement&lt;/key&gt; &lt;string&gt;1&lt;/string&gt; &lt;/dict&gt;"/>
                       </substitutionList>
@@ -431,7 +468,7 @@
                                abortOnError="0"
                                showMessageOnError="0"/>
                    <runProgram program="/usr/bin/defaults"
-                               programArguments="write loginwindow AutoLaunchedApplicationDictionary -array-add &quot;&lt;dict&gt;&lt;key&gt;Hide&lt;/key&gt;&lt;true/&gt;&lt;key&gt;Path&lt;/key&gt;&lt;string&gt;${installdir}/scripts/LaunchUpdateManager.app&lt;/string&gt;&lt;/dict&gt;&quot;"
+                               programArguments="write loginwindow AutoLaunchedApplicationDictionary -array-add &quot;&lt;dict&gt;&lt;key&gt;Hide&lt;/key&gt;&lt;true/&gt;&lt;key&gt;Path&lt;/key&gt;&lt;string&gt;${installdir}/scripts/LaunchUpdateMonitor.app&lt;/string&gt;&lt;/dict&gt;&quot;"
                                runAs="${system_user}"
                                abortOnError="0"
                                showMessageOnError="0">
@@ -546,14 +583,14 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
             <fileExists path="${installdir}/scripts/launchUpdateMonitor.sh" />
           </ruleList>
         </runProgram>
-        <runProgram program="${installdir}/scripts/LaunchUpdateManager.app/Contents/MacOS/applet"
+        <runProgram program="${installdir}/scripts/LaunchUpdateMonitor.app/Contents/MacOS/applet"
                     programArguments=""
                     runAs="${system_user}"
                     showMessageOnError="0"
                     abortOnError="0">
           <ruleList>
             <compareText text="${platform_name}" logic="equals" value="osx"/>
-            <fileExists path="${installdir}/scripts/LaunchUpdateManager.app/Contents/MacOS/applet" />
+            <fileExists path="${installdir}/scripts/LaunchUpdateMonitor.app/Contents/MacOS/applet" />
           </ruleList>
         </runProgram>
     
@@ -766,9 +803,9 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
     </actionGroup>
 
     <!-- MAC: Remove LaunchUpdateManager  -->
-    <deleteFile path="${installdir}/scripts/LaunchUpdateManager.app">
+    <deleteFile path="${installdir}/scripts/LaunchUpdateMonitor.app">
       <ruleList>
-        <fileExists path="${installdir}/scripts/LaunchUpdateManager.app"/>
+        <fileExists path="${installdir}/scripts/LaunchUpdateMonitor.app"/>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </deleteFile>
@@ -791,7 +828,9 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
         <folder description="Program Files" destination="${installdir}" name="updatemonitorfileslinux" platforms="linux">
           <distributionFileList>
             <distributionDirectory origin="staging/linux/UpdateMonitor/bin"/>
-            <distributionDirectory origin="staging/linux/UpdateMonitor/lib"/>
+            <distributionDirectory origin="staging/linux/UpdateMonitor/bin"/>
+            <distributionDirectory origin="staging/linux/installer"/>
+            <distributionDirectory origin="staging/linux/UpdateMonitor/instscripts"/>
             <distributionDirectory origin="staging/linux/UpdateMonitor/scripts"/>
           </distributionFileList>
         </folder>
@@ -800,6 +839,8 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
           <distributionFileList>
             <distributionDirectory origin="staging/linux-x64/UpdateMonitor/bin"/>
             <distributionDirectory origin="staging/linux-x64/UpdateMonitor/lib"/>
+            <distributionDirectory origin="staging/linux-x64/installer"/>
+            <distributionDirectory origin="staging/linux-x64/UpdateMonitor/instscripts"/>
             <distributionDirectory origin="staging/linux-x64/UpdateMonitor/scripts"/>
           </distributionFileList>
         </folder>
@@ -808,6 +849,8 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
           <distributionFileList>
             <distributionDirectory origin="staging/solaris-x64/UpdateMonitor/bin"/>
             <distributionDirectory origin="staging/solaris-x64/UpdateMonitor/lib"/>
+            <distributionDirectory origin="staging/solaris-x64/installer"/>
+            <distributionDirectory origin="staging/solaris-x64/UpdateMonitor/instscripts"/>
             <distributionDirectory origin="staging/solaris-x64/UpdateMonitor/scripts"/>
           </distributionFileList>
         </folder>
@@ -816,6 +859,8 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
           <distributionFileList>
             <distributionDirectory origin="staging/solaris-sparc/UpdateMonitor/bin"/>
             <distributionDirectory origin="staging/solaris-sparc/UpdateMonitor/lib"/>
+            <distributionDirectory origin="staging/solaris-sparc/installer"/>
+            <distributionDirectory origin="staging/solaris-sparc/UpdateMonitor/instscripts"/>
             <distributionDirectory origin="staging/solaris-sparc/UpdateMonitor/scripts"/>
           </distributionFileList>
         </folder>
@@ -824,6 +869,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
           <distributionFileList>
             <distributionDirectory origin="staging/osx/UpdateMonitor.app"/>
             <distributionDirectory origin="staging/osx/UpdateMonitor/scripts"/>
+            <distributionDirectory origin="staging/osx/UpdateMonitor/instscripts"/>
             <distributionDirectory origin="staging/osx/UpdateMonitor/installer"/>
           </distributionFileList>
         </folder>
@@ -831,6 +877,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
         <folder description="Program Files" destination="${installdir}" name="updatemonitorfileswindows" platforms="windows">
           <distributionFileList>
             <distributionDirectory origin="staging/windows/UpdateMonitor/bin"/>
+            <distributionDirectory origin="staging/windows/UpdateMonitor/instscripts"/>
             <distributionDirectory origin="staging/windows/scripts"/>
           </distributionFileList>
         </folder>
@@ -848,7 +895,6 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
     <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
     <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
     <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
-    <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
 
     <directoryParameter>
       <name>installdir</name>

@@ -19,12 +19,19 @@ _prep_updatemonitor_linux() {
       rm -rf UpdateMonitor.linux  || _die "Couldn't remove the existing UpdateMonitor.linux source directory (source/UpdateMonitor.linux)"
     fi
    
+    if [ -e GetLatestPGInstalled.linux ];
+    then
+      echo "Removing existing GetLatestPGInstalled.linux source directory"
+      rm -rf GetLatestPGInstalled.linux  || _die "Couldn't remove the existing GetLatestPGInstalled.linux source directory (source/GetLatestPGInstalled.linux)"
+    fi
+   
     echo "Creating source directory ($WD/UpdateMonitor/source/updatemonitor.linux)"
     mkdir -p $WD/UpdateMonitor/source/updatemonitor.linux || _die "Couldn't create the updatemonitor.linux directory"
 
     # Grab a copy of the source tree
     cp -R SS-UPDATEMANAGER/* updatemonitor.linux || _die "Failed to copy the source code (source/SS-UPDATEMANAGER)"
     chmod -R ugo+w updatemonitor.linux || _die "Couldn't set the permissions on the source directory (SS-UPDATEMANAGER)"
+    cp -R $WD/UpdateMonitor/resources/GetLatestPGInstalled GetLatestPGInstalled.linux
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/UpdateMonitor/staging/linux ];
@@ -49,6 +56,9 @@ _build_updatemonitor_linux() {
     echo "* Building - UpdateMonitor (linux) *"
     echo "***************************************"
 
+    cd $WD/UpdateMonitor/source/GetLatestPGInstalled.linux
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/UpdateMonitor/source/GetLatestPGInstalled.linux;  g++ -I/usr/local/include/wx-2.8/ -I/usr/local/lib/wx/include/gtk2-unicode-release-2.8/ -L/usr/local/lib -lwx_baseud-2.8 -o GetLatestPGInstalled  GetLatestPGInstalled.cpp" || _die "Failed to build GetLatestPGInstalled" 
+
     cd $WD/UpdateMonitor/source/UpdateMonitor.linux
 
     echo "Building & installing UpdateMonitor"
@@ -57,12 +67,16 @@ _build_updatemonitor_linux() {
 
     mkdir -p $WD/UpdateMonitor/staging/linux/UpdateMonitor/bin
     mkdir -p $WD/UpdateMonitor/staging/linux/UpdateMonitor/lib
-
+    mkdir -p $WD/UpdateMonitor/staging/linux/UpdateMonitor/instscripts/bin
+    mkdir -p $WD/UpdateMonitor/staging/linux/UpdateMonitor/instscripts/lib
+	
     echo "Copying UpdateMonitor binary to staging directory"
+    cp $WD/UpdateMonitor/source/GetLatestPGInstalled.linux/GetLatestPGInstalled $WD/UpdateMonitor/staging/linux/UpdateMonitor/instscripts/bin
     cp $WD/UpdateMonitor/source/updatemonitor.linux/UpdateManager $WD/UpdateMonitor/staging/linux/UpdateMonitor/bin
 
     
     echo "Copying dependent libraries to staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp /usr/local/lib/libwx_baseud-2.8.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/instscripts/lib" || _die "Failed to copy dependent library (libwx_baseud-2.8.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp /usr/lib/libQtXml.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp /usr/lib/libQtNetwork.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp /usr/lib/libQtCore.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (linux)"

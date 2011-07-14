@@ -18,6 +18,12 @@ _prep_updatemonitor_osx() {
       echo "Removing existing updatemonitor.osx source directory"
       rm -rf updatemonitor.osx  || _die "Couldn't remove the existing updatemonitor.osx source directory (source/updatemonitor.osx)"
     fi
+
+    if [ -e GetLatestPGInstalled.osx ];
+    then
+      echo "Removing existing GetLatestPGInstalled.osx source directory"
+      rm -rf GetLatestPGInstalled.osx  || _die "Couldn't remove the existing GetLatestPGInstalled.osx source directory (source/GetLatestPGInstalled.osx)"
+    fi
    
     echo "Creating source directory ($WD/UpdateMonitor/source/updatemonitor.osx)"
     mkdir -p $WD/UpdateMonitor/source/updatemonitor.osx || _die "Couldn't create the updatemonitor.osx directory"
@@ -25,6 +31,7 @@ _prep_updatemonitor_osx() {
     # Grab a copy of the source tree
     cp -R SS-UPDATEMANAGER/* updatemonitor.osx || _die "Failed to copy the source code (source/SS-UPDATEMANAGER)"
     chmod -R ugo+w updatemonitor.osx || _die "Couldn't set the permissions on the source directory (SS-UPDATEMANAGER)"
+    cp -R $WD/UpdateMonitor/resources/GetLatestPGInstalled GetLatestPGInstalled.osx
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/UpdateMonitor/staging/osx ];
@@ -49,6 +56,9 @@ _build_updatemonitor_osx() {
     echo "* Building - UpdateMonitor (osx) *"
     echo "*************************************"
 
+    cd $WD/UpdateMonitor/source/GetLatestPGInstalled.osx    
+     g++ -I/usr/local/lib/wx/include/mac-unicode-debug-2.8 -I/usr/local/include/wx-2.8 -arch i386 -L/usr/local/lib -lwx_base_carbonud-2.8 -o GetLatestPGInstalled GetLatestPGInstalled.cpp
+
     cd $WD/UpdateMonitor/source/updatemonitor.osx
 
     # Append mac specific setting in the UpdateMonitor Project
@@ -61,15 +71,16 @@ mac {
 }
 
 EOT
-    cat /tmp/UpdateMonitor.pro >> UpdateMonitor.pro
-    qmake UpdateMonitor.pro
+    cat /tmp/UpdateMonitor.pro >> UpdateManager.pro
+    qmake UpdateManager.pro
     xcodebuild -configuration Release
 
     if [ ! -d UpdateManager.app ]; then
-        _die "Failed building UpdateManager"
+        _die "Failed building UpdateMonitor"
     fi
 
-    cd UpdateManager.app/Contents/MacOS
+    mv UpdateManager.app UpdateMonitor.app || _die "Failed to rename the UpdateManager.app"
+    cd UpdateMonitor.app/Contents/MacOS || _die "Incomplete UpdateMonitor.app"
 
     echo "Copying dependent library QtCore"
     cp -R /Library/Frameworks/QtCore.framework QtCore.framework
@@ -96,8 +107,16 @@ EOT
     cp $WD/UpdateMonitor/source/updatemonitor.osx/Info.plist $WD/UpdateMonitor/source/updatemonitor.osx/updatemonitor.app/Contents/Info.plist || _die "Failed to change the Info.plist"     
 
     cd $WD/UpdateMonitor/source
-    echo "Copy the UpdateManager app bundle into place"
-    cp -R $WD/UpdateMonitor/source/updatemonitor.osx/UpdateManager.app $WD/UpdateMonitor/staging/osx/UpdateManager.app || _die "Failed to copy UpdateMonitor into the staging directory"
+    echo "Copy the UpdateMonitor app bundle into place"
+    cp -R $WD/UpdateMonitor/source/updatemonitor.osx/UpdateMonitor.app $WD/UpdateMonitor/staging/osx/UpdateMonitor.app || _die "Failed to copy UpdateMonitor into the staging directory"
+
+    mkdir -p $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/bin
+    mkdir -p $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
+    
+    cp $WD/UpdateMonitor/source/GetLatestPGInstalled.osx/GetLatestPGInstalled $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/bin
+    cp /usr/local/lib/libwx_base_carbonud-2.8.0.dylib $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
+
+     _rewrite_so_refs $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts bin @loader_path/..
 
     cd $WD
 }
@@ -122,10 +141,10 @@ _postprocess_updatemonitor_osx() {
     cp scripts/osx/launchUpdateMonitor.sh staging/osx/UpdateMonitor/scripts/launchUpdateMonitor.sh || _die "Failed to copy the launch script (scripts/osx/launchSBPUpdateMonitor.sh)"
     cp scripts/osx/launchupdatemonitor.applescript.in staging/osx/UpdateMonitor/scripts/launchupdatemonitor.applescript || _die "Failed to copy the launch script (scripts/osx/launchupdatemonitor.applescript.in)"
     cp scripts/osx/startupcfg.sh staging/osx/UpdateMonitor/installer/UpdateMonitor/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/osx/startupcfg.sh)"
-    chmod ugo+x staging/osx/scripts/*.sh
+    chmod ugo+x staging/osx/UpdateMonitor/scripts/*.sh
 
     # Copy in the menu pick images and XDG items
-    mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
+    mkdir -p staging/osx/UpdateMonitor/scripts/images || _die "Failed to create a directory for the menu pick images"
 
     if [ -f installer_1.xml ]; then
         rm -f installer_1.xml

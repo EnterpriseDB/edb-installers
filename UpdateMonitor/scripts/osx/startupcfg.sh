@@ -37,7 +37,7 @@ _compile_script() {
     osacompile -x -o "$2" "$1" || _die "Failed to compile the script ($1)"
 }
 
-_compile_script $INSTALLDIR/scripts/launchupdatemanager.applescript $INSTALLDIR/scripts/LaunchUpdateManager.app 
+_compile_script $INSTALLDIR/scripts/launchupdatemonitor.applescript $INSTALLDIR/scripts/LaunchUpdateMonitor.app 
 
 echo "$0 ran to completion"
 exit $WARN

@@ -44,7 +44,7 @@ progress.text.creating.loginHook.osx=Creating login hooks
 progress.text.removing.loginHook.osx=Removing login hooks
 progress.text.removing.shortcuts=Removing menu shortcuts
 
-error.pg.not.found=No PostgreSQL ${pgMajorVersion} installation found.
+error.pg.not.found=No PostgreSQL installation found.
 
 registration_plus.error.invalid.email.value=Invalid email address. You must provide a valid email address.  Please try again.
 registration_plus.error.invalid.password.value=Password is empty or contains invalid characters. Please enter valid password.
