@@ -26,4 +26,6 @@ pgbouncer.port.error=无法绑定所指定的端口。请指定另外一个值�
 pgbouncer.blank.error=必须在所有字段中输入值。
 pgbouncer.user.error=所指定的用户在您的系统上不存在。
 error.file.notsecure=无法获得文件{installdir}\etc\userlist.txt。
-pgbouncer.system.user.error=root用户无法运行pgBouncer，请指定一个不同的用户名。
+pgbouncer.system.user.error=root用户无法运行pgBouncer，请指定一个不同的用户名�
+gui.not.available.hpux=The GUI mode installation is not supported on HPUX
+�

@@ -107,6 +107,7 @@
                     <text>${platform_name}</text>
                     <value>linux</value>
                 </compareText>
+		<compareText logic="contains" text="${platform_name}" value="hpux"/>
             </ruleList>
         </setInstallerVariable>
         <!-- WIN : Set the default installation directory -->
@@ -140,22 +141,35 @@
                 </compareText>
             </ruleList>
       </setInstallerVariable>
+      <setInstallerVariable>
+        <name>project.defaultInstallationMode</name>
+        <value>text</value>
+        <ruleList>
+          <compareText logic="contains" text="${platform_name}" value="hpux"/>
+        </ruleList>
+      </setInstallerVariable>
+      <!-- Change allowed values for installation mode in HP-UX -->
+      <setInstallerVariable name="project.allowedInstallationModes" value="text unattended">
+        <ruleList>
+          <compareText logic="contains" text="${platform_name}" value="hpux"/>
+        </ruleList>
+      </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
         <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PGBOUNCER" />
-		<!-- Set the default values -->
-		<setInstallerVariable name="defaultpghost" value="localhost"/>
-		<setInstallerVariable name="defaultpguser" value="postgres"/>
-		<setInstallerVariable name="defaultpgport" value="5432"/>
-		<setInstallerVariable name="defaultpgdbname" value="postgres"/>
-		<!-- Set the default postgres password, to be used only in unnattended mode -->
-		<setInstallerVariable name="defaultpgpassword" value=""/>
-		<setInstallerVariable name="defaultpgpassword" value="postgres">
-		<ruleList>
-    		<compareText logic="equals" text="${installer_ui}" value="unattended"/>
-		</ruleList>
-		</setInstallerVariable>
+	<!-- Set the default values -->
+	<setInstallerVariable name="defaultpghost" value="localhost"/>
+	<setInstallerVariable name="defaultpguser" value="postgres"/>
+	<setInstallerVariable name="defaultpgport" value="5432"/>
+	<setInstallerVariable name="defaultpgdbname" value="postgres"/>
+	<!-- Set the default postgres password, to be used only in unnattended mode -->
+	<setInstallerVariable name="defaultpgpassword" value=""/>
+	<setInstallerVariable name="defaultpgpassword" value="postgres">
+	  <ruleList>
+    	    <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+	  </ruleList>
+	</setInstallerVariable>
 
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PGBOUNCER" />
         <setInstallerVariable name="pgbouncerVersion" value="" />
@@ -167,6 +181,16 @@
           <ruleList>
             <platformTest type="linux-x64"/>
             <compareText text="${originalplatform}" value="linux-x32"/>
+          </ruleList>
+        </throwError>
+	<!-- Abort Installation as GUI mode is not available for HPUX -->
+    	<throwError>
+      	  <customErrorMessage>${msg(gui.not.available.hpux)}</customErrorMessage>
+      	  <text>Unknown Error</text>
+          <ruleList>
+            <compareText logic="contains" text="${platform_name}" value="hpux"/>
+            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
+            <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
           </ruleList>
         </throwError>
 
@@ -185,6 +209,25 @@
                     <logic>contains</logic>
                     <text>${platform_name}</text>
                     <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+	<!-- HPUX : Set the default values for unattended mode -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PgBouncer"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>hpux</value>
                 </compareText>
             </ruleList>
         </actionGroup>
@@ -272,6 +315,11 @@
                     <logic>contains</logic>
                     <text>${platform_name}</text>
                     <value>linux</value>
+                </compareText>
+		<compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>hpux</value>
                 </compareText>
             </ruleList>
         </setInstallerVariable>
@@ -492,6 +540,20 @@
                                 </compareText>
                             </ruleList>
                         </runProgram>
+			<!-- HPUX: Stop the pgbouncer service -->
+                        <runProgram>
+                            <program>/sbin/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</program>
+                            <programArguments>stop</programArguments>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                            <ruleList>
+                                <compareText>
+                                    <logic>contains</logic>
+                                    <text>${platform_name}</text>
+                                    <value>hpux</value>
+                                </compareText>
+                            </ruleList>
+                        </runProgram>
                         <!-- Solaris Stop the pgbouncer service -->  
                         <actionGroup>
                             <actionList>  
@@ -573,6 +635,21 @@
                       </compareText>
                   </ruleList>
               </unpackDirectory>
+	      <!--HPUX -->
+	      <unpackDirectory>
+                  <origin>instscripts</origin>
+                  <destination>${system_temp_directory}</destination>
+                  <component>default</component>
+                  <folder>installfileshpux</folder>
+                  <ruleList>
+                      <compareText>
+                          <logic>equals</logic>
+                          <text>${platform_name}</text>
+                          <value>hpux</value>
+                      </compareText>
+                  </ruleList>
+              </unpackDirectory>
+
               <unpackDirectory>
                   <origin>instscripts</origin>
                   <destination>${system_temp_directory}</destination>
@@ -1007,7 +1084,7 @@
                         </fileTest>
                     </ruleList>
                 </actionGroup>
-                <!-- LINUX | MAC: Install pgbouncer service -->
+                <!-- LINUX | MAC | HPUX : Install pgbouncer service -->
                 <runProgram>
                     <program>${installdir}/installer/pgbouncer/startupcfg.sh</program>
                     <programArguments>"${installdir}" "${system_user}" "PGBOUNCER_SERVICE_VER"</programArguments>
@@ -1053,6 +1130,27 @@
                          <isFalse value="${autostart}"/>
                      </ruleList>
                 </actionGroup>
+		<!-- HPUX : Disable pgbouncer Service if autostart is no-->
+                <actionGroup>
+                  <actionList>
+                    <deleteFile>
+                      <path>/sbin/rc3.d/S86pgbouncer-PGBOUNCER_SERVICE_VER</path>
+                    </deleteFile>
+                    <deleteFile>
+                      <path>/sbin/rc0.d/K14pgbouncer-PGBOUNCER_SERVICE_VER</path>
+                    </deleteFile>
+                    <deleteFile>
+                      <path>/sbin/rc1.d/K14pgbouncer-PGBOUNCER_SERVICE_VER</path>
+                    </deleteFile>
+                    <deleteFile>
+                      <path>/sbin/rc2.d/K14pgbouncer-PGBOUNCER_SERVICE_VER</path>
+                    </deleteFile>
+                  </actionList>
+                  <ruleList>
+                    <compareText logic="contains" text="${platform_name}" value="hpux"/>
+                    <isFalse value="${autostart}"/>
+                  </ruleList>
+                </actionGroup>
 
                 <!-- WIN: Start the pgbouncer service -->    
                 <startWindowsService>
@@ -1085,6 +1183,26 @@
                             <logic>contains</logic>
                             <text>${platform_name}</text>
                             <value>linux</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${autostart}</text>
+                            <value>yes</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+
+		<!-- HPUX: Start the pgbouncer service -->    
+                <runProgram>
+                    <program>/sbin/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</program>
+                    <programArguments>start</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>hpux</value>
                         </compareText>
                         <compareText>
                             <logic>equals</logic>
@@ -1277,6 +1395,21 @@
             </ruleList>
         </runProgram>
 
+	<!-- HPUX -->
+	<runProgram>
+            <program>/sbin/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</program>
+            <programArguments>stop</programArguments>
+            <abortOnError>0</abortOnError>
+            <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>hpux</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+
         <actionGroup>
             <actionList>
                 <runProgram>
@@ -1303,7 +1436,6 @@
             </ruleList>
         </actionGroup>
          
-   
         <deleteFile>
             <path>/etc/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</path>
             <ruleList>
@@ -1315,6 +1447,33 @@
             </ruleList>
         </deleteFile>
 
+	<!-- HPUX: Remove the startup item -->
+	<actionGroup>
+	  <actionList>
+            <deleteFile>
+              <path>/sbin/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</path>
+            </deleteFile>
+            <deleteFile>
+              <path>/sbin/rc3.d/S86pgbouncer-PGBOUNCER_SERVICE_VER</path>
+            </deleteFile>
+            <deleteFile>
+              <path>/sbin/rc0.d/K14pgbouncer-PGBOUNCER_SERVICE_VER</path>
+            </deleteFile>
+            <deleteFile>
+              <path>/sbin/rc1.d/K14pgbouncer-PGBOUNCER_SERVICE_VER</path>
+            </deleteFile>
+            <deleteFile>
+              <path>/sbin/rc2.d/K14pgbouncer-PGBOUNCER_SERVICE_VER</path>
+            </deleteFile>	
+          </actionList>
+	  <ruleList>
+            <compareText>
+              <logic>contains</logic>
+              <text>${platform_name}</text>
+              <value>hpux</value>
+            </compareText>
+          </ruleList>
+        </actionGroup>
         <deleteFile>
             <path>${installdir}/etc</path>
         </deleteFile>
@@ -1418,6 +1577,42 @@
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/linux/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+
+		<!-- HPUX - Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/hpux/pgbouncer/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/hpux/pgbouncer/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/hpux/pgbouncer/share</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/hpux/pgbouncer/doc</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Installer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>installfileshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/hpux/instscripts</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/hpux/installer</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1759,6 +1954,21 @@
                           </compareText>
                       </ruleList>
                   </unpackDirectory>
+
+		  <unpackDirectory>
+                      <origin>instscripts</origin>
+                      <destination>${system_temp_directory}</destination>
+                      <component>default</component>
+                      <folder>installfileshpux</folder>
+                      <ruleList>
+                          <compareText>
+                              <logic>equals</logic>
+                              <text>${platform_name}</text>
+                              <value>hpux</value>
+                          </compareText>
+                      </ruleList>
+                  </unpackDirectory>
+
                   <unpackDirectory>
                       <origin>instscripts</origin>
                       <destination>${system_temp_directory}</destination>
