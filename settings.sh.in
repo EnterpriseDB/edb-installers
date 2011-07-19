@@ -11,7 +11,6 @@ PG_ARCH_LINUX=0
 PG_ARCH_LINUX_X64=0
 PG_ARCH_WINDOWS=1
 PG_ARCH_WINDOWS_X64=0
-PG_ARCH_HPUX=0
 
 # Packages. Set to 1 to enable a specific packages. Note that many packages will be interdependent
 #           so you must ensure that all the required dependencies are enabled.
@@ -119,6 +118,6 @@ PG_ARCH_OSX_CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-
 PG_ARCH_OSX_LDFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -headerpad_max_install_names"
 
 # The InstallBuilder main binary.
-PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder for Qt Enterprise 7.2.2/bin/Builder.app/Contents/MacOS/installbuilder.sh"
+PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder for Qt Enterprise 6.5.6/bin/Builder.app/Contents/MacOS/installbuilder.sh"
 
 

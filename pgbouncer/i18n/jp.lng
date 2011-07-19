@@ -40,6 +40,4 @@ pgbouncer.blank.error=すべてのフィールドの値を入力する必要が�
 pgbouncer.user.error=指定したユーザは、システムに存在していません。
 
 error.file.notsecure={installdir}\etc\userlist.txtファイルを保護できません。
-pgbouncer.system.user.error=pgBouncerは、ルートユーザとして実行できません。別のユーザ名を指定してください�
-gui.not.available.hpux=The GUI mode installation is not supported on HPUX
-�
+pgbouncer.system.user.error=pgBouncerは、ルートユーザとして実行できません。別のユーザ名を指定してください。

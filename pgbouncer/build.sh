@@ -44,12 +44,6 @@ then
     source $WD/pgbouncer/build-solaris-sparc.sh
 fi
 
-# HPUX
-if [ $PG_ARCH_HPUX = 1 ];
-then
-    source $WD/pgbouncer/build-hpux.sh
-fi
-
 ################################################################################
 # Build preparation
 ################################################################################
@@ -120,12 +114,6 @@ _prep_pgbouncer() {
     then
         _prep_pgbouncer_solaris_sparc || exit 1
     fi
-
-    # HPUX
-    if [ $PG_ARCH_HPUX = 1 ];
-    then
-        _prep_pgbouncer_hpux || exit 1
-    fi
 }
 
 ################################################################################
@@ -175,12 +163,6 @@ _build_pgbouncer() {
     if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
     then
        _build_pgbouncer_solaris_sparc || exit 1
-    fi
-
-    # HPUX 
-    if [ $PG_ARCH_HPUX = 1 ];
-    then
-        _build_pgbouncer_hpux || exit 1
     fi
 }
 
@@ -248,11 +230,5 @@ _postprocess_pgbouncer() {
     if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
     then
         _postprocess_pgbouncer_solaris_sparc || exit 1
-    fi
-
-    # HPUX
-    if [ $PG_ARCH_HPUX = 1 ];
-    then
-        _postprocess_pgbouncer_hpux || exit 1
     fi
 }
