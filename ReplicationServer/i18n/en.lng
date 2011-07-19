@@ -141,4 +141,4 @@ registration_plus.userAuth.email.value=Email address
 registration_plus.userAuth.password.value=Password
 registration_plus.ws.internet.not.connected=Error in calling web service. Please check the internet connection and try again.
 registration_plus.emailpassword.not.provided=Please provide the email address and password for your EnterpriseDB user account.
-
+internet.con.title=Looking for Internet Connection
