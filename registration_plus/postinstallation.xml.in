@@ -24,4 +24,7 @@
     </actionGroup>
     <deleteFile path="@@TEMPDIR@@" abortOnError="0" showMessageOnError="0"/>
   </actionList>
+  <ruleList>
+    <isTrue value="${is_internet_connected}" />
+  </ruleList>
 </actionGroup>

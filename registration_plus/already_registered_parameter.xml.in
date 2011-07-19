@@ -36,5 +36,6 @@
     <compareText logic="equals" text="${iExistingEmail}" value=""/>
     <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
     <isTrue value="${registration_plus_required}"/>
+    <isTrue value="${is_internet_connected}" />
   </ruleList>
 </parameterGroup>

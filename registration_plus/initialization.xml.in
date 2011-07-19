@@ -3,7 +3,47 @@
 
     <!-- Set Proxy values from environement variables if any -->
     <setInstallerVariable name="proxyHost" value="${env(PROXY_HOST)}" />
+
     <setInstallerVariable name="proxyPort" value="${env(PROXY_PORT)}" />
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable>
+          <name>is_internet_connected</name>
+          <persist>1</persist>
+          <value>0</value>
+        </setInstallerVariable>
+        <showProgressDialog>
+          <title>${msg(internet.con.title)}</title>
+          <explanation />
+          <width>350</width>
+          <height>100</height>
+          <actionList>
+            <httpGet>
+              <filename>${system_temp_directory}/ib.html</filename>
+              <url>http://www.enterprisedb.com/ib.html</url>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+            </httpGet>
+          </actionList>
+        </showProgressDialog>
+        <setInstallerVariable>
+          <name>is_internet_connected</name>
+          <persist>1</persist>
+          <value>1</value>
+          <ruleList>
+            <fileContentTest>
+              <path>${system_temp_directory}/ib.html</path>
+              <text>EnterpriseDB</text>
+              <logic>contains</logic>
+            </fileContentTest>
+          </ruleList>
+        </setInstallerVariable>
+        <logMessage text="is_internet_connected:${is_internet_connected}"/>
+        <deleteFile>
+          <path>${system_temp_directory}/ib.html</path>
+        </deleteFile>
+      </actionList>
+    </actionGroup>
 
   </actionList>
 </actionGroup>
