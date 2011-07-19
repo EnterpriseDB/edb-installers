@@ -49,6 +49,7 @@
         <compareText logic="equals" text="${installer_ui}" value="unattended"/>
         <compareText logic="equals" text="${iExistingEmail}" value=""/>
         <isTrue value="${registration_plus_required}"/>
+	<isTrue value="${is_internet_connected}" />
       </ruleList>
     </throwError>
 
@@ -60,6 +61,7 @@
         <compareText logic="equals" text="${installer_ui}" value="unattended"/>
         <isTrue value="${registration_plus_required}"/>
         <compareText logic="equals" text="${iExistingEmail}" value=""/>
+	<isTrue value="${is_internet_connected}" />
       </ruleList>
     </throwError>
 
@@ -232,6 +234,7 @@ on=PG_MAJOR_VERSION.PG_MINOR_VERSION</url>
       </actionList>
       <ruleList>
         <isTrue value="${registration_plus_required}"/>
+	<isTrue value="${is_internet_connected}" />
         <compareText logic="equals" text="${iExistingEmail}" value=""/>
       </ruleList>
     </actionGroup>
