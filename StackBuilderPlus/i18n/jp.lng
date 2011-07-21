@@ -46,3 +46,4 @@ progress.text.creating.loginHook.osx=ログインフックを作成していま�
 progress.text.removing.loginHook.osx=ログインフックを削除しています
 progress.text.removing.shortcuts=メニューショートカットを削除しています
 sbp.reboot.required=To complete the installation, you must need to restart your computer.
+gui.not.available.hpux=The GUI mode installation is not supported on HPUX
