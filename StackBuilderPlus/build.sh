@@ -44,6 +44,12 @@ then
     source $WD/StackBuilderPlus/build-solaris-sparc.sh
 fi
 
+# HPUX
+if [ $PG_ARCH_HPUX = 1 ];
+then
+    source $WD/StackBuilderPlus/build-hpux.sh
+fi
+
 ################################################################################
 # Build preparation
 ################################################################################
@@ -122,6 +128,11 @@ _prep_stackbuilderplus() {
         _prep_stackbuilderplus_solaris_sparc || exit 1
     fi
 
+    # HPUX
+    if [ $PG_ARCH_HPUX = 1 ];
+    then
+        _prep_stackbuilderplus_hpux || exit 1
+    fi
 }
 
 ################################################################################
@@ -172,6 +183,11 @@ _build_stackbuilderplus() {
        _build_stackbuilderplus_solaris_sparc || exit 1
     fi
 
+    # HPUX
+    if [ $PG_ARCH_HPUX = 1 ];
+    then
+        _build_stackbuilderplus_hpux || exit 1
+    fi
 }
 
 ################################################################################
@@ -237,7 +253,12 @@ _postprocess_stackbuilderplus() {
     then
         _postprocess_stackbuilderplus_solaris_sparc || exit 1
     fi
+
+    # HPUX
+    if [ $PG_ARCH_HPUX = 1 ];
+    then
+        _postprocess_stackbuilderplus_hpux || exit 1
+    fi
     
     cd $WD
-
 }
