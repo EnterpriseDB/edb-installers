@@ -113,6 +113,17 @@
       <compareText text="${originalplatform}" value="linux-x32"/>
       </ruleList>
     </throwError>
+   
+     <!-- Abort Installation as GUI mode is not available for HPUX -->
+     <throwError>
+       <customErrorMessage>${msg(gui.not.available.hpux)}</customErrorMessage>
+       <text>Unknown Error</text>
+       <ruleList>
+         <compareText logic="contains" text="${platform_name}" value="hpux"/>
+         <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
+         <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
+       </ruleList>
+     </throwError>
 
   </initializationActionList>
 
