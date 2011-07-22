@@ -911,7 +911,30 @@ include conf\addons\*.conf
        <section>Session</section>
        <key>session.save_path</key>
        <value>${system_temp_directory}</value>
+       <ruleList>
+	 <compareText>
+            <logic>does_not_equal</logic>
+            <text>${platform_name}</text>
+            <value>windows</value>
+         </compareText>
+       </ruleList>	
     </iniFileSet>
+ 
+    <!-- setting the PHP session path-->
+    <iniFileSet>
+       <file>${installdir}/php/php.ini</file>
+       <section>Session</section>
+       <key>session.save_path</key>
+       <value>${env(WINDIR)}\TEMP</value>
+       <ruleList>
+	 <compareText>
+            <logic>equals</logic>
+            <text>${platform_name}</text>
+            <value>windows</value>
+         </compareText>
+       </ruleList>	
+    </iniFileSet>
+
     <!-- Deleting the default index.html -->
     <deleteFile>
         <path>${installdir}/apache/www/index.html</path>
