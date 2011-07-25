@@ -3780,6 +3780,7 @@ REM The script sets environment variables helpful for PostgreSQL
                 <compareText logic="does_not_equal" text="${didError}" value="1"/>
                 <isFalse value="${disableStackBuilder}"/>
                 <isFalse value="${extract_mode}"/>
+		<compareText logic="equals" text="${installer_ui}" value="gui" />
             </ruleList>
         </runProgram>
 
@@ -3800,6 +3801,7 @@ REM The script sets environment variables helpful for PostgreSQL
                 <compareText logic="does_not_equal" text="${didError}" value="1"/>
                 <isFalse value="${disableStackBuilder}"/>
                 <isFalse value="${extract_mode}"/>
+		<compareText logic="equals" text="${installer_ui}" value="gui" />
             </ruleList>
         </runProgram>
 
@@ -3814,6 +3816,7 @@ REM The script sets environment variables helpful for PostgreSQL
                 <compareText logic="does_not_equal" text="${didError}" value="1"/>
                 <isFalse value="${disableStackBuilder}"/>
                 <isFalse value="${extract_mode}"/>
+		<compareText logic="equals" text="${installer_ui}" value="gui" />
             </ruleList>
         </runProgram>
 
