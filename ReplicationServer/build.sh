@@ -38,6 +38,12 @@ then
     source $WD/ReplicationServer/build-solaris-sparc.sh
 fi
 
+# HPUX
+if [ $PG_ARCH_HPUX = 1 ];
+then
+    source $WD/ReplicationServer/build-hpux.sh
+fi
+
 ################################################################################
 # Build preparation
 ################################################################################
@@ -144,6 +150,11 @@ _prep_ReplicationServer() {
         _prep_ReplicationServer_solaris_sparc || exit 1
     fi
 
+    # HPUX
+    if [ $PG_ARCH_HPUX = 1 ];
+    then
+        _prep_ReplicationServer_hpux || exit 1
+    fi
 }
 
 ################################################################################
@@ -188,6 +199,11 @@ _build_ReplicationServer() {
        _build_ReplicationServer_solaris_sparc || exit 1
     fi
 
+    # HPUX
+    if [ $PG_ARCH_HPUX = 1 ];
+    then
+        _build_ReplicationServer_hpux || exit 1
+    fi
 }
 
 ################################################################################
@@ -250,4 +266,9 @@ _postprocess_ReplicationServer() {
         _postprocess_ReplicationServer_solaris_sparc || exit 1
     fi
     
+    # HPUX
+    if [ $PG_ARCH_HPUX = 1 ];
+    then
+        _postprocess_ReplicationServer_hpux || exit 1
+    fi
 }

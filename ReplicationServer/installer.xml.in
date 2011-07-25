@@ -74,7 +74,24 @@
 
         <setInstallerVariable name="defaultpubport" value="9051" />
         <setInstallerVariable name="defaultsubport" value="9052" />
-        <setInstallerVariable name="defaultserviceaccount" value="enterprisedb" />
+        <setInstallerVariable name="defaultserviceaccount" value="enterprisedb">
+	  <ruleList>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${platform_name}</text>
+              <value>hpux</value>
+            </compareText>
+          </ruleList>
+	</setInstallerVariable>
+	<setInstallerVariable name="defaultserviceaccount" value="edb">
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>hpux</value>
+            </compareText>
+          </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="defaultdbtype" value="enterprisedb" />
         <setInstallerVariable name="defaultcontroldb" value="edb" />
         <setInstallerVariable name="defaultpghost" value="localhost" />
@@ -112,6 +129,11 @@
                     <text>${platform_name}</text>
                     <value>linux</value>
                 </compareText>
+		<compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>hpux</value>
+                </compareText>
             </ruleList>
         </setInstallerVariable>
         <!-- WIN : Set the default installation directory -->
@@ -137,6 +159,19 @@
               <compareText text="${platform_name}" value="linux"/>
           </ruleList>
       </setInstallerVariable>
+      <setInstallerVariable>
+        <name>project.defaultInstallationMode</name>
+        <value>text</value>
+        <ruleList>
+          <compareText logic="contains" text="${platform_name}" value="hpux"/>
+        </ruleList>
+      </setInstallerVariable>
+      <!-- Change allowed values for installation mode in HP-UX -->
+      <setInstallerVariable name="project.allowedInstallationModes" value="text unattended">
+        <ruleList>
+          <compareText logic="contains" text="${platform_name}" value="hpux"/>
+        </ruleList>
+      </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
         <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
@@ -144,7 +179,24 @@
         <setInstallerVariable name="xDBReplicationServerVersion"  persist="1" value=""/>
         <setInstallerVariable name="defaultpubport" value="9051" />
         <setInstallerVariable name="defaultsubport" value="9052" />
-        <setInstallerVariable name="defaultserviceaccount" value="enterprisedb" />
+	<setInstallerVariable name="defaultserviceaccount" value="enterprisedb">
+          <ruleList>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${platform_name}</text>
+              <value>hpux</value>
+            </compareText>
+          </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="defaultserviceaccount" value="edb">
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>hpux</value>
+            </compareText>
+          </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="defaultdbtype" value="enterprisedb" />
         <setInstallerVariable name="defaultcontroldb" value="edb" />
         <setInstallerVariable name="defaultpghost" value="localhost" />
@@ -168,6 +220,17 @@
           </ruleList>
         </throwError>
 
+	 <!-- Abort Installation as GUI mode is not available for HPUX -->
+        <throwError>
+          <customErrorMessage>${msg(gui.not.available.hpux)}</customErrorMessage>
+          <text>Unknown Error</text>
+          <ruleList>
+            <compareText logic="contains" text="${platform_name}" value="hpux"/>
+            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
+            <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
+          </ruleList>
+        </throwError>
+
         <!-- LIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
@@ -186,6 +249,26 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+	
+	<!-- HPUX : Set the default values for unattended mode -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/EnterpriseDB-xDBReplicationServer"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>hpux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
         <!-- SOLARIS : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
@@ -269,6 +352,11 @@
                     <logic>contains</logic>
                     <text>${platform_name}</text>
                     <value>linux</value>
+                </compareText>
+		<compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>hpux</value>
                 </compareText>
             </ruleList>
         </setInstallerVariable>
@@ -1056,11 +1144,21 @@
                  <runProgram>
                      <program>/etc/init.d/edb-xdbpubserver-XDB_SERVICE_VER</program>
                      <programArguments>stop &amp;</programArguments> 
-                     <workingDirectory>/etc/initd.d</workingDirectory>
+                     <workingDirectory>/etc/init.d</workingDirectory>
                      <abortOnError>0</abortOnError>
                      <showMessageOnError>0</showMessageOnError>
                      <ruleList>
                          <compareText text="${platform_name}" logic="contains" value="linux" />
+                     </ruleList>
+                 </runProgram>
+		 <runProgram>
+                     <program>/sbin/init.d/edb-xdbpubserver-XDB_SERVICE_VER</program>
+                     <programArguments>stop &amp;</programArguments>
+                     <workingDirectory>/sbin/init.d</workingDirectory>
+                     <abortOnError>0</abortOnError>
+                     <showMessageOnError>0</showMessageOnError>
+                     <ruleList>
+                         <compareText text="${platform_name}" logic="contains" value="hpux" />
                      </ruleList>
                  </runProgram>  
                  <runProgram>
@@ -1111,13 +1209,23 @@
                  <runProgram>
                      <program>/etc/init.d/edb-xdbsubserver-XDB_SERVICE_VER</program>
                      <programArguments>stop &amp;</programArguments> 
-                     <workingDirectory>/etc/initd.d</workingDirectory>
+                     <workingDirectory>/etc/init.d</workingDirectory>
                      <abortOnError>0</abortOnError>
                      <showMessageOnError>0</showMessageOnError>
                      <ruleList>
                          <compareText text="${platform_name}" logic="contains" value="linux" />
                      </ruleList>
-                 </runProgram>  
+                 </runProgram>
+		 <runProgram>
+                     <program>/sbin/init.d/edb-xdbsubserver-XDB_SERVICE_VER</program>
+                     <programArguments>stop &amp;</programArguments>
+                     <workingDirectory>/sbin/init.d</workingDirectory>
+                     <abortOnError>0</abortOnError>
+                     <showMessageOnError>0</showMessageOnError>
+                     <ruleList>
+                         <compareText text="${platform_name}" logic="contains" value="hpux" />
+                     </ruleList>
+                 </runProgram>   
                  <runProgram>
                      <program>launchctl</program>
                      <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.xdbsubserver-XDB_SERVICE_VER.plist</programArguments> 
@@ -1514,7 +1622,7 @@ database=${controldb}
                 <!-- Check connection -->
                 <setInstallerVariableFromScriptOutput name="connection"
                                                       exec="${psql_path}"
-                                                      execArgs="-l"
+                                                      execArgs="-l ${env(PGDATABASE)}"
                                                       workingDirectory="${system_temp_directory}/${product_fullname}/instscripts/bin"
                                                       showMessageOnError="0"
                                                       abortOnError="0" />
@@ -1950,6 +2058,17 @@ database=${controldb}
                 <compareText logic="contains" text="${platform_name}" value="linux" />
                 <isFalse value="${extract_mode}"/>
             </ruleList>
+        </runProgram>
+	<runProgram>
+            <program>/sbin/init.d/edb-xdbpubserver-XDB_SERVICE_VER</program>
+            <programArguments>start &amp;</programArguments>
+            <workingDirectory>/sbin/init.d</workingDirectory>
+            <progressText>${msg(progress.text.starting.pubservice)}</progressText>
+            <ruleList>
+                <isTrue value="${component(pubserver).selected}" />
+                <compareText logic="contains" text="${platform_name}" value="hpux" />
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
         </runProgram> 
         <runProgram>
             <program>svcadm</program>
@@ -1985,6 +2104,17 @@ database=${controldb}
             <ruleList>
                 <isTrue value="${component(subserver).selected}" />
                 <compareText logic="contains" text="${platform_name}" value="linux" />
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </runProgram>
+	<runProgram>
+            <program>/sbin/init.d/edb-xdbsubserver-XDB_SERVICE_VER</program>
+            <programArguments>start &amp;</programArguments> 
+            <workingDirectory>/sbin/init.d</workingDirectory>
+            <progressText>${msg(progress.text.starting.subservice)}</progressText>
+            <ruleList>
+                <isTrue value="${component(subserver).selected}" />
+                <compareText logic="contains" text="${platform_name}" value="hpux" />
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram>
@@ -2236,6 +2366,30 @@ database=${controldb}
             </ruleList>
         </runProgram>
 
+	<!-- Stop HPUX services -->
+	<runProgram>
+            <program>/sbin/init.d/edb-xdbpubserver-XDB_SERVICE_VER</program>
+            <programArguments>stop</programArguments>
+            <workingDirectory>/sbin/init.d</workingDirectory>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <fileExists path="/sbin/init.d/edb-xdbpubserver-XDB_SERVICE_VER" />
+                <compareText text="${platform_name}" logic="contains" value="hpux" />
+            </ruleList>
+        </runProgram>
+        <runProgram>
+            <program>/sbin/init.d/edb-xdbsubserver-XDB_SERVICE_VER</program>
+            <programArguments>stop</programArguments>
+            <workingDirectory>/sbin/init.d</workingDirectory>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <fileExists path="/sbin/init.d/edb-xdbsubserver-XDB_SERVICE_VER" />
+                <compareText text="${platform_name}" logic="contains" value="hpux" />
+            </ruleList>
+        </runProgram>
+
         <runProgram>
             <program>launchctl</program>
             <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.xdbpubserver-XDB_SERVICE_VER.plist</programArguments>
@@ -2285,13 +2439,35 @@ database=${controldb}
             </ruleList>
         </deleteFile>    
 
+	<!-- Delete HPUX services -->
+	<deleteFile path="/sbin/init.d/edb-xdbpubserver-XDB_SERVICE_VER" >
+            <ruleList>
+                <fileExists path="/sbin/init.d/edb-xdbpubserver-XDB_SERVICE_VER" />
+                <compareText text="${platform_name}" logic="contains" value="hpux" />
+            </ruleList>
+        </deleteFile>    
+
+        <deleteFile path="/sbin/init.d/edb-xdbsubserver-XDB_SERVICE_VER" >
+            <ruleList>
+                <fileExists path="/sbin/init.d/edb-xdbsubserver-XDB_SERVICE_VER" />
+                <compareText text="${platform_name}" logic="contains" value="hpux" />
+            </ruleList>
+        </deleteFile>    
+
         <deleteFile path="/etc/edb-repl.conf" >
             <ruleList>
                 <fileExists path="/etc/edb-repl.conf" />
                 <compareText text="${platform_name}" logic="contains" value="linux" />
             </ruleList>
         </deleteFile>    
- 
+
+	<deleteFile path="/etc/edb-repl.conf" >
+            <ruleList>
+                <fileExists path="/etc/edb-repl.conf" />
+                <compareText text="${platform_name}" logic="contains" value="hpux" />
+            </ruleList>
+        </deleteFile> 
+
         <actionGroup>
             <actionList>
                <runProgram>
@@ -2528,6 +2704,65 @@ database=${controldb}
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/linux-x64/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+		<!-- HPUX- Program files -->
+                <folder>
+                    <description>RepConsole GUI Files</description>
+                    <destination>${installdir}</destination>
+                    <name>repconsoleguifileshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/hpux/repconsole/bin</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>RepConsole lib Files</description>
+                    <destination>${installdir}</destination>
+                    <name>repconsolelibfileshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/hpux/repconsole/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>DataValidatorFiles</description>
+                    <destination>${installdir}</destination>
+                    <name>datavalidatorfileshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/hpux/repconsole/doc</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/hpux/repconsole/etc</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+		<folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>installscriptshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/hpux/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>menuscriptshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/hpux/scripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -2906,6 +3141,64 @@ database=${controldb}
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+		 <!-- HPUX- Program files -->
+                <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}/bin</destination>
+                    <name>pubserverfileshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/hpux/repserver/bin/edb-repserver.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/hpux/repserver/bin/runPubServer.sh</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverlibfileshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/hpux/repserver/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>PubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>pubserveretcfileshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/hpux/repserver/etc/xdb_pubserver.conf</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder><folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>pubserverinstallscriptshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/hpux/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>pubservermenuscriptshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/hpux/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
                 <!-- SOLARIS-X64- Program files -->
                 <folder>
                     <description>PubServer Files</description>
@@ -3269,6 +3562,65 @@ database=${controldb}
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+		<!-- HPUX- Program files -->
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}/bin</destination>
+                    <name>subserverfileshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/hpux/repserver/bin/edb-repserver.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/hpux/repserver/bin/runSubServer.sh</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverlibfileshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/hpux/repserver/lib</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>SubServer Files</description>
+                    <destination>${installdir}/etc</destination>
+                    <name>subserveretcfileshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/hpux/repserver/etc/xdb_subserver.conf</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+		<folder>
+                    <description>Installer Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>subserverinstallscriptshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/hpux/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Menu Scripts</description>
+                    <destination>${installdir}</destination>
+                    <name>subservermenuscriptshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/hpux/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
                 <!-- SOLARIS-X64 - Program files -->
                 <folder>
                     <description>SubServer Files</description>
@@ -3535,6 +3887,18 @@ database=${controldb}
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/linux-x64/instscripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+		<!-- HPUX- Program files -->
+                <folder>
+                    <description>Installation Scripts</description>
+                    <destination>${system_temp_directory}</destination>
+                    <name>instscriptshpux</name>
+                    <platforms>hpux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/hpux/instscripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
