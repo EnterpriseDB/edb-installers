@@ -122,27 +122,6 @@ then
     chmod 777 /var/log/xdb-rep
 fi
 
-# Configure the startup. On Redhat and friends we use chkconfig. On Debian, update-rc.d
-# These utilities aren't entirely standard, so use both from their standard locations on
-# each distro family. 
-#CHKCONFIG=`type /sbin/chkconfig > /dev/null 2>&1 || echo fail`
-#if [ ! $CHKCONFIG ];
-#then
- #   /sbin/chkconfig --add edb-xdbsubserver-$XDB_SERVICE_VER
-  #  if [ $? -ne 0 ]; then
-   #     _warn "Failed to configure the service startup with chkconfig"
-   # fi
-#fi
-
-#UPDATECONFIG=`type /usr/sbin/update-rc.d > /dev/null 2>&1 || echo fail`
-#if [ ! $UPDATECONFIG ];
-#then
- #   /usr/sbin/update-rc.d edb-xdbsubserver-$XDB_SERVICE_VER defaults
-  #  if [ $? -ne 0 ]; then
-   #     _warn "Failed to configure the service startup with update-rc.d"
-   # fi
-#fi
-
 # Create the service initialisation links
 INIT_LINKS="/sbin/rc3.d/S86edb-xdbsubserver-$XDB_SERVICE_VER /sbin/rc0.d/K14edb-xdbsubserver-$XDB_SERVICE_VER /sbin/rc1.d/K14edb-xdbsubserver-$XDB_SERVICE_VER /sbin/rc2.d/K14edb-xdbsubserver-$XDB_SERVICE_VER"
 for link_path1 in ${INIT_LINKS} ; do
