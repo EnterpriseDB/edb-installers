@@ -128,3 +128,5 @@ sub.service.description=Oracle(tm)からPostgres Plusへのデータレプリケ
 Installer.CustomError.CommandLineOptionsNotPresent=次の必須オプションが指定されていません: ${optionRequired}
 
 Installer.ComponentDescription=
+
+gui.not.available.hpux=The GUI mode installation is not supported on HPUX

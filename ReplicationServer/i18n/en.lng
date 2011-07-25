@@ -127,4 +127,6 @@ sub.service.description=Provides data replication services from Oracle (tm) to P
 
 Installer.CustomError.CommandLineOptionsNotPresent=The following options was not specified and is required: ${optionRequired}
 
-Installer.ComponentDescription= 
+Installer.ComponentDescription=
+
+gui.not.available.hpux=The GUI mode installation is not supported on HPUX 

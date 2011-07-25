@@ -128,3 +128,5 @@ sub.service.description=提供從 Oracle (tm) 到 Postgres Plus 的資料複寫�
 Installer.CustomError.CommandLineOptionsNotPresent=下列是尚未指定的必要選項: ${optionRequired}
 
 Installer.ComponentDescription=
+
+gui.not.available.hpux=The GUI mode installation is not supported on HPUX
