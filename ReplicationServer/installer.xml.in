@@ -651,12 +651,25 @@
         
         <setInstallerVariable name="pg_version" value="PG_MAJOR_VERSION" />
                   
-        <!-- Check for AS84 installed jre -->
+        <!-- Check for AS90 32 bit installed jre -->
         <registryGet>
           <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\AS\${pg_version}\jre</key>
           <name>Base Directory</name>
           <variable>jrehome</variable>
           <ruleList>
+             <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </registryGet>
+
+	<!-- Check for AS90 64 bit installed jre -->
+        <registryGet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\AS\${pg_version}\jre</key>
+          <name>Base Directory</name>
+          <variable>jrehome</variable>
+	  <wowMode>64</wowMode>
+          <ruleList>
+	     <compareText text="${jrehome}" logic="equals" value=""/>
+	     <platformTest type="windows-x64"/>
              <isFalse value="${extract_mode}"/>
           </ruleList>
         </registryGet>
