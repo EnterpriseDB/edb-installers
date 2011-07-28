@@ -40,9 +40,6 @@ _prep_server_solaris_x64() {
     fi
     # Grab a copy of the source tree
     cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.solaris-x64 || _die "Failed to copy the source code (source/pgadmin-$PG_TARBALL_PGADMIN)"
-    cd pgadmin.solaris-x64/pgadmin
-    patch -c -p0 < $WD/tarballs/pgadmin_solaris.patch
-    cd ../..
     chmod -R ugo+w pgadmin.solaris-x64 || _die "Couldn't set the permissions on the source directory"
     zip -r pgadmin.solaris-x64.zip pgadmin.solaris-x64
 
