@@ -48,16 +48,6 @@ _prep_Slony() {
     # Enter the source directory and cleanup if required
     cd $WD/Slony/source
 
-    #postgresql for windows
-    if [ ! -e postgresql-$PG_TARBALL_POSTGRESQL ];
-    then
-      extract_file  ../../tarballs/postgresql-$PG_TARBALL_POSTGRESQL || exit 1
-      cd postgresql-$PG_TARBALL_POSTGRESQL
-      patch -p0 < ../../../tarballs/mingw_build.patch
-    fi
-
-    cd $WD/Slony/source
-
     # SLONY
     if [ -e slony1-$PG_VERSION_SLONY ];
     then
