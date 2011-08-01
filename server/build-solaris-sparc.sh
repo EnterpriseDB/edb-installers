@@ -24,6 +24,9 @@ _prep_server_solaris_sparc() {
    
     # Grab a copy of the source tree
     cp -R postgresql-$PG_TARBALL_POSTGRESQL postgres.solaris-sparc || _die "Failed to copy the source code (source/postgresql-$PG_TARBALL_POSTGRESQL)"
+    cd pgadmin.solaris-sparc/
+    patch -c -p0 < $WD/tarballs/pgadmin_solaris_acinclude.patch
+    cd ../
     chmod -R ugo+w postgres.solaris-sparc || _die "Couldn't set the permissions on the source directory"
     zip -r postgres.solaris-sparc.zip postgres.solaris-sparc 
  
