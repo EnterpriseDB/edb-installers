@@ -1142,9 +1142,6 @@
                         <distributionFile>
                             <origin>staging/windows/lib/slony1_funcs.dll</origin>
                         </distributionFile>
-                        <distributionFile>
-                            <origin>staging/windows/lib/slevent.dll</origin>
-                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
