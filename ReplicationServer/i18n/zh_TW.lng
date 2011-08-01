@@ -129,4 +129,4 @@ Installer.CustomError.CommandLineOptionsNotPresent=下列是尚未指定的必�
 
 Installer.ComponentDescription=
 
-gui.not.available.hpux=The GUI mode installation is not supported on HPUX
+gui.not.available.hpux=HPUX 不支援 GUI 模式安裝

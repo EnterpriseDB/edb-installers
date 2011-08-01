@@ -25,5 +25,5 @@ progress.text.fixing.libs=正在修复类库
 progress.text.creating.loginHook.osx=正在创建login hooks
 progress.text.removing.loginHook.osx=正在删除login hooks
 progress.text.removing.shortcuts=正在删除菜单快捷方式
-sbp.reboot.required=To complete the installation, you must need to restart your computer.
-gui.not.available.hpux=The GUI mode installation is not supported on HPUX
+sbp.reboot.required=要完成安装，必须重新启动计算机。
+gui.not.available.hpux=HPUX 不支持 GUI 模式的安装。
