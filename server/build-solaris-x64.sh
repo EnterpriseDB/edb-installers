@@ -295,6 +295,7 @@ EOT
 
     # Build the app
     echo "Building & installing pgAdmin"
+    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/pgadmin.solaris-x64/xtra/png2c; sed -e 's/-lpq//g' Makefile > /tmp/Makefile.tmp; mv /tmp/Makefile.tmp Makefile" || _die "Failed to modify png2c makefile" 
     ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/pgadmin.solaris-x64/; gmake all" || _die "Failed to build pgAdmin"
     ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/pgadmin.solaris-x64/; gmake install" || _die "Failed to install pgAdmin"
 
