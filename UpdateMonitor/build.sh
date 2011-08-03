@@ -172,8 +172,8 @@ _postprocess_updatemonitor() {
     _replace PG_VERSION_UPDATE_MONITOR $PG_VERSION_UPDATE_MONITOR installer.xml || _die "Failed to set the version in the installer project file (UpdateMonitor/installer.xml)"
     _replace PG_BUILDNUM_UPDATE_MONITOR $PG_BUILDNUM_UPDATE_MONITOR installer.xml || _die "Failed to set the Build Number in the installer project file (UpdateMonitor/installer.xml)"
 
-    #_registration_plus_postprocess(STAGING DIRECTORY, COMPONENT NAME, VERSION VARIABLE, INI, REGISTRY_PREFIX, REGISTRY_PREFIX_WIN, TEMP DIRECTORY, COMONENT TYPE PG_MAJOR_VERSION PG_MINOR_VERSION)
-    _registration_plus_postprocess "$WD/UpdateMonitor/staging"  "UpdateMonitor" "iUMVersion" "/etc/postgres-reg.ini" "UpdateMonitor" "UpdateMonitor" "UpdateMonitor" "$PG_MAJOR_VERSION" "$PG_MINOR_VERSION"
+    #_registration_plus_postprocess(STAGING DIRECTORY, COMPONENT NAME, VERSION VARIABLE, INI, REGISTRY_PREFIX, REGISTRY_PREFIX_WIN, TEMP DIRECTORY, COMONENT TYPE PRODUCT_DESCRIPTION, PRODUCT_VERSION)
+    _registration_plus_postprocess "$WD/UpdateMonitor/staging"  "UpdateMonitor" "iUMVersion" "/etc/postgres-reg.ini" "UpdateMonitor" "UpdateMonitor" "UpdateMonitor" "UpdateMonitor" "$PG_VERSION_UPDATE_MONITOR"
    
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
