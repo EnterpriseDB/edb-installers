@@ -52,15 +52,15 @@ _prep_server_solaris_sparc() {
       rm -rf pljava.solaris-sparc  || _die "Couldn't remove the existing pljava.solaris-sparc source directory (source/pljava.solaris-sparc)"
     fi
 
-    if [ -e pljava.solaris-sparc.zip ];
-    then
-      echo "Removing existing pljava.solaris-sparc zip file"
-      rm -rf pljava.solaris-sparc.zip  || _die "Couldn't remove the existing pljava.solaris-sparc zip file (source/pljava.solaris-sparc.zip)"
-    fi
-    # Grab a copy of the source tree
-    cp -R pljava-$PG_TARBALL_PLJAVA pljava.solaris-sparc || _die "Failed to copy the source code (source/pljava-$PG_TARBALL_PLJAVA)"
-    chmod -R ugo+w pljava.solaris-sparc || _die "Couldn't set the permissions on the source directory"
-    zip -r pljava.solaris-sparc.zip pljava.solaris-sparc
+#    if [ -e pljava.solaris-sparc.zip ];
+#    then
+#      echo "Removing existing pljava.solaris-sparc zip file"
+#      rm -rf pljava.solaris-sparc.zip  || _die "Couldn't remove the existing pljava.solaris-sparc zip file (source/pljava.solaris-sparc.zip)"
+#    fi
+#    # Grab a copy of the source tree
+#    cp -R pljava-$PG_TARBALL_PLJAVA pljava.solaris-sparc || _die "Failed to copy the source code (source/pljava-$PG_TARBALL_PLJAVA)"
+#    chmod -R ugo+w pljava.solaris-sparc || _die "Couldn't set the permissions on the source directory"
+#    zip -r pljava.solaris-sparc.zip pljava.solaris-sparc
 
     if [ -e stackbuilder.solaris-sparc ];
     then
@@ -338,15 +338,15 @@ EOT
      
     # And now, pl/java
 
-    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/server/source/pljava.solaris-sparc/; JAVA_HOME=$PG_JAVA_HOME_SOLARIS_SPARC PATH=$PG_EXEC_PATH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin:\$PATH LD_LIBRARY_PATH=$PG_JAVA_HOME_SOLARIS_SPARC/jre/lib/sparcv9/server:$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/lib:\$LD_LIBRARY_PATH gmake USE_JDK6=1 all" || _die "Failed to build pl/java"
-    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/server/source/pljava.solaris-sparc/; JAVA_HOME=$PG_JAVA_HOME_SOLARIS_SPARC PATH=$PG_EXEC_PATH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin:\$PATH LD_LIBRARY_PATH=$PG_JAVA_HOME_SOLARIS_SPARC/jre/lib/sparcv9/server:$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/lib:\$LD_LIBRARY_PATH gmake prefix=$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc install" || _die "Failed to install pl/java" 
-
-    mkdir -p "$WD/server/staging/solaris-sparc/share/pljava" || _die "Failed to create the pl/java share directory"
-    cp "$WD/server/source/pljava.solaris-sparc/src/sql/install.sql" "$WD/server/staging/solaris-sparc/share/pljava/pljava.sql" || _die "Failed to install the pl/java installation SQL script"
-    cp "$WD/server/source/pljava.solaris-sparc/src/sql/uninstall.sql" "$WD/server/staging/solaris-sparc/share/pljava/uninstall_pljava.sql" || _die "Failed to install the pl/java uninstallation SQL script"
-
-    mkdir -p "$WD/server/staging/solaris-sparc/doc/pljava" || _die "Failed to create the pl/java doc directory"
-    cp "$WD/server/source/pljava.solaris-sparc/docs/"* "$WD/server/staging/solaris-sparc/doc/pljava/" || _die "Failed to install the pl/java documentation"
+#    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/server/source/pljava.solaris-sparc/; JAVA_HOME=$PG_JAVA_HOME_SOLARIS_SPARC PATH=$PG_EXEC_PATH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin:\$PATH LD_LIBRARY_PATH=$PG_JAVA_HOME_SOLARIS_SPARC/jre/lib/sparcv9/server:$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/lib:\$LD_LIBRARY_PATH gmake USE_JDK6=1 all" || _die "Failed to build pl/java"
+#    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/server/source/pljava.solaris-sparc/; JAVA_HOME=$PG_JAVA_HOME_SOLARIS_SPARC PATH=$PG_EXEC_PATH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin:\$PATH LD_LIBRARY_PATH=$PG_JAVA_HOME_SOLARIS_SPARC/jre/lib/sparcv9/server:$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/lib:\$LD_LIBRARY_PATH gmake prefix=$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc install" || _die "Failed to install pl/java" 
+#
+#    mkdir -p "$WD/server/staging/solaris-sparc/share/pljava" || _die "Failed to create the pl/java share directory"
+#    cp "$WD/server/source/pljava.solaris-sparc/src/sql/install.sql" "$WD/server/staging/solaris-sparc/share/pljava/pljava.sql" || _die "Failed to install the pl/java installation SQL script"
+#    cp "$WD/server/source/pljava.solaris-sparc/src/sql/uninstall.sql" "$WD/server/staging/solaris-sparc/share/pljava/uninstall_pljava.sql" || _die "Failed to install the pl/java uninstallation SQL script"
+#
+#    mkdir -p "$WD/server/staging/solaris-sparc/doc/pljava" || _die "Failed to create the pl/java doc directory"
+#    cp "$WD/server/source/pljava.solaris-sparc/docs/"* "$WD/server/staging/solaris-sparc/doc/pljava/" || _die "Failed to install the pl/java documentation"
  
     echo "Changing the rpath for the PostgreSQL executables and libraries"
     ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_STAGING/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\$ORIGIN/../lib:/usr/sfw/lib/64\" \$f; done"

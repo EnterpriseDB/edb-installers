@@ -46,21 +46,21 @@ _prep_server_solaris_x64() {
     chmod -R ugo+w pgadmin.solaris-x64 || _die "Couldn't set the permissions on the source directory"
     zip -r pgadmin.solaris-x64.zip pgadmin.solaris-x64
 
-    if [ -e pljava.solaris-x64 ];
-    then
-      echo "Removing existing pljava.solaris-x64 source directory"
-      rm -rf pljava.solaris-x64  || _die "Couldn't remove the existing pljava.solaris-x64 source directory (source/pljava.solaris-x64)"
-    fi
-
-    if [ -e pljava.solaris-x64.zip ];
-    then
-      echo "Removing existing pljava.solaris-x64 zip file"
-      rm -rf pljava.solaris-x64.zip  || _die "Couldn't remove the existing pljava.solaris-x64 zip file (source/pljava.solaris-x64.zip)"
-    fi
-    # Grab a copy of the source tree
-    cp -R pljava-$PG_TARBALL_PLJAVA pljava.solaris-x64 || _die "Failed to copy the source code (source/pljava-$PG_TARBALL_PLJAVA)"
-    chmod -R ugo+w pljava.solaris-x64 || _die "Couldn't set the permissions on the source directory"
-    zip -r pljava.solaris-x64.zip pljava.solaris-x64
+#    if [ -e pljava.solaris-x64 ];
+#    then
+#      echo "Removing existing pljava.solaris-x64 source directory"
+#      rm -rf pljava.solaris-x64  || _die "Couldn't remove the existing pljava.solaris-x64 source directory (source/pljava.solaris-x64)"
+#    fi
+#
+#    if [ -e pljava.solaris-x64.zip ];
+#    then
+#      echo "Removing existing pljava.solaris-x64 zip file"
+#      rm -rf pljava.solaris-x64.zip  || _die "Couldn't remove the existing pljava.solaris-x64 zip file (source/pljava.solaris-x64.zip)"
+#    fi
+#    # Grab a copy of the source tree
+#    cp -R pljava-$PG_TARBALL_PLJAVA pljava.solaris-x64 || _die "Failed to copy the source code (source/pljava-$PG_TARBALL_PLJAVA)"
+#    chmod -R ugo+w pljava.solaris-x64 || _die "Couldn't set the permissions on the source directory"
+#    zip -r pljava.solaris-x64.zip pljava.solaris-x64
 
     if [ -e stackbuilder.solaris-x64 ];
     then
@@ -339,15 +339,15 @@ EOT
      
     # And now, pl/java
 
-    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/pljava.solaris-x64/; JAVA_HOME=$PG_JAVA_HOME_SOLARIS_X64 PATH=$PG_EXEC_PATH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/server/staging/solaris-x64/bin:\$PATH LD_LIBRARY_PATH=$PG_JAVA_HOME_SOLARIS_X64/jre/lib/amd64/server:$PG_PATH_SOLARIS_X64/server/staging/solaris-x64/lib:\$LD_LIBRARY_PATH gmake USE_JDK6=1 all" || _die "Failed to build pl/java"
-    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/pljava.solaris-x64/; JAVA_HOME=$PG_JAVA_HOME_SOLARIS_X64 PATH=$PG_EXEC_PATH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/server/staging/solaris-x64/bin:\$PATH LD_LIBRARY_PATH=$PG_JAVA_HOME_SOLARIS_X64/jre/lib/amd64/server:$PG_PATH_SOLARIS_X64/server/staging/solaris-x64/lib:\$LD_LIBRARY_PATH gmake prefix=$PG_PATH_SOLARIS_X64/server/staging/solaris-x64 install" || _die "Failed to install pl/java" 
-
-    mkdir -p "$WD/server/staging/solaris-x64/share/pljava" || _die "Failed to create the pl/java share directory"
-    cp "$WD/server/source/pljava.solaris-x64/src/sql/install.sql" "$WD/server/staging/solaris-x64/share/pljava/pljava.sql" || _die "Failed to install the pl/java installation SQL script"
-    cp "$WD/server/source/pljava.solaris-x64/src/sql/uninstall.sql" "$WD/server/staging/solaris-x64/share/pljava/uninstall_pljava.sql" || _die "Failed to install the pl/java uninstallation SQL script"
-
-    mkdir -p "$WD/server/staging/solaris-x64/doc/pljava" || _die "Failed to create the pl/java doc directory"
-    cp "$WD/server/source/pljava.solaris-x64/docs/"* "$WD/server/staging/solaris-x64/doc/pljava/" || _die "Failed to install the pl/java documentation"
+#    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/pljava.solaris-x64/; JAVA_HOME=$PG_JAVA_HOME_SOLARIS_X64 PATH=$PG_EXEC_PATH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/server/staging/solaris-x64/bin:\$PATH LD_LIBRARY_PATH=$PG_JAVA_HOME_SOLARIS_X64/jre/lib/amd64/server:$PG_PATH_SOLARIS_X64/server/staging/solaris-x64/lib:\$LD_LIBRARY_PATH gmake USE_JDK6=1 all" || _die "Failed to build pl/java"
+#    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/pljava.solaris-x64/; JAVA_HOME=$PG_JAVA_HOME_SOLARIS_X64 PATH=$PG_EXEC_PATH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/server/staging/solaris-x64/bin:\$PATH LD_LIBRARY_PATH=$PG_JAVA_HOME_SOLARIS_X64/jre/lib/amd64/server:$PG_PATH_SOLARIS_X64/server/staging/solaris-x64/lib:\$LD_LIBRARY_PATH gmake prefix=$PG_PATH_SOLARIS_X64/server/staging/solaris-x64 install" || _die "Failed to install pl/java" 
+#
+#    mkdir -p "$WD/server/staging/solaris-x64/share/pljava" || _die "Failed to create the pl/java share directory"
+#    cp "$WD/server/source/pljava.solaris-x64/src/sql/install.sql" "$WD/server/staging/solaris-x64/share/pljava/pljava.sql" || _die "Failed to install the pl/java installation SQL script"
+#    cp "$WD/server/source/pljava.solaris-x64/src/sql/uninstall.sql" "$WD/server/staging/solaris-x64/share/pljava/uninstall_pljava.sql" || _die "Failed to install the pl/java uninstallation SQL script"
+#
+#    mkdir -p "$WD/server/staging/solaris-x64/doc/pljava" || _die "Failed to create the pl/java doc directory"
+#    cp "$WD/server/source/pljava.solaris-x64/docs/"* "$WD/server/staging/solaris-x64/doc/pljava/" || _die "Failed to install the pl/java documentation"
  
     echo "Changing the rpath for the PostgreSQL executables and libraries"
     ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_STAGING/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\$ORIGIN/../lib:/usr/sfw/lib/64\" \$f; done"
