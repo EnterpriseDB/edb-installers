@@ -46,12 +46,12 @@
       <actionList>
 
 	<!-- Calling authentication-hb.jsp page -->
-        <logMessage text="Authenticating user ${existingEmail}:MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PG_MAJOR_VERSION&amp;Version=PG_MAJOR_VERSION.PG_MINOR_VERSION"/>
+        <logMessage text="Authenticating user ${existingEmail}:MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PRODUCT_DESCRIPTION&amp;Version=PRODUCT_VERSION"/>
         <httpGet>
           <filename>${system_temp_directory}/auth.html</filename>
           <username>${existingEmail}</username>
           <password>${existingPassword}</password>
-          <url>BASE_URL/authentication-hb.jsp?MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PG_MAJOR_VERSION&amp;Version=PG_MAJOR_VERSION.PG_MINOR_VERSION</url>
+          <url>BASE_URL/authentication-hb.jsp?MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PRODUCT_DESCRIPTION&amp;Version=PRODUCT_VERSION</url>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
         </httpGet>
@@ -68,12 +68,12 @@
         <logMessage text="Status Code: ${statusCode}"/>
 	<actionGroup>
           <actionList>
-            <logMessage text="Retrieving error message: MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PG_MAJOR_VERSION&amp;Version=PG_MAJOR_VERSION.PG_MINOR_VERSION&amp;InstallerLang=${installation_language_code}&amp;File="/>
+            <logMessage text="Retrieving error message: MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PRODUCT_DESCRIPTION&amp;Version=PRODUCT_VERSION&amp;InstallerLang=${installation_language_code}&amp;File="/>
             <httpGet>
               <filename>${system_temp_directory}/error.html</filename>
               <username>${existingEmail}</username>
               <password>${existingPassword}</password>
-              <url>BASE_URL/geterror-hb.jsp?MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PG_MAJOR_VERSION&amp;Version=PG_MAJOR_VERSION.PG_MINOR_VERSION&amp;InstallerLang=${installation_language_code}&amp;File=</url>
+              <url>BASE_URL/geterror-hb.jsp?MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PRODUCT_DESCRIPTION&amp;Version=PRODUCT_VERSION&amp;InstallerLang=${installation_language_code}&amp;File=</url>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
             </httpGet>
