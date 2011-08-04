@@ -86,26 +86,26 @@ _build_server_osx() {
       echo ""
       _replace "pg_config.h" "pg_config_i386.h" src/backend/catalog/genbki.sh
     fi
-    
+
     # Configure the source tree
     echo "Configuring the postgres source tree for Intel"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-L/usr/local/lib" ./configure --host=i386-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for i386"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-L/usr/local/lib" PYTHON=/usr/local/bin/python3.2 TCLSH=/usr/local/bin/tclsh TCL_CONFIG_SH=/Library/Frameworks/Tcl.framework/tclConfig.sh PERL=/usr/local/ActivePerl-5.14/bin/perl ./configure --host=i386-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for i386"
     mv src/include/pg_config.h src/include/pg_config_i386.h
 
     echo "Configuring the postgres source tree for PPC"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" LDFLAGS="-L/usr/local/lib" ./configure --host=powerpc-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for PPC"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" LDFLAGS="-L/usr/local/lib" PYTHON=/usr/local/bin/python3.2 TCLSH=/usr/local/bin/tclsh TCL_CONFIG_SH=/Library/Frameworks/Tcl.framework/tclConfig.sh PERL=/usr/local/ActivePerl-5.14/bin/perl ./configure --host=powerpc-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for PPC"
     mv src/include/pg_config.h src/include/pg_config_ppc.h
 
     echo "Configuring the postgres source tree for PPC64"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc64" LDFLAGS="-L/usr/local/lib" ./configure --host=powerpc64-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for PPC64"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc64" LDFLAGS="-L/usr/local/lib" PYTHON=/usr/local/bin/python3.2 TCLSH=/usr/local/bin/tclsh TCL_CONFIG_SH=/Library/Frameworks/Tcl.framework/tclConfig.sh PERL=/usr/local/ActivePerl-5.14/bin/perl ./configure --host=powerpc64-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for PPC64"
     mv src/include/pg_config.h src/include/pg_config_ppc64.h
 
     echo "Configuring the postgres source tree for x86_64"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/usr/local/lib" ./configure --host=x86_64-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for PPC"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/usr/local/lib" PYTHON=/usr/local/bin/python3.2 TCLSH=/usr/local/bin/tclsh TCL_CONFIG_SH=/Library/Frameworks/Tcl.framework/tclConfig.sh PERL=/usr/local/ActivePerl-5.14/bin/perl ./configure --host=x86_64-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for PPC"
     mv src/include/pg_config.h src/include/pg_config_x86_64.h
 
     echo "Configuring the postgres source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" LDFLAGS="-L/usr/local/lib" ./configure --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" LDFLAGS="-L/usr/local/lib"  PYTHON=/usr/local/bin/python3.2 TCLSH=/usr/local/bin/tclsh TCL_CONFIG_SH=/Library/Frameworks/Tcl.framework/tclConfig.sh PERL=/usr/local/ActivePerl-5.14/bin/perl ./configure --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for Universal"
 
     # Create a replacement pg_config.h that will pull in the appropriate architecture-specific one:
     rm -f src/include/pg_config.h
@@ -127,7 +127,7 @@ cat <<EOT > "src/include/pg_config.h"
 EOT
 
     echo "Building postgres"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" make -j4 || _die "Failed to build postgres"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" make -j4 || _die "Failed to build postgres"
     make install || _die "Failed to install postgres"
 
     cp src/include/pg_config_i386.h $WD/server/staging/osx/include/
@@ -138,19 +138,19 @@ EOT
     echo "Adding ppc64 arch to libpq"
     cd $WD/server/source/postgres.osx/src/interfaces/libpq
     make clean
-    make CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc -arch ppc64 -arch x86_64"
+    make CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc -arch ppc64 -arch x86_64" LDFLAGS="$PG_ARCH_OSX_LDFLAGS -arch i386 -arch ppc -arch ppc64 -arch x86_64"
     make install
 
     cd $WD/server/source/postgres.osx
-   
-    echo "Building contrib modules"
-    cd contrib
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" make -j4 || _die "Failed to build the postgres contrib modules"
-    make install || _die "Failed to install the postgres contrib modules"
 
     echo "Building contrib modules"
+    cd contrib
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" make -j4 || _die "Failed to build the postgres contrib modules"
+    make install || _die "Failed to install the postgres contrib modules"
+
+    echo "Building pldebugger module"
     cd pldebugger
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" make -j4 || _die "Failed to build the debugger module"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" make -j4 || _die "Failed to build the debugger module"
     make install || _die "Failed to install the debugger module"
     if [ ! -e $WD/server/staging/osx/doc ];
     then
@@ -159,7 +159,7 @@ EOT
     cp README.pldebugger $WD/server/staging/osx/doc || _die "Failed to copy the debugger README into the staging directory"
 
     cd ../uuid-ossp
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" make -j4 || _die "Failed to build the uuid-ossp module"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" make -j4 || _die "Failed to build the uuid-ossp module"
     make install || _die "Failed to install the uuid-ossp module"
 
     # Install the PostgreSQL docs
@@ -223,20 +223,25 @@ EOT
     cp -R stackbuilder.app $WD/server/staging/osx || _die "Failed to copy StackBuilder into the staging directory"
 
     cd $WD/server/staging/osx
-    # Copy libxml2 as System's libxml can be old. 	
-    cp /usr/local/lib/libxml2* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
-    cp /usr/local/lib/libxslt.* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxslt"	
-    cp /usr/local/lib/libuuid* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"	
-    cp /usr/local/lib/libedit* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"	
-	 
+    # Copy libxml2 as System's libxml can be old.
+    cp /usr/local/lib/libxml2* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"
+    cp /usr/local/lib/libxslt.* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxslt"
+    cp /usr/local/lib/libuuid* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp /usr/local/lib/libedit* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+
+    # Copying plperl to staging/osx directory as we would not like to update the _rewrite_so_refs for it.
+    cp -f $WD/server/staging/osx/lib/postgresql/plperl.so $WD/server/staging/osx/
+
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     _rewrite_so_refs $WD/server/staging/osx bin @loader_path/..
     _rewrite_so_refs $WD/server/staging/osx lib @loader_path/..
     _rewrite_so_refs $WD/server/staging/osx lib/postgresql @loader_path/../..
     _rewrite_so_refs $WD/server/staging/osx lib/postgresql/plugins @loader_path/../../..
 
-    cd $WD/server/scripts/osx/getlocales/; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64 -o getlocales.osx -O0 getlocales.c  || _die "Failed to build getlocales utility"
-    
+    # Copying back plperl to staging/osx/lib/postgresql directory as we would not like to update the _rewrite_so_refs for it.
+    mv -f $WD/server/staging/osx/plperl.so $WD/server/staging/osx/lib/postgresql/plperl.so
+
+    cd $WD/server/scripts/osx/getlocales/; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -o getlocales.osx -O0 getlocales.c  || _die "Failed to build getlocales utility"
 
     cd $WD
 }
