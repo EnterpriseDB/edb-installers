@@ -78,6 +78,10 @@ _build_server_osx() {
 
     # First, build the server
 
+    cd $WD/server/source/postgres.osx/src/pl/plpython
+
+    _replace "-framework" "-F/System/Library/Frameworks -framework" Makefile || _die "Failed to replace the flag to force to use the System's framework for plpython"
+
     cd $WD/server/source/postgres.osx
 
     if [ -f src/backend/catalog/genbki.sh ];
@@ -89,23 +93,23 @@ _build_server_osx() {
     
     # Configure the source tree
     echo "Configuring the postgres source tree for Intel"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-L/usr/local/lib" ./configure --host=i386-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for i386"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-L/usr/local/lib" PYTHON=/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks/Python.framework/Versions/Current/Resources/Python.app/Contents/MacOS/Python ./configure --host=i386-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for i386"
     mv src/include/pg_config.h src/include/pg_config_i386.h
 
     echo "Configuring the postgres source tree for PPC"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" LDFLAGS="-L/usr/local/lib" ./configure --host=powerpc-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for PPC"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" LDFLAGS="-L/usr/local/lib" PYTHON=/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks/Python.framework/Versions/Current/Resources/Python.app/Contents/MacOS/Python ./configure --host=powerpc-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for PPC"
     mv src/include/pg_config.h src/include/pg_config_ppc.h
 
     echo "Configuring the postgres source tree for PPC64"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc64" LDFLAGS="-L/usr/local/lib" ./configure --host=powerpc64-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for PPC64"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc64" LDFLAGS="-L/usr/local/lib" PYTHON=/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks/Python.framework/Versions/Current/Resources/Python.app/Contents/MacOS/Python ./configure --host=powerpc64-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for PPC64"
     mv src/include/pg_config.h src/include/pg_config_ppc64.h
 
     echo "Configuring the postgres source tree for x86_64"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/usr/local/lib" ./configure --host=x86_64-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for PPC"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/usr/local/lib" PYTHON=/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks/Python.framework/Versions/Current/Resources/Python.app/Contents/MacOS/Python ./configure --host=x86_64-apple-darwin --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for PPC"
     mv src/include/pg_config.h src/include/pg_config_x86_64.h
 
     echo "Configuring the postgres source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" LDFLAGS="-L/usr/local/lib" ./configure --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64" LDFLAGS="-L/usr/local/lib" PYTHON=/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks/Python.framework/Versions/Current/Resources/Python.app/Contents/MacOS/Python ./configure --prefix=$WD/server/staging/osx --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred || _die "Failed to configure postgres for Universal"
 
     # Create a replacement pg_config.h that will pull in the appropriate architecture-specific one:
     rm -f src/include/pg_config.h
