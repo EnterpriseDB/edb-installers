@@ -1,7 +1,6 @@
 <actionGroup>
   <actionList>
     <iniFileSet file="@@REGISTRY_INI@@" section="@@REGISTRY_PREFIX@@" key="Username" value="" />
-    <iniFileSet file="@@REGISTRY_INI@@" section="@@REGISTRY_PREFIX@@" key="MachineID" value="" />
     <iniFileSet file="@@REGISTRY_INI@@" section="@@REGISTRY_PREFIX@@" key="InstallationID" value="" />
   </actionList>
   <ruleList>

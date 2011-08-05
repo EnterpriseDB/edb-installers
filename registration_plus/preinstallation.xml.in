@@ -1,15 +1,37 @@
 <actionGroup>
   <actionList>
     <setInstallerVariable name="iExistingEmail" persist="0" value=""/>
+    <setInstallerVariable name="machine_id" persist="0" value=""/>
+    <setInstallerVariable name="installation_id" persist="0" value=""/>
 
+    <iniFileGet file="@@REGISTRY_INI@@" section="Global_machine_id" key="MachineID" variable="machine_id" >
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+    </iniFileGet>
+    <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Global_machine_id" name="MachineID" variable="machine_id">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+    </registryGet>
     <!-- Set the Installation Directory in case of re-install/upgrade -->
     <actionGroup>
       <actionList>
+	<iniFileGet file="@@REGISTRY_INI@@" section="@@REGISTRY_PREFIX@@" key="InstallationID" variable="installation_id" >
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+	</iniFileGet>
         <iniFileGet file="@@REGISTRY_INI@@" section="@@REGISTRY_PREFIX@@" key="Username" variable="iExistingEmail">
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
           </ruleList>
         </iniFileGet>
+	<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\@@REGISTRY_PREFIX@@" name="InstallationID" variable="installation_id">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+	</registryGet>
         <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\@@REGISTRY_PREFIX_WIN@@" name="Username" variable="iExistingEmail">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -65,6 +87,77 @@
       </ruleList>
     </throwError>
 
+    <!-- Get the processor arch and operating system -->
+    <actionGroup>
+	<actionList>
+	    <runProgram>
+		<program>uname</program>
+		<programArguments>-m</programArguments>
+		<showMessageOnError>0</showMessageOnError>
+		<abortOnError>0</abortOnError>
+		<ruleList>
+		    <fileExists path="/etc/debian_version" />
+		</ruleList>
+	    </runProgram>
+    	    <runProgram>
+		<program>uname</program>
+		<programArguments>-p</programArguments>
+		<showMessageOnError>0</showMessageOnError>
+		<abortOnError>0</abortOnError>
+		<ruleList>
+		    <fileTest condition="not_exists" path="/etc/debian_version" />
+		</ruleList>
+	    </runProgram>
+	    <setInstallerVariable name="processor_arch" value="${program_stdout}" />    
+	</actionList>
+	<ruleList>
+	    <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+	</ruleList>
+    </actionGroup>
+    <setInstallerVariable name="processor_arch" value="${env(PROCESSOR_ARCHITECTURE)}" >
+	<ruleList>
+	    <compareText text="${platform_name}" logic="equals" value="windows" />
+	</ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="os" value="${windows_os_name}" >
+	<ruleList>
+	    <compareText text="${platform_name}" logic="equals" value="windows" />
+	</ruleList>
+    </setInstallerVariable>
+    <actionGroup>
+	<actionList>
+	    <runProgram>
+		<program>uname</program>
+		<programArguments>-r</programArguments>
+		<showMessageOnError>0</showMessageOnError>
+		<abortOnError>0</abortOnError>
+	    </runProgram>
+	    <setInstallerVariable name="os" value="Solaris ${program_stdout}" />
+	</actionList>
+	<ruleList>
+	    <compareText text="${platform_name}" logic="contains" value="solaris" />
+	</ruleList>
+    </actionGroup>
+    <setInstallerVariable name="os" value="Linux ${linux_distribution_version}" >
+	<ruleList>
+	    <compareText text="${platform_name}" logic="contains" value="linux" />
+	</ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="os" value="Macintosh ${osx_version}" >
+	<ruleList>
+	    <compareText text="${platform_name}" logic="equals" value="osx" />
+	</ruleList>
+    </setInstallerVariable>
+
+    <urlEncode>
+        <text>${os}</text>
+        <variable>enc_os</variable>
+    </urlEncode>
+    <urlEncode>
+        <text>@@COMPONENT@@</text>
+        <variable>enc_component</variable>
+    </urlEncode>
+
     <createDirectory path="${system_temp_directory}/@@TEMPDIR@@"/>
 
     <actionGroup>
@@ -85,7 +178,11 @@
 		    name="machine_id"
 		    showMessageOnError="0"
 		    exec="${system_temp_directory}\@@TEMPDIR@@\UserValidation\dbserver_guid.exe"
-		    abortOnError="0"/>
+		    abortOnError="0">
+		    <ruleList>
+			<compareText logic="equals" text="${machine_id}" value=""/>
+		    </ruleList>
+		</setInstallerVariableFromScriptOutput>
 
 		<setInstallerVariableFromRegEx
 		    name="machine_id"
@@ -108,6 +205,7 @@
 	    </actionList>
 	    <ruleList>
 		<compareText logic="equals" text="${platform_name}" value="windows" />
+		<stringTest type="not_empty" text="${@@COMPONENT_VERSION@@}"/>
 	    </ruleList>
 	</actionGroup>
 
@@ -117,6 +215,7 @@
               <setInstallerVariable name="machine_id" value="16a874e6-241e-44ae-b27e-74aecded209a"/>
            </onErrorActionList>
 	   <ruleList>
+		<stringTest type="not_empty" text="${@@COMPONENT_VERSION@@}"/>
 		<compareText logic="does_not_equal" text="${platform_name}" value="windows" />
 	   </ruleList>
         </setInstallerVariableFromScriptOutput>
@@ -152,6 +251,7 @@
 	    </actionList>
 	    <ruleList>
 		<compareText logic="equals" text="${platform_name}" value="windows" />
+		<stringTest type="not_empty" text="${@@COMPONENT_VERSION@@}"/>
 	    </ruleList>
 	</actionGroup>
 
@@ -162,6 +262,7 @@
            </onErrorActionList>
 	   <ruleList>
 		<compareText logic="does_not_equal" text="${platform_name}" value="windows" />
+		<stringTest type="not_empty" text="${@@COMPONENT_VERSION@@}"/>
 	   </ruleList>
         </setInstallerVariableFromScriptOutput>
 
@@ -225,6 +326,15 @@
 		    <compareText value="${statusCode}" text="401" logic="equals"/>
 		</ruleList>
 	    </actionGroup>
+            <httpGet>
+                <filename>${system_temp_directory}/bt.html</filename>
+	        <username>${existingEmail}</username>
+		<password>${existingPassword}</password>
+		<url>BASE_URL/sendbeat-hb.jsp?MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;components=${enc_component}&amp;Version=PRODUCT_VERSION&amp;OS=${enc_os}&amp;SystemArch=${processor_arch}&amp;InstallationSource=COMP</url>
+		<abortOnError>0</abortOnError>
+		<showMessageOnError>0</showMessageOnError>
+	    </httpGet>
+
           </actionList>
           <ruleList>
             <compareText logic="equals" text="${installer_ui}" value="unattended"/>
