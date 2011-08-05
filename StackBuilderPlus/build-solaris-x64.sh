@@ -147,7 +147,7 @@ EOT
     ssh $PG_SSH_SOLARIS_X64 "cp /usr/lib/64/libfontconfig.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libfontconfig.so) in staging directory (solaris-x64)"
     ssh $PG_SSH_SOLARIS_X64 "cp /usr/lib/64/libpango-* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (solaris-x64)"
     ssh $PG_SSH_SOLARIS_X64 "cp /usr/lib/64/libpangoft2* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (solaris-x64)"
-
+    ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libuuid.so.16 $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libuuid.so.16) in staging directory (solaris-x64)"
     scp -r $PG_SSH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/* $WD/StackBuilderPlus/staging/solaris-x64/ || _die "Failed to copy back the staging directory from Solaris VM"
 
     cd $WD
