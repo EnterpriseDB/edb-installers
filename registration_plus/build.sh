@@ -51,6 +51,9 @@ _registration_plus_postprocess()
     cp $PG_REG_COMP_PATH/$REG_FILE.xml.in registration_plus_$REG_FILE.xml
   done
 
+  # registration_plus parameter (initialization.xml)
+  _replace BASE_URL	      $BASE_URL  registration_plus_initialization.xml 
+
   # registration_plus parameter (already_registered_parameter.xml)
   _replace @@COMPONENT@@ "$2" registration_plus_already_registered_parameter.xml
 
