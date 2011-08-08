@@ -2,17 +2,17 @@
   <actionList>
     <deleteFile path="${system_temp_directory}/auth.html">
 	<ruleList>
-	    <fielExists path="${system_temp_directory}/auth.html" />
+	    <fileExists path="${system_temp_directory}/auth.html" />
 	</ruleList>
     </deleteFile>
     <deleteFile path="${system_temp_directory}/error.html">
 	<ruleList>
-	    <fielExists path="${system_temp_directory}/error.html" />
+	    <fileExists path="${system_temp_directory}/error.html" />
 	</ruleList>
     </deleteFile>
     <deleteFile path="${system_temp_directory}/bt.html">
 	<ruleList>
-	    <fielExists path="${system_temp_directory}/bt.html" />
+	    <fileExists path="${system_temp_directory}/bt.html" />
 	</ruleList>
     </deleteFile>
     <!-- Write the registered user-name to INI File -->
