@@ -4,7 +4,6 @@
 #include <wx/file.h>
 #include <wx/fileconf.h>
 #include <wx/wfstream.h>
-//#include <wx/taskbar.h>
 
 #ifdef __WXMSW__
 #include "Registry.h"

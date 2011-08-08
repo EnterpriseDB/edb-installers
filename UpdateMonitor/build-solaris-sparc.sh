@@ -96,7 +96,7 @@ EOT
     scp setenv.sh $PG_SSH_SOLARIS_SPARC: || _die "Failed to scp the setenv.sh file"
 
     cd $WD/UpdateMonitor/source/GetLatestPGInstalled.solaris-sparc
-    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/UpdateMonitor/source/GetLatestPGInstalled.solaris-sparc;  g++ -I/usr/local/include/wx-2.8/ -I/usr/local/lib/wx/include/gtk2-unicode-release-2.8/ -L/usr/local/lib -lwx_baseud-2.8 -o GetLatestPGInstalled  GetLatestPGInstalled.cpp" || _die "Failed to build GetLatestPGInstalled"
+    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/UpdateMonitor/source/GetLatestPGInstalled.solaris-sparc;  g++ -m64 -DwxSIZE_T_IS_UINT -I/usr/local/include/wx-2.8/ -I/usr/local/lib/wx/include/gtk2-unicode-release-2.8/ -L/usr/local/lib -lwx_baseud-2.8 -o GetLatestPGInstalled  GetLatestPGInstalled.cpp" || _die "Failed to build GetLatestPGInstalled"
 
     cd $WD/UpdateMonitor/source/UpdateMonitor.solaris-sparc
 
@@ -110,7 +110,7 @@ EOT
     ssh $PG_SSH_SOLARIS_SPARC "mkdir -p $PG_PATH_SOLARIS_SPARC/UpdateMonitor/staging/solaris-sparc/UpdateMonitor/instscripts/lib" || _die "Failed to create the bin directory"
 
     echo "Copying UpdateMonitor binary to staging directory"
-    ssh $PG_SSH_SOLARIS_SPARC "cp $PG_PATH_SOLARIS_SPARC/UpdateMonitor/source/updatemonitor.solaris-sparc/UpdateMonitor $PG_PATH_SOLARIS_SPARC/UpdateMonitor/staging/solaris-sparc/UpdateMonitor/bin" || _die "Failed to copy the UpdateMonitor binary"
+    ssh $PG_SSH_SOLARIS_SPARC "cp $PG_PATH_SOLARIS_SPARC/UpdateMonitor/source/updatemonitor.solaris-sparc/UpdateManager $PG_PATH_SOLARIS_SPARC/UpdateMonitor/staging/solaris-sparc/UpdateMonitor/bin" || _die "Failed to copy the UpdateMonitor binary"
     ssh $PG_SSH_SOLARIS_SPARC "cp $PG_PATH_SOLARIS_SPARC/UpdateMonitor/source/GetLatestPGInstalled.solaris-sparc/GetLatestPGInstalled $PG_PATH_SOLARIS_SPARC/UpdateMonitor/staging/solaris-sparc/UpdateMonitor/instscripts/bin" || _die "Failed to copy the GetLatestPGInstallerd binary"
 
     echo "Copying dependent libraries to staging directory (solaris-sparc)"
@@ -139,14 +139,13 @@ _postprocess_updatemonitor_solaris_sparc() {
     cd $WD/UpdateMonitor
 
     mkdir -p staging/solaris-sparc/installer/UpdateMonitor || _die "Failed to create a directory for the installer scripts"
-    mkdir -p staging/solaris-sparc/UpdateMonitor/scripts || _die "Failed to create a directory for the installer scripts"
     
     cp scripts/solaris/configlibs.sh staging/solaris-sparc/installer/UpdateMonitor/configlibs.sh || _die "Failed to copy the removeshortcuts script (scripts/solaris/configlibs.sh)"
     chmod ugo+x staging/solaris-sparc/installer/UpdateMonitor/*.sh
 
-    mkdir -p staging/solaris-sparc/scripts || _die "Failed to create a directory for the launch scripts"
-    cp scripts/solaris/launchUpdateMonitor.sh staging/solaris-sparc/scripts/launchUpdateMonitor.sh || _die "Failed to copy the launch scripts (scripts/solaris/launchUpdateMonitor.sh)"
-    chmod ugo+x staging/solaris-sparc/scripts/launchUpdateMonitor.sh
+    mkdir -p staging/solaris-sparc/UpdateMonitor/scripts || _die "Failed to create a directory for the launch scripts"
+    cp scripts/solaris/launchUpdateMonitor.sh staging/solaris-sparc/UpdateMonitor/scripts/launchUpdateMonitor.sh || _die "Failed to copy the launch scripts (scripts/solaris/launchUpdateMonitor.sh)"
+    chmod ugo+x staging/solaris-sparc/UpdateMonitor/scripts/launchUpdateMonitor.sh
 
     mkdir -p staging/solaris-sparc/UpdateMonitor/scripts/xdg || _die "Failed to create a directory for the menu pick items"
     cp resources/xdg/edb-um-update-monitor.desktop staging/solaris-sparc/UpdateMonitor/scripts/xdg/ || _die "Failed to copy the startup pick desktop"
