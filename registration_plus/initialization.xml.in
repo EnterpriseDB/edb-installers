@@ -19,8 +19,8 @@
           <height>100</height>
           <actionList>
             <httpGet>
-              <filename>${system_temp_directory}/ib.html</filename>
-              <url>http://www.enterprisedb.com/ib.html</url>
+              <filename>${system_temp_directory}/connect.html</filename>
+              <url>BASE_URL/connect.jsp</url>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
             </httpGet>
@@ -32,7 +32,7 @@
           <value>1</value>
           <ruleList>
             <fileContentTest>
-              <path>${system_temp_directory}/ib.html</path>
+              <path>${system_temp_directory}/connect.html</path>
               <text>EnterpriseDB</text>
               <logic>contains</logic>
             </fileContentTest>
@@ -40,7 +40,7 @@
         </setInstallerVariable>
         <logMessage text="is_internet_connected:${is_internet_connected}"/>
         <deleteFile>
-          <path>${system_temp_directory}/ib.html</path>
+          <path>${system_temp_directory}/connect.html</path>
         </deleteFile>
       </actionList>
     </actionGroup>
