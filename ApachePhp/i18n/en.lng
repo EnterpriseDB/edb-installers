@@ -6,9 +6,9 @@ Installer.Installing.Title=Installing ${product_fullname}
 
 upgrade.existing.installation.title=Existing Installation
 
-upgrade.existing.installation.description=An existing ApachePhp installation has been found at ${installdir}. This installation will be upgraded.
+upgrade.existing.installation.description=An existing Apache/Php installation has been found at ${installdir}. This installation will be upgraded.
 
-install.summary=ApachePHP is a preconfigured Apache webserver with PHP, compiled for use with PostgreSQL
+install.summary=Apache/PHP is a preconfigured Apache webserver with PHP, compiled for use with PostgreSQL
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 
