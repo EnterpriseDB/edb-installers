@@ -58,8 +58,8 @@ PG_EXEC_PATH_LINUX=/usr/java/jdk1.5.0_14/bin
 PG_JAVA_HOME_LINUX=/usr/java/jdk1.5.0_14
 PG_ANT_HOME_LINUX=/usr/local/apache-ant-1.7.1
 PG_QMAKE_LINUX=qmake-qt4
-PG_PERL_LINUX=/opt/ActivePerl-5.10
-PG_PYTHON_LINUX=/opt/ActivePython-2.6
+PG_PERL_LINUX=/opt/ActivePerl-5.14
+PG_PYTHON_LINUX=/opt/ActivePython-3.2
 PG_TCL_LINUX=/opt/ActiveTcl-8.5
 
 PG_SSH_LINUX_X64=buildfarm@bf2-linux-x64.ox.uk.enterprisedb.com
@@ -69,8 +69,8 @@ PG_EXEC_PATH_LINUX_X64=/usr/java/jdk1.5.0_14/bin
 PG_JAVA_HOME_LINUX_X64=/usr/java/jdk1.5.0_14
 PG_ANT_HOME_LINUX_X64=/usr/local/apache-ant-1.7.1
 PG_QMAKE_LINUX_X64=qmake-qt4
-PG_PERL_LINUX_X64=/opt/ActivePerl-5.10
-PG_PYTHON_LINUX_X64=/opt/ActivePython-2.6
+PG_PERL_LINUX_X64=/opt/ActivePerl-5.14
+PG_PYTHON_LINUX_X64=/opt/ActivePython-3.2
 PG_TCL_LINUX_X64=/opt/ActiveTcl-8.5
 
 PG_SSH_WINDOWS=buildfarm@bf2-windows.ox.uk.enterprisedb.com

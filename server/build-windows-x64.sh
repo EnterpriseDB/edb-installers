@@ -157,8 +157,8 @@ our \$config = {
     asserts=>0,                         # --enable-cassert
     integer_datetimes=>1,               # --enable-integer-datetimes
     nls=>'$PG_PGBUILD_WINDOWS_X64\gettext',        # --enable-nls=<path>
-    perl=>'C:\Perl-5.10',             # --with-perl
-    python=>'C:\Python26',         # --with-python=<path>
+    perl=>'C:\Perl-5.14',             # --with-perl
+    python=>'C:\Python32',         # --with-python=<path>
     tcl=>'C:\Tcl-8.5',            # --with-tls=<path>
     ldap=>1,                # --with-ldap
     openssl=>'$PG_PGBUILD_WINDOWS_X64\OpenSSL',     # --with-ssl=<path>
@@ -206,8 +206,8 @@ use warnings;
     '$PG_PGBUILD_WINDOWS_X64\OpenSSL\bin',
     '$PG_PGBUILD_WINDOWS_X64\libxml2\bin',
     '$PG_PGBUILD_WINDOWS_X64\zlib\bin',
-    'C:\Perl-5.10\bin',
-    'C:\Python26',
+    'C:\Perl-5.14\bin',
+    'C:\Python32',
     'C:\msys\1.0\bin',
     \$ENV{PATH}
 );

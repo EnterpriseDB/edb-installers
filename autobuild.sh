@@ -35,8 +35,8 @@ echo "Updating build system" >> autobuild.log
 /opt/local/bin/git pull >> autobuild.log 2>&1
 
 # Make sure, we always do a full build
-if [ -f settings.sh.full ]; then
-   cp -f settings.sh.full settings.sh
+if [ -f settings.sh.full.REL-9_0 ]; then
+   cp -f settings.sh.full.REL-9_0 settings.sh
 fi
 
 # Run the build, and dump the output to a log file
@@ -61,6 +61,11 @@ rm -rf output/* >> autobuild.log 2>&1
 # Switch to REL-9_1 branch
 echo "Switching to REL-9_1 branch" >> autobuild.log
 /opt/local/bin/git checkout REL-9_1 >> autobuild.log 2>&1
+
+# Make sure, we always do a full build
+if [ -f settings.sh.full.REL-9_1 ]; then
+   cp -f settings.sh.full.REL-9_1 settings.sh
+fi
 
 # Self update
 echo "Updating REL-9_1 branch build system" >> autobuild.log
