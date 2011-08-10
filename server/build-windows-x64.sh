@@ -91,7 +91,10 @@ _prep_server_windows_x64() {
     # Grab a copy of the source tree
     cp -R postgresql-$PG_TARBALL_POSTGRESQL postgres.windows-x64 || _die "Failed to copy the source code (source/postgres.windows-x64)"
     # Apply plpython patch which is required for only windows 64
-    patch -p0 < ../../tarballs/plpython_pg9.0_win64.patch || _die "Couldn't apply the patch tarballs/plpython_pg9.0_win64.patch"
+    cd postgres.windows-x64
+    patch -p1 < ../../../tarballs/plpython_python3_win.patch || _die "Couldn't apply the patch tarballs/plpython_python3_win.patch"
+    cd ..
+
     cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.windows-x64 || _die "Failed to copy the source code (source/pgadmin.windows-x64)"
     cp -R stackbuilder stackbuilder.windows-x64 || _die "Failed to copy the source code (source/stackbuilder.windows-x64)"
     #mkdir pljava.windows-x64 || _die "Failed to create a directory for the plJava binaries"
