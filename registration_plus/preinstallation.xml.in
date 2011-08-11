@@ -179,9 +179,6 @@
 		    showMessageOnError="0"
 		    exec="${system_temp_directory}\@@TEMPDIR@@\UserValidation\dbserver_guid.exe"
 		    abortOnError="0">
-		    <ruleList>
-			<compareText logic="equals" text="${machine_id}" value=""/>
-		    </ruleList>
 		</setInstallerVariableFromScriptOutput>
 
 		<setInstallerVariableFromRegEx
@@ -205,7 +202,7 @@
 	    </actionList>
 	    <ruleList>
 		<compareText logic="equals" text="${platform_name}" value="windows" />
-		<stringTest type="not_empty" text="${@@COMPONENT_VERSION@@}"/>
+		<compareText logic="equals" text="${machine_id}" value=""/>
 	    </ruleList>
 	</actionGroup>
 
@@ -215,7 +212,7 @@
               <setInstallerVariable name="machine_id" value="16a874e6-241e-44ae-b27e-74aecded209a"/>
            </onErrorActionList>
 	   <ruleList>
-		<stringTest type="not_empty" text="${@@COMPONENT_VERSION@@}"/>
+		<compareText text="${machine_id}" logic="equals" value=""/>
 		<compareText logic="does_not_equal" text="${platform_name}" value="windows" />
 	   </ruleList>
         </setInstallerVariableFromScriptOutput>
@@ -251,7 +248,7 @@
 	    </actionList>
 	    <ruleList>
 		<compareText logic="equals" text="${platform_name}" value="windows" />
-		<stringTest type="not_empty" text="${@@COMPONENT_VERSION@@}"/>
+		<compareText text="${installation_id}" logic="equals" value=""/>
 	    </ruleList>
 	</actionGroup>
 
@@ -262,7 +259,7 @@
            </onErrorActionList>
 	   <ruleList>
 		<compareText logic="does_not_equal" text="${platform_name}" value="windows" />
-		<stringTest type="not_empty" text="${@@COMPONENT_VERSION@@}"/>
+		<compareText text="${installation_id}" logic="equals" value=""/>
 	   </ruleList>
         </setInstallerVariableFromScriptOutput>
 
