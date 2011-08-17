@@ -167,7 +167,7 @@ When building on Snow Leopard, using the Leopard SDK a failure may be seen when
 configuring PostgreSQL for PAM. This is because the PAM header location moved 
 from /usr/include/pam in 10.5 to /usr/include/security in 10.6. The difference between
 the base OS and the SDK confuses configure. To avoid this, it may be necessary
-to move the PAM headers in /usr/include/security so configure cannot find them.
+to move the PAM headers in /usr/include/security/security so configure cannot find them.
 
 - Downgrade Java
 

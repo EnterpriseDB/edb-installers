@@ -75,6 +75,12 @@ _prep_server() {
     echo "Unpacking PostgreSQL source..."
     tar -jxvf ../../tarballs/postgresql-$PG_TARBALL_POSTGRESQL.tar.bz2
 
+    if [ -f $WD/tarballs/pg${PG_TARBALL_POSTGRESQL}_python.patch ]; then
+        cd postgresql-$PG_TARBALL_POSTGRESQL
+        patch -p1 < $WD/tarballs/pg${PG_TARBALL_POSTGRESQL}_python.patch
+        cd ..
+    fi
+
     # pgAdmin
     if [ -e pgadmin3-$PG_TARBALL_PGADMIN ];
     then
