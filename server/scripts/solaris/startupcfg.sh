@@ -30,6 +30,8 @@ _warn() {
     WARN=2
 }
 
+mkdir -p /lib/svc/method
+
 # Write the startup script
 cat <<EOT > "/lib/svc/method/$SERVICENAME"
 #!/bin/bash
@@ -88,6 +90,7 @@ esac
 
 EOT
 
+mkdir -p /var/svc/manifest/application/database
 
 cat <<EOT > "/var/svc/manifest/application/database/$SERVICENAME.xml"
 <?xml version="1.0"?>
@@ -183,7 +186,7 @@ EOT
 
 
 # Fixup the permissions on the StartupItems
-chmod 0755 "/lib/svc/method/$SERVICENAME" || _warn "Failed to set the permissions on the startup script (/etc/init.d/$SERVICENAME)"
+chmod 0755 "/lib/svc/method/$SERVICENAME" || _warn "Failed to set the permissions on the startup script (/lib/svc/method/$SERVICENAME)"
 
 svccfg import /var/svc/manifest/application/database/$SERVICENAME.xml
 
