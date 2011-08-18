@@ -79,6 +79,8 @@ _prep_server() {
         cd postgresql-$PG_TARBALL_POSTGRESQL
         patch -p1 < $WD/tarballs/pg${PG_TARBALL_POSTGRESQL}_python.patch
         cd ..
+    else
+        _warn "Could not find the pg${PG_TARBALL_PGADMIN}_python.patch"
     fi
 
     # pgAdmin
