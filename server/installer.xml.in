@@ -1310,7 +1310,35 @@
                 </compareText>
                 <isFalse value="${extract_mode}"/>
              </ruleList>
-	</unpackFile>
+    </unpackFile>
+    <unpackFile>
+        <component>default</component>
+        <destination>${system_temp_directory}</destination>
+        <folder>programfilessolaris-x64</folder>
+        <origin>installer/server/prerun_checks.sh</origin>
+        <ruleList>
+            <compareText>
+                <logic>equals</logic>
+                <text>${platform_name}</text>
+                <value>solaris-intel</value>
+            </compareText>
+            <isFalse value="${extract_mode}"/>
+        </ruleList>
+    </unpackFile>
+    <unpackFile>
+        <component>default</component>
+        <destination>${system_temp_directory}</destination>
+        <folder>programfilessolaris-sparc</folder>
+        <origin>installer/server/prerun_checks.sh</origin>
+        <ruleList>
+            <compareText>
+                <logic>equals</logic>
+                <text>${platform_name}</text>
+                <value>solaris-sparc</value>
+            </compareText>
+            <isFalse value="${extract_mode}"/>
+        </ruleList>
+    </unpackFile>
 
 	<actionGroup>
 	    <actionList>

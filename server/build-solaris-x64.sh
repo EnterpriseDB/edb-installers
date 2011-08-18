@@ -411,6 +411,9 @@ _postprocess_server_solaris_x64() {
     cp $WD/server/scripts/solaris/getlocales/getlocales.solaris-x64 $WD/server/staging/solaris-x64/installer/server/getlocales || _die "Failed ot copy getlocales utility to staging directory"
     chmod ugo+x $WD/server/staging/solaris-x64/installer/server/getlocales
 
+    cp $WD/server/scripts/linux/prerun_checks.sh $WD/server/staging/solaris-x64/installer/server/prerun_checks.sh || _die "Failed to copy the prerun_checks.sh script"
+    chmod ugo+x $WD/server/staging/solaris-x64/installer/server/prerun_checks.sh
+
     cp scripts/solaris/runpgcontroldata.sh staging/solaris-x64/installer/server/runpgcontroldata.sh || _die "Failed to copy the runpgcontroldata script (scripts/solaris/runpgcontroldata.sh)"
     chmod ugo+x staging/solaris-x64/installer/server/runpgcontroldata.sh
 
