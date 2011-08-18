@@ -51,9 +51,9 @@ chown $OSUSERNAME:$OSUSERNAME "$DATADIR" || _die "Failed to set the ownership of
 # Initialise the database cluster
 if [ $LOCALE = "DEFAULT" ];
 then
-    su - $OSUSERNAME -c "$INSTALLDIR/bin/initdb --pwfile /tmp/initdbpw.$$ -A md5 -U \"$SUPERNAME\" -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
+    su - $OSUSERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib:$LD_LIBRARY_PATH $INSTALLDIR/bin/initdb --pwfile /tmp/initdbpw.$$ -A md5 -U \"$SUPERNAME\" -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
 else
-    su - $OSUSERNAME -c "$INSTALLDIR/bin/initdb --pwfile /tmp/initdbpw.$$ --locale=$LOCALE -A md5 -U \"$SUPERNAME\" -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
+    su - $OSUSERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib:$LD_LIBRARY_PATH $INSTALLDIR/bin/initdb --pwfile /tmp/initdbpw.$$ --locale=$LOCALE -A md5 -U \"$SUPERNAME\" -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
 fi
 
 if [ ! -d "$DATADIR/pg_log" ];

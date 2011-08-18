@@ -167,7 +167,7 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH; make install" || _die "Failed to install postgres"
 
     echo "Building contrib modules"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib; make" || _die "Failed to build the postgres contrib modules"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib; make -j4" || _die "Failed to build the postgres contrib modules"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib; make install" || _die "Failed to install the postgres contrib modules"
 
     echo "Building debugger module"
@@ -208,6 +208,7 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libpng12.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libjpeg.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libsasl2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libsasl2)"
+    ssh $PG_SSH_LINUX "cp -R /usr/lib/libldap-2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libldap-2.3)"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libldap_r-2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libldap_r-2.3)"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/liblber-2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (liblber-2.3)"
 
@@ -218,7 +219,10 @@ _build_server_linux() {
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libtermcap.so"  
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libxml2.so"  
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libxslt.so"  
-
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libsasl2.so"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap-2.3.so"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap_r-2.3.so"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "liblber-2.3.so"
 
     # Hack for bypassing dependency on the deprecated libtermcap
     # As libnucurses is API compatible with the termcap so we copy libtermcap and then just
@@ -249,9 +253,9 @@ PG_BIN_PATH=\`dirname \$0\`
 
 if [ -z "\$PLL" ];
 then
-	"\$PG_BIN_PATH/psql.bin" "\$@"
+	LD_LIBRARY_PATH=\$PG_BIN_PATH/../lib "\$PG_BIN_PATH/psql.bin" "\$@"
 else
-	LD_PRELOAD=\$PLL "\$PG_BIN_PATH/psql.bin" "\$@"
+	LD_LIBRARY_PATH=\$PG_BIN_PATH/../lib LD_PRELOAD=\$PLL "\$PG_BIN_PATH/psql.bin" "\$@"
 fi
 
 EOT

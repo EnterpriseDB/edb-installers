@@ -210,7 +210,11 @@ _build_server_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libjpeg.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libsasl2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libsasl2)"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libldap_r-2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libldap_r-2.3)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libldap-2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libldap-2.3)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libldap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libldap)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libldap_r.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libldap_r)"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/liblber-2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (liblber-2.3)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/liblber.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (liblber-2.3)"
 
     # Process Dependent libs
     _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl.so"  
@@ -219,6 +223,10 @@ _build_server_linux_x64() {
     _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libtermcap.so"  
     _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libxml2.so"  
     _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libxslt.so"  
+    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libsasl2.so"
+    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap-2.3.so"
+    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap_r-2.3.so"
+    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "liblber-2.3.so"
 
     # Hack for bypassing dependency on the deprecated libtermcap
     # As libnucurses is API compatible with the termcap so we copy libtermcap and then just
@@ -252,9 +260,9 @@ PG_BIN_PATH=\`dirname \$0\`
 
 if [ -z "\$PLL" ];
 then
-	"\$PG_BIN_PATH/psql.bin" "\$@"
+	LD_LIBRARY_PATH=\$PG_BIN_PATH/../lib:\$LD_LIBRARY_PATH "\$PG_BIN_PATH/psql.bin" "\$@"
 else
-	LD_PRELOAD=\$PLL "\$PG_BIN_PATH/psql.bin" "\$@"
+	LD_LIBRARY_PATH=\$PG_BIN_PATH/../lib:\$LD_LIBRARY_PATH LD_PRELOAD=\$PLL "\$PG_BIN_PATH/psql.bin" "\$@"
 fi
 
 EOT
