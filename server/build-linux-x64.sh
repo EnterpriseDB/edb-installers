@@ -251,9 +251,17 @@ if [ -f /lib64/libreadline.so.6 ];
 then
     PLL=/lib64/libreadline.so.6
 fi
+if [ -f /lib64/libreadline.so.5 ];
+then
+    PLL=\$PLL:/lib64/libreadline.so.5
+fi
 if [ -f /lib/libreadline.so.6 ];
 then
     PLL=\$PLL:/lib/libreadline.so.6
+fi
+if [ -f /lib/libreadline.so.5 ];
+then
+    PLL=\$PLL:/lib/libreadline.so.5
 fi
 # Get the PG bin directory path relative to psql caller script.
 PG_BIN_PATH=\`dirname \$0\`
@@ -262,7 +270,7 @@ if [ -z "\$PLL" ];
 then
 	LD_LIBRARY_PATH=\$PG_BIN_PATH/../lib:\$LD_LIBRARY_PATH "\$PG_BIN_PATH/psql.bin" "\$@"
 else
-	LD_LIBRARY_PATH=\$PG_BIN_PATH/../lib:\$LD_LIBRARY_PATH LD_PRELOAD=\$PLL "\$PG_BIN_PATH/psql.bin" "\$@"
+	LD_PRELOAD=\$PLL LD_LIBRARY_PATH=\$PG_BIN_PATH/../lib:\$LD_LIBRARY_PATH "\$PG_BIN_PATH/psql.bin" "\$@"
 fi
 
 EOT
