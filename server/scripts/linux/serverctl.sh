@@ -53,9 +53,9 @@ if  [ "$action" = "reload" ];
 then
     if [ $USE_SUDO != "1" ];
     then
-        su - -c 'su - PG_OSUSERNAME -c """PG_INSTALLDIR/bin/pg_ctl"" -D ""PG_DATADIR"" reload"'
+        su - -c 'su - PG_OSUSERNAME -c "LD_LIBRARY_PATH=PG_INSTALLDIR/lib ""PG_INSTALLDIR/bin/pg_ctl"" -D ""PG_DATADIR"" reload"'
     else
-        sudo su - PG_OSUSERNAME -c """PG_INSTALLDIR/bin/pg_ctl"" -D ""PG_DATADIR"" reload"
+        sudo su - PG_OSUSERNAME -c "LD_LIBRARY_PATH=PG_INSTALLDIR/lib ""PG_INSTALLDIR/bin/pg_ctl"" -D ""PG_DATADIR"" reload"
     fi
 else
     if [ $USE_SUDO != "1" ];
