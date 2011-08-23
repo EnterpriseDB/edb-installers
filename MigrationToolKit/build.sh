@@ -27,16 +27,16 @@ then
 fi
     
 # Solaris x64
-if [ $PG_ARCH_SOLARIS_X64 = 1 ];
-then
-    source $WD/MigrationToolKit/build-solaris-x64.sh
-fi
-    
-# Solaris sparc
-if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
-then
-    source $WD/MigrationToolKit/build-solaris-sparc.sh
-fi
+#if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+#then
+#    source $WD/MigrationToolKit/build-solaris-x64.sh
+#fi
+#    
+## Solaris sparc
+#if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
+#then
+#    source $WD/MigrationToolKit/build-solaris-sparc.sh
+#fi
 
 ################################################################################
 # Build preparation
@@ -115,16 +115,16 @@ _prep_MigrationToolKit() {
     fi
     
     # Solaris x64
-    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
-    then
-        _prep_MigrationToolKit_solaris_x64 || exit 1
-    fi
-    
-    # Solaris sparc
-    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
-    then
-        _prep_MigrationToolKit_solaris_sparc || exit 1
-    fi
+#    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+#    then
+#        _prep_MigrationToolKit_solaris_x64 || exit 1
+#    fi
+#    
+#    # Solaris sparc
+#    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
+#    then
+#        _prep_MigrationToolKit_solaris_sparc || exit 1
+#    fi
 
 }
 
@@ -159,16 +159,16 @@ _build_MigrationToolKit() {
     fi
 
     # Solaris x64
-    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
-    then
-        _build_MigrationToolKit_solaris_x64 || exit 1
-    fi
-
-    # Solaris sparc
-    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
-    then
-        _build_MigrationToolKit_solaris_sparc || exit 1
-    fi
+#    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+#    then
+#        _build_MigrationToolKit_solaris_x64 || exit 1
+#    fi
+#
+#    # Solaris sparc
+#    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
+#    then
+#        _build_MigrationToolKit_solaris_sparc || exit 1
+#    fi
 
 }
 
@@ -221,15 +221,15 @@ _postprocess_MigrationToolKit() {
     fi
 
     # Solaris x64
-    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
-    then
-        _postprocess_MigrationToolKit_solaris_x64 || exit 1
-    fi
-
-    # Solaris sparc
-    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
-    then
-        _postprocess_MigrationToolKit_solaris_sparc || exit 1
-    fi
+#    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+#    then
+#        _postprocess_MigrationToolKit_solaris_x64 || exit 1
+#    fi
+#
+#    # Solaris sparc
+#    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
+#    then
+#        _postprocess_MigrationToolKit_solaris_sparc || exit 1
+#    fi
     
 }
