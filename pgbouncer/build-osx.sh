@@ -59,25 +59,25 @@ _build_pgbouncer_osx() {
 
     cd $PG_PATH_OSX/pgbouncer/source/pgbouncer.osx/; 
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" LDFLAGS="-arch ppc" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
-    mv lib/usual/config.h lib/usual/config_ppc.h || _die "Failed to rename config.h"
+    mv include/config.h include/config_ppc.h || _die "Failed to rename config.h"
     
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-arch i386" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
-    mv lib/usual/config.h lib/usual/config_i386.h || _die "Failed to rename config.h"
+    mv include/config.h include/config_i386.h || _die "Failed to rename config.h"
 
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
-    mv lib/usual/config.h lib/usual/config_x86_64.h || _die "Failed to rename config.h"
+    mv include/config.h include/config_x86_64.h || _die "Failed to rename config.h"
 
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc -arch x86_64" LDFLAGS="-arch i386 -arch ppc -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
 
-    echo "#ifdef __BIG_ENDIAN__" > lib/usual/config.h
-    echo "  #include \"config_ppc.h\"" >> lib/usual/config.h
-    echo "#else" >> lib/usual/config.h
-    echo "  #ifdef __LP64__" >> lib/usual/config.h
-    echo "    #include \"config_x86_64.h\"" >> lib/usual/config.h
-    echo "  #else" >> lib/usual/config.h
-    echo "    #include \"config_i386.h\"" >> lib/usual/config.h
-    echo "  #endif" >> lib/usual/config.h
-    echo "#endif" >> lib/usual/config.h
+    echo "#ifdef __BIG_ENDIAN__" > include/config.h
+    echo "  #include \"config_ppc.h\"" >> include/config.h
+    echo "#else" >> include/config.h
+    echo "  #ifdef __LP64__" >> include/config.h
+    echo "    #include \"config_x86_64.h\"" >> include/config.h
+    echo "  #else" >> include/config.h
+    echo "    #include \"config_i386.h\"" >> include/config.h
+    echo "  #endif" >> include/config.h
+    echo "#endif" >> include/config.h
     
     MACOSX_DEPLOYMENT_TARGET=10.5 make || _die "Failed to build pgbouncer"
     make install || _die "Failed to install pgbouncer"

@@ -64,7 +64,7 @@ _build_Slony_osx() {
     cp $PG_PGHOME_OSX/lib/libpq*dylib .
 
     CONFIG_FILES="config"
-    ARCHS="i386 x86_64"
+    ARCHS="i386 ppc x86_64"
     ARCH_FLAGS=""
     for ARCH in ${ARCHS}
     do
@@ -91,7 +91,11 @@ _build_Slony_osx() {
         rm -f "${HEADER_FILE}"
         cat <<EOT > "${HEADER_FILE}"
 #ifdef __BIG_ENDIAN__
-  #error "${CONFIG_BASENAME}: Does not have support for ppc architecture"
+ #ifdef __LP64__
+  #error "${CONFIG_BASENAME}: Does not have support for ppc64 architecture"
+ #else
+  #include "${CONFIG_BASENAME}_ppc.h"
+ #endif
 #else
  #ifdef __LP64__
   #include "${CONFIG_BASENAME}_x86_64.h"

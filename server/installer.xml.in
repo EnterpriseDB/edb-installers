@@ -3809,6 +3809,7 @@ REM The script sets environment variables helpful for PostgreSQL
                 <isFalse value="${disableStackBuilder}"/>
                 <isFalse value="${extract_mode}"/>
 		<compareText logic="equals" text="${installer_ui}" value="gui" />
+		<isTrue value="${showLaunchStackBuilderOption}" />
             </ruleList>
         </runProgram>
 
@@ -3830,6 +3831,7 @@ REM The script sets environment variables helpful for PostgreSQL
                 <isFalse value="${disableStackBuilder}"/>
                 <isFalse value="${extract_mode}"/>
 		<compareText logic="equals" text="${installer_ui}" value="gui" />
+		<isTrue value="${showLaunchStackBuilderOption}" />
             </ruleList>
         </runProgram>
 
@@ -3845,6 +3847,7 @@ REM The script sets environment variables helpful for PostgreSQL
                 <isFalse value="${disableStackBuilder}"/>
                 <isFalse value="${extract_mode}"/>
 		<compareText logic="equals" text="${installer_ui}" value="gui" />
+		<isTrue value="${showLaunchStackBuilderOption}" />
             </ruleList>
         </runProgram>
 
@@ -4650,6 +4653,7 @@ REM The script sets environment variables helpful for PostgreSQL
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <booleanParameter name="disableStackBuilder" cliOptionName="disable-stackbuilder" default="${iDisableStackBuilder}" ask="0" cliOptionShow="0"/>
+        <booleanParameter name="showLaunchStackBuilderOption" cliOptionName="launch-stackbuilder" default="1" ask="0" cliOptionShow="0"/>
 
         <stringParameter name="superaccount" ask="1" cliOptionShow="1" cliOptionName="superaccount" default="postgres"
             description="${msg(superaccount.description)}" />

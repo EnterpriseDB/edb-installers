@@ -121,8 +121,8 @@ if EXIST "$PG_PATH_WINDOWS\apache.windows\srclib\zlib\zlib.lib" copy "$PG_PATH_W
 
 REM Building openssl
 cd $PG_PATH_WINDOWS\apache.windows\srclib\openssl
-SET LIB=$PG_PATH_WINDOWS\apache.windows\srclib\zlib;C:\pgBuild\OpenSSL\lib;%LIB%
-SET INCLUDE=$PG_PATH_WINDOWS\apache.windows\srclib\zlib;C:\pgBuild\OpenSSL\include;%INCLUDE%
+SET LIB=$PG_PATH_WINDOWS\apache.windows\srclib\zlib;%LIB%
+SET INCLUDE=$PG_PATH_WINDOWS\apache.windows\srclib\zlib;%INCLUDE%
 SET PATH=$PG_PATH_WINDOWS;C:\pgBuild\gawk\bin;%PATH%
 
 perl Configure no-mdc2 no-rc5 no-idea enable-zlib VC-WIN32
@@ -204,7 +204,7 @@ IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 
 @ECHO Configure PHP
 @REM  --disable-ipv6 --enable-fd-setsize
-@cscript /nologo configure.js --enable-snapshot-build --enable-cli --enable-cgi  --with-openssl --enable-pdo --with-extra-includes=%PHPBUILD%\include;%PHPBUILD%\include\freetype;%PHPBUILD%\include\libpng12;%PHPBUILD%\include\openssl;%PHPBUILD%\include\c-client;%PHPBUILD%\include\curl;%PHPBUILD%\include\glib-2.0;%PHPBUILD%\include\layout;%PHPBUILD%\include\libexslt;%PHPBUILD%\include\libssh2;%PHPBUILD%\include\libxml;%PHPBUILD%\include\libxslt;%PHPBUILD%\include\mpir;%PHPBUILD%\include\mutils;%PHPBUILD%\include\net-snmp;%PHPBUILD%\include\openldap;%APACHE_STAGING%\include;%PG_HOME_PATH%\include --with-extra-libs=%PHPBUILD%\lib;%APACHE_STAGING%\lib;%PG_HOME_PATH%\lib --enable-apache=yes --with-apache-includes=%APACHE_STAGING%\include --with-apache-libs=%APACHE_STAGING%\lib --enable-apache2filter --enable-apache2-2filter --enable-apache2handler --enable-apache2-2handler --with-apache-hooks --with-pgsql --with-pdo-pgsql --with-prefix=%PHP_STAGING% --enable-one-shot --enable-zend-multibyte=yes --enable-cli-win32 --enable-embed --enable-isapi --enable-ftp --without-mysql --without-mysqli --without-pdo-mysql --without-sqlite --without-pdo-sqlite --without-pdo-sqlite-external --with-xsl=SHARED  --enable-mbstring --enable-mbregex --enable-shmop  --enable-exif --enable-soap --enable-sockets --with-php-build --with-gd=SHARED
+@cscript /nologo configure.js --enable-snapshot-build --enable-cli --enable-cgi  --with-openssl --enable-pdo --with-extra-includes=%PHPBUILD%\include;%PHPBUILD%\include\freetype;%PHPBUILD%\include\libpng12;%PHPBUILD%\include\openssl;%PHPBUILD%\include\c-client;%PHPBUILD%\include\curl;%PHPBUILD%\include\glib-2.0;%PHPBUILD%\include\layout;%PHPBUILD%\include\libexslt;%PHPBUILD%\include\libssh2;%PHPBUILD%\include\libxml;%PHPBUILD%\include\libxslt;%PHPBUILD%\include\mpir;%PHPBUILD%\include\mutils;%PHPBUILD%\include\net-snmp;%PHPBUILD%\include\openldap;%APACHE_STAGING%\include;%PG_HOME_PATH%\include --with-extra-libs=%PHPBUILD%\lib;%APACHE_STAGING%\lib;%PG_HOME_PATH%\lib --enable-apache=yes --with-apache-includes=%APACHE_STAGING%\include --with-apache-libs=%APACHE_STAGING%\lib --enable-apache2filter --enable-apache2-2filter --enable-apache2handler --enable-apache2-2handler --with-apache-hooks --with-pgsql --with-pdo-pgsql --enable-prefix=%PHP_STAGING% --enable-one-shot --enable-zend-multibyte=yes --enable-cli-win32 --enable-embed --enable-isapi --enable-ftp --without-mysql --without-mysqli --without-pdo-mysql --without-sqlite --without-pdo-sqlite --without-pdo-sqlite-external --with-xsl=SHARED  --enable-mbstring --enable-mbregex --enable-shmop  --enable-exif --enable-soap --enable-sockets --with-php-build --with-gd=SHARED
 
 @IF NOT EXIST "Makefile" @GOTO make-not-created
 @REM Some extension fails with error 'LNK1169: one or more multiply defined symbols'
