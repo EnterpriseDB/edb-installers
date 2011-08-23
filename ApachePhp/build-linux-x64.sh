@@ -108,6 +108,8 @@ _build_ApachePhp_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libk5crypto.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libpq.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libldap* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/liblber* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libpng12.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libjpeg.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library"
