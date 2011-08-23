@@ -50,7 +50,7 @@ _prep_phpBB() {
 
     echo "Unpacking PhpBB source..."
     extract_file  ../../tarballs/phpBB-$PG_VERSION_PHPBB || exit 1
-
+    mv phpBB3 phpBB-$PG_VERSION_PHPBB
     # Per-platform prep
     cd $WD
     
