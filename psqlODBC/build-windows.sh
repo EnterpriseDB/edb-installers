@@ -15,6 +15,11 @@ _prep_psqlODBC_windows() {
       echo "Removing existing psqlODBC.windows source directory"
       rm -rf psqlODBC.windows  || _die "Couldn't remove the existing psqlODBC.windows source directory (source/psqlODBC.windows)"
     fi
+    if [ -e psqlODBC.zip ];
+    then
+      echo "Removing existing psqlODBC.zip source file"
+      rm -f psqlODBC.zip  || _die "Couldn't remove the existing psqlODBC.zip source file (source/psqlODBC.zip)"
+    fi
    
     echo "Creating source directory ($WD/psqlODBC/source/psqlODBC.windows)"
     mkdir -p $WD/psqlODBC/source/psqlODBC.windows || _die "Couldn't create the psqlODBC.windows directory"
@@ -124,11 +129,19 @@ _postprocess_psqlODBC_windows() {
     mkdir -p staging/windows/scripts/images || _die "Failed to create directory for menu images"
     cp resources/*.ico staging/windows/scripts/images || _die "Failed to copy menu icon image"
 
-    # Build the installer
-    "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
+    if [ -f installer-win.xml ]; then
+        rm -f installer-win.xml
+    fi
+    cp installer.xml installer-win.xml
+    
+    _replace @@WIN64MODE@@ "0" installer-win.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
+    _replace @@WINDIR@@ windows installer-win.xml || _die "Failed to replace the WINDIR setting in the installer.xml"
 
-	# Sign the installer
-	win32_sign "psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-windows.exe"
+    # Build the installer
+    "$PG_INSTALLBUILDER_BIN" build installer-win.xml windows || _die "Failed to build the installer"
+
+    # Sign the installer
+    win32_sign "psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-windows.exe"
 	
     cd $WD
 
