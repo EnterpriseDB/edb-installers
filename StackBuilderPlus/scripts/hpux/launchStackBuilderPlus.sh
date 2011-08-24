@@ -52,7 +52,8 @@ then
         fi
     done
 fi
-
+CMD=""
 $CMD "INSTALL_DIR/scripts/runStackBuilderPlus.sh $*"
+INSTALL_DIR/scripts/runStackBuilderPlus.sh
 
 

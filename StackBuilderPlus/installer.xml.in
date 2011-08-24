@@ -145,6 +145,9 @@
         <setInstallerVariable name="createUninstaller" value="0" persist="1"/>
         <componentSelection>
           <select>updatemanager</select>
+	  <ruleList>
+	    <compareText logic="does_not_contain" text="${platform_name}" value="hpux"/>
+	  </ruleList>
         </componentSelection>
       </actionList>
       <ruleList>
@@ -416,7 +419,7 @@
             <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
           </ruleList>
         </actionGroup>
-	<actionGroup>
+	<!--<actionGroup>
           <actionList>
             <runProgram program="kill">
                <programArguments>-9 `ps ax | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
@@ -428,7 +431,7 @@
             <compareText logic="contains" text="${platform_name}" value="hpux"/>
             <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
           </ruleList>
-        </actionGroup>
+        </actionGroup>-->
         <actionGroup>
           <actionList>
             <runProgram program="kill">
@@ -467,6 +470,7 @@
                 </ruleList>
             </ruleGroup>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	    <compareText logic="does_not_equal" text="${platform_name}" value="hpux"/>
           </ruleList>
         </componentSelection>
         <componentSelection>
@@ -552,6 +556,7 @@
           </substitutionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	    <compareText logic="does_not_equal" text="${platform_name}" value="hpux"/>
           </ruleList>
         </substitute>
     
@@ -602,6 +607,26 @@
               </substitutionList>
                 <ruleList>
 		  <compareText logic="contains" text="${platform_name}" value="hpux"/>
+                </ruleList>
+            </substitute>
+	    <!--Following substitution for linux is done in createshortcuts.sh script which is not in HPUX, that is why it is done only for HPUX here -->
+            <substitute>
+              <files>${installdir}/scripts/launchStackBuilderPlus.sh</files>
+              <substitutionList>
+                <substitution pattern="INSTALL_DIR" value="${installdir}"/>
+              </substitutionList>
+                <ruleList>
+                  <compareText logic="contains" text="${platform_name}" value="hpux"/>
+                </ruleList>
+            </substitute>
+	    <!--Following substitution for linux is done in createshortcuts.sh script which is not in HPUX, that is why it is done only for HPUX here -->
+            <substitute>
+              <files>${installdir}/scripts/runStackBuilderPlus.sh</files>
+              <substitutionList>
+                <substitution pattern="INSTALL_DIR" value="${installdir}"/>
+              </substitutionList>
+                <ruleList>
+                  <compareText logic="contains" text="${platform_name}" value="hpux"/>
                 </ruleList>
             </substitute> 
             <!-- Create shourtcuts for linux/linux-x64/osx -->
@@ -753,7 +778,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
               </ruleList>
             </actionGroup>
 	    <!-- Add SBP UM launch script to gnome/default.session for autostart on user login -->
-            <actionGroup>
+            <!--<actionGroup>
               <actionList>
                  <readFile path="/usr/share/gnome/default.session" name="conf_file" />
                  <setInstallerVariableFromRegEx>
@@ -761,9 +786,9 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
                     <text>${conf_file}</text>
                     <pattern>^.*num_clients\s*=\s*([\d]+)\s*.*$</pattern>
                     <substitution>\1</substitution>
-                 </setInstallerVariableFromRegEx>
+                 </setInstallerVariableFromRegEx>-->
                  <!-- Make it available in the uninstaller as well --> 
-                 <setInstallerVariable name="num_client" value="${num_client}" persist="1" />
+                 <!--<setInstallerVariable name="num_client" value="${num_client}" persist="1" />
 
                  <mathExpression text="${num_client} + 1" variable="new_num_client" >
                     <ruleList>
@@ -791,7 +816,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
                 <compareText text="${platform_name}" logic="contains" value="hpux"/>
                 <compareText text="${iSBPVersion}" logic="equals" value=""/>
               </ruleList>
-            </actionGroup>
+            </actionGroup>-->
           </actionList>
           <ruleList>
             <isTrue value="${component(updatemanager).selected}"/> 
@@ -809,7 +834,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
             <fileExists path="${installdir}/scripts/launchSBPUpdateMonitor.sh" />
           </ruleList>
        </runProgram>
-       <runProgram program="${installdir}/scripts/launchSBPUpdateMonitor.sh"
+       <!--<runProgram program="${installdir}/scripts/launchSBPUpdateMonitor.sh"
                     programArguments=""
                     runAs="${system_user}"
                     showMessageOnError="0"
@@ -818,7 +843,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
             <compareText text="${platform_name}" logic="contains" value="hpux"/>
             <fileExists path="${installdir}/scripts/launchSBPUpdateMonitor.sh" />
           </ruleList>
-       </runProgram>
+       </runProgram>-->
        <runProgram program="${installdir}/scripts/launchSBPUpdateMonitor.sh"
                     programArguments=""
                     runAs="${system_user}"
@@ -882,6 +907,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
           </substitutionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	    <compareText logic="does_not_equal" text="${platform_name}" value="hpux"/>
           </ruleList>
         </substitute>
       </actionList>
@@ -954,7 +980,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
       </ruleList>
     </actionGroup>
 
-    <actionGroup>
+   <!-- <actionGroup>
       <actionList>
         <runProgram program="kill">
            <programArguments>-9 `ps ax | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
@@ -965,7 +991,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="hpux"/>
       </ruleList>
-    </actionGroup>
+    </actionGroup>-->
 
     <actionGroup>
       <actionList>
@@ -1105,7 +1131,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
        </ruleList>
     </actionGroup>
 
-    <actionGroup>
+    <!--<actionGroup>
       <actionList>
           <setInstallerVariableFromRegEx>
              <name>current_num_client</name>
@@ -1139,7 +1165,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
          <regExMatch text="${conf_file}" pattern="${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &amp;" />
          <compareText logic="contains" text="${platform_name}" value="hpux"/>
        </ruleList>
-    </actionGroup>
+    </actionGroup>-->
     <!-- MAC: Remove Stack Builder Plus shortcut -->
     <deleteFile path="/Applications/${branding}/StackBuilder Plus.app">
       <ruleList>
@@ -1281,13 +1307,13 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
           </distributionFileList>
         </folder>
 	<!-- HPUX- Program files -->
-        <folder description="Program Files" destination="${installdir}" name="updatemanagerfileshpux" platforms="hpux">
+        <!--<folder description="Program Files" destination="${installdir}" name="updatemanagerfileshpux" platforms="hpux">
           <distributionFileList>
             <distributionDirectory origin="staging/hpux/UpdateManager/bin"/>
             <distributionDirectory origin="staging/hpux/UpdateManager/lib"/>
             <distributionDirectory origin="staging/hpux/UpdateManager/scripts"/>
           </distributionFileList>
-        </folder>
+        </folder>-->
         <!-- SOLARIS-X64 - Program files -->
         <folder description="Program Files" destination="${installdir}" name="updatemanagerfilessolaris-x64" platforms="solaris-intel">
           <distributionFileList>
