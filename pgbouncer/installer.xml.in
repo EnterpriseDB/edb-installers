@@ -1130,6 +1130,25 @@
                          <isFalse value="${autostart}"/>
                      </ruleList>
                 </actionGroup>
+		<!-- Solaris: Disable pgbouncer Service if autostart is no -->
+		<actionGroup>
+                  <actionList>
+                    <runProgram>
+                      <program>svcadm</program>
+                      <programArguments>-v disable svc:/application/pgbouncer-PGBOUNCER_SERVICE_VER:default</programArguments>
+                      <abortOnError>0</abortOnError>
+                      <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+                    </runProgram>
+                  </actionList>
+                  <ruleList>
+                    <compareText>
+                      <logic>contains</logic>
+                      <text>${platform_name}</text>
+                      <value>solaris</value>
+                    </compareText>
+		    <isFalse value="${autostart}"/>
+                  </ruleList>
+                </actionGroup>
 		<!-- HPUX : Disable pgbouncer Service if autostart is no-->
                 <actionGroup>
                   <actionList>
