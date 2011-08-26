@@ -44,13 +44,15 @@ _build_pgphonehome_linux() {
     
     cd $WD
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; mkdir -p pgphonehome/staging/linux/instscripts" || _die "Failed to create instscripts directory"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/bin/psql pgphonehome/staging/linux/instscripts" || _die "Failed to copy psql binary"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/bin/psql* pgphonehome/staging/linux/instscripts" || _die "Failed to copy psql binary"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libpq.so* pgphonehome/staging/linux/instscripts" || _die "Failed to copy libpq.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libcrypto.so* pgphonehome/staging/linux/instscripts" || _die "Failed to copy libcrypto.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libssl.so* pgphonehome/staging/linux/instscripts" || _die "Failed to copy libssl.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libedit.so* pgphonehome/staging/linux/instscripts" || _die "Failed to copy libedit.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libtermcap.so* pgphonehome/staging/linux/instscripts" || _die "Failed to copy libtermcap.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libxml2.so* pgphonehome/staging/linux/instscripts" || _die "Failed to copy libxml2.so"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libldap*.so* pgphonehome/staging/linux/instscripts" || _die "Failed to copy libldap*.so"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/liblber*.so* pgphonehome/staging/linux/instscripts" || _die "Failed to copy liblber*.so"
 
 }
 

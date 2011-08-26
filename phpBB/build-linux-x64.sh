@@ -51,6 +51,9 @@ _build_phpBB_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libedit.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libedit.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libtermcap.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libtermcap.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxml2.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libxml2.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxslt.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libxslt.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libldap*2.3.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libldap.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/liblber*2.3.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy liblber.so"
 
 }
 

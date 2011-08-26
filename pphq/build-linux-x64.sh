@@ -55,6 +55,9 @@ _build_pphq_linux_x64() {
     cp $SERVER_STAGING/lib/libcrypto.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
     cp $SERVER_STAGING/lib/libtermcap.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
     cp $SERVER_STAGING/lib/libxml2.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
+    cp $SERVER_STAGING/lib/libxslt.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
+    cp $SERVER_STAGING/lib/libldap*.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
+    cp $SERVER_STAGING/lib/liblber*.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
     cp $SERVER_STAGING/lib/libedit.so* $PPHQ_STAGING/instscripts/lib/ || _die "Failed to copy the dependency library"
 
     echo "Copying JRE to staging directory"

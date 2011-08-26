@@ -44,7 +44,7 @@ _build_Drupal_linux() {
 
     cd $WD
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; mkdir -p Drupal/staging/linux/instscripts" || _die "Failed to create instscripts directory"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/bin/psql Drupal/staging/linux/instscripts" || _die "Failed to copy psql binary"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/bin/psql* Drupal/staging/linux/instscripts" || _die "Failed to copy psql binary"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libpq.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libpq.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libcrypto.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libcrypto.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libssl.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libssl.so"
@@ -52,6 +52,8 @@ _build_Drupal_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libtermcap.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libtermcap.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libxml2.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libxml2.so"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libxslt.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libxslt.so"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libldap*.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libxml2.so"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/liblber*.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libxslt.so"
 
 }
 

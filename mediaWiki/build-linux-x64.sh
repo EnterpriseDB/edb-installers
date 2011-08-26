@@ -7,6 +7,10 @@
 
 _prep_mediaWiki_linux_x64() {
 
+    echo "*******************************************************"
+    echo " Pre Process : MediaWiki (LIN-X64)"
+    echo "*******************************************************"
+
     # Enter the source directory and cleanup if required
     cd $WD/mediaWiki/source
     
@@ -42,16 +46,22 @@ _prep_mediaWiki_linux_x64() {
 
 _build_mediaWiki_linux_x64() {
 
+    echo "*******************************************************"
+    echo " Build : MediaWiki (LIN-X64)"
+    echo "*******************************************************"
+
     cd $WD
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; mkdir -p mediaWiki/staging/linux-x64/instscripts" || _die "Failed to create instscripts directory"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/bin/psql mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy psql binary"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libpq.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libpq.so"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libcrypto.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libcrypto.so"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libssl.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libssl.so"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libedit.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libedit.so"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libtermcap.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libtermcap.so"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxml2.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libxml2.so"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxslt.so* mediaWiki/staging/linux-x64/instscripts" || _die "Failed to copy libxslt.so"
+    mkdir -p mediaWiki/staging/linux-x64/instscripts || _die "Failed to create instscripts directory"
+    cp server/staging/linux-x64/bin/psql* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy psql binary"
+    cp server/staging/linux-x64/lib/libpq.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libpq.so"
+    cp server/staging/linux-x64/lib/libcrypto.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libcrypto.so"
+    cp server/staging/linux-x64/lib/libssl.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libssl.so"
+    cp server/staging/linux-x64/lib/libedit.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libedit.so"
+    cp server/staging/linux-x64/lib/libtermcap.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libtermcap.so"
+    cp server/staging/linux-x64/lib/libxml2.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libxml2.so"
+    cp server/staging/linux-x64/lib/libxslt.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libxslt.so"
+    cp server/staging/linux-x64/lib/libldap*2.3.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libldap*.so"
+    cp server/staging/linux-x64/lib/liblber*2.3.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy liblber*.so"
 
 }
 
@@ -62,6 +72,9 @@ _build_mediaWiki_linux_x64() {
 
 _postprocess_mediaWiki_linux_x64() {
 
+    echo "*******************************************************"
+    echo " Post Process : MediaWiki (LIN-X64)"
+    echo "*******************************************************"
 
     cp -R $WD/mediaWiki/source/mediaWiki.linux-x64/* $WD/mediaWiki/staging/linux-x64/mediaWiki || _die "Failed to copy the mediaWiki Source into the staging directory"
 

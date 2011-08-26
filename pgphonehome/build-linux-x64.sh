@@ -43,13 +43,16 @@ _prep_pgphonehome_linux_x64() {
 _build_pgphonehome_linux_x64() {
     
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; mkdir -p pgphonehome/staging/linux-x64/instscripts" || _die "Failed to create instscripts directory"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/bin/psql pgphonehome/staging/linux-x64/instscripts" || _die "Failed to copy psql binary"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/bin/psql* pgphonehome/staging/linux-x64/instscripts" || _die "Failed to copy psql binary"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libpq.so* pgphonehome/staging/linux-x64/instscripts" || _die "Failed to copy libpq.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libcrypto.so* pgphonehome/staging/linux-x64/instscripts" || _die "Failed to copy libcrypto.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libssl.so* pgphonehome/staging/linux-x64/instscripts" || _die "Failed to copy libssl.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libedit.so* pgphonehome/staging/linux-x64/instscripts" || _die "Failed to copy libedit.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libtermcap.so* pgphonehome/staging/linux-x64/instscripts" || _die "Failed to copy libtermcap.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxml2.so* pgphonehome/staging/linux-x64/instscripts" || _die "Failed to copy libxml2.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxslt.so* pgphonehome/staging/linux-x64/instscripts" || _die "Failed to copy libxslt.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libldap*2.3.so* pgphonehome/staging/linux-x64/instscripts" || _die "Failed to copy libldap*.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/liblber*2.3.so* pgphonehome/staging/linux-x64/instscripts" || _die "Failed to copy liblber*.so"
 
 }
 

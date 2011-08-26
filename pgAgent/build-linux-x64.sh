@@ -79,6 +79,8 @@ _build_pgAgent_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libk5crypto)"
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libtermcap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libtermcap)"
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libpq.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libpq)"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/liblber*2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (liblber)"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libldap*2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libldap)"
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/bin/psql $PG_STAGING/bin" || _die "Failed to copy psql"
     ssh $PG_SSH_LINUX_X64 "chmod +rx $PG_STAGING/bin" || _die "Failed to set permissions"
     ssh $PG_SSH_LINUX_X64 "chmod +r $PG_STAGING/lib" || _die "Failed to set permissions"
