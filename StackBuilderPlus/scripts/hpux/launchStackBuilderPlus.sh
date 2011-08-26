@@ -53,7 +53,7 @@ then
     done
 fi
 CMD=""
-$CMD "INSTALL_DIR/scripts/runStackBuilderPlus.sh $*"
+#$CMD "INSTALL_DIR/scripts/runStackBuilderPlus.sh $*"
 INSTALL_DIR/scripts/runStackBuilderPlus.sh
 
 
