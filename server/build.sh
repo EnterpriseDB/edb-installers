@@ -80,7 +80,13 @@ _prep_server() {
         patch -p1 < $WD/tarballs/pg${PG_TARBALL_POSTGRESQL}_python.patch
         cd ..
     else
-        _warn "Could not find the pg${PG_TARBALL_PGADMIN}_python.patch"
+        _warn "Could not find the pg${PG_TARBALL_POSTGRESQL}_python.patch"
+    fi
+
+    if [ -f $WD/tarballs/pg-ldap-liblber.patch ]; then
+        cd postgresql-$PG_TARBALL_POSTGRESQL
+        patch -p1 < $WD/tarballs/pg-ldap-liblber.patch
+        cd ..
     fi
 
     # pgAdmin
