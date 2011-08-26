@@ -1043,10 +1043,10 @@
 
                 <substitute>
                     <files>
-                           ${sharedir}/contrib/postgis.sql
-                           ${sharedir}/contrib/postgis_upgrade_13_to_15.sql
-                           ${sharedir}/contrib/postgis_upgrade_14_to_15.sql
-                           ${sharedir}/contrib/postgis_upgrade_15_minor.sql
+                           ${sharedir}/contrib/postgis-${PostGISMajorVersion}/postgis.sql
+                           ${sharedir}/contrib/postgis-${PostGISMajorVersion}/postgis_upgrade_13_to_15.sql
+                           ${sharedir}/contrib/postgis-${PostGISMajorVersion}/postgis_upgrade_14_to_15.sql
+                           ${sharedir}/contrib/postgis-${PostGISMajorVersion}/postgis_upgrade_15_minor.sql
                     </files>
                     <substitutionList>
                         <substitution>
@@ -1074,10 +1074,10 @@
 
                         <substitute>
                            <files>
-                                  ${installdir}\share\contrib\postgis.sql
-                                  ${installdir}\share\contrib\postgis_upgrade_13_to_15.sql
-                                  ${installdir}\share\contrib\postgis_upgrade_14_to_15.sql
-                                  ${installdir}\share\contrib\postgis_upgrade_15_minor.sql
+                                  ${installdir}\share\contrib\postgis-${PostGISMajorVersion}\postgis.sql
+                                  ${installdir}\share\contrib\postgis-${PostGISMajorVersion}\postgis_upgrade_13_to_15.sql
+                                  ${installdir}\share\contrib\postgis-${PostGISMajorVersion}\postgis_upgrade_14_to_15.sql
+                                  ${installdir}\share\contrib\postgis-${PostGISMajorVersion}\postgis_upgrade_15_minor.sql
                            </files>
                            <substitutionList>
                               <substitution>
@@ -1123,12 +1123,12 @@
                               abortOnError="0" showMessageOnError="0"
                               workingDirectory="${installdir}/bin"/>
                         <runProgram program="${psql_executable}"
-                              programArguments="-f &quot;${sharedir}/contrib/postgis.sql&quot; -d template_postgis"
+                              programArguments="-f &quot;${sharedir}/contrib/postgis-${PostGISMajorVersion}/postgis.sql&quot; -d template_postgis"
                               progressText="${msg(progress.text.installing.postgis.sql)}"
                               abortOnError="0" showMessageOnError="1"
                               workingDirectory="${installdir}/bin"/>
                         <runProgram program="${psql_executable}"
-                              programArguments="-f &quot;${sharedir}/contrib/spatial_ref_sys.sql&quot; -d template_postgis"
+                              programArguments="-f &quot;${sharedir}/contrib/postgis-${PostGISMajorVersion}/spatial_ref_sys.sql&quot; -d template_postgis"
                               progressText="${msg(progress.text.installing.spatial.ref_sys)}"
                               abortOnError="0" showMessageOnError="1"
                               workingDirectory="${installdir}/bin"/>
@@ -1147,7 +1147,7 @@
                 <actionGroup>
                     <actionList>
 		        <runProgram program="${psql_executable}"
-                              programArguments="-f &quot;${sharedir}/contrib/postgis_comments.sql&quot; -d template_postgis"
+                              programArguments="-f &quot;${sharedir}/contrib/postgis-${PostGISMajorVersion}/postgis_comments.sql&quot; -d template_postgis"
                               progressText="${msg(progress.text.installing.postgis.comments)}"
                               abortOnError="0" showMessageOnError="1"
                               workingDirectory="${installdir}/bin"/>
