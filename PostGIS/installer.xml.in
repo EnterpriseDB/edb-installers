@@ -1147,7 +1147,7 @@
                 <actionGroup>
                     <actionList>
 		        <runProgram program="${psql_executable}"
-                              programArguments="-f &quot;${sharedir}/contrib/postgis_comments.sql&quot; -d template_postgis"
+                              programArguments="-f &quot;${sharedir}/contrib/postgis-${PostGISMajorVersion}/postgis_comments.sql&quot; -d template_postgis"
                               progressText="${msg(progress.text.installing.postgis.comments)}"
                               abortOnError="0" showMessageOnError="1"
                               workingDirectory="${installdir}/bin"/>
