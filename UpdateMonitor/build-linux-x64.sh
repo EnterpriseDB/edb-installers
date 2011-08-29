@@ -23,7 +23,7 @@ _prep_updatemonitor_linux_x64() {
     then
       echo "Removing existing GetLatestPGInstalled.linux-x64 source directory"
       rm -rf GetLatestPGInstalled.linux-x64  || _die "Couldn't remove the existing GetLatestPGInstalled.linux-x64 source directory (source/GetLatestPGInstalled.linux-x64)"
-    if
+    fi
    
     echo "Creating source directory ($WD/UpdateMonitor/source/updatemonitor.linux-x64)"
     mkdir -p $WD/UpdateMonitor/source/updatemonitor.linux-x64 || _die "Couldn't create the updatemonitor.linux-x64 directory"
