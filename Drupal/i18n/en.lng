@@ -47,4 +47,4 @@ Installer.Installation.Finished.Visit.Us=Please login on http://127.0.0.1:${apac
 run.update.php=Please finish the installation process after following steps after opening URL http://127.0.0.1:${apacheport}/Drupal/update.php in your browser.
 
 drupal.user.not.superuser=The user '${pguser}' does not have super-user privileges.\nPlease provide the details about the user, who has super-user privileges.
-
+error.drupal.invalid.version=An invalid version of Drupal already installed which this installation cannot upgrade.\nPlease uninstall the older version, remove the drupal database and try again.

@@ -1,7 +1,7 @@
 <project>
     <!-- Package details -->
-    <shortName>drupal</shortName>
-    <fullName>Drupal</fullName>
+    <shortName>drupal7</shortName>
+    <fullName>Drupal7</fullName>
     <version>PG_VERSION_DRUPAL-PG_BUILDNUM_DRUPAL</version>
     <!-- Windows Specific Options -->
     <startMenuGroupName>${branding}</startMenuGroupName>
@@ -127,20 +127,6 @@
                 </compareText>
             </ruleList>
         </touchFile>
-         <!-- Get the Branding -->
-         <iniFileGet>
-            <file>/etc/postgres-reg.ini</file>
-            <section>Drupal</section>
-            <key>Branding</key>
-            <variable>iBranding</variable>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </iniFileGet>
         <!-- LIN & MAC: Check Previous Installation of Drupal -->
         <iniFileGet>
             <file>/etc/postgres-reg.ini</file>
@@ -160,11 +146,65 @@
             <actionList>
                 <registryGet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Drupal</key>
+                    <name>Version</name>
+                    <variable>drupalVersion</variable>
+                </registryGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+	<!-- Error out if a drupal installation previous to version 7 exist  -->
+	<throwError>
+	    <text>${msg(error.drupal.invalid.version)}</text>
+	    <ruleList>
+		<compareText text="${drupalVersion}" logic="does_not_equal" value="" />
+	    </ruleList>
+	</throwError>
+
+        <!-- Get the Branding -->
+         <iniFileGet>
+            <file>/etc/postgres-reg.ini</file>
+            <section>Drupal7</section>
+            <key>Branding</key>
+            <variable>iBranding</variable>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </iniFileGet>
+        <!-- LIN & MAC: Check Previous Installation of Drupal -->
+        <iniFileGet>
+            <file>/etc/postgres-reg.ini</file>
+            <section>Drupal7</section>
+            <key>Version</key>
+            <variable>drupalVersion</variable>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </iniFileGet>
+        <!-- WIN: Check Previous Installation of Drupal -->
+        <actionGroup>
+            <actionList>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Drupal7</key>
                     <name>Branding</name>
                     <variable>iBranding</variable>
                 </registryGet>
                 <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Drupal</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Drupal7</key>
                     <name>Version</name>
                     <variable>drupalVersion</variable>
                 </registryGet>
@@ -870,25 +910,25 @@
             <actionList>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>Drupal</section>
+                    <section>Drupal7</section>
                     <key>Description</key>
                     <value>${msg(install.summary)}</value>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>Drupal</section>
+                    <section>Drupal7</section>
                     <key>InstallationDirectory</key>
                     <value>${installdir}/Drupal</value>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>Drupal</section>
+                    <section>Drupal7</section>
                     <key>Branding</key>
                     <value>${branding}</value>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>Drupal</section>
+                    <section>Drupal7</section>
                     <key>Version</key>
                     <value>${product_version}</value>
                 </iniFileSet>
@@ -1184,7 +1224,7 @@
            </ruleList>
         </startWindowsService>
         <registrySet>
-           <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Drupal</key>
+           <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Drupal7</key>
            <name>Branding</name>
            <value>${branding}</value>
            <ruleList>
@@ -1224,25 +1264,25 @@
             <actionList>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>Drupal</section>
+                    <section>Drupal7</section>
                     <key>Description</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>Drupal</section>
+                    <section>Drupal7</section>
                     <key>InstallationDirectory</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>Drupal</section>
+                    <section>Drupal7</section>
                     <key>Branding</key>
                     <value/>
                 </iniFileSet>
                 <iniFileSet>
                     <file>/etc/postgres-reg.ini</file>
-                    <section>Drupal</section>
+                    <section>Drupal7</section>
                     <key>Version</key>
                     <value/>
                 </iniFileSet>
