@@ -11,6 +11,41 @@ then
     exit 127
 fi
 
+# Generic mail variables
+mail_receipents="pginstaller@enterprisedb.com"
+log_location="/Users/buildfarm/pginstaller.auto/output"
+header_fail="Autobuild failed with the following error (last 20 lines of the log):
+###################################################################################"
+footer_fail="###################################################################################"
+
+# Mail function
+_mail_status()
+{
+        filename=$1
+	version=$2
+        log_file=$log_location/$filename
+
+        log_content=`tail -20 $log_file`
+        error_flag=`echo $log_content | grep "FATAL ERROR"`
+        if [ "x$error_flag" = "x" ];
+        then
+                mail_content="Autobuild completed Successfully."
+                build_status="SUCCESS"
+        else
+                mail_content="
+$header_fail
+
+$log_content
+
+$footer_fail"
+                build_status="FAILED"
+        fi
+
+        mail -s "pgInstaller Build $version - $build_status" $mail_receipents <<EOT
+$mail_content
+EOT
+}
+
 # Run everything from the root of the buld directory
 cd $1
 
@@ -42,6 +77,8 @@ fi
 echo "Running the build" >> autobuild.log
 ./build.sh > output/build-84.log 2>&1
 
+_mail_status "build-84.log" "8.4"
+
 echo "Purging old builds from the builds server" >> autobuild.log
 ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"/var/www/html/builds/pgInstaller/[2-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\" 2" >> autobuild.log 2>&1
 
@@ -67,6 +104,8 @@ echo "Updating REL-8_3 branch build system" >> autobuild.log
 # Run the build, and dump the output to a log file
 echo "Running the build (REL-8_3) " >> autobuild.log
 ./build.sh > output/build-83.log 2>&1
+
+_mail_status "build-83.log" "8.3"
 
 # Create a remote directory and upload the output.
 echo "Creating /var/www/html/builds/pgInstaller/$DATE/8.3 on the builds server" >> autobuild.log
