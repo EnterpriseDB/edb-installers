@@ -19,6 +19,10 @@
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
 
+
+    <!-- set if it is a native windows 64 bit-->
+    <windows64bitMode>@@WIN64MODE@@</windows64bitMode>
+
     <!-- Installer Size -->
     <width>550</width>
     <height>400</height>
@@ -56,6 +60,11 @@
 
     <!-- Prebuild Actons-->
     <preBuildActionList>
+        <setInstallerVariable name="project.installerFilename" value="${product_shortname}-${product_version}-windows-x64.${platform_exec_suffix}">
+            <ruleList>
+                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+            </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="originalplatform" value="${platform_name}"/>
         <setInstallerVariable name="originalplatform" value="linux-x32">
             <ruleList>
@@ -65,7 +74,7 @@
     </preBuildActionList>
 
     <preShowHelpActionList>
-       <!-- Set the default installation directory -->
+        <!-- Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
@@ -92,7 +101,7 @@
             </ruleList>
         </setInstallerVariable>
 
-       <setInstallerVariable>
+        <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
             <value>${platform_install_prefix}\PostgreSQL\PG_MAJOR_VERSION</value>
@@ -164,7 +173,7 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-    
+
         <!-- Registration Pre-Installation Action List -->
         <include file="staging/registration_plus_initialization.xml"/>
 
@@ -178,7 +187,7 @@
                 <!-- Abort installation if not super-user and not running in extract-only mode-->
                 <throwError text="${msg(Installer.Warning.RootPrivileges)}">
                     <ruleList>
-                       <isFalse value="${installer_is_root_install}"/>
+                        <isFalse value="${installer_is_root_install}"/>
                     </ruleList>
                 </throwError>
                 <setInstallerVariable name="windowsSoftwareRegistryPrefix" value="${vendor}\${fullName}" persist="1"/>
@@ -272,334 +281,333 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
-		
-		<!-- Get the installation directory from previous pg installation -->
-	        <!--    Postgres Installation would have set these values -->
-		<actionGroup>
-		    <actionList>
-			<registryGet>
-			    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
-			    <name>Base Directory</name>
-			    <variable>pginstalldir</variable>
-			</registryGet>
-			<registryGet>
-			    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
-			    <name>Super User</name>
-			    <variable>superuser</variable>
-			</registryGet>
-		    </actionList>
-		    <ruleList>
-			<compareText>
-			    <logic>equals</logic>
-			    <text>${platform_name}</text>
-			    <value>windows</value>
-			</compareText>
-		    </ruleList>
-		</actionGroup>
-		<!-- LIN & MAC: Set the installation Directory from registry. -->
-		<!--    plpgsqlo Installation would have set these values -->
-		<actionGroup>
-		    <actionList>
-			<iniFileGet>
-			    <file>/etc/postgres-reg.ini</file>
-			    <section>PostgreSQL/PG_MAJOR_VERSION</section>
-			    <key>InstallationDirectory</key>
-			    <variable>pginstalldir</variable>
-			</iniFileGet>
-			<iniFileGet>
-			    <file>/etc/postgres-reg.ini</file>
-			    <section>PostgreSQL/PG_MAJOR_VERSION</section>
-			    <key>Superuser</key>
-			    <variable>superuser</variable>
-			</iniFileGet>
-		    </actionList>
-		    <ruleList>
-			<compareText>
-			    <logic>does_not_equal</logic>
-			    <text>${platform_name}</text>
-			    <value>windows</value>
-			</compareText>
-		    </ruleList>
-		</actionGroup>
-		
-		<!-- Set the default value of installdir as found in registry if it is found there -->
-		<actionGroup>
-		    <actionList>
-			<setInstallerVariable name="default_installdir" value="${pginstalldir}"/>
-		    </actionList>
-		    <ruleList>
-			<compareText logic="does_not_equal" text="${pginstalldir}" value=""/>
-		    </ruleList>
-		</actionGroup>
 
-
-		<!-- Set the default value of installdir if it is not found in registry -->
-		<actionGroup>
-		    <actionList>
-			<!-- Set the default installation directory -->
-			<setInstallerVariable>
-			    <name>default_installdir</name>
-			    <persist>1</persist>
-			    <value>/Library/PostgreSQL/PG_MAJOR_VERSION</value>
-			    <ruleList>
-				<compareText>
-				    <logic>equals</logic>
-				    <text>${platform_name}</text>
-				    <value>osx</value>
-				</compareText>
-			    </ruleList>
-			</setInstallerVariable>
-
-			<setInstallerVariable>
-			    <name>default_installdir</name>
-			    <persist>1</persist>
-			    <value>${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION</value>
-			    <ruleList>
-				<compareText>
-				    <logic>contains</logic>
-				    <text>${platform_name}</text>
-				    <value>linux</value>
-				</compareText>
-			    </ruleList>
-			</setInstallerVariable>
-
-			<setInstallerVariable>
-			    <name>default_installdir</name>
-			    <persist>1</persist>
-			    <value>${platform_install_prefix}\PostgreSQL\PG_MAJOR_VERSION</value>
-			    <ruleList>
-				<compareText>
-				    <logic>equals</logic>
-				    <text>${platform_name}</text>
-				    <value>windows</value>
-				</compareText>
-			    </ruleList>
-			</setInstallerVariable>
-		    </actionList>
-		    <ruleList>
-			<compareText logic="equals" text="${pginstalldir}" value=""/>
-		    </ruleList>
-		</actionGroup>
-
-		<setInstallerVariable name="installdir" value="${default_installdir}">
-		    <ruleList>
-			 <stringTest text="${installdir}" type="empty"/>
-		    </ruleList>
-		</setInstallerVariable>
-
-		<!-- In case of unattended mode raise error if installdir is not valid -->
-		<!-- LIN | MAC : show error if the installdir is not valid -->
-		<actionGroup>
-		    <actionList>
-			<throwError text="${msg(plpgsqlo.installdir.pgerror)}"/>
-		    </actionList>
-		    <ruleList>
-			<ruleGroup>
-			    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-			    <ruleList>
-				<fileTest>
-				    <path>${installdir}/bin/psql</path>
-				    <condition>not_exists</condition>
-				</fileTest>
-				<fileTest>
-				    <path>${installdir}/bin/createdb</path>
-				    <condition>not_exists</condition>
-				</fileTest>
-				<fileTest>
-				    <path>${installdir}/bin/createlang</path>
-				    <condition>not_exists</condition>
-				</fileTest>
-				<fileTest>
-				    <path>${installdir}/bin/pg_config</path>
-				    <condition>not_exists</condition>
-				</fileTest>
-			    </ruleList>
-			</ruleGroup>
-			<ruleGroup>
-			    <ruleList>
-				<compareText>
-				    <text>${platform_name}</text>
-				    <logic>does_not_equal</logic>
-				    <value>windows</value>
-				</compareText>
-			    </ruleList>
-			</ruleGroup>
-			<compareText>
-			    <text>${installer_ui}</text>
-			    <logic>equals</logic>
-			    <value>unattended</value>
-			</compareText>
-		    </ruleList>
-		</actionGroup>
-		<!-- WIN: show error if the installdir is not valid -->
-		<actionGroup>
-		    <actionList>
-			<throwError text="${msg(plpgsqlo.installdir.pgerror)}"/>
-		    </actionList>
-		    <ruleList>
-			<ruleGroup>
-			    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-			    <ruleList>
-				<fileTest>
-				    <path>${installdir}\bin\psql.exe</path>
-				    <condition>not_exists</condition>
-				</fileTest>
-				<fileTest>
-				    <path>${installdir}\bin\createdb.exe</path>
-				    <condition>not_exists</condition>
-				</fileTest>
-				<fileTest>
-				    <path>${installdir}\bin\createlang.exe</path>
-				    <condition>not_exists</condition>
-				</fileTest>
-				<fileTest>
-				    <path>${installdir}\bin\pg_config.exe</path>
-				    <condition>not_exists</condition>
-				</fileTest>
-			    </ruleList>
-			</ruleGroup>
-			<ruleGroup>
-			    <ruleList>
-				<compareText>
-				    <text>${platform_name}</text>
-				    <logic>equals</logic>
-				    <value>windows</value>
-				</compareText>
-			    </ruleList>
-			</ruleGroup>
-			<compareText>
-			    <text>${installer_ui}</text>
-			    <logic>equals</logic>
-			    <value>unattended</value>
-			</compareText>
-		    </ruleList>
-		</actionGroup>
-		<actionGroup>
-		    <actionList>
-			<setInstallerVariableFromScriptOutput>
-			    <name>pg_version_str</name>
-			    <exec>${installdir}/bin/pg_config</exec>
-			    <execArgs>--version</execArgs>
-			    <workingDirectory>${installdir}\bin</workingDirectory>
-			    <ruleList>
-				<compareText>
-				   <text>${platform_name}</text>
-				   <logic>does_not_equal</logic>
-				   <value>windows</value>
-				</compareText>
-				<fileTest>  
-				    <path>${installdir}/bin/pg_config</path>
-				    <condition>exists</condition>
-				</fileTest>
-			    </ruleList>
-			</setInstallerVariableFromScriptOutput>
-			<setInstallerVariableFromScriptOutput>
-			    <name>pg_version_str</name>
-			    <exec>${installdir}\bin\pg_config.exe</exec>
-			    <execArgs>--version</execArgs>
-			    <workingDirectory>${installdir}\bin</workingDirectory>
-			    <ruleList>
-				<compareText>
-				   <text>${platform_name}</text>
-				   <logic>equals</logic>
-				   <value>windows</value>
-				</compareText>
-			    </ruleList>
-			</setInstallerVariableFromScriptOutput>
-			<setInstallerVariableFromRegEx>
-			      <name>pg_version</name>
-			      <text>${pg_version_str}</text>
-			      <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
-			      <substitution>\1</substitution>
-			      <ruleList>
-				 <compareText>
-				     <logic>does_not_equal</logic>
-				     <text>${pg_version_str}</text>
-				     <value/>
-				</compareText>
-			      </ruleList>
-			</setInstallerVariableFromRegEx>
-		   </actionList>
-		    <ruleList>
-			<compareText>
-			    <text>${installer_ui}</text>
-			    <logic>equals</logic>
-			    <value>unattended</value>
-			</compareText>
-		    </ruleList>
-	       </actionGroup>
-	       <actionGroup>
-		   <actionList>
-			<throwError text="${msg(plpgsqlo.incompatible.pg.error)}"/>
-		   </actionList>
-		   <ruleList>
-			<compareText>
-			      <logic>does_not_equal</logic>
-			      <text>${pg_version}</text>
-			      <value>PG_MAJOR_VERSION</value>            
-			</compareText>
-		    </ruleList>
-		    <ruleList>
-			<compareText>
-			    <text>${installer_ui}</text>
-			    <logic>equals</logic>
-			    <value>unattended</value>
-			</compareText>
-		    </ruleList>
-	       </actionGroup>
-
+                <!-- Get the installation directory from previous pg installation -->
+                <!--    Postgres Installation would have set these values -->
                 <actionGroup>
-		    <actionList>
-			<setInstallerVariable name="superuser" value="postgres"/>
+                    <actionList>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
+                            <name>Base Directory</name>
+                            <variable>pginstalldir</variable>
+                        </registryGet>
+                        <registryGet>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
+                            <name>Super User</name>
+                            <variable>superuser</variable>
+                        </registryGet>
                     </actionList>
                     <ruleList>
-                       <compareTextLength>
-                           <length>0</length>
-                           <logic>equals</logic>
-                           <text>${superuser}</text>
-                       </compareTextLength>
-                    </ruleList>
-                </actionGroup>
-	
- 		<actionGroup>
-		    <actionList>
-			<logMessage text="Check if 32 bit PL/Secure installer is being tried out aginst PG x64 bit. This condition will be hit in case of unattended mode and prefix specified"/>
-			<registryGet>
-			    <wowMode>64</wowMode>
-			    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION</key>
-			    <name>Base Directory</name>
-			    <variable>pginstalldir</variable>
-			</registryGet>
-			<throwError text="${msg(plpgsqlo.incompatible.pg64.error)}">
-			    <ruleList>
-				<compareText>
-				    <nocase>1</nocase>
-				    <logic>equals</logic>
-				    <text>${installdir}</text>
-				    <value>${pginstalldir}</value>
-				</compareText>
-                                <compareText>
-                                    <logic>equals</logic>
-                                    <text>${installer_ui}</text>
-                                    <value>unattended</value>
-                                </compareText>
-				<compareText>
-				    <text>${platform_name}</text>
-				    <logic>equals</logic>
-				    <value>windows</value>
-				</compareText>
-			    </ruleList>
-			</throwError>
-    		    </actionList>
-                    <ruleList>
                         <compareText>
-                            <text>${platform_name}</text>
                             <logic>equals</logic>
+                            <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
                     </ruleList>
-		</actionGroup>
-    
+                </actionGroup>
+                <!-- LIN & MAC: Set the installation Directory from registry. -->
+                <!--    plpgsqlo Installation would have set these values -->
+                <actionGroup>
+                    <actionList>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>PostgreSQL/PG_MAJOR_VERSION</section>
+                            <key>InstallationDirectory</key>
+                            <variable>pginstalldir</variable>
+                        </iniFileGet>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>PostgreSQL/PG_MAJOR_VERSION</section>
+                            <key>Superuser</key>
+                            <variable>superuser</variable>
+                        </iniFileGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <!-- Set the default value of installdir as found in registry if it is found there -->
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="default_installdir" value="${pginstalldir}"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${pginstalldir}" value=""/>
+                    </ruleList>
+                </actionGroup>
+
+
+                <!-- Set the default value of installdir if it is not found in registry -->
+                <actionGroup>
+                    <actionList>
+                        <!-- Set the default installation directory -->
+                        <setInstallerVariable>
+                            <name>default_installdir</name>
+                            <persist>1</persist>
+                            <value>/Library/PostgreSQL/PG_MAJOR_VERSION</value>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>${platform_name}</text>
+                                    <value>osx</value>
+                                </compareText>
+                            </ruleList>
+                        </setInstallerVariable>
+
+                        <setInstallerVariable>
+                            <name>default_installdir</name>
+                            <persist>1</persist>
+                            <value>${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION</value>
+                            <ruleList>
+                                <compareText>
+                                    <logic>contains</logic>
+                                    <text>${platform_name}</text>
+                                    <value>linux</value>
+                                </compareText>
+                            </ruleList>
+                        </setInstallerVariable>
+
+                        <setInstallerVariable>
+                            <name>default_installdir</name>
+                            <persist>1</persist>
+                            <value>${platform_install_prefix}\PostgreSQL\PG_MAJOR_VERSION</value>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>${platform_name}</text>
+                                    <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </setInstallerVariable>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${pginstalldir}" value=""/>
+                    </ruleList>
+                </actionGroup>
+
+                <setInstallerVariable name="installdir" value="${default_installdir}">
+                    <ruleList>
+                        <stringTest text="${installdir}" type="empty"/>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <!-- In case of unattended mode raise error if installdir is not valid -->
+                <!-- LIN | MAC : show error if the installdir is not valid -->
+                <actionGroup>
+                    <actionList>
+                        <throwError text="${msg(plpgsqlo.installdir.pgerror)}"/>
+                    </actionList>
+                    <ruleList>
+                        <ruleGroup>
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                            <ruleList>
+                                <fileTest>
+                                    <path>${installdir}/bin/psql</path>
+                                    <condition>not_exists</condition>
+                                </fileTest>
+                                <fileTest>
+                                    <path>${installdir}/bin/createdb</path>
+                                    <condition>not_exists</condition>
+                                </fileTest>
+                                <fileTest>
+                                    <path>${installdir}/bin/createlang</path>
+                                    <condition>not_exists</condition>
+                                </fileTest>
+                                <fileTest>
+                                    <path>${installdir}/bin/pg_config</path>
+                                    <condition>not_exists</condition>
+                                </fileTest>
+                            </ruleList>
+                        </ruleGroup>
+                        <ruleGroup>
+                            <ruleList>
+                                <compareText>
+                                    <text>${platform_name}</text>
+                                    <logic>does_not_equal</logic>
+                                    <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </ruleGroup>
+                        <compareText>
+                            <text>${installer_ui}</text>
+                            <logic>equals</logic>
+                            <value>unattended</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <!-- WIN: show error if the installdir is not valid -->
+                <actionGroup>
+                    <actionList>
+                        <throwError text="${msg(plpgsqlo.installdir.pgerror)}"/>
+                    </actionList>
+                    <ruleList>
+                        <ruleGroup>
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                            <ruleList>
+                                <fileTest>
+                                    <path>${installdir}\bin\psql.exe</path>
+                                    <condition>not_exists</condition>
+                                </fileTest>
+                                <fileTest>
+                                    <path>${installdir}\bin\createdb.exe</path>
+                                    <condition>not_exists</condition>
+                                </fileTest>
+                                <fileTest>
+                                    <path>${installdir}\bin\createlang.exe</path>
+                                    <condition>not_exists</condition>
+                                </fileTest>
+                                <fileTest>
+                                    <path>${installdir}\bin\pg_config.exe</path>
+                                    <condition>not_exists</condition>
+                                </fileTest>
+                            </ruleList>
+                        </ruleGroup>
+                        <ruleGroup>
+                            <ruleList>
+                                <compareText>
+                                    <text>${platform_name}</text>
+                                    <logic>equals</logic>
+                                    <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </ruleGroup>
+                        <compareText>
+                            <text>${installer_ui}</text>
+                            <logic>equals</logic>
+                            <value>unattended</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariableFromScriptOutput>
+                            <name>pg_version_str</name>
+                            <exec>${installdir}/bin/pg_config</exec>
+                            <execArgs>--version</execArgs>
+                            <workingDirectory>${installdir}\bin</workingDirectory>
+                            <ruleList>
+                                <compareText>
+                                    <text>${platform_name}</text>
+                                    <logic>does_not_equal</logic>
+                                    <value>windows</value>
+                                </compareText>
+                                <fileTest>
+                                    <path>${installdir}/bin/pg_config</path>
+                                    <condition>exists</condition>
+                                </fileTest>
+                            </ruleList>
+                        </setInstallerVariableFromScriptOutput>
+                        <setInstallerVariableFromScriptOutput>
+                            <name>pg_version_str</name>
+                            <exec>${installdir}\bin\pg_config.exe</exec>
+                            <execArgs>--version</execArgs>
+                            <workingDirectory>${installdir}\bin</workingDirectory>
+                            <ruleList>
+                                <compareText>
+                                    <text>${platform_name}</text>
+                                    <logic>equals</logic>
+                                    <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </setInstallerVariableFromScriptOutput>
+                        <setInstallerVariableFromRegEx>
+                            <name>pg_version</name>
+                            <text>${pg_version_str}</text>
+                            <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
+                            <substitution>\1</substitution>
+                            <ruleList>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>${pg_version_str}</text>
+                                    <value/>
+                                </compareText>
+                            </ruleList>
+                        </setInstallerVariableFromRegEx>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <text>${installer_ui}</text>
+                            <logic>equals</logic>
+                            <value>unattended</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <throwError text="${msg(plpgsqlo.incompatible.pg.error)}"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${pg_version}</text>
+                            <value>PG_MAJOR_VERSION</value>
+                        </compareText>
+                    </ruleList>
+                    <ruleList>
+                        <compareText>
+                            <text>${installer_ui}</text>
+                            <logic>equals</logic>
+                            <value>unattended</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="superuser" value="postgres"/>
+                    </actionList>
+                    <ruleList>
+                        <compareTextLength>
+                            <length>0</length>
+                            <logic>equals</logic>
+                            <text>${superuser}</text>
+                        </compareTextLength>
+                    </ruleList>
+                </actionGroup>
+
+                <!-- Check if 32 bit PL/Secure installer is being tried out aginst PG x64 bit or vice versa -->
+                <actionGroup>
+                    <actionList>
+                        <registryGet wowMode="64" variable="pginstalldir">
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION</key>
+                            <name>Base Directory</name>
+                            <ruleList>
+                                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                                <platformTest type="windows-x64"/>
+                            </ruleList>
+                        </registryGet>
+                        <registryGet wowMode="32" variable="pginstalldir">
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
+                            <name>Base Directory</name>
+                            <ruleList>
+                                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                            </ruleList>
+                        </registryGet>
+                        <throwError text="${msg(plpgsqlo.incompatible.pg64.error)}">
+                            <ruleList>
+                                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                                <compareText nocase="1" logic="equals" text="${installdir}" value="${pginstalldir}"/>
+                            </ruleList>
+                        </throwError>
+                        <throwError text="${msg(plpgsqlo.incompatible.pg32.error)}">
+                            <ruleList>
+                                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                                <compareText nocase="1" logic="equals" text="${installdir}" value="${pginstalldir}"/>
+                            </ruleList>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows"/>
+                        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+                        <isFalse value="${extract_mode}"/>
+                    </ruleList>
+                </actionGroup>
+
                 <!-- Setting the installation type as upgrade if previous installation found -->
                 <actionGroup>
                     <actionList>
@@ -615,7 +623,7 @@
                 </actionGroup>
             </actionList>
         </actionGroup>
-   
+
         <setInstallerVariable name="pg_config" value="${installdir}/bin/pg_config"/>
         <setInstallerVariable name="pg_config" value="${installdir}\bin\pg_config.exe">
             <ruleList>
@@ -627,7 +635,7 @@
             </ruleList>
         </setInstallerVariable>
 
-	<include file="staging/registration_plus_preinstallation.xml"/>
+        <include file="staging/registration_plus_preinstallation.xml"/>
 
     </preInstallationActionList>
     <!-- Post installation actions -->
@@ -677,70 +685,70 @@
             </actionList>
         </actionGroup>
         <actionGroup>
-	    <actionList>
-		<substitute>
-		    <files>${installdir}/share/plpgsqlo.sql</files>
-		    <substitutionList>
-			<substitution>
-			    <pattern>\$libdir</pattern>
-			    <value>${installdir}/lib/postgresql</value>
-			</substitution>
-			<substitution>
-			    <pattern>\$SUPERUSER</pattern>
-			    <value>${superuser}</value>
-			</substitution>
-		    </substitutionList>
-		</substitute>
-		<changePermissions>
-		    <files>${installdir}/lib/postgresql/plpgsqlo.so</files>
-		    <permissions>755</permissions>
+            <actionList>
+                <substitute>
+                    <files>${installdir}/share/plpgsqlo.sql</files>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>\$libdir</pattern>
+                            <value>${installdir}/lib/postgresql</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>\$SUPERUSER</pattern>
+                            <value>${superuser}</value>
+                        </substitution>
+                    </substitutionList>
+                </substitute>
+                <changePermissions>
+                    <files>${installdir}/lib/postgresql/plpgsqlo.so</files>
+                    <permissions>755</permissions>
                 </changePermissions>
-	    </actionList>
-	    <ruleList>
-		<compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-	    </ruleList>
-	</actionGroup>
+            </actionList>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
         <actionGroup>
-	    <actionList>
-		<!-- change in C:\ to C:/ does not happen directly so need to use pg_config to get short name-->
-		<setInstallerVariableFromScriptOutput>
+            <actionList>
+                <!-- change in C:\ to C:/ does not happen directly so need to use pg_config to get short name-->
+                <setInstallerVariableFromScriptOutput>
                     <name>libdir</name>
                     <exec>${installdir}\bin\pg_config.exe</exec>
                     <execArgs>--pkglibdir</execArgs>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
-		    <onErrorActionList>
+                    <onErrorActionList>
                         <setInstallerVariable name="libdir" value="${installdir}/lib"/>
                     </onErrorActionList>
-		</setInstallerVariableFromScriptOutput>
-		<!-- change "C:\" to "C:/" in case of Windows -->
+                </setInstallerVariableFromScriptOutput>
+                <!-- change "C:\" to "C:/" in case of Windows -->
                 <setInstallerVariableFromRegEx>
                     <name>libdir</name>
                     <text>${libdir}</text>
                     <pattern>\\</pattern>
                     <substitution>/</substitution>
                 </setInstallerVariableFromRegEx>
-		<substitute>
-		    <files>${installdir}/share/plpgsqlo.sql</files>
-		    <substitutionList>
-			<substitution>
-			    <pattern>\$libdir</pattern>
-			    <value>${libdir}</value>
-			</substitution>
-			<substitution>
-			    <pattern>\$SUPERUSER</pattern>
-			    <value>${superuser}</value>
-			</substitution>
-		    </substitutionList>
-		</substitute>
-	    </actionList>
-	    <ruleList>
-		<compareText logic="equals" text="${platform_name}" value="windows"/>
-	    </ruleList>
-	</actionGroup>
+                <substitute>
+                    <files>${installdir}/share/plpgsqlo.sql</files>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>\$libdir</pattern>
+                            <value>${libdir}</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>\$SUPERUSER</pattern>
+                            <value>${superuser}</value>
+                        </substitution>
+                    </substitutionList>
+                </substitute>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
 
 
-	<include file="staging/registration_plus_postinstallation.xml"/>
+        <include file="staging/registration_plus_postinstallation.xml"/>
 
     </postInstallationActionList>
     <!-- preUninstallation actions -->
@@ -775,9 +783,9 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-	<registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION"/>
+        <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\plpgsqlo-PG_MAJOR_VERSION"/>
 
-	<include file="staging/registration_plus_preuninstallation.xml"/>
+        <include file="staging/registration_plus_preuninstallation.xml"/>
 
     </preUninstallationActionList>
 
@@ -796,28 +804,28 @@
                     <destination>${installdir}\lib</destination>
                     <name>programfileslibwindows</name>
                     <platforms>windows</platforms>
-		    <distributionFileList>
-			<distributionFile origin="staging/windows/lib/plpgsqlo.dll"/>
+                    <distributionFileList>
+                        <distributionFile origin="staging/@@WINDIR@@/lib/plpgsqlo.dll"/>
                     </distributionFileList>
                 </folder>
-               <!-- WIN: plpgsqlo.sql -->
+                <!-- WIN: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
                     <destination>${installdir}\share</destination>
                     <name>programfilessharewindows</name>
                     <platforms>windows</platforms>
-		    <distributionFileList>
-                            <distributionFile origin="staging/windows/share/plpgsqlo.sql"/>
+                    <distributionFileList>
+                        <distributionFile origin="staging/@@WINDIR@@/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
-               <!-- WIN: README -->
+                <!-- WIN: README -->
                 <folder>
                     <description>README</description>
                     <destination>${installdir}\doc</destination>
                     <name>programfilesdocwindows</name>
                     <platforms>windows</platforms>
-		    <distributionFileList>
-                            <distributionFile origin="staging/windows/doc/README.plsecure"/>
+                    <distributionFileList>
+                        <distributionFile origin="staging/@@WINDIR@@/doc/README.plsecure"/>
                     </distributionFileList>
                 </folder>
 
@@ -829,27 +837,27 @@
                     <name>programfilesliblinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
-                            <distributionFile origin="staging/linux/lib/plpgsqlo.so"/>
+                        <distributionFile origin="staging/linux/lib/plpgsqlo.so"/>
                     </distributionFileList>
                 </folder>
-               <!-- LIN: plpgsqlo.sql -->
+                <!-- LIN: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
                     <destination>${installdir}/share</destination>
                     <name>programfilessharelinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
-                            <distributionFile origin="staging/linux/share/plpgsqlo.sql"/>
+                        <distributionFile origin="staging/linux/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
-              <!-- WIN: README -->
+                <!-- WIN: README -->
                 <folder>
                     <description>README</description>
                     <destination>${installdir}/doc</destination>
                     <name>programfilesdoclinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
-                            <distributionFile origin="staging/linux/doc/README.plsecure"/>
+                        <distributionFile origin="staging/linux/doc/README.plsecure"/>
                     </distributionFileList>
                 </folder>
 
@@ -861,17 +869,17 @@
                     <name>programfilesliblinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
-                            <distributionFile origin="staging/linux-x64/lib/plpgsqlo.so"/>
+                        <distributionFile origin="staging/linux-x64/lib/plpgsqlo.so"/>
                     </distributionFileList>
                 </folder>
-               <!-- LIN-X64: plpgsqlo.sql -->
+                <!-- LIN-X64: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
                     <destination>${installdir}/share</destination>
                     <name>programfilessharelinux-x64</name>
                     <platforms>linux-x64</platforms>
-		    <distributionFileList>
-                            <distributionFile origin="staging/linux-x64/share/plpgsqlo.sql"/>
+                    <distributionFileList>
+                        <distributionFile origin="staging/linux-x64/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
                 <!-- WIN: README -->
@@ -881,7 +889,7 @@
                     <name>programfilesdoclinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
-                            <distributionFile origin="staging/linux-x64/doc/README.plsecure"/>
+                        <distributionFile origin="staging/linux-x64/doc/README.plsecure"/>
                     </distributionFileList>
                 </folder>
 
@@ -893,17 +901,17 @@
                     <name>programfileslibosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
-                            <distributionFile origin="staging/osx/lib/plpgsqlo.so"/>
+                        <distributionFile origin="staging/osx/lib/plpgsqlo.so"/>
                     </distributionFileList>
                 </folder>
-               <!-- MAC: plpgsqlo.sql -->
+                <!-- MAC: plpgsqlo.sql -->
                 <folder>
                     <description>SQL Files</description>
                     <destination>${installdir}/share</destination>
                     <name>programfilesshareosx</name>
                     <platforms>osx</platforms>
-		    <distributionFileList>
-                            <distributionFile origin="staging/osx/share/plpgsqlo.sql"/>
+                    <distributionFileList>
+                        <distributionFile origin="staging/osx/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
                 <!-- WIN: README -->
@@ -913,7 +921,7 @@
                     <name>programfilesdocosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
-                            <distributionFile origin="staging/osx/doc/README.plsecure"/>
+                        <distributionFile origin="staging/osx/doc/README.plsecure"/>
                     </distributionFileList>
                 </folder>
 
@@ -921,7 +929,7 @@
 
             </folderList>
         </component>
-	<include file="staging/registration_plus_component.xml"/>
+        <include file="staging/registration_plus_component.xml"/>
     </componentList>
     <parameterList>
         <!-- Registration Parameters -->
@@ -930,9 +938,9 @@
 
         <!-- Install Directory -->
         <parameterGroup name="PostgresInstallationDetails" title="${msg(pg.server.title)}" description="Installer.Parameter.pg.installdir"
-                        explanation="Installer.Parameter.installdir.pg.explanation">
+            explanation="Installer.Parameter.installdir.pg.explanation">
             <parameterList>
-		<directoryParameter>
+                <directoryParameter>
                     <name>installdir</name>
                     <value>${default_installdir}</value>
                     <default/>
@@ -943,220 +951,229 @@
                     <mustExist>0</mustExist>
                     <width>40</width>
 
-		    <!-- Validating whether installdir is empty -->
-		    <validationActionList>
-			<actionGroup>
-			    <actionList>
-				<setInstallerVariable name="installdir" value="${default_installdir}" />
-				<throwError text="${msg(plpgsqlo.installdir.empty)}"/>
-			    </actionList>
-			    <ruleList>
-				<compareText text="${installdir}" logic="equals" value=""/>
-			    </ruleList>
-			</actionGroup>
-			<!-- LIN | MAC : show error if the installdir is not valid -->
-			<actionGroup>
-			    <actionList>
-				<throwError text="${msg(plpgsqlo.installdir.pgerror)}"/>
-			    </actionList>
-			    <ruleList>
-				<ruleGroup>
-				    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-				    <ruleList>
-					<fileTest>
-					    <path>${installdir}/bin/psql</path>
-					    <condition>not_exists</condition>
-					</fileTest>
-					<fileTest>
-					    <path>${installdir}/bin/createdb</path>
-					    <condition>not_exists</condition>
-					</fileTest>
-					<fileTest>
-					    <path>${installdir}/bin/createlang</path>
-					    <condition>not_exists</condition>
-					</fileTest>
-					<fileTest>
-					    <path>${installdir}/bin/pg_config</path>
-					    <condition>not_exists</condition>
-					</fileTest>
-				    </ruleList>
-				</ruleGroup>
-				<ruleGroup>
-				    <ruleList>
-					<compareText>
-					    <text>${platform_name}</text>
-					    <logic>does_not_equal</logic>
-					    <value>windows</value>
-					</compareText>
-				    </ruleList>
-				</ruleGroup>
-			    </ruleList>
-			</actionGroup>
-			<!-- WIN: show error if the installdir is not valid -->
-			<actionGroup>
-			    <actionList>
-				<throwError text="${msg(plpgsqlo.installdir.pgerror)}"/>
-			    </actionList>
-			    <ruleList>
-				<ruleGroup>
-				    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-				    <ruleList>
-					<fileTest>
-					    <path>${installdir}\bin\psql.exe</path>
-					    <condition>not_exists</condition>
-					</fileTest>
-					<fileTest>
-					    <path>${installdir}\bin\createdb.exe</path>
-					    <condition>not_exists</condition>
-					</fileTest>
-					<fileTest>
-					    <path>${installdir}\bin\createlang.exe</path>
-					    <condition>not_exists</condition>
-					</fileTest>
-					<fileTest>
-					    <path>${installdir}\bin\pg_config.exe</path>
-					    <condition>not_exists</condition>
-					</fileTest>
-				    </ruleList>
-				</ruleGroup>
-				<ruleGroup>
-				    <ruleList>
-					<compareText>
-					    <text>${platform_name}</text>
-					    <logic>equals</logic>
-					    <value>windows</value>
-					</compareText>
-				    </ruleList>
-				</ruleGroup>
-			    </ruleList>
-			</actionGroup>
-			<actionGroup>
-			    <actionList>
-				<setInstallerVariableFromScriptOutput>
-				    <name>pg_version_str</name>
-				    <exec>${installdir}/bin/pg_config</exec>
-				    <execArgs>--version</execArgs>
-				    <workingDirectory>${installdir}\bin</workingDirectory>
-				    <ruleList>
-					<compareText>
-					   <text>${platform_name}</text>
-					   <logic>does_not_equal</logic>
-					   <value>windows</value>
-					</compareText>
-				    </ruleList>
-				</setInstallerVariableFromScriptOutput>
-				<setInstallerVariableFromScriptOutput>
-				    <name>pg_version_str</name>
-				    <exec>${installdir}\bin\pg_config.exe</exec>
-				    <execArgs>--version</execArgs>
-				    <workingDirectory>${installdir}\bin</workingDirectory>
-				    <ruleList>
-					<compareText>
-					   <text>${platform_name}</text>
-					   <logic>equals</logic>
-					   <value>windows</value>
-					</compareText>
-				    </ruleList>
-				</setInstallerVariableFromScriptOutput>
-				<setInstallerVariableFromRegEx>
-				      <name>pg_version</name>
-				      <text>${pg_version_str}</text>
-				      <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
-				      <substitution>\1</substitution>
-				      <ruleList>
-					 <compareText>
-					     <logic>does_not_equal</logic>
-					     <text>${pg_version_str}</text>
-					     <value/>
-					</compareText>
-				      </ruleList>
-				</setInstallerVariableFromRegEx>
-			   </actionList>
-		       </actionGroup>
-		       <actionGroup>
-			   <actionList>
-				<throwError text="${msg(plpgsqlo.incompatible.pg.error)}"/>
-			   </actionList>
-			   <ruleList>
-				<compareText>
-				      <logic>does_not_equal</logic>
-				      <text>${pg_version}</text>
-				      <value>PG_MAJOR_VERSION</value>            
-				</compareText>
-			    </ruleList>
-		       </actionGroup>
-		    </validationActionList>
+                    <!-- Validating whether installdir is empty -->
+                    <validationActionList>
+                        <actionGroup>
+                            <actionList>
+                                <setInstallerVariable name="installdir" value="${default_installdir}" />
+                                <throwError text="${msg(plpgsqlo.installdir.empty)}"/>
+                            </actionList>
+                            <ruleList>
+                                <compareText text="${installdir}" logic="equals" value=""/>
+                            </ruleList>
+                        </actionGroup>
+                        <!-- LIN | MAC : show error if the installdir is not valid -->
+                        <actionGroup>
+                            <actionList>
+                                <throwError text="${msg(plpgsqlo.installdir.pgerror)}"/>
+                            </actionList>
+                            <ruleList>
+                                <ruleGroup>
+                                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                                    <ruleList>
+                                        <fileTest>
+                                            <path>${installdir}/bin/psql</path>
+                                            <condition>not_exists</condition>
+                                        </fileTest>
+                                        <fileTest>
+                                            <path>${installdir}/bin/createdb</path>
+                                            <condition>not_exists</condition>
+                                        </fileTest>
+                                        <fileTest>
+                                            <path>${installdir}/bin/createlang</path>
+                                            <condition>not_exists</condition>
+                                        </fileTest>
+                                        <fileTest>
+                                            <path>${installdir}/bin/pg_config</path>
+                                            <condition>not_exists</condition>
+                                        </fileTest>
+                                    </ruleList>
+                                </ruleGroup>
+                                <ruleGroup>
+                                    <ruleList>
+                                        <compareText>
+                                            <text>${platform_name}</text>
+                                            <logic>does_not_equal</logic>
+                                            <value>windows</value>
+                                        </compareText>
+                                    </ruleList>
+                                </ruleGroup>
+                            </ruleList>
+                        </actionGroup>
+                        <!-- WIN: show error if the installdir is not valid -->
+                        <actionGroup>
+                            <actionList>
+                                <throwError text="${msg(plpgsqlo.installdir.pgerror)}"/>
+                            </actionList>
+                            <ruleList>
+                                <ruleGroup>
+                                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                                    <ruleList>
+                                        <fileTest>
+                                            <path>${installdir}\bin\psql.exe</path>
+                                            <condition>not_exists</condition>
+                                        </fileTest>
+                                        <fileTest>
+                                            <path>${installdir}\bin\createdb.exe</path>
+                                            <condition>not_exists</condition>
+                                        </fileTest>
+                                        <fileTest>
+                                            <path>${installdir}\bin\createlang.exe</path>
+                                            <condition>not_exists</condition>
+                                        </fileTest>
+                                        <fileTest>
+                                            <path>${installdir}\bin\pg_config.exe</path>
+                                            <condition>not_exists</condition>
+                                        </fileTest>
+                                    </ruleList>
+                                </ruleGroup>
+                                <ruleGroup>
+                                    <ruleList>
+                                        <compareText>
+                                            <text>${platform_name}</text>
+                                            <logic>equals</logic>
+                                            <value>windows</value>
+                                        </compareText>
+                                    </ruleList>
+                                </ruleGroup>
+                            </ruleList>
+                        </actionGroup>
+                        <actionGroup>
+                            <actionList>
+                                <setInstallerVariableFromScriptOutput>
+                                    <name>pg_version_str</name>
+                                    <exec>${installdir}/bin/pg_config</exec>
+                                    <execArgs>--version</execArgs>
+                                    <workingDirectory>${installdir}\bin</workingDirectory>
+                                    <ruleList>
+                                        <compareText>
+                                            <text>${platform_name}</text>
+                                            <logic>does_not_equal</logic>
+                                            <value>windows</value>
+                                        </compareText>
+                                    </ruleList>
+                                </setInstallerVariableFromScriptOutput>
+                                <setInstallerVariableFromScriptOutput>
+                                    <name>pg_version_str</name>
+                                    <exec>${installdir}\bin\pg_config.exe</exec>
+                                    <execArgs>--version</execArgs>
+                                    <workingDirectory>${installdir}\bin</workingDirectory>
+                                    <ruleList>
+                                        <compareText>
+                                            <text>${platform_name}</text>
+                                            <logic>equals</logic>
+                                            <value>windows</value>
+                                        </compareText>
+                                    </ruleList>
+                                </setInstallerVariableFromScriptOutput>
+                                <setInstallerVariableFromRegEx>
+                                    <name>pg_version</name>
+                                    <text>${pg_version_str}</text>
+                                    <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
+                                    <substitution>\1</substitution>
+                                    <ruleList>
+                                        <compareText>
+                                            <logic>does_not_equal</logic>
+                                            <text>${pg_version_str}</text>
+                                            <value/>
+                                        </compareText>
+                                    </ruleList>
+                                </setInstallerVariableFromRegEx>
+                            </actionList>
+                        </actionGroup>
+                        <actionGroup>
+                            <actionList>
+                                <throwError text="${msg(plpgsqlo.incompatible.pg.error)}"/>
+                            </actionList>
+                            <ruleList>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>${pg_version}</text>
+                                    <value>PG_MAJOR_VERSION</value>
+                                </compareText>
+                            </ruleList>
+                        </actionGroup>
+                    </validationActionList>
 
-		   <!-- Check if 32 bit PL/Secure installer is being tried out aginst PG x64 bit -->
-		    <validationActionList>
-		       <actionGroup>   
-			   <actionList>
-			       <registryGet>
-				   <wowMode>64</wowMode>
-				   <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION</key>
-				   <name>Base Directory</name>
-				   <variable>pginstalldir</variable>
-			       </registryGet>
-			   </actionList>
-		       </actionGroup>
-			<actionGroup>
-			    <actionList>
-				<setInstallerVariable name="installdir" value="${defaultpghome}" />
-			       <showWarning>
-				    <text>${msg(plpgsqlo.incompatible.pg64.error)}</text>
-				</showWarning>
-			    </actionList>
-			    <ruleList>
-				<compareText>
-				    <nocase>1</nocase>
-				    <logic>equals</logic>
-				    <text>${installdir}</text>
-				    <value>${pginstalldir}</value>
-				</compareText>
-				<isFalse value="${extract_mode}"/>
-				<compareText>
-				    <text>${platform_name}</text>
-				    <logic>equals</logic>
-				    <value>windows</value>
-				</compareText>
-			    </ruleList>
-			</actionGroup>
-		    </validationActionList>
-	 
+                    <!-- Check if 32 bit PL/Secure installer is being tried out aginst PG x64 bit or vice versa -->
+                    <validationActionList>
+                        <actionGroup>
+                            <actionList>
+                                <registryGet wowMode="64" variable="pginstalldir">
+                                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION</key>
+                                    <name>Base Directory</name>
+                                    <ruleList>
+                                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                                        <platformTest type="windows-x64"/>
+                                    </ruleList>
+                                </registryGet>
+                                <registryGet wowMode="32" variable="pginstalldir">
+                                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
+                                    <name>Base Directory</name>
+                                    <ruleList>
+                                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                                    </ruleList>
+                                </registryGet>
+                            </actionList>
+                            <ruleList>
+                                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                            </ruleList>
+                        </actionGroup>
+                        <actionGroup>
+                            <actionList>
+                                <setInstallerVariable name="installdir" value="${defaultpghome}"/>
+                                <showWarning text="${msg(plpgsqlo.incompatible.pg64.error)}">
+                                    <ruleList>
+                                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                                    </ruleList>
+                                </showWarning>
+                                <showWarning text="${msg(plpgsqlo.incompatible.pg32.error)}">
+                                    <ruleList>
+                                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                                    </ruleList>
+                                </showWarning>
+                            </actionList>
+                            <ruleList>
+                                <compareText nocase="1" logic="equals" text="${installdir}" value="${pginstalldir}"/>
+                                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                                <isFalse value="${extract_mode}"/>
+                            </ruleList>
+                        </actionGroup>
+                    </validationActionList>
 
-		    <!-- Validating whether installdir contains whitespaces (Linux) -->
-		    <postShowPageActionList>
-			<actionGroup>
-			    <actionList>
-				<showWarning text="${msg(plpgsqlo.installdir.error)}"/>
-			    </actionList>
-			    <ruleList>
-				<regExMatch text="${installdir}" logic="does_not_match">
-				    <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
-				</regExMatch>
-				<compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-			    </ruleList>
-			</actionGroup>
-			<!-- Validating whether installdir is valid (Windows) -->
-			<actionGroup>
-			    <actionList>
-				<setInstallerVariable name="installdir" value="${default_installdir}" />
-				<showWarning text="${msg(plpgsqlo.installdir.error)}"/>
-			    </actionList>
-			    <ruleList>
-				<regExMatch text="${installdir}" logic="does_not_match">
-				    <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
-				</regExMatch>
-				<compareText text="${platform_name}" logic="equals" value="windows"/>
-			    </ruleList>
-			</actionGroup>
-		    </postShowPageActionList>
-		    </directoryParameter>
+                    <!-- Validating whether installdir contains whitespaces (Linux) -->
+                    <postShowPageActionList>
+                        <actionGroup>
+                            <actionList>
+                                <showWarning text="${msg(plpgsqlo.installdir.error)}"/>
+                            </actionList>
+                            <ruleList>
+                                <regExMatch text="${installdir}" logic="does_not_match">
+                                    <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                                </regExMatch>
+                                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                            </ruleList>
+                        </actionGroup>
+                        <!-- Validating whether installdir is valid (Windows) -->
+                        <actionGroup>
+                            <actionList>
+                                <setInstallerVariable name="installdir" value="${default_installdir}" />
+                                <showWarning text="${msg(plpgsqlo.installdir.error)}"/>
+                            </actionList>
+                            <ruleList>
+                                <regExMatch text="${installdir}" logic="does_not_match">
+                                    <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
+                                </regExMatch>
+                                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                            </ruleList>
+                        </actionGroup>
+                    </postShowPageActionList>
+                </directoryParameter>
             </parameterList>
-	    <ruleList>
-		<compareText text="${plpgsqloVersion}" logic="equals" value=""/>
-	    </ruleList>
-	</parameterGroup>
+            <ruleList>
+                <compareText text="${plpgsqloVersion}" logic="equals" value=""/>
+            </ruleList>
+        </parameterGroup>
 
         <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>

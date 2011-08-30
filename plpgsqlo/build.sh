@@ -26,6 +26,12 @@ then
     source $WD/plpgsqlo/build-windows.sh
 fi
     
+# Windows-x64
+if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+then
+    source $WD/plpgsqlo/build-windows-x64.sh
+fi
+    
 ################################################################################
 # Build preparation
 ################################################################################
@@ -60,6 +66,12 @@ _prep_plpgsqlo() {
     then
         _prep_plpgsqlo_windows || exit 1
     fi
+
+    # Windows-x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _prep_plpgsqlo_windows_x64 || exit 1
+    fi
     
 }
 
@@ -92,6 +104,13 @@ _build_plpgsqlo() {
     then
         _build_plpgsqlo_windows || exit 1
     fi
+
+    # Windows-x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _build_plpgsqlo_windows_x64 || exit 1
+    fi
+
 }
 
 ################################################################################
@@ -143,4 +162,11 @@ _postprocess_plpgsqlo() {
     then
         _postprocess_plpgsqlo_windows || exit 1
     fi
+    
+    # Windows-x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _postprocess_plpgsqlo_windows_x64 || exit 1
+    fi
+
 }
