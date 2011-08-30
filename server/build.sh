@@ -75,14 +75,6 @@ _prep_server() {
     echo "Unpacking PostgreSQL source..."
     tar -jxvf ../../tarballs/postgresql-$PG_TARBALL_POSTGRESQL.tar.bz2
 
-    if [ -f $WD/tarballs/pg${PG_TARBALL_POSTGRESQL}_python.patch ]; then
-        cd postgresql-$PG_TARBALL_POSTGRESQL
-        patch -p1 < $WD/tarballs/pg${PG_TARBALL_POSTGRESQL}_python.patch
-        cd ..
-    else
-        _warn "Could not find the pg${PG_TARBALL_POSTGRESQL}_python.patch"
-    fi
-
     if [ -f $WD/tarballs/pg-ldap-liblber.patch ]; then
         cd postgresql-$PG_TARBALL_POSTGRESQL
         patch -p1 < $WD/tarballs/pg-ldap-liblber.patch
