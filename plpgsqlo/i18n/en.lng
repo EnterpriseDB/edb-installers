@@ -18,6 +18,8 @@ plpgsqlo.incompatible.pg.error=The PostgreSQL Server Installation is incompatibl
 
 plpgsqlo.incompatible.pg64.error=The PostgreSQL Server Installation is incompatible with this version of PL/Secure. You are trying 32 bit PL/Secure against 64 bit PostgreSQL server.
 
+plpgsqlo.incompatible.pg32.error=The PostgreSQL Server Installation is incompatible with this version of PL/Secure. You are trying 64 bit PL/Secure against 32 bit PostgreSQL server.
+
 pg.server.title=Postgres Installation Directory
 
 Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
