@@ -31,7 +31,7 @@ _prep_Drupal_windows() {
     fi
 
     echo "Creating staging directory ($WD/Drupal/staging/windows)"
-    mkdir -p $WD/Drupal/staging/windows/Drupal || _die "Couldn't create the staging directory"
+    mkdir -p $WD/Drupal/staging/windows/Drupal7 || _die "Couldn't create the staging directory"
     
 
 }
@@ -67,7 +67,7 @@ _build_Drupal_windows() {
 
 _postprocess_Drupal_windows() {
 
-    cp -R $WD/Drupal/source/Drupal.windows/* $WD/Drupal/staging/windows/Drupal || _die "Failed to copy the Drupal Source into the staging directory"
+    cp -R $WD/Drupal/source/Drupal.windows/* $WD/Drupal/staging/windows/Drupal7 || _die "Failed to copy the Drupal Source into the staging directory"
 
     cd $WD/Drupal
 
@@ -81,19 +81,19 @@ _postprocess_Drupal_windows() {
     cp resources/logo.ico staging/windows/scripts/images || _die "Failed to copy the logo image (resources/logo.ico)"
     
     #Configure the install.php file
-    _replace " '#default_value' => \$db_path," " '#default_value' => drupal," "$WD/Drupal/staging/windows/Drupal/install.php"
-    _replace " '#default_value' => \$db_user," " '#default_value' => drupaluser," "$WD/Drupal/staging/windows/Drupal/install.php"
-    _replace " '#default_value' => \$db_pass," " '#default_value' => drupaluser," "$WD/Drupal/staging/windows/Drupal/install.php"
-    _replace " '#default_value' => \$db_host," " '#default_value' => '@@HOST@@'," "$WD/Drupal/staging/windows/Drupal/install.php"
-    _replace " '#default_value' => \$db_port," " '#default_value' => @@PORT@@," "$WD/Drupal/staging/windows/Drupal/install.php"
-    _replace " '#default_value' => \$db_prefix," " '#default_value' => drupal_," "$WD/Drupal/staging/windows/Drupal/install.php"
+    _replace " '#default_value' => \$db_path," " '#default_value' => drupal," "$WD/Drupal/staging/windows/Drupal7/install.php"
+    _replace " '#default_value' => \$db_user," " '#default_value' => drupaluser," "$WD/Drupal/staging/windows/Drupal7/install.php"
+    _replace " '#default_value' => \$db_pass," " '#default_value' => drupaluser," "$WD/Drupal/staging/windows/Drupal7/install.php"
+    _replace " '#default_value' => \$db_host," " '#default_value' => '@@HOST@@'," "$WD/Drupal/staging/windows/Drupal7/install.php"
+    _replace " '#default_value' => \$db_port," " '#default_value' => @@PORT@@," "$WD/Drupal/staging/windows/Drupal7/install.php"
+    _replace " '#default_value' => \$db_prefix," " '#default_value' => drupal_," "$WD/Drupal/staging/windows/Drupal7/install.php"
 
-    chmod ugo+w staging/windows/Drupal/sites/default || _die "Couldn't set the permissions on the default directory"
+    chmod ugo+w staging/windows/Drupal7/sites/default || _die "Couldn't set the permissions on the default directory"
 
-    cp staging/windows/Drupal/sites/default/default.settings.php staging/windows/Drupal/sites/default/settings.php || _die "Failed to copy the default.settings.php into the settings.php file"
-    chmod ugo+w staging/windows/Drupal/sites/default/settings.php || _die "Couldn't set the permissions on settings.php"
-    mkdir -p staging/windows/Drupal/sites/default/files || _die "Couldn't create the files directory"
-    chmod ugo+w staging/windows/Drupal/sites/default/files || _die "Couldn't set the permissions on the default/files directory"
+    cp staging/windows/Drupal7/sites/default/default.settings.php staging/windows/Drupal7/sites/default/settings.php || _die "Failed to copy the default.settings.php into the settings.php file"
+    chmod ugo+w staging/windows/Drupal7/sites/default/settings.php || _die "Couldn't set the permissions on settings.php"
+    mkdir -p staging/windows/Drupal7/sites/default/files || _die "Couldn't create the files directory"
+    chmod ugo+w staging/windows/Drupal7/sites/default/files || _die "Couldn't set the permissions on the default/files directory"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"

@@ -35,7 +35,7 @@ _prep_Drupal_osx() {
     fi
 
     echo "Creating staging directory ($WD/Drupal/staging/osx)"
-    mkdir -p $WD/Drupal/staging/osx/Drupal || _die "Couldn't create the staging directory"
+    mkdir -p $WD/Drupal/staging/osx/Drupal7 || _die "Couldn't create the staging directory"
 
 
 }
@@ -79,7 +79,7 @@ _postprocess_Drupal_osx() {
     echo " Post Process : Drupal (OSX)"
     echo "*******************************************************"
 
-    cp -R $WD/Drupal/source/Drupal.osx/* $WD/Drupal/staging/osx/Drupal || _die "Failed to copy the Drupal Source into the staging directory"
+    cp -R $WD/Drupal/source/Drupal.osx/* $WD/Drupal/staging/osx/Drupal7 || _die "Failed to copy the Drupal Source into the staging directory"
 
     cd $WD/Drupal
 
@@ -102,19 +102,19 @@ _postprocess_Drupal_osx() {
     cp resources/pg-launchDrupal.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchDrupal.icns)"
 
     #Configure the install.php file
-    _replace " '#default_value' => \$db_path," " '#default_value' => drupal," "$WD/Drupal/staging/osx/Drupal/install.php"
-    _replace " '#default_value' => \$db_user," " '#default_value' => drupaluser," "$WD/Drupal/staging/osx/Drupal/install.php"
-    _replace " '#default_value' => \$db_pass," " '#default_value' => drupaluser," "$WD/Drupal/staging/osx/Drupal/install.php"
-    _replace " '#default_value' => \$db_host," " '#default_value' => '@@HOST@@'," "$WD/Drupal/staging/osx/Drupal/install.php"
-    _replace " '#default_value' => \$db_port," " '#default_value' => @@PORT@@," "$WD/Drupal/staging/osx/Drupal/install.php"
-    _replace " '#default_value' => \$db_prefix," " '#default_value' => drupal_," "$WD/Drupal/staging/osx/Drupal/install.php"
+    _replace " '#default_value' => \$db_path," " '#default_value' => drupal," "$WD/Drupal/staging/osx/Drupal7/install.php"
+    _replace " '#default_value' => \$db_user," " '#default_value' => drupaluser," "$WD/Drupal/staging/osx/Drupal7/install.php"
+    _replace " '#default_value' => \$db_pass," " '#default_value' => drupaluser," "$WD/Drupal/staging/osx/Drupal7/install.php"
+    _replace " '#default_value' => \$db_host," " '#default_value' => '@@HOST@@'," "$WD/Drupal/staging/osx/Drupal7/install.php"
+    _replace " '#default_value' => \$db_port," " '#default_value' => @@PORT@@," "$WD/Drupal/staging/osx/Drupal7/install.php"
+    _replace " '#default_value' => \$db_prefix," " '#default_value' => drupal_," "$WD/Drupal/staging/osx/Drupal7/install.php"
 
-    chmod ugo+w staging/osx/Drupal/sites/default || _die "Couldn't set the permissions on the default directory"
+    chmod ugo+w staging/osx/Drupal7/sites/default || _die "Couldn't set the permissions on the default directory"
 
-    cp staging/osx/Drupal/sites/default/default.settings.php staging/osx/Drupal/sites/default/settings.php || _die "Failed to copy the default.settings.php into the settings.php file"
-    chmod ugo+w staging/osx/Drupal/sites/default/settings.php || _die "Couldn't set the permissions on settings.php"
-    mkdir -p staging/osx/Drupal/sites/default/files || _die "Couldn't create the files directory"
-    chmod ugo+w staging/osx/Drupal/sites/default/files || _die "Couldn't set the permissions on the default/files directory"
+    cp staging/osx/Drupal7/sites/default/default.settings.php staging/osx/Drupal7/sites/default/settings.php || _die "Failed to copy the default.settings.php into the settings.php file"
+    chmod ugo+w staging/osx/Drupal7/sites/default/settings.php || _die "Couldn't set the permissions on settings.php"
+    mkdir -p staging/osx/Drupal7/sites/default/files || _die "Couldn't create the files directory"
+    chmod ugo+w staging/osx/Drupal7/sites/default/files || _die "Couldn't set the permissions on the default/files directory"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"

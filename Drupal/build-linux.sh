@@ -31,7 +31,7 @@ _prep_Drupal_linux() {
     fi
 
     echo "Creating staging directory ($WD/Drupal/staging/linux)"
-    mkdir -p $WD/Drupal/staging/linux/Drupal || _die "Couldn't create the staging directory"
+    mkdir -p $WD/Drupal/staging/linux/Drupal7 || _die "Couldn't create the staging directory"
     
 
 }
@@ -65,7 +65,7 @@ _build_Drupal_linux() {
 _postprocess_Drupal_linux() {
 
 
-    cp -R $WD/Drupal/source/Drupal.linux/* $WD/Drupal/staging/linux/Drupal || _die "Failed to copy the Drupal Source into the staging directory"
+    cp -R $WD/Drupal/source/Drupal.linux/* $WD/Drupal/staging/linux/Drupal7 || _die "Failed to copy the Drupal Source into the staging directory"
 
     cd $WD/Drupal
 
@@ -103,19 +103,19 @@ _postprocess_Drupal_linux() {
     cp -R $WD/scripts/xdg/xdg* staging/linux/installer/xdg/ || _die "Failed to copy the xdg files (resources/)"
 
     #Configure the install.php file
-    _replace " '#default_value' => \$db_path," " '#default_value' => drupal," "$WD/Drupal/staging/linux/Drupal/install.php"
-    _replace " '#default_value' => \$db_user," " '#default_value' => drupaluser," "$WD/Drupal/staging/linux/Drupal/install.php"
-    _replace " '#default_value' => \$db_pass," " '#default_value' => drupaluser," "$WD/Drupal/staging/linux/Drupal/install.php"
-    _replace " '#default_value' => \$db_host," " '#default_value' => '@@HOST@@'," "$WD/Drupal/staging/linux/Drupal/install.php"
-    _replace " '#default_value' => \$db_port," " '#default_value' => @@PORT@@," "$WD/Drupal/staging/linux/Drupal/install.php"
-    _replace " '#default_value' => \$db_prefix," " '#default_value' => drupal_," "$WD/Drupal/staging/linux/Drupal/install.php"
+    _replace " '#default_value' => \$db_path," " '#default_value' => drupal," "$WD/Drupal/staging/linux/Drupal7/install.php"
+    _replace " '#default_value' => \$db_user," " '#default_value' => drupaluser," "$WD/Drupal/staging/linux/Drupal7/install.php"
+    _replace " '#default_value' => \$db_pass," " '#default_value' => drupaluser," "$WD/Drupal/staging/linux/Drupal7/install.php"
+    _replace " '#default_value' => \$db_host," " '#default_value' => '@@HOST@@'," "$WD/Drupal/staging/linux/Drupal7/install.php"
+    _replace " '#default_value' => \$db_port," " '#default_value' => @@PORT@@," "$WD/Drupal/staging/linux/Drupal7/install.php"
+    _replace " '#default_value' => \$db_prefix," " '#default_value' => drupal_," "$WD/Drupal/staging/linux/Drupal7/install.php"
 
-    chmod ugo+w staging/linux/Drupal/sites/default || _die "Couldn't set the permissions on the default directory"
+    chmod ugo+w staging/linux/Drupal7/sites/default || _die "Couldn't set the permissions on the default directory"
 
-    cp staging/linux/Drupal/sites/default/default.settings.php staging/linux/Drupal/sites/default/settings.php || _die "Failed to copy the default.settings.php into the settings.php file"
-    chmod ugo+w staging/linux/Drupal/sites/default/settings.php || _die "Couldn't set the permissions on settings.php"
-    mkdir -p staging/linux/Drupal/sites/default/files || _die "Couldn't create the files directory"
-    chmod ugo+w staging/linux/Drupal/sites/default/files || _die "Couldn't set the permissions on the default/files directory"
+    cp staging/linux/Drupal7/sites/default/default.settings.php staging/linux/Drupal7/sites/default/settings.php || _die "Failed to copy the default.settings.php into the settings.php file"
+    chmod ugo+w staging/linux/Drupal7/sites/default/settings.php || _die "Couldn't set the permissions on settings.php"
+    mkdir -p staging/linux/Drupal7/sites/default/files || _die "Couldn't create the files directory"
+    chmod ugo+w staging/linux/Drupal7/sites/default/files || _die "Couldn't set the permissions on the default/files directory"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"

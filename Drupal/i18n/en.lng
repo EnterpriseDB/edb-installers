@@ -16,11 +16,11 @@ error.stop.apache=Failed to stop Apache.
 
 error.start.apache=Failed to start Apache.
 
-db.create.info=Created a database role with the name "drupaluser" and password "drupaluser". \n\nCreated a database named "drupal", owned by "drupaluser".
+db.create.info=Created a database role with the name "drupal7user" and password "drupal7user". \n\nCreated a database named "drupal7", owned by "drupal7user".
 
-db.drop.info=The Drupal database and user account have not been removed from your PostgreSQL server.
+db.drop.info=The drupal7 database and user account have not been removed from your PostgreSQL server.
 
-db.found.info=A database called 'drupal' and/or user called 'drupaluser' already exist on your server. If you continue with this installation, this database and/or user will be reused, however Drupal may require additional manual reconfiguration for correct operation. \n\nDo you wish to continue?
+db.found.info=A database called 'drupal7' and/or user called 'drupal7user' already exist on your server. If you continue with this installation, this database and/or user will be reused, however Drupal7 may require additional manual reconfiguration for correct operation. \n\nDo you wish to continue?
 
 install.summary=Drupal is a popular content management system for building websites.
 
@@ -42,9 +42,8 @@ Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
-Installer.Installation.Finished.Visit.Us=Please login on http://127.0.0.1:${apacheport}/Drupal and finish the installation process by following steps on http://127.0.0.1:${apacheport}/Drupal/update.php in your browser.
+Installer.Installation.Finished.Visit.Us=Please login on http://127.0.0.1:${apacheport}/Drupal7 and finish the installation process by following steps on http://127.0.0.1:${apacheport}/Drupal7/update.php in your browser.
 
-run.update.php=Please finish the installation process after following steps after opening URL http://127.0.0.1:${apacheport}/Drupal/update.php in your browser.
+run.update.php=Please finish the installation process after following steps after opening URL http://127.0.0.1:${apacheport}/Drupal7/update.php in your browser.
 
 drupal.user.not.superuser=The user '${pguser}' does not have super-user privileges.\nPlease provide the details about the user, who has super-user privileges.
-error.drupal.invalid.version=An invalid version of Drupal already installed which this installation cannot upgrade.\nPlease uninstall the older version, remove the drupal database and try again.

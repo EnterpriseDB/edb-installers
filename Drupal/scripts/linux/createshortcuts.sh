@@ -53,31 +53,31 @@ _fixup_file() {
 
 # Create the icon resources
 
-"$INSTALLDIR/Drupal/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/Drupal/scripts/images/pg-postgresql.png"
-"$INSTALLDIR/Drupal/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/Drupal/scripts/images/pg-launchDrupal.png"
+"$INSTALLDIR/Drupal7/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/Drupal7/scripts/images/pg-postgresql.png"
+"$INSTALLDIR/Drupal7/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/Drupal7/scripts/images/pg-launchDrupal.png"
 
 # Fixup the scripts
-_fixup_file "$INSTALLDIR/Drupal/scripts/launchbrowser.sh"
-_fixup_file "$INSTALLDIR/Drupal/scripts/launchDrupal.sh"
+_fixup_file "$INSTALLDIR/Drupal7/scripts/launchbrowser.sh"
+_fixup_file "$INSTALLDIR/Drupal7/scripts/launchDrupal.sh"
 
-chmod ugo+x "$INSTALLDIR/Drupal/scripts/"*.sh
-chmod ugo+x "$INSTALLDIR/Drupal/installer/Drupal/"*.sh
+chmod ugo+x "$INSTALLDIR/Drupal7/scripts/"*.sh
+chmod ugo+x "$INSTALLDIR/Drupal7/installer/Drupal/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/Drupal/scripts/xdg/pg-postgresql.directory"
-_fixup_file "$INSTALLDIR/Drupal/scripts/xdg/pg-launchDrupal.desktop"
+_fixup_file "$INSTALLDIR/Drupal7/scripts/xdg/pg-postgresql.directory"
+_fixup_file "$INSTALLDIR/Drupal7/scripts/xdg/pg-launchDrupal.desktop"
 
 # Copy the primary desktop file to the branded version. We don't do this if
 # the installation is not branded, to retain backwards compatibility.
 if [ $BRANDED -ne 0 ];
 then
-    cp "$INSTALLDIR/Drupal/scripts/xdg/pg-postgresql.directory" "$INSTALLDIR/Drupal/scripts/xdg/pg-$BRANDING_STR.directory"
+    cp "$INSTALLDIR/Drupal7/scripts/xdg/pg-postgresql.directory" "$INSTALLDIR/Drupal7/scripts/xdg/pg-$BRANDING_STR.directory"
 fi
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
-"$INSTALLDIR/Drupal/installer/xdg/xdg-desktop-menu" install --mode system  \
-      "$INSTALLDIR/Drupal/scripts/xdg/pg-$BRANDING_STR.directory"  \
-      "$INSTALLDIR/Drupal/scripts/xdg/pg-launchDrupal.desktop"  || _warn "Failed to create the Drupal menu"
+"$INSTALLDIR/Drupal7/installer/xdg/xdg-desktop-menu" install --mode system  \
+      "$INSTALLDIR/Drupal7/scripts/xdg/pg-$BRANDING_STR.directory"  \
+      "$INSTALLDIR/Drupal7/scripts/xdg/pg-launchDrupal.desktop"  || _warn "Failed to create the Drupal menu"
 
 #Ubuntu 10.04 and greater require menu cache update
 

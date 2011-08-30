@@ -46,17 +46,17 @@ _replace() {
 
 
 # Remove the menu shortcuts
-"$INSTALLDIR/Drupal/installer/xdg/xdg-desktop-menu" uninstall --mode system  \
-    "$INSTALLDIR/Drupal/scripts/xdg/pg-launchDrupal.desktop"  || _warn "Failed to remove the Drupal menu"
+"$INSTALLDIR/Drupal7/installer/xdg/xdg-desktop-menu" uninstall --mode system  \
+    "$INSTALLDIR/Drupal7/scripts/xdg/pg-launchDrupal.desktop"  || _warn "Failed to remove the Drupal menu"
       
 # Remove the icon resources
-"$INSTALLDIR/Drupal/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32  \
-    "$INSTALLDIR/Drupal/scripts/images/pg-launchDrupal.png" || _warn "Failed to remove icon resource"
+"$INSTALLDIR/Drupal7/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32  \
+    "$INSTALLDIR/Drupal7/scripts/images/pg-launchDrupal.png" || _warn "Failed to remove icon resource"
 
 # Only remove the directory file if it's branded
 if [ $BRANDED -ne 0 ];
 then
-    rm "$INSTALLDIR/Drupal/scripts/xdg/pg-$BRANDING_STR.directory"
+    rm "$INSTALLDIR/Drupal7/scripts/xdg/pg-$BRANDING_STR.directory"
 fi
 
 xdg_dir_name=menus

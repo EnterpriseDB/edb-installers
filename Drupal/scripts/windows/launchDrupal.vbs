@@ -12,7 +12,7 @@ End If
 
 strApachePort = WSHShell.RegRead(strRegKey & "APACHE_PORT")
 
-strURL="http://localhost:" & strApachePort & "/Drupal"
+strURL="http://localhost:" & strApachePort & "/Drupal7"
 strArgs= "url.dll,FileProtocolHandler " & strURL
 
 Set shellApp = WScript.CreateObject("Shell.Application")

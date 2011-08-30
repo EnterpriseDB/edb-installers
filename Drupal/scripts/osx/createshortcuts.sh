@@ -7,7 +7,7 @@ then
     exit 127
 fi
 
-INSTALLDIR=$1/Drupal
+INSTALLDIR=$1/Drupal7
 BRANDING=$2
 FOLDER="/Applications/$BRANDING"
 
@@ -42,7 +42,7 @@ _compile_script() {
 mkdir -p "$FOLDER" || _die "Failed to create the menu directory ($FOLDER)"
 
 # Create the scripts
-_compile_script "$INSTALLDIR/scripts/pg-launchDrupal.applescript" "$FOLDER/Drupal.app" "$INSTALLDIR/scripts/images/pg-launchDrupal.icns"
+_compile_script "$INSTALLDIR/scripts/pg-launchDrupal.applescript" "$FOLDER/Drupal7.app" "$INSTALLDIR/scripts/images/pg-launchDrupal.icns"
 
 echo "$0 ran to completion"
 exit 0

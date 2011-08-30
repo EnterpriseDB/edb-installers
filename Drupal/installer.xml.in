@@ -35,7 +35,7 @@
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
     <leftImage>../resources/pg-side.png</leftImage>
-    <productDisplayIcon>${installdir}/Drupal/scripts/images/logo.ico</productDisplayIcon>
+    <productDisplayIcon>${installdir}/Drupal7/scripts/images/logo.ico</productDisplayIcon>
     <windowsExecutableIcon>resources/logo.ico</windowsExecutableIcon>
 
     <!-- i18n files for the UI -->
@@ -127,45 +127,6 @@
                 </compareText>
             </ruleList>
         </touchFile>
-        <!-- LIN & MAC: Check Previous Installation of Drupal -->
-        <iniFileGet>
-            <file>/etc/postgres-reg.ini</file>
-            <section>Drupal</section>
-            <key>Version</key>
-            <variable>drupalVersion</variable>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </iniFileGet>
-        <!-- WIN: Check Previous Installation of Drupal -->
-        <actionGroup>
-            <actionList>
-                <registryGet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Drupal</key>
-                    <name>Version</name>
-                    <variable>drupalVersion</variable>
-                </registryGet>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-
-	<!-- Error out if a drupal installation previous to version 7 exist  -->
-	<throwError>
-	    <text>${msg(error.drupal.invalid.version)}</text>
-	    <ruleList>
-		<compareText text="${drupalVersion}" logic="does_not_equal" value="" />
-	    </ruleList>
-	</throwError>
 
         <!-- Get the Branding -->
          <iniFileGet>
@@ -432,7 +393,7 @@
 
         <!-- Win: deleting installation helper files (Clean-up for upgrade) -->
         <deleteFile>
-            <path>${installdir}\drupal\install.bat</path>
+            <path>${installdir}\Drupal7\install.bat</path>
             <ruleList>
                 <compareText>
                     <text>${drupalVersion}</text>
@@ -445,13 +406,13 @@
                     <value>windows</value>
                 </compareText>
                 <fileExists>
-                    <path>${installdir}\drupal\install.bat</path>
+                    <path>${installdir}\Drupal7\install.bat</path>
                 </fileExists>
             </ruleList>
         </deleteFile>
 
         <deleteFile>
-            <path>${installdir}\drupal\launchDrupal.vbs</path>
+            <path>${installdir}\Drupal7\launchDrupal.vbs</path>
             <ruleList>
                 <compareText>
                     <text>${drupalVersion}</text>
@@ -464,7 +425,7 @@
                     <value>windows</value>
                 </compareText>
                 <fileExists>
-                    <path>${installdir}\drupal\launchDrupal.vbs</path>
+                    <path>${installdir}\Drupal7\launchDrupal.vbs</path>
                 </fileExists>
             </ruleList>
         </deleteFile>
@@ -474,7 +435,7 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>${installdir}/drupal/uninstall-Drupal</path>
+                    <path>${installdir}/Drupal7/uninstall-Drupal</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -489,7 +450,7 @@
                     <value>windows</value>
                 </compareText>
                 <fileExists>
-                    <path>${installdir}/drupal/uninstall-Drupal</path>
+                    <path>${installdir}/Drupal7/uninstall-Drupal</path>
                 </fileExists>
             </ruleList>
         </actionGroup>
@@ -498,7 +459,7 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>${installdir}\drupal\uninstall-Drupal.exe</path>
+                    <path>${installdir}\Drupal7\uninstall-Drupal.exe</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -513,7 +474,7 @@
                     <value>windows</value>
                 </compareText>
                 <fileExists>
-                    <path>${installdir}\drupal\uninstall-Drupal.exe</path>
+                    <path>${installdir}\Drupal7\uninstall-Drupal.exe</path>
                 </fileExists>
             </ruleList>
         </actionGroup>
@@ -523,16 +484,16 @@
         <actionGroup>
             <actionList>
                 <createBackupFile>
-                    <path>${installdir}/Drupal/sites/default/settings.php</path>
+                    <path>${installdir}/Drupal7/sites/default/settings.php</path>
                 </createBackupFile>
                 <deleteFile>
-                    <path>${installdir}/Drupal/sites/default/settings.php</path>
+                    <path>${installdir}/Drupal7/sites/default/settings.php</path>
                 </deleteFile>
                 <createBackupFile>
-                    <path>${installdir}/Drupal/install.php</path>
+                    <path>${installdir}/Drupal7/install.php</path>
                 </createBackupFile>
                 <deleteFile>
-                    <path>${installdir}/Drupal/install.php</path>
+                    <path>${installdir}/Drupal7/install.php</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -552,16 +513,16 @@
         <actionGroup>
             <actionList>
                 <createBackupFile>
-                    <path>${installdir}\Drupal\sites\default\settings.php</path>
+                    <path>${installdir}\Drupal7\sites\default\settings.php</path>
                 </createBackupFile>
                 <deleteFile>
-                    <path>${installdir}\Drupal\sites\default\settings.php</path>
+                    <path>${installdir}\Drupal7\sites\default\settings.php</path>
                 </deleteFile>
 	        <createBackupFile>
-                    <path>${installdir}\Drupal\install.php</path>
+                    <path>${installdir}\Drupal7\install.php</path>
                 </createBackupFile>
                 <deleteFile>
-                    <path>${installdir}\Drupal\install.php</path>
+                    <path>${installdir}\Drupal7\install.php</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -636,7 +597,7 @@
             <origin>instscripts</origin>
             <folder>installfileslinux</folder>
             <destination>${system_temp_directory}</destination>
-            <component>Drupal</component>
+            <component>Drupal7</component>
             <ruleList>
                 <compareText>
                      <text>${platform_name}</text>
@@ -649,7 +610,7 @@
             <origin>instscripts</origin>
             <folder>installfileslinux-x64</folder>
             <destination>${system_temp_directory}</destination>
-            <component>Drupal</component>
+            <component>Drupal7</component>
             <ruleList>
                 <compareText>
                      <text>${platform_name}</text>
@@ -662,7 +623,7 @@
             <origin>instscripts</origin>
             <folder>installfilesosx</folder>
             <destination>${system_temp_directory}</destination>
-            <component>Drupal</component>
+            <component>Drupal7</component>
             <ruleList>
                 <compareText>
                      <text>${platform_name}</text>
@@ -675,7 +636,7 @@
             <origin>instscripts</origin>
             <folder>installfileswindows</folder>
             <destination>${system_temp_directory}</destination>
-            <component>Drupal</component>
+            <component>Drupal7</component>
             <ruleList>
                 <compareText>
                      <text>${platform_name}</text>
@@ -776,7 +737,7 @@
                         workingDirectory="${system_temp_directory}/instscripts"
                         abortOnError="0" showMessageOnError="0">
                     <exec>${psql_executable}</exec>
-                    <execArgs>-t -A -c "SELECT count(*) FROM pg_catalog.pg_database d WHERE d.datname='drupal'"</execArgs>
+                    <execArgs>-t -A -c "SELECT count(*) FROM pg_catalog.pg_database d WHERE d.datname='drupal7'"</execArgs>
                 </setInstallerVariableFromScriptOutput>
 
                 <!-- Check user exists -->
@@ -785,7 +746,7 @@
                         workingDirectory="${system_temp_directory}/instscripts"
                         abortOnError="0" showMessageOnError="0">
                     <exec>${psql_executable}</exec>
-                    <execArgs>-t -A -c "SELECT count(*) FROM pg_catalog.pg_user u WHERE u.usename='drupaluser'"</execArgs>
+                    <execArgs>-t -A -c "SELECT count(*) FROM pg_catalog.pg_user u WHERE u.usename='drupal7user'"</execArgs>
                 </setInstallerVariableFromScriptOutput>
             </actionList>
             <ruleList>
@@ -812,24 +773,24 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>${installdir}/Drupal/sites/default/settings.php</path>
+                    <path>${installdir}/Drupal7/sites/default/settings.php</path>
                 </deleteFile>
                 <renameFile>
-                    <origin>${installdir}/Drupal/sites/default/settings.php.bak0</origin>
-                    <destination>${installdir}/Drupal/sites/default/settings.php</destination>
+                    <origin>${installdir}/Drupal7/sites/default/settings.php.bak0</origin>
+                    <destination>${installdir}/Drupal7/sites/default/settings.php</destination>
                 </renameFile>
                 <deleteFile>
-                    <path>${installdir}/Drupal/sites/default/settings.php.bak0</path>
+                    <path>${installdir}/Drupal7/sites/default/settings.php.bak0</path>
                 </deleteFile>
                 <deleteFile>
-                    <path>${installdir}/Drupal/install.php</path>
+                    <path>${installdir}/Drupal7/install.php</path>
                 </deleteFile>
                 <renameFile>
-                    <origin>${installdir}/Drupal/install.php.bak0</origin>
-                    <destination>${installdir}/Drupal/install.php</destination>
+                    <origin>${installdir}/Drupal7/install.php.bak0</origin>
+                    <destination>${installdir}/Drupal7/install.php</destination>
                 </renameFile>
                 <deleteFile>
-                    <path>${installdir}/Drupal/install.php.bak0</path>
+                    <path>${installdir}/Drupal7/install.php.bak0</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -844,8 +805,8 @@
                     <value>windows</value>
                 </compareText>
                 <fileExists>
-                    <path>${installdir}/Drupal/sites/default/settings.php.bak0</path>
-                    <path>${installdir}/Drupal/install.php.bak0</path>
+                    <path>${installdir}/Drupal7/sites/default/settings.php.bak0</path>
+                    <path>${installdir}/Drupal7/install.php.bak0</path>
                 </fileExists>
             </ruleList>
         </actionGroup>
@@ -853,24 +814,24 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>${installdir}\Drupal\sites\default\settings.php</path>
+                    <path>${installdir}\Drupal7\sites\default\settings.php</path>
                 </deleteFile>
                 <renameFile>
-                    <origin>${installdir}\Drupal\sites\default\settings.php.bak0</origin>
-                    <destination>${installdir}\Drupal\sites\default\settings.php</destination>
+                    <origin>${installdir}\Drupal7\sites\default\settings.php.bak0</origin>
+                    <destination>${installdir}\Drupal7\sites\default\settings.php</destination>
                 </renameFile>
                 <deleteFile>
-                    <path>${installdir}\Drupal\sites\default\settings.php.bak0</path>
+                    <path>${installdir}\Drupal7\sites\default\settings.php.bak0</path>
                 </deleteFile>
 	        <deleteFile>
-                    <path>${installdir}\Drupal\install.php</path>
+                    <path>${installdir}\Drupal7\install.php</path>
                 </deleteFile>
                 <renameFile>
-                    <origin>${installdir}\Drupal\install.php.bak0</origin>
-                    <destination>${installdir}\Drupal\install.php</destination>
+                    <origin>${installdir}\Drupal7\install.php.bak0</origin>
+                    <destination>${installdir}\Drupal7\install.php</destination>
                 </renameFile>
                 <deleteFile>
-                    <path>${installdir}\Drupal\install.php.bak0</path>
+                    <path>${installdir}\Drupal7\install.php.bak0</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -885,14 +846,14 @@
                     <value>windows</value>
                 </compareText>
                 <fileExists>
-                    <path>${installdir}\Drupal\sites\default\settings.php.bak0</path>
-                    <path>${installdir}\Drupal\install.php.bak0</path>
+                    <path>${installdir}\Drupal7\sites\default\settings.php.bak0</path>
+                    <path>${installdir}\Drupal7\install.php.bak0</path>
                 </fileExists>
             </ruleList>
         </actionGroup>
 
         <substitute>
-            <files>${installdir}/Drupal/install.php</files>
+            <files>${installdir}/Drupal7/install.php</files>
             <substitutionList>
                 <substitution>
                     <pattern>@@HOST@@</pattern>
@@ -956,7 +917,7 @@
             <actionList>
                 <runProgram workingDirectory="${system_temp_directory}/instscripts"
                       program="${psql_executable}">
-                    <programArguments>-t -A -c "CREATE ROLE drupaluser PASSWORD 'drupaluser' NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN"</programArguments>
+                    <programArguments>-t -A -c "CREATE ROLE drupal7user PASSWORD 'drupal7user' NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN"</programArguments>
                 </runProgram>
             </actionList>
             <ruleList>
@@ -969,7 +930,7 @@
             <actionList>
                 <runProgram workingDirectory="${system_temp_directory}/instscripts"
                       program="${psql_executable}">
-                    <programArguments>-t -A -c "CREATE DATABASE drupal OWNER drupaluser"</programArguments>
+                    <programArguments>-t -A -c "CREATE DATABASE drupal7 OWNER drupal7user"</programArguments>
                 </runProgram>
             </actionList>
             <ruleList>
@@ -982,7 +943,7 @@
         <actionGroup>
             <actionList>
                 <runProgram>
-                    <program>${installdir}/Drupal/installer/Drupal/createshortcuts.sh</program>
+                    <program>${installdir}/Drupal7/installer/Drupal/createshortcuts.sh</program>
                     <programArguments>"${installdir}" "${branding}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <workingDirectory>${installdir}/Drupal/installer/Drupal</workingDirectory>
@@ -1019,7 +980,7 @@
         <actionGroup>
             <actionList>
                 <registryDelete>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Drupal ${drupalVersionInstalled}</key>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Drupal7 ${drupalVersionInstalled}</key>
                 </registryDelete>
             </actionList>
             <ruleList>
@@ -1299,7 +1260,7 @@
         <actionGroup>
             <actionList>
                 <runProgram>
-                    <program>${installdir}/Drupal/installer/Drupal/removeshortcuts.sh</program>
+                    <program>${installdir}/Drupal7/installer/Drupal/removeshortcuts.sh</program>
                     <programArguments>"${installdir}" "${branding}"</programArguments>
                     <workingDirectory>${installdir}/Drupal/installer/Drupal</workingDirectory>
                 </runProgram>
@@ -1316,7 +1277,7 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>/Applications/${branding}/Drupal.app</path>
+                    <path>/Applications/${branding}/Drupal7.app</path>
                 </deleteFile>
             </actionList>
             <ruleList>
@@ -1338,7 +1299,7 @@
 
     <!-- finalPage actions -->
     <finalPageActionList>
-        <launchBrowser url="http://127.0.0.1:${apacheport}/Drupal/update.php"
+        <launchBrowser url="http://127.0.0.1:${apacheport}/Drupal7/update.php"
             progressText="${msg(Installer.Installation.Finished.Visit.Us)}">
             <ruleList>
                 <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
@@ -1349,7 +1310,7 @@
                 </compareText>
             </ruleList>
         </launchBrowser>
-        <launchBrowser url="http://127.0.0.1:${apacheport}/Drupal/install.php"
+        <launchBrowser url="http://127.0.0.1:${apacheport}/Drupal7/install.php"
             progressText="${msg(Installer.Installation.Finished.Visit.Us)}">
             <ruleList>
                 <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
@@ -1361,7 +1322,7 @@
     <!-- Components -->
     <componentList>
         <component>
-            <name>Drupal</name>
+            <name>Drupal7</name>
             <description>Drupal components </description>
             <canBeEdited>0</canBeEdited>
             <selected>1</selected>
@@ -1375,13 +1336,13 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux/Drupal</origin>
+                            <origin>staging/linux/Drupal7</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
                 <folder>
                     <description>Installation Files</description>
-                    <destination>${installdir}/Drupal</destination>
+                    <destination>${installdir}/Drupal7</destination>
                     <name>installfileslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
@@ -1395,7 +1356,7 @@
                 </folder>
                 <folder>
                     <description>Launch And Menu Scripts</description>
-                    <destination>${installdir}/Drupal</destination>
+                    <destination>${installdir}/Drupal7</destination>
                     <name>menuandlaunchfileslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
@@ -1412,13 +1373,13 @@
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/Drupal</origin>
+                            <origin>staging/linux-x64/Drupal7</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
                 <folder>
                     <description>Installation Files</description>
-                    <destination>${installdir}/Drupal</destination>
+                    <destination>${installdir}/Drupal7</destination>
                     <name>installfileslinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
@@ -1432,7 +1393,7 @@
                 </folder>
                 <folder>
                     <description>Launch And Menu Scripts</description>
-                    <destination>${installdir}/Drupal</destination>
+                    <destination>${installdir}/Drupal7</destination>
                     <name>menuandlaunchfileslinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
@@ -1449,13 +1410,13 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/windows/Drupal</origin>
+                            <origin>staging/windows/Drupal7</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
                 <folder>
                     <description>Installation Files</description>
-                    <destination>${installdir}/Drupal</destination>
+                    <destination>${installdir}/Drupal7</destination>
                     <name>installfileswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
@@ -1466,7 +1427,7 @@
                 </folder>
                 <folder>
                     <description>Launch And Menu Scripts</description>
-                    <destination>${installdir}/Drupal</destination>
+                    <destination>${installdir}/Drupal7</destination>
                     <name>menuandlaunchfileswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
@@ -1483,13 +1444,13 @@
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/osx/Drupal</origin>
+                            <origin>staging/osx/Drupal7</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
                 <folder>
                     <description>Installation Files</description>
-                    <destination>${installdir}/Drupal</destination>
+                    <destination>${installdir}/Drupal7</destination>
                     <name>installfilesosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
@@ -1503,7 +1464,7 @@
                 </folder>
                 <folder>
                     <description>Launch And Menu Scripts</description>
-                    <destination>${installdir}/Drupal</destination>
+                    <destination>${installdir}/Drupal7</destination>
                     <name>menuandlaunchfilesosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
@@ -1517,12 +1478,12 @@
             <startMenuShortcutList>
                 <!-- Launch Drupal -->
                 <startMenuShortcut>
-                    <comment>Drupal</comment>
-                    <name>Drupal</name>
+                    <comment>Drupal7</comment>
+                    <name>Drupal7</name>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>wscript</windowsExec>
-                    <windowsExecArgs>//NoLogo "${installdir}\Drupal\scripts\launchDrupal.vbs"</windowsExecArgs>
-                    <windowsIcon>${installdir}\Drupal\scripts\images\logo.ico</windowsIcon>
+                    <windowsExecArgs>//NoLogo "${installdir}\Drupal7\scripts\launchDrupal.vbs"</windowsExecArgs>
+                    <windowsIcon>${installdir}\Drupal7\scripts\images\logo.ico</windowsIcon>
                 </startMenuShortcut>
             </startMenuShortcutList>
         </component>
@@ -1749,7 +1710,7 @@
                         workingDirectory="${system_temp_directory}/instscripts"
                         abortOnError="0" showMessageOnError="0">
                     <exec>${psql_executable}</exec>
-                    <execArgs>-t -A -c "SELECT count(*) FROM pg_catalog.pg_database d WHERE d.datname='drupal'"</execArgs>
+                    <execArgs>-t -A -c "SELECT count(*) FROM pg_catalog.pg_database d WHERE d.datname='drupal7'"</execArgs>
                 </setInstallerVariableFromScriptOutput>
 
                 <!-- Check user exists -->
@@ -1758,7 +1719,7 @@
                         workingDirectory="${system_temp_directory}/instscripts"
                         abortOnError="0" showMessageOnError="0">
                     <exec>${psql_executable}</exec>
-                    <execArgs>-t -A -c "SELECT count(*) FROM pg_catalog.pg_user u WHERE u.usename='drupaluser'"</execArgs>
+                    <execArgs>-t -A -c "SELECT count(*) FROM pg_catalog.pg_user u WHERE u.usename='drupal7user'"</execArgs>
                 </setInstallerVariableFromScriptOutput>
 
                 <!-- Inform user about the Existance of database and user -->
