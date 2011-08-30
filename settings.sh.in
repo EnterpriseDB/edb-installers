@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# PostgreSQL Installer build system configuration. 
+# PostgreSQL Installer build system configuration.
 # Copy this file to settings.sh, and edit as required for the build setup
 
 # Platforms. Set to 1 to enable a specific platform
@@ -21,6 +21,7 @@ PG_PACKAGE_APACHEPHP=0
 PG_PACKAGE_MEDIAWIKI=0
 PG_PACKAGE_PHPBB=0
 PG_PACKAGE_DRUPAL=0
+PG_PACKAGE_DRUPAL7=0
 PG_PACKAGE_PHPPGADMIN=0
 PG_PACKAGE_PGJDBC=0
 PG_PACKAGE_PSQLODBC=0

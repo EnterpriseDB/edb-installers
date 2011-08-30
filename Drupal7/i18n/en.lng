@@ -1,0 +1,50 @@
+Installer.Welcome.Title=Setup %1$s
+
+Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
+
+Installer.Installing.Title=Installing ${product_fullname}
+
+platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
+
+error.apache.notfound=No Apache server was found. Please run the EnterpriseDB ApachePhp installer.
+
+error.php.notfound=No PHP installation was found. Please run the EnterpriseDB ApachePhp installer.
+
+apache.restart.question=The installer will restart the Apache Server.\n\nDo you wish to continue?
+
+error.stop.apache=Failed to stop Apache.
+
+error.start.apache=Failed to start Apache.
+
+db.create.info=Created a database role with the name "drupaluser" and password "drupaluser". \n\nCreated a database named "drupal", owned by "drupaluser".
+
+db.drop.info=The Drupal database and user account have not been removed from your PostgreSQL server.
+
+db.found.info=A database called 'drupal' and/or user called 'drupaluser' already exist on your server. If you continue with this installation, this database and/or user will be reused, however Drupal may require additional manual reconfiguration for correct operation. \n\nDo you wish to continue?
+
+install.summary=Drupal is a popular content management system for building websites.
+
+pgplus.details.title=PostgreSQL Installation Details
+
+pgplus.details.explanation=Please verify the PostgreSQL installation details
+
+pgplus.details.error=Connection to the PostgreSQL Server failed. Please re-check the details provided.
+
+post.install.error=Error Configuring Drupal7 Application.
+
+pgplus.blank.error=Values must be entered for all fields.
+
+pgplus.port.error=Invalid port specified.
+
+progress.text.creating.shortcuts=Creating Menu Shortcuts
+
+Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
+
+Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
+
+Installer.Installation.Finished.Visit.Us=Please login on http://127.0.0.1:${apacheport}/Drupal7 and finish the installation process by following steps on http://127.0.0.1:${apacheport}/Drupal7/update.php in your browser.
+
+run.update.php=Please finish the installation process after following steps after opening URL http://127.0.0.1:${apacheport}/Drupal7/update.php in your browser.
+
+drupal.user.not.superuser=The user '${pguser}' does not have super-user privileges.\nPlease provide the details about the user, who has super-user privileges.
+

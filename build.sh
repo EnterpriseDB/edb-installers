@@ -212,6 +212,22 @@ then
     _postprocess_Drupal || exit 1
 fi
 
+# Package: Drupal7
+if [ $PG_PACKAGE_DRUPAL7 = 1 ];
+then
+    echo "### Package: Drupal7"
+    cd $WD
+    source ./Drupal7/build.sh
+
+    if [ $SKIPBUILD = 0 ];
+    then
+        _prep_Drupal7 || exit 1
+        _build_Drupal7 || exit 1
+    fi
+
+    _postprocess_Drupal7 || exit 1
+fi
+
 # Package: phppgadmin
 if [ $PG_PACKAGE_PHPPGADMIN = 1 ];
 then
@@ -409,7 +425,7 @@ fi
 
 #Package: MigrationToolKitA
 #The replication server always needs the latest build of MTK...
-if [ $PG_PACKAGE_MIGRATIONTOOLKIT = 1 -o $PG_PACKAGE_REPLICATIONSERVER = 1 ]; 
+if [ $PG_PACKAGE_MIGRATIONTOOLKIT = 1 -o $PG_PACKAGE_REPLICATIONSERVER = 1 ];
 then
     cd $WD
     source ./MigrationToolKit/build.sh
