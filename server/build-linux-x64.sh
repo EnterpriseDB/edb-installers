@@ -264,7 +264,7 @@ then
     PLL=\$PLL:/lib/libreadline.so.5
 fi
 # Get the PG bin directory path relative to psql caller script.
-PG_BIN_PATH=\`dirname \$0\`
+PG_BIN_PATH=\`dirname "\$0"\`
 
 if [ -z "\$PLL" ];
 then
