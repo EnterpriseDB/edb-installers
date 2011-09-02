@@ -122,8 +122,8 @@ _build_plpgsqlo_windows_x64() {
 
    # Zip up the installed code, copy it back here, and unpack.
    echo "Copying plpgsqlo build tree to Unix host"
-   ssh $PGBUILDSSH "cd $PG_PATH_WINDOWS\\\\plpgsqlo.staging; zip -r ../plpgsqlo-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/plpgsqlo.staging)"
-   scp $PGBUILDSSH:$PGREMOTEBUILDPATH/plpgsqlo-staging.zip $PLPGSQLOSTAGING || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/plpgsqlo-staging.zip)"
+   ssh $PGBUILDSSH "cd $PGREMOTEBUILDPATH\\\\plpgsqlo.staging; zip -r ../plpgsqlo-staging.zip *" || _die "Failed to pack the built source tree ($PGBUILDSSH:$PGREMOTEBUILDPATH/plpgsqlo.staging)"
+   scp $PGBUILDSSH:$PGREMOTEBUILDPATH/plpgsqlo-staging.zip $PLPGSQLOSTAGING || _die "Failed to copy the built source tree ($PGBUILDSSH:$PGREMOTEBUILDPATH/plpgsqlo-staging.zip)"
    unzip $PLPGSQLOSTAGING/plpgsqlo-staging.zip -d $PLPGSQLOSTAGING || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/plpgsqlo-staging.zip)"
    rm $PLPGSQLOSTAGING/plpgsqlo-staging.zip
 
