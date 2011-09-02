@@ -62,6 +62,7 @@ rm -rf output/* >> autobuild.log 2>&1
 
 # Switch to REL-9_0 branch
 echo "Switching to REL-9_0 branch" >> autobuild.log
+/opt/local/bin/git reset --hard >> autobuild.log 2>&1
 /opt/local/bin/git checkout REL-9_0 >> autobuild.log 2>&1
 
 # Self update
@@ -97,6 +98,7 @@ rm -rf output/* >> autobuild.log 2>&1
 
 # Switch to REL-9_1 branch
 echo "Switching to REL-9_1 branch" >> autobuild.log
+/opt/local/bin/git reset --hard >> autobuild.log 2>&1
 /opt/local/bin/git checkout REL-9_1 >> autobuild.log 2>&1
 
 # Make sure, we always do a full build
