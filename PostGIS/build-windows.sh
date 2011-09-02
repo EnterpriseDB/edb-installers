@@ -213,6 +213,8 @@ EOT
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.windows/java; cp -R pljava $PG_PATH_WINDOWS/postgis.staging/java/" || _die "Failed to copy pljava "
 
    echo "Copying required dependent libraries from proj and geos packages"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgis.staging/lib; cp *.dll $PG_PATH_WINDOWS/postgis.staging/bin" || _die "Failed to copy dependent dll"
+   ssh $PG_SSH_WINDOWS "rm -rf $PG_PATH_WINDOWS/postgis.staging/lib" || _die "Failed to delete the lib directory"
    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/geos-$PG_TARBALL_GEOS.staging/bin; cp *.dll $PG_PATH_WINDOWS/postgis.staging/bin" || _die "Failed to copy dependent dll"
    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/proj-$PG_TARBALL_PROJ.staging/lib; cp *.dll $PG_PATH_WINDOWS/postgis.staging/bin" || _die "Failed to copy dependent dll"
 
