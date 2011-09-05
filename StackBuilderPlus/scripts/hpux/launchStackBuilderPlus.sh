@@ -8,7 +8,7 @@ CMD=""
 # KDESU
 if [ x"$KDE_FULL_SESSION" = x"true" ];
 then
-    KDESU=`which kdesu 2> /dev/null`
+    KDESU=`which type 2> /dev/null`
     if [ $? -eq 0 ];
     then
         CMD="$KDESU -c"
@@ -17,7 +17,7 @@ then
 # GNOMESU
 elif [ x"$GNOME_DESKTOP_SESSION_ID" != x"" ];
 then
-    GNOMESU=`which gnomesu 2> /dev/null`
+    GNOMESU=`type gnomesu 2> /dev/null`
     if [ $? -ne 0 ];
     then
         GNOMESU=`which xsu 2> /dev/null`
@@ -32,9 +32,10 @@ fi
 # If we still have nothing, look for gksu
 if [ x"$CMD" = x"" ];
 then
-    GKSU=`which gksu 2> /dev/null`
+    GKSU=`type gksu 2> /dev/null`
     if [ $? -eq 0 ];
     then
+	GKSU=`which gksu 2> /dev/null`
         CMD="$GKSU -u root -D StackBuilderPlus"
     fi
 fi
@@ -44,7 +45,7 @@ if [ x"$CMD" = x"" ];
 then
     for shell in xterm konsole gnome-terminal
     do
-        which $shell > /dev/null 2>&1
+        type $shell > /dev/null 2>&1
         if [ $? -eq 0 ];
         then
             CMD="`which $shell` -e "
@@ -52,8 +53,6 @@ then
         fi
     done
 fi
-CMD=""
-#$CMD "INSTALL_DIR/scripts/runStackBuilderPlus.sh $*"
-INSTALL_DIR/scripts/runStackBuilderPlus.sh
+$CMD "INSTALL_DIR/scripts/runStackBuilderPlus.sh $*"
 
 
