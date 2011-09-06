@@ -54,7 +54,7 @@ _build_pgAgent_linux() {
     SOURCE_DIR=$PG_PATH_LINUX/pgAgent/source/pgAgent.linux
 
     echo "Building pgAgent sources"
-    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; PGDIR=$PG_PGHOME_LINUX cmake -DCMAKE_INSTALL_PREFIX=$PG_STAGING CMakeLists.txt " || _die "Couldn't configure the pgAgent sources"
+    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; PGDIR=$PG_PGHOME_LINUX cmake -DCMAKE_INSTALL_PREFIX=$PG_STAGING -DSTATIC_BUILD=NO CMakeLists.txt " || _die "Couldn't configure the pgAgent sources"
     echo "Compiling pgAgent"
     ssh $PG_SSH_LINUX "cd $SOURCE_DIR; make" || _die "Couldn't compile the pgAgent sources"
     echo "Installing pgAgent"
@@ -71,6 +71,7 @@ _build_pgAgent_linux() {
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libkrb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libkrb5)"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libk5crypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libk5crypto)"
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libk5crypto)"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libwx_baseu-2.8.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libk5crypto)"
     ssh $PG_SSH_LINUX "cp -R /lib/libtermcap.so* $PG_STAGING/lib" || _dme "Failed to copy the dependency library (libtermcap)"
     ssh $PG_SSH_LINUX "cp -R /lib/libkeyutils* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libkeyutils)"
     ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libpq.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libpq)"

@@ -59,6 +59,7 @@ _prep_pgAgent_windows() {
     # Clean sources on Windows VM
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST pgAgent.zip del /S /Q pgAgent.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\pgAgent.zip on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST vc-build.bat del /S /Q vc-build.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS\\vc-build.bat on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST pgAgent.windows rd /S /Q pgAgent.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\pgAgent.windows directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST pgAgent.output rd /S /Q pgAgent.output" || _die "Couldn't remove the $PG_PATH_WINDOWS\\pgAgent.output directory on Windows VM"
 
@@ -83,6 +84,19 @@ _build_pgAgent_windows() {
     SOURCE_DIR=$PG_PATH_WINDOWS/pgAgent.windows
     OUTPUT_DIR=$PG_PATH_WINDOWS\\\\pgAgent.output
     STAGING_DIR=$WD/pgAgent/staging/windows
+
+    cat <<EOT > "vc-build.bat"
+REM Setting Visual Studio Environment
+CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
+
+@SET PGBUILD=$PG_PGBUILD_WINDOWS
+@SET WXWIN=%PGBUILD%\wxWidgets
+@SET PGDIR=$PG_PATH_WINDOWS\output
+
+vcbuild /upgrade
+vcbuild %1 %2 %3 %4 %5 %6 %7 %8 %9
+EOT
+    scp vc-build.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the vc-build.bat to the windows build host (vcbuild.bat)"
 
     echo "Configuring pgAgent sources"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; PGDIR=$PG_PATH_WINDOWS/output WXWIN=$PG_WXWIN_WINDOWS cmake -DCMAKE_INSTALL_PREFIX=$OUTPUT_DIR ." || _die "Couldn't configure the pgAgent sources"
