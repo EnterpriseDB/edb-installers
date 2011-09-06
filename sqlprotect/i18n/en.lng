@@ -12,6 +12,10 @@ sqlprotect.installdir.pgerror=The Postgres installation directory: ${installdir}
 
 sqlprotect.incompatible.pg.error=The Postgres server installation is incompatible with this version of SQL/Protect, which requires Postgres ${pgmajorversion}.
 
+sqlprotect.incompatible.pg64.error=The PostgreSQL Server Installation is incompatible with this version of SQL/Protect. You are trying 32 bit SQL/Protect against 64 bit PostgreSQL server.
+
+sqlprotect.incompatible.pg32.error=The PostgreSQL Server Installation is incompatible with this version of SQL/Protect. You are trying 64 bit SQL/Protect against 32 bit PostgreSQL server.
+
 sqlprotect.installdir.empty=The installation directory cannot be empty.
 
 sqlprotect.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
@@ -64,3 +68,4 @@ registration.ws.internet.not.connected=Error in calling web service. Please chec
 
 registration.emailpassword.not.provided=Please provide the email address and password for your EnterpriseDB user account.
 
+sqlprotect.remove.shared_preload_libraries.info=Please do not forget to remove 'sqlprotect' from the 'shared_preload_libraries' setting in the server's postgresql.conf, and restart the PostgreSQL server.
