@@ -19,7 +19,7 @@
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
     <windowsSoftwareRegistryPrefix>${project.vendor}\sqlprotect-PG_PG_MAJOR_VERSION</windowsSoftwareRegistryPrefix>
-    <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot></replaceLockedFilesOnReboot>
+    <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
 
     <!-- set if it is a native windows 64 bit-->
     <windows64bitMode>@@WIN64MODE@@</windows64bitMode>
