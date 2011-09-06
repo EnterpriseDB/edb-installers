@@ -18,7 +18,8 @@
     <summary>${msg(install.summary)}</summary>
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
-	<windowsSoftwareRegistryPrefix>${project.vendor}\sqlprotect-PG_PG_MAJOR_VERSION</windowsSoftwareRegistryPrefix>
+    <windowsSoftwareRegistryPrefix>${project.vendor}\sqlprotect-PG_PG_MAJOR_VERSION</windowsSoftwareRegistryPrefix>
+    <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot></replaceLockedFilesOnReboot>
 
     <!-- set if it is a native windows 64 bit-->
     <windows64bitMode>@@WIN64MODE@@</windows64bitMode>
@@ -299,6 +300,43 @@
         <!-- Unattended mode: Check valid PostgreSQL directory -->
         <actionGroup>
             <actionList>
+
+                <!-- Check if 32 bit SQL/Protect installer is being tried out aginst PG x64 bit on windows or vice versa -->
+                <actionGroup>
+                    <actionList>
+                        <registryGet wowMode="64" variable="pginstalldir"
+                            key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION"
+                            name="Base Directory">
+                            <ruleList>
+                                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                                <platformTest type="windows-x64"/>
+                            </ruleList>
+                        </registryGet>
+                        <registryGet wowMode="32" variable="pginstalldir"
+                            key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION"
+                            name="Base Directory">
+                            <ruleList>
+                                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                            </ruleList>
+                        </registryGet>
+                        <throwError text="${msg(sqlprotect.incompatible.pg64.error)}">
+                            <ruleList>
+                                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                                <compareText nocase="1" logic="equals" text="${installdir}" value="${pginstalldir}"/>
+                            </ruleList>
+                        </throwError>
+                        <throwError text="${msg(sqlprotect.incompatible.pg32.error)}">
+                            <ruleList>
+                                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                                <compareText nocase="1" logic="equals" text="${installdir}" value="${pginstalldir}"/>
+                            </ruleList>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows"/>
+                    </ruleList>
+                </actionGroup>
+
                 <setInstallerVariable name="pg_version_str" value=""/>
                 <setInstallerVariable name="pg_config_exec" value="${installdir}/bin/pg_config">
                     <ruleList>
@@ -685,6 +723,43 @@
                                 <compareText text="${platform_name}" logic="equals" value="windows"/>
                             </ruleList>
                         </setInstallerVariable>
+
+                        <!-- Check if 32 bit SQL/Protect installer is being tried out aginst PG x64 bit on windows or vice versa -->
+                        <actionGroup>
+                            <actionList>
+                                <registryGet wowMode="64" variable="pginstalldir"
+                                    key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION"
+                                    name="Base Directory">
+                                    <ruleList>
+                                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                                        <platformTest type="windows-x64"/>
+                                    </ruleList>
+                                </registryGet>
+                                <registryGet wowMode="32" variable="pginstalldir"
+                                    key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION"
+                                    name="Base Directory">
+                                    <ruleList>
+                                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                                    </ruleList>
+                                </registryGet>
+                                <throwError text="${msg(sqlprotect.incompatible.pg64.error)}">
+                                    <ruleList>
+                                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                                        <compareText nocase="1" logic="equals" text="${installdir}" value="${pginstalldir}"/>
+                                    </ruleList>
+                                </throwError>
+                                <throwError text="${msg(sqlprotect.incompatible.pg32.error)}">
+                                    <ruleList>
+                                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                                        <compareText nocase="1" logic="equals" text="${installdir}" value="${pginstalldir}"/>
+                                    </ruleList>
+                                </throwError>
+                            </actionList>
+                            <ruleList>
+                                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                            </ruleList>
+                        </actionGroup>
+
                         <setInstallerVariableFromScriptOutput name="pg_version_str"
                               exec="${pg_config_exec}" execArgs="--version"
                               abortOnError="0" showMessageOnError="0"

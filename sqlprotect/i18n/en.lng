@@ -30,6 +30,10 @@ upgrade.existing.installation.title=Existing installation
 
 upgrade.existing.installation.description=An existing SQL/Protect installation has been found at ${installdir}. This installation will be upgraded.
 
+sqlprotect.incompatible.pg64.error=The PostgreSQL Server Installation is incompatible with this version of SQL/Protect. You are trying 32 bit SQL/Protect against 64 bit PostgreSQL server.
+
+sqlprotect.incompatible.pg32.error=The PostgreSQL Server Installation is incompatible with this version of SQL/Protect. You are trying 64 bit SQL/Protect against 32 bit PostgreSQL server.
+
 registration_plus.error.invalid.email.value=Invalid email address. You must provide a valid email address.  Please try again.
 registration_plus.error.invalid.password.value=Password is empty or contains invalid characters. Please enter valid password.
 registration_plus.existingemail.authentication.explanation.value=Please enter the email address and password for your enterprisedb.com user account.
