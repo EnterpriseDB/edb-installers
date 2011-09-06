@@ -171,7 +171,7 @@ EOT
     unzip um_output.zip
     rm -f um_output.zip
 
-    win32_sign "updatemonitor.exe" "$WD/UpdateMonitor/staging/windows/bin"
+    win32_sign "UpdManager.exe" "$WD/UpdateMonitor/staging/windows/UpdateMonitor/bin"
 
 }
 
