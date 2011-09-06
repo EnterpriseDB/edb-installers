@@ -521,6 +521,13 @@
         <!-- Custome Page for Registration -->
         <include file="staging/registration_plus_preuninstallation.xml"/>
     </preUninstallationActionList>
+
+    <!-- postUninstallation actions -->
+    <postUninstallationActionList>
+        <!-- Promt user about removing the sqlprotect from the shared_preload_libraries -->
+        <showInfo text="${msg(sqlprotect.remove.shared_preload_libraries.info)}"/>
+    </postUninstallationActionList>
+
     <!-- Components -->
     <componentList>
         <component>
