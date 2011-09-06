@@ -33,6 +33,7 @@
   <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
   <wrapLicenseFileText>1</wrapLicenseFileText>
   <licenseFile encoding="utf-8">resources/licence.txt</licenseFile>
+  <startMenuGroupName/>
   <!-- Images -->
   <disableSplashScreen>1</disableSplashScreen>
   <leftImage>../resources/edb-side.png</leftImage>
@@ -235,6 +236,21 @@
                 <isFalse value="${extract_mode}"/>
              </ruleList>
         </unpackDirectory>	
+        <unpackDirectory>
+            <component>updatemanager</component>
+            <destination>${system_temp_directory}/${product_shortname}</destination>
+            <folder>updatemonitorfileswindows</folder>
+            <origin>instscripts</origin>
+             <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+             </ruleList>
+        </unpackDirectory>	
+
 
 	<setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/${product_shortname}/lib" />
 
@@ -244,7 +260,21 @@
 	    <workingDirectory>${system_temp_directory}/${product_shortname}/bin</workingDirectory>
 	    <showMessageOnError>0</showMessageOnError>
 	    <abortOnError>0</abortOnError>
+	    <ruleList>
+		<compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+	    </ruleList>
 	</runProgram>
+	<runProgram>	
+	    <program>${system_temp_directory}\${product_shortname}\instscripts\bin\GetLatestPGInstalled.exe</program>
+	    <programArguments/>
+	    <workingDirectory>${system_temp_directory}\${product_shortname}\instscripts\bin</workingDirectory>
+	    <showMessageOnError>0</showMessageOnError>
+	    <abortOnError>0</abortOnError>
+	    <ruleList>
+		<compareText text="${platform_name}" logic="equals" value="windows" />
+	    </ruleList>
+	</runProgram>
+
 
 	<setInstallerVariable name="PGLatestVersion" value="${program_stdout}" >
 	    <ruleList>
@@ -255,6 +285,7 @@
 
 	<actionGroup>
 	    <actionList>
+		<setInstallerVariable name="pg_home" value="" />	
 		<actionGroup>
 		    <actionList>
 			<iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${PGLatestVersion}" key="InstallationDirectory" variable="pg_home" />
