@@ -309,7 +309,6 @@
                             name="Base Directory">
                             <ruleList>
                                 <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
-                                <platformTest type="windows-x64"/>
                             </ruleList>
                         </registryGet>
                         <registryGet wowMode="32" variable="pginstalldir"
@@ -333,7 +332,7 @@
                         </throwError>
                     </actionList>
                     <ruleList>
-                        <compareText text="${platform_name}" logic="equals" value="windows"/>
+                        <platformTest type="windows-x64"/>
                     </ruleList>
                 </actionGroup>
 
@@ -739,7 +738,6 @@
                                     name="Base Directory">
                                     <ruleList>
                                         <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
-                                        <platformTest type="windows-x64"/>
                                     </ruleList>
                                 </registryGet>
                                 <registryGet wowMode="32" variable="pginstalldir"
@@ -763,7 +761,7 @@
                                 </throwError>
                             </actionList>
                             <ruleList>
-                                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                                <platformTest type="windows-x64"/>
                             </ruleList>
                         </actionGroup>
 

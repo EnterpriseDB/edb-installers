@@ -21,6 +21,8 @@
 
     <!-- set if it is a native windows 64 bit-->
     <windows64bitMode>@@WIN64MODE@@</windows64bitMode>
+	<replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
+
     <!-- Installer Size -->
     <width>550</width>
     <height>400</height>
@@ -576,7 +578,6 @@
                             <name>Base Directory</name>
                             <ruleList>
                                 <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
-                                <platformTest type="windows-x64"/>
                             </ruleList>
                         </registryGet>
                         <registryGet wowMode="32" variable="pginstalldir">
@@ -600,7 +601,7 @@
                         </throwError>
                     </actionList>
                     <ruleList>
-                        <compareText text="${platform_name}" logic="equals" value="windows"/>
+                        <platformTest type="windows-x64"/>
                         <compareText logic="equals" text="${installer_ui}" value="unattended"/>
                         <isFalse value="${extract_mode}"/>
                     </ruleList>
@@ -1093,28 +1094,22 @@
                 </actionGroup>
 
                 <!-- Check if 32 bit PL/Secure installer is being tried out aginst PG x64 bit or vice versa -->
-                        <actionGroup>
-                            <actionList>
-                                <registryGet wowMode="64" variable="pginstalldir">
-                                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION</key>
-                                    <name>Base Directory</name>
-                                    <ruleList>
-                                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
-                                        <platformTest type="windows-x64"/>
-                                    </ruleList>
-                                </registryGet>
-                                <registryGet wowMode="32" variable="pginstalldir">
-                                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
-                                    <name>Base Directory</name>
-                                    <ruleList>
-                                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
-                                    </ruleList>
-                                </registryGet>
-                            </actionList>
+                <actionGroup>
+                    <actionList>
+                        <registryGet wowMode="64" variable="pginstalldir">
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION</key>
+                            <name>Base Directory</name>
                             <ruleList>
-                                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
                             </ruleList>
-                        </actionGroup>
+                        </registryGet>
+                        <registryGet wowMode="32" variable="pginstalldir">
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
+                            <name>Base Directory</name>
+                            <ruleList>
+                                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                            </ruleList>
+                        </registryGet>
                         <actionGroup>
                             <actionList>
                                 <setInstallerVariable name="installdir" value="${defaultpghome}"/>
@@ -1131,10 +1126,14 @@
                             </actionList>
                             <ruleList>
                                 <compareText nocase="1" logic="equals" text="${installdir}" value="${pginstalldir}"/>
-                                <compareText text="${platform_name}" logic="equals" value="windows"/>
-                                <isFalse value="${extract_mode}"/>
                             </ruleList>
                         </actionGroup>
+                    </actionList>
+                    <ruleList>
+                        <platformTest type="windows-x64"/>
+                        <isFalse value="${extract_mode}"/>
+                    </ruleList>
+                </actionGroup>
             </validationActionList>
 
 		    <!-- Validating whether installdir contains whitespaces (Linux) -->
