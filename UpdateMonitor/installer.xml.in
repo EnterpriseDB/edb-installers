@@ -92,6 +92,7 @@
   </initializationActionList>
 
   <preInstallationActionList>
+    <createDirectory path="${system_temp_directory}/${product_shortname}" />
 
     <actionGroup>
       <actionList>
