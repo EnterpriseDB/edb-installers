@@ -22,6 +22,7 @@
 
     <!-- set if it is a native windows 64 bit-->
     <windows64bitMode>@@WIN64MODE@@</windows64bitMode>
+    <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
 
     <!-- Installer Size -->
     <width>550</width>
@@ -578,7 +579,6 @@
                             <name>Base Directory</name>
                             <ruleList>
                                 <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
-                                <platformTest type="windows-x64"/>
                             </ruleList>
                         </registryGet>
                         <registryGet wowMode="32" variable="pginstalldir">
@@ -602,7 +602,7 @@
                         </throwError>
                     </actionList>
                     <ruleList>
-                        <compareText text="${platform_name}" logic="equals" value="windows"/>
+                        <platformTest type="windows-x64"/>
                         <compareText logic="equals" text="${installer_ui}" value="unattended"/>
                         <isFalse value="${extract_mode}"/>
                     </ruleList>
@@ -1104,7 +1104,6 @@
                                     <name>Base Directory</name>
                                     <ruleList>
                                         <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
-                                        <platformTest type="windows-x64"/>
                                     </ruleList>
                                 </registryGet>
                                 <registryGet wowMode="32" variable="pginstalldir">
@@ -1116,7 +1115,7 @@
                                 </registryGet>
                             </actionList>
                             <ruleList>
-                                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                                <platformTest type="windows-x64"/>
                             </ruleList>
                         </actionGroup>
                         <actionGroup>
@@ -1134,8 +1133,8 @@
                                 </showWarning>
                             </actionList>
                             <ruleList>
+                                <platformTest type="windows-x64"/>
                                 <compareText nocase="1" logic="equals" text="${installdir}" value="${pginstalldir}"/>
-                                <compareText text="${platform_name}" logic="equals" value="windows"/>
                                 <isFalse value="${extract_mode}"/>
                             </ruleList>
                         </actionGroup>
