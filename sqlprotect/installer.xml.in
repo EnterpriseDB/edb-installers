@@ -318,16 +318,19 @@
                                 <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
                             </ruleList>
                         </registryGet>
+
+                        <stringModify variable="dos_path_installdir" logic="toupper" text="${installdir.dos}"/>
+                        <stringModify variable="dos_path_pginstalldir" logic="toupper" text="${pginstalldir.dos}"/>
                         <throwError text="${msg(sqlprotect.incompatible.pg64.error)}">
                             <ruleList>
                                 <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
-                                <compareText nocase="1" logic="equals" text="${installdir}" value="${pginstalldir}"/>
+                                <compareValues logic="equals" value1="${dos_path_installdir}" value2="${dos_path_pginstalldir}"/>
                             </ruleList>
                         </throwError>
                         <throwError text="${msg(sqlprotect.incompatible.pg32.error)}">
                             <ruleList>
                                 <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
-                                <compareText nocase="1" logic="equals" text="${installdir}" value="${pginstalldir}"/>
+                                <compareValues logic="equals" value1="${dos_path_installdir}" value2="${dos_path_pginstalldir}"/>
                             </ruleList>
                         </throwError>
                     </actionList>
@@ -747,16 +750,19 @@
                                         <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
                                     </ruleList>
                                 </registryGet>
+
+                                <stringModify variable="dos_path_installdir" logic="toupper" text="${installdir.dos}"/>
+                                <stringModify variable="dos_path_pginstalldir" logic="toupper" text="${pginstalldir.dos}"/>
                                 <throwError text="${msg(sqlprotect.incompatible.pg64.error)}">
                                     <ruleList>
                                         <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
-                                        <compareText nocase="1" logic="equals" text="${installdir}" value="${pginstalldir}"/>
+                                        <compareValues logic="equals" value1="${dos_path_installdir}" value2="${dos_path_pginstalldir}"/>
                                     </ruleList>
                                 </throwError>
                                 <throwError text="${msg(sqlprotect.incompatible.pg32.error)}">
                                     <ruleList>
                                         <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
-                                        <compareText nocase="1" logic="equals" text="${installdir}" value="${pginstalldir}"/>
+                                        <compareValues logic="equals" value1="${dos_path_installdir}" value2="${dos_path_pginstalldir}"/>
                                     </ruleList>
                                 </throwError>
                             </actionList>
