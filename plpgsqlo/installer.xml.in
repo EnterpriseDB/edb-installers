@@ -19,6 +19,8 @@
     <vendor>EnterpriseDB</vendor>
     <release>1</release>
 
+    <!-- set if it is a native windows 64 bit-->
+    <windows64bitMode>@@WIN64MODE@@</windows64bitMode>
     <!-- Installer Size -->
     <width>550</width>
     <height>400</height>
@@ -56,6 +58,11 @@
 
     <!-- Prebuild Actons-->
     <preBuildActionList>
+        <setInstallerVariable name="project.installerFilename" value="${product_shortname}-${product_version}-windows-x64.${platform_exec_suffix}">
+            <ruleList>
+                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+            </ruleList>
+        </setInstallerVariable>
         <setInstallerVariable name="originalplatform" value="${platform_name}"/>
         <setInstallerVariable name="originalplatform" value="linux-x32">
             <ruleList>
@@ -560,45 +567,44 @@
                        </compareTextLength>
                     </ruleList>
                 </actionGroup>
-	
- 		<actionGroup>
-		    <actionList>
-			<logMessage text="Check if 32 bit PL/Secure installer is being tried out aginst PG x64 bit. This condition will be hit in case of unattended mode and prefix specified"/>
-			<registryGet>
-			    <wowMode>64</wowMode>
-			    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION</key>
-			    <name>Base Directory</name>
-			    <variable>pginstalldir</variable>
-			</registryGet>
-			<throwError text="${msg(plpgsqlo.incompatible.pg64.error)}">
-			    <ruleList>
-				<compareText>
-				    <nocase>1</nocase>
-				    <logic>equals</logic>
-				    <text>${installdir}</text>
-				    <value>${pginstalldir}</value>
-				</compareText>
-                                <compareText>
-                                    <logic>equals</logic>
-                                    <text>${installer_ui}</text>
-                                    <value>unattended</value>
-                                </compareText>
-				<compareText>
-				    <text>${platform_name}</text>
-				    <logic>equals</logic>
-				    <value>windows</value>
-				</compareText>
-			    </ruleList>
-			</throwError>
-    		    </actionList>
+
+                <!-- Check if 32 bit PL/Secure installer is being tried out aginst PG x64 bit or vice versa -->
+                <actionGroup>
+                    <actionList>
+                        <registryGet wowMode="64" variable="pginstalldir">
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION</key>
+                            <name>Base Directory</name>
+                            <ruleList>
+                                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                                <platformTest type="windows-x64"/>
+                            </ruleList>
+                        </registryGet>
+                        <registryGet wowMode="32" variable="pginstalldir">
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
+                            <name>Base Directory</name>
+                            <ruleList>
+                                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                            </ruleList>
+                        </registryGet>
+                        <throwError text="${msg(plpgsqlo.incompatible.pg64.error)}">
+                            <ruleList>
+                                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                                <compareText nocase="1" logic="equals" text="${installdir}" value="${pginstalldir}"/>
+                            </ruleList>
+                        </throwError>
+                        <throwError text="${msg(plpgsqlo.incompatible.pg32.error)}">
+                            <ruleList>
+                                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                                <compareText nocase="1" logic="equals" text="${installdir}" value="${pginstalldir}"/>
+                            </ruleList>
+                        </throwError>
+                    </actionList>
                     <ruleList>
-                        <compareText>
-                            <text>${platform_name}</text>
-                            <logic>equals</logic>
-                            <value>windows</value>
-                        </compareText>
+                        <compareText text="${platform_name}" logic="equals" value="windows"/>
+                        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+                        <isFalse value="${extract_mode}"/>
                     </ruleList>
-		</actionGroup>
+                </actionGroup>
     
                 <!-- Setting the installation type as upgrade if previous installation found -->
                 <actionGroup>
@@ -797,7 +803,7 @@
                     <name>programfileslibwindows</name>
                     <platforms>windows</platforms>
 		    <distributionFileList>
-			<distributionFile origin="staging/windows/lib/plpgsqlo.dll"/>
+			<distributionFile origin="staging/@@WINDIR@@/lib/plpgsqlo.dll"/>
                     </distributionFileList>
                 </folder>
                <!-- WIN: plpgsqlo.sql -->
@@ -807,7 +813,7 @@
                     <name>programfilessharewindows</name>
                     <platforms>windows</platforms>
 		    <distributionFileList>
-                            <distributionFile origin="staging/windows/share/plpgsqlo.sql"/>
+                            <distributionFile origin="staging/@@WINDIR@@/share/plpgsqlo.sql"/>
                     </distributionFileList>
                 </folder>
                <!-- WIN: README -->
@@ -817,7 +823,7 @@
                     <name>programfilesdocwindows</name>
                     <platforms>windows</platforms>
 		    <distributionFileList>
-                            <distributionFile origin="staging/windows/doc/README.plsecure"/>
+                            <distributionFile origin="staging/@@WINDIR@@/doc/README.plsecure"/>
                     </distributionFileList>
                 </folder>
 
@@ -1084,45 +1090,52 @@
 				      <value>PG_MAJOR_VERSION</value>            
 				</compareText>
 			    </ruleList>
-		       </actionGroup>
-		    </validationActionList>
+                </actionGroup>
 
-		   <!-- Check if 32 bit PL/Secure installer is being tried out aginst PG x64 bit -->
-		    <validationActionList>
-		       <actionGroup>   
-			   <actionList>
-			       <registryGet>
-				   <wowMode>64</wowMode>
-				   <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION</key>
-				   <name>Base Directory</name>
-				   <variable>pginstalldir</variable>
-			       </registryGet>
-			   </actionList>
-		       </actionGroup>
-			<actionGroup>
-			    <actionList>
-				<setInstallerVariable name="installdir" value="${defaultpghome}" />
-			       <showWarning>
-				    <text>${msg(plpgsqlo.incompatible.pg64.error)}</text>
-				</showWarning>
-			    </actionList>
-			    <ruleList>
-				<compareText>
-				    <nocase>1</nocase>
-				    <logic>equals</logic>
-				    <text>${installdir}</text>
-				    <value>${pginstalldir}</value>
-				</compareText>
-				<isFalse value="${extract_mode}"/>
-				<compareText>
-				    <text>${platform_name}</text>
-				    <logic>equals</logic>
-				    <value>windows</value>
-				</compareText>
-			    </ruleList>
-			</actionGroup>
-		    </validationActionList>
-	 
+                <!-- Check if 32 bit PL/Secure installer is being tried out aginst PG x64 bit or vice versa -->
+                        <actionGroup>
+                            <actionList>
+                                <registryGet wowMode="64" variable="pginstalldir">
+                                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-PG_MAJOR_VERSION</key>
+                                    <name>Base Directory</name>
+                                    <ruleList>
+                                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                                        <platformTest type="windows-x64"/>
+                                    </ruleList>
+                                </registryGet>
+                                <registryGet wowMode="32" variable="pginstalldir">
+                                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-PG_MAJOR_VERSION</key>
+                                    <name>Base Directory</name>
+                                    <ruleList>
+                                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                                    </ruleList>
+                                </registryGet>
+                            </actionList>
+                            <ruleList>
+                                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                            </ruleList>
+                        </actionGroup>
+                        <actionGroup>
+                            <actionList>
+                                <setInstallerVariable name="installdir" value="${defaultpghome}"/>
+                                <showWarning text="${msg(plpgsqlo.incompatible.pg64.error)}">
+                                    <ruleList>
+                                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                                    </ruleList>
+                                </showWarning>
+                                <showWarning text="${msg(plpgsqlo.incompatible.pg32.error)}">
+                                    <ruleList>
+                                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                                    </ruleList>
+                                </showWarning>
+                            </actionList>
+                            <ruleList>
+                                <compareText nocase="1" logic="equals" text="${installdir}" value="${pginstalldir}"/>
+                                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                                <isFalse value="${extract_mode}"/>
+                            </ruleList>
+                        </actionGroup>
+            </validationActionList>
 
 		    <!-- Validating whether installdir contains whitespaces (Linux) -->
 		    <postShowPageActionList>
