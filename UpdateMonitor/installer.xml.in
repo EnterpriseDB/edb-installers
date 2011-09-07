@@ -143,6 +143,7 @@
         <touchFile path="/etc/postgres-reg.ini">
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	    <isFalse value="${extract_mode}" />
           </ruleList>
         </touchFile>
 
@@ -161,6 +162,7 @@
           </actionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	    <isFalse value="${extract_mode}" />
           </ruleList>
         </actionGroup>
 
@@ -256,9 +258,9 @@
 	<setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/${product_shortname}/lib" />
 
 	<runProgram>	
-	    <program>${system_temp_directory}/${product_shortname}/bin/GetLatestPGInstalled</program>
+	    <program>${system_temp_directory}/${product_shortname}/instscripts//bin/GetLatestPGInstalled</program>
 	    <programArguments/>
-	    <workingDirectory>${system_temp_directory}/${product_shortname}/bin</workingDirectory>
+	    <workingDirectory>${system_temp_directory}/${product_shortname}/instscripts/bin</workingDirectory>
 	    <showMessageOnError>0</showMessageOnError>
 	    <abortOnError>0</abortOnError>
 	    <ruleList>
@@ -479,7 +481,7 @@
             <!-- WIN: Register launchUpdateMonitor script as a startup script -->
             <registrySet key="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
                          name="UpdateMonitor"
-                         value="&quot;${installdir}\bin\UpdManager.exe&quot; --execute  &quot;${installdir}\bin\updatemonitor.exe&quot;"/>
+                         value="&quot;${installdir}\bin\UpdManager.exe&quot; --execute  &quot;${pg_home}\bin\stackbuilder.exe&quot;"/>
     
             <actionGroup>
                <actionList>
@@ -637,6 +639,8 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
                <fileExists path="${installdir}\scripts\launchUpdateMonitor.vbs" />
             </ruleList>
         </runProgram>
+    	<!-- Custom Page for Registration -->
+    	<include file="staging/registration_plus_postinstallation.xml"/>
       </actionList>
       <ruleList>
         <isFalse value="${extract_mode}"/>
@@ -671,8 +675,6 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
       </ruleList>
     </actionGroup>
     
-    <!-- Custom Page for Registration -->
-    <include file="staging/registration_plus_postinstallation.xml"/>
 
   </postInstallationActionList>
 
