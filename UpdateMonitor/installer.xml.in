@@ -255,7 +255,7 @@
         </unpackDirectory>	
 
 
-	<setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/${product_shortname}/lib" />
+	<setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/${product_shortname}/instscripts/lib" />
 
 	<runProgram>	
 	    <program>${system_temp_directory}/${product_shortname}/instscripts//bin/GetLatestPGInstalled</program>
