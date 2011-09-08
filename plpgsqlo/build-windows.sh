@@ -30,7 +30,6 @@ _prep_plpgsqlo_windows() {
     grep -irl plpgsql $PGPLATFORMDIR/src/pl/plpgsqlo |xargs sed -i .bak 's/\([pP][lL][pP][gG][sS][qQ][lL]\)/\1o/g'
     grep -rl PLPGSQLo_ $PGPLATFORMDIR/src/pl/plpgsqlo |xargs sed -i .bak 's/\(PLPGSQL\)o/\1/g'
     mv $PGPLATFORMDIR/src/pl/plpgsqlo/src/plpgsql.h $PGPLATFORMDIR/src/pl/plpgsqlo/src/plpgsqlo.h || _die "Failed to move plpgsql.h to plpgsqlo.h"
-    mv $PGPLATFORMDIR/src/pl/plpgsqlo/src/plpgsql.control $PGPLATFORMDIR/src/pl/plpgsqlo/src/plpgsqlo.control || _die "Failed to move plpgsql.control to plpgsqlo.control"
     # Copy files from pg-sources into plpgsqlo
     cp $PGSOURECEDIR/src/backend/utils/adt/encode.c $PGPLATFORMDIR/src/pl/plpgsqlo/src || _die "Failed to copy encode.c"
     cp $PGSOURECEDIR/contrib/pgcrypto/md5.c $PGPLATFORMDIR/src/pl/plpgsqlo/src || _die "Failed to copy md5.c"
