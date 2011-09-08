@@ -470,6 +470,35 @@
         		</ruleList>
         	</setInstallerVariable>
 
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${PGCurrentVersion}</key>
+                    <name>Branding</name>
+                    <variable>branding</variable>
+		    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows" />
+                        <compareText text="${branding}" logic="equals" value="" />
+		    </ruleList>
+                </registryGet>
+
+		<iniFileGet>
+                    <file>/etc/postgres-reg.ini</file>
+                    <section>PostgreSQL/{PGCurrentVersion}</section>
+                    <key>Branding</key>
+                    <variable>branding</variable>
+		    <ruleList>
+                        <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+                        <compareText text="${branding}" logic="equals" value="" />
+		    </ruleList>
+                </iniFileGet>
+ 
+		<!-- Set the windows branding to (x86) on win 64 machines as currently we dont have win 64 port of PostGIS -->
+		<setInstallerVariable name="branding" value="PostgreSQL PG_MAJOR_VERSION (x86)" >
+		    <ruleList>
+			<platformTest type="windows-x64" /> 
+                        <compareText text="${branding}" logic="equals" value="" />
+		    </ruleList>
+		</setInstallerVariable>
+
         	<!-- New install, nothing set on the command line -->
         	<setInstallerVariable>
         		<name>branding</name>
@@ -483,7 +512,6 @@
         			</compareText>
         		</ruleList>
         	</setInstallerVariable>
-
                 <logMessage>
                     <text>Using branding: ${branding}</text>
                 </logMessage>
