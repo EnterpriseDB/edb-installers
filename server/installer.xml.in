@@ -4707,6 +4707,9 @@ REM The script sets environment variables helpful for PostgreSQL
 
         <!-- Installation directory. Only show if ${iBaseDirectory} is empty -->
         <directoryParameter>
+            <preShowPageActionList>
+                <wow64FsRedirection action="enable" />
+            </preShowPageActionList>
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
             <explanation>Installer.Parameter.installdir.explanation</explanation>
@@ -4722,6 +4725,9 @@ REM The script sets environment variables helpful for PostgreSQL
                     <type>empty</type>
                 </stringTest>
             </ruleList>
+            <postShowPageActionList>
+                <wow64FsRedirection action="disable" />
+            </postShowPageActionList>
 
             <!-- Note that this validation occurs in a postShowPageActionList due     -->
             <!-- to some odd behaviour in InstallBuilder in the way <allowEmptyValue> -->
@@ -4875,6 +4881,9 @@ REM The script sets environment variables helpful for PostgreSQL
 
         <!-- Data directory. Only show if not upgrading -->
         <directoryParameter>
+            <preShowPageActionList>
+                <wow64FsRedirection action="enable" />
+            </preShowPageActionList>
             <name>datadir</name>
             <description>${msg(config.datadir.description)}</description>
             <explanation>${msg(config.datadir.explanation)}</explanation>
@@ -4891,6 +4900,9 @@ REM The script sets environment variables helpful for PostgreSQL
                 </stringTest>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
+            <postShowPageActionList>
+                <wow64FsRedirection action="disable" />
+            </postShowPageActionList>
 
             <!-- Check the directory selected. If it's a valid data directory, change to upgrade mode -->
 
