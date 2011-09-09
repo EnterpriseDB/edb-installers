@@ -19,7 +19,7 @@ _prep_plpgsqlo_windows() {
     # Remove any existing plpgsqlo directory that might exist, in server
     if [ -e $PGPLATFORMDIR/src/pl/plpgsqlo ];
     then
-      patch -p1 -f -c -R < $WD/plpgsqlo/resources/plpgsqlo.patch
+      patch -p0 -f -c -R < $WD/plpgsqlo/resources/plpgsqlo.patch
 
       echo "Removing existing plpgsqlo directory"
       rm -rf $PGPLATFORMDIR/src/pl/plpgsqlo || _die "Couldn't remove the existing plpgsqlo directory"
@@ -44,7 +44,7 @@ _prep_plpgsqlo_windows() {
     cp $PGSOURECEDIR/src/tools/msvc/pgbison.bat  $PGPLATFORMDIR/src/tools/msvc/. || _die "Failed to copy pgbison.bat"
 
     cd $PGPLATFORMDIR
-    patch -p1 -f -c < $WD/plpgsqlo/resources/plpgsqlo.patch || _die "Failed to apply patch on plpgsqlo tree (plpgsqlo.patch)"
+    patch -p0 -f -c < $WD/plpgsqlo/resources/plpgsqlo.patch || _die "Failed to apply patch on plpgsqlo tree (plpgsqlo.patch)"
 
     cd $WD/server/source
     chmod -R ugo+w $PGPLATFORMDIR || _die "Couldn't set the permissions on the source directory"
