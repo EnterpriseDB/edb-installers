@@ -910,7 +910,7 @@
                                 </substitution>
                                 <substitution>
                                     <pattern>@@PIDFILE@@</pattern>
-                                    <value>${system_temp_directory}/pgbouncer.pid</value>
+                                    <value>${system_temp_directory}/pgbouncer-PGBOUNCER_SERVICE_VER.pid</value>
                                 </substitution>
                                 <substitution>
                                     <pattern>@@AUTHFILE@@</pattern>
