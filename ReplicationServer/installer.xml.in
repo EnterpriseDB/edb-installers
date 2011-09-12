@@ -87,7 +87,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>/Library/PostgresPlus/EnterpriseDB-xDBReplicationServer</value>
+            <value>/Library/PostgreSQL/EnterpriseDB-xDBReplicationServer</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -100,7 +100,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}/PostgresPlus/EnterpriseDB-xDBReplicationServer</value>
+            <value>${platform_install_prefix}/PostgreSQL/EnterpriseDB-xDBReplicationServer</value>
             <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
                 <compareText>
@@ -119,7 +119,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}\PostgresPlus\EnterpriseDB-xDBReplicationServer</value>
+            <value>${platform_install_prefix}\PostgreSQL\EnterpriseDB-xDBReplicationServer</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -172,7 +172,7 @@
         <!-- LIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/EnterpriseDB-xDBReplicationServer"/>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgreSQL/EnterpriseDB-xDBReplicationServer"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -190,7 +190,7 @@
         <!-- SOLARIS : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/EnterpriseDB-xDBReplicationServer"/>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgreSQL/EnterpriseDB-xDBReplicationServer"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -208,7 +208,7 @@
         <!-- WIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}\PostgresPlus\EnterpriseDB-xDBReplicationServer"/>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}\PostgreSQL\EnterpriseDB-xDBReplicationServer"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -226,7 +226,7 @@
         <!-- MAC : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="/Library/PostgresPlus/EnterpriseDB-xDBReplicationServer"/>
+                <setInstallerVariable name="installdir" value="/Library/PostgreSQL/EnterpriseDB-xDBReplicationServer"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -245,7 +245,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>/Library/PostgresPlus/EnterpriseDB-xDBReplicationServer</value>
+            <value>/Library/PostgreSQL/EnterpriseDB-xDBReplicationServer</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -258,7 +258,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}/PostgresPlus/EnterpriseDB-xDBReplicationServer</value>
+            <value>${platform_install_prefix}/PostgreSQL/EnterpriseDB-xDBReplicationServer</value>
             <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
                 <compareText>
@@ -277,7 +277,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}\PostgresPlus\EnterpriseDB-xDBReplicationServer</value>
+            <value>${platform_install_prefix}\PostgreSQL\EnterpriseDB-xDBReplicationServer</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -1861,8 +1861,16 @@ database=${controldb}
             </ruleList>
         </deleteFile>
 
-	<!-- Custom Page for Registration -->
-	<include file="staging/registration_plus_postinstallation.xml"/>
+	<actionGroup>
+	    <actionList>
+		<!-- Custom Page for Registration -->
+		<include file="staging/registration_plus_postinstallation.xml"/>
+	    </actionList>
+	    <ruleList>
+		<isFalse value="${extract_mode}" />
+	    </ruleList>
+	</actionGroup>
+
     </postInstallationActionList>
 
     <readyToInstallActionList>
