@@ -942,6 +942,9 @@
                         explanation="Installer.Parameter.installdir.pg.explanation">
             <parameterList>
 		<directoryParameter>
+                    <preShowPageActionList>
+                        <wow64FsRedirection action="enable" />
+                    </preShowPageActionList>
                     <name>installdir</name>
                     <value>${default_installdir}</value>
                     <default/>
@@ -951,6 +954,9 @@
                     <mustBeWritable>yes</mustBeWritable>
                     <mustExist>0</mustExist>
                     <width>40</width>
+                    <postShowPageActionList>
+                        <wow64FsRedirection action="disable" />
+                    </postShowPageActionList>
 
             <!-- Validating whether installdir is empty -->
             <validationActionList>
