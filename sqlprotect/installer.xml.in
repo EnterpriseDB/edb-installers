@@ -659,6 +659,12 @@
                             default="" allowEmptyValue="1" ask="1" mustExist="1"
                             cliOptionName="prefix" mustBeWritable="1"
                             width="40">
+		    <preShowPageActionList>
+                        <wow64FsRedirection action="enable" />
+                    </preShowPageActionList>
+		    <postShowPageActionList>
+                        <wow64FsRedirection action="disable" />
+                    </postShowPageActionList>
                     <!-- Validating whether installdir is empty -->
                     <validationActionList>
                         <actionGroup>
