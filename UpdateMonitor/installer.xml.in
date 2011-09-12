@@ -456,6 +456,12 @@
                 <substitution pattern="@@INSTALL_DIR@@" value="${installdir}"/>
               </substitutionList>
             </substitute>
+            <substitute>
+              <files>${installdir}/installer/UpdateMonitor/configlibs.sh</files>
+              <substitutionList>
+                <substitution pattern="INSTALL_DIR" value="${installdir}"/>
+              </substitutionList>
+            </substitute>
     
             <!-- Create shourtcuts for linux/linux-x64/osx -->
             <runProgram program="${installdir}/installer/UpdateMonitor/configlibs.sh"
