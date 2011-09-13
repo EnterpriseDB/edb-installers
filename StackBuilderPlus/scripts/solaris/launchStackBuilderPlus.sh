@@ -3,6 +3,7 @@
 # PostgreSQL stackbuilderplus launch script for Solaris
 # Ashesh Vashi, EnterpriseDB
 
+export PATH=/usr/openwin/bin/:$PATH
 XTERM=`which xterm`
 
 if [ -e "$XTERM" ];
