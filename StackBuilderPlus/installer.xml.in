@@ -288,6 +288,19 @@
           </actionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	    <compareText logic="does_not_contain" text="${platform_name}" value="solaris"/>
+          </ruleList>
+        </actionGroup>
+
+	<!-- Temporary Solaris specific change for AS90 -->
+	<!-- Solaris : Get the branding & check Previous Installation of -->
+        <actionGroup>
+          <actionList>
+            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="Branding" variable="iBranding"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="Version" variable="iSBPVersion"/>
+          </actionList>
+          <ruleList>
+            <compareText logic="contains" text="${platform_name}" value="solaris"/>
           </ruleList>
         </actionGroup>
 
@@ -344,6 +357,18 @@
           <ruleList>
             <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	    <compareText logic="does_not_contain" text="${platform_name}" value="solaris"/>
+          </ruleList>
+        </actionGroup>
+
+	 <!-- Temporary for solaris is AS90 Set the installation directory in case of re-install/upgrade -->
+        <actionGroup>
+          <actionList>
+            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="InstallationDirectory" variable="installdir"/>
+          </actionList>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
+            <compareText logic="contains" text="${platform_name}" value="solaris"/>
           </ruleList>
         </actionGroup>
 
@@ -494,6 +519,24 @@
           </actionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	    <compareText logic="does_not_contain" text="${platform_name}" value="solaris"/>
+          </ruleList>
+        </actionGroup>
+
+	<!-- Temporary for solaris AS90 -->
+	<actionGroup>
+          <actionList>
+            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="Description" value="${msg(install.summary)}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="InstallationDirectory" value="${installdir}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="Version" value="${product_version}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="InstallationDate" value="${installDate}">
+              <ruleList>
+                <compareText logic="equals" text="${iSBPVersion}" value=""/>
+              </ruleList>
+            </iniFileSet>
+          </actionList>
+          <ruleList>
+            <compareText logic="contains" text="${platform_name}" value="solaris"/>
           </ruleList>
         </actionGroup>
     
@@ -503,8 +546,17 @@
         <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Branding" value="${branding}">
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	    <compareText logic="does_not_contain" text="${platform_name}" value="solaris"/>
           </ruleList>
         </iniFileSet>
+
+	<!-- Temporary for solaris AS90 -->
+	<iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="Branding" value="${branding}">
+          <ruleList>
+            <compareText logic="contains" text="${platform_name}" value="solaris"/>
+          </ruleList>
+        </iniFileSet>
+
         <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus" name="Description" value="${msg(install.summary)}"/>
         <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus" name="InstallationDirectory" value="${installdir}"/>
         <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus" name="Version" value="${product_version}"/>
@@ -1026,6 +1078,21 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	<compareText logic="does_not_contain" text="${platform_name}" value="solaris"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- Temporary for solaris AS90 -->
+    <actionGroup>
+      <actionList>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="Description" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="InstallationDirectory" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="Version" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="Branding" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="InstallationDate" value=""/>
+      </actionList>
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="solaris"/>
       </ruleList>
     </actionGroup>
 

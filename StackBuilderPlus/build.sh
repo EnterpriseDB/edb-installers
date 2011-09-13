@@ -200,6 +200,7 @@ _postprocess_stackbuilderplus() {
 
     cd $WD/StackBuilderPlus
 
+    SBP_REG_VER=`echo $PG_MAJOR_VERSION | sed 's/\.//'`
 
     # Prepare the installer XML file
     if [ -f installer.xml ];
@@ -211,7 +212,8 @@ _postprocess_stackbuilderplus() {
     
     _replace PG_VERSION_SBP $PG_VERSION_SBP installer.xml || _die "Failed to set the version in the installer project file (StackBuilderPlus/installer.xml)"
     _replace PG_BUILDNUM_SBP $PG_BUILDNUM_SBP installer.xml || _die "Failed to set the Build Number in the installer project file (StackBuilderPlus/installer.xml)"
-   
+    _replace SBP_REG_VER $SBP_REG_VER installer.xml || _die "Failed to set the sbp registry version string in the installer project file ($WD/StackBuilderPlus/installer.xml)"
+ 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
