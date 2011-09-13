@@ -157,6 +157,10 @@
         <text>@@COMPONENT@@</text>
         <variable>enc_component</variable>
     </urlEncode>
+    <urlEncode>
+	<text>PRODUCT_DESCRIPTION</text>
+	<variable>enc_desc</variable>
+    </urlEncode>
 
     <createDirectory path="${system_temp_directory}/@@TEMPDIR@@"/>
 
@@ -273,7 +277,7 @@
 		<filename>${system_temp_directory}/auth.html</filename>
 		<username>${existingEmail}</username>
 		<password>${existingPassword}</password>
-		<url>BASE_URL/authentication-hb.jsp?MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PRODUCT_DESCRIPTION&amp;Version=PRODUCT_VERSION</url>
+		<url>BASE_URL/authentication-hb.jsp?MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=${enc_desc}&amp;Version=PRODUCT_VERSION</url>
 		<abortOnError>0</abortOnError>
 		<showMessageOnError>0</showMessageOnError>
 	    </httpGet>
@@ -295,7 +299,7 @@
 			<filename>${system_temp_directory}/error.html</filename>
 			<username>${existingEmail}</username>
 			<password>${existingPassword}</password>
-			<url>BASE_URL/geterror-hb.jsp?MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PRODUCT_DESCRIPTION&amp;Version=PRODUCT_VERSION&amp;InstallerLang=${installation_language_code}&amp;File=</url>
+			<url>BASE_URL/geterror-hb.jsp?MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=${enc_desc}&amp;Version=PRODUCT_VERSION&amp;InstallerLang=${installation_language_code}&amp;File=</url>
 			<abortOnError>0</abortOnError>
 			<showMessageOnError>0</showMessageOnError>
 		    </httpGet>
