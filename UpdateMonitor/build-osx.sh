@@ -139,9 +139,10 @@ _postprocess_updatemonitor_osx() {
 
     mkdir -p staging/osx/UpdateMonitor/scripts || _die "Failed to create a directory for the launch scripts"
     cp scripts/osx/launchUpdateMonitor.sh staging/osx/UpdateMonitor/scripts/launchUpdateMonitor.sh || _die "Failed to copy the launch script (scripts/osx/launchSBPUpdateMonitor.sh)"
+    chmod ugo+x staging/osx/UpdateMonitor/scripts/*.sh
     cp scripts/osx/launchupdatemonitor.applescript.in staging/osx/UpdateMonitor/scripts/launchupdatemonitor.applescript || _die "Failed to copy the launch script (scripts/osx/launchupdatemonitor.applescript.in)"
     cp scripts/osx/startupcfg.sh staging/osx/UpdateMonitor/installer/UpdateMonitor/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/osx/startupcfg.sh)"
-    chmod ugo+x staging/osx/UpdateMonitor/scripts/*.sh
+    chmod ugo+x staging/osx/UpdateMonitor/installer/UpdateMonitor/*.sh
 
     # Copy in the menu pick images and XDG items
     mkdir -p staging/osx/UpdateMonitor/scripts/images || _die "Failed to create a directory for the menu pick images"

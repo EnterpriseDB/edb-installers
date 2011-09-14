@@ -1,4 +1,4 @@
-set exec_command to "/Applications/BRANDING/UpdateMonitor.app/Contents/MacOS/applet"
-set ret to do shell script "bash -c \"cd INSTALL_DIR/UpdateMonitor.app/Contents/MacOS && INSTALL_DIR/UpdateMonitor.app/Contents/MacOS/UpdateMonitor --execute " & quoted form of exec_command & " \" > /dev/null 2>&1 &"
+set exec_command to "/Applications/BRANDING/Application Stack Builder.app/Contents/MacOS/applet"
+set ret to do shell script "bash -c \"cd INSTALL_DIR/UpdateMonitor.app/Contents/MacOS && INSTALL_DIR/UpdateMonitor.app/Contents/MacOS/UpdateManager --execute " & quoted form of exec_command & " \" > /dev/null 2>&1 &"
 
 

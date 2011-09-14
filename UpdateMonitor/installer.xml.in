@@ -491,6 +491,12 @@
     
             <actionGroup>
                <actionList>
+                   <substitute>
+                      <files>${installdir}/scripts/launchUpdateMonitor.sh</files>
+                      <substitutionList>
+                          <substitution pattern="BRANDING" value="${pg_branding}"/>
+                      </substitutionList>
+                   </substitute>
                    <runProgram program="${installdir}/installer/UpdateMonitor/startupcfg.sh"
                                programArguments="${installdir} &quot;${pg_branding}&quot;"
                                abortOnError="0"
