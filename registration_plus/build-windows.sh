@@ -84,6 +84,7 @@ EOT
     ssh $PG_SSH_WINDOWS "cd $PG_REG_COMP_HOST_PATH; cmd /c build-reg-comp.bat" || _die "Building registration_plus component failed..."
 
     scp $PG_SSH_WINDOWS:$PG_REG_COMP_HOST_PATH\\\\dbserver_guid\\\\release\\\\dbserver_guid.exe     $PG_REG_COMP_STAGING/dbserver_guid.exe || _die "Failed to get dbserver_guid utility from the windows VM"
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS\\\\vcredist\\\\vcredist_x86.exe     $PG_REG_COMP_STAGING/vcredist_x86.exe || _die "Failed to get vcredist_x86.exe utility from the windows VM"
 
     PG_REGISTRATION_PLUS_COMP_BUILT_WIN=Done
   fi
@@ -101,6 +102,7 @@ _registration_plus_postprocess_windows()
 
   cp $1/registration_plus_component.xml $1/registration_plus_component_processed.xml   
   _replace "@@WINDIR@@" "windows" $1/registration_plus_component_processed.xml
+  _replace "@@WINDIR@@" "windows" $1/registration_plus_preinstallation.xml
 
   if [ ! -d $1/$PG_REG_COMP_PLATFORM/UserValidation ]; then
     mkdir -p $1/$PG_REG_COMP_PLATFORM/UserValidation || _die "Failed to create UserValidation in staging directory ($1/$PG_REG_COMP_PLATFORM/UserValidation)"
