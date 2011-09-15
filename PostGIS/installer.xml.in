@@ -151,15 +151,40 @@
             </ruleList>
 	</actionGroup>
 
-	<!-- Throw Error if PG PG_MAJOR_VERSION not found -->
-	<throwError text="${msg(pg.not.found)}" >
-	    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+	<actionGroup>
+	    <actionList>
+		<!-- Throw Error if PG PG_MAJOR_VERSION not found -->
+		<throwError text="${msg(pg.not.found)}" >
+		    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+		    <ruleList>
+			<compareText text="${pghome}" logic="equals" value="" />
+			<compareText text="${pguser}" logic="equals" value="" />
+			<compareText text="${pgport}" logic="equals" value="" />
+		    </ruleList>
+		</throwError>
+	    </actionList>
 	    <ruleList>
-		<compareText text="${pghome}" logic="equals" value="" />
-		<compareText text="${pguser}" logic="equals" value="" />
-		<compareText text="${pgport}" logic="equals" value="" />
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
 	    </ruleList>
-	</throwError>
+	</actionGroup>
+
+	<actionGroup>
+	    <actionList>
+		<!-- Throw Error if PG PG_MAJOR_VERSION not found -->
+		<throwError text="${msg(pg.not.found.win32)}" >
+		    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+		    <ruleList>
+			<compareText text="${pghome}" logic="equals" value="" />
+			<compareText text="${pguser}" logic="equals" value="" />
+			<compareText text="${pgport}" logic="equals" value="" />
+		    </ruleList>
+		</throwError>
+	    </actionList>
+	    <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+	    </ruleList>
+	</actionGroup>
+
 
 	<!-- Set installation directory as the PGHOME -->
 	<setInstallerVariable name="installdir" value="${pghome}" />
