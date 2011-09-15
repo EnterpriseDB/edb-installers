@@ -44,6 +44,9 @@ cat <<EOT > "/sbin/init.d/pgbouncer-$PGBOUNCER_SERVICE_VER"
 # Description:       pgbouncer
 ### END INIT INFO
 
+PATH=/usr/sbin:/usr/bin:/sbin
+export PATH
+
 function start
 {
     PID=\`ps -axef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`

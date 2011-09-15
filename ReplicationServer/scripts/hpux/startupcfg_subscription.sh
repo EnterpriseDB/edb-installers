@@ -46,13 +46,16 @@ cat <<EOT > "/sbin/init.d/edb-xdbsubserver-$XDB_SERVICE_VER"
 # Description:       edb-xdbsubserver-$XDB_SERVICE_VER
 ### END INIT INFO
 
+PATH=/usr/sbin:/usr/bin:/sbin
+export PATH
+
 function start
 {
     PID=\`ps -axef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT > /dev/null 2>&1 &"
+       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; nohup $JAVA -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT > /dev/null 2>&1 &"
        echo "Subscription Service $XDB_SERVICE_VER started"
     else
        echo "Subscription Service $XDB_SERVICE_VER already running"
