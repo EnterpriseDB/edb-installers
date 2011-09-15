@@ -14,31 +14,8 @@ echo ""
 # You're not running this script as root user
 if [ x"$LOADINGUSER" != x"root" ];
 then
-
-    USE_SUDO=0
-
-    if [ -f /etc/lsb-release ];
-    then
-        if [ `grep -E '^DISTRIB_ID=[a-zA-Z]?buntu$' /etc/lsb-release | wc -l` != "0" ];
-        then
-            USE_SUDO=1
-        fi
-    fi
-
-    if [ $USE_SUDO != "1" ];
-    then
-        echo "Please enter the root password when requested."
-    else
-        echo "Please enter your password if requested."
-    fi
-
-    if [ $USE_SUDO = "1" ];
-    then
-        sudo su - -c "LD_LIBRARY_PATH="INSTALL_DIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALL_DIR/bin/stackbuilderplus" $*"
-    else
-        su - -c "LD_LIBRARY_PATH="INSTALL_DIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALL_DIR/bin/stackbuilderplus" $*"
-    fi
-
+    echo "Please enter the root password when requested."
+    su - root -c "LD_LIBRARY_PATH="INSTALL_DIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALL_DIR/bin/stackbuilderplus" $*"
 else
     LD_LIBRARY_PATH="INSTALL_DIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALL_DIR/bin/stackbuilderplus" $*
 fi
