@@ -144,6 +144,7 @@ echo Copying QtGui4.dll
 copy "%QT_PATH%\qt\bin\QtGui4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtGui4.dll) && GOTO EXIT_WITH_ERROR
 echo Copying QtXml4.dll
 copy "%QT_PATH%\qt\bin\QtXml4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtXml4.dll) && GOTO EXIT_WITH_ERROR
+copy "$PG_PGBUILD_WINDOWS\vcredist\vcredist_x86.exe" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtXml4.dll) && GOTO EXIT_WITH_ERROR
 
 cd "%SOURCE_PATH%\updatemonitor.staging"
 zip -r ..\um_output.zip * || SET ERRMSG=ERROR: Couldn't archieve the UpdateMonitor binaries && GOTO EXIT_WITH_ERROR

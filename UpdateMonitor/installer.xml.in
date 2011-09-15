@@ -94,6 +94,21 @@
   <preInstallationActionList>
     <createDirectory path="${system_temp_directory}/${product_shortname}" />
 
+    <!-- Installing vcredist on windows -->
+    <actionGroup>
+       <actionList>
+         <unpackFile component="updatemanager"
+               destination="${system_temp_directory}\vcredist_x86.exe"
+               folder="updatemonitorfileswindows" origin="bin/vcredist_x86.exe"/>
+         <runProgram program="${system_temp_directory}\vcredist_x86.exe"
+               programArguments="/q" workingDirectory="${system_temp_directory}"
+               abortOnError="0" showMessageOnError="0"/>
+      </actionList>
+      <ruleList>
+         <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
     <actionGroup>
       <actionList>
         <!-- Do not create uninstaller in case of extract-only mode -->
