@@ -163,20 +163,24 @@
     </urlEncode>
 
     <createDirectory path="${system_temp_directory}/@@TEMPDIR@@"/>
+    <!-- Unpack scripts and required libraries -->
+    <unpackDirectory
+	    component="userValidation"
+	    destination="${system_temp_directory}/@@TEMPDIR@@/"
+	    folder="registration_plus${platform_name}"
+	    origin="UserValidation">
+       <ruleList>
+	  <compareText logic="equals" text="${platform_name}" value="windows" />
+       </ruleList>
+    </unpackDirectory>
 
+ 
     <actionGroup>
       <actionList>
 
 	<actionGroup>
 	    <actionList>
-	        <!-- Unpack scripts and required libraries -->
-		<unpackDirectory
-		    component="userValidation"
-		    destination="${system_temp_directory}/@@TEMPDIR@@/"
-		    folder="registration_plus${platform_name}"
-		    origin="UserValidation"/>
-
-    
+   
 		<!-- Generate UUID -->
 		<setInstallerVariableFromScriptOutput
 		    name="machine_id"
