@@ -39,7 +39,7 @@
 	    <compareText logic="equals" text="${@@COMPONENT_VERSION@@}" value=""/>
 	</ruleList>
     </actionGroup>
-    <deleteFile path="@@TEMPDIR@@" abortOnError="0" showMessageOnError="0"/>
+    <deleteFile path="${system_temp_directory}/@@TEMPDIR@@" abortOnError="0" showMessageOnError="0"/>
   </actionList>
   <ruleList>
     <isTrue value="${is_internet_connected}" />
