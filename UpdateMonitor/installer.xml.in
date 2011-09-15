@@ -874,7 +874,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
         <folder description="Program Files" destination="${installdir}" name="updatemonitorfileslinux" platforms="linux">
           <distributionFileList>
             <distributionDirectory origin="staging/linux/UpdateMonitor/bin"/>
-            <distributionDirectory origin="staging/linux/UpdateMonitor/bin"/>
+            <distributionDirectory origin="staging/linux/UpdateMonitor/lib"/>
             <distributionDirectory origin="staging/linux/installer"/>
             <distributionDirectory origin="staging/linux/UpdateMonitor/instscripts"/>
             <distributionDirectory origin="staging/linux/UpdateMonitor/scripts"/>
