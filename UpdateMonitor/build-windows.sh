@@ -193,8 +193,8 @@ _postprocess_updatemonitor_windows() {
         rm -f installer-win.xml
     fi
     cp installer.xml installer-win.xml
-    _replace "registration_plus_component" "registration_plus_component_processed" installer-win.xml || _die "Failed to replace the registration_plus compon
-ent file name"
+    _replace "registration_plus_component" "registration_plus_component_windows" installer-win.xml || _die "Failed to replace the registration_plus component file name"
+    _replace "registration_plus_preinstallation" "registration_plus_preinstallation_windows" installer-win.xml || _die "Failed to replace the registration_plus preinstallation file name"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-win.xml windows || _die "Failed to build the installer"

@@ -100,9 +100,10 @@ _registration_plus_postprocess_windows_x64()
   PG_REG_COMP_STAGING=$WD/registration_plus/staging/$PG_REG_COMP_PLATFORM
   PG_REG_COMP_PATH=$WD/registration_plus/source/$PG_REG_COMP_PLATFORM
 
-  cp $1/registration_plus_component.xml $1/registration_plus_component_processed.xml
-  _replace "@@WINDIR@@" "windows-x64" $1/registration_plus_component_processed.xml
-  _replace "@@WINDIR@@" "windows-x64" $1/registration_plus_preinstallation.xml
+  cp $1/registration_plus_component.xml $1/registration_plus_component_windows_x64.xml
+  cp $1/registration_plus_preinstallation.xml  $1/registration_plus_preinstallation_windows_x64.xml
+  _replace "@@WINDIR@@" "windows-x64" $1/registration_plus_component_windows_x64.xml
+  _replace "@@WINDIR@@" "windows-x64" $1/registration_plus_preinstallation_windows_x64.xml
   
   if [ ! -d $1/$PG_REG_COMP_PLATFORM/UserValidation ]; then
     mkdir -p $1/$PG_REG_COMP_PLATFORM/UserValidation || _die "Failed to create UserValidation in staging directory ($1/$PG_REG_COMP_PLATFORM/UserValidation)"

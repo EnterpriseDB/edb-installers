@@ -139,7 +139,8 @@ _postprocess_plpgsqlo_windows() {
 
     _replace @@WIN64MODE@@ "0" installer-win.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
     _replace @@WINDIR@@ "windows" installer-win.xml || _die "Failed to replace the WINDIR setting in the installer.xml"
-    _replace "registration_plus_component" "registration_plus_component_processed" installer-win.xml || _die "Failed to replace the registration_plus component file name"
+    _replace "registration_plus_component" "registration_plus_component_windows" installer-win.xml || _die "Failed to replace the registration_plus component file name"
+    _replace "registration_plus_preinstallation" "registration_plus_preinstallation_windows" installer-win.xml || _die "Failed to replace the registration_plus preinstallation file name"
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-win.xml windows || _die "Failed to build the installer"
 

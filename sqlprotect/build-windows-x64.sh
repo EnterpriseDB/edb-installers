@@ -106,7 +106,8 @@ _postprocess_sqlprotect_windows_x64() {
 
     _replace @@WIN64MODE@@ "1" installer-win-x64.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
     _replace @@WINDIR@@ "windows-x64" installer-win-x64.xml || _die "Failed to replace the WINDIR setting in the installer.xml"
-    _replace "registration_plus_component" "registration_plus_component_processed" installer-win-x64.xml || _die "Failed to replace the registration_plus component file name"
+    _replace "registration_plus_component" "registration_plus_component_windows_x64" installer-win-x64.xml || _die "Failed to replace the registration_plus component file name"
+    _replace "registration_plus_preinstallation" "registration_plus_preinstallation_windows_x64" installer-win-x64.xml || _die "Failed to replace the registration_plus preinstallation file name"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-win-x64.xml windows || _die "Failed to build the installer"
