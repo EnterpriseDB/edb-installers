@@ -8,7 +8,7 @@ Controlling the PgBouncer Service
 By default, the PgBouncer service is configured to autostart at system 
 startup and listen for connections on port 6432.  You can confirm that the 
 PgBouncer service is running through the Windows service manager or through 
-the Linux command line.
+the Linux or HPUX command line.
 
 Windows
 -------
@@ -28,11 +28,11 @@ and enter:
 
     service pgbouncer-90 status
 
-If the PgBouncer service is running, Linux echoes back:
+  If the PgBouncer service is running, Linux echoes back:
 
     pgbouncer-90 is running (PID:29618) 
  
-If the service is not running, Linux echoes:
+  If the service is not running, Linux echoes:
 
     pgbouncer-90 not running
     
@@ -44,6 +44,34 @@ the command line.  To start the pgbouncer-90 daemon, enter:
   To stop the pgbouncer-90 daemon, enter:
 
     service pgbouncer-90 stop 
+
+HPUX
+----
+To view the status of the PgBouncer daemon on HPUX, open a terminal window, 
+and enter:
+
+    /sbin/init.d/pgbouncer-90 status
+
+  If the PgBouncer service is running, HPUX echoes back:
+
+    pgbouncer-90 is running 
+ 
+  If the service is not running, HPUX echoes:
+
+    pgbouncer-90 not running
+    
+You can also control the PgBouncer service at the command line.  To start the 
+PgBouncer daemon, enter:
+
+    /sbin/init.d/pgbouncer-90 start
+    
+To stop the PgBouncer daemon, enter:
+
+    /sbin/init.d/pgbouncer-90 stop 
+
+To stop and then start the PgBouncer daemon, enter:
+
+    /sbin/init.d/pgbouncer-90 restart
 
 
 Configuring PgBouncer
