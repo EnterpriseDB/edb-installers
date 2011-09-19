@@ -471,26 +471,6 @@
                 <substitution pattern="@@INSTALL_DIR@@" value="${installdir}"/>
               </substitutionList>
             </substitute>
-            <substitute>
-              <files>${installdir}/installer/UpdateMonitor/configlibs.sh</files>
-              <substitutionList>
-                <substitution pattern="INSTALL_DIR" value="${installdir}"/>
-              </substitutionList>
-            </substitute>
-    
-            <!-- Create shourtcuts for linux/linux-x64/osx -->
-            <runProgram program="${installdir}/installer/UpdateMonitor/configlibs.sh"
-                        programArguments=""
-                        progressText="${msg(progress.text.fixing.libs)}"
-                        abortOnError="0"
-                        showMessageOnError="0">
-                <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                <ruleList>
-                  <compareText logic="contains" text="${platform_name}" value="linux"/>
-                  <compareText logic="contains" text="${platform_name}" value="solaris"/>
-                </ruleList>
-            </runProgram>
-    
           </actionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>

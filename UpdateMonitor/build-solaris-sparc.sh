@@ -140,9 +140,6 @@ _postprocess_updatemonitor_solaris_sparc() {
 
     mkdir -p staging/solaris-sparc/installer/UpdateMonitor || _die "Failed to create a directory for the installer scripts"
     
-    cp scripts/solaris/configlibs.sh staging/solaris-sparc/installer/UpdateMonitor/configlibs.sh || _die "Failed to copy the removeshortcuts script (scripts/solaris/configlibs.sh)"
-    chmod ugo+x staging/solaris-sparc/installer/UpdateMonitor/*.sh
-
     mkdir -p staging/solaris-sparc/UpdateMonitor/scripts || _die "Failed to create a directory for the launch scripts"
     cp scripts/solaris/launchUpdateMonitor.sh staging/solaris-sparc/UpdateMonitor/scripts/launchUpdateMonitor.sh || _die "Failed to copy the launch scripts (scripts/solaris/launchUpdateMonitor.sh)"
     chmod ugo+x staging/solaris-sparc/UpdateMonitor/scripts/launchUpdateMonitor.sh

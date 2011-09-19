@@ -139,9 +139,6 @@ _postprocess_updatemonitor_solaris_x64() {
 
     mkdir -p staging/solaris-x64/installer/UpdateMonitor || _die "Failed to create a directory for the installer scripts"
     
-    cp scripts/solaris/configlibs.sh staging/solaris-x64/installer/UpdateMonitor/configlibs.sh || _die "Failed to copy the removeshortcuts script (scripts/solaris/configlibs.sh)"
-    chmod ugo+x staging/solaris-x64/installer/UpdateMonitor/*.sh
-
     mkdir -p staging/solaris-x64/UpdateMonitor/scripts || _die "Failed to create a directory for the launch scripts"
     cp scripts/solaris/launchUpdateMonitor.sh staging/solaris-x64/UpdateMonitor/scripts/launchUpdateMonitor.sh || _die "Failed to copy the launch scripts (scripts/solaris/launchUpdateMonitor.sh)"
     chmod ugo+x staging/solaris-x64/UpdateMonitor/scripts/launchUpdateMonitor.sh

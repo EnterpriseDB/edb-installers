@@ -101,10 +101,6 @@ _postprocess_updatemonitor_linux() {
     mkdir -p staging/linux/installer/UpdateMonitor || _die "Failed to create a directory for the installer scripts"
     mkdir -p staging/linux/UpdateMonitor/scripts || _die "Failed to create a directory for the installer scripts"
     
-    cp scripts/linux/configlibs.sh staging/linux/installer/UpdateMonitor/configlibs.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/configlibs.sh)"
-    _replace @@PLATFORM@@ "linux32" staging/linux/installer/UpdateMonitor/configlibs.sh || _die "Failed to replace the platform placeholder value"
-    chmod ugo+x staging/linux/installer/UpdateMonitor/*.sh
-
     cp scripts/linux/launchUpdateMonitor.sh staging/linux/UpdateMonitor/scripts/launchUpdateMonitor.sh || _die "Failed to copy the launch scripts (scripts/linux/launchUpdateMonitor.sh)"
     chmod ugo+x staging/linux/UpdateMonitor/scripts/launchUpdateMonitor.sh
 
