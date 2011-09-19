@@ -72,7 +72,6 @@ _registration_plus_postprocess()
   _replace @@REGISTRY_PREFIX@@     "$5" registration_plus_postinstallation.xml
   _replace @@REGISTRY_PREFIX_WIN@@ "$6" registration_plus_postinstallation.xml
   _replace @@TEMPDIR@@             "$7" registration_plus_postinstallation.xml
-  _replace @@COMPONENT_VERSION@@   "$3" registration_plus_postinstallation.xml
 
   # pre-installation actions list (preinstallation.xml)
   _replace @@COMPONENT@@           "$2" registration_plus_preinstallation.xml

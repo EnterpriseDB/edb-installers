@@ -24,7 +24,6 @@
 	</actionList>
 	<ruleList>
 	    <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
-	    <compareText logic="equals" text="${@@COMPONENT_VERSION@@}" value=""/>
 	</ruleList>
     </actionGroup>
 
@@ -36,7 +35,6 @@
 	</actionList>
         <ruleList>
 	    <compareText text="${platform_name}" logic="equals" value="windows"/>
-	    <compareText logic="equals" text="${@@COMPONENT_VERSION@@}" value=""/>
 	</ruleList>
     </actionGroup>
     <deleteFile path="${system_temp_directory}/@@TEMPDIR@@" abortOnError="0" showMessageOnError="0"/>
