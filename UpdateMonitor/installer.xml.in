@@ -348,6 +348,51 @@
 		<compareText text="${iUMVersion}" logic="equals" value="" />
 	    </ruleList>
 	</actionGroup>
+        <actionGroup>
+          <actionList>
+            <!-- Stop the montioring if installed, after UM exe name change -->
+            <kill path="${installdir}\bin\UpdManager.exe" >
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="does_not_equal" text="${iUMVersion}" value=""/>
+                <fileExists path="${installdir}\bin\UpdManager.exe" />
+              </ruleList>
+            </kill>
+            <runProgram program="kill">
+               <programArguments>-9 `ps ax | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+               <abortOnError>0</abortOnError>
+               <showMessageOnError>0</showMessageOnError>
+               <ruleList>
+                 <compareText logic="contains" text="${platform_name}" value="linux"/>
+                 <compareText logic="does_not_equal" text="${iUMVersion}" value=""/>
+               </ruleList>
+            </runProgram>
+            <runProgram program="kill">
+               <programArguments>-9 `ps awx | grep "${installdir}/UpdateMonitor.app/Contents/MacOS/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+               <abortOnError>0</abortOnError>
+               <showMessageOnError>0</showMessageOnError>
+               <ruleList>
+                 <compareText logic="equals" text="${platform_name}" value="osx"/>
+                 <compareText logic="does_not_equal" text="${iUMVersion}" value=""/>
+               </ruleList>
+            </runProgram>
+            <runProgram program="kill">
+               <programArguments>-9 `ps -ef | grep "${installdir}/bin/UpdateManager" | grep -v "grep" | awk '{print $2}'`</programArguments>
+               <abortOnError>0</abortOnError>
+               <showMessageOnError>0</showMessageOnError>
+               <ruleList>
+                 <compareText logic="contains" text="${platform_name}" value="solaris"/>
+                 <compareText logic="does_not_equal" text="${iUMVersion}" value=""/>
+               </ruleList>
+            </runProgram>
+          </actionList>
+          <ruleList>
+	    <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+          </ruleList>
+        </actionGroup>
+    
       </actionList>
       <ruleList>
         <isFalse value="${extract_mode}"/>
@@ -381,7 +426,7 @@
            </ruleList>
         </runProgram>
         <runProgram program="kill">
-           <programArguments>-9 `ps awx | grep "${installdir}/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+           <programArguments>-9 `ps awx | grep "${installdir}/UpdateMonitor.app/Contents/MacOS/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
            <abortOnError>0</abortOnError>
            <showMessageOnError>0</showMessageOnError>
            <ruleList>
@@ -748,7 +793,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
     <actionGroup>
       <actionList>
         <runProgram program="kill">
-           <programArguments>-9 `ps awx | grep "${installdir}/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+           <programArguments>-9 `ps awx | grep "${installdir}/UpdateMonitor.app/Contents/MacOS/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
            <abortOnError>0</abortOnError>
            <showMessageOnError>0</showMessageOnError>
         </runProgram>
