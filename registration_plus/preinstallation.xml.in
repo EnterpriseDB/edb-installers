@@ -184,8 +184,11 @@
 
     <runProgram program="${system_temp_directory}\@@TEMPDIR@@\UserValidation\${vcredist_exe}"
                programArguments="/q" workingDirectory="${system_temp_directory}\@@TEMPDIR@@\UserValidation"
-               abortOnError="0" showMessageOnError="0"/>
-
+               abortOnError="0" showMessageOnError="0">
+	<ruleList>
+	    <compareText text="${platform_name}" logic="equals" value="windows" />
+	</ruleList>
+    </runProgram>
  
     <actionGroup>
       <actionList>
