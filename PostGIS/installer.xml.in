@@ -125,6 +125,18 @@
     <!-- Preinstallation actions -->
     <preInstallationActionList>
 
+      <!-- Creates the ini file if not exits -->
+      <touchFile path="/etc/postgres-reg.ini">
+          <ruleList>
+              <compareText>
+                   <logic>does_not_equal</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+              </compareText>
+          </ruleList>
+       </touchFile>
+ 
+
 	<!-- Get the PG PG_MAJOR_VERSION installation details -->
 	<actionGroup>
 	    <actionList>
@@ -139,21 +151,33 @@
 
 	<actionGroup>
 	    <actionList>
-		<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${PGCurrentVersion}" 
+		<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${PGMajorVersion}" 
 			     name="Base Directory" variable="pghome" />		 
-		<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${PGCurrentVersion}" 
+		<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${PGMajorVersion}" 
+			     name="Service ID" variable="pgservice_id" />		 
+		<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\${pgservice_id}" 
 			     name="Port" variable="pgport" />		 
-		<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${PGCurrentVersion}" 
-			     name="Superuser" variable="pguser" />		 
+		<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\${pgservice_id}" 
+			     name="Database Superuser" variable="pguser" />		 
 	    </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
 	</actionGroup>
 
-	<actionGroup>
+	<!-- Throw Error if PG PG_MAJOR_VERSION not found -->
+	<if>
 	    <actionList>
-		<!-- Throw Error if PG PG_MAJOR_VERSION not found -->
+		<throwError text="${msg(pg.not.found.win64)}" >
+		    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+		    <ruleList>
+			<compareText text="${pghome}" logic="equals" value="" />
+			<compareText text="${pguser}" logic="equals" value="" />
+			<compareText text="${pgport}" logic="equals" value="" />
+		    </ruleList>
+		</throwError>
+	    </actionList>
+	    <elseActionList>
 		<throwError text="${msg(pg.not.found)}" >
 		    <ruleEvaluationLogic>or</ruleEvaluationLogic>
 		    <ruleList>
@@ -162,29 +186,11 @@
 			<compareText text="${pgport}" logic="equals" value="" />
 		    </ruleList>
 		</throwError>
-	    </actionList>
-	    <ruleList>
-                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-	    </ruleList>
-	</actionGroup>
-
-	<actionGroup>
-	    <actionList>
-		<!-- Throw Error if PG PG_MAJOR_VERSION not found -->
-		<throwError text="${msg(pg.not.found.win32)}" >
-		    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-		    <ruleList>
-			<compareText text="${pghome}" logic="equals" value="" />
-			<compareText text="${pguser}" logic="equals" value="" />
-			<compareText text="${pgport}" logic="equals" value="" />
-		    </ruleList>
-		</throwError>
-	    </actionList>
-	    <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
-	    </ruleList>
-	</actionGroup>
-
+	    </elseActionList>
+	    <conditionRuleList>
+		<platformTest type="windows-x64" />
+	    </conditionRuleList>
+	</if>
 
 	<!-- Set installation directory as the PGHOME -->
 	<setInstallerVariable name="installdir" value="${pghome}" />
@@ -275,17 +281,7 @@
                 </throwError>
                 <setInstallerVariable name="project.windowsSoftwareRegistryPrefix" value="${project.vendor}\${project.fullName}"/>
 
-                <!-- Creates the ini file if not exits -->
-                <touchFile path="/etc/postgres-reg.ini">
-                    <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </touchFile>
-                <!-- WIN: Get the branding & Check Previous Installation of PostGIS -->
+               <!-- WIN: Get the branding & Check Previous Installation of PostGIS -->
                 <actionGroup>
                     <actionList>
                         <registryGet>

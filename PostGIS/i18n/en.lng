@@ -50,7 +50,7 @@ postgis.incompatible.install.error=An incomaptible version of PostGIS is already
 
 postgis.upgrade.info=To complete the upgrade process, you need to run the upgrade sql scripts on your spatial databases.\nThe upgrade scripts are located under:\n${sharedir}/contrib\n
 
-pg.not.found.win32=No PostgreSQL ${PGMajorVersion} (x86) installation found.
+pg.not.found.win64=No PostgreSQL ${PGMajorVersion} (x86) installation found.
 pg.not.found=No PostgreSQL ${PGMajorVersion} installation found.
 
 upgrade.mode.title=Upgrade Mode
