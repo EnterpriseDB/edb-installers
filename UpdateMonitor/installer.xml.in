@@ -344,9 +344,6 @@
 		    </ruleList>
 		</throwError>
 	    </actionList>
-	    <ruleList>
-		<compareText text="${iUMVersion}" logic="equals" value="" />
-	    </ruleList>
 	</actionGroup>
         <actionGroup>
           <actionList>
