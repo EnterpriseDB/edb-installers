@@ -2826,6 +2826,21 @@
                     </ruleList>
                 </throwError>
 
+		<!-- Flush the directory services cache -->
+		<runProgram>
+		    <program>dscacheutil</program>
+		    <programArguments>-flushcache</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+
 
                 <!-- Initialise the cluster if this is an installation -->
                 <actionGroup>
