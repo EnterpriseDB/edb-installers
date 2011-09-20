@@ -14,8 +14,15 @@ echo ""
 # You're not running this script as root user
 if [ x"$LOADINGUSER" != x"root" ];
 then
+    echo $DISPLAY > /tmp/.echoUser1DISPLAY.txt
+    chmod a+r /tmp/.echoUser1DISPLAY.txt
+    xauth list|grep `echo $DISPLAY |cut -c10-12` > /tmp/.parseUser1Xauth.txt
+    chmod a+r /tmp/.parseUser1Xauth.txt
+
     echo "Please enter the root password when requested."
-    su - root -c "LD_LIBRARY_PATH="INSTALL_DIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALL_DIR/bin/stackbuilderplus" $*"
+    su - root -c "xauth add `cat /tmp/.parseUser1Xauth.txt`;export DISPLAY=`cat /tmp/.echoUser1DISPLAY.txt`;LD_LIBRARY_PATH="INSTALL_DIR/lib":$LD_LIBRARY_PATH; export GDK_PIXBUF_MODULE_FILE=../lib/gdk-pixbuf-2.0/2.10.0/loaders.cache;export GDK_PIXBUF_MODULEDIR=../lib/gdk-pixbuf-2.0/2.10.0/loaders/; cd INSTALL_DIR/bin; G_SLICE=always-malloc "INSTALL_DIR/bin/stackbuilderplus" $*"
+    rm -f /tmp/.echoUser1DISPLAY.txt
+    rm -f /tmp/.parseUser1Xauth.txt
 else
     LD_LIBRARY_PATH="INSTALL_DIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALL_DIR/bin/stackbuilderplus" $*
 fi
