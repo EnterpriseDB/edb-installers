@@ -72,6 +72,7 @@ _build_ReplicationServer_osx() {
     mkdir -p $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/lib || _die "Failed to create the instscripts directory"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/lib || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libxml2* $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/lib || _die "Failed to copy libpq in instscripts"
+    cp -R $PG_PATH_OSX/server/staging/osx/lib/libedit* $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/lib || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/bin || _die "Failed to copy psql in instscripts"
    
     cp -R $PG_PATH_OSX/MigrationToolKit/staging/osx/MigrationToolKit/lib/edb-migrationtoolkit.jar $PG_PATH_OSX/ReplicationServer/staging/osx/repserver/lib/repl-mtk || _die "Failed to copy edb-migrationtoolkit.jar"
