@@ -26,20 +26,12 @@ install.summary=Slony is a "master to multiple slaves" replication system suppor
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 
-error.configure.slony=Error Configuring Slony
-
-slony.installdir.empty=The installation directory cannot be empty
-
-slony.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
-
-slony.installdir.pgerror=The installation directory path is not a valid PostgreSQL Server installation directory. Please select the correct path, or install the PostgreSQL Server and try again.
-
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 
 Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
 
 slony.incompatible.install.error=An incompatible version of Slony already installed. \nPlease remove the incompatible installation before installing this version.
 
-slony.incompatible.pg.error=The PostgreSQL Server is incompatible with this version of Slony.
+pg.not.found.win64=No PostgreSQL ${PGMajorVersion} (x86) installation found.
+pg.not.found=No PostgreSQL ${PGMajorVersion} installation found.
 
-slony.incompatible.pg64.error=The PostgreSQL Server is incompatible with this version of Slony. You are trying 32 bit slony against 64 bit PostgreSQL server.
