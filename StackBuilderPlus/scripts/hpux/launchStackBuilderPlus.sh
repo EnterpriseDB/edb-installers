@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# PostgreSQL stackbuilderplus launch script for Linux
+# Postgres Plus Advanced Server Stackbuilder Plus launch script for HP-UX
 # Ashesh Vashi, EnterpriseDB
 
 CMD=""

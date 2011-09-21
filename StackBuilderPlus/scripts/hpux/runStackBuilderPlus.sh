@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# PostgreSQL stackbuilder runner script for Linux
+# Postgres Plus Advanced Server Stackbuilder Plus runner script for HP-UX
 # Dave Page, EnterpriseDB
 
 # Record the calling shell pid in the pid file.
