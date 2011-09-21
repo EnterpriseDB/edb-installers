@@ -92,12 +92,12 @@ _prep_pgmemcache() {
 
     echo "Unpacking pgmemcache source..."
     extract_file ../../tarballs/pgmemcache_$PG_VERSION_PGMEMCACHE || exit 1
-
-    if [ -e $WD/tarballs/pgmemcache_libmemcached038.patch ];
-    then
-         cd pgmemcache_$PG_VERSION_PGMEMCACHE
-         patch -p1 < $WD/tarballs/pgmemcache_libmemcached038.patch
-    fi 
+    if [ -e $WD/tarballs/pgmemcache_$PG_VERSION_PGMEMCACHE.patch ];
+    then 
+	cd pgmemcache_$PG_VERSION_PGMEMCACHE
+	patch -p1 < $WD/tarballs/pgmemcache_$PG_VERSION_PGMEMCACHE.patch
+	cd $WD/pgmemcache/source
+    fi
 
     # Per-platform prep
     cd $WD

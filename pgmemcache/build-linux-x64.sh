@@ -81,6 +81,8 @@ _build_pgmemcache_linux_x64() {
     cd $PGMEM_SOURCE
     ssh $PVT_SSH "cd $PGMEM_PACKAGE_VM_PATH; PATH=$PG_PATH/bin:$PATH make CFLAGS=\" -I$LIBMEMCACHED_CACHING_VM_PATH/include \" LDFLAGS=\" -L$LIBMEMCACHED_CACHING_VM_PATH/lib \"" || _die "Failed to build the pgmemcache for $PGMEM_PLATFORM"
 
+    ssh $PVT_SSH "cd $PGMEM_PACKAGE_VM_PATH; chrpath --replace \"\\\${ORIGIN}/../lib\" pgmemcache.so" || _die "Failed to replace the rpath"
+
     cd $PGMEM_SOURCE
 
     # Copying the binaries
