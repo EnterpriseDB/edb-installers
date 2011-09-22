@@ -86,6 +86,7 @@ EOT
     # Build the code and install into a temporary directory
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-pgbouncer.bat " || _die "Failed to build pgbouncer on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\regex\\\\bin\\\\regex2.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\bin" || _die "Failed to build pgbouncer on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\libevent\\\\bin\\\\*.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\bin" || _die "Failed to build pgbouncer on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\share\\\\doc\\\\pgbouncer\\\\pgbouncer.ini $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\share" || _die "Failed to copy  pgbouncer ini to share dir"
 
     # Copy psql and dependent libraries
