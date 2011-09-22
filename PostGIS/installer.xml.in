@@ -432,8 +432,20 @@
                             <key>InstallationDirectory</key>
                             <variable>installdir</variable>
                         </iniFileGet>
+	                <!-- LIN : Remove Menu shortcuts of old 1.5 installer -->
+			<runProgram>
+			    <program>${installdir}/PostGIS/installer/PostGIS/removeshortcuts.sh</program>
+			    <programArguments>"${installdir}" "1.5.1" "PG_MAJOR_VERSION" "${branding}"</programArguments>
+			    <abortOnError>0</abortOnError>
+			    <showMessageOnError>0</showMessageOnError>
+			</runProgram>
                     </actionList>
                     <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${PostGISVersionInstalled}</text>
+                            <value>1.5.1</value>
+                        </compareText>
                         <compareText>
                             <logic>does_not_equal</logic>
                             <text>${PostGISVersionInstalled}</text>
@@ -686,7 +698,7 @@
                     <actionList>
                         <runProgram>
                             <program>${installdir}/PostGIS/installer/PostGIS/createshortcuts.sh</program>
-                            <programArguments>"${installdir}" "${PGMajorVersion}" "${productVersion}" "${branding}" "${docdir}"</programArguments>
+                            <programArguments>"${installdir}" "${PGMajorVersion}" "${PostGISMajorVersion}" "${branding}" "${docdir}"</programArguments>
                             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -905,7 +917,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/PostGIS/installer/PostGIS/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${productVersion}" "PG_MAJOR_VERSION" "${branding}"</programArguments>
+                    <programArguments>"${installdir}" "${PostGISMajorVersion}" "PG_MAJOR_VERSION" "${branding}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
