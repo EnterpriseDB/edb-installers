@@ -1,7 +1,7 @@
 <project>
   <!-- Package details -->
   <shortName>apachephp</shortName>
-  <fullName>Apache/Php</fullName>
+  <fullName>ApachePhp</fullName>
   <version>PG_VERSION_APACHEPHP-PG_BUILDNUM_APACHEPHP</version>
   <startMenuGroupName>${branding}</startMenuGroupName>
   <!-- Product Specific Options -->
