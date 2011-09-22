@@ -5,8 +5,8 @@
   <version>PG_VERSION_APACHEPHP-PG_BUILDNUM_APACHEPHP</version>
   <startMenuGroupName>${branding}</startMenuGroupName>
   <!-- Product Specific Options -->
-  <productComments>${product_fullname} ${productVersion}, packaged by EnterpriseDB</productComments>
-  <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
+  <productComments>Apache/Php ${productVersion}, packaged by EnterpriseDB</productComments>
+  <productDisplayName>Apache/Php ${productVersion}</productDisplayName>
   <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
   <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
   <!-- The options are used for RPM registration -->
