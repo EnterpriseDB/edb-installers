@@ -25,7 +25,7 @@ then
     rm -f /tmp/.parseUser1Xauth.txt
 else
    cd INSTALL_DIR/bin
-   GDK_PIXBUF_MODULE_FILE=../lib/gdk-pixbuf-2.0/2.10.0/loaders.cache;export GDK_PIXBUF_MODULEDIR=../lib/gdk-pixbuf-2.0/2.10.0/loaders/ LD_LIBRARY_PATH="INSTALL_DIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALL_DIR/bin/stackbuilderplus" $*
+   GDK_PIXBUF_MODULE_FILE=../lib/gdk-pixbuf-2.0/2.10.0/loaders.cache GDK_PIXBUF_MODULEDIR=../lib/gdk-pixbuf-2.0/2.10.0/loaders/ LD_LIBRARY_PATH="INSTALL_DIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "INSTALL_DIR/bin/stackbuilderplus" $*
 fi
 
 # Wait a while to display su or sudo invalid password error if any
