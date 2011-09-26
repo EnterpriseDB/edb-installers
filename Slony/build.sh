@@ -58,6 +58,13 @@ _prep_Slony() {
     echo "Unpacking SLONY source..."
     extract_file  $WD/tarballs/slony1-$PG_VERSION_SLONY || exit 1
     cd slony1-$PG_VERSION_SLONY
+
+    # Patch for 9.1 support
+    if [ -f $WD/tarballs/slony_PG91.patch ]; then
+	patch -p1 < $WD/tarballs/slony_PG91.patch
+    fi
+
+    # Patch for pgport support
     if [ -f $WD/tarballs/slony1-$PG_VERSION_SLONY.patch ]; then
         patch -p1 < $WD/tarballs/slony1-$PG_VERSION_SLONY.patch
     fi
