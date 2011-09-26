@@ -645,6 +645,17 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
           </actionList>
         </actionGroup>
     
+        <!-- Add localhost to the xhost-->
+        <runProgram program="xhost"
+                    programArguments="+localhost"
+                    runAs="${system_user}"
+                    showMessageOnError="0"
+                    abortOnError="0">
+          <ruleList>
+            <compareText text="${linux_distribution_shortname}" logic="equals" value="suse"/>
+          </ruleList>
+       </runProgram>
+    
         <!-- Start Monitoring Service if installed -->
         <runProgram program="${installdir}/scripts/launchUpdateMonitor.sh"
                     programArguments=""
