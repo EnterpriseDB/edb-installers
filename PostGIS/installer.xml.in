@@ -54,6 +54,7 @@
         <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION">
             <persist>1</persist>
         </setInstallerVariable>
+	<setInstallerVariable name="defaultpassword" value="postgres"/>
     </preShowHelpActionList>
 
     <!-- Prebuild Actons-->
