@@ -72,8 +72,8 @@
     </customLanguageFileList>
     <preShowHelpActionList>
 
-        <setInstallerVariable name="defaultpubport" value="9011" />
-        <setInstallerVariable name="defaultsubport" value="9012" />
+        <setInstallerVariable name="defaultpubport" value="9051" />
+        <setInstallerVariable name="defaultsubport" value="9052" />
         <setInstallerVariable name="defaultserviceaccount" value="postgres" />
         <setInstallerVariable name="defaultdbtype" value="postgresql" />
         <setInstallerVariable name="defaultcontroldb" value="postgres" />
@@ -143,8 +143,8 @@
         <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_REPLICATIONSERVER" />
         <setInstallerVariable name="xDBReplicationServerVersion"  persist="1" value=""/>
-        <setInstallerVariable name="defaultpubport" value="9011" />
-        <setInstallerVariable name="defaultsubport" value="9012" />
+        <setInstallerVariable name="defaultpubport" value="9051" />
+        <setInstallerVariable name="defaultsubport" value="9052" />
         <setInstallerVariable name="defaultserviceaccount" value="postgres" />
         <setInstallerVariable name="defaultdbtype" value="postgresql" />
         <setInstallerVariable name="defaultcontroldb" value="postgres" />
