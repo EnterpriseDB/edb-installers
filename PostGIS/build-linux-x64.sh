@@ -254,7 +254,7 @@ _postprocess_PostGIS_linux_x64() {
 
     # Version string, for the xdg filenames
     PG_VERSION_STR=`echo $PG_MAJOR_VERSION | sed 's/\./_/g'`
-    POSTGIS_VERSION_STR=`echo $PG_VERSION_POSTGIS | sed 's/\./_/g'`
+    POSTGIS_VERSION_STR=`echo $PG_VERSION_POSTGIS | cut -f1,2 -d "." | sed 's/\./_/g'`
 
     mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
     cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"

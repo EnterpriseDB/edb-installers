@@ -171,6 +171,8 @@ _postprocess_PostGIS() {
 
     PG_GEOS_DLL_VERSION=`echo $PG_TARBALL_GEOS | sed -e 's:\.:-:g'`
 
+    POSTGIS_MAJOR_VERSION=`echo $PG_VERSION_POSTGIS | cut -f1,2 -d "."`
+
     _replace PG_VERSION_POSTGIS "$PG_VERSION_POSTGIS" installer.xml || _die "Failed to set the major version in the installer project file (PostGIS/installer.xml)"
 
     _replace PG_TARBALL_GEOS $PG_TARBALL_GEOS installer.xml || _die "Failed to set the major version of geos in the installer project file (PostGIS/installer.xml)"
@@ -181,6 +183,7 @@ _postprocess_PostGIS() {
     
     _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION installer.xml || _die "Failed to set the PG MAJOR Number in the installer project file (PostGIS/installer.xml)"
     _replace PG_GEOS_DLL_VERSION $PG_GEOS_DLL_VERSION installer.xml || _die "Failed to set the PG MAJOR Number in the installer project file (PostGIS/installer.xml)"
+    _replace POSTGIS_MAJOR_VERSION $POSTGIS_MAJOR_VERSION installer.xml || _die "Failed to set the PG MAJOR Number in the installer project file (PostGIS/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

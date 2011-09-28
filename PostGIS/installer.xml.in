@@ -138,6 +138,9 @@
         <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION">
             <persist>1</persist>
         </setInstallerVariable>
+        <setInstallerVariable name="PostGISMajorVersion" value="POSTGIS_MAJOR_VERSION">
+            <persist>1</persist>
+        </setInstallerVariable>
         <!-- Set the default values -->
         <setInstallerVariable name="defaultuser" value="postgres"/>
         <setInstallerVariable name="defaultpassword" value=""/>
@@ -514,6 +517,20 @@
                             <key>InstallationDirectory</key>
                             <variable>installdir</variable>
                         </iniFileGet>
+			<!-- LIN : Remove Menu shortcuts of old 1.4 installer -->
+                        <runProgram>
+                            <program>${installdir}/PostGIS/installer/PostGIS/removeshortcuts.sh</program>
+                            <programArguments>"${installdir}" "1.4.1" "PG_MAJOR_VERSION" "${branding}"</programArguments>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>${PostGISVersionInstalled}</text>
+                                    <value>1.5.1</value>
+                                </compareText>
+                            </ruleList>
+                        </runProgram>
                     </actionList>
                     <ruleList>
                         <compareText>
@@ -905,6 +922,7 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
+		
             </actionList>
             <ruleList>
                 <isFalse value="${extract_mode}"/>
@@ -1022,7 +1040,7 @@
                     <actionList>
                         <runProgram>
                             <program>${installdir}/PostGIS/installer/PostGIS/createshortcuts.sh</program>
-                            <programArguments>"${installdir}" "${PGMajorVersion}" "${productVersion}" "${branding}" "${docdir}"</programArguments>
+                            <programArguments>"${installdir}" "${PGMajorVersion}" "${PostGISMajorVersion}" "${branding}" "${docdir}"</programArguments>
                             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -1225,7 +1243,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/PostGIS/installer/PostGIS/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${productVersion}" "PG_MAJOR_VERSION" "${branding}"</programArguments>
+                    <programArguments>"${installdir}" "${PostGISMajorVersion}" "PG_MAJOR_VERSION" "${branding}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
