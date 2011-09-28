@@ -1764,7 +1764,7 @@
 	                    <!-- WIN - Check whether the database already exists -->
                         <setInstallerVariableFromScriptOutput>
                             <name>dbexist</name>
-                            <exec>${system_temp_directory}\${product_fullname\check-db.bat</exec>
+                            <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
                             <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "template_postgis"</execArgs>
                             <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
                             <abortOnError>0</abortOnError>
