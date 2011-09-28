@@ -13,7 +13,7 @@ PG_VERSION=$3
 BRANDING=$4
 
 # Version string, for the xdg filenames
-POSTGIS_VERSION_STR=`echo $POSTGIS_VERSION | sed 's/\./_/g'`
+POSTGIS_VERSION_STR=`echo $POSTGIS_VERSION | cut -f1,2 -d "." | sed 's/\./_/g'`
 PG_VERSION_STR=`echo $PG_VERSION | sed 's/\./_/g'`
 
 # Branding string, for the xdg filenames. If the branding is 'PostgreSQL X.Y',
