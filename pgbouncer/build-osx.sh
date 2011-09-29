@@ -96,6 +96,7 @@ _build_pgbouncer_osx() {
     mkdir -p $WD/pgbouncer/staging/osx/instscripts || _die "Failed to create the instscripts directory"
 
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -R $PG_PATH_OSX/server/staging/osx/lib/libedit* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy psql in instscripts"
     cp /usr/local/lib/libxml2* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy the latest libxml2"
 
