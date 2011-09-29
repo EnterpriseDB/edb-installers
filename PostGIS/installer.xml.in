@@ -527,7 +527,7 @@
                                 <compareText>
                                     <logic>equals</logic>
                                     <text>${PostGISVersionInstalled}</text>
-                                    <value>1.5.1</value>
+                                    <value>1.4.1</value>
                                 </compareText>
                             </ruleList>
                         </runProgram>
