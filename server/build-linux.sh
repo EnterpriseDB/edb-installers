@@ -469,7 +469,7 @@ _postprocess_server_linux() {
     "$PG_INSTALLBUILDER_BIN" build installer-linux.xml linux || _die "Failed to build the installer"
 	
 	# Rename the installer
-	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-installer.bin $WD/output/postgresql-$PG_PACKAGE_VERSION-linux.bin || _die "Failed to rename the installer"
+	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-linux.run || _die "Failed to rename the installer"
 
     cd $WD
 }
