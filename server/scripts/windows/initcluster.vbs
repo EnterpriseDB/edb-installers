@@ -183,10 +183,10 @@ For d = 0 To nDirs
     If IsVistaOrNewer() = True Then
         WScript.Echo "Ensuring we can read the path " & strThisDir & " (using icacls) to " & objNetwork.Username & ":"
         IF d <> 0 Then
-            iRet = DoCmd("icacls """ & strThisDir & """ /grant """ & objNetwork.Username & """:RX")
+            iRet = DoCmd("icacls """ & strThisDir & """ /grant """ & objNetwork.Username & """:(NP)(RX)")
         ELSE
             ' Drive letter must not be surronded by double-quotes and ends with slash (\)
-            iRet = DoCmd("icacls " & strThisDir & "\ /grant """ & objNetwork.Username & """:RX")
+            iRet = DoCmd("icacls " & strThisDir & "\ /grant """ & objNetwork.Username & """:(NP)(RX)")
         END IF
     Else
         WScript.Echo "Ensuring we can read the path " & strThisDir & " (using cacls):"
@@ -278,10 +278,10 @@ For d = 0 To nDirs
     If IsVistaOrNewer() = True Then
         WScript.Echo "Ensuring the service account can read the path " & strThisDir & " (using icacls) to " & strOSUsername & ":"
         If d <> 0 Then
-            iRet = DoCmd("icacls """ & strThisDir & """ /grant """ & strOSUsername & """:RX")
+            iRet = DoCmd("icacls """ & strThisDir & """ /grant """ & strOSUsername & """:(NP)(RX)")
         Else
             ' Drive letter must not be surronded by double-quotes and ends with slash (\)
-            iRet = DoCmd("icacls " & strThisDir & "\ /grant """ & strOSUsername & """:RX")
+            iRet = DoCmd("icacls " & strThisDir & "\ /grant """ & strOSUsername & """:(NP)(RX)")
         End If
     Else
         WScript.Echo "Ensuring the service account can read the path " & strThisDir & " (using cacls):"
