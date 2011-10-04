@@ -503,7 +503,7 @@ y a menu pick image"
     "$PG_INSTALLBUILDER_BIN" build installer-lin64.xml linux-x64 || _die "Failed to build the installer"
 
 	# Rename the installer
-	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-x64-installer.bin $WD/output/postgresql-$PG_PACKAGE_VERSION-linux-x64.bin || _die "Failed to rename the installer"
+	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-x64-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-linux-x64.run || _die "Failed to rename the installer"
 
     cd $WD
 }
