@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Encoding=UTF-8
-Name=Migration Wizard
-Exec="INSTALL_DIR/scripts/launchMigrationWizard.sh"
-Icon=pg-launchMigrationWizard.png
-Terminal=false
-Type=Application

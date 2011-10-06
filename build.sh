@@ -381,32 +381,6 @@ then
     _postprocess_pgbouncer || exit 1
 fi
 
-#Package: StackBuilderPlus
-if [ $PG_PACKAGE_SBP = 1 ];
-then
-    cd $WD
-    source ./StackBuilderPlus/build.sh
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_stackbuilderplus || exit 1
-        _build_stackbuilderplus || exit 1
-    fi
-    _postprocess_stackbuilderplus || exit 1
-fi
-
-#Package: Meta Installer
-if [ $PG_PACKAGE_META = 1 ];
-then
-    cd $WD
-    source ./MetaInstaller/build.sh
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_metainstaller || exit 1
-        _build_metainstaller || exit 1
-    fi
-        _postprocess_metainstaller || exit 1
-fi
-
 #Package: MigrationToolKitA
 #The replication server always needs the latest build of MTK...
 if [ $PG_PACKAGE_MIGRATIONTOOLKIT = 1 -o $PG_PACKAGE_REPLICATIONSERVER = 1 ];
@@ -435,38 +409,6 @@ then
     fi
 
     _postprocess_ReplicationServer || exit 1
-fi
-
-# Package: PPHQ
-if [ $PG_PACKAGE_PPHQ = 1 ];
-then
-    echo "### Package: PPHQ"
-    cd $WD
-    source ./pphq/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_pphq || exit 1
-        _build_pphq || exit 1
-    fi
-
-    _postprocess_pphq || exit 1
-fi
-
-# Package: HQAGENT
-if [ $PG_PACKAGE_HQAGENT = 1 ];
-then
-    echo "### Package: HQAGENT"
-    cd $WD
-    source ./hqagent/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_hqagent || exit 1
-        _build_hqagent || exit 1
-    fi
-
-    _postprocess_hqagent || exit 1
 fi
 
 # Package: PLPGSQLO
@@ -512,23 +454,6 @@ then
     fi
 
     _postprocess_updatemonitor || exit 1
-fi
-
-# Package: DevServer
-# ALWAYS BUILD THIS LAST!!
-if [ $PG_PACKAGE_DEVSERVER = 1 ];
-then
-    echo "### Package: DevServer"
-    cd $WD
-    source ./DevServer/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_DevServer || exit 1
-        _build_DevServer || exit 1
-    fi
-
-    _postprocess_DevServer || exit 1
 fi
 
 # Check for private builds
