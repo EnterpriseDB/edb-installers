@@ -164,38 +164,6 @@ then
     _postprocess_ApachePhp || exit 1
 fi
 
-# Package: mediaWiki
-if [ $PG_PACKAGE_MEDIAWIKI = 1 ];
-then
-    echo "### Package: mediaWiki"
-    cd $WD
-    source ./mediaWiki/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_mediaWiki || exit 1
-        _build_mediaWiki || exit 1
-    fi
-
-    _postprocess_mediaWiki || exit 1
-fi
-
-# Package: phpBB
-if [ $PG_PACKAGE_PHPBB = 1 ];
-then
-    echo "### Package: phpBB"
-    cd $WD
-    source ./phpBB/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_phpBB || exit 1
-        _build_phpBB || exit 1
-    fi
-
-    _postprocess_phpBB || exit 1
-fi
-
 # Package: Drupal
 if [ $PG_PACKAGE_DRUPAL = 1 ];
 then
@@ -210,22 +178,6 @@ then
     fi
 
     _postprocess_Drupal || exit 1
-fi
-
-# Package: phppgadmin
-if [ $PG_PACKAGE_PHPPGADMIN = 1 ];
-then
-    echo "### Package: phppgadmin"
-    cd $WD
-    source ./phpPgAdmin/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_phpPgAdmin || exit 1
-        _build_phpPgAdmin || exit 1
-    fi
-
-    _postprocess_phpPgAdmin || exit 1
 fi
 
 # Package: pgJDBC
@@ -291,21 +243,6 @@ then
     _postprocess_Slony || exit 1
 fi
 
-# Package: TuningWizard
-if [ $PG_PACKAGE_TUNINGWIZARD = 1 ];
-then
-    echo "### Package: TuningWizard"
-    cd $WD
-    source ./TuningWizard/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_TuningWizard || exit 1
-        _build_TuningWizard || exit 1
-    fi
-    _postprocess_TuningWizard || exit 1
-fi
-
 # Package: MigrationWizard
 if [ $PG_PACKAGE_MIGRATIONWIZARD = 1 ];
 then
@@ -319,21 +256,6 @@ then
         _build_MigrationWizard || exit 1
     fi
     _postprocess_MigrationWizard || exit 1
-fi
-
-# Package: pgphonehome
-if [ $PG_PACKAGE_PGPHONEHOME = 1 ];
-then
-    echo "### Package: pgphonehome"
-    cd $WD
-    source ./pgphonehome/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_pgphonehome || exit 1
-        _build_pgphonehome || exit 1
-    fi
-    _postprocess_pgphonehome || exit 1
 fi
 
 # Package: Npgsql
@@ -519,22 +441,4 @@ if [ -e $WD/pvt_build.sh ];
 then
     source $WD/pvt_build.sh
 fi
-
-# Package: DevServer
-# ALWAYS BUILD THIS LAST!!
-if [ $PG_PACKAGE_DEVSERVER = 1 ];
-then
-    echo "### Package: DevServer"
-    cd $WD
-    source ./DevServer/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_DevServer || exit 1
-        _build_DevServer || exit 1
-    fi
-
-    _postprocess_DevServer || exit 1
-fi
-
 
