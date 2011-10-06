@@ -197,36 +197,6 @@ then
     _postprocess_Slony || exit 1
 fi
 
-# Package: TuningWizard
-if [ $PG_PACKAGE_TUNINGWIZARD = 1 ];
-then
-    echo "### Package: TuningWizard"
-    cd $WD
-    source ./TuningWizard/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_TuningWizard || exit 1
-        _build_TuningWizard || exit 1
-    fi
-    _postprocess_TuningWizard || exit 1
-fi
-
-# Package: MigrationWizard
-if [ $PG_PACKAGE_MIGRATIONWIZARD = 1 ];
-then
-    echo "### Package: MigrationWizard"
-    cd $WD
-    source ./MigrationWizard/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_MigrationWizard || exit 1
-        _build_MigrationWizard || exit 1
-    fi
-    _postprocess_MigrationWizard || exit 1
-fi
-
 # Package: Npgsql
 if [ $PG_PACKAGE_NPGSQL = 1 ];
 then
@@ -287,19 +257,6 @@ then
     _postprocess_pgbouncer || exit 1
 fi
 
-#Package: pg_migrator
-if [ $PG_PACKAGE_PGMIGRATOR = 1 ];
-then
-    cd $WD
-    source ./pg_migrator/build.sh
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_pg_migrator || exit 1
-        _build_pg_migrator || exit 1
-    fi
-    _postprocess_pg_migrator || exit 1
-fi
-
 #Package: StackBuilderPlus
 if [ $PG_PACKAGE_SBP = 1 ];
 then
@@ -339,7 +296,7 @@ then
         _postprocess_libpq || exit 1
 fi
 
-#Package: MigrationToolKitA
+#Package: MigrationToolKit
 #The replication server always needs the latest build of MTK...
 if [ $PG_PACKAGE_MIGRATIONTOOLKIT = 1 -o $PG_PACKAGE_REPLICATIONSERVER = 1 ]; 
 then
@@ -389,22 +346,4 @@ if [ -e $WD/pvt_build.sh ];
 then
     source $WD/pvt_build.sh
 fi
-
-# Package: DevServer
-# ALWAYS BUILD THIS LAST!!
-if [ $PG_PACKAGE_DEVSERVER = 1 ];
-then
-    echo "### Package: DevServer"
-    cd $WD
-    source ./DevServer/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_DevServer || exit 1
-        _build_DevServer || exit 1
-    fi
-
-    _postprocess_DevServer || exit 1
-fi
-
 
