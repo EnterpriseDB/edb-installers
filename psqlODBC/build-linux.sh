@@ -147,8 +147,6 @@ _build_psqlODBC_linux() {
     ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libpq.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libldap*.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/liblber*.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
 
     # Process Dependent libs
     _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libssl.so"  
