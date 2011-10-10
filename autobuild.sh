@@ -66,11 +66,12 @@ echo "Switching to REL-8_4 branch" >> autobuild.log
 
 # Self update
 echo "Updating build system" >> autobuild.log
+/opt/local/bin/git reset --hard >> autobuild.log 2>&1
 /opt/local/bin/git pull >> autobuild.log 2>&1
 
 # Make sure, we always do a full build
-if [ -f settings.sh.full ]; then
-   cp -f setttings.sh.full settings.sh
+if [ -f settings.sh.full.REL-8_4 ]; then
+   cp -f setttings.sh.full.REL-8_4 settings.sh
 fi
 
 # Run the build, and dump the output to a log file
@@ -99,7 +100,13 @@ echo "Switching to REL-8_3 branch" >> autobuild.log
 
 # Self update
 echo "Updating REL-8_3 branch build system" >> autobuild.log
+/opt/local/bin/git reset --hard >> autobuild.log 2>&1
 /opt/local/bin/git pull >> autobuild.log 2>&1
+
+# Make sure, we always do a full build
+if [ -f settings.sh.full.REL-8_3 ]; then
+   cp -f setttings.sh.full.REL-8_3 settings.sh
+fi
 
 # Run the build, and dump the output to a log file
 echo "Running the build (REL-8_3) " >> autobuild.log
