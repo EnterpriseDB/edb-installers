@@ -61,8 +61,8 @@ strOutputFile = objTempFolder.Path & "\" & objFso.GetTempName
 ' permissions and may lose access to the current working directory
 objShell.CurrentDirectory = strInstallDir
 
-strProgramFiles = objShell.ExpandEnvironmentStrings("%PROGRAMFILES%");
-strSystemDrive = objShell.ExpandEnvironmentStrings("%SYSTEMDRIVER%");
+strProgramFiles = objShell.ExpandEnvironmentStrings("%PROGRAMFILES%")
+strSystemDrive = objShell.ExpandEnvironmentStrings("%SYSTEMDRIVER%")
 
 ' Is this Vista or above?
 Function IsVistaOrNewer()
