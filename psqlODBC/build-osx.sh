@@ -113,8 +113,6 @@ EOT
     _rewrite_so_refs $WD/psqlODBC/staging/osx lib @loader_path/..
     install_name_tool -change "libpq.5.dylib" "@loader_path/libpq.5.dylib" "$PG_STAGING/lib/psqlodbcw.so"
 
-    chmod a+rx $PG_STAGING/lib/*.dylib || _die "Failed to change mode of all the libraries"
-
 }
 
 

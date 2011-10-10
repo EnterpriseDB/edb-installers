@@ -32,6 +32,8 @@
     <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
     <allowWindowResize>1</allowWindowResize>
     <windowsSoftwareRegistryPrefix/>
+    <!-- set if it is a native windows 64 bit-->
+    <windows64bitMode>@@WIN64MODE@@</windows64bitMode>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
@@ -90,7 +92,12 @@
         </setInstallerVariable>
     </preShowHelpActionList>	
     <!-- Prebuild Actons-->
-    <preBuildActionList>
+    <preBuildActionList>	
+      <setInstallerVariable name="project.installerFilename" value="${product_shortname}-${product_version}-${platform_name}-x64.${platform_exec_suffix}">
+            <ruleList>
+                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+            </ruleList>
+      </setInstallerVariable>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>
       <setInstallerVariable name="originalplatform" value="linux-x32">
           <ruleList>
@@ -1261,7 +1268,7 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/windows/PSQLODBC_MAJOR_VERSION</origin>
+                            <origin>staging/@@WINDIR@@/PSQLODBC_MAJOR_VERSION</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1272,7 +1279,7 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/windows/scripts</origin>
+                            <origin>staging/@@WINDIR@@/scripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1302,6 +1309,9 @@
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>	
         <directoryParameter>
+	    <preShowPageActionList>
+                <wow64FsRedirection action="enable" />
+            </preShowPageActionList>		
             <name>installdir</name>
             <description>Installer.Parameter.installdir.description</description>
             <explanation>Installer.Parameter.installdir.explanation</explanation>
@@ -1320,7 +1330,9 @@
                     <value/>
                 </compareText>
             </ruleList>
-			
+	    <postShowPageActionList>
+                <wow64FsRedirection action="disable" />
+            </postShowPageActionList>		
 	        <!-- Validating whether installdir is empty -->
             <validationActionList>
                 <actionGroup>

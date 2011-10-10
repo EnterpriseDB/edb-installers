@@ -15,15 +15,17 @@ _prep_psqlODBC_windows() {
       echo "Removing existing psqlODBC.windows source directory"
       rm -rf psqlODBC.windows  || _die "Couldn't remove the existing psqlODBC.windows source directory (source/psqlODBC.windows)"
     fi
+    if [ -e psqlODBC.zip ];
+    then
+      echo "Removing existing psqlODBC.zip source file"
+      rm -f psqlODBC.zip  || _die "Couldn't remove the existing psqlODBC.zip source file (source/psqlODBC.zip)"
+    fi
    
     echo "Creating source directory ($WD/psqlODBC/source/psqlODBC.windows)"
     mkdir -p $WD/psqlODBC/source/psqlODBC.windows || _die "Couldn't create the psqlODBC.windows directory"
 
     # Grab a copy of the source tree
     cp -R psqlodbc-$PG_VERSION_PSQLODBC/* psqlODBC.windows || _die "Failed to copy the source code (source/psqlODBC-$PG_VERSION_PSQLODBC)"
-    cd psqlODBC.windows
-    patch -p1 < $WD/tarballs/psqlodbc-9_0_fix.patch
-    cd $WD/psqlODBC/source
 
     echo "Archieving psqlODBC sources"
     zip -r psqlODBC.zip psqlODBC.windows/ || _die "Couldn't create archieve of the psqlODBC sources (psqlODBC.zip)"
@@ -76,10 +78,10 @@ IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 
 cd $PG_PATH_WINDOWS\psqlODBC.windows
 REM Compiling psqlODBC (ANSI)
-nmake /f win32.mak ANSI_VERSION=yes PG_INC=%PG_HOME_PATH%\include PG_LIB=%PG_HOME_PATH%\lib SSL_INC=%OPENSSL_PATH%\include SSL_LIB=%OPENSSL_PATH%\lib\VC CFG=Release ALL
+nmake /f win32.mak ANSI_VERSION=yes PG_INC=%PG_HOME_PATH%\include PG_LIB=%PG_HOME_PATH%\lib SSL_INC=%OPENSSL_PATH%\include SSL_LIB=%OPENSSL_PATH%\lib\VC LINKMT=no USE_SSPI=yes CFG=Release ALL
 
 REM Compiling psqlODBC (UNICODE)
-nmake /f win32.mak CFG=Release ALL PG_INC=%PG_HOME_PATH%\include PG_LIB=%PG_HOME_PATH%\lib SSL_INC=%OPENSSL_PATH%\include SSL_LIB=%OPENSSL_PATH%\lib\VC
+nmake /f win32.mak CFG=Release ALL PG_INC=%PG_HOME_PATH%\include PG_LIB=%PG_HOME_PATH%\lib SSL_INC=%OPENSSL_PATH%\include SSL_LIB=%OPENSSL_PATH%\lib\VC  LINKMT=no USE_SSPI=yes
 
 
 
@@ -94,14 +96,14 @@ EOT
 
     mkdir -p $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin  || _die "Failed to create directory for psqlODBC"
     echo "Copying psqlODBC built tree to Unix host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\psqlODBC.windows\\\\Release; cmd /c zip -r ..\\\\..\\\\psqlODBC-windows.zip *.dll" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/psqlODBC.windows)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\psqlODBC.windows\\\\Releaseno; cmd /c zip -r ..\\\\..\\\\psqlODBC-windows.zip *.dll" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/psqlODBC.windows)"
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/psqlODBC-windows.zip $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/psqlODBC-windows.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST psqlODBC-windows.zip del /S /Q psqlODBC-windows.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\psqlODBC-windows.zip on Windows VM"
     unzip -o $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin/psqlODBC-windows.zip -d $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to unpack the built source tree ($WD/staging/windows/psqlODBC-windows.zip)"
     rm $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin/psqlODBC-windows.zip
 
     echo "Copying psqlODBC built tree to Unix host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\psqlODBC.windows\\\\MultibyteRelease; cmd /c zip -r ..\\\\..\\\\psqlODBC-windows.zip *.dll" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/psqlODBC.windows)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\psqlODBC.windows\\\\MultibyteReleaseno; cmd /c zip -r ..\\\\..\\\\psqlODBC-windows.zip *.dll" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/psqlODBC.windows)"
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/psqlODBC-windows.zip $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/psqlODBC-windows.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST psqlODBC-windows.zip del /S /Q psqlODBC-windows.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\psqlODBC-windows.zip on Windows VM"
     unzip -o $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin/psqlODBC-windows.zip -d $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to unpack the built source tree ($WD/staging/windows/psqlODBC-windows.zip)"
@@ -127,11 +129,19 @@ _postprocess_psqlODBC_windows() {
     mkdir -p staging/windows/scripts/images || _die "Failed to create directory for menu images"
     cp resources/*.ico staging/windows/scripts/images || _die "Failed to copy menu icon image"
 
-    # Build the installer
-    "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
+    if [ -f installer-win.xml ]; then
+        rm -f installer-win.xml
+    fi
+    cp installer.xml installer-win.xml
+    
+    _replace @@WIN64MODE@@ "0" installer-win.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
+    _replace @@WINDIR@@ windows installer-win.xml || _die "Failed to replace the WINDIR setting in the installer.xml"
 
-	# Sign the installer
-	win32_sign "psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-windows.exe"
+    # Build the installer
+    "$PG_INSTALLBUILDER_BIN" build installer-win.xml windows || _die "Failed to build the installer"
+
+    # Sign the installer
+    win32_sign "psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-windows.exe"
 	
     cd $WD
 

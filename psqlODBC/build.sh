@@ -31,6 +31,12 @@ if [ $PG_ARCH_WINDOWS = 1 ];
 then
     source $WD/psqlODBC/build-windows.sh
 fi
+
+# Windows-x64
+if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+then
+    source $WD/psqlODBC/build-windows-x64.sh
+fi
     
 ################################################################################
 # Build preparation
@@ -90,6 +96,12 @@ _prep_psqlODBC() {
     then
         _prep_psqlODBC_windows || exit 1
     fi
+
+    # Windows-x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _prep_psqlODBC_windows_x64 || exit 1
+    fi
     
 }
 
@@ -128,6 +140,12 @@ _build_psqlODBC() {
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
         _build_psqlODBC_windows || exit 1
+    fi
+
+    # Windows-x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _build_psqlODBC_windows_x64 || exit 1
     fi
 }
 
@@ -183,5 +201,11 @@ _postprocess_psqlODBC() {
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
         _postprocess_psqlODBC_windows || exit 1
+    fi
+    
+    # Windows-x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _postprocess_psqlODBC_windows_x64 || exit 1
     fi
 }
