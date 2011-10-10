@@ -3950,7 +3950,7 @@
             <!-- linux -->
             <runProgram>
               <abortOnError>0</abortOnError>
-              <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux.bin</program>
+              <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux.run</program>
               <programArguments>--mode unattended --disable-stackbuilder 1 --installdir "${installdir}" --datadir "${datadir}" --serviceaccount "${serviceaccount}" --superaccount "${supername}" --superpassword "${superpassword.password}" --serverport ${serverport} --locale "${locale}" --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
               <progressText>Installing Database Server ... </progressText>
               <showMessageOnError>0</showMessageOnError>
@@ -3965,7 +3965,7 @@
             <!-- linux-x64 -->
             <runProgram>
               <abortOnError>0</abortOnError>
-              <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</program>
+              <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux-x64.run</program>
               <programArguments>--mode unattended --disable-stackbuilder 1 --installdir "${installdir}" --datadir "${datadir}" --serviceaccount "${serviceaccount}" --superaccount "${supername}" --superpassword "${superpassword.password}" --serverport ${serverport} --locale "${locale}" --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
               <progressText>Installing Database Server ... </progressText>
               <showMessageOnError>0</showMessageOnError>
@@ -3980,7 +3980,7 @@
            <!-- linux-ppc64 -->
             <runProgram>
               <abortOnError>0</abortOnError>
-              <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux-ppc64.bin</program>
+              <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux-ppc64.run</program>
               <programArguments>--mode unattended --disable-stackbuilder 1 --installdir "${installdir}" --datadir "${datadir}" --serviceaccount "${serviceaccount}" --superaccount "${supername}" --superpassword "${superpassword.password}" --serverport ${serverport} --locale "${locale}" --branding "Postgres Plus Standard Server ${product_version}" --servicename "${servicename}"</programArguments>
               <progressText>Installing Database Server ... </progressText>
               <showMessageOnError>0</showMessageOnError>
@@ -4032,7 +4032,7 @@
             <!-- linux -->
             <runProgram>
               <abortOnError>0</abortOnError>
-              <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux.bin</program>
+              <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux.run</program>
               <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword.password}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
               <progressText>Installing Database Server ... </progressText>
               <showMessageOnError>0</showMessageOnError>
@@ -4047,7 +4047,7 @@
              <!-- linux-x64 -->
             <runProgram>
               <abortOnError>0</abortOnError>
-              <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</program>
+              <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux-x64.run</program>
               <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword.password}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
               <progressText>Installing Database Server ... </progressText>
               <showMessageOnError>0</showMessageOnError>
@@ -4062,7 +4062,7 @@
             <!-- linux-ppc64 -->
             <runProgram>
               <abortOnError>0</abortOnError>
-              <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux-ppc64.bin</program>
+              <program>${ppss_temp_directory}/postgresql-PG_PACKAGE_VERSION-linux-ppc64.run</program>
               <programArguments>--mode unattended --disable-stackbuilder 1 --prefix "${installdir}" --datadir "${datadir}" --superpassword "${superpassword.password}" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
               <progressText>Installing Database Server ... </progressText>
               <showMessageOnError>0</showMessageOnError>
@@ -4123,7 +4123,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux.bin</program>
+          <program>${ppss_temp_directory}/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux.run</program>
           <programArguments>--mode unattended --installdir ${installdir} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing Slony ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4145,7 +4145,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux-x64.bin</program>
+          <program>${ppss_temp_directory}/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux-x64.run</program>
           <programArguments>--mode unattended --installdir ${installdir} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing Slony ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4167,7 +4167,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux-ppc64.bin</program>
+          <program>${ppss_temp_directory}/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux-ppc64.run</program>
           <programArguments>--mode unattended --installdir ${installdir} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing Slony ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4203,7 +4203,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux.bin</program>
+          <program>${ppss_temp_directory}/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux.run</program>
           <programArguments>--mode unattended --installdir ${installdir}/pgJDBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing pgJDBC ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4225,7 +4225,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux-x64.bin</program>
+          <program>${ppss_temp_directory}/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux-x64.run</program>
           <programArguments>--mode unattended --installdir ${installdir}/pgJDBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing pgJDBC ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4247,7 +4247,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux-ppc64.bin</program>
+          <program>${ppss_temp_directory}/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux-ppc64.run</program>
           <programArguments>--mode unattended --installdir ${installdir}/pgJDBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing pgJDBC ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4283,7 +4283,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux.bin</program>
+          <program>${ppss_temp_directory}/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux.run</program>
           <programArguments>--mode unattended --installdir ${installdir}/psqlODBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing psqlODBC ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4305,7 +4305,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux-x64.bin</program>
+          <program>${ppss_temp_directory}/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux-x64.run</program>
           <programArguments>--mode unattended --installdir ${installdir}/psqlODBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing psqlODBC ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4327,7 +4327,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux-ppc64.bin</program>
+          <program>${ppss_temp_directory}/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux-ppc64.run</program>
           <programArguments>--mode unattended --installdir ${installdir}/psqlODBC --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing psqlODBC ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4363,7 +4363,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux.bin</program>
+          <program>${ppss_temp_directory}/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux.run</program>
           <programArguments>--mode unattended --prefix "${installdir}/Npgsql" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing NpgSQL ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4383,7 +4383,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux-x64.bin</program>
+          <program>${ppss_temp_directory}/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux-x64.run</program>
           <programArguments>--mode unattended --prefix "${installdir}/Npgsql" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing NpgSQL ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4403,7 +4403,7 @@
 
        <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux-ppc64.bin</program>
+          <program>${ppss_temp_directory}/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux-ppc64.run</program>
           <programArguments>--mode unattended --prefix "${installdir}/Npgsql" --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing NpgSQL ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4439,7 +4439,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux.bin</program>
+          <program>${ppss_temp_directory}/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux.run</program>
           <programArguments>--mode unattended --installdir ${installdir} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing PostGIS ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4461,7 +4461,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-x64.bin</program>
+          <program>${ppss_temp_directory}/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-x64.run</program>
           <programArguments>--mode unattended --installdir ${installdir} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing PostGIS ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4483,7 +4483,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-ppc64.bin</program>
+          <program>${ppss_temp_directory}/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-ppc64.run</program>
           <programArguments>--mode unattended --installdir ${installdir} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --branding "Postgres Plus Standard Server ${product_version}"</programArguments>
           <progressText>Installing PostGIS ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4519,7 +4519,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux.bin</program>
+          <program>${ppss_temp_directory}/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux.run</program>
           <programArguments>--mode unattended --prefix ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
           <progressText>Installing pgbouncer ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4541,7 +4541,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux-x64.bin</program>
+          <program>${ppss_temp_directory}/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux-x64.run</program>
           <programArguments>--mode unattended --prefix ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
           <progressText>Installing pgbouncer ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4563,7 +4563,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux-ppc64.bin</program>
+          <program>${ppss_temp_directory}/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux-ppc64.run</program>
           <programArguments>--mode unattended --prefix ${installdir}/pgbouncer --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --system_user "${serviceaccount}" --autostart no</programArguments>
           <progressText>Installing pgbouncer ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4599,7 +4599,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux.bin</program>
+          <program>${ppss_temp_directory}/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux.run</program>
           <programArguments>--mode unattended --installdir ${installdir}</programArguments>
           <progressText>Installing pgmemcache ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4619,7 +4619,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux-x64.bin</program>
+          <program>${ppss_temp_directory}/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux-x64.run</program>
           <programArguments>--mode unattended --installdir ${installdir}</programArguments>
           <progressText>Installing pgmemcache ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4639,7 +4639,7 @@
 
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux-ppc64.bin</program>
+          <program>${ppss_temp_directory}/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux-ppc64.run</program>
           <programArguments>--mode unattended --installdir ${installdir}</programArguments>
           <progressText>Installing pgmemcache ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4676,7 +4676,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux.bin</program>
+          <program>${ppss_temp_directory}/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux.run</program>
           <programArguments>--mode unattended --prefix ${installdir}/pgAgent --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --systemuser "${serviceaccount}" --schema ${schema} --autostart no</programArguments>
           <progressText>Installing pgAgent ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4696,7 +4696,7 @@
     
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux-x64.bin</program>
+          <program>${ppss_temp_directory}/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux-x64.run</program>
           <programArguments>--mode unattended --installdir ${installdir}/pgAgent --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --systemuser "${serviceaccount}" --schema ${schema} --autostart no</programArguments>
           <progressText>Installing pgAgent ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4716,7 +4716,7 @@
 
         <runProgram>
           <abortOnError>0</abortOnError>
-          <program>${ppss_temp_directory}/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux-ppc64.bin</program>
+          <program>${ppss_temp_directory}/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux-ppc64.run</program>
           <programArguments>--mode unattended --installdir ${installdir}/pgAgent --pghost ${defaultpghost} --pguser "${supername}" --pgpassword "${superpassword.password}" --pgport ${serverport} --systemuser "${serviceaccount}" --schema ${schema} --autostart no</programArguments>
           <progressText>Installing pgAgent ... </progressText>
           <showMessageOnError>0</showMessageOnError>
@@ -4742,7 +4742,7 @@
             <runProgram abortOnError="0"
                         progressText="Installing StackBuilderPlus ... "
                         showMessageOnError="1"
-                        program="${ppss_temp_directory}/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux.bin"
+                        program="${ppss_temp_directory}/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux.run"
                         programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot;  --install-monitoring ${installMonitoring}">
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="linux"/>
@@ -4752,7 +4752,7 @@
             <runProgram abortOnError="0"
                         progressText="Installing StackBuilderPlus ... "
                         showMessageOnError="1"
-                        program="${ppss_temp_directory}/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-x64.bin"
+                        program="${ppss_temp_directory}/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-x64.run"
                         programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot; --install-monitoring ${installMonitoring}">
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
@@ -4762,7 +4762,7 @@
             <runProgram abortOnError="0"
                         progressText="Installing StackBuilderPlus ... "
                         showMessageOnError="1"
-                        program="${ppss_temp_directory}/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-ppc64.bin"
+                        program="${ppss_temp_directory}/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-ppc64.run"
                         programArguments="--mode unattended --installdir ${installdir}/StackBuilderPlus --branding &quot;Postgres Plus Standard Server ${product_version}&quot;  --install-monitoring ${installMonitoring}">
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
@@ -6913,7 +6913,7 @@
           <platforms>linux</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux/postgresql-PG_PACKAGE_VERSION-linux.bin</origin>
+              <origin>staging/linux/postgresql-PG_PACKAGE_VERSION-linux.run</origin>
             </distributionFile>
             <distributionFile>
               <origin>staging/linux/scripts/getlocales.sh</origin>
@@ -7024,7 +7024,7 @@
           <platforms>linux-x64</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-x64/postgresql-PG_PACKAGE_VERSION-linux-x64.bin</origin>
+              <origin>staging/linux-x64/postgresql-PG_PACKAGE_VERSION-linux-x64.run</origin>
             </distributionFile>
             <distributionFile>
               <origin>staging/linux-x64/scripts/getlocales.sh</origin>
@@ -7135,7 +7135,7 @@
           <platforms>linux-ppc</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-ppc64/postgresql-PG_PACKAGE_VERSION-linux-ppc64.bin</origin>
+              <origin>staging/linux-ppc64/postgresql-PG_PACKAGE_VERSION-linux-ppc64.run</origin>
             </distributionFile>
             <distributionFile>
               <origin>staging/linux-ppc64/scripts/getlocales.sh</origin>
@@ -7373,7 +7373,7 @@
           <platforms>linux</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux.bin</origin>
+              <origin>staging/linux/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -7386,7 +7386,7 @@
           <platforms>linux-x64</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-x64/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-x64.bin</origin>
+              <origin>staging/linux-x64/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-x64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -7399,7 +7399,7 @@
           <platforms>linux-ppc</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-ppc64/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-ppc64.bin</origin>
+              <origin>staging/linux-ppc64/stackbuilderplus-PG_VERSION_SBP-PG_BUILDNUM_SBP-linux-ppc64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -7449,7 +7449,7 @@
           <platforms>linux</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux.bin</origin>
+              <origin>staging/linux/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -7463,7 +7463,7 @@
           <platforms>linux-x64</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-x64/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux-x64.bin</origin>
+              <origin>staging/linux-x64/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux-x64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -7477,7 +7477,7 @@
           <platforms>linux-ppc</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-ppc64/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux-ppc64.bin</origin>
+              <origin>staging/linux-ppc64/slony-pgPG_CURRENT_VERSION-PG_VERSION_SLONY-PG_BUILDNUM_SLONY-linux-ppc64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -7573,7 +7573,7 @@
           <platforms>linux</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux.bin</origin>
+              <origin>staging/linux/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -7587,7 +7587,7 @@
           <platforms>linux-ppc</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-ppc64/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux-ppc64.bin</origin>
+              <origin>staging/linux-ppc64/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux-ppc64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -7601,7 +7601,7 @@
           <platforms>linux-x64</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-x64/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux-x64.bin</origin>
+              <origin>staging/linux-x64/pgjdbc-PG_VERSION_PGJDBC-PG_BUILDNUM_PGJDBC-linux-x64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -7693,7 +7693,7 @@
           <platforms>linux</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux.bin</origin>
+              <origin>staging/linux/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -7707,7 +7707,7 @@
           <platforms>linux-ppc</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-ppc64/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-ppc64.bin</origin>
+              <origin>staging/linux-ppc64/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-ppc64.run</origin>
             </distributionFile>
             <distributionFile>
               <origin>staging/linux-ppc64/scripts/check-connection.sh</origin>
@@ -7741,7 +7741,7 @@
           <platforms>linux-x64</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-x64/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-x64.bin</origin>
+              <origin>staging/linux-x64/postgis-pgPG_CURRENT_VERSION-PG_VERSION_POSTGIS-PG_BUILDNUM_POSTGIS-linux-x64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -7839,7 +7839,7 @@
           <platforms>linux</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux.bin</origin>
+              <origin>staging/linux/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -7853,7 +7853,7 @@
           <platforms>linux-ppc</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-ppc64/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux-ppc64.bin</origin>
+              <origin>staging/linux-ppc64/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux-ppc64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -7867,7 +7867,7 @@
           <platforms>linux-x64</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-x64/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux-x64.bin</origin>
+              <origin>staging/linux-x64/psqlodbc-PG_VERSION_PSQLODBC-PG_BUILDNUM_PSQLODBC-linux-x64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -7975,7 +7975,7 @@
           <platforms>linux</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux.bin</origin>
+              <origin>staging/linux/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -7987,7 +7987,7 @@
           <platforms>linux-ppc</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-ppc64/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux-ppc64.bin</origin>
+              <origin>staging/linux-ppc64/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux-ppc64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -7999,7 +7999,7 @@
           <platforms>linux-x64</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-x64/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux-x64.bin</origin>
+              <origin>staging/linux-x64/npgsql-PG_VERSION_NPGSQL-PG_BUILDNUM_NPGSQL-linux-x64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -8079,7 +8079,7 @@
           <platforms>linux</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux.bin</origin>
+              <origin>staging/linux/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -8093,7 +8093,7 @@
           <platforms>linux-ppc</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-ppc64/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux-ppc64.bin</origin>
+              <origin>staging/linux-ppc64/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux-ppc64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -8107,7 +8107,7 @@
           <platforms>linux-x64</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-x64/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux-x64.bin</origin>
+              <origin>staging/linux-x64/pgbouncer-PG_VERSION_PGBOUNCER-PG_BUILDNUM_PGBOUNCER-linux-x64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -8201,7 +8201,7 @@
           <platforms>linux</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux.bin</origin>
+              <origin>staging/linux/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -8215,7 +8215,7 @@
           <platforms>linux-ppc</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-ppc64/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux-ppc64.bin</origin>
+              <origin>staging/linux-ppc64/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux-ppc64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -8229,7 +8229,7 @@
           <platforms>linux-x64</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-x64/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux-x64.bin</origin>
+              <origin>staging/linux-x64/pgmemcache-pgPG_CURRENT_VERSION-PG_VERSION_PGMEMCACHE-PG_BUILDNUM_PGMEMCACHE-linux-x64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -8311,7 +8311,7 @@
           <platforms>linux</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux.bin</origin>
+              <origin>staging/linux/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -8325,7 +8325,7 @@
           <platforms>linux-ppc</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-ppc64/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux-ppc64.bin</origin>
+              <origin>staging/linux-ppc64/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux-ppc64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -8339,7 +8339,7 @@
           <platforms>linux-x64</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/linux-x64/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux-x64.bin</origin>
+              <origin>staging/linux-x64/pgagent-PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT-linux-x64.run</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
