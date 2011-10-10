@@ -26,10 +26,10 @@ _registration_preprocess_windows()
     chmod ugo+x $PG_REG_COMP_STAGING || _die "Couldn't set the permissions on the staging directory (registration-$PG_REG_COMP_PLATFORM)"
 
     echo "Coyping utilities sources in registration source directory..."
-    echo cp -R $WD/MetaInstaller/scripts/windows/dbserver_guid/dbserver_guid/dbserver_guid $PG_REG_COMP_PATH/
-    cp -R $WD/MetaInstaller/scripts/windows/dbserver_guid/dbserver_guid/dbserver_guid $PG_REG_COMP_PATH/ || _die "Failed to copy dbserver_guid sources (registration-$PG_REG_COMP_PLATFORM)"
-    echo cp -R $WD/MetaInstaller/scripts/windows/validateUser $PG_REG_COMP_PATH/
-    cp -R $WD/MetaInstaller/scripts/windows/validateUser $PG_REG_COMP_PATH/ || _die "Failed to copy validateUser sources (registration-$PG_REG_COMP_PLATFORM)"
+    echo cp -R $WD/resources/dbserver_guid/dbserver_guid/dbserver_guid $PG_REG_COMP_PATH/
+    cp -R $WD/resources/dbserver_guid/dbserver_guid/dbserver_guid $PG_REG_COMP_PATH/ || _die "Failed to copy dbserver_guid sources (registration-$PG_REG_COMP_PLATFORM)"
+    echo cp -R $WD/resources/validateUser $PG_REG_COMP_PATH/
+    cp -R $WD/resources/validateUser $PG_REG_COMP_PATH/ || _die "Failed to copy validateUser sources (registration-$PG_REG_COMP_PLATFORM)"
 
     echo "Removing registration source directory on windows host (if any)..."
     ssh $PG_SSH_WINDOWS "cmd /c IF EXIST $PG_REG_COMP_HOST_PATH rd /s /q $PG_REG_COMP_HOST_PATH"

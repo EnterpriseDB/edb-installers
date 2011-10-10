@@ -89,17 +89,11 @@ _build_ReplicationServer_osx() {
     chmod +r $WD/ReplicationServer/staging/osx/repconsole/lib/*
     chmod +r $WD/ReplicationServer/staging/osx/repserver/lib/*
 
-    if [ ! -f $WD/MetaInstaller/source/MetaInstaller.osx/validateUser/validateUserClient.o ];
-    then
-      echo "Building validateUserClient utility"
-      cp -R $WD/MetaInstaller/scripts/osx/validateUser $WD/ReplicationServer/source/ReplicationServer.osx/validateUser || _die "Failed copying validateUser script while building"
-      cd $WD/ReplicationServer/source/ReplicationServer.osx/validateUser
-      gcc -DWITH_OPENSSL -I. -o validateUserClient.o $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto || _die "Failed to build the validateUserClient utility"
-      cp validateUserClient.o $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/validateUserClient.o || _die "Failed to copy validateUserClient utility to staging directory"
-    else
-      echo "Using validateUserClient utility from MetaInstaller package"
-      cp $WD/MetaInstaller/source/MetaInstaller.osx/validateUser/validateUserClient.o $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/validateUserClient.o || _die "Failed to copy validateUserClient utility from MetaInstaller package"
-    fi
+    echo "Building validateUserClient utility"
+    cp -R $WD/resources/validateUser $WD/ReplicationServer/source/ReplicationServer.osx/validateUser || _die "Failed copying validateUser script while building"
+    cd $WD/ReplicationServer/source/ReplicationServer.osx/validateUser
+    gcc -DWITH_OPENSSL -I. -o validateUserClient.o $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto || _die "Failed to build the validateUserClient utility"
+    cp validateUserClient.o $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/validateUserClient.o || _die "Failed to copy validateUserClient utility to staging directory"
     chmod ugo+x $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/validateUserClient.o
 
 }

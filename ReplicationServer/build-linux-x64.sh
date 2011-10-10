@@ -95,13 +95,9 @@ _build_ReplicationServer_linux_x64() {
     chmod +r $WD/ReplicationServer/staging/linux-x64/repserver/lib/repl-mtk/* 
 
     # Build the validateUserClient binary
-    if [ ! -f $WD/MetaInstaller/source/MetaInstaller.linux-x64/validateUser/validateUserClient.o ]; then
-        cp -R $WD/MetaInstaller/scripts/linux-x64/validateUser $WD/ReplicationServer/source/ReplicationServer.linux-x64/validateUser || _die "Failed to copy validateUser source files"
-        ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux-x64/validateUser; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
-        ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp ReplicationServer/source/ReplicationServer.linux-x64/validateUser/validateUserClient.o ReplicationServer/staging/linux-x64/instscripts/" || _die "Failed to copy validateUserClient.o"
-    else
-       cp $WD/MetaInstaller/source/MetaInstaller.linux-x64/validateUser/validateUserClient.o $WD/ReplicationServer/staging/linux-x64/instscripts/validateUserClient.o || _die "Failed to copy validateUserClient.o utility"
-    fi
+    cp -R $WD/resources/validateUser $WD/ReplicationServer/source/ReplicationServer.linux-x64/validateUser || _die "Failed to copy validateUser source files"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux-x64/validateUser; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp ReplicationServer/source/ReplicationServer.linux-x64/validateUser/validateUserClient.o ReplicationServer/staging/linux-x64/instscripts/" || _die "Failed to copy validateUserClient.o"
     chmod ugo+x $WD/ReplicationServer/staging/linux-x64/instscripts/validateUserClient.o || _die "Failed to give execution permission to validateUserClient.o"
 
 }
