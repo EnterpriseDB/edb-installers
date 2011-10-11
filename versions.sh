@@ -41,13 +41,13 @@ PG_BUILDNUM_PLPGSQLO=1
 PG_BUILDNUM_SQLPROTECT=1
 
 # Tags for source checkout
-PG_TAG_REPLICATIONSERVER='AS90R1_90414'
-PG_TAG_MIGRATIONTOOLKIT='AS90R1_90414'
+PG_TAG_REPLICATIONSERVER=''
+PG_TAG_MIGRATIONTOOLKIT=''
 
 # PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
 #                     Minor version is revision.build.
 
-PG_MAJOR_VERSION=9.0
+PG_MAJOR_VERSION=9.1
 PG_MINOR_VERSION=3.1
 
 # Other package versions
