@@ -28,8 +28,8 @@ _registration_preprocess_windows()
     echo "Coyping utilities sources in registration source directory..."
     echo cp -R $WD/resources/dbserver_guid/dbserver_guid/dbserver_guid $PG_REG_COMP_PATH/
     cp -R $WD/resources/dbserver_guid/dbserver_guid/dbserver_guid $PG_REG_COMP_PATH/ || _die "Failed to copy dbserver_guid sources (registration-$PG_REG_COMP_PLATFORM)"
-    echo cp -R $WD/resources/validateUser $PG_REG_COMP_PATH/
-    cp -R $WD/resources/validateUser $PG_REG_COMP_PATH/ || _die "Failed to copy validateUser sources (registration-$PG_REG_COMP_PLATFORM)"
+    echo cp -R $WD/resources/validateUser.windows $PG_REG_COMP_PATH/
+    cp -R $WD/resources/validateUser.windows $PG_REG_COMP_PATH/ || _die "Failed to copy validateUser.windows sources (registration-$PG_REG_COMP_PLATFORM)"
 
     echo "Removing registration source directory on windows host (if any)..."
     ssh $PG_SSH_WINDOWS "cmd /c IF EXIST $PG_REG_COMP_HOST_PATH rd /s /q $PG_REG_COMP_HOST_PATH"
@@ -39,7 +39,7 @@ _registration_preprocess_windows()
 
     cd $PG_REG_COMP_PATH
     echo "Copying  registration component sources on windows host..."
-    zip -r registration.zip dbserver_guid validateUser
+    zip -r registration.zip dbserver_guid validateUser.windows
     scp registration.zip $PG_SSH_WINDOWS:$PG_REG_COMP_HOST_PATH
     rm -f registration.zip
 
@@ -71,10 +71,10 @@ vcbuild /upgrade
 vcbuild dbserver_guid.vcproj release
 if NOT EXIST $PG_REG_COMP_HOST_PATH\\dbserver_guid\\release\\dbserver_guid.exe GOTO dbserver_guid-build-failed
 
-cd $PG_REG_COMP_HOST_PATH\\validateUser
+cd $PG_REG_COMP_HOST_PATH\\validateUser.windows
 vcbuild /upgrade
 vcbuild validateUser.vcproj release
-if NOT EXIST $PG_REG_COMP_HOST_PATH\\validateUser\\release\\validateUserClient.exe GOTO validateuser-build-failed
+if NOT EXIST $PG_REG_COMP_HOST_PATH\\validateUser.windows\\release\\validateUserClient.exe GOTO validateuser-build-failed
 GOTO end
 
 :dbserver_guid-build-failed
@@ -96,7 +96,7 @@ EOT
     ssh $PG_SSH_WINDOWS "cd $PG_REG_COMP_HOST_PATH; cmd /c build-reg-comp.bat" || _die "Building registration component failed..."
 
     scp $PG_SSH_WINDOWS:$PG_REG_COMP_HOST_PATH\\\\dbserver_guid\\\\release\\\\dbserver_guid.exe     $PG_REG_COMP_STAGING/dbserver_guid.exe || _die "Failed to get dbserver_guid utility from the windows VM"
-    scp $PG_SSH_WINDOWS:$PG_REG_COMP_HOST_PATH\\\\validateUser\\\\release\\\\validateUserClient.exe $PG_REG_COMP_STAGING/validateUserClient.exe || _die "Failed to get validateUser utility from the windows VM"
+    scp $PG_SSH_WINDOWS:$PG_REG_COMP_HOST_PATH\\\\validateUser.windows\\\\release\\\\validateUserClient.exe $PG_REG_COMP_STAGING/validateUserClient.exe || _die "Failed to get validateUser utility from the windows VM"
 
     PG_REGISTRATION_COMP_BUILT_WIN=Done
   fi

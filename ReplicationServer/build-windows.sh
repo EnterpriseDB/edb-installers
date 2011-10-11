@@ -54,7 +54,7 @@ _prep_ReplicationServer_windows() {
     cp -R $WD/resources/ServiceWrapper $WD/ReplicationServer/source/ReplicationServer.windows/ServiceWrapper || _die "Failed to copy scripts(ServiceWrapper)"
 
     # Copy validateUserClient scripts
-    cp -R $WD/resources/validateUser $WD/ReplicationServer/source/ReplicationServer.windows/validateUserClient || _die "Failed to copy scripts(validateUserClient)"
+    cp -R $WD/resources/validateUser.windows $WD/ReplicationServer/source/ReplicationServer.windows/validateUserClient || _die "Failed to copy scripts(validateUserClient)"
     cp -R $WD/resources/dbserver_guid/dbserver_guid/dbserver_guid $WD/ReplicationServer/source/ReplicationServer.windows/dbserver_guid || _die "Failed to copy dbserver_guid scripts"
 
     #Copy the required jdbc drivers
