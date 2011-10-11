@@ -189,7 +189,7 @@
             <isFalse value="${installer_is_root_install}"/>
           </ruleList>
         </throwError>
-        <setInstallerVariable name="project.windowsSoftwareRegistryPrefix" value="${project.vendor}\${project.fullName}"/>
+        <setInstallerVariable name="project.windowsSoftwareRegistryPrefix" value="${project.vendor}\${project.fullName}_SBP_REG_VER"/>
 
         <!-- Creates the ini file if not exits -->
         <touchFile path="/etc/postgres-reg.ini">
@@ -307,24 +307,11 @@
         <!-- LIN & MAC : Get the branding & check Previous Installation of -->
         <actionGroup>
           <actionList>
-            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Branding" variable="iBranding"/>
-            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Version" variable="iSBPVersion"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VER" key="Branding" variable="iBranding"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VER" key="Version" variable="iSBPVersion"/>
           </actionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-	    <compareText logic="does_not_contain" text="${platform_name}" value="solaris"/>
-          </ruleList>
-        </actionGroup>
-
-	<!-- Temporary Solaris specific change for AS90 -->
-	<!-- Solaris : Get the branding & check Previous Installation of -->
-        <actionGroup>
-          <actionList>
-            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="Branding" variable="iBranding"/>
-            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="Version" variable="iSBPVersion"/>
-          </actionList>
-          <ruleList>
-            <compareText logic="contains" text="${platform_name}" value="solaris"/>
           </ruleList>
         </actionGroup>
 
@@ -332,8 +319,8 @@
         <actionGroup>
           <actionList>
             <!-- Get the branding -->
-            <registryGet name="Branding" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus" variable="iBranding"/>
-            <registryGet name="Version" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus" variable="iSBPVersion"/>
+            <registryGet name="Branding" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_SBP_REG_VER" variable="iBranding"/>
+            <registryGet name="Version" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_SBP_REG_VER" variable="iSBPVersion"/>
           </actionList>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -376,27 +363,15 @@
         <!-- Set the installation directory in case of re-install/upgrade -->
         <actionGroup>
           <actionList>
-            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="InstallationDirectory" variable="installdir"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VER" key="InstallationDirectory" variable="installdir"/>
           </actionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-	    <compareText logic="does_not_contain" text="${platform_name}" value="solaris"/>
           </ruleList>
         </actionGroup>
 
-	 <!-- Temporary for solaris is AS90 Set the installation directory in case of re-install/upgrade -->
-        <actionGroup>
-          <actionList>
-            <iniFileGet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="InstallationDirectory" variable="installdir"/>
-          </actionList>
-          <ruleList>
-            <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
-            <compareText logic="contains" text="${platform_name}" value="solaris"/>
-          </ruleList>
-        </actionGroup>
-
-        <registryGet name="InstallationDirectory" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus" variable="installdir">
+        <registryGet name="InstallationDirectory" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_SBP_REG_VER" variable="installdir">
           <ruleList>
             <compareText logic="does_not_equal" text="${iSBPVersion}" value=""/>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -532,10 +507,10 @@
     
         <actionGroup>
           <actionList>
-            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Description" value="${msg(install.summary)}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="InstallationDirectory" value="${installdir}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Version" value="${product_version}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="InstallationDate" value="${installDate}">
+            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VER" key="Description" value="${msg(install.summary)}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VER" key="InstallationDirectory" value="${installdir}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VER" key="Version" value="${product_version}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VER" key="InstallationDate" value="${installDate}">
               <ruleList>
                 <compareText logic="equals" text="${iSBPVersion}" value=""/>
               </ruleList>
@@ -543,49 +518,23 @@
           </actionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-	    <compareText logic="does_not_contain" text="${platform_name}" value="solaris"/>
           </ruleList>
         </actionGroup>
 
-	<!-- Temporary for solaris AS90 -->
-	<actionGroup>
-          <actionList>
-            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="Description" value="${msg(install.summary)}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="InstallationDirectory" value="${installdir}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="Version" value="${product_version}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="InstallationDate" value="${installDate}">
-              <ruleList>
-                <compareText logic="equals" text="${iSBPVersion}" value=""/>
-              </ruleList>
-            </iniFileSet>
-          </actionList>
-          <ruleList>
-            <compareText logic="contains" text="${platform_name}" value="solaris"/>
-          </ruleList>
-        </actionGroup>
-    
         <!-- Branding info -->
         <logMessage text="Write the branding to the ini file..."/>
     
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Branding" value="${branding}">
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VER" key="Branding" value="${branding}">
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-	    <compareText logic="does_not_contain" text="${platform_name}" value="solaris"/>
           </ruleList>
         </iniFileSet>
 
-	<!-- Temporary for solaris AS90 -->
-	<iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="Branding" value="${branding}">
-          <ruleList>
-            <compareText logic="contains" text="${platform_name}" value="solaris"/>
-          </ruleList>
-        </iniFileSet>
-
-        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus" name="Description" value="${msg(install.summary)}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus" name="InstallationDirectory" value="${installdir}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus" name="Version" value="${product_version}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus" name="Branding" value="${branding}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus" name="InstallationDate" value="${installDate}">
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_SBP_REG_VER" name="Description" value="${msg(install.summary)}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_SBP_REG_VER" name="InstallationDirectory" value="${installdir}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_SBP_REG_VER" name="Version" value="${product_version}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_SBP_REG_VER" name="Branding" value="${branding}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\Software\EnterpriseDB\StackBuilderPlus_SBP_REG_VER" name="InstallationDate" value="${installDate}">
             <ruleList>
               <compareText logic="equals" text="${iSBPVersion}" value=""/>
             </ruleList>
@@ -716,7 +665,7 @@
           <actionList>
             <!-- WIN: Register launchSBPUpdateMonitor script as a startup script -->
             <registrySet key="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
-                         name="StackBuilderPlus Update Monitor"
+                         name="StackBuilderPlus Update Monitor SBP_REG_VER"
                          value="&quot;${installdir}\bin\UpdManager.exe&quot; --execute  &quot;${installdir}\bin\stackbuilderplus.exe&quot;"/>
     
             <actionGroup>
@@ -1094,29 +1043,14 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
     </actionGroup>
     <actionGroup>
       <actionList>
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Description" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="InstallationDirectory" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Version" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="Branding" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus" key="InstallationDate" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VER" key="Description" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VER" key="InstallationDirectory" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VER" key="Version" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VER" key="Branding" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VER" key="InstallationDate" value=""/>
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-	<compareText logic="does_not_contain" text="${platform_name}" value="solaris"/>
-      </ruleList>
-    </actionGroup>
-
-    <!-- Temporary for solaris AS90 -->
-    <actionGroup>
-      <actionList>
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="Description" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="InstallationDirectory" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="Version" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="Branding" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="StackBuilderPlus_SBP_REG_VERSOL" key="InstallationDate" value=""/>
-      </actionList>
-      <ruleList>
-        <compareText logic="contains" text="${platform_name}" value="solaris"/>
       </ruleList>
     </actionGroup>
 
@@ -1133,7 +1067,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
 
         <!-- WIN: Remove the UpdateMonitor Entry from the Registry as the Startup program -->
         <registryDelete key="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
-                        name="StackBuilderPlus Update Monitor"
+                        name="StackBuilderPlus Update Monitor SBP_REG_VER"
                         showMessageOnError="0"
                         abortOnError="0"/>
 
