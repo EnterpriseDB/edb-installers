@@ -176,7 +176,7 @@ details specific to PgBouncer:
     can be made available to the connection pool.  May be: session, 
     transaction or statement.  The default value is session.   
 
-The following example demonstrates the syntax allowed in the [pgbouncer] 
+The following (Linux) example demonstrates the syntax allowed in the [pgbouncer] 
 section of the configuration file:
     
     [pgbouncer] 
@@ -189,8 +189,8 @@ section of the configuration file:
     admin_users = enterprisedb 
     pool_mode = session 
 
-After editing the PgBouncer configuration file, you must restart the 
-PgBouncer service for the changes to take effect.
+After editing the PgBouncer configuration file to reflect your environment, you must 
+restart the PgBouncer service for the changes to take effect.
 
 
 Using the PgBouncer Admin Console
