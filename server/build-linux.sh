@@ -214,7 +214,7 @@ _build_server_linux() {
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libedit.so"  
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libtermcap.so"  
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libxml2.so"  
-    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libxslt.so"  
+    _process_dependent_libs_linux "$PG_STAGING/lib/postgresql" "$PG_STAGING/lib" "libxslt.so"  
 
 
     # Hack for bypassing dependency on the deprecated libtermcap
