@@ -1071,6 +1071,11 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
                         showMessageOnError="0"
                         abortOnError="0"/>
 
+         <!-- WIN: Remove the SBP registry entry -->
+         <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\StackBuilderPlus_SBP_REG_VER"
+                        showMessageOnError="0"
+                        abortOnError="0"/>
+
         <!-- LIN/LIN-X64: Remove UpdateMonitor Entry from the startup items, if installed -->
         <setInstallerVariable name="xdg_config_dir" value="${env(XDG_CONFIG_DIRS)}"/>
         <setInstallerVariable name="xdg_config_dir" value="/etc/xdg">
