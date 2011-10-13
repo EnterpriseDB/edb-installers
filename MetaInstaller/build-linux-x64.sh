@@ -32,31 +32,31 @@ _prep_metainstaller_linux_x64() {
     chmod ugo+w $WD/MetaInstaller/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
       
     # Grab a copy of the stackbuilderplus installer
-    cp -R "$WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the stackbuilderplus installer (staging/linux/stackbuilderplus-pg_$PG_VERSION_STR-$PG_PACKAGE_SBP-$PG_BUILDNUM_SBP-linux-x64.bin)"
+    cp -R "$WD/output/stackbuilderplus-pg_$PG_VERSION_STR-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-linux-x64.run"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the stackbuilderplus installer (staging/linux/stackbuilderplus-pg_$PG_VERSION_STR-$PG_PACKAGE_SBP-$PG_BUILDNUM_SBP-linux-x64.run)"
 
     # Grab a copy of the postgresql installer
-    cp -R "$WD/output/postgresql-$PG_PACKAGE_VERSION-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the postgresql installer (staging/linux-x64/postgresql-$PG_PACKAGE_VERSION-linux-x64.bin)"
+    cp -R "$WD/output/postgresql-$PG_PACKAGE_VERSION-linux-x64.run"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the postgresql installer (staging/linux-x64/postgresql-$PG_PACKAGE_VERSION-linux-x64.run)"
     # Grab a copy of the slony installer
-    cp -R "$WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the slony installer (staging/linux-x64/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-linux-x64.bin)"
+    cp -R "$WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-linux-x64.run"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the slony installer (staging/linux-x64/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-linux-x64.run)"
     # Grab a copy of the pgjdbc installer
-    cp -R "$WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the pgjdbc installer (staging/linux-x64/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-linux-x64.bin)"
+    cp -R "$WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-linux-x64.run"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the pgjdbc installer (staging/linux-x64/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-linux-x64.run)"
     # Grab a copy of the psqlodbc installer
-    cp -R "$WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the psqlodbc installer (staging/linux-x64/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-linux-x64.bin)"
+    cp -R "$WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-linux-x64.run"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the psqlodbc installer (staging/linux-x64/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-linux-x64.run)"
     # Grab a copy of the postgis installer
-    cp -R "$WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the postgis installer (staging/linux-x64/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-linux-x64.bin)"
+    cp -R "$WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-linux-x64.run"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the postgis installer (staging/linux-x64/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-linux-x64.run)"
 
     # Grab a copy of the npgsql installer
     echo "Grab NpgSQL installer..."
-    cp -R "$WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the npgsql installer (staging/windows/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-linux-x64.bin)"
+    cp -R "$WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-linux-x64.run"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the npgsql installer (staging/windows/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-linux-x64.run)"
 
     # Grab a copy of the pgbouncer installer
-    cp -R "$WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the pgbouncer installer (staging/linux-x64/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-linux-x64.bin"
+    cp -R "$WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-linux-x64.run"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the pgbouncer installer (staging/linux-x64/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-linux-x64.run"
 
     # Grab a copy of the pgmemcache installer
-    cp -R "$WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the pgmemcache installer (staging/linux-x64/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-linux-x64.bin"
+    cp -R "$WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-linux-x64.run"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the pgmemcache installer (staging/linux-x64/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-linux-x64.run"
 
     # Grab a copy of the pgagent installer
-    cp -R "$WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-linux-x64.bin"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the pgagent installer (staging/linux-x64/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-linux-x64.bin"
+    cp -R "$WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-linux-x64.run"  $WD/MetaInstaller/staging/linux-x64 || _die "Failed to copy the pgagent installer (staging/linux-x64/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-linux-x64.run"
 
     cd $WD/MetaInstaller
     mkdir -p staging/linux-x64/scripts/pgcontrol
@@ -116,7 +116,7 @@ _postprocess_metainstaller_linux_x64() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build postgresplus.xml linux-x64 || _die "Failed to build the installer"
     # Rename the installer
-    mv $WD/output/postgresplus-$PG_MAJOR_VERSION-linux-x64-installer.bin $WD/output/postgresplus-$PG_PACKAGE_VERSION-linux-x64.bin || _die "Failed to rename the installer"
+    mv $WD/output/postgresplus-$PG_MAJOR_VERSION-linux-x64-installer.run $WD/output/postgresplus-$PG_PACKAGE_VERSION-linux-x64.run || _die "Failed to rename the installer"
 
     cd $WD
 }
