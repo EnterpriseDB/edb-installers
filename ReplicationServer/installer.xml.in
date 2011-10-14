@@ -503,7 +503,7 @@
             </throwError>
 	  </actionList>
           <ruleList>
-            <isTrue value="${installer_is_root_install}"/>
+	    <isFalse value="${extract_mode}"/>
           </ruleList>
 	</actionGroup>
         <actionGroup>
@@ -536,7 +536,7 @@
                 </if> 
               </actionList>
               <ruleList>
-                <isTrue value="${installer_is_root_install}"/>
+		<isFalse value="${extract_mode}"/>
               </ruleList>
             </while>
             <setInstallerVariable name="pubport" value="${defaultpubport}" />
@@ -578,7 +578,7 @@
                 </if>
               </actionList>
               <ruleList>
-                <isTrue value="${installer_is_root_install}"/>
+		<isFalse value="${extract_mode}"/>
               </ruleList>
             </while>
             <setInstallerVariable name="subport" value="${defaultsubport}"/>
