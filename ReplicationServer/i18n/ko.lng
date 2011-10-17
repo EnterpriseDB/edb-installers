@@ -23,7 +23,7 @@ replicationserver.installdir.empty=설치 디렉터리를 비워 둘 수 없음
 
 replicationserver.installdir.error=설치 디렉터리는 문자, 숫자, '-', '/', '.' 및 '_' 문자를 포함하고 쓰기 가능한 절대 경로여야 합니다.
 
-java.error=Sun Java 1.5 이상이 시스템에 설치되어 있지 않습니다.\n시스템 PATH에서 설치되어 있는지 확인한 다음 설치 관리자를 다시 실행하십시오.
+java.error=Sun Java 1.6 이상이 시스템에 설치되어 있지 않습니다.\n시스템 PATH에서 설치되어 있는지 확인한 다음 설치 관리자를 다시 실행하십시오.
 
 pubserver.service.description=게시 서비스
 subserver.service.description=구독 서비스
