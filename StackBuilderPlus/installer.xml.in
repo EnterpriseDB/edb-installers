@@ -339,7 +339,7 @@
         </setInstallerVariable>
 
         <!-- New install, nothing set on the command line -->
-        <setInstallerVariable name="branding" persist="1" value="Postgres Plus Addons">
+        <setInstallerVariable name="branding" persist="1" value="Postgres Plus Add-ons">
           <ruleList>
             <compareText logic="equals" text="${branding}" value=""/>
           </ruleList>

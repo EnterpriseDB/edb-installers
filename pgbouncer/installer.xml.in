@@ -81,7 +81,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>/Library/PgBouncer</value>
+            <value>/Library/PostgresPlus/Shared/PgBouncer</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -94,7 +94,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}/PgBouncer</value>
+            <value>${platform_install_prefix}/PostgresPlus/Shared/PgBouncer</value>
             <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
                 <compareText>
@@ -114,7 +114,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}\PgBouncer</value>
+            <value>${platform_install_prefix}\PostgresPlus\Shared\PgBouncer</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -197,7 +197,7 @@
         <!-- LIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PgBouncer"/>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/Shared/PgBouncer"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -216,7 +216,7 @@
 	<!-- HPUX : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PgBouncer"/>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/Shared/PgBouncer"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -235,7 +235,7 @@
         <!-- Solaris : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PgBouncer"/>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/Shared/PgBouncer"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -253,7 +253,7 @@
         <!-- WIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}\PgBouncer"/>
+                <setInstallerVariable name="installdir" value="${platform_install_prefix}\PostgresPlus\Shared\PgBouncer"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -271,7 +271,7 @@
         <!-- MAC : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
-                <setInstallerVariable name="installdir" value="/Library/PgBouncer"/>
+                <setInstallerVariable name="installdir" value="/Library/PostgresPlus/Shared/PgBouncer"/>
             </actionList>
             <ruleList>
                 <compareText>
@@ -290,7 +290,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>/Library/PgBouncer</value>
+            <value>/Library/PostgresPlus/Shared/PgBouncer</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -303,7 +303,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}/PgBouncer</value>
+            <value>${platform_install_prefix}/PostgresPlus/Shared/PgBouncer</value>
             <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
                 <compareText>
@@ -327,7 +327,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>${platform_install_prefix}\PgBouncer</value>
+            <value>${platform_install_prefix}\PostgresPlus\Shared\PgBouncer</value>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>

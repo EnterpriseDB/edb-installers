@@ -3,16 +3,8 @@
 INSTALLDIR="@@INSTALL_DIR@@"
 BRANDING="@@BRANDING@@"
 
-# Branding string, for the xdg filenames. If the branding is 'PostgreSQL X.Y',
-# Don't do anything to ensure we remain backwards compatible.
-if [ "x$BRANDING" = "xPostgres Plus Addons" ];
-then
-    BRANDING_STR="postgresql"
-    BRANDED=0
-else
-    BRANDING_STR=`echo $BRANDING | sed 's/\./_/g' | sed 's/ /_/g'`
-    BRANDED=1
-fi
+BRANDING_STR=`echo $BRANDING | sed 's/\./_/g' | sed 's/ /_/g'`
+BRANDED=1
 
 # Exit code
 WARN=0
