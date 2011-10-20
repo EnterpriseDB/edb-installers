@@ -18,7 +18,7 @@ _prep_pgbouncer_hpux() {
     mkdir -p $WD/pgbouncer/staging/hpux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/pgbouncer/staging/hpux || _die "Couldn't set the permissions on the staging directory"
 
-    cp -R $WD/binaries/AS90-HPUX/pgbouncer $WD/pgbouncer/staging/hpux || _die "Couldn't copy hpux distros to staging directory"
+    cp -R $WD/binaries/AS91-HPUX/pgbouncer $WD/pgbouncer/staging/hpux || _die "Couldn't copy hpux distros to staging directory"
 
     echo "Creating staging doc directory ($WD/pgbouncer/staging/hpux/pgbouncer/doc)"
     mkdir $WD/pgbouncer/staging/hpux/pgbouncer/doc || _die "Couldn't create the staging doc directory"
@@ -26,7 +26,7 @@ _prep_pgbouncer_hpux() {
     echo "Copying README.pgbouncer to staging doc directory"
     cp $WD/pgbouncer/resources/README.pgbouncer $WD/pgbouncer/staging/hpux/pgbouncer/doc/README-pgbouncer.txt || _die "Couldn't copy README.pgbouncer to staging doc directory"
     # Copy instscripts to staging directory
-    cp -R $WD/binaries/AS90-HPUX/instscripts $WD/pgbouncer/staging/hpux/ || _die "Failed to copy libpq in instscripts"
+    cp -R $WD/binaries/AS91-HPUX/instscripts $WD/pgbouncer/staging/hpux/ || _die "Failed to copy libpq in instscripts"
 }
 
 ################################################################################
