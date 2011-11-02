@@ -23,7 +23,7 @@
   </parameterList>
   <!-- Open registration_plus page, if not already registered user -->
   <postShowPageActionList>
-    <launchBrowser url="https://www.enterprisedb.com/user-login-registration"
+    <launchBrowser url="${enc_launch_url}"
                    abortOnError="1">
       <ruleList>
           <isFalse value="${alreadyRegistered}"/>
