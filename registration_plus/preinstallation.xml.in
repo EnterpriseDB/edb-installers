@@ -161,6 +161,10 @@
 	<text>PRODUCT_DESCRIPTION</text>
 	<variable>enc_desc</variable>
     </urlEncode>
+    <urlEncode>
+        <text>http://www.enterprisedb.com/create-promo-account.do?type=@@COMPONENT@@</text>
+        <variable>enc_launch_url</variable>
+    </urlEncode>
 
     <createDirectory path="${system_temp_directory}/@@TEMPDIR@@"/>
     <!-- Unpack scripts and required libraries -->
