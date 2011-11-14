@@ -932,6 +932,20 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
         <isFalse value="${extract_mode}"/>
       </ruleList>
     </changeOwnerAndGroup>
+    <!-- Remove libraries causing problems in Ubuntu 11 and onwards -->
+    <actionGroup>
+      <actionList>
+        <deleteFile path="${installdir}/lib/libpango*.*" showMessageOnError="0" abortOnError="0"/>
+        <deleteFile path="${installdir}/lib/libfreetype*.*" showMessageOnError="0" abortOnError="0"/>
+	<deleteFile path="${installdir}/lib/libfontconfig*.*" showMessageOnError="0" abortOnError="0"/>
+	<deleteFile path="${installdir}/lib/libz*.*" showMessageOnError="0" abortOnError="0"/>
+      </actionList>
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+        <compareText logic="contains" text="${linux_distribution}" value="debian"/>
+        <compareVersions logic="greater" version1="${linux_distribution_release}" version2="11"/>
+      </ruleList>
+    </actionGroup>
   </postInstallationActionList>
 
   <!-- preUninstallation actions -->
