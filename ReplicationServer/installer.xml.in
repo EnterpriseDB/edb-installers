@@ -590,6 +590,42 @@
             </stringTest>
           </ruleList>
         </actionGroup>
+	<!-- Check xdbpubport and offset_xdbsubport are not equal -->
+        <actionGroup>
+          <actionList>
+            <throwError>
+              <text>${msg(port.bind.error)}</text>
+              <ruleList>
+                <compareText logic="equals" text="${pubport}" value="${offset_subport}"/>
+                <isTrue value="${component(pubserver).selected}" />
+                <isTrue value="${component(subserver).selected}" />
+		<isFalse value="${IsSubServerUpgrade}" />
+                <isFalse value="${IsPubServerUpgrade}" />
+              </ruleList>
+            </throwError>
+          </actionList>
+	  <ruleList>
+            <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </actionGroup>
+        <!-- Check xdbsubport and offset_xdbpubport are not equal -->
+        <actionGroup>
+          <actionList>
+            <throwError>
+              <text>${msg(port.bind.error)}</text>
+              <ruleList>
+                <compareText logic="equals" text="${subport}" value="${offset_pubport}"/>
+                <isTrue value="${component(pubserver).selected}" />
+                <isTrue value="${component(subserver).selected}" />
+		<isFalse value="${IsSubServerUpgrade}" />
+                <isFalse value="${IsPubServerUpgrade}" />
+              </ruleList>
+            </throwError>
+          </actionList>
+	  <ruleList>
+            <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </actionGroup>
         <setInstallerVariable name="optionRequired" value="servicepassword" />
         <throwError text="${msg(Installer.CustomError.CommandLineOptionsNotPresent)}" >
           <ruleList>
@@ -4299,7 +4335,6 @@ database=${controldb}
                         <isTrue value="${IsSubServerUpgrade}" /> 
                     </ruleList>
                 </throwError>
-
            </validationActionList>
         </parameterGroup>
 
@@ -4410,7 +4445,42 @@ database=${controldb}
                         <isTrue value="${component(pubserver).selected}" /> 
                     </ruleList>
                 </throwError>
-
+		<!-- Check xdbpubport and offset_xdbsubport are not equal -->
+                <actionGroup>
+                  <actionList>
+                    <throwError>
+                      <text>${msg(port.bind.error)}</text>
+                      <ruleList>
+                        <compareText logic="equals" text="${pubport}" value="${offset_subport}"/>
+                        <isTrue value="${component(pubserver).selected}" />
+                        <isTrue value="${component(subserver).selected}" />
+                        <isFalse value="${IsSubServerUpgrade}" />
+                        <isFalse value="${IsPubServerUpgrade}" />
+                      </ruleList>
+                    </throwError>
+                  </actionList>
+                  <ruleList>
+                    <isFalse value="${extract_mode}"/>
+                  </ruleList>
+               </actionGroup>
+               <!-- Check xdbsubport and offset_xdbpubport are not equal -->
+               <actionGroup>
+                 <actionList>
+                   <throwError>
+                     <text>${msg(port.bind.error)}</text>
+                     <ruleList>
+                       <compareText logic="equals" text="${subport}" value="${offset_pubport}"/>
+                       <isTrue value="${component(pubserver).selected}" />
+                       <isTrue value="${component(subserver).selected}" />
+                       <isFalse value="${IsSubServerUpgrade}" />
+                       <isFalse value="${IsPubServerUpgrade}" />
+                     </ruleList>
+                   </throwError>
+                 </actionList>
+                 <ruleList>
+                   <isFalse value="${extract_mode}"/>
+                 </ruleList>
+               </actionGroup>
 
           </validationActionList>
         </parameterGroup>
