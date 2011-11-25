@@ -981,6 +981,13 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
+		<!-- Convert pgbouncer.ini from dos to unix format -->
+        	<dos2unix>
+          	  <files>${installdir}\share\pgbouncer.ini</files>
+          	  <ruleList>
+            	    <compareText logic="equals" text="${platform_name}" value="windows"/>
+          	  </ruleList>
+        	</dos2unix>
                 <!-- Create etc directory for userlist.txt file -->
                 <createDirectory>
                     <path>${installdir}/etc</path>
@@ -1306,6 +1313,13 @@
                     <files>${installdir}/etc/userlist.txt</files>
                     <permissions>700</permissions>
                 </changePermissions>
+		<!-- Convert pgbouncer.ini from dos to unix format -->
+        	<dos2unix>
+          	  <files>${installdir}\share\pgbouncer.ini</files>
+         	  <ruleList>
+            	    <compareText logic="equals" text="${platform_name}" value="windows"/>
+          	  </ruleList>
+        	</dos2unix>
             </actionList>
             <ruleList>
                 <isTrue value="${extract_mode}"/>
