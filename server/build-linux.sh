@@ -79,16 +79,17 @@ _process_dependent_libs() {
        echo ""
        exit 1
    }
- 
+
 
    # Create a temporary directory
-   mkdir /tmp/templibs  
+   mkdir -p /tmp/templibs
 
    export LD_LIBRARY_PATH=$lib_dir
 
    # Get the exact version of $libname which are required by the binaries in $bin_dir
    cd $bin_dir
-   dependent_libs=\`ldd \\\`ls\\\` | grep $libname | cut -f1 -d "=" | uniq\`
+   cd ..
+   dependent_libs=\`ldd \\\`find . -perm +111 -type f\\\` | grep $libname | cut -f1 -d "=" | uniq\`
 
    # Get all the library versions of $libname present in $lib_dir
    cd $lib_dir
@@ -103,34 +104,37 @@ _process_dependent_libs() {
        for lib in \$liblist
        do
            if [ "\$deplib" = "\$lib" ]
-           then 
-                if [ -L \$lib ]
+           then
+                if [ -f \$lib ]
                 then
-                    # Resolve the symlink
-                    ref_lib=\`stat -c %N \$lib | cut -f2 -d ">"  | cut -f1 -d "'" | sed -e 's:\\\`::g'\` 
-                    # Remove the symlink
-                    rm -f \$lib   || _die "Failed to remove the symlink"
-                    # Copy the original lib to the name of the symlink in a temp directory.
-                    cp \$ref_lib /tmp/templibs/\$lib  || _die "Failed to copy the original lib"
-                else
-                    # Copy the original lib in a temp directory.
-                    cp \$lib /tmp/templibs/\$lib || _die "Failed to copy the original lib" 
-                fi     
+                    if [ -L \$lib ]
+                    then
+                        # Resolve the symlink
+                        ref_lib=\`stat -c %N \$lib | cut -f2 -d ">"  | cut -f1 -d "'" | sed -e 's:\\\`::g'\`
+                        # Remove the symlink
+                        rm -f \$lib   || _die "Failed to remove the symlink"
+                        # Copy the original lib to the name of the symlink in a temp directory.
+                        cp \$ref_lib /tmp/templibs/\$lib  || _die "Failed to copy the original lib"
+                    else
+                        # Copy the original lib in a temp directory.
+                        cp \$lib /tmp/templibs/\$lib || _die "Failed to copy the original lib"
+                    fi
+                fi
            fi
         done
     done
 
     # Remove all the remaining \$libname versions (that are not symlinks) in the lib directory
     for lib in \$liblist
-    do 
+    do
          rm -f \$lib || _die "Failed to remove the library"
-    done            
+    done
 
     # Copy libs from the tmp/templibs directory
     cp /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
 
-    # Remove the temporary directory 
-    rm -rf /tmp/templibs  
+    # Remove the temporary directory
+    rm -rf /tmp/templibs
 
 EOT
 
@@ -156,7 +160,7 @@ _build_server_linux() {
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/;export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH;sh ./configure -with-libs=/usr/local/lib --with-includes=/usr/local/include --prefix=$PG_STAGING --with-openssl --with-perl --with-python --with-tcl --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/;export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH;sh ./configure --with-libs=/usr/local/lib --with-includes=/usr/local/include --prefix=$PG_STAGING --with-openssl --with-perl --with-python --with-tcl --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH; make" || _die "Failed to build postgres" 
