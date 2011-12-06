@@ -124,7 +124,6 @@ _rewrite_so_refs() {
 #extract_file archived_file
 extract_file()
 {
-
     FILENAME=$1
 
     if [ -e $FILENAME.zip ]; then
@@ -143,8 +142,7 @@ extract_file()
        # This is a tgz tarball
        tar -zxvf $FILENAME.tgz
     else
-       echo "tarball doesn't exist for the this Package ($FILENAME)"
-       exit 1
+       _die "tarball doesn't exist for the this Package ($FILENAME)"
     fi
 }
 
