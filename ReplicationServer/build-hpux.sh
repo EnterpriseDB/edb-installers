@@ -136,6 +136,7 @@ _build_ReplicationServer_hpux() {
 
     chmod +rx $WD/ReplicationServer/staging/hpux
     chmod +rx $WD/ReplicationServer/staging/hpux/repserver/bin/*
+    chmod +rx $WD/ReplicationServer/staging/hpux/repconsole/bin/*
     chmod +r $WD/ReplicationServer/staging/hpux/repconsole/lib/*
     chmod +r $WD/ReplicationServer/staging/hpux/repconsole/lib/jdbc/*
     chmod +r $WD/ReplicationServer/staging/hpux/repserver/lib/*
