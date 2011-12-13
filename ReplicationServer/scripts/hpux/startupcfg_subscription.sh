@@ -93,6 +93,12 @@ function status
 
 # See how we were called.
 case "\$1" in
+  'start_msg')
+	echo "Starting Subscription Service $XDB_SERVICE_VER" 
+        ;;
+  'stop_msg')
+	echo "Stopping Subscription Service $XDB_SERVICE_VER" 
+        ;;
   start)
         start
         ;;

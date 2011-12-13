@@ -96,7 +96,13 @@ function status
 
 # See how we were called.
 case "\$1" in
-  start)
+  'start_msg')
+	echo "Starting pgbouncer-$PGBOUNCER_SERVICE_VER" 
+        ;;
+  'stop_msg')
+	echo "Stopping pgbouncer-$PGBOUNCER_SERVICE_VER" 
+        ;;
+   start)
         start
         ;;
   stop)
