@@ -134,6 +134,14 @@ cat <<EOT > "/var/svc/manifest/application/edb-xdbsubserver-$XDB_SERVICE_VER.xml
                 <service_fmri value='svc:/system/filesystem/local:default' />
         </dependency>
 
+	<dependency
+                name='ppas-$XDB_SERVICE_VER'
+                grouping='require_all'
+                restart_on='none'
+                type='service'>
+                <service_fmri value='svc:/application/ppas-$XDB_SERVICE_VER:default' />
+        </dependency>
+
         <exec_method
                 type='method'
                 name='start'
