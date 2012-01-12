@@ -700,7 +700,18 @@
                    <compareText logic="equals" text="${platform_name}" value="osx"/>
                </ruleList>
             </actionGroup>
-    
+
+ 	    <!-- Find solaris version number -->
+            <actionGroup>
+	      <actionList>
+	    	<runProgram program="cat" programArguments="/etc/release" abortOnError="0" showMessageOnError="0"/>
+		<setInstallerVariable name="solaris_version" value="${program_stdout}" persist="1"/>
+                <stringModify text="${solaris_version}" variable="solaris_version" logic="trim"/>
+	      </actionList>
+	      <ruleList>
+                <compareText logic="contains" text="${platform_name}" value="solaris"/>
+              </ruleList>
+   	    </actionGroup> 
             <!-- LIN/LIN-X64: Register Stack Builder Plus Update Monitor as a startup script -->
             <actionGroup>
               <actionList>
@@ -776,8 +787,48 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
               <ruleList>
                 <compareText text="${platform_name}" logic="contains" value="solaris"/>
                 <compareText text="${iSBPVersion}" logic="equals" value=""/>
+		<compareText text="${solaris_version}" logic="contains" value="Solaris 10"/>
               </ruleList>
             </actionGroup>
+
+	    <!-- Solaris 11: Register Stack Builder Plus Update Monitor as a startup script -->
+            <actionGroup>
+              <actionList>
+                <setInstallerVariable name="xdg_config_dir_str" value="${env(XDG_CONFIG_DIRS)}"/>
+                <setInstallerVariable name="xdg_config_dir_str" value="/etc/xdg">
+                  <ruleList>
+                    <compareText text="${xdg_config_dir_str}" logic="equals" value=""/>
+                  </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariableFromRegEx>
+                  <name>xdg_config_dir</name>
+                  <text>${xdg_config_dir_str}</text>
+                  <pattern>^[:]*(.*)[:]*$</pattern>
+                  <substitution>\1</substitution>
+                </setInstallerVariableFromRegEx>
+
+                <createDirectory path="${xdg_config_dir}/autostart">
+                  <ruleList>
+                    <fileTest condition="not_exists" path="${xdg_config_dir}/autostart"/>
+                  </ruleList>
+                </createDirectory>
+                <substitute>
+                  <files>${installdir}/scripts/xdg/edb-sbp-update-monitor.desktop</files>
+                  <substitutionList>
+                    <substitution pattern="@@INSTALL_DIR@@" value="${installdir}"/>
+                  </substitutionList>
+                </substitute>
+
+                <!-- Make sure, this will start after the gnome/kde system tray get initialized -->
+                <copyFile origin="${installdir}/scripts/xdg/edb-sbp-update-monitor.desktop"
+                          destination="${xdg_config_dir}/autostart/zzz-edb-sbp-update-monitor.desktop"/>
+              </actionList>
+              <ruleList>
+                <compareText text="${platform_name}" logic="contains" value="solaris"/>
+		<compareText text="${solaris_version}" logic="does_not_contain" value="Solaris 10"/>
+              </ruleList>
+            </actionGroup>
+
 	    <!-- Add SBP UM launch script to gnome/default.session for autostart on user login -->
             <!--<actionGroup>
               <actionList>
@@ -1090,7 +1141,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
                         showMessageOnError="0"
                         abortOnError="0"/>
 
-        <!-- LIN/LIN-X64: Remove UpdateMonitor Entry from the startup items, if installed -->
+        <!-- LIN/LIN-X64/Solaris 11: Remove UpdateMonitor Entry from the startup items, if installed -->
         <setInstallerVariable name="xdg_config_dir" value="${env(XDG_CONFIG_DIRS)}"/>
         <setInstallerVariable name="xdg_config_dir" value="/etc/xdg">
           <ruleList>
@@ -1108,6 +1159,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
     <readFile path="/usr/share/gnome/default.session" name="conf_file" >
        <ruleList>
          <compareText logic="contains" text="${platform_name}" value="solaris"/>
+	 <compareText text="${solaris_version}" logic="contains" value="Solaris 10"/>
        </ruleList>
     </readFile>
     <readFile path="/usr/share/gnome/default.session" name="conf_file" >
@@ -1148,6 +1200,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
        <ruleList>
          <regExMatch text="${conf_file}" pattern="${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &amp;" />
          <compareText logic="contains" text="${platform_name}" value="solaris"/>
+	 <compareText text="${solaris_version}" logic="contains" value="Solaris 10"/>
        </ruleList>
     </actionGroup>
 
