@@ -569,6 +569,8 @@
                                     <abortOnError>0</abortOnError>
                                     <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
                                 </runProgram>
+				<deleteFile path="/var/svc/manifest/application/pgbouncer-PGBOUNCER_SERVICE_VER.xml" />
+                		<deleteFile path="/lib/svc/method/pgbouncer-PGBOUNCER_SERVICE_VER" />
                             </actionList> 
                             <ruleList>
                                 <compareText>
@@ -577,7 +579,7 @@
                                     <value>solaris</value>
                                 </compareText>
                             </ruleList>
-                        </actionGroup>>
+                        </actionGroup>
                     </actionList>
                     <ruleList>
                         <compareText>
@@ -587,6 +589,21 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
+		<actionGroup>
+      		  <actionList>
+        	    <!-- Refresh service profile to remove old services entries -->
+        	    <runProgram>
+          	      <program>svcadm</program>
+          	      <programArguments>-v restart svc:/system/manifest-import:default</programArguments>
+          	      <showMessageOnError>0</showMessageOnError>
+          	      <abortOnError>0</abortOnError>
+        	    </runProgram>
+      		  </actionList>
+      		  <ruleList>
+        	    <compareText logic="contains" text="${platform_name}" value="solaris"/>
+        	    <isFalse value="${extract_mode}"/>
+      		  </ruleList>
+    		</actionGroup>
         
                 <!-- Get a free port for pgbouncer -->
                 <getFreePort>
@@ -1459,6 +1476,13 @@
                 </runProgram>
                 <deleteFile path="/var/svc/manifest/application/pgbouncer-PGBOUNCER_SERVICE_VER.xml" />
                 <deleteFile path="/lib/svc/method/pgbouncer-PGBOUNCER_SERVICE_VER" />
+		<!-- Refresh service profile to remove old services entries -->
+                <runProgram>
+                  <program>svcadm</program>
+                  <programArguments>-v restart svc:/system/manifest-import:default</programArguments>
+                  <showMessageOnError>0</showMessageOnError>
+                  <abortOnError>0</abortOnError>
+                </runProgram>
             </actionList> 
             <ruleList>
                 <compareText>
