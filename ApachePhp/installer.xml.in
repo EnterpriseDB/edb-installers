@@ -1,7 +1,7 @@
 <project>
   <!-- Package details -->
   <shortName>apachephp</shortName>
-  <fullName>ApachePhp</fullName>
+  <fullName>Apache/PHP</fullName>
   <version>PG_VERSION_APACHEPHP-PG_BUILDNUM_APACHEPHP</version>
   <startMenuGroupName>${branding}</startMenuGroupName>
   <!-- Product Specific Options -->
@@ -32,6 +32,7 @@
   <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
   <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
   <allowWindowResize>1</allowWindowResize>
+  <windowsSoftwareRegistryPrefix></windowsSoftwareRegistryPrefix>
 
   <!-- Images -->
   <disableSplashScreen>1</disableSplashScreen>
@@ -162,6 +163,7 @@
   <!-- Preinstallation actions -->
   <preInstallationActionList>
 
+    <setInstallerVariable name="project.windowsSoftwareRegistryPrefix" value="${project.vendor}\ApachePhp"/>
     <setInstallerVariable name="executablePath" value=""/>
     <setInstallerVariable name="selinux" value="" />
     <foreach variables="path" values="/bin /usr/bin /sbin /usr/sbin">
@@ -1545,8 +1547,8 @@ include conf\addons\*.conf
       <startMenuShortcutList>
         <startMenuShortcut>
           <!-- Launch Apache -->
-          <comment>EnterpriseDB ApachePHP</comment>
-          <name>EnterpriseDB ApachePHP</name>
+          <comment>EnterpriseDB Apache/PHP</comment>
+          <name>EnterpriseDB Apache/PHP</name>
           <runInTerminal>0</runInTerminal>
           <windowsExec>wscript</windowsExec>
           <windowsExecArgs>//NoLogo "${installdir}\scripts\launchApachePhp.vbs"</windowsExecArgs>
