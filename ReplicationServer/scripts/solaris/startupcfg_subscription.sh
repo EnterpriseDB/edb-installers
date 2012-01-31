@@ -99,7 +99,14 @@ EOT
 # Fixup the permissions on the StartupItems
 chmod 0755 "/lib/svc/method/edb-xdbsubserver-$XDB_SERVICE_VER" || _warn "Failed to set the permissions on the startup script (/etc/init.d/edb-xdbsubserver-$XDB_SERVICE_VER)"
 
-cat <<EOT > "/var/svc/manifest/application/edb-xdbsubserver-$XDB_SERVICE_VER.xml"
+cat /etc/release | grep 'Solaris 10'> /dev/null
+if [ $? -eq 0 ]; then
+   XML_FILE_PATH=/var/svc/manifest/application/edb-xdbsubserver-$XDB_SERVICE_VER.xml
+else
+   XML_FILE_PATH=$INSTALL_DIR/installer/xDBReplicationServer/edb-xdbsubserver-$XDB_SERVICE_VER.xml
+fi
+
+cat <<EOT > "$XML_FILE_PATH"
 <?xml version="1.0"?>
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
 
@@ -201,7 +208,7 @@ then
     chmod 777 /var/log/xdb-rep
 fi
 
-svccfg import /var/svc/manifest/application/edb-xdbsubserver-$XDB_SERVICE_VER.xml
+svccfg import $XML_FILE_PATH
 
 echo "$0 ran to completion"
 exit $WARN

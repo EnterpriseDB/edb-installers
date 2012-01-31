@@ -94,8 +94,14 @@ EOT
 # Fixup the permissions on the StartupItems
 chmod 0755 "/lib/svc/method/pgbouncer-$PGBOUNCER_SERVICE_VER" || _warn "Failed to set the permissions on the startup script (/lib/svc/method/pgbouncer-$PGBOUNCER_SERVICE_VER)"
 
+cat /etc/release | grep 'Solaris 10'> /dev/null
+if [ $? -eq 0 ]; then
+   XML_FILE_PATH=/var/svc/manifest/application/pgbouncer-$PGBOUNCER_SERVICE_VER.xml
+else
+   XML_FILE_PATH=$INSTALL_DIR/installer/pgbouncer/pgbouncer-$PGBOUNCER_SERVICE_VER.xml
+fi
 
-cat <<EOT > "/var/svc/manifest/application/pgbouncer-$PGBOUNCER_SERVICE_VER.xml"
+cat <<EOT > "$XML_FILE_PATH"
 <?xml version="1.0"?>
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
 
@@ -190,7 +196,7 @@ EOT
 mkdir /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
 chown -R $SYSTEM_USER /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
 
-svccfg import /var/svc/manifest/application/pgbouncer-$PGBOUNCER_SERVICE_VER.xml
+svccfg import $XML_FILE_PATH
 
 echo "$0 ran to completion"
 exit $WARN

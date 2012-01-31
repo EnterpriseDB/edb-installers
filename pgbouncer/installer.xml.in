@@ -69,6 +69,26 @@
         </language>
 
     </customLanguageFileList>
+
+    <!-- Custom functions -->
+    <functionDefinitionList>
+      <actionDefinition name="checkSolarisVersion">
+        <actionList>
+          <globalVariables names="solaris_version"/>
+          <actionGroup>
+            <actionList>
+              <runProgram program="cat" programArguments="/etc/release" abortOnError="0" showMessageOnError="0"/>
+              <setInstallerVariable name="solaris_version" value="${program_stdout}" persist="1"/>
+              <stringModify text="${solaris_version}" variable="solaris_version" logic="trim"/>
+            </actionList>
+            <ruleList>
+              <compareText logic="contains" text="${platform_name}" value="solaris"/>
+            </ruleList>
+          </actionGroup>
+        </actionList>
+      </actionDefinition>
+    </functionDefinitionList>
+
     <preShowHelpActionList>
         <!-- Set the default values -->
 		<setInstallerVariable name="defaultpghost" value="localhost"/>
@@ -569,7 +589,17 @@
                                     <abortOnError>0</abortOnError>
                                     <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
                                 </runProgram>
-				<deleteFile path="/var/svc/manifest/application/pgbouncer-PGBOUNCER_SERVICE_VER.xml" />
+				<checkSolarisVersion/>
+            			<deleteFile path="/var/svc/manifest/application/pgbouncer-PGBOUNCER_SERVICE_VER.xml">
+              			  <ruleList>
+                		    <compareText text="${solaris_version}" logic="contains" value="Solaris 10"/>
+              			  </ruleList>
+            			</deleteFile>
+            			<deleteFile path="${installdir}/installer/pgbouncer/pgbouncer-PGBOUNCER_SERVICE_VER.xml">
+              			  <ruleList>
+                		    <compareText text="${solaris_version}" logic="does_not_contain" value="Solaris 10"/>
+              			  </ruleList>
+            			</deleteFile>
                 		<deleteFile path="/lib/svc/method/pgbouncer-PGBOUNCER_SERVICE_VER" />
                             </actionList> 
                             <ruleList>
@@ -589,21 +619,6 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
-		<actionGroup>
-      		  <actionList>
-        	    <!-- Refresh service profile to remove old services entries -->
-        	    <runProgram>
-          	      <program>svcadm</program>
-          	      <programArguments>-v restart svc:/system/manifest-import:default</programArguments>
-          	      <showMessageOnError>0</showMessageOnError>
-          	      <abortOnError>0</abortOnError>
-        	    </runProgram>
-      		  </actionList>
-      		  <ruleList>
-        	    <compareText logic="contains" text="${platform_name}" value="solaris"/>
-        	    <isFalse value="${extract_mode}"/>
-      		  </ruleList>
-    		</actionGroup>
         
                 <!-- Get a free port for pgbouncer -->
                 <getFreePort>
@@ -628,10 +643,15 @@
             </ruleList>
         </deleteFile>
         
-        <deleteFile path="/tmp/pgbouncer.pid">
+        <deleteFile path="/tmp/pgbouncer-PGBOUNCER_SERVICE_VER.pid">
             <ruleList>
-                <compareText logic="contains" text="${platform_name}" value="linux"/>
-                <fileExists path="/tmp/pgbouncer.pid"/>
+		<ruleGroup>
+		  <ruleList ruleEvaluationGroup="or">
+                    <compareText logic="contains" text="${platform_name}" value="linux"/>
+		    <compareText logic="contains" text="${platform_name}" value="solaris"/>
+		  </ruleList>
+		</ruleGroup>
+                <fileExists path="/tmp/pgbouncer-PGBOUNCER_SERVICE_VER.pid"/>
             </ruleList>
         </deleteFile>
         <!-- Validate the PostgreSQL Server Details -->
@@ -1255,26 +1275,6 @@
                     </ruleList>
                 </runProgram>
        
-                <!-- Solaris: Start the pgbouncer service -->    
-                <runProgram>
-                    <program>svcadm</program>
-                    <programArguments>-v enable svc:/application/pgbouncer-PGBOUNCER_SERVICE_VER:default</programArguments>
-                    <abortOnError>0</abortOnError>
-                    <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
-                    <ruleList>
-                        <compareText>
-                            <logic>contains</logic>
-                            <text>${platform_name}</text>
-                            <value>solaris</value>
-                        </compareText>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${autostart}</text>
-                            <value>yes</value>
-                        </compareText>
-                    </ruleList>
-                </runProgram>
-
                <!-- MAC: Start the pgbouncer service -->    
                 <runProgram>
                     <program>launchctl</program>
@@ -1474,15 +1474,18 @@
                     <abortOnError>0</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
                 </runProgram>
-                <deleteFile path="/var/svc/manifest/application/pgbouncer-PGBOUNCER_SERVICE_VER.xml" />
+		<checkSolarisVersion/>
+                  <deleteFile path="/var/svc/manifest/application/pgbouncer-PGBOUNCER_SERVICE_VER.xml">
+                    <ruleList>
+                      <compareText text="${solaris_version}" logic="contains" value="Solaris 10"/>
+                    </ruleList>
+                  </deleteFile>
+                  <deleteFile path="${installdir}/installer/pgbouncer/pgbouncer-PGBOUNCER_SERVICE_VER.xml">
+                    <ruleList>
+                      <compareText text="${solaris_version}" logic="does_not_contain" value="Solaris 10"/>
+                    </ruleList>
+                  </deleteFile>
                 <deleteFile path="/lib/svc/method/pgbouncer-PGBOUNCER_SERVICE_VER" />
-		<!-- Refresh service profile to remove old services entries -->
-                <runProgram>
-                  <program>svcadm</program>
-                  <programArguments>-v restart svc:/system/manifest-import:default</programArguments>
-                  <showMessageOnError>0</showMessageOnError>
-                  <abortOnError>0</abortOnError>
-                </runProgram>
             </actionList> 
             <ruleList>
                 <compareText>
