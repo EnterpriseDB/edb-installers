@@ -93,7 +93,7 @@ EOT
     ssh $PG_SSH_SOLARIS_SPARC "rm -rf /tmp/tmp_libs && mkdir /tmp/tmp_libs" || _die "Failed to create tmp_libs in tmp folder"
     ssh $PG_SSH_SOLARIS_SPARC "cp -R /export/home/buildfarm/PPAS/libevent-2.0.16-stable/inst/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* /tmp/tmp_libs" || _die "Failed to copy libevent libs in tmp folder"
     ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libxml2.so* /tmp/tmp_libs" || _die "Failed to copy libxml libs in tmp folder"
-    ssh $PG_SSH_SOLARIS_SPARC "/usr/local/bin/chrpath -r '\$ORIGIN' /tmp/tmp_libs/*" || _die "Failed to set rpath in tmp_libs folder"
+    ssh $PG_SSH_SOLARIS_SPARC "/usr/local/bin/chrpath -r '\$ORIGIN' /tmp/tmp_libs/libxml2.so*" || _die "Failed to set rpath in tmp_libs folder"
     ssh $PG_SSH_SOLARIS_SPARC "cp -R /tmp/tmp_libs/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
     ssh $PG_SSH_SOLARIS_SPARC "cp -R /tmp/tmp_libs/libxml2.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
 
