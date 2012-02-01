@@ -80,7 +80,7 @@ EOT
     scp setenv.sh $PG_SSH_SOLARIS_X64: || _die "Failed to scp the setenv.sh file"
 
 
-    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/pgbouncer/source/pgbouncer.solaris-x64/; ./configure --prefix=$PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/pgbouncer --with-libevent=/usr/local" || _die "Failed to configure pgbouncer"
+    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/pgbouncer/source/pgbouncer.solaris-x64/; ./configure --prefix=$PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/pgbouncer --with-libevent=/export/home/buildfarm/PPAS/libevent-2.0.16-stable/inst/lib" || _die "Failed to configure pgbouncer"
     ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/pgbouncer/source/pgbouncer.solaris-x64/; gmake" || _die "Failed to build pgbouncer"
     ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/pgbouncer/source/pgbouncer.solaris-x64/; gmake install" || _die "Failed to install pgbouncer"
     ssh $PG_SSH_SOLARIS_X64 "cp -R $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/pgbouncer/share/doc/pgbouncer/pgbouncer.ini $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/pgbouncer/share/" || _die "Failed to copy pgbouncer ini to share folder"
@@ -88,9 +88,9 @@ EOT
 
     ssh $PG_SSH_SOLARIS_X64 "mkdir -p $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts" || _die "Failed to create the instscripts directory"
     ssh $PG_SSH_SOLARIS_X64 "mkdir -p $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/pgbouncer/lib" || _die "Failed to create the pgbouncer lib directory"
-    PG_LIBEVENT_MAJOR_VERSION=`echo $PG_TARBALL_LIBEVENT | cut -f1,2 '.'`
+    PG_LIBEVENT_MAJOR_VERSION=`echo $PG_TARBALL_LIBEVENT | cut -f1,2 -d'.'`
 
-    ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
+    ssh $PG_SSH_SOLARIS_X64 "cp -R /export/home/buildfarm/PPAS/libevent-2.0.16-stable/inst/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
 
 
     ssh $PG_SSH_SOLARIS_X64 "cp -R $PG_PATH_SOLARIS_X64/server/staging/solaris-x64/lib/libpq* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy libpq in instscripts"
