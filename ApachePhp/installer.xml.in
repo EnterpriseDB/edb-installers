@@ -1309,6 +1309,8 @@ include conf\addons\*.conf
           <program>${installdir}/installer/ApachePhp/removeshortcuts.sh</program>
           <programArguments>"${installdir}" "${branding}"</programArguments>
           <workingDirectory>${installdir}/installer/ApachePhp</workingDirectory>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
         </runProgram>
         <!-- Uninstall the ApachePhp service -->
 
@@ -1322,7 +1324,9 @@ include conf\addons\*.conf
 
         <!-- Remove the startup script -->
         <deleteFile>
-  	   <path>/etc/init.d/EnterpriseDBApachePhp</path>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <path>/etc/init.d/EnterpriseDBApachePhp</path>
         </deleteFile>
 
         <!-- Attempt to remove any runlevel config with update-rc.d -->
@@ -1345,6 +1349,8 @@ include conf\addons\*.conf
     <!-- MAC: Remove menu shortcuts -->
     <deleteFile>
       <path>/Applications/${branding}/EnterpriseDB ApachePhp</path>
+      <abortOnError>0</abortOnError>
+      <showMessageOnError>0</showMessageOnError>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -1357,6 +1363,8 @@ include conf\addons\*.conf
     <!-- MAC: Uninstall Apache Service -->
     <deleteFile>
       <path>/Library/LaunchDaemons/com.edb.launchd.apache.plist</path>
+      <abortOnError>0</abortOnError>
+      <showMessageOnError>0</showMessageOnError>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -1374,6 +1382,8 @@ include conf\addons\*.conf
           <program>${installdir}\installer\ApachePhp\uninstall-apache.bat</program>
           <programArguments/>
           <workingDirectory>${installdir}\installer\ApachePhp</workingDirectory>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
         </runProgram>
       </actionList>
       <ruleList>
@@ -1388,6 +1398,8 @@ include conf\addons\*.conf
     <actionGroup>
       <actionList>
         <deleteFile>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
           <path>${installdir}/apache/logs</path>
         </deleteFile>
       </actionList>
