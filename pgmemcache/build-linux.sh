@@ -79,7 +79,7 @@ _build_pgmemcache_linux() {
     fi
 
     cd $PGMEM_SOURCE
-    ssh $PVT_SSH "cd $PGMEM_PACKAGE_VM_PATH; PATH=$PG_PATH/bin:$PATH make CFLAGS=\" -I$LIBMEMCACHED_CACHING_VM_PATH/include \" LDFLAGS=\" -L$LIBMEMCACHED_CACHING_VM_PATH/lib \"" || _die "Failed to build the pgmemcache for $PGMEM_PLATFORM"
+    ssh $PVT_SSH "cd $PGMEM_PACKAGE_VM_PATH; LD_LIBRARY_PATH=$PG_PATH/lib PATH=$PG_PATH/bin:$PATH make CFLAGS=\" -I$LIBMEMCACHED_CACHING_VM_PATH/include \" LDFLAGS=\" -L$LIBMEMCACHED_CACHING_VM_PATH/lib \"" || _die "Failed to build the pgmemcache for $PGMEM_PLATFORM"
 
     ssh $PVT_SSH "cd $PGMEM_PACKAGE_VM_PATH; chrpath --replace \"\\\${ORIGIN}/../lib\" pgmemcache.so" || _die "Failed to replace the rpath"
 
@@ -119,10 +119,10 @@ _postprocess_pgmemcache_linux() {
 
     # Make all the files readable under the given directory
     find "$PGMEM_PACKAGE_PATH" -exec chmod a+r {} \;
-    # Make all the directories readable, writable and executable under the given directory
-    find "$PGMEM_PACKAGE_PATH" -type d -exec chmod a+wrx {} \;
+    # Make all the directories readable and executable under the given directory
+    find "$PGMEM_PACKAGE_PATH" -type d -exec chmod 755 {} \;
     # Make all the shared objects readable and executable under the given directory
-    find "$PGMEM_PACKAGE_PATH" -name "*.so*" -exec chmod a+rx {} \;
+    find "$PGMEM_PACKAGE_PATH" -name "*.so*" -exec chmod 755 {} \;
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml ${PGMEM_PLATFORM} || _die "Failed to build the installer (${PGMEM_PLATFORM})"

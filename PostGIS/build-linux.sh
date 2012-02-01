@@ -158,7 +158,7 @@ fi
 
 cd $POSTGIS_SOURCE_REMOTE
 export PATH=$PROJ_CACHHE_REMOTE/bin:$GEOS_CACHE_REMOTE/bin:\$PATH
-export LD_LIBRARY_PATH=$PROJ_CACHHE_REMOTE/lib:$GEOS_CACHE_REMOTE/lib:\$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$POSTGRES_REMOTE_PATH/lib:$PROJ_CACHHE_REMOTE/lib:$GEOS_CACHE_REMOTE/lib:\$LD_LIBRARY_PATH
 export LDFLAGS=-Wl,--rpath,'\\\$ORIGIN/../lib'
 
 echo "Configuring the postgis source tree"
@@ -260,9 +260,9 @@ _postprocess_PostGIS_linux() {
 
     mkdir -p staging/linux/scripts || _die "Failed to create a directory for the launch scripts"
     cp -R scripts/linux/launchbrowser.sh staging/linux/scripts/launchbrowser.sh || _die "Failed to copy the launch scripts (scripts/linux)"
-	chmod ugo+x staging/linux/scripts/launchbrowser.sh
+    chmod ugo+x staging/linux/scripts/launchbrowser.sh
     cp -R scripts/linux/launchPostGISDocs.sh staging/linux/scripts/launchPostGISDocs.sh || _die "Failed to copy the launch scripts (scripts/linux)"
-	chmod ugo+x staging/linux/scripts/launchPostGISDocs.sh
+    chmod ugo+x staging/linux/scripts/launchPostGISDocs.sh
     cp -R scripts/linux/launchJDBCDocs.sh staging/linux/scripts/launchJDBCDocs.sh || _die "Failed to copy the launch scripts (scripts/linux)"
     chmod ugo+x staging/linux/scripts/launchJDBCDocs.sh
 

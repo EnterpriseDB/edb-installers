@@ -51,11 +51,11 @@ _build_Slony_linux() {
     PG_STAGING=$PG_PATH_LINUX/Slony/staging/linux
 
     echo "Configuring the slony source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/Slony/source/slony.linux/; ./configure --with-pgconfigdir=$PG_PGHOME_LINUX/bin"  || _die "Failed to configure slony"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/Slony/source/slony.linux; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib ./configure --with-pgconfigdir=$PG_PGHOME_LINUX/bin"  || _die "Failed to configure slony"
 
     echo "Building slony"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/Slony/source/slony.linux; make" || _die "Failed to build slony"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/Slony/source/slony.linux; make install" || _die "Failed to install slony"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/Slony/source/slony.linux; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib make" || _die "Failed to build slony"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/Slony/source/slony.linux; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib make install" || _die "Failed to install slony"
 
     echo "Changing the rpath for the slonik binaries and libraries"
     ssh $PG_SSH_LINUX "cd $PG_PGHOME_LINUX/bin; for f in slon slonik slony_logshipper ; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
@@ -103,7 +103,7 @@ _postprocess_Slony_linux() {
 
     mkdir -p staging/linux/scripts || _die "Failed to create a directory for the launch scripts"
     cp -R scripts/linux/launchbrowser.sh staging/linux/scripts/launchbrowser.sh || _die "Failed to copy the launch scripts (scripts/linux)"
-	chmod ugo+x staging/linux/scripts/launchbrowser.sh
+    chmod ugo+x staging/linux/scripts/launchbrowser.sh
     cp -R scripts/linux/launchSlonyDocs.sh staging/linux/scripts/launchSlonyDocs.sh || _die "Failed to copy the launch scripts (scripts/linux)"
     chmod ugo+x staging/linux/scripts/launchSlonyDocs.sh 
 
