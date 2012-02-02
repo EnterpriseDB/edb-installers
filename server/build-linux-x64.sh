@@ -1,6 +1,5 @@
 #!/bin/bash
 
-    
 ################################################################################
 # Build preparation
 ################################################################################
@@ -9,17 +8,17 @@ _prep_server_linux_x64() {
 
     # Enter the source directory and cleanup if required
     cd $WD/server/source
-    
+
     if [ -e postgres.linux-x64 ];
     then
       echo "Removing existing postgres.linux-x64 source directory"
       rm -rf postgres.linux-x64  || _die "Couldn't remove the existing postgres.linux-x64 source directory (source/postgres.linux-x64)"
     fi
-   
+
     # Grab a copy of the source tree
     cp -R postgresql-$PG_TARBALL_POSTGRESQL postgres.linux-x64 || _die "Failed to copy the source code (source/postgresql-$PG_TARBALL_POSTGRESQL)"
     chmod -R ugo+w postgres.linux-x64 || _die "Couldn't set the permissions on the source directory"
- 
+
     if [ -e pgadmin.linux-x64 ];
     then
       echo "Removing existing pgadmin.linux-x64 source directory"
@@ -47,9 +46,9 @@ _prep_server_linux_x64() {
     fi
 
     # Grab a copy of the stackbuilder source tree
-    cp -R stackbuilder stackbuilder.linux-x64 || _die "Failed to copy the source code (source/stackbuilder)"	
-	chmod -R ugo+w stackbuilder.linux-x64 || _die "Couldn't set the permissions on the source directory"
-	
+    cp -R stackbuilder stackbuilder.linux-x64 || _die "Failed to copy the source code (source/stackbuilder)"
+    chmod -R ugo+w stackbuilder.linux-x64 || _die "Couldn't set the permissions on the source directory"
+
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/linux-x64 ];
     then
@@ -67,7 +66,6 @@ _prep_server_linux_x64() {
 
 }
 
-
 _process_dependent_libs_linux_x64() {
 
    bin_dir=$1
@@ -84,10 +82,9 @@ _process_dependent_libs_linux_x64() {
        echo ""
        exit 1
    }
- 
 
    # Create a temporary directory
-   mkdir /tmp/templibs  
+   mkdir /tmp/templibs
 
    export LD_LIBRARY_PATH=$lib_dir
 
@@ -108,34 +105,34 @@ _process_dependent_libs_linux_x64() {
        for lib in \$liblist
        do
            if [ "\$deplib" = "\$lib" ]
-           then 
+           then
                 if [ -L \$lib ]
                 then
                     # Resolve the symlink
-                    ref_lib=\`stat -c %N \$lib | cut -f2 -d ">"  | cut -f1 -d "'" | sed -e 's:\\\`::g'\` 
+                    ref_lib=\`stat -c %N \$lib | cut -f2 -d ">"  | cut -f1 -d "'" | sed -e 's:\\\`::g'\`
                     # Remove the symlink
                     rm -f \$lib   || _die "Failed to remove the symlink"
                     # Copy the original lib to the name of the symlink in a temp directory.
                     cp \$ref_lib /tmp/templibs/\$lib  || _die "Failed to copy the original lib"
                 else
                     # Copy the original lib in a temp directory.
-                    cp \$lib /tmp/templibs/\$lib || _die "Failed to copy the original lib" 
-                fi     
+                    cp \$lib /tmp/templibs/\$lib || _die "Failed to copy the original lib"
+                fi
            fi
         done
     done
 
     # Remove all the remaining \$libname versions (that are not symlinks) in the lib directory
     for lib in \$liblist
-    do 
+    do
          rm -f \$lib || _die "Failed to remove the library"
-    done            
+    done
 
     # Copy libs from the tmp/templibs directory
     cp /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
 
-    # Remove the temporary directory 
-    rm -rf /tmp/templibs  
+    # Remove the temporary directory
+    rm -rf /tmp/templibs
 
 EOT
 
@@ -158,30 +155,31 @@ _build_server_linux_x64() {
     # First build PostgreSQL
 
     PG_STAGING=$PG_PATH_LINUX_X64/server/staging/linux-x64
-    
+
+
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/;export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH;PATH=$PG_PERL_LINUX_X64/bin:$PG_PYTHON_LINUX_X64/bin:$PG_TCL_LINUX_X64/bin:\$PATH ./configure --with-libs=/usr/local/lib --with-includes=/usr/local/include --prefix=$PG_STAGING --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX_X64/lib --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/;export PATH=$PG_PERL_LINUX_X64/bin:$PG_PYTHON_LINUX_X64/bin:$PG_TCL_LINUX_X64/bin:\$PATH; ./configure --with-includes=/usr/local/openssl/include:/usr/local/ldap-2.4.23/include:/usr/local/include --with-libs=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib --prefix=$PG_STAGING --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX_X64/lib --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-ldap LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64; export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH; make -j4" || _die "Failed to build postgres" 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64; export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH; make install" || _die "Failed to install postgres"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib; make -j4" || _die "Failed to build postgres"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib; make install" || _die "Failed to install postgres"
 
     echo "Building contrib modules"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib; make" || _die "Failed to build the postgres contrib modules"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib; make install" || _die "Failed to install the postgres contrib modules"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib; make" || _die "Failed to build the postgres contrib modules"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib; LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib make install" || _die "Failed to install the postgres contrib modules"
 
     echo "Building debugger module"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/pldebugger; make" || _die "Failed to build the debugger module"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
-	if [ ! -e $WD/server/staging/linux-x64/doc ];
-	then
-	    mkdir -p $WD/server/staging/linux-x64/doc || _die "Failed to create the doc directory"
-	fi
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/pldebugger; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib; make" || _die "Failed to build the debugger module"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/pldebugger; LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib make install" || _die "Failed to install the debugger module"
+    if [ ! -e $WD/server/staging/linux-x64/doc ];
+    then
+        mkdir -p $WD/server/staging/linux-x64/doc || _die "Failed to create the doc directory"
+    fi
     cp "$WD/server/source/postgres.linux-x64/contrib/pldebugger/README.pldebugger" $WD/server/staging/linux-x64/doc || _die "Failed to copy the debugger README into the staging directory"
 
     echo "Building uuid-ossp module"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/uuid-ossp; make" || _die "Failed to build the uuid-ossp module"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/uuid-ossp; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib; make" || _die "Failed to build the uuid-ossp module"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
 
     # Install the PostgreSQL docs
@@ -197,8 +195,8 @@ _build_server_linux_x64() {
     cp -R $WD/server/source/postgres.linux-x64/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
 
     # Copy in the dependency libraries
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/openssl/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/openssl/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libtermcap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libncurses.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
@@ -208,14 +206,20 @@ _build_server_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libpng12.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libjpeg.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/ldap-2.4.23/lib/liblber-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(lber)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/ldap-2.4.23/lib/libldap_r-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap_r)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/cyrus-sasl/lib/libsasl2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(libsasl2)"
 
     # Process Dependent libs
-    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl.so"  
-    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libcrypto.so"  
-    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libedit.so"  
-    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libtermcap.so"  
-    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libxml2.so"  
-    _process_dependent_libs_linux_x64 "$PG_STAGING/lib/postgresql" "$PG_STAGING/lib" "libxslt.so"  
+    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl.so"
+    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libcrypto.so"
+    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libedit.so"
+    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libtermcap.so"
+    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libxml2.so"
+    _process_dependent_libs_linux_x64 "$PG_STAGING/lib/postgresql" "$PG_STAGING/lib" "libxslt.so"
+    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap_r-2.4"
+    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "liblber-2.4"
+    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libsasl2"
 
     # Hack for bypassing dependency on the deprecated libtermcap
     # As libnucurses is API compatible with the termcap so we copy libtermcap and then just
@@ -307,7 +311,7 @@ EOT
 
     # Move the utilties.ini file out of the way (Uncomment for Postgres Studio or 1.9+)
     # ssh $PG_SSH_LINUX_X64 "mv $PG_STAGING/pgAdmin3/share/pgadmin3/plugins/utilities.ini $PG_STAGING/pgAdmin3/share/pgadmin3/plugins/utilities.ini.new" || _die "Failed to move the utilties.ini file"
-     
+
     # And now, pl/java
 
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pljava.linux-x64/; JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 PATH=$PG_JAVA_HOME_LINUX_X64/bin:$PATH:$PG_EXEC_PATH_LINUX_X64:$PG_PATH_LINUX_X64/server/staging/linux-x64/bin make USE_JDK6=1" || _die "Failed to build pl/java"
@@ -319,7 +323,7 @@ EOT
 
     mkdir -p "$WD/server/staging/linux-x64/doc/pljava" || _die "Failed to create the pl/java doc directory"
     cp "$WD/server/source/pljava.linux-x64/docs/"* "$WD/server/staging/linux-x64/doc/pljava/" || _die "Failed to install the pl/java documentation"
- 
+
     echo "Changing the rpath for the PostgreSQL executables and libraries"
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/lib; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}\" \$f; done"
@@ -332,7 +336,7 @@ EOT
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/share/postgresql/timezone; chmod -R a+r *"
 
     # Stackbuilder
-	
+
     # Configure
     echo "Configuring the StackBuilder source tree"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/stackbuilder.linux-x64/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_STAGING/stackbuilder ."
@@ -349,7 +353,6 @@ EOT
 
     cd $WD
 }
-
 
 ################################################################################
 # Post process
@@ -370,11 +373,11 @@ _postprocess_server_linux_x64() {
     tar -czf postgresql-$PG_PACKAGE_VERSION-linux-x64-binaries.tar.gz pgsql || _die "Failed to archive the postgresql binaries"
     mv postgresql-$PG_PACKAGE_VERSION-linux-x64-binaries.tar.gz $WD/output/ || _die "Failed to move the archive to output folder"
 
-    rm -rf pgsql || _die "Failed to remove the binaries directory" 
+    rm -rf pgsql || _die "Failed to remove the binaries directory"
 
     cd $WD/server
 
-    # Setup the installer scripts. 
+    # Setup the installer scripts.
     mkdir -p staging/linux-x64/installer/server || _die "Failed to create a directory for the install scripts"
     cp $WD/server/scripts/linux/getlocales/getlocales.linux-x64 $WD/server/staging/linux-x64/installer/server/getlocales || _die "Failed ot copy getlocales utility to staging directory"
     chmod ugo+x $WD/server/staging/linux-x64/installer/server/getlocales
@@ -403,13 +406,13 @@ _postprocess_server_linux_x64() {
     mkdir -p staging/linux-x64/installer/xdg || _die "Failed to create a directory for the xdg scripts"
     cp -R $WD/scripts/xdg/xdg* staging/linux-x64/installer/xdg || _die "Failed to copy the xdg scripts (scripts/xdg/*)"
     chmod ugo+x staging/linux-x64/installer/xdg/xdg*
-    
+
     # Version string, for the xdg filenames
     PG_VERSION_STR=`echo $PG_MAJOR_VERSION | sed 's/\./_/g'`
 
     # Copy in the menu pick images and XDG items
     mkdir -p staging/linux-x64/scripts/images || _die "Failed to create a directory for the menu pick images"
-    
+
     cp resources/pg-help.png staging/linux-x64/scripts/images/pg-help-$PG_VERSION_STR.png || _die "Failed to copy a menu pick im
 age"
     cp resources/pg-pgadmin.png staging/linux-x64/scripts/images/pg-pgadmin-$PG_VERSION_STR.png || _die "Failed to copy a menu p
@@ -425,7 +428,6 @@ y a menu pick image"
 
     mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
 
-
     cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/pg-documentation.directory staging/linux-x64/scripts/xdg/pg-documentation-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
 
@@ -438,8 +440,8 @@ y a menu pick image"
     cp resources/xdg/pg-pgadmin.desktop staging/linux-x64/scripts/xdg/pg-pgadmin-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-psql.desktop staging/linux-x64/scripts/xdg/pg-psql-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-reload.desktop staging/linux-x64/scripts/xdg/pg-reload-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
-	cp resources/xdg/pg-stackbuilder.desktop staging/linux-x64/scripts/xdg/pg-stackbuilder-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
-    
+    cp resources/xdg/pg-stackbuilder.desktop staging/linux-x64/scripts/xdg/pg-stackbuilder-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+
     # Copy the launch scripts
     cp scripts/linux/launchpsql.sh staging/linux-x64/scripts/launchpsql.sh || _die "Failed to copy the launchpsql script (scripts/linux/launchpsql.sh)"
     chmod ugo+x staging/linux-x64/scripts/launchpsql.sh
@@ -457,7 +459,7 @@ y a menu pick image"
     chmod ugo+x staging/linux-x64/scripts/launchstackbuilder.sh
     cp scripts/linux/runstackbuilder.sh staging/linux-x64/scripts/runstackbuilder.sh || _die "Failed to copy the runstackbuilder script (scripts/linux/runstackbuilder.sh)"
     chmod ugo+x staging/linux-x64/scripts/runstackbuilder.sh
-		
+
     PG_DATETIME_SETTING_LINUX_X64=`cat staging/linux-x64/include/pg_config.h | grep "#define USE_INTEGER_DATETIMES 1"`
 
     if [ "x$PG_DATETIME_SETTING_LINUX_X64" = "x" ]
@@ -475,12 +477,11 @@ y a menu pick image"
     _replace @@WIN64MODE@@ "0" installer-lin64.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
     _replace @@SERVICE_SUFFIX@@ "" installer-lin64.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
 
-		
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-lin64.xml linux-x64 || _die "Failed to build the installer"
 
-	# Rename the installer
-	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-x64-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-linux-x64.run || _die "Failed to rename the installer"
+    # Rename the installer
+    mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-x64-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-linux-x64.run || _die "Failed to rename the installer"
 
     cd $WD
 }

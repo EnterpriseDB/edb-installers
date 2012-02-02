@@ -1,12 +1,12 @@
 #!/bin/bash
 
-    
+
 ################################################################################
 # Build preparation
 ################################################################################
 
 _prep_ApachePhp_linux_x64() {
-      
+
     # Enter the source directory and cleanup if required
     cd $WD/ApachePhp/source
 
@@ -29,7 +29,7 @@ _prep_ApachePhp_linux_x64() {
       echo "Removing existing php.linux-x64 source directory"
       rm -rf php.linux-x64  || _die "Couldn't remove the existing php.linux-x64 source directory (source/php.linux-x64)"
     fi
-    
+
     echo "Creating php source directory ($WD/ApachePhp/source/php.linux-x64)"
     mkdir -p php.linux-x64 || _die "Couldn't create the php.linux-x64 directory"
     chmod ugo+w php.linux-x64 || _die "Couldn't set the permissions on the source directory"
@@ -49,7 +49,7 @@ _prep_ApachePhp_linux_x64() {
     echo "Creating staging directory ($WD/ApachePhp/staging/linux-x64)"
     mkdir -p $WD/ApachePhp/staging/linux-x64 || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/ApachePhp/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
-        
+
 }
 
 
@@ -65,29 +65,44 @@ _build_ApachePhp_linux_x64() {
 
     # Configure the source tree
     echo "Configuring the apache source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/apache.linux-x64/; sh ./configure --prefix=$PG_STAGING/apache --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache"  || _die "Failed to configure apache"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/apache.linux-x64/; sh ./configure --prefix=$PG_STAGING/apache --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache --with-ssl=/usr/local/openssl --enable-mods-shared=all"  || _die "Failed to configure apache"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/apache.linux-x64/modules/ssl; sed -i \"s^\\(\\t\\\$(SH_LINK).*$\\)^\\1 -Wl,-rpath,\\\${libexecdir}^\" modules.mk"
 
     echo "Building apache"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/apache.linux-x64; make" || _die "Failed to build apache"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/apache.linux-x64; make install" || _die "Failed to install apache"
 
-    #Configure the httpd.conf file
-    _replace "$PG_STAGING/apache" "@@INSTALL_DIR@@" "$WD/ApachePhp/staging/linux-x64/apache/conf/httpd.conf"
-    _replace "Listen 80" "Listen @@PORT@@" "$WD/ApachePhp/staging/linux-x64/apache/conf/httpd.conf"
-    _replace "htdocs" "www" "$WD/ApachePhp/staging/linux-x64/apache/conf/httpd.conf"
-    _replace "#ServerName www.example.com:80" "ServerName localhost:@@PORT@@" "$WD/ApachePhp/staging/linux-x64/apache/conf/httpd.conf"
+    # Configure the httpd.conf file
+    cd $WD/ApachePhp/staging/linux-x64/apache/conf
+    _replace "$PG_STAGING/apache" "@@INSTALL_DIR@@" "httpd.conf"
+    _replace "Listen 80" "Listen @@PORT@@" "httpd.conf"
+    _replace "htdocs" "www" "httpd.conf"
+    _replace "#ServerName www.example.com:80" "ServerName localhost:@@PORT@@" "httpd.conf"
 
-    #Configure the apachectl script file
-    _replace "\$HTTPD -k \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\"@@INSTALL_DIR@@/php/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux-x64/apache/bin/apachectl"
-    _replace "\$HTTPD -t" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\"@@INSTALL_DIR@@/php/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux-x64/apache/bin/apachectl"
-    _replace "\$HTTPD \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\"@@INSTALL_DIR@@/php/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$WD/ApachePhp/staging/linux-x64/apache/bin/apachectl"
+    # Configure the apachectl script file
+    cd $WD/ApachePhp/staging/linux-x64/apache/bin
+    _replace "\$HTTPD -k \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\"@@INSTALL_DIR@@/php/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
+    _replace "\$HTTPD -t" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\"@@INSTALL_DIR@@/php/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
+    _replace "\$HTTPD \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\"@@INSTALL_DIR@@/php/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
     ssh $PG_SSH_LINUX_X64 "chmod ugo+x \"$PG_STAGING/apache/bin/apachectl\""
-     
+
+    # Copy in the dependency libraries (apache)
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/openssl/lib/libssl.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libssl)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/openssl/lib/libcrypto.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libcrypto)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypt.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libcrypt)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcom_err.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libcom_err)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libkeyutils.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libkeyutils)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libexpat.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libexpat)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libgssapi_krb5.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libgssapi_krb5)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libkrb5.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libkrb5)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libk5crypto.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libk5crypto)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libxml2)"
+
     echo "Configuring the php source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/php.linux-x64/; sh ./configure --prefix=$PG_STAGING/php --with-libdir=lib64 --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --with-pgsql=$PG_PGHOME_LINUX_X64 --with-openssl --with-pdo-pgsql=$PG_PGHOME_LINUX_X64 --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-png-dir=/usr --with-jpeg-dir=/usr --with-freetype-dir=/usr --enable-gd-native-ttf --enable-mbstring=all" || _die "Failed to configure php"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/php.linux-x64/; export LD_LIBRARY_PATH=$PG_PGHOME_LINUX_X64/lib:/usr/local/openssl/lib; sh ./configure --prefix=$PG_STAGING/php --with-libdir=lib64 --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --with-pgsql=$PG_PGHOME_LINUX_X64 --with-openssl=/usr/local/openssl --with-pdo-pgsql=$PG_PGHOME_LINUX_X64 --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-png-dir=/usr --with-jpeg-dir=/usr --with-freetype-dir=/usr --enable-gd-native-ttf --enable-mbstring=all" || _die "Failed to configure php"
 
     echo "Building php"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/php.linux-x64; make" || _die "Failed to build php"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/php.linux-x64; export LD_LIBRARY_PATH=$PG_PGHOME_LINUX_X64/lib make" || _die "Failed to build php"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/php.linux-x64; make install" || _die "Failed to install php"
     cd $WD/ApachePhp
     if [ -f source/php.linux-x64/php.ini-production ]; then
@@ -97,51 +112,66 @@ _build_ApachePhp_linux_x64() {
     fi
     cd $WD
 
-    # Copy in the dependency libraries
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libssl.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypt* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcom_err.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libkeyutils.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libexpat.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libgssapi_krb5.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libkrb5.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libk5crypto.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libpq.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libpng12.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libjpeg.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libfreetype.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libz.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library"
-  
+    # Copy in the dependency libraries (apache)
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libpq.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library(libpq)"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/liblber*.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library(liblber*)"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libldap*.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library(libldap*)"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libsasl2.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library(libsasl2)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libpng12.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library(libpng12)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libjpeg.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library(libjpeg)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libfreetype.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library(libfreetype)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libz.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library(libz)"
+
     # Add LD_PRELOAD in envvars scripts
-    echo "CWD=\`pwd\`" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "cd @@INSTALL_DIR@@/php/lib" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "files=\`ls *.so*\`" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "cd \$CWD" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "for f in \$files " >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "do" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "    BROKEN=\`file @@INSTALL_DIR@@/php/lib/\$f | grep broken\`" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "    if [ \"x\$BROKEN\" = \"x\" ] ; then " >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "        LD_PRELOAD=@@INSTALL_DIR@@/php/lib/\$f:\$LD_PRELOAD" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "    fi" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "done" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "cd @@INSTALL_DIR@@/apache/lib" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "files=\`ls *.so*\`" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "cd \$CWD" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "for f in \$files " >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "do" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "    BROKEN=\`file @@INSTALL_DIR@@/apache/lib/\$f | grep broken\`" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "    if [ \"x\$BROKEN\" = \"x\" ] ; then " >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "        LD_PRELOAD=@@INSTALL_DIR@@/apache/lib/\$f:\$LD_PRELOAD" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "    fi" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "done" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo "export LD_PRELOAD" >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-    echo " " >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    cd $WD/ApachePhp/staging/linux-x64/apache/bin
+    echo "CWD=\`pwd\`" >> envvars
+    echo "cd @@INSTALL_DIR@@/php/lib" >> envvars
+    echo "files=\`ls *.so*\`" >> envvars
+    echo "cd \$CWD" >> envvars
+    echo "for f in \$files " >> envvars
+    echo "do" >> envvars
+    echo "    BROKEN=\`file @@INSTALL_DIR@@/php/lib/\$f | grep broken\`" >> envvars
+    echo "    if [ \"x\$BROKEN\" = \"x\" ] ; then " >> envvars
+    echo "        LD_PRELOAD=@@INSTALL_DIR@@/php/lib/\$f:\$LD_PRELOAD" >> envvars
+    echo "    fi" >> envvars
+    echo "done" >> envvars
+    echo "cd @@INSTALL_DIR@@/apache/lib" >> envvars
+    echo "files=\`ls *.so*\`" >> envvars
+    echo "cd \$CWD" >> envvars
+    echo "for f in \$files " >> envvars
+    echo "do" >> envvars
+    echo "    BROKEN=\`file @@INSTALL_DIR@@/apache/lib/\$f | grep broken\`" >> envvars
+    echo "    if [ \"x\$BROKEN\" = \"x\" ] ; then " >> envvars
+    echo "        LD_PRELOAD=@@INSTALL_DIR@@/apache/lib/\$f:\$LD_PRELOAD" >> envvars
+    echo "    fi" >> envvars
+    echo "done" >> envvars
+    echo "export LD_PRELOAD" >> envvars
+    echo " " >> envvars
     ssh $PG_SSH_LINUX_X64 "chmod ugo+x \"$PG_STAGING/apache/bin/envvars\""
 
+    # Configure the php script files
+    cd $WD/ApachePhp/staging/linux-x64/php
+    _replace "--with-pgsql=$PG_PGHOME_LINUX_X64" "--with-pgsql" bin/php-config
+    _replace "--with-pdo-pgsql=$PG_PGHOME_LINUX_X64" "--with-pdo-pgsql" bin/php-config
+    _replace "--with-openssl=/usr/local/openssl" "--with-openssl" bin/php-config
+    _replace " -L/usr/local/openssl/lib" "" bin/php-config
+    _replace " -L$PG_PGHOME_LINUX_X64/lib" "" bin/php-config
+    _replace "--with-pgsql=$PG_PGHOME_LINUX_X64" "--with-pgsql" include/php/main/build-defs.h
+    _replace "--with-pdo-pgsql=$PG_PGHOME_LINUX_X64" "--with-pdo-pgsql" include/php/main/build-defs.h
+    _replace "--with-openssl=/usr/local/openssl" "--with-openssl" include/php/main/build-defs.h
+    _replace "$PG_STAGING/php" "@@INSTALL_DIR@@/php" bin/phar.phar
+    ssh $PG_SSH_LINUX_X64 "chmod a+rx \"$PG_STAGING/php/bin/php-config\""
+    ssh $PG_SSH_LINUX_X64 "chmod a+rx \"$PG_STAGING/php/bin/phar.phar\""
+
+    # Change the rpath for php
+    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/php/bin; chrpath --replace \\\${ORIGIN}/../lib:\\\${ORIGIN}/../../apache/lib php"
+
+    # Change the rpath for php
+    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/apache; chrpath --replace \\\${ORIGIN}/../lib:\\\${ORIGIN}/../../php/lib modules/libphp5.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/apache; FILES=\`file \\\`find . -maxdepth 2 -mindepth 2\\\` | grep ELF | cut -d: -f1\`; for F in \$FILES; do RPATH=\`chrpath \$F | grep RPATH | grep -v ORIGIN\`; if [[ x\${RPATH} != x ]]; then chrpath --replace \\\${ORIGIN}/../lib \$F; fi done"
+
     cd $WD
-    
+
 }
 
 
@@ -153,7 +183,7 @@ _build_ApachePhp_linux_x64() {
 _postprocess_ApachePhp_linux_x64() {
 
     PG_STAGING=$PG_PATH_LINUX_X64/ApachePhp/staging/linux-x64
-    
+
     #Configure the files in apache and php
     filelist=`grep -rslI "$PG_STAGING" "$WD/ApachePhp/staging/linux-x64" | grep -v Binary`
 
@@ -163,11 +193,11 @@ _postprocess_ApachePhp_linux_x64() {
     do
     _replace "$PG_STAGING" @@INSTALL_DIR@@ "$file"
     chmod ugo+x "$file"
-    done  
+    done
 
     cd $WD/ApachePhp
 
-    # Setup the installer scripts. 
+    # Setup the installer scripts.
 
     #Changing the ServerRoot from htdocs to www in apache
     cp -R staging/linux-x64/apache/htdocs staging/linux-x64/apache/www || _die "Failed to change Server Root"
@@ -187,8 +217,8 @@ _postprocess_ApachePhp_linux_x64() {
     chmod ugo+x staging/linux-x64/installer/ApachePhp/configureApachePhp.sh
 
     cp scripts/linux/startupcfg.sh staging/linux-x64/installer/ApachePhp/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/linux/startupcfg.sh)"
-    chmod ugo+x staging/linux-x64/installer/ApachePhp/startupcfg.sh    
-   
+    chmod ugo+x staging/linux-x64/installer/ApachePhp/startupcfg.sh
+
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the launch scripts"
     # Copy the launch scripts
     cp scripts/linux/launchApachePhp.sh staging/linux-x64/scripts/launchApachePhp.sh || _die "Failed to copy the launchApachePhp script (scripts/linux/launchApachePhp.sh)"
@@ -216,12 +246,12 @@ _postprocess_ApachePhp_linux_x64() {
     cp resources/index.php staging/linux-x64/apache/www || _die "Failed to copy index.php"
     chmod ugo+x staging/linux-x64/apache/www/index.php
 
-    _replace PG_VERSION_APACHE $PG_VERSION_APACHE "staging/linux-x64/apache/www/index.php" 
-    _replace PG_VERSION_PHP $PG_VERSION_PHP "staging/linux-x64/apache/www/index.php" 
+    _replace PG_VERSION_APACHE $PG_VERSION_APACHE "staging/linux-x64/apache/www/index.php"
+    _replace PG_VERSION_PHP $PG_VERSION_PHP "staging/linux-x64/apache/www/index.php"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
-    
+
     cd $WD
 }
 
