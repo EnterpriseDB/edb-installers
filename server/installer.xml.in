@@ -3806,6 +3806,20 @@ REM The script sets environment variables helpful for PostgreSQL
             </ruleList>
         </registrySet>
 
+        <!-- Associate Windows File Extension -->
+        <associateWindowsFileExtension>
+           <extensions>.sql</extensions>
+           <progID>Applications\pgAdmin3.exe</progID>
+           <mimeType>text/plain</mimeType>
+           <commandList>
+              <command>
+                  <verb>open</verb>
+                  <runProgram>${installdir}\bin\pgAdmin3.exe</runProgram>
+                  <runProgramArguments>-q -f "%1"</runProgramArguments>
+             </command>
+           </commandList>
+        </associateWindowsFileExtension>
+
     </postInstallationActionList>
 
     <!-- Final page actions -->
