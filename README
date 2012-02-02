@@ -226,6 +226,21 @@ Copy the resulting id_rsa.pub file to ~/.ssh/authorized_keys on each VM.
 - Install chrpath utility in order to change the rpath of the installed PostgreSQL binaries in the staging directory.
   Use the following command to install the chrpath:
   * yum install chrpath
+- Download latest libxml2, libxslt, openssl, libcurl, ldap
+- Build them and install at /usr/local directory
+  * Few packages are installed in private directories.
+    i.e.
+    + openssl - /usr/local/openssl
+    + libcurl - /usr/local/curl
+    + ldap    - /usr/local/ldap-2.4.23
+- On linux-x64, PHP require <PACKAGE_PATH>/lib64 directory, while building
+  because we specified '--with-libdir=lib64', it is not present create a
+  symlink to the lib directory.
+  i.e.
+  ln -s /usr/local/lib /usr/local/lib64
+  ln -s /usr/local/openssl/lib /usr/local/openssl/lib64
+  ln -s /usr/local/curl/lib /usr/local/curl/lib64
+  ln -s /usr/local/ldap-2.4.23/lib /usr/local/ldap-2.4.23/lib64
 
 * Windows
 
