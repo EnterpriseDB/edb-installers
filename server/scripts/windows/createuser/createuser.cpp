@@ -438,7 +438,7 @@ int main(int argc, TCHAR * argv[])
 	sprintf_s(password, sizeof(password), "%s", argv[3]);
 
 	// Check to see if the user account exists
-	if (!CheckUserExists(servername, username))
+	if (!CheckUserExists(domain, username))
 	{
 		NET_API_STATUS status;
 		status = CreateUser(servername, username, password, errmsg, sizeof(errmsg)/sizeof(TCHAR) - 1);
