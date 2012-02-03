@@ -57,10 +57,9 @@ _build_pgAgent_osx() {
 
     echo "Building pgAgent sources"
     cd $SOURCE_DIR
-    WXWIN=/usr/local PGDIR=$PG_PGHOME_OSX cmake -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.5 -DCMAKE_INSTALL_PREFIX=$PG_STAGING CMakeLists.txt || _die "Couldn't configure the pgAgent sources"
+    WXWIN=/usr/local PGDIR=$PG_PGHOME_OSX LDFLAGS=' -lldap ' cmake -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.5 -DCMAKE_INSTALL_PREFIX=$PG_STAGING CMakeLists.txt || _die "Couldn't configure the pgAgent sources"
     echo "Compiling pgAgent"
-    cd $SOURCE_DIR
-    make || _die "Couldn't compile the pgAgent sources"
+    LDFLAGS=' -lldap ' make || _die "Couldn't compile the pgAgent sources"
     make install || _die "Couldn't install pgAgent"
 
     mkdir -p $PG_STAGING/lib
