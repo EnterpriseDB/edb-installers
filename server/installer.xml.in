@@ -1680,29 +1680,17 @@
                     <folder>programfileswindows</folder>
                     <origin>bin/pg_controldata.exe</origin>
                 </unpackFile>
-                <setInstallerVariable name="libintl_dll" value="libintl-8.dll"/>
-                <setInstallerVariable name="libintl_dll" value="libintl.dll">
-                    <ruleList>
-                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
-                    </ruleList>
-                </setInstallerVariable>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\${libintl_dll}</destination>
+                    <destination>${system_temp_directory}\postgresql_installer\libintl-8.dll</destination>
                     <folder>programfileswindows</folder>
-                    <origin>bin/${libintl_dll}</origin>
+                    <origin>bin/libintl-8.dll</origin>
                 </unpackFile>
-                <setInstallerVariable name="libiconv_dll" value="libiconv-2.dll"/>
-                <setInstallerVariable name="libiconv_dll" value="libiconv.dll">
-                    <ruleList>
-                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
-                    </ruleList>
-                </setInstallerVariable>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\${libiconv_dll}</destination>
+                    <destination>${system_temp_directory}\postgresql_installer\libiconv-2.dll</destination>
                     <folder>programfileswindows</folder>
-                    <origin>bin/${libiconv_dll}</origin>
+                    <origin>bin/libiconv-2.dll</origin>
                 </unpackFile>
                 <!-- Validate user binary -->
                 <unpackFile>
