@@ -1,6 +1,5 @@
 #!/bin/bash
 
-    
 ################################################################################
 # Build preparation
 ################################################################################
@@ -161,19 +160,19 @@ _build_server_linux_x64() {
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/;export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH; PYTHON=/opt/ActivePython-3.2/bin/python3.2 TCLSH=/opt/ActiveTcl-8.5/bin/tclsh TCL_CONFIG_SH=/opt/ActiveTcl-8.5/lib/tclConfig.sh PERL=/opt/ActivePerl-5.14/bin/perl ./configure --with-libs=/usr/local/lib --with-includes=/usr/local/include --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX_X64/lib --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/;export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH; PYTHON=/opt/ActivePython-3.2/bin/python3.2 TCLSH=/opt/ActiveTcl-8.5/bin/tclsh TCL_CONFIG_SH=/opt/ActiveTcl-8.5/lib/tclConfig.sh PERL=/opt/ActivePerl-5.14/bin/perl ./configure --with-libs=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib --with-includes=/usr/local/openssl/include:/usr/local/ldap-2.4.23/include:/usr/local/include --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX_X64/lib --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64; export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH; make -j4" || _die "Failed to build postgres" 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64; export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH; make install" || _die "Failed to install postgres"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib; make -j4" || _die "Failed to build postgres" 
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib; make install" || _die "Failed to install postgres"
 
     echo "Building contrib modules"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib; make" || _die "Failed to build the postgres contrib modules"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib; make install" || _die "Failed to install the postgres contrib modules"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib; make" || _die "Failed to build the postgres contrib modules"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib; LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib make install" || _die "Failed to install the postgres contrib modules"
 
     echo "Building debugger module"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/pldebugger; make" || _die "Failed to build the debugger module"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/pldebugger; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib; make" || _die "Failed to build the debugger module"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/pldebugger; LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib make install" || _die "Failed to install the debugger module"
 	if [ ! -e $WD/server/staging/linux-x64/doc ];
 	then
 	    mkdir -p $WD/server/staging/linux-x64/doc || _die "Failed to create the doc directory"
@@ -181,7 +180,7 @@ _build_server_linux_x64() {
     cp "$WD/server/source/postgres.linux-x64/contrib/pldebugger/README.pldebugger" $WD/server/staging/linux-x64/doc || _die "Failed to copy the debugger README into the staging directory"
 
     echo "Building uuid-ossp module"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/uuid-ossp; make" || _die "Failed to build the uuid-ossp module"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/uuid-ossp; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib; make" || _die "Failed to build the uuid-ossp module"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
 
     # Install the PostgreSQL docs
@@ -197,8 +196,8 @@ _build_server_linux_x64() {
     cp -R $WD/server/source/postgres.linux-x64/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
 
     # Copy in the dependency libraries
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/openssl/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/openssl/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libtermcap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libncurses.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
@@ -208,13 +207,10 @@ _build_server_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libpng12.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libjpeg.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libsasl2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libsasl2)"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libldap_r-2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libldap_r-2.3)"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libldap-2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libldap-2.3)"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libldap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libldap)"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libldap_r.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libldap_r)"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/liblber-2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (liblber-2.3)"
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/liblber.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (liblber-2.3)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/ldap-2.4.23/lib/liblber-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(lber)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/ldap-2.4.23/lib/libldap-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/ldap-2.4.23/lib/libldap_r-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap_r)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/cyrus-sasl/lib/libsasl2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(libsasl2)"
 
     # Process Dependent libs
     _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl.so"  
@@ -223,10 +219,10 @@ _build_server_linux_x64() {
     _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libtermcap.so"  
     _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libxml2.so"  
     _process_dependent_libs_linux_x64 "$PG_STAGING/lib/postgresql" "$PG_STAGING/lib" "libxslt.so"  
-    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libsasl2.so"
-    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap-2.3.so"
-    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap_r-2.3.so"
-    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "liblber-2.3.so"
+    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "liblber-2.4"
+    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap-2.4"
+    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap_r-2.4"
+    _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libsasl2"
 
     # Hack for bypassing dependency on the deprecated libtermcap
     # As libnucurses is API compatible with the termcap so we copy libtermcap and then just
@@ -268,16 +264,14 @@ PG_BIN_PATH=\`dirname "\$0"\`
 
 if [ -z "\$PLL" ];
 then
-	LD_LIBRARY_PATH=\$PG_BIN_PATH/../lib:\$LD_LIBRARY_PATH "\$PG_BIN_PATH/psql.bin" "\$@"
+	LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\$PG_BIN_PATH/../lib "\$PG_BIN_PATH/psql.bin" "\$@"
 else
-	LD_PRELOAD=\$PLL LD_LIBRARY_PATH=\$PG_BIN_PATH/../lib:\$LD_LIBRARY_PATH "\$PG_BIN_PATH/psql.bin" "\$@"
+	LD_PRELOAD=\$PLL LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\$PG_BIN_PATH/../lib "\$PG_BIN_PATH/psql.bin" "\$@"
 fi
 
 EOT
-    chmod +x psql || _die "Failed to grant execute permission to psql script"
+    chmod a+x psql || _die "Failed to grant execute permission to psql script"
 
-
-	
     # Now build pgAdmin
 
     # Bootstrap
@@ -498,7 +492,6 @@ y a menu pick image"
     _replace @@WIN64MODE@@ "0" installer-lin64.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
     _replace @@SERVICE_SUFFIX@@ "" installer-lin64.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
 
-		
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-lin64.xml linux-x64 || _die "Failed to build the installer"
 

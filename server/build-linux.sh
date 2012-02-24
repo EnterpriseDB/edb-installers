@@ -160,18 +160,18 @@ _build_server_linux() {
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/; export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH; PYTHON=/opt/ActivePython-3.2/bin/python3.2 TCLSH=/opt/ActiveTcl-8.5/bin/tclsh TCL_CONFIG_SH=/opt/ActiveTcl-8.5/lib/tclConfig.sh PERL=/opt/ActivePerl-5.14/bin/perl ./configure --with-libs=/usr/local/lib --with-includes=/usr/local/include --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX/lib --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/; PYTHON=/opt/ActivePython-3.2/bin/python3.2 TCLSH=/opt/ActiveTcl-8.5/bin/tclsh TCL_CONFIG_SH=/opt/ActiveTcl-8.5/lib/tclConfig.sh PERL=/opt/ActivePerl-5.14/bin/perl ./configure --with-libs=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib --with-includes=/usr/local/openssl/include:/usr/local/ldap-2.4.23/include:/usr/local/include --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX/lib --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH; make -j4" || _die "Failed to build postgres" 
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH; make install" || _die "Failed to install postgres"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib:\$LD_LIBRARY_PATH; make -j4" || _die "Failed to build postgres" 
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; make install" || _die "Failed to install postgres"
 
     echo "Building contrib modules"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib; make -j4" || _die "Failed to build the postgres contrib modules"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib:\$LD_LIBRARY_PATH; make -j4" || _die "Failed to build the postgres contrib modules"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib; make install" || _die "Failed to install the postgres contrib modules"
 
     echo "Building debugger module"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/pldebugger; make" || _die "Failed to build the debugger module"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/pldebugger; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib:\$LD_LIBRARY_PATH; make" || _die "Failed to build the debugger module"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
 	if [ ! -e $WD/server/staging/linux/doc ];
 	then
@@ -180,7 +180,7 @@ _build_server_linux() {
     cp "$WD/server/source/postgres.linux/contrib/pldebugger/README.pldebugger" $WD/server/staging/linux/doc || _die "Failed to copy the debugger README into the staging directory"
 
     echo "Building uuid-ossp module"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/uuid-ossp; make" || _die "Failed to build the uuid-ossp module"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/uuid-ossp; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib:\$LD_LIBRARY_PATH; make" || _die "Failed to build the uuid-ossp module"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
  
     # Install the PostgreSQL docs
@@ -191,13 +191,13 @@ _build_server_linux() {
     # Install the PostgreSQL man pages
     mkdir -p $WD/server/staging/linux/share/man || _die "Failed to create the man directory"
     cd $WD/server/staging/linux/share/man || _die "Failed to change to the man directory"
-    cp -R $WD/server/source/postgres.linux/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
-    cp -R $WD/server/source/postgres.linux/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
-    cp -R $WD/server/source/postgres.linux/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
+    cp -R $WD/server/source/postgres.linux/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (linux)"
+    cp -R $WD/server/source/postgres.linux/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (linux)"
+    cp -R $WD/server/source/postgres.linux/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (linux)"
 
     # Copy in the dependency libraries
-    ssh $PG_SSH_LINUX "cp -R /lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/openssl/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/openssl/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libtermcap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libncurses.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
@@ -207,9 +207,10 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libpng12.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libjpeg.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /usr/lib/libsasl2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libsasl2)"
-    ssh $PG_SSH_LINUX "cp -R /usr/lib/libldap-2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libldap-2.3)"
-    ssh $PG_SSH_LINUX "cp -R /usr/lib/libldap_r-2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libldap_r-2.3)"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/ldap-2.4.23/lib/liblber-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(lber)"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/ldap-2.4.23/lib/libldap-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap)"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/ldap-2.4.23/lib/libldap_r-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap_r)"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/cyrus-sasl/lib/libsasl2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(libsasl2)"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/liblber-2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (liblber-2.3)"
 
     # Process Dependent libs
@@ -219,10 +220,10 @@ _build_server_linux() {
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libtermcap.so"  
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libxml2.so"  
     _process_dependent_libs_linux "$PG_STAGING/lib/postgresql" "$PG_STAGING/lib" "libxslt.so"  
-    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libsasl2.so"
-    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap-2.3.so"
-    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap_r-2.3.so"
-    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "liblber-2.3.so"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "liblber-2.4"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap-2.4"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap_r-2.4"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libsasl2"
 
     # Hack for bypassing dependency on the deprecated libtermcap
     # As libnucurses is API compatible with the termcap so we copy libtermcap and then just
@@ -257,9 +258,9 @@ PG_BIN_PATH=\`dirname "\$0"\`
 
 if [ -z "\$PLL" ];
 then
-	LD_LIBRARY_PATH=\$PG_BIN_PATH/../lib:\$LD_LIBRARY_PATH "\$PG_BIN_PATH/psql.bin" "\$@"
+	LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\$PG_BIN_PATH/../lib  "\$PG_BIN_PATH/psql.bin" "\$@"
 else
-	LD_PRELOAD=\$PLL LD_LIBRARY_PATH=\$PG_BIN_PATH/../lib:\$LD_LIBRARY_PATH "\$PG_BIN_PATH/psql.bin" "\$@"
+	LD_PRELOAD=\$PLL LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\$PG_BIN_PATH/../lib "\$PG_BIN_PATH/psql.bin" "\$@"
 fi
 
 EOT
@@ -273,11 +274,11 @@ EOT
 
     # Configure
     echo "Configuring the pgAdmin source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; sh ./configure --prefix=$PG_STAGING/pgAdmin3 --with-pgsql=$PG_PATH_LINUX/server/staging/linux --with-wx=/usr/local --with-libxml2=/usr/local --with-libxslt=/usr/local --disable-debug --disable-static" || _die "Failed to configure pgAdmin"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; sh ./configure --prefix=$PG_STAGING/pgAdmin3 --with-pgsql=$PG_PATH_LINUX/server/staging/linux --with-wx=/usr/local --with-libxml2=/usr/local --with-libxslt=/usr/local --disable-debug --disable-static LD_LIBRARY_PATH=$PG_PATH_LINUX/server/staging/linux/lib" || _die "Failed to configure pgAdmin"
 
     # Build the app
     echo "Building & installing pgAdmin"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; make all" || _die "Failed to build pgAdmin"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; make all LD_LIBRARY_PATH=$PG_PATH_LINUX/server/staging/linux/lib" || _die "Failed to build pgAdmin"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; make install" || _die "Failed to install pgAdmin"
 
     # Copy in the various libraries
@@ -307,7 +308,7 @@ EOT
     ssh $PG_SSH_LINUX "cd $PG_STAGING/pgAdmin3/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
 
     #Fix permission in the staging/linux/pgAdmin3/lib
-    ssh $PG_SSH_LINUX "cd $PG_STAGING/pgAdmin3/lib; chmod a+r *"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/pgAdmin3/lib; chmod a+rx *"
 	
     # Copy the Postgres utilities
     ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/server/staging/linux/bin/pg_dump $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
