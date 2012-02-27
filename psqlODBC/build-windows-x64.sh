@@ -110,8 +110,7 @@ EOT
     scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output/lib/libpq.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/OpenSSL/bin/ssleay32.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/OpenSSL/bin/libeay32.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
-    ssh $PG_SSH_WINDOWS_X64 "cp /cygdrive/c/pgBuild/libiconv/bin/libiconv.dll $PG_PATH_WINDOWS_X64/output/bin/."
-    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/libiconv/bin/libiconv.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dll (libiconv-2.dll)"
+    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/libiconv/bin/libiconv-2.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dll (libiconv-2.dll)"
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/gettext/bin/libintl-8.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dll (libintl-8.dll)"
 
 }
