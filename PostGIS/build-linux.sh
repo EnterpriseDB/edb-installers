@@ -1,12 +1,12 @@
 #!/bin/bash
 
-    
+
 ################################################################################
 # Build preparation
 ################################################################################
 
 _prep_PostGIS_linux() {
-      
+
     # Enter the source directory and cleanup if required
     cd $WD/PostGIS/source
 
@@ -75,7 +75,7 @@ _prep_PostGIS_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PGHOME_LINUX; rm -f share/man/man1/pgsql2shp.1 share/man/man1/shp2pgsql.1" || _die "Failed to remove man pages"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; rm -f build-postgis-linux.sh" || _die "Failed to remove build-postgis-linux.sh script"
 
-         
+
 }
 
 
@@ -85,7 +85,7 @@ _prep_PostGIS_linux() {
 
 _build_PostGIS_linux() {
 
-    # build postgis    
+    # build postgis
 
     PLATFORM=linux
     PLATFORM_SSH=$PG_SSH_LINUX
@@ -158,7 +158,7 @@ fi
 
 cd $POSTGIS_SOURCE_REMOTE
 export PATH=$PROJ_CACHHE_REMOTE/bin:$GEOS_CACHE_REMOTE/bin:\$PATH
-export LD_LIBRARY_PATH=$PROJ_CACHHE_REMOTE/lib:$GEOS_CACHE_REMOTE/lib:\$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$POSTGRES_REMOTE_PATH/lib:$PROJ_CACHHE_REMOTE/lib:$GEOS_CACHE_REMOTE/lib:\$LD_LIBRARY_PATH
 export LDFLAGS=-Wl,--rpath,'\\\$ORIGIN/../lib'
 
 echo "Configuring the postgis source tree"
@@ -179,7 +179,7 @@ cd $POSTGIS_SOURCE_REMOTE/java/jdbc
 CLASSPATH=$PACKAGE_SOURCE_REMOTE/postgresql-$PG_VERSION_PGJDBC.jdbc3.jar:\$CLASSPATH JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX/bin/ant
 
 mkdir -p $POSTGIS_STAGING_REMOTE/PostGIS/java/jdbc
- 
+
 echo "Copying postgis-jdbc"
 cd $POSTGIS_SOURCE_REMOTE/java
 cp jdbc/postgis*.jar $POSTGIS_STAGING_REMOTE/PostGIS/java/jdbc/ || _die "Failed to copy postgis jars into postgis-jdbc"
@@ -240,7 +240,7 @@ EOT
 
     cd $WD/PostGIS
 
-} 
+}
 
 
 ################################################################################
@@ -256,13 +256,13 @@ _postprocess_PostGIS_linux() {
     chmod ugo+x staging/linux/installer/PostGIS/createshortcuts.sh
 
     cp scripts/linux/removeshortcuts.sh staging/linux/installer/PostGIS/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
-    chmod ugo+x staging/linux/installer/PostGIS/removeshortcuts.sh    
+    chmod ugo+x staging/linux/installer/PostGIS/removeshortcuts.sh
 
     mkdir -p staging/linux/scripts || _die "Failed to create a directory for the launch scripts"
     cp -R scripts/linux/launchbrowser.sh staging/linux/scripts/launchbrowser.sh || _die "Failed to copy the launch scripts (scripts/linux)"
-	chmod ugo+x staging/linux/scripts/launchbrowser.sh
+    chmod ugo+x staging/linux/scripts/launchbrowser.sh
     cp -R scripts/linux/launchPostGISDocs.sh staging/linux/scripts/launchPostGISDocs.sh || _die "Failed to copy the launch scripts (scripts/linux)"
-	chmod ugo+x staging/linux/scripts/launchPostGISDocs.sh
+    chmod ugo+x staging/linux/scripts/launchPostGISDocs.sh
     cp -R scripts/linux/launchJDBCDocs.sh staging/linux/scripts/launchJDBCDocs.sh || _die "Failed to copy the launch scripts (scripts/linux)"
     chmod ugo+x staging/linux/scripts/launchJDBCDocs.sh
 
@@ -287,7 +287,7 @@ _postprocess_PostGIS_linux() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
-    
+
     cd $WD
 }
 

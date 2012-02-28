@@ -1,6 +1,6 @@
 #!/bin/bash
 
-    
+
 ################################################################################
 # Build preparation
 ################################################################################
@@ -15,7 +15,7 @@ _prep_psqlODBC_linux() {
       echo "Removing existing psqlODBC.linux source directory"
       rm -rf psqlODBC.linux  || _die "Couldn't remove the existing psqlODBC.linux source directory (source/psqlODBC.linux)"
     fi
-   
+
     echo "Creating source directory ($WD/psqlODBC/source/psqlODBC.linux)"
     mkdir -p $WD/psqlODBC/source/psqlODBC.linux || _die "Couldn't create the psqlODBC.linux directory"
 
@@ -34,7 +34,7 @@ _prep_psqlODBC_linux() {
     echo "Creating staging directory ($WD/psqlODBC/staging/linux)"
     mkdir -p $WD/psqlODBC/staging/linux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/psqlODBC/staging/linux || _die "Couldn't set the permissions on the staging directory"
-    
+
 }
 
 _process_dependent_libs() {
@@ -53,10 +53,10 @@ _process_dependent_libs() {
        echo ""
        exit 1
    }
- 
+
 
    # Create a temporary directory
-   mkdir /tmp/templibs  
+   mkdir /tmp/templibs
 
    export LD_LIBRARY_PATH=$lib_dir
 
@@ -77,34 +77,34 @@ _process_dependent_libs() {
        for lib in \$liblist
        do
            if [ "\$deplib" = "\$lib" ]
-           then 
+           then
                 if [ -L \$lib ]
                 then
                     # Resolve the symlink
-                    ref_lib=\`stat -c %N \$lib | cut -f2 -d ">"  | cut -f1 -d "'" | sed -e 's:\\\`::g'\` 
+                    ref_lib=\`stat -c %N \$lib | cut -f2 -d ">"  | cut -f1 -d "'" | sed -e 's:\\\`::g'\`
                     # Remove the symlink
                     rm -f \$lib   || _die "Failed to remove the symlink"
                     # Copy the original lib to the name of the symlink in a temp directory.
                     cp \$ref_lib /tmp/templibs/\$lib  || _die "Failed to copy the original \$lib"
                 else
                     # Copy the original lib in a temp directory.
-                    cp \$lib /tmp/templibs/\$lib || _die "Failed to copy the original \$lib" 
-                fi     
+                    cp \$lib /tmp/templibs/\$lib || _die "Failed to copy the original \$lib"
+                fi
            fi
         done
     done
 
     # Remove all the remaining \$libname versions (that are not symlinks) in the lib directory
     for lib in \$liblist
-    do 
+    do
          rm -f \$lib || _die "Failed to remove the library"
-    done            
+    done
 
     # Copy libs from the tmp/templibs directory
     cp /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
 
-    # Remove the temporary directory 
-    rm -rf /tmp/templibs  
+    # Remove the temporary directory
+    rm -rf /tmp/templibs
 
 EOT
 
@@ -134,31 +134,30 @@ _build_psqlODBC_linux() {
     echo "Compiling psqlODBC"
     ssh $PG_SSH_LINUX "cd $SOURCE_DIR; make" || _die "Couldn't compile the psqlODBC sources"
     echo "Installing psqlODBC into the sources"
-    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; make install" || _die "Couldn't install the psqlODBC into statging directory" 
+    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; make install" || _die "Couldn't install the psqlODBC into statging directory"
 
     # Copy in the dependency libraries
-    ssh $PG_SSH_LINUX "cp -R /lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libcom_err.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libgssapi_krb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libkrb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libk5crypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libodbcinst.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libpq.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libldap*.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/liblber*.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libpq.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libpq)"
+    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libxml2)"
+    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libxslt)"
+    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libldap*.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libldap)"
+    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/liblber*.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (liblber)"
+    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libssl)"
+    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libcrypto)"
+    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libedit)"
+    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libtermcap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libtermcap)"
 
     # Process Dependent libs
-    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libssl.so"  
-    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libcrypto.so"  
-    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libcom_err.so"  
-    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libgssapi_krb5.so"  
-    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libkrb5.so"  
-    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libk5crypto.so"  
+    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libcom_err.so"
+    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libgssapi_krb5.so"
+    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libkrb5.so"
+    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libk5crypto.so"
 
-    
 }
 
 
@@ -174,7 +173,7 @@ _postprocess_psqlODBC_linux() {
     mkdir -p staging/linux/installer/psqlODBC || _die "Failed to create a directory for the install scripts"
     cp scripts/linux/removeshortcuts.sh staging/linux/installer/psqlODBC/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux/installer/psqlODBC/removeshortcuts.sh
-    
+
     cp scripts/linux/createshortcuts.sh staging/linux/installer/psqlODBC/createshortcuts.sh || _die "Failed to copy the createshortcuts.sh script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux/installer/psqlODBC/createshortcuts.sh
 

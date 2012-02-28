@@ -51,10 +51,10 @@ _build_Slony_linux_x64() {
     PG_STAGING=$PG_PATH_LINUX_X64/Slony/staging/linux-x64
 
     echo "Configuring the slony source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/Slony/source/slony.linux-x64/; ./configure --with-pgconfigdir=$PG_PGHOME_LINUX_X64/bin"  || _die "Failed to configure slony"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/Slony/source/slony.linux-x64/; ./configure --with-pgconfigdir=$PG_PGHOME_LINUX_X64/bin LD_LIBRARY_PATH=$PG_PGHOME_LINUX_X64/lib"  || _die "Failed to configure slony"
 
     echo "Building slony"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/Slony/source/slony.linux-x64; make" || _die "Failed to build slony"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/Slony/source/slony.linux-x64; LD_LIBRARY_PATH=$PG_PGHOME_LINUX_X64/lib make" || _die "Failed to build slony"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/Slony/source/slony.linux-x64; make install" || _die "Failed to install slony"
 
     echo "Changing the rpath for the slonik binaries and libraries"

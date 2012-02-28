@@ -1,6 +1,6 @@
 #!/bin/bash
 
-    
+
 ################################################################################
 # Build preparation
 ################################################################################
@@ -20,7 +20,7 @@ _prep_ReplicationServer_linux() {
       echo "Removing existing DataValidator.linux source directory"
       rm -rf DataValidator.linux  || _die "Couldn't remove the existing DataValidator.linux source directory (source/DataValidator.linux)"
     fi
-   
+
     echo "Creating staging directory ($WD/ReplicationServer/source/ReplicationServer.linux)"
     mkdir -p $WD/ReplicationServer/source/ReplicationServer.linux || _die "Couldn't create the ReplicationServer.linux directory"
     echo "Creating staging directory ($WD/ReplicationServer/source/DataValidator.linux)"
@@ -36,7 +36,7 @@ _prep_ReplicationServer_linux() {
 
     #Copy the required jdbc drivers
     cp $WD/tarballs/edb-jdbc14.jar $WD/ReplicationServer/source/ReplicationServer.linux/lib || _die "Failed to copy the edb-jdbc-14.jar"
-    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/source/ReplicationServer.linux/lib || _die "Failed to copy pg jdbc drivers" 
+    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/source/ReplicationServer.linux/lib || _die "Failed to copy pg jdbc drivers"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/ReplicationServer/staging/linux ];
@@ -48,7 +48,7 @@ _prep_ReplicationServer_linux() {
     echo "Creating staging directory ($WD/ReplicationServer/staging/linux)"
     mkdir -p $WD/ReplicationServer/staging/linux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/ReplicationServer/staging/linux || _die "Couldn't set the permissions on the staging directory"
-    
+
 }
 
 ################################################################################
@@ -68,35 +68,41 @@ _build_ReplicationServer_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; mkdir -p ReplicationServer/staging/linux/instscripts/bin" || _die "Failed to create instscripts directory"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; mkdir -p ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to create instscripts directory"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/bin/psql* ReplicationServer/staging/linux/instscripts/bin" || _die "Failed to copy psql binary"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libpq.so* ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy libpq.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libcrypto.so* ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy libcrypto.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libssl.so* ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy libssl.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libedit.so* ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy libedit.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libtermcap.so* ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy libtermcap.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libxml2.so* ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy libxml2.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libxslt.so* ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy libxml2.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libldap*.so* ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy libxml2.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/liblber*.so* ReplicationServer/staging/linux/instscripts/lib" || _die "Failed to copy libxml2.so"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX;
+SRCDIR=server/staging/linux/lib
+DESTDIR=ReplicationServer/staging/linux/instscripts/lib
+function _cp_lib_pg_to_repl() {
+    while [[ ! -z \"\$1\" ]];
+    do
+        echo \"Copying:\$1\";
+        cp \$SRCDIR/\$1 \$DESTDIR || (echo \"Failed to copy the PostgreSQL supported library (\$1)\" > /dev/stderr && exit 1);
+        if [ \$? -eq 1 ]; then
+            exit 1;
+        fi;
+        shift;
+    done;
+};
+_cp_lib_pg_to_repl \"libpq.so*\" \"libcrypto.so*\" \"libssl.so*\" \"libedit.so*\" \"libtermcap.so*\" \"libxml2.so*\" \"libxslt.so*\" \"libldap*.so*\" \"liblber*.so*\" \"libsasl2.so*\";" || _die "Failed to copy supporting libraries"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp MigrationToolKit/staging/linux/MigrationToolKit/lib/edb-migrationtoolkit.jar ReplicationServer/staging/linux/repserver/lib/repl-mtk" || _die "Failed to copy edb-migrationtoolkit.jar"
-    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/staging/linux/repconsole/lib/jdbc/ || _die "Failed to copy pg jdbc drivers" 
+    cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/staging/linux/repconsole/lib/jdbc/ || _die "Failed to copy pg jdbc drivers"
     cd $WD
     _replace "java -jar edb-repconsole.jar" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repconsole.jar" "$WD/ReplicationServer/staging/linux/repconsole/bin/runRepConsole.sh" || _die "Failed to put the placehoder in runRepConsole.sh file"
     _replace "java -jar edb-repserver.jar pubserver 9011" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar pubserver @@PUBPORT@@" "$WD/ReplicationServer/staging/linux/repserver/bin/runPubServer.sh" || _die "Failed to put the placehoder in runPubServer.sh file"
     _replace "java -jar edb-repserver.jar subserver 9012" "@@JAVA@@ -jar @@INSTALL_DIR@@/bin/edb-repserver.jar subserver @@SUBPORT@@" "$WD/ReplicationServer/staging/linux/repserver/bin/runSubServer.sh" || _die "Failed to put the placehoder in runSubServer.sh file"
 
-    chmod +rx $WD/ReplicationServer/staging/linux/repconsole/bin/*
-    chmod +rx $WD/ReplicationServer/staging/linux/repserver/bin/*
-    chmod +r $WD/ReplicationServer/staging/linux/repconsole/lib/*
-    chmod +r $WD/ReplicationServer/staging/linux/repconsole/lib/jdbc/*
-    chmod +r $WD/ReplicationServer/staging/linux/repserver/lib/*
-    chmod +r $WD/ReplicationServer/staging/linux/repserver/lib/jdbc/*
-    chmod +r $WD/ReplicationServer/staging/linux/repserver/lib/repl-mtk/*
+    chmod a+rx $WD/ReplicationServer/staging/linux/repconsole/bin/*
+    chmod a+rx $WD/ReplicationServer/staging/linux/repserver/bin/*
+    chmod a+rx $WD/ReplicationServer/staging/linux/repconsole/lib/*
+    chmod a+r $WD/ReplicationServer/staging/linux/repconsole/lib/jdbc/*
+    chmod a+rx $WD/ReplicationServer/staging/linux/repserver/lib/*
+    chmod a+r $WD/ReplicationServer/staging/linux/repserver/lib/jdbc/*
+    chmod a+r $WD/ReplicationServer/staging/linux/repserver/lib/repl-mtk/*
 
     # Build the validateUserClient binary
     cp -R $WD/resources/validateUser $WD/ReplicationServer/source/ReplicationServer.linux/validateUser || _die "Failed to copy validateUser source files"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux/validateUser; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp ReplicationServer/source/ReplicationServer.linux/validateUser/validateUserClient.o ReplicationServer/staging/linux/instscripts/" || _die "Failed to copy validateUserClient.o"
-    chmod ugo+x $WD/ReplicationServer/staging/linux/instscripts/validateUserClient.o || _die "Failed to give execution permission to validateUserClient.o"
+    chmod ugo+rx $WD/ReplicationServer/staging/linux/instscripts/validateUserClient.o || _die "Failed to give execution permission to validateUserClient.o"
 
 }
 
@@ -106,7 +112,7 @@ _build_ReplicationServer_linux() {
 ################################################################################
 
 _postprocess_ReplicationServer_linux() {
- 
+
 
     cd $WD/ReplicationServer
 
@@ -140,7 +146,7 @@ _postprocess_ReplicationServer_linux() {
     cp resources/*.png staging/linux/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
 
     mkdir -p staging/linux/installer/xdg || _die "Failed to create a directory for the menu pick xdg files"
-    
+
     # Copy in installation xdg Files
     cp -R $WD/scripts/xdg/xdg* staging/linux/installer/xdg || _die "Failed to copy the xdg files "
 

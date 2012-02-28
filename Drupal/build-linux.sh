@@ -45,15 +45,21 @@ _build_Drupal_linux() {
     cd $WD
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; mkdir -p Drupal/staging/linux/instscripts" || _die "Failed to create instscripts directory"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/bin/psql* Drupal/staging/linux/instscripts" || _die "Failed to copy psql binary"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libpq.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libpq.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libcrypto.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libcrypto.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libssl.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libssl.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libedit.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libedit.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libtermcap.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libtermcap.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libxml2.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libxml2.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libxslt.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libxslt.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libldap*.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libxml2.so"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/liblber*.so* Drupal/staging/linux/instscripts" || _die "Failed to copy libxslt.so"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX;
+SRCDIR=server/staging/linux/lib
+DESTDIR=Drupal/staging/linux/instscripts
+function _cp_lib_pg_to_drupal() {
+    while [[ ! -z \"\$1\" ]];
+    do
+        echo \"Copying:\$1\";
+        cp \$SRCDIR/\$1 \$DESTDIR || (echo \"Failed to copy the PostgreSQL supported library (\$1)\" > /dev/stderr && exit 1);
+        if [ \$? -eq 1 ]; then
+            exit 1;
+        fi;
+        shift;
+    done;
+};
+_cp_lib_pg_to_drupal \"libpq.so*\" \"libcrypto.so*\" \"libssl.so*\" \"libedit.so*\" \"libtermcap.so*\" \"libxml2.so*\" \"libxslt.so*\" \"libldap*.so*\" \"liblber*.so*\" \"libsasl2.so*\";" || _die "Failed to copy supporting libraries"
 
 }
 
