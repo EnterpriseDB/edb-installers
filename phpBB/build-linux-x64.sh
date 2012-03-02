@@ -44,17 +44,22 @@ _build_phpBB_linux_x64() {
     
     cd $WD
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; mkdir -p phpBB/staging/linux-x64/instscripts" || _die "Failed to create instscripts directory"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/bin/psql* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy psql binary"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libpq.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libpq.so"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libcrypto.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libcrypto.so"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libssl.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libssl.so"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libedit.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libedit.so"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libtermcap.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libtermcap.so"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxml2.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libxml2.so"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxslt.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libxslt.so"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libldap*2.3.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy libldap.so"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/liblber*2.3.so* phpBB/staging/linux-x64/instscripts" || _die "Failed to copy liblber.so"
 
+    cd $WD/phpBB/staging/linux-x64/
+    cp $WD/server/staging/linux-x64/bin/psql* instscripts/ || _die "Failed to copy psql"
+    cp $WD/server/staging/linux-x64/lib/libpq* instscripts/ || _die "Failed to copy libpq"
+    cp $WD/server/staging/linux-x64/lib/libcrypto* instscripts/ || _die "Failed to copy libcrypto"
+    cp $WD/server/staging/linux-x64/lib/libssl* instscripts/ || _die "Failed to copy libssl"
+    cp $WD/server/staging/linux-x64/lib/libedit* instscripts/ || _die "Failed to copy libedit"
+    cp $WD/server/staging/linux-x64/lib/libtermcap* instscripts/ || _die "Failed to copy libtermcap"
+    cp $WD/server/staging/linux-x64/lib/libxml2* instscripts/ || _die "Failed to copy libxml2"
+    cp $WD/server/staging/linux-x64/lib/libxslt* instscripts/ || _die "Failed to copy libxslt"
+    cp $WD/server/staging/linux-x64/lib/libldap* instscripts/ || _die "Failed to copy libldap"
+    cp $WD/server/staging/linux-x64/lib/liblber* instscripts/ || _die "Failed to copy liblber"
+    cp $WD/server/staging/linux-x64/lib/libsasl2* instscripts/ || _die "Failed to copy libsasl2"
+    ssh $PG_SSH_LINUX "chmod 755 $PG_PATH_LINUX/phpBB/staging/linux-x64/instscripts/*" || _die "Failed to change permission of libraries"
+
+    cd $WD
 }
 
 ################################################################################

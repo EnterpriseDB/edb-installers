@@ -62,8 +62,9 @@ _build_mediaWiki_linux() {
     cp $WD/server/staging/linux/lib/libtermcap.so* . || _die "Failed to copy libtermcap.so"
     cp $WD/server/staging/linux/lib/libxml2.so* . || _die "Failed to copy libxml2.so"
     cp $WD/server/staging/linux/lib/libxslt.so* . || _die "Failed to copy libxslt.so"
-    cp $WD/server/staging/linux/lib/libldap*2.3.so* . || _die "Failed to copy libldap*.so"
-    cp $WD/server/staging/linux/lib/liblber*2.3.so* . || _die "Failed to copy liblber*.so"
+    cp $WD/server/staging/linux/lib/libldap*.so* . || _die "Failed to copy libldap*.so"
+    cp $WD/server/staging/linux/lib/liblber*.so* . || _die "Failed to copy liblber*.so"
+    cp $WD/server/staging/linux/lib/libsasl2.so* . || _die "Failed to copy libsasl2.so"
 
 }
 

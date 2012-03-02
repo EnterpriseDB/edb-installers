@@ -63,17 +63,23 @@ _build_pgbouncer_linux() {
     PG_LIBEVENT_MAJOR_VERSION=`echo $PG_TARBALL_LIBEVENT | cut -f1,2 '.'`  
   
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
-    ssh $PG_SSH_LINUX "chmod o+rx $PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/lib/*" || _die "Failed to change permission of libevent libs in pgbouncer lib folder"
-    ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/server/staging/linux/lib/libpq* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy libpq in instscripts"
-    ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/server/staging/linux/lib/liblber* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy liblber* in instscripts"
-    ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/server/staging/linux/lib/libldap* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy libldap* in instscripts"
-    ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/server/staging/linux/bin/psql* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy psql in instscripts"
-    ssh $PG_SSH_LINUX "cp -R /lib/libssl.so* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /lib/libcrypto.so* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /lib/libtermcap.so* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libxml2.so* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/lib/libxslt.so* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy libxslt.so"
-    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libedit.so* $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "chmod a+rx $PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/lib/*" || _die "Failed to change permission of libevent libs in pgbouncer lib folder"
+
+    cd $WD/pgbouncer/staging/linux/
+    cp $WD/server/staging/linux/bin/psql* instscripts/ || _die "Failed to copy psql"
+    cp $WD/server/staging/linux/lib/libpq* instscripts/ || _die "Failed to copy libpq"
+    cp $WD/server/staging/linux/lib/libcrypto* instscripts/ || _die "Failed to copy libcrypto"
+    cp $WD/server/staging/linux/lib/libssl* instscripts/ || _die "Failed to copy libssl"
+    cp $WD/server/staging/linux/lib/libedit* instscripts/ || _die "Failed to copy libedit"
+    cp $WD/server/staging/linux/lib/libtermcap* instscripts/ || _die "Failed to copy libtermcap"
+    cp $WD/server/staging/linux/lib/libxml2* instscripts/ || _die "Failed to copy libxml2"
+    cp $WD/server/staging/linux/lib/libxslt* instscripts/ || _die "Failed to copy libxslt"
+    cp $WD/server/staging/linux/lib/libldap* instscripts/ || _die "Failed to copy libldap"
+    cp $WD/server/staging/linux/lib/liblber* instscripts/ || _die "Failed to copy liblber"
+    cp $WD/server/staging/linux/lib/libsasl2* instscripts/ || _die "Failed to copy libsasl2"
+    ssh $PG_SSH_LINUX "chmod 755 $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/*" || _die "Failed to change permission of libraries"
+
+    cd $WD
 
 }
 

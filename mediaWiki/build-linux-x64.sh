@@ -60,8 +60,9 @@ _build_mediaWiki_linux_x64() {
     cp server/staging/linux-x64/lib/libtermcap.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libtermcap.so"
     cp server/staging/linux-x64/lib/libxml2.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libxml2.so"
     cp server/staging/linux-x64/lib/libxslt.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libxslt.so"
-    cp server/staging/linux-x64/lib/libldap*2.3.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libldap*.so"
-    cp server/staging/linux-x64/lib/liblber*2.3.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy liblber*.so"
+    cp server/staging/linux-x64/lib/libldap*.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libldap*.so"
+    cp server/staging/linux-x64/lib/liblber*.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy liblber*.so"
+    cp server/staging/linux-x64/lib/libsasl2.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libsasl2.so"
 
 }
 
