@@ -1560,7 +1560,7 @@ include conf\addons\*.conf
         <startMenuShortcut>
           <!-- Launch Apache -->
           <comment>EnterpriseDB Apache/PHP</comment>
-          <name>EnterpriseDB Apache/PHP</name>
+          <name>EnterpriseDB ApachePHP</name>
           <runInTerminal>0</runInTerminal>
           <windowsExec>wscript</windowsExec>
           <windowsExecArgs>//NoLogo "${installdir}\scripts\launchApachePhp.vbs"</windowsExecArgs>
