@@ -36,6 +36,8 @@ config.port.in.use=The specified port number is not available. Please enter a di
 
 warn.selinux=SELinux is enabled on the system, which might cause apache start/stop/restart to fail.\nPlease ensure proper access privileges to apache after installation.
 
+selinux.not.permissive=Please put SELinux in permissive mode and then run installer again. SELinux can be put in enforcing mode again after installation.
+
 apachephp.installdir.empty=The installation directory cannot be empty
 
 apachephp.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
