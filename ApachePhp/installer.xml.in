@@ -97,6 +97,20 @@
           <compareText text="${originalplatform}" value="linux-x32"/>
         </ruleList>
       </throwError>
+      <!-- Abort installation if SELinux is enabled -->
+      <throwError>
+        <customErrorMessage>${msg(selinux.not.permissive)}</customErrorMessage>
+        <text>SELinux Error</text>
+        <ruleList>
+          <compareText>
+            <logic>contains</logic>
+            <text>${platform_name}</text>
+            <value>linux</value>
+          </compareText>
+          <fileContentTest text="1" path="/selinux/enforce" logic="contains"/>
+          <isFalse value="${extract_mode}"/>
+        </ruleList>
+      </throwError>
       <!-- WIN & LIN: Set the default values for unattended mode -->
     <actionGroup>
       <actionList>
