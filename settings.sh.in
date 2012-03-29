@@ -11,6 +11,9 @@ PG_ARCH_LINUX=0
 PG_ARCH_LINUX_X64=0
 PG_ARCH_WINDOWS=1
 PG_ARCH_WINDOWS_X64=0
+PG_ARCH_LINUX_PPC64=0
+PG_ARCH_SOLARIS_X64=0
+PG_ARCH_SOLARIS_SPARC=0
 PG_ARCH_HPUX=0
 
 # Packages. Set to 1 to enable a specific packages. Note that many packages will be interdependent
@@ -53,10 +56,10 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 #            We can also specify additional directorys to include in the path.
 
 PG_SSH_LINUX=buildfarm@bf2-linux.ox.uk.enterprisedb.com
-PG_PATH_LINUX=/mnt/buildfarm/pginstaller
+PG_PATH_LINUX=/mnt/buildfarm/pginstaller.isb
 PG_PGHOME_LINUX=$PG_PATH_LINUX/server/staging/linux
-PG_EXEC_PATH_LINUX=/usr/java/jdk1.5.0_14/bin
-PG_JAVA_HOME_LINUX=/usr/java/jdk1.5.0_14
+PG_EXEC_PATH_LINUX=/usr/java/jdk1.6.0_21/bin
+PG_JAVA_HOME_LINUX=/usr/java/jdk1.6.0_21
 PG_ANT_HOME_LINUX=/usr/local/apache-ant-1.7.1
 PG_QMAKE_LINUX=qmake-qt4
 PG_PERL_LINUX=/opt/ActivePerl-5.10
@@ -64,10 +67,10 @@ PG_PYTHON_LINUX=/opt/ActivePython-2.6
 PG_TCL_LINUX=/opt/ActiveTcl-8.5
 
 PG_SSH_LINUX_X64=buildfarm@bf2-linux-x64.ox.uk.enterprisedb.com
-PG_PATH_LINUX_X64=/mnt/buildfarm/pginstaller
+PG_PATH_LINUX_X64=/mnt/buildfarm/pginstaller.isb
 PG_PGHOME_LINUX_X64=$PG_PATH_LINUX_X64/server/staging/linux-x64
-PG_EXEC_PATH_LINUX_X64=/usr/java/jdk1.5.0_14/bin
-PG_JAVA_HOME_LINUX_X64=/usr/java/jdk1.5.0_14
+PG_EXEC_PATH_LINUX_X64=/usr/java/jdk1.6.0_21/bin
+PG_JAVA_HOME_LINUX_X64=/usr/java/jdk1.6.0_21
 PG_ANT_HOME_LINUX_X64=/usr/local/apache-ant-1.7.1
 PG_QMAKE_LINUX_X64=qmake-qt4
 PG_PERL_LINUX_X64=/opt/ActivePerl-5.10
@@ -75,7 +78,7 @@ PG_PYTHON_LINUX_X64=/opt/ActivePython-2.6
 PG_TCL_LINUX_X64=/opt/ActiveTcl-8.5
 
 PG_SSH_WINDOWS=buildfarm@bf2-windows.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS=C:\\\\pginstaller-repo
+PG_PATH_WINDOWS=C:\\\\pginstaller.isb-repo
 PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 9.0"
 PG_FRAMEWORKDIR_WINDOWS="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework"
 PG_FRAMEWORKVERSION_WINDOWS=v2.0.50727
@@ -88,12 +91,12 @@ PG_ANT_WINDOWS="C:\\\\apache-ant-1.8.0"
 PG_PSDK_WINDOWS="C:\\\\Program Files\\\\Microsoft Platform SDK"
 PG_MINGW_WINDOWS=C:\\\\MinGW
 PG_MSYS_WINDOWS=C:\\\\msys\\1.0
-PG_JAVA_HOME_WINDOWS="C:\\\\Program Files\\\\Java\\\\jdk1.5.0_22"
+PG_JAVA_HOME_WINDOWS="C:\\\\Program Files\\\\Java\\\\jdk1.6.0_21"
 PG_QTPATH_WINDOWS=C:\\\\Qt\\\\2009.03
 PG_SIGNTOOL_WINDOWS="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v6.0A\\\\bin\\\\signtool.exe"
 
-PG_SSH_WINDOWS_X64=buildfarm@bf-windows-x64.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS_X64=C:\\\\pginstaller-repo
+PG_SSH_WINDOWS_X64=buildfarm@bf2-windows-x64.ox.uk.enterprisedb.com
+PG_PATH_WINDOWS_X64=E:\\\\pginstaller.isb-repo
 PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 9.0"
 PG_FRAMEWORKDIR_WINDOWS_X64="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework64"
 PG_FRAMEWORKVERSION_WINDOWS_X64=v2.0.50727
@@ -102,6 +105,24 @@ PG_DEVENVDIR_WINDOWS_X64="C:\\\\Program Files(x86)\\\\Microsoft Visual Studio 9.
 PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild"
 PG_WXWIN_WINDOWS_X64="$PG_PGBUILD_WINDOWS_X64\\\\wxWidgets"
 PG_CMAKE_WINDOWS_X64="C:\\\\pgBuild\\\\CMake2.8"
+
+PG_SSH_SOLARIS_X64=buildfarm@bf2-solaris-x64.ox.uk.enterprisedb.com
+PG_PATH_SOLARIS_X64=/export/home/buildfarm/pginstaller.isb-repo
+PG_PGHOME_SOLARIS_X64=$PG_PATH_SOLARIS_X64/server/staging/solaris-x64
+PG_EXEC_PATH_SOLARIS_X64=/usr/jdk/jdk1.6.0_21/bin/amd64
+PG_JAVA_HOME_SOLARIS_X64=/usr/jdk/jdk1.6.0_21
+PG_ANT_HOME_SOLARIS_X64=/opt/apache-ant-1.8.1
+PG_QMAKE_SOLARIS_X64=qmake
+MAKE=/export/home/buildfarm/make-3.82/inst/ ## needed for pgbouncer 1.5
+
+PG_SSH_SOLARIS_SPARC=buildfarm@suzuka.ox.uk.enterprisedb.com
+PG_PATH_SOLARIS_SPARC=/mnt/buildfarm/pginstaller.isb-repo
+PG_PGHOME_SOLARIS_SPARC=$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc
+PG_EXEC_PATH_SOLARIS_SPARC=/usr/jdk/jdk1.6.0_21/bin/sparcv9
+PG_JAVA_HOME_SOLARIS_SPARC=/usr/jdk/jdk1.6.0_21
+PG_ANT_HOME_SOLARIS_SPARC=/opt/apache-ant-1.8.1
+PG_QMAKE_SOLARIS_SPARC=qmake
+MAKE=/export/home/buildfarm/make-3.82/inst/ ## needed for pgbouncer 1.5
 
 PG_PATH_OSX=`pwd`
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging/osx
@@ -119,6 +140,6 @@ PG_ARCH_OSX_CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-
 PG_ARCH_OSX_LDFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -headerpad_max_install_names"
 
 # The InstallBuilder main binary.
-PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder for Qt Enterprise 7.2.2/bin/Builder.app/Contents/MacOS/installbuilder.sh"
+PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder for Qt Enterprise 7.2.5/bin/Builder.app/Contents/MacOS/installbuilder.sh"
 
 
