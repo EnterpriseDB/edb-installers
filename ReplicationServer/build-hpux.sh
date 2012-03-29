@@ -131,8 +131,8 @@ _build_ReplicationServer_hpux() {
 
     cd $WD
 
-    cp $WD/binaries/AS91-HPUX/instscripts/psql $WD/ReplicationServer/staging/hpux/instscripts/bin || _die "Failed to copy psql binary"
-    cp $WD/binaries/AS91-HPUX/instscripts/lib*.* $WD/ReplicationServer/staging/hpux/instscripts/lib || _die "Failed to copy libs"
+    cp $WD/binaries/AS92-HPUX/instscripts/psql $WD/ReplicationServer/staging/hpux/instscripts/bin || _die "Failed to copy psql binary"
+    cp $WD/binaries/AS92-HPUX/instscripts/lib*.* $WD/ReplicationServer/staging/hpux/instscripts/lib || _die "Failed to copy libs"
 
     chmod +rx $WD/ReplicationServer/staging/hpux
     chmod +rx $WD/ReplicationServer/staging/hpux/repserver/bin/*

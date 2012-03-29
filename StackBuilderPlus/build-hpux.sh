@@ -19,7 +19,7 @@ _prep_stackbuilderplus_hpux() {
 
     echo "Creating staging directory ($WD/StackBuilderPlus/staging/hpux)"
     mkdir -p $WD/StackBuilderPlus/staging/hpux || _die "Couldn't create the staging directory"
-    cp -R $WD/binaries/AS91-HPUX/stackbuilderplus/* $WD/StackBuilderPlus/staging/hpux
+    cp -R $WD/binaries/AS92-HPUX/stackbuilderplus/* $WD/StackBuilderPlus/staging/hpux
     chmod ugo+w $WD/StackBuilderPlus/staging/hpux || _die "Couldn't set the permissions on the staging directory"
 }
 

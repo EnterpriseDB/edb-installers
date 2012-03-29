@@ -47,8 +47,8 @@ PG_TAG_MIGRATIONTOOLKIT=''
 # PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
 #                     Minor version is revision.build.
 
-PG_MAJOR_VERSION=9.1
-PG_MINOR_VERSION=3.1
+PG_MAJOR_VERSION=9.2
+PG_MINOR_VERSION=0.0
 
 # Other package versions
 PG_VERSION_APACHE=2.2.17
