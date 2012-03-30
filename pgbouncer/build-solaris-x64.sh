@@ -72,7 +72,7 @@ export CXX=g++
 export CFLAGS="-m64 -D_XPG5 -D__EXTENSIONS__ -DX_OPEN_SOURCE=2 -D _XOPEN_SOURCE_EXTENDED=1"
 export CXXFLAGS="-m64"
 export CPPFLAGS="-m64"
-export LDFLAGS="-m64"
+export LDFLAGS="-m64 -Wl,-R,\$ORIGIN/../lib/"
 export LD_LIBRARY_PATH=/usr/local/lib
 export PATH=/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/local/bin:/usr/ucb:\$PATH
 EOT
@@ -90,7 +90,7 @@ EOT
     PG_LIBEVENT_MAJOR_VERSION=`echo $PG_TARBALL_LIBEVENT | cut -f1,2 -d'.'`
 
     ssh $PG_SSH_SOLARIS_X64 "cp -R /export/home/buildfarm/PPAS/libevent-2.0.16-stable/inst/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
-
+    ssh $PG_SSH_SOLARIS_X64 "/usr/local/bin/chrpath -r '\$ORIGIN/../lib/' $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/pgbouncer/bin/pgbouncer" || _die "Failed to set rpath of pgbouncer"
 
     ssh $PG_SSH_SOLARIS_X64 "cp -R $PG_PATH_SOLARIS_X64/server/staging/solaris-x64/lib/libpq* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy libpq in instscripts"
     ssh $PG_SSH_SOLARIS_X64 "cp -R $PG_PATH_SOLARIS_X64/server/staging/solaris-x64/bin/psql $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy psql in instscripts"
@@ -103,6 +103,7 @@ EOT
     ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libkrb5support.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libk5crypto.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libcom_err.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/lib/amd64/libz.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
 
     scp -r $PG_SSH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/* $WD/pgbouncer/staging/solaris-x64/ || _die "Failed to scp back the staging directory"
  
