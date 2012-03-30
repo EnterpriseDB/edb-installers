@@ -61,7 +61,7 @@
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>${platform_install_prefix}/PostgreSQL/EnterpriseDB-${product_fullname}</value>
+      <value>${platform_install_prefix}/PostgreSQL/EnterpriseDB-ApachePHP</value>
       <ruleList>
         <compareText>
           <logic>does_not_equal</logic>
@@ -74,7 +74,7 @@
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>/Library/PostgreSQL/EnterpriseDB-${product_fullname}</value>
+      <value>/Library/PostgreSQL/EnterpriseDB-ApachePHP</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -114,7 +114,7 @@
       <!-- WIN & LIN: Set the default values for unattended mode -->
     <actionGroup>
       <actionList>
-        <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgreSQL/EnterpriseDB-${product_fullname}" persist="1"/>
+        <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgreSQL/EnterpriseDB-ApachePHP" persist="1"/>
       </actionList>
       <ruleList>
         <compareText>
@@ -132,7 +132,7 @@
     <!-- MAC : Set the  default values for unattended mode -->
     <actionGroup>
       <actionList>
-        <setInstallerVariable name="installdir" value="/Library/PostgreSQL/EnterpriseDB-${product_fullname}"/>
+        <setInstallerVariable name="installdir" value="/Library/PostgreSQL/EnterpriseDB-ApachePHP"/>
       </actionList>
       <ruleList>
         <compareText>
@@ -151,7 +151,7 @@
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>${platform_install_prefix}/PostgreSQL/EnterpriseDB-${product_fullname}</value>
+      <value>${platform_install_prefix}/PostgreSQL/EnterpriseDB-ApachePHP</value>
       <ruleList>
         <compareText>
           <logic>does_not_equal</logic>
@@ -164,7 +164,7 @@
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>/Library/PostgreSQL/EnterpriseDB-${product_fullname}</value>
+      <value>/Library/PostgreSQL/EnterpriseDB-ApachePHP</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>

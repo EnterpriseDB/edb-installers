@@ -78,6 +78,9 @@ _build_ApachePhp_linux_x64() {
     _replace "Listen 80" "Listen @@PORT@@" "httpd.conf"
     _replace "htdocs" "www" "httpd.conf"
     _replace "#ServerName www.example.com:80" "ServerName localhost:@@PORT@@" "httpd.conf"
+	# Comment out the unique_id_module, do not load it
+	sed -e "s,^LoadModule unique_id_module modules/mod_unique_id.so,#LoadModule unique_id_module modules/mod_unique_id.so,g" httpd.conf > "/tmp/httpd.conf.tmp"
+	mv /tmp/httpd.conf.tmp httpd.conf
 
     # Configure the apachectl script file
     cd $WD/ApachePhp/staging/linux-x64/apache/bin
@@ -94,6 +97,7 @@ _build_ApachePhp_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libexpat.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libexpat)"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libgssapi_krb5.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libgssapi_krb5)"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libkrb5.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libkrb5)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libkrb5support.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libkrb5support)"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libk5crypto.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libk5crypto)"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libxml2)"
 
