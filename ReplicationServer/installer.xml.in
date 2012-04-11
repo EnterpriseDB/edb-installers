@@ -179,19 +179,6 @@
               <compareText text="${platform_name}" value="linux"/>
           </ruleList>
       </setInstallerVariable>
-      <setInstallerVariable>
-        <name>project.defaultInstallationMode</name>
-        <value>text</value>
-        <ruleList>
-          <compareText logic="contains" text="${platform_name}" value="hpux"/>
-        </ruleList>
-      </setInstallerVariable>
-      <!-- Change allowed values for installation mode in HP-UX -->
-      <setInstallerVariable name="project.allowedInstallationModes" value="text unattended">
-        <ruleList>
-          <compareText logic="contains" text="${platform_name}" value="hpux"/>
-        </ruleList>
-      </setInstallerVariable>
     </preBuildActionList>
     <initializationActionList>
         <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
@@ -237,17 +224,6 @@
           <ruleList>
             <platformTest type="linux-x64"/>
             <compareText text="${originalplatform}" value="linux-x32"/>
-          </ruleList>
-        </throwError>
-
-	 <!-- Abort Installation as GUI mode is not available for HPUX -->
-        <throwError>
-          <customErrorMessage>${msg(gui.not.available.hpux)}</customErrorMessage>
-          <text>Unknown Error</text>
-          <ruleList>
-            <compareText logic="contains" text="${platform_name}" value="hpux"/>
-            <compareText logic="does_not_equal" text="${installer_ui}" value="unattended"/>
-            <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
           </ruleList>
         </throwError>
 
