@@ -4,7 +4,7 @@ if [ -e $WD/pvt_settings.sh ]
 then
 
     # Source the private settings.    
-    source $WD/pvt_settings.sh
+    source $WD/pvt_settings.sh.REL-9_1
 
     # Create the pvt_packages directory. If not exist.
     if [ ! -e $WD/pvt_packages ];
@@ -18,15 +18,17 @@ then
 	if [ ${!C_PKG} = 1 ];
 	then
 	    C_PKG_NAME=PVT_$PKG"_PACKAGE_NAME"
+	    C_PKG_INSTALLER_REPO_BRANCH=PVT_$PKG"_INSTALLER_REPO_BRANCH"
 	    if [ ! -e $WD/pvt_packages/${!C_PKG_NAME} ];
 	    then
 		cd $WD/pvt_packages
 		# Get the installer source
 		C_PKG_INSTALLER_REPO=PVT_$PKG"_INSTALLER_REPO"
-		git clone ${!C_PKG_INSTALLER_REPO}
+		git clone -b ${!C_PKG_INSTALLER_REPO_BRANCH} ${!C_PKG_INSTALLER_REPO}
 	    else
 		# Update the installer repo
 		cd $WD/pvt_packages/${!C_PKG_NAME}
+		git checkout ${!C_PKG_INSTALLER_REPO_BRANCH}
 		git pull
 	    fi
 	    # Copy the installer source to proper location.
