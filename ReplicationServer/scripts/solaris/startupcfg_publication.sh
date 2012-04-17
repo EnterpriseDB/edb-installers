@@ -33,11 +33,11 @@ cat <<EOT > "/lib/svc/method/edb-xdbpubserver-$XDB_SERVICE_VER"
 
 start()
 {
-    PID=\`/usr/ucb/ps awwx | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$1}'\`
+    PID=\`/usr/ucb/ps awwx | grep 'java -Xms128m -Xmx512m -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$1}'\`
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
+       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -Xms128m -Xmx512m -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
        exit 0
     else
        echo "Publication Service $XDB_SERVICE_VER already running"
@@ -47,7 +47,7 @@ start()
 
 stop()
 {
-    PID=\`/usr/ucb/ps awwx | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$1}'\`
+    PID=\`/usr/ucb/ps awwx | grep 'java -Xms128m -Xmx512m -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$1}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -60,7 +60,7 @@ stop()
 
 status()
 {
-    PID=\`/usr/ucb/ps awwx | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$1}'\`
+    PID=\`/usr/ucb/ps awwx | grep 'java -Xms128m -Xmx512m -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$1}'\`
 
     if [ "x\$PID" = "x" ];
     then

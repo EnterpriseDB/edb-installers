@@ -2042,10 +2042,39 @@ database=${controldb}
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram>
-
+	
+       <!-- Check java executable is 32 bit or 64 bit -->
+       <actionGroup>
+         <actionList>
+	   <setInstallerVariable name="temp_dir" value="${system_temp_directory}"/>
+           <runProgram program="${java_executable_windows}">
+	     <programArguments> -version 2&gt;${temp_dir.dos}\test.log</programArguments>
+ 	     <workingDirectory>${temp_dir.dos}</workingDirectory>
+	   </runProgram>
+	   <readFile name="jvm_ver" path="${temp_dir.dos}\test.log"/>
+           <setInstallerVariable name="java_heap_size" value="-Xms128m -Xmx512m">
+             <ruleList>
+               <compareText logic="contains" text="${jvm_ver}" value="64-Bit"/>
+             </ruleList>
+           </setInstallerVariable>
+           <setInstallerVariable name="java_heap_size" value="-Xms64m -Xmx256m">
+             <ruleList>
+               <compareText logic="does_not_contain" text="${jvm_ver}" value="64-Bit"/>
+             </ruleList>
+           </setInstallerVariable>
+	   <deleteFile path="${temp_dir.dos}\test.log"/>
+	   <logMessage text="Using java heap size=${java_heap_size}"/> 
+	  </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows" />
+		<isTrue value="${component(pubserver).selected}" />
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+	
        <writeFile>
             <path>${system_temp_directory}/servicewrapper.bat</path>
-            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Publication Service XDB_SERVICE_VER" -d "Publication Service XDB_SERVICE_VER for xDB Replication Server." -c "${java_executable_windows}" -o "-Djava.awt.headless=true -jar """"${installdir}\bin\edb-repserver.jar"""" pubserver ${pubport} """"${installdir}\etc""""" -u "${serviceaccount}" -p "${servicepassword.password}" -w "${installdir}\bin"</text>
+            <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Publication Service XDB_SERVICE_VER" -d "Publication Service XDB_SERVICE_VER for xDB Replication Server." -c "${java_executable_windows}" -o "${java_heap_size} -Djava.awt.headless=true -jar """"${installdir}\bin\edb-repserver.jar"""" pubserver ${pubport} """"${installdir}\etc""""" -u "${serviceaccount}" -p "${servicepassword.password}" -w "${installdir}\bin"</text>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(pubserver).selected}" />
@@ -2244,7 +2273,7 @@ database=${controldb}
                 <fileExists path="${installdir}/scripts/serviceWrapper.vbs" />
                 <compareText logic="equals" text="${platform_name}" value="windows" />
             </ruleList>
-        </deleteFile> 
+        </deleteFile>
 
         <!-- Remove the temporary folder -->
         <deleteFile path="${system_temp_directory}/${product_fullname}" >

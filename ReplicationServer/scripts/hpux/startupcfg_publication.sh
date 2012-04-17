@@ -51,11 +51,11 @@ export PATH
 
 function start
 {
-    PID=\`ps -axef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -axef | grep 'java -Xms128m -Xmx512m -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; nohup $JAVA -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
+       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; nohup $JAVA -Xms128m -Xmx512m -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
        echo "Publication Service $XDB_SERVICE_VER started"
     else
        echo "Publication Service $XDB_SERVICE_VER already running"
@@ -65,7 +65,7 @@ function start
 
 function _stop
 {
-    PID=\`ps -axef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -axef | grep 'java -Xms128m -Xmx512m -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -78,7 +78,7 @@ function _stop
 
 function status
 {
-    PID=\`ps -axef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -axef | grep 'java -Xms128m -Xmx512m -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then

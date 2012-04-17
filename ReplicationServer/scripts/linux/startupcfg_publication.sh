@@ -46,13 +46,29 @@ cat <<EOT > "/etc/init.d/edb-xdbpubserver-$XDB_SERVICE_VER"
 # Description:       edb-xdbpubserver-$XDB_SERVICE_VER
 ### END INIT INFO
 
+set_jvm_heap_size()
+{
+	$JAVA -version &> test.log      
+        
+        if cat test.log | grep "64-Bit" &> /dev/null
+        then
+          export JAVA_HEAP_SIZE="-Xms128m -Xmx512m"
+        else
+          export JAVA_HEAP_SIZE="-Xms64m -Xmx256m"
+       fi
+
+       rm -f test.log
+}
+
 start()
 {
-    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    set_jvm_heap_size;
+
+    PID=\`ps -aef | grep 'java '"\$JAVA_HEAP_SIZE"' -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
+       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA \$JAVA_HEAP_SIZE -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
        echo "Publication Service $XDB_SERVICE_VER started"
     else
        echo "Publication Service $XDB_SERVICE_VER already running"
@@ -61,8 +77,10 @@ start()
 }
 
 stop()
-{
-    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+{   
+    set_jvm_heap_size;
+
+    PID=\`ps -aef | grep 'java '"\$JAVA_HEAP_SIZE"' -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -75,7 +93,9 @@ stop()
 
 status()
 {
-    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    set_jvm_heap_size;
+
+    PID=\`ps -aef | grep 'java '"\$JAVA_HEAP_SIZE"' -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
