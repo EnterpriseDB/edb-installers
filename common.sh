@@ -1,5 +1,20 @@
 #!/bin/bash
 
+_check_copyright_info() {
+    BASENAME=`basename $0`
+    YEAR=`date | awk '{print $NF}'`
+
+    # Get the file names that contain string "EnterpriseDB Corp" and then grep if it contains the current year. If not then exit
+    for file in `find $1 -name "*.sh" -o -name "*.bat" -o -name "*.vbs" | grep -v $BASENAME | grep -v binaries | grep -v staging | grep -v source | xargs grep "EnterpriseDB Corp"| awk '{print $1}' | cut -d":" -f1`
+    do
+        if ! grep $YEAR $file > /dev/null
+        then
+            echo "Error: $file does not contain copyright $YEAR. Please change the copyright information in all the required scripts in \"$1\" directory and rerun $BASENAME"
+            exit 1
+        fi
+    done
+}
+
 # Fatal error handler
 _die() {
     echo ""

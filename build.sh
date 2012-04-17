@@ -377,6 +377,9 @@ fi
 if [ $PG_PACKAGE_PGBOUNCER = 1 ];
 then
     echo "### Package: pgbouncer"
+    # Check if the copyright information in the installer scripts is updated
+    _check_copyright_info pgbouncer
+
     cd $WD
     source ./pgbouncer/build.sh
 
@@ -391,6 +394,9 @@ fi
 #Package: StackBuilderPlus
 if [ $PG_PACKAGE_SBP = 1 ];
 then
+    # Check if the copyright information in the installer scripts is updated
+    _check_copyright_info StackBuilderPlus
+
     cd $WD
     source ./StackBuilderPlus/build.sh
     if [ $SKIPBUILD = 0 ];
@@ -432,6 +438,9 @@ fi
 if [ $PG_PACKAGE_REPLICATIONSERVER = 1 ];
 then
     echo "### Package: ReplicationServer"
+    # Check if the copyright information in the installer scripts is updated
+    _check_copyright_info ReplicationServer
+
     cd $WD
     source ./ReplicationServer/build.sh
 
