@@ -305,15 +305,15 @@
         <actionGroup>
            <actionList>
             <!-- LIN: Unpack psql and its shared libraries -->
-            <unpackFile>
+            <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}/bin/psql</destination>
+              <destination>${system_temp_directory}/${product_fullname}</destination>
               <folder>programfileslinux</folder>
-              <origin>bin/psql</origin>
+              <origin>bin</origin>
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="linux"/>
               </ruleList>
-            </unpackFile>
+            </unpackDirectory>
             <unpackDirectory>
               <component>pgAgent</component>
               <destination>${system_temp_directory}/${product_fullname}/lib</destination>
@@ -325,15 +325,15 @@
             </unpackDirectory>
 
             <!-- LIN-x64: Unpack psql and its shared libraries -->
-            <unpackFile>
+            <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}/bin/psql</destination>
+              <destination>${system_temp_directory}/${product_fullname}</destination>
               <folder>programfileslinux-x64</folder>
-              <origin>bin/psql</origin>
+              <origin>bin</origin>
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
               </ruleList>
-            </unpackFile>
+            </unpackDirectory>
             <unpackDirectory>
               <component>pgAgent</component>
               <destination>${system_temp_directory}/${product_fullname}/lib</destination>
@@ -1817,15 +1817,15 @@
           <actionList>
 
             <!-- LIN: Unpack psql and its shared libraries -->
-            <unpackFile>
+            <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}/bin/psql</destination>
+              <destination>${system_temp_directory}/${product_fullname}</destination>
               <folder>programfileslinux</folder>
-              <origin>bin/psql</origin>
+              <origin>bin</origin>
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="linux"/>
               </ruleList>
-            </unpackFile>
+            </unpackDirectory>
             <unpackDirectory>
               <component>pgAgent</component>
               <destination>${system_temp_directory}/${product_fullname}/lib</destination>
@@ -1837,15 +1837,15 @@
             </unpackDirectory>
 
             <!-- LIN-x64: Unpack psql and its shared libraries -->
-            <unpackFile>
+            <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}/bin/psql</destination>
+              <destination>${system_temp_directory}/${product_fullname}</destination>
               <folder>programfileslinux-x64</folder>
-              <origin>bin/psql</origin>
+              <origin>bin</origin>
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
               </ruleList>
-            </unpackFile>
+            </unpackDirectory>
             <unpackDirectory>
               <component>pgAgent</component>
               <destination>${system_temp_directory}/${product_fullname}/lib</destination>

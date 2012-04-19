@@ -83,7 +83,7 @@ _build_pgAgent_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libssl)"
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libcrypto)"
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libedit)"
-    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/bin/psql $PG_STAGING/bin" || _die "Failed to copy psql"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/bin/psql* $PG_STAGING/bin" || _die "Failed to copy psql"
     ssh $PG_SSH_LINUX_X64 "chmod a+rx $PG_STAGING/bin" || _die "Failed to set permissions on bin directory"
     ssh $PG_SSH_LINUX_X64 "chmod a+rx $PG_STAGING/lib" || _die "Failed to set permissions on lib directory"
     ssh $PG_SSH_LINUX_X64 "chmod a+rx $PG_STAGING/bin/*" || _die "Failed to set permissions on binaries in bin directory"
