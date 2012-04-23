@@ -45,8 +45,8 @@ _registration_build_linux_x64()
     ssh $PG_SSH_LINUX_X64 "cd $PG_REG_COMP_HOST_PATH; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility for registration component"
 
     cp $PG_REG_COMP_PATH/validateUserClient.o $PG_REG_COMP_STAGING/ || _die "Failed to copy the validateUserClient to staging directory"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libssl.so* $PG_REG_COMP_HOST_STAGING/lib" || _die "Failed to copy the dependency library (libssl)"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypto.so* $PG_REG_COMP_HOST_STAGING/lib" || _die "Failed to copy the dependency library (libcrypto)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/openssl/lib/libssl.so* $PG_REG_COMP_HOST_STAGING/lib" || _die "Failed to copy the dependency library (libssl)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/openssl/lib/libcrypto.so* $PG_REG_COMP_HOST_STAGING/lib" || _die "Failed to copy the dependency library (libcrypto)"
 
     chmod ugo+x $PG_REG_COMP_STAGING/validateUserClient.o || _die "Couldn't set the permissions on the validateUserClient($PG_REG_COMP_PLATFORM)"
     chmod ugo+x $PG_REG_COMP_STAGING/lib/* || _die "Couldn't set the permissions on the dependent libraries for validateUserClient"

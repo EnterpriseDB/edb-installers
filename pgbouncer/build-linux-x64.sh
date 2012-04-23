@@ -67,8 +67,8 @@ _build_pgbouncer_linux_x64() {
 
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/lib/libpq* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy libpq in instscripts"
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/bin/psql $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy psql in instscripts"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libssl.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypto.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/openssl/lib/libssl.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/openssl/lib/libcrypto.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libtermcap.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxml2.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxslt.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy libxslt.so"

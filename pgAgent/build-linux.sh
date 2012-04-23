@@ -62,8 +62,8 @@ _build_pgAgent_linux() {
 
     # Copy in the dependency libraries
     ssh $PG_SSH_LINUX "mkdir -p $PG_STAGING/lib" || _die "Failed to create lib direcotyr"
-    ssh $PG_SSH_LINUX "cp -R /lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libssl)"
-    ssh $PG_SSH_LINUX "cp -R /lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libcrypto)"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/openssl/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libssl)"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/openssl/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libcrypto)"
     ssh $PG_SSH_LINUX "cp -R /lib/libcrypt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libcrypt)"
     ssh $PG_SSH_LINUX "cp -R /lib/libcom_err.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libcom_err)"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libexpat.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libexpat)"

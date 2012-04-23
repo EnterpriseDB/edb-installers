@@ -68,8 +68,8 @@ _build_pgAgent_linux_x64() {
 
     # Copy in the dependency libraries
     ssh $PG_SSH_LINUX_X64 "mkdir -p $PG_STAGING/lib" || _die "Failed to create lib directory"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libssl)"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libcrypto)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/openssl/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libssl)"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/openssl/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libcrypto)"
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libcrypt)"
     ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcom_err.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libcom_err)"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/lib64/libexpat.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libexpat)"

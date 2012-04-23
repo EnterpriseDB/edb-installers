@@ -76,8 +76,8 @@ _prep_metainstaller_linux() {
 
     mkdir $WD/MetaInstaller/staging/linux/scripts/lib
 
-    ssh $PG_SSH_LINUX "cp -r /lib/libssl.so* $PG_PATH_LINUX/MetaInstaller/staging/linux/scripts/lib/."
-    ssh $PG_SSH_LINUX "cp -r /lib/libcrypto.so* $PG_PATH_LINUX/MetaInstaller/staging/linux/scripts/lib/."
+    ssh $PG_SSH_LINUX "cp -r /usr/local/openssl/lib/libssl.so* $PG_PATH_LINUX/MetaInstaller/staging/linux/scripts/lib/."
+    ssh $PG_SSH_LINUX "cp -r /usr/local/openssl/lib/libcrypto.so* $PG_PATH_LINUX/MetaInstaller/staging/linux/scripts/lib/."
     
 }
 
