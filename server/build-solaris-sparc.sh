@@ -269,6 +269,7 @@ EOT
     ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libkrb5support.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libk5crypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libcom_err.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libz.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
 
     # Process Dependent libs
     _process_dependent_libs_solaris_sparc "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl.so"  
@@ -280,6 +281,7 @@ EOT
     _process_dependent_libs_solaris_sparc "$PG_STAGING/bin" "$PG_STAGING/lib" "libkrb5support.so"  
     _process_dependent_libs_solaris_sparc "$PG_STAGING/bin" "$PG_STAGING/lib" "libk5crypto.so"  
     _process_dependent_libs_solaris_sparc "$PG_STAGING/bin" "$PG_STAGING/lib" "libcom_err.so"  
+    _process_dependent_libs_solaris_sparc "$PG_STAGING/bin" "$PG_STAGING/lib" "libz.so"  
 
 	
     # Now build pgAdmin

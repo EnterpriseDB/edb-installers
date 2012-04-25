@@ -199,6 +199,7 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cp -R /usr/local/openssl/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/local/openssl/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libz.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libtermcap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libncurses.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /lib/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
@@ -224,6 +225,7 @@ _build_server_linux() {
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap-2.4"
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap_r-2.4"
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libsasl2"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libz"
 
     # Hack for bypassing dependency on the deprecated libtermcap
     # As libnucurses is API compatible with the termcap so we copy libtermcap and then just

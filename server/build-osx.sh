@@ -228,6 +228,7 @@ EOT
     cp /usr/local/lib/libxslt.* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxslt"
     cp /usr/local/lib/libuuid* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
     cp /usr/local/lib/libedit* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp /usr/local/lib/libz* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
 
     # Copying plperl to staging/osx directory as we would not like to update the _rewrite_so_refs for it.
     cp -f $WD/server/staging/osx/lib/postgresql/plperl.so $WD/server/staging/osx/
