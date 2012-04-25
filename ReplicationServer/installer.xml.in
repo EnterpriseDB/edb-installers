@@ -233,12 +233,9 @@
                 <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/Shared/EnterpriseDB-xDBReplicationServer"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
-                <compareText>
+                <!-- following check means mode equals unattended -->
+        	<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
+		<compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
                     <value>linux</value>
@@ -252,11 +249,8 @@
                 <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/Shared/EnterpriseDB-xDBReplicationServer"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
+		<!-- following check means mode equals unattended -->
+        	<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
                 <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
@@ -271,11 +265,8 @@
                 <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/Shared/EnterpriseDB-xDBReplicationServer"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
+		<!-- following check means mode equals unattended -->
+        	<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
                 <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
@@ -289,11 +280,8 @@
                 <setInstallerVariable name="installdir" value="${platform_install_prefix}\PostgresPlus\Shared\EnterpriseDB-xDBReplicationServer"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
+		<!-- following check means mode equals unattended -->
+        	<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
                 <compareText>
                     <logic>equals</logic>
                     <text>${platform_name}</text>
@@ -307,11 +295,8 @@
                 <setInstallerVariable name="installdir" value="/Library/PostgresPlus/Shared/EnterpriseDB-xDBReplicationServer"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
+		<!-- following check means mode equals unattended -->
+        	<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
                 <compareText>
                     <logic>equals</logic>
                     <text>${platform_name}</text>
@@ -625,7 +610,8 @@
         <setInstallerVariable name="optionRequired" value="servicepassword" />
         <throwError text="${msg(Installer.CustomError.CommandLineOptionsNotPresent)}" >
           <ruleList>
-               <compareText text="${installer_ui}" logic="equals" value="unattended" />
+	       <!-- following check means mode equals unattended -->
+               <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
                <compareText text="${servicepassword}" logic="equals" value="" />
                <isFalse value="${extract_mode}" />
                <ruleGroup>
@@ -980,7 +966,8 @@
 			<compareText text="${component(repconsole).selected}" value="0" logic="equals"/>
 			<compareText text="${component(pubserver).selected}" value="0" logic="equals"/>
 			<compareText text="${component(subserver).selected}" value="0" logic="equals"/>
-			<compareText text="${installer_ui}" value="unattended" logic="equals" /> 
+			<!-- following check means mode equals unattended -->
+        		<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
 		    </ruleList>
 		</throwError>
 
@@ -1149,8 +1136,9 @@
                 </setInstallerVariable>  
                 <setInstallerVariable name="pgpassword" value="${defaultpgpassword}" >
                     <ruleList>
-                        <compareText logic="equals" text="${pgpassword}" value="" /> 
-                        <compareText logic="equals" text="${installer_ui}" value="unattended" />
+                        <compareText logic="equals" text="${pgpassword}" value="" />
+			<!-- following check means mode equals unattended -->
+        		<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/> 
                     </ruleList>
                 </setInstallerVariable>  
                 <setInstallerVariable name="controldb" value="${defaultcontroldb}" >
@@ -1372,7 +1360,8 @@
           <ruleList>
              <isFalse value="${extract_mode}"/>
              <compareText text="${platform_name}" logic="equals" value="windows"/>
-             <compareText text="${installer_ui}" logic="equals" value="unattended" />
+	     <!-- following check means mode equals unattended -->
+             <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
              <ruleGroup>
                  <ruleEvaluationLogic>or</ruleEvaluationLogic>
                  <ruleList>

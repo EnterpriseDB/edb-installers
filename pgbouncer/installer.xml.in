@@ -174,7 +174,8 @@
 	<setInstallerVariable name="defaultpgpassword" value=""/>
 	<setInstallerVariable name="defaultpgpassword" value="postgres">
 	  <ruleList>
-    	    <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+	    <!-- following check means mode equals unattended -->
+            <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
 	  </ruleList>
 	</setInstallerVariable>
 
@@ -197,11 +198,8 @@
                 <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/Shared/PgBouncer"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
+		<!-- following check means mode equals unattended -->
+        	<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
                 <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
@@ -216,11 +214,8 @@
                 <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/Shared/PgBouncer"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
+		<!-- following check means mode equals unattended -->
+        	<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
                 <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
@@ -235,11 +230,8 @@
                 <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/Shared/PgBouncer"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
+		<!-- following check means mode equals unattended -->
+        	<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
                 <compareText>
                     <logic>contains</logic>
                     <text>${platform_name}</text>
@@ -253,11 +245,8 @@
                 <setInstallerVariable name="installdir" value="${platform_install_prefix}\PostgresPlus\Shared\PgBouncer"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
+		<!-- following check means mode equals unattended -->
+        	<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
                 <compareText>
                     <logic>equals</logic>
                     <text>${platform_name}</text>
@@ -271,11 +260,8 @@
                 <setInstallerVariable name="installdir" value="/Library/PostgresPlus/Shared/PgBouncer"/>
             </actionList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${installer_ui}</text>
-                    <value>unattended</value>
-                </compareText>
+		<!-- following check means mode equals unattended -->
+       		<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
                 <compareText>
                     <logic>equals</logic>
                     <text>${platform_name}</text>
@@ -869,8 +855,9 @@
             </throwError> 
           </actionList>
           <ruleList>
-            <compareText text="${pgbouncerVersion}" logic="equals" value="" /> 
-            <compareText text="${installer_ui}" logic="equals" value="unattended" />
+            <compareText text="${pgbouncerVersion}" logic="equals" value="" />
+	    <!-- following check means mode equals unattended -->
+            <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/> 
             <isFalse value="${extract_mode}" />
           </ruleList>    
          </actionGroup> 

@@ -907,7 +907,8 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
 	<logMessage text="${msg(sbp.reboot.required)}">
           <ruleList>
             <compareText text="${platform_name}" logic="equals" value="windows"/>
-            <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+	    <!-- following check means mode equals unattended -->
+            <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
             <isTrue value="${project.rebootRequired}"/>
           </ruleList>
 	</logMessage>
