@@ -1,7 +1,7 @@
+' Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 On Error Resume Next
 
 ' PostgreSQL server shortcut creation script for Windows
-' Dave Page, EnterpriseDB
 
 ' Note that on Windows, the shortcuts themselves are created by the installer,
 ' we just hack up the various helper scripts here.

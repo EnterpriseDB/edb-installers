@@ -1,8 +1,8 @@
 #!/bin/sh 
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 ##################################################################################
 # launchbrowser.sh
 #
-# Author: Sibte Abbas <sibte@enterprisedb.com>	
 #
 # Launch a url (supplied as parameter) in a web browser in a platform 
 # independent manner. Since as till now(07-30-07) there are no standards 

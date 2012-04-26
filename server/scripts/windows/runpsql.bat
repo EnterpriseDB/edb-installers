@@ -1,7 +1,7 @@
 @echo off
+REM Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 REM PostgreSQL server psql runner script for Windows
-REM Dave Page, EnterpriseDB
 
 SET server=localhost
 SET /P server="Server [%server%]: "

@@ -1,7 +1,7 @@
 #!/bin/sh
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL server control launch script for Linux
-# Dave Page, EnterpriseDB
 
 for shell in xterm konsole gnome-terminal
 do

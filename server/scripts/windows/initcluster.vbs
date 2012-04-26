@@ -1,7 +1,7 @@
+' Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 On Error Resume Next
 
 ' PostgreSQL server cluster init script for Windows
-' Dave Page, EnterpriseDB
 
 Const ForReading = 1
 Const ForWriting = 2

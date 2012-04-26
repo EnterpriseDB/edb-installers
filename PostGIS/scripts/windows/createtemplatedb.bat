@@ -1,4 +1,5 @@
 @ECHO OFF
+REM Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 @SET PGHOST=%1
 @SET PGPORT=%2

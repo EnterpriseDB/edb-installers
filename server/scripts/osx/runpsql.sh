@@ -1,7 +1,7 @@
 #!/bin/bash
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL psql runner script for OS X
-# Dave Page, EnterpriseDB
 
 # Check the command line
 if [ $# -ne 0 -a $# -ne 1 ]; 

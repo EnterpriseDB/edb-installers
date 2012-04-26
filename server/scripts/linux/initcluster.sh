@@ -1,7 +1,7 @@
 #!/bin/sh 
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL cluster init script for Linux
-# Dave Page, EnterpriseDB
 
 # Check the command line
 if [ $# -ne 6 ]; 

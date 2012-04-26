@@ -1,7 +1,7 @@
+' Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 On Error Resume Next
 
 ' PostgreSQL server startup configuration script for Windows
-' Dave Page, EnterpriseDB
 
 ' Check the command line
 If WScript.Arguments.Count <> 5 Then
