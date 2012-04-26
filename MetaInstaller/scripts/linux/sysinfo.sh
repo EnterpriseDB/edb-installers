@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 os=`uname | awk '{print $1}'`
 if [ "$os" = "Linux" ]

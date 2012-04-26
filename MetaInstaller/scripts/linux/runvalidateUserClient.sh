@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 spath=$1
 a=$2
 b=$3

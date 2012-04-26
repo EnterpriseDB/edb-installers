@@ -1,7 +1,7 @@
 #!/bin/sh
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # Postgres Plus HQ server script for Linux
-# Ashesh Vashi
 
 # Check the command line
 if [ $# -ne 1 ]; 

@@ -1,4 +1,5 @@
 #!/bin/sh
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 INSTALLDIR="@@INSTALL_DIR@@"
 BRANDING="@@BRANDING@@"

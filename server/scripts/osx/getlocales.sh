@@ -1,7 +1,7 @@
 #!/bin/sh
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL server locales script for OSX (returns valid locales on the system)
-# Dave Page, EnterpriseDB
 
 #Check the command line
 if [ $# -ne 0 ];
