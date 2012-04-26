@@ -1,7 +1,7 @@
 #!/bin/sh
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL tuning-wizard runner script for Linux
-# Dave Page, EnterpriseDB
 LOADINGUSER=`whoami`
 echo "No graphical su/sudo program could be found on your system!"
 echo "This window must be kept open while the Tuning Wizard is running."

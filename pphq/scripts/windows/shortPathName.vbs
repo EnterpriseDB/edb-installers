@@ -1,3 +1,4 @@
+' Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 Set fso=CreateObject("Scripting.FileSystemObject")
 
 ' Is object a file or folder?

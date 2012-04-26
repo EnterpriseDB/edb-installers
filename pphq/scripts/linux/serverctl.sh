@@ -1,7 +1,7 @@
 #!/bin/bash
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # Postgres Plus HQ server control script for Linux
-# Ashesh Vashi, EnterpriseDB
 
 # Check the command line
 usage()

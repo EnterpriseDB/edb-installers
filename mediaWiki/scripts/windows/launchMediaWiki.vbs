@@ -1,3 +1,4 @@
+' Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 Option Explicit
 
 Dim WSHShell, shellApp, strRegKey, strApachePort, strURL, strArgs, strArch

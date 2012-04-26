@@ -1,5 +1,5 @@
+' Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 ' VBscript test script - check that the scripting host appears functional
-' Dave Page, EnterpriseDB
 
 Set WshShell = WScript.CreateObject("WScript.Shell")
 Set WshSysEnv = WshShell.Environment("PROCESS")

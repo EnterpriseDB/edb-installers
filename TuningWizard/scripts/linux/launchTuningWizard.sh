@@ -1,7 +1,7 @@
 #!/bin/sh
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL TuningWizard launch script for Linux
-# Dave Page, EnterpriseDB
 
 CMD=""
 

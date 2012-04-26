@@ -1,7 +1,7 @@
 #!/bin/bash
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL psql launch script for Linux
-# Dave Page, EnterpriseDB
 
 for shell in xterm konsole gnome-terminal
 do

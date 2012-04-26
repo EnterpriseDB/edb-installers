@@ -1,3 +1,4 @@
+' Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 Dim strCmd, strTempDir, strOutputFile, strErrorFile, bIsCommand
 
 SET FSO       = CreateObject("Scripting.FileSystemObject")
