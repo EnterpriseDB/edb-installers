@@ -1,7 +1,7 @@
 #!/bin/sh
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL startup configuration script for Linux
-# Ashesh Vashi, EnterpriseDB
 
 _process_libs() {
 

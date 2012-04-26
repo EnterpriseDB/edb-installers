@@ -1,7 +1,7 @@
 #!/bin/bash
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL stackbuilderplus launch script for Solaris
-# Ashesh Vashi, EnterpriseDB
 
 XTERM=`which xterm`
 

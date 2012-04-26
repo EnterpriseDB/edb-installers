@@ -1,7 +1,7 @@
 #!/bin/sh
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # Postgres Plus HQ agent control script for Linux
-# Ashesh Vashi
 
 if [ "`whoami`" != "@@AGENTSERVICEUSER@@" ];
 then

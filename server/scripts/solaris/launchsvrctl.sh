@@ -1,7 +1,7 @@
 #!/bin/bash
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL server control launch script for Linux
-# Dave Page, EnterpriseDB
 
 # Check the command line
 if [ $# -ne 1 ];
