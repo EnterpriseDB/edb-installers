@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # Check the command line
 if [ $# -ne 4 ]; 

@@ -1,7 +1,7 @@
 #!/bin/bash
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # Postgres Plus installer script (extract-only mode) for linux and osx
-# Ashesh Vashi, EnterpriseDB
 
 ##################
 # Initialization #

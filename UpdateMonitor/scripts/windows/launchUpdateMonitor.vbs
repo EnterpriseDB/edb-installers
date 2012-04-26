@@ -1,3 +1,4 @@
+' Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' launch the Update Monitoring Agent script
 

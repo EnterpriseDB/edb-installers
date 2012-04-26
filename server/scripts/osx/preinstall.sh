@@ -1,7 +1,7 @@
 #!/bin/sh
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL server installation preflight script for OSX
-# Dave Page, EnterpriseDB
 
 # Check we have at least 32MB of shared memory, and that the configuration is sane
 SHMMAX=`sysctl -a 2> /dev/null |grep kern.sysv.shmmax | awk '{ print $2; }'`
