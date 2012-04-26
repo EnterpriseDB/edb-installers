@@ -1,7 +1,7 @@
 #!/bin/bash
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL pg_controldata runner script for Linux
-# Dave Page, EnterpriseDB
 
 # Check the command line
 if [ $# -ne 2 ]; 

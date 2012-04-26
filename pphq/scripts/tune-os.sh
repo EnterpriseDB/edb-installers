@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # Make sure we are root
 if [ `whoami` != 'root' ] ; then

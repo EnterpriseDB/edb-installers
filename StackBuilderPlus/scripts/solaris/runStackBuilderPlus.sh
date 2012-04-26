@@ -1,7 +1,7 @@
 #!/bin/bash
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL stackbuilder runner script for Linux
-# Dave Page, EnterpriseDB
 
 # Record the calling shell pid in the pid file.
 echo $$ > /tmp/runsbp.pid

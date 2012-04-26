@@ -1,3 +1,4 @@
+' Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 Option Explicit
 ' Postgres Plus Advanced Server server control script for Windows
 

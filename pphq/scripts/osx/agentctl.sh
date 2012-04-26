@@ -1,7 +1,7 @@
 #!/bin/bash
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # Server Control Script for Postgres Plus HQ Agent
-# Author: Ashesh Vashi, EnterpriseDB
 
 JAVA_HOME=@@JAVAHOME@@
 HQ_JAVA_HOME=@@JAVAHOME@@

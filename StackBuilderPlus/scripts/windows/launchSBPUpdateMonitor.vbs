@@ -1,6 +1,6 @@
+' Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' launch the Stack-Builder Plus Monitoring Agent script
-' Ashesh Vashi, EnterpriseDB
 
 Option Explicit
 On Error Resume Next

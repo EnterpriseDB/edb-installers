@@ -1,7 +1,7 @@
+' Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 On Error Resume Next
 
 ' PostgreSQL server control script for Windows
-' Dave Page, EnterpriseDB
 
 ' Check the command line
 If WScript.Arguments.Count = 0 OR WScript.Arguments.Count > 2 Then

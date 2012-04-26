@@ -1,7 +1,7 @@
 #!/bin/sh
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # Postgres Plus Advanced Server Stackbuilder Plus launch script for HP-UX
-# Ashesh Vashi, EnterpriseDB
 
 CMD=""
 

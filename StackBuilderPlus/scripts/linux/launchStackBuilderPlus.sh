@@ -1,7 +1,7 @@
 #!/bin/sh
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL stackbuilderplus launch script for Linux
-# Ashesh Vashi, EnterpriseDB
 
 CMD=""
 

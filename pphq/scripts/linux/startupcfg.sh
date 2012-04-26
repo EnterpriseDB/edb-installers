@@ -1,4 +1,5 @@
 #!/bin/sh
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 if [ $# -ne 8 ];
 then
