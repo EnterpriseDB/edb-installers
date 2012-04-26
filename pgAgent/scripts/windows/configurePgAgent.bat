@@ -1,4 +1,5 @@
 @ECHO OFF
+REM Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 IF "%1" == "CHECK_CONNECTION" %2 -l %3 || exit -1
 IF "%1" == "CHECK_PGAGENT_SCHEMA" %2 -t -c "SELECT has_schema_privilege('pgagent', 'USAGE')" || exit -1
 IF "%1" == "CHECK_PLPGSQL" %2 -t -c "SELECT lanname FROM pg_language WHERE lanname='plpgsql'" || exit -1

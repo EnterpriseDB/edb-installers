@@ -1,7 +1,7 @@
 #!/bin/sh
+# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # StackBuilderPlus shortcut creation script for OSX
-# Ashesh Vashi, EnterpriseDB
 
 # Check the command line
 PG_VERSION=@@PG_VERSION@@

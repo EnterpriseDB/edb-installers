@@ -1,3 +1,4 @@
+' Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 If WScript.Arguments.Count <> 1 Then
  Wscript.Quit 127

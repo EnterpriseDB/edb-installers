@@ -1,5 +1,5 @@
+' Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 ' Postgres Plus installer script (extract-only mode) for windows
-' Ashesh Vashi, EnterpriseDB
 
 'Initialization
 Dim WSI, FSO, WshShell, WshApp, TempFolder, LogFile, WMIService, Services, Locator

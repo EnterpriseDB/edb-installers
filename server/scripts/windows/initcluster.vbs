@@ -1,7 +1,7 @@
+' Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 On Error Resume Next
 
 ' PostgreSQL server cluster init script for Windows
-' Dave Page, EnterpriseDB
 
 ' Findings (ASHESH):
 ' - http://support.microsoft.com/kb/951978
