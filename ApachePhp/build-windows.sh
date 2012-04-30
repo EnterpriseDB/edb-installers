@@ -126,7 +126,7 @@ SET INCLUDE=$PG_PATH_WINDOWS\apache.windows\srclib\zlib;C:\pgBuild\OpenSSL\inclu
 SET PATH=$PG_PATH_WINDOWS;C:\pgBuild\gawk\bin;%PATH%
 
 perl Configure no-mdc2 no-rc5 no-idea enable-zlib VC-WIN32
-CALL ms\do_masm.bat
+CALL ms\do_ms.bat
 nmake -f ms\ntdll.mak
 
 REM Building apache
