@@ -1299,7 +1299,7 @@
 
     <!-- finalPage actions -->
     <finalPageActionList>
-        <launchBrowser url="http://127.0.0.1:${apacheport}/Drupal7/update.php"
+        <launchBrowser url="http://127.0.0.1:${apacheport}/Drupal7/"
             progressText="${msg(Installer.Installation.Finished.Visit.Us)}">
             <ruleList>
                 <compareText logic="does_not_equal" text="${installer_ui}" value="text"/>
