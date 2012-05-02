@@ -765,7 +765,7 @@
                     <url>http://jdbc.postgresql.org/</url>
                     <windowsIcon>${installdir}\scripts\images\pg-launchPgJDBC.ico</windowsIcon>
                     <ruleList>
-                        <isTrue value="${admin_rights}"/>
+                        <isFalse value="${extract_mode}"/>
                     </ruleList>
                  </startMenuLinkShortcut>  
             </startMenuShortcutList>
