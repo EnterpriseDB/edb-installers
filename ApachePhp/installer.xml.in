@@ -388,12 +388,12 @@
     <actionGroup>
       <actionList>
 	<registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Apache/Php</key>
           <name>Location</name>
           <variable>installdir</variable>
         </registryGet>
 	<registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Apache/Php</key>
           <name>Version</name>
           <variable>apachephpVersion</variable>
         </registryGet>
