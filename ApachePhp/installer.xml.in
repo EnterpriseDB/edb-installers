@@ -388,6 +388,36 @@
     <actionGroup>
       <actionList>
 	<registryGet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+          <name>Location</name>
+          <variable>installdir</variable>
+        </registryGet>
+	<registryGet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp</key>
+          <name>Version</name>
+          <variable>apachephpVersion</variable>
+        </registryGet>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${apache_home}</text>
+          <value/>
+        </compareText>
+      </ruleList>    
+    </actionGroup>
+
+    <!-- If its a old installation 2.2.20-5.3.8 Windows 
+	 A different registry prefix was used 
+	: Set the installation directory in case of re-install/upgrade -->
+    <actionGroup>
+      <actionList>
+	<registryGet>
           <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Apache/Php</key>
           <name>Location</name>
           <variable>installdir</variable>
@@ -407,6 +437,11 @@
         <compareText>
           <logic>does_not_equal</logic>
           <text>${apache_home}</text>
+          <value/>
+        </compareText>
+	<compareText>
+          <logic>equals</logic>
+          <text>${installdir}</text>
           <value/>
         </compareText>
       </ruleList>    
@@ -1423,6 +1458,22 @@ include conf\addons\*.conf
         </fileExists>
       </ruleList>
     </actionGroup>
+
+    <!-- Clear out any residual registry entres -->
+    <actionGroup>
+      <actionList>
+	    <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApachePhp" />
+	    <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Apache/Php" />
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+
   </preUninstallationActionList>
 
   <!-- Components -->
