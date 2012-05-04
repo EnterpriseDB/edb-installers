@@ -757,6 +757,60 @@
       </ruleList>
     </setInstallerVariable>
 
+    <actionGroup>
+      <actionList>
+        <throwError>
+           <text>${msg(config.port.invalid)}</text>
+           <ruleEvaluationLogic>or</ruleEvaluationLogic>
+           <ruleList>
+              <compareValues>
+                 <value1>${port}</value1>
+                 <logic>less</logic>
+                 <value2>1</value2>
+              </compareValues>
+              <compareValues>
+    	     <value1>${port}</value1>
+                 <logic>greater</logic>
+                 <value2>65535</value2>
+              </compareValues>
+           </ruleList>
+        </throwError>
+        <throwError>
+           <text>${msg(config.port.in.use)}</text>
+           <ruleList>
+              <portTest>
+                 <condition>cannot_bind</condition>
+                 <port>${port}</port>
+              </portTest>
+           </ruleList>
+        </throwError>
+        <throwError>
+           <text>${msg(config.port.invalid)}</text>
+           <ruleList>
+             <stringTest>
+               <text>${port}</text>
+               <type>not_digit</type>
+             </stringTest>
+           </ruleList>
+        </throwError>
+        <throwError>
+           <text>${msg(config.port.invalid)}</text>
+             <ruleList>
+                <stringTest>
+                    <text>${port}</text>
+                    <type>empty</type>
+                </stringTest>
+             </ruleList>
+         </throwError>
+      </actionList>
+      <ruleList>
+  	<compareText>
+            <logic>equals</logic>
+            <text>${installer_ui}</text>
+            <value>unattended</value>
+          </compareText>	 
+      </ruleList>
+    </actionGroup>  
   </preInstallationActionList>
   <!-- Postinstallation actions -->
   <postInstallationActionList>
