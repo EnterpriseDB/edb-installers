@@ -30,7 +30,7 @@ apache.details.title=Apache Server Details
 
 apache.details.explanation=Please specify a port on which Apache will run
 
-config.port.invalid=The port number must be an integer between 1024 and 65535.
+config.port.invalid=The port number must be an integer between 1 and 65535.
 
 config.port.in.use=The specified port number is not available. Please enter a different port.
 
