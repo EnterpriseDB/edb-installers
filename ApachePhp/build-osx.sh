@@ -95,7 +95,7 @@ _build_ApachePhp_osx() {
     for ARCH in ${ARCHS}
     do
       echo "Configuring the apache source tree for ${ARCH}"
-      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch ${ARCH}"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -arch ${ARCH} -no_compact_linkedit" ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for ${ARCH}"
+      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch ${ARCH} -I/usr/local/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -arch ${ARCH} -L/usr/local/lib -no_compact_linkedit" ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for ${ARCH}"
       ARCH_FLAGS="${ARCH_FLAGS} -arch ${ARCH}"
       for configFile in ${CONFIG_FILES}
       do
@@ -106,7 +106,7 @@ _build_ApachePhp_osx() {
     done
 
     echo "Configuring the apache source tree for Universal"
-    CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS}"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS} -no_compact_linkedit" ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache  || _die "Failed to configure apache for 32 bit Universal"
+    CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS} -I/usr/local/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS} -L/usr/local/lib -no_compact_linkedit" ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache  || _die "Failed to configure apache for 32 bit Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     for configFile in ${CONFIG_FILES}
@@ -137,7 +137,7 @@ EOT
     _replace "#define HTTPD_ROOT \"$PG_STAGING/apache\"" "#define HTTPD_ROOT \"/Library/EnterpriseDB-ApachePhp/apache\"" include/ap_config_auto.h
 
     echo "Building apache"
-    CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS}"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS} -no_compact_linkedit" make || _die "Failed to build apache"
+    CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS} -I/usr/local/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS} -L/usr/local/lib -no_compact_linkedit" make || _die "Failed to build apache"
     make install || _die "Failed to install apache"
 
     PATH=$OLDPATH
@@ -169,7 +169,7 @@ EOT
     for ARCH in ${ARCHS}
     do
       echo "Configuring the php source tree for ${ARCH}"
-      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch ${ARCH}"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -arch ${ARCH} -no_compact_linkedit" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for ${ARCH}"
+      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch ${ARCH}"   LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -arch ${ARCH} -no_compact_linkedit" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr/local --with-zlib-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for ${ARCH}"
       for configFile in ${CONFIG_FILES}
       do
            if [ -f "${configFile}.h" ]; then
@@ -179,7 +179,7 @@ EOT
     done
  
     echo "Configuring the php source tree for Universal"
-    CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS}"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS} -no_compact_linkedit" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr --with-zlib-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for Universal"
+    CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS}"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS} -no_compact_linkedit" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr/local --with-zlib-dir=/usr --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     for configFile in ${CONFIG_FILES}
@@ -256,6 +256,8 @@ EOT
     cp -R /usr/local/lib/libxml*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -R /usr/local/lib/libexpat*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -R /usr/local/lib/libexpat*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
+    cp -R /usr/local/lib/libcrypto*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
+    cp -R /usr/local/lib/libssl*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
 
     files=`ls $WD/ApachePhp/staging/osx/apache/lib/*`
     for file in $files
