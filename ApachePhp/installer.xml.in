@@ -1528,6 +1528,13 @@ include conf\addons\*.conf
       </ruleList>
     </actionGroup>
 
+    <!-- Remove the addons directory -->
+    <deleteFile path="${installdir}/apache/conf/addons" >
+	<ruleList>
+	    <fileExists path="${installdir}/apache/conf/addons" />
+	</ruleList>
+    </deleteFile>
+
     <!-- Clear out any residual registry entres -->
     <actionGroup>
       <actionList>
