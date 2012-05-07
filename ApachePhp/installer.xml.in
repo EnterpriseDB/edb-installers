@@ -511,19 +511,6 @@
            </compareText>
         </ruleList>
    </setInstallerVariableFromRegEx>
-    <actionGroup>
-	<actionList>
-	    <setInstallerVariable name="installationType" value="upgrade" />
-	</actionList>
-	<ruleList>
-	    <compareText>
-		<text>${apachephpVersion}</text>
-		<logic>does_not_equal</logic>
-		<value/>
-	    </compareText>
-	</ruleList>
-    </actionGroup>
-
 
     <actionGroup>
       <actionList> 
