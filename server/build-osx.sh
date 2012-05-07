@@ -173,6 +173,8 @@ _build_server_osx() {
     cp /usr/local/lib/libxml2* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
     cp /usr/local/lib/libxslt.* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxslt"	
     cp /usr/local/lib/libuuid* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"	
+    cp /usr/local/lib/libssl* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"	
+    cp /usr/local/lib/libcrypto* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"	
 	 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     _rewrite_so_refs $WD/server/staging/osx bin @loader_path/..
