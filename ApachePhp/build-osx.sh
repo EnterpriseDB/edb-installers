@@ -267,6 +267,8 @@ EOT
     for file in $files
     do 
         install_name_tool -change "/usr/local/lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
+	install_name_tool -change "/usr/local/lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
+	install_name_tool -change "/usr/local/lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" $file
     done
 
     chmod u+w $PG_STAGING/apache/lib/*
