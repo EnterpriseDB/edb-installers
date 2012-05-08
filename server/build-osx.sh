@@ -232,12 +232,15 @@ EOT
     cp /usr/local/lib/libedit* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
     cp /usr/local/lib/libssl* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
     cp /usr/local/lib/libcrypto* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp /usr/local/lib/libexpat* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp /usr/local/lib/libz* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     _rewrite_so_refs $WD/server/staging/osx bin @loader_path/..
     _rewrite_so_refs $WD/server/staging/osx lib @loader_path/..
     _rewrite_so_refs $WD/server/staging/osx lib/postgresql @loader_path/../..
     _rewrite_so_refs $WD/server/staging/osx lib/postgresql/plugins @loader_path/../../..
+    _rewrite_so_refs $WD/server/staging/osx stackbuilder.app/Contents/MacOS @loader_path/../../..
 
     cd $WD/server/scripts/osx/getlocales/; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 -arch x86_64 -o getlocales.osx -O0 getlocales.c  || _die "Failed to build getlocales utility"
 
