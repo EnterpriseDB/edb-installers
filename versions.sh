@@ -42,7 +42,7 @@ PG_BUILDNUM_SQLPROTECT=1
 
 # Tags for source checkout
 PG_TAG_REPLICATIONSERVER='MMR_WIP'
-PG_TAG_MIGRATIONTOOLKIT='AS91R1_9122'
+PG_TAG_MIGRATIONTOOLKIT=''
 
 # PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
 #                     Minor version is revision.build.
