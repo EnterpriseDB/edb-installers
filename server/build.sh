@@ -110,10 +110,11 @@ _prep_server() {
     then
         echo "Updating debugger source..."
         cd pldebugger
+	git checkout PRE_9_2
         git pull || _die "Failed to update the pldebugger code"
     else
         echo "Fetching debugger source..."
-        git clone git://git.postgresql.org/git/pldebugger.git || _die "Failed to checkout the pldebugger code"
+	git clone -b PRE_9_2 git://git.postgresql.org/git/pldebugger.git || _die "Failed to checkout the pldebugger code"
     fi  
 	
 	# StackBuilder (CVS Tree)
