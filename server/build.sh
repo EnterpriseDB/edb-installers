@@ -108,10 +108,11 @@ _prep_server() {
     then
     echo "Updating debugger source..."
         cd pldebugger
-        cvs -z3 update -dP  || _die "Failed to update the pldebugger code" 
+	git checkout PRE_9_2
+        git pull  || _die "Failed to update the pldebugger code" 
     else
         echo "Fetching debugger source..."
-        cvs -d:pserver:anonymous@cvs.pgfoundry.org:/cvsroot/edb-debugger co -d pldebugger server || _die "Failed to checkout the pldebugger code"
+	git clone -b PRE_9_2 git://git.postgresql.org/git/pldebugger.git || _die "Failed to checkout the pldebugger code"
     fi  
 	
 	# StackBuilder (CVS Tree)
