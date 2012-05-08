@@ -259,6 +259,8 @@ EOT
     cp -R /usr/local/lib/libxml*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -R /usr/local/lib/libexpat*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -R /usr/local/lib/libz*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -R /usr/local/lib/libssl*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -R /usr/local/lib/libcrypto*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -R /usr/local/lib/libexpat*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
     cp -R /usr/local/lib/libssl*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
     cp -R /usr/local/lib/libcrypto*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
