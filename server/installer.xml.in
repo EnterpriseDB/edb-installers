@@ -1213,6 +1213,24 @@
                     <folder>programfilesmacosx</folder>
                     <origin>lib/libxml2.2.dylib</origin>
                 </unpackFile>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/lib/libxslt.1.dylib</destination>
+                    <folder>programfilesmacosx</folder>
+                    <origin>lib/libxslt.1.dylib</origin>
+                </unpackFile>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/lib/libssl.1.0.0.dylib</destination>
+                    <folder>programfilesmacosx</folder>
+                    <origin>lib/libssl.1.0.0.dylib</origin>
+                </unpackFile>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}/postgresql_installer/lib/libcrypto.1.0.0.dylib</destination>
+                    <folder>programfilesmacosx</folder>
+                    <origin>lib/libcrypto.1.0.0.dylib</origin>
+                </unpackFile>
             </actionList>
             <ruleList>
                 <compareText>
