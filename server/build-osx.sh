@@ -186,6 +186,7 @@ EOT
 
     # Build the app bundle
     make -j4 all || _die "Failed to build pgAdmin"
+	make doc || _die "Failed to build documentation for pgAdmin"
     make install || _die "Failed to install pgAdmin"
 
     # Move the utilties.ini file out of the way (Uncomment for Postgres Studio or pgAdmin 1.9+)
