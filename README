@@ -399,6 +399,15 @@ Additional configuration in the VM's :
        2) yum install libpng
          (libjpeg.so should also be present in /usr/lib and /usr/lib64 for linux and linux-x64 respectively)
 
+* Install the latest version of ActiveState Python, Perl & TCL/Tk.
+* Install SPHINX for generating documentation for generating documentations for
+  pgAdmin3.
+  i.e. <PYTHONHOME>/bin/pypm install sphinx
+       For ActiveState Python 2.6, the PYTHONHOME is '/opt/ActivePython-2.6'
+       For ActiveState Python 3.2, the PYTHONHOME is '/opt/ActivePython-3.2'
+  NOTE: Install the SPHINX as the login user. i.e. 'buildfarm'.
+        It will be installed in '$HOME/.local' directory. i.e. /home/buildram/.local
+
 Further info
 ------------
 

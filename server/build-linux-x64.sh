@@ -287,7 +287,7 @@ EOT
     # Build the app
     echo "Building & installing pgAdmin"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; make all" || _die "Failed to build pgAdmin"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; make doc" || _die "Failed to build documentation for pgAdmin"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; make doc SPHINXBUILD=\$HOME/.local/bin/sphinx-build" || _die "Failed to build documentation for pgAdmin"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; make install" || _die "Failed to install pgAdmin"
 
     # Copy in the various libraries
