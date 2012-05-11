@@ -91,18 +91,6 @@ _prep_server() {
     echo "Unpacking pgAdmin source..."
     tar -zxvf ../../tarballs/pgadmin3-$PG_TARBALL_PGADMIN.tar.gz
 
-    # pl/Java
-#    if [ -e pljava-$PG_TARBALL_PLJAVA ];
-#    then
-#      echo "Removing existing pljava-$PG_TARBALL_PLJAVA source directory"
-#      rm -rf pljava-$PG_TARBALL_PLJAVA || _die "Couldn't remove the existing pljava-$PG_TARBALL_PLJAVA source directory (source/pljava-$PG_TARBALL_PLJAVA)"
-#    fi
-
-#    echo "Unpacking pljava source..."
-#    tar -zxvf ../../tarballs/pljava-src-$PG_TARBALL_PLJAVA.tar.gz
-#    cd pljava-$PG_TARBALL_PLJAVA 
-#    patch -p1 < ../../../tarballs/pljava_pg90_jdk5_jdk6.patch
-
     # Debugger
     cd $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib
 
@@ -110,11 +98,10 @@ _prep_server() {
     then
         echo "Updating debugger source..."
         cd pldebugger
-	git checkout PRE_9_2
         git pull || _die "Failed to update the pldebugger code"
     else
         echo "Fetching debugger source..."
-	git clone -b PRE_9_2 git://git.postgresql.org/git/pldebugger.git || _die "Failed to checkout the pldebugger code"
+	git clone git://git.postgresql.org/git/pldebugger.git || _die "Failed to checkout the pldebugger code"
     fi  
 	
 	# StackBuilder (CVS Tree)
