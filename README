@@ -399,14 +399,59 @@ Additional configuration in the VM's :
        2) yum install libpng
          (libjpeg.so should also be present in /usr/lib and /usr/lib64 for linux and linux-x64 respectively)
 
-* Install the latest version of ActiveState Python, Perl & TCL/Tk.
+* Install the latest version of ActiveState Python, Perl & TCL/Tk on all
+  the platforms.
 * Install SPHINX for generating documentation for generating documentations for
   pgAdmin3.
-  i.e. <PYTHONHOME>/bin/pypm install sphinx
+  i.e. <PYTHONHOME>/bin/easy_install Sphinx
        For ActiveState Python 2.6, the PYTHONHOME is '/opt/ActivePython-2.6'
        For ActiveState Python 3.2, the PYTHONHOME is '/opt/ActivePython-3.2'
-  NOTE: Install the SPHINX as the login user. i.e. 'buildfarm'.
-        It will be installed in '$HOME/.local' directory. i.e. /home/buildram/.local
+  NOTE: Install the SPHINX as the root user.
+
+Trouble-Shooting:
+* I got this error for ActivePython-3.2 on linux/linux-x64
+    -----------------------------------------------------------------
+      /opt/ActivePython-3.2/bin/python3.2
+    ActivePython 3.2.2.3 (ActiveState Software Inc.) based on
+    Python 3.2.2 (default, Sep  8 2011, 12:20:28) 
+    [GCC 4.0.2 20051125 (Red Hat 4.0.2-8)] on linux2
+    Type "help", "copyright", "credits" or "license" for more information.
+    >>> import hashlib;
+    ERROR:root:code for hash md5 was not found.
+    Traceback (most recent call last):
+      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 141, in <module>
+        globals()[__func_name] = __get_hash(__func_name)
+      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 91, in
+    __get_builtin_constructor
+        raise ValueError('unsupported hash type %s' % name)
+    ValueError: unsupported hash type md5
+    ERROR:root:code for hash sha1 was not found.
+    Traceback (most recent call last):
+      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 141, in <module>
+        globals()[__func_name] = __get_hash(__func_name)
+      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 91, in
+    __get_builtin_constructor
+        raise ValueError('unsupported hash type %s' % name)
+    ValueError: unsupported hash type sha1
+    ERROR:root:code for hash sha224 was not found.
+    Traceback (most recent call last):
+      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 141, in <module>
+        globals()[__func_name] = __get_hash(__func_name)
+      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 91, in
+    __get_builtin_constructor
+        raise ValueError('unsupported hash type %s' % name)
+    ValueError: unsupported hash type sha224
+    ERROR:root:code for hash sha256 was not found.
+    Traceback (most recent call last):
+      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 141, in <module>
+        globals()[__func_name] = __get_hash(__func_name)
+      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 91, in
+    __get_builtin_constructor
+        raise ValueError('unsupported hash type %s' % name)
+    -----------------------------------------------------------------
+  In order to resolve the issue, I had to run the following command as 'root'
+  user.
+  chcon -t texrel_shlib_t /opt/ActivePython-3.2/lib/python3.2/lib-dynload/_hashlib.cpython-32m.so
 
 Further info
 ------------
