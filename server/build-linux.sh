@@ -276,7 +276,7 @@ EOT
 
     # Configure
     echo "Configuring the pgAdmin source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; sh ./configure --prefix=$PG_STAGING/pgAdmin3 --with-pgsql=$PG_PATH_LINUX/server/staging/linux --with-wx=/usr/local --with-libxml2=/usr/local --with-libxslt=/usr/local --disable-debug --disable-static --with-sphinx-build=\$HOME/.local/bin/sphinx-build LD_LIBRARY_PATH=$PG_PATH_LINUX/server/staging/linux/lib" || _die "Failed to configure pgAdmin"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; sh ./configure --prefix=$PG_STAGING/pgAdmin3 --with-pgsql=$PG_PATH_LINUX/server/staging/linux --with-wx=/usr/local --with-libxml2=/usr/local --with-libxslt=/usr/local --disable-debug --disable-static --with-sphinx-build=/opt/ActivePython-3.2/bin/sphinx-build LD_LIBRARY_PATH=$PG_PATH_LINUX/server/staging/linux/lib" || _die "Failed to configure pgAdmin"
 
     # Build the app
     echo "Building & installing pgAdmin"
