@@ -74,16 +74,8 @@ _prep_server() {
     # Debugger
     cd $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib
 
-    if [ -e pldebugger ];
-    then
-        echo "Updating debugger source..."
-        cd pldebugger
-        git checkout PRE_9_2
-        git pull || _die "Failed to update the pldebugger code"
-    else
-        echo "Fetching debugger source..."
-        git clone -b PRE_9_2 git://git.postgresql.org/git/pldebugger.git || _die "Failed to checkout the pldebugger code"
-    fi
+    echo "Unpacking debugger source..."
+    tar -zxvf ../../../../tarballs/edb-debugger-$PG_TARBALL_DEBUGGER.tgz
 
 	# StackBuilder (CVS Tree)
 	echo "Updating the StackBuilder source tree..."
