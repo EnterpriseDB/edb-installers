@@ -43,6 +43,10 @@ _prep_stackbuilderplus_osx() {
     mkdir -p $WD/StackBuilderPlus/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/StackBuilderPlus/staging/osx || _die "Couldn't set the permissions on the staging directory"
 
+    echo "Creating staging directory ($WD/StackBuilderPlus/staging/osx/lib)"
+    mkdir -p $WD/StackBuilderPlus/staging/osx/lib || _die "Couldn't create the staging lib directory"
+    chmod ugo+w $WD/StackBuilderPlus/staging/osx/lib || _die "Couldn't set the permissions on the staging lib directory"
+
 }
 
 ################################################################################
@@ -113,6 +117,19 @@ EOT
     echo "Copy the UpdateManager app bundle into place"
     cp -R $WD/StackBuilderPlus/source/updatemanager.osx/UpdateManager.app $WD/StackBuilderPlus/staging/osx/UpdateManager.app || _die "Failed to copy StackBuilderPlus into the staging directory"
 
+    cd $WD/server/staging/osx
+
+
+    # Copy libxml2 as System's libxml can be old.
+    cp /usr/local/lib/libxml2* $WD/StackBuilderPlus/staging/osx/lib/ || _die "Failed to copy the latest libxml2"
+    cp /usr/local/lib/libxslt.* $WD/StackBuilderPlus/staging/osx/lib/ || _die "Failed to copy the latest libxslt"
+    cp /usr/local/lib/libuuid* $WD/StackBuilderPlus/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp /usr/local/lib/libz* $WD/StackBuilderPlus/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp /usr/local/lib/libexpat* $WD/StackBuilderPlus/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+
+    _rewrite_so_refs $WD/StackBuilderPlus/staging/osx lib @loader_path/..
+    _rewrite_so_refs $WD/StackBuilderPlus/staging/osx stackbuilderplus.app/Contents/MacOS @loader_path/../../..
+
     cd $WD
 }
 
@@ -153,12 +170,12 @@ _postprocess_stackbuilderplus_osx() {
 
     if [ ! -f $WD/scripts/risePrivileges ]; then
         cp installer.xml installer_1.xml
-        _replace "<requireInstallationByRootUser>\${admin_rights}</requireInstallationByRootUser>" "<requireInstallationByRootUser>1</requireInstallationByRootUser>"
+        _replace "<requireInstallationByRootUser>\${admin_rights}</requireInstallationByRootUser>" "<requireInstallationByRootUser>1</requireInstallationByRootUser>" installer_1.xml
 
         # Build the installer (for the root privileges required)
         echo Building the installer with the root privileges required
         "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
-        cp $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/Contents/MacOS/psqlODBC $WD/scripts/risePrivileges || _die "Failed to copy privileges escalation applet"
+        cp $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/Contents/MacOS/StackBuilderPlus $WD/scripts/risePrivileges || _die "Failed to copy privileges escalation applet"
         rm -rf $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app
     fi
 

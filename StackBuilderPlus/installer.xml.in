@@ -550,6 +550,7 @@
                 <ruleList>
                   <compareText logic="contains" text="${platform_name}" value="linux"/>
                   <compareText logic="contains" text="${platform_name}" value="solaris"/>
+		  <compareText logic="equals" text="${platform_name}" value="osx"/>
                 </ruleList>
             </substitute>
             <substitute>
@@ -574,6 +575,7 @@
                 <ruleList>
                   <compareText logic="contains" text="${platform_name}" value="linux"/>
                   <compareText logic="contains" text="${platform_name}" value="solaris"/>
+		  <compareText logic="equals" text="${platform_name}" value="osx"/>
                 </ruleList>
             </runProgram>
 	   <!--Following substitution for linux is done in createshortcuts.sh script which is not in HPUX, that is why it is done only for HPUX here -->
@@ -617,6 +619,7 @@
                   <compareText logic="contains" text="${platform_name}" value="linux"/>
                   <compareText logic="contains" text="${platform_name}" value="solaris"/>
 		  <compareText logic="contains" text="${platform_name}" value="hpux"/>
+		  <compareText logic="equals" text="${platform_name}" value="osx"/>
                 </ruleList>
             </runProgram>
     
@@ -1308,6 +1311,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
         <folder description="Program Files" destination="${installdir}" name="programfilesosx" platforms="osx">
           <distributionFileList>
             <distributionDirectory origin="staging/osx/StackBuilderPlus.app"/>
+	    <distributionDirectory origin="staging/osx/lib"/>
             <distributionDirectory origin="staging/osx/installer"/>
             <distributionDirectory origin="staging/osx/scripts"/>
           </distributionFileList>
