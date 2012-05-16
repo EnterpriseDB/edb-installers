@@ -73,7 +73,21 @@ _build_ReplicationServer_osx() {
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/lib || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libxml2* $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/lib || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/bin || _die "Failed to copy psql in instscripts"
-   
+    cp -R $PG_PATH_OSX/server/staging/osx/lib/libedit* $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/lib || _die "Failed to copy libpq in instscripts"
+
+    # Temporarily move libssl and libcrypt into temp directory and write placeholder for rpath
+    mkdir -p $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/temp || _die "Failed to create $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/temp"
+
+    cp /usr/local/lib/libssl* $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/temp || _die "Failed to copy the latest libssl"
+    cp /usr/local/lib/libcrypto* $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/temp || _die "Failed to copy the latest libcrypto"
+
+    _rewrite_so_refs $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts temp @loader_path/..
+
+    # Now move libssl and libcrypto to instscripts directory.
+    mv $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/temp/* $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/lib || _die "Failed to copy the libs"
+ 
+    rm -rf $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/temp || _die "Failed to remove the $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/temp"
+
     cp -R $PG_PATH_OSX/MigrationToolKit/staging/osx/MigrationToolKit/lib/edb-migrationtoolkit.jar $PG_PATH_OSX/ReplicationServer/staging/osx/repserver/lib/repl-mtk || _die "Failed to copy edb-migrationtoolkit.jar"
     cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/staging/osx/repconsole/lib/jdbc || _die "Failed to copy pg jdbc drivers"
   
@@ -87,19 +101,6 @@ _build_ReplicationServer_osx() {
     chmod +rx $WD/ReplicationServer/staging/osx/repserver/bin/*
     chmod +r $WD/ReplicationServer/staging/osx/repconsole/lib/*
     chmod +r $WD/ReplicationServer/staging/osx/repserver/lib/*
-
-    if [ ! -f $WD/MetaInstaller/source/MetaInstaller.osx/validateUser/validateUserClient.o ];
-    then
-      echo "Building validateUserClient utility"
-      cp -R $WD/MetaInstaller/scripts/osx/validateUser $WD/ReplicationServer/source/ReplicationServer.osx/validateUser || _die "Failed copying validateUser script while building"
-      cd $WD/ReplicationServer/source/ReplicationServer.osx/validateUser
-      gcc -DWITH_OPENSSL -I. -o validateUserClient.o $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto || _die "Failed to build the validateUserClient utility"
-      cp validateUserClient.o $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/validateUserClient.o || _die "Failed to copy validateUserClient utility to staging directory"
-    else
-      echo "Using validateUserClient utility from MetaInstaller package"
-      cp $WD/MetaInstaller/source/MetaInstaller.osx/validateUser/validateUserClient.o $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/validateUserClient.o || _die "Failed to copy validateUserClient utility from MetaInstaller package"
-    fi
-    chmod ugo+x $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/validateUserClient.o
 
 }
 
@@ -154,7 +155,7 @@ _postprocess_ReplicationServer_osx() {
         # Build the installer (for the root privileges required)
         echo Building the installer with the root privileges required
         "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
-        cp $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/xDBReplicationServer $WD/scripts/risePrivileges || _die "Failed to copy the privileges escalation applet"
+        cp $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/xDB\ Replication\ Server $WD/scripts/risePrivileges || _die "Failed to copy the privileges escalation applet"
 
         rm -rf $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app
     fi
@@ -163,10 +164,10 @@ _postprocess_ReplicationServer_osx() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
     # Using own scripts for extract-only mode
-    cp -f $WD/scripts/risePrivileges $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/xDBReplicationServer
-    chmod a+x $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/xDBReplicationServer
+    cp -f $WD/scripts/risePrivileges $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/xDB\ Replication\ Server
+    chmod a+x $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/xDB\ Replication\ Server
     cp -f $WD/resources/extract_installbuilder.osx $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/installbuilder.sh
-    _replace @@PROJECTNAME@@ xDBReplicationServer $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
+    _replace @@PROJECTNAME@@ xDB\ Replication\ Server $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
     chmod a+x $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/Contents/MacOS/installbuilder.sh
 
 

@@ -746,7 +746,7 @@
             <promptUser>0</promptUser>
             <validVersionList>
                 <validVersion>
-                    <vendor>sun</vendor>
+                <!--    <vendor>sun</vendor> -->
                     <maxVersion/>
                     <minVersion>1.6.0</minVersion>
                     <requireJDK>0</requireJDK>
@@ -2554,6 +2554,14 @@ database=${controldb}
                 <compareText text="${platform_name}" logic="contains" value="hpux" />
             </ruleList>
         </deleteFile> 
+
+	<!-- Mac -->
+	<deleteFile path="/etc/edb-repl.conf" >
+            <ruleList>
+                <fileExists path="/etc/edb-repl.conf" />
+                <compareText text="${platform_name}" logic="equals" value="osx" />
+            </ruleList>
+        </deleteFile>
 
         <actionGroup>
             <actionList>

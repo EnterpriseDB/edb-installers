@@ -17,7 +17,7 @@ _die() {
 }
 
 # Create the user account if required
-if [ "x`dscl . -list /users|cut -f2 -d' '|grep $1`" != "x" ];
+if [ "x`dscl . -list /users|cut -f2 -d' '|grep ^$1\$`" != "x" ];
 then
     echo "User account '$1' already exists"
     exit 0
@@ -31,7 +31,7 @@ else
     dscl . create /users/$1 gid 1
     dscl . create /users/$1 home $2
     dscl . create /users/$1 shell /bin/bash
-    dscl . create /users/$1 realname "pgAgent"
+    dscl . create /users/$1 realname "xDBReplication"
 fi
 
 echo "$0 ran to completion"
