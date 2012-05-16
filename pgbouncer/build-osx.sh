@@ -57,28 +57,28 @@ _build_pgbouncer_osx() {
     echo "*  Build: pgBouncer (OSX)  *"
     echo "****************************"
 
-    cd $PG_PATH_OSX/pgbouncer/source/pgbouncer.osx/; 
+    cd $PG_PATH_OSX/pgbouncer/source/pgbouncer.osx/;
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" LDFLAGS="-arch ppc" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
-    mv include/config.h include/config_ppc.h || _die "Failed to rename config.h"
-    
+    mv lib/usual/config.h lib/usual/config_ppc.h || _die "Failed to rename config.h"
+   
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-arch i386" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
-    mv include/config.h include/config_i386.h || _die "Failed to rename config.h"
+    mv lib/usual/config.h lib/usual/config_i386.h || _die "Failed to rename config.h"
 
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
-    mv include/config.h include/config_x86_64.h || _die "Failed to rename config.h"
+    mv lib/usual/config.h lib/usual/config_x86_64.h || _die "Failed to rename config.h"
 
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc -arch x86_64" LDFLAGS="-arch i386 -arch ppc -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
 
-    echo "#ifdef __BIG_ENDIAN__" > include/config.h
-    echo "  #include \"config_ppc.h\"" >> include/config.h
-    echo "#else" >> include/config.h
-    echo "  #ifdef __LP64__" >> include/config.h
-    echo "    #include \"config_x86_64.h\"" >> include/config.h
-    echo "  #else" >> include/config.h
-    echo "    #include \"config_i386.h\"" >> include/config.h
-    echo "  #endif" >> include/config.h
-    echo "#endif" >> include/config.h
-    
+    echo "#ifdef __BIG_ENDIAN__" > lib/usual/config.h
+    echo "  #include \"config_ppc.h\"" >> lib/usual/config.h
+    echo "#else" >> lib/usual/config.h
+    echo "  #ifdef __LP64__" >> lib/usual/config.h
+    echo "    #include \"config_x86_64.h\"" >> lib/usual/config.h
+    echo "  #else" >> lib/usual/config.h
+    echo "    #include \"config_i386.h\"" >> lib/usual/config.h
+    echo "  #endif" >> lib/usual/config.h
+    echo "#endif" >> lib/usual/config.h
+   
     MACOSX_DEPLOYMENT_TARGET=10.5 make || _die "Failed to build pgbouncer"
     make install || _die "Failed to install pgbouncer"
 
@@ -86,28 +86,47 @@ _build_pgbouncer_osx() {
 
     mkdir -p $WD/pgbouncer/staging/osx/pgbouncer/lib || _die "Failed to create the pgbouncer lib directory"
     PG_LIBEVENT_MAJOR_VERSION=`echo $PG_TARBALL_LIBEVENT | cut -f1,2 -d '.'`
- 
+
     cp /usr/local/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION*dylib $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/lib/ || _die "Failed to copy the libevent library(libevent-$PG_LIBEVENT_MAJOR_VERSION)"
 
     _rewrite_so_refs $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer bin @loader_path/..
     _rewrite_so_refs $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer lib @loader_path/
-
  
     mkdir -p $WD/pgbouncer/staging/osx/instscripts || _die "Failed to create the instscripts directory"
 
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -R $PG_PATH_OSX/server/staging/osx/lib/libedit* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy libedit in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy psql in instscripts"
     cp /usr/local/lib/libxml2* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy the latest libxml2"
+
+    # Setting loader_path of libcrypto in libssl
+    mkdir -p $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/temp || _die "Failed to create $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/temp"
+
+    cp /usr/local/lib/libssl* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/temp || _die "Failed to copy the latest libssl"
+    cp /usr/local/lib/libcrypto* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/temp || _die "Failed to copy the latest libcrypto"
+
+    _rewrite_so_refs $PG_PATH_OSX/pgbouncer/staging/osx/instscripts temp @loader_path/
+
+    # Now move libssl and libcrypto to instscripts directory.
+    mv $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/temp/* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy the libs"
+ 
+    rm -rf $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/temp || _die "Failed to remove the $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/temp"
 
     # Change the referenced libraries
     OLD_DLL_LIST=`otool -L $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/psql | grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' `
     for OLD_DLL in $OLD_DLL_LIST
-    do 
+    do
         NEW_DLL=`echo $OLD_DLL | sed -e "s^@loader_path/../lib/^^g"`
         install_name_tool -change "$OLD_DLL" "$NEW_DLL" "$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/psql"
     done
 
-  
+   # Change the referenced libraries of libssl
+    OLD_DLL_LIST1=`otool -L $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.1.0.0.dylib | grep @loader_path//lib |  grep -v ":" | awk '{ print $1 }' `
+    for OLD_DLL in $OLD_DLL_LIST1
+    do
+        NEW_DLL=`echo $OLD_DLL | sed -e "s^@loader_path//lib/^^g"`
+        install_name_tool -change "$OLD_DLL" "$NEW_DLL" "$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.1.0.0.dylib"
+    done 
 }
 
 
@@ -149,30 +168,30 @@ _postprocess_pgbouncer_osx() {
 
     if [ ! -f $WD/scripts/risePrivileges ]; then
         cp installer.xml installer_1.xml
-        _replace "<requireInstallationByRootUser>\${admin_rights}</requireInstallationByRootUser>" "<requireInstallationByRootUser>1</requireInstallationByRootUser>"
+        _replace "<requireInstallationByRootUser>\${admin_rights}</requireInstallationByRootUser>" "<requireInstallationByRootUser>1</requireInstallationByRootUser>" installer_1.xml
 
         # Build the installer (for the root privileges required)
         echo Building the installer with the root privileges required
         "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
-        cp $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/PgBouncer $WD/scripts/risePrivileges || _die "Failed to copy the privileges escalation applet"
+        cp $WD/output/pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/PgBouncer $WD/scripts/risePrivileges || _die "Failed to copy the privileges escalation applet"
 
-        rm -rf $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app
+        rm -rf $WD/output/pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app
     fi
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
     # Using own scripts for extract-only mode
-    cp -f $WD/scripts/risePrivileges $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/PgBouncer
-    chmod a+x $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/PgBouncer
-    cp -f $WD/resources/extract_installbuilder.osx $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/installbuilder.sh
-    _replace @@PROJECTNAME@@ PgBouncer $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace @@PROJECTNAME@@ with PgBouncer ($WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/installbuilder.sh)"
-    chmod a+x $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/installbuilder.sh
+    cp -f $WD/scripts/risePrivileges $WD/output/pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/PgBouncer
+    chmod a+x $WD/output/pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/PgBouncer
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ PgBouncer $WD/output/pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace @@PROJECTNAME@@ with PgBouncer ($WD/output/pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/installbuilder.sh)"
+    chmod a+x $WD/output/pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/Contents/MacOS/installbuilder.sh
 
     # Zip up the output
     cd $WD/output
-    zip -r pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.zip pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/ || _die "Failed to zip the installer bundle"
-    rm -rf pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/ || _die "Failed to remove the unpacked installer bundle"
+    zip -r pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.zip pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
 
     cd $WD
