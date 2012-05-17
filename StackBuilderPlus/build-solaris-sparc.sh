@@ -99,7 +99,7 @@ export CFLAGS="-m64"
 export CXXFLAGS="-m64"
 export CPPFLAGS="-m64"
 export LDFLAGS="-m64"
-export LD_LIBRARY_PATH=/usr/local/lib
+export LD_LIBRARY_PATH=/usr/local/lib:/usr/sfw/lib/sparcv9
 export PATH=/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/ucb:\$PATH
 
 EOT
