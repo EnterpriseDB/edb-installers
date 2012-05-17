@@ -170,7 +170,7 @@ _build_proj() {
 _build_postgis() {
 
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx || _die "Failed to change to the proj source directory (PostGIS/source/proj.osx)"
-
+    PG_PGHOME_OSX=$WD/server/caching/osx
     # Configure the source tree
     echo "Configuring the PostGIS source tree for Intel"
     PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/bin:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin:$PATH; LD_LIBRARY_PATH=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib:$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" MACOSX_DEPLOYMENT_TARGET=10.4 ./configure --prefix=$PG_STAGING/PostGIS --with-pgsql=$PG_PGHOME_OSX/bin/pg_config --with-geos=$PG_STAGING/geos-$PG_TARBALL_GEOS.osx/bin/geos-config --with-proj=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx --with-proj-libdir=$PG_STAGING/proj-$PG_TARBALL_PROJ.osx/lib --with-xsl=$PG_DOCBOOK_OSX --disable-dependency-tracking || _die "Failed to configure PostGIS for i386"

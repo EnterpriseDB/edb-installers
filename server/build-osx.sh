@@ -56,6 +56,16 @@ _prep_server_osx() {
     echo "Creating staging directory ($WD/server/staging/osx)"
     mkdir -p $WD/server/staging/osx || _die "Couldn't create the staging directory"
 
+    # Remove any existing caching directory that might exist, and create a clean one
+    if [ -e $WD/server/caching/osx ];
+    then
+      echo "Removing existing caching directory"
+      rm -rf $WD/server/caching/osx || _die "Couldn't remove the existing caching directory"
+    fi
+
+    echo "Creating caching directory ($WD/server/caching/osx)"
+    mkdir -p $WD/server/caching/osx || _die "Couldn't create the caching directory"
+
 }
 
 ################################################################################
@@ -166,7 +176,10 @@ _build_server_osx() {
     cp /usr/local/lib/libxml2* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
     cp /usr/local/lib/libssl* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
     cp /usr/local/lib/libcrypto* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
-	 
+	
+    # maintain absolute refrences for postgis build. 
+    cp -R $WD/server/staging/osx $WD/server/caching/. || _die "Failed to copy the caching directory for osx"
+  
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     _rewrite_so_refs $WD/server/staging/osx bin @loader_path/..
     _rewrite_so_refs $WD/server/staging/osx lib @loader_path/..
