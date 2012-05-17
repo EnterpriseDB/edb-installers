@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -e $WD/pvt_settings.sh ]
+if [ -e $WD/pvt_settings.sh.REL-9_0 ]
 then
 
     # Source the private settings.    
