@@ -66,6 +66,9 @@ _build_Slony_osx() {
 
     cp $PG_PGHOME_OSX/lib/libpq* .
 
+    #Use cached libpq and other libraries.
+    PG_PGHOME_OSX=$WD/server/caching/osx 
+
     echo "Configuring the slony source tree for intel"
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure  --prefix=$PG_PGHOME_OSX --with-pgconfigdir=$PG_PGHOME_OSX/bin   || _die "Failed to configure slony for intel"
 

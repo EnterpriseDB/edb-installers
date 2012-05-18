@@ -57,7 +57,9 @@ _build_psqlODBC_osx() {
 
     #Hack for psqlODBC-08.04.0200 
     cp $PG_PGHOME_OSX/lib/libpq.5.dylib . || _die "Failed to copy the libpq to the build directory"
- 
+
+    #Use cached libpq and other libraries.
+    PG_PGHOME_OSX=$WD/server/caching/osx 
     echo "Configuring psqlODBC sources for intel"
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --with-iodbc --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for intel"
 
