@@ -106,8 +106,14 @@ _process_dependent_libs() {
          rm -f \$lib || _die "Failed to remove the library"
     done            
 
-    # Copy libs from the tmp/templibs directory
-    cp /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
+    if [ -e /tmp/tmplibs ];
+    then
+        # Copy libs from the tmp/templibs directory
+        cp /tmp/templibs/* $lib_dir/ || _die "Failed to move the library files from temp directory"
+    
+        # Remove the temporary directory 
+        rm -rf /tmp/templibs
+    fi
 
     # Remove the temporary directory 
     rm -rf /tmp/templibs  
