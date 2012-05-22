@@ -44,6 +44,8 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.xdbpubserver-$XDB_SERVICE_VE
         <key>ProgramArguments</key>
         <array>
                 <string>$JAVA</string>
+		<string>-Xms128m</string>
+		<string>-Xmx512m</string>
                 <string>-Djava.awt.headless=true</string>
                 <string>-jar</string>
                 <string>$INSTALL_DIR/bin/edb-repserver.jar</string>
