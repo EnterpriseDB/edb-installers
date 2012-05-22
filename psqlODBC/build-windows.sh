@@ -21,6 +21,9 @@ _prep_psqlODBC_windows() {
 
     # Grab a copy of the source tree
     cp -R psqlodbc-$PG_VERSION_PSQLODBC/* psqlODBC.windows || _die "Failed to copy the source code (source/psqlODBC-$PG_VERSION_PSQLODBC)"
+    cd psqlODBC.windows
+    patch -p1 < ../../../tarballs/psql_odbc_win.patch || _die "Failed to apply psql_odbc_win.patch"
+    cd ..
 
     echo "Archieving psqlODBC sources"
     zip -r psqlODBC.zip psqlODBC.windows/ || _die "Couldn't create archieve of the psqlODBC sources (psqlODBC.zip)"
