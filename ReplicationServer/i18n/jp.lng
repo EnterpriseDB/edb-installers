@@ -22,7 +22,7 @@ install.summary=Postgres Plus xDB Replication Server (EnterpriseDB製)。
 replicationserver.installdir.empty=インストールディレクトリを空にすることはできません
 
 replicationserver.installdir.error=インストールディレクトリは、文字、数字、および記号「-」、「/」、「.」、「_」のみを使用した絶対パスであり、書き込み可能でなければなりません。
-
+replicationserver.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
 java.error=Sun Java 1.6以降のバージョンがシステムにインストールされません。\nインストーラを再実行する前に、システムのPATHにインストールされていることを確認してください。
 
 pubserver.service.description=パブリケーションサービス。

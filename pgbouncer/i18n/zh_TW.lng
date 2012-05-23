@@ -19,7 +19,7 @@ install.summary=PostgreSQL Server 的連線共用器，由 EnterpriseDB 封裝�
 pgbouncer.installdir.empty=安裝目錄不可是空的
 
 pgbouncer.installdir.error=安裝目錄必須是絕對路徑，只包含字母、數字和字元 '-'、'/'、'.' 和 '_'，而且為可寫入。
-
+pgbouncer.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
 pgbouncer.install.service.error=無法安裝 pgbouncer 服務。
 pgbouncer.service.description=PostgreSQL Server 的連線共用服務。
 pgbouncer.osx.service.error=無法建立 pgbouncer LaunchDaemons。

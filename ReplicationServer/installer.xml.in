@@ -4799,6 +4799,19 @@ database=${controldb}
                        </compareText>
                     </ruleList>
                 </actionGroup>
+                <!-- Validating whether installdir starts with /home on Solaris 11-->
+                <checkSolarisVersion/>
+                <actionGroup>
+                    <actionList>  
+                        <showWarning text="${msg(replicationserver.installdir.invalid.solaris11)}"/>
+                        <setInstallerVariable name="next_page" value="installdir"/>
+                    </actionList>
+                    <ruleList>
+                      <compareText text="${platform_name}" logic="contains" value="solaris"/>
+                      <compareText text="${solaris_version}" logic="contains" value="Solaris 11"/>
+                      <regExMatch text="${installdir}" logic="matches" pattern="^/(home)"/>
+                    </ruleList>
+	        </actionGroup>
                 <!-- Validating whether installdir is valid (Windows) -->
                 <actionGroup>
                    <actionList>

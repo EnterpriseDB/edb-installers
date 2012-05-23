@@ -19,6 +19,7 @@ install.summary=EnterpriseDB 제공 PostgreSQL Server용 연결 풀러
 pgbouncer.installdir.empty=설치 디렉터리를 비워 둘 수 없음
 
 pgbouncer.installdir.error=설치 디렉터리는 문자, 숫자, '-', '/', '.' 및 '_' 문자를 포함하고 쓰기 가능한 절대 경로여야 합니다.
+pgbouncer.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
 
 pgbouncer.install.service.error=pgbouncer 서비스를 설치하지 못했습니다.
 pgbouncer.service.description=PostgreSQL Server용 연결 풀링 서비스
