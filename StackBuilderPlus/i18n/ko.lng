@@ -35,7 +35,7 @@ install.summary=StackBuilder Plus(고급 응용 프로그램 스택 빌더)
 sbp.installdir.empty=설치 디렉터리를 비워 둘 수 없음
 
 sbp.installdir.error=설치 디렉터리는 문자, 숫자, '-', '/', '.' 및 '_' 문자를 포함하고 쓰기 가능한 절대 경로여야 합니다.
-
+sbp.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
 monitor.server.version.warning=모니터링하도록 지정한 서버는 설치된 유효 서버가 아닙니다. Update Monitoring 서비스를 사용하지 않습니다.
 monitor.server.title=PostgreSQL 서버 버전
 monitor.server.explanation=모니터링할 postgresql 서버 버전을 지정하십시오.

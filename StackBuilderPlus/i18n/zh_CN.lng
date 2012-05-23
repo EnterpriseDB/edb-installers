@@ -17,6 +17,7 @@ Installer.Installation.Finished.Text=EnterpriseDB是针对Postgres社区的增�
 install.summary=StackBuilder Plus (这是一个高级的application stack创建器)
 sbp.installdir.empty=用于安装的目录不能为空。
 sbp.installdir.error=安装目录必须为绝对路径，只能包含字母，数字以及字符'-', '/', '.'和'_'，并且这个目录必须可写。
+sbp.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
 monitor.server.version.warning=用于监控的服务器没有进行正确的安装，这样将会无法使用更新监控服务。
 monitor.server.title=PostgreSQL Server Version PostgreSQL服务器的版本
 monitor.server.explanation=请指定用于监控的PostgreSQL服务器的版本。
