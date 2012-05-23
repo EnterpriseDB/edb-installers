@@ -35,7 +35,7 @@ install.summary=StackBuilder Plus (An advanced application stack builder)
 sbp.installdir.empty=The installation directory cannot be empty
 
 sbp.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
-
+sbp.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
 monitor.server.version.warning=The server specified to monitor is not a valid server installed. Update Monitoring service will be disabled.
 monitor.server.title=PostgreSQL Server Version
 monitor.server.explanation=Please specify postgresql server version to monitor.

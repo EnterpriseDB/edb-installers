@@ -19,6 +19,7 @@ install.summary=EnterpriseDBによってパッケージされたPostgreSQL Serve
 pgbouncer.installdir.empty=インストールディレクトリを空にすることはできません
 
 pgbouncer.installdir.error=インストールディレクトリは、文字、数字、および記号「-」、「/」、「.」、「_」のみを使用した絶対パスであり、書き込み可能でなければなりません。
+pgbouncer.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
 
 pgbouncer.install.service.error=pgbouncerサービスをインストールできませんでした。
 pgbouncer.service.description=PostgreSQL Serverの接続プールサービス。
