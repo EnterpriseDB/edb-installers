@@ -35,7 +35,6 @@ install.summary=StackBuilder Plus (進階應用程式堆疊產生器)
 sbp.installdir.empty=安裝目錄不可是空的
 
 sbp.installdir.error=安裝目錄必須是絕對路徑，只包含字母、數字和字元 '-'、'/'、'.' 和 '_'，而且為可寫入。
-sbp.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
 
 monitor.server.version.warning=指定要監視的伺服器不是有效的已安裝伺服器。更新監視服務將會停用。
 monitor.server.title=PostgreSQL Server 版本

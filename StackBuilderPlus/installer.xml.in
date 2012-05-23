@@ -52,25 +52,6 @@
     <language code="ko" encoding="utf-8" file="i18n/ko.lng"/>
   </customLanguageFileList>
 
-  <!-- Custom functions -->
-  <functionDefinitionList>
-    <actionDefinition name="checkSolarisVersion">
-      <actionList>
-        <globalVariables names="solaris_version"/>
-        <actionGroup>
-          <actionList>
-            <runProgram program="cat" programArguments="/etc/release" abortOnError="0" showMessageOnError="0"/>
-            <setInstallerVariable name="solaris_version" value="${program_stdout}" persist="1"/>
-            <stringModify text="${solaris_version}" variable="solaris_version" logic="trim"/>
-          </actionList>
-          <ruleList>
-            <compareText logic="contains" text="${platform_name}" value="solaris"/>
-          </ruleList>
-        </actionGroup>
-      </actionList>
-    </actionDefinition>
-  </functionDefinitionList>
-  
   <preShowHelpActionList>
     <!-- MAC : Set the default installation directory -->
     <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/Shared/StackBuilderPlus">
@@ -1477,19 +1458,6 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
              <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
           </ruleList>
         </actionGroup>
-        <!-- Validating whether installdir starts with /home on Solaris 11-->
-        <checkSolarisVersion/>
-        <actionGroup>
-            <actionList>  
-                <showWarning text="${msg(sbp.installdir.invalid.solaris11)}"/>
-                <setInstallerVariable name="next_page" value="installdir"/>
-            </actionList>
-            <ruleList>
-              <compareText text="${platform_name}" logic="contains" value="solaris"/>
-              <compareText text="${solaris_version}" logic="contains" value="Solaris 11"/>
-              <regExMatch text="${installdir}" logic="matches" pattern="^/(home)"/>
-            </ruleList>
-	</actionGroup>
         <!-- Validating whether installdir is valid (Windows) -->
         <actionGroup>
           <actionList>

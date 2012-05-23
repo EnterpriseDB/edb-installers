@@ -11,7 +11,6 @@ Installer.Installation.Finished.Text=EnterpriseDB是针对Postgres社区的增�
 install.summary=Postgres Plus xDB Replication Server,由EnterpriseDB开发。
 replicationserver.installdir.empty=安装目录不能为空。
 replicationserver.installdir.error=安装目录必须为绝对路径，只能包含字母，数字以及字符'-', '/', '.'和'_'，并且这个目录必须可写。
-replicationserver.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
 java.error=在您的系统上没有安装Sun Java 1.6或以上的版本.\n在重新运行安装程序前需要确定已安装了Java程序包并且在系统的PATH路径中进行了设置。
 pubserver.service.description=发布服务。
 subserver.service.description=订阅服务。

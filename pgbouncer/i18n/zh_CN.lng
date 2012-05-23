@@ -9,7 +9,6 @@ Installer.Installation.Finished.Text=EnterpriseDB是针对Postgres社区的增�
 install.summary=PgBouncer用于实现PostgreSQL服务器的连接池功能，由EnterpriseDB进行程序打包工作。
 pgbouncer.installdir.empty=所指定的安装目录不能为空
 pgbouncer.installdir.error=安装目录必须为绝对路径，只能包含字母，数字以及字符'-', '/', '.'和'_'，并且这个目录必须可写。
-pgbouncer.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
 pgbouncer.install.service.error=安装pgbouncer服务失败。
 pgbouncer.service.description=PgBouncer用于为PostgreSQL服务器提供连接池服务。
 pgbouncer.osx.service.error=创建pgbouncer启动守护进程失败。

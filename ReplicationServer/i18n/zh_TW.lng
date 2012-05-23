@@ -22,7 +22,7 @@ install.summary=Postgres Plus xDB Replication Server，由 EnterpriseDB 提供�
 replicationserver.installdir.empty=安裝目錄不可是空的
 
 replicationserver.installdir.error=安裝目錄必須是絕對路徑，只包含字母、數字和字元 '-'、'/'、'.' 和 '_'，而且為可寫入。
-replicationserver.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
+
 java.error=系統未安裝 Sun Java 1.6 或更新版本。\n請先確認此軟體已安裝在系統 PATH 中，再重新執行安裝程式。
 
 pubserver.service.description=發行集服務。
