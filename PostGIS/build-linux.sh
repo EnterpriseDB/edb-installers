@@ -113,8 +113,8 @@ _build_PostGIS_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/; export PATH=$PG_CACHING/proj-$PG_TARBALL_PROJ.linux/bin:$PG_CACHING/geos-$PG_TARBALL_GEOS.linux/bin:\$PATH; export LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:$PG_CACHING/proj-$PG_TARBALL_PROJ.linux/lib:$PG_CACHING/geos-$PG_TARBALL_GEOS.linux/lib:\$LD_LIBRARY_PATH; LDFLAGS=\"-Wl,--rpath,'\\\$ORIGIN/../lib'\"; ./configure --with-pgconfig=$PG_PGHOME_LINUX/bin/pg_config --with-geosconfig=$PG_CACHING/geos-$PG_TARBALL_GEOS.linux/bin/geos-config --with-projdir=$PG_CACHING/proj-$PG_TARBALL_PROJ.linux"  || _die "Failed to configure postgis"
 
     echo "Building postgis"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux; make; make comments" || _die "Failed to build postgis"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux; make install; make comments-install" || _die "Failed to install postgis"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux; export LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:$PG_CACHING/proj-$PG_TARBALL_PROJ.linux/lib:$PG_CACHING/geos-$PG_TARBALL_GEOS.linux/lib:\$LD_LIBRARY_PATH; make; make comments" || _die "Failed to build postgis"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux; export LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:$PG_CACHING/proj-$PG_TARBALL_PROJ.linux/lib:$PG_CACHING/geos-$PG_TARBALL_GEOS.linux/lib:\$LD_LIBRARY_PATH; make install; make comments-install" || _die "Failed to install postgis"
     
     echo "Building postgis-jdbc"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PostGIS/source/postgis.linux/java/jdbc ;CLASSPATH=$PG_PATH_LINUX/PostGIS/source/postgresql-$PG_JAR_POSTGRESQL.jar:$CLASSPATH JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX/bin/ant" || _die "Failed to build postgis-jdbc"
