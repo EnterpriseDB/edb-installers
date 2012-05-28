@@ -1710,15 +1710,15 @@
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\libintl-8.dll</destination>
+                    <destination>${system_temp_directory}\postgresql_installer\libintl3.dll</destination>
                     <folder>programfileswindows</folder>
-                    <origin>bin/libintl-8.dll</origin>
+                    <origin>bin/libintl3.dll</origin>
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\libiconv-2.dll</destination>
+                    <destination>${system_temp_directory}\postgresql_installer\libiconv2.dll</destination>
                     <folder>programfileswindows</folder>
-                    <origin>bin/libiconv-2.dll</origin>
+                    <origin>bin/libiconv2.dll</origin>
                 </unpackFile>
                 <!-- Validate user binary -->
                 <unpackFile>

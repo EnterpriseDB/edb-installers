@@ -63,8 +63,8 @@ REM Setting Visual Studio Environment
 CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
 
 cd $PG_REG_COMP_HOST_PATH\\dbserver_guid
-vcbuild /upgrade
-vcbuild dbserver_guid.vcproj release
+devenv /upgrade dbserver_guid.vcproj
+msbuild dbserver_guid.vcxproj /p:Configuration=Release
 if NOT EXIST $PG_REG_COMP_HOST_PATH\\dbserver_guid\\release\\dbserver_guid.exe GOTO dbserver_guid-build-failed
 
 GOTO end
@@ -84,7 +84,8 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_REG_COMP_HOST_PATH; cmd /c build-reg-comp.bat" || _die "Building registration_plus component failed..."
 
     scp $PG_SSH_WINDOWS_X64:$PG_REG_COMP_HOST_PATH\\\\dbserver_guid\\\\release\\\\dbserver_guid.exe     $PG_REG_COMP_STAGING/dbserver_guid.exe || _die "Failed to get dbserver_guid utility from the windows-x64 VM"
-    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64\\\\vcredist\\\\vcredist_x64.exe     $PG_REG_COMP_STAGING/vcredist_x64.exe || _die "Failed to get vcredist_x64 utility from the windows-x64 VM"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy \"$PG_SDK_WINDOWS_X64\\\\Bootstrapper\\\\Packages\\\\vcredist_x64\\\\vcredist_x64.exe\" $PG_REG_COMP_HOST_PATH\\\\dbserver_guid\\\\release" || _die "Failed to copy the VC++ runtimes on the windows build host"
+    scp $PG_SSH_WINDOWS_X64:$PG_REG_COMP_HOST_PATH\\\\dbserver_guid\\\\release\\\\vcredist_x64.exe     $PG_REG_COMP_STAGING/vcredist_x64.exe || _die "Failed to get vc++ runtimes from the windows VM"
 
     PG_REGISTRATION_PLUS_COMP_BUILT_WIN_X64=Done
   fi

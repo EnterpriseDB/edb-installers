@@ -60,11 +60,11 @@ _registration_plus_build_windows()
     cat<<EOT > build-reg-comp.bat
 @ECHO OFF
 REM Setting Visual Studio Environment
-CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
+CALL "$PG_VSINSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
 
 cd $PG_REG_COMP_HOST_PATH\\dbserver_guid
-vcbuild /upgrade
-vcbuild dbserver_guid.vcproj release
+devenv /upgrade dbserver_guid.vcproj
+msbuild dbserver_guid.vcxproj /p:Configuration=Release
 if NOT EXIST $PG_REG_COMP_HOST_PATH\\dbserver_guid\\release\\dbserver_guid.exe GOTO dbserver_guid-build-failed
 
 GOTO end
@@ -84,7 +84,8 @@ EOT
     ssh $PG_SSH_WINDOWS "cd $PG_REG_COMP_HOST_PATH; cmd /c build-reg-comp.bat" || _die "Building registration_plus component failed..."
 
     scp $PG_SSH_WINDOWS:$PG_REG_COMP_HOST_PATH\\\\dbserver_guid\\\\release\\\\dbserver_guid.exe     $PG_REG_COMP_STAGING/dbserver_guid.exe || _die "Failed to get dbserver_guid utility from the windows VM"
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS\\\\vcredist\\\\vcredist_x86.exe     $PG_REG_COMP_STAGING/vcredist_x86.exe || _die "Failed to get vcredist_x86.exe utility from the windows VM"
+    ssh $PG_SSH_WINDOWS "cmd /c copy \"$PG_SDK_WINDOWS\\\\Bootstrapper\\\\Packages\\\\vcredist_x86\\\\vcredist_x86.exe\" $PG_REG_COMP_HOST_PATH\\\\dbserver_guid\\\\release" || _die "Failed to copy the VC++ runtimes on the windows build host" 
+    scp $PG_SSH_WINDOWS:$PG_REG_COMP_HOST_PATH\\\\dbserver_guid\\\\release\\\\vcredist_x86.exe     $PG_REG_COMP_STAGING/vcredist_x86.exe || _die "Failed to get vc++ runtimes from the windows VM"
 
     PG_REGISTRATION_PLUS_COMP_BUILT_WIN=Done
   fi

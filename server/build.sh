@@ -91,22 +91,25 @@ _prep_server() {
     echo "Unpacking pgAdmin source..."
     tar -zxvf ../../tarballs/pgadmin3-$PG_TARBALL_PGADMIN.tar.gz
 
-    # Debugger
-    cd $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib
+    cd $WD/server/source
 
+    # Debugger
     if [ -e pldebugger ]; 
     then
         echo "Updating debugger source..."
         cd pldebugger
         git pull || _die "Failed to update the pldebugger code"
+	cd ..
     else
         echo "Fetching debugger source..."
 	git clone git://git.postgresql.org/git/pldebugger.git || _die "Failed to checkout the pldebugger code"
     fi  
 	
-	# StackBuilder (CVS Tree)
-	echo "Updating the StackBuilder source tree..."
-	cd $WD/server/source/stackbuilder
+    cp -R pldebugger $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/
+
+    # StackBuilder (CVS Tree)
+    echo "Updating the StackBuilder source tree..."
+    cd $WD/server/source/stackbuilder
     cvs -z3 update -dP
 
     # Per-platform prep

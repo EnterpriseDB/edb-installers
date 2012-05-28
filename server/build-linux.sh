@@ -30,16 +30,6 @@ _prep_server_linux() {
     cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.linux || _die "Failed to copy the source code (source/pgadmin-$PG_TARBALL_PGADMIN)"
     chmod -R ugo+w pgadmin.linux || _die "Couldn't set the permissions on the source directory"
 
-#    if [ -e pljava.linux ];
-#    then
-#      echo "Removing existing pljava.linux source directory"
-#      rm -rf pljava.linux  || _die "Couldn't remove the existing pljava.linux source directory (source/pljava.linux)"
-#    fi
-
-    # Grab a copy of the source tree
-#    cp -R pljava-$PG_TARBALL_PLJAVA pljava.linux || _die "Failed to copy the source code (source/pljava-$PG_TARBALL_PLJAVA)"
-#    chmod -R ugo+w pljava.linux || _die "Couldn't set the permissions on the source directory"
-
     if [ -e stackbuilder.linux ];
     then
       echo "Removing existing stackbuilder.linux source directory"
@@ -160,18 +150,18 @@ _build_server_linux() {
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/; PYTHON=/opt/ActivePython-3.2/bin/python3.2 TCLSH=/opt/ActiveTcl-8.5/bin/tclsh TCL_CONFIG_SH=/opt/ActiveTcl-8.5/lib/tclConfig.sh PERL=/opt/ActivePerl-5.14/bin/perl ./configure --with-libs=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib --with-includes=/usr/local/openssl/include:/usr/local/ldap-2.4.23/include:/usr/local/include --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX/lib --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/; PYTHON=$PG_PYTHON_LINUX/bin/python3.2 TCLSH=$PG_TCL_LINUX/bin/tclsh TCL_CONFIG_SH=$PG_TCL_LINUX/lib/tclConfig.sh PERL=$PG_PERL_LINUX/bin/perl ./configure --with-libs=/usr/local/lib --with-includes=/usr/local/include:/usr/local/include/libxml2 --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX/lib --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi LD_LIBRARY_PATH=/usr/local/lib"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib:\$LD_LIBRARY_PATH; make -j4" || _die "Failed to build postgres" 
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; make install" || _die "Failed to install postgres"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; LD_LIBRARY_PATH=/usr/local/lib  make -j4" || _die "Failed to build postgres" 
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; LD_LIBRARY_PATH=/usr/local/lib make install" || _die "Failed to install postgres"
 
     echo "Building contrib modules"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib:\$LD_LIBRARY_PATH; make -j4" || _die "Failed to build the postgres contrib modules"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib; LD_LIBRARY_PATH=/usr/local/lib make -j4" || _die "Failed to build the postgres contrib modules"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib; make install" || _die "Failed to install the postgres contrib modules"
 
     echo "Building debugger module"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/pldebugger; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib:\$LD_LIBRARY_PATH; make" || _die "Failed to build the debugger module"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/pldebugger; export LD_LIBRARY_PATH=/usr/local/lib:\$LD_LIBRARY_PATH; make" || _die "Failed to build the debugger module"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
 	if [ ! -e $WD/server/staging/linux/doc ];
 	then
@@ -180,7 +170,7 @@ _build_server_linux() {
     cp "$WD/server/source/postgres.linux/contrib/pldebugger/README.pldebugger" $WD/server/staging/linux/doc || _die "Failed to copy the debugger README into the staging directory"
 
     echo "Building uuid-ossp module"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/uuid-ossp; export LD_LIBRARY_PATH=/usr/local/openssl/lib:/usr/local/ldap-2.4.23/lib:/usr/local/lib:\$LD_LIBRARY_PATH; make" || _die "Failed to build the uuid-ossp module"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/uuid-ossp; export LD_LIBRARY_PATH=/usr/local/lib:\$LD_LIBRARY_PATH; make" || _die "Failed to build the uuid-ossp module"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
  
     # Install the PostgreSQL docs
@@ -196,35 +186,32 @@ _build_server_linux() {
     cp -R $WD/server/source/postgres.linux/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (linux)"
 
     # Copy in the dependency libraries
-    ssh $PG_SSH_LINUX "cp -R /usr/local/openssl/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /usr/local/openssl/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libz.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /lib/libtermcap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /usr/lib/libncurses.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /lib/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libkrb5* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libcom* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libncurses.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /usr/lib/libpng12.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /usr/lib/libjpeg.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /usr/local/ldap-2.4.23/lib/liblber-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(lber)"
-    ssh $PG_SSH_LINUX "cp -R /usr/local/ldap-2.4.23/lib/libldap-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap)"
-    ssh $PG_SSH_LINUX "cp -R /usr/local/ldap-2.4.23/lib/libldap_r-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap_r)"
-    ssh $PG_SSH_LINUX "cp -R /usr/local/cyrus-sasl/lib/libsasl2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(libsasl2)"
-    ssh $PG_SSH_LINUX "cp -R /usr/lib/liblber-2.3.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (liblber-2.3)"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libpng15.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libjpeg.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/liblber-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(lber)"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libldap-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap)"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libldap_r-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap_r)"
 
     # Process Dependent libs
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl.so"  
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libcrypto.so"  
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libedit.so"  
-    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libtermcap.so"  
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libkrb5.so"  
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libxml2.so"  
     _process_dependent_libs_linux "$PG_STAGING/lib/postgresql" "$PG_STAGING/lib" "libxslt.so"  
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "liblber-2.4"
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap-2.4"
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap_r-2.4"
-    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libsasl2"
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libz"
 
     # Hack for bypassing dependency on the deprecated libtermcap
@@ -232,9 +219,7 @@ _build_server_linux() {
     # create a symlink libtermcap.so pointing to libncurses.
     cd $WD/server/staging/linux/lib
 
-    termcap_lib=`ls libtermcap*`
-    rm -f $termcap_lib
-    ln -s libncurses.so $termcap_lib 
+    ln -s libncurses.so libtermcap.so
 
     # Copying psql to psql.bin and the creating a caller script psql
     # which will set the LD_PRELOAD to libreadline if found on the system.
@@ -276,11 +261,11 @@ EOT
 
     # Configure
     echo "Configuring the pgAdmin source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; sh ./configure --prefix=$PG_STAGING/pgAdmin3 --with-pgsql=$PG_PATH_LINUX/server/staging/linux --with-wx=/usr/local --with-libxml2=/usr/local --with-libxslt=/usr/local --disable-debug --disable-static --with-sphinx-build=/opt/ActivePython-3.2/bin/sphinx-build LD_LIBRARY_PATH=$PG_PATH_LINUX/server/staging/linux/lib" || _die "Failed to configure pgAdmin"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; LD_LIBRARY_PATH=/usr/local/lib" CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib" ./configure --prefix=$PG_STAGING/pgAdmin3 --with-pgsql=$PG_PATH_LINUX/server/staging/linux --with-wx=/usr/local --with-libxml2=/usr/local --with-libxslt=/usr/local --disable-debug --disable-static --with-sphinx-build=$PG_PYTHON_LINUX/bin/sphinx-build || _die "Failed to configure pgAdmin"
 
     # Build the app
     echo "Building & installing pgAdmin"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; make all LD_LIBRARY_PATH=$PG_PATH_LINUX/server/staging/linux/lib" || _die "Failed to build pgAdmin"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; LD_LIBRARY_PATH=/usr/local/lib" make all|| _die "Failed to build pgAdmin"    
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; make doc" || _die "Failed to build documentation for pgAdmin"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; make install" || _die "Failed to install pgAdmin"
 
@@ -304,15 +289,21 @@ EOT
 
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libxslt.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /lib/libexpat.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /usr/lib/libtiff.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    #ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libexpat.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    #ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libtiff.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libkrb5* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libcom* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
 
     echo "Changing the rpath for the pgAdmin binaries"
     ssh $PG_SSH_LINUX "cd $PG_STAGING/pgAdmin3/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
 
     #Fix permission in the staging/linux/pgAdmin3/lib
     ssh $PG_SSH_LINUX "cd $PG_STAGING/pgAdmin3/lib; chmod a+rx *"
-	
+
+    # Copy the pgAdmin docs
+    # We build docs only in osx branch.
+    #cp -R $WD/server/staging/osx/pgAdmin3.app/Contents/SharedSupport/docs $WD/server/staging/linux/pgAdmin3/share/pgadmin3/ || _die "Failed to copy the pgAdmin docs from osx staging directory"	
+
     # Copy the Postgres utilities
     ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/server/staging/linux/bin/pg_dump $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
     ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/server/staging/linux/bin/pg_dumpall $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
@@ -321,18 +312,6 @@ EOT
 
     # Move the utilties.ini file out of the way (Uncomment for Postgres Studio or 1.9+)
     # ssh $PG_SSH_LINUX "mv $PG_STAGING/pgAdmin3/share/pgadmin3/plugins/utilities.ini $PG_STAGING/pgAdmin3/share/pgadmin3/plugins/utilities.ini.new" || _die "Failed to move the utilties.ini file"
-
-    # And now, pl/java
-
-#    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pljava.linux/; JAVA_HOME=$PG_JAVA_HOME_LINUX PATH=$PG_JAVA_HOME_LINUX/bin:$PATH:$PG_EXEC_PATH_LINUX:$PG_PATH_LINUX/server/staging/linux/bin make USE_JDK6=1" || _die "Failed to build pl/java"
-#    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pljava.linux/; JAVA_HOME=$PG_JAVA_HOME_LINUX PATH=$PATH:$PG_EXEC_PATH_LINUX:$PG_PATH_LINUX/server/staging/linux/bin make prefix=$PG_PATH_LINUX/server/staging/linux install" || _die "Failed to install pl/java"
-
-#    mkdir -p "$WD/server/staging/linux/share/pljava" || _die "Failed to create the pl/java share directory"
-#    cp "$WD/server/source/pljava.linux/src/sql/install.sql" "$WD/server/staging/linux/share/pljava/pljava.sql" || _die "Failed to install the pl/java installation SQL script"
-#    cp "$WD/server/source/pljava.linux/src/sql/uninstall.sql"	 "$WD/server/staging/linux/share/pljava/uninstall_pljava.sql" || _die "Failed to install the pl/java uninstallation SQL script"
-
-#    mkdir -p "$WD/server/staging/linux/doc/pljava" || _die "Failed to create the pl/java doc directory"
-#    cp "$WD/server/source/pljava.linux/docs/"* "$WD/server/staging/linux/doc/pljava/" || _die "Failed to install the pl/java documentation"
 
     echo "Changing the rpath for the PostgreSQL executables and libraries"
     ssh $PG_SSH_LINUX "cd $PG_STAGING/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
@@ -348,7 +327,7 @@ EOT
     # Stackbuilder
     # Configure
     echo "Configuring the StackBuilder source tree"
-	ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_STAGING/stackbuilder ."
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_STAGING/stackbuilder ."
 
     # Build the app
     echo "Building & installing StackBuilder"
