@@ -303,7 +303,7 @@ For d = 0 To nDirs
             If strThisDir <> strSystemDrive THEN
                 WScript.Echo "Ensuring the service account can read the path " & strThisDir & " (using icacls) to " & strOSUsername & ":"
                 ' Drive letter must not be surronded by double-quotes and ends with slash (\)
-                iRet = DoCmd("icacls " & strThisDir & "\ /grant """ & strOSUsername & """:RX")
+                iRet = DoCmd("icacls " & strThisDir & "\ /grant """ & strOSUsername & """:(RX)(NP)")
             End If
         End If
     Else
