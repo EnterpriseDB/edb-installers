@@ -49,16 +49,16 @@ cat <<EOT > "/etc/init.d/edb-xdbpubserver-$XDB_SERVICE_VER"
 
 set_jvm_heap_size()
 {
-	$JAVA -version &> test.log      
+	$JAVA -version &> /tmp/test.log      
         
-        if cat test.log | grep "64-Bit" &> /dev/null
+        if cat /tmp/test.log | grep "64-Bit" &> /dev/null
         then
           export JAVA_HEAP_SIZE="-Xms128m -Xmx512m"
         else
           export JAVA_HEAP_SIZE="-Xms64m -Xmx256m"
        fi
 
-       rm -f test.log
+       rm -f /tmp/test.log
 }
 
 start()
