@@ -170,7 +170,7 @@ EOT
 
     cd $WD/server/source/stackbuilder.osx
 
-    cmake -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6 -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON .  || _die "Failed to configure StackBuilder"
+    cmake -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6 -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF .  || _die "Failed to configure StackBuilder"
     make all || _die "Failed to build StackBuilder"
 
     # Copy the StackBuilder app bundle into place
@@ -188,6 +188,12 @@ EOT
     cp /usr/local/lib/libjpeg* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
     cp /usr/local/lib/libpng15* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
     cp /usr/local/lib/libiconv* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+
+    cp /usr/local/lib/libwx_macu_adv-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp /usr/local/lib/libwx_macu_core-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp /usr/local/lib/libwx_base_carbonu-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp /usr/local/lib/libwx_base_carbonu_net-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp /usr/local/lib/libwx_base_carbonu_xml-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
 
     # Copying plperl to staging/osx directory as we would not like to update the _rewrite_so_refs for it.
     cp -f $WD/server/staging/osx/lib/postgresql/plperl.so $WD/server/staging/osx/

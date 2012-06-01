@@ -1708,11 +1708,17 @@
                     <folder>programfileswindows</folder>
                     <origin>bin/pg_controldata.exe</origin>
                 </unpackFile>
+                <setInstallerVariable name="libintl_dll" value="libintl.dll"/>
+                <setInstallerVariable name="libintl_dll" value="libintl-8.dll">
+                    <ruleList>
+                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                    </ruleList>
+                </setInstallerVariable>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\libintl3.dll</destination>
+                    <destination>${system_temp_directory}\postgresql_installer\${libintl_dll}</destination>
                     <folder>programfileswindows</folder>
-                    <origin>bin/libintl3.dll</origin>
+                    <origin>bin/${libintl_dll}</origin>
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
@@ -1750,18 +1756,11 @@
                     <origin>installer/${vcredist_executable}</origin>
                     <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
                 </unpackFile>
-                <unpackFile>
-                    <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer/installruntimes.vbs</destination>
-                    <folder>programfileswindows</folder>
-                    <origin>installer/installruntimes.vbs</origin>
-                    <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
-                </unpackFile>
                 <actionGroup>
                     <actionList>
                         <runProgram>
-                            <program>cscript</program>
-                            <programArguments>//NoLogo "${system_temp_directory}\postgresql_installer\installruntimes.vbs" "${system_temp_directory}\postgresql_installer\${vcredist_executable}"</programArguments>
+                            <program>${system_temp_directory}\postgresql_installer\${vcredist_executable}</program>
+                            <programArguments>/q</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
