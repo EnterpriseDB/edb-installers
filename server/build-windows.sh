@@ -418,7 +418,8 @@ EOT
 	
 	# Copy in the plDebugger docs & SQL script
 	cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/README.pldebugger $WD/server/staging/windows/doc
-	cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi.sql $WD/server/staging/windows/share/contrib
+	cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi*.sql $WD/server/staging/windows/share/contrib
+	cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/uninstall_pldbgapi.sql $WD/server/staging/windows/share/contrib
 	 
 	# Copy in the pljava binaries/docs
 	cd $WD/server/source/
