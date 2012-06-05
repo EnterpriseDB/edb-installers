@@ -78,7 +78,7 @@ PG_PYTHON_LINUX_X64=/opt/ActivePython-2.6
 PG_TCL_LINUX_X64=/opt/ActiveTcl-8.5
 
 PG_SSH_WINDOWS=buildfarm@bf2-windows.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS=C:\\\\pginstaller.isb-repo
+PG_PATH_WINDOWS=E:\\\\pginstaller.isb-repo
 PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 9.0"
 PG_FRAMEWORKDIR_WINDOWS="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework"
 PG_FRAMEWORKVERSION_WINDOWS=v2.0.50727
