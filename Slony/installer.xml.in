@@ -845,13 +845,7 @@
                             <origin>staging/windows/bin/slon.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/windows/bin/slon.exe.manifest</origin>
-                        </distributionFile>
-                        <distributionFile>
                             <origin>staging/windows/bin/slonik.exe</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/windows/bin/slonik.exe.manifest</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>staging/windows/bin/pthreadGC2.dll</origin>
