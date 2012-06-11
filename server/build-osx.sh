@@ -21,7 +21,7 @@ _prep_server_osx() {
     fi
 
     # Grab a copy of the postgres source tree
-    cp -dpR postgresql-$PG_TARBALL_POSTGRESQL postgres.osx || _die "Failed to copy the source code (source/postgresql-$PG_TARBALL_POSTGRESQL)"
+    cp -pR postgresql-$PG_TARBALL_POSTGRESQL postgres.osx || _die "Failed to copy the source code (source/postgresql-$PG_TARBALL_POSTGRESQL)"
 
     if [ -e pgadmin.osx ];
     then
@@ -30,7 +30,7 @@ _prep_server_osx() {
     fi
 
     # Grab a copy of the pgadmin source tree
-    cp -dpR pgadmin3-$PG_TARBALL_PGADMIN pgadmin.osx || _die "Failed to copy the source code (source/pgadmin3-$PG_TARBALL_PGADMIN)"
+    cp -pR pgadmin3-$PG_TARBALL_PGADMIN pgadmin.osx || _die "Failed to copy the source code (source/pgadmin3-$PG_TARBALL_PGADMIN)"
 
     if [ -e stackbuilder.osx ];
     then
@@ -39,7 +39,7 @@ _prep_server_osx() {
     fi
 
     # Grab a copy of the stackbuilder source tree
-    cp -dpR stackbuilder stackbuilder.osx || _die "Failed to copy the source code (source/stackbuilder)"
+    cp -pR stackbuilder stackbuilder.osx || _die "Failed to copy the source code (source/stackbuilder)"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/osx ];
@@ -136,14 +136,14 @@ EOT
     # Install the PostgreSQL docs
     mkdir -p $WD/server/staging/osx/doc/postgresql/html || _die "Failed to create the doc directory"
     cd $WD/server/staging/osx/doc/postgresql/html || _die "Failed to change to the doc directory"
-    cp -dpR $WD/server/source/postgres.osx/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
+    cp -pR $WD/server/source/postgres.osx/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
 
     # Install the PostgreSQL man pages
     mkdir -p $WD/server/staging/osx/share/man || _die "Failed to create the man directory"
     cd $WD/server/staging/osx/share/man || _die "Failed to change to the man directory"
-    cp -dpR $WD/server/source/postgres.osx/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (osx)"
-    cp -dpR $WD/server/source/postgres.osx/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (osx)"
-    cp -dpR $WD/server/source/postgres.osx/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (osx)"
+    cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (osx)"
+    cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (osx)"
+    cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (osx)"
 
     # Now, build pgAdmin
 
@@ -161,7 +161,7 @@ EOT
     make install || _die "Failed to install pgAdmin"
 
     # Copy the app bundle into place
-    cp -dpR pgAdmin3.app $WD/server/staging/osx || _die "Failed to copy pgAdmin into the staging directory"
+    cp -pR pgAdmin3.app $WD/server/staging/osx || _die "Failed to copy pgAdmin into the staging directory"
 
     #Fix permission in the staging/osx/share
     chmod -R a+r $WD/server/staging/osx/share/postgresql/timezone/*
@@ -174,27 +174,27 @@ EOT
     make all || _die "Failed to build StackBuilder"
 
     # Copy the StackBuilder app bundle into place
-    cp -dpR stackbuilder.app $WD/server/staging/osx || _die "Failed to copy StackBuilder into the staging directory"
+    cp -pR stackbuilder.app $WD/server/staging/osx || _die "Failed to copy StackBuilder into the staging directory"
 
     cd $WD/server/staging/osx
     # Copy libxml2 as System's libxml can be old.
-    cp -dpR /usr/local/lib/libxml2* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"
-    cp -dpR /usr/local/lib/libxslt.* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxslt"
-    cp -dpR /usr/local/lib/libuuid* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
-    cp -dpR /usr/local/lib/libedit* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libedit"
-    cp -dpR /usr/local/lib/libz* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libz"
-    cp -dpR /usr/local/lib/libssl* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libssl"
-    cp -dpR /usr/local/lib/libcrypto* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libcrypto"
-    cp -dpR /usr/local/lib/libjpeg* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libjpeg"
-    cp -dpR /usr/local/lib/libpng15* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libpng15"
-    cp -dpR /usr/local/lib/libiconv* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libiconv"
-    cp -dpR /usr/local/lib/libexpat* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libexpat"
+    cp -pR /usr/local/lib/libxml2* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"
+    cp -pR /usr/local/lib/libxslt.* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxslt"
+    cp -pR /usr/local/lib/libuuid* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp -pR /usr/local/lib/libedit* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libedit"
+    cp -pR /usr/local/lib/libz* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libz"
+    cp -pR /usr/local/lib/libssl* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libssl"
+    cp -pR /usr/local/lib/libcrypto* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libcrypto"
+    cp -pR /usr/local/lib/libjpeg* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libjpeg"
+    cp -pR /usr/local/lib/libpng15* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libpng15"
+    cp -pR /usr/local/lib/libiconv* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libiconv"
+    cp -pR /usr/local/lib/libexpat* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libexpat"
 
-    cp -dpR /usr/local/lib/libwx_macu_adv-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
-    cp -dpR /usr/local/lib/libwx_macu_core-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
-    cp -dpR /usr/local/lib/libwx_base_carbonu-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
-    cp -dpR /usr/local/lib/libwx_base_carbonu_net-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
-    cp -dpR /usr/local/lib/libwx_base_carbonu_xml-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp -pR /usr/local/lib/libwx_macu_adv-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp -pR /usr/local/lib/libwx_macu_core-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp -pR /usr/local/lib/libwx_base_carbonu-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp -pR /usr/local/lib/libwx_base_carbonu_net-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp -pR /usr/local/lib/libwx_base_carbonu_xml-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
 
     # Copying plperl to staging/osx directory as we would not like to update the _rewrite_so_refs for it.
     cp -f $WD/server/staging/osx/lib/postgresql/plperl.so $WD/server/staging/osx/
@@ -234,7 +234,7 @@ _postprocess_server_osx() {
     #Creating a archive of the binaries
     mkdir -p $WD/server/staging/osx/pgsql || _die "Failed to create the directory for binaries "
     cd $WD/server/staging/osx
-    cp -dpR bin doc include lib pgAdmin3.app share stackbuilder.app pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
+    cp -pR bin doc include lib pgAdmin3.app share stackbuilder.app pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
     zip -rq postgresql-$PG_PACKAGE_VERSION-osx-binaries.zip pgsql || _die "Failed to archive the postgresql binaries"
     mv postgresql-$PG_PACKAGE_VERSION-osx-binaries.zip $WD/output/ || _die "Failed to move the archive to output folder"
 

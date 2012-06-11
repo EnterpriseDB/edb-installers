@@ -23,7 +23,7 @@ _prep_server_solaris_sparc() {
     fi
    
     # Grab a copy of the source tree
-    cp -dpR postgresql-$PG_TARBALL_POSTGRESQL postgres.solaris-sparc || _die "Failed to copy the source code (source/postgresql-$PG_TARBALL_POSTGRESQL)"
+    cp -pR postgresql-$PG_TARBALL_POSTGRESQL postgres.solaris-sparc || _die "Failed to copy the source code (source/postgresql-$PG_TARBALL_POSTGRESQL)"
     chmod -R ugo+w postgres.solaris-sparc || _die "Couldn't set the permissions on the source directory"
     zip -r postgres.solaris-sparc.zip postgres.solaris-sparc 
  
@@ -39,7 +39,7 @@ _prep_server_solaris_sparc() {
 #      rm -rf pgadmin.solaris-sparc.zip  || _die "Couldn't remove the existing pgadmin.solaris-sparc zip file (source/pgadmin.solaris-sparc.zip)"
 #    fi
 #    # Grab a copy of the source tree
-#    cp -dpR pgadmin3-$PG_TARBALL_PGADMIN pgadmin.solaris-sparc || _die "Failed to copy the source code (source/pgadmin-$PG_TARBALL_PGADMIN)"
+#    cp -pR pgadmin3-$PG_TARBALL_PGADMIN pgadmin.solaris-sparc || _die "Failed to copy the source code (source/pgadmin-$PG_TARBALL_PGADMIN)"
 #    cd pgadmin.solaris-sparc/
 #    patch -c -p0 < $WD/tarballs/pgadmin_solaris_acinclude.patch
 #    cd ../
@@ -58,7 +58,7 @@ _prep_server_solaris_sparc() {
 ##      rm -rf pljava.solaris-sparc.zip  || _die "Couldn't remove the existing pljava.solaris-sparc zip file (source/pljava.solaris-sparc.zip)"
 ##    fi
 ##    # Grab a copy of the source tree
-##    cp -dpR pljava-$PG_TARBALL_PLJAVA pljava.solaris-sparc || _die "Failed to copy the source code (source/pljava-$PG_TARBALL_PLJAVA)"
+##    cp -pR pljava-$PG_TARBALL_PLJAVA pljava.solaris-sparc || _die "Failed to copy the source code (source/pljava-$PG_TARBALL_PLJAVA)"
 ##    chmod -R ugo+w pljava.solaris-sparc || _die "Couldn't set the permissions on the source directory"
 ##    zip -r pljava.solaris-sparc.zip pljava.solaris-sparc
 #
@@ -74,7 +74,7 @@ _prep_server_solaris_sparc() {
 #      rm -rf stackbuilder.solaris-sparc.zip  || _die "Couldn't remove the existing stackbuilder.solaris-sparc zip file (source/stackbuilder.solaris-sparc.zip)"
 #    fi
 #    # Grab a copy of the stackbuilder source tree
-#    cp -dpR stackbuilder stackbuilder.solaris-sparc || _die "Failed to copy the source code (source/stackbuilder)"	
+#    cp -pR stackbuilder stackbuilder.solaris-sparc || _die "Failed to copy the source code (source/stackbuilder)"	
 #    chmod -R ugo+w stackbuilder.solaris-sparc || _die "Couldn't set the permissions on the source directory"
 #    cd stackbuilder.solaris-sparc
 #    patch -p0 < $WD/tarballs/stackbuilder.patch
@@ -249,27 +249,27 @@ EOT
     # Install the PostgreSQL docs
     mkdir -p $WD/server/staging/solaris-sparc/doc/postgresql/html || _die "Failed to create the doc directory"
     cd $WD/server/staging/solaris-sparc/doc/postgresql/html || _die "Failed to change to the doc directory"
-    cp -dpR $WD/server/source/postgres.solaris-sparc/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
+    cp -pR $WD/server/source/postgres.solaris-sparc/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
 
     # Install the PostgreSQL man pages
     mkdir -p $WD/server/staging/solaris-sparc/share/man || _die "Failed to create the man directory"
     cd $WD/server/staging/solaris-sparc/share/man || _die "Failed to change to the man directory"
-    cp -dpR $WD/server/source/postgres.solaris-sparc/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (solaris-sparc)"
-    cp -dpR $WD/server/source/postgres.solaris-sparc/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (solaris-sparc)"
-    cp -dpR $WD/server/source/postgres.solaris-sparc/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (solaris-sparc)"
+    cp -pR $WD/server/source/postgres.solaris-sparc/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (solaris-sparc)"
+    cp -pR $WD/server/source/postgres.solaris-sparc/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (solaris-sparc)"
+    cp -pR $WD/server/source/postgres.solaris-sparc/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (solaris-sparc)"
 
     # Copy in the dependency libraries
-    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libkrb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libkrb5support.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libk5crypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libcom_err.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libz.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libkrb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libkrb5support.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libk5crypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libcom_err.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libz.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
 
     # Process Dependent libs
     _process_dependent_libs_solaris_sparc "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl.so"  
@@ -303,25 +303,25 @@ EOT
 #    # Copy in the various libraries
 #    ssh $PG_SSH_SOLARIS_SPARC "mkdir -p $PG_STAGING/pgAdmin3/lib" || _die "Failed to create the lib directory"
 #
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libwx_gtk2u_adv-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libwx_gtk2u_aui-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libwx_gtk2u_core-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libwx_gtk2u_html-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libwx_gtk2u_ogl-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libwx_gtk2u_qa-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libwx_gtk2u_richtext-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libwx_gtk2u_stc-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libwx_gtk2u_xrc-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libwx_gtk2u_adv-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libwx_gtk2u_aui-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libwx_gtk2u_core-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libwx_gtk2u_html-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libwx_gtk2u_ogl-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libwx_gtk2u_qa-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libwx_gtk2u_richtext-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libwx_gtk2u_stc-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libwx_gtk2u_xrc-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
 #
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libwx_baseu-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libwx_baseu_net-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libwx_baseu_xml-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR $PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/lib/libpq.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libwx_baseu-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libwx_baseu_net-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libwx_baseu_xml-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR $PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/lib/libpq.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
 #
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libxml2.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/local/lib/libxslt.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/sfw/lib/64/libexpat.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR /usr/lib/64/libtiff.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libxml2.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libxslt.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/sfw/lib/64/libexpat.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/lib/64/libtiff.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
 #
 #    echo "Changing the rpath for the pgAdmin binaries"
 #    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_STAGING/pgAdmin3/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\$ORIGIN/../lib:/usr/sfw/lib/64\" \$f; done"
@@ -330,10 +330,10 @@ EOT
 #    ssh $PG_SSH_SOLARIS_SPARC "cd $PG_STAGING/pgAdmin3/lib; chmod a+r *"
 #
 #    # Copy the Postgres utilities
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR $PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin/pg_dump $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR $PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin/pg_dumpall $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR $PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin/pg_restore $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
-#    ssh $PG_SSH_SOLARIS_SPARC "cp -dpR $PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin/psql $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR $PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin/pg_dump $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR $PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin/pg_dumpall $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR $PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin/pg_restore $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
+#    ssh $PG_SSH_SOLARIS_SPARC "cp -pR $PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin/psql $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
 
     # Move the utilties.ini file out of the way (Uncomment for Postgres Studio or 1.9+)
     # ssh $PG_SSH_SOLARIS_SPARC "mv $PG_STAGING/pgAdmin3/share/pgadmin3/plugins/utilities.ini $PG_STAGING/pgAdmin3/share/pgadmin3/plugins/utilities.ini.new" || _die "Failed to move the utilties.ini file"
@@ -399,7 +399,7 @@ _postprocess_server_solaris_sparc() {
     #Creating a archive of the binaries
 #    mkdir -p $WD/server/staging/solaris-sparc/pgsql || _die "Failed to create the directory for binaries "
 #    cd $WD/server/staging/solaris-sparc
-#    cp -dpR bin doc include lib pgAdmin3 share stackbuilder pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
+#    cp -pR bin doc include lib pgAdmin3 share stackbuilder pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
 #
 #    tar -czf postgresql-$PG_PACKAGE_VERSION-solaris-sparc-binaries.tar.gz pgsql || _die "Failed to archive the postgresql binaries"
 #    mv postgresql-$PG_PACKAGE_VERSION-solaris-sparc-binaries.tar.gz $WD/output/ || _die "Failed to move the archive to output folder"
@@ -436,7 +436,7 @@ _postprocess_server_solaris_sparc() {
 #
 #    # Copy the XDG scripts
 #    mkdir -p staging/solaris-sparc/installer/xdg || _die "Failed to create a directory for the xdg scripts"
-#    cp -dpR $WD/scripts/xdg/xdg* staging/solaris-sparc/installer/xdg || _die "Failed to copy the xdg scripts (scripts/xdg/*)"
+#    cp -pR $WD/scripts/xdg/xdg* staging/solaris-sparc/installer/xdg || _die "Failed to copy the xdg scripts (scripts/xdg/*)"
 #    chmod ugo+x staging/solaris-sparc/installer/xdg/xdg*
 #    
 #    # Version string, for the xdg filenames
