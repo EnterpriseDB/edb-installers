@@ -1760,7 +1760,7 @@
                     <actionList>
                         <runProgram>
                             <program>${system_temp_directory}\postgresql_installer\${vcredist_executable}</program>
-                            <programArguments>/q</programArguments>
+                            <programArguments>/passive /norestart</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
@@ -1777,6 +1777,11 @@
                         <throwError>
                             <text>${msg(error.installing.runtimes)}</text>
                             <ruleList>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>5100</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
                                 <compareText>
                                     <logic>does_not_equal</logic>
                                     <text>3010</text>
