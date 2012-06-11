@@ -54,9 +54,9 @@ _build_pgAgent_linux() {
     SOURCE_DIR=$PG_PATH_LINUX/pgAgent/source/pgAgent.linux
 
     echo "Building pgAgent sources"
-    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; LDFLAGS=' -L$PG_PGHOME_LINUX/lib -lldap ' LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib PGDIR=$PG_PGHOME_LINUX cmake -DCMAKE_INSTALL_PREFIX=$PG_STAGING -DSTATIC_BUILD=NO CMakeLists.txt " || _die "Couldn't configure the pgAgent sources"
+    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; LDFLAGS=' -L/usr/local/ldap-2.4.23/lib -L$PG_PGHOME_LINUX/lib ' LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib PGDIR=$PG_PGHOME_LINUX cmake -DCMAKE_INSTALL_PREFIX=$PG_STAGING -DSTATIC_BUILD=NO CMakeLists.txt " || _die "Couldn't configure the pgAgent sources"
     echo "Compiling pgAgent"
-    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; LDFLAGS=' -L$PG_PGHOME_LINUX/lib -lldap ' LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib make" || _die "Couldn't compile the pgAgent sources"
+    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; export LD_LIBRARY_PATH=/usr/local/ldap-2.4.23/lib:$LD_LIBRARY_PATH; LDFLAGS=' -L/usr/local/ldap-2.4.23/lib -L$PG_PGHOME_LINUX/lib ' LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib make" || _die "Couldn't compile the pgAgent sources"
     echo "Installing pgAgent"
     ssh $PG_SSH_LINUX "cd $SOURCE_DIR; make install" || _die "Couldn't compile the pgAgent sources"
 
