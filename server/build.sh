@@ -47,7 +47,7 @@ _prep_server() {
       echo "Removing existing postgresql-$PG_TARBALL_POSTGRESQL source directory"
       rm -rf postgresql-$PG_TARBALL_POSTGRESQL  || _die "Couldn't remove the existing postgresql-$PG_TARBALL_POSTGRESQL source directory (source/postgresql-$PG_TARBALL_POSTGRESQL)"
     fi
-	
+
     echo "Unpacking PostgreSQL source..."
     tar -jxvf ../../tarballs/postgresql-$PG_TARBALL_POSTGRESQL.tar.bz2
 
@@ -80,6 +80,7 @@ _prep_server() {
     # StackBuilder (Git Tree)
     if [ -e $WD/server/source/stackbuilder/CVS/Repository ]; then
         echo "Remove existing stackbuilder directory (based on CVS)..."
+        rm -rf $WD/server/source/stackbuilder
     fi
 
     if [ ! -e $WD/server/source/stackbuilder ]; then
