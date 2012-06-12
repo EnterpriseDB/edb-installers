@@ -107,10 +107,21 @@ _prep_server() {
 	
     cp -R pldebugger $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/
 
-    # StackBuilder (CVS Tree)
-    echo "Updating the StackBuilder source tree..."
-    cd $WD/server/source/stackbuilder
-    cvs -z3 update -dP
+    # StackBuilder (Git Tree)
+    if [ -e $WD/server/source/stackbuilder/CVS/Repository ]; then
+        echo "Remove existing stackbuilder directory (based on CVS)..."
+    fi
+
+    if [ ! -e $WD/server/source/stackbuilder ]; then
+        echo "Cloning the StackBuilder source tree..."
+		cd $WD/server/source
+        git clone git://git.postgresql.org/git/stackbuilder
+    else
+        echo "Updating the StackBuilder source tree..."
+        cd $WD/server/source/stackbuilder
+        git reset HEAD --hard
+        git pull
+    fi
 
     # Per-platform prep
     cd $WD
