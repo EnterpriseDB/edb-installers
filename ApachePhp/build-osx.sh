@@ -25,7 +25,7 @@ _prep_ApachePhp_osx() {
     chmod ugo+w apache.osx || _die "Couldn't set the permissions on the source directory"
 
     # Grab a copy of the apache source tree
-    cp -R httpd-$PG_VERSION_APACHE/* apache.osx || _die "Failed to copy the source code (source/httpd-$PG_VERSION_APACHE)"
+    cp -pR httpd-$PG_VERSION_APACHE/* apache.osx || _die "Failed to copy the source code (source/httpd-$PG_VERSION_APACHE)"
     chmod -R ugo+w apache.osx || _die "Couldn't set the permissions on the source directory"
 
     if [ -e php.osx ];
@@ -39,7 +39,7 @@ _prep_ApachePhp_osx() {
     chmod ugo+w php.osx || _die "Couldn't set the permissions on the source directory"
 
     # Grab a copy of the php source tree
-    cp -R php-$PG_VERSION_PHP/* php.osx || _die "Failed to copy the source code (source/php-$PG_VERSION_PHP)"
+    cp -pR php-$PG_VERSION_PHP/* php.osx || _die "Failed to copy the source code (source/php-$PG_VERSION_PHP)"
     chmod -R ugo+w php.osx || _die "Couldn't set the permissions on the source directory"
     cd php.osx
     if [ -f $WD/tarballs/php-${PG_VERSION_PHP}_osx.patch ]; then
@@ -90,12 +90,12 @@ _build_ApachePhp_osx() {
                  srclib/apr-util/include/apu_want srclib/apr-util/include/private/apu_config \
                  srclib/apr-util/include/private/apu_select_dbm srclib/apr-util/xml/expat/config \
                  srclib/apr-util/xml/expat/lib/expat"
-    ARCHS="i386 ppc x86_64"
+    ARCHS="i386 x86_64"
     ARCH_FLAGS=""
     for ARCH in ${ARCHS}
     do
       echo "Configuring the apache source tree for ${ARCH}"
-      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch ${ARCH} -I/usr/local/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -L/usr/local/lib -arch ${ARCH}" ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for ${ARCH}"
+      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch ${ARCH} -I/usr/local/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -L/usr/local/lib -arch ${ARCH}" ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache --with-pcre=/usr/local || _die "Failed to configure apache for ${ARCH}"
       ARCH_FLAGS="${ARCH_FLAGS} -arch ${ARCH}"
       for configFile in ${CONFIG_FILES}
       do
@@ -106,7 +106,7 @@ _build_ApachePhp_osx() {
     done
 
     echo "Configuring the apache source tree for Universal"
-    CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS} -I/usr/local/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS} -L/usr/local/lib" ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache  || _die "Failed to configure apache for 32 bit Universal"
+    CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS} -I/usr/local/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS} -L/usr/local/lib" ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache --with-pcre=/usr/local || _die "Failed to configure apache for 32 bit Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     for configFile in ${CONFIG_FILES}
@@ -117,11 +117,7 @@ _build_ApachePhp_osx() {
         rm -f "${HEADER_FILE}"
         cat <<EOT > "${HEADER_FILE}"
 #ifdef __BIG_ENDIAN__
- #ifdef __LP64__
   #error "${CONFIG_BASENAME}: Does not have support for ppc64 architecture"
- #else
-  #include "${CONFIG_BASENAME}_ppc.h"
- #endif
 #else
  #ifdef __LP64__
   #include "${CONFIG_BASENAME}_x86_64.h"
@@ -169,7 +165,7 @@ EOT
     for ARCH in ${ARCHS}
     do
       echo "Configuring the php source tree for ${ARCH}"
-      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch ${ARCH} -I/usr/local/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -L/usr/local/lib -arch ${ARCH}" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr/local --with-zlib-dir=/usr/local --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for ${ARCH}"
+      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch ${ARCH} -I/usr/local/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -L/usr/local/lib -arch ${ARCH}" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr/local --with-zlib-dir=/usr/local --with-iconv=/usr/local --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for ${ARCH}"
       for configFile in ${CONFIG_FILES}
       do
            if [ -f "${configFile}.h" ]; then
@@ -179,7 +175,7 @@ EOT
     done
  
     echo "Configuring the php source tree for Universal"
-    CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS} -I/usr/local/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS} -L/usr/local/lib" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr/local --with-zlib-dir=/usr/local --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for Universal"
+    CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS} -I/usr/local/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS} -L/usr/local/lib" ./configure --with-libxml-dir=/usr/local --with-openssl-dir=/usr/local --with-zlib-dir=/usr/local --with-iconv=/usr/local --with-libexpat-dir=/usr/local --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --with-freetype-dir=/usr/local --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     for configFile in ${CONFIG_FILES}
@@ -190,11 +186,7 @@ EOT
         rm -f "${HEADER_FILE}"
         cat <<EOT > "${HEADER_FILE}"
 #ifdef __BIG_ENDIAN__
- #ifdef __LP64__
   #error "${CONFIG_BASENAME}: Does not have support for ppc64 architecture"
- #else
-  #include "${CONFIG_BASENAME}_ppc.h"
- #endif
 #else
  #ifdef __LP64__
   #include "${CONFIG_BASENAME}_x86_64.h"
@@ -253,17 +245,17 @@ EOT
     done
 
     # Copy in the dependency libraries
-    cp -R /usr/local/lib/libpng*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
-    cp -R /usr/local/lib/libjpeg*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
-    cp -R /usr/local/lib/libfreetype*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
-    cp -R /usr/local/lib/libxml*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
-    cp -R /usr/local/lib/libexpat*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
-    cp -R /usr/local/lib/libz*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
-    cp -R /usr/local/lib/libssl*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
-    cp -R /usr/local/lib/libcrypto*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
-    cp -R /usr/local/lib/libexpat*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
-    cp -R /usr/local/lib/libssl*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
-    cp -R /usr/local/lib/libcrypto*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
+    cp -pR /usr/local/lib/libpng*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -pR /usr/local/lib/libjpeg*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -pR /usr/local/lib/libfreetype*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -pR /usr/local/lib/libxml*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -pR /usr/local/lib/libexpat*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -pR /usr/local/lib/libz*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -pR /usr/local/lib/libssl*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -pR /usr/local/lib/libcrypto*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -pR /usr/local/lib/libexpat*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
+    cp -pR /usr/local/lib/libssl*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
+    cp -pR /usr/local/lib/libcrypto*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
 
     files=`ls $WD/ApachePhp/staging/osx/apache/lib/*`
     for file in $files
@@ -314,7 +306,7 @@ _postprocess_ApachePhp_osx() {
     # Setup the installer scripts. 
 
     #Changing the ServerRoot from htdocs to www in apache
-    cp -R staging/osx/apache/htdocs staging/osx/apache/www || _die "Failed to change Server Root"
+    cp -pR staging/osx/apache/htdocs staging/osx/apache/www || _die "Failed to change Server Root"
     chmod ugo+wx staging/osx/apache/www
 
     mkdir -p staging/osx/installer/ApachePhp || _die "Failed to create a directory for the install scripts"
