@@ -12,7 +12,6 @@ then
 fi
 
 # Generic mail variables
-mail_receipents="pginstaller@enterprisedb.com"
 log_location="/Users/buildfarm/pginstaller.auto/output"
 header_fail="Autobuild failed with the following error (last 20 lines of the log):
 ###################################################################################"
@@ -31,6 +30,7 @@ _mail_status()
         then
                 mail_content="Autobuild completed Successfully."
                 build_status="SUCCESS"
+                mail_receipents="sachin.srivastava@enterprisedb.com"
         else
                 mail_content="
 $header_fail
@@ -39,6 +39,7 @@ $log_content
 
 $footer_fail"
                 build_status="FAILED"
+                mail_receipents="pginstaller@enterprisedb.com"
         fi
 
         mail -s "pgInstaller Build $version - $build_status" $mail_receipents <<EOT
