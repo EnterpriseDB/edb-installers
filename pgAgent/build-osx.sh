@@ -66,6 +66,8 @@ _build_pgAgent_osx() {
     mkdir -p $PG_STAGING/lib
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
+    cp $PG_PGHOME_OSX/lib/libssl* $PG_STAGING/lib/ || _die "Failed to copy the dependency library (libssl)"
+    cp $PG_PGHOME_OSX/lib/libcrypto* $PG_STAGING/lib || _die "Failed to copy the dependency library (libcrypto)"
     cp -R $PG_PGHOME_OSX/bin/psql $PG_STAGING/bin || _die "Failed to copy psql"
     cp -R $PG_PGHOME_OSX/lib/libpq.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library (libpq.5.dylib)"
     cp -R $PG_PGHOME_OSX/lib/libedit.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library (libedit.0.dylib)"

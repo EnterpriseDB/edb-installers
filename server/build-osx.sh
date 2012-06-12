@@ -138,7 +138,7 @@ EOT
     echo "Adding ppc64 arch to libpq"
     cd $WD/server/source/postgres.osx/src/interfaces/libpq
     make clean
-    make CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc -arch ppc64 -arch x86_64" LDFLAGS="$PG_ARCH_OSX_LDFLAGS -arch i386 -arch ppc -arch ppc64 -arch x86_64"
+    make CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc -arch ppc64 -arch x86_64" LDFLAGS="$PG_ARCH_OSX_LDFLAGS -arch i386 -arch ppc -arch ppc64 -arch x86_64 -L/usr/local/lib"
     make install
 
     cd $WD/server/source/postgres.osx
