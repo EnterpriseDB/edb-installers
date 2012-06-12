@@ -59,7 +59,7 @@ _prep_server() {
       echo "Removing existing postgresql-$PG_TARBALL_POSTGRESQL source directory"
       rm -rf postgresql-$PG_TARBALL_POSTGRESQL  || _die "Couldn't remove the existing postgresql-$PG_TARBALL_POSTGRESQL source directory (source/postgresql-$PG_TARBALL_POSTGRESQL)"
     fi
-	
+
     echo "Unpacking PostgreSQL source..."
     tar -jxvf ../../tarballs/postgresql-$PG_TARBALL_POSTGRESQL.tar.bz2
 
@@ -92,7 +92,7 @@ _prep_server() {
     then
         echo "Updating debugger source..."
         cd pldebugger
-	git checkout PRE_9_2
+        git checkout PRE_9_2
         git pull || _die "Failed to update the pldebugger code"
     else
         echo "Fetching debugger source..."
@@ -102,6 +102,7 @@ _prep_server() {
     # StackBuilder (Git Tree)
     if [ -e $WD/server/source/stackbuilder/CVS/Repository ]; then
         echo "Remove existing stackbuilder directory (based on CVS)..."
+        rm -rf $WD/server/source/stackbuilder
     fi
 
     if [ ! -e $WD/server/source/stackbuilder ]; then
