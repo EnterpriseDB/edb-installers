@@ -70,6 +70,8 @@ _build_ReplicationServer_osx() {
 
     mkdir -p $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/bin || _die "Failed to create the instscripts directory"
     mkdir -p $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/lib || _die "Failed to create the instscripts directory"
+    cp $PG_PATH_OSX/server/staging/osx/lib/libssl* $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/lib || _die "Failed to copy the libssl in instscripts"
+    cp $PG_PATH_OSX/server/staging/osx/lib/libcrypto* $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/lib || _die "Failed to copy the libcrypto in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/lib || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libxml2* $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/lib || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libedit* $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/lib || _die "Failed to copy libpq in instscripts"
