@@ -103,15 +103,31 @@ EOT
     done
 
     echo "Compiling psqlODBC"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" make || _die "Couldn't compile sources"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" LDFLAGS="$PG_ARCH_OSX_LDFLAGS -L/usr/local/lib" make || _die "Couldn't compile sources"
 
     echo "Installing psqlODBC into the sources"
     make install || _die "Couldn't install psqlODBC"
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     cp -R $PG_PGHOME_OSX/lib/libpq.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library"
+    cp $PG_PGHOME_OSX/lib/libssl* $PG_STAGING/lib || _die "Failed to copy the libssl in lib"
+    cp $PG_PGHOME_OSX/lib/libcrypto* $PG_STAGING/lib || _die "Failed to copy the libcrypto in lib"
     _rewrite_so_refs $WD/psqlODBC/staging/osx lib @loader_path/..
     install_name_tool -change "libpq.5.dylib" "@loader_path/libpq.5.dylib" "$PG_STAGING/lib/psqlodbcw.so"
+
+    OLD_DLLS=`otool -L $PG_STAGING/lib/libpq.5.dylib| grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' `
+    for DLL in $OLD_DLLS
+    do
+        NEW_DLL=`echo $DLL | sed -e "s^@loader_path/../lib/^^g"`
+        install_name_tool -change "$DLL" "$NEW_DLL" "$PG_STAGING/lib/libpq.5.dylib"
+    done
+
+    OLD_DLLS=`otool -L $PG_STAGING/lib/libssl.dylib| grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' `
+    for DLL in $OLD_DLLS
+    do
+        NEW_DLL=`echo $DLL | sed -e "s^@loader_path/../lib/^^g"`
+        install_name_tool -change "$DLL" "$NEW_DLL" "$PG_STAGING/lib/libssl.dylib"
+    done
 
 }
 
