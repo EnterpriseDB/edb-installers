@@ -96,6 +96,12 @@
 
     <!-- Initialisation actions -->
     <initializationActionList>
+        <setInstallerVariable name="win64_platform" value="0"/>
+        <setInstallerVariable name="win64_platform" value="1">
+            <ruleList>
+                <platformTest type="windows-x64"/>
+            </ruleList>
+        </setInstallerVariable>
 	<setInstallerVariable name="pgmajorversion" value="PG_MAJOR_VERSION"/>
         <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_SQLPROTECT"/>
         <!-- Abort Installation as trying to    run a 32-bit installer on 64-bit machine -->
@@ -106,6 +112,13 @@
                 <platformTest type="linux-x64"/>
                 <compareText text="${originalplatform}" value="linux-x32"/>
             </ruleList>
+        </throwError>
+
+        <throwError customErrorMessage="${msg(platform.not.match64)}" text="Unknown Error">
+          <ruleList>
+            <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+            <isFalse value="${win64_platform}"/>
+          </ruleList>
         </throwError>
 
         <!-- WIN: Set the pghome default value -->

@@ -7,6 +7,7 @@ install.summary=SQL/Protect
 Installer.Installing.Title=Installing ${product_fullname}
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
+platform.not.match64=You are trying to run a 64bit installer in a 32bit machine. The installer will exit now
 
 sqlprotect.installdir.pgerror=The Postgres installation directory: ${installdir} is not valid.
 
