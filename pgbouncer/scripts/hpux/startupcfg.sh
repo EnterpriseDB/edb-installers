@@ -48,20 +48,43 @@ cat <<EOT > "/sbin/init.d/pgbouncer-$PGBOUNCER_SERVICE_VER"
 PATH=/usr/sbin:/usr/bin:/sbin
 export PATH
 
+function check_pid()
+{
+    export PIDB=\`ps -axef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`
+}
+
 function start
 {
-    PID=\`ps -axef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
-    if [ "x\$PID" = "x" ];
+    if [ "x\$PIDB" = "x" ];
     then
        # Service Owner should be able to start the service without root password.
        if [ "\`id -un\`" = "$SYSTEM_USER" ];
        then
            LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH $INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini
-	   echo "pgbouncer-$PGBOUNCER_SERVICE_VER started" 
+
+	   check_pid;
+
+           if [ "x\$PIDB" = "x" ];
+           then
+               echo "pgbouncer-$PGBOUNCER_SERVICE_VER not started"
+               exit 1
+           else
+	       echo "pgbouncer-$PGBOUNCER_SERVICE_VER started" 
+	   fi
        else
            su $SYSTEM_USER -c "LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH $INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini " 
-	   echo "pgbouncer-$PGBOUNCER_SERVICE_VER started" 
+
+	   check_pid;
+
+           if [ "x\$PIDB" = "x" ];
+           then
+               echo "pgbouncer-$PGBOUNCER_SERVICE_VER not started"
+               exit 1
+           else
+	       echo "pgbouncer-$PGBOUNCER_SERVICE_VER started" 
+	   fi
        fi
     else
        echo "pgbouncer-$PGBOUNCER_SERVICE_VER already running"
@@ -71,26 +94,26 @@ function start
 
 function _stop
 {
-    PID=\`ps -axef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
-    if [ "x\$PID" = "x" ];
+    if [ "x\$PIDB" = "x" ];
     then
         echo "pgbouncer-$PGBOUNCER_SERVICE_VER not running"
     else
-        kill \$PID
+        kill \$PIDB
 	echo "pgbouncer-$PGBOUNCER_SERVICE_VER stopped" 
     fi
 }
 function status
 {
-    PID=\`ps -axef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
-    if [ "x\$PID" = "x" ];
+    if [ "x\$PIDB" = "x" ];
     then
         echo "pgbouncer-$PGBOUNCER_SERVICE_VER not running"
 	exit 1
     else
-        echo "pgbouncer-$PGBOUNCER_SERVICE_VER is running (PID: \$PID)"
+        echo "pgbouncer-$PGBOUNCER_SERVICE_VER is running (PID: \$PIDB)"
 	exit 0
     fi
 }

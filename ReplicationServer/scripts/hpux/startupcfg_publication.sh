@@ -50,14 +50,28 @@ cat <<EOT > "/sbin/init.d/edb-xdbpubserver-$XDB_SERVICE_VER"
 PATH=/usr/sbin:/usr/bin:/sbin
 export PATH
 
+function check_pid()
+{
+    export PID=\`ps -axef | grep 'java -Xms128m -Xmx512m -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+}
+
 function start
 {
-    PID=\`ps -axef | grep 'java -Xms128m -Xmx512m -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
     if [ "x\$PID" = "x" ];
     then
        su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; nohup $JAVA -Xms128m -Xmx512m -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
-       echo "Publication Service $XDB_SERVICE_VER started"
+       
+       check_pid;
+
+       if [ "x\$PID" = "x" ];
+       then
+          echo "Publication Service $XDB_SERVICE_VER not started"
+          exit 1
+       else
+          echo "Publication Service $XDB_SERVICE_VER started"
+       fi
     else
        echo "Publication Service $XDB_SERVICE_VER already running"
        exit 0
@@ -66,7 +80,7 @@ function start
 
 function _stop
 {
-    PID=\`ps -axef | grep 'java -Xms128m -Xmx512m -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
     if [ "x\$PID" = "x" ];
     then
@@ -79,7 +93,7 @@ function _stop
 
 function status
 {
-    PID=\`ps -axef | grep 'java -Xms128m -Xmx512m -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
     if [ "x\$PID" = "x" ];
     then

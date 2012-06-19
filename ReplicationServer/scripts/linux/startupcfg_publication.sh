@@ -61,16 +61,29 @@ set_jvm_heap_size()
        rm -f /tmp/test.log
 }
 
+check_pid()
+{   
+   export PID=\`ps -aef | grep 'java '"\$JAVA_HEAP_SIZE"' -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+}
+
 start()
 {
     set_jvm_heap_size;
-
-    PID=\`ps -aef | grep 'java '"\$JAVA_HEAP_SIZE"' -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
     if [ "x\$PID" = "x" ];
     then
        su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA \$JAVA_HEAP_SIZE -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
-       echo "Publication Service $XDB_SERVICE_VER started"
+
+       check_pid;
+
+       if [ "x\$PID" = "x" ];
+       then
+          echo "Publication Service $XDB_SERVICE_VER not started"
+          exit 1
+       else
+          echo "Publication Service $XDB_SERVICE_VER started"
+       fi
     else
        echo "Publication Service $XDB_SERVICE_VER already running"
        exit 0
@@ -80,8 +93,7 @@ start()
 stop()
 {   
     set_jvm_heap_size;
-
-    PID=\`ps -aef | grep 'java '"\$JAVA_HEAP_SIZE"' -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
     if [ "x\$PID" = "x" ];
     then
@@ -95,8 +107,7 @@ stop()
 status()
 {
     set_jvm_heap_size;
-
-    PID=\`ps -aef | grep 'java '"\$JAVA_HEAP_SIZE"' -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
     if [ "x\$PID" = "x" ];
     then
