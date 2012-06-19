@@ -248,7 +248,7 @@ EOT
     for file in $files
     do 
         install_name_tool -change "/usr/local/lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
-        install_name_tool -change "/usr/local/lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
+        install_name_tool -change "/usr/local/lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" $file
         install_name_tool -change "/usr/local/lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" $file
     done
 
@@ -277,8 +277,17 @@ EOT
     _rewrite_so_refs $WD/ApachePhp/staging/osx apache/lib @loader_path/../..
     _rewrite_so_refs $WD/ApachePhp/staging/osx apache/modules @loader_path/../..
     _rewrite_so_refs $WD/ApachePhp/staging/osx apache/bin @loader_path/../..
-    _rewrite_so_refs $WD/ApachePhp/staging/osx php/bin @loader_path/..
-    _rewrite_so_refs $WD/ApachePhp/staging/osx php/lib @loader_path/..
+    _rewrite_so_refs $WD/ApachePhp/staging/osx php/bin @loader_path/../..
+    _rewrite_so_refs $WD/ApachePhp/staging/osx php/lib @loader_path/../..
+
+    # Fix libssl refrences
+    files=`ls $WD/ApachePhp/staging/osx/apache/lib/* $WD/ApachePhp/staging/osx/apache/modules/* $WD/ApachePhp/staging/osx/apache/bin/* $WD/ApachePhp/staging/osx/php/bin/* $WD/ApachePhp/staging/osx/php/lib/*`
+    for file in $files
+    do 
+        install_name_tool -change "@loader_path/../../lib/libssl.dylib" "@loader_path/../lib/libssl.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libcrypto.dylib" "@loader_path/../lib/libcrypto.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libcrypto.1.0.0.dylib" "@loader_path/../lib/libcrypto.1.0.0.dylib" $file
+    done
 
     cd $WD
 }
