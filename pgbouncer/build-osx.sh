@@ -94,7 +94,8 @@ _build_pgbouncer_osx() {
 
  
     mkdir -p $WD/pgbouncer/staging/osx/instscripts || _die "Failed to create the instscripts directory"
-
+    cp $PG_PGHOME_OSX/lib/libssl* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy the dependency library (libssl)"
+    cp $PG_PGHOME_OSX/lib/libcrypto* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy the dependency library (libcrypto)"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libedit* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy psql in instscripts"
@@ -107,6 +108,22 @@ _build_pgbouncer_osx() {
         NEW_DLL=`echo $OLD_DLL | sed -e "s^@loader_path/../lib/^^g"`
         install_name_tool -change "$OLD_DLL" "$NEW_DLL" "$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/psql"
     done
+
+    OLD_DLLS=`otool -L $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libpq.5.dylib| grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' `
+    for DLL in $OLD_DLLS
+    do
+        NEW_DLL=`echo $DLL | sed -e "s^@loader_path/../lib/^^g"`
+        install_name_tool -change "$DLL" "$NEW_DLL" "$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libpq.5.dylib"
+    done
+
+    OLD_DLLS=`otool -L $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.dylib| grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' `
+    for DLL in $OLD_DLLS
+    do
+        NEW_DLL=`echo $DLL | sed -e "s^@loader_path/../lib/^^g"`
+        install_name_tool -change "$DLL" "$NEW_DLL" "$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.dylib"
+    done
+
+    chmod +r $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/*
 
   
 }
