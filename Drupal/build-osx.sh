@@ -24,7 +24,7 @@ _prep_Drupal_osx() {
     mkdir -p $WD/Drupal/source/Drupal.osx || _die "Couldn't create the Drupal.osx directory"
 
     # Grab a copy of the source tree
-    cp -R drupal-$PG_VERSION_DRUPAL/* Drupal.osx || _die "Failed to copy the source code (source/drupal-$PG_VERSION_DRUPAL)"
+    cp -pR drupal-$PG_VERSION_DRUPAL/* Drupal.osx || _die "Failed to copy the source code (source/drupal-$PG_VERSION_DRUPAL)"
     chmod -R ugo+w Drupal.osx || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -52,11 +52,11 @@ _build_Drupal_osx() {
 
     cd $WD
     mkdir -p $PG_PATH_OSX/Drupal/staging/osx/instscripts || _die "Failed to create the instscripts directory"
-    cp -R $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
-    cp -R $PG_PATH_OSX/server/staging/osx/lib/libxml2* $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
-    cp -R $PG_PATH_OSX/server/staging/osx/lib/libedit* $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
-    cp -R $PG_PATH_OSX/server/staging/osx/lib/libxslt* $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
-    cp -R $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy psql in instscripts"
+    cp -pR $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -pR $PG_PATH_OSX/server/staging/osx/lib/libxml2* $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -pR $PG_PATH_OSX/server/staging/osx/lib/libedit* $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -pR $PG_PATH_OSX/server/staging/osx/lib/libxslt* $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -pR $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/Drupal/staging/osx/instscripts/ || _die "Failed to copy psql in instscripts"
 
     # Change the referenced libraries
     OLD_DLLS=`otool -L $PG_PATH_OSX/Drupal/staging/osx/instscripts/psql | grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' `
@@ -79,7 +79,7 @@ _postprocess_Drupal_osx() {
     echo " Post Process : Drupal (OSX)"
     echo "*******************************************************"
 
-    cp -R $WD/Drupal/source/Drupal.osx/* $WD/Drupal/staging/osx/Drupal7 || _die "Failed to copy the Drupal Source into the staging directory"
+    cp -pR $WD/Drupal/source/Drupal.osx/* $WD/Drupal/staging/osx/Drupal7 || _die "Failed to copy the Drupal Source into the staging directory"
 
     cd $WD/Drupal
 

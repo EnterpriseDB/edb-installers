@@ -20,7 +20,7 @@ _prep_Drupal_linux_x64() {
     mkdir -p $WD/Drupal/source/Drupal.linux-x64 || _die "Couldn't create the Drupal.linux-x64 directory"
 
     # Grab a copy of the source tree
-    cp -R drupal-$PG_VERSION_DRUPAL/* Drupal.linux-x64 || _die "Failed to copy the source code (source/drupal-$PG_VERSION_DRUPAL)"
+    cp -pR drupal-$PG_VERSION_DRUPAL/* Drupal.linux-x64 || _die "Failed to copy the source code (source/drupal-$PG_VERSION_DRUPAL)"
     chmod -R ugo+w Drupal.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -53,14 +53,14 @@ function _cp_lib_pg_to_drupal() {
     while [[ ! -z \"\$1\" ]];
     do
         echo \"Copying:\$1\";
-        cp \$SRCDIR/\$1 \$DESTDIR || (echo \"Failed to copy the PostgreSQL supported library (\$1)\" > /dev/stderr && exit 1);
+        cp -pR \$SRCDIR/\$1 \$DESTDIR || (echo \"Failed to copy the PostgreSQL supported library (\$1)\" > /dev/stderr && exit 1);
         if [ \$? -eq 1 ]; then
             exit 1;
         fi;
         shift;
     done;
 };
-_cp_lib_pg_to_drupal \"libpq.so*\" \"libcrypto.so*\" \"libssl.so*\" \"libedit.so*\" \"libtermcap.so*\" \"libxml2.so*\" \"libxslt.so*\" \"libldap*.so*\" \"liblber*.so*\" \"libsasl2.so*\";" || _die "Failed to copy supporting libraries"
+_cp_lib_pg_to_drupal \"libpq.so*\" \"libcrypto.so*\" \"libssl.so*\" \"libedit.so*\" \"libxml2.so*\" \"libxslt.so*\" \"libldap*.so*\" \"liblber*.so*\" ;" || _die "Failed to copy supporting libraries"
 
 }
 
@@ -72,7 +72,7 @@ _cp_lib_pg_to_drupal \"libpq.so*\" \"libcrypto.so*\" \"libssl.so*\" \"libedit.so
 _postprocess_Drupal_linux_x64() {
 
 
-    cp -R $WD/Drupal/source/Drupal.linux-x64/* $WD/Drupal/staging/linux-x64/Drupal7 || _die "Failed to copy the Drupal Source into the staging directory"
+    cp -pR $WD/Drupal/source/Drupal.linux-x64/* $WD/Drupal/staging/linux-x64/Drupal7 || _die "Failed to copy the Drupal Source into the staging directory"
 
     cd $WD/Drupal
 
@@ -107,7 +107,7 @@ _postprocess_Drupal_linux_x64() {
     mkdir -p staging/linux-x64/installer/xdg || _die "Failed to create a directory for the menu pick xdg files"
 
     # Copy in installation xdg Files
-    cp -R $WD/scripts/xdg/xdg* staging/linux-x64/installer/xdg/ || _die "Failed to copy the xdg files (resources/)"
+    cp -pR $WD/scripts/xdg/xdg* staging/linux-x64/installer/xdg/ || _die "Failed to copy the xdg files (resources/)"
 
     #Configure the install.php file
     _replace " '#default_value' => \$db_path," " '#default_value' => drupal," "$WD/Drupal/staging/linux-x64/Drupal7/install.php"
