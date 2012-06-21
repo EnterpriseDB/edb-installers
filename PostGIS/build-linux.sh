@@ -24,34 +24,6 @@ _prep_PostGIS_linux() {
     cp -R postgis-$PG_VERSION_POSTGIS/* postgis.linux || _die "Failed to copy the source code (source/postgis-$PG_VERSION_POSTGIS)"
     chmod -R ugo+w postgis.linux || _die "Couldn't set the permissions on the source directory"
 
-    if [ -e geos.linux ];
-    then
-      echo "Removing existing geos.linux source directory"
-      rm -rf geos.linux  || _die "Couldn't remove the existing geos.linux source directory (source/geos.linux)"
-    fi
-
-    echo "Creating geos source directory ($WD/PostGIS/source/geos.linux)"
-    mkdir -p geos.linux || _die "Couldn't create the geos.linux directory"
-    chmod ugo+w geos.linux || _die "Couldn't set the permissions on the source directory"
-
-    # Grab a copy of the geos source tree
-    cp -R geos-$PG_TARBALL_GEOS/* geos.linux || _die "Failed to copy the source code (source/geos.linux)"
-    chmod -R ugo+w geos.linux || _die "Couldn't set the permissions on the source directory"
-
-    if [ -e proj.linux ];
-    then
-       echo "Removing existing proj.linux source directory"
-       rm -rf proj.linux  || _die "Couldn't remove the existing proj.linux source directory (source/proj.linux)"
-    fi
-
-    echo "Creating proj source directory ($WD/PostGIS/source/proj.linux)"
-    mkdir -p proj.linux || _die "Couldn't create the proj.linux directory"
-    chmod ugo+w proj.linux || _die "Couldn't set the permissions on the source directory"
-
-    # Grab a copy of the proj source tree
-    cp -R proj-$PG_TARBALL_PROJ/* proj.linux || _die "Failed to copy the source code (source/proj.linux)"
-    chmod -R ugo+w proj.linux || _die "Couldn't set the permissions on the source directory"
-
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/PostGIS/staging/linux ];
     then
@@ -101,24 +73,6 @@ _build_PostGIS_linux() {
     POSTGIS_STAGING=$WD/PostGIS/staging/$PLATFORM
     POSTGIS_STAGING_REMOTE=$BLD_REMOTE_PATH/PostGIS/staging/$PLATFORM
 
-    BUILD_PROJ=1
-    PROJ_SOURCE_REMOTE=$PACKAGE_SOURCE_REMOTE/proj.$PLATFORM
-    PROJ_CACHE=$WD/PostGIS/caching/$PLATFORM/proj-$PG_TARBALL_PROJ.$PLATFORM
-    PROJ_CACHHE_REMOTE=$BLD_REMOTE_PATH/PostGIS/caching/$PLATFORM/proj-$PG_TARBALL_PROJ.$PLATFORM
-
-    BUILD_GEOS=1
-    GEOS_SOURCE_REMOTE=$PACKAGE_SOURCE_REMOTE/geos.$PLATFORM
-    GEOS_CACHE=$WD/PostGIS/caching/$PLATFORM/geos-$PG_TARBALL_GEOS.$PLATFORM
-    GEOS_CACHE_REMOTE=$BLD_REMOTE_PATH/PostGIS/caching/$PLATFORM/geos-$PG_TARBALL_GEOS.$PLATFORM
-
-    if [ -e $PROJ_CACHE ]; then
-        BUILD_PROJ=0
-    fi
-
-    if [ -e $GEOS_CACHE ]; then
-        BUILD_GEOS=0
-    fi
-
     cd $PACKAGE_SOURCE
 
 cat <<EOT > "build-postgis-$PLATFORM.sh"
@@ -131,44 +85,23 @@ _die() {
     exit 1
 }
 
-# Build proj
-if [ \$1 -eq 1 ]; then
-    cd $PROJ_SOURCE_REMOTE
-
-    # Configure the source tree
-    echo "Configuring the proj source tree"
-    sh ./configure --prefix=$PROJ_CACHHE_REMOTE  || _die "Failed to configure proj"
-
-    echo "Building proj"
-    make || _die "Failed to build proj"
-    make install || _die "Failed to install proj"
-fi
-
-if [ \$2 -eq 1 ]; then
-    cd $GEOS_SOURCE_REMOTE
-
-    # Configure the source tree
-    echo "Configuring the geos source tree"
-    sh ./configure --prefix=$GEOS_CACHE_REMOTE  || _die "Failed to configure geos"
-
-    echo "Building geos"
-    make || _die "Failed to build geos"
-    make install || _die "Failed to install geos"
-fi
-
 cd $POSTGIS_SOURCE_REMOTE
-export PATH=$PROJ_CACHHE_REMOTE/bin:$GEOS_CACHE_REMOTE/bin:\$PATH
-export LD_LIBRARY_PATH=$POSTGRES_REMOTE_PATH/lib:$PROJ_CACHHE_REMOTE/lib:$GEOS_CACHE_REMOTE/lib:\$LD_LIBRARY_PATH
+export PATH=$PG_PERL_LINUX/bin:/usr/local/bin:$PATH
 export LDFLAGS=-Wl,--rpath,'\\\$ORIGIN/../lib'
 
 echo "Configuring the postgis source tree"
-./configure --with-pgconfig=$POSTGRES_REMOTE_PATH/bin/pg_config --with-geosconfig=$GEOS_CACHE_REMOTE/bin/geos-config --with-projdir=$PROJ_CACHHE_REMOTE  || _die "Failed to configure postgis"
+./configure --with-pgconfig=$POSTGRES_REMOTE_PATH/bin/pg_config --with-geosconfig=/usr/local/bin/geos-config --with-projdir=/usr/local   || _die "Failed to configure postgis"
 
 echo "Building postgis ($PLATFORM)"
 make || _die "Failed to build postgis (make on $PLATFORM)"
 make comments || _die "Failed to build postgis ('make comments' on $PLATFORM)"
-make install PGXSOVERRIDE=0 DESTDIR=$POSTGIS_STAGING_REMOTE/PostGIS bindir=/bin pkglibdir=/lib datadir=/share PGSQL_DOCDIR=$POSTGIS_STAGING_REMOTE/PostGIS/doc PGSQL_MANDIR=$POSTGIS_STAGING_REMOTE/PostGIS/man PGSQL_SHAREDIR=$POSTGIS_STAGING_REMOTE/PostGIS/share/postgresql || _die "Failed to install postgis ($PLATFORM)"
-make comments-install PGXSOVERRIDE=0 DESTDIR=$POSTGIS_STAGING_REMOTE/PostGIS bindir=/bin pkglibdir=/lib datadir=/share PGSQL_DOCDIR=$POSTGIS_STAGING_REMOTE/PostGIS/doc PGSQL_MANDIR=$POSTGIS_STAGING_REMOTE/PostGIS/man PGSQL_SHAREDIR=$POSTGIS_STAGING_REMOTE/PostGIS/share/postgresql || _die "Failed to install comments postgis ($PLATFORM)"
+make install PGXSOVERRIDE=0 DESTDIR=$POSTGIS_STAGING_REMOTE/PostGIS bindir=/bin pkglibdir=/lib datadir=/share REGRESS=1 PGSQL_DOCDIR=$POSTGIS_STAGING_REMOTE/PostGIS/doc PGSQL_MANDIR=$POSTGIS_STAGING_REMOTE/PostGIS/man PGSQL_SHAREDIR=$POSTGIS_STAGING_REMOTE/PostGIS/share/postgresql || _die "Failed to install postgis ($PLATFORM)"
+make comments-install PGXSOVERRIDE=0 DESTDIR=$POSTGIS_STAGING_REMOTE/PostGIS bindir=/bin pkglibdir=/lib REGRESS=1 datadir=/share PGSQL_DOCDIR=$POSTGIS_STAGING_REMOTE/PostGIS/doc PGSQL_MANDIR=$POSTGIS_STAGING_REMOTE/PostGIS/man PGSQL_SHAREDIR=$POSTGIS_STAGING_REMOTE/PostGIS/share/postgresql || _die "Failed to install comments postgis ($PLATFORM)"
+
+echo "Building postgis-docs"
+cd $POSTGIS_SOURCE_REMOTE/doc
+make html || _die "Failed to build PostGIS docs"
+make install PGXSOVERRIDE=0 DESTDIR=$POSTGIS_STAGING_REMOTE/PostGIS bindir=/bin pkglibdir=/lib datadir=/share REGRESS=1 PGSQL_DOCDIR=$POSTGIS_STAGING_REMOTE/PostGIS/doc PGSQL_MANDIR=$POSTGIS_STAGING_REMOTE/PostGIS/man PGSQL_SHAREDIR=$POSTGIS_STAGING_REMOTE/PostGIS/share/postgresql || _die "Failed to install postgis ($PLATFORM)"
 
 echo "Copying the utils"
 mkdir -p $POSTGIS_STAGING_REMOTE/PostGIS/utils
@@ -182,13 +115,29 @@ mkdir -p $POSTGIS_STAGING_REMOTE/PostGIS/java/jdbc
 
 echo "Copying postgis-jdbc"
 cd $POSTGIS_SOURCE_REMOTE/java
-cp jdbc/postgis*.jar $POSTGIS_STAGING_REMOTE/PostGIS/java/jdbc/ || _die "Failed to copy postgis jars into postgis-jdbc"
-cp -R ejb2 ejb3 pljava $POSTGIS_STAGING_REMOTE/PostGIS/java/ || _die "Failed to copy ejb2, ejb3 & pljava into postgis-java"
+cp jdbc/target/postgis*.jar $POSTGIS_STAGING_REMOTE/PostGIS/java/jdbc/ || _die "Failed to copy postgis jars into postgis-jdbc"
+cp -R ejb2 ejb3 $POSTGIS_STAGING_REMOTE/PostGIS/java/ || _die "Failed to copy ejb2, ejb3 into postgis-java"
 
 echo "Copy dependent libraries"
 cd $POSTGIS_STAGING_REMOTE/PostGIS/lib
-cp $PROJ_CACHHE_REMOTE/lib/libproj* . || _die "Failed to copy the proj libraries"
-cp $GEOS_CACHE_REMOTE/lib/libgeos* . || _die "Failed to copy the geos libraries"
+cp -pR /usr/local/lib/libproj* . || _die "Failed to copy the proj libraries"
+cp -pR /usr/local/lib/libgeos* . || _die "Failed to copy the geos libraries"
+cp -pR /usr/local/lib/libgdal* . || _die "Failed to copy the gdal libraries"
+cp -pR /usr/local/lib/libiconv* . || _die "Failed to copy the libiconv libraries"
+cp -pR /usr/local/lib/libexpat* . || _die "Failed to copy the libexpat libraries"
+cp -pR /usr/local/lib/libtiff* . || _die "Failed to copy the libtiff libraries"
+cp -pR /usr/local/lib/libjpeg* . || _die "Failed to copy the libjpeg libraries"
+cp -pR /usr/local/lib/libcrypto* . || _die "Failed to copy the libcrypto libraries"
+cp -pR /usr/local/lib/libssl* . || _die "Failed to copy the libssl libraries"
+cp -pR /usr/local/lib/libcurl* . || _die "Failed to copy the curl libraries"
+cp -pR /usr/local/lib/libldap* . || _die "Failed to copy the ldap libraries"
+cp -pR /usr/local/lib/liblber* . || _die "Failed to copy the liblber libraries"
+cp -pR /usr/local/lib/libxml2* . || _die "Failed to copy the libxml2 libraries"
+cp -pR /usr/local/lib/libz* . || _die "Failed to copy the libz libraries"
+cp -pR /usr/local/lib/libkrb5support* . || _die "Failed to copy the libkrb5support libraries"
+cp -pR /usr/local/lib/libkrb5.so* . || _die "Failed to copy the libkrb5 libraries"
+cp -pR /usr/local/lib/libcom_err** . || _die "Failed to copy the libcom_err libraries"
+cp -pR /usr/local/lib/libk5crypto* . || _die "Failed to copy the libk5crypto libraries"
 
 echo "Changing the rpath for the PostGIS executables and libraries"
 cd $POSTGIS_STAGING_REMOTE/PostGIS/bin
@@ -198,9 +147,11 @@ cd $POSTGIS_STAGING_REMOTE/PostGIS/lib
 for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \"\\\$ORIGIN:\\\$ORIGIN/..\" \$f; done
 chmod a+rx *
 
+cp -pR $POSTGIS_STAGING_REMOTE/PostGIS/$PG_PGHOME_LINUX/bin/* $POSTGIS_STAGING_REMOTE/PostGIS/bin/
+
 echo "Creating wrapper script for pgsql2shp and shp2pgsql"
 cd $POSTGIS_STAGING_REMOTE/PostGIS/bin
-for f in pgsql2shp shp2pgsql ; do mv \$f \$f.bin; done
+for f in pgsql2shp shp2pgsql raster2pgsql; do mv \$f \$f.bin; done
 
 cat <<EOS > pgsql2shp
 #!/bin/sh
@@ -225,18 +176,39 @@ LD_LIBRARY_PATH=\\\$PWD:\\\$LD_LIBRARY_PATH \\\$WD/shp2pgsql.bin $*
 
 cd \\\$CURRENTWD
 EOS
+
+cat <<EOS > raster2pgsql
+#!/bin/sh
+
+CURRENTWD=\\\$PWD
+WD=\\\`dirname \\\$0\\\`
+cd \\\$WD/../lib
+
+LD_LIBRARY_PATH=\\\$PWD:\\\$LD_LIBRARY_PATH \\\$WD/raster2pgsql.bin $*
+
+cd \\\$CURRENTWD
+EOS
+
 chmod a+rx *
 
 EOT
 
     scp build-postgis-$PLATFORM.sh $PLATFORM_SSH:$BLD_REMOTE_PATH || _die "Failed to copy build script on $PLATFORM VM"
-    ssh $PLATFORM_SSH "cd $BLD_REMOTE_PATH; bash ./build-postgis-$PLATFORM.sh $BUILD_PROJ $BUILD_GEOS" || _die "Failed to execution of build script on $PLATFORM"
+    ssh $PLATFORM_SSH "cd $BLD_REMOTE_PATH; bash ./build-postgis-$PLATFORM.sh" || _die "Failed to execution of build script on $PLATFORM"
 
     cd $POSTGIS_STAGING/PostGIS
 
-    echo "Copying Postgis docs from osx staging build"
-    cp -R $WD/PostGIS/staging/osx/PostGIS/doc . || _die "Failed to copy the doc folder from staging directory"
-    cp -R $WD/PostGIS/staging/osx/PostGIS/man . || _die "Failed to copy the man folder from staging directory"
+    mkdir -p $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
+    cp -pR $WD/PostGIS/source/postgis.linux/doc/html/images $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
+    cp -pR $WD/PostGIS/source/postgis.osx/doc/html/postgis.html $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
+    cp -pR $WD/PostGIS/source/postgis.linux/doc/postgis-$PG_VERSION_POSTGIS.pdf $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
+    cp -pR $WD/PostGIS/source/postgis.linux/doc/man $WD/PostGIS/staging/linux/PostGIS/ 
+
+
+    cp -pR $WD/PostGIS/staging/linux/PostGIS/usr/local/include . || _die "Failed to copy liblwgeom include files"
+    cp -pR $WD/PostGIS/staging/linux/PostGIS/usr/local/lib/* lib/ || _die "Failed to copy liblwgeom lib files"
+    rm -rf $WD/PostGIS/staging/linux/PostGIS/usr
+    rm -rf $WD/PostGIS/staging/linux/PostGIS/mnt
 
     cd $WD/PostGIS
 

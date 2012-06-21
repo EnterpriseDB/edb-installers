@@ -988,17 +988,6 @@
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${mandir}</destination>
-                    <name>programfilesmanosx</name>
-                    <platforms>osx</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/osx/PostGIS/man/man1</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
                     <destination>${docdir}</destination>
                     <name>programfilesdocosx</name>
                     <platforms>osx</platforms>
@@ -1019,6 +1008,9 @@
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/osx/PostGIS/java</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/osx/PostGIS/man</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1080,17 +1072,6 @@
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${mandir}</destination>
-                    <name>programfilesmanlinux</name>
-                    <platforms>linux</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux/PostGIS/man/man1</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
                     <destination>${docdir}</destination>
                     <name>programfilesdoclinux</name>
                     <platforms>linux</platforms>
@@ -1111,6 +1092,9 @@
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/linux/PostGIS/java</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/PostGIS/man</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1172,17 +1156,6 @@
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${mandir}</destination>
-                    <name>programfilesmanlinux-x64</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/PostGIS/man/man1</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
                     <destination>${docdir}</destination>
                     <name>programfilesdoclinux-x64</name>
                     <platforms>linux-x64</platforms>
@@ -1203,6 +1176,9 @@
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/linux-x64/PostGIS/java</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/PostGIS/man</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1264,17 +1240,6 @@
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${mandir}</destination>
-                    <name>programfilesmanlinux-ppc64</name>
-                    <platforms>linux-ppc</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-ppc64/PostGIS/man/man1</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
                     <destination>${docdir}</destination>
                     <name>programfilesdoclinux-ppc64</name>
                     <platforms>linux-ppc</platforms>
@@ -1295,6 +1260,9 @@
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/linux-ppc64/PostGIS/java</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/PostGIS/man</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1345,17 +1313,6 @@
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${mandir}</destination>
-                    <name>programfilesmanwindows</name>
-                    <platforms>windows</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/windows/PostGIS/man/man1</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
                     <destination>${docdir}</destination>
                     <name>programfilesdocwindows</name>
                     <platforms>windows</platforms>
@@ -1376,6 +1333,9 @@
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/windows/PostGIS/java</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/windows/PostGIS/man</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>

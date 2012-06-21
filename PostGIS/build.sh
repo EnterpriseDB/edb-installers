@@ -29,7 +29,8 @@ fi
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
-    source $WD/PostGIS/build-windows.sh
+    echo "In Process..."
+    #source $WD/PostGIS/build-windows.sh
 fi
 
     
@@ -49,16 +50,6 @@ _prep_PostGIS() {
     # Enter the source directory and cleanup if required
     cd $WD/PostGIS/source
 
-    #postgresql for windows
-    if [ ! -e postgresql-$PG_TARBALL_POSTGRESQL ];
-    then
-      extract_file  ../../tarballs/postgresql-$PG_TARBALL_POSTGRESQL || exit 1
-      cd postgresql-$PG_TARBALL_POSTGRESQL
-      patch -p0 < ../../../tarballs/mingw_build.patch
-    fi
-
-    cd $WD/PostGIS/source
-
     # postgis
     if [ -e postgis-$PG_VERSION_POSTGIS ];
     then
@@ -70,26 +61,6 @@ _prep_PostGIS() {
     extract_file  ../../tarballs/postgis-$PG_VERSION_POSTGIS || exit 1
   
     cd $WD/PostGIS/source  
-
-    # geos
-    if [ -e geos-$PG_TARBALL_GEOS ];
-    then
-      echo "Removing existing geos-$PG_TARBALL_GEOS source directory"
-      rm -rf geos-$PG_TARBALL_GEOS || _die "Couldn't remove the existing geos-$PG_TARBALL_GEOS source directory (source/geos-$PG_TARBALL_GEOS)"
-    fi
-
-    echo "Unpacking geos source..."
-    extract_file  ../../tarballs/geos-$PG_TARBALL_GEOS || exit 1 
-
-    # proj
-    if [ -e proj-$PG_TARBALL_PROJ ];
-    then
-      echo "Removing existing proj-$PG_TARBALL_PROJ source directory"
-      rm -rf proj-$PG_TARBALL_PROJ  || _die "Couldn't remove the existing proj-$PG_TARBALL_PROJ source directory (source/proj-$PG_TARBALL_PROJ)"
-    fi
-
-    echo "Unpacking proj source..."
-    extract_file  ../../tarballs/proj-$PG_TARBALL_PROJ || exit 1 
 
     echo "Extracting the postgresql jar file..."
     extract_file  ../../tarballs/pgJDBC-$PG_VERSION_PGJDBC || exit 1 
@@ -126,7 +97,7 @@ _prep_PostGIS() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _prep_PostGIS_windows || exit 1
+        #_prep_PostGIS_windows || exit 1
         echo "PostGIS:Disabled for now:windows"
     fi
     
@@ -166,7 +137,8 @@ _build_PostGIS() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _build_PostGIS_windows || exit 1
+        #_build_PostGIS_windows || exit 1
+        echo "PostGIS:Disabled for now:windows"
     fi
 }
 
@@ -190,20 +162,15 @@ _postprocess_PostGIS() {
 
     PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
 
-    PG_GEOS_DLL_VERSION=`echo $PG_TARBALL_GEOS | sed -e 's:\.:-:g'`
-
     POSTGIS_MAJOR_VERSION=`echo $PG_VERSION_POSTGIS | cut -f1,2 -d "."`
 
     _replace PG_VERSION_POSTGIS "$PG_VERSION_POSTGIS" installer.xml || _die "Failed to set the major version in the installer project file (PostGIS/installer.xml)"
 
-    _replace PG_TARBALL_GEOS $PG_TARBALL_GEOS installer.xml || _die "Failed to set the major version of geos in the installer project file (PostGIS/installer.xml)"
-    
     _replace PG_BUILDNUM_POSTGIS $PG_BUILDNUM_POSTGIS installer.xml || _die "Failed to set Build Number in the installer project file (PostGIS/installer.xml)"
 
     _replace PG_CURRENT_VERSION $PG_CURRENT_VERSION installer.xml || _die "Failed to set the PG Current Number in the installer project file (PostGIS/installer.xml)"
     
     _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION installer.xml || _die "Failed to set the PG MAJOR Number in the installer project file (PostGIS/installer.xml)"
-    _replace PG_GEOS_DLL_VERSION $PG_GEOS_DLL_VERSION installer.xml || _die "Failed to set the PG MAJOR Number in the installer project file (PostGIS/installer.xml)"
     _replace POSTGIS_MAJOR_VERSION $POSTGIS_MAJOR_VERSION installer.xml || _die "Failed to set the POSTGIS MAJOR Number in the installer project file (PostGIS/installer.xml)"
 
     # Mac OSX
@@ -233,7 +200,8 @@ _postprocess_PostGIS() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _postprocess_PostGIS_windows || exit 1
+        #_postprocess_PostGIS_windows || exit 1
+        echo "PostGIS:Disabled for now:windows"
     fi
 }
 
