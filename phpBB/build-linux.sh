@@ -45,18 +45,22 @@ _build_phpBB_linux() {
     cd $WD
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; mkdir -p phpBB/staging/linux/instscripts" || _die "Failed to create instscripts directory"
 
-    cd $WD/phpBB/staging/linux/
-    cp $WD/server/staging/linux/bin/psql* instscripts/ || _die "Failed to copy psql"
-    cp $WD/server/staging/linux/lib/libpq* instscripts/ || _die "Failed to copy libpq"
-    cp $WD/server/staging/linux/lib/libcrypto* instscripts/ || _die "Failed to copy libcrypto"
-    cp $WD/server/staging/linux/lib/libssl* instscripts/ || _die "Failed to copy libssl"
-    cp $WD/server/staging/linux/lib/libedit* instscripts/ || _die "Failed to copy libedit"
-    cp $WD/server/staging/linux/lib/libtermcap* instscripts/ || _die "Failed to copy libtermcap"
-    cp $WD/server/staging/linux/lib/libxml2* instscripts/ || _die "Failed to copy libxml2"
-    cp $WD/server/staging/linux/lib/libxslt* instscripts/ || _die "Failed to copy libxslt"
-    cp $WD/server/staging/linux/lib/libldap* instscripts/ || _die "Failed to copy libldap"
-    cp $WD/server/staging/linux/lib/liblber* instscripts/ || _die "Failed to copy liblber"
-    cp $WD/server/staging/linux/lib/libsasl2* instscripts/ || _die "Failed to copy libsasl2"
+    cd $WD/phpBB/staging/linux/instscripts
+
+    cp -pR $WD/server/staging/linux/bin/psql* . || _die "Failed to copy psql binary"
+    cp -pR $WD/server/staging/linux/lib/libpq.so* . || _die "Failed to copy libpq.so"
+    cp -pR $WD/server/staging/linux/lib/libcrypto.so* . || _die "Failed to copy libcrypto.so"
+    cp -pR $WD/server/staging/linux/lib/libssl.so* . || _die "Failed to copy libssl.so"
+    cp -pR $WD/server/staging/linux/lib/libedit.so* . || _die "Failed to copy libedit.so"
+    cp -pR $WD/server/staging/linux/lib/libldap*.so* . || _die "Failed to copy libldap.so"
+    cp -pR $WD/server/staging/linux/lib/liblber*.so* . || _die "Failed to copy liblber.so"
+    cp -pR $WD/server/staging/linux/lib/libgssapi_krb5*.so* . || _die "Failed to copy libgssapi_krb5.so"
+    cp -pR $WD/server/staging/linux/lib/libkrb5.so* . || _die "Failed to copy libkrb5.so"
+    cp -pR $WD/server/staging/linux/lib/libkrb5support*.so* . || _die "Failed to copy libkrb5support.so"
+    cp -pR $WD/server/staging/linux/lib/libk5crypto*.so* . || _die "Failed to copy libk5crypto.so"
+    cp -pR $WD/server/staging/linux/lib/libcom_err*.so* . || _die "Failed to copy libcom_err.so"
+    cp -pR $WD/server/staging/linux/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
+
     ssh $PG_SSH_LINUX "chmod 755 $PG_PATH_LINUX/phpBB/staging/linux/instscripts/*" || _die "Failed to change permission of libraries"
 
     cd $WD

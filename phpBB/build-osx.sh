@@ -53,8 +53,8 @@ _build_phpBB_osx() {
     cd $WD
     mkdir -p $PG_PATH_OSX/phpBB/staging/osx/instscripts || _die "Failed to create the instscripts directory"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/phpBB/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
-    cp -R $PG_PATH_OSX/server/staging/osx/lib/libxml2* $PG_PATH_OSX/phpBB/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
-    cp -R $PG_PATH_OSX/server/staging/osx/lib/libxslt* $PG_PATH_OSX/phpBB/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -R $PG_PATH_OSX/server/staging/osx/lib/libssl* $PG_PATH_OSX/phpBB/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -R $PG_PATH_OSX/server/staging/osx/lib/libcrypto* $PG_PATH_OSX/phpBB/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/lib/libedit* $PG_PATH_OSX/phpBB/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
     cp -R $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/phpBB/staging/osx/instscripts/ || _die "Failed to copy psql in instscripts"
 
