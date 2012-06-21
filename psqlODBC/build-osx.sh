@@ -55,11 +55,8 @@ _build_psqlODBC_osx() {
     SOURCE_DIR=$PG_PATH_OSX/psqlODBC/source/psqlODBC.osx
     cd $SOURCE_DIR
 
-    #Hack for psqlODBC-08.04.0200 
-    cp $PG_PGHOME_OSX/lib/libpq.5.dylib . || _die "Failed to copy the libpq to the build directory"
-
     CONFIG_FILES="config"
-    ARCHS="i386 ppc x86_64"
+    ARCHS="i386 x86_64"
     ARCH_FLAGS=""
     for ARCH in ${ARCHS}
     do
@@ -86,11 +83,7 @@ _build_psqlODBC_osx() {
         rm -f "${HEADER_FILE}"
         cat <<EOT > "${HEADER_FILE}"
 #ifdef __BIG_ENDIAN__
- #ifdef __LP64__
-  #error "${CONFIG_BASENAME}: Does not have support for ppc64 architecture"
- #else
-  #include "${CONFIG_BASENAME}_ppc.h"
- #endif
+  #error "${CONFIG_BASENAME}: Does not have support for ppc architecture"
 #else
  #ifdef __LP64__
   #include "${CONFIG_BASENAME}_x86_64.h"
@@ -110,8 +103,13 @@ EOT
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     cp -R $PG_PGHOME_OSX/lib/libpq.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library"
+    cp -R $PG_PGHOME_OSX/lib/libssl.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library"
+    cp -R $PG_PGHOME_OSX/lib/libcrypto.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library"
+
     _rewrite_so_refs $WD/psqlODBC/staging/osx lib @loader_path/..
-    install_name_tool -change "libpq.5.dylib" "@loader_path/libpq.5.dylib" "$PG_STAGING/lib/psqlodbcw.so"
+
+    install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$PG_STAGING/lib/psqlodbcw.so"
+    install_name_tool -change "libssl.1.0.0.dylib" "@loader_path/../lib/libssl.1.0.0.dylib" "$PG_STAGING/lib/psqlodbcw.so"
 
 }
 

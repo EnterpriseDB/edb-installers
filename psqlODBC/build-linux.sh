@@ -100,8 +100,11 @@ _process_dependent_libs() {
          rm -f \$lib || _die "Failed to remove the library"
     done
 
-    # Copy libs from the tmp/templibs directory
-    cp /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
+    if [ "\$(ls -A /tmp/templibs)" ];
+    then
+        # Copy libs from the tmp/templibs directory
+        cp -pR /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
+    fi
 
     # Remove the temporary directory
     rm -rf /tmp/templibs
@@ -130,33 +133,43 @@ _build_psqlODBC_linux() {
     SOURCE_DIR=$PG_PATH_LINUX/psqlODBC/source/psqlODBC.linux
 
     echo "Configuring psqlODBC sources"
-    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:\$LD_LIBRARY_PATH PATH=$PG_PGHOME_LINUX/bin:\$PATH ./configure --prefix=$PG_STAGING " || _die "Couldn't configure the psqlODBC sources"
+    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; export LD_LIBRARY_PATH=/usr/local/lib:$PG_PGHOME_LINUX/lib:\$LD_LIBRARY_PATH; export PATH=/usr/local/bin:$PG_PGHOME_LINUX/bin:\$PATH; CFLAGS=\"-I/usr/local/include\" LDFLAGS=\"-L/usr/local/lib\"  ./configure --prefix=$PG_STAGING " || _die "Couldn't configure the psqlODBC sources"
     echo "Compiling psqlODBC"
-    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; make" || _die "Couldn't compile the psqlODBC sources"
+    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; CFLAGS=\"-I/usr/local/include\" LDFLAGS=\"-L/usr/local/lib\"  make" || _die "Couldn't compile the psqlODBC sources"
     echo "Installing psqlODBC into the sources"
     ssh $PG_SSH_LINUX "cd $SOURCE_DIR; make install" || _die "Couldn't install the psqlODBC into statging directory"
 
+    cd $WD/psqlODBC/staging/linux/lib
+
     # Copy in the dependency libraries
-    ssh $PG_SSH_LINUX "cp -R /lib/libcom_err.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /usr/lib/libgssapi_krb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /usr/lib/libkrb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /usr/lib/libk5crypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R /usr/lib/libodbcinst.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libpq.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libpq)"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libxml2)"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libxslt)"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libldap*.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libldap)"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/liblber*.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (liblber)"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libssl)"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libcrypto)"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libedit)"
-    ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libtermcap.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libtermcap)"
+    cp -pR $WD/server/staging/linux/lib/libpq.so* . || _die "Failed to copy libcrypto.so"
+    cp -pR $WD/server/staging/linux/lib/libcrypto.so* . || _die "Failed to copy libcrypto.so"
+    cp -pR $WD/server/staging/linux/lib/libssl.so* . || _die "Failed to copy libssl.so"
+    cp -pR $WD/server/staging/linux/lib/libedit.so* . || _die "Failed to copy libedit.so"
+    cp -pR $WD/server/staging/linux/lib/libldap*.so* . || _die "Failed to copy libldap.so"
+    cp -pR $WD/server/staging/linux/lib/liblber*.so* . || _die "Failed to copy liblber.so"
+    cp -pR $WD/server/staging/linux/lib/libgssapi_krb5*.so* . || _die "Failed to copy libgssapi_krb5.so"
+    cp -pR $WD/server/staging/linux/lib/libkrb5.so* . || _die "Failed to copy libkrb5.so"
+    cp -pR $WD/server/staging/linux/lib/libkrb5support*.so* . || _die "Failed to copy libkrb5support.so"
+    cp -pR $WD/server/staging/linux/lib/libk5crypto*.so* . || _die "Failed to copy libk5crypto.so"
+    cp -pR $WD/server/staging/linux/lib/libcom_err*.so* . || _die "Failed to copy libcom_err.so"
+    cp -pR $WD/server/staging/linux/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
+    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libodbcinst.so* $PG_STAGING/lib" || _die "Failed to copy libodbcinst.so"
 
     # Process Dependent libs
     _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libcom_err.so"
     _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libgssapi_krb5.so"
     _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libkrb5.so"
     _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libk5crypto.so"
+    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libkrb5support.so"
+    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libssl.so"
+    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libcrypto.so"
+    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libedit.so"
+    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libncurses.so"
+    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libldap.so"
+    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "liblber.so"
+    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libodbcinst.so"
+    _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libpq.so"
 
 }
 

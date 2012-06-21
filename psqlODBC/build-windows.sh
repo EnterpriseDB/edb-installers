@@ -67,23 +67,18 @@ _build_psqlODBC_windows() {
 
     cat <<EOT > "build-psqlODBC.bat"
 
-@CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
-IF EXIST "$PG_PSDK_WINDOWS\SetEnv.Bat" @CALL "$PG_PSDK_WINDOWS\SetEnv.Bat"
-IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
+@CALL "$PG_VSINSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
 
-@SET OPENSSL_PATH=C:\pgBuild\OpenSSL
+@SET OPENSSL_PATH=$PG_PGBUILD_WINDOWS
 @SET PG_HOME_PATH=$PG_PATH_WINDOWS\output
 @SET PATH=%PG_HOME_PATH%\bin;%PATH%
-@SET LIB=C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib;%LIB%
 
 cd $PG_PATH_WINDOWS\psqlODBC.windows
 REM Compiling psqlODBC (ANSI)
-nmake /f win32.mak ANSI_VERSION=yes PG_INC=%PG_HOME_PATH%\include PG_LIB=%PG_HOME_PATH%\lib SSL_INC=%OPENSSL_PATH%\include SSL_LIB=%OPENSSL_PATH%\lib\VC LINKMT=no USE_SSPI=yes CFG=Release ALL
+nmake /f win32.mak ANSI_VERSION=yes PG_INC=%PG_HOME_PATH%\include PG_LIB=%PG_HOME_PATH%\lib SSL_INC=%OPENSSL_PATH%\include SSL_LIB=%OPENSSL_PATH%\lib LINKMT=no USE_SSPI=yes CFG=Release ALL
 
 REM Compiling psqlODBC (UNICODE)
-nmake /f win32.mak CFG=Release ALL PG_INC=%PG_HOME_PATH%\include PG_LIB=%PG_HOME_PATH%\lib SSL_INC=%OPENSSL_PATH%\include SSL_LIB=%OPENSSL_PATH%\lib\VC  LINKMT=no USE_SSPI=yes
-
-
+nmake /f win32.mak CFG=Release ALL PG_INC=%PG_HOME_PATH%\include PG_LIB=%PG_HOME_PATH%\lib SSL_INC=%OPENSSL_PATH%\include SSL_LIB=%OPENSSL_PATH%\lib  LINKMT=no USE_SSPI=yes
 
 EOT
 
@@ -110,10 +105,9 @@ EOT
     rm $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin/psqlODBC-windows.zip
 
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output/lib/libpq.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/OpenSSL/bin/ssleay32.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/OpenSSL/bin/libeay32.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/gettext/bin/libiconv-2.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dll (libiconv-2.dll)"
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/gettext/bin/libintl-8.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dll (libintl-8.dll)"
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/ssleay32.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libeay32.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libintl.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dll (libintl-8.dll)"
 
 }
 
