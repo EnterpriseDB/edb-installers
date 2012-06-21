@@ -620,8 +620,8 @@
         <actionGroup>
 	    <actionList>
 		<copyFile>
-		   <origin>${installdir}/mediaWiki/config/index.php</origin>
-		   <destination>${installdir}/mediaWiki/config/index.php.bk</destination>
+		   <origin>${installdir}/mediaWiki/includes/DefaultSettings.php</origin>
+		   <destination>${installdir}/mediaWiki/includes/DefaultSettings.php.bk</destination>
 		</copyFile>
 	    </actionList>
 	    <ruleList>
@@ -637,12 +637,12 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>${installdir}/mediaWiki/config/LocalSettings.php</path>
+                    <path>${installdir}/mediaWiki/mw-config/LocalSettings.php</path>
                 </deleteFile>
             </actionList>
             <ruleList>
                 <fileExists>
-                    <path>${installdir}/mediaWiki/config/LocalSettings.php</path>
+                    <path>${installdir}/mediaWiki/mw-config/LocalSettings.php</path>
                 </fileExists>
                 <compareText>
                     <logic>does_not_equal</logic>
@@ -655,12 +655,12 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>${installdir}\mediaWiki\config\LocalSettings.php</path>
+                    <path>${installdir}\mediaWiki\mw-config\LocalSettings.php</path>
                 </deleteFile>
             </actionList>
             <ruleList>
                 <fileExists>
-                    <path>${installdir}\mediaWiki\config\LocalSettings.php</path>
+                    <path>${installdir}\mediaWiki\mw-config\LocalSettings.php</path>
                 </fileExists>
                 <compareText>
                     <logic>equals</logic>
@@ -692,6 +692,7 @@
 
         <deleteFile>
             <path>${installdir}\mediaWiki\launchMediaWiki.vbs</path>
+
             <ruleList>
                 <compareText>
                     <text>${mediaWikiVersion}</text>
@@ -769,15 +770,15 @@
 
     <!-- Post installation actions -->
     <postInstallationActionList>
-	<!-- In case of upgrade copy previous index.php -->
+	<!-- In case of upgrade copy previous DefaultSettings.php -->
 	<actionGroup>
 	    <actionList>
 		<copyFile>
-		   <origin>${installdir}/mediaWiki/config/index.php.bk</origin>
-		   <destination>${installdir}/mediaWiki/config/index.php</destination>
+		   <origin>${installdir}/mediaWiki/includes/DefaultSettings.php.bk</origin>
+		   <destination>${installdir}/mediaWiki/includes/DefaultSettings.php</destination>
 		</copyFile>
                 <deleteFile>
-                    <path>${installdir}/mediaWiki/config/index.php.bk</path>
+                    <path>${installdir}/mediaWiki/includes/DefaultSettings.php.bk</path>
                 </deleteFile>
 	    </actionList>
 	    <ruleList>
@@ -792,7 +793,7 @@
         <actionGroup>
             <actionList>
 		<substitute>
-		    <files>${installdir}/mediaWiki/config/index.php</files>
+		    <files>${installdir}/mediaWiki/includes/DefaultSettings.php</files>
 		    <substitutionList>
 			<substitution>
 			    <pattern>@@HOST@@</pattern>
@@ -1188,12 +1189,12 @@
         <actionGroup>
             <actionList>
                 <deleteFile>
-                    <path>${installdir}/mediaWiki/config/LocalSettings.php</path>
+                    <path>${installdir}/mediaWiki/mw-config/LocalSettings.php</path>
                 </deleteFile>
             </actionList>
             <ruleList>
                 <fileExists>
-                    <path>${installdir}/mediaWiki/config/LocalSettings.php</path>
+                    <path>${installdir}/mediaWiki/mw-config/LocalSettings.php</path>
                 </fileExists>
             </ruleList>
         </actionGroup>

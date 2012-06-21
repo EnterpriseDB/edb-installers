@@ -20,7 +20,7 @@ _prep_mediaWiki_windows() {
     mkdir -p $WD/mediaWiki/source/mediaWiki.windows || _die "Couldn't create the mediaWiki.windows directory"
     
     # Grab a copy of the source tree
-    cp -R mediawiki-$PG_VERSION_MEDIAWIKI/* mediaWiki.windows || _die "Failed to copy the source code (source/mediaWiki-$PG_VERSION_MEDIAWIKI)"
+    cp -pR mediawiki-$PG_VERSION_MEDIAWIKI/* mediaWiki.windows || _die "Failed to copy the source code (source/mediaWiki-$PG_VERSION_MEDIAWIKI)"
 
     cd $WD/mediaWiki/source
     chmod -R ugo+w mediaWiki.windows || _die "Couldn't set the permissions on the source directory"
@@ -48,18 +48,16 @@ _build_mediaWiki_windows() {
     # Copy the various support files into place
 
     mkdir -p mediaWiki/staging/windows/instscripts || _die "Failed to create the instscripts directory"
-    cp -R server/staging/windows/lib/libpq* mediaWiki/staging/windows/instscripts/ || _die "Failed to copy libpq in instscripts"
-    cp -R server/staging/windows/bin/psql.exe mediaWiki/staging/windows/instscripts/ || _die "Failed to copy psql in instscripts"
-    cp -R server/staging/windows/bin/ssleay32.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/libeay32.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/iconv.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/libintl-8.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/libiconv-2.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/libiconv-2.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/libxml2.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/libxslt.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/zlib1.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
-
+    cp -pR server/staging/windows/lib/libpq* mediaWiki/staging/windows/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -pR server/staging/windows/bin/psql.exe mediaWiki/staging/windows/instscripts/ || _die "Failed to copy psql in instscripts"
+    cp -pR server/staging/windows/bin/ssleay32.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -pR server/staging/windows/bin/libeay32.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -pR server/staging/windows/bin/iconv.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -pR server/staging/windows/bin/libintl.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -pR server/staging/windows/bin/libiconv2.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -pR server/staging/windows/bin/libxml2.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -pR server/staging/windows/bin/libxslt.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -pR server/staging/windows/bin/zlib1.dll mediaWiki/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
 
 }
 
@@ -70,7 +68,7 @@ _build_mediaWiki_windows() {
 
 _postprocess_mediaWiki_windows() {
 
-    cp -R $WD/mediaWiki/source/mediaWiki.windows/* $WD/mediaWiki/staging/windows/mediaWiki || _die "Failed to copy the mediaWiki Source into the staging directory"
+    cp -pR $WD/mediaWiki/source/mediaWiki.windows/* $WD/mediaWiki/staging/windows/mediaWiki || _die "Failed to copy the mediaWiki Source into the staging directory"
 
     cd $WD/mediaWiki
 
@@ -85,16 +83,12 @@ _postprocess_mediaWiki_windows() {
 
     cp resources/logo.ico staging/windows/scripts/images || _die "Failed to copy the menu pick images (resources/logo.ico)"
 
-    #Configure the config/index.php file
-    _replace "\$conf->DBserver = importPost( \"DBserver\", \"localhost\" );" "\$conf->DBserver = importPost( \"DBserver\", \"@@HOST@@\" );" "$WD/mediaWiki/staging/windows/mediaWiki/config/index.php"
-    _replace "\$conf->DBport      = importPost( \"DBport\",      \"5432\" );" "\$conf->DBport      = importPost( \"DBport\",      \"@@PORT@@\" );" "$WD/mediaWiki/staging/windows/mediaWiki/config/index.php"
-    _replace "\$conf->DBname = importPost( \"DBname\", \"wikidb\" );" "\$conf->DBname = importPost( \"DBname\", \"mediawiki\" );" "$WD/mediaWiki/staging/windows/mediaWiki/config/index.php"
-    _replace "\$conf->DBuser = importPost( \"DBuser\", \"wikiuser\" );" "\$conf->DBuser = importPost( \"DBuser\", \"mediawikiuser\" );" "$WD/mediaWiki/staging/windows/mediaWiki/config/index.php"
-    _replace "\$conf->DBpassword = importPost( \"DBpassword\" );" "\$conf->DBpassword = importPost( \"DBpassword\",\"mediawikiuser\" );" "$WD/mediaWiki/staging/windows/mediaWiki/config/index.php"
-    _replace "\$conf->DBpassword2 = importPost( \"DBpassword2\" );" "\$conf->DBpassword2 = importPost( \"DBpassword2\",\"mediawikiuser\" );" "$WD/mediaWiki/staging/windows/mediaWiki/config/index.php"
-    _replace "\$wgDatabase = \$dbc->newFromParams(\$wgDBserver, \$wgDBsuperuser, \$conf->RootPW, \"postgres\", 1);" "\$wgDatabase = \$dbc->newFromParams(\$wgDBserver, \$wgDBsuperuser, \$conf->RootPW, \"template1\", 1);" "$WD/mediaWiki/staging/windows/mediaWiki/config/index.php"
-
-    chmod a+w staging/windows/mediaWiki/config || _die "Couldn't set the permissions on the config directory"
+    #Configure the includes/DefaultSettings.php file
+    _replace "\$wgDBserver = 'localhost';" "\$wgDBserver = '@@HOST@@';" "$WD/mediaWiki/staging/windows/mediaWiki/includes/DefaultSettings.php"
+    _replace "\$wgDBport = '5432';" "\$wgDBport = '@@PORT@@';" "$WD/mediaWiki/staging/windows/mediaWiki/includes/DefaultSettings.php"
+    _replace "\$wgDBname = 'my_wiki';" "\$wgDBname = 'mediawiki';" "$WD/mediaWiki/staging/windows/mediaWiki/includes/DefaultSettings.php"
+    _replace "\$wgDBuser = 'wikiuser';" "\$wgDBuser = 'mediawikiuser';" "$WD/mediaWiki/staging/windows/mediaWiki/includes/DefaultSettings.php"    _replace "\$wgDBpassword = '';" "\$wgDBpassword = 'mediawikiuser';" "$WD/mediaWiki/staging/windows/mediaWiki/includes/DefaultSettings.php"
+    _replace "\$wgDBtype = 'mysql';" "\$$wgDBtype = 'postgresql';" "$WD/mediaWiki/staging/windows/mediaWiki/includes/DefaultSettings.php"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
