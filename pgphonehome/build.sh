@@ -37,12 +37,18 @@ _prep_pgphonehome() {
     then
         mkdir $WD/pgphonehome/source
     fi
-    
-    # Enter the source directory and cleanup if required
-    cd $WD/pgphonehome/source/PGPHONEHOME
+   
+    if [ ! -e $WD/pgphonehome/source/PGPHONEHOME ];
+    then
+         cd $WD/pgphonehome/source
+         git clone ssh://pginstaller@scm.enterprisedb.com/git/PGPHONEHOME
+    else
+        # Enter the source directory and cleanup if required
+        cd $WD/pgphonehome/source/PGPHONEHOME
 
-    # Updating to the latest source (from git)
-    git pull
+        # Updating to the latest source (from git)
+        git pull
+    fi
  
     # Per-platform prep
     cd $WD

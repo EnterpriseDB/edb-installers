@@ -51,13 +51,12 @@ _build_pgphonehome_windows() {
     cp -R server/staging/windows/bin/ssleay32.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/libeay32.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/iconv.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/libintl-8.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/libiconv-2.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/libiconv-2.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libintl.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libiconv2.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/libxml2.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/libxslt.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
     cp -R server/staging/windows/bin/zlib1.dll pgphonehome/staging/windows/instscripts/ || _die "Failed to copy dependent libs"
- 
+
 }
 
 ################################################################################
