@@ -50,17 +50,22 @@ _build_mediaWiki_linux_x64() {
     echo " Build : MediaWiki (LIN-X64)"
     echo "*******************************************************"
 
-    cd $WD
     mkdir -p mediaWiki/staging/linux-x64/instscripts || _die "Failed to create instscripts directory"
-    cp -pR server/staging/linux-x64/bin/psql* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy psql binary"
-    cp -pR server/staging/linux-x64/lib/libpq.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libpq.so"
-    cp -pR server/staging/linux-x64/lib/libcrypto.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libcrypto.so"
-    cp -pR server/staging/linux-x64/lib/libssl.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libssl.so"
-    cp -pR server/staging/linux-x64/lib/libedit.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libedit.so"
-    cp -pR server/staging/linux-x64/lib/libxml2.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libxml2.so"
-    cp -pR server/staging/linux-x64/lib/libxslt.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libxslt.so"
-    cp -pR server/staging/linux-x64/lib/libldap*.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy libldap*.so"
-    cp -pR server/staging/linux-x64/lib/liblber*.so* mediaWiki/staging/linux-x64/instscripts || _die "Failed to copy liblber*.so"
+    cd $WD/mediaWiki/staging/linux-x64/instscripts
+
+    cp -pR $WD/server/staging/linux-x64/bin/psql* . || _die "Failed to copy psql binary"
+    cp -pR $WD/server/staging/linux-x64/lib/libpq.so* . || _die "Failed to copy libpq.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libcrypto.so* . || _die "Failed to copy libcrypto.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libssl.so* . || _die "Failed to copy libssl.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libedit.so* . || _die "Failed to copy libedit.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libldap*.so* . || _die "Failed to copy libldap.so"
+    cp -pR $WD/server/staging/linux-x64/lib/liblber*.so* . || _die "Failed to copy liblber.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libgssapi_krb5*.so* . || _die "Failed to copy libgssapi_krb5.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libkrb5.so* . || _die "Failed to copy libkrb5.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libkrb5support*.so* . || _die "Failed to copy libkrb5support.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libk5crypto*.so* . || _die "Failed to copy libk5crypto.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libcom_err*.so* . || _die "Failed to copy libcom_err.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
 
 }
 

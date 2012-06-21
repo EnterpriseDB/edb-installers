@@ -44,22 +44,22 @@ _build_Drupal_linux() {
 
     cd $WD
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; mkdir -p Drupal/staging/linux/instscripts" || _die "Failed to create instscripts directory"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp server/staging/linux/bin/psql* Drupal/staging/linux/instscripts" || _die "Failed to copy psql binary"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX;
-SRCDIR=server/staging/linux/lib
-DESTDIR=Drupal/staging/linux/instscripts
-function _cp_lib_pg_to_drupal() {
-    while [[ ! -z \"\$1\" ]];
-    do
-        echo \"Copying:\$1\";
-        cp -pR \$SRCDIR/\$1 \$DESTDIR || (echo \"Failed to copy the PostgreSQL supported library (\$1)\" > /dev/stderr && exit 1);
-        if [ \$? -eq 1 ]; then
-            exit 1;
-        fi;
-        shift;
-    done;
-};
-_cp_lib_pg_to_drupal \"libpq.so*\" \"libcrypto.so*\" \"libssl.so*\" \"libedit.so*\" \"libxml2.so*\" \"libxslt.so*\" \"libldap*.so*\" \"liblber*.so*\" ;" || _die "Failed to copy supporting libraries"
+
+    cd $WD/Drupal/staging/linux/instscripts
+
+    cp -pR $WD/server/staging/linux/bin/psql* . || _die "Failed to copy psql binary"
+    cp -pR $WD/server/staging/linux/lib/libpq.so* . || _die "Failed to copy libpq.so"
+    cp -pR $WD/server/staging/linux/lib/libcrypto.so* . || _die "Failed to copy libcrypto.so"
+    cp -pR $WD/server/staging/linux/lib/libssl.so* . || _die "Failed to copy libssl.so"
+    cp -pR $WD/server/staging/linux/lib/libedit.so* . || _die "Failed to copy libedit.so"
+    cp -pR $WD/server/staging/linux/lib/libldap*.so* . || _die "Failed to copy libldap.so"
+    cp -pR $WD/server/staging/linux/lib/liblber*.so* . || _die "Failed to copy liblber.so"
+    cp -pR $WD/server/staging/linux/lib/libgssapi_krb5*.so* . || _die "Failed to copy libgssapi_krb5.so"
+    cp -pR $WD/server/staging/linux/lib/libkrb5.so* . || _die "Failed to copy libkrb5.so"
+    cp -pR $WD/server/staging/linux/lib/libkrb5support*.so* . || _die "Failed to copy libkrb5support.so"
+    cp -pR $WD/server/staging/linux/lib/libk5crypto*.so* . || _die "Failed to copy libk5crypto.so"
+    cp -pR $WD/server/staging/linux/lib/libcom_err*.so* . || _die "Failed to copy libcom_err.so"
+    cp -pR $WD/server/staging/linux/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
 
 }
 

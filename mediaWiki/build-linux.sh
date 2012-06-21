@@ -52,17 +52,21 @@ _build_mediaWiki_linux() {
 
     cd $WD
     mkdir -p mediaWiki/staging/linux/instscripts || _die "Failed to create instscripts directory"
-	cd $WD/mediaWiki/staging/linux/instscripts
+    cd $WD/mediaWiki/staging/linux/instscripts
 
     cp -pR $WD/server/staging/linux/bin/psql* . || _die "Failed to copy psql binary"
     cp -pR $WD/server/staging/linux/lib/libpq.so* . || _die "Failed to copy libpq.so"
     cp -pR $WD/server/staging/linux/lib/libcrypto.so* . || _die "Failed to copy libcrypto.so"
     cp -pR $WD/server/staging/linux/lib/libssl.so* . || _die "Failed to copy libssl.so"
     cp -pR $WD/server/staging/linux/lib/libedit.so* . || _die "Failed to copy libedit.so"
-    cp -pR $WD/server/staging/linux/lib/libxml2.so* . || _die "Failed to copy libxml2.so"
-    cp -pR $WD/server/staging/linux/lib/libxslt.so* . || _die "Failed to copy libxslt.so"
-    cp -pR $WD/server/staging/linux/lib/libldap*.so* . || _die "Failed to copy libldap*.so"
-    cp -pR $WD/server/staging/linux/lib/liblber*.so* . || _die "Failed to copy liblber*.so"
+    cp -pR $WD/server/staging/linux/lib/libldap*.so* . || _die "Failed to copy libldap.so"
+    cp -pR $WD/server/staging/linux/lib/liblber*.so* . || _die "Failed to copy liblber.so"
+    cp -pR $WD/server/staging/linux/lib/libgssapi_krb5*.so* . || _die "Failed to copy libgssapi_krb5.so"
+    cp -pR $WD/server/staging/linux/lib/libkrb5.so* . || _die "Failed to copy libkrb5.so"
+    cp -pR $WD/server/staging/linux/lib/libkrb5support*.so* . || _die "Failed to copy libkrb5support.so"
+    cp -pR $WD/server/staging/linux/lib/libk5crypto*.so* . || _die "Failed to copy libk5crypto.so"
+    cp -pR $WD/server/staging/linux/lib/libcom_err*.so* . || _die "Failed to copy libcom_err.so"
+    cp -pR $WD/server/staging/linux/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
 
 }
 
