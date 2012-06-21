@@ -847,8 +847,8 @@
                         <distributionFile>
                             <origin>staging/windows/bin/slonik.exe</origin>
                         </distributionFile>
-                        <distributionFile>
-                            <origin>staging/windows/bin/pthreadGC2.dll</origin>
+			<distributionFile>
+                            <origin>staging/windows/bin/pthreadVC2.dll</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>

@@ -16,6 +16,12 @@ _prep_Slony_windows() {
       rm -rf Slony.windows  || _die "Couldn't remove the existing Slony.windows source directory (source/Slony.windows)"
     fi
 
+    if [ -e Slony.zip ];
+    then
+      echo "Removing existing Slony.zip file"
+      rm -rf Slony.zip || _die "Couldn't remove the existing Slony.windows source directory (source/Slony.zip)"
+    fi
+
     echo "Creating Slony source directory ($WD/Slony/source/Slony.windows)"
     mkdir -p Slony.windows || _die "Couldn't create the Slony.windows directory"
     chmod ugo+w Slony.windows || _die "Couldn't set the permissions on the source directory"
@@ -66,9 +72,9 @@ CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
 
 @SET PG_INC=$PG_PATH_WINDOWS\output\include
 @SET PG_LIB=$PG_PATH_WINDOWS\output\lib
-@SET GETTEXT_LIB=$PG_PGBUILD_WINDOWS\gettext\lib
-@SET PTHREADS_INC=$PG_PGBUILD_WINDOWS\pthreads\include
-@SET PTHREADS_LIB=$PG_PGBUILD_WINDOWS\pthreads\lib
+@SET GETTEXT_LIB=$PG_PGBUILD_WINDOWS\lib
+@SET PTHREADS_INC=$PG_PGBUILD_WINDOWS\include
+@SET PTHREADS_LIB=$PG_PGBUILD_WINDOWS\lib
 @SET PGSHARE=\"\"
 
 cd Slony.windows\src\slonik
@@ -88,7 +94,7 @@ EOT
    ssh $PG_SSH_WINDOWS  "mkdir -p $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to create the bin directory"
    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/slon/slon.exe $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slon binary to staging directory"
    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/slonik/slonik.exe $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slonik binary to staging directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_MINGW_WINDOWS/lib/pthreadGC2.dll $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slonik binary to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PGBUILD_WINDOWS/bin/pthreadVC2.dll $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slonik binary to staging directory"
 
    ssh $PG_SSH_WINDOWS "mkdir -p $PG_PATH_WINDOWS/Slony.staging/lib" || _die "Failed to create the bin directory"
    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.dll $PG_PATH_WINDOWS/Slony.staging/lib" || _die "Failed to copy slony_funcs.dll to staging directory"
