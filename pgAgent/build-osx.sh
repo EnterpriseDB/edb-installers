@@ -57,7 +57,7 @@ _build_pgAgent_osx() {
 
     echo "Building pgAgent sources"
     cd $SOURCE_DIR
-    WXWIN=/usr/local PGDIR=$PG_PGHOME_OSX cmake -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.5 -DCMAKE_INSTALL_PREFIX=$PG_STAGING -DSTATIC_BUILD=NO CMakeLists.txt || _die "Couldn't configure the pgAgent sources"
+    WXWIN=/usr/local PGDIR=$PG_PGHOME_OSX cmake -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6  -DCMAKE_INSTALL_PREFIX=$PG_STAGING -DSTATIC_BUILD=NO -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CMAKE_OSX_ARCHITECTURES:STRING=i386 CMakeLists.txt || _die "Couldn't configure the pgAgent sources"
     echo "Compiling pgAgent"
     cd $SOURCE_DIR
     make || _die "Couldn't compile the pgAgent sources"
@@ -66,13 +66,15 @@ _build_pgAgent_osx() {
     mkdir -p $PG_STAGING/lib
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
-    cp -R $PG_PGHOME_OSX/bin/psql $PG_STAGING/bin || _die "Failed to copy psql"
-    cp -R $PG_PGHOME_OSX/lib/libpq.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library (libpq.5.dylib)"
-    cp -R $PG_PGHOME_OSX/lib/libedit.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library (libedit.0.dylib)"
+    cp -pR $PG_PGHOME_OSX/bin/psql $PG_STAGING/bin || _die "Failed to copy psql"
+    cp -pR $PG_PGHOME_OSX/lib/libpq.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library (libpq.5.dylib)"
+    cp -pR $PG_PGHOME_OSX/lib/libedit.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library (libedit.0.dylib)"
+    cp -pR $PG_PGHOME_OSX/lib/libssl.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library (libedit.0.dylib)"
+    cp -pR $PG_PGHOME_OSX/lib/libcrypto.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library (libedit.0.dylib)"
 
     # Copy libxml2 as System's libxml can be old.
-    cp /usr/local/lib/libxml2* $PG_STAGING/lib || _die "Failed to copy the latest libxml2"
-    cp /usr/local/lib/libwx_base_carbonu-2.8* $PG_STAGING/lib || _die "Failed to copy the latest libxml2"
+    cp -pR /usr/local/lib/libxml2* $PG_STAGING/lib || _die "Failed to copy the latest libxml2"
+    cp -pR /usr/local/lib/libwx_base_carbonu-2.8* $PG_STAGING/lib || _die "Failed to copy the latest libxml2"
 
     _rewrite_so_refs $WD/pgAgent/staging/osx lib @loader_path/..
     install_name_tool -change "libpq.5.dylib" "@loader_path/libpq.5.dylib" "$PG_STAGING/bin/psql"

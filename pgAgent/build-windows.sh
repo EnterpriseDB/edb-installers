@@ -87,25 +87,36 @@ _build_pgAgent_windows() {
 
     cat <<EOT > "vc-build.bat"
 REM Setting Visual Studio Environment
-CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
+CALL "$PG_VSINSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
 
 @SET PGBUILD=$PG_PGBUILD_WINDOWS
-@SET WXWIN=%PGBUILD%\wxWidgets
+@SET WXWIN=$PG_WXWIN_WINDOWS
 @SET PGDIR=$PG_PATH_WINDOWS\output
 
-vcbuild /upgrade
-vcbuild %1 %2 %3 %4 %5 %6 %7 %8 %9
+IF "%2" == "UPGRADE" GOTO upgrade
+
+msbuild %1 /p:Configuration=%2
+GOTO end
+
+:upgrade
+devenv /upgrade %1
+
+:end
+
 EOT
     scp vc-build.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the vc-build.bat to the windows build host (vcbuild.bat)"
 
     echo "Configuring pgAgent sources"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; PGDIR=$PG_PATH_WINDOWS/output WXWIN=$PG_WXWIN_WINDOWS cmake -DCMAKE_INSTALL_PREFIX=$OUTPUT_DIR ." || _die "Couldn't configure the pgAgent sources"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; PGDIR=$PG_PATH_WINDOWS/output WXWIN=$PG_WXWIN_WINDOWS cmake -DCMAKE_INSTALL_PREFIX=$OUTPUT_DIR -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Couldn't configure the pgAgent sources"
     echo "Building pgAgent"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; export PGDIR=$PG_PATH_WINDOWS/output ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgagent.vcproj RELEASE" || _die "Failed to build pgAgent on the build host"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/pgaevent; export PGDIR=$PG_PATH_WINDOWS/output ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgaevent.vcproj RELEASE" || _die "Failed to build pgaevent on the build host"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/validateuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/createuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/CreatePGPassconfForUser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat CreatePGPassconfForUser.vcproj RELEASE" || _die "Failed to build validateuser on the build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; export PGDIR=$PG_PATH_WINDOWS/output ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgagent.vcxproj RELEASE" || _die "Failed to build pgAgent on the build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/pgaevent; export PGDIR=$PG_PATH_WINDOWS/output ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgaevent.vcxproj RELEASE" || _die "Failed to build pgaevent on the build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/validateuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcproj UPGRADE" || _die "Failed to build validateuser on the build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/validateuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcxproj RELEASE" || _die "Failed to build validateuser on the build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/createuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcproj UPGRADE" || _die "Failed to build validateuser on the build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/createuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcxproj RELEASE" || _die "Failed to build validateuser on the build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/CreatePGPassconfForUser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat CreatePGPassconfForUser.vcproj UPGRADE" || _die "Failed to build validateuser on the build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/CreatePGPassconfForUser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat CreatePGPassconfForUser.vcxproj RELEASE" || _die "Failed to build validateuser on the build host"
 
     echo "Installing pgAgent"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c cmake -DBUILD_TYPE=RELEASE -P cmake_install.cmake" || _die "Failed to install pgAgent in output directory"
@@ -114,7 +125,7 @@ EOT
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy validateuser\\\\release\\\\validateuser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy createuser\\\\release\\\\createuser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy CreatePGPassconfForUser\\\\release\\\\CreatePGPassconfForUser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy /Y C:\\\\pgBuild\\\\vcredist\\\\vcredist_x86.exe $OUTPUT_DIR" || _die "Failed to copy the VC++ runtimes on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy /Y $PG_PGBUILD_WINDOWS\\\\vcredist\\\\vcredist_x86.exe $OUTPUT_DIR" || _die "Failed to copy the VC++ runtimes on the windows build host"
  
     cd $WD/pgAgent/staging/windows
     echo "Copying built tree to Windows host"
@@ -128,10 +139,10 @@ EOT
     echo "Copying dependent libraries from the windows VM to staging directory"
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output/bin/psql.exe $STAGING_DIR/bin || _die "Failed to copy psql.exe"
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output/bin/libpq.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libpq.dll)"
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/OpenSSL/bin/ssleay32.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (ssleay32.dll)"
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/OpenSSL/bin/libeay32.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libeay32.dll)"
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/gettext/bin/libiconv-2.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libiconv-2.dll)"
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/gettext/bin/libintl-8.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libintl-8.dll)"
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/ssleay32.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (ssleay32.dll)"
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS//bin/libeay32.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libeay32.dll)"
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libiconv2.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libiconv-2.dll)"
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libintl.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libintl-8.dll)"
 
 }
 

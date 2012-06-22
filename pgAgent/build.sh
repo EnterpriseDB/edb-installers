@@ -56,7 +56,9 @@ _prep_pgAgent() {
 
     echo "Unpacking pgAgent source..."
     extract_file  ../../tarballs/pgAgent-$PG_VERSION_PGAGENT-Source || exit 1
-
+    cd pgAgent-$PG_VERSION_PGAGENT-Source
+    patch -p1 < $WD/tarballs/pgAgent-Lion.patch
+    
     # Per-platform prep
     cd $WD
     
