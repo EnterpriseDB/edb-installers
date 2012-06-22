@@ -50,7 +50,7 @@ _build_mediaWiki_linux_x64() {
     echo " Build : MediaWiki (LIN-X64)"
     echo "*******************************************************"
 
-    mkdir -p mediaWiki/staging/linux-x64/instscripts || _die "Failed to create instscripts directory"
+    mkdir -p $WD/mediaWiki/staging/linux-x64/instscripts || _die "Failed to create instscripts directory"
     cd $WD/mediaWiki/staging/linux-x64/instscripts
 
     cp -pR $WD/server/staging/linux-x64/bin/psql* . || _die "Failed to copy psql binary"
