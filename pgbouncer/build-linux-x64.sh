@@ -60,23 +60,26 @@ _build_pgbouncer_linux_x64() {
 
     mkdir -p $WD/pgbouncer/staging/linux-x64/instscripts || _die "Failed to create the instscripts directory"
     mkdir -p $WD/pgbouncer/staging/linux-x64/pgbouncer/lib || _die "Failed to create the pgbouncer lib directory"
-    PG_LIBEVENT_MAJOR_VERSION=`echo $PG_TARBALL_LIBEVENT | cut -f1,2 '.'`
 
-    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
+    ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libevent-* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
     ssh $PG_SSH_LINUX_X64 "chmod o+rx $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/lib/*" || _die "Failed to change permission of libevent libs in pgbouncer lib folder"
 
-    cd $WD/pgbouncer/staging/linux-x64/
-    cp $WD/server/staging/linux-x64/bin/psql* instscripts/ || _die "Failed to copy psql"
-    cp $WD/server/staging/linux-x64/lib/libpq* instscripts/ || _die "Failed to copy libpq"
-    cp $WD/server/staging/linux-x64/lib/libcrypto* instscripts/ || _die "Failed to copy libcrypto"
-    cp $WD/server/staging/linux-x64/lib/libssl* instscripts/ || _die "Failed to copy libssl"
-    cp $WD/server/staging/linux-x64/lib/libedit* instscripts/ || _die "Failed to copy libedit"
-    cp $WD/server/staging/linux-x64/lib/libtermcap* instscripts/ || _die "Failed to copy libtermcap"
-    cp $WD/server/staging/linux-x64/lib/libxml2* instscripts/ || _die "Failed to copy libxml2"
-    cp $WD/server/staging/linux-x64/lib/libxslt* instscripts/ || _die "Failed to copy libxslt"
-    cp $WD/server/staging/linux-x64/lib/libldap* instscripts/ || _die "Failed to copy libldap"
-    cp $WD/server/staging/linux-x64/lib/liblber* instscripts/ || _die "Failed to copy liblber"
-    cp $WD/server/staging/linux-x64/lib/libsasl2* instscripts/ || _die "Failed to copy libsasl2"
+    cd $WD/pgbouncer/staging/linux-x64/instscripts/
+
+    cp -pR $WD/server/staging/linux-x64/bin/psql* . || _die "Failed to copy psql binary"
+    cp -pR $WD/server/staging/linux-x64/lib/libpq.so* . || _die "Failed to copy libpq.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libcrypto.so* . || _die "Failed to copy libcrypto.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libssl.so* . || _die "Failed to copy libssl.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libedit.so* . || _die "Failed to copy libedit.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libldap*.so* . || _die "Failed to copy libldap.so"
+    cp -pR $WD/server/staging/linux-x64/lib/liblber*.so* . || _die "Failed to copy liblber.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libgssapi_krb5*.so* . || _die "Failed to copy libgssapi_krb5.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libkrb5.so* . || _die "Failed to copy libkrb5.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libkrb5support*.so* . || _die "Failed to copy libkrb5support.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libk5crypto*.so* . || _die "Failed to copy libk5crypto.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libcom_err*.so* . || _die "Failed to copy libcom_err.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
+
     ssh $PG_SSH_LINUX_X64 "chmod 755 $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/*" || _die "Failed to change permission of libraries"
 
     cd $WD

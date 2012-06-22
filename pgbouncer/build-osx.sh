@@ -57,20 +57,18 @@ _build_pgbouncer_osx() {
     echo "*  Build: pgBouncer (OSX)  *"
     echo "****************************"
 
-    cd $PG_PATH_OSX/pgbouncer/source/pgbouncer.osx/; 
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" LDFLAGS="-arch ppc" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
-    mv lib/usual/config.h lib/usual/config_ppc.h || _die "Failed to rename config.h"
+    cd $PG_PATH_OSX/pgbouncer/source/pgbouncer.osx/
     
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-arch i386" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -O2" LDFLAGS="-arch i386" MACOSX_DEPLOYMENT_TARGET=10.6 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
     mv lib/usual/config.h lib/usual/config_i386.h || _die "Failed to rename config.h"
 
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -O2" LDFLAGS="-arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.6 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
     mv lib/usual/config.h lib/usual/config_x86_64.h || _die "Failed to rename config.h"
 
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc -arch x86_64" LDFLAGS="-arch i386 -arch ppc -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -O2" LDFLAGS="-arch i386 -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.6 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
 
     echo "#ifdef __BIG_ENDIAN__" > lib/usual/config.h
-    echo "  #include \"config_ppc.h\"" >> lib/usual/config.h
+    echo "  #error \"Do not support ppc architecture\"" >> lib/usual/config.h
     echo "#else" >> lib/usual/config.h
     echo "  #ifdef __LP64__" >> lib/usual/config.h
     echo "    #include \"config_x86_64.h\"" >> lib/usual/config.h
@@ -79,26 +77,27 @@ _build_pgbouncer_osx() {
     echo "  #endif" >> lib/usual/config.h
     echo "#endif" >> lib/usual/config.h
     
-    MACOSX_DEPLOYMENT_TARGET=10.5 make || _die "Failed to build pgbouncer"
+    MACOSX_DEPLOYMENT_TARGET=10.6 make || _die "Failed to build pgbouncer"
+    ln -s $PG_PATH_OSX/pgbouncer/source/pgbouncer.osx/install-sh $PG_PATH_OSX/pgbouncer/source/pgbouncer.osx/doc/install-sh
     make install || _die "Failed to install pgbouncer"
 
     cp -R $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/share/doc/pgbouncer/pgbouncer.ini $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/share || _die "Failed to copy the ini file to share directory"
 
     mkdir -p $WD/pgbouncer/staging/osx/pgbouncer/lib || _die "Failed to create the pgbouncer lib directory"
-    PG_LIBEVENT_MAJOR_VERSION=`echo $PG_TARBALL_LIBEVENT | cut -f1,2 -d '.'`
+    cp -pR /usr/local/lib/libevent-*.dylib $WD/pgbouncer/staging/osx/pgbouncer/lib
  
-    cp /usr/local/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION*dylib $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/lib/ || _die "Failed to copy the libevent library(libevent-$PG_LIBEVENT_MAJOR_VERSION)"
-
     _rewrite_so_refs $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer bin @loader_path/..
     _rewrite_so_refs $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer lib @loader_path/
 
  
     mkdir -p $WD/pgbouncer/staging/osx/instscripts || _die "Failed to create the instscripts directory"
 
-    cp -R $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
-    cp -R $PG_PATH_OSX/server/staging/osx/lib/libedit* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
-    cp -R $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy psql in instscripts"
-    cp /usr/local/lib/libxml2* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy the latest libxml2"
+    cp -pR $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -pR $PG_PATH_OSX/server/staging/osx/lib/libedit* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy libedit in instscripts"
+    cp -pR $PG_PATH_OSX/server/staging/osx/lib/libssl* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy libssl in instscripts"
+    cp -pR $PG_PATH_OSX/server/staging/osx/lib/libcrypto* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy libcrypto in instscripts"
+    cp -pR $PG_PATH_OSX/server/staging/osx/lib/libxml2* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy libxml2 in instscripts"
+    cp -pR $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy psql in instscripts"
 
     # Change the referenced libraries
     OLD_DLL_LIST=`otool -L $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/psql | grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' `
