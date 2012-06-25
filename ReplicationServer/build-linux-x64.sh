@@ -70,21 +70,21 @@ _build_ReplicationServer_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; mkdir -p ReplicationServer/staging/linux-x64/instscripts/bin" || _die "Failed to create instscripts directory"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; mkdir -p ReplicationServer/staging/linux-x64/instscripts/lib" || _die "Failed to create instscripts directory"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/bin/psql* ReplicationServer/staging/linux-x64/instscripts/bin" || _die "Failed to copy psql binary"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64;
-SRCDIR=server/staging/linux-x64/lib
-DESTDIR=ReplicationServer/staging/linux-x64/instscripts/lib
-function _cp_lib_pg_to_repl() {
-    while [[ ! -z \"\$1\" ]];
-    do
-        echo \"Copying:\$1\";
-        cp \$SRCDIR/\$1 \$DESTDIR || (echo \"Failed to copy the PostgreSQL supported library (\$1)\" > /dev/stderr && exit 1);
-        if [ \$? -eq 1 ]; then
-            exit 1;
-        fi;
-        shift;
-    done;
-};
-_cp_lib_pg_to_repl \"libpq.so*\" \"libcrypto.so*\" \"libssl.so*\" \"libedit.so*\" \"libtermcap.so*\" \"libxml2.so*\" \"libxslt.so*\" \"libldap*.so*\" \"liblber*.so*\" \"libsasl2.so*\";" || _die "Failed to copy supporting libraries"
+    cd $WD/ReplicationServer/staging/linux-x64/instscripts/lib
+
+    cp -pR $WD/server/staging/linux-x64/lib/libpq.so* . || _die "Failed to copy libpq.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libcrypto.so* . || _die "Failed to copy libcrypto.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libssl.so* . || _die "Failed to copy libssl.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libedit.so* . || _die "Failed to copy libedit.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libldap*.so* . || _die "Failed to copy libldap.so"
+    cp -pR $WD/server/staging/linux-x64/lib/liblber*.so* . || _die "Failed to copy liblber.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libgssapi_krb5*.so* . || _die "Failed to copy libgssapi_krb5.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libkrb5.so* . || _die "Failed to copy libkrb5.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libkrb5support*.so* . || _die "Failed to copy libkrb5support.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libk5crypto*.so* . || _die "Failed to copy libk5crypto.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libcom_err*.so* . || _die "Failed to copy libcom_err.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
+
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp MigrationToolKit/staging/linux-x64/MigrationToolKit/lib/edb-migrationtoolkit.jar ReplicationServer/staging/linux-x64/repserver/lib/repl-mtk" || _die "Failed to copy edb-migrationtoolkit.jar"
     cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/staging/linux-x64/repconsole/lib/jdbc/ || _die "Failed to copy pg jdbc drivers"
     cd $WD
@@ -101,9 +101,9 @@ _cp_lib_pg_to_repl \"libpq.so*\" \"libcrypto.so*\" \"libssl.so*\" \"libedit.so*\
     chmod +r $WD/ReplicationServer/staging/linux-x64/repserver/lib/repl-mtk/*
 
     # Build the validateUserClient binary
-    cp -R $WD/resources/validateUser $WD/ReplicationServer/source/ReplicationServer.linux-x64/validateUser || _die "Failed to copy validateUser source files"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux-x64/validateUser; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp ReplicationServer/source/ReplicationServer.linux-x64/validateUser/validateUserClient.o ReplicationServer/staging/linux-x64/instscripts/" || _die "Failed to copy validateUserClient.o"
+    cp -R $WD/resources/validateUser $WD/ReplicationServer/source/ReplicationServer.linux-x64/ || _die "Failed to copy validateUser source files"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ReplicationServer/source/ReplicationServer.linux-x64/validateUser; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp ReplicationServer/source/ReplicationServer.linux-x64/validateUser/validateUserClient.o ReplicationServer/staging/linux-x64/instscripts/" || _die "Failed to copy validateUserClient.o"
     chmod ugo+x $WD/ReplicationServer/staging/linux-x64/instscripts/validateUserClient.o || _die "Failed to give execution permission to validateUserClient.o"
 
 }

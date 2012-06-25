@@ -128,29 +128,29 @@ REM Setting Visual Studio Environment
 CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
 
 cd "%SOURCE_PATH%\\validateuser"
-vcbuild /upgrade
-vcbuild validateuser.vcproj RELEASE
+devenv /upgrade validateuser.vcproj
+msbuild validateuser.vcxproj /p:Configuration=Release
 IF NOT EXIST "release\\validateuser.exe" goto build-validateuser-failed
 
 cd "%SOURCE_PATH%\\createuser"
-vcbuild /upgrade
-vcbuild createuser.vcproj RELEASE
+devenv /upgrade createuser.vcproj
+msbuild createuser.vcxproj /p:Configuration=Release
 IF NOT EXIST "release\\createuser.exe" goto build-createuser-failed
 
 cd "%SOURCE_PATH%\\ServiceWrapper"
-vcbuild /upgrade
-vcbuild ServiceWrapper.vcproj RELEASE
+devenv /upgrade ServiceWrapper.vcproj
+msbuild ServiceWrapper.vcxproj /p:Configuration=Release
 IF NOT EXIST "release\\ServiceWrapper.exe" goto build-servicewrapper-failed
 
 
 cd "%SOURCE_PATH%\\validateUserClient"
-vcbuild /upgrade
-vcbuild validateuser.vcproj RELEASE
+devenv /upgrade validateuser.vcproj
+msbuild validateuser.vcxproj /p:Configuration=Release
 IF NOT EXIST "release\\validateUserClient.exe" goto build-wsvalidateuser-failed
 
 cd "%SOURCE_PATH%\\dbserver_guid"
-vcbuild /upgrade
-vcbuild dbserver_guid.vcproj RELEASE
+devenv /upgrade dbserver_guid.vcproj
+msbuild dbserver_guid.vcxproj /p:Configuration=Release
 IF NOT EXIST "release\\dbserver_guid.exe" goto build-dbserver-guid-failed
 
 echo "copying application files into the output directory"
@@ -160,7 +160,7 @@ copy /y createuser\\\\release\\\\createuser.exe $OUTPUT_DIR
 copy /y ServiceWrapper\\\\release\\\\ServiceWrapper.exe $OUTPUT_DIR
 copy /y validateUserClient\\\\release\\\\validateUserClient.exe $OUTPUT_DIR
 copy /y dbserver_guid\\\\release\\\\dbserver_guid.exe $OUTPUT_DIR
-copy /Y C:\\\\pgBuild\\\\vcredist\\\\vcredist_x86.exe  $OUTPUT_DIR
+copy /Y $PG_PGBUILD_WINDOWS\\\\vcredist\\\\vcredist_x86.exe  $OUTPUT_DIR
 
 echo "Removing existing dist.zip (if any)"
 If EXIST dist.zip del /q dist.zip
@@ -225,17 +225,18 @@ EOT
     cd $WD
     mv $WD/ReplicationServer/staging/windows/validateUserClient.exe $WD/ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy the utilities (validateUserClient.exe)"
     mv $WD/ReplicationServer/staging/windows/dbserver_guid.exe $WD/ReplicationServer/staging/windows/instscripts/bin/uuid.exe || _die "Failed to copy the utilities (dbserver_guid.exe)"
-    cp -R server/staging/windows/lib/libpq* ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy libpq in instscripts"
-    cp -R server/staging/windows/bin/psql.exe ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy psql in instscripts"
-    cp -R server/staging/windows/bin/ssleay32.dll ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/libeay32.dll ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/iconv.dll ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/libintl-8.dll ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/libiconv-2.dll ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/libiconv-2.dll ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/libxml2.dll ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/libxslt.dll ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy dependent libs"
-    cp -R server/staging/windows/bin/zlib1.dll ReplicationServer/staging/windows/instscripts/bin || _die "Failed to copy dependent libs"
+
+    cp -R server/staging/windows/lib/libpq* ReplicationServer/staging/windows/instscripts/bin/ || _die "Failed to copy libpq in instscripts"
+    cp -R server/staging/windows/bin/psql.exe ReplicationServer/staging/windows/instscripts/bin/ || _die "Failed to copy psql in instscripts"
+    cp -R server/staging/windows/bin/ssleay32.dll ReplicationServer/staging/windows/instscripts/bin/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libeay32.dll ReplicationServer/staging/windows/instscripts/bin/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/iconv.dll ReplicationServer/staging/windows/instscripts/bin/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libintl.dll ReplicationServer/staging/windows/instscripts/bin/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libiconv2.dll ReplicationServer/staging/windows/instscripts/bin/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libxml2.dll ReplicationServer/staging/windows/instscripts/bin/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/libxslt.dll ReplicationServer/staging/windows/instscripts/bin/ || _die "Failed to copy dependent libs"
+    cp -R server/staging/windows/bin/zlib1.dll ReplicationServer/staging/windows/instscripts/bin/ || _die "Failed to copy dependent libs"
+
     cp -R MigrationToolKit/staging/windows/MigrationToolKit/lib/edb-migrationtoolkit.jar ReplicationServer/staging/windows/repserver/lib/repl-mtk || _die "Failed to copy edb-migrationtoolkit.jar"
     cp $WD/ReplicationServer/source/pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_JAR_POSTGRESQL.jar $WD/ReplicationServer/staging/windows/repconsole/lib/jdbc/ || _die "Failed to copy pg jdbc drivers"
 
