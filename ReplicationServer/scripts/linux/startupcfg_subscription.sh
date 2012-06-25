@@ -47,14 +47,28 @@ cat <<EOT > "/etc/init.d/edb-xdbsubserver-$XDB_SERVICE_VER"
 # Description:       edb-xdbsubserver-$XDB_SERVICE_VER
 ### END INIT INFO
 
+check_pid()
+{
+    export PIDS=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
+}
+
 start()
 {
-    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
-    if [ "x\$PID" = "x" ];
+    if [ "x\$PIDS" = "x" ];
     then
        su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT > /dev/null 2>&1 &"
-       echo "Subscription Service $XDB_SERVICE_VER started"
+
+       check_pid;
+
+       if [ "x\$PIDS" = "x" ];
+       then
+           echo "Subscription Service $XDB_SERVICE_VER not started"
+           exit 1
+       else
+           echo "Subscription Service $XDB_SERVICE_VER started"
+       fi
     else
        echo "Subscription Service $XDB_SERVICE_VER already running"
        exit 0
@@ -63,27 +77,27 @@ start()
 
 stop()
 {
-    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
-    if [ "x\$PID" = "x" ];
+    if [ "x\$PIDS" = "x" ];
     then
         echo "Subscription Service $XDB_SERVICE_VER not running"
     else
-        kill -9 \$PID
+        kill -9 \$PIDS
 	echo "Subscription Service $XDB_SERVICE_VER stopped"
     fi
 }
 
 status()
 {
-    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
-    if [ "x\$PID" = "x" ];
+    if [ "x\$PIDS" = "x" ];
     then
         echo "Subscription Service $XDB_SERVICE_VER not running"
         exit 1
     else
-        echo "Subscription Service $XDB_SERVICE_VER (PID:\$PID) is running"
+        echo "Subscription Service $XDB_SERVICE_VER (PID:\$PIDS) is running"
         exit 0
     fi
 

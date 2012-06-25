@@ -49,28 +49,41 @@ cat <<EOT > "/etc/init.d/edb-xdbpubserver-$XDB_SERVICE_VER"
 
 set_jvm_heap_size()
 {
-	$JAVA -version &> test.log      
+	$JAVA -version &> /tmp/test.log      
         
-        if cat test.log | grep "64-Bit" &> /dev/null
+        if cat /tmp/test.log | grep "64-Bit" &> /dev/null
         then
           export JAVA_HEAP_SIZE="-Xms128m -Xmx512m"
         else
           export JAVA_HEAP_SIZE="-Xms64m -Xmx256m"
        fi
 
-       rm -f test.log
+       rm -f /tmp/test.log
+}
+
+check_pid()
+{   
+   export PID=\`ps -aef | grep 'java '"\$JAVA_HEAP_SIZE"' -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
 }
 
 start()
 {
     set_jvm_heap_size;
-
-    PID=\`ps -aef | grep 'java '"\$JAVA_HEAP_SIZE"' -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
     if [ "x\$PID" = "x" ];
     then
        su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA \$JAVA_HEAP_SIZE -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
-       echo "Publication Service $XDB_SERVICE_VER started"
+
+       check_pid;
+
+       if [ "x\$PID" = "x" ];
+       then
+          echo "Publication Service $XDB_SERVICE_VER not started"
+          exit 1
+       else
+          echo "Publication Service $XDB_SERVICE_VER started"
+       fi
     else
        echo "Publication Service $XDB_SERVICE_VER already running"
        exit 0
@@ -80,8 +93,7 @@ start()
 stop()
 {   
     set_jvm_heap_size;
-
-    PID=\`ps -aef | grep 'java '"\$JAVA_HEAP_SIZE"' -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
     if [ "x\$PID" = "x" ];
     then
@@ -95,8 +107,7 @@ stop()
 status()
 {
     set_jvm_heap_size;
-
-    PID=\`ps -aef | grep 'java '"\$JAVA_HEAP_SIZE"' -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
     if [ "x\$PID" = "x" ];
     then

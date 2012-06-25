@@ -1210,7 +1210,7 @@
                 <runProgram>
                     <program>/etc/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</program>
                     <programArguments>start</programArguments>
-                    <abortOnError>0</abortOnError>
+                    <abortOnError>1</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
                     <ruleList>
                         <compareText>
@@ -1230,7 +1230,7 @@
                 <runProgram>
                     <program>/sbin/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</program>
                     <programArguments>start</programArguments>
-                    <abortOnError>0</abortOnError>
+                    <abortOnError>1</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
                     <ruleList>
                         <compareText>

@@ -2137,9 +2137,10 @@ database=${controldb}
         </startWindowsService>
        <runProgram>
             <program>/etc/init.d/edb-xdbpubserver-XDB_SERVICE_VER</program>
-            <programArguments>start &amp;</programArguments> 
+            <programArguments>start</programArguments> 
             <workingDirectory>/etc/init.d</workingDirectory>
             <progressText>${msg(progress.text.starting.pubservice)}</progressText>
+	    <abortOnError>1</abortOnError>
             <ruleList>
                 <isTrue value="${component(pubserver).selected}" />
                 <compareText logic="contains" text="${platform_name}" value="linux" />
@@ -2148,9 +2149,10 @@ database=${controldb}
         </runProgram>
 	<runProgram>
             <program>/sbin/init.d/edb-xdbpubserver-XDB_SERVICE_VER</program>
-            <programArguments>start &amp;</programArguments>
+            <programArguments>start</programArguments>
             <workingDirectory>/sbin/init.d</workingDirectory>
             <progressText>${msg(progress.text.starting.pubservice)}</progressText>
+	    <abortOnError>1</abortOnError>
             <ruleList>
                 <isTrue value="${component(pubserver).selected}" />
                 <compareText logic="contains" text="${platform_name}" value="hpux" />
@@ -2185,9 +2187,10 @@ database=${controldb}
         </startWindowsService>
         <runProgram>
             <program>/etc/init.d/edb-xdbsubserver-XDB_SERVICE_VER</program>
-            <programArguments>start &amp;</programArguments> 
+            <programArguments>start</programArguments> 
             <workingDirectory>/etc/init.d</workingDirectory>
             <progressText>${msg(progress.text.starting.subservice)}</progressText>
+	    <abortOnError>1</abortOnError>
             <ruleList>
                 <isTrue value="${component(subserver).selected}" />
                 <compareText logic="contains" text="${platform_name}" value="linux" />
@@ -2196,9 +2199,10 @@ database=${controldb}
         </runProgram>
 	<runProgram>
             <program>/sbin/init.d/edb-xdbsubserver-XDB_SERVICE_VER</program>
-            <programArguments>start &amp;</programArguments> 
+            <programArguments>start</programArguments> 
             <workingDirectory>/sbin/init.d</workingDirectory>
             <progressText>${msg(progress.text.starting.subservice)}</progressText>
+	    <abortOnError>1</abortOnError>
             <ruleList>
                 <isTrue value="${component(subserver).selected}" />
                 <compareText logic="contains" text="${platform_name}" value="hpux" />
