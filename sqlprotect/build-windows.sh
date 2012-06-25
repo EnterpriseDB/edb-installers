@@ -62,7 +62,17 @@ _prep_sqlprotect_windows() {
 
 _build_sqlprotect_windows() {
 
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgres.windows/src/tools/msvc; ./build.bat sqlprotect RELEASE" || _die "could not build sqlprotect on windows vm"
+
+cat <<EOT > "$WD/server/source/build32-sqlprotect.bat"
+
+@SET PATH=%PATH%;$PG_PERL_WINDOWS\bin
+
+build.bat sqlprotect RELEASE
+
+EOT
+
+    scp $WD/server/source/build32-sqlprotect.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/postgres.windows/src/tools/msvc || _die "Failed to copy the build32.bat"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgres.windows/src/tools/msvc; ./build32-sqlprotect.bat " || _die "could not build sqlprotect on windows vm"
 
    # We need to copy shared objects to staging directory
    ssh $PG_SSH_WINDOWS "mkdir -p $PG_PATH_WINDOWS/sqlprotect.staging/lib/postgresql" || _die "Failed to create the lib directory"

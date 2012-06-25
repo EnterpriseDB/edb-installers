@@ -62,7 +62,20 @@ _prep_sqlprotect_windows_x64() {
 
 _build_sqlprotect_windows_x64() {
 
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; ./build.bat sqlprotect RELEASE" || _die "could not build sqlprotect on windows vm"
+    cat <<EOT > "$WD/server/source/build64-sqlprotect.bat"
+
+REM Setting Visual Studio Environment
+CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
+
+@SET PATH=%PATH%;$PG_PERL_WINDOWS_X64\bin
+
+build.bat sqlprotect Release
+
+EOT
+
+    scp $WD/server/source/build64-sqlprotect.bat $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc || _die "Failed to copy the build32.bat"
+ 
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; ./build64-sqlprotect.bat" || _die "could not build sqlprotect on windows vm"
 
    # We need to copy shared objects to staging directory
    ssh $PG_SSH_WINDOWS_X64 "mkdir -p $PG_PATH_WINDOWS_X64/sqlprotect.staging/lib/postgresql" || _die "Failed to create the lib directory"
