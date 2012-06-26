@@ -155,6 +155,7 @@ _build_psqlODBC_linux() {
     cp -pR $WD/server/staging/linux/lib/libcom_err*.so* . || _die "Failed to copy libcom_err.so"
     cp -pR $WD/server/staging/linux/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
     ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libodbcinst.so* $PG_STAGING/lib" || _die "Failed to copy libodbcinst.so"
+    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libodbc.so* $PG_STAGING/lib" || _die "Failed to copy libodbc.so"
 
     # Process Dependent libs
     _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libcom_err.so"
