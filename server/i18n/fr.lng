@@ -57,7 +57,8 @@ config.datadir.explanation=Sélectionnez un répertoire dans lequel sera enregistr
 
 config.superpassword.description=Mot de passe
 config.superpassword.explanation=Donnez un mot de passe pour le super-utilisateur de la base de données (${superaccount}). Un compte utilisateur Unix verrouillé (${serviceaccount}) sera créé s'il n'existe pas déjà.
-config.superpassword.explanation.windows=Donnez un mot de passe pour le super-utilisateur de la base de données (${superaccount}) et le compte du service (${serviceaccount}). Si le compte du service existe déjà sur Windows, vous devez saisir le mot de passe actuel de ce compte. Si le compte n'existe pas, il sera créé quand vous cliquerez sur « Suivant ».
+config.superpassword.explanation.windows=S'il vous plaÃ®t fournir un mot de passe pour le superutilisateur ${superaccoun}).
+config.superpassword.explanation.custom.windows=Donnez un mot de passe pour le super-utilisateur de la base de données (${superaccount}) et le compte du service (${serviceaccount}). Si le compte du service existe déjà sur Windows, vous devez saisir le mot de passe actuel de ce compte. Si le compte n'existe pas, il sera créé quand vous cliquerez sur « Suivant ».
 config.superpassword.explanation.upgrade.windows=Donnez un mot de passe pour le compte du service (${serviceaccount}).
 config.superpassword.confirm=Confirmez le mot de passe.
 config.superpassword.no.password=Vous devez saisir un mot de passe pour continuer.

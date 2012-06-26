@@ -2346,6 +2346,9 @@
 		    <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
 		    <abortOnError>0</abortOnError>
 		    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
+                    </ruleList>
 		</runProgram>
 
 		<throwError>
@@ -2488,6 +2491,9 @@
 		    <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
 		    <abortOnError>1</abortOnError>
 		    <showMessageOnError>1</showMessageOnError>
+                    <ruleList>
+                        <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
+                    </ruleList>
 		</runProgram>
 
 		<throwError>
@@ -4680,7 +4686,7 @@ REM The script sets environment variables helpful for PostgreSQL
             description="${msg(superaccount.description)}" />
         <stringParameter name="servicename" ask="1" cliOptionShow="1" cliOptionName="servicename" default=""
             description="${msg(servicename.description)}" />
-        <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default="postgres"
+        <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default="NT AUTHORITY\NetworkService"
             description="${msg(serviceaccount.description)}"/>
         <passwordParameter name="servicepassword" ask="1" cliOptionShow="1" cliOptionName="servicepassword"
             description="${msg(servicepassword.description)}" default="" >
@@ -5387,6 +5393,26 @@ REM The script sets environment variables helpful for PostgreSQL
                     </ruleList>
                 </setInstallerVariable>
 
+                <!-- It's different again on Windows if a custom service account is used -->
+                <setInstallerVariable>
+                    <name>_explanation</name>
+                    <value>${msg(config.superpassword.explanation.custom.windows)}</value>
+
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <nocase>1</nocase>
+                            <value>${serviceaccount}</value>
+                            <text>NT AUTHORITY\NetworkService</text>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+
                 <!-- On Windows, we need a different explanation if upgrade mode -->
                 <setInstallerVariable>
                     <name>_explanation</name>
@@ -5513,6 +5539,9 @@ REM The script sets environment variables helpful for PostgreSQL
                             <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
+                            <ruleList>
+                                <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
+                            </ruleList>
                         </runProgram>
 
                         <throwError>
@@ -5649,6 +5678,9 @@ REM The script sets environment variables helpful for PostgreSQL
                             <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
+                            <ruleList>
+			        <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
+                            </ruleList>
                         </runProgram>
 
                         <throwError>
@@ -5682,16 +5714,19 @@ REM The script sets environment variables helpful for PostgreSQL
                     </ruleList>
                 </actionGroup>
             </validationActionList>
+
+            <!-- Show the password dialogue when (!upgrade || (windows && !NetworkService)) && !extract -->
             <ruleList>
                 <ruleGroup>
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
 			<isFalse value="${IsUpgrade}"/>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
+                        <ruleGroup>
+                            <ruleList>
+                                <compareText logic="does_not_equal" nocase="1" value="${serviceaccount}" text="NT AUTHORITY\NetworkService" />
+                                <compareText logic="equals" text="${platform_name}" value="windows" />
+                            </ruleList>
+                        </ruleGroup>
                     </ruleList>
                 </ruleGroup>
                 <isFalse value="${extract_mode}"/>

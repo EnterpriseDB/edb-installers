@@ -63,8 +63,9 @@ config.datadir.explanation=Please select a directory under which to store your d
 
 config.superpassword.description=Password
 config.superpassword.explanation=Please provide a password for the database superuser (${superaccount}). A locked Unix user account (${serviceaccount}) will be created if not present.
-config.superpassword.explanation.windows=Please provide a password for the database superuser (${superaccount}) and service account (${serviceaccount}). If the service account already exists in Windows, you must enter the current password for the account. If the account does not exist, it will be created when you click 'Next'.
-config.superpassword.explanation.upgrade.windows=Please provide a password for service account (${serviceaccount}).
+config.superpassword.explanation.windows=Please provide a password for the database superuser (${superaccount}).
+config.superpassword.explanation.custom.windows=Please provide a password for the database superuser (${superaccount}) and service account (${serviceaccount}). If the service account already exists in Windows, you must enter the current password for the account. If the account does not exist, it will be created when you click 'Next'.
+config.superpassword.explanation.upgrade.windows=Please provide the password for service account (${serviceaccount}).
 config.superpassword.confirm=Retype password
 config.superpassword.no.password=You must enter a password to continue.
 config.superpassword.incorrect.windows=The password specified was incorrect. Please enter the correct password for the ${serviceaccount} windows user account.

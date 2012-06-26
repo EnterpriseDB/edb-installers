@@ -62,7 +62,12 @@ Sub Warn(msg)
 End Sub
 
 ' We'll let pg_ctl do all the heavy lifting
-iRet = DoCmd("""" & strInstallDir & "\bin\pg_ctl.exe"" register -N " & strServiceName & " -U " & strUsername & " -P """ & strFormattedPassword & """ -D """ & strDataDir & """ -w")
+If strUsername = "NT AUTHORITY\NetworkService" Then
+    iRet = DoCmd("""" & strInstallDir & "\bin\pg_ctl.exe"" register -N """ & strServiceName & """ -U """ & strUsername & """ -D """ & strDataDir & """ -w")
+Else
+    iRet = DoCmd("""" & strInstallDir & "\bin\pg_ctl.exe"" register -N """ & strServiceName & """ -U """ & strUsername & """ -P """ & strFormattedPassword & """ -D """ & strDataDir & """ -w")
+End If
+
 if iRet <> 0 Then
     Die "Failed to register the service with the service control manager"
 End If
