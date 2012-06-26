@@ -227,83 +227,6 @@
           </ruleList>
         </throwError>
 
-        <!-- LIN : Set the default values for unattended mode -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/Shared/EnterpriseDB-xDBReplicationServer"/>
-            </actionList>
-            <ruleList>
-                <!-- following check means mode equals unattended -->
-        	<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
-		<compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-	
-	<!-- HPUX : Set the default values for unattended mode -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/Shared/EnterpriseDB-xDBReplicationServer"/>
-            </actionList>
-            <ruleList>
-		<!-- following check means mode equals unattended -->
-        	<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>hpux</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-
-        <!-- SOLARIS : Set the default values for unattended mode -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgresPlus/Shared/EnterpriseDB-xDBReplicationServer"/>
-            </actionList>
-            <ruleList>
-		<!-- following check means mode equals unattended -->
-        	<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>solaris</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- WIN : Set the default values for unattended mode -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="installdir" value="${platform_install_prefix}\PostgresPlus\Shared\EnterpriseDB-xDBReplicationServer"/>
-            </actionList>
-            <ruleList>
-		<!-- following check means mode equals unattended -->
-        	<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
-        <!-- MAC : Set the default values for unattended mode -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="installdir" value="/Library/PostgresPlus/Shared/EnterpriseDB-xDBReplicationServer"/>
-            </actionList>
-            <ruleList>
-		<!-- following check means mode equals unattended -->
-        	<compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-            </ruleList>
-        </actionGroup>
         <!-- MAC : Set the default installation directory -->
         <setInstallerVariable>
             <name>default_installdir</name>
@@ -354,6 +277,20 @@
                 </compareText>
             </ruleList>
         </setInstallerVariable>
+        <!-- On Solaris11, platform_install_prefix for an ordinary user expands to /home. and according to FB20570
+             installation directory cannot be set explicitly to "^/home". Hence, prepend "/export" to the value.-->
+        <checkSolarisVersion/>
+        <setInstallerVariableFromRegEx>
+          <name>default_installdir</name>
+          <pattern>^/home/(.*)$</pattern>
+          <substitution>/export/home/\1</substitution>
+          <text>${default_installdir}</text>
+          <ruleList>
+            <compareText text="${platform_name}" logic="contains" value="solaris"/>
+            <compareText text="${solaris_version}" logic="contains" value="Solaris 11"/>
+            <regExMatch text="${platform_install_prefix}" logic="matches" pattern="^/(home)"/>
+          </ruleList>
+        </setInstallerVariableFromRegEx>
     </initializationActionList>
     <preInstallationActionList>
        <!-- Setting defaultUnixGroup and defaultUnixOwner -->
