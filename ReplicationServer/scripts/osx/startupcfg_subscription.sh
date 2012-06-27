@@ -49,6 +49,7 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.xdbsubserver-$XDB_SERVICE_VE
                 <string>$INSTALL_DIR/bin/edb-repserver.jar</string>
                 <string>subserver</string>
                 <string>$SUBPORT</string>
+		<string>$INSTALL_DIR/etc</string>
         </array>
         <key>RunAtLoad</key>
         <true/>

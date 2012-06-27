@@ -61,7 +61,7 @@ function start
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; nohup $JAVA -Xms128m -Xmx512m -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
+       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; nohup $JAVA -Xms128m -Xmx512m -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT $INSTALL_DIR/etc > /dev/null 2>&1 &"
        
        check_pid;
 

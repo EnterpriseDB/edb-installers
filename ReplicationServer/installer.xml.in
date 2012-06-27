@@ -1575,10 +1575,27 @@ database=${controldb}
                         <compareText text="${platform_name}" logic="equals" value="windows" />
                     </ruleList>
                </writeFile>
-
+	      
+	       <!-- Give permissions -->
+	       <actionGroup>
+		<actionList>
+		  <clearWindowsACL>
+		    <files>${installdir}\etc\edb-repl.conf</files>
+		  </clearWindowsACL>
+		  <setWindowsACL>
+		    <action>allow</action>
+		    <files>${installdir}\etc\edb-repl.conf</files>
+ 		    <permissions>file_generic_read</permissions>
+ 		    <users>${serviceaccount}</users>
+		  </setWindowsACL>
+		</actionList>
+		<ruleList>
+                  <compareText text="${platform_name}" logic="equals" value="windows" />
+                </ruleList>
+	       </actionGroup>
 
                <writeFile>
-                   <path>/etc/edb-repl.conf</path>
+                   <path>${installdir}/etc/edb-repl.conf</path>
                    <text>
 user=${pguser}
 port=${pgport}
@@ -1591,7 +1608,24 @@ database=${controldb}
                         <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
                     </ruleList>
                 </writeFile>
-
+		<!-- Give permissionss to only owner -->
+		<actionGroup>
+		  <actionList>
+	            <changeOwnerAndGroup>
+                      <files>${installdir}/etc/edb-repl.conf</files>
+                      <owner>${serviceaccount}</owner>
+		      <group>daemon</group>
+                    </changeOwnerAndGroup>
+		    <changePermissions>
+                      <files>${installdir}/etc/edb-repl.conf</files>
+                      <permissions>600</permissions>
+		    </changePermissions>
+		  </actionList>
+                  <ruleList>
+                    <fileExists path="${installdir}/etc/edb-repl.conf" />
+                    <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+                  </ruleList>
+                </actionGroup>
                 <!-- Set variable psql_path -->
                 <setInstallerVariable name="psql_path" value="${system_temp_directory}/${product_fullname}/instscripts/bin/psql">
                     <ruleList>
@@ -2482,24 +2516,24 @@ database=${controldb}
             </ruleList>
         </deleteFile>    
 
-        <deleteFile path="/etc/edb-repl.conf" >
+        <deleteFile path="${installdir}/etc/edb-repl.conf" >
             <ruleList>
-                <fileExists path="/etc/edb-repl.conf" />
+                <fileExists path="${installdir}/etc/edb-repl.conf" />
                 <compareText text="${platform_name}" logic="contains" value="linux" />
             </ruleList>
         </deleteFile>    
 
-	<deleteFile path="/etc/edb-repl.conf" >
+	<deleteFile path="${installdir}/etc/edb-repl.conf" >
             <ruleList>
-                <fileExists path="/etc/edb-repl.conf" />
+                <fileExists path="${installdir}/etc/edb-repl.conf" />
                 <compareText text="${platform_name}" logic="contains" value="hpux" />
             </ruleList>
         </deleteFile> 
 
 	<!-- Mac -->
-	<deleteFile path="/etc/edb-repl.conf" >
+	<deleteFile path="${installdir}/etc/edb-repl.conf" >
             <ruleList>
-                <fileExists path="/etc/edb-repl.conf" />
+                <fileExists path="${installdir}/etc/edb-repl.conf" />
                 <compareText text="${platform_name}" logic="equals" value="osx" />
             </ruleList>
         </deleteFile>
@@ -2530,9 +2564,9 @@ database=${controldb}
                  </ruleList>
                </deleteFile>
                <deleteFile path="/lib/svc/method/edb-xdbpubserver-XDB_SERVICE_VER" />
-               <deleteFile path="/etc/edb-repl.conf" >
+               <deleteFile path="${installdir}/etc/edb-repl.conf" >
                   <ruleList>
-                     <fileExists path="/etc/edb-repl.conf" />
+                     <fileExists path="${installdir}/etc/edb-repl.conf" />
                   </ruleList>
                </deleteFile>
              </actionList>

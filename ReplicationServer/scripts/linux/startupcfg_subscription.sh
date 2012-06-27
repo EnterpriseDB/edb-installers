@@ -58,7 +58,7 @@ start()
 
     if [ "x\$PIDS" = "x" ];
     then
-       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT > /dev/null 2>&1 &"
+       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT $INSTALL_DIR/etc > /dev/null 2>&1 &"
 
        check_pid;
 
