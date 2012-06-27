@@ -77,10 +77,10 @@ _build_updatemonitor_linux() {
     
     echo "Copying dependent libraries to staging directory (linux)"
     ssh $PG_SSH_LINUX "cp /usr/local/lib/libwx_baseud-2.8.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/instscripts/lib" || _die "Failed to copy dependent library (libwx_baseud-2.8.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp /usr/lib/libQtXml.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp /usr/lib/libQtNetwork.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp /usr/lib/libQtCore.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp /usr/lib/libQtGui.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtGui.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX/lib/libQtXml.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX/lib/libQtNetwork.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX/lib/libQtCore.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX/lib/libQtGui.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtGui.so) in staging directory (linux)"
    ssh $PG_SSH_LINUX "chmod a+r $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib/*" || _die "Failed to set the read permissions on the lib directory"
     cd $WD
 }

@@ -65,31 +65,31 @@ _build_updatemonitor_osx() {
     cat <<EOT > /tmp/UpdateMonitor.pro
 
 mac {
-    QMAKE_MAC_SDK=$PG_OSX_SDK
-    CONFIG+=x86 ppc
-    QMAKE_MACOSX_DEPLOYMENT_TARGET=$PG_OSX_DEPLOYMENT_TARGET
+    QMAKE_MAC_SDK = $SDK_PATH
+    CONFIG += x86_64
+    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.6
 }
 
 EOT
     cat /tmp/UpdateMonitor.pro >> UpdateManager.pro
-    qmake UpdateManager.pro
-    xcodebuild -configuration Release
+    $PG_QMAKE_OSX UpdateManager.pro
+    make
 
     if [ ! -d UpdateManager.app ]; then
         _die "Failed building UpdateMonitor"
     fi
 
-    mv UpdateManager.app UpdateMonitor.app || _die "Failed to rename the UpdateManager.app"
-    cd UpdateMonitor.app/Contents/MacOS || _die "Incomplete UpdateMonitor.app"
+    
+    cd UpdateManager.app/Contents/MacOS || _die "Incomplete UpdateMonitor.app"
 
     echo "Copying dependent library QtCore"
-    cp -R /Library/Frameworks/QtCore.framework QtCore.framework
+    cp -R $PG_QTFRAMEWORK_OSX/QtCore.framework QtCore.framework
     echo "Copying dependent library QtGui"
-    cp -R /Library/Frameworks/QtGui.framework  QtGui.framework
+    cp -R $PG_QTFRAMEWORK_OSX/QtGui.framework  QtGui.framework
     echo "Copying dependent library QtNetwork"
-    cp -R /Library/Frameworks/QtNetwork.framework  QtNetwork.framework
+    cp -R $PG_QTFRAMEWORK_OSX/QtNetwork.framework  QtNetwork.framework
     echo "Copying dependent library QtXml"
-    cp -R /Library/Frameworks/QtXml.framework  QtXml.framework
+    cp -R $PG_QTFRAMEWORK_OSX/QtXml.framework  QtXml.framework
 
     # Remove unnecessary files i.e. Headers & debug from the Qt
     QT_HEADERS_FILES=`find . | grep Headers`
@@ -104,11 +104,11 @@ EOT
     done
 
     #Copy our custom Info.plist
-    cp $WD/UpdateMonitor/source/updatemonitor.osx/Info.plist $WD/UpdateMonitor/source/updatemonitor.osx/updatemonitor.app/Contents/Info.plist || _die "Failed to change the Info.plist"     
+    cp $WD/UpdateMonitor/source/updatemonitor.osx/Info.plist $WD/UpdateMonitor/source/updatemonitor.osx/UpdateManager.app/Contents/Info.plist || _die "Failed to change the Info.plist"     
 
     cd $WD/UpdateMonitor/source
     echo "Copy the UpdateMonitor app bundle into place"
-    cp -R $WD/UpdateMonitor/source/updatemonitor.osx/UpdateMonitor.app $WD/UpdateMonitor/staging/osx/UpdateMonitor.app || _die "Failed to copy UpdateMonitor into the staging directory"
+    cp -R $WD/UpdateMonitor/source/updatemonitor.osx/UpdateManager.app $WD/UpdateMonitor/staging/osx/UpdateManager.app || _die "Failed to copy UpdateMonitor into the staging directory"
 
     mkdir -p $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/bin
     mkdir -p $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib

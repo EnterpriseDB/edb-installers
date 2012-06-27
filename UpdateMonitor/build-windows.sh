@@ -94,30 +94,44 @@ _build_updatemonitor_windows() {
     PG_STAGING=$PG_PATH_WINDOWS\\\\updatemonitor.staging
 
     cd $WD/UpdateMonitor/source/updatemonitor.windows
-    
-    cat <<EOT > "vc-build.bat"
 
+    cat <<EOT > "vc-build.bat"
 REM Setting Visual Studio Environment
-CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
+CALL "$PG_VSINSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
 
 @SET PGBUILD=$PG_PGBUILD_WINDOWS
 @SET WXWIN=$PG_WXWIN_WINDOWS
-@SET PGDIR=$PG_PATH_WINDOWS\output
+@SET INCLUDE=$PG_PGBUILD_WINDOWS\\include;%INCLUDE%
+@SET LIB=$PG_PGBUILD_WINDOWS\\lib;%LIB%
+@SET PGDIR=$PG_PATH_WINDOWS\\output
+@SET SPHINXBUILD=C:\\Python27-x86\\Scripts\\sphinx-build.exe
 
-vcbuild %1 %2 %3 %4 %5 %6 %7 %8 %9
+IF "%2" == "UPGRADE" GOTO upgrade
+
+msbuild %1 /p:Configuration=%2
+GOTO end
+
+:upgrade
+devenv /upgrade %1
+
+:end
+
 EOT
+   
     scp vc-build.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy vc-build.bat in staging directory on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\GetLatestPGInstalled.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat GetLatestPGInstalled.vcproj RELEASE" || _die "Error building UpdateMonitor binaries on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\GetLatestPGInstalled.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat GetLatestPGInstalled.vcproj UPGRADE" || _die "Error building UpdateMonitor binaries on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\GetLatestPGInstalled.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat GetLatestPGInstalled.vcxproj Release" || _die "Error building UpdateMonitor binaries on Windows VM"
 
     cat <<EOT > "build-um.bat"
 @ECHO OFF
 
-SET QT_PATH=$PG_QTPATH_WINDOWS
+SET QT_PATH=$PG_QTPATH_WINDOWS\Simulator\Qt\mingw
 SET SOURCE_PATH=%CD%
-SET QMAKE=%QT_PATH%\qt\bin\qmake.exe
-SET QT_MINGW_MAKE=%QT_PATH%\mingw\bin\mingw32-make.exe
-SET ERRMSG=No error found!
-SET PATH=%PATH%;$PG_MINGW_WINDOWS;$PG_MINGW_WINDOWS\bin;$PG_MINGW_WINDOWS\libexec\gcc\mingw32\3.4.5
+REM SET QMAKE=%QT_PATH%\Desktop\Qt\4.8.1\msvc2010\bin\qmake.exe
+SET QMAKE=%QT_PATH%\bin\qmake.exe
+SET QT_MINGW_MAKE=$PG_QTPATH_WINDOWS\mingw\bin\mingw32-make.exe
+SET ERRMSG=No error found
+SET PATH=%PATH%;$PG_QTPATH_WINDOWS\mingw\lib\gcc\mingw32\4.4.0;$PG_QTPATH_WINDOWS\mingw\bin;$PG_QTPATH_WINDOWS\mingw\mingw32\bin
 
 ECHO ***************************************
 ECHO * Build and Install the UpdateMonitor *
@@ -135,15 +149,15 @@ ECHO ***************************************************************************
 ECHO * Collecting dependent libraries and Archieving all binaries in one file (um_output.zip) *
 ECHO *******************************************************************************************
 cd "%SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\bin"
-copy "%QT_PATH%\qt\bin\mingwm10.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (mingwm10.dll) && GOTO EXIT_WITH_ERROR
+copy "%QT_PATH%\bin\mingwm10.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (mingwm10.dll) && GOTO EXIT_WITH_ERROR
 echo Copying QtCore4 dll
-copy "%QT_PATH%\qt\bin\QtCore4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtCore4.dll) && GOTO EXIT_WITH_ERROR
+copy "%QT_PATH%\bin\QtCore4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtCore4.dll) && GOTO EXIT_WITH_ERROR
 echo Copying QtNetwork4 dll
-copy "%QT_PATH%\qt\bin\QtNetwork4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtNetwork4.dll) && GOTO EXIT_WITH_ERROR
+copy "%QT_PATH%\bin\QtNetwork4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtNetwork4.dll) && GOTO EXIT_WITH_ERROR
 echo Copying QtGui4.dll
-copy "%QT_PATH%\qt\bin\QtGui4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtGui4.dll) && GOTO EXIT_WITH_ERROR
+copy "%QT_PATH%\bin\QtGui4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtGui4.dll) && GOTO EXIT_WITH_ERROR
 echo Copying QtXml4.dll
-copy "%QT_PATH%\qt\bin\QtXml4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtXml4.dll) && GOTO EXIT_WITH_ERROR
+copy "%QT_PATH%\bin\QtXml4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtXml4.dll) && GOTO EXIT_WITH_ERROR
 copy "$PG_PGBUILD_WINDOWS\vcredist\vcredist_x86.exe" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtXml4.dll) && GOTO EXIT_WITH_ERROR
 
 cd "%SOURCE_PATH%\updatemonitor.staging"
