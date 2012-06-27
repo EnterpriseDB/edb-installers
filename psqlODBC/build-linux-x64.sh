@@ -55,6 +55,10 @@ _process_dependent_libs() {
        exit 1
    }
  
+   if [ -e /tmp/templibs ];
+   then
+       rm -rf /tmp/templibs
+   fi
 
    # Create a temporary directory
    mkdir /tmp/templibs  
@@ -99,10 +103,13 @@ _process_dependent_libs() {
     for lib in \$liblist
     do 
          rm -f \$lib || _die "Failed to remove the library"
-    done            
-
-    # Copy libs from the tmp/templibs directory
-    cp /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
+    done        
+    
+    if [ "\$(ls -A /tmp/templibs)" ];
+    then
+        # Copy libs from the tmp/templibs directory
+        cp -R /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
+    fi
 
     # Remove the temporary directory 
     rm -rf /tmp/templibs  
@@ -132,7 +139,7 @@ _build_psqlODBC_linux_x64() {
     SOURCE_DIR=$PG_PATH_LINUX_X64/psqlODBC/source/psqlODBC.linux-x64
 
     echo "Configuring psqlODBC sources"
-    ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; LD_LIBRARY_PATH=$PG_PGHOME_LINUX_X64/lib:\$LD_LIBRARY_PATH PATH=\"$PG_PGHOME_LINUX_X64/bin:\$PATH\" CFLAGS=\"-I\`odbc_config --include-prefix\` \" LDFLAGS=\" -Wl,--rpath -Wl,\`odbc_config --lib-prefix\` \`odbc_config --libs\` \" ./configure --prefix=$PG_STAGING " || _die "Couldn't configure the psqlODBC sources"
+    ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; LD_LIBRARY_PATH=/usr/local/lib:/usr/local/openssl/lib:$PG_PGHOME_LINUX_X64/lib:\$LD_LIBRARY_PATH PATH=\"/usr/local/bin:$PG_PGHOME_LINUX_X64/bin:\$PATH\" CFLAGS=\"-I/usr/local/include -I/usr/local/openssl/include\" LDFLAGS=\"-L/usr/local/lib -L/usr/local/openssl/lib\"  ./configure --prefix=$PG_STAGING " || _die "Couldn't configure the psqlODBC sources"
     echo "Compiling psqlODBC"
     ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; LD_LIBRARY_PATH=$PG_PGHOME_LINUX_X64/lib make" || _die "Couldn't compile the psqlODBC sources"
     echo "Installing psqlODBC into the sources"
@@ -154,6 +161,7 @@ _build_psqlODBC_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libxslt)"
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libssl)"
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PGHOME_LINUX_X64/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libcrypto)"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/lib; chmod a+rx *" || _die "Failed to copy the dependency library (libtermcap)"
 
     # Process Dependent libs
     _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libcom_err.so"
