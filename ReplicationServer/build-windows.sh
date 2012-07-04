@@ -160,7 +160,7 @@ copy /y createuser\\\\release\\\\createuser.exe $OUTPUT_DIR
 copy /y ServiceWrapper\\\\release\\\\ServiceWrapper.exe $OUTPUT_DIR
 copy /y validateUserClient\\\\release\\\\validateUserClient.exe $OUTPUT_DIR
 copy /y dbserver_guid\\\\release\\\\dbserver_guid.exe $OUTPUT_DIR
-copy /Y C:\\\\pgBuild\\\\vcredist\\\\vcredist_x86.exe  $OUTPUT_DIR
+copy /Y C:\\\\pgBuild\\\\vcredist\\\\vcredist2010\\\\vcredist_x86.exe  $OUTPUT_DIR
 
 echo "Removing existing dist.zip (if any)"
 If EXIST dist.zip del /q dist.zip

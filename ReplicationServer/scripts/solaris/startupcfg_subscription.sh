@@ -38,7 +38,7 @@ start()
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -jar edb-repserver.jar subserver $SUBPORT > /dev/null 2>&1 &"
+       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -jar edb-repserver.jar subserver $SUBPORT $INSTALL_DIR/etc > /dev/null 2>&1 &"
        exit 0
     else
        echo "Subscription Service $XDB_SERVICE_VER already running"

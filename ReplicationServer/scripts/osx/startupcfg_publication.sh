@@ -51,6 +51,7 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.xdbpubserver-$XDB_SERVICE_VE
                 <string>$INSTALL_DIR/bin/edb-repserver.jar</string>
                 <string>pubserver</string>
                 <string>$PUBPORT</string>
+		<string>$INSTALL_DIR/etc</string>
         </array>
         <key>RunAtLoad</key>
         <true/>
