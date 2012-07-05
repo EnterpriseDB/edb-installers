@@ -36,8 +36,8 @@ _rewrite_so_refs() {
 
     for FILE in $FLIST; do
 
-            IS_EXECUTABLE=`file $FILE_PATH/$FILE | grep "Mach-O executable" | wc -l`
-            IS_SHAREDLIB=`file $FILE_PATH/$FILE | grep -E "(Mach-O\ dynamically\ linked\ shared\ library|Mach-O\ bundle)" | wc -l`
+            IS_EXECUTABLE=`file $FILE_PATH/$FILE | grep -E "Mach-O executable|Mach-O 64-bit executable" | wc -l`
+            IS_SHAREDLIB=`file $FILE_PATH/$FILE | grep -E "(Mach-O\ 64-bit\ dynamically\ linked\ shared\ library|Mach-O\ dynamically\ linked\ shared\ library|Mach-O\ bundle|Mach-O 64-bit bundle)" | wc -l`
 
                if [ $IS_EXECUTABLE -ne 0 -o $IS_SHAREDLIB -ne 0 ]; then
 
