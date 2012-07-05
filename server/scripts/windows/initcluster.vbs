@@ -189,7 +189,7 @@ For d = 0 To nDirs
         If d <> 0 Then
             If strThisDir <> strProgramFiles Then
                 WScript.Echo "Ensuring we can read the path " & strThisDir & " (using icacls) to " & objNetwork.Username & ":"
-                iRet = DoCmd("icacls """ & strThisDir & """ /grant """ & objNetwork.Username & """:(RX)(NP)")
+                iRet = DoCmd("icacls """ & strThisDir & """ /grant """ & objNetwork.Username & """:(NP)(RX)")
             End If
         ELSE
 
@@ -197,7 +197,7 @@ For d = 0 To nDirs
                 WScript.Echo "Ensuring we can read the path " & strThisDir & " (using icacls) to " & objNetwork.Username & ":"
                 ' Drive letter must not be surronded by double-quotes and ends with slash (\)
                 ' "icacls" fails on the drives with (NP) flag
-                iRet = DoCmd("icacls " & strThisDir & "\ /grant """ & objNetwork.Username & """:RX")
+                iRet = DoCmd("icacls " & strThisDir & "\ /grant """ & objNetwork.Username & """:(NP)(RX)")
             End If
         End If
     Else
@@ -299,14 +299,14 @@ For d = 0 To nDirs
         If d <> 0 Then
             If strThisDir <> strProgramFiles THEN
                 WScript.Echo "Ensuring the service account can read the path " & strThisDir & " (using icacls) to " & strOSUsername & ":"
-                iRet = DoCmd("icacls """ & strThisDir & """ /grant """ & strOSUsername & """:(RX)(NP)")
+                iRet = DoCmd("icacls """ & strThisDir & """ /grant """ & strOSUsername & """:(NP)(RX)")
             End If
         Else
             If strThisDir <> strSystemDrive THEN
                 WScript.Echo "Ensuring the service account can read the path " & strThisDir & " (using icacls) to " & strOSUsername & ":"
                 ' Drive letter must not be surronded by double-quotes and ends with slash (\)
                 ' "icacls" fails on the drives with (NP) flag
-                iRet = DoCmd("icacls " & strThisDir & "\ /grant """ & strOSUsername & """:RX")
+                iRet = DoCmd("icacls " & strThisDir & "\ /grant """ & strOSUsername & """:(NP)(RX)")
             End If
         End If
     Else
