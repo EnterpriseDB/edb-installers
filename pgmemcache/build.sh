@@ -6,36 +6,18 @@
 if [ $PG_ARCH_OSX = 1 ]; 
 then
     source $WD/pgmemcache/build-osx.sh
-
-    if [ -d $WD/pgmemcache/cache/libmemcached-$PG_TARBALL_LIBMEMCACHED/osx ]; then
-        BUILD_LIBMEMCACHED_OSX=0
-    else
-        BUILD_LIBMEMCACHED_OSX=1
-    fi
 fi
 
 # Linux
 if [ $PG_ARCH_LINUX = 1 ];
 then
     source $WD/pgmemcache/build-linux.sh
-
-    if [ -d $WD/pgmemcache/cache/libmemcached-$PG_TARBALL_LIBMEMCACHED/linux ]; then
-        BUILD_LIBMEMCACHED_LINUX=0
-    else
-        BUILD_LIBMEMCACHED_LINUX=1
-    fi
 fi
 
 # Linux x64
 if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
     source $WD/pgmemcache/build-linux-x64.sh
-
-    if [ -d $WD/pgmemcache/cache/libmemcached-$PG_TARBALL_LIBMEMCACHED/linux-x64 ]; then
-        BUILD_LIBMEMCACHED_LINUX_X64=0
-    else
-        BUILD_LIBMEMCACHED_LINUX_X64=1
-    fi
 fi
 
 # Linux ppc64
@@ -66,23 +48,6 @@ _prep_pgmemcache() {
     # Enter the source directory and cleanup if required
     cd $WD/pgmemcache/source
 
-    # libmemcached
-    if [ -e libmemcached-$PG_TARBALL_LIBMEMCACHED ];
-    then
-      echo "Removing existing libmemcached-$PG_TARBALL_LIBMEMCACHED source directory"
-      rm -rf libmemcached-$PG_TARBALL_LIBMEMCACHED  || _die "Couldn't remove the existing libmemcached-$PG_TARBALL_LIBMEMCACHED source directory (source/libmemcached-$PG_TARBALL_LIBMEMCACHED)"
-    fi
-
-    echo "Unpacking libmemcached source..."
-    extract_file ../../tarballs/libmemcached-$PG_TARBALL_LIBMEMCACHED || exit 1
-
-    if [ -f $WD/tarballs/libmemcached-$PG_TARBALL_LIBMEMCACHED.patch ]; then
-        echo "Patching libmemcached source for version $PG_TARBALL_LIBMEMCACHED"
-        cd $WD/pgmemcache/source/libmemcached-$PG_TARBALL_LIBMEMCACHED
-        patch -p0 < $WD/tarballs/libmemcached-$PG_TARBALL_LIBMEMCACHED.patch
-        cd $WD/pgmemcache/source
-    fi
-
     # pgmemcache
     if [ -e pgmemcache_$PG_VERSION_PGMEMCACHE ];
     then
@@ -92,6 +57,9 @@ _prep_pgmemcache() {
 
     echo "Unpacking pgmemcache source..."
     extract_file ../../tarballs/pgmemcache_$PG_VERSION_PGMEMCACHE || exit 1
+
+    cd $WD/pgmemcache/source/pgmemcache
+    patch -p1 < $WD/tarballs/pgmemcache-libmemcached-1.0.8.patch
 
     # Per-platform prep
     cd $WD

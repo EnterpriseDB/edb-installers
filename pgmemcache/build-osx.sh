@@ -20,7 +20,7 @@ _prep_pgmemcache_osx() {
         echo "Removing existing source directory (pgmemcache.$PGMEM_PLATFORM/pgmemcache.$PGMEM_PLATFORM)"
         rm -rf $PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM || _die "Couldn't remove the existing source directory ($PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM)"
     fi
-    cp -r $PGMEM_SOURCE/pgmemcache_$PG_VERSION_PGMEMCACHE $PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM || _die "Couldn't copy the source directory (pgmemcache.$PGMEM_PLATFORM)"
+    cp -r $PGMEM_SOURCE/pgmemcache  $PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM || _die "Couldn't copy the source directory (pgmemcache.$PGMEM_PLATFORM)"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $PGMEM_STAGING ];
@@ -31,15 +31,6 @@ _prep_pgmemcache_osx() {
 
     echo "Creating staging directory ($PGMEM_STAGING)"
     mkdir -p $PGMEM_STAGING || _die "Couldn't create the staging directory"
-
-    LIBMEMCACHED_SOURCE=$PGMEM_SOURCE/libmemcached.$PGMEM_PLATFORM
-    if [ -d $LIBMEMCACHED_SOURCE ]; then
-        rm -rf $LIBMEMCACHED_SOURCE
-    fi
-
-    if [ $BUILD_LIBMEMCACHED_OSX -eq 1 ]; then
-        cp -r $PGMEM_SOURCE/libmemcached-$PG_TARBALL_LIBMEMCACHED $LIBMEMCACHED_SOURCE
-    fi
 
 }
 
@@ -58,53 +49,25 @@ _build_pgmemcache_osx() {
     PGMEM_STAGING=$PGMEM_PACKAGE_PATH/staging/$PGMEM_PLATFORM
     PGMEM_SOURCE=$PGMEM_PACKAGE_PATH/source/pgmemcache.$PGMEM_PLATFORM
     PG_PATH=$WD/server/staging/$PGMEM_PLATFORM
-    LIBMEMCACHED_CACHING=$PGMEM_PACKAGE_PATH/cache/libmemcached-$PG_TARBALL_LIBMEMCACHED/$PGMEM_PLATFORM
-
-    if [ $BUILD_LIBMEMCACHED_OSX -eq 1 ]; then
-        LIBMEMCACHED_SOURCE=$PGMEM_PACKAGE_PATH/source/libmemcached.$PGMEM_PLATFORM
-
-        cd $LIBMEMCACHED_SOURCE
-
-        MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$LIBMEMCACHED_CACHING --disable-static --disable-dependency-tracking --enable-fat-binaries || _die "Failed to configure libmemcached ($PGMEM_PLATFORM)"
-
-        MACOSX_DEPLOYMENT_TARGET=10.5 make || _die "Failed to build libmemcached ($PGMEM_PLATFORM)"
-        make install  || _die "Failed to install libmemcached ($PGMEM_PLATFORM)"
-
-
-        # Make all the files readable under the given directory
-        find "$LIBMEMCACHED_CACHING" -exec chmod a+r {} \;
-        # Make all the directories readable, writable and executable under the given directory
-        find "$LIBMEMCACHED_CACHING" -type d -exec chmod a+wrx {} \;
-        # Make all the shared objects readable and executable under the given directory
-        find "$LIBMEMCACHED_CACHING" -name "*.dylib" -exec chmod a+rx {} \;
-
-    fi
 
     cd $PGMEM_SOURCE
-    PATH=$PG_PATH/bin:$PATH make CFLAGS=" -I$LIBMEMCACHED_CACHING/include " LDFLAGS=" -L$LIBMEMCACHED_CACHING/lib " || _die "Failed to build the pgmemcache for $PGMEM_PLATFORM"
+    PATH=$PG_PATH/bin:$PATH make CFLAGS="$PG_ARCH_OSX_CFLAGS -I/usr/local/include -arch x86_64 -arch i386" LDFLAGS="-L/usr/local/lib -arch x86_64 -arch i386" || _die "Failed to build the pgmemcache for $PGMEM_PLATFORM"
 
     # Copying the binaries
     mkdir -p $PGMEM_STAGING/include || _die "Failed to create include directory"
     mkdir -p $PGMEM_STAGING/lib || _die "Failed to create lib directory"
     mkdir -p $PGMEM_STAGING/share || _die "Failed to create share directory"
 
-    cp $LIBMEMCACHED_CACHING/lib/libmemcached.*.dylib $PGMEM_STAGING/lib || _die "Failed to copy the libmemcached binaries"
-    cp -R $PGMEM_SOURCE/pgmemcache.so $PGMEM_STAGING/lib || _die "Failed to copy the pgmemcache binary"
-    cp -R $PGMEM_SOURCE/*.sql $PGMEM_STAGING/share || _die "Failed to copy the share files for the pgmemcache"
-    cp -R $LIBMEMCACHED_CACHING/include/* $PGMEM_STAGING/include || _die "Failed to copy the header files for the libmemcached"
+    cp -pR /usr/local/lib/libmemcached.*.dylib $PGMEM_STAGING/lib || _die "Failed to copy the libmemcached binaries"
+    cp -pR $PGMEM_SOURCE/pgmemcache.so $PGMEM_STAGING/lib || _die "Failed to copy the pgmemcache binary"
+    cp -pR $PGMEM_SOURCE/*.sql $PGMEM_STAGING/share || _die "Failed to copy the share files for the pgmemcache"
+    cp -pR /usr/local/include/libmemcached* $PGMEM_STAGING/include || _die "Failed to copy the header files for the libmemcached"
 
     chmod a+rx $PGMEM_STAGING/lib/* || _die "Failed to set permissions"
     chmod a+r $PGMEM_STAGING/share/* || _die "Failed to set permissions"
 
     cd $PGMEM_STAGING/lib
-    filelist=`ls *.dylib`
-    for file in $filelist
-    do
-        new_id=`otool -D $file | grep -v : | sed -e "s:$LIBMEMCACHED_CACHING/lib/::g"`
-        install_name_tool -id $new_id $file
-    done
-
-    install_name_tool -change $LIBMEMCACHED_CACHING/lib/libmemcached.8.dylib @loader_path/../lib/libmemcached.8.dylib pgmemcache.so
+    _rewrite_so_refs  $PGMEM_STAGING lib @loader_path/..
 
 }
 

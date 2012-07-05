@@ -27,7 +27,7 @@ _prep_pgmemcache_linux_ppc64() {
     mkdir -p $WD/pgmemcache/source/libmemcached.linux-ppc64 || _die "Couldn't create the libmemcached.linux-ppc64 directory"
 
     # Grab a copy of the source tree
-    cp -R pgmemcache_$PG_VERSION_PGMEMCACHE/* pgmemcache.linux-ppc64 || _die "Failed to copy the source code (source/pgmemcache_$PG_VERSION_PGMEMCACHE)"
+    cp -R pgmemcache/* pgmemcache.linux-ppc64 || _die "Failed to copy the source code (source/pgmemcache_$PG_VERSION_PGMEMCACHE)"
     chmod -R ugo+w pgmemcache.linux-ppc64 || _die "Couldn't set the permissions on the source directory"
 
     cp -R libmemcached-$PG_TARBALL_LIBMEMCACHED/* libmemcached.linux-ppc64 || _die "Failed to copy the source code (source/libmemcached-$PG_VERSION_LIBMEMCACHED)"
