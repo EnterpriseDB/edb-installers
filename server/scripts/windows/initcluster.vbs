@@ -27,7 +27,7 @@ strLocale = WScript.Arguments.Item(6)
 ' Remove any trailing \'s from the data dir - they will confuse cacls
 If Right(strDataDir, 1) = "\" Then
     strDataDir = Left(strDataDir, Len(strDataDir)-1)
-End IF
+End If
 
 Dim strInitdbPass
 iWarn = 0
@@ -37,7 +37,7 @@ Dim objShell, objFso, objTempFolder, objWMI
 Set objShell = WScript.CreateObject("WScript.Shell")
 If objShell Is Nothing Then
   WScript.Echo "Couldn't create WScript.Shell object..."
-ElseIF IsObject(objShell) Then
+ElseIf IsObject(objShell) Then
   WScript.Echo "WScript.Shell Initialized..."
 Else
   WScript.Echo "WScript.Shell not initialized..."
@@ -61,6 +61,9 @@ strOutputFile = objTempFolder.Path & "\" & objFso.GetTempName
 ' permissions and may lose access to the current working directory
 objShell.CurrentDirectory = strInstallDir
 
+strProgramFiles = objShell.ExpandEnvironmentStrings("%PROGRAMFILES%")
+strSystemDrive = objShell.ExpandEnvironmentStrings("%SYSTEMDRIVER%")
+
 ' Is this Vista or above?
 Function IsVistaOrNewer()
     WScript.Echo "Called IsVistaOrNewer()..."
@@ -68,18 +71,18 @@ Function IsVistaOrNewer()
     If objWMI Is Nothing Then
         WScript.Echo "    Couldn't create 'winmgmts:\\.\root\cimv2' object"
         IsVistaOrNewer=false
-    ElseIF IsObject(objWMI) Then
+    ElseIf IsObject(objWMI) Then
         WScript.Echo "    'winmgmts' object initialized..."
     Else
         WScript.Echo "    'winmgmts' object not initialized..."
     End If
     Set colItems = objWMI.ExecQuery("Select * from Win32_OperatingSystem",,48)
-	
+
     For Each objItem In colItems
         strVersion = Left(objItem.Version, 3)
     Next
     WScript.Echo "    Version:" & strVersion
-	
+
     If InStr(strVersion, ".") > 0 Then
         majorVersion = CInt(Left(strVersion,  InStr(strVersion, ".") - 1))
     ElseIf InStr(strVersion, ",") > 0 Then
@@ -89,7 +92,7 @@ Function IsVistaOrNewer()
     End If
 
     WScript.Echo "    MajorVersion:" & majorVersion
-	
+
     If majorVersion >= 6.0 Then
         IsVistaOrNewer = True
     Else
@@ -103,12 +106,12 @@ Function DoCmd(strCmd)
     Set objBatchFile = objTempFolder.CreateTextFile(strBatchFile, True)
     objBatchFile.WriteLine "@ECHO OFF"
     objBatchFile.WriteLine strCmd & " > """ & strOutputFile & """ 2>&1"
-	objBatchFile.WriteLine "EXIT /B %ERRORLEVEL%"
+    objBatchFile.WriteLine "EXIT /B %ERRORLEVEL%"
     objBatchFile.Close
     WScript.Echo "    Executing batch file '" & strBatchFile & "'..."
     DoCmd = objShell.Run(objTempFolder.Path & "\" & strBatchFile, 0, True)
     If objFso.FileExists(objTempFolder.Path & "\" & strBatchFile) = True Then
-        'objFso.DeleteFile objTempFolder.Path & "\" & strBatchFile, True
+        objFso.DeleteFile objTempFolder.Path & "\" & strBatchFile, True
     Else
         WScript.Echo "    Batch file '" & strBatchFile & "' does not exist..."
     End If
@@ -171,9 +174,58 @@ Else
     WScript.Echo "WScript.Network not initialized..."
 End If
 
+' Loop up the directory path, and ensure we have read permissions
+' on the entire path leading to the data directory
+arrDirs = Split(strDataDir, "\")
+nDirs = UBound(arrDirs)
+strThisDir = ""
+
+iRet = 0
+
+For d = 0 To nDirs
+    strThisDir = strThisDir & arrDirs(d)
+
+    If IsVistaOrNewer() = True Then
+        If d <> 0 Then
+            If strThisDir <> strProgramFiles Then
+                WScript.Echo "Ensuring we can read the path " & strThisDir & " (using icacls) to " & objNetwork.Username & ":"
+                iRet = DoCmd("icacls """ & strThisDir & """ /grant """ & objNetwork.Username & """:(NP)(RX)")
+            End If
+        ELSE
+
+            If strThisDir <> strSystemDrive Then
+                WScript.Echo "Ensuring we can read the path " & strThisDir & " (using icacls) to " & objNetwork.Username & ":"
+                ' Drive letter must not be surronded by double-quotes and ends with slash (\)
+                ' "icacls" fails on the drives with (NP) flag
+                iRet = DoCmd("icacls " & strThisDir & "\ /grant """ & objNetwork.Username & """:(NP)(RX)")
+            End If
+        End If
+    Else
+        If d <> 0 Then
+            ' Do not touch the %PROGRAMFILES%
+            If strThisDir <> strProgramFiles Then
+                WScript.Echo "Ensuring we can read the path " & strThisDir & " (using cacls):"
+                iRet = DoCmd("echo y|cacls """ & strThisDir & """ /E /G """ & objNetwork.Username & """:R")
+            End If
+        ELSE
+            ' Do not touch the %SYSTEMDRIVE%
+            If strThisDir <> strSystemDrive Then
+                WScript.Echo "Ensuring we can read the path " & strThisDir & " (using cacls):"
+                ' Drive letter must not be surronded by double-quotes and ends with slash (\)
+                iRet = DoCmd("echo y|cacls " & strThisDir & "\ /E /G """ & objNetwork.Username & """:R")
+            End If
+        End If
+    End If
+    if iRet <> 0 Then
+        WScript.Echo "Failed to ensure the path " * strThisDir & " is readable"
+    End If
+
+    strThisDir = strThisDir & "\"
+Next
+
 If IsVistaOrNewer() = True Then
-    WScript.Echo "Ensuring we can write to the data directory (using icacls):"
-    iRet = DoCmd("icacls """ & strDataDir & """ /T /grant:r """ & objNetwork.Username & """:F")
+    WScript.Echo "Ensuring we can write to the data directory (using icacls) to  " & objNetwork.Username & ":"
+    iRet = DoCmd("icacls """ & strDataDir & """ /T /grant:r """ & objNetwork.Username & """:(OI)(CI)F")
 Else
     WScript.Echo "Ensuring we can write to the data directory (using cacls):"
     iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /G """ & objNetwork.Username & """:F")
@@ -181,6 +233,7 @@ End If
 if iRet <> 0 Then
     WScript.Echo "Failed to ensure the data directory is accessible (" & strDataDir & ")"
 End If
+
 
 ' Initialise the database cluster, and set the appropriate permissions/ownership
 if strLocale = "DEFAULT" Then
@@ -232,10 +285,60 @@ End If
 objConfFile.WriteLine strConfig
 objConfFile.Close
 
+' Loop up the directory path, and ensure the service account has read permissions
+' on the entire path leading to the data directory
+arrDirs = Split(strDataDir, "\")
+nDirs = UBound(arrDirs)
+strThisDir = ""
+iRet = 0
+
+For d = 0 To nDirs
+    strThisDir = strThisDir & arrDirs(d)
+
+    If IsVistaOrNewer() = True Then
+        If d <> 0 Then
+            If strThisDir <> strProgramFiles THEN
+                WScript.Echo "Ensuring the service account can read the path " & strThisDir & " (using icacls) to " & strOSUsername & ":"
+                iRet = DoCmd("icacls """ & strThisDir & """ /grant """ & strOSUsername & """:(NP)(RX)")
+            End If
+        Else
+            If strThisDir <> strSystemDrive THEN
+                WScript.Echo "Ensuring the service account can read the path " & strThisDir & " (using icacls) to " & strOSUsername & ":"
+                ' Drive letter must not be surronded by double-quotes and ends with slash (\)
+                ' "icacls" fails on the drives with (NP) flag
+                iRet = DoCmd("icacls " & strThisDir & "\ /grant """ & strOSUsername & """:(NP)(RX)")
+            End If
+        End If
+    Else
+        If d <> 0 Then
+            If strThisDir <> strProgramFiles THEN
+                WScript.Echo "Ensuring the service account can read the path " & strThisDir & " (using cacls):"
+                iRet = DoCmd("echo y|cacls """ & strThisDir & """ /E /G """ & strOSUsername & """:R")
+            End If
+        Else
+            If strThisDir <> strSystemDrive THEN
+                WScript.Echo "Ensuring the service account can read the path " & strThisDir & " (using cacls):"
+                ' Drive letter must not be surronded by double-quotes and ends with slash (\)
+                iRet = DoCmd("echo y|cacls " & strThisDir & "\ /E /G """ & strOSUsername & """:R")
+            End If
+        End If
+    End If
+    if iRet <> 0 Then
+        WScript.Echo "Failed to ensure the path " * strThisDir & " is readable by the service account"
+    End If
+    strThisDir = strThisDir & "\"
+Next
+
+' Create the <DATA_DIR>\pg_log directory (if not exists)
+' Create it before updating the permissions, so that it will also get affected
+If  Not objFso.FolderExists(strDataDir & "\pg_log") Then
+    newfolder = objFso.CreateFolder (strDataDir & "\pg_log")
+End If
+
 ' Secure the data directory
 If IsVistaOrNewer() = True Then
-    WScript.Echo "Granting service account access to the data directory (using icacls):"
-    iRet = DoCmd("icacls """ & strDataDir & """ /T /C /grant:r """ & strOSUsername & """:M")
+    WScript.Echo "Granting service account access to the data directory (using icacls) to " & strOSUsername & ":"
+    iRet = DoCmd("icacls """ & strDataDir & """ /T /C /grant """ & strOSUsername & """:(OI)(CI)(F)")
 Else
     WScript.Echo "Granting service account access to the data directory (using cacls):"
     iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /C /G """ & strOSUsername & """:F")
