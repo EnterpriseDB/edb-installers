@@ -16,8 +16,6 @@ _prep_plpgsqlo_osx() {
     # Remove any existing plpgsqlo directory that might exist, in server
     if [ -e $PGPLATFORMDIR/src/pl/plpgsqlo ];
     then
-      patch -p1 -f -c -R < $WD/plpgsqlo/resources/plpgsqlo.patch
-
       echo "Removing existing plpgsqlo directory"
       rm -rf $PGPLATFORMDIR/src/pl/plpgsqlo || _die "Couldn't remove the existing plpgsqlo directory"
     fi
@@ -84,6 +82,8 @@ _build_plpgsqlo_osx() {
     rm -f $PG_PATH_OSX/plpgsqlo/staging/osx/lib/plpgsqlo.so
     cp $PG_PATH_OSX/server/source/postgres.osx/src/pl/plpgsqlo/src/plpgsqlo.so $PG_PATH_OSX/plpgsqlo/staging/osx/lib/ || _die "Failed to copy plpgsqlo.so to staging directory"
 
+    cd $PGPLATFORMDIR
+    patch -p1 -f -c -R < $WD/plpgsqlo/resources/plpgsqlo.patch
 }
 
 
@@ -110,10 +110,6 @@ _postprocess_plpgsqlo_osx() {
     cd $WD/output
     zip -r plsecure-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.zip plsecure-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/ || _die "Failed to zip the installer bundle"
     rm -rf plsecure-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/ || _die "Failed to remove the unpacked installer bundle"
-    # Restoring postgres.platform_name files which were changed by plsecure.patch
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Project.pm $WD/server/source/postgres.osx/src/tools/msvc/. || _die "Failed to copy Project.pm"
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Mkvcbuild.pm $WD/server/source/postgres.osx/src/tools/msvc/. || _die "Failed to copy Mkvcbuild.pm"
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/pgbison.bat $WD/server/source/postgres.osx/src/tools/msvc/. || _die "Failed to copy pgbison.bat"
 
     cd $WD
 

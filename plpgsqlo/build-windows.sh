@@ -19,8 +19,6 @@ _prep_plpgsqlo_windows() {
     # Remove any existing plpgsqlo directory that might exist, in server
     if [ -e $PGPLATFORMDIR/src/pl/plpgsqlo ];
     then
-      patch -p1 -f -c -R < $WD/plpgsqlo/resources/plpgsqlo.patch
-
       echo "Removing existing plpgsqlo directory"
       rm -rf $PGPLATFORMDIR/src/pl/plpgsqlo || _die "Couldn't remove the existing plpgsqlo directory"
     fi
@@ -99,6 +97,13 @@ _prep_plpgsqlo_windows() {
 
 _build_plpgsqlo_windows() {
 
+cat <<EOT > "$WD/server/source/build32-plpgsqlo.bat"
+
+@SET PATH=%PATH%;$PG_PERL_WINDOWS\bin
+build.bat RELEASE
+EOT
+    scp $WD/server/source/build32-plpgsqlo.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/postgres.windows/src/tools/msvc || _die "Failed to copy the build32.bat"
+   
     PGSOURECEDIR=$WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL
     PGPLATFORMDIR=$WD/server/source/postgres.windows
     PLPGSQLOSTAGING=$WD/plpgsqlo/staging/windows
@@ -106,7 +111,7 @@ _build_plpgsqlo_windows() {
     PGREMOTEBUILDPATH=$PG_PATH_WINDOWS
     PGSERVERPATH=postgres.windows
 
-    ssh $PGBUILDSSH "cd $PGREMOTEBUILDPATH/$PGSERVERPATH/src/tools/msvc; ./build.bat RELEASE" || _die "could not build plpgsqlo on windows vm"
+    ssh $PGBUILDSSH "cd $PGREMOTEBUILDPATH/$PGSERVERPATH/src/tools/msvc; ./build32-plpgsqlo.bat" || _die "could not build plpgsqlo on windows vm"
 
    # We need to copy shared objects to staging directory
    ssh $PGBUILDSSH "mkdir -p $PGREMOTEBUILDPATH/plpgsqlo.staging/lib" || _die "Failed to create the lib directory"
@@ -118,6 +123,9 @@ _build_plpgsqlo_windows() {
    scp $PGBUILDSSH:$PGREMOTEBUILDPATH/plpgsqlo-staging.zip $PLPGSQLOSTAGING || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/plpgsqlo-staging.zip)"
    unzip $PLPGSQLOSTAGING/plpgsqlo-staging.zip -d $PLPGSQLOSTAGING || _die "Failed to unpack the built source tree ($WD/staging/windows/plpgsqlo-staging.zip)"
    rm $PLPGSQLOSTAGING/plpgsqlo-staging.zip
+
+   cd $PGPLATFORMDIR
+   patch -p1 -f -c -R < $WD/plpgsqlo/resources/plpgsqlo.patch
 
 }
 
@@ -146,11 +154,6 @@ _postprocess_plpgsqlo_windows() {
 
     # Sign the installer
     win32_sign "plsecure-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-windows.exe"
-
-    # Restoring postgres.platform_name files which were changed by plsecure.patch
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Project.pm $WD/server/source/postgres.windows/src/tools/msvc/. || _die "Failed to copy Project.pm"
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Mkvcbuild.pm $WD/server/source/postgres.windows/src/tools/msvc/. || _die "Failed to copy Mkvcbuild.pm"
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/pgbison.bat $WD/server/source/postgres.windows/src/tools/msvc/. || _die "Failed to copy pgbison.bat"
 
     cd $WD
 

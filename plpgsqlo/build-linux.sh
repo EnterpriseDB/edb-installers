@@ -16,7 +16,6 @@ _prep_plpgsqlo_linux() {
     # Remove any existing plpgsqlo directory that might exist, in server
     if [ -e $PGPLATFORMDIR/src/pl/plpgsqlo ];
     then
-      patch -p1 -f -c -R < $WD/plpgsqlo/resources/plpgsqlo.patch
 
       echo "Removing existing plpgsqlo directory"
       rm -rf $PGPLATFORMDIR/src/pl/plpgsqlo || _die "Couldn't remove the existing plpgsqlo directory"
@@ -87,6 +86,8 @@ _build_plpgsqlo_linux() {
 
     ssh $PGBUILDSSH "rm -f $PGREMOTESTAGINGPATH/lib/plpgsqlo.so; cp $PGSERVERREMOTEPATH/src/pl/plpgsqlo/src/plpgsqlo.so $PGREMOTESTAGINGPATH/lib/" || _die "Failed to copy plpgsqlo.so to staging directory"
 
+    cd $PGPLATFORMDIR
+    patch -p1 -f -c -R < $WD/plpgsqlo/resources/plpgsqlo.patch
 }
 
 
@@ -100,11 +101,6 @@ _postprocess_plpgsqlo_linux() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
-
-    # Restoring postgres.platform_name files which were changed by plpgsqlo.patch
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Project.pm $WD/server/source/postgres.linux/src/tools/msvc/. || _die "Failed to copy Project.pm"
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/Mkvcbuild.pm $WD/server/source/postgres.linux/src/tools/msvc/. || _die "Failed to copy Mkvcbuild.pm"
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/tools/msvc/pgbison.bat $WD/server/source/postgres.linux/src/tools/msvc/. || _die "Failed to copy pgbison.bat"
 
     cd $WD
 
