@@ -79,6 +79,7 @@ _build_plpgsqlo_linux_x64() {
     PGBUILDSSH=$PG_SSH_LINUX_X64
     PGSERVERREMOTEPATH=$PG_PATH_LINUX_X64/server/source/postgres.linux-x64
     PGREMOTESTAGINGPATH=$PG_PATH_LINUX_X64/plpgsqlo/staging/linux-x64
+    PGPLATFORMDIR=$WD/server/source/postgres.linux-x64
 
     ssh $PGBUILDSSH "cd $PGSERVERREMOTEPATH/src/pl/plpgsqlo/; make clean ; make " || _die "Failed to build plpgsqlo"
     ssh $PGBUILDSSH "mkdir -p $PGREMOTESTAGINGPATH/lib " || _die "Failed to create staging lib directory"

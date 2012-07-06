@@ -110,6 +110,7 @@ EOT
     PGBUILDSSH=$PG_SSH_WINDOWS
     PGREMOTEBUILDPATH=$PG_PATH_WINDOWS
     PGSERVERPATH=postgres.windows
+    PGPLATFORMDIR=$WD/server/source/postgres.windows
 
     ssh $PGBUILDSSH "cd $PGREMOTEBUILDPATH/$PGSERVERPATH/src/tools/msvc; ./build32-plpgsqlo.bat" || _die "could not build plpgsqlo on windows vm"
 

@@ -125,6 +125,7 @@ EOT
     PGBUILDSSH=$PG_SSH_WINDOWS_X64
     PGREMOTEBUILDPATH=$PG_PATH_WINDOWS_X64
     PGSERVERPATH=postgres.windows-x64
+    PGPLATFORMDIR=$WD/server/source/postgres.windows-x64
 
     ssh $PGBUILDSSH "cd $PGREMOTEBUILDPATH/$PGSERVERPATH/src/tools/msvc; ./build64-plpgsqlo.bat" || _die "could not build plpgsqlo on windows-x64 vm"
 

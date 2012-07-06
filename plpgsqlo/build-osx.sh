@@ -76,6 +76,8 @@ _prep_plpgsqlo_osx() {
 
 _build_plpgsqlo_osx() {
 
+    PGPLATFORMDIR=$WD/server/source/postgres.osx
+
     cd $PG_PATH_OSX/server/source/postgres.osx/src/pl/plpgsqlo/; make distclean ; make || _die "Failed to build plpgsqlo"
     mkdir -p $PG_PATH_OSX/plpgsqlo/staging/osx/lib || _die "Failed to create staging/osx/lib "
 
