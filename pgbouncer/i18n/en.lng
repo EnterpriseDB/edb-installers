@@ -41,3 +41,5 @@ pgbouncer.user.error=The user specified does not exist on your system.
 
 error.file.notsecure=Unable to secure the {installdir}\etc\userlist.txt file.
 pgbouncer.system.user.error=pgBouncer cannot be run as the root user. Please specify a different username.
+
+error.could.not.start.service=Failed to start the ${servicename} service.

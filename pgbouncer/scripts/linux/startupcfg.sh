@@ -44,20 +44,44 @@ cat <<EOT > "/etc/init.d/pgbouncer"
 # Description:       pgbouncer
 ### END INIT INFO
 
+check_pid()
+{
+    export PIDB=\`ps -aef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`
+}
+
 start()
 {
-    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
-    if [ "x\$PID" = "x" ];
+    if [ "x\$PIDB" = "x" ];
     then
        # Service Owner should be able to start the service without root password.
        if [ "\$USER" = "$SYSTEM_USER" ];
        then
            LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH $INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini 
+
+           check_pid;
+
+           if [ "x\$PIDB" = "x" ];
+           then
+               echo "pgbouncer not started"
+               exit 1
+           else
+              exit 0 
+          fi
        else
-           su $SYSTEM_USER -c "LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH $INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini " 
+           su $SYSTEM_USER -c "LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH $INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini "
+
+           check_pid;
+
+           if [ "x\$PIDB" = "x" ];
+           then
+               echo "pgbouncer not started"
+               exit 1
+           else
+               exit 0
+           fi 
        fi
-       exit 0
     else
        echo "pgbouncer already running"
        exit 1
@@ -66,25 +90,25 @@ start()
 
 stop()
 {
-    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
-    if [ "x\$PID" = "x" ];
+    if [ "x\$PIDB" = "x" ];
     then
         echo "pgbouncer not running"
         exit 2
     else
-        kill \$PID
+        kill \$PIDB
     fi
 }
 status()
 {
-    PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
-    if [ "x\$PID" = "x" ];
+    if [ "x\$PIDB" = "x" ];
     then
         echo "pgbouncer not running"
     else
-        echo "pgbouncer is running (PID: \$PID)"
+        echo "pgbouncer is running (PID: \$PIDB)"
     fi
     exit 0
 }

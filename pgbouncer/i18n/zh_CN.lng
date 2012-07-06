@@ -27,3 +27,5 @@ pgbouncer.blank.error=必须在所有字段中输入值。
 pgbouncer.user.error=所指定的用户在您的系统上不存在。
 error.file.notsecure=无法获得文件{installdir}\etc\userlist.txt。
 pgbouncer.system.user.error=root用户无法运行pgBouncer，请指定一个不同的用户名。
+
+error.could.not.start.service=Failed to start the ${servicename} service.

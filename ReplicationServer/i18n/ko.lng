@@ -128,3 +128,5 @@ sub.service.description=Oracle(TM)에서 Postgres Plus로 데이터 복제 서�
 Installer.CustomError.CommandLineOptionsNotPresent=다음 필수 옵션이 지정되지 않음: ${optionRequired}
 
 Installer.ComponentDescription=
+
+error.could.not.start.service=Failed to start the ${servicename} Service.

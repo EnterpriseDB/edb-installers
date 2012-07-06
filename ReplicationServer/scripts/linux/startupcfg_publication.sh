@@ -46,14 +46,28 @@ cat <<EOT > "/etc/init.d/edb-xdbpubserver"
 # Description:       edb-xdbpubserver
 ### END INIT INFO
 
+check_pid()
+{
+   export PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+}
+
 start()
 {
-    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
     if [ "x\$PID" = "x" ];
     then
        su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
-       exit 0
+
+       check_pid;
+
+       if [ "x\$PID" = "x" ];
+       then
+	  echo "Publication Service not started"
+          exit 1
+       else
+          exit 0
+       fi
     else
        echo "Publication Service already running"
        exit 1
@@ -62,7 +76,7 @@ start()
 
 stop()
 {
-    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
     if [ "x\$PID" = "x" ];
     then
@@ -75,7 +89,7 @@ stop()
 
 status()
 {
-    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$2}'\`
+    check_pid;
 
     if [ "x\$PID" = "x" ];
     then
