@@ -54,6 +54,10 @@ _process_dependent_libs() {
        exit 1
    }
 
+   if [ -e /tmp/templibs ];
+   then
+       rm -rf /tmp/templibs
+   fi
 
    # Create a temporary directory
    mkdir /tmp/templibs
@@ -100,8 +104,11 @@ _process_dependent_libs() {
          rm -f \$lib || _die "Failed to remove the library"
     done
 
-    # Copy libs from the tmp/templibs directory
-    cp /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
+    if [ "\$(ls -A /tmp/templibs)" ];
+    then
+        # Copy libs from the tmp/templibs directory
+        cp -R /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
+    fi
 
     # Remove the temporary directory
     rm -rf /tmp/templibs
@@ -130,7 +137,7 @@ _build_psqlODBC_linux() {
     SOURCE_DIR=$PG_PATH_LINUX/psqlODBC/source/psqlODBC.linux
 
     echo "Configuring psqlODBC sources"
-    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:\$LD_LIBRARY_PATH PATH=$PG_PGHOME_LINUX/bin:\$PATH ./configure --prefix=$PG_STAGING " || _die "Couldn't configure the psqlODBC sources"
+    ssh $PG_SSH_LINUX "cd $SOURCE_DIR; LD_LIBRARY_PATH=/usr/local/lib:/usr/local/openssl/lib:$PG_PGHOME_LINUX/lib:\$LD_LIBRARY_PATH PATH=/usr/local/bin:$PG_PGHOME_LINUX/bin:\$PATH LDFLAGS=\"-L/usr/local/lib -L/usr/local/openssl/lib\" CFLAGS=\"-I/usr/local/include -I/usr/local/openssl/include\" ./configure --prefix=$PG_STAGING " || _die "Couldn't configure the psqlODBC sources"
     echo "Compiling psqlODBC"
     ssh $PG_SSH_LINUX "cd $SOURCE_DIR; make" || _die "Couldn't compile the psqlODBC sources"
     echo "Installing psqlODBC into the sources"
@@ -142,6 +149,7 @@ _build_psqlODBC_linux() {
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libkrb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libk5crypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libodbcinst.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/lib/libodbc.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libpq.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libpq)"
     ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libxml2)"
     ssh $PG_SSH_LINUX "cp -R $PG_PGHOME_LINUX/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libxslt)"
