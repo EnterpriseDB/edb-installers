@@ -1966,6 +1966,52 @@ database=${controldb}
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </wait>
+
+        <!-- Check if Publication Service started in OSX -->
+        <actionGroup>
+          <actionList>
+            <setInstallerVariableFromScriptOutput name="pubservice_status"
+                                                  exec="launchctl"
+                                                  execArgs="list | grep xdbpubserver-XDB_SERVICE_VER | cut -f1"
+                                                  showMessageOnError="0"
+                                                  abortOnError="0"/>
+            <setInstallerVariable name="servicename" value="Publication"/> 
+            <throwError text="${msg(error.could.not.start.service)}">
+              <ruleList>
+                <stringTest type="not_digit" text="${pubservice_status}"/>
+              </ruleList>
+            </throwError>
+          </actionList>
+          <ruleList>
+            <fileExists path="/Library/LaunchDaemons/com.edb.launchd.xdbpubserver-XDB_SERVICE_VER.plist" />
+            <compareText text="${platform_name}" logic="equals" value="osx" />
+           <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </actionGroup>
+
+	<!-- Check if Publication Service started in Solaris -->
+        <actionGroup>
+          <actionList>
+	    <wait ms="10000"/>
+            <setInstallerVariableFromScriptOutput name="pubservice_status"
+                                                  exec="svcs"
+                                                  execArgs="-a | grep edb-xdbpubserver-XDB_SERVICE_VER"
+                                                  showMessageOnError="0"
+                                                  abortOnError="0"/>
+            <setInstallerVariable name="servicename" value="Publication"/>
+            <throwError text="${msg(error.could.not.start.service)}">
+              <ruleList>
+                <compareText logic="does_not_contain" text="${pubservice_status}" value="online"/>
+              </ruleList>
+            </throwError>
+          </actionList>
+          <ruleList>
+            <compareText text="${platform_name}" logic="contains" value="solaris" />
+            <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </actionGroup>
+
+
         <runProgram>
             <program>${installdir}/scripts/startupcfg_subscription.sh</program>
             <programArguments>"${installdir}" "${serviceaccount}" "${subport}" "${java_executable}" "XDB_SERVICE_VER"</programArguments>
@@ -1978,6 +2024,62 @@ database=${controldb}
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram>
+
+        <!-- Pause for 10 sec between publication/subscription startup.
+             On Mac we load the service from startupcfg scripts.
+             So introducing wait here -->
+        <wait ms="10000" >
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="osx" />
+            <isTrue value="${component(subserver).selected}" />
+            <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </wait>
+
+        <!-- Check if Subscription Service started in OSX -->
+        <actionGroup>
+          <actionList>
+            <setInstallerVariableFromScriptOutput name="subservice_status"
+                                                  exec="launchctl"
+                                                  execArgs="list | grep xdbsubserver-XDB_SERVICE_VER | cut -f1"
+                                                  showMessageOnError="0"
+                                                  abortOnError="0"/>
+           <setInstallerVariable name="servicename" value="Subscription"/>
+            <throwError text="${msg(error.could.not.start.service)}">
+              <ruleList>
+                <stringTest type="not_digit" text="${subservice_status}"/>
+              </ruleList>
+            </throwError>
+          </actionList>
+          <ruleList>
+            <fileExists path="/Library/LaunchDaemons/com.edb.launchd.xdbsubserver-XDB_SERVICE_VER.plist" />
+            <compareText text="${platform_name}" logic="equals" value="osx" />
+           <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </actionGroup>
+
+	<!-- Check if Subscription Service started in Solaris -->
+        <actionGroup>
+          <actionList>
+	    <wait ms="10000"/>
+            <setInstallerVariableFromScriptOutput name="subservice_status"
+                                                  exec="svcs"
+                                                  execArgs="-a | grep edb-xdbsubserver-XDB_SERVICE_VER"
+                                                  showMessageOnError="0"
+                                                  abortOnError="0"/>
+           <setInstallerVariable name="servicename" value="Subscription"/>
+            <throwError text="${msg(error.could.not.start.service)}">
+              <ruleList>
+		<compareText logic="does_not_contain" text="${subservice_status}" value="online"/>
+              </ruleList>
+            </throwError>
+          </actionList>
+          <ruleList>
+            <compareText text="${platform_name}" logic="contains" value="solaris" />
+           <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </actionGroup>
+
         <runProgram>
             <program>${installdir}\scripts\ServiceWrapper.exe</program>
             <programArguments>unregister -n "Publication Service XDB_SERVICE_VER"</programArguments>

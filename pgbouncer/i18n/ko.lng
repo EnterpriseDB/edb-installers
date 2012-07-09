@@ -43,3 +43,5 @@ pgbouncer.user.error=지정된 사용자가 시스템에 없습니다.
 error.file.notsecure={installdir}\etc\userlist.txt 파일을 보호할 수 없습니다.
 pgbouncer.system.user.error=pgBouncer를 루트 사용자로 실행할 수 없습니다. 다른 사용자 이름을 지정하십시오.
 gui.not.available.hpux=HPUX에서는 GUI 모드 설치가 지원되지 않음
+
+error.could.not.start.service=Failed to start the ${servicename} service.
