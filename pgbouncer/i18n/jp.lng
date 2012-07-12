@@ -43,3 +43,5 @@ pgbouncer.user.error=指定したユーザは、システムに存在してい�
 error.file.notsecure={installdir}\etc\userlist.txtファイルを保護できません。
 pgbouncer.system.user.error=pgBouncerは、ルートユーザとして実行できません。別のユーザ名を指定してください。
 gui.not.available.hpux=GUIモードのインストールはHPUXではサポートされていません
+
+error.could.not.start.service=Failed to start the ${servicename} service.

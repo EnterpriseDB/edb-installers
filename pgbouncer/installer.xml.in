@@ -1202,7 +1202,55 @@
                         </compareText>
                     </ruleList>
                 </runProgram>
-        
+       
+                <!-- Check if pgbouncer Service started in OSX -->
+                <actionGroup>
+                  <actionList>
+                   <!-- Pause for 10 sec between pgbouncer startup. -->
+                    <wait ms="10000" />
+                    <setInstallerVariableFromScriptOutput name="pgbouncer_status"
+                                                          exec="launchctl"
+                                                          execArgs="list | grep pgbouncer-PGBOUNCER_SERVICE_VER | cut -f1"
+                                                          showMessageOnError="0"
+                                                          abortOnError="0"/>
+                    <setInstallerVariable name="servicename" value="pgbouncer"/>
+                    <throwError text="${msg(error.could.not.start.service)}">
+                      <ruleList>
+                        <stringTest type="not_digit" text="${pgbouncer_status}"/>
+                      </ruleList>
+                    </throwError>
+                  </actionList>
+                  <ruleList>
+                    <fileExists path="/Library/LaunchDaemons/com.edb.launchd.pgbouncer-PGBOUNCER_SERVICE_VER.plist" />
+                    <compareText text="${platform_name}" logic="equals" value="osx" />
+                    <isFalse value="${extract_mode}"/>
+                    <compareText logic="equals" text="${autostart}" value="yes"/>
+                  </ruleList>
+                </actionGroup>
+
+		<!-- Check if pgbouncer Service started in Solaris -->
+                <actionGroup>
+                  <actionList>
+                    <wait ms="10000"/>
+                    <setInstallerVariableFromScriptOutput name="pgbouncer_status"
+                                                          exec="svcs"
+                                                          execArgs="-a | grep pgbouncer-PGBOUNCER_SERVICE_VER"
+                                                          showMessageOnError="0"
+                                                          abortOnError="0"/>
+                    <setInstallerVariable name="servicename" value="pgbouncer"/>
+                    <throwError text="${msg(error.could.not.start.service)}">
+                      <ruleList>
+                        <compareText logic="does_not_contain" text="${pgbouncer_status}" value="online"/>
+                      </ruleList>
+                    </throwError>
+                  </actionList>
+                  <ruleList>
+                    <compareText text="${platform_name}" logic="contains" value="solaris" />
+                    <isFalse value="${extract_mode}"/>
+		    <compareText logic="equals" text="${autostart}" value="yes"/>
+                  </ruleList>
+                </actionGroup>
+
                 <runProgram>
                     <program>cscript</program>
                     <programArguments>//NoLogo "${installdir}/installer/pgbouncer/securefile.vbs" "${installdir}\etc\userlist.txt" "${system_username}"</programArguments>

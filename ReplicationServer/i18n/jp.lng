@@ -130,3 +130,5 @@ Installer.CustomError.CommandLineOptionsNotPresent=次の必須オプション�
 Installer.ComponentDescription=
 
 gui.not.available.hpux=GUIモードのインストールはHPUXではサポートされていません
+
+error.could.not.start.service=Failed to start the ${servicename} Service.

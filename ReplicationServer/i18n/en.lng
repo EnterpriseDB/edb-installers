@@ -130,3 +130,5 @@ Installer.CustomError.CommandLineOptionsNotPresent=The following options was not
 Installer.ComponentDescription=
 
 gui.not.available.hpux=The GUI mode installation is not supported on HPUX 
+
+error.could.not.start.service=Failed to start the ${servicename} Service.
