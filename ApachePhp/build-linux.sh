@@ -65,7 +65,7 @@ _build_ApachePhp_linux() {
 
     # Configure the source tree
     echo "Configuring the apache source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/apache.linux/; sh ./configure --prefix=$PG_STAGING/apache --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache --with-ssl=/usr/local --enable-mods-shared=all --with-pcre=/usr/local"  || _die "Failed to configure apache"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/apache.linux/; sh ./configure --prefix=$PG_STAGING/apache --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache --with-ssl=/usr/local --enable-mods-shared=all"  || _die "Failed to configure apache"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/apache.linux/modules/ssl; sed -i \"s^\\(\\t\\\$(SH_LINK).*$\\)^\\1 -Wl,-rpath,\\\${libexecdir}^\" modules.mk"
 
     echo "Building apache"

@@ -95,7 +95,7 @@ _build_ApachePhp_osx() {
     for ARCH in ${ARCHS}
     do
       echo "Configuring the apache source tree for ${ARCH}"
-      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch ${ARCH} -I/usr/local/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -L/usr/local/lib -arch ${ARCH}" ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache --with-pcre=/usr/local || _die "Failed to configure apache for ${ARCH}"
+      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch ${ARCH} -I/usr/local/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -L/usr/local/lib -arch ${ARCH}" ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for ${ARCH}"
       ARCH_FLAGS="${ARCH_FLAGS} -arch ${ARCH}"
       for configFile in ${CONFIG_FILES}
       do
@@ -106,7 +106,7 @@ _build_ApachePhp_osx() {
     done
 
     echo "Configuring the apache source tree for Universal"
-    CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS} -I/usr/local/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS} -L/usr/local/lib" ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache --with-pcre=/usr/local || _die "Failed to configure apache for 32 bit Universal"
+    CFLAGS="${PG_ARCH_OSX_CFLAGS} ${ARCH_FLAGS} -I/usr/local/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} ${ARCH_FLAGS} -L/usr/local/lib" ./configure --prefix=$PG_STAGING/apache --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for 32 bit Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     for configFile in ${CONFIG_FILES}

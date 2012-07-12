@@ -31,7 +31,7 @@ _prep_ApachePhp_windows() {
 
     # Grab a copy of PHP
     echo "Grab copy of the clean php sources"
-    cp -R php-$PG_VERSION_PHP php.windows || _die "Couldn't copy sources for php (php-$PG_VERSION_PHP to php.windows)"
+    cp -pR php-$PG_VERSION_PHP php.windows || _die "Couldn't copy sources for php (php-$PG_VERSION_PHP to php.windows)"
     if [ x"$PG_VERSION_PHP" = x"5.3.3" -o x"$PG_VERSION_PHP" = x"5.3.5" ]; then
         if [ -f "$WD/tarballs/php-$PG_VERSION_PHP-win32.patch" ]; then
             cp $WD/ApachePhp/source/php.windows/win32/readdir.c $WD/ApachePhp/source/php.windows/ext/mcrypt/readdir.c
@@ -121,10 +121,9 @@ if EXIST "$PG_PATH_WINDOWS\apache.windows\srclib\zlib\zlib.lib" copy "$PG_PATH_W
 
 REM Building openssl
 cd $PG_PATH_WINDOWS\apache.windows\srclib\openssl
-SET LIB=$PG_PATH_WINDOWS\apache.windows\srclib\zlib;C:\pgBuild\OpenSSL\lib;%LIB%
+SET LIB=$PG_PATH_WINDOWS\apache.windows\srclib\zlib;C:\pgBuild\lib;%LIB%
 SET INCLUDE=$PG_PATH_WINDOWS\apache.windows\srclib\zlib;C:\pgBuild\OpenSSL\include;%INCLUDE%
-SET PATH=$PG_PATH_WINDOWS;C:\pgBuild\gawk\bin;%PATH%
-
+SET PATH=$PG_PATH_WINDOWS;$PG_PGBUILD_WINDOWS\bin;$PG_PERL_WINDOWS\bin;$PG_PYTHON_WINDOWS;$PG_TCL_WINDOWS\bin;%PATH%;C:\cygwin\bin
 perl Configure no-mdc2 no-rc5 no-idea enable-zlib VC-WIN32
 CALL ms\do_ms.bat
 nmake -f ms\ntdll.mak
@@ -137,26 +136,13 @@ perl srclib\apr\build\cvtdsp.pl -2005
 perl srclib\apr\build\fixwin32mak.pl
 
 REM Compiling Apache with Standard configuration
-nmake -f Makefile.win _apacher PORT=8080 NO_EXTERNAL_DEPS=1 || exit 1
-
-nmake -f Makefile.win installr INSTDIR="%STAGING_DIR%\apache.staging" NO_EXTERNAL_DEPS=1 || exit 1
+nmake -f Makefile.win PORT=8080 NO_EXTERNAL_DEPS=1 _apacher || exit 1
+nmake -f Makefile.win PORT=8080 INSTDIR="%STAGING_DIR%\apache.staging" NO_EXTERNAL_DEPS=1 installr || exit 1
 
 EOT
 
-    #ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; if [ \"x`which awk`\" != \"x\" ]; then cp `which awk` awk.exe; fi"
     scp build-apache.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
-    APACHE_BUILT=0
-    APACHE_WIN_BUILT_COUNT=0
-    while [ $APACHE_BUILT == 0 ]; do
-        # We will stop trying, if the count is more than 3
-        if [ $APACHE_WIN_BUILT_COUNT -gt 9 ];
-        then
-            _die "Failed to build Apache on Windows VM"
-        fi
-        APACHE_BUILT=1
-	ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-apache.bat" || APACHE_BUILT=0
-        APACHE_WIN_BUILT_COUNT=`expr $APACHE_WIN_BUILT_COUNT + 1`
-    done
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-apache.bat" || _die "Failed to build Apache on Windows VM"
 
     #Building php
     cat <<EOT > "build-php.bat"
@@ -164,20 +150,19 @@ EOT
 @ECHO OFF
 @ECHO Setting Proper Environment Variable to build PHP
 @SET BUILD_DIR=%~dp0
-@SET PHPBUILD=C:\phpBuild
-@SET PGBUILD=C:\pgBuild
+@SET PGBUILD=$PG_PGBUILD_WINDOWS
 @SET PG_HOME_PATH=$PG_PATH_WINDOWS\output
 @CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
 IF EXIST "$PG_PSDK_WINDOWS\SetEnv.Bat" @CALL "$PG_PSDK_WINDOWS\SetEnv.Bat"
 IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 @SET INCLUDE=$PG_PATH_WINDOWS\apache.staging\include;%INCLUDE%
-@SET LIB=%PHPBUILD%\lib;%LIB%
-@SET PATH=%PHPBUILD%\bin;%PATH%
+@SET LIB=%PGBUILD%\lib;%LIB%
+@SET PATH=%PGBUILD%\bin;%PATH%
 
 @cd $PG_PATH_WINDOWS
 @SET APACHE_STAGING=%CD%\apache.staging
 @SET PHP_STAGING=%CD%\php.staging
-@SET BISON_SIMPLE=%PHPBUILD%\bin\bison.simple
+@SET BISON_SIMPLE=%PGBUILD%\bin\bison.simple
 
 
 @IF NOT EXIST "php.zip" GOTO phpzip-not-found
@@ -187,15 +172,10 @@ IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 
 @cd %BUILD_DIR%/php.windows
 
-@REM Use zlib from pgBuild instead of the one provided by PHP-WIN32BUILD
-@REM EXIST "win32build\lib\zlib.lib" @move win32build\lib\zlib.lib win32build\lib\z.lib
 @REM Have make to change to compile bcmath properly
 @IF EXIST "ext\bcmath\libbcmath\src\config.h" @copy /Y ext\bcmath\libbcmath\src\config.h ext\bcmath\config.h
 @REM Copy WinResrc.h in current directory as winres.h
 @IF EXIST "$PG_PSDK_WINDOWS\Include\WinResrc.h" @copy "$PG_PSDK_WINDOWS\Include\WinResrc.h" winres.h
-
-@REM Patch the configure macros for a change in 5.2.9
-@REM #define HAVE_STRNLEN 1 >> win32\build\config.w32.h.in
 
 @ECHO Generating configuration files
 @cscript /nologo win32\build\buildconf.js 
@@ -203,14 +183,9 @@ IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 @IF NOT EXIST "configure.js" @GOTO configure-not-build
 
 @ECHO Configure PHP
-@REM  --disable-ipv6 --enable-fd-setsize
-@cscript /nologo configure.js --enable-snapshot-build --enable-cli --enable-cgi  --with-openssl --enable-pdo --with-extra-includes=%PHPBUILD%\include;%PHPBUILD%\include\freetype;%PHPBUILD%\include\libpng12;%PGBUILD%\OpenSSL\include\openssl;%PHPBUILD%\include\c-client;%PHPBUILD%\include\curl;%PHPBUILD%\include\glib-2.0;%PHPBUILD%\include\layout;%PHPBUILD%\include\libexslt;%PHPBUILD%\include\libssh2;%PHPBUILD%\include\libxml;%PHPBUILD%\include\libxslt;%PHPBUILD%\include\mpir;%PHPBUILD%\include\mutils;%PHPBUILD%\include\net-snmp;%PHPBUILD%\include\openldap;%APACHE_STAGING%\include;%PG_HOME_PATH%\include --with-extra-libs=%PGBUILD%\OpenSSL\lib;%PHPBUILD%\lib;%APACHE_STAGING%\lib;%PG_HOME_PATH%\lib --enable-apache=yes --with-apache-includes=%APACHE_STAGING%\include --with-apache-libs=%APACHE_STAGING%\lib --enable-apache2filter --enable-apache2-2filter --enable-apache2handler --enable-apache2-2handler --with-apache-hooks --with-pgsql --with-pdo-pgsql --with-prefix=%PHP_STAGING% --enable-one-shot --enable-zend-multibyte=yes --enable-cli-win32 --enable-embed --enable-isapi --enable-ftp --without-mysql --without-mysqli --without-pdo-mysql --without-sqlite --without-pdo-sqlite --without-pdo-sqlite-external --with-xsl=SHARED  --enable-mbstring --enable-mbregex --enable-shmop  --enable-exif --enable-soap --enable-sockets --with-php-build --with-gd=SHARED
+@cscript /nologo configure.js --enable-snapshot-build --enable-cli --enable-cgi  --with-openssl --enable-pdo --with-extra-includes=%PGBUILD%\include;%PG_HOME_PATH%\include --with-extra-libs=%PGBUILD%\lib;%PG_HOME_PATH%\lib --enable-apache=yes --with-apache-includes=%APACHE_STAGING%\include --with-apache-libs=%APACHE_STAGING%\lib --enable-apache2filter --enable-apache2-2filter --enable-apache2handler --enable-apache2-2handler --with-apache-hooks --with-pgsql --with-pdo-pgsql --with-prefix=%PHP_STAGING% --enable-one-shot --enable-cli-win32 --enable-embed --enable-isapi --enable-ftp --without-mysqlnd --with-xsl=SHARED  --enable-mbstring --enable-mbregex --enable-shmop  --enable-exif --enable-soap --enable-sockets --with-php-build --with-gd=SHARED --without-mysql --without-mysqli --without-sqlite3 --without-pdo-mysql --without-pdo-sqlite
 
 @IF NOT EXIST "Makefile" @GOTO make-not-created
-@REM Some extension fails with error 'LNK1169: one or more multiply defined symbols'
-@REM Hack to remove this error in those extensions
-@REM sed -e 's/^LDFLAGS=/LDFLAGS=\/FORCE:MULTIPLE /' Makefile > Makefile.tmp
-@REM move /Y Makefile.tmp Makefile
 
 @ECHO Compiling PHP
 @nmake
@@ -221,19 +196,15 @@ IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 cd ..
 IF NOT EXIST php.staging/php.exe @GOTO installation-failed
 
-@REM @COPY "%PHPBUILD%\bin\jpeg62.dll" php.staging || echo Failed to copy jpeg62.dll && EXIT -1
-@REM @COPY "%PHPBUILD%\bin\freetype6.dll" php.staging || echo Failed to copy freetype6.dll && EXIT -1
-@REM @COPY "%PHPBUILD%\bin\libpng12.dll" php.staging || echo Failed to copy libpng12.dll && EXIT -1
 @COPY "%PGBUILD%\vcredist\vcredist_x86.exe" php.staging || echo Failed to copy VC redist && EXIT -1
-@COPY "%PGBUILD%\OpenSSL\bin\ssleay32.dll" php.staging || echo Failed to copy OpenSSL\bin\ssleay32.dll && EXIT -1
-@COPY "%PGBUILD%\OpenSSL\bin\libeay32.dll" php.staging || echo Failed to copy OpenSSL\bin\libeay32.dll && EXIT -1
+@COPY "%PGBUILD%\bin\ssleay32.dll" php.staging || echo Failed to copy OpenSSL\bin\ssleay32.dll && EXIT -1
+@COPY "%PGBUILD%\bin\libeay32.dll" php.staging || echo Failed to copy OpenSSL\bin\libeay32.dll && EXIT -1
 
-@REM @COPY "%PHPBUILD%\bin\iconv.dll" php.staging || echo Failed to copy iconv\bin\iconv.dll && EXIT -1
-@COPY "%PHPBUILD%\bin\libintl.dll" php.staging || echo Failed to copy gettext\bin\libintl.dll && EXIT -1
-@COPY "%PHPBUILD%\bin\libiconv.dll" php.staging || echo Failed to copy gettext\bin\libiconv.dll && EXIT -1
-@COPY "%PHPBUILD%\bin\libxml2.dll" php.staging || echo Failed to copy libxml2\bin\libxml2.dll && EXIT -1
-@COPY "%PHPBUILD%\bin\libxslt.dll" php.staging || echo Failed to copy libxslt\bin\libxslt.dll && EXIT -1
-@COPY "%PHPBUILD%\bin\zlib.dll" php.staging || echo Failed to copy zlib.dll && EXIT -1
+@COPY "%PGBUILD%\bin\libintl.dll" php.staging || echo Failed to copy gettext\bin\libintl.dll && EXIT -1
+@COPY "%PGBUILD%\bin\libiconv.dll" php.staging || echo Failed to copy gettext\bin\libiconv.dll && EXIT -1
+@COPY "%PGBUILD%\bin\libxml2.dll" php.staging || echo Failed to copy libxml2\bin\libxml2.dll && EXIT -1
+@COPY "%PGBUILD%\bin\libxslt.dll" php.staging || echo Failed to copy libxslt\bin\libxslt.dll && EXIT -1
+@COPY "%PGBUILD%\bin\zlib.dll" php.staging || echo Failed to copy zlib.dll && EXIT -1
 @COPY "%PG_HOME_PATH%\bin\libpq.dll" php.staging || echo Failed to copy libpq.dll && EXIT -1
 
 @GOTO end
@@ -311,13 +282,11 @@ _postprocess_ApachePhp_windows() {
 
     cd $WD/ApachePhp
     #Changing the ServerRoot from htdocs to www in apache
-    cp -R staging/windows/apache/htdocs staging/windows/apache/www || _die "Failed to change Server Root"
+    cp -pR staging/windows/apache/htdocs staging/windows/apache/www || _die "Failed to change Server Root"
 
     mkdir -p staging/windows/installer/ApachePhp || _die "Failed to create a directory for the install scripts"
     mkdir -p staging/windows/apache/www/images || _die "Failed to create a directory for the images"
 
-    cp -R $WD/server/staging/windows/bin/libintl-8.dll $WD/ApachePhp/staging/windows/php || _die "Failed to copy dependent libs"
-    cp -R $WD/server/staging/windows/bin/libiconv-2.dll $WD/ApachePhp/staging/windows/php || _die "Failed to copy dependent libs"
     cp scripts/windows/start-apache.bat staging/windows/installer/ApachePhp/start-apache.bat || _die "Failed to copy the start-apache script (scripts/windows/start-apache.bat)"
     cp scripts/windows/install-apache.bat staging/windows/installer/ApachePhp/install-apache.bat || _die "Failed to copy the install-apache script (scripts/windows/install-apache.bat)"
     cp scripts/windows/uninstall-apache.bat staging/windows/installer/ApachePhp/uninstall-apache.bat || _die "Failed to copy the uninstall-apache script (scripts/windows/uninstall-apache.bat)"
