@@ -146,7 +146,7 @@ our \$config = {
     xslt=>'$PG_PGBUILD_WINDOWS',
     iconv=>'$PG_PGBUILD_WINDOWS',
     zlib=>'$PG_PGBUILD_WINDOWS',        # --with-zlib=<path>
-    uuid=>'$PG_PGBUILD_WINDOWS'       # --with-uuid-ossp
+    uuid=>'$PG_PGBUILD_WINDOWS\uuid'       # --with-uuid-ossp
 };
 
 1;
