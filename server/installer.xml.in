@@ -4686,8 +4686,18 @@ REM The script sets environment variables helpful for PostgreSQL
             description="${msg(superaccount.description)}" />
         <stringParameter name="servicename" ask="1" cliOptionShow="1" cliOptionName="servicename" default=""
             description="${msg(servicename.description)}" />
-        <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default="NT AUTHORITY\NetworkService"
+        <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default="postgres"
             description="${msg(serviceaccount.description)}"/>
+        <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default="NT AUTHORITY\NetworkService"
+            description="${msg(serviceaccount.description)}">
+	   <ruleList>
+               <compareText>
+                   <text>${platform_name}</text>
+                   <logic>equals</logic>
+                   <value>windows</value>
+               </compareText>
+           </ruleList>
+        </stringParameter>
         <passwordParameter name="servicepassword" ask="1" cliOptionShow="1" cliOptionName="servicepassword"
             description="${msg(servicepassword.description)}" default="" >
 	   <ruleList>
