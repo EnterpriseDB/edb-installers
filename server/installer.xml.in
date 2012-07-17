@@ -486,6 +486,40 @@
           </ruleList>
         </setInstallerVariable>
 
+        <!-- Set the service account value to NT AUTHORITY\NetworkService if platform is windows 
+	     And if the service account value is not specified on the command line -->
+        <setInstallerVariable name="serviceaccount" value="NT AUTHORITY\NetworkService" >
+	   <ruleList>
+               <compareText>
+                   <text>${platform_name}</text>
+                   <logic>equals</logic>
+                   <value>windows</value>
+               </compareText>
+               <compareText>
+                   <text>${serviceaccount}</text>
+                   <logic>equals</logic>
+                   <value></value>
+               </compareText>
+           </ruleList>
+        </setInstallerVariable>>
+
+        <!-- Set the service account value to postgres if platform is non-windows
+	     And if the service account value is not specified on the command line -->
+        <setInstallerVariable name="serviceaccount" value="postgres" >
+	   <ruleList>
+               <compareText>
+                   <text>${platform_name}</text>
+                   <logic>does_not_equal</logic>
+                   <value>windows</value>
+               </compareText>
+               <compareText>
+                   <text>${serviceaccount}</text>
+                   <logic>equals</logic>
+                   <value></value>
+               </compareText>
+           </ruleList>
+        </setInstallerVariable>>
+
         <actionGroup>
             <actionList>
                 <!-- Abort installation if not super-user and not running in extract-only mode-->
@@ -4686,18 +4720,8 @@ REM The script sets environment variables helpful for PostgreSQL
             description="${msg(superaccount.description)}" />
         <stringParameter name="servicename" ask="1" cliOptionShow="1" cliOptionName="servicename" default=""
             description="${msg(servicename.description)}" />
-        <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default="postgres"
+        <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default=""
             description="${msg(serviceaccount.description)}"/>
-        <stringParameter name="serviceaccount" ask="1" cliOptionShow="1" cliOptionName="serviceaccount" default="NT AUTHORITY\NetworkService"
-            description="${msg(serviceaccount.description)}">
-	   <ruleList>
-               <compareText>
-                   <text>${platform_name}</text>
-                   <logic>equals</logic>
-                   <value>windows</value>
-               </compareText>
-           </ruleList>
-        </stringParameter>
         <passwordParameter name="servicepassword" ask="1" cliOptionShow="1" cliOptionName="servicepassword"
             description="${msg(servicepassword.description)}" default="" >
 	   <ruleList>
