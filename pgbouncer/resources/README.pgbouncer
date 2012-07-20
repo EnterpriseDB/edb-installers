@@ -61,24 +61,46 @@ Linux
 To view the status of the pgbouncer daemon on Linux, open a terminal window, 
 and enter:
 
-    service pgbouncer-91 status
+    service pgbouncer-92 status
 
 If the PgBouncer service is running, Linux echoes back:
 
-    pgbouncer-91 is running (PID:2etc618) 
+    pgbouncer-92 is running (PID:2etc618) 
  
 If the service is not running, Linux echoes:
 
-    pgbouncer-91 not running
+    pgbouncer-92 not running
     
 You can also use the service command to stop or start the pgbouncer service at 
 the command line.  To start the pgbouncer daemon, enter:
 
-    service pgbouncer-91 start
+    service pgbouncer-92 start
     
   To stop the pgbouncer daemon, enter:
 
-    service pgbouncer-91 stop 
+    service pgbouncer-92 stop 
+
+Solaris
+-------
+To view the status of Advanced Server services on a Solaris system, open a terminal window, 
+assume superuser privileges, and enter:
+
+    svcs -algrep 92
+    
+Use the following commands to stop or start the pgbouncer service at 
+the command line.  
+  
+  To start the pgbouncer service, enter:
+
+    svcadm enable pgbouncer
+    
+  To stop the pgbouncer service, enter:
+
+    svcadm disable pgbouncer 
+
+  To restart the pgbouncer service, enter:
+
+    svcadm restart pgbouncer
 
 
 Configuring PgBouncer
@@ -194,7 +216,7 @@ section of the configuration file:
     listen_addr = * 
     listen_port = 6432 
     auth_type = md5 
-    auth_file = /opt/PostgresPlus/9.1AS/pgbouncer/etc/userlist.txt 
+    auth_file = /opt/PostgresPlus/9.2AS/pgbouncer/etc/userlist.txt 
     admin_users = postgres 
     pool_mode = session 
 
