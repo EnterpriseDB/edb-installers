@@ -48,14 +48,14 @@ cat <<EOT > "/sbin/init.d/pgbouncer-$PGBOUNCER_SERVICE_VER"
 PATH=/usr/sbin:/usr/bin:/sbin
 export PATH
 
-function check_pid()
+function check_pid
 {
     export PIDB=\`ps -axef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`
 }
 
 function start
 {
-    check_pid;
+    check_pid
 
     if [ "x\$PIDB" = "x" ];
     then
@@ -64,7 +64,7 @@ function start
        then
            LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH $INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini
 
-	   check_pid;
+	   check_pid
 
            if [ "x\$PIDB" = "x" ];
            then
@@ -76,7 +76,7 @@ function start
        else
            su $SYSTEM_USER -c "LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH $INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini " 
 
-	   check_pid;
+	   check_pid
 
            if [ "x\$PIDB" = "x" ];
            then
@@ -94,7 +94,7 @@ function start
 
 function _stop
 {
-    check_pid;
+    check_pid
 
     if [ "x\$PIDB" = "x" ];
     then
@@ -106,7 +106,7 @@ function _stop
 }
 function status
 {
-    check_pid;
+    check_pid
 
     if [ "x\$PIDB" = "x" ];
     then

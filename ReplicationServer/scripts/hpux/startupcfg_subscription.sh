@@ -50,20 +50,20 @@ cat <<EOT > "/sbin/init.d/edb-xdbsubserver-$XDB_SERVICE_VER"
 PATH=/usr/sbin:/usr/bin:/sbin
 export PATH
 
-function check_pid()
+function check_pid
 {
     export PIDS=\`ps -axef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
 }
 
 function start
 {
-    check_pid;
+    check_pid
 
     if [ "x\$PIDS" = "x" ];
     then
        su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; nohup $JAVA -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT $INSTALL_DIR/etc > /dev/null 2>&1 &"
 
-       check_pid;
+       check_pid
 
        if [ "x\$PIDS" = "x" ];
        then
@@ -80,7 +80,7 @@ function start
 
 function _stop
 {
-    check_pid;
+    check_pid
 
     if [ "x\$PIDS" = "x" ];
     then
@@ -93,7 +93,7 @@ function _stop
 
 function status
 {
-    check_pid;
+    check_pid
 
     if [ "x\$PIDS" = "x" ];
     then
