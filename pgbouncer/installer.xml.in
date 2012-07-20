@@ -420,8 +420,8 @@
                         </registryGet> 
                         <!-- WIN: Stop the pgbouncer service -->    
                         <stopWindowsService>
-                            <serviceName>pgbouncer-PGBOUNCER_SERVICE_VER</serviceName>
-                            <displayName>pgbouncer-PGBOUNCER_SERVICE_VER</displayName>
+                            <serviceName>pgbouncer-PG_MAJOR_VERSION</serviceName>
+                            <displayName>pgbouncer-PG_MAJOR_VERSION</displayName>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                             <ruleList>
@@ -435,7 +435,7 @@
                         <!-- Mac: Stop the pgbouncer service -->    
                         <runProgram>
                             <program>launchctl</program>
-                            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgbouncer-PGBOUNCER_SERVICE_VER.plist</programArguments>
+                            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgbouncer-PG_MAJOR_VERSION.plist</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                             <ruleList>
@@ -448,7 +448,7 @@
                         </runProgram>
                         <!-- Linux: Stop the pgbouncer service -->    
                         <runProgram>
-                            <program>/etc/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</program>
+                            <program>/etc/init.d/pgbouncer-PG_MAJOR_VERSION</program>
                             <programArguments>stop</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -462,7 +462,7 @@
                         </runProgram>
 			<!-- HPUX: Stop the pgbouncer service -->
                         <runProgram>
-                            <program>/sbin/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</program>
+                            <program>/sbin/init.d/pgbouncer-PG_MAJOR_VERSION</program>
                             <programArguments>stop</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -479,28 +479,28 @@
                             <actionList>  
                                 <runProgram>
                                     <program>svcadm</program>
-                                    <programArguments>-v disable svc:/application/pgbouncer-PGBOUNCER_SERVICE_VER:default</programArguments>
+                                    <programArguments>-v disable svc:/application/pgbouncer-PGBOUNCER_SOL_SERVICE_VER:default</programArguments>
                                     <abortOnError>0</abortOnError>
                                     <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
                                 </runProgram>
                                 <runProgram>
                                     <program>svccfg</program>
-                                    <programArguments>-v delete -f svc:/application/pgbouncer-PGBOUNCER_SERVICE_VER:default</programArguments>
+                                    <programArguments>-v delete -f svc:/application/pgbouncer-PGBOUNCER_SOL_SERVICE_VER:default</programArguments>
                                     <abortOnError>0</abortOnError>
                                     <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
                                 </runProgram>
 				<checkSolarisVersion/>
-            			<deleteFile path="/var/svc/manifest/application/pgbouncer-PGBOUNCER_SERVICE_VER.xml">
+            			<deleteFile path="/var/svc/manifest/application/pgbouncer-PGBOUNCER_SOL_SERVICE_VER.xml">
               			  <ruleList>
                 		    <compareText text="${solaris_version}" logic="contains" value="Solaris 10"/>
               			  </ruleList>
             			</deleteFile>
-            			<deleteFile path="${installdir}/installer/pgbouncer/pgbouncer-PGBOUNCER_SERVICE_VER.xml">
+            			<deleteFile path="${installdir}/installer/pgbouncer/pgbouncer-PGBOUNCER_SOL_SERVICE_VER.xml">
               			  <ruleList>
                 		    <compareText text="${solaris_version}" logic="does_not_contain" value="Solaris 10"/>
               			  </ruleList>
             			</deleteFile>
-                		<deleteFile path="/lib/svc/method/pgbouncer-PGBOUNCER_SERVICE_VER" />
+                		<deleteFile path="/lib/svc/method/pgbouncer-PGBOUNCER_SOL_SERVICE_VER" />
                             </actionList> 
                             <ruleList>
                                 <compareText>
@@ -549,16 +549,22 @@
             </ruleList>
         </deleteFile>
         
-        <deleteFile path="/tmp/pgbouncer-PGBOUNCER_SERVICE_VER.pid">
+        <deleteFile path="/tmp/pgbouncer-PG_MAJOR_VERSION.pid">
             <ruleList>
 		<ruleGroup>
 		  <ruleList ruleEvaluationGroup="or">
                     <compareText logic="contains" text="${platform_name}" value="linux"/>
-		    <compareText logic="contains" text="${platform_name}" value="solaris"/>
 		    <compareText logic="equals" text="${platform_name}" value="osx"/>
 		  </ruleList>
 		</ruleGroup>
-                <fileExists path="/tmp/pgbouncer-PGBOUNCER_SERVICE_VER.pid"/>
+                <fileExists path="/tmp/pgbouncer-PG_MAJOR_VERSION.pid"/>
+            </ruleList>
+        </deleteFile>
+	
+	<deleteFile path="/tmp/pgbouncer-PGBOUNCER_SOL_SERVICE_VER.pid">
+            <ruleList>
+              <compareText logic="contains" text="${platform_name}" value="solaris"/>
+              <fileExists path="/tmp/pgbouncer-PGBOUNCER_SOL_SERVICE_VER.pid"/>
             </ruleList>
         </deleteFile>
         <!-- Validate the PostgreSQL Server Details -->
@@ -874,11 +880,11 @@
                             <substitutionList>
                                 <substitution>
                                     <pattern>@@LOGFILE@@</pattern>
-                                    <value>/var/log/pgbouncer-PGBOUNCER_SERVICE_VER/pgbouncer.log</value>
+                                    <value>/var/log/pgbouncer-PG_MAJOR_VERSION/pgbouncer.log</value>
                                 </substitution>
                                 <substitution>
                                     <pattern>@@PIDFILE@@</pattern>
-                                    <value>${system_temp_directory}/pgbouncer-PGBOUNCER_SERVICE_VER.pid</value>
+                                    <value>${system_temp_directory}/pgbouncer-PG_MAJOR_VERSION.pid</value>
                                 </substitution>
                                 <substitution>
                                     <pattern>@@AUTHFILE@@</pattern>
@@ -891,8 +897,39 @@
                                     <logic>does_not_equal</logic>
                                     <value>windows</value>
                                 </compareText>
+				<compareText>
+                                    <text>${platform_name}</text>
+                                    <logic>does_not_contain</logic>
+                                    <value>solaris</value>
+                                </compareText>
                             </ruleList>
                         </substitute>
+
+			<substitute>
+                            <files>${installdir}/share/pgbouncer.ini</files>
+                            <substitutionList>
+                                <substitution>
+                                    <pattern>@@LOGFILE@@</pattern>
+                                    <value>/var/log/pgbouncer-PGBOUNCER_SOL_SERVICE_VER/pgbouncer.log</value>
+                                </substitution>
+                                <substitution>
+                                    <pattern>@@PIDFILE@@</pattern>
+                                    <value>${system_temp_directory}/pgbouncer-PGBOUNCER_SOL_SERVICE_VER.pid</value>
+                                </substitution>
+                                <substitution>
+                                    <pattern>@@AUTHFILE@@</pattern>
+                                    <value>${installdir}/etc/userlist.txt</value>
+                                </substitution>
+                            </substitutionList>
+                            <ruleList>
+                                <compareText>
+                                    <text>${platform_name}</text>
+                                    <logic>contains</logic>
+                                    <value>solaris</value>
+                                </compareText>
+                            </ruleList>
+                        </substitute>
+
                         <substitute>
                             <files>${installdir}\share\pgbouncer.ini</files>
                             <substitutionList>
@@ -1039,7 +1076,7 @@
                 <!-- LINUX | MAC | HPUX : Install pgbouncer service -->
                 <runProgram>
                     <program>${installdir}/installer/pgbouncer/startupcfg.sh</program>
-                    <programArguments>"${installdir}" "${system_user}" "PGBOUNCER_SERVICE_VER"</programArguments>
+                    <programArguments>"${installdir}" "${system_user}" "PG_MAJOR_VERSION"</programArguments>
                     <abortOnError>0</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.linux.service.error)}</customErrorMessage>
                     <ruleList>
@@ -1048,12 +1085,32 @@
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+			<compareText>
+                            <logic>does_not_contain</logic>
+                            <text>${platform_name}</text>
+                            <value>solaris</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+
+		<!-- Solaris : Install pgbouncer service -->
+                <runProgram>
+                    <program>${installdir}/installer/pgbouncer/startupcfg.sh</program>
+                    <programArguments>"${installdir}" "${system_user}" "PGBOUNCER_SOL_SERVICE_VER"</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <customErrorMessage>${msg(pgbouncer.linux.service.error)}</customErrorMessage>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>solaris</value>
+                        </compareText>
                     </ruleList>
                 </runProgram>
                 <!-- Win : Disable pgbouncer Service if autostart is no-->
                 <runProgram>
                     <program>sc</program>
-                    <programArguments>config pgbouncer-PGBOUNCER_SERVICE_VER start= demand</programArguments>
+                    <programArguments>config pgbouncer-PG_MAJOR_VERSION start= demand</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                     <ruleList>
@@ -1066,13 +1123,13 @@
                     <actionList>
                         <runProgram>
                            <program>/sbin/chkconfig</program>
-                           <programArguments>pgbouncer-PGBOUNCER_SERVICE_VER off</programArguments>
+                           <programArguments>pgbouncer-PG_MAJOR_VERSION off</programArguments>
                            <abortOnError>0</abortOnError>
                            <showMessageOnError>0</showMessageOnError>
                         </runProgram>
                         <runProgram>
                            <program>/usr/sbin/update-rc.d</program>
-                           <programArguments>pgbouncer-PGBOUNCER_SERVICE_VER disable</programArguments>
+                           <programArguments>pgbouncer-PG_MAJOR_VERSION disable</programArguments>
                            <abortOnError>0</abortOnError>
                            <showMessageOnError>0</showMessageOnError>
                         </runProgram>
@@ -1087,7 +1144,7 @@
                   <actionList>
                     <runProgram>
                       <program>svcadm</program>
-                      <programArguments>-v disable svc:/application/pgbouncer-PGBOUNCER_SERVICE_VER:default</programArguments>
+                      <programArguments>-v disable svc:/application/pgbouncer-PGBOUNCER_SOL_SERVICE_VER:default</programArguments>
                       <abortOnError>0</abortOnError>
                       <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
                     </runProgram>
@@ -1105,16 +1162,16 @@
                 <actionGroup>
                   <actionList>
                     <deleteFile>
-                      <path>/sbin/rc3.d/S86pgbouncer-PGBOUNCER_SERVICE_VER</path>
+                      <path>/sbin/rc3.d/S86pgbouncer-PG_MAJOR_VERSION</path>
                     </deleteFile>
                     <deleteFile>
-                      <path>/sbin/rc0.d/K14pgbouncer-PGBOUNCER_SERVICE_VER</path>
+                      <path>/sbin/rc0.d/K14pgbouncer-PG_MAJOR_VERSION</path>
                     </deleteFile>
                     <deleteFile>
-                      <path>/sbin/rc1.d/K14pgbouncer-PGBOUNCER_SERVICE_VER</path>
+                      <path>/sbin/rc1.d/K14pgbouncer-PG_MAJOR_VERSION</path>
                     </deleteFile>
                     <deleteFile>
-                      <path>/sbin/rc2.d/K14pgbouncer-PGBOUNCER_SERVICE_VER</path>
+                      <path>/sbin/rc2.d/K14pgbouncer-PG_MAJOR_VERSION</path>
                     </deleteFile>
                   </actionList>
                   <ruleList>
@@ -1125,8 +1182,8 @@
 
                 <!-- WIN: Start the pgbouncer service -->    
                 <startWindowsService>
-                    <serviceName>pgbouncer-PGBOUNCER_SERVICE_VER</serviceName>
-                    <displayName>pgbouncer-PGBOUNCER_SERVICE_VER</displayName>
+                    <serviceName>pgbouncer-PG_MAJOR_VERSION</serviceName>
+                    <displayName>pgbouncer-PG_MAJOR_VERSION</displayName>
                     <abortOnError>0</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
                     <ruleList>
@@ -1145,7 +1202,7 @@
  
                 <!-- Linux: Start the pgbouncer service -->    
                 <runProgram>
-                    <program>/etc/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</program>
+                    <program>/etc/init.d/pgbouncer-PG_MAJOR_VERSION</program>
                     <programArguments>start</programArguments>
                     <abortOnError>1</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
@@ -1165,7 +1222,7 @@
 
 		<!-- HPUX: Start the pgbouncer service -->    
                 <runProgram>
-                    <program>/sbin/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</program>
+                    <program>/sbin/init.d/pgbouncer-PG_MAJOR_VERSION</program>
                     <programArguments>start</programArguments>
                     <abortOnError>1</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
@@ -1186,7 +1243,7 @@
                <!-- MAC: Start the pgbouncer service -->    
                 <runProgram>
                     <program>launchctl</program>
-                    <programArguments>load /Library/LaunchDaemons/com.edb.launchd.pgbouncer-PGBOUNCER_SERVICE_VER.plist</programArguments>
+                    <programArguments>load /Library/LaunchDaemons/com.edb.launchd.pgbouncer-PG_MAJOR_VERSION.plist</programArguments>
                     <abortOnError>0</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
                     <ruleList>
@@ -1210,7 +1267,7 @@
                     <wait ms="10000" />
                     <setInstallerVariableFromScriptOutput name="pgbouncer_status"
                                                           exec="launchctl"
-                                                          execArgs="list | grep pgbouncer-PGBOUNCER_SERVICE_VER | cut -f1"
+                                                          execArgs="list | grep pgbouncer-PG_MAJOR_VERSION | cut -f1"
                                                           showMessageOnError="0"
                                                           abortOnError="0"/>
                     <setInstallerVariable name="servicename" value="pgbouncer"/>
@@ -1221,7 +1278,7 @@
                     </throwError>
                   </actionList>
                   <ruleList>
-                    <fileExists path="/Library/LaunchDaemons/com.edb.launchd.pgbouncer-PGBOUNCER_SERVICE_VER.plist" />
+                    <fileExists path="/Library/LaunchDaemons/com.edb.launchd.pgbouncer-PG_MAJOR_VERSION.plist" />
                     <compareText text="${platform_name}" logic="equals" value="osx" />
                     <isFalse value="${extract_mode}"/>
                     <compareText logic="equals" text="${autostart}" value="yes"/>
@@ -1234,7 +1291,7 @@
                     <wait ms="10000"/>
                     <setInstallerVariableFromScriptOutput name="pgbouncer_status"
                                                           exec="svcs"
-                                                          execArgs="-a | grep pgbouncer-PGBOUNCER_SERVICE_VER"
+                                                          execArgs="-a | grep pgbouncer-PGBOUNCER_SOL_SERVICE_VER"
                                                           showMessageOnError="0"
                                                           abortOnError="0"/>
                     <setInstallerVariable name="servicename" value="pgbouncer"/>
@@ -1334,7 +1391,7 @@
         <!-- MAC: Stop the pgbouncer service -->    
          <runProgram>
             <program>launchctl</program>
-            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgbouncer-PGBOUNCER_SERVICE_VER.plist</programArguments>
+            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgbouncer-PG_MAJOR_VERSION.plist</programArguments>
             <abortOnError>0</abortOnError>
             <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
             <ruleList>
@@ -1347,7 +1404,7 @@
         </runProgram>
 
        <deleteFile>
-            <path>/Library/LaunchDaemons/com.edb.launchd.pgbouncer-PGBOUNCER_SERVICE_VER.plist</path>
+            <path>/Library/LaunchDaemons/com.edb.launchd.pgbouncer-PG_MAJOR_VERSION.plist</path>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -1359,8 +1416,8 @@
 
         <!-- WIN: Stop the pgbouncer service -->    
         <stopWindowsService>
-            <serviceName>pgbouncer-PGBOUNCER_SERVICE_VER</serviceName>
-            <displayName>pgbouncer-PGBOUNCER_SERVICE_VER</displayName>
+            <serviceName>pgbouncer-PG_MAJOR_VERSION</serviceName>
+            <displayName>pgbouncer-PG_MAJOR_VERSION</displayName>
             <abortOnError>0</abortOnError>
             <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
             <ruleList>
@@ -1388,7 +1445,7 @@
         </runProgram>
 
         <runProgram>
-            <program>/etc/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</program>
+            <program>/etc/init.d/pgbouncer-PG_MAJOR_VERSION</program>
             <programArguments>stop</programArguments>
             <abortOnError>0</abortOnError>
             <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
@@ -1403,7 +1460,7 @@
 
 	<!-- HPUX -->
 	<runProgram>
-            <program>/sbin/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</program>
+            <program>/sbin/init.d/pgbouncer-PG_MAJOR_VERSION</program>
             <programArguments>stop</programArguments>
             <abortOnError>0</abortOnError>
             <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
@@ -1420,28 +1477,28 @@
             <actionList>
                 <runProgram>
                     <program>svcadm</program>
-                    <programArguments>-v disable svc:/application/pgbouncer-PGBOUNCER_SERVICE_VER:default</programArguments>
+                    <programArguments>-v disable svc:/application/pgbouncer-PGBOUNCER_SOL_SERVICE_VER:default</programArguments>
                     <abortOnError>0</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
                 </runProgram>
                 <runProgram>
                     <program>svccfg</program>
-                    <programArguments>-v delete -f svc:/application/pgbouncer-PGBOUNCER_SERVICE_VER:default</programArguments>
+                    <programArguments>-v delete -f svc:/application/pgbouncer-PGBOUNCER_SOL_SERVICE_VER:default</programArguments>
                     <abortOnError>0</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
                 </runProgram>
 		<checkSolarisVersion/>
-                  <deleteFile path="/var/svc/manifest/application/pgbouncer-PGBOUNCER_SERVICE_VER.xml">
+                  <deleteFile path="/var/svc/manifest/application/pgbouncer-PGBOUNCER_SOL_SERVICE_VER.xml">
                     <ruleList>
                       <compareText text="${solaris_version}" logic="contains" value="Solaris 10"/>
                     </ruleList>
                   </deleteFile>
-                  <deleteFile path="${installdir}/installer/pgbouncer/pgbouncer-PGBOUNCER_SERVICE_VER.xml">
+                  <deleteFile path="${installdir}/installer/pgbouncer/pgbouncer-PGBOUNCER_SOL_SERVICE_VER.xml">
                     <ruleList>
                       <compareText text="${solaris_version}" logic="does_not_contain" value="Solaris 10"/>
                     </ruleList>
                   </deleteFile>
-                <deleteFile path="/lib/svc/method/pgbouncer-PGBOUNCER_SERVICE_VER" />
+                <deleteFile path="/lib/svc/method/pgbouncer-PGBOUNCER_SOL_SERVICE_VER" />
             </actionList> 
             <ruleList>
                 <compareText>
@@ -1453,7 +1510,7 @@
         </actionGroup>
          
         <deleteFile>
-            <path>/etc/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</path>
+            <path>/etc/init.d/pgbouncer-PG_MAJOR_VERSION</path>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
@@ -1467,19 +1524,19 @@
 	<actionGroup>
 	  <actionList>
             <deleteFile>
-              <path>/sbin/init.d/pgbouncer-PGBOUNCER_SERVICE_VER</path>
+              <path>/sbin/init.d/pgbouncer-PG_MAJOR_VERSION</path>
             </deleteFile>
             <deleteFile>
-              <path>/sbin/rc3.d/S86pgbouncer-PGBOUNCER_SERVICE_VER</path>
+              <path>/sbin/rc3.d/S86pgbouncer-PG_MAJOR_VERSION</path>
             </deleteFile>
             <deleteFile>
-              <path>/sbin/rc0.d/K14pgbouncer-PGBOUNCER_SERVICE_VER</path>
+              <path>/sbin/rc0.d/K14pgbouncer-PG_MAJOR_VERSION</path>
             </deleteFile>
             <deleteFile>
-              <path>/sbin/rc1.d/K14pgbouncer-PGBOUNCER_SERVICE_VER</path>
+              <path>/sbin/rc1.d/K14pgbouncer-PG_MAJOR_VERSION</path>
             </deleteFile>
             <deleteFile>
-              <path>/sbin/rc2.d/K14pgbouncer-PGBOUNCER_SERVICE_VER</path>
+              <path>/sbin/rc2.d/K14pgbouncer-PG_MAJOR_VERSION</path>
             </deleteFile>	
           </actionList>
 	  <ruleList>
