@@ -1508,17 +1508,47 @@
                 </compareText>
             </ruleList>
         </actionGroup>
-         
-        <deleteFile>
-            <path>/etc/init.d/pgbouncer-PG_MAJOR_VERSION</path>
-            <ruleList>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </deleteFile>
+       
+        <!-- Attempt to remove any runlevel config with chkconfig -->
+        <actionGroup> 
+          <actionList> 
+            <runProgram>
+              <customErrorMessage>${msg(pgbouncer.uninstall.service.error)}</customErrorMessage>
+              <program>/sbin/chkconfig</program>
+              <programArguments>--del pgbouncer-PG_MAJOR_VERSION</programArguments>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <ruleList>
+                <fileExists>
+                  <path>/sbin/chkconfig</path>
+                </fileExists>
+              </ruleList>
+            </runProgram>
+            <!-- Attempt to remove any runlevel config with update-rc.d -->
+            <runProgram>
+              <customErrorMessage>${msg(pgbouncer.uninstall.service.error)}</customErrorMessage>
+              <program>/usr/sbin/update-rc.d</program>
+              <programArguments>-f pgbouncer-PG_MAJOR_VERSION remove</programArguments>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <ruleList>
+                <fileExists>
+                  <path>/usr/sbin/update-rc.d</path>
+                </fileExists>
+              </ruleList>
+            </runProgram>
+            <deleteFile>
+                <path>/etc/init.d/pgbouncer-PG_MAJOR_VERSION</path>
+            </deleteFile>
+          </actionList> 
+          <ruleList>
+              <compareText>
+                  <logic>contains</logic>
+                  <text>${platform_name}</text>
+                  <value>linux</value>
+              </compareText>
+          </ruleList>
+        </actionGroup>
 
 	<!-- HPUX: Remove the startup item -->
 	<actionGroup>
