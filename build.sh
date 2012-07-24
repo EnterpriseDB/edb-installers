@@ -387,22 +387,6 @@ then
         _postprocess_MigrationToolKit || exit 1
 fi
 
-# Package: ReplicationServer
-if [ $PG_PACKAGE_REPLICATIONSERVER = 1 ];
-then
-    echo "### Package: ReplicationServer"
-    cd $WD
-    source ./ReplicationServer/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_ReplicationServer || exit 1
-        _build_ReplicationServer || exit 1
-    fi
-
-    _postprocess_ReplicationServer || exit 1
-fi
-
 # Package: PLPGSQLO
 if [ $PG_PACKAGE_PLPGSQLO = 1 ];
 then
