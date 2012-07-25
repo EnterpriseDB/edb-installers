@@ -190,11 +190,11 @@ EOT
     cp -pR /usr/local/lib/libiconv* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libiconv"
     cp -pR /usr/local/lib/libexpat* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libexpat"
 
-    cp -pR /usr/local/lib/libwx_macu_adv-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
-    cp -pR /usr/local/lib/libwx_macu_core-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
-    cp -pR /usr/local/lib/libwx_base_carbonu-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
-    cp -pR /usr/local/lib/libwx_base_carbonu_net-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
-    cp -pR /usr/local/lib/libwx_base_carbonu_xml-2.8.0.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp -pR /usr/local/lib/libwx_macu_adv-*.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp -pR /usr/local/lib/libwx_macu_core-*.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp -pR /usr/local/lib/libwx_base_carbonu-*.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp -pR /usr/local/lib/libwx_base_carbonu_net-*.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    cp -pR /usr/local/lib/libwx_base_carbonu_xml-*.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
 
     # Copying plperl to staging/osx directory as we would not like to update the _rewrite_so_refs for it.
     cp -f $WD/server/staging/osx/lib/postgresql/plperl.so $WD/server/staging/osx/
