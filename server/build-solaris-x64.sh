@@ -87,16 +87,18 @@ _prep_server_solaris_x64() {
       echo "Removing existing staging directory"
       rm -rf $WD/server/staging/solaris-x64 || _die "Couldn't remove the existing staging directory"
       ssh $PG_SSH_SOLARIS_X64 "rm -rf $PG_PATH_SOLARIS_X64/server/staging/solaris-x64" || _die "Falied to remove the staging directory on the Solaris VM"
+
     fi
 
     echo "Creating staging directory ($WD/server/staging/solaris-x64)"
     mkdir -p $WD/server/staging/solaris-x64 || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/server/staging/solaris-x64 || _die "Couldn't set the permissions on the staging directory"
 
-    # Send all the source to Solaris VM
     ssh $PG_SSH_SOLARIS_X64 "rm -rf $PG_PATH_SOLARIS_X64/server/source" || _die "Falied to remove the source directory on the Solaris VM"
     ssh $PG_SSH_SOLARIS_X64 "mkdir -p $PG_PATH_SOLARIS_X64/server/source" || _die "Falied to create the source directory on the Solaris VM"
     ssh $PG_SSH_SOLARIS_X64 "mkdir -p $PG_PATH_SOLARIS_X64/server/staging/solaris-x64" || _die "Falied to create the staging directory on the Solaris VM"
+
+    # Send all the source to Solaris VM
     scp -r postgres.solaris-x64.zip $PG_SSH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/server/source/ || _die "Failed to scp the postgres source"
 #    scp -r pgadmin.solaris-x64.zip $PG_SSH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/server/source/ || _die "Failed to scp the postgres source"
 #    scp -r pljava.solaris-x64.zip  $PG_SSH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/server/source/ || _die "Failed to scp the postgres source"
@@ -209,22 +211,21 @@ _build_server_solaris_x64() {
     PG_STAGING=$PG_PATH_SOLARIS_X64/server/staging/solaris-x64
 
     cat <<EOT > "setenv.sh"
-export CC=gcc
-export CXX=g++
-export CFLAGS="-m64"
-export CXXFLAGS="-m64"
-export CPPFLAGS="-m64"
-export LDFLAGS="-m64"
-export LD_LIBRARY_PATH=/usr/local/lib
-export PATH=/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/local/bin:\$PATH
+#!/bin/bash
+#export CC=cc
+#export CXX=CC
+export CFLAGS="-m64 -I$PG_SOLARIS_STUDIO_SOLARIS_X64/include -I/usr/local/include -I/usr/sfw/include"
+export CXXFLAGS="-m64 -I$PG_SOLARIS_STUDIO_SOLARIS_X64/include -I/usr/local/include -I/usr/sfw/include"
+export LDFLAGS="-m64  -L$PG_SOLARIS_STUDIO_SOLARIS_X64/lib/amd64 -L$PG_SOLARIS_STUDIO_SOLARIS_X64/lib -L/usr/local/lib -L/usr/sfw/lib/amd64"
+export PATH=$PG_SOLARIS_STUDIO_SOLARIS_X64/bin:/usr/local/bin:/usr/ccs/bin:/opt/csw/bin:/usr/ucb:/usr/sfw/bin/64:/usr/sfw/bin:/usr/sfw/sbin:\$PATH
 export GTK_MODULES=""
-
+export LD_LIBRARY_PATH=/usr/local/lib
 EOT
     scp setenv.sh $PG_SSH_SOLARIS_X64: || _die "Failed to scp the setenv.sh file"
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/postgres.solaris-x64/;./configure --prefix=$PG_STAGING --with-openssl --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/postgres.solaris-x64/; ./configure --prefix=$PG_STAGING --with-includes=/usr/local/include/libxml2 --with-openssl --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
     ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/postgres.solaris-x64; gmake -j4" || _die "Failed to build postgres" 
