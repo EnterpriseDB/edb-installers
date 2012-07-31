@@ -135,10 +135,15 @@ _process_dependent_libs_solaris_x64() {
    }
  
 
+   if [ -e /tmp/templibs ];
+   then
+	rm -rf /tmp/templibs
+   fi
+
    # Create a temporary directory
    mkdir /tmp/templibs  
 
-   export LD_LIBRARY_PATH=$lib_dir
+   export LD_LIBRARY_PATH=$libdir
 
    # Get the exact version of $libname which are required by the binaries in $bin_dir
    cd $bin_dir
@@ -180,11 +185,14 @@ _process_dependent_libs_solaris_x64() {
          rm -f \$lib || _die "Failed to remove the library"
     done            
 
-    # Copy libs from the tmp/templibs directory
-    cp /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
+    if [ "\$(ls -A /tmp/templibs)" ];
+    then
+        # Copy libs from the tmp/templibs directory
+        cp -pR /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
+    fi
 
     # Remove the temporary directory 
-    rm -rf /tmp/templibs  
+    rm -rf /tmp/templibs
 
 EOT
 
@@ -212,23 +220,23 @@ _build_server_solaris_x64() {
 
     cat <<EOT > "setenv.sh"
 #!/bin/bash
-#export CC=cc
-#export CXX=CC
+export CC=cc
+export CXX=CC
 export CFLAGS="-m64 -I$PG_SOLARIS_STUDIO_SOLARIS_X64/include -I/usr/local/include -I/usr/sfw/include"
 export CXXFLAGS="-m64 -I$PG_SOLARIS_STUDIO_SOLARIS_X64/include -I/usr/local/include -I/usr/sfw/include"
 export LDFLAGS="-m64  -L$PG_SOLARIS_STUDIO_SOLARIS_X64/lib/amd64 -L$PG_SOLARIS_STUDIO_SOLARIS_X64/lib -L/usr/local/lib -L/usr/sfw/lib/amd64"
 export PATH=$PG_SOLARIS_STUDIO_SOLARIS_X64/bin:/usr/local/bin:/usr/ccs/bin:/opt/csw/bin:/usr/ucb:/usr/sfw/bin/64:/usr/sfw/bin:/usr/sfw/sbin:\$PATH
 export GTK_MODULES=""
-export LD_LIBRARY_PATH=/usr/local/lib
+export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib/5.14.2/i86pc-solaris-multi-64/CORE/
 EOT
     scp setenv.sh $PG_SSH_SOLARIS_X64: || _die "Failed to scp the setenv.sh file"
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/postgres.solaris-x64/; ./configure --prefix=$PG_STAGING --with-includes=/usr/local/include/libxml2 --with-openssl --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/postgres.solaris-x64/; ./configure --prefix=$PG_STAGING --with-includes=/usr/local/include/libxml2 --with-openssl --with-pam --with-krb5 --disable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --without-readline --with-libedit-preferred"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
-    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/postgres.solaris-x64; gmake -j4" || _die "Failed to build postgres" 
+    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/postgres.solaris-x64; gmake " || _die "Failed to build postgres" 
     ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/postgres.solaris-x64; gmake install" || _die "Failed to install postgres"
 
     echo "Building contrib modules"
@@ -298,7 +306,7 @@ EOT
 #
 #    # Build the app
 #    echo "Building & installing pgAdmin"
-#    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/pgadmin.solaris-x64/xtra/png2c; sed -e 's/-lpq//g' Makefile > /tmp/Makefile.tmp; mv /tmp/Makefile.tmp Makefile" || _die "Failed to modify png2c makefile" 
+#    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/pgadmin.solaris-x64/xtra/png2c; sed -e 's/-lpq//g' Makefile > /tmp/Makefile.tmp; mv /tmp/Makefile.tmp Makefile" || _die "Failed to modify png2c gmakefile" 
 #    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/pgadmin.solaris-x64/; gmake all" || _die "Failed to build pgAdmin"
 #    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/pgadmin.solaris-x64/; gmake install" || _die "Failed to install pgAdmin"
 #
@@ -367,7 +375,7 @@ EOT
 	
     # Configure
 #    echo "Configuring the StackBuilder source tree"
-#    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/stackbuilder.solaris-x64/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF -D CMAKE_INSTALL_PREFIX:PATH=$PG_STAGING/stackbuilder -D CMAKE_CXX_FLAGS:STRING=\"-m64\" ."
+#    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/stackbuilder.solaris-x64/; cgmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF -D CMAKE_INSTALL_PREFIX:PATH=$PG_STAGING/stackbuilder -D CMAKE_CXX_FLAGS:STRING=\"-m64\" ."
 #
 #    # Build the app
 #    echo "Building & installing StackBuilder"
