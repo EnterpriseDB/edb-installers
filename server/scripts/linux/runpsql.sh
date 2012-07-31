@@ -26,8 +26,8 @@ validate_port()
        echo "Port specified must be greater than 0." 
        return 1
   fi
-  if [ "$port" -ge 65535 ] ; then
-       echo "Port specified must be less than 65535." 
+  if [ "$port" -ge 65536 ] ; then
+       echo "Port specified must be less than 65536." 
        return 1
   fi
   return 0
