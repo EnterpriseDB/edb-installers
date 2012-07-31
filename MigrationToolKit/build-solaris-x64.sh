@@ -90,7 +90,7 @@ _postprocess_MigrationToolKit_solaris_x64() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-intel || _die "Failed to build the installer"
    
-    mv $WD/output/migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT-$PG_BUILDNUM_MIGRATIONTOOLKIT-solaris-intel.bin $WD/output/migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT-$PG_BUILDNUM_MIGRATIONTOOLKIT-solaris-x64.bin 
+    mv $WD/output/migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT-$PG_BUILDNUM_MIGRATIONTOOLKIT-solaris-intel.run $WD/output/migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT-$PG_BUILDNUM_MIGRATIONTOOLKIT-solaris-x64.run 
     cd $WD
 }
 

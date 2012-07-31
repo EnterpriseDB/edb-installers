@@ -33,11 +33,11 @@ then
 fi
     
 # Solaris x64
-#if [ $PG_ARCH_SOLARIS_X64 = 1 ];
-#then
-#    source $WD/pgbouncer/build-solaris-x64.sh
-#fi
-#
+if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+then
+    source $WD/pgbouncer/build-solaris-x64.sh
+fi
+
 ## Solaris sparc
 #if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
 #then
@@ -104,11 +104,11 @@ _prep_pgbouncer() {
     fi
     
     # Solaris x64
-#    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
-#    then
-#        _prep_pgbouncer_solaris_x64 || exit 1
-#    fi
-#
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+        _prep_pgbouncer_solaris_x64 || exit 1
+    fi
+
 #    # Solaris sparc
 #    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
 #    then
@@ -154,12 +154,12 @@ _build_pgbouncer() {
     fi
 
     # Solaris x64
-#    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
-#    then
-#       _build_pgbouncer_solaris_x64 || exit 1
-#    fi
-#
-#    # Solaris sparc
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+       _build_pgbouncer_solaris_x64 || exit 1
+    fi
+
+     # Solaris sparc
 #    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
 #    then
 #       _build_pgbouncer_solaris_sparc || exit 1
@@ -219,11 +219,11 @@ _postprocess_pgbouncer() {
     fi
 
     # Solaris x64
-#    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
-#    then
-#        _postprocess_pgbouncer_solaris_x64 || exit 1
-#    fi
-#
+    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
+    then
+        _postprocess_pgbouncer_solaris_x64 || exit 1
+    fi
+
 #    # Solaris sparc
 #    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
 #    then

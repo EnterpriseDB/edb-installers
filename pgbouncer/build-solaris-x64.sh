@@ -66,29 +66,31 @@ _build_pgbouncer_solaris_x64() {
 
     cd $WD/pgbouncer/source
 
-    cat <<EOT > "setenv.sh"
-export CC=gcc
-export CXX=g++
-export CFLAGS="-m64 -D _XOPEN_SOURCE=2 -D _XOPEN_SOURCE_EXTENDED=1 -D __EXTENSIONS__=1"
-export CXXFLAGS="-m64"
-export CPPFLAGS="-m64"
-export LDFLAGS="-m64"
-export LD_LIBRARY_PATH=/usr/local/lib
-export PATH=/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/local/bin:/usr/ucb:\$PATH
-
+ cat <<EOT > "setenv.sh"
+#!/bin/bash
+export CC=cc
+export CXX=CC
+export CFLAGS="-m64 -I$PG_SOLARIS_STUDIO_SOLARIS_X64/include -I/usr/local/include -I/usr/sfw/include"
+export CXXFLAGS="-m64 -I$PG_SOLARIS_STUDIO_SOLARIS_X64/include -I/usr/local/include -I/usr/sfw/include"
+export LDFLAGS="-m64  -L$PG_SOLARIS_STUDIO_SOLARIS_X64/lib/amd64 -L$PG_SOLARIS_STUDIO_SOLARIS_X64/lib -L/usr/local/lib -L/usr/sfw/lib/amd64"
+export PATH=$PG_SOLARIS_STUDIO_SOLARIS_X64/bin:/usr/local/bin:/usr/ccs/bin:/opt/csw/bin:/usr/ucb:/usr/sfw/bin/64:/usr/sfw/bin:/usr/sfw/sbin:\$PATH
+export GTK_MODULES=""
+export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib/5.14.2/i86pc-solaris-multi-64/CORE/
 EOT
+
     scp setenv.sh $PG_SSH_SOLARIS_X64: || _die "Failed to scp the setenv.sh file"
 
 
     ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/pgbouncer/source/pgbouncer.solaris-x64/; ./configure --prefix=$PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/pgbouncer --with-libevent=/usr/local" || _die "Failed to configure pgbouncer"
     ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/pgbouncer/source/pgbouncer.solaris-x64/; gmake" || _die "Failed to build pgbouncer"
+    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/pgbouncer/source/pgbouncer.solaris-x64/; cp install-sh doc/" || _die "Failed to copy install-sh to doc folder"
     ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/pgbouncer/source/pgbouncer.solaris-x64/; gmake install" || _die "Failed to install pgbouncer"
     ssh $PG_SSH_SOLARIS_X64 "cp -R $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/pgbouncer/share/doc/pgbouncer/pgbouncer.ini $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/pgbouncer/share/" || _die "Failed to copy pgbouncer ini to share folder"
 
 
     ssh $PG_SSH_SOLARIS_X64 "mkdir -p $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts" || _die "Failed to create the instscripts directory"
     ssh $PG_SSH_SOLARIS_X64 "mkdir -p $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/pgbouncer/lib" || _die "Failed to create the pgbouncer lib directory"
-    PG_LIBEVENT_MAJOR_VERSION=`echo $PG_TARBALL_LIBEVENT | cut -f1,2 '.'`
+    PG_LIBEVENT_MAJOR_VERSION=`echo $PG_TARBALL_LIBEVENT | cut -f1,2 -d'.'`
 
     ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
 
@@ -141,7 +143,7 @@ _postprocess_pgbouncer_solaris_x64() {
     _replace ";ignore_startup_parameters = extra_float_digits" "ignore_startup_parameters = application_name" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to uncomment the ignore startup parameters config line"
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-intel || _die "Failed to build the installer"
-    mv $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-solaris-intel.bin  $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-solaris-x64.bin
+    mv $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-solaris-intel.run  $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-solaris-x64.run
     cd $WD
 }
 
