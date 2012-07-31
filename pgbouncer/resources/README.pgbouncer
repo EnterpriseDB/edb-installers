@@ -61,46 +61,46 @@ Linux
 To view the status of the pgbouncer daemon on Linux, open a terminal window, 
 and enter:
 
-    service pgbouncer-92 status
+    service pgbouncer-9.2 status
 
 If the PgBouncer service is running, Linux echoes back:
 
-    pgbouncer-92 is running (PID:2etc618) 
+    pgbouncer-9.2 is running (PID:2etc618) 
  
 If the service is not running, Linux echoes:
 
-    pgbouncer-92 not running
+    pgbouncer-9.2 not running
     
 You can also use the service command to stop or start the pgbouncer service at 
 the command line.  To start the pgbouncer daemon, enter:
 
-    service pgbouncer-92 start
+    service pgbouncer-9.2 start
     
   To stop the pgbouncer daemon, enter:
 
-    service pgbouncer-92 stop 
+    service pgbouncer-9.2 stop 
 
 Solaris
 -------
 To view the status of Advanced Server services on a Solaris system, open a terminal window, 
 assume superuser privileges, and enter:
 
-    svcs -algrep 92
+    svcs -algrep 9_2
     
 Use the following commands to stop or start the pgbouncer service at 
 the command line.  
   
   To start the pgbouncer service, enter:
 
-    svcadm enable pgbouncer
+    svcadm enable pgbouncer-9_2
     
   To stop the pgbouncer service, enter:
 
-    svcadm disable pgbouncer 
+    svcadm disable pgbouncer-9_2 
 
   To restart the pgbouncer service, enter:
 
-    svcadm restart pgbouncer
+    svcadm restart pgbouncer-9_2
 
 
 Configuring PgBouncer
