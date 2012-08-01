@@ -233,7 +233,7 @@ EOT
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/postgres.solaris-x64/; ./configure --prefix=$PG_STAGING --with-includes=/usr/local/include/libxml2 --with-openssl --with-pam --with-krb5 --disable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --without-readline --with-libedit-preferred"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/postgres.solaris-x64/; ./configure --prefix=$PG_STAGING --with-includes=/usr/local/include/libxml2 --with-openssl --with-pam --with-krb5 --disable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt  --with-libedit-preferred"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
     ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/server/source/postgres.solaris-x64; gmake " || _die "Failed to build postgres" 
