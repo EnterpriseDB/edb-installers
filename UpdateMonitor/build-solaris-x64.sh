@@ -42,6 +42,13 @@ _prep_updatemonitor_solaris_x64() {
 
     # Grab a copy of the source tree
     cp -R SS-UPDATEMANAGER/* updatemonitor.solaris-x64 || _die "Failed to copy the source code (source/SS-UPDATEMANAGER)"
+    cd updatemonitor.solaris-x64
+    cat <<EOT >> "UpdateManager.pro"
+
+QMAKE_CXXFLAGS += -library=stlport4 -m64
+QMAKE_LIBS += -library=stlport4 -m64 -L$PG_SOLARIS_STUDIO_SOLARIS_X64/lib/stlport4/amd64 -liconv -L/usr/sfw/lib/amd64
+EOT
+    cd ..
     chmod -R ugo+w updatemonitor.solaris-x64 || _die "Couldn't set the permissions on the source directory (SS-UPDATEMANAGER)"
     zip -r updatemonitor.solaris-x64.zip updatemonitor.solaris-x64 || _die "Failed to zip the updatemonitor source directory"
 
@@ -82,20 +89,21 @@ _build_updatemonitor_solaris_x64() {
     cd $WD/UpdateMonitor/source
 
     cat <<EOT > "setenv.sh"
-export CC=gcc
-export CXX=g++
-export CFLAGS="-m64" 
-export CXXFLAGS="-m64"
-export CPPFLAGS="-m64"
-export LDFLAGS="-m64"
-export LD_LIBRARY_PATH=/usr/local/lib
-export PATH=/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/local/bin:/usr/ucb:\$PATH
-
+#!/bin/bash
+export CC=cc
+export CXX=CC
+export CFLAGS="-m64 -I$PG_SOLARIS_STUDIO_SOLARIS_X64/include -I/usr/local/include -I/usr/sfw/include"
+export CXXFLAGS="-m64 -I$PG_SOLARIS_STUDIO_SOLARIS_X64/include -I/usr/local/include -I/usr/sfw/include -library=stlport4"
+export LDFLAGS="-m64  -L$PG_SOLARIS_STUDIO_SOLARIS_X64/lib/amd64 -L$PG_SOLARIS_STUDIO_SOLARIS_X64/lib/stlport4/amd64 -L$PG_SOLARIS_STUDIO_SOLARIS_X64/lib -L/usr/local/lib -L/usr/sfw/lib/amd64 -library=stlport4"
+export PATH=$PG_SOLARIS_STUDIO_SOLARIS_X64/bin:/usr/local/bin:/usr/ccs/bin:/opt/csw/bin:/usr/ucb:/usr/sfw/bin/64:/usr/sfw/bin:/usr/sfw/sbin:\$PATH
+export GTK_MODULES=""
+export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib/5.14.2/i86pc-solaris-multi-64/CORE:$PG_SOLARIS_STUDIO_SOLARIS_X64/lib/stlport4/amd64
 EOT
+
     scp setenv.sh $PG_SSH_SOLARIS_X64: || _die "Failed to scp the setenv.sh file"
 
     cd $WD/UpdateMonitor/source/GetLatestPGInstalled.solaris-x64
-    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/UpdateMonitor/source/GetLatestPGInstalled.solaris-x64;  g++ -m64 -DwxSIZE_T_IS_UINT -I/usr/local/include/wx-2.8/ -I/usr/local/lib/wx/include/gtk2-unicode-release-2.8/ -L/usr/local/lib -lwx_baseud-2.8 -o GetLatestPGInstalled  GetLatestPGInstalled.cpp" || _die "Failed to build GetLatestPGInstalled"
+    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/UpdateMonitor/source/GetLatestPGInstalled.solaris-x64;  CC -library=stlport4 -m64 -DwxSIZE_T_IS_UINT -I/usr/local/include/wx-2.8/ -I/usr/local/lib/wx/include/gtk2-unicode-release-2.8/ \$LDFLGAS \$CXXFLAGS -L/usr/local/lib -lwx_baseud-2.8 -o GetLatestPGInstalled  GetLatestPGInstalled.cpp" || _die "Failed to build GetLatestPGInstalled"
 
     cd $WD/UpdateMonitor/source/UpdateMonitor.solaris-x64
 
@@ -150,7 +158,7 @@ _postprocess_updatemonitor_solaris_x64() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-intel || _die "Failed to build the installer for solaris-x64"
-    mv $WD/output/updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-solaris-intel.bin  $WD/output/updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-solaris-x64.bin
+    mv $WD/output/updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-solaris-intel.run  $WD/output/updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-solaris-x64.run
    
     cd $WD
 }
