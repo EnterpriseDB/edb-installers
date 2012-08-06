@@ -327,12 +327,12 @@ EOT
     # pgAdmin
     #####################
 
-    cd pgadmin.windows-x64/pgadmin
-    _replace "\$(PGBUILD)/libxml2" "\$(PGBUILD)" pgAdmin3.vcproj || _die "Failed to replace the include directory"
-    _replace "\$(PGBUILD)/libxslt" "\$(PGBUILD)" pgAdmin3.vcproj || _die "Failed to replace the include directory"
-    _replace "\$(PGBUILD)/iconv" "\$(PGBUILD)" pgAdmin3.vcproj || _die "Failed to replace the include directory"
-    _replace "iconv_a.lib" " " pgAdmin3.vcproj || _die "Failed to replace the include directory"
-    cd ../..
+    #cd pgadmin.windows-x64/pgadmin
+    #_replace "\$(PGBUILD)/libxml2" "\$(PGBUILD)" pgAdmin3.vcproj || _die "Failed to replace the include directory"
+    #_replace "\$(PGBUILD)/libxslt" "\$(PGBUILD)" pgAdmin3.vcproj || _die "Failed to replace the include directory"
+    #_replace "\$(PGBUILD)/iconv" "\$(PGBUILD)" pgAdmin3.vcproj || _die "Failed to replace the include directory"
+    #_replace "iconv_a.lib" " " pgAdmin3.vcproj || _die "Failed to replace the include directory"
+    #cd ../..
  
     echo "Copying pgAdmin source tree to Windows build VM"
     zip -r pgadmin-win64.zip pgadmin.windows-x64 || _die "Failed to pack the source tree (pgadmin.windows-x64)"

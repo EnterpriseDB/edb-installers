@@ -58,42 +58,43 @@ at the Mac command line.
 
 Linux
 -----
-To view the status of the pgbouncer daemon on Linux, open a terminal window, 
+To view the status of the pgbouncer-9.2 daemon on Linux, open a terminal window, 
 and enter:
 
-    service pgbouncer status
+    service pgbouncer-9.2 status
 
 If the PgBouncer service is running, Linux echoes back:
 
-    pgbouncer is running (PID:29618) 
+    pgbouncer-9.2 is running (PID:29618) 
  
 If the service is not running, Linux echoes:
 
-    pgbouncer not running
+    pgbouncer-9.2 not running
     
 You can also use the service command to stop or start the pgbouncer service at 
-the command line.  To start the pgbouncer daemon, enter:
+the command line.  To start the pgbouncer-9.2 daemon, enter:
 
-    service pgbouncer start
+    service pgbouncer-9.2 start
     
-  To stop the pgbouncer daemon, enter:
+  To stop the pgbouncer-9.2 daemon, enter:
 
-    service pgbouncer stop 
+    service pgbouncer-9.2 stop 
 
 Solaris
 -----
-To start the pgbouncer daemon on Solaris, open a terminal window, 
+To start the pgbouncer-9_2 daemon on Solaris, open a terminal window, 
 and enter:
 
-    svcadm enable pgbouncer
+    svcadm enable pgbouncer-9_2
 
-  To stop the pgbouncer daemon, enter:
+  To stop the pgbouncer-9_2 daemon, enter:
 
-    svcadm disable pgbouncer 
+    svcadm disable pgbouncer-9_2 
   
-  To restart the pgbouncer daemon, enter:
+  To restart the pgbouncer-9_2 daemon, enter:
 
-    svcadm restart pgbouncer 
+    svcadm restart pgbouncer-9_2 
+
 
 Configuring PgBouncer
 ---------------------
