@@ -287,12 +287,12 @@ EOT
     # pgAdmin
     #####################
     echo "Copying pgAdmin source tree to Windows build VM"
-    cd pgadmin.windows/pgadmin
-    _replace "\$(PGBUILD)/libxml2" "\$(PGBUILD)" pgAdmin3.vcproj || _die "Failed to replace the include directory"
-    _replace "\$(PGBUILD)/libxslt" "\$(PGBUILD)" pgAdmin3.vcproj || _die "Failed to replace the include directory"
-    _replace "\$(PGBUILD)/iconv" "\$(PGBUILD)" pgAdmin3.vcproj || _die "Failed to replace the include directory"
-    _replace "iconv_a.lib" " " pgAdmin3.vcproj || _die "Failed to replace the include directory"
-    cd ../..
+    #cd pgadmin.windows/pgadmin
+    #_replace "\$(PGBUILD)/libxml2" "\$(PGBUILD)" pgAdmin3.vcproj || _die "Failed to replace the include directory"
+    #_replace "\$(PGBUILD)/libxslt" "\$(PGBUILD)" pgAdmin3.vcproj || _die "Failed to replace the include directory"
+    #_replace "\$(PGBUILD)/iconv" "\$(PGBUILD)" pgAdmin3.vcproj || _die "Failed to replace the include directory"
+    #_replace "iconv_a.lib" " " pgAdmin3.vcproj || _die "Failed to replace the include directory"
+    #cd ../..
     zip -r pgadmin.zip pgadmin.windows || _die "Failed to pack the source tree (pgadmin.windows)"
     scp pgadmin.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the source tree to the windows build host (pgadmin.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip pgadmin.zip" || _die "Failed to unpack the source tree on the windows build host (pgadmin.zip)"
