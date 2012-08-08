@@ -1577,8 +1577,17 @@
             </compareText>
           </ruleList>
         </actionGroup>
-        <deleteFile>
-            <path>${installdir}/etc</path>
+
+        <!-- delete userlist.txt file and etc directory-->
+        <deleteFile path="${installdir}${platform_path_separator}etc${platform_path_separator}userlist.txt">
+          <ruleList>
+            <fileTest path="${installdir}${platform_path_separator}etc${platform_path_separator}userlist.txt" condition="exists"/>
+          </ruleList>
+        </deleteFile>
+        <deleteFile path="${installdir}${platform_path_separator}etc">
+          <ruleList>
+            <fileTest path="${installdir}${platform_path_separator}etc" condition="is_empty"/>
+          </ruleList>
         </deleteFile>
 
         <deleteFile>
