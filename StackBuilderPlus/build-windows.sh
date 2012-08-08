@@ -104,6 +104,7 @@ SET SOURCE_PATH=%CD%
 SET QMAKE=%QT_PATH%\qt\bin\qmake.exe
 SET QT_MINGW_MAKE=%QT_PATH%\mingw\bin\mingw32-make.exe
 SET ERRMSG=No error found!
+SET PATH=%PATH%;$PG_MINGW_WINDOWS;$PG_MINGW_WINDOWS\bin;$PG_MINGW_WINDOWS\libexec\gcc\mingw32\3.4.5
 
 ECHO ******************************************
 ECHO * Build and Install the StackBuilderPlus *
