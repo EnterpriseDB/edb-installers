@@ -64,6 +64,7 @@ function start
        then
            LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH $INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini
 
+	   sleep 3
 	   check_pid
 
            if [ "x\$PIDB" = "x" ];
@@ -76,6 +77,7 @@ function start
        else
            su $SYSTEM_USER -c "LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH $INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini " 
 
+	   sleep 3
 	   check_pid
 
            if [ "x\$PIDB" = "x" ];
