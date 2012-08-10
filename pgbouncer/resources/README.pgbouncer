@@ -17,8 +17,8 @@ On Windows, select Run from the Start menu; when the Run dialog opens, enter:
     services.msc 
 
 and click OK to open the Services dialog.  Scroll through the list of services 
-to view status information about the PgBouncer service (pgbouncer-91).  To change 
-the state of the pgbouncer-91 service, select the service from the list, and use 
+to view status information about the PgBouncer service (pgbouncer-9.2).  To change 
+the state of the pgbouncer-9.2 service, select the service from the list, and use 
 the Start and Stop service links in the upper-left corner of the Services dialog.  
 
 Linux
@@ -26,52 +26,52 @@ Linux
 To view the status of the PgBouncer daemon on Linux, open a terminal window, 
 and enter:
 
-    service pgbouncer-91 status
+    service pgbouncer-9.2 status
 
   If the PgBouncer service is running, Linux echoes back:
 
-    pgbouncer-91 is running (PID:29618) 
+    pgbouncer-9.2 is running (PID:29618) 
  
   If the service is not running, Linux echoes:
 
-    pgbouncer-91 not running
+    pgbouncer-9.2 not running
     
 You can also use the service command to stop or start the PgBouncer service at 
-the command line.  To start the pgbouncer-91 daemon, enter:
+the command line.  To start the pgbouncer-9.2 daemon, enter:
 
-    service pgbouncer-91 start
+    service pgbouncer-9.2 start
     
-  To stop the pgbouncer-91 daemon, enter:
+  To stop the pgbouncer-9.2 daemon, enter:
 
-    service pgbouncer-91 stop 
+    service pgbouncer-9.2 stop 
 
 HPUX
 ----
 To view the status of the PgBouncer daemon on HPUX, open a terminal window, 
 and enter:
 
-    /sbin/init.d/pgbouncer-91 status
+    /sbin/init.d/pgbouncer-9.2 status
 
   If the PgBouncer service is running, HPUX echoes back:
 
-    pgbouncer-91 is running 
+    pgbouncer-9.2 is running 
  
   If the service is not running, HPUX echoes:
 
-    pgbouncer-91 not running
+    pgbouncer-9.2 not running
     
 You can also control the PgBouncer service at the command line.  To start the 
 PgBouncer daemon, enter:
 
-    /sbin/init.d/pgbouncer-91 start
+    /sbin/init.d/pgbouncer-9.2 start
     
 To stop the PgBouncer daemon, enter:
 
-    /sbin/init.d/pgbouncer-91 stop 
+    /sbin/init.d/pgbouncer-9.2 stop 
 
 To stop and then start the PgBouncer daemon, enter:
 
-    /sbin/init.d/pgbouncer-91 restart
+    /sbin/init.d/pgbouncer-9.2 restart
 
 
 Configuring PgBouncer
@@ -180,12 +180,12 @@ The following (Linux) example demonstrates the syntax allowed in the [pgbouncer]
 section of the configuration file:
     
     [pgbouncer] 
-    logfile = /var/log/pgbouncer-91/pgbouncer.log 
+    logfile = /var/log/pgbouncer-9.2/pgbouncer.log 
     pidfile = /tmp/pgbouncer.pid 
     listen_addr = * 
     listen_port = 6432 
     auth_type = md5 
-    auth_file = /opt/PostgresPlus/9.1AS/etc/userlist.txt 
+    auth_file = /opt/PostgresPlus/9.2AS/etc/userlist.txt 
     admin_users = enterprisedb 
     pool_mode = session 
 
