@@ -27,23 +27,19 @@ To view the status of the PgBouncer service on Linux, open a terminal window,
 and enter:
 
     service pgbouncer-9.2 status
-
-  If the PgBouncer service is running, Linux echoes back:
-
-    pgbouncer-9.2 is running (PID:29618) 
- 
-  If the service is not running, Linux echoes:
-
-    pgbouncer-9.2 not running
     
-You can also use the service command to stop or start the PgBouncer service at 
-the command line.  To start the pgbouncer-9.2 service, enter:
+You can also use the service command to start, stop or restart the PgBouncer 
+service.  To start the pgbouncer-9.2 service, enter:
 
     service pgbouncer-9.2 start
     
-  To stop the pgbouncer-9.2 service, enter:
+To stop the pgbouncer-9.2 service, enter:
 
     service pgbouncer-9.2 stop 
+
+To stop, and then start the PgBouncer service, enter:
+
+    service pgbouncer-9.2 restart 
 
 HPUX
 ----
@@ -51,17 +47,8 @@ To view the status of the PgBouncer service on HPUX, open a terminal window,
 and enter:
 
     /sbin/init.d/pgbouncer-9.2 status
-
-  If the PgBouncer service is running, HPUX echoes back:
-
-    pgbouncer-9.2 is running 
- 
-  If the service is not running, HPUX echoes:
-
-    pgbouncer-9.2 not running
     
-You can also control the PgBouncer service at the command line.  To start the 
-PgBouncer service, enter:
+To start the PgBouncer service, enter:
 
     /sbin/init.d/pgbouncer-9.2 start
     
@@ -69,9 +56,28 @@ To stop the PgBouncer service, enter:
 
     /sbin/init.d/pgbouncer-9.2 stop 
 
-To stop and then start the PgBouncer service, enter:
+To stop, and then start the PgBouncer service, enter:
 
     /sbin/init.d/pgbouncer-9.2 restart
+
+Solaris
+-------
+To view the status of the PgBouncer service, assume superuser privileges, and 
+enter:
+       
+       svcs -algrep 92
+
+To start the pgbouncer-9_2 service, enter:
+
+    svcadm enable pgbouncer-9_2
+    
+To stop the pgbouncer-9_2 service, enter:
+
+    svcadm disable pgbouncer-9_2 
+
+To stop, and then start the pgbouncer-9_2 service, enter:
+
+    svcadm restart pgbouncer-9_2
 
 
 Configuring PgBouncer
