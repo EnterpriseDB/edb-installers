@@ -23,7 +23,7 @@ the Start and Stop service links in the upper-left corner of the Services dialog
 
 Linux
 -----
-To view the status of the PgBouncer daemon on Linux, open a terminal window, 
+To view the status of the PgBouncer service on Linux, open a terminal window, 
 and enter:
 
     service pgbouncer-9.2 status
@@ -37,17 +37,17 @@ and enter:
     pgbouncer-9.2 not running
     
 You can also use the service command to stop or start the PgBouncer service at 
-the command line.  To start the pgbouncer-9.2 daemon, enter:
+the command line.  To start the pgbouncer-9.2 service, enter:
 
     service pgbouncer-9.2 start
     
-  To stop the pgbouncer-9.2 daemon, enter:
+  To stop the pgbouncer-9.2 service, enter:
 
     service pgbouncer-9.2 stop 
 
 HPUX
 ----
-To view the status of the PgBouncer daemon on HPUX, open a terminal window, 
+To view the status of the PgBouncer service on HPUX, open a terminal window, 
 and enter:
 
     /sbin/init.d/pgbouncer-9.2 status
@@ -61,15 +61,15 @@ and enter:
     pgbouncer-9.2 not running
     
 You can also control the PgBouncer service at the command line.  To start the 
-PgBouncer daemon, enter:
+PgBouncer service, enter:
 
     /sbin/init.d/pgbouncer-9.2 start
     
-To stop the PgBouncer daemon, enter:
+To stop the PgBouncer service, enter:
 
     /sbin/init.d/pgbouncer-9.2 stop 
 
-To stop and then start the PgBouncer daemon, enter:
+To stop and then start the PgBouncer service, enter:
 
     /sbin/init.d/pgbouncer-9.2 restart
 
