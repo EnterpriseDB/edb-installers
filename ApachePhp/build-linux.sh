@@ -99,6 +99,7 @@ _build_ApachePhp_linux() {
     ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libkrb5support.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libkrb5support)"
     ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libk5crypto.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libk5crypto)"
     ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libxml2.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libxml2)"
+    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libiconv.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libiconv)"
 
     echo "Configuring the php source tree"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux/; export LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:/usr/local/lib; sh ./configure --prefix=$PG_STAGING/php --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --with-pgsql=$PG_PGHOME_LINUX --with-openssl=/usr/local --with-pdo-pgsql=$PG_PGHOME_LINUX --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-png-dir=/usr --with-jpeg-dir=/usr/local --with-freetype-dir=/usr/local --with-iconv=/usr/local --enable-gd-native-ttf --enable-mbstring=all" || _die "Failed to configure php"
@@ -166,11 +167,14 @@ EOT
     ssh $PG_SSH_LINUX "chmod a+rx \"$PG_STAGING/php/bin/phar.phar\""
 
     # Change the rpath for php
-    ssh $PG_SSH_LINUX "cd $PG_STAGING/php/bin; chrpath --replace \\\${ORIGIN}/../lib:\\\${ORIGIN}/../../apache/lib php; chmod 755 php"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/php; chrpath --replace \\\${ORIGIN}/../lib:\\\${ORIGIN}/../../apache/lib php; chmod 755 php"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/php; FILES=\`file \\\`find . -maxdepth 2 -mindepth 2\\\` | grep ELF | cut -d: -f1\`; for F in \$FILES; do RPATH=\`chrpath \$F | grep RPATH | grep -v ORIGIN\`; if [[ x\"\${RPATH}\" != x\"\" ]]; then chrpath --replace \\\${ORIGIN}/../lib:\\\${ORIGIN}/../../apache/lib \$F; chmod 755 \$F; fi done"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/php; FILES=\`file \\\`find . -maxdepth 3 -mindepth 3\\\` | grep ELF | cut -d: -f1\`; for F in \$FILES; do RPATH=\`chrpath \$F | grep RPATH | grep -v ORIGIN\`; if [[ x\"\${RPATH}\" != x\"\" ]]; then chrpath --replace \\\${ORIGIN}/../../lib:\\\${ORIGIN}/../../../apache/lib \$F; chmod 755 \$F; fi done"
 
-    # Change the rpath for php
+    # Change the rpath for apache
     ssh $PG_SSH_LINUX "cd $PG_STAGING/apache; chrpath --replace \\\${ORIGIN}/../lib:\\\${ORIGIN}/../../php/lib modules/libphp5.so"
     ssh $PG_SSH_LINUX "cd $PG_STAGING/apache; FILES=\`file \\\`find . -maxdepth 2 -mindepth 2\\\` | grep ELF | cut -d: -f1\`; for F in \$FILES; do RPATH=\`chrpath \$F | grep RPATH | grep -v ORIGIN\`; if [[ x\"\${RPATH}\" != x\"\" ]]; then chrpath --replace \\\${ORIGIN}/../lib \$F; chmod 755 \$F; fi done"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/apache; FILES=\`file \\\`find . -maxdepth 3 -mindepth 3\\\` | grep ELF | cut -d: -f1\`; for F in \$FILES; do RPATH=\`chrpath \$F | grep RPATH | grep -v ORIGIN\`; if [[ x\"\${RPATH}\" != x\"\" ]]; then chrpath --replace \\\${ORIGIN}/../../lib \$F; chmod 755 \$F; fi done"
 
     cd $WD
 
