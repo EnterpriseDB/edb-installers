@@ -183,7 +183,7 @@ IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 @IF NOT EXIST "configure.js" @GOTO configure-not-build
 
 @ECHO Configure PHP
-@cscript /nologo configure.js --enable-snapshot-build --enable-cli --enable-cgi  --with-openssl --enable-pdo --with-extra-includes=%PGBUILD%\include;%PG_HOME_PATH%\include --with-extra-libs=%PGBUILD%\lib;%PG_HOME_PATH%\lib --enable-apache=yes --with-apache-includes=%APACHE_STAGING%\include --with-apache-libs=%APACHE_STAGING%\lib --enable-apache2filter --enable-apache2-2filter --enable-apache2handler --enable-apache2-2handler --with-apache-hooks --with-pgsql --with-pdo-pgsql --with-prefix=%PHP_STAGING% --enable-one-shot --enable-cli-win32 --enable-embed --enable-isapi --enable-ftp --without-mysqlnd --with-xsl=SHARED  --enable-mbstring --enable-mbregex --enable-shmop  --enable-exif --enable-soap --enable-sockets --with-php-build --with-gd=SHARED --without-mysql --without-mysqli --without-sqlite3 --without-pdo-mysql --without-pdo-sqlite
+@cscript /nologo configure.js --enable-cli --enable-cgi  --with-openssl --enable-pdo --with-extra-includes=%PGBUILD%\include;%PG_HOME_PATH%\include;%APACHE_STAGING%\include --with-extra-libs=%PGBUILD%\lib;%PG_HOME_PATH%\lib;%APACHE_STAGING%\lib --enable-apache2filter --enable-apache2-2filter --enable-apache2handler --enable-apache2-2handler --with-apache-hooks --with-pgsql --with-pdo-pgsql --with-prefix=%PHP_STAGING% --enable-one-shot --enable-cli-win32 --enable-embed --enable-isapi --enable-ftp --without-mysqlnd --with-xsl=SHARED  --enable-mbstring --enable-mbregex --enable-shmop  --enable-exif --enable-soap --enable-sockets --with-gd=SHARED --without-mysql --without-mysqli --without-sqlite3 --without-pdo-mysql --without-pdo-sqlite
 
 @IF NOT EXIST "Makefile" @GOTO make-not-created
 
@@ -201,10 +201,10 @@ IF NOT EXIST php.staging/php.exe @GOTO installation-failed
 @COPY "%PGBUILD%\bin\libeay32.dll" php.staging || echo Failed to copy OpenSSL\bin\libeay32.dll && EXIT -1
 
 @COPY "%PGBUILD%\bin\libintl.dll" php.staging || echo Failed to copy gettext\bin\libintl.dll && EXIT -1
-@COPY "%PGBUILD%\bin\libiconv.dll" php.staging || echo Failed to copy gettext\bin\libiconv.dll && EXIT -1
+@COPY "%PGBUILD%\bin\iconv.dll" php.staging || echo Failed to copy gettext\bin\libiconv.dll && EXIT -1
 @COPY "%PGBUILD%\bin\libxml2.dll" php.staging || echo Failed to copy libxml2\bin\libxml2.dll && EXIT -1
 @COPY "%PGBUILD%\bin\libxslt.dll" php.staging || echo Failed to copy libxslt\bin\libxslt.dll && EXIT -1
-@COPY "%PGBUILD%\bin\zlib.dll" php.staging || echo Failed to copy zlib.dll && EXIT -1
+@COPY "%PGBUILD%\bin\zlib1.dll" php.staging || echo Failed to copy zlib.dll && EXIT -1
 @COPY "%PG_HOME_PATH%\bin\libpq.dll" php.staging || echo Failed to copy libpq.dll && EXIT -1
 
 @GOTO end
@@ -258,9 +258,9 @@ EOT
 
     # Configure the httpd.conf file
     _replace "$TEMP_PATH/apache.staging" "@@INSTALL_DIR@@" "$WD/ApachePhp/staging/windows/apache/conf/httpd.conf"
-    _replace "Listen 80" "Listen @@PORT@@" "$WD/ApachePhp/staging/windows/apache/conf/httpd.conf"
+    _replace "Listen 8080" "Listen @@PORT@@" "$WD/ApachePhp/staging/windows/apache/conf/httpd.conf"
     _replace "htdocs" "www" "$WD/ApachePhp/staging/windows/apache/conf/httpd.conf"
-    _replace "#ServerName www.example.com:80" "ServerName localhost:@@PORT@@" "$WD/ApachePhp/staging/windows/apache/conf/httpd.conf"
+    _replace "#ServerName www.example.com:8080" "ServerName localhost:@@PORT@@" "$WD/ApachePhp/staging/windows/apache/conf/httpd.conf"
 
 
     mkdir $WD/ApachePhp/staging/windows/php || _die "Failed to create directory for php"
