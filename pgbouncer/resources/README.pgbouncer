@@ -65,7 +65,7 @@ Solaris
 To view the status of the PgBouncer service, assume superuser privileges, and 
 enter:
        
-       svcs -algrep 92
+       svcs -a | grep pgbouncer-9_2
 
 To start the pgbouncer-9_2 service, enter:
 
