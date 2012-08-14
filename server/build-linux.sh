@@ -191,6 +191,8 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libz.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libiconv.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libpng12.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libjpeg.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
 
@@ -201,6 +203,8 @@ _build_server_linux() {
     _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libtermcap.so"  
     _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libxml2.so"  
     _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libxslt.so"  
+    _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libz.so"  
+    _process_dependent_libs "$PG_STAGING/bin" "$PG_STAGING/lib" "libiconv.so"  
 
 	
     # Now build pgAdmin

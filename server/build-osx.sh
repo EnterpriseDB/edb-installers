@@ -181,6 +181,8 @@ _build_server_osx() {
     # Copy libxml2 as System's libxml can be old. 	
     cp /usr/local/lib/libxml2* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
     cp /usr/local/lib/libxslt.* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxslt"	
+    cp /usr/local/lib/libz* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxslt"	
+    cp /usr/local/lib/libiconv.* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxslt"	
     cp /usr/local/lib/libuuid* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"	
     cp /usr/local/lib/libssl* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"	
     cp /usr/local/lib/libcrypto* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"	
