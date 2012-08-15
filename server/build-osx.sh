@@ -173,12 +173,12 @@ _build_server_osx() {
     cp -R stackbuilder.app $WD/server/staging/osx || _die "Failed to copy StackBuilder into the staging directory"
 
     # Copy libxml2 as System's libxml can be old. 	
-    cp /usr/local/lib/libxml2* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
-    cp /usr/local/lib/libxslt* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
-    cp /usr/local/lib/libz* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
-    cp /usr/local/lib/libiconv* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
-    cp /usr/local/lib/libssl* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
-    cp /usr/local/lib/libcrypto* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
+    cp /usr/local/lib/libxml2.* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
+    cp /usr/local/lib/libxslt.* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
+    cp /usr/local/lib/libz.* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
+    cp /usr/local/lib/libiconv.* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
+    cp /usr/local/lib/libssl.* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
+    cp /usr/local/lib/libcrypto.* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"	
 	
     # maintain absolute refrences for postgis build. 
     cp -R $WD/server/staging/osx $WD/server/caching/. || _die "Failed to copy the caching directory for osx"
