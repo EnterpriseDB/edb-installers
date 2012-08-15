@@ -8,11 +8,11 @@
 <body>
 
 <center>
-<h1>PostgreSQL 9.1</h1></p>
+<h1>PostgreSQL 9.2</h1></p>
 <h2>Installation Notes</h2>
 </center>
 
-<p>Welcome to the PostgreSQL 9.1 Installation Wizard.</p>
+<p>Welcome to the PostgreSQL 9.2 Installation Wizard.</p>
 
 <h3>Legal Bits</h3>
 
@@ -24,7 +24,7 @@
 
 <h3>Supported Operating Systems</h3>
 
-<p>The Linux builds of this installer have been tested on a variety of different versions of 32 and 64bit Linux distributions, including CentOS 5 and above, Ubuntu 10.04 and above, Redhat Enterprise Linux 5 and above and Fedora Core 13 and above. The Mac OS X build has been tested on OS X 10.5 (Leopard) and above. Please let us know if the installer does not operate as expected on your operating system, and where possible, we will try to add support</p>
+<p>The Linux builds of this installer have been tested on a variety of different versions of 32 and 64bit Linux distributions, including CentOS 5 and above, Ubuntu 10.04 and above, Redhat Enterprise Linux 5 and above and Fedora Core 15 and above. The Mac OS X build has been tested on OS X 10.5 (Leopard) and above. Please let us know if the installer does not operate as expected on your operating system, and where possible, we will try to add support</p>
 
 <h3>Technical Support</h3>
 
@@ -41,10 +41,10 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 
 <ol>
   <li>Edit the postgresql.conf file in the data directory and modify the shared_preload_libraries config option to look like the following, if running on Linux or Mac:<br>&nbsp;<br>
-      <code>shared_preload_libraries = '$libdir/plugins/plugin_debugger.so'</code><br>&nbsp;<br>or if you are on Windows:<br>&nbsp;<br>
-      <code>shared_preload_libraries = '$libdir/plugins/plugin_debugger.dll'</code><br>&nbsp;</li>
+      <code>shared_preload_libraries = '$libdir/plugin_debugger.so'</code><br>&nbsp;<br>or if you are on Windows:<br>&nbsp;<br>
+      <code>shared_preload_libraries = '$libdir/plugin_debugger.dll'</code><br>&nbsp;</li>
   <li>Restart the PostgreSQL server.<br>&nbsp;</li>
-  <li>Run <i>&lt;Installation directory&gt;/share/postgresql/contrib/pldbgapi.sql</i> (or <i>&lt;Installation directory&gt;/share/contrib/pldbgapi.sql</i> on Windows) in the database you wish to debug using psql or the pgAdmin query tool.
+  <li>Run <i>CREATE EXTENSION pldbgapi;</i> in the database you wish to debug using psql or the pgAdmin query tool.
 </ol>
 
 <p>For further information, please see the pgAdmin online help, and the debugger plugin <a href="README.pldebugger">README file</a>. 
