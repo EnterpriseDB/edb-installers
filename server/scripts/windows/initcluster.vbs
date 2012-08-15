@@ -11,18 +11,18 @@ Const ForReading = 1
 Const ForWriting = 2
 
 ' Check the command line
-If WScript.Arguments.Count <> 7 Then
- Wscript.Echo "Usage: initcluster.vbs <OSUsername> <SuperUsername> <Password> <Install dir> <Data dir> <Port> <Locale>"
+If WScript.Arguments.Count <> 6 Then
+ Wscript.Echo "Usage: initcluster.vbs <SuperUsername> <Password> <Install dir> <Data dir> <Port> <Locale>"
  Wscript.Quit 127
 End If
 
 strOSUsername = WScript.Arguments.Item(0)
-strUsername = WScript.Arguments.Item(1)
-strPassword = WScript.Arguments.Item(2)
-strInstallDir = WScript.Arguments.Item(3)
-strDataDir = WScript.Arguments.Item(4)
-lPort = CLng(WScript.Arguments.Item(5))
-strLocale = WScript.Arguments.Item(6)
+strUsername = WScript.Arguments.Item(0)
+strPassword = WScript.Arguments.Item(1)
+strInstallDir = WScript.Arguments.Item(2)
+strDataDir = WScript.Arguments.Item(3)
+lPort = CLng(WScript.Arguments.Item(4))
+strLocale = WScript.Arguments.Item(5)
 
 ' Remove any trailing \'s from the data dir - they will confuse cacls
 If Right(strDataDir, 1) = "\" Then
