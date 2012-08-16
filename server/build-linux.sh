@@ -206,6 +206,7 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cp -R /usr/local/ldap-2.4.23/lib/libldap_r-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap_r)"
     ssh $PG_SSH_LINUX "cp -R /usr/local/ldap-2.4.23/lib/libldap-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap)"
     ssh $PG_SSH_LINUX "cp -R /usr/local/cyrus-sasl/lib/libsasl2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(libsasl2)"
+    ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libz.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
 
     # Process Dependent libs
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl.so"
@@ -218,6 +219,7 @@ _build_server_linux() {
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap-2.4"
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "liblber-2.4"
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libsasl2"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libz"
 
     # Hack for bypassing dependency on the deprecated libtermcap
     # As libnucurses is API compatible with the termcap so we copy libtermcap and then just
