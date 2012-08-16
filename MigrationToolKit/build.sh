@@ -38,6 +38,12 @@ then
     source $WD/MigrationToolKit/build-solaris-sparc.sh
 fi
 
+# HPUX
+if [ $PG_ARCH_HPUX = 1 ];
+then
+    source $WD/MigrationToolKit/build-hpux.sh
+fi
+
 ################################################################################
 # Build preparation
 ################################################################################
@@ -126,6 +132,11 @@ _prep_MigrationToolKit() {
         _prep_MigrationToolKit_solaris_sparc || exit 1
     fi
 
+    # HPUX
+    if [ $PG_ARCH_HPUX = 1 ];
+    then
+        _prep_MigrationToolKit_hpux || exit 1
+    fi
 }
 
 ################################################################################
@@ -170,6 +181,11 @@ _build_MigrationToolKit() {
         _build_MigrationToolKit_solaris_sparc || exit 1
     fi
 
+    # HPUX
+    if [ $PG_ARCH_HPUX = 1 ];
+    then
+        _build_MigrationToolKit_hpux || exit 1
+    fi
 }
 
 ################################################################################
@@ -231,5 +247,10 @@ _postprocess_MigrationToolKit() {
     then
         _postprocess_MigrationToolKit_solaris_sparc || exit 1
     fi
-    
+   
+    # HPUX
+#    if [ $PG_ARCH_HPUX = 1 ];
+ #   then
+  #      _postprocess_MigrationToolKit_hpux || exit 1
+   # fi 
 }
