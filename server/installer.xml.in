@@ -1754,12 +1754,6 @@
                     <folder>programfileswindows</folder>
                     <origin>bin/${libintl_dll}</origin>
                 </unpackFile>
-                <unpackFile>
-                    <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\libiconv2.dll</destination>
-                    <folder>programfileswindows</folder>
-                    <origin>bin/libiconv2.dll</origin>
-                </unpackFile>
                 <!-- Validate user binary -->
                 <unpackFile>
                     <component>default</component>
