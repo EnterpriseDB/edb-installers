@@ -188,6 +188,7 @@ _build_server_osx() {
     _rewrite_so_refs $WD/server/staging/osx lib @loader_path/..
     _rewrite_so_refs $WD/server/staging/osx lib/postgresql @loader_path/../..
     _rewrite_so_refs $WD/server/staging/osx lib/postgresql/plugins @loader_path/../../..
+    _rewrite_so_refs $WD/server/staging/osx stackbuilder.app/Contents/MacOS @loader_path/../../..
 	
     cd $WD 
 }
