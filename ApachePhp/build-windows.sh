@@ -142,7 +142,18 @@ nmake -f Makefile.win PORT=8080 INSTDIR="%STAGING_DIR%\apache.staging" NO_EXTERN
 EOT
 
     scp build-apache.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-apache.bat" || _die "Failed to build Apache on Windows VM"
+    APACHE_BUILT=0
+    APACHE_WIN_BUILT_COUNT=0
+    while [ $APACHE_BUILT == 0 ]; do
+        # We will stop trying, if the count is more than 3
+        if [ $APACHE_WIN_BUILT_COUNT -gt 9 ];
+        then
+            _die "Failed to build Apache on Windows VM"
+        fi
+        APACHE_BUILT=1
+        ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-apache.bat" || APACHE_BUILT=0
+        APACHE_WIN_BUILT_COUNT=`expr $APACHE_WIN_BUILT_COUNT + 1`
+    done
 
     #Building php
     cat <<EOT > "build-php.bat"
