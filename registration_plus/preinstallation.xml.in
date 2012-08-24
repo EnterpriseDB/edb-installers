@@ -95,8 +95,10 @@
 		<programArguments>-m</programArguments>
 		<showMessageOnError>0</showMessageOnError>
 		<abortOnError>0</abortOnError>
+                <ruleEvaluationLogic>or</ruleEvaluationLogic>
 		<ruleList>
 		    <fileExists path="/etc/debian_version" />
+		    <compareText logic="contains" text="${platform_name}" value="hpux"/>
 		</ruleList>
 	    </runProgram>
     	    <runProgram>
@@ -106,6 +108,7 @@
 		<abortOnError>0</abortOnError>
 		<ruleList>
 		    <fileTest condition="not_exists" path="/etc/debian_version" />
+		    <compareText logic="does_not_contain" text="${platform_name}" value="hpux"/>
 		</ruleList>
 	    </runProgram>
 	    <setInstallerVariable name="processor_arch" value="${program_stdout}" />    
@@ -147,6 +150,11 @@
 	<ruleList>
 	    <compareText text="${platform_name}" logic="equals" value="osx" />
 	</ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="os" value="HP-UX" >
+        <ruleList>
+	    <compareText logic="contains" text="${platform_name}" value="hpux"/>
+        </ruleList>
     </setInstallerVariable>
 
     <urlEncode>
