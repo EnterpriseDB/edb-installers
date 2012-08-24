@@ -101,7 +101,7 @@ _build_ApachePhp_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libiconv.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libiconv)"
 
     echo "Configuring the php source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/php.linux-x64/; export LD_LIBRARY_PATH=$PG_PGHOME_LINUX_X64/lib:/usr/local/lib; sh ./configure --prefix=$PG_STAGING/php --with-libdir=lib64 --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --with-pgsql=$PG_PGHOME_LINUX_X64 --with-openssl=/usr/local --with-pdo-pgsql=$PG_PGHOME_LINUX_X64 --without-mysql --without-pdo-mysql --without-pdo-sqlite --with-gd --with-png-dir=/usr/local --with-jpeg-dir=/usr/local --with-freetype-dir=/usr/local --with-iconv=/usr/local --enable-gd-native-ttf --enable-mbstring=all" || _die "Failed to configure php"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/php.linux-x64/; export LD_LIBRARY_PATH=$PG_PGHOME_LINUX_X64/lib:/usr/local/lib; sh ./configure --prefix=$PG_STAGING/php --with-libdir=lib64 --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --with-pgsql=$PG_PGHOME_LINUX_X64 --with-openssl=/usr/local --with-pdo-pgsql=$PG_PGHOME_LINUX_X64 --without-mysql --without-pdo-mysql --without-pdo-sqlite --with-gd --with-png-dir=/usr/local --with-jpeg-dir=/usr/local --with-freetype-dir=/usr/local --with-iconv=/usr/local --enable-gd-native-ttf --enable-mbstring=all --with-zlib=/usr/local" || _die "Failed to configure php"
 
     echo "Building php"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/php.linux-x64; LD_LIBRARY_PATH=$PG_PGHOME_LINUX_X64/lib:/usr/local/lib make" || _die "Failed to build php"

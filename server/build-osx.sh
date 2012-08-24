@@ -80,15 +80,15 @@ _build_server_osx() {
 
     # Configure the source tree
     echo "Configuring the postgres source tree for Intel"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-L/usr/local/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --host=i386-apple-darwin --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for i386"
+    PATH=/usr/local/bin:$PATH CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-L/usr/local/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --host=i386-apple-darwin --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for i386"
     mv src/include/pg_config.h src/include/pg_config_i386.h
 
     echo "Configuring the postgres source tree for x86_64"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/usr/local/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --host=x86_64-apple-darwin --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for PPC"
+    PATH=/usr/local/bin:$PATH CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/usr/local/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --host=x86_64-apple-darwin --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for PPC"
     mv src/include/pg_config.h src/include/pg_config_x86_64.h
 
     echo "Configuring the postgres source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" LDFLAGS="-L/usr/local/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for Universal"
+    PATH=/usr/local/bin:$PATH CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" LDFLAGS="-L/usr/local/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for Universal"
 
     # Create a replacement pg_config.h that will pull in the appropriate architecture-specific one:
     rm -f src/include/pg_config.h
@@ -106,7 +106,7 @@ cat <<EOT > "src/include/pg_config.h"
 EOT
 
     echo "Building postgres"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" make -j4 || _die "Failed to build postgres"
+    PATH=/usr/local/bin:$PATH CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" make -j4 || _die "Failed to build postgres"
     make install || _die "Failed to install postgres"
 
     cp src/include/pg_config_i386.h $WD/server/staging/osx/include/
@@ -150,10 +150,10 @@ EOT
     cd $WD/server/source/pgadmin.osx
 
     # Bootstrap
-    PATH=/opt/local/bin:$PATH sh bootstrap
+    PATH=/usr/local/bin:/opt/local/bin:$PATH sh bootstrap
 
     # Configure
-    CPPFLAGS="$PG_ARCH_OSX_CPPFLAGS" LDFLAGS="$PG_ARCH_OSX_LDFLAGS" ./configure --enable-appbundle --disable-dependency-tracking --with-pgsql=$WD/server/staging/osx --with-wx=/usr/local --with-libxml2=/usr/local --with-libxslt=/usr/local --disable-debug --disable-static  --with-sphinx-build=$PG_PYTHON_OSX/bin/sphinx-build || _die "Failed to configure pgAdmin"
+    PATH=/usr/local/bin:/opt/local/bin:$PATH CPPFLAGS="$PG_ARCH_OSX_CPPFLAGS" LDFLAGS="$PG_ARCH_OSX_LDFLAGS" ./configure --enable-appbundle --disable-dependency-tracking --with-pgsql=$WD/server/staging/osx --with-wx=/usr/local --with-libxml2=/usr/local --with-libxslt=/usr/local --disable-debug --disable-static  --with-sphinx-build=$PG_PYTHON_OSX/bin/sphinx-build || _die "Failed to configure pgAdmin"
 
     # Build the app bundle
     make -j4 all || _die "Failed to build pgAdmin"
@@ -170,7 +170,7 @@ EOT
 
     cd $WD/server/source/stackbuilder.osx
 
-    cmake -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6 -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CMAKE_OSX_ARCHITECTURES:STRING=i386 .  || _die "Failed to configure StackBuilder"
+    PATH=/usr/local/bin:$PATH cmake -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6 -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CMAKE_OSX_ARCHITECTURES:STRING=i386 .  || _die "Failed to configure StackBuilder"
     make all || _die "Failed to build StackBuilder"
 
     # Copy the StackBuilder app bundle into place
