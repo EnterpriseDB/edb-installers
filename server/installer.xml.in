@@ -1822,6 +1822,15 @@
                                 </compareText>
                             </ruleList>
                         </throwError>
+                        <throwError text="${msg(error.runtimes.does.not.meet.requirements)}">
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>5100</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                            </ruleList>
+                        </throwError>
                     </actionList>
                     <ruleList>
                         <isTrue value="${install_runtimes}" />
