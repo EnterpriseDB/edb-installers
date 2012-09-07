@@ -4610,25 +4610,9 @@ REM The script sets environment variables helpful for PostgreSQL
 
                         <!-- pgAdmin -->
                         <startMenuShortcut>
-                            <name>pgAdmin documentation (Czech)</name>
-                            <runInTerminal>0</runInTerminal>
-                            <windowsExec>${installdir}/pgAdmin III/docs/cs_CZ/pgadmin3.chm</windowsExec>
-                            <ruleList>
-                                <isTrue value="${create_shortcuts}" />
-                            </ruleList>
-                        </startMenuShortcut>
-                        <startMenuShortcut>
-                            <name>pgAdmin documentation (English)</name>
+                            <name>pgAdmin documentation</name>
                             <runInTerminal>0</runInTerminal>
                             <windowsExec>${installdir}/pgAdmin III/docs/en_US/pgadmin3.chm</windowsExec>
-                            <ruleList>
-                                <isTrue value="${create_shortcuts}" />
-                            </ruleList>
-                        </startMenuShortcut>
-                        <startMenuShortcut>
-                            <name>pgAdmin documentation (French)</name>
-                            <runInTerminal>0</runInTerminal>
-                            <windowsExec>${installdir}/pgAdmin III/docs/fr_FR/pgadmin3.chm</windowsExec>
                             <ruleList>
                                 <isTrue value="${create_shortcuts}" />
                             </ruleList>
