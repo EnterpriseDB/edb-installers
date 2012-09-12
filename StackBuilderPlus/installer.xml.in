@@ -39,6 +39,7 @@
   <!-- Images -->
   <disableSplashScreen>1</disableSplashScreen>
   <leftImage>../resources/pg-side.png</leftImage>
+  <wmImage>../resources/ppas-postgresql.png</wmImage>
 
   <!-- i18n files for the UI -->
   <allowLanguageSelection>1</allowLanguageSelection> 
