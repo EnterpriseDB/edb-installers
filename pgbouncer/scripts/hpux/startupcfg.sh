@@ -50,7 +50,8 @@ export PATH
 
 function check_pid
 {
-    export PIDB=\`ps -axef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`
+    PIDB=\`ps -axef | grep '$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini' | grep -v grep | awk '{print \$2}'\`
+    export PIDB
 }
 
 function start
