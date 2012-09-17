@@ -57,7 +57,7 @@ _prep_pgAgent() {
     echo "Unpacking pgAgent source..."
     extract_file  ../../tarballs/pgAgent-$PG_VERSION_PGAGENT-Source || exit 1
     cd pgAgent-$PG_VERSION_PGAGENT-Source
-    patch -p1 < $WD/tarballs/pgAgent-Lion.patch
+    #patch -p1 < $WD/tarballs/pgAgent-Lion.patch # This is not required to build pgAgent3.3.0. Hence, commenting this.
     
     # Per-platform prep
     cd $WD
