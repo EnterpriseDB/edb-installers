@@ -164,54 +164,6 @@ then
     _postprocess_ApachePhp || exit 1
 fi
 
-# Package: mediaWiki
-if [ $PG_PACKAGE_MEDIAWIKI = 1 ];
-then
-    echo "### Package: mediaWiki"
-    cd $WD
-    source ./mediaWiki/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_mediaWiki || exit 1
-        _build_mediaWiki || exit 1
-    fi
-
-    _postprocess_mediaWiki || exit 1
-fi
-
-# Package: phpBB
-if [ $PG_PACKAGE_PHPBB = 1 ];
-then
-    echo "### Package: phpBB"
-    cd $WD
-    source ./phpBB/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_phpBB || exit 1
-        _build_phpBB || exit 1
-    fi
-
-    _postprocess_phpBB || exit 1
-fi
-
-# Package: Drupal
-if [ $PG_PACKAGE_DRUPAL = 1 ];
-then
-    echo "### Package: Drupal"
-    cd $WD
-    source ./Drupal/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_Drupal || exit 1
-        _build_Drupal || exit 1
-    fi
-
-    _postprocess_Drupal || exit 1
-fi
-
 # Package: phppgadmin
 if [ $PG_PACKAGE_PHPPGADMIN = 1 ];
 then
@@ -304,21 +256,6 @@ then
         _build_TuningWizard || exit 1
     fi
     _postprocess_TuningWizard || exit 1
-fi
-
-# Package: pgphonehome
-if [ $PG_PACKAGE_PGPHONEHOME = 1 ];
-then
-    echo "### Package: pgphonehome"
-    cd $WD
-    source ./pgphonehome/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_pgphonehome || exit 1
-        _build_pgphonehome || exit 1
-    fi
-    _postprocess_pgphonehome || exit 1
 fi
 
 # Package: Npgsql
