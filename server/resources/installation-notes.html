@@ -26,6 +26,10 @@
 
 <p>The Linux builds of this installer have been tested on a variety of different versions of 32 and 64bit Linux distributions, including CentOS 5 and above, Ubuntu 10.04 and above, Redhat Enterprise Linux 5 and above and Fedora Core 15 and above. The Mac OS X build has been tested on OS X 10.5 (Leopard) and above. Please let us know if the installer does not operate as expected on your operating system, and where possible, we will try to add support</p>
 
+<h3>Windows Service Account</h3>
+
+<p>Prior to version 9.2, the Windows port used a service account called 'postgres' by default. From 9.2 onwards, the special 'NT AUTHORITY\NetworkService' account is used instead. If you need to use an alternative account, for example, to allow the database server to use server-side COPY with files on a network share, run the installer with a command line option such as <i>--serviceaccount postgres</i>.</p>
+
 <h3>Technical Support</h3>
 
 <p>For Installer support, please use the EnterpriseDB forums at <a href="http://forums.enterprisedb.com/">http://forums.enterprisedb.com/</a>, or if you need a more formal support arrangement, a list of providers can be found on the <a href="http://www.postgresql.org/support/professional_support">PostgreSQL website</a>.</p>
