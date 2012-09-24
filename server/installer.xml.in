@@ -1239,6 +1239,33 @@
         <logMessage>
             <text>Running the post-installation/upgrade actions:</text>
         </logMessage>
+        
+        <!-- In upgrade mode, remove the existing ldconfig setting - set during the previous installation -->
+        <actionGroup>
+            <actionList>
+                <logMessage text="Removing the existing ldconfig setting - set during the previous installation."/>
+                <deleteFile>
+                    <path>/etc/ld.so.conf.d/postgresql-${product_version}.conf</path>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </deleteFile>
+                <substitute>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>${installdir}/lib</pattern>
+                            <value></value>
+                        </substitution>
+                    </substitutionList>
+                    <type>exact</type>
+                    <files>/etc/ld.so.conf</files>
+                </substitute>
+            </actionList>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${brandingVer}" value=""/>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
   
         <!-- Delete the temp scripts directory -->
         <logMessage>

@@ -125,10 +125,13 @@ _process_dependent_libs() {
     do 
          rm -f \$lib || _die "Failed to remove the library"
     done            
-
+    
     # Copy libs from the tmp/templibs directory
-    NUMBER_LIBS=`ls /tmp/templibs/* | wc -l`
-    if [ x"$NUMBER_LIBS" != x"0" ]; then
+    NUMBER_LIBS=\`ls /tmp/templibs/ | wc -l\`
+    #\t is there in the output of above in case of 0 file in templibs
+    NUMBER_LIBS2=\`echo \$NUMBER_LIBS | sed -e 's:\\\s+::g'\`
+
+    if [ x"\$NUMBER_LIBS2" != x"0" ]; then
         cp /tmp/templibs/* $lib_dir/     || _die "Failed to move the library files from temp directory"
     fi
 
@@ -236,7 +239,9 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cp -R /usr/local/lib/libxslt.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
 	ssh $PG_SSH_LINUX "cp -R /usr/lib/libexpat.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -R /usr/lib/libtiff.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-	
+
+    echo "Changing the rpath for the pgAdmin binaries"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/pgAdmin3/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"	
     # Copy the Postgres utilities
     ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/server/staging/linux/bin/pg_dump $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
     ssh $PG_SSH_LINUX "cp -R $PG_PATH_LINUX/server/staging/linux/bin/pg_dumpall $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
@@ -257,6 +262,11 @@ _build_server_linux() {
 
     mkdir -p "$WD/server/staging/linux/doc/pljava" || _die "Failed to create the pl/java doc directory"
     cp "$WD/server/source/pljava.linux/docs/"* "$WD/server/staging/linux/doc/pljava/" || _die "Failed to install the pl/java documentation"
+
+    echo "Changing the rpath for the PostgreSQL executables and libraries"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/lib; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}\" \$f; done"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/lib/postgresql; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/..\" \$f; done"
  
 	# Stackbuilder
 	
@@ -268,7 +278,9 @@ _build_server_linux() {
     echo "Building & installing StackBuilder"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; make all" || _die "Failed to build StackBuilder"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; make install" || _die "Failed to install StackBuilder"
-	
+
+    echo "Changing the rpath for the StackBuilder"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/stackbuilder/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../../lib:\\\\${ORIGIN}/../../pgAdmin3/lib\" \$f; done"	
     cd $WD
 }
 
