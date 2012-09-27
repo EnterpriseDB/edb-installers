@@ -137,14 +137,6 @@ cat <<EOT > "$XML_FILE_PATH"
                 <service_fmri value='svc:/system/filesystem/local:default' />
         </dependency>
 
-	<dependency
-                name='ppas-$PGBOUNCER_SERVICE_VER'
-                grouping='require_all'
-                restart_on='none'
-                type='service'>
-                <service_fmri value='svc:/application/ppas-$PGBOUNCER_SERVICE_VER:default' />
-        </dependency>
-
         <exec_method
                 type='method'
                 name='start'
