@@ -108,7 +108,6 @@
             <value>linux</value>
           </compareText>
           <fileContentTest text="1" path="/selinux/enforce" logic="contains"/>
-          <isFalse value="${extract_mode}"/>
         </ruleList>
       </throwError>
       <!-- WIN & LIN: Set the default values for unattended mode -->
@@ -814,6 +813,47 @@
       </ruleList>
     </actionGroup>  
   </preInstallationActionList>
+  <!-- Ready to install actions -->
+  <readyToInstallActionList>
+    <actionGroup>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${apachephpVersion}"
+          value=""/>
+      </ruleList>
+      <actionList>
+
+        <!-- Stop the existing Apache/PHP service -->
+        <runProgram program="/ete/init.d/EnterpriseDBApachePhp"
+          programArguments="stop"
+          workingDirectory="${installdir}/apache/bin"
+          abortOnError="0" showMessageOnError="0">
+          <ruleList>
+            <compareText logic="contains" text="${platform_name}" value="linux"/>
+          </ruleList>
+        </runProgram>
+        <runProgram program="launchctl"
+          programArguments="unload /Library/LaunchDaemons/com.edb.launchd.apache.plist"
+          workingDirectory="${installdir}/apache/bin"
+          abortOnError="0" showMessageOnError="0">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="osx"/>
+          </ruleList>
+        </runProgram>
+        <stopWindowsService serviceName="EnterpriseDBApachePhp"
+          delay="60000"
+          abortOnError="0" showMessageOnError="0">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}"
+              value="windows"/>
+          </ruleList>
+        </stopWindowsService>
+
+        <!-- Wait for sometime after stopping the existing service -->
+        <wait ms="5000"/>
+
+      </actionList>
+    </actionGroup>
+  </readyToInstallActionList>
   <!-- Postinstallation actions -->
   <postInstallationActionList>
     <!-- WIN| Substituting Apache-Home in the install/uninstall service script -->
