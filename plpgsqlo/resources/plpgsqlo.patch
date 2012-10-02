@@ -494,45 +494,61 @@ diff -c -r plpgsqlo-postgresql-9.2beta2/src/tools/msvc/MSBuildProject.pm plpg/sr
 *** plpgsqlo-postgresql-9.2beta2/src/tools/msvc/MSBuildProject.pm	Fri Jun  1 04:46:55 2012
 --- plpg/src/tools/msvc/MSBuildProject.pm	Wed Jul  4 13:20:00 2012
 ***************
-*** 164,169 ****
---- 164,170 ----
-              if ($grammarFile =~ /\.y$/)
-              {
-                  $outputFile =~ s{^src\\pl\\plpgsql\\src\\gram.c$}{src\\pl\\plpgsql\\src\\pl_gram.c};
-+                 $outputFile =~ s{^src\\pl\\plpgsqlo\\src\\gram.c$}{src\\pl\\plpgsqlo\\src\\pl_gram.c};
-                  print $f <<EOF;
+*** 174,180 ****
+  			if ($grammarFile =~ /\.y$/)
+  			{
+  				$outputFile =~
+! s{^src\\pl\\plpgsql\\src\\gram.c$}{src\\pl\\plpgsql\\src\\pl_gram.c};
+  				print $f <<EOF;
+      <CustomBuild Include="$grammarFile">
+        <Message Condition="'\$(Configuration)|\$(Platform)'=='Debug|$self->{platform}'">Running bison on $grammarFile</Message>
+--- 174,180 ----
+  			if ($grammarFile =~ /\.y$/)
+  			{
+  				$outputFile =~
+! s{^src\\pl\\plpgsqlo\\src\\gram.c$}{src\\pl\\plpgsqlo\\src\\pl_gram.c};
+  				print $f <<EOF;
       <CustomBuild Include="$grammarFile">
         <Message Condition="'\$(Configuration)|\$(Platform)'=='Debug|$self->{platform}'">Running bison on $grammarFile</Message>
 diff -c -r plpgsqlo-postgresql-9.2beta2/src/tools/msvc/Mkvcbuild.pm plpg/src/tools/msvc/Mkvcbuild.pm
 *** plpgsqlo-postgresql-9.2beta2/src/tools/msvc/Mkvcbuild.pm	Fri Jun  1 04:46:55 2012
 --- plpg/src/tools/msvc/Mkvcbuild.pm	Wed Jul  4 12:56:55 2012
 ***************
-*** 99,104 ****
---- 99,112 ----
-      $plpgsql->AddFiles('src\pl\plpgsql\src', 'gram.y');
-      $plpgsql->AddReference($postgres);
+*** 110,115 ****
+--- 110,124 ----
+  	$plpgsql->AddFiles('src\pl\plpgsql\src', 'gram.y');
+  	$plpgsql->AddReference($postgres);
   
-+     my $plpgsqlo =  $solution->AddProject('plpgsqlo','dll','PLs','src\pl\plpgsqlo\src');
-+     $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'gram.y');
-+     $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'encode.c');
-+     $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'wrap.c');
-+     $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'md5.c');
-+     $plpgsqlo->AddReference($postgres);
-+     $plpgsqlo->AddLibrary('ws2_32.lib');
++          my $plpgsqlo =
++            $solution->AddProject('plpgsqlo','dll','PLs','src\pl\plpgsqlo\src');
++          $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'gram.y');
++          $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'encode.c');
++          $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'wrap.c');
++          $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'md5.c');
++          $plpgsqlo->AddReference($postgres);
++          $plpgsqlo->AddLibrary('ws2_32.lib');
 + 
-      if ($solution->{options}->{perl})
-      {
-          my $plperlsrc = "src\\pl\\plperl\\";
+  	if ($solution->{options}->{perl})
+  	{
+  		my $plperlsrc = "src\\pl\\plperl\\";
 diff -c -r plpgsqlo-postgresql-9.2beta2/src/tools/msvc/VCBuildProject.pm plpg/src/tools/msvc/VCBuildProject.pm
 *** plpgsqlo-postgresql-9.2beta2/src/tools/msvc/VCBuildProject.pm	Fri Jun  1 04:46:55 2012
 --- plpg/src/tools/msvc/VCBuildProject.pm	Wed Jul  4 12:58:47 2012
 ***************
-*** 85,90 ****
---- 85,91 ----
-              my $of = $fileNameWithPath;
-              $of =~ s/\.y$/.c/;
-              $of =~ s{^src\\pl\\plpgsql\\src\\gram.c$}{src\\pl\\plpgsql\\src\\pl_gram.c};
-+ 	    $of =~ s{^src\\pl\\plpgsqlo\\src\\gram.c$}{src\\pl\\plpgsqlo\\src\\pl_gram.c};
-              print $f '>'
-                . $self->GenerateCustomTool('Running bison on ' . $fileNameWithPath,
-                  "perl src\\tools\\msvc\\pgbison.pl $fileNameWithPath", $of)
+*** 107,113 ****
+  			my $of = $fileNameWithPath;
+  			$of =~ s/\.y$/.c/;
+  			$of =~
+! s{^src\\pl\\plpgsql\\src\\gram.c$}{src\\pl\\plpgsql\\src\\pl_gram.c};
+  			print $f '>'
+  			  . $self->GenerateCustomTool(
+  				'Running bison on ' . $fileNameWithPath,
+--- 107,113 ----
+  			my $of = $fileNameWithPath;
+  			$of =~ s/\.y$/.c/;
+  			$of =~
+! s{^src\\pl\\plpgsqlo\\src\\gram.c$}{src\\pl\\plpgsqlo\\src\\pl_gram.c};
+  			print $f '>'
+  			  . $self->GenerateCustomTool(
+  				'Running bison on ' . $fileNameWithPath,
+
