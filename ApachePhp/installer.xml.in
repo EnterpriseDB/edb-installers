@@ -550,11 +550,6 @@
             <text>${platform_name}</text>
             <value>windows</value>
          </compareText>
-         <compareText>
-            <logic>equals</logic>
-            <text>${apache_home}</text>
-            <value/>
-         </compareText>
       </ruleList>
     </actionGroup>
 
