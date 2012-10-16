@@ -33,7 +33,7 @@ PG_BUILDNUM_UPDATE_MONITOR=1
 
 # Tags for source checkout
 PG_TAG_REPLICATIONSERVER=''
-PG_TAG_MIGRATIONTOOLKIT=''
+PG_TAG_MIGRATIONTOOLKIT='EDBAS9_1_STABLE'
 
 # PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
 #                     Minor version is revision.build.
