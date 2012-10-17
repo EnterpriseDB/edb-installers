@@ -164,22 +164,6 @@ then
     _postprocess_ApachePhp || exit 1
 fi
 
-# Package: Drupal
-if [ $PG_PACKAGE_DRUPAL = 1 ];
-then
-    echo "### Package: Drupal"
-    cd $WD
-    source ./Drupal/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_Drupal || exit 1
-        _build_Drupal || exit 1
-    fi
-
-    _postprocess_Drupal || exit 1
-fi
-
 # Package: pgJDBC
 if [ $PG_PACKAGE_PGJDBC = 1 ];
 then
