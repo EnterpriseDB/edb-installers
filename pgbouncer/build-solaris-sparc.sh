@@ -95,25 +95,27 @@ EOT
     ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libxml2.so* /tmp/tmp_libs" || _die "Failed to copy libxml libs in tmp folder"
     ssh $PG_SSH_SOLARIS_SPARC "/usr/local/bin/chrpath -r '\$ORIGIN' /tmp/tmp_libs/libxml2.so*" || _die "Failed to set rpath in tmp_libs folder"
     ssh $PG_SSH_SOLARIS_SPARC "cp -R /tmp/tmp_libs/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -R /tmp/tmp_libs/libxml2.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
 
-    ##ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
+    ###ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
 
 
-    ssh $PG_SSH_SOLARIS_SPARC "cp -R $PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/lib/libpq* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy libpq in instscripts"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -R $PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin/psql $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy psql in instscripts"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libssl.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libcrypto.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libedit.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
-    ##ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libxml2.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libxslt.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libkrb5.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libkrb5support.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libk5crypto.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libcom_err.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
+    ###ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libxml2.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
 
     scp -r $PG_SSH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/* $WD/pgbouncer/staging/solaris-sparc/ || _die "Failed to scp back the staging directory"
- 
+
+    cp -R $WD/server/staging/solaris-sparc/lib/libxml2.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
+
+    cp -R $WD/server/staging/solaris-sparc/lib/libpq* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -R $WD/server/staging/solaris-sparc/bin/psql $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy psql in instscripts"
+    cp -R $WD/server/staging/solaris-sparc/lib/libssl.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-sparc/lib/libcrypto.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-sparc/lib/libedit.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-sparc/lib/libxslt.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-sparc/lib/libkrb5.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-sparc/lib/libkrb5support.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-sparc/lib/libk5crypto.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-sparc/lib/libcom_err.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-sparc/lib/libiconv.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library" 
 }
 
 

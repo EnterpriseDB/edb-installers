@@ -94,18 +94,7 @@ EOT
 
     # Copy the various support files into place
     ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to create the pgbouncer.staging\\\\instscripts directory on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\output\\\\bin\\\\psql.exe  $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy the psql.exe to the pgbouncer.staging\\\\instscripts directory on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\output\\\\bin\\\\libpq.dll  $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy the psql.exe to the pgbouncer.staging\\\\instscripts directory on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\vcredist\\\\vcredist_x86.exe $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy the VC++ runtimes on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\openssl\\\\bin\\\\ssleay32.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\openssl\\\\bin\\\\libeay32.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\iconv\\\\bin\\\\iconv.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\gettext\\\\bin\\\\libintl-8.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\gettext\\\\bin\\\\libiconv-2.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\libxml2\\\\bin\\\\libxml2.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\libxslt\\\\bin\\\\libxslt.dll $PG_PATH_WINDOWS\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy C:\\\\pgBuild\\\\zlib\\\\zlib1.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
-    
 
     # Zip up the installed code, copy it back here, and unpack.
     echo "Copying pgbouncer built tree to Unix host"
@@ -113,6 +102,17 @@ EOT
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/pgbouncer-staging.zip $WD/pgbouncer/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/pgbouncer-staging.zip)"
     unzip $WD/pgbouncer/staging/windows/pgbouncer-staging.zip -d $WD/pgbouncer/staging/windows || _die "Failed to unpack the built source tree ($WD/staging/windows/pgbouncer-staging.zip)"
     rm $WD/pgbouncer/staging/windows/pgbouncer-staging.zip
+
+    # Copy the various support files into place
+    cp $WD/server/staging/windows/bin/psql.exe  $WD/pgbouncer/staging/windows/instscripts || _die "Failed to copy the psql.exe to the instscripts directory"
+    cp $WD/server/staging/windows/bin/libpq.dll  $WD/pgbouncer/staging/windows/instscripts || _die "Failed to copy the libpq.dll to the instscripts directory"
+    cp $WD/server/staging/windows/bin/ssleay32.dll  $WD/pgbouncer/staging/windows/instscripts || _die "Failed to copy the ssleay32.dll to the instscripts directory"
+    cp $WD/server/staging/windows/bin/libeay32.dll  $WD/pgbouncer/staging/windows/instscripts || _die "Failed to copy the libeay32.dll to the instscripts directory"
+    cp $WD/server/staging/windows/bin/libiconv.dll  $WD/pgbouncer/staging/windows/instscripts || _die "Failed to copy the libiconv.dll to the instscripts directory"
+    cp $WD/server/staging/windows/bin/libintl.dll  $WD/pgbouncer/staging/windows/instscripts || _die "Failed to copy the libintl.dll to the instscripts directory"
+    cp $WD/server/staging/windows/bin/libxml2.dll  $WD/pgbouncer/staging/windows/instscripts || _die "Failed to copy the libxml2.dll to the instscripts directory"
+    cp $WD/server/staging/windows/bin/libxslt.dll  $WD/pgbouncer/staging/windows/instscripts || _die "Failed to copy the libxslt.dll to the instscripts directory"
+    cp $WD/server/staging/windows/bin/zlib1.dll  $WD/pgbouncer/staging/windows/instscripts || _die "Failed to copy the zlib1.dll to the instscripts directory"
 
 }
 

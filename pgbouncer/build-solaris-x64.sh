@@ -92,21 +92,20 @@ EOT
     ssh $PG_SSH_SOLARIS_X64 "cp -R /export/home/buildfarm/PPAS/libevent-2.0.16-stable/inst/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
     ssh $PG_SSH_SOLARIS_X64 "/usr/local/bin/chrpath -r '\$ORIGIN/../lib/' $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/pgbouncer/bin/pgbouncer" || _die "Failed to set rpath of pgbouncer"
 
-    ssh $PG_SSH_SOLARIS_X64 "cp -R $PG_PATH_SOLARIS_X64/server/staging/solaris-x64/lib/libpq* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy libpq in instscripts"
-    ssh $PG_SSH_SOLARIS_X64 "cp -R $PG_PATH_SOLARIS_X64/server/staging/solaris-x64/bin/psql $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy psql in instscripts"
-    ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libssl.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libcrypto.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libedit.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libxml2.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libxslt.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libkrb5.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libkrb5support.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libk5crypto.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/local/lib/libcom_err.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_X64 "cp -R /usr/lib/amd64/libz.so* $PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/instscripts/" || _die "Failed to copy the dependency library"
-
     scp -r $PG_SSH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/pgbouncer/staging/solaris-x64/* $WD/pgbouncer/staging/solaris-x64/ || _die "Failed to scp back the staging directory"
  
+    cp -R $WD/server/staging/solaris-x64/lib/libpq* $WD/pgbouncer/staging/solaris-x64/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -R $WD/server/staging/solaris-x64/bin/psql $WD/pgbouncer/staging/solaris-x64/instscripts/ || _die "Failed to copy psql in instscripts"
+    cp -R $WD/server/staging/solaris-x64/lib/libssl.so* $WD/pgbouncer/staging/solaris-x64/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-x64/lib/libcrypto.so* $WD/pgbouncer/staging/solaris-x64/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-x64/lib/libedit.so* $WD/pgbouncer/staging/solaris-x64/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-x64/lib/libxml2.so* $WD/pgbouncer/staging/solaris-x64/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-x64/lib/libxslt.so* $WD/pgbouncer/staging/solaris-x64/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-x64/lib/libkrb5.so* $WD/pgbouncer/staging/solaris-x64/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-x64/lib/libkrb5support.so* $WD/pgbouncer/staging/solaris-x64/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-x64/lib/libk5crypto.so* $WD/pgbouncer/staging/solaris-x64/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-x64/lib/libcom_err.so* $WD/pgbouncer/staging/solaris-x64/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-x64/lib/libz.so* $WD/pgbouncer/staging/solaris-x64/instscripts/ || _die "Failed to copy the dependency library"
 }
 
 
