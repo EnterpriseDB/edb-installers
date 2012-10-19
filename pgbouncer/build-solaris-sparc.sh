@@ -115,7 +115,8 @@ EOT
     cp -R $WD/server/staging/solaris-sparc/lib/libkrb5support.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
     cp -R $WD/server/staging/solaris-sparc/lib/libk5crypto.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
     cp -R $WD/server/staging/solaris-sparc/lib/libcom_err.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
-    cp -R $WD/server/staging/solaris-sparc/lib/libiconv.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library" 
+    cp -R $WD/server/staging/solaris-sparc/lib/libiconv.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-sparc/lib/libz.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library" 
 }
 
 

@@ -72,6 +72,7 @@ _build_pgbouncer_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/lib/libxml2.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxslt.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy libxslt.so"
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/lib/libedit.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/lib/libz.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
 
     echo "Changing the rpath for the pgbouncer"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
