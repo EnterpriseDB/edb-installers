@@ -215,15 +215,15 @@ export CFLAGS="-m64"
 export CXXFLAGS="-m64"
 export CPPFLAGS="-m64"
 export LDFLAGS="-m64"
-export LD_LIBRARY_PATH=/usr/local/lib
-export PATH=/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/local/bin:\$PATH
+export LD_LIBRARY_PATH=/usr/local.sun/lib
+export PATH=/usr/local.sun/bin:/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:\$PATH
 
 EOT
     scp setenv.sh $PG_SSH_SOLARIS_SPARC: || _die "Failed to scp the setenv.sh file"
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/server/source/postgres.solaris-sparc/;./configure --prefix=$PG_STAGING --with-openssl --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/server/source/postgres.solaris-sparc/;./configure --prefix=$PG_STAGING --with-openssl --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-libs=/usr/local.sun/lib --with-includes=/usr/local.sun/include/libxml2:/usr/local.sun/include"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
     ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/server/source/postgres.solaris-sparc; gmake -j4" || _die "Failed to build postgres" 
@@ -259,17 +259,17 @@ EOT
     cp -pR $WD/server/source/postgres.solaris-sparc/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (solaris-sparc)"
 
     # Copy in the dependency libraries
-    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libkrb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libkrb5support.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libk5crypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libcom_err.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local/lib/libz.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local.sun/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local.sun/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local.sun/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local.sun/lib/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local.sun/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local.sun/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local.sun/lib/libkrb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local.sun/lib/libkrb5support.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local.sun/lib/libk5crypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local.sun/lib/libcom_err.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -pR /usr/local.sun/lib/libz.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
 
     # Process Dependent libs
     _process_dependent_libs_solaris_sparc "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl.so"  
@@ -397,14 +397,15 @@ _postprocess_server_solaris_sparc() {
     cp "$WD/server/resources/enterprisedb.gif" "$WD/server/staging/solaris-sparc/doc/" || _die "Failed to install the welcome logo"
 
     #Creating a archive of the binaries
-#    mkdir -p $WD/server/staging/solaris-sparc/pgsql || _die "Failed to create the directory for binaries "
-#    cd $WD/server/staging/solaris-sparc
+    mkdir -p $WD/server/staging/solaris-sparc/pgsql || _die "Failed to create the directory for binaries "
+    cd $WD/server/staging/solaris-sparc
 #    cp -pR bin doc include lib pgAdmin3 share stackbuilder pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
+    cp -pR bin doc include lib share pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
 #
-#    tar -czf postgresql-$PG_PACKAGE_VERSION-solaris-sparc-binaries.tar.gz pgsql || _die "Failed to archive the postgresql binaries"
-#    mv postgresql-$PG_PACKAGE_VERSION-solaris-sparc-binaries.tar.gz $WD/output/ || _die "Failed to move the archive to output folder"
+    tar -czf postgresql-$PG_PACKAGE_VERSION-solaris-sparc-binaries.tar.gz pgsql || _die "Failed to archive the postgresql binaries"
+    mv postgresql-$PG_PACKAGE_VERSION-solaris-sparc-binaries.tar.gz $WD/output/ || _die "Failed to move the archive to output folder"
 #
-#    rm -rf pgsql || _die "Failed to remove the binaries directory" 
+    rm -rf pgsql || _die "Failed to remove the binaries directory" 
 
 #    cd $WD/server
 #
