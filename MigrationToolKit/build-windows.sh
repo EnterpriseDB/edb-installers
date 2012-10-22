@@ -29,7 +29,7 @@ _prep_MigrationToolKit_windows() {
     cp -R EDB-MTK/* migrationtoolkit.windows || _die "Failed to copy the mtk source code"
     chmod ugo+w migrationtoolkit.windows || _die "Couldn't set the permissions on the source directory"
  
-    cp pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_VERSION_PGJDBC.jdbc3.jar migrationtoolkit.windows/lib/ || _die "Failed to copy the pg-jdbc driver"
+    cp pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_VERSION_PGJDBC.jdbc4.jar migrationtoolkit.windows/lib/ || _die "Failed to copy the pg-jdbc driver"
 
     # Grab a copy of the migrationtoolkit source tree
     cp -R EDB-MTK/* migrationtoolkit.windows || _die "Failed to copy the source code (source/migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT)"

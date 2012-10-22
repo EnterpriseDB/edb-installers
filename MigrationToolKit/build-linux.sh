@@ -24,7 +24,7 @@ _prep_MigrationToolKit_linux() {
     cp -R EDB-MTK/* migrationtoolkit.linux || _die "Failed to copy the source code (source/migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT)"
     chmod -R ugo+w migrationtoolkit.linux || _die "Couldn't set the permissions on the source directory"
     
-    cp pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_VERSION_PGJDBC.jdbc3.jar migrationtoolkit.linux/lib/ || _die "Failed to copy the pg-jdbc driver"
+    cp pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_VERSION_PGJDBC.jdbc4.jar migrationtoolkit.linux/lib/ || _die "Failed to copy the pg-jdbc driver"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/MigrationToolKit/staging/linux ];
