@@ -588,9 +588,6 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/linux/postgresql-PG_VERSION_PGJDBC.jdbc3.jar</origin>
-                        </distributionFile>
-                        <distributionFile>
                             <origin>staging/linux/postgresql-PG_VERSION_PGJDBC.jdbc4.jar</origin>
                         </distributionFile>
                     </distributionFileList>
@@ -624,9 +621,6 @@
                     <name>programfileslinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/linux-x64/postgresql-PG_VERSION_PGJDBC.jdbc3.jar</origin>
-                        </distributionFile>
                         <distributionFile>
                             <origin>staging/linux-x64/postgresql-PG_VERSION_PGJDBC.jdbc4.jar</origin>
                         </distributionFile>
@@ -662,9 +656,6 @@
                     <platforms>linux-ppc</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/linux-ppc64/postgresql-PG_VERSION_PGJDBC.jdbc3.jar</origin>
-                        </distributionFile>
-                        <distributionFile>
                             <origin>staging/linux-ppc64/postgresql-PG_VERSION_PGJDBC.jdbc4.jar</origin>
                         </distributionFile>
                     </distributionFileList>
@@ -699,9 +690,6 @@
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/osx/postgresql-PG_VERSION_PGJDBC.jdbc3.jar</origin>
-                        </distributionFile>
-                        <distributionFile>
                             <origin>staging/osx/postgresql-PG_VERSION_PGJDBC.jdbc4.jar</origin>
                         </distributionFile>
                     </distributionFileList>
@@ -735,9 +723,6 @@
                     <name>programfileswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/windows/postgresql-PG_VERSION_PGJDBC.jdbc3.jar</origin>
-                        </distributionFile>
                         <distributionFile>
                             <origin>staging/windows/postgresql-PG_VERSION_PGJDBC.jdbc4.jar</origin>
                         </distributionFile>
