@@ -62,7 +62,7 @@ strOutputFile = objTempFolder.Path & "\" & objFso.GetTempName
 objShell.CurrentDirectory = strInstallDir
 
 strProgramFiles = objShell.ExpandEnvironmentStrings("%PROGRAMFILES%")
-strSystemDrive = objShell.ExpandEnvironmentStrings("%SYSTEMDRIVER%")
+strSystemDrive = objShell.ExpandEnvironmentStrings("%SYSTEMDRIVE%")
 
 ' Is this Vista or above?
 Function IsVistaOrNewer()
