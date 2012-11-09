@@ -58,16 +58,12 @@ _build_pgbouncer_osx() {
     echo "****************************"
 
     cd $PG_PATH_OSX/pgbouncer/source/pgbouncer.osx/;
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc" LDFLAGS="-arch ppc" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
-    mv lib/usual/config.h lib/usual/config_ppc.h || _die "Failed to rename config.h"
    
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-arch i386" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
     mv lib/usual/config.h lib/usual/config_i386.h || _die "Failed to rename config.h"
 
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
     mv lib/usual/config.h lib/usual/config_x86_64.h || _die "Failed to rename config.h"
-
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc -arch x86_64" LDFLAGS="-arch i386 -arch ppc -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.5 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
 
     echo "#ifdef __BIG_ENDIAN__" > lib/usual/config.h
     echo "  #include \"config_ppc.h\"" >> lib/usual/config.h

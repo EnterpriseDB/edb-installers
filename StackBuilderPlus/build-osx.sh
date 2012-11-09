@@ -70,7 +70,7 @@ _build_stackbuilderplus_osx() {
     cat <<EOT > /tmp/UpdateManager.pro
 
 mac {
-    QMAKE_MAC_SDK=$PG_OSX_SDK
+    QMAKE_MAC_SDK=$SDK_PATH
     CONFIG+=x86 ppc
     QMAKE_MACOSX_DEPLOYMENT_TARGET=$PG_OSX_DEPLOYMENT_TARGET
 }

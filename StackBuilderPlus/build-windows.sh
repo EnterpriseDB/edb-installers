@@ -87,24 +87,39 @@ _build_stackbuilderplus_windows() {
 
 REM Setting Visual Studio Environment
 CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
+REM CALL "$PG_VSINSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
 
 @SET PGBUILD=$PG_PGBUILD_WINDOWS
 @SET WXWIN=$PG_WXWIN_WINDOWS
 @SET PGDIR=$PG_PATH_WINDOWS\output
+@SET INCLUDE=$PG_PGBUILD_WINDOWS\\include;%INCLUDE%
+@SET SPHINXBUILD=C:\\Python27-x86\\Scripts\\sphinx-build.exe
 
-vcbuild %1 %2 %3 %4 %5 %6 %7 %8 %9
+IF "%2" == "UPGRADE" GOTO upgrade
+
+msbuild %1 /p:Configuration=%2
+GOTO end
+
+:upgrade
+devenv /upgrade %1
+
+:end
+
 EOT
     scp vc-build.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy vc-build.bat in staging directory on Windows VM"
 
     cat <<EOT > "build-sbp.bat"
 @ECHO OFF
 
-SET QT_PATH=$PG_QTPATH_WINDOWS
+REM SET QT_PATH=$PG_QTPATH_WINDOWS\Simulator\Qt\mingw
+SET QT_PATH=$PG_QTPATH_WINDOWS\Desktop\Qt\4.8.1\msvc2010
 SET SOURCE_PATH=%CD%
-SET QMAKE=%QT_PATH%\qt\bin\qmake.exe
-SET QT_MINGW_MAKE=%QT_PATH%\mingw\bin\mingw32-make.exe
-SET ERRMSG=No error found!
-SET PATH=%PATH%;$PG_MINGW_WINDOWS;$PG_MINGW_WINDOWS\bin;$PG_MINGW_WINDOWS\libexec\gcc\mingw32\3.4.5
+SET QMAKE=%QT_PATH%\bin\qmake.exe
+SET QT_MINGW_MAKE=$PG_QTPATH_WINDOWS\mingw\bin\mingw32-make.exe
+SET ERRMSG=No error found
+SET PATH=%PATH%;%QT_PATH%\bin
+REM SET PATH=%PATH%;$PG_QTPATH_WINDOWS\mingw\lib\gcc\mingw32\4.4.0;$PG_QTPATH_WINDOWS\mingw\bin;$PG_QTPATH_WINDOWS\mingw\mingw32\bin
+SET QMAKESPEC=%QT_PATH%\mkspecs\win32-msvc2010
 
 ECHO ******************************************
 ECHO * Build and Install the StackBuilderPlus *
@@ -112,18 +127,21 @@ ECHO ******************************************
 
 cd "%SOURCE_PATH%\stackbuilderplus.windows"
 
-cmake.exe -D WX_ROOT_DIR=C:\pgBuild\wxWidgets -D MSGFMT_EXECUTABLE=C:\pgBuild\gettext\bin\msgfmt -D CMAKE_INSTALL_PREFIX="%SOURCE_PATH%\stackbuilderplus.staging" . || SET ERRMSG=ERROR: Couldn't configure StackBuilderPlus on Windows && GOTO EXIT_WITH_ERROR
+cmake.exe -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS\bin\msgfmt -D MS_VS_10=1 -D CMAKE_CXX_FLAGS="/D _UNICODE /EHsc" -D CMAKE_INSTALL_PREFIX="%SOURCE_PATH%\stackbuilderplus.staging" . || SET ERRMSG=ERROR: Couldn't configure StackBuilderPlus on Windows && GOTO EXIT_WITH_ERROR
 
-CALL "%SOURCE_PATH%\vc-build.bat" stackbuilderplus.vcproj RELEASE || SET ERRMSG=ERROR: Couldn't build StackBuilderPlus on Windows && GOTO EXIT_WITH_ERROR
-CALL "%SOURCE_PATH%\vc-build.bat" INSTALL.vcproj RELEASE || SET ERRMSG=ERROR:Couldn't install StackBuilderPlus to staging directory && GOTO EXIT_WITH_ERROR
+CALL "%SOURCE_PATH%\vc-build.bat" stackbuilderplus.vcxproj RELEASE || SET ERRMSG=ERROR: Couldn't build StackBuilderPlus on Windows && GOTO EXIT_WITH_ERROR
+CALL "%SOURCE_PATH%\vc-build.bat" INSTALL.vcxproj RELEASE || SET ERRMSG=ERROR:Couldn't install StackBuilderPlus to staging directory && GOTO EXIT_WITH_ERROR
 
 ECHO ***************************************
 ECHO * Build and Install the UpdateManager *
 ECHO ***************************************
 
 cd "%SOURCE_PATH%\updatemanager.windows"
+echo %QMAKE%
+echo %QMAKESPEC%
 "%QMAKE%" UpdateManager.pro || SET ERRMSG=ERROR: Couldn't configure the UpdateManager on Windows && GOTO EXIT_WITH_ERROR
-"%QT_MINGW_MAKE%" release || SET ERRMSG=ERROR: Couldn't build the UpdateManager && GOTO EXIT_WITH_ERROR
+nmake -f Makefile.Release || SET ERRMSG=ERROR: Couldn't build the UpdateManager && GOTO EXIT_WITH_ERROR
+REM "%QT_MINGW_MAKE%" release || SET ERRMSG=ERROR: Couldn't build the UpdateManager && GOTO EXIT_WITH_ERROR
 mkdir %SOURCE_PATH%\stackbuilderplus.staging\UpdateManager\bin 
 copy release\UpdManager.exe %SOURCE_PATH%\stackbuilderplus.staging\UpdateManager\bin\ || SET ERRMSG=ERROR: Couldn't copy the UpdateManager binary to staging directory && GOTO EXIT_WITH_ERROR
 
@@ -131,15 +149,16 @@ ECHO ***************************************************************************
 ECHO * Collecting dependent libraries and Archieving all binaries in one file (sbp_output.zip) *
 ECHO *******************************************************************************************
 cd "%SOURCE_PATH%\stackbuilderplus.staging\UpdateManager\bin"
-copy "%QT_PATH%\qt\bin\mingwm10.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (mingwm10.dll) && GOTO EXIT_WITH_ERROR
+REM copy "%QT_PATH%\bin\mingwm10.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (mingwm10.dll) && GOTO EXIT_WITH_ERROR
 echo Copying QtCore4 dll
-copy "%QT_PATH%\qt\bin\QtCore4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtCore4.dll) && GOTO EXIT_WITH_ERROR
+copy "%QT_PATH%\bin\QtCore4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtCore4.dll) && GOTO EXIT_WITH_ERROR
 echo Copying QtNetwork4 dll
-copy "%QT_PATH%\qt\bin\QtNetwork4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtNetwork4.dll) && GOTO EXIT_WITH_ERROR
+copy "%QT_PATH%\bin\QtNetwork4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtNetwork4.dll) && GOTO EXIT_WITH_ERROR
 echo Copying QtGui4.dll
-copy "%QT_PATH%\qt\bin\QtGui4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtGui4.dll) && GOTO EXIT_WITH_ERROR
+copy "%QT_PATH%\bin\QtGui4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtGui4.dll) && GOTO EXIT_WITH_ERROR
 echo Copying QtXml4.dll
-copy "%QT_PATH%\qt\bin\QtXml4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtXml4.dll) && GOTO EXIT_WITH_ERROR
+copy "%QT_PATH%\bin\QtXml4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtXml4.dll) && GOTO EXIT_WITH_ERROR
+REM copy "%QT_PATH%\bin\libgcc_s_dw2-1.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (libgcc_s_dw2-1.dll) && GOTO EXIT_WITH_ERROR
 
 cd "%SOURCE_PATH%\stackbuilderplus.staging"
 zip -r ..\sbp_output.zip * || SET ERRMSG=ERROR: Couldn't archieve the StackBuilderPlus binaries && GOTO EXIT_WITH_ERROR

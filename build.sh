@@ -116,7 +116,8 @@ source $WD/registration/build.sh
 
 if [ $SKIPBUILD = 0 ];
 then
-  _registration_component_build
+  :
+  #_registration_component_build
 fi
 
 # Build each package. This may have interdepencies so must be built in order

@@ -68,6 +68,8 @@ _prep_stackbuilderplus() {
     # StackBuilderPlus
     if [ ! -e STACKBUILDER-PLUS ]; then
         git clone ssh://pginstaller@cvs.enterprisedb.com/git/STACKBUILDER-PLUS
+        cd STACKBUILDER-PLUS
+        patch -p0 < ../../../../tarballs/stackbuilderplus-win.patch
     else
         cd $WD/StackBuilderPlus/source/STACKBUILDER-PLUS
         git pull
@@ -77,6 +79,8 @@ _prep_stackbuilderplus() {
     # Update Manager
     if [ ! -e SS-UPDATEMANAGER ]; then
         git clone ssh://pginstaller@cvs.enterprisedb.com/git/SS-UPDATEMANAGER
+        cd SS-UPDATEMANAGER
+        patch -p0 < ../../../../tarballs/updatemanager-win.patch
     else
         cd $WD/StackBuilderPlus/source/SS-UPDATEMANAGER
         git pull

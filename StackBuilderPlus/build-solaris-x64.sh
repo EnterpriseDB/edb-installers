@@ -47,7 +47,7 @@ _prep_stackbuilderplus_solaris_x64() {
     cp -R STACKBUILDER-PLUS/* StackBuilderPlus.solaris-x64 || _die "Failed to copy the source code (source/STACKBUILDER-PLUS)"
     chmod -R ugo+w StackBuilderPlus.solaris-x64 || _die "Couldn't set the permissions on the source directory (STACKBUILDER-PLUS)"
     cd StackBuilderPlus.solaris-x64
-    patch -p0 < $WD/tarballs/StackBuilderPlus_solaris.patch
+    patch -p0 < $WD/../tarballs/StackBuilderPlus_solaris.patch
     cd ..
     zip -r StackBuilderPlus.solaris-x64.zip StackBuilderPlus.solaris-x64 || _die "Failed to zip the StackBuilderPlus source directory"
 
@@ -93,14 +93,14 @@ _build_stackbuilderplus_solaris_x64() {
     cd $WD/StackBuilderPlus/source
 
     cat <<EOT > "setenv.sh"
-export CC=gcc
-export CXX=g++
+export CC="cc"
+export CXX="CC"
 export CFLAGS="-m64" 
 export CXXFLAGS="-m64"
 export CPPFLAGS="-m64"
 export LDFLAGS="-m64"
-export LD_LIBRARY_PATH=/usr/local/lib
-export PATH=/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/local/bin:/usr/ucb:\$PATH
+export LD_LIBRARY_PATH=/export/home/buildfarm/qt-4.4.3/lib:/usr/local/lib
+export PATH=$PG_SOLARIS_STUDIO_SOLARIS_X64/bin:/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/export/home/buildfarm/qt-4.4.3/bin:/usr/local/bin:/usr/ucb:\$PATH
 
 EOT
     scp setenv.sh $PG_SSH_SOLARIS_X64: || _die "Failed to scp the setenv.sh file"
@@ -117,7 +117,8 @@ EOT
     ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/StackBuilderPlus/source/StackBuilderPlus.solaris-x64/; gmake install" || _die "Failed to install StackBuilderPlus"
 
     echo "Building & installing UpdateManager"
-    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/StackBuilderPlus/source/updatemanager.solaris-x64; $PG_QMAKE_SOLARIS_X64 UpdateManager.pro" || _die "Failed to configure UpdateManager on solaris-x64"
+    ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/StackBuilderPlus/source/updatemanager.solaris-x64; QMAKESPEC=/export/home/buildfarm/qt-4.4.3/mkspecs/solaris-g++-64 $PG_QMAKE_SOLARIS_X64 UpdateManager.pro" || _die "Failed to configure UpdateManager on solaris-x64"
+    #ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/StackBuilderPlus/source/updatemanager.solaris-x64; $PG_QMAKE_SOLARIS_X64 QMAKESPEC=/usr/local/mkspecs/solaris-cc-64 QMAKE_CFLAGS=-m64 QMAKE_LFLAGS=-m64 QMAKE_CXX=\"CC -m64\" QMAKE_LIBS=\"-L /usr/sfw/lib/amd64 -L$PG_SOLARIS_STUDIO_SOLARIS_X64/lib/amd64\" UpdateManager.pro" || _die "Failed to configure UpdateManager on solaris-x64"
     ssh $PG_SSH_SOLARIS_X64 "source setenv.sh; cd $PG_PATH_SOLARIS_X64/StackBuilderPlus/source/updatemanager.solaris-x64; gmake" || _die "Failed to build UpdateManger on solaris-x64"
       
     ssh $PG_SSH_SOLARIS_X64 "mkdir -p $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/UpdateManager/bin" || _die "Failed to create the bin directory" 
@@ -126,29 +127,44 @@ EOT
     echo "Copying UpdateManager binary to staging directory"
     ssh $PG_SSH_SOLARIS_X64 "cp $PG_PATH_SOLARIS_X64/StackBuilderPlus/source/updatemanager.solaris-x64/UpdateManager $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/UpdateManager/bin" || _die "Failed to copy the UpdateManager binary"
 
+    ssh $PG_SSH_SOLARIS_X64 "/usr/local/bin/chrpath -r '\$ORIGIN/../lib' $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/UpdateManager/bin/UpdateManager" || _die "Failed to change the rpath of UpdateManager binary"
+
     echo "Copying dependent libraries to staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libQtXml.so.* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/UpdateManager/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libQtNetwork.so.* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/UpdateManager/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libQtCore.so.* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/UpdateManager/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libQtGui.so.* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/UpdateManager/lib" || _die "Failed to copy dependent library (libQtGui.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/lib/64/libpng12.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libpng12.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libssl.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libssl.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libcrypto.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libcrypto.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/sfw/lib/64/libexpat.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libexpat.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libgssapi_krb5.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libgssapi_krb5.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libkrb5.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libkrb5.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libkrb5support.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libkrb5.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libcom_err.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libcom_err.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libk5crypto.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libk5crypto.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/lib/64/libjpeg.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libjpeg.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/lib/64/libtiff.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libtiff.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/lib/64/libz.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libz.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/sfw/lib/64/libfreetype.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libfreetype.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/lib/64/libfontconfig.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libfontconfig.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/lib/64/libpango-* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/lib/64/libpangoft2* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (solaris-x64)"
-    ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/lib/libuuid.so.16 $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libuuid.so.16) in staging directory (solaris-x64)"
-    scp -r $PG_SSH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/* $WD/StackBuilderPlus/staging/solaris-x64/ || _die "Failed to copy back the staging directory from Solaris VM"
+    ssh $PG_SSH_SOLARIS_X64 "cp -Pr /export/home/buildfarm/qt-4.4.3/lib/libQtXml.so.* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/UpdateManager/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "/usr/local/bin/chrpath -r '\$ORIGIN' $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/UpdateManager/lib/libQtXml.so.*" || _die "Failed to change the rpath of libQtXml.so"
+    ssh $PG_SSH_SOLARIS_X64 "cp -Pr /export/home/buildfarm/qt-4.4.3/lib/libQtNetwork.so.* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/UpdateManager/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "/usr/local/bin/chrpath -r '\$ORIGIN' $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/UpdateManager/lib/libQtNetwork.so.*" || _die "Failed to change the rpath of libQtNetwork.so"
+    ssh $PG_SSH_SOLARIS_X64 "cp -Pr /export/home/buildfarm/qt-4.4.3/lib/libQtCore.so.* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/UpdateManager/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "/usr/local/bin/chrpath -r '\$ORIGIN' $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/UpdateManager/lib/libQtCore.so.*" || _die "Failed to change the rpath of libQtCore.so"
+    ssh $PG_SSH_SOLARIS_X64 "cp -Pr /export/home/buildfarm/qt-4.4.3/lib/libQtGui.so.* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/UpdateManager/lib" || _die "Failed to copy dependent library (libQtGui.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "/usr/local/bin/chrpath -r '\$ORIGIN' $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/UpdateManager/lib/libQtGui.so.*" || _die "Failed to change the rpath of libQtGui.so"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/lib/64/libpng12.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libpng.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/local/lib/libssl.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libssl.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/local/lib/libcrypto.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libcrypto.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -prR /usr/local/lib/libiconv.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libiconv.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/sfw/lib/64/libexpat.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libexpat.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/local/lib/libgssapi_krb5.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libgssapi_krb5.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/local/lib/libkrb5.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libkrb5.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/local/lib/libkrb5support.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libkrb5.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/local/lib/libcom_err.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libcom_err.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/local/lib/libk5crypto.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libk5crypto.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/local/lib/libjpeg.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libjpeg.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/local/lib/libtiff.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libtiff.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/local/lib/libz.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libz.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/sfw/lib/64/libfreetype.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libfreetype.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/lib/64/libfontconfig.so* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libfontconfig.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/lib/64/libpango-* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/lib/64/libpangoft2* $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r $PG_SOLARIS_STUDIO_SOLARIS_X64/lib/stlport4/amd64/libstlport.so.1 $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libstlport.so.1) in staging directory (solaris-x64)"
+    ssh $PG_SSH_SOLARIS_X64 "cp -r /usr/local/lib/libuuid.so.16 $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64/lib" || _die "Failed to copy dependent library (libuuid.so.16) in staging directory (solaris-x64)"
+    #ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging; tar cvf solaris-x64.tar solaris-x64" || _die "Failed to create tar file"
+    ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64/StackBuilderPlus/staging; /usr/sfw/bin/gtar cpvzf solaris-x64.tar.gz solaris-x64" || _die "Failed to create tar file"
+    scp -r $PG_SSH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64.tar.gz $WD/StackBuilderPlus/staging/ || _die "Failed to copy back the staging directory from Solaris VM"
+    #scp -r $PG_SSH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/StackBuilderPlus/staging/solaris-x64 $WD/StackBuilderPlus/staging/ || _die "Failed to copy back the staging directory from Solaris VM"
+    cd $WD/StackBuilderPlus/staging
+
+    tar zxvfp solaris-x64.tar.gz || _die "Failed to extract tar file"
+    rm -f solaris-x64.tar.gz || _die "Failed to delete tar file"
 
     cd $WD
 }
