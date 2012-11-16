@@ -124,14 +124,15 @@ EOT
 
     cat <<EOT > "build-um.bat"
 @ECHO OFF
+CALL "$PG_VSINSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
 
-SET QT_PATH=$PG_QTPATH_WINDOWS\Simulator\Qt\mingw
+SET QT_PATH=$PG_QTPATH_WINDOWS\Desktop\Qt\4.8.1\msvc2010
 SET SOURCE_PATH=%CD%
-REM SET QMAKE=%QT_PATH%\Desktop\Qt\4.8.1\msvc2010\bin\qmake.exe
 SET QMAKE=%QT_PATH%\bin\qmake.exe
 SET QT_MINGW_MAKE=$PG_QTPATH_WINDOWS\mingw\bin\mingw32-make.exe
 SET ERRMSG=No error found
-SET PATH=%PATH%;$PG_QTPATH_WINDOWS\mingw\lib\gcc\mingw32\4.4.0;$PG_QTPATH_WINDOWS\mingw\bin;$PG_QTPATH_WINDOWS\mingw\mingw32\bin
+SET PATH=%PATH%;%QT_PATH%\bin
+SET QMAKESPEC=%QT_PATH%\mkspecs\win32-msvc2010
 
 ECHO ***************************************
 ECHO * Build and Install the UpdateMonitor *
@@ -139,7 +140,7 @@ ECHO ***************************************
 
 cd "%SOURCE_PATH%\updatemonitor.windows"
 "%QMAKE%" UpdateManager.pro || SET ERRMSG=ERROR: Couldn't configure the UpdateMonitor on Windows && GOTO EXIT_WITH_ERROR
-"%QT_MINGW_MAKE%" release || SET ERRMSG=ERROR: Couldn't build the UpdateMonitor && GOTO EXIT_WITH_ERROR
+nmake -f Makefile.Release || SET ERRMSG=ERROR: Couldn't build the UpdateManager && GOTO EXIT_WITH_ERROR
 mkdir %SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\bin 
 mkdir %SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\instscripts\bin 
 copy release\UpdManager.exe %SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\bin\ || SET ERRMSG=ERROR: Couldn't copy the UpdateMonitor binary to staging directory && GOTO EXIT_WITH_ERROR
@@ -149,7 +150,6 @@ ECHO ***************************************************************************
 ECHO * Collecting dependent libraries and Archieving all binaries in one file (um_output.zip) *
 ECHO *******************************************************************************************
 cd "%SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\bin"
-copy "%QT_PATH%\bin\mingwm10.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (mingwm10.dll) && GOTO EXIT_WITH_ERROR
 echo Copying QtCore4 dll
 copy "%QT_PATH%\bin\QtCore4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtCore4.dll) && GOTO EXIT_WITH_ERROR
 echo Copying QtNetwork4 dll
