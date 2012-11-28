@@ -256,6 +256,8 @@ _build_PostGIS_osx() {
     echo "Copying Dependent libraries"
     cp -pR /usr/local/lib/libgeos*dylib staging/osx/PostGIS/lib || _die "Failed to copy dependent libraries"
     cp -pR /usr/local/lib/libproj*dylib staging/osx/PostGIS/lib || _die "Failed to copy dependent libraries"
+    cp -pR /usr/local/lib/libgdal*dylib staging/osx/PostGIS/lib || _die "Failed to copy dependent libraries"
+    cp -pR /usr/local/lib/libcurl*dylib staging/osx/PostGIS/lib || _die "Failed to copy dependent libraries"
 
     _rewrite_so_refs $WD/PostGIS/staging/osx/PostGIS bin @loader_path/..
     _rewrite_so_refs $WD/PostGIS/staging/osx/PostGIS lib @loader_path/..
