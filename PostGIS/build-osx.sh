@@ -189,11 +189,6 @@ _build_postgis() {
     make install PGXSOVERRIDE=0 DESTDIR=$WD/PostGIS/staging/osx/PostGIS bindir=/bin pkglibdir=/lib datadir=/share REGRESS=1 PGSQL_DOCDIR=$WD/PostGIS/staging/osx/PostGIS/doc PGSQL_MANDIR=$WD/PostGIS/staging/osx/PostGIS/man PGSQL_SHAREDIR=$WD/PostGIS/staging/osx/PostGIS/share/postgresql || _die "Failed to install PostGIS"
     make comments-install PGXSOVERRIDE=0 DESTDIR=$WD/PostGIS/staging/osx/PostGIS bindir=/bin pkglibdir=/lib datadir=/share REGRESS=1 PGSQL_DOCDIR=$WD/PostGIS/staging/osx/PostGIS/doc PGSQL_MANDIR=$WD/PostGIS/staging/osx/PostGIS/man PGSQL_SHAREDIR=$WD/PostGIS/staging/osx/PostGIS/share/postgresql || _die "Failed to install PostGIS comments"
 
-    echo "Building postgis-jdbc"
-    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java/jdbc 
-    export CLASSPATH=$PG_PATH_OSX/PostGIS/source/postgresql-$PG_JAR_POSTGRESQL.jar:$CLASSPATH 
-    $PG_ANT_HOME_OSX/bin/ant || _die "Failed to build postgis-jdbc"
-   
     echo "Building postgis-doc"
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/doc/html/image_src;
     make clean
@@ -216,16 +211,6 @@ _build_postgis() {
     cd $WD/PostGIS/source/postgis.osx/utils
     cp *.pl $PG_STAGING/PostGIS/utils || _die "Failed to copy the utilities "
     
-    cd $WD/PostGIS
-
-    mkdir -p staging/osx/PostGIS/java/jdbc
- 
-    echo "Copying postgis-jdbc"
-    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java
-    cp jdbc/target/postgis*.jar $PG_STAGING/PostGIS/java/jdbc/ || _die "Failed to copy postgis jars into postgis-jdbc directory "
-    cp -R ejb2 $PG_STAGING/PostGIS/java/ || _die "Failed to copy ejb2 into postgis-jdbc directory "
-    cp -R ejb3 $PG_STAGING/PostGIS/java/ || _die "Failed to copy ejb3 into postgis-jdbc directory "
-
     cd $WD
 }
 
@@ -298,7 +283,6 @@ _postprocess_PostGIS_osx() {
     # Copy in the menu pick images 
     mkdir -p $PG_PATH_OSX/PostGIS/staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp -pR $PG_PATH_OSX/PostGIS/resources/pg-launchPostGISDocs.icns $PG_PATH_OSX/PostGIS/staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchPostGISDocs.icns)"
-    cp -pR $PG_PATH_OSX/PostGIS/resources/pg-launchPostGISJDBCDocs.icns $PG_PATH_OSX/PostGIS/staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchJdbcDocs.icns)"
 
     cd $PG_PATH_OSX/PostGIS/
 

@@ -96,20 +96,14 @@ make comments || _die "Failed to build postgis ('make comments' on $PLATFORM)"
 make install PGXSOVERRIDE=0 DESTDIR=$POSTGIS_STAGING_REMOTE/PostGIS bindir=/bin pkglibdir=/lib datadir=/share PGSQL_DOCDIR=$POSTGIS_STAGING_REMOTE/PostGIS/doc PGSQL_MANDIR=$POSTGIS_STAGING_REMOTE/PostGIS/man PGSQL_SHAREDIR=$POSTGIS_STAGING_REMOTE/PostGIS/share/postgresql REGRESS=1 || _die "Failed to install postgis ($PLATFORM)"
 make comments-install PGXSOVERRIDE=0 DESTDIR=$POSTGIS_STAGING_REMOTE/PostGIS bindir=/bin pkglibdir=/lib datadir=/share PGSQL_DOCDIR=$POSTGIS_STAGING_REMOTE/PostGIS/doc PGSQL_MANDIR=$POSTGIS_STAGING_REMOTE/PostGIS/man PGSQL_SHAREDIR=$POSTGIS_STAGING_REMOTE/PostGIS/share/postgresql REGRESS=1 || _die "Failed to install comments postgis ($PLATFORM)"
 
+echo "Building postgis-docs"
+cd $POSTGIS_SOURCE_REMOTE/doc
+make html || _die "Failed to build PostGIS docs"
+make install PGXSOVERRIDE=0 DESTDIR=$POSTGIS_STAGING_REMOTE/PostGIS bindir=/bin pkglibdir=/lib datadir=/share REGRESS=1 PGSQL_DOCDIR=$POSTGIS_STAGING_REMOTE/PostGIS/doc PGSQL_MANDIR=$POSTGIS_STAGING_REMOTE/PostGIS/man PGSQL_SHAREDIR=$POSTGIS_STAGING_REMOTE/PostGIS/share/postgresql || _die "Failed to install postgis ($PLATFORM)"
+
 echo "Copying the utils"
 mkdir -p $POSTGIS_STAGING_REMOTE/PostGIS/utils
 cp $POSTGIS_SOURCE_REMOTE/utils/*.pl $POSTGIS_STAGING_REMOTE/PostGIS/utils/  || _die "Failed to copy the utilities"
-
-echo "Building postgis-jdbc"
-cd $POSTGIS_SOURCE_REMOTE/java/jdbc
-CLASSPATH=$PACKAGE_SOURCE_REMOTE/postgresql-$PG_VERSION_PGJDBC.jdbc3.jar:\$CLASSPATH JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX_X64/bin/ant
-
-mkdir -p $POSTGIS_STAGING_REMOTE/PostGIS/java/jdbc
-
-echo "Copying postgis-jdbc"
-cd $POSTGIS_SOURCE_REMOTE/java
-cp jdbc/target/postgis*.jar $POSTGIS_STAGING_REMOTE/PostGIS/java/jdbc/ || _die "Failed to copy postgis jars into postgis-jdbc"
-cp -R ejb2 ejb3 $POSTGIS_STAGING_REMOTE/PostGIS/java/ || _die "Failed to copy ejb2, ejb3 into postgis-java"
 
 echo "Copy dependent libraries"
 cd $POSTGIS_STAGING_REMOTE/PostGIS/lib

@@ -65,23 +65,18 @@ _fixup_file() {
 "$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-postgresql.png"
 "$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-postgis.png"
 "$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-launchPostGISDocs.png"
-"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-launchPostGISJDBCDocs.png"
 
 # Fixup the scripts
 chmod ugo+x "$INSTALLDIR/PostGIS/installer/PostGIS/"*.sh
 _fixup_file "$INSTALLDIR/PostGIS/scripts/launchPostGISDocs.sh"
-_fixup_file "$INSTALLDIR/PostGIS/scripts/launchJDBCDocs.sh"
 
 chmod ugo+x "$INSTALLDIR/PostGIS/scripts/launchPostGISDocs.sh"
-chmod ugo+x "$INSTALLDIR/PostGIS/scripts/launchJDBCDocs.sh"
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
 _fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop"
-_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory"
 
 chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop"
-chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR.desktop"
 chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgis-$POSTGIS_VERSION_STR.directory"
 chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory"
 
@@ -98,7 +93,6 @@ fi
          "$INSTALLDIR/PostGIS/scripts/xdg/pg-$BRANDING_STR.directory" \
          "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgis-$POSTGIS_VERSION_STR.directory" \
     "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop" \
-    "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR.desktop"  || _warn "Failed to create the PostGIS menu"
 
 #Ubuntu 10.04 and greater require menu cache update
 

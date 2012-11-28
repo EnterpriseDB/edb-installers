@@ -107,17 +107,6 @@ echo "Copying the utils"
 mkdir -p $POSTGIS_STAGING_REMOTE/PostGIS/utils
 cp $POSTGIS_SOURCE_REMOTE/utils/*.pl $POSTGIS_STAGING_REMOTE/PostGIS/utils/  || _die "Failed to copy the utilities"
 
-echo "Building postgis-jdbc"
-cd $POSTGIS_SOURCE_REMOTE/java/jdbc
-CLASSPATH=$PACKAGE_SOURCE_REMOTE/postgresql-$PG_VERSION_PGJDBC.jdbc3.jar:\$CLASSPATH JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX/bin/ant
-
-mkdir -p $POSTGIS_STAGING_REMOTE/PostGIS/java/jdbc
-
-echo "Copying postgis-jdbc"
-cd $POSTGIS_SOURCE_REMOTE/java
-cp jdbc/target/postgis*.jar $POSTGIS_STAGING_REMOTE/PostGIS/java/jdbc/ || _die "Failed to copy postgis jars into postgis-jdbc"
-cp -R ejb2 ejb3 $POSTGIS_STAGING_REMOTE/PostGIS/java/ || _die "Failed to copy ejb2, ejb3 into postgis-java"
-
 echo "Copy dependent libraries"
 cd $POSTGIS_STAGING_REMOTE/PostGIS/lib
 cp -pR /usr/local/lib/libproj.so* . || _die "Failed to copy the proj libraries"
@@ -191,7 +180,7 @@ EOT
 
     mkdir -p $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
     cp -pR $WD/PostGIS/source/postgis.linux/doc/html/images $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
-    cp -pR $WD/PostGIS/source/postgis.osx/doc/html/postgis.html $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
+    cp -pR $WD/PostGIS/source/postgis.linux/doc/html/postgis.html $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
     cp -pR $WD/PostGIS/source/postgis.linux/doc/postgis-$PG_VERSION_POSTGIS.pdf $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
     cp -pR $WD/PostGIS/source/postgis.linux/doc/man $WD/PostGIS/staging/linux/PostGIS/ 
 
