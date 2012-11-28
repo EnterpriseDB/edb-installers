@@ -85,7 +85,7 @@ _die() {
 cd $POSTGIS_SOURCE_REMOTE
 export PATH=$PG_PERL_LINUX_X64/bin:/usr/local/bin:$PATH
 export LD_LIBRARY_PATH=$POSTGRES_REMOTE_PATH/lib:/usr/local/lib:\$LD_LIBRARY_PATH
-export LDFLAGS=-Wl,--rpath,'\\\$ORIGIN/../lib'
+export LDFLAGS=-Wl,--rpath,'\\\${ORIGIN}/../lib'
 
 echo "Configuring the postgis source tree"
 ./configure --with-pgconfig=$POSTGRES_REMOTE_PATH/bin/pg_config --with-geosconfig=/usr/local/bin/geos-config --with-projdir=/usr/local || _die "Failed to configure postgis"
@@ -114,7 +114,7 @@ cp -R ejb2 ejb3 $POSTGIS_STAGING_REMOTE/PostGIS/java/ || _die "Failed to copy ej
 echo "Copy dependent libraries"
 cd $POSTGIS_STAGING_REMOTE/PostGIS/lib
 cp -pR /usr/local/lib/libproj.so* . || _die "Failed to copy the proj libraries"
-cp -pR /usr/local/lib/libgeos.so* . || _die "Failed to copy the geos libraries"
+cp -pR /usr/local/lib/libgeos*.so* . || _die "Failed to copy the geos libraries"
 cp -pR /usr/local/lib/libgdal.so* . || _die "Failed to copy the gdal libraries"
 cp -pR /usr/local/lib/libcurl.so* . || _die "Failed to copy the curl libraries"
 cp -pR /usr/local/lib/libtiff.so* . || _die "Failed to copy the libtiff libraries"
@@ -123,15 +123,15 @@ cp -pR /usr/local/lib/libexpat.so* . || _die "Failed to copy the libexpat librar
 cp -pR /usr/local/lib/libodbc.so* . || _die "Failed to copy the libodbc libraries"
 cp -pR /usr/local/lib/libodbcinst.so* . || _die "Failed to copy the libodbcinst libraries"
 
+cp -pR $POSTGIS_STAGING_REMOTE/PostGIS/$PG_PGHOME_LINUX_X64/bin/* $POSTGIS_STAGING_REMOTE/PostGIS/bin/
+
 echo "Changing the rpath for the PostGIS executables and libraries"
 cd $POSTGIS_STAGING_REMOTE/PostGIS/bin
-for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \\\$ORIGIN/../lib \$f; done
+for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \\\${ORIGIN}/../lib \$f; done
 
 cd $POSTGIS_STAGING_REMOTE/PostGIS/lib
-for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \\\$ORIGIN/../lib \$f; done
+for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \\\${ORIGIN}/../lib \$f; done
 chmod a+rx *
-
-cp -pR $POSTGIS_STAGING_REMOTE/PostGIS/$PG_PGHOME_LINUX_X64/bin/* $POSTGIS_STAGING_REMOTE/PostGIS/bin/
 
 echo "Creating wrapper script for pgsql2shp and shp2pgsql"
 cd $POSTGIS_STAGING_REMOTE/PostGIS/bin
@@ -160,9 +160,6 @@ LD_LIBRARY_PATH=\\\$PWD:\\\$LD_LIBRARY_PATH \\\$WD/shp2pgsql.bin $*
 
 cd \\\$CURRENTWD
 EOS
-chmod a+rx *
-
-EOT
 
 cat <<EOS > raster2pgsql
 #!/bin/sh
@@ -176,6 +173,7 @@ LD_LIBRARY_PATH=\\\$PWD:\\\$LD_LIBRARY_PATH \\\$WD/raster2pgsql.bin $*
 cd \\\$CURRENTWD
 EOS
 
+chmod a+rx *
 EOT
 
 
