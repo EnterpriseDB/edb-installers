@@ -60,6 +60,7 @@ _prep_pgmemcache() {
 
     cd $WD/pgmemcache/source/pgmemcache
     patch -p1 < $WD/tarballs/pgmemcache-libmemcached-1.0.8.patch
+    patch -p1 < $WD/tarballs/pgmemcache-2.0.6.patch
 
     # Per-platform prep
     cd $WD
