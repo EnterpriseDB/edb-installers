@@ -56,24 +56,22 @@ _prep_MigrationToolKit() {
 
     if [ ! -e EDB-MTK ];
     then
-      echo "Fetching MigrationToolKit sources from the cvs..."
+      echo "Fetching MigrationToolKit sources from the repo..."
       mkdir -p EDB-MTK
       cd EDB-MTK
-      if  [ x$PG_TAG_MIGRATIONTOOLKIT = x ];
-      then
-          cvs -d:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK co . 
-      else
-          cvs -d:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK co -r $PG_TAG_MIGRATIONTOOLKIT . 
-      fi
+          git clone ssh://pginstaller@cvs.enterprisedb.com/git/MTK .
+          git checkout $PG_TAG_MIGRATIONTOOLKIT
     else  
       cd $WD/MigrationToolKit/source/EDB-MTK
-      echo "Updating MigrationToolKit sources from the cvs..."
+      echo "Updating MigrationToolKit sources from the repo..."
+      git reset --hard
       if  [ x$PG_TAG_MIGRATIONTOOLKIT = x ];
       then
-          CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK cvs update -dPCA
+        git checkout master
       else
-          CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-MTK cvs update -r $PG_TAG_MIGRATIONTOOLKIT -dPC
+        git checkout $PG_TAG_MIGRATIONTOOLKIT
       fi
+      git pull
     fi
 
     if [ -e $WD/MigrationToolKit/source/pgJDBC-$PG_VERSION_PGJDBC ];
