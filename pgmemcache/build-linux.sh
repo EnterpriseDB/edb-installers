@@ -54,7 +54,10 @@ _build_pgmemcache_linux() {
     PGMEM_PACKAGE_VM_PATH=$PVT_REPO/pgmemcache/source/pgmemcache.$PGMEM_PLATFORM
 
     cd $PGMEM_SOURCE
-    ssh $PVT_SSH "cd $PGMEM_PACKAGE_VM_PATH; LD_LIBRARY_PATH=$PG_PATH/lib PATH=$PG_PATH/bin:$PATH make CFLAGS=\" -I/usr/local/include \" LDFLAGS=\" -L/usr/local/lib \"" || _die "Failed to build the pgmemcache for $PGMEM_PLATFORM"
+    ssh $PVT_SSH "cd $PGMEM_PACKAGE_VM_PATH; LD_LIBRARY_PATH=$PG_PATH/lib PATH=$PG_PATH/bin:$PATH make CFLAGS=\" -I/usr/local/include \" LDFLAGS=\" -L/usr/local/lib -Wl,--rpath,$PGMEM_PACKAGE_VM_PATH/../lib\"" || _die "Failed to build the pgmemcache for $PGMEM_PLATFORM"
+    
+    echo "Changing rpath"
+    ssh $PVT_SSH "cd $PGMEM_PACKAGE_VM_PATH; chrpath --replace \"\\\${ORIGIN}/" pgmemcache.so"
 
     cd $PGMEM_SOURCE
 
@@ -67,6 +70,7 @@ _build_pgmemcache_linux() {
     cp -pR $PGMEM_SOURCE/pgmemcache.so $PGMEM_STAGING/lib || _die "Failed to copy the pgmemcache binary"
     cp -pR $PGMEM_SOURCE/*.sql $PGMEM_STAGING/share || _die "Failed to copy the share files for the pgmemcache"
     ssh $PVT_SSH "cp -pR /usr/local/include/libmemcached* $PVT_REPO/pgmemcache/staging/linux/include/" || _die "Failed to copy the header files for the libmemcached"
+    
 
     chmod a+rx $PGMEM_STAGING/lib/* || _die "Failed to set permissions"
     chmod a+r $PGMEM_STAGING/share/* || _die "Failed to set permissions"
