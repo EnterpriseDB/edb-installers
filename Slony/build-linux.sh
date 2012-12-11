@@ -51,7 +51,7 @@ _build_Slony_linux() {
     PG_STAGING=$PG_PATH_LINUX/Slony/staging/linux
 
     echo "Configuring the slony source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/Slony/source/slony.linux/; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib ./configure --with-pgconfigdir=$PG_PGHOME_LINUX/bin"  || _die "Failed to configure slony"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/Slony/source/slony.linux/; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib ./configure --with-pgconfigdir=$PG_PGHOME_LINUX/bin --with-pgport=yes"  || _die "Failed to configure slony"
 
     echo "Building slony"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/Slony/source/slony.linux; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib make" || _die "Failed to build slony"
