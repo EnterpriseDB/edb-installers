@@ -238,10 +238,11 @@ EOT
 
     files=`ls $WD/ApachePhp/staging/osx/apache/bin/*`
     for file in $files
-    do 
+    do
         install_name_tool -change "/usr/local/lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
         install_name_tool -change "/usr/local/lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
         install_name_tool -change "/usr/local/lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" $file
+        install_name_tool -change "/usr/local/lib/libiconv.2.dylib" "@loader_path/../../apache/lib/libiconv.2.dylib" $file
     done
 
     # Copy in the dependency libraries
@@ -255,7 +256,7 @@ EOT
     cp -pR /usr/local/lib/libcrypto*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -pR /usr/local/lib/libexpat*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
     cp -pR /usr/local/lib/libssl*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
-    cp -pR /usr/local/lib/libcrypto*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
+    cp -pR /usr/local/lib/libiconv*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
 
     files=`ls $WD/ApachePhp/staging/osx/apache/lib/*`
     for file in $files
