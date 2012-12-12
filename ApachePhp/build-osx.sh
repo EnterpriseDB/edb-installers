@@ -229,11 +229,12 @@ EOT
     do 
         install_name_tool -change "libpq.5.dylib" "@loader_path/../../php/lib/libpq.5.dylib" $file
         install_name_tool -change "/usr/local/lib/libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" $file
-        install_name_tool -change "/usr/local/lib/libpng14.14.dylib" "@loader_path/../../php/lib/libpng14.14.dylib" $file
+        install_name_tool -change "/usr/local/lib/libpng15.15.dylib" "@loader_path/../../php/lib/libpng15.15.dylib" $file
         install_name_tool -change "/usr/local/lib/libjpeg.8.dylib" "@loader_path/../../php/lib/libjpeg.8.dylib" $file
         install_name_tool -change "/usr/local/lib/libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" $file
         install_name_tool -change "/usr/local/lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
-        install_name_tool -change "/usr/local/lib/libz.1.2.6.dylib" "@loader_path/../../php/lib/libz.1.2.6.dylib" $file
+        install_name_tool -change "/usr/local/lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" $file
+        install_name_tool -change "/usr/local/lib/libiconv.2.dylib" "@loader_path/../../apache/lib/libiconv.2.dylib" $file
     done
 
     files=`ls $WD/ApachePhp/staging/osx/apache/bin/*`
@@ -263,8 +264,15 @@ EOT
     do 
         install_name_tool -change "/usr/local/lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
         install_name_tool -change "/usr/local/lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
+        install_name_tool -change "/usr/local/lib/libiconv.2.dylib" "@loader_path/../../apache/lib/libiconv.2.dylib" $file
     done
 
+    files=`ls $WD/ApachePhp/staging/osx/php/lib/*`
+    for file in $files
+    do 
+        install_name_tool -change "/usr/local/lib/libiconv.2.dylib" "@loader_path/../../apache/lib/libiconv.2.dylib" $file
+    done
+    
     chmod u+w $PG_STAGING/apache/lib/*
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     _rewrite_so_refs $WD/ApachePhp/staging/osx apache/lib @loader_path/../..
