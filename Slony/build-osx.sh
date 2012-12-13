@@ -69,7 +69,7 @@ _build_Slony_osx() {
     for ARCH in ${ARCHS}
     do
       echo "Configuring slony sources for ${ARCH}"
-      CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ${ARCH}" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --prefix=$PG_PGHOME_OSX --with-pgconfigdir=$PG_PGHOME_OSX/bin --with-pgport=yes || _die "Failed to configure slony for intel"
+      CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ${ARCH}" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --prefix=$PG_PGHOME_OSX --with-pgconfigdir=$PG_PGHOME_OSX/bin --with-pgport=yes || _die "Failed to configure slony for intel"
       ARCH_FLAGS="${ARCH_FLAGS} -arch ${ARCH}"
       for configFile in ${CONFIG_FILES}
       do
@@ -80,7 +80,7 @@ _build_Slony_osx() {
     done
 
     echo "Configuring the slony source tree for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --prefix=$PG_PGHOME_OSX --with-pgconfigdir=$PG_PGHOME_OSX/bin --with-pgport=yes || _die "Failed to configure slony for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --prefix=$PG_PGHOME_OSX --with-pgconfigdir=$PG_PGHOME_OSX/bin --with-pgport=yes || _die "Failed to configure slony for Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     for configFile in ${CONFIG_FILES}
