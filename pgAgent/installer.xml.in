@@ -1026,7 +1026,7 @@
             <runProgram>
               <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
               <program>/etc/init.d/pgagent</program>
-              <programArguments>start &amp;</programArguments>
+              <programArguments>start</programArguments>
               <workingDirectory>/etc/init.d</workingDirectory>
               <progressText>Starting pgAgent service</progressText>
               <abortOnError>0</abortOnError>
