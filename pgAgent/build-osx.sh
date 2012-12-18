@@ -73,11 +73,16 @@ _build_pgAgent_osx() {
     cp -pR $PG_PGHOME_OSX/lib/libcrypto.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library (libedit.0.dylib)"
 
     # Copy libxml2 as System's libxml can be old.
-    cp -pR /usr/local/lib/libxml2* $PG_STAGING/lib || _die "Failed to copy the latest libxml2"
-    cp -pR /usr/local/lib/libwx_base_carbonu-2.8* $PG_STAGING/lib || _die "Failed to copy the latest libxml2"
+    cp -pR /usr/local/lib/libxml2*dylib $PG_STAGING/lib || _die "Failed to copy the latest libxml2"
+    cp -pR /usr/local/lib/libz*dylib $PG_STAGING/lib || _die "Failed to copy the latest libxml2"
+    cp -pR /usr/local/lib/libiconv*dylib $PG_STAGING/lib || _die "Failed to copy the latest libxml2"
+    cp -pR /usr/local/lib/libwx_base_carbonu-2.8*dylib $PG_STAGING/lib || _die "Failed to copy the latest libxml2"
 
+    otool -L $WD/pgAgent/staging/osx/bin/pgagent
+    install_name_tool -change "libpq.5.dylib" "@loader_path/../libpq.5.dylib" "$PG_STAGING/bin/psql"
+    install_name_tool -change "libpq.5.dylib" "@loader_path/../libpq.5.dylib" "$PG_STAGING/bin/pgagent"
     _rewrite_so_refs $WD/pgAgent/staging/osx lib @loader_path/..
-    install_name_tool -change "libpq.5.dylib" "@loader_path/libpq.5.dylib" "$PG_STAGING/bin/psql"
+    _rewrite_so_refs $WD/pgAgent/staging/osx bin @loader_path/..
 
     chmod +r $PG_STAGING/lib/*
     chmod +rx $PG_STAGING/bin/* 
