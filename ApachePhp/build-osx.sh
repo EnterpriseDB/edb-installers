@@ -224,28 +224,6 @@ EOT
 
     cp $PG_PGHOME_OSX/lib/libpq.*dylib $PG_STAGING/php/lib || _die "Failed to copy libpq to php lib "
 
-    files=`ls $WD/ApachePhp/staging/osx/apache/modules/libphp*.so`
-    for file in $files
-    do 
-        install_name_tool -change "libpq.5.dylib" "@loader_path/../../php/lib/libpq.5.dylib" $file
-        install_name_tool -change "/usr/local/lib/libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" $file
-        install_name_tool -change "/usr/local/lib/libpng15.15.dylib" "@loader_path/../../php/lib/libpng15.15.dylib" $file
-        install_name_tool -change "/usr/local/lib/libjpeg.8.dylib" "@loader_path/../../php/lib/libjpeg.8.dylib" $file
-        install_name_tool -change "/usr/local/lib/libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" $file
-        install_name_tool -change "/usr/local/lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
-        install_name_tool -change "/usr/local/lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" $file
-        install_name_tool -change "/usr/local/lib/libiconv.2.dylib" "@loader_path/../../apache/lib/libiconv.2.dylib" $file
-    done
-
-    files=`ls $WD/ApachePhp/staging/osx/apache/bin/*`
-    for file in $files
-    do
-        install_name_tool -change "/usr/local/lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
-        install_name_tool -change "/usr/local/lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
-        install_name_tool -change "/usr/local/lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" $file
-        install_name_tool -change "/usr/local/lib/libiconv.2.dylib" "@loader_path/../../apache/lib/libiconv.2.dylib" $file
-    done
-
     # Copy in the dependency libraries
     cp -pR /usr/local/lib/libpng*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -pR /usr/local/lib/libjpeg*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
@@ -253,33 +231,74 @@ EOT
     cp -pR /usr/local/lib/libxml*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -pR /usr/local/lib/libexpat*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -pR /usr/local/lib/libz*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
-    cp -pR /usr/local/lib/libssl*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
-    cp -pR /usr/local/lib/libcrypto*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -pR /usr/local/lib/libcrypto*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
     cp -pR /usr/local/lib/libexpat*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
     cp -pR /usr/local/lib/libssl*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
-    cp -pR /usr/local/lib/libiconv*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
+    cp -pR /usr/local/lib/libiconv*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
 
-    files=`ls $WD/ApachePhp/staging/osx/apache/lib/*`
-    for file in $files
-    do 
-        install_name_tool -change "/usr/local/lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
-        install_name_tool -change "/usr/local/lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
-        install_name_tool -change "/usr/local/lib/libiconv.2.dylib" "@loader_path/../../apache/lib/libiconv.2.dylib" $file
-    done
-
-    files=`ls $WD/ApachePhp/staging/osx/php/lib/*`
-    for file in $files
-    do 
-        install_name_tool -change "/usr/local/lib/libiconv.2.dylib" "@loader_path/../../apache/lib/libiconv.2.dylib" $file
-    done
-    
     chmod u+w $PG_STAGING/apache/lib/*
+
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     _rewrite_so_refs $WD/ApachePhp/staging/osx apache/lib @loader_path/../..
     _rewrite_so_refs $WD/ApachePhp/staging/osx apache/modules @loader_path/../..
     _rewrite_so_refs $WD/ApachePhp/staging/osx apache/bin @loader_path/../..
-    _rewrite_so_refs $WD/ApachePhp/staging/osx php/bin @loader_path/..
-    _rewrite_so_refs $WD/ApachePhp/staging/osx php/lib @loader_path/..
+    _rewrite_so_refs $WD/ApachePhp/staging/osx php/bin @loader_path/../..
+    _rewrite_so_refs $WD/ApachePhp/staging/osx php/lib @loader_path/../..
+
+    files=`ls $WD/ApachePhp/staging/osx/apache/modules/libphp*.so`
+    for file in $files
+    do 
+        install_name_tool -change "libpq.5.dylib" "@loader_path/../../php/lib/libpq.5.dylib" $file
+        install_name_tool -change "libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libpng15.15.dylib" "@loader_path/../../php/lib/libpng15.15.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libjpeg.8.dylib" "@loader_path/../../php/lib/libjpeg.8.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" $file
+    done
+
+    files=`ls $WD/ApachePhp/staging/osx/apache/bin/*`
+    for file in $files
+    do
+        install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" $file
+    done
+    files=`ls $WD/ApachePhp/staging/osx/php/bin/*`
+    for file in $files
+    do
+        install_name_tool -change "@loader_path/../../lib/libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libpng15.15.dylib" "@loader_path/../../php/lib/libpng15.15.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libjpeg.8.dylib" "@loader_path/../../php/lib/libjpeg.8.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" $file
+    done
+    files=`ls $WD/ApachePhp/staging/osx/apache/lib/lib*.dylib`
+    for file in $files
+    do
+        install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" $file
+    done
+    files=`ls $WD/ApachePhp/staging/osx/php/lib/lib*.dylib`
+    for file in $files
+    do
+        install_name_tool -change "@loader_path/../../lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" $file
+        install_name_tool -change "@loader_path/../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
+        install_name_tool -change "@loader_path/../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" $file
+    done
 
     cd $WD
 }
