@@ -1334,7 +1334,7 @@ include conf\addons\*.conf
     <actionGroup>
         <actionList>
             <registryDelete>
-                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApachePhp ${apachephpVersionInstalled}</key>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Apache/Php ${apachephpVersion}</key>
                 <showMessageOnError>0</showMessageOnError>
                 <abortOnError>0</abortOnError>
             </registryDelete>
