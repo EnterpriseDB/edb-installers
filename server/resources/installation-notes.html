@@ -26,6 +26,16 @@
 
 <p>The Linux builds of this installer have been tested on a variety of different versions of 32 and 64bit Linux distributions, including CentOS 5 and above, Ubuntu 10.04 and above, Redhat Enterprise Linux 5 and above and Fedora Core 15 and above. The Mac OS X build has been tested on OS X 10.5 (Leopard) and above. Please let us know if the installer does not operate as expected on your operating system, and where possible, we will try to add support</p>
 
+<h3>Procedural Languages</h3>
+
+<p>The procedural languages pl/Perl, pl/Python and pl/Tcl are included in this distribution of PostgreSQL. The server has been built using the <a href="http://www.activestate.com">ActiveState</a> community distributions of those language interpreters. To use any of the these languages from within PostgreSQL, download and install the appropriate interpreters and ensure they are included in the PATH variable under which the database server will be started. The versions used are shown below - newer minor (bugfix) releases may also work, but have not been tested:</p>
+
+<ul>
+  <li>ActivePerl 5.14.2</li>
+  <li>ActivePython 3.2.2</li>
+  <li>ActiveTcl 8.5.11</li>
+</ul>
+
 <h3>Windows Service Account</h3>
 
 <p>Prior to version 9.2, the Windows port used a service account called 'postgres' by default. From 9.2 onwards, the special 'NT AUTHORITY\NetworkService' account is used instead. If you need to use an alternative account, for example, to allow the database server to use server-side COPY with files on a network share, run the installer with a command line option such as <i>--serviceaccount postgres</i>.</p>
