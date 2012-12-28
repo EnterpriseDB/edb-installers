@@ -27,7 +27,6 @@ PG_PACKAGE_PSQLODBC=0
 PG_PACKAGE_POSTGIS=0
 PG_PACKAGE_SLONY=0
 PG_PACKAGE_TUNINGWIZARD=0
-PG_PACKAGE_MIGRATIONWIZARD=0
 PG_PACKAGE_NPGSQL=0
 PG_PACKAGE_PGAGENT=0
 PG_PACKAGE_PGMEMCACHE=0
@@ -36,6 +35,7 @@ PG_PACKAGE_MIGRATIONTOOLKIT=0
 PG_PACKAGE_REPLICATIONSERVER=0
 PG_PACKAGE_PLPGSQLO=0
 PG_PACKAGE_SQLPROTECT=0
+PG_PACKAGE_UPDATE_MONITOR=0
 
 # Path for the build machine (/opt/... must be at the end!)
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
@@ -45,73 +45,115 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 #            On Windows we don't have a shared directory, so specify a build directory
 #            We can also specify additional directorys to include in the path.
 
-PG_SSH_LINUX=buildfarm@bf2-linux.ox.uk.enterprisedb.com
-PG_PATH_LINUX=/mnt/buildfarm/pginstaller
+PG_SSH_LINUX=buildfarm@bf3-linux.pn.in.enterprisedb.com
+PG_PATH_LINUX=/mnt/hgfs/pginstaller.auto-repo
 PG_PGHOME_LINUX=$PG_PATH_LINUX/server/staging/linux
-PG_EXEC_PATH_LINUX=/usr/java/jdk1.5.0_14/bin
-PG_JAVA_HOME_LINUX=/usr/java/jdk1.5.0_14
-PG_ANT_HOME_LINUX=/usr/local/apache-ant-1.7.1
-PG_QMAKE_LINUX=qmake-qt4
+PG_EXEC_PATH_LINUX=/opt/jdk1.6.0_33/bin
+PG_JAVA_HOME_LINUX=/opt/jdk1.6.0_33
+PG_ANT_HOME_LINUX=/opt/apache-ant-1.8.4
+PG_QMAKE_LINUX=/opt/qtsdk/bin/qmake
+PG_QT_LINUX=/opt/qtsdk
 PG_PERL_LINUX=/opt/ActivePerl-5.14
 PG_PYTHON_LINUX=/opt/ActivePython-3.2
 PG_TCL_LINUX=/opt/ActiveTcl-8.5
+PG_XULRUNNER_SDK_LINUX=/usr/lib/xulrunner-sdk-1.9.2
+PG_XULRUNNER_RUNTIMES_LINUX=/usr/lib/xulrunner-1.9.2
 
-PG_SSH_LINUX_X64=buildfarm@bf2-linux-x64.ox.uk.enterprisedb.com
-PG_PATH_LINUX_X64=/mnt/buildfarm/pginstaller
+PG_SSH_LINUX_X64=buildfarm@bf3-linux-x64.pn.in.enterprisedb.com
+PG_PATH_LINUX_X64=/mnt/hgfs/pginstaller.auto-repo
 PG_PGHOME_LINUX_X64=$PG_PATH_LINUX_X64/server/staging/linux-x64
-PG_EXEC_PATH_LINUX_X64=/usr/java/jdk1.5.0_14/bin
-PG_JAVA_HOME_LINUX_X64=/usr/java/jdk1.5.0_14
-PG_ANT_HOME_LINUX_X64=/usr/local/apache-ant-1.7.1
-PG_QMAKE_LINUX_X64=qmake-qt4
+PG_EXEC_PATH_LINUX_X64=/opt/jdk1.6.0_33/bin
+PG_JAVA_HOME_LINUX_X64=/opt/jdk1.6.0_33
+PG_ANT_HOME_LINUX_X64=/opt/apache-ant-1.8.4
+PG_QMAKE_LINUX_X64=/opt/qtsdk/bin/qmake
+PG_QT_LINUX_X64=/opt/qtsdk
 PG_PERL_LINUX_X64=/opt/ActivePerl-5.14
 PG_PYTHON_LINUX_X64=/opt/ActivePython-3.2
 PG_TCL_LINUX_X64=/opt/ActiveTcl-8.5
+PG_XULRUNNER_SDK_LINUX_X64=/usr/lib64/xulrunner-sdk-1.9.2
+PG_XULRUNNER_RUNTIMES_LINUX_X64=/usr/lib64/xulrunner-1.9.2
 
-PG_SSH_WINDOWS=buildfarm@bf2-windows.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS=C:\\\\pginstaller-repo
-PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 9.0"
+PG_SSH_WINDOWS=buildfarm@bf3-windows-x64.pn.in.enterprisedb.com
+PG_PATH_WINDOWS=D:\\\\pginstaller.auto-repo
+PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0"
 PG_FRAMEWORKDIR_WINDOWS="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework"
-PG_FRAMEWORKVERSION_WINDOWS=v2.0.50727
-PG_FRAMEWORKSDKDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 9.0\\\\SDK\\\\v3.5"
-PG_DEVENVDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 9.0\\\\Common7\\\\IDE"
-PG_PGBUILD_WINDOWS="C:\\\\pgBuild"
-PG_WXWIN_WINDOWS="$PG_PGBUILD_WINDOWS\\\\wxWidgets"
-PG_CMAKE_WINDOWS="C:\\\\Program Files\\\\CMake 2.8"
-PG_ANT_WINDOWS="C:\\\\apache-ant-1.8.0"
-PG_PSDK_WINDOWS="C:\\\\Program Files\\\\Microsoft Platform SDK"
+PG_FRAMEWORKVERSION_WINDOWS=v4.0.30319
+PG_FRAMEWORKSDKDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0\\\\SDK\\\\v4.0.30319"
+PG_DEVENVDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0\\\\Common7\\\\IDE"
+PG_PGBUILD_WINDOWS="C:\\\\pgBuild32"
+PG_WXWIN_WINDOWS="$PG_PGBUILD_WINDOWS\\\\wxWidgets-2.8.12"
+PG_CMAKE_WINDOWS="C:\\\\cmake-x86"
+PG_ANT_WINDOWS="$PG_PGBUILD_WINDOWS"
 PG_MINGW_WINDOWS=C:\\\\MinGW
-PG_MSYS_WINDOWS=C:\\\\msys\\1.0
-PG_JAVA_HOME_WINDOWS="C:\\\\Program Files\\\\Java\\\\jdk1.5.0_22"
-PG_QTPATH_WINDOWS=C:\\\\Qt\\\\2009.03
-PG_SIGNTOOL_WINDOWS="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v6.0A\\\\bin\\\\signtool.exe"
+PG_MSYS_WINDOWS=C:\\\\MinGW\\\\msys\\\\1.0
+PG_JAVA_HOME_WINDOWS="C:\\\\Program Files (x86)\\\\Java\\\\jdk1.6.0_33"
+PG_QTPATH_WINDOWS=C:\\\\QtSDK
+PG_SDK_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.0A"
+PG_SIGNTOOL_WINDOWS="$PG_SDK_WINDOWS\\\\Bin\\\\signtool.exe"
+PG_PERL_WINDOWS=C:\\\\Perl32
+PG_PYTHON_WINDOWS=C:\\\\Python32-x86
+PG_TCL_WINDOWS=C:\\\\Tcl32
 
-PG_SSH_WINDOWS_X64=buildfarm@bf-windows-x64.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS_X64=C:\\\\pginstaller-repo
-PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 9.0"
+
+PG_SSH_WINDOWS_X64=buildfarm@bf3-windows-x64.pn.in.enterprisedb.com
+PG_PATH_WINDOWS_X64=D:\\\\pginstaller.auto-repo-x64
+PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0"
 PG_FRAMEWORKDIR_WINDOWS_X64="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework64"
-PG_FRAMEWORKVERSION_WINDOWS_X64=v2.0.50727
-PG_FRAMEWORKSDKDIR_WINDOWS_X64="C:\\\\Program Files(x86)\\\\Microsoft Visual Studio 9.0\\\\SDK\\\\v2.0"
-PG_DEVENVDIR_WINDOWS_X64="C:\\\\Program Files(x86)\\\\Microsoft Visual Studio 9.0\\\\Common7\\\\IDE"
-PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild"
-PG_WXWIN_WINDOWS_X64="$PG_PGBUILD_WINDOWS_X64\\\\wxWidgets"
-PG_CMAKE_WINDOWS_X64="C:\\\\pgBuild\\\\CMake2.8"
+PG_FRAMEWORKVERSION_WINDOWS_X64=v4.0.30319
+PG_FRAMEWORKSDKDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0\\\\SDK\\\\v4.0.30319"
+PG_DEVENVDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0\\\\Common7\\\\IDE"
+PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild64"
+PG_WXWIN_WINDOWS_X64="$PG_PGBUILD_WINDOWS_X64\\\\wxWidgets-2.8.12"
+PG_JAVA_HOME_WINDOWS_X64="C:\\\\Program Files\\\\Java\\\\jdk1.6.0_33"
+PG_CMAKE_WINDOWS_X64="C:\\\\cmake-x86"
+PG_PERL_WINDOWS_X64=C:\\\\Perl64
+PG_PYTHON_WINDOWS_X64=C:\\\\Python32-x64
+PG_TCL_WINDOWS_X64=C:\\\\Tcl64
+PG_SDK_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.0A"
+PG_SIGNTOOL_WINDOWS="$PG_SDK_WINDOWS\\\\Bin\\\\signtool.exe"
+
+PG_SSH_SOLARIS_X64=buildfarm@bf3-solaris-x64.pn.in.enterprisedb.com
+PG_PATH_SOLARIS_X64=/mnt/buildfarm/pginstaller.auto-repo
+PG_PGHOME_SOLARIS_X64=$PG_PATH_SOLARIS_X64/server/staging/solaris-x64
+PG_EXEC_PATH_SOLARIS_X64=/opt/jdk1.6.0_32
+PG_JAVA_HOME_SOLARIS_X64=/opt/jdk1.6.0_32
+PG_SOLARIS_STUDIO_SOLARIS_X64=/opt/solarisstudio12.3/prod
+PG_ANT_HOME_SOLARIS_X64=/opt/apache-ant-1.8.4
+PG_QMAKE_SOLARIS_X64=/usr/local/bin/qmake
+
+PG_SSH_SOLARIS_SPARC=buildfarm@suzuka.ox.uk.enterprisedb.com
+PG_PATH_SOLARIS_SPARC=/mnt/buildfarm/pginstaller.auto-bugatti
+PG_PGHOME_SOLARIS_SPARC=$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc
+PG_EXEC_PATH_SOLARIS_SPARC=/opt/jdk1.6.0_33
+PG_JAVA_HOME_SOLARIS_SPARC=/opt/jdk1.6.0_33
+#PG_SOLARIS_STUDIO_SOLARIS_SPARC=/opt/solarisstudio12.3/prod
+PG_SOLARIS_STUDIO_SOLARIS_SPARC=/opt/sunstudio12.1/prod
+PG_ANT_HOME_SOLARIS_SPARC=/opt/apache-ant-1.8.4
+PG_QMAKE_SOLARIS_SPARC=/usr/local.sun/bin/qmake
+
 
 PG_PATH_OSX=`pwd`
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging/osx
-PG_ANT_HOME_OSX=/usr/local/apache-ant-1.7.1
-PG_DOCBOOK_OSX=/opt/local/share/xsl/docbook-xsl
-PG_JAVA_HOME_OSX=/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home
+PG_ANT_HOME_OSX=/usr
+PG_DOCBOOK_OSX=/usr/local/docbook-xsl-1.77.1
+PG_JAVA_HOME_OSX=/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home
+PG_PERL_OSX=/usr/local/ActivePerl-5.14
+PG_PYTHON_OSX=/Library/Frameworks/Python.framework/Versions/3.2
+PG_TCL_OSX=/Library/Frameworks/Tcl.framework/Versions/8.5/
+PG_QTFRAMEWORK_OSX=/Users/buildfarm/QtSDK/Simulator/Qt/gcc/lib
+PG_QMAKE_OSX=/Users/buildfarm/QtSDK/Simulator/Qt/gcc/bin/qmake
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the
 # oldest supported
 
-PG_ARCH_OSX_CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -headerpad_max_install_names"
-PG_ARCH_OSX_CPPFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -headerpad_max_install_names"
-PG_ARCH_OSX_CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -headerpad_max_install_names"
-PG_ARCH_OSX_LDFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -headerpad_max_install_names"
+SDK_PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk
+PG_ARCH_OSX_CFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.6 -headerpad_max_install_names"
+PG_ARCH_OSX_CPPFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.6 -headerpad_max_install_names"
+PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.6 -headerpad_max_install_names"
+PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.6 -headerpad_max_install_names"
 
 # The InstallBuilder main binary.
-PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder for Qt Enterprise 6.5.6/bin/Builder.app/Contents/MacOS/installbuilder.sh"
+PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder for Qt Enterprise 8.2.0/bin/Builder.app/Contents/MacOS/installbuilder.sh"
 
 
