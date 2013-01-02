@@ -30,7 +30,7 @@ _mail_status()
         then
                 mail_content="Autobuild completed Successfully."
                 build_status="SUCCESS"
-                mail_receipents="sachin.srivastava@enterprisedb.com"
+                mail_receipents="sandeep.thakkar@enterprisedb.com"
         else
                 mail_content="
 $header_fail
