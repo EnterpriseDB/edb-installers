@@ -3,39 +3,49 @@
 # PostgreSQL Installer build system configuration.
 # Copy this file to settings.sh, and edit as required for the build setup
 
+# Check if the variable passed is already defined in the environment. If no, then set the value else skip it.
+_set_config()
+{
+	VAR=$1	
+	if [ "${!VAR}" = "" ]
+	then
+		#echo "${VAR} value not set in the environment"
+		eval $1=$2
+	fi
+}
+
 # Platforms. Set to 1 to enable a specific platform
 
-PG_ARCH_OSX=0
-
-PG_ARCH_LINUX=0
-PG_ARCH_LINUX_X64=0
-PG_ARCH_WINDOWS=0
-PG_ARCH_WINDOWS_X64=0
-PG_ARCH_LINUX_PPC64=0
-PG_ARCH_SOLARIS_X64=0
-PG_ARCH_SOLARIS_SPARC=0
-PG_ARCH_HPUX=0
+_set_config PG_ARCH_OSX 0
+_set_config PG_ARCH_LINUX 0
+_set_config PG_ARCH_LINUX_X64 0
+_set_config PG_ARCH_WINDOWS 0
+_set_config PG_ARCH_WINDOWS_X64 0
+_set_config PG_ARCH_LINUX_PPC64 0
+_set_config PG_ARCH_SOLARIS_X64 0
+_set_config PG_ARCH_SOLARIS_SPARC 0
+_set_config PG_ARCH_HPUX 0
 
 # Packages. Set to 1 to enable a specific packages. Note that many packages will be interdependent
 #           so you must ensure that all the required dependencies are enabled.
 
-PG_PACKAGE_SERVER=1
-PG_PACKAGE_APACHEPHP=0
-PG_PACKAGE_PHPPGADMIN=0
-PG_PACKAGE_PGJDBC=0
-PG_PACKAGE_PSQLODBC=0
-PG_PACKAGE_POSTGIS=0
-PG_PACKAGE_SLONY=0
-PG_PACKAGE_TUNINGWIZARD=0
-PG_PACKAGE_NPGSQL=0
-PG_PACKAGE_PGAGENT=0
-PG_PACKAGE_PGMEMCACHE=0
-PG_PACKAGE_PGBOUNCER=0
-PG_PACKAGE_MIGRATIONTOOLKIT=0
-PG_PACKAGE_REPLICATIONSERVER=0
-PG_PACKAGE_PLPGSQLO=0
-PG_PACKAGE_SQLPROTECT=0
-PG_PACKAGE_UPDATE_MONITOR=0
+_set_config PG_PACKAGE_SERVER 1
+_set_config PG_PACKAGE_APACHEPHP 0
+_set_config PG_PACKAGE_PHPPGADMIN 0
+_set_config PG_PACKAGE_PGJDBC 0
+_set_config PG_PACKAGE_PSQLODBC 0
+_set_config PG_PACKAGE_POSTGIS 0
+_set_config PG_PACKAGE_SLONY 0
+_set_config PG_PACKAGE_TUNINGWIZARD 0
+_set_config PG_PACKAGE_NPGSQL 0
+_set_config PG_PACKAGE_PGAGENT 0
+_set_config PG_PACKAGE_PGMEMCACHE 0
+_set_config PG_PACKAGE_PGBOUNCER 0
+_set_config PG_PACKAGE_MIGRATIONTOOLKIT 0
+_set_config PG_PACKAGE_REPLICATIONSERVER 0
+_set_config PG_PACKAGE_PLPGSQLO 0
+_set_config PG_PACKAGE_SQLPROTECT 0
+_set_config PG_PACKAGE_UPDATE_MONITOR 0
 
 # Path for the build machine (/opt/... must be at the end!)
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
