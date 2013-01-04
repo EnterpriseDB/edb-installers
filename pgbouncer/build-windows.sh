@@ -132,10 +132,7 @@ _postprocess_pgbouncer_windows() {
 
     rm -rf staging/windows/share/doc || _die "Failed to remove the extra doc directory"
 
-    _replace "bardb = host=127.0.0.1 dbname=bazdb" ";bardb = host=127.0.0.1 dbname=bazdb" staging/windows/share/pgbouncer.ini || _die "Failed to comment the extra db details"
-    _replace "forcedb = host=127.0.0.1 port=300 user=baz password=foo client_encoding=UNICODE datestyle=ISO connect_query='SELECT 1'" ";forcedb = host=127.0.0.1 port=300 user=baz password=foo client_encoding=UNICODE datestyle=ISO connect_query='SELECT 1'" staging/windows/share/pgbouncer.ini || _die "Failed to comment the extra db details"
-    _replace "nondefaultdb = pool_size=50 reserve_pool=10" ";nondefaultdb = pool_size=50 reserve_pool=10" staging/windows/share/pgbouncer.ini || _die "Failed to comment the extra db details"
-    _replace "foodb =" "@@CON@@" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"
+    _replace ";foodb =" "@@CON@@" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "logfile = /var/log/pgbouncer/pgbouncer.log" "logfile = @@LOGFILE@@" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "pidfile = /var/run/pgbouncer/pgbouncer.pid" "pidfile = @@PIDFILE@@" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "listen_addr = 127.0.0.1" "listen_addr = *" staging/windows/share/pgbouncer.ini || _die "Failed to put the place holder"
