@@ -270,6 +270,7 @@ EOT
     files=`ls $WD/ApachePhp/staging/osx/php/bin/*`
     for file in $files
     do
+        install_name_tool -change "libpq.5.dylib" "@loader_path/../../php/lib/libpq.5.dylib" $file
         install_name_tool -change "@loader_path/../../lib/libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" $file
         install_name_tool -change "@loader_path/../../lib/libpng15.15.dylib" "@loader_path/../../php/lib/libpng15.15.dylib" $file
         install_name_tool -change "@loader_path/../../lib/libjpeg.8.dylib" "@loader_path/../../php/lib/libjpeg.8.dylib" $file
