@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# PostgreSQL Installer build system configuration.
+# PostgreSQL Installer build system configuration. 
 # Copy this file to settings.sh, and edit as required for the build setup
 
 # Platforms. Set to 1 to enable a specific platform
@@ -14,7 +14,6 @@ PG_ARCH_WINDOWS_X64=0
 PG_ARCH_LINUX_PPC64=0
 PG_ARCH_SOLARIS_X64=0
 PG_ARCH_SOLARIS_SPARC=0
-PG_ARCH_HPUX=0
 
 # Packages. Set to 1 to enable a specific packages. Note that many packages will be interdependent
 #           so you must ensure that all the required dependencies are enabled.
@@ -27,7 +26,6 @@ PG_PACKAGE_PSQLODBC=0
 PG_PACKAGE_POSTGIS=0
 PG_PACKAGE_SLONY=0
 PG_PACKAGE_TUNINGWIZARD=0
-PG_PACKAGE_MIGRATIONWIZARD=0
 PG_PACKAGE_NPGSQL=0
 PG_PACKAGE_PGAGENT=0
 PG_PACKAGE_PGMEMCACHE=0
@@ -36,6 +34,7 @@ PG_PACKAGE_MIGRATIONTOOLKIT=0
 PG_PACKAGE_REPLICATIONSERVER=0
 PG_PACKAGE_PLPGSQLO=0
 PG_PACKAGE_SQLPROTECT=0
+PG_PACKAGE_UPDATE_MONITOR=0
 
 # Path for the build machine (/opt/... must be at the end!)
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
@@ -46,29 +45,36 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 #            We can also specify additional directorys to include in the path.
 
 PG_SSH_LINUX=buildfarm@bf2-linux.ox.uk.enterprisedb.com
-PG_PATH_LINUX=/mnt/buildfarm/pginstaller
+PG_PATH_LINUX=/mnt/buildfarm/pginstaller.auto
 PG_PGHOME_LINUX=$PG_PATH_LINUX/server/staging/linux
-PG_EXEC_PATH_LINUX=/usr/java/jdk1.5.0_14/bin
-PG_JAVA_HOME_LINUX=/usr/java/jdk1.5.0_14
+PG_EXEC_PATH_LINUX=/usr/java/jdk1.6.0_21/bin
+PG_JAVA_HOME_LINUX=/usr/java/jdk1.6.0_21
 PG_ANT_HOME_LINUX=/usr/local/apache-ant-1.7.1
 PG_QMAKE_LINUX=qmake-qt4
 PG_PERL_LINUX=/opt/ActivePerl-5.14
 PG_PYTHON_LINUX=/opt/ActivePython-3.2
 PG_TCL_LINUX=/opt/ActiveTcl-8.5
+#PG_XULRUNNER_RUNTIMES_LINUX=/usr/lib/xulrunner-1.9.2
+PG_XULRUNNER_RUNTIMES_LINUX=/home/buildfarm/xulrunner-runtimes/Current
+PG_XULRUNNER_SDK_LINUX=/home/buildfarm/xulrunner-sdk/Current
 
 PG_SSH_LINUX_X64=buildfarm@bf2-linux-x64.ox.uk.enterprisedb.com
-PG_PATH_LINUX_X64=/mnt/buildfarm/pginstaller
+PG_PATH_LINUX_X64=/mnt/buildfarm/pginstaller.auto
 PG_PGHOME_LINUX_X64=$PG_PATH_LINUX_X64/server/staging/linux-x64
-PG_EXEC_PATH_LINUX_X64=/usr/java/jdk1.5.0_14/bin
-PG_JAVA_HOME_LINUX_X64=/usr/java/jdk1.5.0_14
+PG_EXEC_PATH_LINUX_X64=/usr/java/jdk1.6.0_21/bin
+PG_JAVA_HOME_LINUX_X64=/usr/java/jdk1.6.0_21
 PG_ANT_HOME_LINUX_X64=/usr/local/apache-ant-1.7.1
 PG_QMAKE_LINUX_X64=qmake-qt4
 PG_PERL_LINUX_X64=/opt/ActivePerl-5.14
 PG_PYTHON_LINUX_X64=/opt/ActivePython-3.2
 PG_TCL_LINUX_X64=/opt/ActiveTcl-8.5
+#PG_XULRUNNER_RUNTIMES_LINUX_X64=/usr/lib64/xulrunner-1.9.2
+#PG_XULRUNNER_SDK_LINUX_X64=/usr/lib64/xulrunner-sdk-1.9.2
+PG_XULRUNNER_RUNTIMES_LINUX_X64=/home/buildfarm/xulrunner-runtimes/Current
+PG_XULRUNNER_SDK_LINUX_X64=/home/buildfarm/xulrunner-sdk/Current
 
 PG_SSH_WINDOWS=buildfarm@bf2-windows.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS=C:\\\\pginstaller-repo
+PG_PATH_WINDOWS=E:\\\\pginstaller.auto-repo
 PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 9.0"
 PG_FRAMEWORKDIR_WINDOWS="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework"
 PG_FRAMEWORKVERSION_WINDOWS=v2.0.50727
@@ -86,8 +92,8 @@ PG_QTPATH_WINDOWS=C:\\\\Qt\\\\2009.03
 PG_SIGNTOOL_WINDOWS="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v6.0A\\\\bin\\\\signtool.exe"
 PG_MANIFEST_WINDOWS="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v6.0A\\\\bin\\\\mt.exe"
 
-PG_SSH_WINDOWS_X64=buildfarm@bf-windows-x64.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS_X64=C:\\\\pginstaller-repo
+PG_SSH_WINDOWS_X64=buildfarm@bf2-windows-x64.ox.uk.enterprisedb.com
+PG_PATH_WINDOWS_X64=E:\\\\pginstaller.auto-repo
 PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 9.0"
 PG_FRAMEWORKDIR_WINDOWS_X64="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework64"
 PG_FRAMEWORKVERSION_WINDOWS_X64=v2.0.50727
@@ -97,11 +103,27 @@ PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild"
 PG_WXWIN_WINDOWS_X64="$PG_PGBUILD_WINDOWS_X64\\\\wxWidgets"
 PG_CMAKE_WINDOWS_X64="C:\\\\pgBuild\\\\CMake2.8"
 
+PG_SSH_SOLARIS_X64=buildfarm@bf2-solaris-x64.ox.uk.enterprisedb.com
+PG_PATH_SOLARIS_X64=/export/home/buildfarm/pginstaller.auto-repo
+PG_PGHOME_SOLARIS_X64=$PG_PATH_SOLARIS_X64/server/staging/solaris-x64
+PG_EXEC_PATH_SOLARIS_X64=/usr/jdk/jdk1.6.0_21/bin/amd64
+PG_JAVA_HOME_SOLARIS_X64=/usr/jdk/jdk1.6.0_21
+PG_ANT_HOME_SOLARIS_X64=/opt/apache-ant-1.8.1
+PG_QMAKE_SOLARIS_X64=qmake
+
+PG_SSH_SOLARIS_SPARC=buildfarm@suzuka.ox.uk.enterprisedb.com
+PG_PATH_SOLARIS_SPARC=/mnt/buildfarm/pginstaller.auto-repo
+PG_PGHOME_SOLARIS_SPARC=$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc
+PG_EXEC_PATH_SOLARIS_SPARC=/usr/jdk/jdk1.6.0_21/bin/sparcv9
+PG_JAVA_HOME_SOLARIS_SPARC=/usr/jdk/jdk1.6.0_21
+PG_ANT_HOME_SOLARIS_SPARC=/opt/apache-ant-1.8.1
+PG_QMAKE_SOLARIS_SPARC=qmake
+
 PG_PATH_OSX=`pwd`
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging/osx
-PG_ANT_HOME_OSX=/usr/local/apache-ant-1.7.1
+PG_ANT_HOME_OSX=/opt/local/share/java/apache-ant
 PG_DOCBOOK_OSX=/opt/local/share/xsl/docbook-xsl
-PG_JAVA_HOME_OSX=/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home
+PG_JAVA_HOME_OSX=/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the
@@ -113,6 +135,6 @@ PG_ARCH_OSX_CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-
 PG_ARCH_OSX_LDFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -headerpad_max_install_names"
 
 # The InstallBuilder main binary.
-PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder for Qt Enterprise 6.5.6/bin/Builder.app/Contents/MacOS/installbuilder.sh"
+PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder for Qt Enterprise 8.5.0/bin/Builder.app/Contents/MacOS/installbuilder.sh"
 
 
