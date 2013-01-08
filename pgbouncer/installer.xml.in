@@ -299,6 +299,32 @@
                  <isTrue value="${extract_mode}"/>
              </ruleList>
         </actionGroup>
+	
+	<actionGroup>
+	  <actionList>
+	    <unpackFile>
+              <origin>instscripts\vcredist_x86.exe</origin>
+              <destination>${system_temp_directory}\vcredist_x86.exe</destination>
+              <component>default</component>
+              <folder>installfileswindows</folder>
+            </unpackFile>
+            <runProgram>
+              <program>${system_temp_directory}\vcredist_x86.exe</program>
+              <programArguments>/q</programArguments>
+              <workingDirectory>${windir}</workingDirectory>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+            </runProgram>
+	  </actionList>
+	  <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+	    <isFalse value="${extract_mode}"/>
+          </ruleList>
+	</actionGroup>
 
         <!-- Do not perform the below actions in case of extract-only mode -->
         <actionGroup>
