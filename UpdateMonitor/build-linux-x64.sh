@@ -76,6 +76,7 @@ _build_updatemonitor_linux_x64() {
 
     echo "Copying dependent libraries to staging directory (linux-x64)"
     ssh $PG_SSH_LINUX_X64 "cp /usr/local/lib/libwx_baseud-2.8.so.* $PG_PATH_LINUX_X64/UpdateMonitor/staging/linux-x64/UpdateMonitor/instscripts/lib" || _die "Failed to copy dependent library (libwx_baseud-2.8.so) in staging directory (linux)-x64"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libiconv.so* $PG_PATH_LINUX/UpdateMonitor/staging/linux-x64/UpdateMonitor/instscripts/lib" || _die "Failed to copy dependent library (libiconv.so) in staging directory (linux-x64)"
     ssh $PG_SSH_LINUX_X64 "cp $PG_QT_LINUX_X64/lib/libQtXml.so.* $PG_PATH_LINUX_X64/UpdateMonitor/staging/linux-x64/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (linux-x64)"
     ssh $PG_SSH_LINUX_X64 "cp $PG_QT_LINUX_X64/lib/libQtNetwork.so.* $PG_PATH_LINUX_X64/UpdateMonitor/staging/linux-x64/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (linux-x64)"
     ssh $PG_SSH_LINUX_X64 "cp $PG_QT_LINUX_X64/lib/libQtCore.so.* $PG_PATH_LINUX_X64/UpdateMonitor/staging/linux-x64/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (linux-x64)"
