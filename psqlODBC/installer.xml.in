@@ -1131,8 +1131,9 @@
        </registryDelete>
 
        <registryDelete>
-           <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers\PostgreSQL ODBC Driver(ANSI)</key>
-           <showMessageOnError>0</showMessageOnError>
+           <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers</key>
+           <name>PostgreSQL ODBC Driver(ANSI)</name>
+           <showMessageOnError>1</showMessageOnError>
            <abortOnError>0</abortOnError>
            <ruleList>
                <compareText>
@@ -1144,8 +1145,9 @@
       </registryDelete>       
 
       <registryDelete>
-           <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers\PostgreSQL ODBC Driver(UNICODE)</key>
-           <showMessageOnError>0</showMessageOnError>
+           <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers</key>
+           <name>PostgreSQL ODBC Driver(UNICODE)</name>
+           <showMessageOnError>1</showMessageOnError>
            <abortOnError>0</abortOnError>
            <ruleList>
                <compareText>
