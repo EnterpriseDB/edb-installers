@@ -117,12 +117,17 @@ echo "Running the build (REL-9_1) " >> autobuild.log
 
 _mail_status "build-91.log" "9.1"
 
-# Create a remote directory and upload the output.
-echo "Creating /var/www/html/builds/pgInstaller/$DATE/9.1 on the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com mkdir -p /var/www/html/builds/pgInstaller/$DATE/9.1 >> autobuild.log 2>&1
+remote_location="/var/www/html/builds/Installers"
 
-echo "Uploading output to /var/www/html/builds/pgInstaller/$DATE/9.1 on the builds server" >> autobuild.log
-scp output/* buildfarm@builds.enterprisedb.com:/var/www/html/builds/pgInstaller/$DATE/9.1 >> autobuild.log 2>&1
+# remote location
+remote_location="$remote_location/$DATE/9.1"
+
+# Create a remote directory and upload the output.
+echo "Creating $remote_location on the builds server" >> autobuild.log
+ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
+
+echo "Uploading output to $remote_location on the builds server" >> autobuild.log
+scp output/* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
 
 echo "#######################################################################" >> autobuild.log
 echo "Build run completed at `date`" >> autobuild.log
