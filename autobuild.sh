@@ -16,7 +16,7 @@ usage()
         echo "      [-platforms list]  list of platforms. It may include the list of supported platforms separated by comma or all" 
         echo "      [-packages list]   list of packages. It may include the list of supported platforms separated by comma or all"
         echo "    Examples:"
-        echo "     $BASENAME -skipbuild -skipbuild 0 -platforms "linux, linux_64, windows, windows_x64, osx" -packages "server, apachephp, phppgadmin, pgjdbc, psqlodbc, slony, postgis, tuningwizard, npgsql, pgagent, pgmemcache, pgbouncer, migrationtoolkit, replicationserver, plpgsqlo, sqlprotect, update_monitor""
+        echo "     $BASENAME -skipbuild 0 -platforms "linux, linux_64, windows, windows_x64, osx" -packages "server, apachephp, phppgadmin, pgjdbc, psqlodbc, slony, postgis, tuningwizard, npgsql, pgagent, pgmemcache, pgbouncer, migrationtoolkit, replicationserver, plpgsqlo, sqlprotect, update_monitor""
         echo "     $BASENAME -skipbuild 1 -platforms "all" -packages "all""
         echo ""
         echo "    Note: setting skipbuild to 1 will skip the product build and just create the installer. 'all' option for -packages and -platforms will set all platforms and packages."
@@ -179,14 +179,14 @@ echo "Running the build (REL-9_2) " >> autobuild.log
 
 _mail_status "build-92.log" "9.2"
 
-remote_location="/var/www/html/builds/pgInstaller/9.2"
+remote_location="/var/www/html/builds/Installers"
 
 # Different location for the manual and cron triggered builds.
 if [ "$BUILD_USER" == "" ]
 then
-        remote_location="$remote_location/$DATE"
+        remote_location="$remote_location/$DATE/9.2"
 else
-        remote_location="$remote_location/Custom/$BUILD_USER/$BUILD_NUMBER"
+        remote_location="$remote_location/Custom/$BUILD_USER/9.2/$BUILD_NUMBER"
 fi
 
 # Create a remote directory and upload the output.
