@@ -82,16 +82,20 @@ echo "Running the build" >> autobuild.log
 
 _mail_status "build-90.log" "9.0"
 
+remote_location="/var/www/html/builds/Installers"
+
 echo "Purging old builds from the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"/var/www/html/builds/pgInstaller/[2-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\" 2" >> autobuild.log 2>&1
+ssh buildfarm@builds.enterprisedb.com "bin/culldirs "$remote_location/20*" 5" >> autobuild.log 2>&1
+
+# remote location
+remote_location_90="$remote_location/$DATE/9.0"
 
 # Create a remote directory and upload the output.
+echo "Creating $remote_location_90 on the builds server" >> autobuild.log
+ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location_90 >> autobuild.log 2>&1
 
-echo "Creating /var/www/html/builds/pgInstaller/$DATE/9.0 on the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com mkdir -p /var/www/html/builds/pgInstaller/$DATE/9.0 >> autobuild.log 2>&1
-
-echo "Uploading output to /var/www/html/builds/pgInstaller/$DATE/9.0 on the builds server" >> autobuild.log
-scp output/* buildfarm@builds.enterprisedb.com:/var/www/html/builds/pgInstaller/$DATE/9.0 >> autobuild.log 2>&1
+echo "Uploading output to $remote_location_90 on the builds server" >> autobuild.log
+scp output/* buildfarm@builds.enterprisedb.com:$remote_location_90 >> autobuild.log 2>&1
 
 # Clear out 9.0 output
 echo "Cleaning up 9.0 output" >> autobuild.log
@@ -117,17 +121,15 @@ echo "Running the build (REL-9_1) " >> autobuild.log
 
 _mail_status "build-91.log" "9.1"
 
-remote_location="/var/www/html/builds/Installers"
-
 # remote location
-remote_location="$remote_location/$DATE/9.1"
+remote_location_91="$remote_location/$DATE/9.1"
 
 # Create a remote directory and upload the output.
-echo "Creating $remote_location on the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
+echo "Creating $remote_location_91 on the builds server" >> autobuild.log
+ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location_91 >> autobuild.log 2>&1
 
-echo "Uploading output to $remote_location on the builds server" >> autobuild.log
-scp output/* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
+echo "Uploading output to $remote_location_91 on the builds server" >> autobuild.log
+scp output/* buildfarm@builds.enterprisedb.com:$remote_location_91 >> autobuild.log 2>&1
 
 echo "#######################################################################" >> autobuild.log
 echo "Build run completed at `date`" >> autobuild.log
