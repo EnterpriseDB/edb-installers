@@ -2072,21 +2072,6 @@
                     <value>0</value>
                 </setInstallerVariable>
 
-                <!-- Create a symlink to libpq.5.dylib on OSX. This allows the dynamic linker to find -->
-                <!-- libpq, which it otherwise wouldn't because the library ID is just the filename -->
-                <!-- (because we don't know the install directory at any time when we have install_name_tool) -->
-                <createSymLink>
-                    <linkName>/usr/lib/libpq.5.dylib</linkName>
-                    <target>${installdir}/lib/libpq.5.dylib</target>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>osx</value>
-                        </compareText>
-                    </ruleList>
-                </createSymLink>
-
                 <!-- Create the service user account -->
                 <runProgram>
                     <program>${installdir}/installer/server/createuser.sh</program>
