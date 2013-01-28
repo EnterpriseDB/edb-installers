@@ -85,7 +85,7 @@ _mail_status "build-90.log" "9.0"
 remote_location="/var/www/html/builds/Installers"
 
 echo "Purging old builds from the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com "bin/culldirs "$remote_location/20*" 5" >> autobuild.log 2>&1
+ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"$remote_location/20*\" 5" >> autobuild.log 2>&1
 
 # remote location
 remote_location_90="$remote_location/$DATE/9.0"
