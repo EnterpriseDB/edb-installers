@@ -3,6 +3,7 @@ default.locale=Default locale
 error.installing.runtimes=An error occured executing the Microsoft VC++ runtime installer.
 
 error.runtimes.does.not.meet.requirements=An error occured executing the Microsoft VC++ runtime installer.\nPlease ensure that Windows Installer 3.1 or later is installed.
+error.comspec=The environment variable COMSPEC does not seem to point to the cmd.exe or there is a trailing semicolon present. Please fix this variable and restart installation.
 
 error.writing.temp=system's temp folder is not writable by the current user.
 prerunscript.command.line.error=Unable to write inside TEMP environment variable path.
