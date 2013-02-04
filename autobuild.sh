@@ -81,15 +81,20 @@ echo "Running the build" >> autobuild.log
 
 _mail_status "build-84.log" "8.4"
 
+remote_location="/var/www/html/builds/Installers"
+
 echo "Purging old builds from the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"/var/www/html/builds/pgInstaller/[2-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\" 2" >> autobuild.log 2>&1
+ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"$remote_location/20*\" 5" >> autobuild.log 2>&1
+
+# remote location
+remote_location_84="$remote_location/$DATE/8.4"
 
 # Create a remote directory and upload the output.
-echo "Creating /var/www/html/builds/pgInstaller/$DATE/8.4 on the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com mkdir -p /var/www/html/builds/pgInstaller/$DATE/8.4 >> autobuild.log 2>&1
+echo "Creating $remote_location_84 on the builds server" >> autobuild.log
+ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location_84 >> autobuild.log 2>&1
 
-echo "Uploading output to /var/www/html/builds/pgInstaller/$DATE/8.4 on the builds server" >> autobuild.log
-scp output/* buildfarm@builds.enterprisedb.com:/var/www/html/builds/pgInstaller/$DATE/8.4 >> autobuild.log 2>&1
+echo "Uploading output to $remote_location_84 on the builds server" >> autobuild.log
+scp output/* buildfarm@builds.enterprisedb.com:$remote_location_84 >> autobuild.log 2>&1
 
 # Clear out 8.4 output
 echo "Cleaning up 8.4 output" >> autobuild.log
@@ -115,12 +120,15 @@ echo "Running the build (REL-8_3) " >> autobuild.log
 
 _mail_status "build-83.log" "8.3"
 
-# Create a remote directory and upload the output.
-echo "Creating /var/www/html/builds/pgInstaller/$DATE/8.3 on the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com mkdir -p /var/www/html/builds/pgInstaller/$DATE/8.3 >> autobuild.log 2>&1
+# remote location
+remote_location_83="$remote_location/$DATE/8.3"
 
-echo "Uploading output to /var/www/html/builds/pgInstaller/$DATE/8.3 on the builds server" >> autobuild.log
-scp output/* buildfarm@builds.enterprisedb.com:/var/www/html/builds/pgInstaller/$DATE/8.3 >> autobuild.log 2>&1
+# Create a remote directory and upload the output.
+echo "Creating $remote_location_83 on the builds server" >> autobuild.log
+ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location_83 >> autobuild.log 2>&1
+
+echo "Uploading output to $remote_location_83 on the builds server" >> autobuild.log
+scp output/* buildfarm@builds.enterprisedb.com:$remote_location_83 >> autobuild.log 2>&1
 
 echo "#######################################################################" >> autobuild.log
 echo "Build run completed at `date`" >> autobuild.log
