@@ -1,6 +1,6 @@
 default.locale=Configuración Regional por defecto
 error.installing.runtimes=Un error ocurrió ejecutando el instalador del runtime de Microsoft VC++
-error.comspec=The environment variable COMSPEC does not seem to point to the cmd.exe or there is a trailing semicolon present. Please fix this variable and restart installation.
+error.comspec=La variable de entorno COMSPEC parece no apuntar a cmd.exe o existe un punto y coma al final. Por favor, corriga el valor de esta variable y reinicie la instalación.
 upgrade.existing.installation.title=Instalación existente
 upgrade.existing.installation.description=Una instalación existente ha sido encontrada en ${iBaseDirectory}. La instalación será actualizada.\n\nEn fin de mejorar, es posible que tenga que reiniciar el servidor. Todas las conexiones al servidor tendrá que ser restablecido después de la finalización del proceso de instalación.
 upgrade.existing.datadir.title=Directorio de datos existente

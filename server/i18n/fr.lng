@@ -1,7 +1,7 @@
 default.locale=Locale par défaut
 
 error.installing.runtimes=Une erreur est survenu lors de l'exécution de l'installeur « Microsoft VC++ runtime ».
-error.comspec=The environment variable COMSPEC does not seem to point to the cmd.exe or there is a trailing semicolon present. Please fix this variable and restart installation.
+error.comspec=La variable d'environnement COMSPEC ne semble pas referrer a cmd.exe, ou il reste un point virgule. Corrigez cette variable et recommencez l'installation.
 upgrade.existing.installation.title=Installation existante
 upgrade.existing.installation.description=Une ancienne installation de PostgreSQL a été trouvée dans ${iBaseDirectory}. Cette installation sera mise à jour.
 
