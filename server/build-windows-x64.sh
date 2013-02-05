@@ -308,7 +308,9 @@ EOT
     # Copy the debugger plugins into place
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\output\\\\lib\\\\plugins" || _die "Failed to create the plugins directory on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\contrib\\\\pldebugger\\\\pldbgapi.dll $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy the debugger api library on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\contrib\\\\pldebugger\\\\targetinfo.dll $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy the targetinfo library on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\contrib\\\\pldebugger\\\\plugin_debugger.dll $PG_PATH_WINDOWS_X64\\\\output\\\\lib\\\\plugins" || _die "Failed to copy the debugger plugin on the windows-x64 build host"    
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\contrib\\\\pldebugger\\\\plugin_profiler.dll $PG_PATH_WINDOWS_X64\\\\output\\\\lib\\\\plugins" || _die "Failed to copy the profiler plugin on the windows-x64 build host"    
     
     #####################
     # pgAdmin
