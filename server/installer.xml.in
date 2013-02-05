@@ -536,8 +536,8 @@
         </actionGroup>
 
         <!-- FB22939. Check if COMSPEC value is fine. Otherwise, initdb will fail.-->
-     <actionGroup>
-         <actionList>
+        <actionGroup>
+          <actionList>
              <writeFile>
                <path>${system_temp_directory}/temp_check_comspec.bat</path>
                <text>@echo off
@@ -548,9 +548,6 @@
                <programArguments></programArguments>
                <abortOnError>0</abortOnError>
                <showMessageOnError>0</showMessageOnError>
-               <ruleList>
-                 <compareText logic="equals" text="${platform_name}" value="windows"/>
-               </ruleList>
              </runProgram>
              <deleteFile>
                <path>${system_temp_directory}/temp_check_comspec.bat</path>
@@ -560,8 +557,11 @@
                   <compareText text="${program_stdout}" value="test ok" logic="does_not_contain" />
                </ruleList>
              </throwError>
-         </actionList>
-     </actionGroup>
+          </actionList>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
 
         <setInstallerVariable name="iDataDirectory" value=""/>
         <setInstallerVariable name="iBaseDirectory" value=""/>
