@@ -1,5 +1,5 @@
 @ECHO OFF
-REM Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
+REM Copyright (c) 2012-2013, EnterpriseDB Corporation.  All rights reserved
 
 SET INSTALL_DIR="%1"
 
