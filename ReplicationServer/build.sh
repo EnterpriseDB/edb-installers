@@ -69,46 +69,25 @@ _prep_ReplicationServer() {
     echo "Unpacking pgJDBC source..."
     extract_file ../../tarballs/pgJDBC-$PG_VERSION_PGJDBC || exit 1
 
-    # ReplicationServer
-    if [ -e replicator ];
+    # XDB
+    if [ ! -e XDB ];
     then
-      cd replicator 
-      echo "Updating xDB Replication Server source directory"
-      if  [ x$PG_TAG_REPLICATIONSERVER = x ];
-      then
-      	  CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -PdCA
-      else
-      	  CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -r $PG_TAG_REPLICATIONSERVER -PdC
-      fi
+      echo "Fetching XDB sources from the git repo..."
+      mkdir -p XDB
+      cd XDB
+          git clone ssh://pginstaller@cvs.enterprisedb.com/git/XDB .
+          git checkout $PG_TAG_REPLICATIONSERVER
     else
-      echo "Fetching xDB Replication Server source directory"
+      cd XDB
+      echo "Updating XDB sources from the git repo..."
+      #git reset --hard
       if  [ x$PG_TAG_REPLICATIONSERVER = x ];
       then
-          cvs -d:ext:pginstaller@cvs.enterprisedb.com/cvs/EDB-RREP co replicator
+        git checkout master
       else
-          cvs -d:ext:pginstaller@cvs.enterprisedb.com/cvs/EDB-RREP co -r $PG_TAG_REPLICATIONSERVER replicator
+        git checkout $PG_TAG_REPLICATIONSERVER
       fi
-    fi
-    cd $WD/ReplicationServer/source
-    # DataValidator
-    if [ -e DataValidator ]; 
-    then
-      cd DataValidator
-      echo "Updating DataValidator source directory"
-      if  [ x$PG_TAG_REPLICATIONSERVER = x ];
-      then
-          CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -PdCA
-      else
-          CVSROOT=:ext:pginstaller@cvs.enterprisedb.com:/cvs/EDB-RREP cvs update -r $PG_TAG_REPLICATIONSERVER -PdC
-      fi
-    else
-      echo "Fetching xDB DataValidator source directory"
-      if  [ x$PG_TAG_REPLICATIONSERVER = x ];
-      then
-          cvs -d:ext:pginstaller@cvs.enterprisedb.com/cvs/EDB-RREP co DataValidator
-      else
-          cvs -d:ext:pginstaller@cvs.enterprisedb.com/cvs/EDB-RREP co -r $PG_TAG_REPLICATIONSERVER DataValidator
-      fi
+      git pull
     fi
 
     # Per-platform prep
