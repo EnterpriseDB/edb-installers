@@ -39,9 +39,9 @@ _prep_ReplicationServer_windows() {
 
 
     # Grab a copy of the source tree
-    cp -R replicator/* ReplicationServer.windows || _die "Failed to copy the source code (source/ReplicationServer-$PG_VERSION_ReplicationServer)"
+    cp -R $WD/ReplicationServer/source/XDB/replicator/* ReplicationServer.windows || _die "Failed to copy the source code (source/ReplicationServer-$PG_VERSION_ReplicationServer)"
     chmod -R ugo+w ReplicationServer.windows || _die "Couldn't set the permissions on the source directory"
-    cp -R DataValidator/* DataValidator.windows || _die "Failed to copy the source code (source/DataValidator-$PG_VERSION_DataValidator)"
+    cp -R $WD/ReplicationServer/source/XDB/DataValidator/* DataValidator.windows || _die "Failed to copy the source code (source/DataValidator-$PG_VERSION_DataValidator)"
     chmod -R ugo+w DataValidator.windows || _die "Couldn't set the permissions on the source directory"
 
     # Copy validateuser to ReplicationServer directory

@@ -28,9 +28,9 @@ _prep_ReplicationServer_linux_x64() {
     mkdir -p $WD/ReplicationServer/source/DataValidator.linux-x64 || _die "Couldn't create the DataValidator.linux-x64 directory"
 
     # Grab a copy of the source tree
-    cp -R replicator/* ReplicationServer.linux-x64 || _die "Failed to copy the source code (source/ReplicationServer-$PG_VERSION_ReplicationServer)"
+    cp -R $WD/ReplicationServer/source/XDB/replicator/* ReplicationServer.linux-x64 || _die "Failed to copy the source code (source/ReplicationServer-$PG_VERSION_ReplicationServer)"
     chmod -R ugo+w ReplicationServer.linux-x64 || _die "Couldn't set the permissions on the source directory"
-    cp -R DataValidator/* DataValidator.linux-x64 || _die "Failed to copy the source code (source/DataValidator-$PG_VERSION_DataValidator)"
+    cp -R $WD/ReplicationServer/source/XDB/DataValidator/* DataValidator.linux-x64 || _die "Failed to copy the source code (source/DataValidator-$PG_VERSION_DataValidator)"
     chmod -R ugo+w DataValidator.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
     #Copy the required jdbc drivers
