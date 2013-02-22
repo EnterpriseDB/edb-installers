@@ -28,9 +28,9 @@ _prep_ReplicationServer_osx() {
     mkdir -p $WD/ReplicationServer/source/DataValidator.osx || _die "Couldn't create the DataValidator.osx directory"
 
     # Grab a copy of the source tree
-    cp -R replicator/* ReplicationServer.osx || _die "Failed to copy the source code (source/replicator)"
+    cp -R $WD/ReplicationServer/source/XDB/replicator/* ReplicationServer.osx || _die "Failed to copy the source code (source/replicator)"
     chmod -R ugo+w ReplicationServer.osx || _die "Couldn't set the permissions on the source directory"
-    cp -R DataValidator/* DataValidator.osx || _die "Failed to copy the source code (source/DataValidator)"
+    cp -R $WD/ReplicationServer/source/XDB/DataValidator/* DataValidator.osx || _die "Failed to copy the source code (source/DataValidator)"
     chmod -R ugo+w DataValidator.osx || _die "Couldn't set the permissions on the source directory"
 
     #Copy the required jdbc drivers

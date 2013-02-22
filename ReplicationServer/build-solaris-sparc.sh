@@ -40,10 +40,10 @@ _prep_ReplicationServer_solaris_sparc() {
     mkdir -p $WD/ReplicationServer/source/DataValidator.solaris-sparc || _die "Couldn't create the DataValidator.solaris-sparc directory"
 
     # Grab a copy of the source tree
-    cp -R replicator/* ReplicationServer.solaris-sparc || _die "Failed to copy the source code (source/ReplicationServer-$PG_VERSION_ReplicationServer)"
+    cp -R $WD/ReplicationServer/source/XDB/replicator/* ReplicationServer.solaris-sparc || _die "Failed to copy the source code (source/ReplicationServer-$PG_VERSION_ReplicationServer)"
     chmod -R ugo+w ReplicationServer.solaris-sparc || _die "Couldn't set the permissions on the source directory"
 
-    cp -R DataValidator/* DataValidator.solaris-sparc || _die "Failed to copy the source code (source/DataValidator-$PG_VERSION_DataValidator)"
+    cp -R $WD/ReplicationServer/source/XDB/DataValidator/* DataValidator.solaris-sparc || _die "Failed to copy the source code (source/DataValidator-$PG_VERSION_DataValidator)"
     chmod -R ugo+w DataValidator.solaris-sparc || _die "Couldn't set the permissions on the source directory"
 
     #Copy the required jdbc drivers
