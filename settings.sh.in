@@ -36,7 +36,6 @@ _set_config PG_PACKAGE_PGJDBC 0
 _set_config PG_PACKAGE_PSQLODBC 0
 _set_config PG_PACKAGE_POSTGIS 0
 _set_config PG_PACKAGE_SLONY 0
-_set_config PG_PACKAGE_TUNINGWIZARD 0
 _set_config PG_PACKAGE_NPGSQL 0
 _set_config PG_PACKAGE_PGAGENT 0
 _set_config PG_PACKAGE_PGMEMCACHE 0
