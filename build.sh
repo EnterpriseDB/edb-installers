@@ -243,21 +243,6 @@ then
     _postprocess_Slony || exit 1
 fi
 
-# Package: TuningWizard
-if [ $PG_PACKAGE_TUNINGWIZARD = 1 ];
-then
-    echo "### Package: TuningWizard"
-    cd $WD
-    source ./TuningWizard/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_TuningWizard || exit 1
-        _build_TuningWizard || exit 1
-    fi
-    _postprocess_TuningWizard || exit 1
-fi
-
 # Package: Npgsql
 if [ $PG_PACKAGE_NPGSQL = 1 ];
 then
