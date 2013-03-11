@@ -100,36 +100,6 @@ scp output/* buildfarm@builds.enterprisedb.com:$remote_location_84 >> autobuild.
 echo "Cleaning up 8.4 output" >> autobuild.log
 rm -rf output/* >> autobuild.log 2>&1
 
-# Switch to REL-8_3 branch
-echo "Switching to REL-8_3 branch" >> autobuild.log
-/opt/local/bin/git checkout REL-8_3 >> autobuild.log 2>&1
-
-# Self update
-echo "Updating REL-8_3 branch build system" >> autobuild.log
-/opt/local/bin/git reset --hard >> autobuild.log 2>&1
-/opt/local/bin/git pull >> autobuild.log 2>&1
-
-# Make sure, we always do a full build
-if [ -f settings.sh.full.REL-8_3 ]; then
-   cp -f settings.sh.full.REL-8_3 settings.sh
-fi
-
-# Run the build, and dump the output to a log file
-echo "Running the build (REL-8_3) " >> autobuild.log
-./build.sh > output/build-83.log 2>&1
-
-_mail_status "build-83.log" "8.3"
-
-# remote location
-remote_location_83="$remote_location/$DATE/8.3"
-
-# Create a remote directory and upload the output.
-echo "Creating $remote_location_83 on the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location_83 >> autobuild.log 2>&1
-
-echo "Uploading output to $remote_location_83 on the builds server" >> autobuild.log
-scp output/* buildfarm@builds.enterprisedb.com:$remote_location_83 >> autobuild.log 2>&1
-
 echo "#######################################################################" >> autobuild.log
 echo "Build run completed at `date`" >> autobuild.log
 echo "#######################################################################" >> autobuild.log
