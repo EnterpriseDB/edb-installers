@@ -8,7 +8,7 @@ Controlling the PgBouncer Service
 By default, the PgBouncer service is configured to autostart at system 
 startup and listen for connections on port 6432.  You can confirm that the 
 PgBouncer service is running through the Windows service manager or through 
-the Linux or HPUX command line.
+the Linux or Solaris command line.
 
 Windows
 -------
@@ -17,8 +17,8 @@ On Windows, select Run from the Start menu; when the Run dialog opens, enter:
     services.msc 
 
 and click OK to open the Services dialog.  Scroll through the list of services 
-to view status information about the PgBouncer service (pgbouncer-9.2).  To change 
-the state of the pgbouncer-9.2 service, select the service from the list, and use 
+to view status information about the PgBouncer service (pgbouncer-9.3).  To change 
+the state of the pgbouncer-9.3 service, select the service from the list, and use 
 the Start and Stop service links in the upper-left corner of the Services dialog.  
 
 Linux
@@ -26,58 +26,39 @@ Linux
 To view the status of the PgBouncer service on Linux, open a terminal window, 
 and enter:
 
-    service pgbouncer-9.2 status
+    service pgbouncer-9.3 status
     
 You can also use the service command to start, stop or restart the PgBouncer 
-service.  To start the pgbouncer-9.2 service, enter:
+service.  To start the pgbouncer-9.3 service, enter:
 
-    service pgbouncer-9.2 start
+    service pgbouncer-9.3 start
     
-To stop the pgbouncer-9.2 service, enter:
+To stop the pgbouncer-9.3 service, enter:
 
-    service pgbouncer-9.2 stop 
+    service pgbouncer-9.3 stop 
 
 To stop, and then start the PgBouncer service, enter:
 
-    service pgbouncer-9.2 restart 
-
-HPUX
-----
-To view the status of the PgBouncer service on HPUX, open a terminal window, 
-and enter:
-
-    /sbin/init.d/pgbouncer-9.2 status
-    
-To start the PgBouncer service, enter:
-
-    /sbin/init.d/pgbouncer-9.2 start
-    
-To stop the PgBouncer service, enter:
-
-    /sbin/init.d/pgbouncer-9.2 stop 
-
-To stop, and then start the PgBouncer service, enter:
-
-    /sbin/init.d/pgbouncer-9.2 restart
+    service pgbouncer-9.3 restart 
 
 Solaris
 -------
 To view the status of the PgBouncer service, assume superuser privileges, and 
 enter:
        
-       svcs -a | grep pgbouncer-9_2
+       svcs -a | grep pgbouncer-9_3
 
-To start the pgbouncer-9_2 service, enter:
+To start the pgbouncer-9_3 service, enter:
 
-    svcadm enable pgbouncer-9_2
+    svcadm enable pgbouncer-9_3
     
-To stop the pgbouncer-9_2 service, enter:
+To stop the pgbouncer-9_3 service, enter:
 
-    svcadm disable pgbouncer-9_2 
+    svcadm disable pgbouncer-9_3 
 
-To stop, and then start the pgbouncer-9_2 service, enter:
+To stop, and then start the pgbouncer-9_3 service, enter:
 
-    svcadm restart pgbouncer-9_2
+    svcadm restart pgbouncer-9_3
 
 
 Configuring PgBouncer
@@ -186,12 +167,12 @@ The following (Linux) example demonstrates the syntax allowed in the [pgbouncer]
 section of the configuration file:
     
     [pgbouncer] 
-    logfile = /var/log/pgbouncer-9.2/pgbouncer.log 
+    logfile = /var/log/pgbouncer-9.3/pgbouncer.log 
     pidfile = /tmp/pgbouncer.pid 
     listen_addr = * 
     listen_port = 6432 
     auth_type = md5 
-    auth_file = /opt/PostgresPlus/9.2AS/etc/userlist.txt 
+    auth_file = /opt/PostgresPlus/9.3AS/etc/userlist.txt 
     admin_users = enterprisedb 
     pool_mode = session 
 
