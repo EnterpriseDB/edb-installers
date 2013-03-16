@@ -4,9 +4,9 @@
 # PostgreSQL server shortcut creation script for Linux
 
 # Check the command line
-if [ $# -ne 9 ];
+if [ $# -ne 10 ];
 then
-    echo "Usage: $0 <Major.Minor version> <OSUsername> <SuperUsername> <Port> <Branding> <Install dir> <Data dir> <DisableStackBuilder> <ServiceName>"
+    echo "Usage: $0 <Major.Minor version> <OSUsername> <SuperUsername> <Port> <Branding> <Install dir> <Data dir> <DisableStackBuilder> <ServiceName> <Temp dir>"
     exit 127
 fi
 
@@ -19,6 +19,7 @@ INSTALLDIR=$6
 DATADIR=$7
 DISABLE_STACKBUILDER=$8
 SERVICENAME=$9
+TEMPDIR=${10}
 
 # Exit code
 WARN=0
@@ -64,8 +65,8 @@ _warn() {
 
 # Search & replace in a file - _replace($find, $replace, $file) 
 _replace() {
-    sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
-	mv /tmp/$$.tmp $3 || _die "Failed to move /tmp/$$.tmp to $3"
+    sed -e "s^$1^$2^g" $3 > "$TEMPDIR/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
+	mv $TEMPDIR/$$.tmp $3 || _die "Failed to move $TEMPDIR/$$.tmp to $3"
 }
 
 # Substitute values into a file ($in)

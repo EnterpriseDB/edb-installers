@@ -1,6 +1,7 @@
 default.locale=Configuración Regional por defecto
 error.installing.runtimes=Un error ocurrió ejecutando el instalador del runtime de Microsoft VC++
 error.comspec=La variable de entorno COMSPEC parece no apuntar a cmd.exe o existe un punto y coma al final. Por favor, corriga el valor de esta variable y reinicie la instalación.
+cannot.create.tmp.dir=No se puede crear el directorio de trabajo en / tmp. Por favor, elimine todos los directorios de instalación existente en / tmp para proceder.
 upgrade.existing.installation.title=Instalación existente
 upgrade.existing.installation.description=Una instalación existente ha sido encontrada en ${iBaseDirectory}. La instalación será actualizada.\n\nEn fin de mejorar, es posible que tenga que reiniciar el servidor. Todas las conexiones al servidor tendrá que ser restablecido después de la finalización del proceso de instalación.
 upgrade.existing.datadir.title=Directorio de datos existente
