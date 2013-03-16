@@ -36,7 +36,7 @@ PG_TAG_MIGRATIONTOOLKIT='AS84R1-SP1_84518'
 #                     Minor version is revision.build. 
 
 PG_MAJOR_VERSION=8.4
-PG_MINOR_VERSION=16.1
+PG_MINOR_VERSION=16.3
 
 # Other package versions
 PG_VERSION_PGJDBC=8.4-702
