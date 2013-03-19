@@ -67,6 +67,7 @@
          <!-- Unix -->
          <actionGroup>
            <actionList>
+            <setInstallerVariable name="iteration" value="0"/>
             <!-- Create a random number to use unique filenames -->
             <!-- If the tenporary directory already exist, then generate the random number again. Repeat it for 10 times and then exit if the directory still exists -->
              <while>
