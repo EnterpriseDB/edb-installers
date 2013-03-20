@@ -6,15 +6,14 @@
 DIRNAME=`dirname $0`
 
 # Check if temp path is writable 
-TEMPFILE=`mktemp -q $DIRNAME/test_temp_XXXXXXXXXX.sh`
+TEMPFILE="$DIRNAME/test_temp.sh"
+echo "a=1" > $TEMPFILE
 
 if [ $? -ne 0 ];
 then
     echo "Unable to write inside TEMP environment variable path."
     exit 1
 fi
-
-echo "a=1" > $TEMPFILE
 
 # check if we can run a script from temp folder
 sh $TEMPFILE
