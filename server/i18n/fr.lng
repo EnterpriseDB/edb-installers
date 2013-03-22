@@ -11,6 +11,7 @@ upgrade.existing.datadir.description=Un ancien répertoire des données a été trou
 error.install.directory.invalid=Le répertoire d'installation doit être un chemin complet, contenant seulement des letters, des chiffres et les caractères '-', '/', '.' et '_'. De plus, il doit être possible d'écrire dans ce répertoire.
 error.install.directory.invalid.linux=Le répertoire d'installation ne peut pas être '/' ou '/usr'.
 error.install.directory.not.writable=Droit refusé pour lire/écrire dans le répertoire d'installation.
+cannot.create.tmp.dir=Impossible de crÃ©er le rÃ©pertoire de travail dans /tmp. Veuillez supprimer tous les rÃ©pertoires d'installation existants dans /tmp pour continu
 
 platform.not.match=Vous essayez d'exécuter un installeur 32 bits sur une machine 64 bits. L'installeur va quitter maintenant.
 error.data.directory.invalid=Le répertoire d'installation doit être un chemin complet, contenant seulement des letters, des chiffres et les caractères '-', '/', '.' et '_'. De plus, il doit être possible d'écrire dans ce répertoire.

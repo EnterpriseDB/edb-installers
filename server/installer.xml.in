@@ -59,6 +59,163 @@
         </language>
     </customLanguageFileList>
 
+    <!-- Custom functions -->
+    <functionDefinitionList>
+     <actionDefinition name="removeExistingSymlinks">
+       <actionList>
+         <!-- Fix existing symlinks -->
+         <actionGroup>
+           <actionList>
+             <writeFile>
+               <path>${system_temp_directory}/postgresql_installer_${random_number}/removeSymlinks.sh</path>
+               <text>
+dirname="$1"
+isExtraction=$2
+
+linkList=`find $dirname -type l`
+for name in $linkList; do
+        # Get source of symlink
+        result=`readlink $name`
+        if [ "x"$result != "x" ];
+        then
+            # Check if source exists in same directory
+            sourceInCurrentDir=`find $dirname | grep $result`
+            if [ "x"$sourceInCurrentDir = "x" ];
+            then
+                if [ $isExtraction = "1" ];
+                then
+                     # Abort extraction if symlink pointing to external resource
+                     echo "Aborting ..."
+                     exit 100
+                else
+                   # Unlink all symlinks pointing to external resources in normal installation.
+                   echo Deleting $name
+                   unlink $name
+                fi
+            fi
+        fi
+done
+               </text>
+             </writeFile>
+             <changePermissions files="${system_temp_directory}/postgresql_installer_${random_number}/removeSymlinks.sh" permissions="755"/>
+             <runProgram>
+               <abortOnError>0</abortOnError>
+               <program>${system_temp_directory}/postgresql_installer_${random_number}/removeSymlinks.sh</program>
+               <programArguments>"${dirname}" "${isExtraction}"</programArguments>
+               <showMessageOnError>0</showMessageOnError>
+               <workingDirectory>${system_temp_directory}/postgresql_installer_${random_number}</workingDirectory>
+             </runProgram>
+             <throwError>
+               <text>${msg(symlink.error.extract.mode)}</text>
+               <abortOnError>1</abortOnError>
+               <ruleList>
+                 <compareText logic="does_not_equal" text="0" value="${program_exit_code}"/>
+                 <isTrue value="${isExtraction}"/>
+               </ruleList>
+             </throwError>
+             <deleteFile path="${system_temp_directory}/postgresql_installer_${random_number}/removeSymlinks.sh">
+               <ruleList>
+                 <fileTest path="${system_temp_directory}/postgresql_installer_${random_number}/removeSymlinks.sh" condition="exists"/>
+               </ruleList>
+             </deleteFile>
+           </actionList>
+           <ruleList>
+             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+             <fileExists path="${dirname}"/>
+           </ruleList>
+         </actionGroup>
+       </actionList>
+       <parameterList>
+         <stringParameter name="dirname" allowEmptyValue="0"/>
+         <booleanParameter name="isExtraction" default="0"/>
+       </parameterList>
+     </actionDefinition>
+     <actionDefinition name="createTempDir">
+       <actionList>
+         <globalVariables names="random_number"/>
+         <!-- Unix -->
+         <actionGroup>
+           <actionList>
+            <setInstallerVariable name="iteration" value="0"/>
+            <generateRandomValue length="10" variable="tmp_random_number"/>
+             <!-- Create a hidden directory in user's home -->
+             <createDirectory path="${user_home_directory}/.postgresql-${tmp_random_number}"/>
+             <changePermissions files="${user_home_directory}/.postgresql-${tmp_random_number}" permissions="700"/>
+             <!-- create a script that will set umask to 077 and then create a tenporary directory in system temp -->
+             <writeFile>
+               <path>${user_home_directory}/.postgresql-${tmp_random_number}/gtd-${tmp_random_number}.sh</path>
+               <text>
+                 tmpdirname="$1"
+                 umask 0077
+                 mkdir "$tmpdirname"
+                 if [ $? -ne 0 ];
+                 then
+                     exit 100
+                 fi
+               </text>
+             </writeFile>
+            <changePermissions files="${user_home_directory}/.postgresql-${tmp_random_number}/gtd-${tmp_random_number}.sh" permissions="700"/>
+            <!-- Create a random number to use unique filenames -->
+            <!-- If the tenporary directory already exist, then generate the random number again. Repeat it for 10 times and then exit if the directory still exists -->
+             <while>
+               <actionList>
+                 <generateRandomValue length="10" variable="random_number"/>
+                <runProgram>
+                   <abortOnError>0</abortOnError>
+                   <program>${user_home_directory}/.postgresql-${tmp_random_number}/gtd-${tmp_random_number}.sh</program>
+                   <programArguments>${system_temp_directory}/${dirPrefix}_${random_number}</programArguments>
+                   <showMessageOnError>0</showMessageOnError>
+                   <workingDirectory>${user_home_directory}</workingDirectory>
+                 </runProgram>
+                 <break>
+                   <ruleList>
+                    <compareText logic="equals" text="0" value="${program_exit_code}"/>
+                   </ruleList>
+                 </break>
+                <actionGroup>
+                  <actionList>
+                    <throwError text="${msg(cannot.create.tmp.dir)}" abortOnError="1">
+                      <ruleList>
+                         <compareValues value1="${iteration}" logic="equals" value2="9"/>
+                       </ruleList>
+                     </throwError>
+                  </actionList>
+                </actionGroup>
+                 <mathExpression text="${iteration}+1" variable="iteration"/>
+               </actionList>
+               <conditionRuleList>
+                 <compareValues value1="${iteration}" logic="less" value2="10"/>
+               </conditionRuleList>
+             </while>
+            <deleteFile path="${user_home_directory}/.postgresql-${tmp_random_number}" abortOnError="0" showMessageOnError="0">
+               <ruleList>
+                 <fileTest path="${user_home_directory}/.postgresql-${tmp_random_number}" condition="exists"/>
+               </ruleList>
+             </deleteFile>
+            <setInstallerVariable name="random_number" value="${random_number}"/>
+          </actionList>
+          <ruleList>
+             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+           </ruleList>
+         </actionGroup>
+        <!-- Windows -->
+        <actionGroup>
+          <actionList>
+            <generateRandomValue length="10" variable="random_number"/>
+            <createDirectory path="${system_temp_directory}/${dirPrefix}_${random_number}"/>
+            <setInstallerVariable name="random_number" value="${random_number}"/>
+          </actionList>
+           <ruleList>
+             <compareText logic="equals" text="${platform_name}" value="windows"/>
+           </ruleList>
+        </actionGroup>
+       </actionList>
+       <parameterList>
+         <stringParameter name="dirPrefix" allowEmptyValue="0"/>
+       </parameterList>
+     </actionDefinition>
+    </functionDefinitionList>
+
     <!-- Prebuild Actons-->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>
@@ -387,6 +544,20 @@
 
     <!-- Preinstallation actions -->
     <preInstallationActionList>
+
+    <!-- Create temporary directory where all the temp files will be copied -->
+        <!-- createTempDir is a custom function that creates the unique temporary directory with proper permissions and returns the path in tempDir variable -->
+        <createTempDir dirPrefix="postgresql_installer"/>
+        <actionGroup>
+          <actionList>
+            <createDirectory path="${system_temp_directory}/postgresql_installer_${random_number}/bin"/>
+            <createDirectory path="${system_temp_directory}/postgresql_installer_${random_number}/lib"/>
+          </actionList>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="osx"/>
+            <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </actionGroup>
 
         <actionGroup>
             <actionList>
@@ -1107,27 +1278,10 @@
         <logMessage text="Using Service Name: ${servicename}"/>
 
 
-        <!-- Temp directory for preflight scripts -->
-        <createDirectory path="${system_temp_directory}/postgresql_installer"/>
-        <actionGroup>
-            <actionList>
-                <createDirectory path="${system_temp_directory}/postgresql_installer/bin" />
-                <createDirectory path="${system_temp_directory}/postgresql_installer/lib"/>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </actionGroup>
-
         <!-- Preinstall script -->
         <unpackFile>
             <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer/preinstall.sh</destination>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}/preinstall.sh</destination>
             <folder>programfilesmacosx</folder>
             <origin>installer/server/preinstall.sh</origin>
             <ruleList>
@@ -1143,7 +1297,7 @@
         <!-- Getlocales script -->
         <unpackFile>
             <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer/getlocales.sh</destination>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales.sh</destination>
             <folder>programfilesmacosx</folder>
             <origin>installer/server/getlocales.sh</origin>
             <ruleList>
@@ -1157,7 +1311,7 @@
         </unpackFile>
        <unpackFile>
             <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer/getlocales.sh</destination>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales.sh</destination>
             <folder>programfileslinux</folder>
             <origin>installer/server/getlocales.sh</origin>
             <ruleList>
@@ -1171,7 +1325,7 @@
         </unpackFile>
        <unpackFile>
             <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer/getlocales.sh</destination>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales.sh</destination>
             <folder>programfileslinux-x64</folder>
             <origin>installer/server/getlocales.sh</origin>
             <ruleList>
@@ -1185,7 +1339,7 @@
         </unpackFile>
        <unpackFile>
             <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer/getlocales.exe</destination>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales.exe</destination>
             <folder>programfileswindows</folder>
             <origin>installer/server/getlocales.exe</origin>
             <ruleList>
@@ -1203,37 +1357,37 @@
             <actionList>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer/bin/pg_controldata</destination>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/bin/pg_controldata</destination>
                     <folder>programfilesmacosx</folder>
                     <origin>bin/pg_controldata</origin>
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer/lib/libxml2.2.dylib</destination>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/lib/libxml2.2.dylib</destination>
                     <folder>programfilesmacosx</folder>
                     <origin>lib/libxml2.2.dylib</origin>
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer/lib/libxslt.1.dylib</destination>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/lib/libxslt.1.dylib</destination>
                     <folder>programfilesmacosx</folder>
                     <origin>lib/libxslt.1.dylib</origin>
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer/lib/libssl.1.0.0.dylib</destination>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/lib/libssl.1.0.0.dylib</destination>
                     <folder>programfilesmacosx</folder>
                     <origin>lib/libssl.1.0.0.dylib</origin>
                 </unpackFile>
 	       <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer/lib/libiconv.2.dylib</destination>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/lib/libiconv.2.dylib</destination>
                     <folder>programfilesmacosx</folder>
                     <origin>lib/libiconv.2.dylib</origin>
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer/lib/libcrypto.1.0.0.dylib</destination>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/lib/libcrypto.1.0.0.dylib</destination>
                     <folder>programfilesmacosx</folder>
                     <origin>lib/libcrypto.1.0.0.dylib</origin>
                 </unpackFile>
@@ -1252,19 +1406,19 @@
             <actionList>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer/pg_controldata</destination>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/pg_controldata</destination>
                     <folder>programfileslinux</folder>
                     <origin>bin/pg_controldata</origin>
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</destination>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</destination>
                     <folder>programfileslinux</folder>
                     <origin>installer/server/runpgcontroldata.sh</origin>
                 </unpackFile>
                 <unpackDirectory>
                     <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer/</destination>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/</destination>
                     <folder>programfileslinux</folder>
                     <origin>lib</origin>
                 </unpackDirectory>
@@ -1283,19 +1437,19 @@
             <actionList>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer/pg_controldata</destination>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/pg_controldata</destination>
                     <folder>programfileslinux-x64</folder>
                     <origin>bin/pg_controldata</origin>
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</destination>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</destination>
                     <folder>programfileslinux-x64</folder>
                     <origin>installer/server/runpgcontroldata.sh</origin>
                 </unpackFile>
                 <unpackDirectory>
                     <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer/</destination>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/</destination>
                     <folder>programfileslinux-x64</folder>
                     <origin>lib</origin>
                 </unpackDirectory>
@@ -1314,19 +1468,19 @@
             <actionList>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\pg_controldata.exe</destination>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\pg_controldata.exe</destination>
                     <folder>programfileswindows</folder>
                     <origin>bin/pg_controldata.exe</origin>
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\libintl-8.dll</destination>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\libintl-8.dll</destination>
                     <folder>programfileswindows</folder>
                     <origin>bin/libintl-8.dll</origin>
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\libiconv-2.dll</destination>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\libiconv-2.dll</destination>
                     <folder>programfileswindows</folder>
                     <origin>bin/libiconv-2.dll</origin>
                 </unpackFile>
@@ -1334,7 +1488,7 @@
                 <!-- Validate user binary -->
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\validateuser.exe</destination>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\validateuser.exe</destination>
                     <folder>programfileswindows</folder>
                     <origin>installer/server/validateuser.exe</origin>
                 </unpackFile>
@@ -1342,7 +1496,7 @@
                 <!-- Create user binary   -->
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\createuser.exe</destination>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\createuser.exe</destination>
                     <folder>programfileswindows</folder>
                     <origin>installer/server/createuser.exe</origin>
                 </unpackFile>
@@ -1350,21 +1504,21 @@
                 <!-- We will also need to get the VC++ runtimes installed on Windows, before we do anything with binaries -->
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer\vcredist_x86.exe</destination>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x86.exe</destination>
                     <folder>programfileswindows</folder>
                     <origin>installer/vcredist_x86.exe</origin>
                     <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer/installruntimes.vbs</destination>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/installruntimes.vbs</destination>
                     <folder>programfileswindows</folder>
                     <origin>installer/installruntimes.vbs</origin>
                     <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
                 </unpackFile>
                 <runProgram>
                     <program>cscript</program>
-                    <programArguments>//NoLogo "${system_temp_directory}\postgresql_installer\installruntimes.vbs" "${system_temp_directory}\postgresql_installer\vcredist_x86.exe"</programArguments>
+                    <programArguments>//NoLogo "${system_temp_directory}\postgresql_installer_${random_number}\installruntimes.vbs" "${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x86.exe"</programArguments>
                     <abortOnError>1</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
                     <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
@@ -1415,7 +1569,7 @@
 
                 <!-- Do we have a valid catalog version? -->
                 <runProgram>
-                    <program>${system_temp_directory}/postgresql_installer/bin/pg_controldata</program>
+                    <program>${system_temp_directory}/postgresql_installer_${random_number}/bin/pg_controldata</program>
                     <programArguments>"${datadir}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -1429,8 +1583,8 @@
                 </runProgram>
 
                 <runProgram>
-                    <program>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</program>
-                    <programArguments>${system_temp_directory}/postgresql_installer "${datadir}"</programArguments>
+                    <program>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</program>
+                    <programArguments>${system_temp_directory}/postgresql_installer_${random_number} "${datadir}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                     <ruleList>
@@ -1443,7 +1597,7 @@
                 </runProgram>
 
                 <runProgram>
-                    <program>${system_temp_directory}\postgresql_installer\pg_controldata.exe</program>
+                    <program>${system_temp_directory}\postgresql_installer_${random_number}\pg_controldata.exe</program>
                     <programArguments>"${datadir}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -1552,7 +1706,7 @@
         <actionGroup>
             <actionList>
                 <runProgram>
-                    <program>${system_temp_directory}/postgresql_installer/preinstall.sh</program>
+                    <program>${system_temp_directory}/postgresql_installer_${random_number}/preinstall.sh</program>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -1644,7 +1798,7 @@
                 </addChoiceOptions>
 
                 <runProgram>
-                    <program>${system_temp_directory}/postgresql_installer/getlocales.sh</program>
+                    <program>${system_temp_directory}/postgresql_installer_${random_number}/getlocales.sh</program>
                     <ruleList>
                         <compareText>
                             <logic>does_not_equal</logic>
@@ -1655,7 +1809,7 @@
                 </runProgram>
 
                 <runProgram>
-                    <program>${system_temp_directory}\postgresql_installer\getlocales.exe</program>
+                    <program>${system_temp_directory}\postgresql_installer_${random_number}\getlocales.exe</program>
                     <ruleList>
                         <compareText>
                             <logic>equals</logic>
@@ -1792,6 +1946,27 @@
     </preInstallationActionList>
 
     <readyToInstallActionList>
+       <!-- Fix existing symlinks -->
+       <actionGroup>
+         <actionList>
+            <removeExistingSymlinks dirname="${installdir}/doc" isExtraction="0"/>
+          </actionList>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </actionGroup>
+        <!-- Fix existing symlinks in extraction -->
+        <actionGroup>
+          <actionList>
+            <removeExistingSymlinks dirname="${installdir}/doc" isExtraction="1"/>
+          </actionList>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            <isTrue value="${extract_mode}"/>
+          </ruleList>
+        </actionGroup>
+
         <!-- Attempt to stop any existing server. We *always* do this, just in case  -->
         <!-- the existing installation is broken and it doesn't look like an upgrade -->
 
@@ -1978,12 +2153,6 @@
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-
-        <deleteFile>
-            <path>${system_temp_directory}/postgresql_installer</path>
-            <abortOnError>0</abortOnError>
-            <showMessageOnError>0</showMessageOnError>
-        </deleteFile>
 
         <!-- Do not perform any actions, if extract-only mode is enabled -->
         <actionGroup>
@@ -2317,9 +2486,15 @@
                         </setInstallerVariableFromRegEx>
 
                         <!-- Initdb -->
+                        <setEnvironmentVariable name="PGPASSWORD" value="${superpassword}">
+                        <ruleList>
+                           <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                        </ruleList>
+                        </setEnvironmentVariable>
+
                         <runProgram>
                             <program>${installdir}/installer/server/initcluster.sh</program>
-                            <programArguments>"${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport} ${reallocale}</programArguments>
+                            <programArguments>"${serviceaccount}" "${superaccount}" "${installdir}" "${datadir}" ${serverport} ${reallocale}</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -2478,7 +2653,7 @@
                 <!-- Shortcuts -->
                 <runProgram>
                     <program>${installdir}/installer/server/createshortcuts.sh</program>
-                    <programArguments>${product_version} "${serviceaccount}" "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${disableStackBuilder}" "${servicename}"</programArguments>
+                    <programArguments>${product_version} "${serviceaccount}" "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${disableStackBuilder}" "${servicename}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -2699,7 +2874,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <actionList>
                         <runProgram>
                             <program>${installdir}/installer/server/loadmodules.sh</program>
-                            <programArguments>"${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" ${serverport} "${install_plpgsql}"</programArguments>
+                            <programArguments>"${serviceaccount}" "${superaccount}" "${installdir}" ${serverport} "${install_plpgsql}"</programArguments>
                             <progressText>${msg(progress.text.loading.modules)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -3193,7 +3368,30 @@ REM The script sets environment variables helpful for PostgreSQL
             </ruleList>
         </registrySet>
 
+        <!-- Delete the temp scripts directory -->
+        <logMessage>
+          <text>Delete the temporary scripts directory...</text>
+        </logMessage>
+        <deleteFile>
+          <path>${system_temp_directory}/postgresql_installer_${random_number}</path>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </deleteFile>
+
     </postInstallationActionList>
+    <installationAbortedActionList>
+    <deleteFile path="${system_temp_directory}/postgresql_installer_${random_number}" abortOnError="0" showMessageOnError="0">
+      <ruleList>
+        <fileTest path="${system_temp_directory}/postgresql_installer_${random_number}" condition="exists"/>
+      </ruleList>
+    </deleteFile>
+    <deleteFile path="${user_home_directory}/.postgresql-${tmp_random_number}" abortOnError="0" showMessageOnError="0">
+      <ruleList>
+        <fileTest path="${user_home_directory}/.postgresql-${tmp_random_number}" condition="exists"/>
+      </ruleList>
+    </deleteFile>
+    </installationAbortedActionList>
+
 
     <!-- Final page actions -->
     <finalPageActionList>
@@ -3245,6 +3443,12 @@ REM The script sets environment variables helpful for PostgreSQL
 
     <!-- Preuninstallation actions -->
     <preUninstallationActionList>
+    <!-- Create temporary directory -->
+    <createTempDir dirPrefix="postgresql_installer">
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </createTempDir>
 
         <!-- Abort uninstallation if not super-user/Administrator -->
         <actionGroup>
@@ -3310,7 +3514,7 @@ REM The script sets environment variables helpful for PostgreSQL
         <!-- LINUX: Remove menu shortcuts -->
         <runProgram>
             <program>${installdir}/installer/server/removeshortcuts.sh</program>
-            <programArguments>"${installdir}" ${product_version} "${branding}"</programArguments>
+            <programArguments>"${installdir}" ${product_version} "${branding}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -3544,6 +3748,11 @@ REM The script sets environment variables helpful for PostgreSQL
 
     <!-- Post-uninstall actions -->
     <postUninstallationActionList>
+       <deleteFile path="${system_temp_directory}/postgresql_installer_${random_number}">
+          <ruleList>
+            <compareText logic="contains" text="${platform_name}" value="linux"/>
+          </ruleList>
+        </deleteFile>
         <showWarning>
             <text>${msg(info.datadirectory.user.kept)}</text>
         </showWarning>
@@ -4431,7 +4640,7 @@ REM The script sets environment variables helpful for PostgreSQL
 
                         <!-- Do we have a valid catalog version? -->
                         <runProgram>
-                            <program>${system_temp_directory}/postgresql_installer/bin/pg_controldata</program>
+                            <program>${system_temp_directory}/postgresql_installer_${random_number}/bin/pg_controldata</program>
                             <programArguments>"${datadir}"</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -4445,8 +4654,8 @@ REM The script sets environment variables helpful for PostgreSQL
                         </runProgram>
 
                         <runProgram>
-                            <program>${system_temp_directory}/postgresql_installer/runpgcontroldata.sh</program>
-                            <programArguments>${system_temp_directory}/postgresql_installer "${datadir}"</programArguments>
+                            <program>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</program>
+                            <programArguments>${system_temp_directory}/postgresql_installer_${random_number} "${datadir}"</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                             <ruleList>
@@ -4459,7 +4668,7 @@ REM The script sets environment variables helpful for PostgreSQL
                         </runProgram>
 
                         <runProgram>
-                            <program>${system_temp_directory}\postgresql_installer\pg_controldata.exe</program>
+                            <program>${system_temp_directory}\postgresql_installer_${random_number}\pg_controldata.exe</program>
                             <programArguments>"${datadir}"</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -4769,7 +4978,7 @@ REM The script sets environment variables helpful for PostgreSQL
                         </setInstallerVariable>
 
                         <runProgram>
-                            <program>${system_temp_directory}\postgresql_installer\createuser.exe</program>
+                            <program>${system_temp_directory}\postgresql_installer_${random_number}\createuser.exe</program>
                             <!-- The dot at the beginning of the arguments is the domain -->
                             <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
                             <abortOnError>0</abortOnError>
@@ -4904,7 +5113,7 @@ REM The script sets environment variables helpful for PostgreSQL
                         </setInstallerVariable>
 
                         <runProgram>
-                            <program>${system_temp_directory}\postgresql_installer\validateuser.exe</program>
+                            <program>${system_temp_directory}\postgresql_installer_${random_number}\validateuser.exe</program>
                             <!-- The dot at the beginning of the arguments is the domain -->
                             <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
                             <abortOnError>0</abortOnError>
