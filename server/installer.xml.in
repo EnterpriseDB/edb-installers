@@ -124,34 +124,23 @@ done
          <actionGroup>
            <actionList>
             <setInstallerVariable name="iteration" value="0"/>
-            <generateRandomValue length="10" variable="tmp_random_number"/>
-             <!-- Create a hidden directory in user's home -->
-             <createDirectory path="${user_home_directory}/.postgresql-${tmp_random_number}"/>
-             <!-- create a script that will set umask to 077 and then create a tenporary directory in system temp -->
-             <writeFile>
-               <path>${user_home_directory}/.postgresql-${tmp_random_number}/gtd-${tmp_random_number}.sh</path>
-               <text>
-                 tmpdirname="$1"
-                 umask 0077
-                 mkdir "$tmpdirname"
-                 if [ $? -ne 0 ];
-                 then
-                     exit 100
-                 fi
-               </text>
-             </writeFile>
-            <changePermissions files="${user_home_directory}/.postgresql-${tmp_random_number}/gtd-${tmp_random_number}.sh" permissions="700"/>
             <!-- Create a random number to use unique filenames -->
             <!-- If the tenporary directory already exist, then generate the random number again. Repeat it for 10 times and then exit if the directory still exists -->
              <while>
                <actionList>
                  <generateRandomValue length="10" variable="random_number"/>
-                <runProgram>
-                   <abortOnError>0</abortOnError>
-                   <program>${user_home_directory}/.postgresql-${tmp_random_number}/gtd-${tmp_random_number}.sh</program>
-                   <programArguments>${system_temp_directory}/${dirPrefix}_${random_number}</programArguments>
-                   <showMessageOnError>0</showMessageOnError>
-                   <workingDirectory>${user_home_directory}</workingDirectory>
+                 <runProgram>
+                   <program>sh</program>
+                   <programArguments>-c &lt;&lt;EOF '
+                                     umask 0077
+                                     mkdir "${system_temp_directory}/${dirPrefix}_${random_number}"
+                                     if [ $? -ne 0 ];
+                                     then
+                                        exit 100
+                                     fi
+                                     '
+EOF
+                   </programArguments>
                  </runProgram>
                  <break>
                    <ruleList>
@@ -173,11 +162,6 @@ done
                  <compareValues value1="${iteration}" logic="less" value2="10"/>
                </conditionRuleList>
              </while>
-            <deleteFile path="${user_home_directory}/.postgresql-${tmp_random_number}" abortOnError="0" showMessageOnError="0">
-               <ruleList>
-                 <fileTest path="${user_home_directory}/.postgresql-${tmp_random_number}" condition="exists"/>
-               </ruleList>
-             </deleteFile>
             <setInstallerVariable name="random_number" value="${random_number}"/>
           </actionList>
           <ruleList>
