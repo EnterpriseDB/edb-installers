@@ -10,6 +10,7 @@ upgrade.existing.datadir.description=An existing data directory has been found a
 
 error.install.directory.invalid=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 error.install.directory.invalid.linux=The installation directory cannot not be '/' or '/usr'.
+cannot.create.tmp.dir=Unable to create working directory in /tmp. Please remove all existing installer directories in /tmp to proceed.
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 error.data.directory.invalid=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.', and '_', and must be writable.
@@ -72,3 +73,4 @@ config.locale.explanation=Select the locale to be used by the new database clust
 config.locale.no.locale=You must select a locale to continue.
 
 info.datadirectory.user.kept=The data directory (${datadir}) and service user account (${supername}) have not been removed.
+symlink.error.extract.mode=The installation directory contains the symbolic links pointing to external resources that may compromise system security and stability. Please extract in a folder without any symbolic links.

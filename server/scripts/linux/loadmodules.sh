@@ -4,25 +4,25 @@
 # PostgreSQL server module load script for Linux
 
 # Check the command line
-if [ $# -ne 4 ]; 
+if [ $# -ne 3 ]; 
 then
-    echo "Usage: $0 <Username> <Password> <Install dir> <Port>"
+    echo "Usage: $0 <Username> <Install dir> <Port>"
     exit 127
 fi
 
 USERNAME=$1
-PASSWORD=$2
-INSTALLDIR=$3
-PORT=$4
+PASSWORD=$PGPASSWORD
+INSTALLDIR=$2
+PORT=$3
 
 # Exit code
 WARN=0
 
 # Error handlers
 _die() {
-    if [ -f /tmp/pgpass.$$ ];
+    if [ -f $INSTALLDIR/installer/server/pgpass.$$ ];
     then
-        rm -rf /tmp/pgpass.$$
+        rm -rf $INSTALLDIR/installer/server/pgpass.$$
     fi
     echo $1
     exit 1
@@ -34,23 +34,23 @@ _warn() {
 }
 
 # Create a password file for later
-touch /tmp/pgpass.$$ || _die "Failed to create the password file (/tmp/pgpass.$$)"
-chmod 0600 /tmp/pgpass.$$ || _die "Failed to set the permissions on the password file (/tmp/pgpass.$$)"
-echo "localhost:$PORT:*:$USERNAME:$PASSWORD" > /tmp/pgpass.$$ || _die "Failed to write the password file (/tmp/pgpass.$$)"
-chown $USERNAME:daemon /tmp/pgpass.$$ || _die "Failed to set the ownership of the password file (/tmp/pgpass.$$)"
+touch $INSTALLDIR/installer/server/pgpass.$$ || _die "Failed to create the password file ($INSTALLDIR/installer/server/pgpass.$$)"
+chmod 0600 $INSTALLDIR/installer/server/pgpass.$$ || _die "Failed to set the permissions on the password file ($INSTALLDIR/installer/server/pgpass.$$)"
+echo "localhost:$PORT:*:$USERNAME:$PASSWORD" > $INSTALLDIR/installer/server/pgpass.$$ || _die "Failed to write the password file ($INSTALLDIR/installer/server/pgpass.$$)"
+chown $USERNAME:daemon $INSTALLDIR/installer/server/pgpass.$$ || _die "Failed to set the ownership of the password file ($INSTALLDIR/installer/server/pgpass.$$)"
 
 # Create the plpgsql language
 echo "Installing pl/pgsql in the template1 database..."
-su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -U $USERNAME -p $PORT -c 'CREATE LANGUAGE plpgsql;' template1" || _warn "Failed to install pl/pgsql in the 'template1' database"
+su - $USERNAME -c "PGPASSFILE=$INSTALLDIR/installer/server/pgpass.$$ $INSTALLDIR/bin/psql -U $USERNAME -p $PORT -c 'CREATE LANGUAGE plpgsql;' template1" || _warn "Failed to install pl/pgsql in the 'template1' database"
 
 # Install adminpack in the postgres database
 echo "Installing the adminpack module in the postgres database..."
-su - $USERNAME -c "PGPASSFILE=/tmp/pgpass.$$ $INSTALLDIR/bin/psql -U $USERNAME -p $PORT postgres < $INSTALLDIR/share/postgresql/contrib/adminpack.sql" || _warn "Failed to install the 'adminpack' module in the 'postgres' database"
+su - $USERNAME -c "PGPASSFILE=$INSTALLDIR/installer/server/pgpass.$$ $INSTALLDIR/bin/psql -U $USERNAME -p $PORT postgres < $INSTALLDIR/share/postgresql/contrib/adminpack.sql" || _warn "Failed to install the 'adminpack' module in the 'postgres' database"
 
 # Cleanup
-if [ -f /tmp/pgpass.$$ ];
+if [ -f $INSTALLDIR/installer/server/pgpass.$$ ];
 then
-    rm /tmp/pgpass.$$ || _warn "Failed to remove the password file (/tmp/pgpass.$$)"
+    rm $INSTALLDIR/installer/server/pgpass.$$ || _warn "Failed to remove the password file ($INSTALLDIR/installer/server/pgpass.$$)"
 fi
 
 echo "$0 ran to completion"
