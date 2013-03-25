@@ -16,6 +16,7 @@ upgrade.existing.datadir.description=An existing data directory has been found a
 error.install.directory.invalid=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 error.install.directory.invalid.linux=The installation directory cannot not be '/' or '/usr'.
 error.install.directory.not.writable=Permission denied to read/write to the installation directory.
+cannot.create.tmp.dir=Unable to create working directory in /tmp. Please remove all existing installer directories in /tmp to proceed.
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 platform.not.match64=You are trying to run a 64bit installer in a 32bit machine. The installer will exit now
@@ -99,3 +100,4 @@ servicename.already.exists.solaris=A service (${servicename}) already exists.\nP
 servicename.already.exists.windows=A service (${servicename}) already exists.\nPlease specify another name.
 servicename.already.exists.osx=A service (com.edb.launchd.${servicename}.plist) already exists in the '/Library/LaunchDaemons' directory.\nPlease specify another name.
 pg.service.description=Provides relational database storage.
+symlink.error.extract.mode=The installation directory contains the symbolic links pointing to external resources that may compromise system security and stability. Please extract in a folder without any symbolic links.
