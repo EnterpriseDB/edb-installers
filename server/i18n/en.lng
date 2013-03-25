@@ -5,6 +5,7 @@ error.installing.runtimes=An error occured executing the Microsoft VC++ runtime 
 error.writing.temp=system's temp folder is not writable by the current user.
 prerunscript.command.line.error=Unable to write inside TEMP environment variable path.
 prerunscript.command.line.execute.error=Unable to execute from TEMP environment variable path.
+cannot.create.tmp.dir=Unable to create working directory in /tmp. Please remove all existing installer directories in /tmp to proceed.
 
 upgrade.existing.installation.title=Existing installation
 upgrade.existing.installation.description=An existing PostgreSQL installation has been found at ${iBaseDirectory}. This installation will be upgraded.
@@ -99,3 +100,4 @@ servicename.already.exists.solaris=A service (${servicename}) already exists.\nP
 servicename.already.exists.windows=A service (${servicename}) already exists.\nPlease specify another name.
 servicename.already.exists.osx=A service (com.edb.launchd.${servicename}.plist) already exists in the '/Library/LaunchDaemons' directory.\nPlease specify another name.
 pg.service.description=Provides relational database storage.
+symlink.error.extract.mode=The installation directory contains the symbolic links pointing to external resources that may compromise system security and stability. Please extract in a folder without any symbolic links.

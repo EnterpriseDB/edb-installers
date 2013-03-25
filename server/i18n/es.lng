@@ -4,6 +4,7 @@ upgrade.existing.installation.title=Instalación existente
 upgrade.existing.installation.description=Una instalación existente ha sido encontrada en ${iBaseDirectory}. La instalación será actualizada.\n\nEn fin de mejorar, es posible que tenga que reiniciar el servidor. Todas las conexiones al servidor tendrá que ser restablecido después de la finalización del proceso de instalación.
 upgrade.existing.datadir.title=Directorio de datos existente
 upgrade.existing.datadir.description=Un directorio de datos existente ha sido encontrado en ${datadir} configurado para usar el puerto ${serverport}. Dicho directorio y su configuración será usado para esta instalación.
+cannot.create.tmp.dir=No se puede crear el directorio de trabajo en / tmp. Por favor, elimine todos los directorios de instalaciÃ³n existente en / tmp para proceder.
 error.install.directory.invalid=El directorio de instalación debe ser una ruta absoluta, conteniendo solo letras, números y los caracteres '-', '/', '.' y '_', y se debe tener permisos de escritura.
 error.install.directory.invalid.linux=El directorio de instalación no puede ser '/' o '/usr'.
 platform.not.match=Está intentando ejecutar un instalador de 32bits en una maquina de 64bits. El instalador terminará ahora.

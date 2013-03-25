@@ -3,8 +3,11 @@
 
 # test script for osx - check if system temp is writable and scripts can be executed from this path.
 
+DIRNAME=`dirname $0`
+
 # Check if temp path is writable 
-echo "a=1" > /tmp/test_temp.sh
+TEMPFILE="$DIRNAME/test_temp.sh"
+echo "a=1" > $TEMPFILE
 
 if [ $? -ne 0 ];
 then
@@ -13,7 +16,7 @@ then
 fi
 
 # check if we can run a script from temp folder
-sh /tmp/test_temp.sh
+sh $TEMPFILE
 
 if [ $? -ne 0 ];
 then
@@ -21,5 +24,5 @@ then
     exit 2
 fi
 
-`rm -f /tmp/test_temp.sh`
+rm -f $TEMPFILE
 exit 0

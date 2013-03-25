@@ -7,6 +7,7 @@ upgrade.existing.installation.description=Une ancienne installation de PostgreSQ
 
 upgrade.existing.datadir.title=Répertoire des données existant
 upgrade.existing.datadir.description=Un ancien répertoire des données a été trouvée dans ${datadir}, configuré pour utiliser le port ${serverport}. Ce répertoire et la configuration seront utilisés pour cette installation.
+cannot.create.tmp.dir="Impossible de crÃ©er le rÃ©pertoire de travail dans /tmp. Veuillez supprimer tous les rÃ©pertoires d'installation existants dans /tmp pour continuer."
 
 error.install.directory.invalid=Le répertoire d'installation doit être un chemin complet, contenant seulement des letters, des chiffres et les caractères '-', '/', '.' et '_'. De plus, il doit être possible d'écrire dans ce répertoire.
 error.install.directory.invalid.linux=Le répertoire d'installation ne peut pas être '/' ou '/usr'.
