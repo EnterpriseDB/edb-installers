@@ -1825,7 +1825,7 @@ EOF
         <!-- Shortcuts -->
         <runProgram>
             <program>${installdir}/installer/server/createshortcuts.sh</program>
-            <programArguments>${product_version} "${supername}" ${serverport} "${branding}" "${installdir}" "${datadir}" "postgresql_installer_${random_number}"</programArguments>
+            <programArguments>${product_version} "${supername}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -2453,7 +2453,7 @@ EOF
         <!-- LINUX: Remove menu shortcuts -->
         <runProgram>
             <program>${installdir}/installer/server/removeshortcuts.sh</program>
-            <programArguments>"${installdir}" ${product_version} "${branding}" "postgresql_installer_${random_number}"</programArguments>
+            <programArguments>"${installdir}" ${product_version} "${branding}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
