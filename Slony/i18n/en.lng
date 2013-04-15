@@ -35,3 +35,4 @@ slony.incompatible.install.error=An incompatible version of Slony already instal
 pg.not.found.win64=No PostgreSQL ${PGMajorVersion} (x86) installation found.
 pg.not.found=No PostgreSQL ${PGMajorVersion} installation found.
 
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.

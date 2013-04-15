@@ -20,8 +20,7 @@ _prep_Npgsql_linux() {
     mkdir -p $WD/Npgsql/source/Npgsql.linux || _die "Couldn't create the Npgsql.linux directory"
 
     # Grab a copy of the source tree
-    cp -R Mono2.0/* Npgsql.linux || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql)"
-    chmod -R ugo+w Npgsql.linux || _die "Couldn't set the permissions on the source directory"
+    cp -R Npgsql$PG_VERSION_NPGSQL/Mono2.0/* Npgsql.linux || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql)"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/Npgsql/staging/linux ];

@@ -22,8 +22,6 @@ _prep_psqlODBC_linux_x64() {
     # Grab a copy of the source tree
     cp -R psqlodbc-$PG_VERSION_PSQLODBC/* psqlODBC.linux-x64 || _die "Failed to copy the source code (source/psqlODBC-$PG_VERSION_PSQLODBC)"
 
-    chmod -R ugo+w psqlODBC.linux-x64 || _die "Couldn't set the permissions on the source directory"
-
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/psqlODBC/staging/linux-x64 ];
     then

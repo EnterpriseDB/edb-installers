@@ -1,18 +1,18 @@
 <actionGroup>
   <actionList>
-    <deleteFile path="${system_temp_directory}/auth.html">
+    <deleteFile path="${system_temp_directory}/registration_plus_${random_number_reg}/auth.html">
 	<ruleList>
-	    <fileExists path="${system_temp_directory}/auth.html" />
+	    <fileExists path="${system_temp_directory}/registration_plus_${random_number_reg}/auth.html" />
 	</ruleList>
     </deleteFile>
-    <deleteFile path="${system_temp_directory}/error.html">
+    <deleteFile path="${system_temp_directory}/registration_plus_${random_number_reg}/error.html">
 	<ruleList>
-	    <fileExists path="${system_temp_directory}/error.html" />
+	    <fileExists path="${system_temp_directory}/registration_plus_${random_number_reg}/error.html" />
 	</ruleList>
     </deleteFile>
-    <deleteFile path="${system_temp_directory}/bt.html">
+    <deleteFile path="${system_temp_directory}/registration_plus_${random_number_reg}/bt.html">
 	<ruleList>
-	    <fileExists path="${system_temp_directory}/bt.html" />
+	    <fileExists path="${system_temp_directory}/registration_plus_${random_number_reg}/bt.html" />
 	</ruleList>
     </deleteFile>
     <!-- Write the registered user-name to INI File -->
@@ -37,7 +37,7 @@
 	    <compareText text="${platform_name}" logic="equals" value="windows"/>
 	</ruleList>
     </actionGroup>
-    <deleteFile path="${system_temp_directory}/@@TEMPDIR@@" abortOnError="0" showMessageOnError="0"/>
+    <deleteFile path="${system_temp_directory}/registration_plus_${random_number_reg}" abortOnError="0" showMessageOnError="0"/>
   </actionList>
   <ruleList>
     <isTrue value="${is_internet_connected}" />

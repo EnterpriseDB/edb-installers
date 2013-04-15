@@ -21,7 +21,6 @@ _prep_pgJDBC_windows() {
 
     # Grab a copy of the source tree
     cp -R pgJDBC-$PG_VERSION_PGJDBC/* pgJDBC.windows || _die "Failed to copy the source code (source/pgJDBC-$PG_VERSION_PGJDBC)"
-    chmod -R ugo+w pgJDBC.windows || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/pgJDBC/staging/windows ];

@@ -32,12 +32,18 @@ _warn() {
 USER_HOME_DIR=`cat /etc/passwd | grep "^$SYSTEM_USER:" | cut -d":" -f6`
 touch /var/log/pgagent.log
 chown $SYSTEM_USER:$SYSTEM_USER /var/log/pgagent.log
-pgpassline=`cat $INSTALL_DIR/installer/pgAgent/pgpass`
-chk=`grep $pgpassline $USER_HOME_DIR/.pgpass`
-if [ "x$chk" = "x" ];
-then 
-    cat $INSTALL_DIR/installer/pgAgent/pgpass >> $USER_HOME_DIR/.pgpass
+if [ -f $USER_HOME_DIR/.pgpass ];
+then
+    chk=`grep -c ^$PG_HOST:$PG_PORT:$PG_DATABASE:$PG_USER $USER_HOME_DIR/.pgpass`
+    if [ "$chk" != "0" ];
+    then
+       # Remove existing line and add new one
+       sed /$PG_HOST:$PG_PORT:$PG_DATABASE:$PG_USER:.*/d $USER_HOME_DIR/.pgpass >$USER_HOME_DIR/.pgpass1
+       mv $USER_HOME_DIR/.pgpass1 $USER_HOME_DIR/.pgpass
+    fi
 fi
+cat $INSTALL_DIR/installer/pgAgent/pgpass >> $USER_HOME_DIR/.pgpass
+
 chmod 0600 $USER_HOME_DIR/.pgpass
 chown $SYSTEM_USER:$SYSTEM_USER $USER_HOME_DIR/.pgpass
 

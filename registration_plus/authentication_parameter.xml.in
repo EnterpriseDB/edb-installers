@@ -48,7 +48,7 @@
 	<!-- Calling authentication-hb.jsp page -->
         <logMessage text="Authenticating user ${existingEmail}:MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PRODUCT_DESCRIPTION&amp;Version=PRODUCT_VERSION"/>
         <httpGet>
-          <filename>${system_temp_directory}/auth.html</filename>
+          <filename>${system_temp_directory}/registration_plus_${random_number_reg}/auth.html</filename>
           <username>${existingEmail}</username>
           <password>${existingPassword}</password>
           <url>BASE_URL/authentication-hb.jsp?MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=${enc_desc}&amp;Version=PRODUCT_VERSION</url>
@@ -57,7 +57,7 @@
         </httpGet>
         <readFile>
           <name>auth_result</name>
-          <path>${system_temp_directory}/auth.html</path>
+          <path>${system_temp_directory}/registration_plus_${random_number_reg}/auth.html</path>
         </readFile>
         <setInstallerVariableFromRegEx>
           <name>statusCode</name>
@@ -70,7 +70,7 @@
           <actionList>
             <logMessage text="Retrieving error message: MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=PRODUCT_DESCRIPTION&amp;Version=PRODUCT_VERSION&amp;InstallerLang=${installation_language_code}&amp;File="/>
             <httpGet>
-              <filename>${system_temp_directory}/error.html</filename>
+              <filename>${system_temp_directory}/registration_plus_${random_number_reg}/error.html</filename>
               <username>${existingEmail}</username>
               <password>${existingPassword}</password>
               <url>BASE_URL/geterror-hb.jsp?MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;Description=${enc_desc}&amp;Version=PRODUCT_VERSION&amp;InstallerLang=${installation_language_code}&amp;File=</url>
@@ -79,7 +79,7 @@
             </httpGet>
             <readFile>
               <name>error_message</name>
-              <path>${system_temp_directory}/error.html</path>
+              <path>${system_temp_directory}/registration_plus_${random_number_reg}/error.html</path>
             </readFile>
             <stringModify text="${error_message}" variable="error_message" logic="trim"/>
             <showWarning>
@@ -103,7 +103,7 @@
             </ruleList>
         </actionGroup>
         <httpGet>
-          <filename>${system_temp_directory}/bt.html</filename>
+          <filename>${system_temp_directory}/registration_plus_${random_number_reg}/bt.html</filename>
           <username>${existingEmail}</username>
           <password>${existingPassword}</password>
 	  <url>BASE_URL/sendbeat-hb.jsp?MachineID=${machine_id}&amp;InstallationID=${installation_id}&amp;components=${enc_component}&amp;Version=PRODUCT_VERSION&amp;OS=${enc_os}&amp;SystemArch=${processor_arch}&amp;InstallationSource=COMP</url>

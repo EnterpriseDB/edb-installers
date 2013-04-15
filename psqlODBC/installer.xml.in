@@ -49,6 +49,73 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+  <!-- Custom functions -->
+  <functionDefinitionList>
+    <actionDefinition name="createTempDir">
+       <actionList>
+         <globalVariables names="random_number"/>
+         <actionGroup>
+           <actionList>
+            <setInstallerVariable name="iteration" value="0"/>
+            <!-- Create a random number to use unique filenames -->
+             <while>
+               <actionList>
+                 <generateRandomValue length="10" variable="random_number"/>
+                 <runProgram>
+                   <program>sh</program>
+                   <programArguments>-c &lt;&lt;EOF '
+                                     umask 0077
+                                     mkdir "${system_temp_directory}/${dirPrefix}_${random_number}"
+                                     if [ $? -ne 0 ];
+                                     then
+                                        exit 100
+                                     fi
+                                     '
+EOF
+                   </programArguments>
+                 </runProgram>
+                 <break>
+                   <ruleList>
+                    <compareText logic="equals" text="0" value="${program_exit_code}"/>
+                   </ruleList>
+                 </break>
+                <actionGroup>
+                  <actionList>
+                    <throwError text="${msg(cannot.create.tmp.dir)}" abortOnError="1">
+                      <ruleList>
+                        <compareValues value1="${iteration}" logic="equals" value2="9"/>
+                      </ruleList>
+                    </throwError>
+                  </actionList>
+                </actionGroup>
+                 <mathExpression text="${iteration}+1" variable="iteration"/>
+               </actionList>
+               <conditionRuleList>
+                 <compareValues value1="${iteration}" logic="less" value2="10"/>
+               </conditionRuleList>
+             </while>
+             <setInstallerVariable name="random_number" value="${random_number}"/>
+           </actionList>
+           <ruleList>
+             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+           </ruleList>
+         </actionGroup>
+         <actionGroup>
+           <actionList>
+             <generateRandomValue length="10" variable="random_number"/>
+             <createDirectory path="${system_temp_directory}/${dirPrefix}_${random_number}"/>
+             <setInstallerVariable name="random_number" value="${random_number}"/>
+           </actionList>
+           <ruleList>
+             <compareText logic="equals" text="${platform_name}" value="windows"/>
+           </ruleList>
+         </actionGroup>
+       </actionList>
+       <parameterList>
+         <stringParameter name="dirPrefix" allowEmptyValue="0"/>
+       </parameterList>
+    </actionDefinition>
+  </functionDefinitionList>
     <preShowHelpActionList>
         <!-- MAC : Set the default installation directory -->
         <setInstallerVariable>
@@ -67,7 +134,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>/opt/PostgreSQL/psqlODBC</value>
+            <value>${platform_install_prefix}/PostgreSQL/psqlODBC</value>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
@@ -193,7 +260,7 @@
         <setInstallerVariable>
             <name>default_installdir</name>
             <persist>1</persist>
-            <value>/opt/PostgreSQL/psqlODBC</value>
+            <value>${platform_install_prefix}/PostgreSQL/psqlODBC</value>
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
@@ -222,6 +289,8 @@
     </initializationActionList>
 	
     <preInstallationActionList>
+     <!-- Creating a temporary directory -->
+     <createTempDir dirPrefix="${product_shortname}"/>
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="branding" value=""/>
@@ -422,26 +491,18 @@
                         </compareText>
                     </ruleList>
                 </actionGroup>
-                <!-- Create a temporary directory -->
-                <createDirectory>
-                    <path>${system_temp_directory}/${product_shortname}</path>
-                </createDirectory>
-                <changePermissions>
-                    <permissions>777</permissions>
-                    <files>${system_temp_directory}/${product_fullname}</files>
-                </changePermissions>
                 <!-- LIN: Set the unixODBC Path -->
                 <actionGroup>
                     <actionList>
                         <unpackFile>
                             <component>psqlODBC</component>
-                            <destination>${system_temp_directory}/${product_shortname}/getodbcinstpath.sh</destination>
+                            <destination>${system_temp_directory}/${product_shortname}_${random_number}/getodbcinstpath.sh</destination>
                             <folder>programfileslinux</folder>
                             <origin>installer/psqlODBC/getodbcinstpath.sh</origin>
                         </unpackFile>
                         <runProgram>
-                            <program>${system_temp_directory}/${product_shortname}/getodbcinstpath.sh</program>
-                            <workingDirectory>${system_temp_directory}/${product_shortname}</workingDirectory>
+                            <program>${system_temp_directory}/${product_shortname}_${random_number}/getodbcinstpath.sh</program>
+                            <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
@@ -449,7 +510,7 @@
                             <name>odbcinstpath</name>
                             <exec>cat</exec>
                             <execArgs>odbcinstfilepath</execArgs>
-                            <workingDirectory>${system_temp_directory}/${product_shortname}</workingDirectory>
+                            <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </setInstallerVariableFromScriptOutput>
@@ -467,13 +528,13 @@
                     <actionList>
                         <unpackFile>
                             <component>psqlODBC</component>
-                            <destination>${system_temp_directory}/${product_shortname}/getodbcinstpath.sh</destination>
+                            <destination>${system_temp_directory}/${product_shortname}_${random_number}/getodbcinstpath.sh</destination>
                             <folder>programfileslinux-x64</folder>
                             <origin>installer/psqlODBC/getodbcinstpath.sh</origin>
                         </unpackFile>
                         <runProgram>
-                            <program>${system_temp_directory}/${product_shortname}/getodbcinstpath.sh</program>
-                            <workingDirectory>${system_temp_directory}/${product_shortname}</workingDirectory>
+                            <program>${system_temp_directory}/${product_shortname}_${random_number}/getodbcinstpath.sh</program>
+                            <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
@@ -481,7 +542,7 @@
                             <name>odbcinstpath</name>
                             <exec>cat</exec>
                             <execArgs>odbcinstfilepath</execArgs>
-                            <workingDirectory>${system_temp_directory}/${product_shortname}</workingDirectory>
+                            <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </setInstallerVariableFromScriptOutput>
@@ -499,13 +560,13 @@
                     <actionList>
                         <unpackFile>
                             <component>psqlODBC</component>
-                            <destination>${system_temp_directory}/${product_shortname}/getodbcinstpath.sh</destination>
+                            <destination>${system_temp_directory}/${product_shortname}_${random_number}/getodbcinstpath.sh</destination>
                             <folder>programfileslinux-ppc64</folder>
                             <origin>installer/psqlODBC/getodbcinstpath.sh</origin>
                         </unpackFile>
                         <runProgram>
-                            <program>${system_temp_directory}/${product_shortname}/getodbcinstpath.sh</program>
-                            <workingDirectory>${system_temp_directory}/${product_shortname}</workingDirectory>
+                            <program>${system_temp_directory}/${product_shortname}_${random_number}/getodbcinstpath.sh</program>
+                            <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
@@ -513,7 +574,7 @@
                             <name>odbcinstpath</name>
                             <exec>cat</exec>
                             <execArgs>odbcinstfilepath</execArgs>
-                            <workingDirectory>${system_temp_directory}/${product_shortname}</workingDirectory>
+                            <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </setInstallerVariableFromScriptOutput>
@@ -752,7 +813,7 @@
                 	    <!-- LIN & MAC: Create Menu Shortcuts -->
                         <runProgram>
                             <program>${installdir}/installer/psqlODBC/createshortcuts.sh</program>
-                            <programArguments>"${installdir}" "${branding}"</programArguments>
+                            <programArguments>"${installdir}" "${branding}" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
                             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -963,10 +1024,32 @@
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-    </postInstallationActionList>
+    <actionGroup>
+     <actionList>
+       <deleteFile>
+         <path>${system_temp_directory}/${product_shortname}_${random_number}</path>
+       </deleteFile>
+     </actionList>
+     <ruleList>
+       <fileExists path="${system_temp_directory}/${product_shortname}_${random_number}"/>
+     </ruleList>
+   </actionGroup>
+  </postInstallationActionList>
+  <installationAbortedActionList>
+    <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" abortOnError="0" showMessageOnError="0">
+      <ruleList>
+        <fileTest path="${system_temp_directory}/${product_shortname}_${random_number}" condition="exists"/>
+      </ruleList>
+    </deleteFile>
+  </installationAbortedActionList>
 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
+     <createTempDir dirPrefix="${product_shortname}">
+     <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </createTempDir>
 
         <!-- Abort uninstallation if not super-user/Administrator -->
         <actionGroup>
@@ -1057,7 +1140,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/installer/psqlODBC/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${branding}"</programArguments>
+                    <programArguments>"${installdir}" "${branding}" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
@@ -1178,6 +1261,13 @@
         </registryDelete>
   
     </preUninstallationActionList>
+    <postUninstallationActionList>
+      <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
+        <ruleList>
+           <compareText logic="contains" text="${platform_name}" value="linux"/>
+        </ruleList>
+      </deleteFile>
+    </postUninstallationActionList>
     <componentList>
         <component>
             <name>psqlODBC</name>
@@ -1412,6 +1502,7 @@
                     <logic>does_not_equal</logic>
                     <value/>
                 </compareText>
+                <isFalse value="${extract_mode}" />
             </ruleList>
         </labelParameter>	
 

@@ -50,23 +50,23 @@ _prep_Npgsql() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-	if [ -e Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net ];
+	if [ -e Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net2.0 ];
         then
-	  echo "Removing existing Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net source directory"
-          rm -rf Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net  || _die "Couldn't remove the existing Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net source directory (source/Npgsql"$PG_VERSION_Npgsql-bin-ms.net")"
+	  echo "Removing existing Npgsql"${PG_VERSION_NPGSQL}".0-bin-ms.net2.0 source directory"
+          rm -rf Npgsql"${PG_VERSION_NPGSQL}".0-bin-ms.net2.0  || _die "Couldn't remove the existing Npgsql"${PG_VERSION_NPGSQL}".0-bin-ms.net2 source directory (source/Npgsql"${PG_VERSION_Npgsql}.0-bin-ms.net")"
 	fi
     
 	echo "Unpacking Npgsql source..."
-        extract_file ../../tarballs/Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net || exit 1
-        extract_file ../../tarballs/Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net3.5sp1 || exit 1
-        extract_file ../../tarballs/Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net4.0 || exit 1
+        extract_file ../../tarballs/Npgsql"${PG_VERSION_NPGSQL}".0-bin-ms.net2.0 || exit 1
+        extract_file ../../tarballs/Npgsql"${PG_VERSION_NPGSQL}".0-bin-ms.net3.5sp1 || exit 1
+        extract_file ../../tarballs/Npgsql"${PG_VERSION_NPGSQL}".0-bin-ms.net4.0 || exit 1
     fi
     
     # non-Windows
-    if [ -e Mono2.0 ];
+    if [ -e Npgsql"$PG_VERSION_NPGSQL" ];
     then
         echo "Removing existing NpgSQL"$PG_VERSION_NPGSQL" (Mono2.0) source directory"
-        rm -rf Mono2.0  || _die "Couldn't remove the existing Mono"$PG_VERSION_NPGSQL" source directory (source/Mono"$PG_VERSION_NPGSQL")"
+        rm -rf Npgsql"$PG_VERSION_NPGSQL"  || _die "Couldn't remove the existing Mono"$PG_VERSION_NPGSQL" source directory (source/Npgsql"$PG_VERSION_NPGSQL"/Mono"$PG_VERSION_NPGSQL")"
     fi
 
     echo "Unpacking Npgsql (Mono2.0) source..."

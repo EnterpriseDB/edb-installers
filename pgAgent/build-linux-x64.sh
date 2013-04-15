@@ -25,7 +25,6 @@ _prep_pgAgent_linux_x64() {
 
     # Grab a copy of the source tree
     cp -R pgAgent-$PG_VERSION_PGAGENT-Source/* pgAgent.linux-x64 || _die "Failed to copy the source code (source/pgAgent-$PG_VERSION_PGAGENT)"
-    chmod -R ugo+w pgAgent.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/pgAgent/staging/linux-x64 ];

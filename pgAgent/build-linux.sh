@@ -23,7 +23,6 @@ _prep_pgAgent_linux() {
     
     # Grab a copy of the source tree
     cp -R pgAgent-$PG_VERSION_PGAGENT-Source pgAgent.linux || _die "Failed to copy the source code (source/pgAgent-$PG_VERSION_PGAGENT-Source)"
-    chmod -R ugo+w pgAgent.linux || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/pgAgent/staging/linux ];

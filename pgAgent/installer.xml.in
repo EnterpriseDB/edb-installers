@@ -48,6 +48,73 @@
     <language code="en" encoding="iso8859-1" file="i18n/en.lng"/>
   </customLanguageFileList>
 
+  <!-- Custom functions -->
+  <functionDefinitionList>
+    <actionDefinition name="createTempDir">
+       <actionList>
+         <globalVariables names="random_number"/>
+         <actionGroup>
+           <actionList>
+            <setInstallerVariable name="iteration" value="0"/>
+            <!-- Create a random number to use unique filenames -->
+             <while>
+               <actionList>
+                 <generateRandomValue length="10" variable="random_number"/>
+                 <runProgram>
+                   <program>sh</program>
+                   <programArguments>-c &lt;&lt;EOF '
+                                     umask 0077
+                                     mkdir "${system_temp_directory}/${dirPrefix}_${random_number}"
+                                     if [ $? -ne 0 ];
+                                     then
+                                        exit 100
+                                     fi
+                                     '
+EOF
+                   </programArguments>
+                 </runProgram>
+                 <break>
+                   <ruleList>
+                    <compareText logic="equals" text="0" value="${program_exit_code}"/>
+                   </ruleList>
+                 </break>
+                <actionGroup>
+                  <actionList>
+                    <throwError text="${msg(cannot.create.tmp.dir)}" abortOnError="1">
+                      <ruleList>
+                        <compareValues value1="${iteration}" logic="equals" value2="9"/>
+                      </ruleList>
+                    </throwError>
+                  </actionList>
+                </actionGroup>
+                 <mathExpression text="${iteration}+1" variable="iteration"/>
+               </actionList>
+               <conditionRuleList>
+                 <compareValues value1="${iteration}" logic="less" value2="10"/>
+               </conditionRuleList>
+             </while>
+             <setInstallerVariable name="random_number" value="${random_number}"/>
+           </actionList>
+           <ruleList>
+             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+           </ruleList>
+         </actionGroup>
+         <actionGroup>
+           <actionList>
+             <generateRandomValue length="10" variable="random_number"/>
+             <createDirectory path="${system_temp_directory}/${dirPrefix}_${random_number}"/>
+             <setInstallerVariable name="random_number" value="${random_number}"/>
+           </actionList>
+           <ruleList>
+             <compareText logic="equals" text="${platform_name}" value="windows"/>
+           </ruleList>
+         </actionGroup>
+       </actionList>
+       <parameterList>
+         <stringParameter name="dirPrefix" allowEmptyValue="0"/>
+       </parameterList>
+    </actionDefinition>
+  </functionDefinitionList>
   <preShowHelpActionList>
      <!-- Set the default values -->
     <setInstallerVariable name="defaultpghost" value="localhost"/>
@@ -164,6 +231,8 @@
 
   <!-- Preinstallation actions -->
   <preInstallationActionList>
+     <!-- Creating a temporary directory -->
+     <createTempDir dirPrefix="${product_shortname}"/>
        <actionGroup>
       <actionList>
         <setInstallerVariable name="branding" value=""/>
@@ -191,9 +260,9 @@
         <actionGroup>
           <actionList>
             <unpackFile component="configuration"
-               destination="${system_temp_directory}\vcredist_x86.exe"
+               destination="${system_temp_directory}\${product_shortname}_${random_number}\vcredist_x86.exe"
                folder="vcredistwindows" origin="vcredist_x86.exe"/>
-            <runProgram program="${system_temp_directory}\vcredist_x86.exe"
+            <runProgram program="${system_temp_directory}\${product_shortname}_${random_number}\vcredist_x86.exe"
                programArguments="/q" workingDirectory="${windir}"
                abortOnError="0" showMessageOnError="0"/>
           </actionList>
@@ -296,18 +365,15 @@
             </ruleList>
         </actionGroup>
 
-        <!-- Creating a temporary directory -->
-        <createDirectory path="${system_temp_directory}/${product_fullname}"/>
-
         <!-- Create temporary directory -->
-        <createDirectory path="${system_temp_directory}/${product_fullname}/bin"/>
+        <createDirectory path="${system_temp_directory}/${product_shortname}_${random_number}/bin"/>
 
         <actionGroup>
            <actionList>
             <!-- LIN: Unpack psql and its shared libraries -->
             <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}</destination>
+              <destination>${system_temp_directory}/${product_shortname}_${random_number}</destination>
               <folder>programfileslinux</folder>
               <origin>bin</origin>
               <ruleList>
@@ -316,7 +382,7 @@
             </unpackDirectory>
             <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}/lib</destination>
+              <destination>${system_temp_directory}/${product_shortname}_${random_number}/lib</destination>
               <folder>libfileslinux</folder>
               <origin>lib</origin>
               <ruleList>
@@ -327,7 +393,7 @@
             <!-- LIN-x64: Unpack psql and its shared libraries -->
             <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}</destination>
+              <destination>${system_temp_directory}/${product_shortname}_${random_number}</destination>
               <folder>programfileslinux-x64</folder>
               <origin>bin</origin>
               <ruleList>
@@ -336,7 +402,7 @@
             </unpackDirectory>
             <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}/lib</destination>
+              <destination>${system_temp_directory}/${product_shortname}_${random_number}/lib</destination>
               <folder>libfileslinux-x64</folder>
               <origin>lib</origin>
               <ruleList>
@@ -347,7 +413,7 @@
             <!-- MAC: Unpack psql and its shared libraries -->
             <unpackFile>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}/bin/psql</destination>
+              <destination>${system_temp_directory}/${product_shortname}_${random_number}/bin/psql</destination>
               <folder>programfilesosx</folder>
               <origin>bin/psql</origin>
               <ruleList>
@@ -356,7 +422,7 @@
             </unpackFile>
             <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}/lib</destination>
+              <destination>${system_temp_directory}/${product_shortname}_${random_number}/lib</destination>
               <folder>libfilesosx</folder>
               <origin>lib</origin>
               <ruleList>
@@ -367,7 +433,7 @@
             <!-- WIN: Unpack psql and its shared libraries -->
             <unpackFile>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}\${product_fullname}\bin\psql.exe</destination>
+              <destination>${system_temp_directory}\${product_shortname}_${random_number}\bin\psql.exe</destination>
               <folder>libfileswindows</folder>
               <origin>bin\psql.exe</origin>
               <ruleList>
@@ -376,7 +442,7 @@
             </unpackFile>
             <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}\${product_fullname}</destination>
+              <destination>${system_temp_directory}\${product_shortname}_${random_number}</destination>
               <folder>libfileswindows</folder>
               <origin>bin</origin>
               <ruleList>
@@ -393,12 +459,12 @@
               <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
               <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
               <setEnvironmentVariable name="PGDATABASE" value="" />
-              <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/${product_fullname}/lib:${installdir}/lib"/>
+              <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/${product_shortname}_${random_number}/lib:${installdir}/lib"/>
               <setInstallerVariable name="pgdbname" value="" />
               <setInstallerVariable name="connection" value="" />
 
-              <setInstallerVariable name="psql_executable" value="${system_temp_directory}/${product_fullname}/bin/psql"/>
-              <setInstallerVariable name="psql_executable" value="${system_temp_directory}\${product_fullname}\bin\psql.exe">
+              <setInstallerVariable name="psql_executable" value="${system_temp_directory}/${product_shortname}_${random_number}/bin/psql"/>
+              <setInstallerVariable name="psql_executable" value="${system_temp_directory}\${product_shortname}_${random_number}\bin\psql.exe">
                <ruleList>
                  <compareText logic="equals" text="${platform_name}" value="windows"/>
                </ruleList>
@@ -454,7 +520,7 @@
               <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "SELECT lanname FROM pg_language WHERE lanname='plpgsql'"</execArgs>
               <name>plpgsql_exist</name>
-              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+              <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
             </setInstallerVariableFromScriptOutput>
@@ -465,7 +531,7 @@
               <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "SELECT has_schema_privilege('pgagent', 'USAGE')"</execArgs>
               <name>pgagent_schema_exist</name>
-              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+              <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
             </setInstallerVariableFromScriptOutput>
@@ -476,7 +542,7 @@
               <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "SELECT COUNT(*) FROM pg_proc WHERE proname = 'pgagent_schema_version' AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'pgagent') AND prorettype = (SELECT oid FROM pg_type WHERE typname = 'int2') AND proargtypes = ''"</execArgs>
               <name>pgagent_schema_version_function_exist</name>
-              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+              <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
               <ruleList>
@@ -490,7 +556,7 @@
               <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "SELECT pgagent.pgagent_schema_version()"</execArgs>
               <name>pgagent_current_schema_version</name>
-              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+              <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
               <ruleList>
@@ -939,30 +1005,30 @@
         <actionGroup>
           <actionList>
             <createDirectory>
-              <path>${system_temp_directory}\${product_fullname}\bin</path>
+              <path>${system_temp_directory}\${product_shortname}_${random_number}\bin</path>
               <ruleList>
                 <fileTest>
-                   <path>${system_temp_directory}\${product_fullname}\bin</path>
+                   <path>${system_temp_directory}\${product_shortname}_${random_number}\bin</path>
                    <condition>not_exists</condition>
                 </fileTest>
               </ruleList>
             </createDirectory>
             <unpackFile>
               <component>configuration</component>
-              <destination>${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe</destination>
+              <destination>${system_temp_directory}\${product_shortname}_${random_number}\bin\CreatePGPassconfForUser.exe</destination>
               <folder>createpgpassconfforuser</folder>
               <origin>CreatePGPassconfForUser.exe</origin>
             </unpackFile>
             <runProgram>
               <customErrorMessage>${msg(error.create.pgpass)}</customErrorMessage>
-              <program>${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe</program>
+              <program>${system_temp_directory}\${product_shortname}_${random_number}\bin\CreatePGPassconfForUser.exe</program>
               <programArguments>${systemuser} "${systempassword.password}" ${pghost} ${pgport} ${pgdbname} ${pguser} "${pgpassword.password}"</programArguments>
               <workingDirectory>${windir}</workingDirectory>
               <abortOnError>0</abortOnError>
               <showMessageOnError>1</showMessageOnError>
             </runProgram>
             <deleteFile>
-              <path>${system_temp_directory}\${product_fullname}\bin\CreatePGPassconfForUser.exe</path>
+              <path>${system_temp_directory}\${product_shortname}_${random_number}\bin\CreatePGPassconfForUser.exe</path>
             </deleteFile>
 
             <!-- WIN : Install pgAgent as Service -->
@@ -1070,7 +1136,24 @@
            <isFalse value="${extract_mode}"/>
         </ruleList>
     </registrySet>
+    <actionGroup>
+     <actionList>
+       <deleteFile>
+         <path>${system_temp_directory}/${product_shortname}_${random_number}</path>
+       </deleteFile>
+     </actionList>
+     <ruleList>
+       <fileExists path="${system_temp_directory}/${product_shortname}_${random_number}"/>
+     </ruleList>
+   </actionGroup>
   </postInstallationActionList>
+  <installationAbortedActionList>
+    <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" abortOnError="0" showMessageOnError="0">
+      <ruleList>
+        <fileTest path="${system_temp_directory}/${product_shortname}_${random_number}" condition="exists"/>
+      </ruleList>
+    </deleteFile>
+  </installationAbortedActionList>
 
   <postUninstallerCreationActionList>
     <!-- Inform user about configuring pgagent Schema -->
@@ -1806,11 +1889,9 @@
             </compareValues>
           </ruleList>
         </throwError>
-        <!-- Creating a temporary directory -->
-        <createDirectory path="${system_temp_directory}/${product_fullname}"/>
 
         <!-- Create temporary directory -->
-        <createDirectory path="${system_temp_directory}/${product_fullname}/bin"/>
+        <createDirectory path="${system_temp_directory}/${product_shortname}_${random_number}/bin"/>
 
         <!-- Validate the PostgreSQL Server Details -->
         <actionGroup>
@@ -1819,7 +1900,7 @@
             <!-- LIN: Unpack psql and its shared libraries -->
             <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}</destination>
+              <destination>${system_temp_directory}/${product_shortname}_${random_number}</destination>
               <folder>programfileslinux</folder>
               <origin>bin</origin>
               <ruleList>
@@ -1828,7 +1909,7 @@
             </unpackDirectory>
             <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}/lib</destination>
+              <destination>${system_temp_directory}/${product_shortname}_${random_number}/lib</destination>
               <folder>libfileslinux</folder>
               <origin>lib</origin>
               <ruleList>
@@ -1839,7 +1920,7 @@
             <!-- LIN-x64: Unpack psql and its shared libraries -->
             <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}</destination>
+              <destination>${system_temp_directory}/${product_shortname}_${random_number}</destination>
               <folder>programfileslinux-x64</folder>
               <origin>bin</origin>
               <ruleList>
@@ -1848,7 +1929,7 @@
             </unpackDirectory>
             <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}/lib</destination>
+              <destination>${system_temp_directory}/${product_shortname}_${random_number}/lib</destination>
               <folder>libfileslinux-x64</folder>
               <origin>lib</origin>
               <ruleList>
@@ -1859,7 +1940,7 @@
             <!-- LIN-ppc64: Unpack psql and its shared libraries -->
             <unpackFile>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}/bin/psql</destination>
+              <destination>${system_temp_directory}/${product_shortname}_${random_number}/bin/psql</destination>
               <folder>programfileslinux-ppc64</folder>
               <origin>bin/psql</origin>
               <ruleList>
@@ -1868,7 +1949,7 @@
             </unpackFile>
             <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}/lib</destination>
+              <destination>${system_temp_directory}/${product_shortname}_${random_number}/lib</destination>
               <folder>libfileslinux-ppc64</folder>
               <origin>lib</origin>
               <ruleList>
@@ -1880,7 +1961,7 @@
             <!-- MAC: Unpack psql and its shared libraries -->
             <unpackFile>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}/bin/psql</destination>
+              <destination>${system_temp_directory}/${product_shortname}_${random_number}/bin/psql</destination>
               <folder>programfilesosx</folder>
               <origin>bin/psql</origin>
               <ruleList>
@@ -1889,7 +1970,7 @@
             </unpackFile>
             <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_fullname}/lib</destination>
+              <destination>${system_temp_directory}/${product_shortname}_${random_number}/lib</destination>
               <folder>libfilesosx</folder>
               <origin>lib</origin>
               <ruleList>
@@ -1900,7 +1981,7 @@
             <!-- WIN: Unpack psql and its shared libraries -->
             <unpackFile>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}\${product_fullname}\bin\psql.exe</destination>
+              <destination>${system_temp_directory}\${product_shortname}_${random_number}\bin\psql.exe</destination>
               <folder>libfileswindows</folder>
               <origin>bin\psql.exe</origin>
               <ruleList>
@@ -1910,7 +1991,7 @@
 
             <unpackDirectory>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}\${product_fullname}</destination>
+              <destination>${system_temp_directory}\${product_shortname}_${random_number}</destination>
               <folder>libfileswindows</folder>
               <origin>bin</origin>
               <ruleList>
@@ -1924,17 +2005,17 @@
             <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
             <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
             <setEnvironmentVariable name="PGDATABASE" value=""/>
-            <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/${product_fullname}/lib"/>
+            <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/${product_shortname}_${random_number}/lib"/>
             <setInstallerVariable name="pgdbname" value="" />
             <setInstallerVariable name="connection" value="" />
             <foreach variables="dbname">
               <values>postgres edb template1</values>
               <actionList>
                 <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}/${product_fullname}/bin/psql</exec>
+                  <exec>${system_temp_directory}/${product_shortname}_${random_number}/bin/psql</exec>
                   <execArgs>-l -d ${dbname}</execArgs>
                   <name>connection</name>
-                  <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
+                  <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/bin</workingDirectory>
                   <abortOnError>0</abortOnError>
                   <showMessageOnError>0</showMessageOnError>
                   <ruleList>
@@ -1943,10 +2024,10 @@
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
                 <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}\${product_fullname}\bin\psql.exe</exec>
+                  <exec>${system_temp_directory}\${product_shortname}_${random_number}\bin\psql.exe</exec>
                   <execArgs>-t -c "SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${dbname}'" -d ${dbname}</execArgs>
                   <name>connection</name>
-                  <workingDirectory>${system_temp_directory}/${product_fullname}/bin</workingDirectory>
+                  <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/bin</workingDirectory>
                   <abortOnError>0</abortOnError>
                   <showMessageOnError>0</showMessageOnError>
                   <ruleList>
@@ -1969,8 +2050,8 @@
               </ruleList>
             </throwError>
             <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}" />
-            <setInstallerVariable name="psql_executable" value="${system_temp_directory}/${product_fullname}/bin/psql"/>
-            <setInstallerVariable name="psql_executable" value="${system_temp_directory}\${product_fullname}\bin\psql.exe">
+            <setInstallerVariable name="psql_executable" value="${system_temp_directory}/${product_shortname}_${random_number}/bin/psql"/>
+            <setInstallerVariable name="psql_executable" value="${system_temp_directory}\${product_shortname}_${random_number}\bin\psql.exe">
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
               </ruleList>
@@ -1978,7 +2059,7 @@
 
             <setInstallerVariableFromScriptOutput name="user_has_permission"
                 showMessageOnError="0" abortOnError="0"
-                workingDirectory="${system_temp_directory}/${product_fullname}">
+                workingDirectory="${system_temp_directory}/${product_shortname}_${random_number}">
               <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "select CASE WHEN has_database_privilege(d.oid, 'CREATE') THEN 1 ELSE 0 END FROM pg_catalog.pg_database d WHERE d.datname=current_database()"</execArgs>
             </setInstallerVariableFromScriptOutput>
@@ -1996,7 +2077,7 @@
               <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "SELECT lanname FROM pg_language WHERE lanname='plpgsql'"</execArgs>
               <name>plpgsql_exist</name>
-              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+              <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
             </setInstallerVariableFromScriptOutput>
@@ -2007,7 +2088,7 @@
               <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "SELECT has_schema_privilege('pgagent', 'USAGE')"</execArgs>
               <name>pgagent_schema_exist</name>
-              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+              <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
             </setInstallerVariableFromScriptOutput>
@@ -2018,7 +2099,7 @@
               <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "SELECT COUNT(*) FROM pg_proc WHERE proname = 'pgagent_schema_version' AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'pgagent') AND prorettype = (SELECT oid FROM pg_type WHERE typname = 'int2') AND proargtypes = ''"</execArgs>
               <name>pgagent_schema_version_function_exist</name>
-              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+              <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
               <ruleList>
@@ -2032,7 +2113,7 @@
               <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "SELECT pgagent.pgagent_schema_version()"</execArgs>
               <name>pgagent_current_schema_version</name>
-              <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+              <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
               <ruleList>
@@ -2232,12 +2313,12 @@
           <actionList>
               <unpackFile>
                 <component>pgAgent</component>
-                <destination>${system_temp_directory}\${product_fullname}\bin\createuser.exe</destination>
+                <destination>${system_temp_directory}\${product_shortname}_${random_number}\bin\createuser.exe</destination>
                 <folder>installfileswindows</folder>
                 <origin>installer\pgAgent\createuser.exe</origin>
               </unpackFile>
               <runProgram>
-                <program>${system_temp_directory}\${product_fullname}\bin\createuser.exe</program>
+                <program>${system_temp_directory}\${product_shortname}_${random_number}\bin\createuser.exe</program>
                 <programArguments>. "${systemuser}" "${systempassword.password}"</programArguments>
                 <abortOnError>0</abortOnError>
                 <showMessageOnError>0</showMessageOnError>
@@ -2264,12 +2345,12 @@
           <actionList>
             <unpackFile>
               <component>pgAgent</component>
-              <destination>${system_temp_directory}\${product_fullname}\bin\validateuser.exe</destination>
+              <destination>${system_temp_directory}\${product_shortname}_${random_number}\bin\validateuser.exe</destination>
               <folder>installfileswindows</folder>
               <origin>installer\pgAgent\validateuser.exe</origin>
             </unpackFile>
             <runProgram>
-              <program>${system_temp_directory}\${product_fullname}\bin\validateuser.exe</program>
+              <program>${system_temp_directory}\${product_shortname}_${random_number}\bin\validateuser.exe</program>
               <programArguments>. "${systemuser}" "${systempassword.password}"</programArguments>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>

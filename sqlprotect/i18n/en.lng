@@ -48,3 +48,5 @@ registration_plus.ws.internet.not.connected=Error in calling web service. Please
 registration_plus.emailpassword.not.provided=Please provide the email address and password for your EnterpriseDB user account.
 internet.con.title=Checking Internet Connection
 sqlprotect.remove.shared_preload_libraries.info=Please do not forget to remove 'sqlprotect' from the 'shared_preload_libraries' setting in the server's postgresql.conf, and restart the PostgreSQL server.
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
+
