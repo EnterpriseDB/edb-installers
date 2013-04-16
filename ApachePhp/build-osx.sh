@@ -26,7 +26,6 @@ _prep_ApachePhp_osx() {
 
     # Grab a copy of the apache source tree
     cp -pR httpd-$PG_VERSION_APACHE/* apache.osx || _die "Failed to copy the source code (source/httpd-$PG_VERSION_APACHE)"
-    chmod -R ugo+w apache.osx || _die "Couldn't set the permissions on the source directory"
 
     if [ -e php.osx ];
     then
@@ -40,7 +39,6 @@ _prep_ApachePhp_osx() {
 
     # Grab a copy of the php source tree
     cp -pR php-$PG_VERSION_PHP/* php.osx || _die "Failed to copy the source code (source/php-$PG_VERSION_PHP)"
-    chmod -R ugo+w php.osx || _die "Couldn't set the permissions on the source directory"
     cd php.osx
     if [ -f $WD/tarballs/php-${PG_VERSION_PHP}_osx.patch ]; then
       echo "Applying php patch on osx..."
@@ -336,11 +334,11 @@ _postprocess_ApachePhp_osx() {
 
     #Changing the ServerRoot from htdocs to www in apache
     cp -pR staging/osx/apache/htdocs staging/osx/apache/www || _die "Failed to change Server Root"
-    chmod ugo+wx staging/osx/apache/www
+    chmod 755 staging/osx/apache/www
 
     mkdir -p staging/osx/installer/ApachePhp || _die "Failed to create a directory for the install scripts"
     mkdir -p staging/osx/apache/www/images || _die "Failed to create a directory for the images"
-    chmod ugo+wx staging/osx/apache/www/images
+    chmod 755 staging/osx/apache/www/images
 
     cp scripts/osx/createshortcuts.sh staging/osx/installer/ApachePhp/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/osx/createshortcuts.sh)"
     chmod ugo+x staging/osx/installer/ApachePhp/createshortcuts.sh
@@ -368,6 +366,11 @@ _postprocess_ApachePhp_osx() {
 
     _replace PG_VERSION_APACHE $PG_VERSION_APACHE "staging/osx/apache/www/index.php" 
     _replace PG_VERSION_PHP $PG_VERSION_PHP "staging/osx/apache/www/index.php" 
+
+    #Remove the httpd.conf.bak from the staging if exists.
+    if [ -f staging/osx/apache/conf/httpd.conf.bak ]; then
+      rm -f staging/osx/apache/conf/httpd.conf.bak
+    fi
 
     # Build the installer"
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"

@@ -1,6 +1,8 @@
-set ret to do shell script "INSTALL_DIR/scripts/getapacheport.sh > /tmp/apacheport.txt 2>&1"
-set output to do shell script "cat /tmp/apacheport.txt"
-set ret to do shell script "rm /tmp/apacheport.txt" 
+set tempdir to system attribute "TMPDIR"
+set tempfile to do shell script "mktemp -q " & tempdir & "/apacheport.txt.XXXXXXXXXX"
+set ret to do shell script "INSTALL_DIR/scripts/getapacheport.sh > " & tempfile
+set output to do shell script "cat " & tempfile
+set ret to do shell script "rm " & tempfile
 open location output
 
 

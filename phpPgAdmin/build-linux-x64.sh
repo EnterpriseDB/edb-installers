@@ -21,7 +21,6 @@ _prep_phpPgAdmin_linux_x64() {
     
     # Grab a copy of the source tree
     cp -R phpPgAdmin-$PG_VERSION_PHPPGADMIN/* phpPgAdmin.linux-x64 || _die "Failed to copy the source code (source/phpPgAdmin-$PG_VERSION_PHPPGADMIN)"
-    chmod -R ugo+w phpPgAdmin.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/phpPgAdmin/staging/linux-x64 ];

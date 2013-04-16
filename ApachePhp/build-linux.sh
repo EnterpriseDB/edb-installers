@@ -22,7 +22,6 @@ _prep_ApachePhp_linux() {
 
     # Grab a copy of the apache source tree
     cp -pR httpd-$PG_VERSION_APACHE/* apache.linux || _die "Failed to copy the source code (source/httpd-$PG_VERSION_APACHE)"
-    chmod -R ugo+w apache.linux || _die "Couldn't set the permissions on the source directory"
 
     if [ -e php.linux ];
     then
@@ -36,7 +35,6 @@ _prep_ApachePhp_linux() {
 
     # Grab a copy of the php source tree
     cp -pR php-$PG_VERSION_PHP/* php.linux || _die "Failed to copy the source code (source/php-$PG_VERSION_PHP)"
-    chmod -R ugo+w php.linux || _die "Couldn't set the permissions on the source directory"
 
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -207,11 +205,11 @@ _postprocess_ApachePhp_linux() {
 
     #Changing the ServerRoot from htdocs to www in apache
     cp -pR staging/linux/apache/htdocs staging/linux/apache/www || _die "Failed to change Server Root"
-    chmod ugo+wx staging/linux/apache/www
+    chmod 755 staging/linux/apache/www
 
     mkdir -p staging/linux/installer/ApachePhp || _die "Failed to create a directory for the install scripts"
     mkdir -p staging/linux/apache/www/images || _die "Failed to create a directory for the images"
-    chmod ugo+wx staging/linux/apache/www/images
+    chmod 755 staging/linux/apache/www/images
 
     cp scripts/linux/createshortcuts.sh staging/linux/installer/ApachePhp/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux/installer/ApachePhp/createshortcuts.sh
@@ -251,6 +249,11 @@ _postprocess_ApachePhp_linux() {
 
     cp resources/index.php staging/linux/apache/www || _die "Failed to copy index.php"
     chmod ugo+x staging/linux/apache/www/index.php
+
+    #Remove the httpd.conf.bak from the staging if exists.
+    if [ -f staging/linux/apache/conf/httpd.conf.bak ]; then
+      rm -f staging/linux/apache/conf/httpd.conf.bak
+    fi
 
     _replace PG_VERSION_APACHE $PG_VERSION_APACHE "staging/linux/apache/www/index.php"
     _replace PG_VERSION_PHP $PG_VERSION_PHP "staging/linux/apache/www/index.php"

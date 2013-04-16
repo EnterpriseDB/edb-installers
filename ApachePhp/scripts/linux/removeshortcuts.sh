@@ -2,14 +2,15 @@
 # Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # Check the command line
-if [ $# -ne 2 ]; 
+if [ $# -ne 3 ]; 
 then
-    echo "Usage: $0 <Install dir> <Branding>"
+    echo "Usage: $0 <Install dir> <Branding> <Temp dir>"
     exit 127
 fi
 
 INSTALLDIR="$1"
 BRANDING=$2
+TEMPDIR=$3
 
 # Branding string, for the xdg filenames. If the branding is 'PostgreSQL',
 # Don't do anything to ensure we remain backwards compatible.
@@ -41,8 +42,8 @@ _warn() {
 
 # Search & replace in a file - _replace($find, $replace, $file)
 _replace() {
-    sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
-        mv /tmp/$$.tmp $3 || _die "Failed to move /tmp/$$.tmp to $3"
+    sed -e "s^$1^$2^g" $3 > "$TEMPDIR/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
+        mv $TEMPDIR/$$.tmp $3 || _die "Failed to move $TEMPDIR/$$.tmp to $3"
 }
 
 # Remove the menu shortcuts

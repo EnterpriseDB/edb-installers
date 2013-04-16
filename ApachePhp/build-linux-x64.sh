@@ -22,7 +22,6 @@ _prep_ApachePhp_linux_x64() {
 
     # Grab a copy of the apache source tree
     cp -pR httpd-$PG_VERSION_APACHE/* apache.linux-x64 || _die "Failed to copy the source code (source/httpd-$PG_VERSION_APACHE)"
-    chmod -R ugo+w apache.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
     if [ -e php.linux-x64 ];
     then
@@ -36,7 +35,6 @@ _prep_ApachePhp_linux_x64() {
 
     # Grab a copy of the php source tree
     cp -pR php-$PG_VERSION_PHP/* php.linux-x64 || _die "Failed to copy the source code (source/php-$PG_VERSION_PHP)"
-    chmod -R ugo+w php.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -206,11 +204,11 @@ _postprocess_ApachePhp_linux_x64() {
 
     #Changing the ServerRoot from htdocs to www in apache
     cp -pR staging/linux-x64/apache/htdocs staging/linux-x64/apache/www || _die "Failed to change Server Root"
-    chmod ugo+wx staging/linux-x64/apache/www
+    chmod 755 staging/linux-x64/apache/www
 
     mkdir -p staging/linux-x64/installer/ApachePhp || _die "Failed to create a directory for the install scripts"
     mkdir -p staging/linux-x64/apache/www/images || _die "Failed to create a directory for the images"
-    chmod ugo+wx staging/linux-x64/apache/www/images
+    chmod 755 staging/linux-x64/apache/www/images
 
     cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/ApachePhp/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux-x64/installer/ApachePhp/createshortcuts.sh
@@ -253,6 +251,11 @@ _postprocess_ApachePhp_linux_x64() {
 
     _replace PG_VERSION_APACHE $PG_VERSION_APACHE "staging/linux-x64/apache/www/index.php"
     _replace PG_VERSION_PHP $PG_VERSION_PHP "staging/linux-x64/apache/www/index.php"
+  
+    #Remove the httpd.conf.bak from the staging if exists.
+    if [ -f staging/linux-x64/apache/conf/httpd.conf.bak ]; then
+      rm -f staging/linux-x64/apache/conf/httpd.conf.bak
+    fi
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
