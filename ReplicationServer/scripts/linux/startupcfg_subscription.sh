@@ -8,10 +8,10 @@ echo "Usage: $0 <Installdir> <SystemUser> <SubPort> <Java Executable> <DBSERVER_
     exit 127
 fi
 
-INSTALL_DIR=$1
+INSTALL_DIR="$1"
 SYSTEM_USER=$2
 SUBPORT=$3
-JAVA=$4
+JAVA="$4"
 XDB_SERVICE_VER=$5
 
 # Exit code
@@ -49,11 +49,11 @@ cat <<EOT > "/etc/init.d/edb-xdbsubserver-$XDB_SERVICE_VER"
 
 start()
 {
-    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep 'java -XX:-UsePerfData -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT > /dev/null 2>&1 &"
+       su $SYSTEM_USER -c "cd '$INSTALL_DIR/bin'; '$JAVA' -XX:-UsePerfData -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT > /dev/null 2>&1 &"
        echo "Subscription Service $XDB_SERVICE_VER started"
     else
        echo "Subscription Service $XDB_SERVICE_VER already running"
@@ -63,7 +63,7 @@ start()
 
 stop()
 {
-    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep 'java -XX:-UsePerfData -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -76,7 +76,7 @@ stop()
 
 status()
 {
-    PID=\`ps -aef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -aef | grep 'java -XX:-UsePerfData -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -120,8 +120,8 @@ if [ ! -e /var/log/xdb-rep ];
 then
     mkdir -p /var/log/xdb-rep
     chown $SYSTEM_USER /var/log/xdb-rep
-    chmod 777 /var/log/xdb-rep
 fi
+chmod 755 /var/log/xdb-rep
 
 # Configure the startup. On Redhat and friends we use chkconfig. On Debian, update-rc.d
 # These utilities aren't entirely standard, so use both from their standard locations on

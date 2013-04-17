@@ -76,3 +76,4 @@ sub.service.description=用于提供从Oracle (tm)到Postgres Plus的数据复�
 Installer.CustomError.CommandLineOptionsNotPresent=需要对下面这些选项进行指定：${optionRequired}
 Installer.ComponentDescription=
 gui.not.available.hpux=HPUX 不支持 GUI 模式的安装。
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed. 

@@ -8,10 +8,10 @@ echo "Usage: $0 <Installdir> <SystemUser> <SubPort> <Java Executable> <DBSERVER_
     exit 127
 fi
 
-INSTALL_DIR=$1
+INSTALL_DIR="$1"
 SYSTEM_USER=$2
 SUBPORT=$3
-JAVA=$4
+JAVA="$4"
 XDB_SERVICE_VER=$5
 
 # Exit code
@@ -52,11 +52,11 @@ export PATH
 
 function start
 {
-    PID=\`ps -axef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -axef | grep 'java -XX:-UsePerfData -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; nohup $JAVA -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT > /dev/null 2>&1 &"
+       su $SYSTEM_USER -c "cd '$INSTALL_DIR/bin'; nohup '$JAVA' -XX:-UsePerfData -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT > /dev/null 2>&1 &"
        echo "Subscription Service $XDB_SERVICE_VER started"
     else
        echo "Subscription Service $XDB_SERVICE_VER already running"
@@ -66,7 +66,7 @@ function start
 
 function _stop
 {
-    PID=\`ps -axef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -axef | grep 'java -XX:-UsePerfData -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -79,7 +79,7 @@ function _stop
 
 function status
 {
-    PID=\`ps -axef | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
+    PID=\`ps -axef | grep 'java -XX:-UsePerfData -Djava.awt.headless=true -jar edb-repserver.jar subserver $SUBPORT' | grep -v grep | awk '{print \$2}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -129,8 +129,8 @@ if [ ! -e /var/log/xdb-rep ];
 then
     mkdir -p /var/log/xdb-rep
     chown $SYSTEM_USER /var/log/xdb-rep
-    chmod 777 /var/log/xdb-rep
 fi
+chmod 755 /var/log/xdb-rep
 
 # Create the service initialisation links
 INIT_LINKS="/sbin/rc3.d/S86edb-xdbsubserver-$XDB_SERVICE_VER /sbin/rc0.d/K14edb-xdbsubserver-$XDB_SERVICE_VER /sbin/rc1.d/K14edb-xdbsubserver-$XDB_SERVICE_VER /sbin/rc2.d/K14edb-xdbsubserver-$XDB_SERVICE_VER"

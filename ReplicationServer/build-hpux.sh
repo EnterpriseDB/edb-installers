@@ -51,11 +51,11 @@ _prep_ReplicationServer_hpux() {
     mkdir -p $WD/ReplicationServer/staging/hpux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/ReplicationServer/staging/hpux || _die "Couldn't set the permissions on the staging directory"
     mkdir -p $WD/ReplicationServer/staging/hpux/instscripts || _die "Couldn't create the staging/hpux/instscripts directory"
-    chmod ugo+w $WD/ReplicationServer/staging/hpux/instscripts || _die "Couldn't set the permissions on the staging/hpux/instscripts directory"
+    chmod 755 $WD/ReplicationServer/staging/hpux/instscripts || _die "Couldn't set the permissions on the staging/hpux/instscripts directory"
     mkdir -p $WD/ReplicationServer/staging/hpux/instscripts/bin || _die "Couldn't create the staging/hpux/instscripts/bin directory"
-    chmod ugo+w $WD/ReplicationServer/staging/hpux/instscripts/bin || _die "Couldn't set the permissions on the staging/hpux/instscripts/bin directory"
+    chmod 755 $WD/ReplicationServer/staging/hpux/instscripts/bin || _die "Couldn't set the permissions on the staging/hpux/instscripts/bin directory"
     mkdir -p $WD/ReplicationServer/staging/hpux/instscripts/lib || _die "Couldn't create the staging/hpux/instscripts/lib directory"
-    chmod ugo+w $WD/ReplicationServer/staging/hpux/instscripts/lib || _die "Couldn't set the permissions on the staging/hpux/instscripts/lib directory"
+    chmod 755 $WD/ReplicationServer/staging/hpux/instscripts/lib || _die "Couldn't set the permissions on the staging/hpux/instscripts/lib directory"
 
     # Build Migration Toolkit for Replication Server installer. Building it on linux machine as we need only edb-migrationtoolkit.jar
 

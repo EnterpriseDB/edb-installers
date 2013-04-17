@@ -130,3 +130,4 @@ Installer.CustomError.CommandLineOptionsNotPresent=다음 필수 옵션이 지�
 Installer.ComponentDescription=
 
 gui.not.available.hpux=HPUX에서는 GUI 모드 설치가 지원되지 않음
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed. 
