@@ -45,7 +45,7 @@ _prep_stackbuilderplus_osx() {
 
     echo "Creating staging directory ($WD/StackBuilderPlus/staging/osx/lib)"
     mkdir -p $WD/StackBuilderPlus/staging/osx/lib || _die "Couldn't create the staging lib directory"
-    chmod ugo+w $WD/StackBuilderPlus/staging/osx/lib || _die "Couldn't set the permissions on the staging lib directory"
+    chmod 755 $WD/StackBuilderPlus/staging/osx/lib || _die "Couldn't set the permissions on the staging lib directory"
 
 }
 
