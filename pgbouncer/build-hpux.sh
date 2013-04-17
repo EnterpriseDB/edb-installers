@@ -22,7 +22,7 @@ _prep_pgbouncer_hpux() {
 
     echo "Creating staging doc directory ($WD/pgbouncer/staging/hpux/pgbouncer/doc)"
     mkdir $WD/pgbouncer/staging/hpux/pgbouncer/doc || _die "Couldn't create the staging doc directory"
-    chmod ugo+w $WD/pgbouncer/staging/hpux/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
+    chmod 755 $WD/pgbouncer/staging/hpux/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
     echo "Copying README.pgbouncer to staging doc directory"
     cp $WD/pgbouncer/resources/README.pgbouncer $WD/pgbouncer/staging/hpux/pgbouncer/doc/README-pgbouncer.txt || _die "Couldn't copy README.pgbouncer to staging doc directory"
     # Copy instscripts to staging directory

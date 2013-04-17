@@ -120,6 +120,8 @@ chmod 0755 "/etc/init.d/pgbouncer-$PGBOUNCER_SERVICE_VER" || _warn "Failed to se
 
 mkdir /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
 chown -R $SYSTEM_USER /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
+mkdir -p /var/pgbouncer-$SYSTEM_USER
+chown -R $SYSTEM_USER /var/pgbouncer-$SYSTEM_USER
 
 # Configure the startup. On Redhat and friends we use chkconfig. On Debian, update-rc.d
 # These utilities aren't entirely standard, so use both from their standard locations on

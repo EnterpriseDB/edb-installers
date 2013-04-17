@@ -51,7 +51,73 @@
     <language code="ja" encoding="utf-8" file="i18n/jp.lng"/>
     <language code="ko" encoding="utf-8" file="i18n/ko.lng"/>
   </customLanguageFileList>
-
+  <!-- Custom functions -->
+  <functionDefinitionList>
+    <actionDefinition name="createTempDir">
+      <actionList>
+        <globalVariables names="random_number"/>
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="iteration" value="0"/>
+            <!-- Create a random number to use unique filenames -->
+            <while>
+              <actionList>
+                <generateRandomValue length="10" variable="random_number"/>
+                <runProgram>
+                  <program>sh</program>
+                  <programArguments>-c &lt;&lt;EOF '
+                                    umask 0077
+                                    mkdir "${system_temp_directory}/${dirPrefix}_${random_number}"
+                                    if [ $? -ne 0 ];
+                                    then
+                                       exit 100
+                                    fi
+                                    '
+EOF
+                  </programArguments>
+                </runProgram>
+                <break>
+                  <ruleList>
+                    <compareText logic="equals" text="0" value="${program_exit_code}"/>
+                  </ruleList>
+                </break>
+                <actionGroup>
+                  <actionList>
+                    <throwError text="${msg(cannot.create.tmp.dir)}" abortOnError="1">
+                      <ruleList>
+                        <compareValues value1="${iteration}" logic="equals" value2="9"/>
+                      </ruleList>
+                    </throwError>
+                  </actionList>
+                </actionGroup>
+                <mathExpression text="${iteration}+1" variable="iteration"/>
+              </actionList>
+              <conditionRuleList>
+                <compareValues value1="${iteration}" logic="less" value2="10"/>
+              </conditionRuleList>
+            </while>
+            <setInstallerVariable name="random_number" value="${random_number}"/>
+          </actionList>
+         <ruleList>
+           <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <generateRandomValue length="10" variable="random_number"/>
+            <createDirectory path="${system_temp_directory}/${dirPrefix}_${random_number}"/>
+            <setInstallerVariable name="random_number" value="${random_number}"/>
+          </actionList>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+      </actionList>
+      <parameterList>
+        <stringParameter name="dirPrefix" allowEmptyValue="0"/>
+      </parameterList>
+    </actionDefinition>
+  </functionDefinitionList>
   <preShowHelpActionList>
     <!-- MAC : Set the default installation directory -->
     <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgresPlus/Shared/StackBuilderPlus">
@@ -128,6 +194,8 @@
   </initializationActionList>
 
   <preInstallationActionList>
+    <!-- Temp directory for preflight scripts -->
+    <createTempDir dirPrefix="sbp_installer"/>
     <!-- Setting defaultUnixGroup and defaultUnixOwner -->
     <actionGroup>
       <actionList>
@@ -590,7 +658,7 @@
     
             <!-- Create shourtcuts for linux/linux-x64/osx -->
             <runProgram program="${installdir}/installer/StackBuilderPlus/createshortcuts.sh"
-                        programArguments=""
+                        programArguments="&quot;${system_temp_directory}/sbp_installer_${random_number}&quot;"
                         progressText="${msg(progress.text.creating.shortcuts)}"
                         abortOnError="0"
                         showMessageOnError="0">
@@ -671,7 +739,7 @@
             <actionGroup>
                <actionList>
                    <runProgram program="${installdir}/installer/StackBuilderPlus/startupcfg.sh"
-                               programArguments="${installdir} &quot;${branding}&quot;"
+                               programArguments="${installdir} &quot;${branding}&quot; &quot;${system_temp_directory}/sbp_installer_${random_number}&quot;"
                                abortOnError="0"
                                showMessageOnError="0"/>
                    <substitute>
@@ -997,7 +1065,20 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
         <compareVersions logic="greater" version1="${linux_distribution_release}" version2="11"/>
       </ruleList>
     </actionGroup>
+    <deleteFile path="${system_temp_directory}/sbp_installer_${random_number}" >
+      <ruleList>
+        <fileExists path="${system_temp_directory}/sbp_installer_${random_number}" />
+      </ruleList>
+    </deleteFile>
   </postInstallationActionList>
+
+  <installationAbortedActionList>
+    <deleteFile path="${system_temp_directory}/sbp_installer_${random_number}" >
+      <ruleList>
+        <fileExists path="${system_temp_directory}/sbp_installer_${random_number}" />
+      </ruleList>
+    </deleteFile>
+  </installationAbortedActionList>
 
   <!-- preUninstallation actions -->
   <preUninstallationActionList>
@@ -1087,6 +1168,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
     <!-- Remove shortcuts -->
     <actionGroup>
       <actionList>
+	<createTempDir dirPrefix="sbp_installer"/>
         <substitute>
           <files>${installdir}/installer/StackBuilderPlus/removeshortcuts.sh</files>
           <substitutionList>
@@ -1095,10 +1177,11 @@ ${num_client},RestartCommand=${installdir}/scripts/launchSBPUpdateMonitor.sh &am
           </substitutionList>
         </substitute>
         <runProgram program="${installdir}/installer/StackBuilderPlus/removeshortcuts.sh"
-                    programArguments=""
+                    programArguments="&quot;${system_temp_directory}/sbp_installer_${random_number}&quot;"
                     progressText="${msg(progress.text.removing.shortcuts)}"
                     abortOnError="0"
                     showMessageOnError="0"/>
+	<deleteFile path="${system_temp_directory}/sbp_installer_${random_number}"/>
       </actionList>
       <ruleEvaluationLogic>or</ruleEvaluationLogic>
       <ruleList>

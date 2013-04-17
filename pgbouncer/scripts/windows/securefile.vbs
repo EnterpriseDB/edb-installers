@@ -62,7 +62,7 @@ End Sub
 
 If IsVistaOrNewer() = True Then
     WScript.Echo "Securing userlist.txt file (using icacls):"
-    iRet = DoCmd("icacls """ & strFilename & """ /T /grant:r *S-1-5-32-544:M /grant:r """ & strUsername & """:M")
+    iRet = DoCmd("icacls """ & strFilename & """ /inheritance:r /T /grant:r *S-1-5-32-544:M /grant:r """ & strUsername & """:M")
 Else
     WScript.Echo "Securing userlist.txt file (using cacls): " & strFilename & " " & strUsername
     iRet = DoCmd("echo y|cacls """ & strFilename & """ /T /G Administrators:F """ & strUsername & """:C")
