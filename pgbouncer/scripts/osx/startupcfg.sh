@@ -59,6 +59,8 @@ EOT
 
 mkdir /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
 chown -R $SYSTEM_USER /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
+mkdir -p /var/pgbouncer-$SYSTEM_USER
+chown -R $SYSTEM_USER /var/pgbouncer-$SYSTEM_USER
 
 # Fixup the permissions on the launchDaemon
 chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.pgbouncer-$PGBOUNCER_SERVICE_VER.plist" || _warn "Failed to set the ownership of the launchd daemon for pgbouncer (/Library/LaunchDaemons/com.edb.launchd.pgbouncer-$PGBOUNCER_SERVICE_VER.plist)"

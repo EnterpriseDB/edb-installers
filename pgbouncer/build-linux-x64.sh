@@ -39,7 +39,7 @@ _prep_pgbouncer_linux_x64() {
     
     echo "Creating staging doc directory ($WD/pgbouncer/staging/linux-x64/pgbouncer/doc)"
     mkdir -p $WD/pgbouncer/staging/linux-x64/pgbouncer/doc || _die "Couldn't create the staging doc directory"
-    chmod ugo+w $WD/pgbouncer/staging/linux-x64/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
+    chmod 755 $WD/pgbouncer/staging/linux-x64/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
     echo "Copying README.pgbouncer to staging doc directory"
     cp $WD/pgbouncer/resources/README.pgbouncer $WD/pgbouncer/staging/linux-x64/pgbouncer/doc/README-pgbouncer.txt || _die "Couldn't copy README.pgbouncer to staging doc directory"
 
@@ -66,13 +66,16 @@ _build_pgbouncer_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "chmod o+rx $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/lib/*" || _die "Failed to change permission of libevent libs in pgbouncer lib folder"
 
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/lib/libpq* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy libpq in instscripts"
-    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/bin/psql $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy psql in instscripts"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libssl.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libcrypto.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -R /lib64/libtermcap.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/bin/psql* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy psql in instscripts"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/lib/libssl.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/lib/libcrypto.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/lib/libtermcap.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libxml2.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; cp server/staging/linux-x64/lib/libxslt.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy libxslt.so"
     ssh $PG_SSH_LINUX_X64 "cp -R /usr/local/lib/libedit.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
+     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/lib/libz.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/lib/libldap*.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/server/staging/linux-x64/lib/liblber*.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/" || _die "Failed to copy the dependency library"
 
     echo "Changing the rpath for the pgbouncer"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"

@@ -52,7 +52,7 @@ _prep_pgbouncer_solaris_sparc() {
 
     echo "Creating staging doc directory ($WD/pgbouncer/staging/solaris-sparc/pgbouncer/doc)"
     mkdir -p $WD/pgbouncer/staging/solaris-sparc/pgbouncer/doc || _die "Couldn't create the staging doc directory"
-    chmod ugo+w $WD/pgbouncer/staging/solaris-sparc/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
+    chmod 755 $WD/pgbouncer/staging/solaris-sparc/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
     echo "Copying README.pgbouncer to staging doc directory"
     cp $WD/pgbouncer/resources/README.pgbouncer $WD/pgbouncer/staging/solaris-sparc/pgbouncer/doc/README-pgbouncer.txt || _die "Couldn't copy README.pgbouncer to staging doc directory"
 
@@ -104,7 +104,7 @@ EOT
     ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libkrb5support.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libk5crypto.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libcom_err.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
-
+    ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libz.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
     scp -r $PG_SSH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/* $WD/pgbouncer/staging/solaris-sparc/ || _die "Failed to scp back the staging directory"
  
 }

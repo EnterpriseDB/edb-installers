@@ -47,3 +47,4 @@ progress.text.removing.loginHook.osx=로그인 후크를 제거하는 중
 progress.text.removing.shortcuts=바로 가기 메뉴를 제거하는 중
 sbp.reboot.required=설치를 완료하려면 컴퓨터를 다시 시작해야 합니다.
 gui.not.available.hpux=HPUX에서는 GUI 모드 설치가 지원되지 않음
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.

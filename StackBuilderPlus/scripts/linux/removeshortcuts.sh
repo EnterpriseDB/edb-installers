@@ -1,6 +1,14 @@
 #!/bin/sh
 # Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
+if [ $# -ne 1 ];
+then
+    echo "Usage: $0 <TEMP_DIR>"
+    exit 127
+fi
+
+TEMP_DIR=$1
+
 INSTALLDIR="@@INSTALL_DIR@@"
 BRANDING="@@BRANDING@@"
 
@@ -34,8 +42,8 @@ _warn() {
 
 # Search & replace in a file - _replace($find, $replace, $file) 
 _replace() {
-    sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
-        mv /tmp/$$.tmp $3 || _die "Failed to move /tmp/$$.tmp to $3"
+    sed -e "s^$1^$2^g" $3 > "$TEMP_DIR/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
+        mv $TEMP_DIR/$$.tmp $3 || _die "Failed to move $TEMP_DIR/$$.tmp to $3"
 }
 
 # Remove the menu shortcuts

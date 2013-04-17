@@ -123,6 +123,8 @@ chmod 0755 "/sbin/init.d/pgbouncer-$PGBOUNCER_SERVICE_VER" || _warn "Failed to s
 
 mkdir /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
 chown -R $SYSTEM_USER /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
+mkdir -p /var/pgbouncer-$SYSTEM_USER
+chown -R $SYSTEM_USER /var/pgbouncer-$SYSTEM_USER
 
 # Create the service initialisation links
 INIT_LINKS="/sbin/rc3.d/S86pgbouncer-$PGBOUNCER_SERVICE_VER /sbin/rc0.d/K14pgbouncer-$PGBOUNCER_SERVICE_VER /sbin/rc1.d/K14pgbouncer-$PGBOUNCER_SERVICE_VER /sbin/rc2.d/K14pgbouncer-$PGBOUNCER_SERVICE_VER"

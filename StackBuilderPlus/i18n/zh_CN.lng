@@ -27,3 +27,4 @@ progress.text.removing.loginHook.osx=正在删除login hooks
 progress.text.removing.shortcuts=正在删除菜单快捷方式
 sbp.reboot.required=要完成安装，必须重新启动计算机。
 gui.not.available.hpux=HPUX 不支持 GUI 模式的安装。
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
