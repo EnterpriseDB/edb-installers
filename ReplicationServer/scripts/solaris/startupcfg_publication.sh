@@ -8,10 +8,10 @@ echo "Usage: $0 <Installdir> <SystemUser> <PubPort> <Java Executable> <DBSERVER_
     exit 127
 fi
 
-INSTALL_DIR=$1
+INSTALL_DIR="$1"
 SYSTEM_USER=$2
 PUBPORT=$3
-JAVA=$4
+JAVA="$4"
 XDB_SERVICE_VER=$5
 
 # Exit code
@@ -34,11 +34,11 @@ cat <<EOT > "/lib/svc/method/edb-xdbpubserver-$XDB_SERVICE_VER"
 
 start()
 {
-    PID=\`/usr/ucb/ps awwx | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$1}'\`
+    PID=\`/usr/ucb/ps awwx | grep 'java -XX:-UsePerfData -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$1}'\`
 
     if [ "x\$PID" = "x" ];
     then
-       su $SYSTEM_USER -c "cd $INSTALL_DIR/bin; $JAVA -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
+       su $SYSTEM_USER -c "cd '$INSTALL_DIR/bin'; '$JAVA' -XX:-UsePerfData -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT > /dev/null 2>&1 &"
        exit 0
     else
        echo "Publication Service $XDB_SERVICE_VER already running"
@@ -48,7 +48,7 @@ start()
 
 stop()
 {
-    PID=\`/usr/ucb/ps awwx | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$1}'\`
+    PID=\`/usr/ucb/ps awwx | grep 'java -XX:-UsePerfData -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$1}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -61,7 +61,7 @@ stop()
 
 status()
 {
-    PID=\`/usr/ucb/ps awwx | grep 'java -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$1}'\`
+    PID=\`/usr/ucb/ps awwx | grep 'java -XX:-UsePerfData -Djava.awt.headless=true -jar edb-repserver.jar pubserver $PUBPORT' | grep -v grep | awk '{print \$1}'\`
 
     if [ "x\$PID" = "x" ];
     then
@@ -193,8 +193,8 @@ if [ ! -e /var/log/xdb-rep ];
 then
     mkdir -p /var/log/xdb-rep
     chown $SYSTEM_USER /var/log/xdb-rep
-    chmod 777 /var/log/xdb-rep
 fi
+chmod 755 /var/log/xdb-rep
 
 svccfg import /var/svc/manifest/application/edb-xdbpubserver-$XDB_SERVICE_VER.xml
 

@@ -2,15 +2,16 @@
 # Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # Check the command line
-if [ $# -ne 3 ]; 
+if [ $# -ne 4 ]; 
 then
-    echo "Usage: $0 <Install dir> <Branding> <PG MAJOR VERSION>"
+    echo "Usage: $0 <Install dir> <Branding> <PG MAJOR VERSION> <TEMP_DIR>"
     exit 127
 fi
 
-INSTALLDIR=$1
+INSTALLDIR="$1"
 BRANDING=$2
 PG_VERSION_STR=$3
+TEMP_DIR="$4"
 
 # Branding string, for the xdg filenames. If the branding is 'PostgreSQL',
 # Don't do anything to ensure we remain backwards compatible.
@@ -42,8 +43,8 @@ _warn() {
 
 # Search & replace in a file - _replace($find, $replace, $file) 
 _replace() {
-    sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
-        mv /tmp/$$.tmp $3 || _die "Failed to move /tmp/$$.tmp to $3"
+    sed -e "s^$1^$2^g" $3 > "$TEMP_DIR/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
+        mv "$TEMP_DIR/$$.tmp" $3 || _die "Failed to move '$TEMP_DIR/$$.tmp' to $3"
 }
 
 

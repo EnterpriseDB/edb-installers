@@ -2,14 +2,15 @@
 # Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # Check the command line
-if [ $# -ne 2 ]; 
+if [ $# -ne 3 ]; 
 then
-    echo "Usage: $0 <Install dir> <Branding>"
+    echo "Usage: $0 <Install dir> <Branding> <TEMP_DIR>"
     exit 127
 fi
 
-INSTALLDIR=$1
+INSTALLDIR="$1"
 BRANDING=$2
+TEMP_DIR="$3"
 FOLDER="/Applications/$BRANDING"
 
 # Exit code
@@ -28,8 +29,8 @@ _warn() {
 
 # Search & replace in a file - _replace($find, $replace, $file) 
 _replace() {
-    sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" 
-    mv /tmp/$$.tmp $3 
+    sed -e "s^$1^$2^g" $3 > "$TEMP_DIR/$$.tmp" 
+    mv "$TEMP_DIR/$$.tmp" $3 
 }
 
 # Compile a script - _compile_script($in.applescript, $out.app, $image)

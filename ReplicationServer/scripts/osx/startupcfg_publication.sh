@@ -8,10 +8,10 @@ echo "Usage: $0 <Install dir> <System User> <PubPort> <Java Executable> <DBSERVE
     exit 127
 fi
 
-INSTALL_DIR=$1
+INSTALL_DIR="$1"
 SYSTEM_USER=$2
 PUBPORT=$3
-JAVA=$4
+JAVA="$4"
 XDB_SERVICE_VER=$5
 
 # Error handlers
@@ -44,6 +44,7 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.xdbpubserver-$XDB_SERVICE_VE
         <key>ProgramArguments</key>
         <array>
                 <string>$JAVA</string>
+		<string>-XX:-UsePerfData</string>
                 <string>-Djava.awt.headless=true</string>
                 <string>-jar</string>
                 <string>$INSTALL_DIR/bin/edb-repserver.jar</string>
@@ -73,8 +74,8 @@ if [ ! -e /var/log/xdb-rep ];
 then
     mkdir -p /var/log/xdb-rep
     chown $SYSTEM_USER /var/log/xdb-rep
-    chmod 777 /var/log/xdb-rep
 fi
+chmod 755 /var/log/xdb-rep
 
 # Load the plist.
 launchctl load /Library/LaunchDaemons/com.edb.launchd.xdbpubserver-$XDB_SERVICE_VER.plist || _warn "Failed to load the xdbpubserver-$XDB_SERVICE_VER launchd plist"
