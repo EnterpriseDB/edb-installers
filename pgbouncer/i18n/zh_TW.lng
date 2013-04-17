@@ -44,3 +44,4 @@ pgbouncer.system.user.error=pgBouncer 無法以根使用者身分執行。請指
 gui.not.available.hpux=HPUX 不支援 GUI 模式安裝
 
 error.could.not.start.service=Failed to start the ${servicename} service.
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.

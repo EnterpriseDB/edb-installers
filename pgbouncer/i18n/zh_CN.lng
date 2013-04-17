@@ -31,3 +31,4 @@ pgbouncer.system.user.error=root用户无法运行pgBouncer，请指定一个不
 gui.not.available.hpux=HPUX 不支持 GUI 模式的安装。
 
 error.could.not.start.service=Failed to start the ${servicename} service.
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.

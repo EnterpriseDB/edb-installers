@@ -45,3 +45,4 @@ pgbouncer.system.user.error=pgBouncer를 루트 사용자로 실행할 수 없�
 gui.not.available.hpux=HPUX에서는 GUI 모드 설치가 지원되지 않음
 
 error.could.not.start.service=Failed to start the ${servicename} service.
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.

@@ -188,6 +188,8 @@ EOT
 
 mkdir /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
 chown -R $SYSTEM_USER /var/log/pgbouncer-$PGBOUNCER_SERVICE_VER
+mkdir -p /var/pgbouncer-$SYSTEM_USER
+chown -R $SYSTEM_USER /var/pgbouncer-$SYSTEM_USER
 
 svccfg import $XML_FILE_PATH
 

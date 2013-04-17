@@ -48,3 +48,4 @@ progress.text.removing.loginHook.osx=正在移除登入攔截程序
 progress.text.removing.shortcuts=正在移除功能表捷徑
 sbp.reboot.required=若要完成安裝，必須要重新啟動電腦。
 gui.not.available.hpux=HPUX 不支援 GUI 模式安裝
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
