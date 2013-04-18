@@ -30,7 +30,6 @@ _prep_updatemonitor_linux() {
 
     # Grab a copy of the source tree
     cp -R SS-UPDATEMANAGER/* updatemonitor.linux || _die "Failed to copy the source code (source/SS-UPDATEMANAGER)"
-    chmod -R ugo+w updatemonitor.linux || _die "Couldn't set the permissions on the source directory (SS-UPDATEMANAGER)"
     cp -R $WD/UpdateMonitor/resources/GetLatestPGInstalled GetLatestPGInstalled.linux
 
     # Remove any existing staging directory that might exist, and create a clean one

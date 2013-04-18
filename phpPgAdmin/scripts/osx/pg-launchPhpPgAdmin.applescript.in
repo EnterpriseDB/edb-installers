@@ -1,6 +1,6 @@
 set tempdir to system attribute "TMPDIR"
-et tempfile to do shell script "mktemp -q " & tempdir & "/apacheport.txt.XXXXXXXXXX"
-set ret to do shell script "INSTALL_DIR/scripts/getapacheport.sh > & tempfile 2>&1"
+set tempfile to do shell script "mktemp -q " & tempdir & "/apacheport.txt.XXXXXXXXXX"
+set ret to do shell script "INSTALL_DIR/scripts/getapacheport.sh > " & tempfile
 set output to do shell script "cat " & tempfile
 set ret to do shell script "rm " & tempfile
 open location output

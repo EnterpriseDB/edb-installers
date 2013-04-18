@@ -30,7 +30,6 @@ _prep_updatemonitor_osx() {
 
     # Grab a copy of the source tree
     cp -R SS-UPDATEMANAGER/* updatemonitor.osx || _die "Failed to copy the source code (source/SS-UPDATEMANAGER)"
-    chmod -R ugo+w updatemonitor.osx || _die "Couldn't set the permissions on the source directory (SS-UPDATEMANAGER)"
     cp -R $WD/UpdateMonitor/resources/GetLatestPGInstalled GetLatestPGInstalled.osx
 
     # Remove any existing staging directory that might exist, and create a clean one

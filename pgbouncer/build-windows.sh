@@ -35,10 +35,7 @@ _prep_pgbouncer_windows() {
 
     # Grab a copy of the source tree
     cp -R pgbouncer-$PG_VERSION_PGBOUNCER/* pgbouncer.windows || _die "Failed to copy the source code (source/pgbouncer-$PG_VERSION_PGBOUNCER)"
-    cd pgbouncer.windows
-    patch -p0 < $WD/tarballs/pgbouncer_windows.patch
     cd $WD/pgbouncer/source 
-    chmod -R ugo+w pgbouncer.windows || _die "Couldn't set the permissions on the source directory"
 
     zip -r pgbouncer.zip pgbouncer.windows || _die "Failed to zip the pgbouncer source" 
 
@@ -55,7 +52,7 @@ _prep_pgbouncer_windows() {
 
     echo "Creating staging doc directory ($WD/pgbouncer/staging/windows/pgbouncer/doc)"
     mkdir -p $WD/pgbouncer/staging/windows/pgbouncer/doc || _die "Couldn't create the staging doc directory"
-    chmod ugo+w $WD/pgbouncer/staging/windows/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
+    chmod 755 $WD/pgbouncer/staging/windows/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
     echo "Copying README.pgbouncer to staging doc directory"
     cp $WD/pgbouncer/resources/README.pgbouncer $WD/pgbouncer/staging/windows/pgbouncer/doc/README-pgbouncer.txt || _die "Couldn't copy README.pgbouncer to staging doc directory"
     unix2dos $WD/pgbouncer/staging/windows/pgbouncer/doc/README-pgbouncer.txt|| _die "Failed to convert pgbouncer readme in dos readable format."
@@ -75,10 +72,10 @@ _build_pgbouncer_windows() {
 
     cat <<EOT > "build-pgbouncer.bat"
 
-@SET PATH=%PATH%;$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;$PG_PGBUILD_WINDOWS\flex\bin;$PG_PGBUILD_WINDOWS\bison\bin;$PG_PGBUILD_WINDOWS\regex\bin
+@SET PATH=%PATH%;$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;$PG_PGBUILD_MINGW_WINDOWS\flex\bin;$PG_PGBUILD_MINGW_WINDOWS\bison\bin;$PG_PGBUILD_MINGW_WINDOWS\regex\bin
 
 REM Configuring, building the pgbouncer source tree
-@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD; cd pgbouncer.windows; CPPFLAGS="-I$PG_PGBUILD_WINDOWS/include" LDFLAGS="-L$PG_PGBUILD_WINDOWS/lib" ./configure --prefix=\$COMMONDIR/pgbouncer.staging --with-libevent=$PG_PGBUILD_WINDOWS; make; make install  | $PG_MSYS_WINDOWS\bin\sh --login -i
+@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD; cd pgbouncer.windows; CPPFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS/include" LDFLAGS="-L$PG_PGBUILD_MINGW_WINDOWS/lib" ./configure --prefix=\$COMMONDIR/pgbouncer.staging --with-libevent=$PG_PGBUILD_MINGW_WINDOWS; make; make install  | $PG_MSYS_WINDOWS\bin\sh --login -i
 
 EOT
 
