@@ -2,9 +2,9 @@
 # Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # Check the command line
-if [ $# -ne 5 ];
+if [ $# -ne 4 ];
 then
-    echo "Usage: $0 <Install dir> <Slony_Version> <PG Version> <Branding> <Temp dir>"
+    echo "Usage: $0 <Install dir> <Slony_Version> <PG Version> <Branding>"
     exit 127
 fi
 
@@ -12,7 +12,7 @@ INSTALLDIR="$1"
 SLONY_VERSION=$2
 PG_VERSION=$3
 BRANDING=$4
-TEMPDIR=$5
+TEMPFILE=`mktemp -q /tmp/$$.tmp-XXXXXXXXXX`
 
 # Version string, for the xdg filenames
 SLONY_VERSION_STR=`echo $SLONY_VERSION | cut -f1,2 -d "." | sed 's/\./_/g'`
@@ -48,8 +48,8 @@ _warn() {
 
 # Search & replace in a file - _replace($find, $replace, $file) 
 _replace() {
-    sed -e "s^$1^$2^g" $3 > "$TEMPDIR/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
-        mv $TEMPDIR/$$.tmp $3 || _die "Failed to move $TEMPDIR/$$.tmp to $3"
+    sed -e "s^$1^$2^g" $3 > "$TEMPFILE" || _die "Failed for search and replace '$1' with '$2' in $3"
+        mv $TEMPFILE $3 || _die "Failed to move $TEMPFILE to $3"
 }
 
 # Remove the menu shortcuts
