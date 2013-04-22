@@ -60,8 +60,8 @@ _prep_PostGIS() {
     echo "Unpacking postgis source..."
     extract_file  ../../tarballs/postgis-$PG_VERSION_POSTGIS || exit 1
 
-    cd $WD/PostGIS/source/postgis-$PG_VERSION_POSTGIS
-    patch -p0 < ../../../tarballs/postgis_jarpath.patch
+    #cd $WD/PostGIS/source/postgis-$PG_VERSION_POSTGIS
+    #patch -p0 < ../../../tarballs/postgis_jarpath.patch
   
     cd $WD/PostGIS/source  
 

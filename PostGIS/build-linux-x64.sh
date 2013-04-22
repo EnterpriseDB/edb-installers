@@ -22,7 +22,6 @@ _prep_PostGIS_linux_x64() {
 
     # Grab a copy of the postgis source tree
     cp -R postgis-$PG_VERSION_POSTGIS/* postgis.linux-x64 || _die "Failed to copy the source code (source/postgis-$PG_VERSION_POSTGIS)"
-    chmod -R ugo+w postgis.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/PostGIS/staging/linux-x64 ];
@@ -85,7 +84,7 @@ _die() {
 cd $POSTGIS_SOURCE_REMOTE
 export PATH=$PG_PERL_LINUX_X64/bin:/usr/local/bin:$PATH
 export LD_LIBRARY_PATH=$POSTGRES_REMOTE_PATH/lib:/usr/local/lib:\$LD_LIBRARY_PATH
-export LDFLAGS=-Wl,--rpath,'\\\${ORIGIN}/../lib'
+export LDFLAGS=-Wl,--rpath,'\\\${ORIGIN}/../lib -lz'
 
 echo "Configuring the postgis source tree"
 ./configure --with-pgconfig=$POSTGRES_REMOTE_PATH/bin/pg_config --with-geosconfig=/usr/local/bin/geos-config --with-projdir=/usr/local || _die "Failed to configure postgis"
