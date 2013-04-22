@@ -2,9 +2,9 @@
 # Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # Check the command line
-if [ $# -ne 5 ]; 
+if [ $# -ne 6 ]; 
 then
-    echo "Usage: $0 <Install dir> <PG Version> <Slony Version> <Branding> <Docdir>" 
+    echo "Usage: $0 <Install dir> <PG Version> <Slony Version> <Branding> <Docdir> <Tempdir>" 
     exit 127
 fi
 
@@ -13,6 +13,7 @@ PG_VERSION=$2
 SLONY_VERSION=$3
 BRANDING=$4
 DOCDIR=$5
+TEMPDIR=$6
 
 FOLDER="/Applications/$BRANDING/PostGIS"
 
@@ -32,8 +33,8 @@ _warn() {
 
 # Search & replace in a file - _replace($find, $replace, $file) 
 _replace() {
-    sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" 
-    mv /tmp/$$.tmp $3 
+    sed -e "s^$1^$2^g" $3 > "$TEMPDIR/$$.tmp" 
+    mv $TEMPDIR/$$.tmp $3 
 }
 
 # Compile a script - _compile_script($in.applescript, $out.app, $image)
