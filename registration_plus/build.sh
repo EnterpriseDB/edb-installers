@@ -35,8 +35,8 @@ _registration_plus_component_build()
 
 _registration_plus_postprocess()
 {
-  if [ $# -ne 9 ]; then
-    _die "Wrong number of parameters calling _registration_plus_postprocess(STAGING DIRECTORY, COMPONENT NAME, VERSION VARIABLE, INI, REGISTRY_PREFIX, REGISTRY_PREFIX WINDOWS, TEMP DIRECTORY, PRODUCT_DESCRIPTION, PRODUCT_VERSION)"
+  if [ $# -ne 8 ]; then
+    _die "Wrong number of parameters calling _registration_plus_postprocess(STAGING DIRECTORY, COMPONENT NAME, VERSION VARIABLE, INI, REGISTRY_PREFIX, REGISTRY_PREFIX WINDOWS, PRODUCT_DESCRIPTION, PRODUCT_VERSION)"
   fi
 
   PG_REG_COMP_PATH=$WD/registration_plus
@@ -59,19 +59,16 @@ _registration_plus_postprocess()
 
   # Authentication parameter (authentication_parameter.xml)
   _replace @@COMPONENT@@ "$2" registration_plus_authentication_parameter.xml
-  _replace @@TEMPDIR@@   "$7" registration_plus_authentication_parameter.xml
-  _replace PRODUCT_DESCRIPTION   "$8" registration_plus_authentication_parameter.xml
-  _replace PRODUCT_VERSION   "$9" registration_plus_authentication_parameter.xml
+  _replace PRODUCT_DESCRIPTION   "$7" registration_plus_authentication_parameter.xml
+  _replace PRODUCT_VERSION   "$8" registration_plus_authentication_parameter.xml
   _replace BASE_URL	      $BASE_URL  registration_plus_authentication_parameter.xml 
 
   # Registration Component (component.xml)
-  _replace @@TEMPDIR@@   "$7" registration_plus_component.xml
 
   # post-installation actions list (postinstallation.xml)
   _replace @@REGISTRY_INI@@        "$4" registration_plus_postinstallation.xml
   _replace @@REGISTRY_PREFIX@@     "$5" registration_plus_postinstallation.xml
   _replace @@REGISTRY_PREFIX_WIN@@ "$6" registration_plus_postinstallation.xml
-  _replace @@TEMPDIR@@             "$7" registration_plus_postinstallation.xml
 
   # pre-installation actions list (preinstallation.xml)
   _replace @@COMPONENT@@           "$2" registration_plus_preinstallation.xml
@@ -79,9 +76,8 @@ _registration_plus_postprocess()
   _replace @@REGISTRY_INI@@        "$4" registration_plus_preinstallation.xml
   _replace @@REGISTRY_PREFIX@@     "$5" registration_plus_preinstallation.xml
   _replace @@REGISTRY_PREFIX_WIN@@ "$6" registration_plus_preinstallation.xml
-  _replace @@TEMPDIR@@             "$7" registration_plus_preinstallation.xml
-  _replace PRODUCT_DESCRIPTION     "$8" registration_plus_preinstallation.xml
-  _replace PRODUCT_VERSION         "$9" registration_plus_preinstallation.xml
+  _replace PRODUCT_DESCRIPTION     "$7" registration_plus_preinstallation.xml
+  _replace PRODUCT_VERSION         "$8" registration_plus_preinstallation.xml
   _replace BASE_URL          $BASE_URL   registration_plus_preinstallation.xml
 
   # pre-uninstallation actions list (preuninstallation.xml)
