@@ -1530,22 +1530,6 @@ EOF
             </ruleList>
         </actionGroup>
 
-        <!-- Preinstall script -->
-        <unpackFile>
-            <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer_${random_number}/preinstall.sh</destination>
-            <folder>programfilesmacosx</folder>
-            <origin>installer/server/preinstall.sh</origin>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </unpackFile>
-
         <!-- Getlocales script -->
         <unpackFile>
             <component>default</component>
@@ -2108,68 +2092,6 @@ EOF
                     <path>${datadir}</path>
                     <condition>is_not_empty</condition>
                 </fileTest>
-            </ruleList>
-        </actionGroup>
-
-        <!-- MAC: Preinstall script. -->
-        <actionGroup>
-            <actionList>
-                <runProgram>
-                    <program>${system_temp_directory}/postgresql_installer_${random_number}/preinstall.sh</program>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                </runProgram>
-
-                <!-- Check the output from the preinstall script -->
-                <throwError>
-                    <text>${msg(error.shared.memory.manual)}</text>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>1</text>
-                            <value>${program_exit_code}</value>
-                        </compareText>
-                    </ruleList>
-                </throwError>
-                <throwError>
-                    <text>${msg(error.shared.memory.updated)}</text>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>2</text>
-                            <value>${program_exit_code}</value>
-                        </compareText>
-                    </ruleList>
-                </throwError>
-                <throwError>
-                    <text>${msg(error.shared.memory.shmall.manual)}</text>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>3</text>
-                            <value>${program_exit_code}</value>
-                        </compareText>
-                    </ruleList>
-                </throwError>
-                <throwError>
-                    <text>${msg(error.shared.memory.shmall.updated)}</text>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>4</text>
-                            <value>${program_exit_code}</value>
-                        </compareText>
-                    </ruleList>
-                </throwError>
-            </actionList>
-
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>osx</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
 
