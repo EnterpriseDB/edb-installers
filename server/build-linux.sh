@@ -18,7 +18,6 @@ _prep_server_linux() {
    
     # Grab a copy of the source tree
     cp -pR postgresql-$PG_TARBALL_POSTGRESQL postgres.linux || _die "Failed to copy the source code (source/postgresql-$PG_TARBALL_POSTGRESQL)"
-    chmod -R ugo+w postgres.linux || _die "Couldn't set the permissions on the source directory"
  
     if [ -e pgadmin.linux ];
     then
@@ -28,7 +27,6 @@ _prep_server_linux() {
 
     # Grab a copy of the source tree
     cp -pR pgadmin3-$PG_TARBALL_PGADMIN pgadmin.linux || _die "Failed to copy the source code (source/pgadmin-$PG_TARBALL_PGADMIN)"
-    chmod -R ugo+w pgadmin.linux || _die "Couldn't set the permissions on the source directory"
 
     if [ -e stackbuilder.linux ];
     then
@@ -38,7 +36,6 @@ _prep_server_linux() {
 
     # Grab a copy of the stackbuilder source tree
     cp -pR stackbuilder stackbuilder.linux || _die "Failed to copy the source code (source/stackbuilder)"	
-    chmod -R ugo+w stackbuilder.linux || _die "Couldn't set the permissions on the source directory"
 	
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/linux ];
