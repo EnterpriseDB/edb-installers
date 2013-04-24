@@ -37,7 +37,6 @@ _prep_plpgsqlo_osx() {
     patch -p0 < $WD/plpgsqlo/resources/plpgsqlo.patch || _die "Failed to apply patch on plpgsqlo tree (plpgsqlo.patch)"
 
     cd $WD/server/source
-    chmod -R ugo+w postgres.osx || _die "Couldn't set the permissions on the source directory"
 	
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/plpgsqlo/staging/osx ];
@@ -53,13 +52,13 @@ _prep_plpgsqlo_osx() {
 
     echo "Creating staging share directory ($WD/plpgsqlo/staging/osx/share)"
     mkdir -p $WD/plpgsqlo/staging/osx/share || _die "Couldn't create the staging share directory"
-    chmod ugo+w $WD/plpgsqlo/staging/osx/share || _die "Couldn't set the permissions on the staging share directory"
+    chmod 755 $WD/plpgsqlo/staging/osx/share || _die "Couldn't set the permissions on the staging share directory"
     echo "Copying plpgsqlo.sql to staging share directory"
     cp $WD/plpgsqlo/resources/plpgsqlo.sql $WD/plpgsqlo/staging/osx/share || _die "Couldn't copy plpgsqlo.sql to staging share directory"
 
     echo "Creating staging doc directory ($WD/plpgsqlo/staging/osx/doc)"
     mkdir -p $WD/plpgsqlo/staging/osx/doc || _die "Couldn't create the staging doc directory"
-    chmod ugo+w $WD/plpgsqlo/staging/osx/doc || _die "Couldn't set the permissions on the staging doc directory"
+    chmod 755 $WD/plpgsqlo/staging/osx/doc || _die "Couldn't set the permissions on the staging doc directory"
     echo "Copying readme.sqlprotect to staging doc directory"
     cp $WD/plpgsqlo/resources/README.plsecure $WD/plpgsqlo/staging/osx/doc || _die "Couldn't copy README.plsecure to staging doc directory"
 

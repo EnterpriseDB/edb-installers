@@ -63,7 +63,6 @@
       </ruleList>
     </throwError>
 
-    <createDirectory path="${system_temp_directory}/@@TEMPDIR@@"/>
 
     <actionGroup>
       <actionList>
@@ -71,7 +70,7 @@
         <!-- Unpack scripts and required libraries -->
         <unpackDirectory
           component="userValidation"
-          destination="${system_temp_directory}/@@TEMPDIR@@/"
+          destination="${system_temp_directory}/registration_plus_${random_number_reg}"
           folder="registration${platform_name}"
           origin="UserValidation"/>
 
@@ -80,7 +79,7 @@
           <actionList>
 
             <!-- Use script to generate the required information, while validating email -->
-            <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/@@TEMPDIR@@/UserValidation/lib"/>
+            <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/registration_plus_${random_number_reg}/UserValidation/lib"/>
 
             <!-- Generate UUID -->
             <setInstallerVariableFromScriptOutput name="uuid_val" showMessageOnError="0" exec="uuidgen" abortOnError="0">
@@ -96,9 +95,9 @@
                 <logMessage text="Sending parameter:&quot;${uuid_val}&quot; &quot;@@COMPONENT@@&quot; &quot;false&quot; &quot;true&quot; &quot;&quot; &quot;&quot; &quot;1&quot; &quot;&quot; &quot;&quot; &quot;0&quot; &quot;0&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"/>
                 <setInstallerVariableFromScriptOutput name="ws_existinguser_result"
                   abortOnError="0" customErrorMessage="${msg(registration.validatinguser.ws.error)}"
-                  exec="${system_temp_directory}/@@TEMPDIR@@/UserValidation/validateUserClient.o"
+                  exec="${system_temp_directory}/registration_plus_${random_number_reg}/UserValidation/validateUserClient.o"
                   execArgs="&quot;${uuid_val}&quot; &quot;@@COMPONENT@@&quot; &quot;false&quot; &quot;true&quot; &quot;&quot; &quot;&quot; &quot;1&quot; &quot;&quot; &quot;&quot; &quot;0&quot; &quot;0&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
-                  workingDirectory="${system_temp_directory}/@@TEMPDIR@@/UserValidation"/>
+                  workingDirectory="${system_temp_directory}/registration_plus_${random_number_reg}/UserValidation"/>
               </actionList>
               <ruleList>
                 <compareText logic="equals" text="${installer_ui}" value="unattended"/>
@@ -116,7 +115,7 @@
             <setInstallerVariableFromScriptOutput
               name="uuid_val"
               showMessageOnError="0"
-              exec="${system_temp_directory}\@@TEMPDIR@@\UserValidation\dbserver_guid.exe"
+              exec="${system_temp_directory}\registration_plus_${random_number_reg}\UserValidation\dbserver_guid.exe"
               abortOnError="0"/>
             <setInstallerVariableFromRegEx
               name="uuid_val"
@@ -143,11 +142,11 @@
                 <logMessage text="Sending parameter: &quot;@@COMPONENT@@&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${uuid_val}&quot;"/>
                 <setInstallerVariableFromScriptOutput
                   customErrorMessage="${msg(registration.validatinguser.ws.error)}"
-                  exec="${system_temp_directory}\@@TEMPDIR@@\UserValidation\validateUserClient.exe"
+                  exec="${system_temp_directory}\registration_plus_${random_number_reg}\UserValidation\validateUserClient.exe"
                   execArgs="&quot;@@COMPONENT@@&quot; &quot;false&quot; &quot;true&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${uuid_val}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
                   name="ws_existinguser_result"
                   abortOnError="0"
-                  workingDirectory="${system_temp_directory}\@@TEMPDIR@@\UserValidation"/>
+                  workingDirectory="${system_temp_directory}\registration_plus_${random_number_reg}\UserValidation"/>
               </actionList>
               <ruleList>
                 <compareText logic="equals" text="${installer_ui}" value="unattended"/>

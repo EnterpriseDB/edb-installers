@@ -8,7 +8,7 @@
     <!-- LIN: Program files -->
     <folder>
       <description>UserValidateScripts</description>
-      <destination>${system_temp_directory}/@@TEMPDIR@@</destination>
+      <destination>${system_temp_directory}/registration_plus_${random_number_reg}</destination>
       <name>registrationlinux</name>
       <platforms>linux</platforms>
       <distributionFileList>
@@ -18,7 +18,7 @@
     <!-- LIN-X64: Program files -->
     <folder>
       <description>UserValidateScripts</description>
-      <destination>${system_temp_directory}/@@TEMPDIR@@</destination>
+      <destination>${system_temp_directory}/registration_plus_${random_number_reg}</destination>
       <name>registrationlinux-x64</name>
       <platforms>linux-x64</platforms>
       <distributionFileList>
@@ -29,7 +29,7 @@
     <!-- MAC: Program files -->
     <folder>
       <description>UserValidateScripts</description>
-      <destination>${system_temp_directory}/@@TEMPDIR@@</destination>
+      <destination>${system_temp_directory}/registration_plus_${random_number_reg}</destination>
       <name>registrationosx</name>
       <platforms>osx</platforms>
       <distributionFileList>
@@ -40,7 +40,7 @@
     <!-- WIN: Program files -->
     <folder>
       <description>UserValidateScripts</description>
-      <destination>${system_temp_directory}/@@TEMPDIR@@</destination>
+      <destination>${system_temp_directory}/registration_plus_${random_number_reg}</destination>
       <name>registrationwindows</name>
       <platforms>windows</platforms>
       <distributionFileList>

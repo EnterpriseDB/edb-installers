@@ -67,3 +67,5 @@ upgrade.existing.installation.description=An existing PL/Secure installation has
 Installer.Parameter.pg.installdir=Postgres Installation Directory
 
 Installer.Parameter.installdir.pg.explanation=Please provide the path where your postgres server is installed.
+
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.

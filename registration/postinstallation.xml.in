@@ -12,6 +12,6 @@
         <compareText text="${platform_name}" logic="equals" value="windows"/>
       </ruleList>
     </registrySet>
-    <deleteFile path="@@TEMPDIR@@" abortOnError="0" showMessageOnError="0"/>
+    <deleteFile path="${system_temp_directory}/registration_plus_${random_number_reg}" abortOnError="0" showMessageOnError="0"/>
   </actionList>
 </actionGroup>
