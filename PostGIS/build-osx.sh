@@ -25,7 +25,6 @@ _prep_PostGIS_osx() {
 
     # Grab a copy of the postgis source tree
     cp -R postgis-$PG_VERSION_POSTGIS/* postgis.osx || _die "Failed to copy the source code (PostGIS/source/postgis-$PG_VERSION_POSTGIS)"
-    chmod -R ugo+w postgis.osx || _die "Couldn't set the permissions on the source directory"
 
     if [ -e geos.osx ];
     then
@@ -39,7 +38,6 @@ _prep_PostGIS_osx() {
 
     # Grab a copy of the geos source tree
     cp -R geos-$PG_TARBALL_GEOS/* geos.osx || _die "Failed to copy the source code (PostGIS/source/geos-$PG_TARBALL_GEOS)"
-    chmod -R ugo+w geos.osx || _die "Couldn't set the permissions on the source directory"
     
 
     if [ -e proj.osx ];
@@ -54,7 +52,6 @@ _prep_PostGIS_osx() {
 
     # Grab a copy of the proj source tree
     cp -R proj-$PG_TARBALL_PROJ/* proj.osx || _die "Failed to copy the source code (PostGIS/source/proj-$PG_TARBALL_PROJ)"
-    chmod -R ugo+w proj.osx || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/PostGIS/staging/osx ];
@@ -318,7 +315,7 @@ _build_postgis() {
     echo "Building postgis-doc"
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/doc; 
     make html || _die "Failed to build postgis-doc"
-    make install DESTDIR=$WD/PostGIS/staging/osx/PostGIS bindir=/bin pkglibdir=/lib datadir=/share PGSQL_DOCDIR=$WD/PostGIS/staging/osx/PostGIS/doc/ PGSQL_MANDIR=$WD/PostGIS/staging/osx/PostGIS/man PGSQL_SHAREDIR=$WD/PostGIS/staging/osx/PostGIS/share/postgresql || _die "Failed to install PostGIS-doc"
+    make install DESTDIR=$WD/PostGIS/staging/osx/PostGIS bindir=/bin pkglibdir=/lib datadir=/share PGSQL_DOCDIR=/doc PGSQL_MANDIR=/man PGSQL_SHAREDIR=$WD/PostGIS/staging/osx/PostGIS/share/postgresql || _die "Failed to install PostGIS-doc"
     
     cd $WD/PostGIS
 

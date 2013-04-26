@@ -2,9 +2,9 @@
 # Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
 
 # Check the command line
-if [ $# -ne 5 ]; 
+if [ $# -ne 6 ]; 
 then
-    echo "Usage: $0 <Install dir> <PG Version> <PostGIS Version> <Branding> <Docdir>" 
+    echo "Usage: $0 <Install dir> <PG Version> <PostGIS Version> <Branding> <Docdir> <Temp dir>" 
     exit 127
 fi
 
@@ -13,6 +13,7 @@ PG_VERSION=$2
 POSTGIS_VERSION=$3
 BRANDING=$4
 DOCDIR=$5
+TEMPDIR=$6
 
 # Version string, for the xdg filenames
 PG_VERSION_STR=`echo $PG_VERSION | sed 's/\./_/g'`
@@ -49,8 +50,8 @@ _warn() {
 
 # Search & replace in a file - _replace($find, $replace, $file) 
 _replace() {
-    sed -e "s^$1^$2^g" "$3" > "/tmp/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
-    mv /tmp/$$.tmp "$3" || _die "Failed to move /tmp/$$.tmp to $3"
+    sed -e "s^$1^$2^g" "$3" > "$TEMPDIR/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
+    mv $TEMPDIR/$$.tmp "$3" || _die "Failed to move $TEMPDIR/$$.tmp to $3"
 }
 
 # Substitute values into a file ($in)

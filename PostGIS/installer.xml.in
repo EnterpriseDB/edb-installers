@@ -49,6 +49,73 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+  <!-- Custom functions -->
+  <functionDefinitionList>
+    <actionDefinition name="createTempDir">
+       <actionList>
+         <globalVariables names="random_number"/>
+         <actionGroup>
+           <actionList>
+            <setInstallerVariable name="iteration" value="0"/>
+            <!-- Create a random number to use unique filenames -->
+             <while>
+               <actionList>
+                 <generateRandomValue length="10" variable="random_number"/>
+                 <runProgram>
+                   <program>sh</program>
+                   <programArguments>-c &lt;&lt;EOF '
+                                     umask 0077
+                                     mkdir "${system_temp_directory}/${dirPrefix}_${random_number}"
+                                     if [ $? -ne 0 ];
+                                     then
+                                        exit 100
+                                     fi
+                                     '
+EOF
+                   </programArguments>
+                 </runProgram>
+                 <break>
+                   <ruleList>
+                    <compareText logic="equals" text="0" value="${program_exit_code}"/>
+                   </ruleList>
+                 </break>
+                <actionGroup>
+                  <actionList>
+                    <throwError text="${msg(cannot.create.tmp.dir)}" abortOnError="1">
+                      <ruleList>
+                        <compareValues value1="${iteration}" logic="equals" value2="9"/>
+                      </ruleList>
+                    </throwError>
+                  </actionList>
+                </actionGroup>
+                 <mathExpression text="${iteration}+1" variable="iteration"/>
+               </actionList>
+               <conditionRuleList>
+                 <compareValues value1="${iteration}" logic="less" value2="10"/>
+               </conditionRuleList>
+             </while>
+             <setInstallerVariable name="random_number" value="${random_number}"/>
+           </actionList>
+           <ruleList>
+             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+           </ruleList>
+         </actionGroup>
+         <actionGroup>
+           <actionList>
+             <generateRandomValue length="10" variable="random_number"/>
+             <createDirectory path="${system_temp_directory}/${dirPrefix}_${random_number}"/>
+             <setInstallerVariable name="random_number" value="${random_number}"/>
+           </actionList>
+           <ruleList>
+             <compareText logic="equals" text="${platform_name}" value="windows"/>
+           </ruleList>
+         </actionGroup>
+       </actionList>
+       <parameterList>
+         <stringParameter name="dirPrefix" allowEmptyValue="0"/>
+       </parameterList>
+    </actionDefinition>
+  </functionDefinitionList>
     <preShowHelpActionList>
 	<!-- Set the PG Major Version -->
         <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION">
@@ -125,6 +192,8 @@
     </initializationActionList>
     <!-- Preinstallation actions -->
     <preInstallationActionList>
+     <!-- Creating a temporary directory -->
+     <createTempDir dirPrefix="${product_shortname}"/>
 
       <!-- Creates the ini file if not exits -->
       <touchFile path="/etc/postgres-reg.ini">
@@ -687,7 +756,7 @@
                     <actionList>
                         <runProgram>
                             <program>${installdir}/PostGIS/installer/PostGIS/createshortcuts.sh</program>
-                            <programArguments>"${installdir}" "${PGMajorVersion}" "${PostGISMajorVersion}" "${branding}" "${docdir}"</programArguments>
+                            <programArguments>"${installdir}" "${PGMajorVersion}" "${PostGISMajorVersion}" "${branding}" "${docdir}" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
                             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -838,7 +907,20 @@
             </ruleList>
         </actionGroup>
   
+      <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
+            <ruleList>
+                <fileExists path="${system_temp_directory}/${product_shortname}_${random_number}" />
+            </ruleList>
+      </deleteFile>
+
     </postInstallationActionList>
+    <installationAbortedActionList>
+      <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
+        <ruleList>
+          <fileExists path="${system_temp_directory}/${product_shortname}_${random_number}" />
+        </ruleList>
+      </deleteFile>
+    </installationAbortedActionList>
 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
