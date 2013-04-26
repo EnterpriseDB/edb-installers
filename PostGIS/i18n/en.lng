@@ -56,4 +56,4 @@ pg.not.found=No PostgreSQL ${PGMajorVersion} installation found.
 upgrade.mode.title=Upgrade Mode
 upgrade.mode.description=Upgrade Mode
 upgrade.mode.explanation=Upgrade mode will prevent the installer from modifying the database cluster by loading PostGIS SQL scripts, in preparation for upgrading from earlier releases of PostgreSQL using the pg_upgrade tool.
-
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
