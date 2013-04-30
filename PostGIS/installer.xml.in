@@ -47,6 +47,73 @@
             <file>i18n/en.lng</file>
         </language>
     </customLanguageFileList>
+  <!-- Custom functions -->
+  <functionDefinitionList>
+    <actionDefinition name="createTempDir">
+       <actionList>
+         <globalVariables names="random_number"/>
+         <actionGroup>
+           <actionList>
+            <setInstallerVariable name="iteration" value="0"/>
+            <!-- Create a random number to use unique filenames -->
+             <while>
+               <actionList>
+                 <generateRandomValue length="10" variable="random_number"/>
+                 <runProgram>
+                   <program>sh</program>
+                   <programArguments>-c &lt;&lt;EOF '
+                                     umask 0077
+                                     mkdir "${system_temp_directory}/${dirPrefix}_${random_number}"
+                                     if [ $? -ne 0 ];
+                                     then
+                                        exit 100
+                                     fi
+                                     '
+EOF
+                   </programArguments>
+                 </runProgram>
+                 <break>
+                   <ruleList>
+                    <compareText logic="equals" text="0" value="${program_exit_code}"/>
+                   </ruleList>
+                 </break>
+                <actionGroup>
+                  <actionList>
+                    <throwError text="${msg(cannot.create.tmp.dir)}" abortOnError="1">
+                      <ruleList>
+                        <compareValues value1="${iteration}" logic="equals" value2="9"/>
+                      </ruleList>
+                    </throwError>
+                  </actionList>
+                </actionGroup>
+                 <mathExpression text="${iteration}+1" variable="iteration"/>
+               </actionList>
+               <conditionRuleList>
+                 <compareValues value1="${iteration}" logic="less" value2="10"/>
+               </conditionRuleList>
+             </while>
+             <setInstallerVariable name="random_number" value="${random_number}"/>
+           </actionList>
+           <ruleList>
+             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+           </ruleList>
+         </actionGroup>
+         <actionGroup>
+           <actionList>
+             <generateRandomValue length="10" variable="random_number"/>
+             <createDirectory path="${system_temp_directory}/${dirPrefix}_${random_number}"/>
+             <setInstallerVariable name="random_number" value="${random_number}"/>
+           </actionList>
+           <ruleList>
+             <compareText logic="equals" text="${platform_name}" value="windows"/>
+           </ruleList>
+         </actionGroup>
+       </actionList>
+       <parameterList>
+         <stringParameter name="dirPrefix" allowEmptyValue="0"/>
+       </parameterList>
+    </actionDefinition>
+  </functionDefinitionList>
     <!-- Prebuild Actons-->
     <preBuildActionList>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>
@@ -217,6 +284,8 @@
     </initializationActionList>
     <!-- Preinstallation actions -->
     <preInstallationActionList>
+     <!-- Creating a temporary directory -->
+     <createTempDir dirPrefix="${product_shortname}"/>
         <!-- Creates the ini file if not exits -->
         <touchFile path="/etc/postgres-reg.ini">
             <ruleList>
@@ -647,7 +716,7 @@
             <actionList>
                 <runProgram>
                     <program>${installdir}/PostGIS/installer/PostGIS/createshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${PGMajorVersion}" "${productVersion}" "${branding}"</programArguments>
+                    <programArguments>"${installdir}" "${PGMajorVersion}" "${productVersion}" "${branding}" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -665,7 +734,7 @@
         <runProgram>
             <customErrorMessage>${msg(error.configure.postgis)}</customErrorMessage>
             <program>${installdir}/PostGIS/installer/PostGIS/configurePostGIS.sh</program>
-            <programArguments>"${installdir}"</programArguments>
+            <programArguments>"${installdir}" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
             <progressText>${msg(progress.text.configure.postgis)}</progressText>
             <workingDirectory>${installdir}/PostGIS/installer/PostGIS</workingDirectory>
             <ruleList>
@@ -799,7 +868,20 @@
             </ruleList>
         </runProgram>
 
+      <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
+            <ruleList>
+                <fileExists path="${system_temp_directory}/${product_shortname}_${random_number}" />
+            </ruleList>
+      </deleteFile>
+
     </postInstallationActionList>
+    <installationAbortedActionList>
+      <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
+        <ruleList>
+          <fileExists path="${system_temp_directory}/${product_shortname}_${random_number}" />
+        </ruleList>
+      </deleteFile>
+    </installationAbortedActionList>
 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
@@ -1615,21 +1697,19 @@
                     </ruleList>
                 </throwError>
 
-	            <!-- Creating a temporary directory -->
-                <createDirectory path="${system_temp_directory}/${product_fullname}"/>
 	            <!-- WIN - Unpack Script Files -->
                 <actionGroup>
                     <actionList>
 	                    <!-- Unpacking the Script file to temporary directory -->
                         <unpackFile>
                             <component>PostGIS</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-connection.bat</destination>
+                            <destination>${system_temp_directory}/${product_shortname}_${random_number}/check-connection.bat</destination>
                             <folder>installfileswindows</folder>
                             <origin>installer/PostGIS/check-connection.bat</origin>
                         </unpackFile>
                         <unpackFile>
                             <component>PostGIS</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-db.bat</destination>
+                            <destination>${system_temp_directory}/${product_shortname}_${random_number}/check-db.bat</destination>
                             <folder>installfileswindows</folder>
                             <origin>installer/PostGIS/check-db.bat</origin>
                         </unpackFile>
@@ -1648,13 +1728,13 @@
 	                    <!-- Unpacking the Script file to temporary directory -->
                         <unpackFile>
                             <component>PostGIS</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
+                            <destination>${system_temp_directory}/${product_shortname}_${random_number}/check-connection.sh</destination>
                             <folder>installfileslinux</folder>
                             <origin>installer/PostGIS/check-connection.sh</origin>
                         </unpackFile>
                         <unpackFile>
                             <component>PostGIS</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-db.sh</destination>
+                            <destination>${system_temp_directory}/${product_shortname}_${random_number}/check-db.sh</destination>
                             <folder>installfileslinux</folder>
                             <origin>installer/PostGIS/check-db.sh</origin>
                         </unpackFile>
@@ -1673,13 +1753,13 @@
 	                    <!-- Unpacking the Script file to temporary directory -->
                         <unpackFile>
                             <component>PostGIS</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
+                            <destination>${system_temp_directory}/${product_shortname}_${random_number}/check-connection.sh</destination>
                             <folder>installfileslinux-x64</folder>
                             <origin>installer/PostGIS/check-connection.sh</origin>
                         </unpackFile>
                         <unpackFile>
                             <component>PostGIS</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-db.sh</destination>
+                            <destination>${system_temp_directory}/${product_shortname}_${random_number}/check-db.sh</destination>
                             <folder>installfileslinux-x64</folder>
                             <origin>installer/PostGIS/check-db.sh</origin>
                         </unpackFile>
@@ -1698,13 +1778,13 @@
 	                    <!-- Unpacking the Script file to temporary directory -->
                         <unpackFile>
                             <component>PostGIS</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-connection.sh</destination>
+                            <destination>${system_temp_directory}/${product_shortname}_${random_number}/check-connection.sh</destination>
                             <folder>installfilesosx</folder>
                             <origin>installer/PostGIS/check-connection.sh</origin>
                         </unpackFile>
                         <unpackFile>
                             <component>PostGIS</component>
-                            <destination>${system_temp_directory}/${product_fullname}/check-db.sh</destination>
+                            <destination>${system_temp_directory}/${product_shortname}_${random_number}/check-db.sh</destination>
                             <folder>installfilesosx</folder>
                             <origin>installer/PostGIS/check-db.sh</origin>
                         </unpackFile>
@@ -1722,10 +1802,10 @@
                     <actionList>
 	                    <!-- Running the Script to validate the PostgreSQL Server Details -->
                         <setInstallerVariableFromScriptOutput>
-                            <exec>${system_temp_directory}\${product_fullname}\check-connection.bat</exec>
+                            <exec>${system_temp_directory}/${product_shortname}_${random_number}\check-connection.bat</exec>
                             <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
                             <name>connection</name>
-                            <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
+                            <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
                             <customErrorMessage>${msg(pgplus.details.error)}</customErrorMessage>
                         </setInstallerVariableFromScriptOutput>
                     </actionList>
@@ -1742,10 +1822,10 @@
                     <actionList>
 	                    <!-- Running the Script to validate the PostgreSQL Server Details -->
                         <setInstallerVariableFromScriptOutput>
-                            <exec>${system_temp_directory}/${product_fullname}/check-connection.sh</exec>
+                            <exec>${system_temp_directory}/${product_shortname}_${random_number}/check-connection.sh</exec>
                             <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
                             <name>connection</name>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
                             <customErrorMessage>${msg(pgplus.details.error)}</customErrorMessage>
                         </setInstallerVariableFromScriptOutput>
                     </actionList>
@@ -1764,9 +1844,9 @@
 	                    <!-- WIN - Check whether the database already exists -->
                         <setInstallerVariableFromScriptOutput>
                             <name>dbexist</name>
-                            <exec>${system_temp_directory}\${product_fullname}\check-db.bat</exec>
+                            <exec>${system_temp_directory}/${product_shortname}_${random_number}\check-db.bat</exec>
                             <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "template_postgis"</execArgs>
-                            <workingDirectory>${system_temp_directory}\${product_fullname}</workingDirectory>
+                            <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </setInstallerVariableFromScriptOutput>
@@ -1785,9 +1865,9 @@
 	                    <!-- LIN & MAC: Check whether the database already exists -->
                         <setInstallerVariableFromScriptOutput>
                             <name>dbexist</name>
-                            <exec>${system_temp_directory}/${product_fullname}/check-db.sh</exec>
+                            <exec>${system_temp_directory}/${product_shortname}_${random_number}/check-db.sh</exec>
                             <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "template_postgis"</execArgs>
-                            <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                            <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </setInstallerVariableFromScriptOutput>
@@ -2001,10 +2081,9 @@
                 </actionGroup>
             </validationActionList>
             <validationActionList>
-                <createDirectory path="${system_temp_directory}/${product_fullname}" />
                 <unpackFile>
                     <component>PostGIS</component>
-                    <destination>${system_temp_directory}/${product_fullname}/check-pgversion.sh</destination>
+                    <destination>${system_temp_directory}/${product_shortname}_${random_number}/check-pgversion.sh</destination>
                     <folder>installfilesosx</folder>
                     <origin>installer/PostGIS/check-pgversion.sh</origin>
                     <ruleList>
@@ -2017,7 +2096,7 @@
                 </unpackFile>
                 <unpackFile>
                     <component>PostGIS</component>
-                    <destination>${system_temp_directory}/${product_fullname}/check-pgversion.sh</destination>
+                    <destination>${system_temp_directory}/${product_shortname}_${random_number}/check-pgversion.sh</destination>
                     <folder>installfileslinux</folder>
                     <origin>installer/PostGIS/check-pgversion.sh</origin>
                     <ruleList>
@@ -2030,7 +2109,7 @@
                 </unpackFile>
                 <unpackFile>
                     <component>PostGIS</component>
-                    <destination>${system_temp_directory}/${product_fullname}/check-pgversion.sh</destination>
+                    <destination>${system_temp_directory}/${product_shortname}_${random_number}/check-pgversion.sh</destination>
                     <folder>installfileslinux-x64</folder>
                     <origin>installer/PostGIS/check-pgversion.sh</origin>
                     <ruleList>
@@ -2043,9 +2122,9 @@
                 </unpackFile>
                 <setInstallerVariableFromScriptOutput>
                     <name>pg_version</name>
-                    <exec>${system_temp_directory}/${product_fullname}/check-pgversion.sh</exec>
+                    <exec>${system_temp_directory}/${product_shortname}_${random_number}/check-pgversion.sh</exec>
                     <execArgs>"${installdir}"</execArgs>
-                    <workingDirectory>${system_temp_directory}/${product_fullname}</workingDirectory>
+                    <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
                     <ruleList>
                         <compareText>
                            <text>${platform_name}</text>

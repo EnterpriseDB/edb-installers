@@ -22,7 +22,6 @@ _prep_Slony_osx() {
 
     # Grab a copy of the slony source tree
     cp -R slony1-$PG_VERSION_SLONY/* slony.osx || _die "Failed to copy the source code (source/slony1-$PG_VERSION_SLONY)"
-    chmod -R ugo+w slony.osx || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/Slony/staging/osx ];
@@ -53,6 +52,11 @@ _build_Slony_osx() {
 
     echo "Configuring the slony source tree"
     cd $PG_PATH_OSX/Slony/source/slony.osx/
+
+    cp $PG_PGHOME_OSX/lib/libpq* .
+
+    #Use cached libpq and other libraries.
+    PG_PGHOME_OSX=$WD/server/caching/osx
 
     echo "Configuring the slony source tree for intel"
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --prefix=$PG_PGHOME_OSX --with-pgconfigdir=$PG_PGHOME_OSX/bin  || _die "Failed to configure slony for intel"
