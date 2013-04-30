@@ -22,7 +22,6 @@ _prep_PostGIS_linux_x64() {
 
     # Grab a copy of the postgis source tree
     cp -R postgis-$PG_VERSION_POSTGIS/* postgis.linux-x64 || _die "Failed to copy the source code (source/postgis-$PG_VERSION_POSTGIS)"
-    chmod -R ugo+w postgis.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
     if [ -e geos.linux-x64 ];
     then
@@ -36,7 +35,6 @@ _prep_PostGIS_linux_x64() {
 
     # Grab a copy of the geos source tree
     cp -R geos-$PG_TARBALL_GEOS/* geos.linux-x64 || _die "Failed to copy the source code (source/geos.linux-x64)"
-    chmod -R ugo+w geos.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
     if [ -e proj.linux-x64 ];
     then
@@ -50,7 +48,6 @@ _prep_PostGIS_linux_x64() {
 
     # Grab a copy of the proj source tree
     cp -R proj-$PG_TARBALL_PROJ/* proj.linux-x64 || _die "Failed to copy the source code (source/proj.linux-x64)"
-    chmod -R ugo+w proj.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
 
     # Remove any existing staging directory that might exist, and create a clean one

@@ -41,3 +41,5 @@ Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of val
 slony.incompatible.install.error=An incompatible version of Slony already installed. \nPlease remove the incompatible installation before installing this version.
 
 slony.incompatible.pg.error=The PostgreSQL Server is incompatible with this version of Slony.
+
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.

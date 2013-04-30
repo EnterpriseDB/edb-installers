@@ -29,7 +29,6 @@ _prep_Slony_osx() {
     cd slony.osx
     patch -p1 < $WD/tarballs/slony1-2.0.7-osx.patch
     cd ..
-    chmod -R ugo+w slony.osx || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/Slony/staging/osx ];

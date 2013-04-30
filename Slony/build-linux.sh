@@ -22,7 +22,6 @@ _prep_Slony_linux() {
 
     # Grab a copy of the slony source tree
     cp -R slony1-$PG_VERSION_SLONY/* slony.linux || _die "Failed to copy the source code (source/slony1-$PG_VERSION_SLONY)"
-    chmod -R ugo+w slony.linux || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/Slony/staging/linux ];
