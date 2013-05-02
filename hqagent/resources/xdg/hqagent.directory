@@ -1,7 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Type=Directory
-Name=@@BRANDING@@
-Comment=Postgres Plus HQ Agent, packaged by EnterpriseDB
-Icon=pphq-logo.png
-Encoding=UTF-8
