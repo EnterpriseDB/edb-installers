@@ -195,6 +195,43 @@ ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log
 echo "Uploading output to $remote_location on the builds server" >> autobuild.log
 scp output/* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
 
+# Switch to REL-9_3 branch
+echo "Switching to REL-9_3 branch" >> autobuild.log
+git reset --hard >> autobuild.log 2>&1
+git checkout REL-9_3 >> autobuild.log 2>&1
+
+# Make sure, we always do a full build
+if [ -f settings.sh.full.REL-9_3 ]; then
+   cp -f settings.sh.full.REL-9_3 settings.sh
+fi
+
+# Self update
+echo "Updating REL-9_3 branch build system" >> autobuild.log
+git pull >> autobuild.log 2>&1
+
+# Run the build, and dump the output to a log file
+echo "Running the build (REL-9_3) " >> autobuild.log
+./build.sh $SKIPBUILD > output/build-93.log 2>&1
+
+_mail_status "build-93.log" "9.3"
+
+remote_location="/var/www/html/builds/Installers"
+
+# Different location for the manual and cron triggered builds.
+if [ "$BUILD_USER" == "" ]
+then
+        remote_location="$remote_location/$DATE/9.3"
+else
+        remote_location="$remote_location/Custom/$BUILD_USER/9.3/$BUILD_NUMBER"
+fi
+
+# Create a remote directory and upload the output.
+echo "Creating $remote_location on the builds server" >> autobuild.log
+ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
+
+echo "Uploading output to $remote_location on the builds server" >> autobuild.log
+scp output/* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
+
 echo "#######################################################################" >> autobuild.log
 echo "Build run completed at `date`" >> autobuild.log
 echo "#######################################################################" >> autobuild.log
