@@ -93,4 +93,3 @@ servicename.already.exists.linux=A service (${servicename}) already exists in th
 servicename.already.exists.windows=A service (${servicename}) already exists.\nPlease specify another name.
 servicename.already.exists.osx=A service (com.edb.launchd.${servicename}.plist) already exists in the '/Library/LaunchDaemons' directory.\nPlease specify another name.
 pg.service.description=Provides relational database storage.
-symlink.error.extract.mode=The installation directory contains the symbolic links pointing to external resources that may compromise system security and stability. Please extract in a folder without any symbolic links.
