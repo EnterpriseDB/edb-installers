@@ -61,75 +61,6 @@
 
     <!-- Custom functions -->
     <functionDefinitionList>
-     <actionDefinition name="removeExistingSymlinks">
-       <actionList>
-         <!-- Fix existing symlinks -->
-         <actionGroup>
-           <actionList>
-             <writeFile>
-               <path>${system_temp_directory}/postgresql_installer_${random_number}/removeSymlinks.sh</path>
-               <text>
-dirname="$1"
-isExtraction=$2
-
-linkList=`find $dirname -type l`
-for name in $linkList; do
-        # Get source of symlink
-        result=`readlink $name`
-        if [ "x"$result != "x" ];
-        then
-            # Check if source exists in same directory
-            sourceInCurrentDir=`find $dirname | grep $result`
-            if [ "x"$sourceInCurrentDir = "x" ];
-            then
-                if [ $isExtraction = "1" ];
-                then
-                     # Abort extraction if symlink pointing to external resource
-                     echo "Aborting ..."
-                     exit 100
-                else
-                   # Unlink all symlinks pointing to external resources in normal installation.
-                   echo Deleting $name
-                   unlink $name
-                fi
-            fi
-        fi
-done
-               </text>
-             </writeFile>
-             <changePermissions files="${system_temp_directory}/postgresql_installer_${random_number}/removeSymlinks.sh" permissions="755"/>
-             <runProgram>
-               <abortOnError>0</abortOnError>
-               <program>${system_temp_directory}/postgresql_installer_${random_number}/removeSymlinks.sh</program>
-               <programArguments>"${dirname}" "${isExtraction}"</programArguments>
-               <showMessageOnError>0</showMessageOnError>
-               <workingDirectory>${system_temp_directory}/postgresql_installer_${random_number}</workingDirectory>
-             </runProgram>
-             <throwError>
-               <text>${msg(symlink.error.extract.mode)}</text>
-               <abortOnError>1</abortOnError>
-               <ruleList>
-                 <compareText logic="does_not_equal" text="0" value="${program_exit_code}"/>
-                 <isTrue value="${isExtraction}"/>
-               </ruleList>
-             </throwError>
-             <deleteFile path="${system_temp_directory}/postgresql_installer_${random_number}/removeSymlinks.sh">
-               <ruleList>
-                 <fileTest path="${system_temp_directory}/postgresql_installer_${random_number}/removeSymlinks.sh" condition="exists"/>
-               </ruleList>
-             </deleteFile>
-           </actionList>
-           <ruleList>
-             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-             <fileExists path="${dirname}"/>
-           </ruleList>
-         </actionGroup>
-       </actionList>
-       <parameterList>
-         <stringParameter name="dirname" allowEmptyValue="0"/>
-         <booleanParameter name="isExtraction" default="0"/>
-       </parameterList>
-     </actionDefinition>
      <actionDefinition name="createTempDir">
        <actionList>
          <globalVariables names="random_number"/>
@@ -2322,26 +2253,6 @@ EOF
     </preInstallationActionList>
 
     <readyToInstallActionList>
-       <!-- Fix existing symlinks -->
-       <actionGroup>
-         <actionList>
-            <removeExistingSymlinks dirname="${installdir}/doc" isExtraction="0"/>
-          </actionList>
-          <ruleList>
-            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-            <isFalse value="${extract_mode}"/>
-          </ruleList>
-        </actionGroup>
-        <!-- Fix existing symlinks in extraction -->
-        <actionGroup>
-          <actionList>
-            <removeExistingSymlinks dirname="${installdir}/doc" isExtraction="1"/>
-          </actionList>
-          <ruleList>
-            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-            <isTrue value="${extract_mode}"/>
-          </ruleList>
-        </actionGroup>
 
         <!-- Attempt to stop any existing server. We *always* do this, just in case  -->
         <!-- the existing installation is broken and it doesn't look like an upgrade -->
