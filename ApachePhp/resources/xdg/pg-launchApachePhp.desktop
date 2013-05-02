@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Encoding=UTF-8
-Name=ApachePHP
-Exec="INSTALL_DIR/scripts/launchApachePhp.sh"
-Icon=pg-launchApachePhp.png
-Terminal=false
-Type=Application
