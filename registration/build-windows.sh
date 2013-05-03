@@ -26,8 +26,8 @@ _registration_preprocess_windows()
     chmod ugo+x $PG_REG_COMP_STAGING || _die "Couldn't set the permissions on the staging directory (registration-$PG_REG_COMP_PLATFORM)"
 
     echo "Coyping utilities sources in registration source directory..."
-    echo cp -R $WD/MetaInstaller/scripts/windows/dbserver_guid/dbserver_guid/dbserver_guid $PG_REG_COMP_PATH/
-    cp -R $WD/MetaInstaller/scripts/windows/dbserver_guid/dbserver_guid/dbserver_guid $PG_REG_COMP_PATH/ || _die "Failed to copy dbserver_guid sources (registration-$PG_REG_COMP_PLATFORM)"
+    echo cp -R $WD/resources/dbserver_guid/dbserver_guid/dbserver_guid $PG_REG_COMP_PATH/
+    cp -R $WD/resources/dbserver_guid/dbserver_guid/dbserver_guid $PG_REG_COMP_PATH/ || _die "Failed to copy dbserver_guid sources (registration-$PG_REG_COMP_PLATFORM)"
     echo cp -R $WD/resources/validateUser.windows $PG_REG_COMP_PATH/
     cp -R $WD/resources/validateUser.windows $PG_REG_COMP_PATH/ || _die "Failed to copy validateUser.windows sources (registration-$PG_REG_COMP_PLATFORM)"
 
