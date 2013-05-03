@@ -26,7 +26,7 @@ _registration_preprocess_linux_x64()
     chmod ugo+x $PG_REG_COMP_STAGING/lib || _die "Couldn't set the permissions on the lib directory for registration component ($PG_REG_COMP_PLATFORM)"
 
     echo "Coyping validateUser source in registration source directory..."
-    cp -R $WD/MetaInstaller/scripts/linux/validateUser/* $PG_REG_COMP_PATH/ || _die "Failed to copy validateUser source files"
+    cp -R $WD/resources/validateUser/* $PG_REG_COMP_PATH/ || _die "Failed to copy validateUser source files"
   fi
 }
 

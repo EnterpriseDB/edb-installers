@@ -25,7 +25,7 @@ _registration_preprocess_osx()
     chmod ugo+x $PG_REG_COMP_STAGING || _die "Couldn't set the permissions on the staging directory (registration component-$PG_REG_COMP_PLATFORM)"
 
     echo "Coyping validateUser source in registration source directory..."
-    cp -R $WD/MetaInstaller/scripts/osx/validateUser/* $PG_REG_COMP_PATH/ || _die "Failed to copy validateUser source files"
+    cp -R $WD/resources/validateUser/* $PG_REG_COMP_PATH/ || _die "Failed to copy validateUser source files"
   fi
 }
 
