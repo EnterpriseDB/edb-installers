@@ -33,7 +33,7 @@ _registration_preprocess_solaris_x64()
     ssh $PG_SSH_SOLARIS_X64 "chmod ugo+x $PG_PATH_SOLARIS_X64/registration/staging/$PG_REG_COMP_PLATFORM/lib" || _die "Couldn't set the permissions on the lib directory for registration component ($PG_REG_COMP_PLATFORM)"
 
     echo "Coyping validateUser source in registration source directory..."
-    cp -R $WD/MetaInstaller/scripts/linux/validateUser/* $PG_REG_COMP_PATH/ || _die "Failed to copy validateUser source files"
+    cp -R $WD/resources/validateUser/* $PG_REG_COMP_PATH/ || _die "Failed to copy validateUser source files"
     cd $PG_REG_COMP_PATH
     zip -r registration.zip *
     scp registration.zip $PG_SSH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/registration/source/$PG_REG_COMP_PLATFORM/
