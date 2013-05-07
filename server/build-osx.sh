@@ -149,9 +149,6 @@ EOT
 
     cd $WD/server/source/pgadmin.osx
 
-    # Bootstrap
-    PATH=/usr/local/bin:/opt/local/bin:$PATH sh bootstrap
-
     # Configure
     PATH=/usr/local/bin:/opt/local/bin:$PATH CPPFLAGS="$PG_ARCH_OSX_CPPFLAGS" LDFLAGS="$PG_ARCH_OSX_LDFLAGS" ./configure --enable-appbundle --disable-dependency-tracking --with-pgsql=$WD/server/staging/osx --with-wx=/usr/local --with-libxml2=/usr/local --with-libxslt=/usr/local --disable-debug --disable-static  --with-sphinx-build=$PG_PYTHON_OSX/bin/sphinx-build || _die "Failed to configure pgAdmin"
 

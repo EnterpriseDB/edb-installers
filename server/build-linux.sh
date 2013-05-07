@@ -263,10 +263,6 @@ EOT
 
     # Now build pgAdmin
 
-    # Bootstrap
-    echo "Bootstrapping the build system"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; sh bootstrap"
-
     # Configure
     echo "Configuring the pgAdmin source tree"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; LD_LIBRARY_PATH=/usr/local/lib" CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib" ./configure --prefix=$PG_STAGING/pgAdmin3 --with-pgsql=$PG_PATH_LINUX/server/staging/linux --with-wx=/usr/local --with-libxml2=/usr/local --with-libxslt=/usr/local --disable-debug --disable-static --with-sphinx-build=$PG_PYTHON_LINUX/bin/sphinx-build || _die "Failed to configure pgAdmin"
