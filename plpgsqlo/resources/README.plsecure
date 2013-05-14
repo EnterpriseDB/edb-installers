@@ -55,7 +55,7 @@ Steps to Install PL/Secure
 1. Make sure Postgres Plus Standard Server or PostgreSQL is installed on
    the computer on which you want to install the PL/Secure module.
 
-2. From StackBuilder Plus, run the option to install PL/Secure. The
+2. From StackBuilder/StackBuilder Plus, run the option to install PL/Secure. The
    installer automatically detects the location of your Postgres Plus
    product. Databases in any database server instance initiated from your
    Postgres Plus installation can now be configured to use PL/Secure.
@@ -78,7 +78,7 @@ Steps to Install PL/Secure
   b) Run the script 'plpgsqlo.sql' located in the 'share' directory of the 
      Postgres Plus/PostgreSQL instance.
 
-       postgres=# \i /opt/PostgreSQL/9.1/share/postgresql/plpgsqlo.sql
+       postgres=# \i /opt/PostgreSQL/9.1/share/plpgsqlo.sql
        CREATE FUNCTION
        ALTER FUNCTION
        CREATE FUNCTION
