@@ -157,10 +157,10 @@ PG_QMAKE_OSX=/Users/buildfarm/QtSDK/Simulator/Qt/gcc/bin/qmake
 # oldest supported
 
 SDK_PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk
-PG_ARCH_OSX_CFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.6 -headerpad_max_install_names"
-PG_ARCH_OSX_CPPFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.6 -headerpad_max_install_names"
-PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.6 -headerpad_max_install_names"
-PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.6 -headerpad_max_install_names"
+PG_ARCH_OSX_CFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.5 -headerpad_max_install_names"
+PG_ARCH_OSX_CPPFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.5 -headerpad_max_install_names"
+PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.5 -headerpad_max_install_names"
+PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.5 -headerpad_max_install_names"
 
 # The InstallBuilder main binary.
 PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder for Qt Enterprise 8.5.2/bin/Builder.app/Contents/MacOS/installbuilder.sh"
