@@ -183,6 +183,15 @@ _postprocess_stackbuilderplus_solaris_sparc() {
 
     mkdir -p staging/solaris-sparc/installer/StackBuilderPlus || _die "Failed to create a directory for the installer scripts"
     mkdir -p staging/solaris-sparc/UpdateManager/scripts || _die "Failed to create a directory for the installer scripts"
+
+    #Mark all files except bin folder as 644 (rw-r--r--)
+    find ./staging/solaris-sparc -type f -not -regex '.*/bin/*.*' -exec chmod 644 {} \;
+    #Mark all files under bin as 755
+    find ./staging/solaris-sparc -type f -regex '.*/bin/*.*' -exec chmod 755 {} \;
+    #Mark all directories with 755(rwxr-xr-x)
+    find ./staging/solaris-sparc -type d -exec chmod 755 {} \;
+    #Mark all sh with 755 (rwxr-xr-x)
+    find ./staging/solaris-sparc -name \*.sh -exec chmod 755 {} \;
     
     cp scripts/solaris/createshortcuts.sh staging/solaris-sparc/installer/StackBuilderPlus/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/solaris/createshortcuts.sh)"
     cp scripts/solaris/removeshortcuts.sh staging/solaris-sparc/installer/StackBuilderPlus/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/solaris/removeshortcuts.sh)"
@@ -190,21 +199,26 @@ _postprocess_stackbuilderplus_solaris_sparc() {
     chmod ugo+x staging/solaris-sparc/installer/StackBuilderPlus/*.sh
 
     mkdir -p staging/solaris-sparc/scripts || _die "Failed to create a directory for the launch scripts"
+    chmod 755 staging/solaris-sparc/scripts
     cp scripts/solaris/launchSBPUpdateMonitor.sh staging/solaris-sparc/UpdateManager/scripts/launchSBPUpdateMonitor.sh || _die "Failed to copy the launch scripts (scripts/solaris/launchSBPUpdateMonitor.sh)"
     cp scripts/solaris/launchStackBuilderPlus.sh staging/solaris-sparc/scripts/launchStackBuilderPlus.sh || _die "Failed to copy the launch scripts (scripts/solaris/launchStackBuilderPlus.sh)"
     cp scripts/solaris/runStackBuilderPlus.sh staging/solaris-sparc/scripts/runStackBuilderPlus.sh || _die "Failed to copy the launch scripts (scripts/solaris/runStackBuilderPlus.sh)"
 
     # Copy the XDG scripts
     mkdir -p staging/solaris-sparc/installer/xdg || _die "Failed to create a directory for the xdg scripts"
+    chmod 755 staging/solaris-sparc/installer/xdg
     cp $WD/scripts/xdg/xdg* staging/solaris-sparc/installer/xdg || _die "Failed to copy the xdg scripts (scripts/xdg/*)"
     chmod ugo+x staging/solaris-sparc/installer/xdg/xdg*
 
     mkdir -p staging/solaris-sparc/scripts/images || _die "Failed to create a directory for the menu pick images"
+    chmod 755 staging/solaris-sparc/scripts/images
     cp resources/edb-stackbuilderplus.png staging/solaris-sparc/scripts/images/ || _die "Failed to copy the menu pick images (resources/edb-stackbuilderplus.png)"
     cp resources/pg-postgresql.png staging/solaris-sparc/scripts/images/ || _die "Failed to copy the menu pick images (pg-postgresql.png)"
 
     mkdir -p staging/solaris-sparc/scripts/xdg || _die "Failed to create a directory for the menu pick items"
+    chmod 755 staging/solaris-sparc/scripts/xdg
     mkdir -p staging/solaris-sparc/UpdateManager/scripts/xdg || _die "Failed to create a directory for the menu pick items"
+    chmod 755 staging/solaris-sparc/UpdateManager/scripts/xdg
     cp resources/xdg/pg-postgresql.directory staging/solaris-sparc/scripts/xdg/ || _die "Failed to copy a menu pick directory"
     cp resources/xdg/edb-stackbuilderplus.desktop staging/solaris-sparc/scripts/xdg/ || _die "Failed to copy a menu pick desktop"
     cp resources/xdg/edb-sbp-update-monitor.desktop staging/solaris-sparc/UpdateManager/scripts/xdg/ || _die "Failed to copy the startup pick desktop"

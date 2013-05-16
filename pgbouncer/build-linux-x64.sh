@@ -91,6 +91,16 @@ _postprocess_pgbouncer_linux_x64() {
     cd $WD/pgbouncer
 
     mkdir -p staging/linux-x64/installer/pgbouncer || _die "Failed to create directory for installer scripts"
+
+    #Mark all files except bin folder as 644 (rw-r--r--)
+    find ./staging/linux-x64 -type f -not -regex '.*/bin/*.*' -exec chmod 644 {} \;
+    #Mark all files under bin as 755
+    find ./staging/linux-x64 -type f -regex '.*/bin/*.*' -exec chmod 755 {} \;
+    #Mark all directories with 755(rwxr-xr-x)
+    find ./staging/linux-x64 -type d -exec chmod 755 {} \;
+    #Mark all sh with 755 (rwxr-xr-x)
+    find ./staging/linux-x64 -name \*.sh -exec chmod 755 {} \;
+
     cp -R scripts/linux/startupcfg.sh staging/linux-x64/installer/pgbouncer/ || _die "Failed to copy the installer script"
     chmod ugo+x staging/linux-x64/installer/pgbouncer/startupcfg.sh
 
