@@ -55,7 +55,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 #            We can also specify additional directorys to include in the path.
 
 PG_SSH_LINUX=buildfarm@bf3-linux.pn.in.enterprisedb.com
-PG_PATH_LINUX=/mnt/hgfs/pginstaller.auto-repo
+PG_PATH_LINUX=/mnt/hgfs/pginstaller_2.auto-repo
 PG_PGHOME_LINUX=$PG_PATH_LINUX/server/staging/linux
 PG_EXEC_PATH_LINUX=/opt/jdk1.6.0_33/bin
 PG_JAVA_HOME_LINUX=/opt/jdk1.6.0_33
@@ -69,7 +69,7 @@ PG_XULRUNNER_SDK_LINUX=/usr/lib/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX=/usr/lib/xulrunner-1.9.2
 
 PG_SSH_LINUX_X64=buildfarm@bf3-linux-x64.pn.in.enterprisedb.com
-PG_PATH_LINUX_X64=/mnt/hgfs/pginstaller.auto-repo
+PG_PATH_LINUX_X64=/mnt/hgfs/pginstaller_2.auto-repo
 PG_PGHOME_LINUX_X64=$PG_PATH_LINUX_X64/server/staging/linux-x64
 PG_EXEC_PATH_LINUX_X64=/opt/jdk1.6.0_33/bin
 PG_JAVA_HOME_LINUX_X64=/opt/jdk1.6.0_33
@@ -83,7 +83,7 @@ PG_XULRUNNER_SDK_LINUX_X64=/usr/lib64/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX_X64=/usr/lib64/xulrunner-1.9.2
 
 PG_SSH_WINDOWS=buildfarm@bf3-windows-x64.pn.in.enterprisedb.com
-PG_PATH_WINDOWS=D:\\\\pginstaller.auto-repo
+PG_PATH_WINDOWS=D:\\\\pginstaller_2.auto-repo
 PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0"
 PG_FRAMEWORKDIR_WINDOWS="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework"
 PG_FRAMEWORKVERSION_WINDOWS=v4.0.30319
@@ -105,7 +105,7 @@ PG_TCL_WINDOWS=C:\\\\Tcl32
 
 
 PG_SSH_WINDOWS_X64=buildfarm@bf3-windows-x64.pn.in.enterprisedb.com
-PG_PATH_WINDOWS_X64=D:\\\\pginstaller.auto-repo-x64
+PG_PATH_WINDOWS_X64=D:\\\\pginstaller_2.auto-repo-x64
 PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0"
 PG_FRAMEWORKDIR_WINDOWS_X64="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework64"
 PG_FRAMEWORKVERSION_WINDOWS_X64=v4.0.30319
@@ -122,7 +122,7 @@ PG_SDK_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7
 PG_SIGNTOOL_WINDOWS="$PG_SDK_WINDOWS\\\\Bin\\\\signtool.exe"
 
 PG_SSH_SOLARIS_X64=buildfarm@bf3-solaris-x64.pn.in.enterprisedb.com
-PG_PATH_SOLARIS_X64=/mnt/buildfarm/pginstaller.auto-repo
+PG_PATH_SOLARIS_X64=/mnt/buildfarm/pginstaller_2.auto-repo
 PG_PGHOME_SOLARIS_X64=$PG_PATH_SOLARIS_X64/server/staging/solaris-x64
 PG_EXEC_PATH_SOLARIS_X64=/opt/jdk1.6.0_32
 PG_JAVA_HOME_SOLARIS_X64=/opt/jdk1.6.0_32
@@ -131,7 +131,7 @@ PG_ANT_HOME_SOLARIS_X64=/opt/apache-ant-1.8.4
 PG_QMAKE_SOLARIS_X64=/usr/local/bin/qmake
 
 PG_SSH_SOLARIS_SPARC=buildfarm@suzuka.ox.uk.enterprisedb.com
-PG_PATH_SOLARIS_SPARC=/mnt/buildfarm/pginstaller.auto-bugatti
+PG_PATH_SOLARIS_SPARC=/mnt/buildfarm/pginstaller_2.auto-bugatti
 PG_PGHOME_SOLARIS_SPARC=$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc
 PG_EXEC_PATH_SOLARIS_SPARC=/opt/jdk1.6.0_33
 PG_JAVA_HOME_SOLARIS_SPARC=/opt/jdk1.6.0_33

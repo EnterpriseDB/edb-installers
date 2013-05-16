@@ -109,7 +109,7 @@ _set_config_package UPDATE_MONITOR
 fi
 
 # Generic mail variables
-log_location="/Users/buildfarm/pginstaller.auto/output"
+log_location="/Users/buildfarm/pginstaller_2.auto/output"
 header_fail="Autobuild failed with the following error (last 20 lines of the log):
 ###################################################################################"
 footer_fail="###################################################################################"
@@ -157,43 +157,6 @@ DATE=`date +'%Y-%m-%d'`
 # Clear out any old output
 echo "Cleaning up old output" >> autobuild.log
 rm -rf output/* >> autobuild.log 2>&1
-
-# Switch to REL-9_2 branch
-echo "Switching to REL-9_2 branch" >> autobuild.log
-git reset --hard >> autobuild.log 2>&1
-git checkout REL-9_2 >> autobuild.log 2>&1
-
-# Make sure, we always do a full build
-if [ -f settings.sh.full.REL-9_2 ]; then
-   cp -f settings.sh.full.REL-9_2 settings.sh
-fi
-
-# Self update
-echo "Updating REL-9_2 branch build system" >> autobuild.log
-git pull >> autobuild.log 2>&1
-
-# Run the build, and dump the output to a log file
-echo "Running the build (REL-9_2) " >> autobuild.log
-./build.sh $SKIPBUILD > output/build-92.log 2>&1
-
-_mail_status "build-92.log" "9.2"
-
-remote_location="/var/www/html/builds/Installers"
-
-# Different location for the manual and cron triggered builds.
-if [ "$BUILD_USER" == "" ]
-then
-        remote_location="$remote_location/$DATE/9.2"
-else
-        remote_location="$remote_location/Custom/$BUILD_USER/9.2/$BUILD_NUMBER"
-fi
-
-# Create a remote directory and upload the output.
-echo "Creating $remote_location on the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
-
-echo "Uploading output to $remote_location on the builds server" >> autobuild.log
-scp output/* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
 
 # Switch to REL-9_3 branch
 echo "Switching to REL-9_3 branch" >> autobuild.log
