@@ -105,6 +105,7 @@ _postprocess_pgbouncer_linux() {
     cp -R scripts/linux/startupcfg.sh staging/linux/installer/pgbouncer/ || _die "Failed to copy the installer script"
     chmod ugo+x staging/linux/installer/pgbouncer/startupcfg.sh
 
+    chmod -R 755 staging/linux/instscripts
 
     rm -rf staging/linux/pgbouncer/share/doc || _die "Failed to remove the extra doc directory"
 

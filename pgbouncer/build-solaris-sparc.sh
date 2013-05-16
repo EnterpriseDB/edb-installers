@@ -144,6 +144,7 @@ _postprocess_pgbouncer_solaris_sparc() {
     cp -R scripts/solaris/startupcfg.sh staging/solaris-sparc/installer/pgbouncer/ || _die "Failed to copy the installer script"
     chmod ugo+x staging/solaris-sparc/installer/pgbouncer/startupcfg.sh
 
+    chmod -R 755 staging/solaris-sparc/instscripts
 
     rm -rf staging/solaris-sparc/pgbouncer/share/doc || _die "Failed to remove the extra doc directory"
 
