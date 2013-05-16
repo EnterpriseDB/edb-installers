@@ -91,7 +91,7 @@ PG_OCI_LINUX_X64=/opt/oracle_10.2
 PG_CHRPATH_PATH_LINUX_X64=/usr
 
 # Windows-x32
-PG_SSH_WINDOWS=buildfarm@bfas93-windows-x64.pn.in.enterprisedb.com
+PG_SSH_WINDOWS=buildfarm@bfas93-windows.pn.in.enterprisedb.com
 PG_PATH_WINDOWS=D:\\\\pginstaller.auto-repo
 PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0"
 PG_FRAMEWORKDIR_WINDOWS="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework"
