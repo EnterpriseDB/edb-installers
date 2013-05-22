@@ -67,6 +67,73 @@
             <file>i18n/ko.lng</file>
         </language>
     </customLanguageFileList>
+  <!-- Custom functions -->
+  <functionDefinitionList>
+    <actionDefinition name="createTempDir">
+       <actionList>
+         <globalVariables names="random_number"/>
+         <actionGroup>
+           <actionList>
+            <setInstallerVariable name="iteration" value="0"/>
+            <!-- Create a random number to use unique filenames -->
+             <while>
+               <actionList>
+                 <generateRandomValue length="10" variable="random_number"/>
+                 <runProgram>
+                   <program>sh</program>
+                   <programArguments>-c &lt;&lt;EOF '
+                                     umask 0077
+                                     mkdir "${system_temp_directory}/${dirPrefix}_${random_number}"
+                                     if [ $? -ne 0 ];
+                                     then
+                                        exit 100
+                                     fi
+                                     '
+EOF
+                   </programArguments>
+                 </runProgram>
+                 <break>
+                   <ruleList>
+                    <compareText logic="equals" text="0" value="${program_exit_code}"/>
+                   </ruleList>
+                 </break>
+                <actionGroup>
+                  <actionList>
+                    <throwError text="${msg(cannot.create.tmp.dir)}" abortOnError="1">
+                      <ruleList>
+                        <compareValues value1="${iteration}" logic="equals" value2="9"/>
+                      </ruleList>
+                    </throwError>
+                  </actionList>
+                </actionGroup>
+                 <mathExpression text="${iteration}+1" variable="iteration"/>
+               </actionList>
+               <conditionRuleList>
+                 <compareValues value1="${iteration}" logic="less" value2="10"/>
+               </conditionRuleList>
+             </while>
+             <setInstallerVariable name="random_number" value="${random_number}"/>
+           </actionList>
+           <ruleList>
+             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+           </ruleList>
+         </actionGroup>
+         <actionGroup>
+           <actionList>
+             <generateRandomValue length="10" variable="random_number"/>
+             <createDirectory path="${system_temp_directory}/${dirPrefix}_${random_number}"/>
+             <setInstallerVariable name="random_number" value="${random_number}"/>
+           </actionList>
+           <ruleList>
+             <compareText logic="equals" text="${platform_name}" value="windows"/>
+           </ruleList>
+         </actionGroup>
+       </actionList>
+       <parameterList>
+         <stringParameter name="dirPrefix" allowEmptyValue="0"/>
+       </parameterList>
+    </actionDefinition>
+  </functionDefinitionList>
     <preShowHelpActionList>
         <!-- Set the default values -->
 		<setInstallerVariable name="defaultpghost" value="localhost"/>
@@ -257,6 +324,8 @@
         </setInstallerVariable>
     </initializationActionList>
     <preInstallationActionList>
+     <!-- Creating a temporary directory -->
+     <createTempDir dirPrefix="${product_shortname}"/>
         <actionGroup>
              <actionList>
                  <setInstallerVariable name="branding" value=""/>
@@ -486,10 +555,10 @@
             </ruleList>
         </deleteFile>
         
-        <deleteFile path="/tmp/pgbouncer.pid">
+        <deleteFile path="/var/pgbouncer-${system_user}/pgbouncer.pid">
             <ruleList>
                 <compareText logic="contains" text="${platform_name}" value="linux"/>
-                <fileExists path="/tmp/pgbouncer.pid"/>
+                <fileExists path="/var/pgbouncer-${system_user}/pgbouncer.pid"/>
             </ruleList>
         </deleteFile>
         <!-- Validate the PostgreSQL Server Details -->
@@ -499,7 +568,7 @@
               <!-- Extract file --> 
               <unpackDirectory>
                   <origin>instscripts</origin>
-                  <destination>${system_temp_directory}</destination>
+                  <destination>${system_temp_directory}/pgbouncer_${random_number}</destination>
                   <component>default</component>
                   <folder>installfileslinux</folder>
                   <ruleList>
@@ -512,7 +581,7 @@
               </unpackDirectory>
               <unpackDirectory>
                   <origin>instscripts</origin>
-                  <destination>${system_temp_directory}</destination>
+                  <destination>${system_temp_directory}/pgbouncer_${random_number}</destination>
                   <component>default</component>
                   <folder>installfileslinux-x64</folder>
                   <ruleList>
@@ -525,7 +594,7 @@
               </unpackDirectory>
               <unpackDirectory>
                   <origin>instscripts</origin>
-                  <destination>${system_temp_directory}</destination>
+                  <destination>${system_temp_directory}/pgbouncer_${random_number}</destination>
                   <component>default</component>
                   <folder>installfileswindows</folder>
                   <ruleList>
@@ -538,7 +607,7 @@
               </unpackDirectory>
               <unpackFile>
                   <origin>installer/pgbouncer/check-connection.bat</origin>
-                  <destination>${system_temp_directory}/instscripts/check-connection.bat</destination>
+                  <destination>${system_temp_directory}/pgbouncer_${random_number}/instscripts/check-connection.bat</destination>
                   <component>default</component>
                   <folder>installfileswindows</folder>
                   <ruleList>
@@ -551,7 +620,7 @@
               </unpackFile>
               <unpackDirectory>
                   <origin>instscripts</origin>
-                  <destination>${system_temp_directory}</destination>
+                  <destination>${system_temp_directory}/pgbouncer_${random_number}</destination>
                   <component>default</component>
                   <folder>installfilesosx</folder>
                   <ruleList>
@@ -568,13 +637,13 @@
             <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
             <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
             <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-            <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts"/>
+            <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/pgbouncer_${random_number}/instscripts"/>
 
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}/instscripts/psql</exec>
+              <exec>${system_temp_directory}/pgbouncer_${random_number}/instscripts/psql</exec>
               <execArgs>-d ${pgdbname} -l </execArgs>
               <name>connection</name>
-              <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
+              <workingDirectory>${system_temp_directory}/pgbouncer_${random_number}/instscripts</workingDirectory>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError> 
               <ruleList>
@@ -587,10 +656,10 @@
               </ruleList>
             </setInstallerVariable>
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}/instscripts/psql</exec>
+              <exec>${system_temp_directory}/pgbouncer_${random_number}/instscripts/psql</exec>
               <execArgs>-d ${pgdbname} -l </execArgs>
               <name>connection</name>
-              <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
+              <workingDirectory>${system_temp_directory}/pgbouncer_${random_number}/instscripts</workingDirectory>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError> 
               <ruleList>
@@ -604,10 +673,10 @@
               </ruleList>
             </setInstallerVariable>
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}/instscripts/psql</exec>
+              <exec>${system_temp_directory}/pgbouncer_${random_number}/instscripts/psql</exec>
               <execArgs>-d ${pgdbname} -l </execArgs>
               <name>connection</name>
-              <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
+              <workingDirectory>${system_temp_directory}/pgbouncer_${random_number}/instscripts</workingDirectory>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError> 
               <ruleList>
@@ -616,10 +685,10 @@
               </ruleList>
             </setInstallerVariableFromScriptOutput>
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}\instscripts\check-connection.bat</exec>
-              <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
+              <exec>${system_temp_directory}/pgbouncer_${random_number}\instscripts\check-connection.bat</exec>
+              <execArgs>"${system_temp_directory}/pgbouncer_${random_number}\instscripts\psql.exe" ${pgdbname}</execArgs>
               <name>connection</name>
-              <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
+              <workingDirectory>${system_temp_directory}/pgbouncer_${random_number}\instscripts</workingDirectory>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError> 
               <ruleList>
@@ -632,10 +701,10 @@
               </ruleList>
             </setInstallerVariable>
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}\instscripts\check-connection.bat</exec>
-              <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
+              <exec>${system_temp_directory}/pgbouncer_${random_number}\instscripts\check-connection.bat</exec>
+              <execArgs>"${system_temp_directory}/pgbouncer_${random_number}\instscripts\psql.exe" ${pgdbname}</execArgs>
               <name>connection</name>
-              <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
+              <workingDirectory>${system_temp_directory}/pgbouncer_${random_number}\instscripts</workingDirectory>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError> 
               <ruleList>
@@ -648,10 +717,10 @@
               </ruleList>
             </setInstallerVariable>
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}\instscripts\check-connection.bat</exec>
-              <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
+              <exec>${system_temp_directory}/pgbouncer_${random_number}\instscripts\check-connection.bat</exec>
+              <execArgs>"${system_temp_directory}/pgbouncer_${random_number}\instscripts\psql.exe" ${pgdbname}</execArgs>
               <name>connection</name>
-              <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
+              <workingDirectory>${system_temp_directory}/pgbouncer_${random_number}\instscripts</workingDirectory>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError> 
               <ruleList>
@@ -741,7 +810,7 @@
                                 </substitution>
                                 <substitution>
                                     <pattern>@@PIDFILE@@</pattern>
-                                    <value>${system_temp_directory}/pgbouncer.pid</value>
+                                    <value>/var/pgbouncer-${system_user}/pgbouncer.pid</value>
                                 </substitution>
                                 <substitution>
                                     <pattern>@@AUTHFILE@@</pattern>
@@ -1040,7 +1109,20 @@
             </ruleList>
         </actionGroup>
 
+      <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
+            <ruleList>
+                <fileExists path="${system_temp_directory}/${product_shortname}_${random_number}" />
+            </ruleList>
+      </deleteFile>
+
     </postInstallationActionList>
+    <installationAbortedActionList>
+      <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
+        <ruleList>
+          <fileExists path="${system_temp_directory}/${product_shortname}_${random_number}" />
+        </ruleList>
+      </deleteFile>
+    </installationAbortedActionList>
 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
@@ -1484,7 +1566,7 @@
                   <!-- Extract file --> 
                   <unpackDirectory>
                       <origin>instscripts</origin>
-                      <destination>${system_temp_directory}</destination>
+                      <destination>${system_temp_directory}/pgbouncer_${random_number}</destination>
                       <component>default</component>
                       <folder>installfileslinux</folder>
                       <ruleList>
@@ -1497,7 +1579,7 @@
                   </unpackDirectory>
                   <unpackDirectory>
                       <origin>instscripts</origin>
-                      <destination>${system_temp_directory}</destination>
+                      <destination>${system_temp_directory}/pgbouncer_${random_number}</destination>
                       <component>default</component>
                       <folder>installfileslinux-x64</folder>
                       <ruleList>
@@ -1510,7 +1592,7 @@
                   </unpackDirectory>
                   <unpackDirectory>
                       <origin>instscripts</origin>
-                      <destination>${system_temp_directory}</destination>
+                      <destination>${system_temp_directory}/pgbouncer_${random_number}</destination>
                       <component>default</component>
                       <folder>installfileswindows</folder>
                       <ruleList>
@@ -1523,7 +1605,7 @@
                   </unpackDirectory>
                   <unpackFile>
                       <origin>installer/pgbouncer/check-connection.bat</origin>
-                      <destination>${system_temp_directory}/instscripts/check-connection.bat</destination>
+                      <destination>${system_temp_directory}/pgbouncer_${random_number}/instscripts/check-connection.bat</destination>
                       <component>default</component>
                       <folder>installfileswindows</folder>
                       <ruleList>
@@ -1536,7 +1618,7 @@
                   </unpackFile>
                   <unpackDirectory>
                       <origin>instscripts</origin>
-                      <destination>${system_temp_directory}</destination>
+                      <destination>${system_temp_directory}/pgbouncer_${random_number}</destination>
                       <component>default</component>
                       <folder>installfilesosx</folder>
                       <ruleList>
@@ -1553,13 +1635,13 @@
                 <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
                 <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
                 <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
-                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/instscripts"/>
+                <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/pgbouncer_${random_number}/instscripts"/>
     
                 <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}/instscripts/psql</exec>
+                  <exec>${system_temp_directory}/pgbouncer_${random_number}/instscripts/psql</exec>
                   <execArgs>-d ${pgdbname} -l </execArgs>
                   <name>connection</name>
-                  <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
+                  <workingDirectory>${system_temp_directory}/pgbouncer_${random_number}/instscripts</workingDirectory>
                   <abortOnError>0</abortOnError>
                   <showMessageOnError>0</showMessageOnError> 
                   <ruleList>
@@ -1573,10 +1655,10 @@
                   </ruleList>
                 </setInstallerVariable>
                 <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}/instscripts/psql</exec>
+                  <exec>${system_temp_directory}/pgbouncer_${random_number}/instscripts/psql</exec>
                   <execArgs>-d ${pgdbname} -l </execArgs>
                   <name>connection</name>
-                  <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
+                  <workingDirectory>${system_temp_directory}/pgbouncer_${random_number}/instscripts</workingDirectory>
                   <abortOnError>0</abortOnError>
                   <showMessageOnError>0</showMessageOnError> 
                   <ruleList>
@@ -1591,10 +1673,10 @@
                   </ruleList>
                 </setInstallerVariable>
                 <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}/instscripts/psql</exec>
+                  <exec>${system_temp_directory}/pgbouncer_${random_number}/instscripts/psql</exec>
                   <execArgs>-d ${pgdbname} -l </execArgs>
                   <name>connection</name>
-                  <workingDirectory>${system_temp_directory}/instscripts</workingDirectory>
+                  <workingDirectory>${system_temp_directory}/pgbouncer_${random_number}/instscripts</workingDirectory>
                   <abortOnError>0</abortOnError>
                   <showMessageOnError>0</showMessageOnError> 
                   <ruleList>
@@ -1603,10 +1685,10 @@
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
                 <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}\instscripts\check-connection.bat</exec>
-                  <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
+                  <exec>${system_temp_directory}/pgbouncer_${random_number}\instscripts\check-connection.bat</exec>
+                  <execArgs>"${system_temp_directory}/pgbouncer_${random_number}\instscripts\psql.exe" ${pgdbname}</execArgs>
                   <name>connection</name>
-                  <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
+                  <workingDirectory>${system_temp_directory}/pgbouncer_${random_number}\instscripts</workingDirectory>
                   <abortOnError>0</abortOnError>
                   <showMessageOnError>0</showMessageOnError> 
                   <ruleList>
@@ -1620,10 +1702,10 @@
                   </ruleList>
                 </setInstallerVariable>
                 <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}\instscripts\check-connection.bat</exec>
-                  <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
+                  <exec>${system_temp_directory}\pgbouncer_${random_number}\instscripts\check-connection.bat</exec>
+                  <execArgs>"${system_temp_directory}\pgbouncer_${random_number}\instscripts\psql.exe" ${pgdbname}</execArgs>
                   <name>connection</name>
-                  <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
+                  <workingDirectory>${system_temp_directory}\pgbouncer_${random_number}\instscripts</workingDirectory>
                   <abortOnError>0</abortOnError>
                   <showMessageOnError>0</showMessageOnError> 
                   <ruleList>
@@ -1637,10 +1719,10 @@
                   </ruleList>
                 </setInstallerVariable>
                 <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}\instscripts\check-connection.bat</exec>
-                  <execArgs>"${system_temp_directory}\instscripts\psql.exe" ${pgdbname}</execArgs>
+                  <exec>${system_temp_directory}\pgbouncer_${random_number}\instscripts\check-connection.bat</exec>
+                  <execArgs>"${system_temp_directory}\pgbouncer_${random_number}\instscripts\psql.exe" ${pgdbname}</execArgs>
                   <name>connection</name>
-                  <workingDirectory>${system_temp_directory}\instscripts</workingDirectory>
+                  <workingDirectory>${system_temp_directory}\pgbouncer_${random_number}\instscripts</workingDirectory>
                   <abortOnError>0</abortOnError>
                   <showMessageOnError>0</showMessageOnError> 
                   <ruleList>

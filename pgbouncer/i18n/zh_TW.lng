@@ -41,3 +41,4 @@ pgbouncer.user.error=系統中沒有指定的使用者。
 
 error.file.notsecure=無法保護 {installdir}\etc\userlist.txt 檔案。
 pgbouncer.system.user.error=pgBouncer 無法以根使用者身分執行。請指定另一個使用者名稱。
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.

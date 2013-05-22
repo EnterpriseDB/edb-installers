@@ -11,6 +11,7 @@ fi
 INSTALLDIR=$1
 MONITOR_VERSION=$2
 BRANDING="$3"
+TEMPFILE=`mktemp -q /tmp/$$.tmp-XXXXXXXXXX`
 
 # Exit code
 WARN=0
@@ -28,8 +29,8 @@ _warn() {
 
 # Search & replace in a file - _replace($find, $replace, $file)
 _replace() {
-    sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
-    mv /tmp/$$.tmp $3 || _die "Failed to move /tmp/$$.tmp to $3"
+    sed -e "s^$1^$2^g" $3 > "$TEMPFILE" || _die "Failed for search and replace '$1' with '$2' in $3"
+    mv $TEMPFILE $3 || _die "Failed to move $TEMPFILE to $3"
 }
 
 # Compile a script - _compile_script($in.applescript, $out.app)

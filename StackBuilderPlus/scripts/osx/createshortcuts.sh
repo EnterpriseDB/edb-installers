@@ -7,6 +7,7 @@
 PG_VERSION=@@PG_VERSION@@
 BRANDING="@@BRANDING@@"
 INSTALLDIR=@@INSTALL_DIR@@
+TEMPFILE=`mktemp -q /tmp/$$.tmp-XXXXXXXXXX`
 
 PG_VERSION_STR=`echo $PG_VERSION | sed 's/\./_/g'`
 
@@ -26,8 +27,8 @@ _warn() {
 
 # Search & replace in a file - _replace($find, $replace, $file) 
 _replace() {
-    sed -e "s^$1^$2^g" $3 > "/tmp/$$.tmp" || _die "Failed for search and replace '$1' with '$2' in $3"
-    mv /tmp/$$.tmp $3 || _die "Failed to move /tmp/$$.tmp to $3"
+    sed -e "s^$1^$2^g" $3 > "$TEMPFILE" || _die "Failed for search and replace '$1' with '$2' in $3"
+    mv $TEMPFILE $3 || _die "Failed to move $TEMPFILE to $3"
 }
 
 # Compile a script - _compile_script($in.applescript, $out.app, $image)

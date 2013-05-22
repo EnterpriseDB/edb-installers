@@ -27,3 +27,4 @@ pgbouncer.blank.error=必须在所有字段中输入值。
 pgbouncer.user.error=所指定的用户在您的系统上不存在。
 error.file.notsecure=无法获得文件{installdir}\etc\userlist.txt。
 pgbouncer.system.user.error=root用户无法运行pgBouncer，请指定一个不同的用户名。
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.

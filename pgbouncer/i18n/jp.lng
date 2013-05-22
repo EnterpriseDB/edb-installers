@@ -41,3 +41,4 @@ pgbouncer.user.error=指定したユーザは、システムに存在してい�
 
 error.file.notsecure={installdir}\etc\userlist.txtファイルを保護できません。
 pgbouncer.system.user.error=pgBouncerは、ルートユーザとして実行できません。別のユーザ名を指定してください。
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.

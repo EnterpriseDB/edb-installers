@@ -24,7 +24,6 @@ _prep_pgbouncer_linux_x64() {
 
     # Grab a copy of the source tree
     cp -R pgbouncer-$PG_VERSION_PGBOUNCER/* pgbouncer.linux-x64 || _die "Failed to copy the source code (source/pgbouncer-$PG_VERSION_PGBOUNCER)"
-    chmod -R ugo+w pgbouncer.linux-x64 || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/pgbouncer/staging/linux-x64 ];
@@ -39,7 +38,7 @@ _prep_pgbouncer_linux_x64() {
     
     echo "Creating staging doc directory ($WD/pgbouncer/staging/linux-x64/pgbouncer/doc)"
     mkdir -p $WD/pgbouncer/staging/linux-x64/pgbouncer/doc || _die "Couldn't create the staging doc directory"
-    chmod ugo+w $WD/pgbouncer/staging/linux-x64/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
+    chmod 755 $WD/pgbouncer/staging/linux-x64/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
     echo "Copying README.pgbouncer to staging doc directory"
     cp $WD/pgbouncer/resources/README.pgbouncer $WD/pgbouncer/staging/linux-x64/pgbouncer/doc/README-pgbouncer.txt || _die "Couldn't copy README.pgbouncer to staging doc directory"
 

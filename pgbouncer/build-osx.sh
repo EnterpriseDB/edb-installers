@@ -28,7 +28,6 @@ _prep_pgbouncer_osx() {
 
     # Grab a copy of the source tree
     cp -R pgbouncer-$PG_VERSION_PGBOUNCER/* pgbouncer.osx || _die "Failed to copy the source code (source/pgbouncer-$PG_VERSION_PGBOUNCER)"
-    chmod -R ugo+w pgbouncer.osx || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/pgbouncer/staging/osx ];
@@ -43,7 +42,7 @@ _prep_pgbouncer_osx() {
 
     echo "Creating staging doc directory ($WD/pgbouncer/staging/osx/pgbouncer/doc)"
     mkdir -p $WD/pgbouncer/staging/osx/pgbouncer/doc || _die "Couldn't create the staging doc directory"
-    chmod ugo+w $WD/pgbouncer/staging/osx/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
+    chmod 755 $WD/pgbouncer/staging/osx/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
     echo "Copying README.pgbouncer to staging doc directory"
     cp $WD/pgbouncer/resources/README.pgbouncer $WD/pgbouncer/staging/osx/pgbouncer/doc/README-pgbouncer.txt || _die "Couldn't copy README.pgbouncer to staging doc directory"
     

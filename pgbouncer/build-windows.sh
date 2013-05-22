@@ -41,7 +41,6 @@ _prep_pgbouncer_windows() {
     cd pgbouncer.windows
     patch -p0 < $WD/tarballs/pgbouncer_windows.patch
     cd $WD/pgbouncer/source 
-    chmod -R ugo+w pgbouncer.windows || _die "Couldn't set the permissions on the source directory"
 
     zip -r pgbouncer.zip pgbouncer.windows || _die "Failed to zip the pgbouncer source" 
 
@@ -58,7 +57,7 @@ _prep_pgbouncer_windows() {
 
     echo "Creating staging doc directory ($WD/pgbouncer/staging/windows/pgbouncer/doc)"
     mkdir -p $WD/pgbouncer/staging/windows/pgbouncer/doc || _die "Couldn't create the staging doc directory"
-    chmod ugo+w $WD/pgbouncer/staging/windows/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
+    chmod 755 $WD/pgbouncer/staging/windows/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
     echo "Copying README.pgbouncer to staging doc directory"
     cp $WD/pgbouncer/resources/README.pgbouncer $WD/pgbouncer/staging/windows/pgbouncer/doc/README-pgbouncer.txt || _die "Couldn't copy README.pgbouncer to staging doc directory"
     unix2dos $WD/pgbouncer/staging/windows/pgbouncer/doc/README-pgbouncer.txt|| _die "Failed to convert pgbouncer readme in dos readable format."
