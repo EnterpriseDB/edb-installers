@@ -151,6 +151,17 @@ _postprocess_pgbouncer_solaris_x64() {
     _replace "stats_users = stats, root" "stats_users = @@STATSUSERS@@" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
     _replace "auth_type = trust" "auth_type = md5" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to change the auth type"
     _replace ";ignore_startup_parameters = extra_float_digits" "ignore_startup_parameters = application_name" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to uncomment the ignore startup parameters config line"
+
+    # Set 644 for all files and folders
+    find staging/solaris-x64/ -type f | xargs -I{} chmod 644 {}
+    
+    # Set Permissions for links and folders
+    find staging/solaris-x64/ -xtype l | xargs -I{} chmod 777 {}
+    find staging/solaris-x64/ -type d | xargs -I{} chmod 755 {}
+
+    # " executable" requires a ' ' prefix to ensure it is not a filename
+    find staging/solaris-x64/ -type f | xargs -I{} file {} | grep -i " executable" | cut -f1 -d":" | xargs -I{} chmod +x {}
+
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-intel || _die "Failed to build the installer"
 

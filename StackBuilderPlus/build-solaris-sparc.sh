@@ -223,6 +223,16 @@ _postprocess_stackbuilderplus_solaris_sparc() {
     cp resources/xdg/edb-stackbuilderplus.desktop staging/solaris-sparc/scripts/xdg/ || _die "Failed to copy a menu pick desktop"
     cp resources/xdg/edb-sbp-update-monitor.desktop staging/solaris-sparc/UpdateManager/scripts/xdg/ || _die "Failed to copy the startup pick desktop"
 
+    # Set 644 for all files and folders
+    find staging/solaris-sparc/ -type f | xargs -I{} chmod 644 {}
+    
+    # Set Permissions for links and folders
+    find staging/solaris-sparc/ -xtype l | xargs -I{} chmod 777 {}
+    find staging/solaris-sparc/ -type d | xargs -I{} chmod 755 {}
+
+    # " executable" requires a ' ' prefix to ensure it is not a filename
+    find staging/solaris-sparc/ -type f | xargs -I{} file {} | grep -i " executable" | cut -f1 -d":" | xargs -I{} chmod +x {}
+
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-sparc || _die "Failed to build the installer for solaris-sparc"
    

@@ -123,6 +123,15 @@ _postprocess_pgbouncer_linux() {
     _replace "auth_type = trust" "auth_type = md5" staging/linux/pgbouncer/share/pgbouncer.ini || _die "Failed to change the auth type"
     _replace ";ignore_startup_parameters = extra_float_digits" "ignore_startup_parameters = application_name" staging/linux/pgbouncer/share/pgbouncer.ini || _die "Failed to uncomment the ignore startup parameters config line"
 
+    # Set 644 for all files and folders
+    find staging/linux/ -type f | xargs -I{} chmod 644 {}
+
+    # Set Permissions for links and folders
+    find staging/linux/ -xtype l | xargs -I{} chmod 777 {}
+    find staging/linux/ -type d | xargs -I{} chmod 755 {}
+
+    # " executable" requires a ' ' prefix to ensure it is not a filename
+    find staging/linux/ -type f | xargs -I{} file {} | grep -i " executable" | cut -f1 -d":" | xargs -I{} chmod +x {}
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
