@@ -57,6 +57,6 @@ PG_VERSION_UPDATE_MONITOR=1.0
 # Miscellaneous options
 
 # PostgreSQL jdbc jar version used by PostGIS
-PG_JAR_POSTGRESQL=9.2-1000.jdbc4
+PG_JAR_POSTGRESQL=9.2-1002.jdbc4
 BASE_URL=http://sbp.enterprisedb.com
 JRE_VERSIONS_LIST="$PG_MAJOR_VERSION;9.1;9.0"
