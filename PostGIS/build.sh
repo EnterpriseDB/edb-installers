@@ -61,7 +61,7 @@ _prep_PostGIS() {
     extract_file  ../../tarballs/postgis-$PG_VERSION_POSTGIS || exit 1
 
     cd $WD/PostGIS/source/postgis-$PG_VERSION_POSTGIS
-    patch -p1 < ../../tarballs/postgis-203-pg93.patch
+    patch -p1 < ../../../tarballs/postgis-203-pg93.patch
   
     cd $WD/PostGIS/source  
 
