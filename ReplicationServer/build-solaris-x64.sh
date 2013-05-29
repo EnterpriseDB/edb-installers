@@ -41,10 +41,8 @@ _prep_ReplicationServer_solaris_x64() {
 
     # Grab a copy of the source tree
     cp -R $WD/ReplicationServer/source/XDB/replicator/* ReplicationServer.solaris-x64 || _die "Failed to copy the source code (source/ReplicationServer-$PG_VERSION_ReplicationServer)"
-    chmod -R ugo+w ReplicationServer.solaris-x64 || _die "Couldn't set the permissions on the source directory"
 
     cp -R $WD/ReplicationServer/source/XDB/DataValidator/* DataValidator.solaris-x64 || _die "Failed to copy the source code (source/DataValidator-$PG_VERSION_DataValidator)"
-    chmod -R ugo+w DataValidator.solaris-x64 || _die "Couldn't set the permissions on the source directory"
 
     #Copy the required jdbc drivers
     cp $WD/tarballs/edb-jdbc14.jar $WD/ReplicationServer/source/ReplicationServer.solaris-x64/lib || _die "Failed to copy the edb-jdbc-14.jar"
@@ -100,13 +98,9 @@ _build_ReplicationServer_solaris_x64() {
     ssh $PG_SSH_SOLARIS_X64 "cp /usr/local/bin/uuid $PG_PATH_SOLARIS_X64/ReplicationServer/staging/solaris-x64/instscripts/bin" || _die "Failed to copy uuid"
 
    # Build the validateUserClient binary
-    if [ ! -f $WD/MetaInstaller/source/MetaInstaller.solaris-x64/validateUser/validateUserClient.o ]; then
-        scp -r $WD/MetaInstaller/scripts/linux/validateUser $PG_SSH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/ReplicationServer/source/ReplicationServer.solaris-x64/ || _die "Failed to copy validateUser source files"
-        ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64/ReplicationServer/source/ReplicationServer.solaris-x64/validateUser; PATH=/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/local/bin:/usr/ucb:\$PATH gcc -m64 -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto -lnsl -lsocket" || _die "Failed to build the validateUserClient utility"
-        ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp ReplicationServer/source/ReplicationServer.solaris-x64/validateUser/validateUserClient.o ReplicationServer/staging/solaris-x64/instscripts/" || _die "Failed to copy validateUserClient.o"
-    else
-       cp $WD/MetaInstaller/source/MetaInstaller.solaris-x64/validateUser/validateUserClient.o $WD/ReplicationServer/staging/solaris-x64/instscripts/validateUserClient.o || _die "Failed to copy validateUserClient.o utility"
-    fi
+   scp -r $WD/resources/validateUser $PG_SSH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/ReplicationServer/source/ReplicationServer.solaris-x64/ || _die "Failed to copy validateUser source files"
+   ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64/ReplicationServer/source/ReplicationServer.solaris-x64/validateUser; PATH=/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/local/bin:/usr/ucb:\$PATH gcc -m64 -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto -lnsl -lsocket" || _die "Failed to build the validateUserClient utility"
+   ssh $PG_SSH_SOLARIS_X64 "cd $PG_PATH_SOLARIS_X64; cp ReplicationServer/source/ReplicationServer.solaris-x64/validateUser/validateUserClient.o ReplicationServer/staging/solaris-x64/instscripts/" || _die "Failed to copy validateUserClient.o"
 
     scp -r $PG_SSH_SOLARIS_X64:$PG_PATH_SOLARIS_X64/ReplicationServer/staging/solaris-x64/* $WD/ReplicationServer/staging/solaris-x64/ || _die "Failed to copy back the staging directory from Solaris VM"
 
@@ -182,7 +176,7 @@ _postprocess_ReplicationServer_solaris_x64() {
      
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-intel || _die "Failed to build the installer"
-    mv $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-solaris-intel.bin $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-solaris-x64.bin
+    mv $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-solaris-intel.run $WD/output/xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-solaris-x64.run
      
     cd $WD
 }

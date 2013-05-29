@@ -294,7 +294,10 @@ then
         _prep_MigrationToolKit || exit 1
         _build_MigrationToolKit || exit 1
     fi
-        _postprocess_MigrationToolKit || exit 1
+	if [ $PG_PACKAGE_MIGRATIONTOOLKIT = 1 ]
+	then
+        	_postprocess_MigrationToolKit || exit 1
+	fi
 fi
 
 # Package: ReplicationServer

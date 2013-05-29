@@ -28,7 +28,6 @@ _prep_MigrationToolKit_solaris_x64() {
 
     # Grab a copy of the migrationtoolkit source tree
     cp -R EDB-MTK/* migrationtoolkit.solaris-x64 || _die "Failed to copy the source code (source/migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT)"
-    chmod -R ugo+w migrationtoolkit.solaris-x64 || _die "Couldn't set the permissions on the source directory"
 
     cp pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_VERSION_PGJDBC.jdbc3.jar migrationtoolkit.solaris-x64/lib/ || _die "Failed to copy the pg-jdbc driver"
     zip -r migrationtoolkit.solaris-x64.zip migrationtoolkit.solaris-x64 || _die "Failed to zip the migrationtoolkit source directory"

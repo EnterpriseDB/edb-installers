@@ -70,6 +70,73 @@
             <file>i18n/ko.lng</file>
         </language>
     </customLanguageFileList>
+  <!-- Custom functions -->
+  <functionDefinitionList>
+    <actionDefinition name="createTempDir">
+       <actionList>
+         <globalVariables names="random_number"/>
+         <actionGroup>
+           <actionList>
+            <setInstallerVariable name="iteration" value="0"/>
+            <!-- Create a random number to use unique filenames -->
+             <while>
+               <actionList>
+                 <generateRandomValue length="10" variable="random_number"/>
+                 <runProgram>
+                   <program>sh</program>
+                   <programArguments>-c &lt;&lt;EOF '
+                                     umask 0077
+                                     mkdir "${system_temp_directory}/${dirPrefix}_${random_number}"
+                                     if [ $? -ne 0 ];
+                                     then
+                                        exit 100
+                                     fi
+                                     '
+EOF
+                   </programArguments>
+                 </runProgram>
+                 <break>
+                   <ruleList>
+                    <compareText logic="equals" text="0" value="${program_exit_code}"/>
+                   </ruleList>
+                 </break>
+                <actionGroup>
+                  <actionList>
+                    <throwError text="${msg(cannot.create.tmp.dir)}" abortOnError="1">
+                      <ruleList>
+                        <compareValues value1="${iteration}" logic="equals" value2="9"/>
+                      </ruleList>
+                    </throwError>
+                  </actionList>
+                </actionGroup>
+                 <mathExpression text="${iteration}+1" variable="iteration"/>
+               </actionList>
+               <conditionRuleList>
+                 <compareValues value1="${iteration}" logic="less" value2="10"/>
+               </conditionRuleList>
+             </while>
+             <setInstallerVariable name="random_number" value="${random_number}"/>
+           </actionList>
+           <ruleList>
+             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+           </ruleList>
+         </actionGroup>
+         <actionGroup>
+           <actionList>
+             <generateRandomValue length="10" variable="random_number"/>
+             <createDirectory path="${system_temp_directory}/${dirPrefix}_${random_number}"/>
+             <setInstallerVariable name="random_number" value="${random_number}"/>
+           </actionList>
+           <ruleList>
+             <compareText logic="equals" text="${platform_name}" value="windows"/>
+           </ruleList>
+         </actionGroup>
+       </actionList>
+       <parameterList>
+         <stringParameter name="dirPrefix" allowEmptyValue="0"/>
+       </parameterList>
+    </actionDefinition>
+  </functionDefinitionList>
     <preShowHelpActionList>
 
         <setInstallerVariable name="defaultpubport" value="9011" />
@@ -290,6 +357,8 @@
 
     </initializationActionList>
     <preInstallationActionList>
+     <!-- Creating a temporary directory -->
+     <createTempDir dirPrefix="${product_shortname}"/>
          
         <setInstallerVariable name="optionRequired" value="servicepassword" />
         <throwError text="${msg(Installer.CustomError.CommandLineOptionsNotPresent)}" >
@@ -311,12 +380,12 @@
             <actionList>
                 <unpackFile>
                     <component>pubserver</component>
-                    <destination>${system_temp_directory}\vcredist_x86.exe</destination>
+                    <destination>${system_temp_directory}\${product_shortname}_${random_number}\vcredist_x86.exe</destination>
                     <folder>pubserverinstallscriptswindows</folder>
                     <origin>installer/xDBReplicationServer/vcredist_x86.exe</origin>
                 </unpackFile>
                 <runProgram>
-                    <program>${system_temp_directory}\vcredist_x86.exe</program>
+                    <program>${system_temp_directory}\${product_shortname}_${random_number}\vcredist_x86.exe</program>
                     <programArguments>/q</programArguments>
                     <workingDirectory>${windir}</workingDirectory>
                     <abortOnError>0</abortOnError>
@@ -578,19 +647,16 @@
                     </ruleList>
                 </actionGroup>
 
-                <!-- Creating a temporary directory -->
-                <createDirectory path="${system_temp_directory}/${product_fullname}"/>
-
                 <!-- Extracting installation scripts -->
                 <unpackDirectory origin="instscripts"
-                    destination="${system_temp_directory}/${product_fullname}"
+                    destination="${system_temp_directory}/${product_shortname}_${random_number}"
                     folder="instscripts${platform_name}" component="psql">
                     <ruleList>
                        <compareText text="${platform_name}" logic="does_not_equal" value="solaris-intel" />
                     </ruleList>
                 </unpackDirectory>  
                 <unpackDirectory origin="instscripts"
-                    destination="${system_temp_directory}/${product_fullname}"
+                    destination="${system_temp_directory}/${product_shortname}_${random_number}"
                     folder="instscriptssolaris-x64" component="psql">
                     <ruleList>
                        <compareText text="${platform_name}" logic="equals" value="solaris-intel" />
@@ -874,7 +940,7 @@
                 </setInstallerVariable>
 
                 <setEnvironmentVariable name="LD_LIBRARY_PATH"
-                      value="${env(LD_LIBRARY_PATH)}:${system_temp_directory}/${product_fullname}/instscripts/lib"/>
+                      value="${env(LD_LIBRARY_PATH)}:${system_temp_directory}/${product_shortname}_${random_number}/instscripts/lib"/>
                 <setInstallerVariable name="uuid_val" value=""/>
 
                 <setInstallerVariableFromScriptOutput name="uuid_val" showMessageOnError="0" exec="uuidgen" abortOnError="0">
@@ -885,14 +951,14 @@
                 </setInstallerVariableFromScriptOutput>
 
                 <setInstallerVariableFromScriptOutput name="uuid_val" showMessageOnError="0" abortOnError="0"
-                      exec="${system_temp_directory}/${product_fullname}/instscripts/bin/uuid">
+                      exec="${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin/uuid">
                     <ruleList>
                         <compareText logic="contains" text="${platform_name}" value="solaris"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
 
                 <setInstallerVariableFromScriptOutput name="uuid_val" showMessageOnError="0" abortOnError="0"
-                      exec="${system_temp_directory}\${product_fullname}\instscripts\bin\uuid.exe">
+                      exec="${system_temp_directory}/${product_shortname}_${random_number}\instscripts\bin\uuid.exe">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
@@ -1046,10 +1112,10 @@
                     </ruleList>
                 </throwError>
                 <setEnvironmentVariable name="LD_LIBRARY_PATH"
-                      value="${env(LD_LIBRARY_PATH)}:${system_temp_directory}/${product_fullname}/instscripts/lib"/>
+                      value="${env(LD_LIBRARY_PATH)}:${system_temp_directory}/${product_shortname}_${random_number}/instscripts/lib"/>
                 <!-- Email/Password Validation -->
                 <setInstallerVariableFromScriptOutput name="registered"
-                      exec="${system_temp_directory}/${product_fullname}/instscripts/validateUserClient.o"
+                      exec="${system_temp_directory}/${product_shortname}_${random_number}/instscripts/validateUserClient.o"
                       execArgs="&quot;${uuid_val}&quot; &quot;xdb&quot; &quot;false&quot; &quot;false&quot; &quot;&quot; &quot;&quot; &quot;1&quot; &quot;&quot; &quot;&quot; &quot;0&quot; &quot;0&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
                       abortOnError="1" showMessageOnError="1"
                       customErrorMessage="${msg(validatinguser.ws.error)}">
@@ -1058,7 +1124,7 @@
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
                 <setInstallerVariableFromScriptOutput name="registered"
-                      exec="${system_temp_directory}\${product_fullname}\instscripts\bin\validateUserClient.exe"
+                      exec="${system_temp_directory}/${product_shortname}_${random_number}\instscripts\bin\validateUserClient.exe"
                       execArgs="&quot;xdb&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${uuid_val}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
                       abortOnError="1" showMessageOnError="1"
                       customErrorMessage="${msg(validatinguser.ws.error)}">
@@ -1274,7 +1340,7 @@
                         </iniFileSet>
                         <runProgram>
                             <program>${installdir}/installer/xDBReplicationServer/createshortcuts.sh</program>
-                            <programArguments>"${installdir}" "${branding}"</programArguments>
+                            <programArguments>"${installdir}" "${branding}" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
                             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                             <workingDirectory>${installdir}/installer/xDBReplicationServer</workingDirectory>
                             <abortOnError>0</abortOnError>
@@ -1442,12 +1508,12 @@ database=${controldb}
                 </writeFile>
 
                 <!-- Set variable psql_path -->
-                <setInstallerVariable name="psql_path" value="${system_temp_directory}/${product_fullname}/instscripts/bin/psql">
+                <setInstallerVariable name="psql_path" value="${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin/psql">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </setInstallerVariable>
-                <setInstallerVariable name="psql_path" value="${system_temp_directory}\${product_fullname}\instscripts\bin\psql.exe">
+                <setInstallerVariable name="psql_path" value="${system_temp_directory}\${product_shortname}_${random_number}\instscripts\bin\psql.exe">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
@@ -1467,7 +1533,7 @@ database=${controldb}
                 <setInstallerVariableFromScriptOutput name="connection"
                                                       exec="${psql_path}"
                                                       execArgs="-l"
-                                                      workingDirectory="${system_temp_directory}/${product_fullname}/instscripts/bin"
+                                                      workingDirectory="${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin"
                                                       showMessageOnError="0"
                                                       abortOnError="0" />
 
@@ -1479,7 +1545,7 @@ database=${controldb}
                          <setInstallerVariableFromScriptOutput name="connection"
                                                        exec="${psql_path}"
                                                        execArgs="-l ${env(PGDATABASE)}"
-                                                       workingDirectory="${system_temp_directory}/${product_fullname}/instscripts/bin"
+                                                       workingDirectory="${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin"
                                                        showMessageOnError="0"
                                                        abortOnError="0" />
                     </actionList>
@@ -1497,7 +1563,7 @@ database=${controldb}
                          <setInstallerVariableFromScriptOutput name="connection"
                                                        exec="${psql_path}"
                                                        execArgs="-l ${env(PGDATABASE)}"
-                                                       workingDirectory="${system_temp_directory}/${product_fullname}/instscripts/bin"
+                                                       workingDirectory="${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin"
                                                        customErrorMessage="${program_stderr}" />
                     </actionList>
                     <ruleList>
@@ -1510,14 +1576,14 @@ database=${controldb}
                 <setInstallerVariableFromScriptOutput name="dbexist"
                                                       exec="${psql_path}"
                                                       execArgs="-t -c &quot;SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${controldb}'&quot;"
-                                                      workingDirectory="${system_temp_directory}/${product_fullname}/instscripts/bin"
+                                                      workingDirectory="${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin"
                                                       abortOnError="0"
                                                       showMessageOnError="0"/>
 
                 <runProgram>
                     <program>${psql_path}</program>
                     <programArguments>-t -c "CREATE DATABASE \"${controldb}\""</programArguments>
-                    <workingDirectory>${system_temp_directory}/${product_fullname}/instscripts/bin</workingDirectory>
+                    <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin</workingDirectory>
                     <progressText>${msg(progress.text.creating.controldb)}</progressText>
                     <ruleList>
                         <compareText>
@@ -1819,7 +1885,7 @@ database=${controldb}
         </runProgram>
 
        <writeFile>
-            <path>${system_temp_directory}/servicewrapper.bat</path>
+            <path>${system_temp_directory}/${product_shortname}_${random_number}/servicewrapper.bat</path>
             <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Publication Service" -d "Publication Service for xDB Replication Server." -c "${java_executable_windows}" -o "-Djava.awt.headless=true -jar """"${installdir}\bin\edb-repserver.jar"""" pubserver ${pubport} """"${installdir}\etc""""" -u "${serviceaccount}" -p "${servicepassword.password}" -w "${installdir}\bin"</text>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
@@ -1829,7 +1895,7 @@ database=${controldb}
         </writeFile>
         <runProgram>
             <program>cscript</program>
-            <programArguments>//NOLOGO "${installdir}\scripts\serviceWrapper.vbs" "${system_temp_directory}"</programArguments>
+            <programArguments>//NOLOGO "${installdir}\scripts\serviceWrapper.vbs" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
             <workingDirectory>${installdir}\scripts</workingDirectory>
             <progressText>${msg(progress.text.installing.pubservice)}</progressText>  
             <abortOnError>0</abortOnError>            
@@ -1840,7 +1906,7 @@ database=${controldb}
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram>
-        <deleteFile path="${system_temp_directory}/servicewrapper.bat" >          
+        <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}/servicewrapper.bat" >          
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(pubserver).selected}" />
@@ -1848,7 +1914,7 @@ database=${controldb}
             </ruleList>
         </deleteFile>
         <writeFile>
-            <path>${system_temp_directory}/servicewrapper.bat</path>
+            <path>${system_temp_directory}/${product_shortname}_${random_number}/servicewrapper.bat</path>
             <text>"${installdir}\scripts\ServiceWrapper.exe" register -n "Subscription Service" -d "Subscription Service for xDB Replication Server." -c "${java_executable_windows}" -o "-Djava.awt.headless=true -jar """"${installdir}\bin\edb-repserver.jar"""" subserver ${subport} """"${installdir}\etc""""" -u "${serviceaccount}" -p "${servicepassword.password}" -w "${installdir}\bin"</text>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
@@ -1858,7 +1924,7 @@ database=${controldb}
         </writeFile>
         <runProgram>
             <program>cscript</program>
-            <programArguments>//NOLOGO "${installdir}\scripts\serviceWrapper.vbs" "${system_temp_directory}"</programArguments>
+            <programArguments>//NOLOGO "${installdir}\scripts\serviceWrapper.vbs" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
             <workingDirectory>${installdir}\scripts</workingDirectory>
             <progressText>${msg(progress.text.installing.subservice)}</progressText>  
             <abortOnError>0</abortOnError> 
@@ -1869,7 +1935,7 @@ database=${controldb}
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram>
-        <deleteFile path="${system_temp_directory}/servicewrapper.bat" >          
+        <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}/servicewrapper.bat" >          
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows" />
                 <isTrue value="${component(subserver).selected}" />
@@ -1995,13 +2061,20 @@ database=${controldb}
         <setInstallerVariable name="EnterpriseDBEmail" value="${existingEmail}" persist="1"/>
 
         <!-- Remove the temporary folder -->
-        <deleteFile path="${system_temp_directory}/${product_fullname}" >
+        <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
             <ruleList>
-                <fileExists path="${system_temp_directory}/${product_fullname}" />
+                <fileExists path="${system_temp_directory}/${product_shortname}_${random_number}" />
             </ruleList>
         </deleteFile>
 
     </postInstallationActionList>
+    <installationAbortedActionList>
+      <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
+        <ruleList>
+          <fileExists path="${system_temp_directory}/${product_shortname}_${random_number}" />
+        </ruleList>
+      </deleteFile>
+    </installationAbortedActionList>
 
     <readyToInstallActionList>
         <setInstallerVariable name="branding" value="" >
@@ -3450,7 +3523,7 @@ database=${controldb}
                 <!-- LIN- Program files -->
                 <folder>
                     <description>Installation Scripts</description>
-                    <destination>${system_temp_directory}</destination>
+                    <destination>${system_temp_directory}/${product_shortname}_${random_number}</destination>
                     <name>instscriptslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
@@ -3462,7 +3535,7 @@ database=${controldb}
                 <!-- LIN-X64- Program files -->
                 <folder>
                     <description>Installation Scripts</description>
-                    <destination>${system_temp_directory}</destination>
+                    <destination>${system_temp_directory}/${product_shortname}_${random_number}</destination>
                     <name>instscriptslinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
@@ -3474,7 +3547,7 @@ database=${controldb}
                 <!-- SOLARIS-X64- Program files -->
                 <folder>
                     <description>Installation Scripts</description>
-                    <destination>${system_temp_directory}</destination>
+                    <destination>${system_temp_directory}/${product_shortname}_${random_number}</destination>
                     <name>instscriptssolaris-x64</name>
                     <platforms>solaris-intel</platforms>
                     <distributionFileList>
@@ -3486,7 +3559,7 @@ database=${controldb}
                 <!-- SOLARIS_SPARC - Program files -->
                 <folder>
                     <description>Installation Scripts</description>
-                    <destination>${system_temp_directory}</destination>
+                    <destination>${system_temp_directory}/${product_shortname}_${random_number}</destination>
                     <name>instscriptssolaris-sparc</name>
                     <platforms>solaris-sparc</platforms>
                     <distributionFileList>
@@ -3498,7 +3571,7 @@ database=${controldb}
                 <!-- OSX- Program files -->
                 <folder>
                     <description>Installation Scripts</description>
-                    <destination>${system_temp_directory}</destination>
+                    <destination>${system_temp_directory}/${product_shortname}_${random_number}</destination>
                     <name>instscriptsosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
@@ -3510,7 +3583,7 @@ database=${controldb}
                  <!-- Windows- Program files -->
                 <folder>
                     <description>Installation Scripts</description>
-                    <destination>${system_temp_directory}</destination>
+                    <destination>${system_temp_directory}/${product_shortname}_${random_number}</destination>
                     <name>instscriptswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
@@ -3606,21 +3679,21 @@ database=${controldb}
             <!-- Validate entered email & password -->
             <postShowPageActionList>
                 <setEnvironmentVariable name="LD_LIBRARY_PATH"
-                      value="${env(LD_LIBRARY_PATH)}:${system_temp_directory}/${product_fullname}/instscripts/lib"/>
+                      value="${env(LD_LIBRARY_PATH)}:${system_temp_directory}/${product_shortname}_${random_number}/instscripts/lib"/>
                 <setInstallerVariableFromScriptOutput name="ws_existinguser_result"
                     customErrorMessage="${msg(validatinguser.ws.error)}" abortOnError="0"
-                    exec="${system_temp_directory}/${product_fullname}/instscripts/validateUserClient.o"
+                    exec="${system_temp_directory}/${product_shortname}_${random_number}/instscripts/validateUserClient.o"
                     execArgs="&quot;${uuid_val}&quot; &quot;xdb&quot; &quot;false&quot; &quot;false&quot; &quot;&quot; &quot;&quot; &quot;1&quot; &quot;&quot; &quot;&quot; &quot;0&quot; &quot;0&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
-                    workingDirectory="${system_temp_directory}/${product_fullname}/instscripts">
+                    workingDirectory="${system_temp_directory}/${product_shortname}_${random_number}/instscripts">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
                 <setInstallerVariableFromScriptOutput name="ws_existinguser_result"
                     customErrorMessage="${msg(validatinguser.ws.error)}" abortOnError="0"
-                    exec="${system_temp_directory}\${product_fullname}\instscripts\bin\validateUserClient.exe"
+                    exec="${system_temp_directory}/${product_shortname}_${random_number}\instscripts\bin\validateUserClient.exe"
                     execArgs="&quot;xdb&quot; &quot;false&quot; &quot;false&quot; &quot;${existingEmail}&quot; &quot;${existingPassword.password}&quot; &quot;${uuid_val}&quot; &quot;${proxyHost}&quot; &quot;${proxyPort}&quot;"
-                    workingDirectory="${system_temp_directory}\${product_fullname}\instscripts\bin">
+                    workingDirectory="${system_temp_directory}/${product_shortname}_${random_number}\instscripts\bin">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
@@ -3802,12 +3875,12 @@ database=${controldb}
                 <actionGroup>
                     <actionList>
                         <!-- Set variable psql_path -->
-                        <setInstallerVariable name="psql_path" value="${system_temp_directory}/${product_fullname}/instscripts/bin/psql">
+                        <setInstallerVariable name="psql_path" value="${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin/psql">
                             <ruleList>
                                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                             </ruleList>
                         </setInstallerVariable>
-                        <setInstallerVariable name="psql_path" value="${system_temp_directory}\${product_fullname}\instscripts\bin\psql.exe">
+                        <setInstallerVariable name="psql_path" value="${system_temp_directory}/${product_shortname}_${random_number}\instscripts\bin\psql.exe">
                             <ruleList>
                                 <compareText logic="equals" text="${platform_name}" value="windows"/>
                             </ruleList>
@@ -3827,7 +3900,7 @@ database=${controldb}
                         <setInstallerVariableFromScriptOutput name="connection"
                                                               exec="${psql_path}"
                                                               execArgs="-l"
-                                                              workingDirectory="${system_temp_directory}/${product_fullname}/bin"
+                                                              workingDirectory="${system_temp_directory}/${product_shortname}_${random_number}/bin"
                                                               showMessageOnError="0"
                                                               abortOnError="0" /> 
                         <!-- If it fails for postgres database, fall back to edb --> 
@@ -3838,7 +3911,7 @@ database=${controldb}
                                    <setInstallerVariableFromScriptOutput name="connection"
                                                               exec="${psql_path}"
                                                               execArgs="-l ${env(PGDATABASE)}"
-                                                              workingDirectory="${system_temp_directory}/${product_fullname}/bin"
+                                                              workingDirectory="${system_temp_directory}/${product_shortname}_${random_number}/bin"
                                                               showMessageOnError="0"
                                                               abortOnError="0" /> 
                             </actionList>
@@ -3856,7 +3929,7 @@ database=${controldb}
                                    <setInstallerVariableFromScriptOutput name="connection"
                                                               exec="${psql_path}"
                                                               execArgs="-l ${env(PGDATABASE)}"
-                                                              workingDirectory="${system_temp_directory}/${product_fullname}/bin"
+                                                              workingDirectory="${system_temp_directory}/${product_shortname}_${random_number}/bin"
                                                               customErrorMessage="${program_stderr}" />
                             </actionList>
                             <ruleList>
@@ -4238,12 +4311,12 @@ database=${controldb}
                 <actionList>
                     <unpackFile>
                       <component>pubserver</component>
-                      <destination>${system_temp_directory}\${product_fullname}\createuser.exe</destination>
+                      <destination>${system_temp_directory}/${product_shortname}_${random_number}\createuser.exe</destination>
                       <folder>pubserverinstallscriptswindows</folder>
                       <origin>installer\xDBReplicationServer\createuser.exe</origin>
                     </unpackFile>
                     <runProgram>
-                      <program>${system_temp_directory}\${product_fullname}\createuser.exe</program>
+                      <program>${system_temp_directory}/${product_shortname}_${random_number}\createuser.exe</program>
                       <programArguments>. "${serviceaccount}" "${servicepassword.password}"</programArguments>
                       <abortOnError>0</abortOnError>
                       <showMessageOnError>0</showMessageOnError>
@@ -4270,12 +4343,12 @@ database=${controldb}
                 <actionList>
                   <unpackFile>
                     <component>pubserver</component>
-                    <destination>${system_temp_directory}\${product_fullname}\validateuser.exe</destination>
+                    <destination>${system_temp_directory}/${product_shortname}_${random_number}\validateuser.exe</destination>
                     <folder>pubserverinstallscriptswindows</folder>
                     <origin>installer\xDBReplicationServer\validateuser.exe</origin>
                   </unpackFile>
                   <runProgram>
-                    <program>${system_temp_directory}\${product_fullname}\validateuser.exe</program>
+                    <program>${system_temp_directory}/${product_shortname}_${random_number}\validateuser.exe</program>
                     <programArguments>. "${serviceaccount}" "${servicepassword.password}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>

@@ -40,9 +40,7 @@ _prep_ReplicationServer_windows() {
 
     # Grab a copy of the source tree
     cp -R $WD/ReplicationServer/source/XDB/replicator/* ReplicationServer.windows || _die "Failed to copy the source code (source/ReplicationServer-$PG_VERSION_ReplicationServer)"
-    chmod -R ugo+w ReplicationServer.windows || _die "Couldn't set the permissions on the source directory"
     cp -R $WD/ReplicationServer/source/XDB/DataValidator/* DataValidator.windows || _die "Failed to copy the source code (source/DataValidator-$PG_VERSION_DataValidator)"
-    chmod -R ugo+w DataValidator.windows || _die "Couldn't set the permissions on the source directory"
 
     # Copy validateuser to ReplicationServer directory
     cp -R $WD/ReplicationServer/scripts/windows/validateuser $WD/ReplicationServer/source/ReplicationServer.windows/validateuser || _die "Failed to copy scripts(validateuser)"
@@ -54,8 +52,8 @@ _prep_ReplicationServer_windows() {
     cp -R $WD/resources/ServiceWrapper $WD/ReplicationServer/source/ReplicationServer.windows/ServiceWrapper || _die "Failed to copy scripts(ServiceWrapper)"
 
     # Copy validateUserClient scripts
-    cp -R $WD/MetaInstaller/scripts/windows/validateUser $WD/ReplicationServer/source/ReplicationServer.windows/validateUserClient || _die "Failed to copy scripts(validateUserClient)"
-    cp -R $WD/MetaInstaller/scripts/windows/dbserver_guid/dbserver_guid/dbserver_guid $WD/ReplicationServer/source/ReplicationServer.windows/dbserver_guid || _die "Failed to copy dbserver_guid scripts"
+    cp -R $WD/resources/validateUser.windows $WD/ReplicationServer/source/ReplicationServer.windows/validateUserClient || _die "Failed to copy scripts(validateUserClient)"
+    cp -R $WD/resources/dbserver_guid/dbserver_guid/dbserver_guid $WD/ReplicationServer/source/ReplicationServer.windows/dbserver_guid || _die "Failed to copy dbserver_guid scripts"
 
     #Copy the required jdbc drivers
     cp $WD/tarballs/edb-jdbc14.jar $WD/ReplicationServer/source/ReplicationServer.windows/lib || _die "Failed to copy the edb-jdbc-14.jar"

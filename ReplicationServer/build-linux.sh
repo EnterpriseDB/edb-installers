@@ -28,10 +28,8 @@ _prep_ReplicationServer_linux() {
 
     # Grab a copy of the source tree
     cp -R $WD/ReplicationServer/source/XDB/replicator/* ReplicationServer.linux || _die "Failed to copy the source code (source/ReplicationServer-$PG_VERSION_ReplicationServer)"
-    chmod -R ugo+w ReplicationServer.linux || _die "Couldn't set the permissions on the source directory"
     # Grab a copy of the source tree
     cp -R $WD/ReplicationServer/source/XDB/DataValidator/* DataValidator.linux || _die "Failed to copy the source code (source/DataValidator-$PG_VERSION_DataValidator)"
-    chmod -R ugo+w DataValidator.linux || _die "Couldn't set the permissions on the source directory"
 
 
     #Copy the required jdbc drivers
@@ -91,13 +89,9 @@ _build_ReplicationServer_linux() {
     chmod +r $WD/ReplicationServer/staging/linux/repserver/lib/repl-mtk/*
 
     # Build the validateUserClient binary
-    if [ ! -f $WD/MetaInstaller/source/MetaInstaller.linux/validateUser/validateUserClient.o ]; then
-        cp -R $WD/MetaInstaller/scripts/linux/validateUser $WD/ReplicationServer/source/ReplicationServer.linux/validateUser || _die "Failed to copy validateUser source files"
-        ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux/validateUser; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
-        ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp ReplicationServer/source/ReplicationServer.linux/validateUser/validateUserClient.o ReplicationServer/staging/linux/instscripts/" || _die "Failed to copy validateUserClient.o"
-    else
-       cp $WD/MetaInstaller/source/MetaInstaller.linux/validateUser/validateUserClient.o $WD/ReplicationServer/staging/linux/instscripts/validateUserClient.o || _die "Failed to copy validateUserClient.o utility"
-    fi
+    cp -R $WD/resources/validateUser $WD/ReplicationServer/source/ReplicationServer.linux/validateUser || _die "Failed to copy validateUser source files"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux/validateUser; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp ReplicationServer/source/ReplicationServer.linux/validateUser/validateUserClient.o ReplicationServer/staging/linux/instscripts/" || _die "Failed to copy validateUserClient.o"
     chmod ugo+x $WD/ReplicationServer/staging/linux/instscripts/validateUserClient.o || _die "Failed to give execution permission to validateUserClient.o"
 
 }

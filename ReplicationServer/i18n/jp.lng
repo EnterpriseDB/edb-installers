@@ -128,3 +128,4 @@ sub.service.description=Oracle(tm)からPostgres Plusへのデータレプリケ
 Installer.CustomError.CommandLineOptionsNotPresent=次の必須オプションが指定されていません: ${optionRequired}
 
 Installer.ComponentDescription= 
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.

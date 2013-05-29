@@ -128,3 +128,4 @@ sub.service.description=Provides data replication services from Oracle (tm) to P
 Installer.CustomError.CommandLineOptionsNotPresent=The following options was not specified and is required: ${optionRequired}
 
 Installer.ComponentDescription= 
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.

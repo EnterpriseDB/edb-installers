@@ -128,3 +128,4 @@ sub.service.description=提供從 Oracle (tm) 到 Postgres Plus 的資料複寫�
 Installer.CustomError.CommandLineOptionsNotPresent=下列是尚未指定的必要選項: ${optionRequired}
 
 Installer.ComponentDescription= 
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.

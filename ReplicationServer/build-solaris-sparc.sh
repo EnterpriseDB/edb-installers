@@ -41,10 +41,8 @@ _prep_ReplicationServer_solaris_sparc() {
 
     # Grab a copy of the source tree
     cp -R $WD/ReplicationServer/source/XDB/replicator/* ReplicationServer.solaris-sparc || _die "Failed to copy the source code (source/ReplicationServer-$PG_VERSION_ReplicationServer)"
-    chmod -R ugo+w ReplicationServer.solaris-sparc || _die "Couldn't set the permissions on the source directory"
 
     cp -R $WD/ReplicationServer/source/XDB/DataValidator/* DataValidator.solaris-sparc || _die "Failed to copy the source code (source/DataValidator-$PG_VERSION_DataValidator)"
-    chmod -R ugo+w DataValidator.solaris-sparc || _die "Couldn't set the permissions on the source directory"
 
     #Copy the required jdbc drivers
     cp $WD/tarballs/edb-jdbc14.jar $WD/ReplicationServer/source/ReplicationServer.solaris-sparc/lib || _die "Failed to copy the edb-jdbc-14.jar"
@@ -100,13 +98,9 @@ _build_ReplicationServer_solaris_sparc() {
     ssh $PG_SSH_SOLARIS_SPARC "cp /usr/local/bin/uuid $PG_PATH_SOLARIS_SPARC/ReplicationServer/staging/solaris-sparc/instscripts/bin" || _die "Failed to copy uuid"
 
    # Build the validateUserClient binary
-    if [ ! -f $WD/MetaInstaller/source/MetaInstaller.solaris-sparc/validateUser/validateUserClient.o ]; then
-        scp -r $WD/MetaInstaller/scripts/linux/validateUser $PG_SSH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/ReplicationServer/source/ReplicationServer.solaris-sparc/ || _die "Failed to copy validateUser source files"
-        ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC/ReplicationServer/source/ReplicationServer.solaris-sparc/validateUser; PATH=/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/local/bin:/usr/ucb:\$PATH gcc -m64 -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto -lnsl -lsocket" || _die "Failed to build the validateUserClient utility"
-        ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp ReplicationServer/source/ReplicationServer.solaris-sparc/validateUser/validateUserClient.o ReplicationServer/staging/solaris-sparc/instscripts/" || _die "Failed to copy validateUserClient.o"
-    else
-       cp $WD/MetaInstaller/source/MetaInstaller.solaris-sparc/validateUser/validateUserClient.o $WD/ReplicationServer/staging/solaris-sparc/instscripts/validateUserClient.o || _die "Failed to copy validateUserClient.o utility"
-    fi
+   scp -r $WD/resources/validateUser $PG_SSH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/ReplicationServer/source/ReplicationServer.solaris-sparc/ || _die "Failed to copy validateUser source files"
+   ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC/ReplicationServer/source/ReplicationServer.solaris-sparc/validateUser; PATH=/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/local/bin:/usr/ucb:\$PATH gcc -m64 -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto -lnsl -lsocket" || _die "Failed to build the validateUserClient utility"
+   ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; cp ReplicationServer/source/ReplicationServer.solaris-sparc/validateUser/validateUserClient.o ReplicationServer/staging/solaris-sparc/instscripts/" || _die "Failed to copy validateUserClient.o"
 
     scp -r $PG_SSH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/ReplicationServer/staging/solaris-sparc/* $WD/ReplicationServer/staging/solaris-sparc/ || _die "Failed to copy back the staging directory from Solaris VM"
 
