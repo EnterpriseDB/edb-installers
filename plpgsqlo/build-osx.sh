@@ -83,6 +83,8 @@ _build_plpgsqlo_osx() {
     rm -f $PG_PATH_OSX/plpgsqlo/staging/osx/lib/plpgsqlo.so
     cp $PG_PATH_OSX/server/source/postgres.osx/src/pl/plpgsqlo/src/plpgsqlo.so $PG_PATH_OSX/plpgsqlo/staging/osx/lib/ || _die "Failed to copy plpgsqlo.so to staging directory"
 
+    install_name_tool -change /usr/local/lib/libz.1.2.6.dylib @loader_path/../libz.1.dylib $PG_PATH_OSX/plpgsqlo/staging/osx/lib/plpgsqlo.so
+
 }
 
 
