@@ -4,9 +4,9 @@
 export PGHOST=$1
 export PGPORT=$2
 export PGUSER=$3
-export PGPASSWORD=$4
-PGHOME=$5
-INSTALLDIR=$5
+PGHOME=$4
+INSTALLDIR=$4
+PGPASSWORD=$PGPASSWORD
 
 # Creating template postgis database
 "$PGHOME/bin/createdb" template_postgis 

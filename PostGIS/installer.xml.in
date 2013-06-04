@@ -662,6 +662,12 @@ EOF
     </preInstallationActionList>
     <!-- Post installation actions -->
     <postInstallationActionList>
+        <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}">
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setEnvironmentVariable>
+
         <!-- LIN & MAC: Write the PostGIS Version to INI File -->
         <actionGroup>
             <actionList>
@@ -748,7 +754,7 @@ EOF
         <!-- Create Template Spatial Database -->
         <runProgram>
             <program>${installdir}/PostGIS/installer/PostGIS/createtemplatedb.sh</program>
-            <programArguments>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</programArguments>
+            <programArguments>${pghost} ${pgport} ${pguser} "${pghome}"</programArguments>
             <progressText>${msg(progress.text.creating.templatedb)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
@@ -1647,6 +1653,7 @@ EOF
                     <value2>${productVersion}</value2>
                 </compareValues>
             </ruleList>
+
             <!-- Checking the validity of PostgreSQL Server Details -->
             <validationActionList>
                 <actionGroup>
@@ -1691,7 +1698,7 @@ EOF
                          </compareValues>
                          <compareValues>
                             <value1>${pgport}</value1>
-                            <logic>greater_or_equal</logic>
+                            <logic>greater</logic>
                             <value2>65535</value2>
                          </compareValues>
                     </ruleList>
@@ -1797,6 +1804,15 @@ EOF
                         </compareText>
                     </ruleList>
                 </actionGroup>
+                <!-- Set the environment variable that will be used in the scripts -->
+                <actionGroup>
+                  <actionList>
+                    <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
+                  </actionList>
+                  <ruleList>
+                    <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                  </ruleList>
+                </actionGroup>
 	            <!-- WIN: validate the PostgreSQL Server Details -->
                 <actionGroup>
                     <actionList>
@@ -1823,7 +1839,7 @@ EOF
 	                    <!-- Running the Script to validate the PostgreSQL Server Details -->
                         <setInstallerVariableFromScriptOutput>
                             <exec>${system_temp_directory}/${product_shortname}_${random_number}/check-connection.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pghome}"</execArgs>
                             <name>connection</name>
                             <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
                             <customErrorMessage>${msg(pgplus.details.error)}</customErrorMessage>
@@ -1866,7 +1882,7 @@ EOF
                         <setInstallerVariableFromScriptOutput>
                             <name>dbexist</name>
                             <exec>${system_temp_directory}/${product_shortname}_${random_number}/check-db.sh</exec>
-                            <execArgs>${pghost} ${pgport} ${pguser} "${pgpassword}" "${pghome}" "template_postgis"</execArgs>
+                            <execArgs>${pghost} ${pgport} ${pguser} "${pghome}" "template_postgis"</execArgs>
                             <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
