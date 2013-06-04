@@ -62,7 +62,7 @@ _build_stackbuilderplus_linux() {
 
     # Configure
     echo "Configuring the StackBuilder Plus source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/StackBuilderPlus/source/StackBuilderPlus.linux/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/opt/local/Current/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_PATH_LINUX/StackBuilderPlus/staging/linux ."
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/StackBuilderPlus/source/StackBuilderPlus.linux/; cmake -DCMAKE_C_FLAGS_DEBUG=ON -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/opt/local/Current/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_PATH_LINUX/StackBuilderPlus/staging/linux ."
 
     # Build the app
     echo "Building & installing StackBuilderPlus"
@@ -106,7 +106,7 @@ _build_stackbuilderplus_linux() {
    ssh $PG_SSH_LINUX "chmod a+r $PG_PATH_LINUX/StackBuilderPlus/staging/linux/lib/*" || _die "Failed to set the read permissions on the lib directory"
    ssh $PG_SSH_LINUX "chmod a+r $PG_PATH_LINUX/StackBuilderPlus/staging/linux/UpdateManager/lib/*" || _die "Failed to set the read permissions on the lib directory"
 
-    cd $WD
+   cd $WD
 }
 
 
@@ -164,6 +164,20 @@ _postprocess_stackbuilderplus_linux() {
     cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/ || _die "Failed to copy a menu pick directory"
     cp resources/xdg/edb-stackbuilderplus.desktop staging/linux/scripts/xdg/ || _die "Failed to copy a menu pick desktop"
     cp resources/xdg/edb-sbp-update-monitor.desktop staging/linux/UpdateManager/scripts/xdg/ || _die "Failed to copy the startup pick desktop"
+
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_PATH_LINUX/StackBuilderPlus/staging/linux" || _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux/StackBuilderPlus ];
+    then
+        echo "Removing existing $WD/output/symbols/linux/StackBuilderPlus directory"
+        rm -rf $WD/output/symbols/linux/StackBuilderPlus || _die "Couldn't remove the existing $WD/output/symbols/linux/StackBuilderPlus directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
+    mv $WD/StackBuilderPlus/staging/linux/symbols $WD/output/symbols/linux/StackBuilderPlus || _die "Failed to move $WD/StackBuilderPlus/staging/linux/symbols to $WD/output/symbols/linux/StackBuilderPlus directory"
 
     # Set 644 for all files and folders
     find staging/linux/ -type f | xargs -I{} chmod 644 {}

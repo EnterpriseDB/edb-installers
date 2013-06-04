@@ -78,6 +78,20 @@ _build_pgbouncer_linux_x64() {
 
     echo "Changing the rpath for the pgbouncer"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
+
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer" || _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux-x64/pgbouncer ];
+    then
+        echo "Removing existing $WD/output/symbols/linux-x64/pgbouncer directory"
+        rm -rf $WD/output/symbols/linux-x64/pgbouncer  || _die "Couldn't remove the existing $WD/output/symbols/linux-x64/pgbouncer directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
+    mv $WD/pgbouncer/staging/linux-x64/pgbouncer/symbols $WD/output/symbols/linux-x64/pgbouncer || _die "Failed to move $WD/pgbouncer/staging/linux-x64/pgbouncer/symbols to $WD/output/symbols/linux-x64/pgbouncer directory"
 }
 
 

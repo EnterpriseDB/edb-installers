@@ -79,6 +79,21 @@ _build_pgbouncer_linux() {
 
     echo "Changing the rpath for the pgbouncer"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
+
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer" || _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux/pgbouncer ];
+    then
+        echo "Removing existing $WD/output/symbols/linux/pgbouncer directory"
+        rm -rf $WD/output/symbols/linux/pgbouncer  || _die "Couldn't remove the existing $WD/output/symbols/linux/pgbouncer directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
+    mv $WD/pgbouncer/staging/linux/pgbouncer/symbols $WD/output/symbols/linux/pgbouncer || _die "Failed to move $WD/pgbouncer/staging/linux/pgbouncer/symbols to $WD/output/symbols/linux/pgbouncer directory"
+
 }
 
 
