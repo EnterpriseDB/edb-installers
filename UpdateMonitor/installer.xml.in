@@ -603,7 +603,7 @@ EOF
                       </substitutionList>
                    </substitute>
                    <runProgram program="${installdir}/installer/UpdateMonitor/startupcfg.sh"
-                               programArguments="${installdir} &quot;${pg_branding}&quot; &quot;${system_temp_directory}/${product_shortname}_${random_number} &quot;"
+                               programArguments="${installdir} &quot;${pg_branding}&quot; &quot;${system_temp_directory}/${product_shortname}_${random_number}&quot;"
                                abortOnError="0"
                                showMessageOnError="0"/>
                    <substitute>

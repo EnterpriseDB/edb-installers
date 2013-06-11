@@ -114,10 +114,18 @@ EOT
     
     cp $WD/UpdateMonitor/source/GetLatestPGInstalled.osx/GetLatestPGInstalled $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/bin
     cp /usr/local/lib/libwx_base_carbonud-2.8.0.dylib $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
+    cp -pR /usr/local/lib/libiconv*.dylib $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
+    cp -pR /usr/local/lib/libz*.dylib $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
 
      _rewrite_so_refs $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts bin @loader_path/..
+     _rewrite_so_refs $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts lib @loader_path/..
+     install_name_tool -change "/Users/buildfarm/QtSDK/Simulator/Qt/gcc/lib/QtXml.framework/Versions/4/QtXml" "@loader_path/QtXmlframework/Versions/4/QtXml" $WD/UpdateMonitor/staging/osx/UpdateManager.app/Contents/MacOS/UpdateManager
+     install_name_tool -change "/Users/buildfarm/QtSDK/Simulator/Qt/gcc/lib/QtCore.framework/Versions/4/QtCore" "@loader_path/QtCoreframework/Versions/4/QtCore" $WD/UpdateMonitor/staging/osx/UpdateManager.app/Contents/MacOS/UpdateManager
+     install_name_tool -change "/Users/buildfarm/QtSDK/Simulator/Qt/gcc/lib/QtNetwork.framework/Versions/4/QtNetwork" "@loader_path/QtNetworkframework/Versions/4/QtNetwork" $WD/UpdateMonitor/staging/osx/UpdateManager.app/Contents/MacOS/UpdateManager
+     install_name_tool -change "/Users/buildfarm/QtSDK/Simulator/Qt/gcc/lib/QtGui.framework/Versions/4/QtGui" "@loader_path/QtGuiframework/Versions/4/QtGui" $WD/UpdateMonitor/staging/osx/UpdateManager.app/Contents/MacOS/UpdateManager
 
     cd $WD
+
 }
 
 
