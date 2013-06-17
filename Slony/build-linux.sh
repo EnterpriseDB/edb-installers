@@ -121,7 +121,7 @@ _postprocess_Slony_linux() {
 
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the menu pick items"
     cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/pg-launchSlonyDocs.desktop staging/linux/scripts/xdg/pg-launchSlonyDocs-$SLONY_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/pg-launchSlonyDocs.desktop staging/linux/scripts/xdg/pg-launchSlonyDocs-$SLONY_VERSION_STR-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
 
  
     # Build the installer

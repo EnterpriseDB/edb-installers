@@ -55,7 +55,7 @@ _replace() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/Slony/installer/xdg/xdg-desktop-menu" uninstall --mode system   \
-    "$INSTALLDIR/Slony/scripts/xdg/pg-launchSlonyDocs-$SLONY_VERSION_STR.desktop" || _warn "Failed to remove the Slony docs menu item"
+    "$INSTALLDIR/Slony/scripts/xdg/pg-launchSlonyDocs-$SLONY_VERSION_STR-$PG_VERSION_STR.desktop" || _warn "Failed to remove the Slony docs menu item"
       
 # Remove the icon resources
 "$INSTALLDIR/Slony/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/Slony/scripts/images/launch-SlonyDocs.png"
@@ -79,7 +79,13 @@ done
 xdg_global_dir="$xdg_global_dir/applications-merged"
 
 # Hack up the XDG menu files to make sure everything really does go.
-_replace "<Filename>pg-launchSlonyDocs-$SLONY_VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
+_replace "<Filename>pg-launchSlonyDocs-$SLONY_VERSION_STR-$PG_VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
+
+# remove older version menu
+if [ -f "$xdg_global_dir/pg-$BRANDING_STR.menu" ];
+then
+    _replace "<Filename>pg-launchSlonyDocs-$SLONY_VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR.menu"
+fi
 
 #Ubuntu 10.04 and greater require menu cache update
 

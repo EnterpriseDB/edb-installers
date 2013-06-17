@@ -71,7 +71,7 @@ _fixup_file "$INSTALLDIR/Slony/scripts/launchSlonyDocs.sh"
 chmod ugo+x "$INSTALLDIR/Slony/scripts/launchSlonyDocs.sh"
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/Slony/scripts/xdg/pg-launchSlonyDocs-$SLONY_VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/Slony/scripts/xdg/pg-launchSlonyDocs-$SLONY_VERSION_STR-$PG_VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/Slony/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory"
 
 # Copy the primary desktop file to the branded version. We don't do this if
@@ -84,7 +84,7 @@ fi
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/Slony/installer/xdg/xdg-desktop-menu" install --mode system  \
     "$INSTALLDIR/Slony/scripts/xdg/pg-$BRANDING_STR.directory" \
-    "$INSTALLDIR/Slony/scripts/xdg/pg-launchSlonyDocs-$SLONY_VERSION_STR.desktop"  || _warn "Failed to create the Slony menu"
+    "$INSTALLDIR/Slony/scripts/xdg/pg-launchSlonyDocs-$SLONY_VERSION_STR-$PG_VERSION_STR.desktop"  || _warn "Failed to create the Slony menu"
 
 #Ubuntu 10.04 and greater require menu cache update
 

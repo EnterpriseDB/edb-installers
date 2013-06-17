@@ -541,6 +541,36 @@ EOF
                     </ruleList>
                 </actionGroup>
         
+                <!-- LIN & LIN64: Remove Old Menu shortcuts in upgrade mode -->
+                <actionGroup>
+                    <actionList>
+                        <runProgram>
+                            <program>${installdir}/Slony/installer/Slony/removeshortcuts.sh</program>
+                            <programArguments>"${installdir}" "${productVersion}" "${PGMajorVersion}" "${branding}"</programArguments>
+                            <workingDirectory>${installdir}/Slony/installer/Slony</workingDirectory>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+                    </actionList>
+                    <ruleList>
+                        <compareText>
+                            <text>${SlonyVersion}</text>
+                            <logic>does_not_equal</logic>
+                            <value/>
+                        </compareText>
+                        <compareValues>
+                            <logic>equals</logic>
+                            <value1>${SlonyMajorVersion}</value1>
+                            <value2>${SlonyMajorVersionInstalled}</value2>
+                        </compareValues>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>linux</value>
+                        </compareText>
+                    </ruleList>
+                </actionGroup>
+        
                 <!-- LIN & MAC: Create Menu Shortcuts -->
                 <actionGroup>
                     <actionList>
