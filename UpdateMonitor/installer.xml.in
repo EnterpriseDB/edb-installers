@@ -435,7 +435,7 @@ EOF
                </ruleList>
             </runProgram>
             <runProgram program="kill">
-               <programArguments>-9 `ps awx | grep "${installdir}/UpdateManager.app/Contents/MacOS/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+               <programArguments>-9 `ps awx | grep "${installdir}/UpdateMonitor.app/Contents/MacOS/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
                <abortOnError>0</abortOnError>
                <showMessageOnError>0</showMessageOnError>
                <ruleList>
@@ -491,7 +491,7 @@ EOF
            </ruleList>
         </runProgram>
         <runProgram program="kill">
-           <programArguments>-9 `ps awx | grep "${installdir}/UpdateManager.app/Contents/MacOS/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+           <programArguments>-9 `ps awx | grep "${installdir}/UpdateMonitor.app/Contents/MacOS/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
            <abortOnError>0</abortOnError>
            <showMessageOnError>0</showMessageOnError>
            <ruleList>
@@ -607,7 +607,7 @@ EOF
                                abortOnError="0"
                                showMessageOnError="0"/>
                    <substitute>
-                      <files>${installdir}/scripts/LaunchUpdateManager.app/Contents/Info.plist</files>
+                      <files>${installdir}/scripts/LaunchUpdateMonitor.app/Contents/Info.plist</files>
                       <substitutionList>
                           <substitution pattern="&lt;/dict&gt;" value="        &lt;key&gt;LSUIElement&lt;/key&gt; &lt;string&gt;1&lt;/string&gt; &lt;/dict&gt;"/>
                       </substitutionList>
@@ -619,7 +619,7 @@ EOF
                                abortOnError="0"
                                showMessageOnError="0"/>
                    <runProgram program="/usr/bin/defaults"
-                               programArguments="write loginwindow AutoLaunchedApplicationDictionary -array-add &quot;&lt;dict&gt;&lt;key&gt;Hide&lt;/key&gt;&lt;true/&gt;&lt;key&gt;Path&lt;/key&gt;&lt;string&gt;${installdir}/scripts/LaunchUpdateManager.app&lt;/string&gt;&lt;/dict&gt;&quot;"
+                               programArguments="write loginwindow AutoLaunchedApplicationDictionary -array-add &quot;&lt;dict&gt;&lt;key&gt;Hide&lt;/key&gt;&lt;true/&gt;&lt;key&gt;Path&lt;/key&gt;&lt;string&gt;${installdir}/scripts/LaunchUpdateMonitor.app&lt;/string&gt;&lt;/dict&gt;&quot;"
                                runAs="${system_user}"
                                abortOnError="0"
                                showMessageOnError="0">
@@ -745,14 +745,14 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
             <fileExists path="${installdir}/scripts/launchUpdateMonitor.sh" />
           </ruleList>
         </runProgram>
-        <runProgram program="${installdir}/scripts/LaunchUpdateManager.app/Contents/MacOS/applet"
+        <runProgram program="${installdir}/scripts/LaunchUpdateMonitor.app/Contents/MacOS/applet"
                     programArguments=""
                     runAs="${system_user}"
                     showMessageOnError="0"
                     abortOnError="0">
           <ruleList>
             <compareText text="${platform_name}" logic="equals" value="osx"/>
-            <fileExists path="${installdir}/scripts/LaunchUpdateManager.app/Contents/MacOS/applet" />
+            <fileExists path="${installdir}/scripts/LaunchUpdateMonitor.app/Contents/MacOS/applet" />
           </ruleList>
         </runProgram>
     
@@ -887,7 +887,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
     <actionGroup>
       <actionList>
         <runProgram program="kill">
-           <programArguments>-9 `ps awx | grep "${installdir}/UpdateManager.app/Contents/MacOS/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
+           <programArguments>-9 `ps awx | grep "${installdir}/UpdateMonitor.app/Contents/MacOS/UpdateManager" | grep -v "grep" | awk '{print $1}'`</programArguments>
            <abortOnError>0</abortOnError>
            <showMessageOnError>0</showMessageOnError>
         </runProgram>
@@ -983,9 +983,9 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
     </actionGroup>
 
     <!-- MAC: Remove LaunchUpdateManager  -->
-    <deleteFile path="${installdir}/scripts/LaunchUpdateManager.app">
+    <deleteFile path="${installdir}/scripts/LaunchUpdateMonitor.app">
       <ruleList>
-        <fileExists path="${installdir}/scripts/LaunchUpdateManager.app"/>
+        <fileExists path="${installdir}/scripts/LaunchUpdateMonitor.app"/>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </deleteFile>
@@ -1054,7 +1054,7 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
         <!-- MAC Program Files -->
         <folder description="Program Files" destination="${installdir}" name="updatemonitorfilesosx" platforms="osx">
           <distributionFileList>
-            <distributionDirectory origin="staging/osx/UpdateManager.app"/>
+            <distributionDirectory origin="staging/osx/UpdateMonitor.app"/>
             <distributionDirectory origin="staging/osx/UpdateMonitor/scripts"/>
             <distributionDirectory origin="staging/osx/UpdateMonitor/instscripts"/>
             <distributionDirectory origin="staging/osx/UpdateMonitor/installer"/>
