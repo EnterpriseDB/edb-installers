@@ -149,8 +149,8 @@ PG_JAVA_HOME_OSX=/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home
 PG_PERL_OSX=/usr/local/ActivePerl-5.14
 PG_PYTHON_OSX=/Library/Frameworks/Python.framework/Versions/3.2
 PG_TCL_OSX=/Library/Frameworks/Tcl.framework/Versions/8.5/
-PG_QTFRAMEWORK_OSX=/Users/buildfarm/QtSDK/Simulator/Qt/gcc/lib
-PG_QMAKE_OSX=/Users/buildfarm/QtSDK/Simulator/Qt/gcc/bin/qmake
+PG_QTFRAMEWORK_OSX=/Library/Frameworks
+PG_QMAKE_OSX=/Developer/Tools/Qt/qmake
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the

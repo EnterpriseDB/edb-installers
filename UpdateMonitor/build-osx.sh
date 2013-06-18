@@ -71,15 +71,15 @@ mac {
 
 EOT
     cat /tmp/UpdateMonitor.pro >> UpdateManager.pro
-    $PG_QMAKE_OSX UpdateManager.pro
+    $PG_QMAKE_OSX -spec macx-g++ UpdateManager.pro
     make
 
     if [ ! -d UpdateManager.app ]; then
         _die "Failed building UpdateMonitor"
     fi
 
-    
-    cd UpdateManager.app/Contents/MacOS || _die "Incomplete UpdateMonitor.app"
+    mv UpdateManager.app UpdateMonitor.app || _die "Failed to rename the UpdateManager.app"    
+    cd UpdateMonitor.app/Contents/MacOS || _die "Incomplete UpdateMonitor.app"
 
     echo "Copying dependent library QtCore"
     cp -R $PG_QTFRAMEWORK_OSX/QtCore.framework QtCore.framework
@@ -103,11 +103,11 @@ EOT
     done
 
     #Copy our custom Info.plist
-    cp $WD/UpdateMonitor/source/updatemonitor.osx/Info.plist $WD/UpdateMonitor/source/updatemonitor.osx/UpdateManager.app/Contents/Info.plist || _die "Failed to change the Info.plist"     
+    cp $WD/UpdateMonitor/source/updatemonitor.osx/Info.plist $WD/UpdateMonitor/source/updatemonitor.osx/UpdateMonitor.app/Contents/Info.plist || _die "Failed to change the Info.plist"     
 
     cd $WD/UpdateMonitor/source
     echo "Copy the UpdateMonitor app bundle into place"
-    cp -R $WD/UpdateMonitor/source/updatemonitor.osx/UpdateManager.app $WD/UpdateMonitor/staging/osx/UpdateManager.app || _die "Failed to copy UpdateMonitor into the staging directory"
+    cp -R $WD/UpdateMonitor/source/updatemonitor.osx/UpdateMonitor.app $WD/UpdateMonitor/staging/osx/UpdateMonitor.app || _die "Failed to copy UpdateMonitor into the staging directory"
 
     mkdir -p $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/bin
     mkdir -p $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
@@ -119,10 +119,6 @@ EOT
 
      _rewrite_so_refs $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts bin @loader_path/..
      _rewrite_so_refs $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts lib @loader_path/..
-     install_name_tool -change "/Users/buildfarm/QtSDK/Simulator/Qt/gcc/lib/QtXml.framework/Versions/4/QtXml" "@loader_path/QtXmlframework/Versions/4/QtXml" $WD/UpdateMonitor/staging/osx/UpdateManager.app/Contents/MacOS/UpdateManager
-     install_name_tool -change "/Users/buildfarm/QtSDK/Simulator/Qt/gcc/lib/QtCore.framework/Versions/4/QtCore" "@loader_path/QtCoreframework/Versions/4/QtCore" $WD/UpdateMonitor/staging/osx/UpdateManager.app/Contents/MacOS/UpdateManager
-     install_name_tool -change "/Users/buildfarm/QtSDK/Simulator/Qt/gcc/lib/QtNetwork.framework/Versions/4/QtNetwork" "@loader_path/QtNetworkframework/Versions/4/QtNetwork" $WD/UpdateMonitor/staging/osx/UpdateManager.app/Contents/MacOS/UpdateManager
-     install_name_tool -change "/Users/buildfarm/QtSDK/Simulator/Qt/gcc/lib/QtGui.framework/Versions/4/QtGui" "@loader_path/QtGuiframework/Versions/4/QtGui" $WD/UpdateMonitor/staging/osx/UpdateManager.app/Contents/MacOS/UpdateManager
 
     cd $WD
 
