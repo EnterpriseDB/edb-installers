@@ -123,9 +123,9 @@ _build_Slony_osx() {
     mkdir -p $WD/Slony/staging/osx/Slony
     cp $PG_PGHOME_OSX/share/postgresql/slony*.sql $PG_STAGING/Slony || _die "Failed to share files to staging directory"
 
-    install_name_tool -change "$WD/server/staging/osx/lib/libpq.5.dylib" "@loader_path/../libpq.5.dylib" $WD/Slony/staging/osx/bin/slon
-    install_name_tool -change "$WD/server/staging/osx/lib/libpq.5.dylib" "@loader_path/../libpq.5.dylib" $WD/Slony/staging/osx/bin/slonik
-    install_name_tool -change "$WD/server/staging/osx/lib/libpq.5.dylib" "@loader_path/../libpq.5.dylib" $WD/Slony/staging/osx/bin/slony_logshipper
+    install_name_tool -change "$WD/server/staging/osx/lib/libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" $WD/Slony/staging/osx/bin/slon
+    install_name_tool -change "$WD/server/staging/osx/lib/libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" $WD/Slony/staging/osx/bin/slonik
+    install_name_tool -change "$WD/server/staging/osx/lib/libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" $WD/Slony/staging/osx/bin/slony_logshipper
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     _rewrite_so_refs $WD/Slony/staging/osx lib @loader_path/..
