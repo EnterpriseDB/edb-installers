@@ -12,7 +12,6 @@ fi
 
 INSTALLDIR=$1
 BRANDING=$2
-TEMPFILE=`mktemp -q /tmp/$$.tmp-XXXXXXXXXX`
 
 # Branding string, for the xdg filenames. If the branding is 'PostgreSQL',
 # Don't do anything to ensure we remain backwards compatible.
@@ -44,8 +43,10 @@ _warn() {
 
 # Search & replace in a file - _replace($find, $replace, $file)
 _replace() {
+    TEMPFILE=`mktemp -q /tmp/$$.tmp-XXXXXXXXXX`
     sed -e "s^$1^$2^g" $3 > "$TEMPFILE" || _die "Failed for search and replace '$1' with '$2' in $3"
         mv $TEMPFILE $3 || _die "Failed to move $TEMPFILE to $3"
+         chmod 644 $3
 }
 
 # Remove the menu shortcuts
