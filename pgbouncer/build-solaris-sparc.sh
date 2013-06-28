@@ -73,14 +73,14 @@ export CFLAGS="-m64"
 export CXXFLAGS="-m64 -library=stlport4"
 export CPPFLAGS="-m64"
 export LDFLAGS="-m64"
-export LD_LIBRARY_PATH=/opt/local/Current/lib
-export PATH=$PG_SOLARIS_STUDIO_SOLARIS_SPARC/bin:/opt/local/Current/bin:/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/ucb:\$PATH
+export LD_LIBRARY_PATH=/usr/local.sun/lib
+export PATH=$PG_SOLARIS_STUDIO_SOLARIS_SPARC/bin:/usr/local.sun/bin:/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/ucb:\$PATH
 
 EOT
     scp setenv.sh $PG_SSH_SOLARIS_SPARC: || _die "Failed to scp the setenv.sh file"
 
 
-    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/pgbouncer/source/pgbouncer.solaris-sparc/; LDFLAGS="-Wl,-R,$PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer/lib" ./configure --prefix=$PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer --with-libevent=/opt/local/Current" || _die "Failed to configure pgbouncer"
+    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/pgbouncer/source/pgbouncer.solaris-sparc/; LDFLAGS="-Wl,-R,$PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer/lib" ./configure --prefix=$PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer --with-libevent=/usr/local.sun" || _die "Failed to configure pgbouncer"
     ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/pgbouncer/source/pgbouncer.solaris-sparc/; gmake" || _die "Failed to build pgbouncer"
     ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/pgbouncer/source/pgbouncer.solaris-sparc/; gmake  install" || _die "Failed to install pgbouncer"
     ssh $PG_SSH_SOLARIS_SPARC "cp -R $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer/share/doc/pgbouncer/pgbouncer.ini $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer/share/" || _die "Failed to copy pgbouncer ini to share folder"
@@ -91,10 +91,10 @@ EOT
     PG_LIBEVENT_MAJOR_VERSION=`echo $PG_TARBALL_LIBEVENT | cut -f1,2 -d'.'`
 
     ssh $PG_SSH_SOLARIS_SPARC "rm -rf /tmp/tmp_libs && mkdir /tmp/tmp_libs" || _die "Failed to create tmp_libs in tmp folder"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -R /opt/local/Current/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* /tmp/tmp_libs" || _die "Failed to copy libevent libs in tmp folder"
-    ssh $PG_SSH_SOLARIS_SPARC "/opt/local/Current/bin/chrpath -r '\$ORIGIN/../lib/' $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer/bin/pgbouncer" || _die "Failed to set rpath of pgbouncer"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -R /opt/local/Current/lib/libxml2.so* /tmp/tmp_libs" || _die "Failed to copy libxml libs in tmp folder"
-    ssh $PG_SSH_SOLARIS_SPARC "/opt/local/Current/bin/chrpath -r '\$ORIGIN' /tmp/tmp_libs/libxml2.so*" || _die "Failed to set rpath in tmp_libs folder"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local.sun/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* /tmp/tmp_libs" || _die "Failed to copy libevent libs in tmp folder"
+    ssh $PG_SSH_SOLARIS_SPARC "/usr/local.sun/bin/chrpath -r '\$ORIGIN/../lib/' $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer/bin/pgbouncer" || _die "Failed to set rpath of pgbouncer"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local.sun/lib/libxml2.so* /tmp/tmp_libs" || _die "Failed to copy libxml libs in tmp folder"
+    ssh $PG_SSH_SOLARIS_SPARC "/usr/local.sun/bin/chrpath -r '\$ORIGIN' /tmp/tmp_libs/libxml2.so*" || _die "Failed to set rpath in tmp_libs folder"
     ssh $PG_SSH_SOLARIS_SPARC "cp -R /tmp/tmp_libs/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
 
     ###ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libevent-$PG_LIBEVENT_MAJOR_VERSION* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
@@ -171,7 +171,6 @@ _postprocess_pgbouncer_solaris_sparc() {
 
     # " executable" requires a ' ' prefix to ensure it is not a filename
     find staging/solaris-sparc/ -type f | xargs -I{} file {} | grep -i " executable" | cut -f1 -d":" | xargs -I{} chmod +x {}
-    find staging/solaris-sparc/ -type f | xargs -I{} file {} | grep "ELF" | cut -f1 -d":" | xargs -I{} chmod +x {}
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-sparc || _die "Failed to build the installer"

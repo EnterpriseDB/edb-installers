@@ -99,8 +99,8 @@ export CFLAGS="-m64 -library=stlport4"
 export CXXFLAGS="-m64 -library=stlport4"
 export CPPFLAGS="-m64"
 export LDFLAGS="-m64"
-export LD_LIBRARY_PATH=/opt/local/Current/lib
-export PATH=$PG_SOLARIS_STUDIO_SOLARIS_SPARC/bin:/opt/cmake-2.8.8/bin:/opt/local/Current/bin:/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/ucb:\$PATH
+export LD_LIBRARY_PATH=/usr/local.sun/lib
+export PATH=$PG_SOLARIS_STUDIO_SOLARIS_SPARC/bin:/usr/local.sun/bin:/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/ucb:\$PATH
 
 EOT
     scp setenv.sh $PG_SSH_SOLARIS_SPARC: || _die "Failed to scp the setenv.sh file"
@@ -109,9 +109,7 @@ EOT
 
     # Configure
     echo "Configuring the StackBuilder Plus source tree"
-    #ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/source/StackBuilderPlus.solaris-sparc/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=//opt/local/20120829/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc -D CMAKE_CXX_FLAGS:STRING=\"-m64\" ."
-
-    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/source/StackBuilderPlus.solaris-sparc/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=//opt/wxWidgets-2.8.12/inst/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc -D CMAKE_CXX_FLAGS:STRING=\"-m64\" ."
+    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/source/StackBuilderPlus.solaris-sparc/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=//opt/local/20120829/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc -D CMAKE_CXX_FLAGS:STRING=\"-m64\" ."
 
     # Build the app
     echo "Building & installing StackBuilderPlus"
@@ -128,7 +126,7 @@ EOT
    
     echo "Copying UpdateManager binary to staging directory"
     ssh $PG_SSH_SOLARIS_SPARC "cp $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/source/updatemanager.solaris-sparc/UpdateManager $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/bin" || _die "Failed to copy the UpdateManager binary"
-    ssh $PG_SSH_SOLARIS_SPARC "/opt/local/Current/bin/chrpath -r '\$ORIGIN/../lib' $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/bin/UpdateManager" || _die "Failed to change the rpath of UpdateManager binary"
+    ssh $PG_SSH_SOLARIS_SPARC "/usr/local.sun/bin/chrpath -r '\$ORIGIN/../lib' $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/bin/UpdateManager" || _die "Failed to change the rpath of UpdateManager binary"
 
     echo "Copying dependent libraries to staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "cp -Pr /usr/local/lib/libQtXml.so.* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (solaris-sparc)"
@@ -136,27 +134,27 @@ EOT
     ssh $PG_SSH_SOLARIS_SPARC "cp -Pr /usr/local/lib/libQtNetwork.so.* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "/usr/local/bin/chrpath -r '\$ORIGIN' $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib/libQtNetwork.so.*" || _die "Failed to change the rpath of libQtNetwork.so"
     ssh $PG_SSH_SOLARIS_SPARC "cp -Pr /usr/local/lib/libQtCore.so.* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (solaris-sparc)"
-    ssh $PG_SSH_SOLARIS_SPARC "/opt/local/Current/bin/chrpath -r '\$ORIGIN' $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib/libQtCore.so.*" || _die "Failed to change the rpath of libQtCore.so"
+    ssh $PG_SSH_SOLARIS_SPARC "/usr/local/bin/chrpath -r '\$ORIGIN' $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib/libQtCore.so.*" || _die "Failed to change the rpath of libQtCore.so"
     ssh $PG_SSH_SOLARIS_SPARC "cp -Pr /usr/local/lib/libQtGui.so.* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib" || _die "Failed to copy dependent library (libQtGui.so) in staging directory (solaris-sparc)"
-    ssh $PG_SSH_SOLARIS_SPARC "/opt/local/Current/bin/chrpath -r '\$ORIGIN' $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib/libQtGui.so.*" || _die "Failed to change the rpath of libQtGui.so"
+    ssh $PG_SSH_SOLARIS_SPARC "/usr/local/bin/chrpath -r '\$ORIGIN' $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib/libQtGui.so.*" || _die "Failed to change the rpath of libQtGui.so"
     ssh $PG_SSH_SOLARIS_SPARC "cp /usr/lib/64/libpng12.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libpng12.so) in staging directory (solaris-sparc)"
-    ssh $PG_SSH_SOLARIS_SPARC "cp /opt/local/Current/lib/libssl.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libssl.so) in staging directory (solaris-sparc)"
-    ssh $PG_SSH_SOLARIS_SPARC "cp /opt/local/Current/lib/libcrypto.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libcrypto.so) in staging directory (solaris-sparc)"
-    ssh $PG_SSH_SOLARIS_SPARC "cp /opt/local/Current/lib/libiconv.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libiconv.so) in staging directory (solaris-sparc)"
-    ssh $PG_SSH_SOLARIS_SPARC "cp /opt/local/Current/lib/libexpat.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libexpat.so) in staging directory (solaris-sparc)"
-    ssh $PG_SSH_SOLARIS_SPARC "cp /opt/local/Current/lib/libgssapi_krb5.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libgssapi_krb5.so) in staging directory (solaris-sparc)"
-    ssh $PG_SSH_SOLARIS_SPARC "cp /opt/local/Current/lib/libkrb5.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libkrb5.so) in staging directory (solaris-sparc)"
-    ssh $PG_SSH_SOLARIS_SPARC "cp /opt/local/Current/lib/libkrb5support.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libkrb5.so) in staging directory (solaris-sparc)"
-    ssh $PG_SSH_SOLARIS_SPARC "cp /opt/local/Current/lib/libcom_err.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libcom_err.so) in staging directory (solaris-sparc)"
-    ssh $PG_SSH_SOLARIS_SPARC "cp /opt/local/Current/lib/libk5crypto.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libk5crypto.so) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp /usr/local.sun/lib/libssl.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libssl.so) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp /usr/local.sun/lib/libcrypto.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libcrypto.so) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp /usr/local.sun/lib/libiconv.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libiconv.so) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp /usr/local.sun/lib/libexpat.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libexpat.so) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp /usr/local.sun/lib/libgssapi_krb5.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libgssapi_krb5.so) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp /usr/local.sun/lib/libkrb5.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libkrb5.so) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp /usr/local.sun/lib/libkrb5support.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libkrb5.so) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp /usr/local.sun/lib/libcom_err.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libcom_err.so) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp /usr/local.sun/lib/libk5crypto.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libk5crypto.so) in staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "cp /usr/lib/64/libjpeg.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libjpeg.so) in staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "cp /usr/lib/64/libtiff.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libtiff.so) in staging directory (solaris-sparc)"
-    ssh $PG_SSH_SOLARIS_SPARC "cp /opt/local/Current/lib/libz.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libz.so) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp /usr/local.sun/lib/libz.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libz.so) in staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "cp /usr/sfw/lib/64/libfreetype.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libfreetype.so) in staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "cp /usr/lib/64/libfontconfig.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libfontconfig.so) in staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "cp /usr/lib/64/libpango-* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "cp /usr/lib/64/libpangoft2* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libpangoft2-1.0.so) in staging directory (solaris-sparc)"
-    ssh $PG_SSH_SOLARIS_SPARC "cp /opt/local/Current/lib/libuuid.so.16 $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libuuid.so.16) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp /usr/local.sun/lib/libuuid.so.16 $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libuuid.so.16) in staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "cp -r $PG_SOLARIS_STUDIO_SOLARIS_SPARC/lib/stlport4/v9/libstlport.so.1 $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libstlport.so.1) in staging directory (solaris-sparc)"
     #scp -r $PG_SSH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/* $WD/StackBuilderPlus/staging/solaris-sparc/ || _die "Failed to copy back the staging directory from Solaris VM"
     ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging; /usr/sfw/bin/gtar cpvzf solaris-sparc.tar.gz solaris-sparc" || _die "Failed to create tar file"
@@ -234,7 +232,6 @@ _postprocess_stackbuilderplus_solaris_sparc() {
 
     # " executable" requires a ' ' prefix to ensure it is not a filename
     find staging/solaris-sparc/ -type f | xargs -I{} file {} | grep -i " executable" | cut -f1 -d":" | xargs -I{} chmod +x {}
-    find staging/solaris-sparc/ -type f | xargs -I{} file {} | grep "ELF" | cut -f1 -d":" | xargs -I{} chmod +x {}
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-sparc || _die "Failed to build the installer for solaris-sparc"
