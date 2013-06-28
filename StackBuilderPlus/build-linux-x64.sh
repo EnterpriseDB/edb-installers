@@ -187,6 +187,7 @@ _postprocess_stackbuilderplus_linux_x64() {
 
     # " executable" requires a ' ' prefix to ensure it is not a filename
     find staging/linux-x64/ -type f | xargs -I{} file {} | grep -i " executable" | cut -f1 -d":" | xargs -I{} chmod +x {}
+    find staging/linux-x64/ -type f | xargs -I{} file {} | grep "ELF" | cut -f1 -d":" | xargs -I{} chmod +x {}
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer for linux-x64"
