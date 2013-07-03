@@ -144,14 +144,15 @@ PG_QMAKE_SOLARIS_X64=/usr/local/bin/qmake
 PG_CHRPATH_PATH_SOLARIS_X64=/opt/chrpath-0.13/inst
 
 # Solaris SPARC
-PG_SSH_SOLARIS_SPARC=buildfarm@suzuka.ox.uk.enterprisedb.com
-PG_PATH_SOLARIS_SPARC=/mnt/buildfarm/edb-posgres.auto-bugatti
+PG_SSH_SOLARIS_SPARC=buildfarm@172.24.34.125
+PG_PATH_SOLARIS_SPARC=/mnt/buildfarm/pginstaller.isb-akash
 PG_PGHOME_SOLARIS_SPARC=$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc
 PG_EXEC_PATH_SOLARIS_SPARC=/usr/jdk/jdk1.6.0_21/bin/sparcv9
 PG_JAVA_HOME_SOLARIS_SPARC=/usr/jdk/jdk1.6.0_21
 PG_ANT_HOME_SOLARIS_SPARC=/opt/apache-ant-1.8.1
-PG_QMAKE_SOLARIS_SPARC=qmake
+PG_QMAKE_SOLARIS_SPARC=/opt/Qt4.4/bin/qmake
 PG_CHRPATH_PATH_SOLARIS_SPARC=/opt/chrpath-0.13/inst
+PG_SOLARIS_STUDIO_SOLARIS_SPARC=/opt/sunstudio12.1/prod
 
 # HPUX
 PG_SSH_HPUX=bfarm@172.24.33.171
