@@ -99,8 +99,8 @@ export CFLAGS="-m64 -library=stlport4"
 export CXXFLAGS="-m64 -library=stlport4"
 export CPPFLAGS="-m64"
 export LDFLAGS="-m64"
-export LD_LIBRARY_PATH=/opt/local/Current/lib:/opt/Qt4.4/lib:/usr/sfw/lib/64
-export PATH=/opt/Qt4.4/bin:/opt/gettext-0.18.1.1/inst/bin:$PG_SOLARIS_STUDIO_SOLARIS_SPARC/bin:/opt/cmake-2.8.8/bin:/opt/local/Current/bin:/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/ucb:\$PATH
+export LD_LIBRARY_PATH=/opt/local/Current/lib:/opt/qt-4.4.3-gnu/lib:/usr/sfw/lib/64
+export PATH=/opt/qt-4.4.3-gnu/bin:/opt/gettext-0.18.1.1/inst/bin:$PG_SOLARIS_STUDIO_SOLARIS_SPARC/bin:/opt/cmake-2.8.8/bin:/opt/local/Current/bin:/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:/usr/sfw/sbin:/opt/csw/bin:/usr/ucb:\$PATH
 EOT
     scp setenv.sh $PG_SSH_SOLARIS_SPARC: || _die "Failed to scp the setenv.sh file"
 
@@ -116,7 +116,6 @@ EOT
     ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/source/StackBuilderPlus.solaris-sparc/; gmake install" || _die "Failed to install StackBuilderPlus"
 
     echo "Building & installing UpdateManager"
-    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/source/updatemanager.solaris-sparc; touch *.*" || _die "Failed to touch files in order to change timestamp"
     ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/source/updatemanager.solaris-sparc; $PG_QMAKE_SOLARIS_SPARC UpdateManager.pro" || _die "Failed to configure UpdateManager on solaris-sparc"
     #ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/source/updatemanager.solaris-sparc; $PG_QMAKE_SOLARIS_SPARC QMAKESPEC=/usr/local/mkspecs/solaris-cc-64 QMAKE_CFLAGS=-m64 QMAKE_LFLAGS=-m64 QMAKE_CXX=\"CC -m64\" QMAKE_LIBS=\"-L /usr/sfw/lib/64 -L$PG_SOLARIS_STUDIO_SOLARIS_X64/lib/v9\" UpdateManager.pro" || _die "Failed to configure UpdateManager on solaris-sparc"
     ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/source/updatemanager.solaris-sparc; gmake" || _die "Failed to build UpdateManger on solaris-sparc"
@@ -129,13 +128,13 @@ EOT
     ssh $PG_SSH_SOLARIS_SPARC "/opt/local/Current/bin/chrpath -r '\$ORIGIN/../lib' $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/bin/UpdateManager" || _die "Failed to change the rpath of UpdateManager binary"
 
     echo "Copying dependent libraries to staging directory (solaris-sparc)"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -Pr /opt/Qt4.4/lib/libQtXml.so.* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -Pr /opt/qt-4.4.3-gnu/lib/libQtXml.so.* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "/opt/local/Current/bin/chrpath -r '\$ORIGIN' $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib/libQtXml.so.*" || _die "Failed to change the rpath of libQtXml.so"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -Pr /opt/Qt4.4/lib/libQtNetwork.so.* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -Pr /opt/qt-4.4.3-gnu/lib/libQtNetwork.so.* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "/opt/local/Current/bin/chrpath -r '\$ORIGIN' $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib/libQtNetwork.so.*" || _die "Failed to change the rpath of libQtNetwork.so"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -Pr /opt/Qt4.4/lib/libQtCore.so.* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -Pr /opt/qt-4.4.3-gnu/lib/libQtCore.so.* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "/opt/local/Current/bin/chrpath -r '\$ORIGIN' $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib/libQtCore.so.*" || _die "Failed to change the rpath of libQtCore.so"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -Pr /opt/Qt4.4/lib/libQtGui.so.* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib" || _die "Failed to copy dependent library (libQtGui.so) in staging directory (solaris-sparc)"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -Pr /opt/qt-4.4.3-gnu/lib/libQtGui.so.* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib" || _die "Failed to copy dependent library (libQtGui.so) in staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "/opt/local/Current/bin/chrpath -r '\$ORIGIN' $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/UpdateManager/lib/libQtGui.so.*" || _die "Failed to change the rpath of libQtGui.so"
     #ssh $PG_SSH_SOLARIS_SPARC "cp /usr/lib/64/libpng12.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libpng12.so) in staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "cp /opt/local/Current/lib/libpng15.so* $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libpng15.so) in staging directory (solaris-sparc)"

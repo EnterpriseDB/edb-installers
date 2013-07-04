@@ -150,7 +150,7 @@ PG_PGHOME_SOLARIS_SPARC=$PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc
 PG_EXEC_PATH_SOLARIS_SPARC=/usr/jdk/jdk1.6.0_21/bin/sparcv9
 PG_JAVA_HOME_SOLARIS_SPARC=/usr/jdk/jdk1.6.0_21
 PG_ANT_HOME_SOLARIS_SPARC=/opt/apache-ant-1.8.1
-PG_QMAKE_SOLARIS_SPARC=/opt/Qt4.4/bin/qmake
+PG_QMAKE_SOLARIS_SPARC=/opt/qt-4.4.3-gnu/bin/qmake
 PG_CHRPATH_PATH_SOLARIS_SPARC=/opt/chrpath-0.13/inst
 PG_SOLARIS_STUDIO_SOLARIS_SPARC=/opt/sunstudio12.1/prod
 
