@@ -740,6 +740,63 @@ EOF
             </ruleList>
         </actionGroup>
     </preInstallationActionList>
+
+    <readyToInstallActionList>
+      <!-- Delete existing psqlODBC directory in case of upgrade. We have to do this on Windows because the installation 
+           directory creates a directory with a version name on Windows like 0901, 0902 -->
+      <actionGroup>
+        <actionList>
+           <!-- Get psqlODBCVersion without dot operator -->
+          <setInstallerVariableFromRegEx>
+            <name>psqlODBCVersionWithoutDot</name>
+            <pattern>\.+</pattern>
+            <substitution></substitution>
+            <text>${psqlODBCVersion}</text>
+          </setInstallerVariableFromRegEx>
+          <!-- Get first four characters which will be directory name --> 
+          <setInstallerVariableFromRegEx>
+            <name>dirNameToDelete</name>
+            <pattern>^(....)(.*)$</pattern>
+            <substitution>\1</substitution>
+            <text>${psqlODBCVersionWithoutDot}</text>
+          </setInstallerVariableFromRegEx>
+          <!-- Delete bin and scripts directories first and then remove the top level directory if empty. We do this because we do not want to 
+               remove any users files if present in the top directory -->
+          <deleteFile>
+            <path>${installdir}\${dirNameToDelete}\bin</path>
+	    <ruleList>
+              <fileExists path="${installdir}\${dirNameToDelete}\bin"/>
+	    </ruleList>
+          </deleteFile>
+          <deleteFile>
+            <path>${installdir}\${dirNameToDelete}\scripts</path>
+	    <ruleList>
+              <fileExists path="${installdir}\${dirNameToDelete}\scripts"/>
+	    </ruleList>
+          </deleteFile>
+          <deleteFile>
+            <path>${installdir}\${dirNameToDelete}</path>
+	    <ruleList>
+	      <fileExists path="${installdir}\${dirNameToDelete}/bin"/>
+	      <fileTest path="${installdir}\${dirNameToDelete}" condition="is_empty"/>
+            </ruleList>
+          </deleteFile>
+        </actionList>
+        <ruleList>
+          <compareText>
+            <text>${psqlODBCVersion}</text>
+            <logic>does_not_equal</logic>
+            <value/>
+          </compareText>
+          <compareText>
+            <logic>equals</logic>
+            <text>${platform_name}</text>
+            <value>windows</value>
+          </compareText>
+        </ruleList>
+      </actionGroup>
+    </readyToInstallActionList>
+
     <postInstallationActionList>
 
         <!-- Setting the installation directory in the PostgreSQL.ini file -->
