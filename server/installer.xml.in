@@ -4389,6 +4389,16 @@ REM The script sets environment variables helpful for PostgreSQL
 
         <showWarning>
             <text>${msg(info.datadirectory.user.kept)}</text>
+            <ruleList>
+                <compareText text="${serviceaccount}" logic="does_not_equal" value="NT AUTHORITY\NetworkService" />
+            </ruleList>
+        </showWarning>
+        <showWarning>
+            <text>${msg(info.datadirectory.kept)}</text>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows" />
+                <compareText text="${serviceaccount}" logic="equals" value="NT AUTHORITY\NetworkService" />
+            </ruleList>
         </showWarning>
     </postUninstallationActionList>
 
