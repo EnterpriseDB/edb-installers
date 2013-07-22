@@ -85,6 +85,7 @@ install.runtimes.description=Specifies whether or not install the Microsoft Visu
 create.shortcut.description=Specifies whether or not menu shortcuts should be created.
 
 info.datadirectory.user.kept=The data directory (${datadir}) and service user account (${serviceaccount}) have not been removed.
+info.datadirectory.kept=The data directory (${datadir}) has not been removed.
 locale.error=Locale specified is not supported.
 
 superaccount.description=Sets the user name of the database superuser. Defaults to 'postgres'.
