@@ -1647,10 +1647,18 @@ include conf\addons\*.conf
       </ruleList>
     </actionGroup>
 
+    <!-- Remove the application_secure.conf file -->
+    <deleteFile path="${installdir}/apache/conf/addons/application_secure.conf" >
+	<ruleList>
+	    <fileExists path="${installdir}/apache/conf/addons/application_secure.conf" />
+	</ruleList>
+    </deleteFile>
+    
     <!-- Remove the addons directory -->
     <deleteFile path="${installdir}/apache/conf/addons" >
 	<ruleList>
 	    <fileExists path="${installdir}/apache/conf/addons" />
+            <fileTest path="${installdir}/apache/conf/addons" condition="is_empty" />
 	</ruleList>
     </deleteFile>
 
