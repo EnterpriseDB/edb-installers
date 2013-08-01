@@ -73,13 +73,8 @@ _registration_component_build()
 
 _registration_postprocess()
 {
-<<<<<<< HEAD
   if [ $# -ne 7 ]; then
     _die "Wrong number of parameters calling _registration_postprocess(STAGING DIRECTORY, COMPONENT NAME, VERSION VARIABLE, INI, REGISTRY_PREFIX, REGISTRY_PREFIX WINDOWS, COMPONENT TYPE)"
-=======
-  if [ $# -ne 8 ]; then
-    _die "Wrong number of parameters calling _registration_postprocess(STAGING DIRECTORY, COMPONENT NAME, VERSION VARIABLE, INI, REGISTRY_PREFIX, REGISTRY_PREFIX WINDOWS, TEMP DIRECTORY, COMPONENT TYPE)"
->>>>>>> f28757b... Fix typo.
   fi
 
   PG_REG_COMP_PATH=$WD/registration
