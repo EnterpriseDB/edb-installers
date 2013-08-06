@@ -977,8 +977,8 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
           </substitute>
        </actionList>
        <ruleList>
-         <regExMatch text="${conf_file}" pattern="${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;" />
          <compareText logic="contains" text="${platform_name}" value="solaris"/>
+         <regExMatch text="${conf_file}" pattern="${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;" />
        </ruleList>
     </actionGroup>
 
