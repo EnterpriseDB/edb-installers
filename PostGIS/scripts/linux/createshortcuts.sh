@@ -77,12 +77,12 @@ chmod ugo+x "$INSTALLDIR/PostGIS/scripts/launchPostGISDocs.sh"
 chmod ugo+x "$INSTALLDIR/PostGIS/scripts/launchJDBCDocs.sh"
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop"
-_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory"
 
-chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop"
-chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR.desktop"
+chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.desktop"
+chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.desktop"
 chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgis-$POSTGIS_VERSION_STR.directory"
 chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory"
 
@@ -90,16 +90,16 @@ chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$PG_VERSION_STR.direc
 # the installation is not branded, to retain backwards compatibility.
 if [ $BRANDED -ne 0 ];
 then
-    cp "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory" "$INSTALLDIR/PostGIS/scripts/xdg/pg-$BRANDING_STR.directory"
+    cp "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$PG_VERSION_STR-$PG_VERSION_STR.directory" "$INSTALLDIR/PostGIS/scripts/xdg/pg-$BRANDING_STR.directory"
 fi
 
 
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/PostGIS/installer/xdg/xdg-desktop-menu" install --mode system \
          "$INSTALLDIR/PostGIS/scripts/xdg/pg-$BRANDING_STR.directory" \
-         "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgis-$POSTGIS_VERSION_STR.directory" \
-    "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop" \
-    "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR.desktop"  || _warn "Failed to create the PostGIS menu"
+         "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgis-$POSTGIS_VERSION_STR-$PG_VERSION_STR.directory" \
+    "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.desktop" \
+    "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.desktop"  || _warn "Failed to create the PostGIS menu"
 
 #Ubuntu 10.04 and greater require menu cache update
 
