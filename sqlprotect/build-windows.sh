@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_sqlprotect_windows() {
+    
+    echo "BEGIN PREP sqlprotect Windows"    
 
     cd $WD/server/source
 
@@ -53,7 +55,8 @@ _prep_sqlprotect_windows() {
     scp sqlprotect.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the sqlprotect archive to windows VM (sqlprotect.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c  unzip sqlprotect.zip" || _die "Couldn't extract postgresql archieve on windows VM (sqlprotect.zip)"
     chmod -R ugo+r $WD/sqlprotect/staging/windows
-
+    
+    echo "END PREP sqlprotect Windows"
 }
 
 ################################################################################
@@ -62,6 +65,7 @@ _prep_sqlprotect_windows() {
 
 _build_sqlprotect_windows() {
 
+    echo "BEGIN BUILD sqlprotect Windows"     
 
 cat <<EOT > "$WD/server/source/build32-sqlprotect.bat"
 
@@ -96,7 +100,8 @@ EOT
       echo "Removing existing sqlprotect directory"
       rm -rf postgres.windows/contrib/SQLPROTECT || _die "Couldn't remove the existing sqlprotect directory"
     fi
-
+    
+    echo "END BUILD sqlprotect Windows"
 }
 
 
@@ -107,7 +112,8 @@ EOT
 
 _postprocess_sqlprotect_windows() {
 
-
+    echo "BEGIN POST sqlprotect Windows"    
+ 
     cd $WD/sqlprotect
 
     if [ -f installer-win.xml ];
@@ -128,6 +134,7 @@ _postprocess_sqlprotect_windows() {
     win32_sign "sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-windows.exe"
 
     cd $WD
-
+    
+    echo "END POST sqlprotect Windows"
 }
 

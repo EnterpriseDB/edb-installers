@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_ReplicationServer_linux() {
+    
+    echo "BEGIN PREP ReplicationServer Linux"    
 
     # Enter the source directory and cleanup if required
     cd $WD/ReplicationServer/source
@@ -48,7 +50,8 @@ _prep_ReplicationServer_linux() {
     echo "Creating staging directory ($WD/ReplicationServer/staging/linux)"
     mkdir -p $WD/ReplicationServer/staging/linux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/ReplicationServer/staging/linux || _die "Couldn't set the permissions on the staging directory"
-
+    
+    echo "END PREP ReplicationServer Linux"
 }
 
 ################################################################################
@@ -56,6 +59,8 @@ _prep_ReplicationServer_linux() {
 ################################################################################
 
 _build_ReplicationServer_linux() {
+
+    echo "BEGIN BUILD ReplicationServer Linux"    
 
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux; JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX/bin/ant -f custom_build.xml dist" || _die "Failed to build the Replication xDB Replicator"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux; cp -R dist/* $PG_PATH_LINUX/ReplicationServer/staging/linux/" || _die "Failed to copy the dist content to staging directory"
@@ -104,7 +109,8 @@ _build_ReplicationServer_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ReplicationServer/source/ReplicationServer.linux/validateUser; gcc -DWITH_OPENSSL -I. -o validateUserClient.o WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto" || _die "Failed to build the validateUserClient utility"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; cp ReplicationServer/source/ReplicationServer.linux/validateUser/validateUserClient.o ReplicationServer/staging/linux/instscripts/" || _die "Failed to copy validateUserClient.o"
     chmod ugo+rx $WD/ReplicationServer/staging/linux/instscripts/validateUserClient.o || _die "Failed to give execution permission to validateUserClient.o"
-
+   
+    echo "END BUILD ReplicationServer Linux"
 }
 
 
@@ -114,6 +120,7 @@ _build_ReplicationServer_linux() {
 
 _postprocess_ReplicationServer_linux() {
 
+    echo "BEGIN POST ReplicationServer Linux"    
 
     cd $WD/ReplicationServer
 
@@ -155,5 +162,8 @@ _postprocess_ReplicationServer_linux() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
 
     cd $WD
+   
+    echo "END POST ReplicationServer Linux"
 }
+
 

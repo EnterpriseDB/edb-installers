@@ -6,7 +6,9 @@
 ################################################################################
 
 _prep_MigrationToolKit_linux_x64() {
-      
+    
+    echo "BEGIN PREP MigrationToolKit Linux-x64"
+  
     # Enter the source directory and cleanup if required
     cd $WD/MigrationToolKit/source
 
@@ -35,7 +37,8 @@ _prep_MigrationToolKit_linux_x64() {
     echo "Creating staging directory ($WD/MigrationToolKit/staging/linux-x64)"
     mkdir -p $WD/MigrationToolKit/staging/linux-x64 || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/MigrationToolKit/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
-
+    
+    echo "END PREP MigrationToolKit Linux-x64"
 }
 
 
@@ -44,6 +47,8 @@ _prep_MigrationToolKit_linux_x64() {
 ################################################################################
 
 _build_MigrationToolKit_linux_x64() {
+
+    echo "BEGIN BUILD MigrationToolKit Linux-x64"
 
     # build migrationtoolkit    
     PG_STAGING=$PG_PATH_LINUX_X64/MigrationToolKit/staging/linux-x64    
@@ -56,6 +61,7 @@ _build_MigrationToolKit_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MigrationToolKit/source/migrationtoolkit.linux-x64; mkdir $PG_STAGING/MigrationToolKit" || _die "Couldn't create the migrationtoolkit staging directory (MigrationToolKit/staging/linux-x64/MigrationToolKit)"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MigrationToolKit/source/migrationtoolkit.linux-x64; cp -R install/* $PG_STAGING/MigrationToolKit" || _die "Couldn't copy the binaries to the migrationtoolkit staging directory (MigrationToolKit/staging/linux-x64/MigrationToolKit)"
 
+    echo "END BUILD MigrationToolKit Linux-x64"
 }
 
 
@@ -65,11 +71,15 @@ _build_MigrationToolKit_linux_x64() {
 
 _postprocess_MigrationToolKit_linux_x64() {
 
+    echo "BEGIN POST MigrationToolKit Linux-x64"
+
     cd $WD/MigrationToolKit
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
     
     cd $WD
+
+    echo "END POST MigrationToolKit Linux-x64"
 }
 

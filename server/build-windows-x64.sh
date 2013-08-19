@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_server_windows_x64() {
+    # Following echo statement for Jenkins Console Section output
+    echo "BEGIN PREP Server Windows-x64"
 
     # Enter the source directory and cleanup if required
     cd $WD/server/source
@@ -99,6 +101,7 @@ _prep_server_windows_x64() {
     echo "Creating staging directory ($WD/server/staging/windows-x64)"
     mkdir -p $WD/server/staging/windows-x64 || _die "Couldn't create the staging directory"
 
+    echo "END PREP Server Windows-x64"
 }
 
 ################################################################################
@@ -106,6 +109,7 @@ _prep_server_windows_x64() {
 ################################################################################
 
 _build_server_windows_x64() {
+    echo "BEGIN BUILD Server Windows-x64"
     
     # Create a build script for VC++
     cd $WD/server/scripts/windows
@@ -431,6 +435,7 @@ EOT
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi.control $WD/server/staging/windows-x64/share/extension
      
     cd $WD
+    echo "END BUILD Server Windows-x64"
 }
 
 
@@ -439,6 +444,7 @@ EOT
 ################################################################################
 
 _postprocess_server_windows_x64() {
+    echo "BEGIN POST Server Windows-x64"
 
     cd $WD/server
 
@@ -509,5 +515,6 @@ _postprocess_server_windows_x64() {
     win32_sign "postgresql-$PG_PACKAGE_VERSION-windows-x64.exe"
     
     cd $WD
+    echo "END POST Server Windows-x64"
 }
 

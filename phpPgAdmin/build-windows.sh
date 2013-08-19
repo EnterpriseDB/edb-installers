@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_phpPgAdmin_windows() {
+     
+    echo "BEGIN PREP phpPgAdmin Windows"   
 
     # Enter the source directory and cleanup if required
     cd $WD/phpPgAdmin/source
@@ -32,7 +34,8 @@ _prep_phpPgAdmin_windows() {
 
     echo "Creating staging directory ($WD/phpPgAdmin/staging/windows)"
     mkdir -p $WD/phpPgAdmin/staging/windows/phpPgAdmin || _die "Couldn't create the staging directory"
-
+    
+    echo "END PREP phpPgAdmin Windows" 
 
 }
 
@@ -41,8 +44,12 @@ _prep_phpPgAdmin_windows() {
 ################################################################################
 
 _build_phpPgAdmin_windows() {
+    
+    echo "BEGIN BUILD phpPgAdmin Windows"
 
     cd $WD
+   
+    echo "END BUILD phpPgAdmin Windows"
 }
 
 
@@ -52,6 +59,7 @@ _build_phpPgAdmin_windows() {
 
 _postprocess_phpPgAdmin_windows() {
 
+    echo "BEGIN POST phpPgAdmin Windows"    
 
     cp -R $WD/phpPgAdmin/source/phpPgAdmin.windows/* $WD/phpPgAdmin/staging/windows/phpPgAdmin || _die "Failed to copy the phpPgAdmin Source into the staging directory"
 
@@ -88,6 +96,8 @@ _postprocess_phpPgAdmin_windows() {
 	win32_sign "phppgadmin-$PG_VERSION_PHPPGADMIN-$PG_BUILDNUM_PHPPGADMIN-windows.exe"
 	
     cd $WD
+   
+    echo "END POST phpPgAdmin Windows"
 
 }
 

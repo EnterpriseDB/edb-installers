@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_psqlODBC_osx() {
+    
+    echo "BEGIN PREP psqlODBC OSX"    
 
     echo "*******************************************************"
     echo " Pre Process : psqlODBC(OSX)"
@@ -36,7 +38,8 @@ _prep_psqlODBC_osx() {
     echo "Creating staging directory ($WD/psqlODBC/staging/osx)"
     mkdir -p $WD/psqlODBC/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/psqlODBC/staging/osx || _die "Couldn't set the permissions on the staging directory"
-
+    
+    echo "END PREP psqlODBC OSX"
 }
 
 ################################################################################
@@ -44,6 +47,8 @@ _prep_psqlODBC_osx() {
 ################################################################################
 
 _build_psqlODBC_osx() {
+    
+    echo "BEGIN BUILD psqlODBC OSX"
 
     echo "*******************************************************"
     echo " Build : psqlODBC(OSX)"
@@ -108,7 +113,8 @@ EOT
 
     install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$PG_STAGING/lib/psqlodbcw.so"
     install_name_tool -change "libssl.1.0.0.dylib" "@loader_path/../lib/libssl.1.0.0.dylib" "$PG_STAGING/lib/psqlodbcw.so"
-
+    
+    echo "END BUILD psqlODBC OSX"
 }
 
 
@@ -117,6 +123,8 @@ EOT
 ################################################################################
 
 _postprocess_psqlODBC_osx() {
+    
+    echo "BEGIN POST psqlODBC OSX"    
 
     echo "*******************************************************"
     echo " Post Process : psqlODBC(OSX)"
@@ -172,5 +180,7 @@ _postprocess_psqlODBC_osx() {
     rm -rf psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
+    
+    echo "END POST psqlODBC OSX"
 }
 

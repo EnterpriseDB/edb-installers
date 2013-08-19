@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_pgJDBC_osx() {
+    
+    echo "BEGIN PREP pgJDBC OSX"    
 
     echo "*******************************************************"
     echo " Pre Process : pgJDBC (OSX)"
@@ -37,7 +39,7 @@ _prep_pgJDBC_osx() {
     mkdir -p $WD/pgJDBC/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/pgJDBC/staging/osx || _die "Couldn't set the permissions on the staging directory"
 
-
+    echo "END PREP pgJDBC OSX"
 }
 
 ################################################################################
@@ -45,6 +47,8 @@ _prep_pgJDBC_osx() {
 ################################################################################
 
 _build_pgJDBC_osx() {
+    
+    echo "BEGIN BUILD pgJDBC OSX"    
 
     echo "*******************************************************"
     echo " Build : pgJDBC (OSX)"
@@ -52,6 +56,8 @@ _build_pgJDBC_osx() {
     cp -R $WD/pgJDBC/source/pgJDBC.osx/* $WD/pgJDBC/staging/osx || _die "Failed to copy the pgJDBC Source into the staging directory"
 
     cd $WD
+
+    echo "END BUILD pgJDBC OSX"
 }
 
 
@@ -60,6 +66,8 @@ _build_pgJDBC_osx() {
 ################################################################################
 
 _postprocess_pgJDBC_osx() {
+
+    echo "BEGIN POST pgJDBC OSX"
 
     echo "*******************************************************"
     echo " Post Process : pgJDBC (OSX)"
@@ -113,5 +121,7 @@ _postprocess_pgJDBC_osx() {
     rm -rf pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
+
+    echo "END POST pgJDBC OSX"
 }
 

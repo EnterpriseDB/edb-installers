@@ -7,6 +7,8 @@
 
 _prep_pgAgent_osx() {
 
+    echo "BEGIN PREP pgAgent OSX"
+
     echo "#####################################"
     echo "# pgAgent : OSX : Build preparation #"
     echo "#####################################"
@@ -35,7 +37,8 @@ _prep_pgAgent_osx() {
 
     echo "Creating staging directory ($WD/pgAgent/staging/osx)"
     mkdir -p $WD/pgAgent/staging/osx || _die "Couldn't create the staging directory"
-
+    
+    echo "END PREP pgAgent OSX"
 
 }
 
@@ -44,6 +47,8 @@ _prep_pgAgent_osx() {
 ################################################################################
 
 _build_pgAgent_osx() {
+
+    echo "BEGIN BUILD pgAgent OSX"
 
     echo "#####################################"
     echo "# pgAgent : OSX : Build             #"
@@ -85,7 +90,8 @@ _build_pgAgent_osx() {
 
     chmod +r $PG_STAGING/lib/*
     chmod +rx $PG_STAGING/bin/* 
-
+    
+    echo "END BUILD pgAgent OSX"
 }
 
 
@@ -94,6 +100,8 @@ _build_pgAgent_osx() {
 ################################################################################
 
 _postprocess_pgAgent_osx() {
+
+    echo "BEGIN POST pgAgent OSX"
 
     echo "#####################################"
     echo "# pgAgent : OSX : Post Process      #"
@@ -139,6 +147,8 @@ _postprocess_pgAgent_osx() {
     rm -rf pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
+
+    echo "END POST pgAgent OSX"
 
 }
 

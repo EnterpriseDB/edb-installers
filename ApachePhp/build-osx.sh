@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_ApachePhp_osx() {
+    # Following echo statement for Jenkins Console Section output
+    echo "BEGIN PREP ApachePhp OSX"
 
     echo "*******************************************************"
     echo " Pre Process : ApachePHP (OSX)"
@@ -58,6 +60,7 @@ _prep_ApachePhp_osx() {
     mkdir -p $WD/ApachePhp/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/ApachePhp/staging/osx || _die "Couldn't set the permissions on the staging directory"
         
+    echo "END PREP ApachePhp OSX"
 }
 
 
@@ -66,6 +69,7 @@ _prep_ApachePhp_osx() {
 ################################################################################
 
 _build_ApachePhp_osx() {
+    echo "BEGIN BUILD ApachePhp OSX"
 
     echo "*******************************************************"
     echo " Build : ApachePHP (OSX)"
@@ -300,6 +304,7 @@ EOT
     done
 
     cd $WD
+    echo "END BUILD ApachePhp OSX"
 }
 
 
@@ -308,6 +313,7 @@ EOT
 ################################################################################
 
 _postprocess_ApachePhp_osx() {
+    echo "BEGIN POST ApachePhp OSX"
 
     echo "*******************************************************"
     echo " Post Process : ApachePHP (OSX)"
@@ -381,5 +387,6 @@ _postprocess_ApachePhp_osx() {
     rm -rf apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-osx.app/ || _die "Failed to remove the unpacked installer bundle"
     
     cd $WD
+    echo "END POST ApachePhp OSX"
 }
 

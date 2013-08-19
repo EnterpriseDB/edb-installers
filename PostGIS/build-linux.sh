@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_PostGIS_linux() {
+       
+    echo "BEGIN PREP PostGIS Linux"    
 
     # Enter the source directory and cleanup if required
     cd $WD/PostGIS/source
@@ -45,7 +47,8 @@ _prep_PostGIS_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PGHOME_LINUX; rm -f doc/postgresql/postgis/postgis.html doc/postgresql/postgis/README.postgis" || _die "Failed to remove documentation"
     ssh $PG_SSH_LINUX "cd $PG_PGHOME_LINUX; rm -f share/man/man1/pgsql2shp.1 share/man/man1/shp2pgsql.1" || _die "Failed to remove man pages"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; rm -f build-postgis-linux.sh" || _die "Failed to remove build-postgis-linux.sh script"
-
+    
+    echo "END PREP PostGIS Linux"
 
 }
 
@@ -55,7 +58,9 @@ _prep_PostGIS_linux() {
 ################################################################################
 
 _build_PostGIS_linux() {
-
+    
+    echo "BEGIN BUILD PostGIS Linux"    
+ 
     # build postgis
 
     PLATFORM=linux
@@ -191,7 +196,8 @@ EOT
     rm -rf $WD/PostGIS/staging/linux/PostGIS/mnt
 
     cd $WD/PostGIS
-
+    
+    echo "END BUILD PostGIS Linux"
 }
 
 
@@ -200,6 +206,8 @@ EOT
 ################################################################################
 
 _postprocess_PostGIS_linux() {
+
+    echo "BEGIN POST PostGIS Linux"
 
     cd $WD/PostGIS
     mkdir -p staging/linux/installer/PostGIS || _die "Failed to create a directory for the install scripts"
@@ -241,5 +249,7 @@ _postprocess_PostGIS_linux() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
 
     cd $WD
+
+    echo "END POST PostGIS Linux"
 }
 

@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_ReplicationServer_windows() {
+    
+    echo "BEGIN PREP ReplicationServer Windows"    
 
     # Enter the source directory and cleanup if required
     cd $WD/ReplicationServer/source
@@ -91,7 +93,8 @@ _prep_ReplicationServer_windows() {
     scp DataValidator.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the DataValidator archieve to windows VM (DataValidator.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip ReplicationServer.zip" || _die "Couldn't extract ReplicationServer archieve on windows VM (ReplicationServer.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip DataValidator.zip" || _die "Couldn't extract DataValidator archieve on windows VM (DataValidator.zip)"
-
+    
+    echo "END PREP ReplicationServer Windows"
 }
 
 ################################################################################
@@ -100,6 +103,7 @@ _prep_ReplicationServer_windows() {
 
 _build_ReplicationServer_windows() {
 
+    echo "BEGIN BUILD ReplicationServer Windows"     
 
      # build ReplicationServer   
     PG_STAGING=$PG_PATH_WINDOWS
@@ -248,7 +252,8 @@ EOT
     unix2dos $WD/ReplicationServer/staging/windows/repserver/etc/xdb_pubserver.conf || _die "Failed to convert xdb_pubserver conf in dos readable format."
     unix2dos $WD/ReplicationServer/staging/windows/repserver/etc/xdb_subserver.conf || _die "Failed to convert xdb_subserver conf in dos readable format."
     unix2dos $WD/ReplicationServer/staging/windows/repconsole/etc/datavalidator.properties || _die "Failed to convert datavalidator properties in dos readable format."
-
+    
+    echo "END BUILD ReplicatioinServer Windows"
 }
 
 
@@ -258,6 +263,7 @@ EOT
 
 _postprocess_ReplicationServer_windows() {
  
+    echo "BEGIN POST ReplicationServer Windows"    
 
     cd $WD/ReplicationServer
 
@@ -287,5 +293,7 @@ _postprocess_ReplicationServer_windows() {
     win32_sign "xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-windows.exe"
 
     cd $WD
+    
+    echo "END POST ReplicationServer Windows"
 }
 

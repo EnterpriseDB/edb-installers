@@ -5,7 +5,9 @@
 ################################################################################
 
 _prep_PostGIS_osx() {
-      
+    
+    echo "BEGIN PREP PostGIS OSX"
+  
     echo "********************************"
     echo "*  Pre Process: PostGIS (OSX)  *"
     echo "********************************"
@@ -49,6 +51,8 @@ _prep_PostGIS_osx() {
     rm -f doc/postgresql/postgis/postgis.html doc/postgresql/postgis/README.postgis || _die "Failed to remove documentation"
     rm -f share/man/man1/pgsql2shp.1 share/man/man1/shp2pgsql.1 || _die "Failed to remove man pages"
     cd $WD
+
+    echo "END PREP PostGIS OSX"
 
 }
 
@@ -220,6 +224,8 @@ _build_postgis() {
 
 _build_PostGIS_osx() {
 
+    echo "BEGIN BUILD PostGIS OSX"
+
     echo "**************************"
     echo "*  Build: PostGIS (OSX)  *"
     echo "**************************"
@@ -255,6 +261,8 @@ _build_PostGIS_osx() {
     
 
     cd $WD
+
+    echo "END BUILD PostGIS OSX"
  
 }
     
@@ -264,6 +272,8 @@ _build_PostGIS_osx() {
 ################################################################################
 
 _postprocess_PostGIS_osx() {
+
+    echo "BEGIN POST PostGIS OSX"
 
     echo "*********************************"
     echo "*  Post Process: PostGIS (OSX)  *"
@@ -319,5 +329,7 @@ _postprocess_PostGIS_osx() {
     rm -rf postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app/ || _die "Failed to remove the unpacked installer bundle"
     
     cd $WD
+
+    echo "END POST PostGIS OSX"
 }
 

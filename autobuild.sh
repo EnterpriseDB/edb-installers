@@ -174,7 +174,7 @@ git pull >> autobuild.log 2>&1
 
 # Run the build, and dump the output to a log file
 echo "Running the build (REL-9_3) " >> autobuild.log
-./build.sh $SKIPBUILD > output/build-93.log 2>&1
+./build.sh $SKIPBUILD 2>&1 | tee output/build-93.log
 
 _mail_status "build-93.log" "9.3"
 

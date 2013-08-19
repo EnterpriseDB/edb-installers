@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_server_linux() {
+    # Following echo statement for Jenkins Console Section output
+    echo "BEGIN PREP Server Linux"
 
     # Enter the source directory and cleanup if required
     cd $WD/server/source
@@ -52,6 +54,7 @@ _prep_server_linux() {
       rm -f $WD/server/scripts/linux/getlocales/getlocales.linux
     fi
 
+    echo "END PREP Server Linux"
 }
 
 _process_dependent_libs_linux() {
@@ -148,6 +151,7 @@ EOT
 ################################################################################
 
 _build_server_linux() {
+    echo "BEGIN BUILD Server Linux"
 
     # First build PostgreSQL
 
@@ -359,6 +363,7 @@ EOT
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/scripts/linux/getlocales/; gcc -o getlocales.linux -O0 getlocales.c" || _die "Failed to build getlocales utility"
 
     cd $WD
+    echo "END BUILD Server Linux"
 }
 
 
@@ -367,6 +372,7 @@ EOT
 ################################################################################
 
 _postprocess_server_linux() {
+    echo "BEGIN POST Server Linux"
 
     cd $WD/server
 
@@ -485,5 +491,6 @@ _postprocess_server_linux() {
 	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-linux.run || _die "Failed to rename the installer"
 
     cd $WD
+    echo "END POST Server Linux"
 }
 

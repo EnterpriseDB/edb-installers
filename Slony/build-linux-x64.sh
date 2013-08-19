@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_Slony_linux_x64() {
+
+    echo "BEGIN PREP Slony Linux-x64"
       
     # Enter the source directory and cleanup if required
     cd $WD/Slony/source
@@ -37,6 +39,8 @@ _prep_Slony_linux_x64() {
     echo "Removing existing slony files from the PostgreSQL directory"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f bin/slon bin/slonik bin/slony_logshipper lib/postgresql/slony_funcs.so"  || _die "Failed to remove slony binary files"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f share/postgresql/slony*.sql"  || _die "remove slony share files"
+  
+    echo "END PREP Slony Linux-x64"
 }
 
 
@@ -45,6 +49,8 @@ _prep_Slony_linux_x64() {
 ################################################################################
 
 _build_Slony_linux_x64() {
+
+    echo "BEGIN BUILD Slony Linux-x64"
 
     # build slony
     PG_STAGING=$PG_PATH_LINUX_X64/Slony/staging/linux-x64
@@ -61,6 +67,8 @@ _build_Slony_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64/lib/postgresql; chrpath --replace \"\\\${ORIGIN}/../lib\" slony1_funcs.so"
 
     cd $WD
+   
+    echo "END BUILD Slony Linux-x64"
 
 }
 
@@ -70,6 +78,8 @@ _build_Slony_linux_x64() {
 ################################################################################
 
 _postprocess_Slony_linux_x64() {
+
+    echo "BEGIN POST Slony Linux-x64"
 
     PG_STAGING=$PG_PATH_LINUX_X64/Slony/staging/linux-x64
 
@@ -130,5 +140,7 @@ _postprocess_Slony_linux_x64() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
     
     cd $WD
+
+    echo "END POST Slony Linux-x64"
 }
 

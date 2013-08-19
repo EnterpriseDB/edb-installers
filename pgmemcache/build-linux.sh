@@ -5,6 +5,8 @@
 ################################################################################
 
 _prep_pgmemcache_linux() {
+    
+    echo "BEGIN PREP pgmemcache Linux"    
 
     echo "############################################"
     echo "# pgmemcache : LINUX : Build preparation #"
@@ -31,7 +33,8 @@ _prep_pgmemcache_linux() {
 
     echo "Creating staging directory ($PGMEM_STAGING)"
     mkdir -p $PGMEM_STAGING || _die "Couldn't create the staging directory"
-
+    
+    echo "END PREP pgmemcache Linux"
 }
 
 ################################################################################
@@ -39,6 +42,8 @@ _prep_pgmemcache_linux() {
 ################################################################################
 
 _build_pgmemcache_linux() {
+
+    echo "BEGIN BUILD pgmemcache Linux"
 
     echo "##############################"
     echo "# pgmemcache : LINUX : Build #"
@@ -70,10 +75,11 @@ _build_pgmemcache_linux() {
     cp -pR $PGMEM_SOURCE/pgmemcache.so $PGMEM_STAGING/lib || _die "Failed to copy the pgmemcache binary"
     cp -pR $PGMEM_SOURCE/*.sql $PGMEM_STAGING/share || _die "Failed to copy the share files for the pgmemcache"
     ssh $PVT_SSH "cp -pR /usr/local/include/libmemcached* $PVT_REPO/pgmemcache/staging/linux/include/" || _die "Failed to copy the header files for the libmemcached"
-    
 
     chmod a+rx $PGMEM_STAGING/lib/* || _die "Failed to set permissions"
     chmod a+r $PGMEM_STAGING/share/* || _die "Failed to set permissions"
+
+    echo "END BUILD pgmemcache Linux"
 
 }
 
@@ -83,6 +89,8 @@ _build_pgmemcache_linux() {
 ################################################################################
 
 _postprocess_pgmemcache_linux() {
+    
+    echo "BEGIN POST pgmemcache Linux"
 
     echo "#######################################"
     echo "# pgmemcache : LINUX : Post Process #"
@@ -105,6 +113,8 @@ _postprocess_pgmemcache_linux() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml ${PGMEM_PLATFORM} || _die "Failed to build the installer (${PGMEM_PLATFORM})"
 
     cd $WD
+
+    echo "END POST pgmemcache Linux"
 
 }
 

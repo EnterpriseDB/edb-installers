@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_server_osx() {
+    # Following echo statement for Jenkins Console Section output
+    echo "BEGIN PREP Server OSX"
 
     echo "*******************************************************"
     echo " Pre Process : Server (OSX)"
@@ -55,6 +57,7 @@ _prep_server_osx() {
       rm -f $WD/server/scripts/osx/getlocales/getlocales.osx
     fi
 
+    echo "END PREP Server OSX"
 }
 
 ################################################################################
@@ -62,6 +65,7 @@ _prep_server_osx() {
 ################################################################################
 
 _build_server_osx() {
+    echo "BEGIN BUILD Server OSX"
 
     echo "*******************************************************"
     echo " Build : Server (OSX) "
@@ -209,6 +213,7 @@ EOT
     cd $WD/server/scripts/osx/getlocales/; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -o getlocales.osx -O0 getlocales.c  || _die "Failed to build getlocales utility"
 
     cd $WD
+    echo "END BUILD Server OSX"
 }
 
 
@@ -217,6 +222,7 @@ EOT
 ################################################################################
 
 _postprocess_server_osx() {
+    echo "BEGIN POST Server OSX"
 
     echo "*******************************************************"
     echo " Post Process : Server (OSX)"
@@ -341,5 +347,6 @@ _postprocess_server_osx() {
     rm -rf server.img
 
     cd $WD
+    echo "END POST Server OSX"
 }
 

@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_pgbouncer_windows() {
+    
+    echo "BEGIN PREP pgbouncer Windows"    
 
     # Enter the source directory and cleanup if required
     cd $WD/pgbouncer/source
@@ -60,6 +62,8 @@ _prep_pgbouncer_windows() {
     echo "Copying pgbouncer sources to Windows VM"
     scp pgbouncer.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the pgbouncer archieve to windows VM (pgbouncer.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip pgbouncer.zip" || _die "Couldn't extract pgbouncer archieve on windows VM (pgbouncer.zip)"
+
+    echo "END PREP pgbouncer Windows"
 }
 
 ################################################################################
@@ -67,6 +71,8 @@ _prep_pgbouncer_windows() {
 ################################################################################
 
 _build_pgbouncer_windows() {
+
+    echo "BEGIN BUILD pgbouncer Windows"
 
     PG_PGBUILD_MINGW_WINDOWS=`echo $PG_PGBUILD_WINDOWS | sed -e 's/://g' -e 's:\\\\:/:g' -e 's:^:/:g'`
 
@@ -110,7 +116,8 @@ EOT
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/pgbouncer-staging.zip $WD/pgbouncer/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/pgbouncer-staging.zip)"
     unzip $WD/pgbouncer/staging/windows/pgbouncer-staging.zip -d $WD/pgbouncer/staging/windows || _die "Failed to unpack the built source tree ($WD/staging/windows/pgbouncer-staging.zip)"
     rm $WD/pgbouncer/staging/windows/pgbouncer-staging.zip
-
+    
+    echo "END BUILD pgbouncer Windows"
 }
 
 ################################################################################
@@ -119,6 +126,7 @@ EOT
 
 _postprocess_pgbouncer_windows() {
  
+    echo "BEGIN POST pgbouncer Windows"
 
     cd $WD/pgbouncer
 
@@ -147,5 +155,7 @@ _postprocess_pgbouncer_windows() {
 	win32_sign "pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-windows.exe"
 	
     cd $WD
+
+    echo "END POST pgbouncer Windows"
 }
 

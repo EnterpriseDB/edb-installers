@@ -6,7 +6,9 @@
 ################################################################################
 
 _prep_updatemonitor_windows() {
-
+    
+    echo "BEGIN PREP updatemonitor Windows"     
+ 
     echo "****************************************"
     echo "* Preparing - UpdateMonitor (win32) *"
     echo "****************************************"
@@ -77,7 +79,8 @@ _prep_updatemonitor_windows() {
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip updatemonitor.zip" || _die "Couldn't extract UpdateMonitor archieve on Windows VM (updatemonitor.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip GetLatestPGInstalled.zip" || _die "Couldn't extract GetLatestPGInstalled archieve on Windows VM (GetLatestPGInstalled.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; mkdir -p updatemonitor.staging" || _die "Couldn't create updatemonitor.staging directory on Windows VM"
-
+    
+    echo "END PREP updatemonitor Windows"
 }
 
 ################################################################################
@@ -85,6 +88,8 @@ _prep_updatemonitor_windows() {
 ################################################################################
 
 _build_updatemonitor_windows() {
+
+    echo "BEGIN BUILD updatemonitor Windows"
 
     echo "**************************************"
     echo "* Build - UpdateMonitor (win32)   *"
@@ -187,7 +192,8 @@ EOT
     rm -f um_output.zip
 
     win32_sign "UpdManager.exe" "$WD/UpdateMonitor/staging/windows/UpdateMonitor/bin"
-
+    
+    echo "END BUILD updtemonitor Windows"
 }
 
 
@@ -196,6 +202,8 @@ EOT
 ################################################################################
 
 _postprocess_updatemonitor_windows() {
+    
+    echo "BEGIN POST updatemonitor Windows"
  
     cd $WD/UpdateMonitor
 
@@ -217,5 +225,7 @@ _postprocess_updatemonitor_windows() {
     win32_sign "updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-windows.exe"
 	
     cd $WD
+    
+    echo "END POST updatemonitor Windows"
 }
 

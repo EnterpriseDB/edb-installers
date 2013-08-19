@@ -7,6 +7,8 @@
 
 _prep_Npgsql_linux() {
 
+    echo "BEGIN PREP Npgsql Linux"
+
     # Enter the source directory and cleanup if required
     cd $WD/Npgsql/source
 
@@ -33,6 +35,7 @@ _prep_Npgsql_linux() {
     mkdir -p $WD/Npgsql/staging/linux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/Npgsql/staging/linux || _die "Couldn't set the permissions on the staging directory"
     
+    echo "END PREP Npgsql Linux"
 
 }
 
@@ -41,8 +44,12 @@ _prep_Npgsql_linux() {
 ################################################################################
 
 _build_Npgsql_linux() {
+  
+    echo "BEGIN BUILD Npgsql Linux"
 
     cd $WD
+
+    echo "END BUILD Npgsql Linux"
 }
 
 
@@ -51,6 +58,8 @@ _build_Npgsql_linux() {
 ################################################################################
 
 _postprocess_Npgsql_linux() {
+
+    echo "BEGIN POST Npgsql Linux"
  
     cp -R $WD/Npgsql/source/Npgsql.linux/* $WD/Npgsql/staging/linux || _die "Failed to copy the Npgsql Source into the staging directory"
     chmod -R ugo+rx $WD/Npgsql/staging/linux/docs
@@ -90,5 +99,7 @@ _postprocess_Npgsql_linux() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
 
     cd $WD
+
+    echo "END POST Npgsql Linux"
 }
 

@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_ApachePhp_linux_x64() {
+    # Following echo statement for Jenkins Console Section output
+    echo "BEGIN PREP ApachePhp Linux-x64"
 
     # Enter the source directory and cleanup if required
     cd $WD/ApachePhp/source
@@ -48,6 +50,7 @@ _prep_ApachePhp_linux_x64() {
     mkdir -p $WD/ApachePhp/staging/linux-x64 || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/ApachePhp/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
 
+    echo "END PREP ApachePhp Linux-x64"
 }
 
 
@@ -56,6 +59,7 @@ _prep_ApachePhp_linux_x64() {
 ################################################################################
 
 _build_ApachePhp_linux_x64() {
+    echo "BEGIN BUILD ApachePhp Linux-x64"
 
     # build apache
 
@@ -175,6 +179,7 @@ EOT
 
     cd $WD
 
+    echo "END BUILD ApachePhp Linux-x64"
 }
 
 
@@ -184,6 +189,7 @@ EOT
 ################################################################################
 
 _postprocess_ApachePhp_linux_x64() {
+    echo "BEGIN POST ApachePhp Linux-x64"
 
     PG_STAGING=$PG_PATH_LINUX_X64/ApachePhp/staging/linux-x64
 
@@ -261,5 +267,6 @@ _postprocess_ApachePhp_linux_x64() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 
     cd $WD
+    echo "END POST ApachePhp Linux-x64"
 }
 

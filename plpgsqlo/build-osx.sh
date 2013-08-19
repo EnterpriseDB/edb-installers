@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_plpgsqlo_osx() {
+    
+    echo "BEGIN PREP plpgsqlo OSX"    
 
     cd $WD/server/source
 
@@ -64,7 +66,8 @@ _prep_plpgsqlo_osx() {
     chmod 755 $PLPGSQLOSTAGING/doc || _die "Couldn't set the permissions on the staging doc directory"
     echo "Copying readme.sqlprotect to staging doc directory"
     cp $WD/plpgsqlo/resources/README.plsecure $PLPGSQLOSTAGING/doc/ || _die "Couldn't copy README.plsecure to staging doc directory"
-
+    
+    echo "END PREP plpgsqlo OSX"
 }
 
 ################################################################################
@@ -72,6 +75,8 @@ _prep_plpgsqlo_osx() {
 ################################################################################
 
 _build_plpgsqlo_osx() {
+
+    echo "BEGIN BUILD plpgsqlo OSX"
 
     PGPLATFORMDIR=$WD/server/source/postgres.osx
 
@@ -83,6 +88,8 @@ _build_plpgsqlo_osx() {
 
     cd $PGPLATFORMDIR
     patch -p1 -f -c -R < $WD/plpgsqlo/resources/plpgsqlo.patch
+
+    echo "END BUILD plpgsqlo OSX"
 }
 
 
@@ -92,6 +99,7 @@ _build_plpgsqlo_osx() {
 
 _postprocess_plpgsqlo_osx() {
 
+    echo "BEGIN POST plpgsqlo OSX"    
 
     cd $WD/plpgsqlo
 
@@ -111,6 +119,8 @@ _postprocess_plpgsqlo_osx() {
     rm -rf plsecure-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
+
+    echo "END POST plpgsqlo OSX"
 
 }
 

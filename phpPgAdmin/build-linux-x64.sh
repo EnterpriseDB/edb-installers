@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_phpPgAdmin_linux_x64() {
+    
+    echo "BEGIN PREP phpPgAdmin Linux-x64"    
 
     # Enter the source directory and cleanup if required
     cd $WD/phpPgAdmin/source
@@ -31,7 +33,8 @@ _prep_phpPgAdmin_linux_x64() {
 
     echo "Creating staging directory ($WD/phpPgAdmin/staging/linux-x64)"
     mkdir -p $WD/phpPgAdmin/staging/linux-x64/phpPgAdmin || _die "Couldn't create the staging directory"
-
+   
+    echo "END PREP phpPgAdmin Linux-x64"
 
 }
 
@@ -40,8 +43,12 @@ _prep_phpPgAdmin_linux_x64() {
 ################################################################################
 
 _build_phpPgAdmin_linux_x64() {
+    
+    echo "BEGIN BUILD phpPgAdmin Linux-x64"    
 
     cd $WD
+
+    echo "END BUILD phpPgAdmin Linux-x64"
 }
 
 
@@ -51,6 +58,7 @@ _build_phpPgAdmin_linux_x64() {
 
 _postprocess_phpPgAdmin_linux_x64() {
 
+    echo "BEGIN POST phpPgAdmin Linux-x64"    
 
     cp -R $WD/phpPgAdmin/source/phpPgAdmin.linux-x64/* $WD/phpPgAdmin/staging/linux-x64/phpPgAdmin || _die "Failed to copy the phpPgAdmin Source into the staging directory"
 
@@ -102,7 +110,9 @@ _postprocess_phpPgAdmin_linux_x64() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 
-    cd $WD
+    cd $WD 
+
+    echo "END POST phpPgAdmin Linux-x64"
 
 }
 

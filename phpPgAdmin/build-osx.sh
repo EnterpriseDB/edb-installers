@@ -5,6 +5,8 @@
 ################################################################################
 
 _prep_phpPgAdmin_osx() {
+    
+    echo "BEGIN PREP phpPgAdmin OSX"
 
     echo "*******************************************************"
     echo " Pre Process : phpPGAdmin (OSX)"
@@ -34,7 +36,8 @@ _prep_phpPgAdmin_osx() {
 
     echo "Creating staging directory ($WD/phpPgAdmin/staging/osx)"
     mkdir -p $WD/phpPgAdmin/staging/osx/phpPgAdmin || _die "Couldn't create the staging directory"
-
+    
+    echo "END PREP phpPgAdmin OSX"
 }
 
 ################################################################################
@@ -42,14 +45,18 @@ _prep_phpPgAdmin_osx() {
 ################################################################################
 
 _build_phpPgAdmin_osx() {
-
+    
+    echo "BEGIN BUILD phpPgAdmin OSX"    
+ 
     echo "*******************************************************"
     echo " Build : phpPGAdmin (OSX)"
     echo "*******************************************************"
 
     cd $WD
     cp -R $WD/phpPgAdmin/source/phpPgAdmin.osx/* $WD/phpPgAdmin/staging/osx/phpPgAdmin || _die "Failed to copy the phpPgAdmin Source into the staging directory"
-}
+     
+    echo "END BUILD phpPgAdmin OSX"
+ } 
 
 
 ################################################################################
@@ -57,6 +64,8 @@ _build_phpPgAdmin_osx() {
 ################################################################################
 
 _postprocess_phpPgAdmin_osx() {
+           
+    echo "BEGIN POST phpPgAdmin OSX"
 
     echo "*******************************************************"
     echo " Post Process : phpPGAdmin (OSX)"
@@ -96,6 +105,8 @@ _postprocess_phpPgAdmin_osx() {
     rm -rf phppgadmin-$PG_VERSION_PHPPGADMIN-$PG_BUILDNUM_PHPPGADMIN-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
+
+    echo "END POST phpPgAdmin OSX"
 
 }
 

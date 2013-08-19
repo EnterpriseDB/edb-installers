@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_ApachePhp_windows() {
+    # Following echo statement for Jenkins Console Section output
+    echo "BEGIN PREP ApachePhp Windows"
       
     # Enter the source directory and cleanup if required
     cd $WD/ApachePhp/source
@@ -94,6 +96,7 @@ _prep_ApachePhp_windows() {
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip php.zip" || _die "Couldn't extract php archieve on windows VM (php.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; chmod -R a+wrx php.windows" || _die "Couldn't give full rights to php windows directory on windows VM (php.windows)"
 
+    echo "END PREP ApachePhp Windows"
 }
 
 
@@ -102,6 +105,7 @@ _prep_ApachePhp_windows() {
 ################################################################################
 
 _build_ApachePhp_windows() {
+    echo "BEGIN BUILD ApachePhp Windows"
 
 
     cd $WD/ApachePhp/staging/windows
@@ -281,6 +285,7 @@ EOT
     unzip $WD/ApachePhp/staging/windows/php/php-staging.zip -d $WD/ApachePhp/staging/windows/php || _die "Failed to unpack the built source tree ($WD/staging/windows/php-staging.zip)"
     rm $WD/ApachePhp/staging/windows/php/php-staging.zip
 
+    echo "END BUILD ApachePhp Windows"
 }
 
 
@@ -290,6 +295,7 @@ EOT
 ################################################################################
 
 _postprocess_ApachePhp_windows() {
+    echo "BEGIN POST ApachePhp Windows"
 
     cd $WD/ApachePhp
     #Changing the ServerRoot from htdocs to www in apache
@@ -326,5 +332,6 @@ _postprocess_ApachePhp_windows() {
 	win32_sign "apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-windows.exe"
 	
      cd $WD
+    echo "END POST ApachePhp Windows"
 }
 

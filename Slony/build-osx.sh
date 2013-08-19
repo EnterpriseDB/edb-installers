@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_Slony_osx() {
+    
+    echo "BEGIN PREP Slony OSX"    
 
     echo "*******************************************************"
     echo " Pre Process : Slony(OSX)"
@@ -42,7 +44,8 @@ _prep_Slony_osx() {
     cd $PG_PGHOME_OSX
     rm -f bin/slon bin/slonik bin/slony_logshipper lib/postgresql/slony_funcs.so"  || _die "Failed to remove slony binary files"
     rm -f share/postgresql/slony*.sql"  || _die "remove slony share files"
-
+    
+    echo "END PREP Slony OSX"
 }
 
 ################################################################################
@@ -50,6 +53,8 @@ _prep_Slony_osx() {
 ################################################################################
 
 _build_Slony_osx() {
+ 
+    echo "BEGIN BUILD Slony OSX"
 
     echo "*******************************************************"
     echo " Build : Slony(OSX)"
@@ -144,7 +149,6 @@ EOT
     mkdir -p $WD/Slony/staging/osx/Slony
     cp $PG_PGHOME_OSX/share/postgresql/slony*.sql $PG_STAGING/Slony || _die "Failed to share files to staging directory"
 
-
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     _rewrite_so_refs $WD/Slony/staging/osx lib @loader_path/..
     _rewrite_so_refs $WD/Slony/staging/osx bin @loader_path/..
@@ -152,13 +156,17 @@ EOT
     install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$WD/Slony/staging/osx/bin/slon"
     install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$WD/Slony/staging/osx/bin/slonik"
     install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$WD/Slony/staging/osx/bin/slony_logshipper"
-}
+
+    echo "END BUILD Slony OSX"
+ }
 
 ################################################################################
 # Slony Postprocess
 ################################################################################
 
 _postprocess_Slony_osx() {
+
+    echo "BEGIN POST Slony OSX"
 
     echo "*******************************************************"
     echo " Post Process : Slony(OSX)"
@@ -215,6 +223,8 @@ _postprocess_Slony_osx() {
     rm -rf slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
+
+    echo "END POST Slony OSX"
 
 }
 

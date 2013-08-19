@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_pgJDBC_windows() {
+    
+    echo "BEGIN PREP pgJDBC Windows"   
 
     # Enter the source directory and cleanup if required
     cd $WD/pgJDBC/source
@@ -33,6 +35,7 @@ _prep_pgJDBC_windows() {
     mkdir -p $WD/pgJDBC/staging/windows || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/pgJDBC/staging/windows || _die "Couldn't set the permissions on the staging directory"
     
+    echo "END PREP pgJDBC Windows"
 
 }
 
@@ -41,8 +44,12 @@ _prep_pgJDBC_windows() {
 ################################################################################
 
 _build_pgJDBC_windows() {
+    
+    echo "BEGIN BUILD pgJDBC Windows"    
 
     cd $WD
+
+    echo "END BUILD pgJDBC Windows"
 }
 
 
@@ -51,6 +58,8 @@ _build_pgJDBC_windows() {
 ################################################################################
 
 _postprocess_pgJDBC_windows() {
+    
+    echo "BEGIN POST pgJDBC Windows"   
  
     cp -R $WD/pgJDBC/source/pgJDBC.windows/* $WD/pgJDBC/staging/windows || _die "Failed to copy the pgJDBC Source into the staging directory"
 
@@ -67,5 +76,7 @@ _postprocess_pgJDBC_windows() {
 	win32_sign "pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-windows.exe"
 	
     cd $WD
+
+    echo "END POST pgJDBC Windows"
 }
 

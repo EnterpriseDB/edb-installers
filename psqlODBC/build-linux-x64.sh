@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_psqlODBC_linux_x64() {
+    
+    echo "BEGIN PREP psqlODBC Linux-x64"
 
     # Enter the source directory and cleanup if required
     cd $WD/psqlODBC/source
@@ -32,7 +34,8 @@ _prep_psqlODBC_linux_x64() {
     echo "Creating staging directory ($WD/psqlODBC/staging/linux-x64)"
     mkdir -p $WD/psqlODBC/staging/linux-x64 || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/psqlODBC/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
-
+    
+    echo "END PREP psqlODBC Linux-x64"
 }
 
 
@@ -126,6 +129,8 @@ EOT
 ################################################################################
 
 _build_psqlODBC_linux_x64() {
+    
+    echo "BEGIN BUILD psqlODBC Linux-x64"
 
     cd $WD/psqlODBC
 
@@ -171,6 +176,8 @@ _build_psqlODBC_linux_x64() {
     _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "liblber.so"
     _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libodbcinst.so"
     _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libpq.so"
+    
+    echo "END BUILD psqlODBC Linux-x64"
 }
 
 
@@ -179,6 +186,8 @@ _build_psqlODBC_linux_x64() {
 ################################################################################
 
 _postprocess_psqlODBC_linux_x64() {
+    
+    echo "BEGIN POST psqlODBC Linux-x64"    
 
     cd $WD/psqlODBC
 
@@ -220,5 +229,8 @@ _postprocess_psqlODBC_linux_x64() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 
     cd $WD
+
+    echo "END POST psqlODBC Linux-x64"
 }
+
 

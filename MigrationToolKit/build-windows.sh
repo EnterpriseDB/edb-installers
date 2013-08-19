@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_MigrationToolKit_windows() {
+    
+    echo "BEGIN PREP MigrationToolKit Windows"   
       
     # Enter the source directory and cleanup if required
     cd $WD/MigrationToolKit/source
@@ -47,6 +49,7 @@ _prep_MigrationToolKit_windows() {
     mkdir -p $WD/MigrationToolKit/staging/windows || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/MigrationToolKit/staging/windows || _die "Couldn't set the permissions on the staging directory"
         
+    echo "END PREP MigrationToolKit Windows"
 }
 
 
@@ -55,6 +58,8 @@ _prep_MigrationToolKit_windows() {
 ################################################################################
 
 _build_MigrationToolKit_windows() {
+
+    echo "BEGIN BUILD MigrationToolKit Windows" 
 
     echo ############################################
     echo # Build Migration ToolKit (windows)
@@ -111,7 +116,8 @@ EOT
     unzip $WD/MigrationToolKit/staging/windows/dist.zip -d $WD/MigrationToolKit/staging/windows/ || _die "Failed to unpack the built source tree ($WD/staging/windows/dist.zip)"
     rm $WD/MigrationToolKit/staging/windows/dist.zip
     mv $WD/MigrationToolKit/staging/windows/install $WD/MigrationToolKit/staging/windows/MigrationToolKit || _die "Failed to rename the dist folder"
-
+    
+    echo "END BUILD MigrationToolKit Windows"
 }
     
 
@@ -121,6 +127,8 @@ EOT
 ################################################################################
 
 _postprocess_MigrationToolKit_windows() {
+
+    echo "BEGIN POST MigrationToolKit Windows"
 
     cd $WD/MigrationToolKit
 
@@ -139,5 +147,7 @@ _postprocess_MigrationToolKit_windows() {
 	win32_sign "migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT-$PG_BUILDNUM_MIGRATIONTOOLKIT-windows.exe"
 	
     cd $WD
+
+    echo "END POST MigrationToolKit Windows"
 }
 

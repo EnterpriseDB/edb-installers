@@ -5,6 +5,8 @@
 ################################################################################
 
 _prep_updatemonitor_linux() {
+   
+    echo "BEGIN PREP updatemonitor Linux"
 
     echo "****************************************"
     echo "* Preparing - UpdateMonitor (linux) *"
@@ -42,7 +44,8 @@ _prep_updatemonitor_linux() {
     echo "Creating staging directory ($WD/UpdateMonitor/staging/linux)"
     mkdir -p $WD/UpdateMonitor/staging/linux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/UpdateMonitor/staging/linux || _die "Couldn't set the permissions on the staging directory"
-
+    
+    echo "END PREP updatemonitor Linux"
 }
 
 ################################################################################
@@ -50,6 +53,8 @@ _prep_updatemonitor_linux() {
 ################################################################################
 
 _build_updatemonitor_linux() {
+
+    echo "BEGIN BUILD updatemonitor Linux"
 
     echo "***************************************"
     echo "* Building - UpdateMonitor (linux) *"
@@ -83,6 +88,8 @@ _build_updatemonitor_linux() {
     ssh $PG_SSH_LINUX "cp $PG_QT_LINUX/lib/libQtGui.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtGui.so) in staging directory (linux)"
    ssh $PG_SSH_LINUX "chmod a+r $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib/*" || _die "Failed to set the read permissions on the lib directory"
     cd $WD
+   
+    echo "END BUILD updatemonitor Linux"
 }
 
 
@@ -91,6 +98,8 @@ _build_updatemonitor_linux() {
 ################################################################################
 
 _postprocess_updatemonitor_linux() { 
+ 
+    echo "BEGIN POST updatmonitor Linux"
 
     echo "**********************************************"
     echo "* Post-processing - UpdateMonitor (linux) *"
@@ -111,5 +120,7 @@ _postprocess_updatemonitor_linux() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer for linux"
 
     cd $WD
+    
+    echo "END POST updatemonitor Linux"
 }
 

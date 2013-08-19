@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_ApachePhp_linux() {
+    # Following echo statement for Jenkins Console Section output
+    echo "BEGIN PREP ApachePhp Linux"
 
     # Enter the source directory and cleanup if required
     cd $WD/ApachePhp/source
@@ -48,6 +50,7 @@ _prep_ApachePhp_linux() {
     mkdir -p $WD/ApachePhp/staging/linux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/ApachePhp/staging/linux || _die "Couldn't set the permissions on the staging directory"
 
+    echo "END PREP ApachePhp Linux"
 }
 
 
@@ -56,6 +59,7 @@ _prep_ApachePhp_linux() {
 ################################################################################
 
 _build_ApachePhp_linux() {
+    echo "BEGIN BUILD ApachePhp Linux"
 
     # build apache
 
@@ -176,6 +180,7 @@ EOT
 
     cd $WD
 
+    echo "END BUILD ApachePhp Linux"
 }
 
 
@@ -185,6 +190,7 @@ EOT
 ################################################################################
 
 _postprocess_ApachePhp_linux() {
+    echo "BEGIN POST ApachePhp Linux"
 
     PG_STAGING=$PG_PATH_LINUX/ApachePhp/staging/linux
 
@@ -262,5 +268,6 @@ _postprocess_ApachePhp_linux() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
     
     cd $WD
+    echo "END POST ApachePhp Linux"
 }
 

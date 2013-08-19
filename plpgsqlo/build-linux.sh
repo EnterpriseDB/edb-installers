@@ -6,7 +6,9 @@
 ################################################################################
 
 _prep_plpgsqlo_linux() {
-
+    
+    echo "BEGIN PREP plpgsqlo Linux"   
+ 
     cd $WD/server/source
 
     PGSOURECEDIR=$WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL
@@ -65,7 +67,8 @@ _prep_plpgsqlo_linux() {
     chmod 755 $PLPGSQLOSTAGING/doc || _die "Couldn't set the permissions on the staging doc directory"
     echo "Copying readme.sqlprotect to staging doc directory"
     cp $WD/plpgsqlo/resources/README.plsecure $PLPGSQLOSTAGING/doc/ || _die "Couldn't copy README.plsecure to staging doc directory"
-
+    
+    echo "END PREP plpgsqlo Linux"
 }
 
 ################################################################################
@@ -73,6 +76,8 @@ _prep_plpgsqlo_linux() {
 ################################################################################
 
 _build_plpgsqlo_linux() {
+    
+    echo "BEGIN BUILD plpgsqlo Linux"   
 
     PGBUILDSSH=$PG_SSH_LINUX
     PGSERVERREMOTEPATH=$PG_PATH_LINUX/server/source/postgres.linux
@@ -86,7 +91,9 @@ _build_plpgsqlo_linux() {
 
     cd $PGPLATFORMDIR
     patch -p1 -f -c -R < $WD/plpgsqlo/resources/plpgsqlo.patch
-}
+
+    echo "END BUILD plpgsqlo Linux"
+ }
 
 
 ################################################################################
@@ -94,7 +101,9 @@ _build_plpgsqlo_linux() {
 ################################################################################
 
 _postprocess_plpgsqlo_linux() {
-
+    
+    echo "BEGIN POST plpgsqlo Linux"    
+ 
     cd $WD/plpgsqlo
 
     # Build the installer
@@ -102,5 +111,6 @@ _postprocess_plpgsqlo_linux() {
 
     cd $WD
 
+    echo "END POST plpgsqlo Linux"
 }
 
