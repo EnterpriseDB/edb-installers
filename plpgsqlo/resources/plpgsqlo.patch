@@ -287,24 +287,28 @@ diff -c -r plpgsqlo-postgresql-9.2beta2/src/pl/plpgsqlo/src/pl_handler.c plpg/sr
 *** plpgsqlo-postgresql-9.2beta2/src/pl/plpgsqlo/src/pl_handler.c	Wed Jul  4 13:08:27 2012
 --- plpg/src/pl/plpgsqlo/src/pl_handler.c	Wed Jul  4 14:51:57 2012
 ***************
-*** 14,26 ****
---- 14,29 ----
-   */
+*** 15,21 ****
+--- 15,24 ----
   
   #include "plpgsqlo.h"
-+ #include "wrap.h"
   
++ #include "wrap.h"
++ 
+  #include "access/htup_details.h"
 + #include "catalog/indexing.h"
   #include "catalog/pg_proc.h"
   #include "catalog/pg_type.h"
   #include "funcapi.h"
-  #include "miscadmin.h"
+***************
+*** 23,28 ****
+--- 26,32 ----
   #include "utils/builtins.h"
   #include "utils/guc.h"
-+ #include "utils/rel.h"
   #include "utils/lsyscache.h"
++ #include "utils/rel.h"
   #include "utils/syscache.h"
   
+  PG_MODULE_MAGIC;
 ***************
 *** 144,210 ****
   }
@@ -465,7 +469,7 @@ diff -c -r plpgsqlo-postgresql-9.2beta2/src/pl/plpgsqlo/src/pl_handler.c plpg/sr
   	/* Get the new function's pg_proc entry */
   	tuple = SearchSysCache1(PROCOID, ObjectIdGetDatum(funcoid));
 ***************
-*** 269,280 ****
+*** 279,285 ****
   	}
   
   	/* Postpone body checks if !check_function_bodies */
@@ -473,23 +477,14 @@ diff -c -r plpgsqlo-postgresql-9.2beta2/src/pl/plpgsqlo/src/pl_handler.c plpg/sr
   	{
   		FunctionCallInfoData fake_fcinfo;
   		FmgrInfo	flinfo;
-  		TriggerData trigdata;
-- 		int			rc;
-  
-  		/*
-  		 * Connect to SPI manager (is this needed for compilation?)
---- 291,301 ----
+--- 283,289 ----
   	}
   
   	/* Postpone body checks if !check_function_bodies */
-! 	if (false && check_function_bodies)
+!  	if (false && check_function_bodies)
   	{
   		FunctionCallInfoData fake_fcinfo;
   		FmgrInfo	flinfo;
-  		TriggerData trigdata;
-  
-  		/*
-  		 * Connect to SPI manager (is this needed for compilation?)
 diff -c -r plpgsqlo-postgresql-9.2beta2/src/tools/msvc/MSBuildProject.pm plpg/src/tools/msvc/MSBuildProject.pm
 *** plpgsqlo-postgresql-9.2beta2/src/tools/msvc/MSBuildProject.pm	Fri Jun  1 04:46:55 2012
 --- plpg/src/tools/msvc/MSBuildProject.pm	Wed Jul  4 13:20:00 2012
@@ -514,19 +509,19 @@ diff -c -r plpgsqlo-postgresql-9.2beta2/src/tools/msvc/Mkvcbuild.pm plpg/src/too
 *** plpgsqlo-postgresql-9.2beta2/src/tools/msvc/Mkvcbuild.pm	Fri Jun  1 04:46:55 2012
 --- plpg/src/tools/msvc/Mkvcbuild.pm	Wed Jul  4 12:56:55 2012
 ***************
-*** 110,115 ****
---- 110,124 ----
-  	$plpgsql->AddFiles('src\pl\plpgsql\src', 'gram.y');
+*** 132,137 ****
+--- 132,146 ----
+  	$plpgsql->AddFiles('src\pl\plpgsql\src', 'pl_gram.y');
   	$plpgsql->AddReference($postgres);
   
-+          my $plpgsqlo =
-+            $solution->AddProject('plpgsqlo','dll','PLs','src\pl\plpgsqlo\src');
-+          $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'gram.y');
-+          $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'encode.c');
-+          $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'wrap.c');
-+          $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'md5.c');
-+          $plpgsqlo->AddReference($postgres);
-+          $plpgsqlo->AddLibrary('ws2_32.lib');
++         my $plpgsqlo =
++           $solution->AddProject('plpgsqlo','dll','PLs','src\pl\plpgsqlo\src');
++         $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'gram.y');
++         $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'encode.c');
++         $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'wrap.c');
++         $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'md5.c');
++         $plpgsqlo->AddReference($postgres);
++         $plpgsqlo->AddLibrary('ws2_32.lib');
 + 
   	if ($solution->{options}->{perl})
   	{
