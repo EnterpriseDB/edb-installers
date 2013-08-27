@@ -79,12 +79,13 @@ CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
 @SET PTHREADS_INC=$PG_PGBUILD_WINDOWS\include
 @SET PTHREADS_LIB=$PG_PGBUILD_WINDOWS\lib
 @SET PGVER=$PG_MAJOR_VERSION
+@SET SLONY_VERSION=$PG_VERSION_SLONY
 @SET PGSHARE=\"\"
 
 cd Slony.windows\src\slonik
 nmake /E /F win32.mak slonik.exe
 cd ..\backend
-nmake /E /F win32.mak slony1_funcs.dll
+nmake /E /F win32.mak slony1_funcs.%SLONY_VERSION%.dll
 cd ..\slon
 nmake /E /F win32.mak slon.exe
 
@@ -101,7 +102,7 @@ EOT
    ssh $PG_SSH_WINDOWS "cp $PG_PGBUILD_WINDOWS/bin/pthreadVC2.dll $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slonik binary to staging directory"
 
    ssh $PG_SSH_WINDOWS "mkdir -p $PG_PATH_WINDOWS/Slony.staging/lib" || _die "Failed to create the bin directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.dll $PG_PATH_WINDOWS/Slony.staging/lib" || _die "Failed to copy slony_funcs.dll to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.$PG_VERSION_SLONY.dll $PG_PATH_WINDOWS/Slony.staging/lib" || _die "Failed to copy slony_funcs.dll to staging directory"
 
    ssh $PG_SSH_WINDOWS "mkdir -p $PG_PATH_WINDOWS/Slony.staging/Slony" || _die "Failed to create the bin directory"
    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony*.sql $PG_PATH_WINDOWS/Slony.staging/Slony" || _die "Failed to share files to staging directory"

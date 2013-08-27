@@ -37,7 +37,7 @@ _prep_Slony_linux_x64() {
     chmod ugo+w $WD/Slony/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
 
     echo "Removing existing slony files from the PostgreSQL directory"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f bin/slon bin/slonik bin/slony_logshipper lib/postgresql/slony_funcs.so"  || _die "Failed to remove slony binary files"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f bin/slon bin/slonik bin/slony_logshipper lib/postgresql/slony_funcs.$PG_VERSION_SLONY.so"  || _die "Failed to remove slony binary files"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f share/postgresql/slony*.sql"  || _die "remove slony share files"
   
     echo "END PREP Slony Linux-x64"
@@ -64,7 +64,7 @@ _build_Slony_linux_x64() {
 
     echo "Changing the rpath for the slonik binaries and libraries"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64/bin; for f in slon slonik slony_logshipper ; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64/lib/postgresql; chrpath --replace \"\\\${ORIGIN}/../lib\" slony1_funcs.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64/lib/postgresql; chrpath --replace \"\\\${ORIGIN}/../lib\" slony1_funcs.$PG_VERSION_SLONY.so"
 
     cd $WD
    
@@ -94,7 +94,7 @@ _postprocess_Slony_linux_x64() {
     chmod +rx $WD/Slony/staging/linux-x64/bin/*   
  
     mkdir -p $WD/Slony/staging/linux-x64/lib
-    ssh $PG_SSH_LINUX_X64 "cp $PG_PGHOME_LINUX_X64/lib/postgresql/slony1_funcs.so $PG_STAGING/lib" || _die "Failed to copy slony_funs.so to staging directory"
+    ssh $PG_SSH_LINUX_X64 "cp $PG_PGHOME_LINUX_X64/lib/postgresql/slony1_funcs.$PG_VERSION_SLONY.so $PG_STAGING/lib" || _die "Failed to copy slony_funs.so to staging directory"
     chmod +r $WD/Slony/staging/linux-x64/lib/*
 
     mkdir -p $WD/Slony/staging/linux-x64/Slony

@@ -42,7 +42,7 @@ _prep_Slony_osx() {
 
     echo "Removing existing slony files from the PostgreSQL directory"
     cd $PG_PGHOME_OSX
-    rm -f bin/slon bin/slonik bin/slony_logshipper lib/postgresql/slony_funcs.so"  || _die "Failed to remove slony binary files"
+    rm -f bin/slon bin/slonik bin/slony_logshipper lib/postgresql/slony_funcs.$PG_VERSION_SLONY.so"  || _die "Failed to remove slony binary files"
     rm -f share/postgresql/slony*.sql"  || _die "remove slony share files"
     
     echo "END PREP Slony OSX"
@@ -143,7 +143,7 @@ EOT
     chmod +rx $WD/Slony/staging/osx/bin/*
 
     mkdir -p $WD/Slony/staging/osx/lib
-    cp $PG_PGHOME_OSX/lib/postgresql/slony1_funcs.so $PG_STAGING/lib || _die "Failed to copy slony_funcs.so to staging directory"
+    cp $PG_PGHOME_OSX/lib/postgresql/slony1_funcs.$PG_VERSION_SLONY.so $PG_STAGING/lib || _die "Failed to copy slony_funcs.so to staging directory"
     chmod +r $WD/Slony/staging/osx/lib/*
 
     mkdir -p $WD/Slony/staging/osx/Slony
