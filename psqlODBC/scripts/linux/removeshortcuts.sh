@@ -46,6 +46,7 @@ _warn() {
 _replace() {
     sed -e "s^$1^$2^g" $3 > "$TEMPFILE" || _die "Failed for search and replace '$1' with '$2' in $3"
         mv $TEMPFILE $3 || _die "Failed to move $TEMPFILE to $3"
+	chmod 644 $3
 }
 
 # Remove the menu shortcuts
