@@ -801,7 +801,7 @@ EOF
             <actionList>
                 <runProgram>
                     <program>${installdir}/Slony/installer/Slony/removeshortcuts.sh</program>
-                    <programArguments>"${installdir}" "${productVersion}" "${PGMajorVersion}" "${branding}" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
+                    <programArguments>"${installdir}" "${productVersion}" "${PGMajorVersion}" "${branding}"</programArguments>
                     <workingDirectory>${installdir}/Slony/installer/Slony</workingDirectory>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
