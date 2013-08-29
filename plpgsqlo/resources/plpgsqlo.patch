@@ -516,7 +516,7 @@ diff -c -r plpgsqlo-postgresql-9.2beta2/src/tools/msvc/Mkvcbuild.pm plpg/src/too
   
 +         my $plpgsqlo =
 +           $solution->AddProject('plpgsqlo','dll','PLs','src\pl\plpgsqlo\src');
-+         $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'gram.y');
++         $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'pl_gram.y');
 +         $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'encode.c');
 +         $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'wrap.c');
 +         $plpgsqlo->AddFiles('src\pl\plpgsqlo\src', 'md5.c');
