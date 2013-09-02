@@ -65,7 +65,9 @@ _build_Slony_linux() {
 
     echo "Changing the rpath for the slonik binaries and libraries"
     ssh $PG_SSH_LINUX "cd $PG_PGHOME_LINUX/bin; for f in slon slonik slony_logshipper ; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
-    ssh $PG_SSH_LINUX "cd $PG_PGHOME_LINUX/lib/postgresql; chrpath --replace \"\\\${ORIGIN}/../lib\" slony1_funcs.$PG_VERSION_SLONY.so"
+
+    #With slony1_funcs.$PG_VERSION_SLONY.so in lib/postgresql, the rpath must point to the parent directory for libpq and dependent libraries
+    ssh $PG_SSH_LINUX "cd $PG_PGHOME_LINUX/lib/postgresql; chrpath --replace \"\\\${ORIGIN}/..\" slony1_funcs.$PG_VERSION_SLONY.so"
 
     cd $WD
 
@@ -94,9 +96,9 @@ _postprocess_Slony_linux() {
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/bin/slony_logshipper $PG_STAGING/bin" || _die "Failed to copy slony_logshipper binary to staging directory"
     chmod +rx $WD/Slony/staging/linux/bin/*
 
-    mkdir -p $WD/Slony/staging/linux/lib
-    ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/lib/postgresql/slony1_funcs.$PG_VERSION_SLONY.so $PG_STAGING/lib" || _die "Failed to copy slony_funs.so to staging directory"
-    chmod +r $WD/Slony/staging/linux/lib/*
+    mkdir -p $WD/Slony/staging/linux/lib/postgresql
+    ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/lib/postgresql/slony1_funcs.$PG_VERSION_SLONY.so $PG_STAGING/lib/postgresql" || _die "Failed to copy slony_funs.so to staging directory"
+    chmod +r $WD/Slony/staging/linux/lib/postgresql/*
 
     mkdir -p $WD/Slony/staging/linux/Slony
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/share/postgresql/slony*.sql $PG_STAGING/Slony; chmod 755 $PG_STAGING/Slony/slony*.sql" || _die "Failed to share files to staging directory"
