@@ -142,15 +142,15 @@ EOT
     cp $PG_PGHOME_OSX/bin/slony_logshipper $PG_STAGING/bin || _die "Failed to copy slony_logshipper binary to staging directory"
     chmod +rx $WD/Slony/staging/osx/bin/*
 
-    mkdir -p $WD/Slony/staging/osx/lib/postgresql
-    cp $PG_PGHOME_OSX/lib/postgresql/slony1_funcs.$PG_VERSION_SLONY.so $PG_STAGING/lib/postgresql || _die "Failed to copy slony_funcs.so to staging directory"
-    chmod +r $WD/Slony/staging/osx/lib/postgresql/*
+    mkdir -p $WD/Slony/staging/osx/lib
+    cp $PG_PGHOME_OSX/lib/postgresql/slony1_funcs.$PG_VERSION_SLONY.so $PG_STAGING/lib || _die "Failed to copy slony_funcs.so to staging directory"
+    chmod +r $WD/Slony/staging/osx/lib/*
 
     mkdir -p $WD/Slony/staging/osx/Slony
     cp $PG_PGHOME_OSX/share/postgresql/slony*.sql $PG_STAGING/Slony || _die "Failed to share files to staging directory"
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
-    _rewrite_so_refs $WD/Slony/staging/osx lib/postgresql @loader_path/..
+    _rewrite_so_refs $WD/Slony/staging/osx lib @loader_path/..
     _rewrite_so_refs $WD/Slony/staging/osx bin @loader_path/..
 
     install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$WD/Slony/staging/osx/bin/slon"
