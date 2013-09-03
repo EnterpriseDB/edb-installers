@@ -5,7 +5,7 @@ PGHOME=$1
 
 #Copying the lib files to pkglibdir
 libdir=`$PGHOME/bin/pg_config --pkglibdir`
-mv -f $PGHOME/lib/slony1_funcs.so $libdir/
+mv -f $PGHOME/lib/slony1_funcs*.so $libdir/
 
 #Copying the share files to sharedir
 sharedir=`$PGHOME/bin/pg_config --sharedir`
@@ -14,7 +14,7 @@ sharedir=`$PGHOME/bin/pg_config --sharedir`
 filelist=`ls $PGHOME/share/Slony/`
 echo "#!/bin/bash" > $PGHOME/Slony/installer/Slony/removeFiles.sh
 echo "#Remove these files installed in the lib directory" >> $PGHOME/Slony/installer/Slony/removeFiles.sh
-echo "rm -rf $libdir/slony1_funcs.so" >> $PGHOME/Slony/installer/Slony/removeFiles.sh
+echo "rm -rf $libdir/slony1_funcs*.so" >> $PGHOME/Slony/installer/Slony/removeFiles.sh
 echo "#Remove these files installed in the share directory" >> $PGHOME/Slony/installer/Slony/removeFiles.sh
 for f in $filelist
 do

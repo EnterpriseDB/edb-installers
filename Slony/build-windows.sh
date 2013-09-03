@@ -47,6 +47,7 @@ _prep_Slony_windows() {
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST Slony.zip del /S /Q Slony.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\Slony.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST Slony.windows rd /S /Q Slony.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\Slony.windows directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST Slony.staging rd /S /Q Slony.staging" || _die "Couldn't remove the $PG_PATH_WINDOWS\\Slony.staging directory on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST slony-staging.zip del /S /Q slony-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\slony-staging.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST build-Slony.bat del /S /Q build-Slony.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS\\build-Slony.bat on Windows VM"
 
     echo "Copying Slony sources to Windows VM"
