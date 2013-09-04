@@ -82,6 +82,18 @@ else
   SKIPBUILD=0
 fi
 
+if [ $# -ge 1 ];
+then
+  if [ $3 = "-skippvtpackages" ];
+  then
+    SKIPPVTPACKAGES=1
+  else
+    SKIPPVTPACKAGES=0
+  fi
+else
+  SKIPPVTPACKAGES=0
+fi
+
 # Check the VMs
 if [ $PG_ARCH_LINUX = 1 ];
 then
@@ -355,8 +367,10 @@ then
 fi
 
 # Check for private builds
+if [ $SKIPPVTPACKAGES = 0 ];
+then
 if [ -e $WD/pvt_build.sh ];
 then
-    source $WD/pvt_build.sh
+    source $WD/pvt_build.sh > output/build-pem.log 2>&1
 fi
-
+fi
