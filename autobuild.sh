@@ -30,6 +30,7 @@ while [ "$#" -gt "0" ]; do
                 -skipbuild) SKIPBUILD=$2; shift 2;;
                 -platforms) PLATFORMS=$2; shift 2;;
                 -packages) PACKAGES=$2; shift 2;;
+                -skippvtpkg) SKIPPVTPACKAGES=$2; shift 2;;
                 -help|-h) usage;;
                 *) echo -e "error: no such option $1. -h for help"; exit 1;;
         esac
@@ -55,6 +56,14 @@ then
 	SKIPBUILD="-skipbuild"
 else
 	SKIPBUILD=""
+fi
+
+# required by build.sh
+if $SKIPPVTPACKAGES ;
+then
+        SKIPPVTPACKAGES="-skippvtpkg"
+else
+        SKIPPVTPACKAGES=""
 fi
 
 _set_config_package()
@@ -174,7 +183,7 @@ git pull >> autobuild.log 2>&1
 
 # Run the build, and dump the output to a log file
 echo "Running the build (REL-9_3) " >> autobuild.log
-./build.sh $SKIPBUILD 2>&1 | tee output/build-93.log
+./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-93.log
 
 _mail_status "build-93.log" "9.3"
 
