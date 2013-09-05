@@ -106,7 +106,12 @@ EOT
    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.$PG_VERSION_SLONY.dll $PG_PATH_WINDOWS/Slony.staging/lib" || _die "Failed to copy slony_funcs.dll to staging directory"
 
    ssh $PG_SSH_WINDOWS "mkdir -p $PG_PATH_WINDOWS/Slony.staging/Slony" || _die "Failed to create the bin directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony*.sql $PG_PATH_WINDOWS/Slony.staging/Slony" || _die "Failed to share files to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_base.sql $PG_PATH_WINDOWS/Slony.staging/Slony/slony1_base.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_base.v83.sql $PG_PATH_WINDOWS/Slony.staging/Slony/slony1_base.v83.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_base.v84.sql $PG_PATH_WINDOWS/Slony.staging/Slony/slony1_base.v84.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.sql $PG_PATH_WINDOWS/Slony.staging/Slony/slony1_funcs.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.v83.sql $PG_PATH_WINDOWS/Slony.staging/Slony/slony1_funcs.v83.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.v84.sql $PG_PATH_WINDOWS/Slony.staging/Slony/slony1_funcs.v84.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
 
    # Zip up the installed code, copy it back here, and unpack.
    echo "Copying slony built tree to Unix host"
