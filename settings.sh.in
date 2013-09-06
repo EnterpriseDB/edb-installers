@@ -177,5 +177,5 @@ PG_PCRE_PATH_HPUX=/opt/packages/pcre-8.12/inst
 PG_COREUTILS_PATH_HPUX=/opt/packages/coreutils-8.6/inst
 
 # The InstallBuilder main binary.
-PG_INSTALLBUILDER_BIN="/opt/installbuilder-8.5.2/bin/builder"
+PG_INSTALLBUILDER_BIN="/opt/installbuilder-8.6.0/bin/builder"
 
