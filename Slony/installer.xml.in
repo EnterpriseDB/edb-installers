@@ -503,6 +503,51 @@ EOF
         </actionGroup>
     </preInstallationActionList>
 
+    <readyToInstallActionList>
+        <!-- LIN & MAC: Deleting library files installed by the previous version -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${installdir}/Slony/installer/Slony/removeFiles.sh</program>
+                    <programArguments>"${installdir}"</programArguments>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${SlonyVersion}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- Windows: Deleting library files installed by the previous version -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${installdir}\Slony\installer\Slony\removeFiles.bat</program>
+                    <programArguments>"${installdir}"</programArguments>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${SlonyVersion}</text>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+    </readyToInstallActionList>
+
     <!-- Post installation actions -->
     <postInstallationActionList>
 
