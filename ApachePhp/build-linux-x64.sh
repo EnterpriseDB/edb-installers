@@ -125,30 +125,10 @@ _build_ApachePhp_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libfreetype.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (libfreetype)"
     ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libz.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (libz)"
 
-    # Add LD_PRELOAD in envvars scripts
+    # Add LD_LIBRARY_PATH in envvars scripts
     cat <<EOT >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
-CWD=\`pwd\`
-cd @@INSTALL_DIR@@/php/lib
-files=\`ls *.so*\`
-cd \$CWD
-for f in \$files
-do
-    BROKEN=\`file @@INSTALL_DIR@@/php/lib/\$f | grep broken\`
-    if [ \"x\$BROKEN\" = \"x\" ] ; then
-        LD_PRELOAD=@@INSTALL_DIR@@/php/lib/\$f:\$LD_PRELOAD
-    fi
-done
-cd @@INSTALL_DIR@@/apache/lib
-files=\`ls *.so*\`
-cd \$CWD
-for f in \$files
-do
-    BROKEN=\`file @@INSTALL_DIR@@/apache/lib/\$f | grep broken\`
-    if [ \"x\$BROKEN\" = \"x\" ] ; then
-        LD_PRELOAD=@@INSTALL_DIR@@/apache/lib/\$f:\$LD_PRELOAD
-    fi
-done
-export LD_PRELOAD
+LD_LIBRARY_PATH=@@INSTALL_DIR@@/apache/lib:@@INSTALL_DIR@@/php/lib:\$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
 EOT
     ssh $PG_SSH_LINUX_X64 "chmod ugo+rx \"$PG_STAGING/apache/bin/envvars\""
 

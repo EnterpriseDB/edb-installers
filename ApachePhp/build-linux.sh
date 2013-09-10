@@ -127,30 +127,10 @@ _build_ApachePhp_linux() {
     ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libz.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (libz)"
     ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libxml2.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (libxml2)"
 
-    # Add LD_PRELOAD in envvars scripts
+    # Add LD_LIBRARY_PATH in envvars scripts
     cat <<EOT >> $WD/ApachePhp/staging/linux/apache/bin/envvars
-CWD=\`pwd\`
-cd @@INSTALL_DIR@@/php/lib
-files=\`ls *.so*\`
-cd \$CWD
-for f in \$files
-do
-    BROKEN=\`file @@INSTALL_DIR@@/php/lib/\$f | grep broken\`
-    if [ \"x\$BROKEN\" = \"x\" ] ; then
-        LD_PRELOAD=@@INSTALL_DIR@@/php/lib/\$f:\$LD_PRELOAD
-    fi
-done
-cd @@INSTALL_DIR@@/apache/lib
-files=\`ls *.so*\`
-cd \$CWD
-for f in \$files
-do
-    BROKEN=\`file @@INSTALL_DIR@@/apache/lib/\$f | grep broken\`
-    if [ \"x\$BROKEN\" = \"x\" ] ; then
-        LD_PRELOAD=@@INSTALL_DIR@@/apache/lib/\$f:\$LD_PRELOAD
-    fi
-done
-export LD_PRELOAD
+LD_LIBRARY_PATH=@@INSTALL_DIR@@/apache/lib:@@INSTALL_DIR@@/php/lib:\$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
 EOT
     ssh $PG_SSH_LINUX "chmod ugo+rx \"$PG_STAGING/apache/bin/envvars\""
 
