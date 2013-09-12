@@ -64,7 +64,7 @@ _build_Slony_linux_x64() {
 
     echo "Changing the rpath for the slonik binaries and libraries"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64/bin; for f in slon slonik slony_logshipper ; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64/lib/postgresql; chrpath --replace \"\\\${ORIGIN}/../lib\" slony1_funcs.$PG_VERSION_SLONY.so"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64/lib/postgresql; chrpath --replace \"\\\${ORIGIN}/../../lib\" slony1_funcs.$PG_VERSION_SLONY.so"
 
     cd $WD
    
