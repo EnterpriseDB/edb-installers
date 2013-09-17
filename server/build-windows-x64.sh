@@ -364,6 +364,10 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\docs\\\\en_US\"" || _die "Failed to create a directory on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\docs\\\\en_US\\\\_build\\\\htmlhelp; cp -R *  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\docs\\\\en_US\"" || _die "Failed to copy a help file on the windows-x64 build host"
 
+    # There's no particularly clean way to do this as we don't want all the files, and each language may or may not be completely transated :-(
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\docs\\\\en_US\\\\hints\"" || _die "Failed to create a directory on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\docs\\\\en_US\\\\hints\\\\*.html \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\docs\\\\en_US\\\\hints\"" || _die "Failed to copy a help file on the windows-x64 build host"
+
     # i18n
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\i18n\"" || _die "Failed to create a directory on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\i18n\\\\pg_settings.csv \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\i18n\"" || _die "Failed to copy an i18n file on the windows-x64 build host"
