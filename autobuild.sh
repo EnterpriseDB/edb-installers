@@ -13,13 +13,16 @@ usage()
         echo "Usage: $BASENAME [Options]\n"
         echo "    Options:"
         echo "      [-skipbuild boolean]" boolean value may be either "1" or "0"
+        echo "      [-skippvtpkg boolean]" boolean value may be either "1" or "0"
         echo "      [-platforms list]  list of platforms. It may include the list of supported platforms separated by comma or all" 
         echo "      [-packages list]   list of packages. It may include the list of supported platforms separated by comma or all"
         echo "    Examples:"
         echo "     $BASENAME -skipbuild 0 -platforms "linux, linux_64, windows, windows_x64, osx" -packages "server, apachephp, phppgadmin, pgjdbc, psqlodbc, slony, postgis, npgsql, pgagent, pgmemcache, pgbouncer, migrationtoolkit, replicationserver, plpgsqlo, sqlprotect, update_monitor""
         echo "     $BASENAME -skipbuild 1 -platforms "all" -packages "all""
+        echo "     $BASENAME -skipbuild 1 -skippvtpkg 1 -platforms "all" -packages "all""
         echo ""
         echo "    Note: setting skipbuild to 1 will skip the product build and just create the installer. 'all' option for -packages and -platforms will set all platforms and packages."
+        echo "    Note: setting skippvtpkg to 1 will skip the private package (PEM) build and installers"
         echo ""
         exit 1;
 }
@@ -126,13 +129,27 @@ footer_fail="###################################################################
 # Mail function
 _mail_status()
 {
-        filename=$1
-	version=$2
-        log_file=$log_location/$filename
+        build_filename=$1
+        pvtbuild_filename=$2
+        version=$3
+        build_log_file=$log_location/$build_filename
+        pvtbuild_log_file=$log_location/$pvtbuild_filename
 
-        log_content=`tail -20 $log_file`
-        error_flag=`echo $log_content | grep "FATAL ERROR"`
-        if [ "x$error_flag" = "x" ];
+        build_log_content=`tail -20 $build_log_file`
+        pvtbuild_log_content=`tail -20 $pvtbuild_log_file`
+
+        build_error_flag=`echo $build_log_content | grep "FATAL ERROR"`
+        pvtbuild_error_flag=`echo $pvtbuild_log_content | grep "FATAL ERROR"`
+
+        if [ ${#build_error_flag} -gt 0 ]
+        then
+                $log_content=$build_log_content
+        elif [ ${#pvtbuild_error_flag} -gt 0 ]
+        then
+                $log_content=$pvtbuild_log_content
+        fi
+
+        if [ "x$build_error_flag" = "x" ] && [ "x$pvtbuild_error_flag" = "x" ]
         then
                 mail_content="Autobuild completed Successfully."
                 build_status="SUCCESS"
@@ -145,7 +162,13 @@ $log_content
 
 $footer_fail"
                 build_status="FAILED"
-                mail_receipents="pginstaller@enterprisedb.com"
+                if [ ${#build_error_flag} -gt 0 ]
+                then
+                        mail_receipents="cm@enterprisedb.com"
+                elif [ ${#pvtbuild_error_flag} -gt 0 ]
+                then
+                        mail_receipents="pem@enterprisedb.com -c cm@enterprisedb.com "
+                fi
         fi
 
         mail -s "pgInstaller Build $version - $build_status" $mail_receipents <<EOT
@@ -185,7 +208,7 @@ git pull >> autobuild.log 2>&1
 echo "Running the build (REL-9_3) " >> autobuild.log
 ./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-93.log
 
-_mail_status "build-93.log" "9.3"
+_mail_status "build-93.log" "build-pvt.log" "9.3"
 
 remote_location="/var/www/html/builds/Installers"
 

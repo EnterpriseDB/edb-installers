@@ -102,7 +102,7 @@ else
   SKIPBUILD=0
 fi
 
-if [ $SKIPPVTPACKAGES = "-skippvtpkg" ];
+if [ "$SKIPPVTPACKAGES" = "-skippvtpkg" ];
 then
   SKIPPVTPACKAGES=1
 else
@@ -386,6 +386,6 @@ if [ $SKIPPVTPACKAGES = 0 ];
 then
     if [ -e $WD/pvt_build.sh ];
     then
-        source $WD/pvt_build.sh
+        source $WD/pvt_build.sh > output/build-pvt.log 2>&1
     fi
 fi
