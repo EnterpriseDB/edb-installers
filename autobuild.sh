@@ -143,10 +143,10 @@ _mail_status()
 
         if [ ${#build_error_flag} -gt 0 ]
         then
-                $log_content=$build_log_content
+                log_content=$build_log_content
         elif [ ${#pvtbuild_error_flag} -gt 0 ]
         then
-                $log_content=$pvtbuild_log_content
+                log_content=$pvtbuild_log_content
         fi
 
         if [ "x$build_error_flag" = "x" ] && [ "x$pvtbuild_error_flag" = "x" ]
