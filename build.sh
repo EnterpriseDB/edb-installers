@@ -386,6 +386,7 @@ if [ $SKIPPVTPACKAGES = 0 ];
 then
     if [ -e $WD/pvt_build.sh ];
     then
-        source $WD/pvt_build.sh > output/build-pvt.log 2>&1
+	[ -z "${PVT_BUILD_LOG}" ] && PVT_BUILD_LOG=$WD/output/build-pvt.log
+        source $WD/pvt_build.sh > "${PVT_BUILD_LOG}" 2>&1
     fi
 fi
