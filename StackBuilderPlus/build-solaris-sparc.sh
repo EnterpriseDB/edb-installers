@@ -64,6 +64,9 @@ _prep_stackbuilderplus_solaris_sparc() {
     fi
     
     ssh $PG_SSH_SOLARIS_SPARC "rm -rf $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/source" || _die "Failed to remove the StackBuilderPlus source directory from Soalris VM"
+
+    ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; rm -f create_debug_symbols.sh"
+
     ssh $PG_SSH_SOLARIS_SPARC "mkdir -p $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/source" || _die "Failed to create the StackBuilderPlus source directory on Soalris VM"
     scp StackBuilderPlus.solaris-sparc.zip $PG_SSH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/StackBuilderPlus/source/ 
     scp updatemanager.solaris-sparc.zip $PG_SSH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/StackBuilderPlus/source/ 
@@ -158,6 +161,12 @@ EOT
     ssh $PG_SSH_SOLARIS_SPARC "cp /opt/local/Current/lib/libuuid.so.16 $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libuuid.so.16) in staging directory (solaris-sparc)"
     ssh $PG_SSH_SOLARIS_SPARC "cp -r $PG_SOLARIS_STUDIO_SOLARIS_SPARC/lib/stlport4/v9/libstlport.so.1 $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/lib" || _die "Failed to copy dependent library (libstlport.so.1) in staging directory (solaris-sparc)"
     #scp -r $PG_SSH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc/* $WD/StackBuilderPlus/staging/solaris-sparc/ || _die "Failed to copy back the staging directory from Solaris VM"
+
+    # Generate debug symbols
+    scp $WD/create_debug_symbols.sh $PG_SSH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC || _die "Failed to copy create_debug_symbols.sh on solaris-sparc build machine"
+
+    ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc" || _die "Failed to execute create_debug_symbols.sh"
+
     ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging; /usr/sfw/bin/gtar cpvzf solaris-sparc.tar.gz solaris-sparc" || _die "Failed to create tar file"
     scp -r $PG_SSH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/StackBuilderPlus/staging/solaris-sparc.tar.gz $WD/StackBuilderPlus/staging/ || _die "Failed to copy back the staging directory from Solaris VM"
 
@@ -165,6 +174,17 @@ EOT
 
     tar zxvfp solaris-sparc.tar.gz || _die "Failed to extract tar file"
     rm -f solaris-sparc.tar.gz || _die "Failed to delete tar file"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/solaris-sparc/StackBuilderPlus ];
+    then
+        echo "Removing existing $WD/output/symbols/solaris-sparc/StackBuilderPlus directory"
+        rm -rf $WD/output/symbols/solaris-sparc/StackBuilderPlus  || _die "Couldn't remove the existing $WD/output/symbols/solaris-sparc/StackBuilderPlus directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/solaris-sparc || _die "Failed to create $WD/output/symbols/solaris-sparc directory"
+    mv $WD/StackBuilderPlus/staging/solaris-sparc/symbols $WD/output/symbols/solaris-sparc/StackBuilderPlus || _die "Failed to move $WD/StackBuilderPlus/staging/solaris-sparc/StackBuilderPlus/symbols to $WD/output/symbols/solaris-sparc/StackBuilderPlus directory"
 
     cd $WD
 }

@@ -45,6 +45,8 @@ _prep_pgbouncer_solaris_sparc() {
     mkdir -p $WD/pgbouncer/staging/solaris-sparc || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/pgbouncer/staging/solaris-sparc || _die "Couldn't set the permissions on the staging directory"
 
+    ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; rm -f create_debug_symbols.sh"
+
     ssh $PG_SSH_SOLARIS_SPARC "rm -rf  $PG_PATH_SOLARIS_SPARC/pgbouncer/source" || _die "Failed to remove the pgbouncer source directory from Solaris VM"
     ssh $PG_SSH_SOLARIS_SPARC "mkdir -p $PG_PATH_SOLARIS_SPARC/pgbouncer/source" || _die "Failed to create the pgbouncer source directory from Solaris VM"
     scp pgbouncer.solaris-sparc.zip $PG_SSH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/pgbouncer/source/ || _die "Failed to scp the pgbouncer zip file"
@@ -102,6 +104,11 @@ EOT
 
     ###ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libxml2.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
 
+    # Generate debug symbols
+    scp $WD/create_debug_symbols.sh $PG_SSH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC || _die "Failed to copy create_debug_symbols.sh on solaris-sparc build machine"
+
+    ssh $PG_SSH_SOLARIS_SPARC "cd $PG_PATH_SOLARIS_SPARC; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer" || _die "Failed to execute create_debug_symbols.sh"
+
     scp -r $PG_SSH_SOLARIS_SPARC:$PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/* $WD/pgbouncer/staging/solaris-sparc/ || _die "Failed to scp back the staging directory"
 
     cp -R $WD/server/staging/solaris-sparc/lib/libxml2.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
@@ -119,7 +126,19 @@ EOT
     cp -R $WD/server/staging/solaris-sparc/lib/libiconv.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
     cp -R $WD/server/staging/solaris-sparc/lib/libz.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
     cp -R $WD/server/staging/solaris-sparc/lib/libmemcached*.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
-    cp -R $WD/server/staging/solaris-sparc/lib/libgssapi_krb*.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library" 
+    cp -R $WD/server/staging/solaris-sparc/lib/libgssapi_krb*.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/solaris-sparc/pgbouncer ];
+    then
+        echo "Removing existing $WD/output/symbols/solaris-sparc/pgbouncer directory"
+        rm -rf $WD/output/symbols/solaris-sparc/pgbouncer  || _die "Couldn't remove the existing $WD/output/symbols/solaris-sparc/pgbouncer directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/solaris-sparc || _die "Failed to create $WD/output/symbols/solaris-sparc directory"
+    mv $WD/pgbouncer/staging/solaris-sparc/pgbouncer/symbols $WD/output/symbols/solaris-sparc/pgbouncer || _die "Failed to move $WD/pgbouncer/staging/solaris-sparc/pgbouncer/symbols to $WD/output/symbols/solaris-sparc/pgbouncer directory"
+ 
 }
 
 
