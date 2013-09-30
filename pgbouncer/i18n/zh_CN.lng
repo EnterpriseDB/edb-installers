@@ -9,7 +9,7 @@ Installer.Installation.Finished.Text=EnterpriseDB是针对Postgres社区的增�
 install.summary=PgBouncer用于实现PostgreSQL服务器的连接池功能，由EnterpriseDB进行程序打包工作。
 pgbouncer.installdir.empty=所指定的安装目录不能为空
 pgbouncer.installdir.error=安装目录必须为绝对路径，只能包含字母，数字以及字符'-', '/', '.'和'_'，并且这个目录必须可写。
-pgbouncer.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
+pgbouncer.installdir.invalid.solaris11=路径不能以“/home”开始。请选择另一路径。
 pgbouncer.install.service.error=安装pgbouncer服务失败。
 pgbouncer.service.description=PgBouncer用于为PostgreSQL服务器提供连接池服务。
 pgbouncer.osx.service.error=创建pgbouncer启动守护进程失败。
@@ -30,5 +30,5 @@ error.file.notsecure=无法获得文件{installdir}\etc\userlist.txt。
 pgbouncer.system.user.error=root用户无法运行pgBouncer，请指定一个不同的用户名。
 gui.not.available.hpux=HPUX 不支持 GUI 模式的安装。
 
-error.could.not.start.service=Failed to start the ${servicename} service.
-cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
+error.could.not.start.service=无法启动 ${servicename} 服务。
+cannot.create.tmp.dir=无法在 ${system_temp_directory} 中创建临时目录。请先删除 ${system_temp_directory} 中的所有现有安装程序目录，然后继续。

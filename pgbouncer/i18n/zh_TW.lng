@@ -19,7 +19,7 @@ install.summary=PostgreSQL Server 的連線共用器，由 EnterpriseDB 封裝�
 pgbouncer.installdir.empty=安裝目錄不可是空的
 
 pgbouncer.installdir.error=安裝目錄必須是絕對路徑，只包含字母、數字和字元 '-'、'/'、'.' 和 '_'，而且為可寫入。
-pgbouncer.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
+pgbouncer.installdir.invalid.solaris11=路徑的開頭不可以是 '/home'。請選擇其他路徑。
 pgbouncer.install.service.error=無法安裝 pgbouncer 服務。
 pgbouncer.service.description=PostgreSQL Server 的連線共用服務。
 pgbouncer.osx.service.error=無法建立 pgbouncer LaunchDaemons。
@@ -43,5 +43,5 @@ error.file.notsecure=無法保護 {installdir}\etc\userlist.txt 檔案。
 pgbouncer.system.user.error=pgBouncer 無法以根使用者身分執行。請指定另一個使用者名稱。
 gui.not.available.hpux=HPUX 不支援 GUI 模式安裝
 
-error.could.not.start.service=Failed to start the ${servicename} service.
-cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
+error.could.not.start.service=無法啟動 ${servicename} 服務。
+cannot.create.tmp.dir=無法在 ${system_temp_directory} 中建立暫存目錄。請移除 ${system_temp_directory} 中所有現有的安裝程式目錄以繼續進行。

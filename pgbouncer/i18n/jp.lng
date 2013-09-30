@@ -19,7 +19,7 @@ install.summary=EnterpriseDBによってパッケージされたPostgreSQL Serve
 pgbouncer.installdir.empty=インストールディレクトリを空にすることはできません
 
 pgbouncer.installdir.error=インストールディレクトリは、文字、数字、および記号「-」、「/」、「.」、「_」のみを使用した絶対パスであり、書き込み可能でなければなりません。
-pgbouncer.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
+pgbouncer.installdir.invalid.solaris11=パスは「/home」で開始できません。別のパスを指定してください。
 
 pgbouncer.install.service.error=pgbouncerサービスをインストールできませんでした。
 pgbouncer.service.description=PostgreSQL Serverの接続プールサービス。
@@ -44,5 +44,5 @@ error.file.notsecure={installdir}\etc\userlist.txtファイルを保護できま
 pgbouncer.system.user.error=pgBouncerは、ルートユーザとして実行できません。別のユーザ名を指定してください。
 gui.not.available.hpux=GUIモードのインストールはHPUXではサポートされていません
 
-error.could.not.start.service=Failed to start the ${servicename} service.
-cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
+error.could.not.start.service=${servicename}サービスを開始できませんでした。
+cannot.create.tmp.dir=${system_temp_directory}に一時ディレクトリを作成できません。続行するには、${system_temp_directory}内に存在するすべてのインストーラを削除してください。

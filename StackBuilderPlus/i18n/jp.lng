@@ -35,7 +35,7 @@ install.summary=StackBuilder Plus (高度なアプリケーションスタック
 sbp.installdir.empty=インストールディレクトリを空にすることはできません
 
 sbp.installdir.error=インストールディレクトリは、文字、数字、および記号「-」、「/」、「.」、「_」のみを使用した絶対パスであり、書き込み可能でなければなりません。
-sbp.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
+sbp.installdir.invalid.solaris11=パスは「/home」で開始できません。別のパスを指定してください。
 monitor.server.version.warning=監視するように指定されているサーバは、インストールされている有効なサーバではありません。Update Monitoringサービスは無効になります。
 monitor.server.title=PostgreSQLサーバのバージョン
 monitor.server.explanation=監視するpostgresqlサーバのバージョンを指定してください。
@@ -47,4 +47,4 @@ progress.text.removing.loginHook.osx=ログインフックを削除していま�
 progress.text.removing.shortcuts=メニューショートカットを削除しています
 sbp.reboot.required=インストールを完了するには、コンピュータの再起動が必要です。
 gui.not.available.hpux=GUIモードのインストールはHPUXではサポートされていません
-cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
+cannot.create.tmp.dir=${system_temp_directory}に一時ディレクトリを作成できません。続行するには、${system_temp_directory}内に存在するすべてのインストーラを削除してください。

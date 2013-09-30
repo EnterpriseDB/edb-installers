@@ -35,7 +35,7 @@ install.summary=StackBuilder Plus (進階應用程式堆疊產生器)
 sbp.installdir.empty=安裝目錄不可是空的
 
 sbp.installdir.error=安裝目錄必須是絕對路徑，只包含字母、數字和字元 '-'、'/'、'.' 和 '_'，而且為可寫入。
-sbp.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
+sbp.installdir.invalid.solaris11=路徑的開頭不可以是 '/home'。請選擇其他路徑。
 
 monitor.server.version.warning=指定要監視的伺服器不是有效的已安裝伺服器。更新監視服務將會停用。
 monitor.server.title=PostgreSQL Server 版本
@@ -48,4 +48,4 @@ progress.text.removing.loginHook.osx=正在移除登入攔截程序
 progress.text.removing.shortcuts=正在移除功能表捷徑
 sbp.reboot.required=若要完成安裝，必須要重新啟動電腦。
 gui.not.available.hpux=HPUX 不支援 GUI 模式安裝
-cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
+cannot.create.tmp.dir=無法在 ${system_temp_directory} 中建立暫存目錄。請移除 ${system_temp_directory} 中所有現有的安裝程式目錄以繼續進行。
