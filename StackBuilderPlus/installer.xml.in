@@ -38,7 +38,7 @@
   <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
   <!-- Images -->
   <disableSplashScreen>1</disableSplashScreen>
-  <leftImage>../resources/pg-side.png</leftImage>
+  <leftImage>../resources/edb-side.png</leftImage>
 
   <!-- i18n files for the UI -->
   <allowLanguageSelection>1</allowLanguageSelection> 
