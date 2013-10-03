@@ -19,7 +19,7 @@ install.summary=EnterpriseDB 제공 PostgreSQL Server용 연결 풀러
 pgbouncer.installdir.empty=설치 디렉터리를 비워 둘 수 없음
 
 pgbouncer.installdir.error=설치 디렉터리는 문자, 숫자, '-', '/', '.' 및 '_' 문자를 포함하고 쓰기 가능한 절대 경로여야 합니다.
-pgbouncer.installdir.invalid.solaris11=The path cannot start with '/home'. Please choose another path.
+pgbouncer.installdir.invalid.solaris11=경로는 '/home'으로 시작할 수 없습니다. 다른 경로를 선택하십시오.
 
 pgbouncer.install.service.error=pgbouncer 서비스를 설치하지 못했습니다.
 pgbouncer.service.description=PostgreSQL Server용 연결 풀링 서비스
@@ -44,5 +44,5 @@ error.file.notsecure={installdir}\etc\userlist.txt 파일을 보호할 수 없�
 pgbouncer.system.user.error=pgBouncer를 루트 사용자로 실행할 수 없습니다. 다른 사용자 이름을 지정하십시오.
 gui.not.available.hpux=HPUX에서는 GUI 모드 설치가 지원되지 않음
 
-error.could.not.start.service=Failed to start the ${servicename} service.
-cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
+error.could.not.start.service=${servicename} 서비스를 시작하지 못했습니다.
+cannot.create.tmp.dir=${system_temp_directory}에 임시 디렉터리를 만들 수 없습니다. 계속하려면 ${system_temp_directory}에 있는 기존의 설치 관리자 디렉터리를 모두 제거하십시오.
