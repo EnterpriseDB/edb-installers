@@ -25,6 +25,7 @@ _prep_MigrationToolKit_hpux() {
     chmod -R ugo+w migrationtoolkit.hpux || _die "Couldn't set the permissions on the source directory"
     
     cp pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_VERSION_PGJDBC.jdbc4.jar migrationtoolkit.hpux/lib/ || _die "Failed to copy the pg-jdbc driver"
+    cp $WD/tarballs/edb-jdbc14.jar migrationtoolkit.hpux/lib/ || _die "Failed to copy the edb-jdbc driver"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/MigrationToolKit/staging/hpux ];
