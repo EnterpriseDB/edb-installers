@@ -105,3 +105,4 @@ servicename.already.exists.windows=A service (${servicename}) already exists.\nP
 servicename.already.exists.osx=A service (com.edb.launchd.${servicename}.plist) already exists in the '/Library/LaunchDaemons' directory.\nPlease specify another name.
 pg.service.description=Provides relational database storage.
 cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
+acl.check.description=Check and give the read permissions on the complete data directory path for the service account.
