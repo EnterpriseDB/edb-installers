@@ -11,8 +11,8 @@ Const ForReading = 1
 Const ForWriting = 2
 
 ' Check the command line
-If WScript.Arguments.Count <> 7 Then
- Wscript.Echo "Usage: initcluster.vbs <OSUsername> <SuperUsername> <Password> <Install dir> <Data dir> <Port> <Locale>"
+If WScript.Arguments.Count <> 8 Then
+ Wscript.Echo "Usage: initcluster.vbs <OSUsername> <SuperUsername> <Password> <Install dir> <Data dir> <Port> <Locale> <CheckACL>"
  Wscript.Quit 127
 End If
 
@@ -23,6 +23,7 @@ strInstallDir = WScript.Arguments.Item(3)
 strDataDir = WScript.Arguments.Item(4)
 lPort = CLng(WScript.Arguments.Item(5))
 strLocale = WScript.Arguments.Item(6)
+boolCheckAcl = WScript.Arguments.Item(7)
 
 ' Remove any trailing \'s from the data dir - they will confuse cacls
 If Right(strDataDir, 1) = "\" Then
@@ -174,54 +175,48 @@ Else
     WScript.Echo "WScript.Network not initialized..."
 End If
 
-' Loop up the directory path, and ensure we have read permissions
-' on the entire path leading to the data directory
-arrDirs = Split(strDataDir, "\")
-nDirs = UBound(arrDirs)
-strThisDir = ""
 
-iRet = 0
-
-For d = 0 To nDirs
-    strThisDir = strThisDir & arrDirs(d)
-
-    If IsVistaOrNewer() = True Then
-        If d <> 0 Then
-            If strThisDir <> strProgramFiles Then
-                WScript.Echo "Ensuring we can read the path " & strThisDir & " (using icacls) to " & objNetwork.Username & ":"
-                iRet = DoCmd("icacls """ & strThisDir & """ /grant """ & objNetwork.Username & """:(NP)(RX)")
-            End If
-        ELSE
-
-            If strThisDir <> strSystemDrive Then
-                WScript.Echo "Ensuring we can read the path " & strThisDir & " (using icacls) to " & objNetwork.Username & ":"
-                ' Drive letter must not be surronded by double-quotes and ends with slash (\)
-                ' "icacls" fails on the drives with (NP) flag
-                iRet = DoCmd("icacls " & strThisDir & "\ /grant """ & objNetwork.Username & """:(NP)(RX)")
-            End If
-        End If
+Sub AclCheck(strThisDir, userName)
+    WScript.Echo "Called AclCheck(" & strThisDir & ")"
+    If strThisDir = strProgramFiles Then
+        WScript.Echo "Skipping the ACL check on " & strThisDir
+        iRet = 0
+    ElseIf strThisDir = strSystemDrive Then
+        WScript.Echo "Skipping the ACL check on " & strThisDir
+        iRet = 0
     Else
-        If d <> 0 Then
-            ' Do not touch the %PROGRAMFILES%
-            If strThisDir <> strProgramFiles Then
-                WScript.Echo "Ensuring we can read the path " & strThisDir & " (using cacls):"
-                iRet = DoCmd("echo y|cacls """ & strThisDir & """ /E /G """ & objNetwork.Username & """:R")
-            End If
-        ELSE
-            ' Do not touch the %SYSTEMDRIVE%
-            If strThisDir <> strSystemDrive Then
-                WScript.Echo "Ensuring we can read the path " & strThisDir & " (using cacls):"
-                ' Drive letter must not be surronded by double-quotes and ends with slash (\)
-                iRet = DoCmd("echo y|cacls " & strThisDir & "\ /E /G """ & objNetwork.Username & """:R")
-            End If
+        If IsVistaOrNewer() = True Then
+            WScript.Echo "Executing icacls to ensure the " & userName & " account can read the path " & strThisDir
+            iRet = DoCmd("icacls """ & strThisDir & """ /grant """ & userName & """:(NP)(RX)")
+        Else
+            WScript.Echo "Executing cacls to ensure the " & userName & " account can read the path " & strThisDir
+            iRet = DoCmd("echo y|cacls """ & strThisDir & """ /E /G """ & userName & """:R")
         End If
     End If
     if iRet <> 0 Then
         WScript.Echo "Failed to ensure the path " * strThisDir & " is readable"
     End If
+End Sub
 
-    strThisDir = strThisDir & "\"
-Next
+' dirname of strDataDir'
+strParentOfDataDir = objFSO.GetParentFolderName(strDataDir)
+
+If boolCheckAcl Then
+    ' Loop up the directory path, and ensure we have read permissions
+    ' on the entire path leading to the data directory
+    arrDirs = Split(strParentOfDataDir, "\")
+    nDirs = UBound(arrDirs)
+    strThisDir = ""
+    
+    For d = 0 To nDirs
+        strThisDir = strThisDir & arrDirs(d)
+        Call AclCheck (strThisDir,objNetwork.Username)
+    
+        strThisDir = strThisDir & "\"
+    Next
+End If
+
+Call AclCheck(strDataDir,objNetwork.Username)
 
 If IsVistaOrNewer() = True Then
     WScript.Echo "Ensuring we can write to the data directory (using icacls) to  " & objNetwork.Username & ":"
@@ -285,49 +280,22 @@ End If
 objConfFile.WriteLine strConfig
 objConfFile.Close
 
+If boolCheckAcl Then
 ' Loop up the directory path, and ensure the service account has read permissions
 ' on the entire path leading to the data directory
-arrDirs = Split(strDataDir, "\")
-nDirs = UBound(arrDirs)
-strThisDir = ""
-iRet = 0
+    arrDirs = Split(strParentOfDataDir, "\")
+    nDirs = UBound(arrDirs)
+    strThisDir = ""
+    
+    For d = 0 To nDirs
+        strThisDir = strThisDir & arrDirs(d)
+        Call AclCheck(strThisDir,strOSUsername)
+    
+        strThisDir = strThisDir & "\"
+    Next
+End If
 
-For d = 0 To nDirs
-    strThisDir = strThisDir & arrDirs(d)
-
-    If IsVistaOrNewer() = True Then
-        If d <> 0 Then
-            If strThisDir <> strProgramFiles THEN
-                WScript.Echo "Ensuring the service account can read the path " & strThisDir & " (using icacls) to " & strOSUsername & ":"
-                iRet = DoCmd("icacls """ & strThisDir & """ /grant """ & strOSUsername & """:(NP)(RX)")
-            End If
-        Else
-            If strThisDir <> strSystemDrive THEN
-                WScript.Echo "Ensuring the service account can read the path " & strThisDir & " (using icacls) to " & strOSUsername & ":"
-                ' Drive letter must not be surronded by double-quotes and ends with slash (\)
-                ' "icacls" fails on the drives with (NP) flag
-                iRet = DoCmd("icacls " & strThisDir & "\ /grant """ & strOSUsername & """:(NP)(RX)")
-            End If
-        End If
-    Else
-        If d <> 0 Then
-            If strThisDir <> strProgramFiles THEN
-                WScript.Echo "Ensuring the service account can read the path " & strThisDir & " (using cacls):"
-                iRet = DoCmd("echo y|cacls """ & strThisDir & """ /E /G """ & strOSUsername & """:R")
-            End If
-        Else
-            If strThisDir <> strSystemDrive THEN
-                WScript.Echo "Ensuring the service account can read the path " & strThisDir & " (using cacls):"
-                ' Drive letter must not be surronded by double-quotes and ends with slash (\)
-                iRet = DoCmd("echo y|cacls " & strThisDir & "\ /E /G """ & strOSUsername & """:R")
-            End If
-        End If
-    End If
-    if iRet <> 0 Then
-        WScript.Echo "Failed to ensure the path " * strThisDir & " is readable by the service account"
-    End If
-    strThisDir = strThisDir & "\"
-Next
+Call AclCheck(strDataDir,strOSUsername)
 
 ' Create the <DATA_DIR>\pg_log directory (if not exists)
 ' Create it before updating the permissions, so that it will also get affected

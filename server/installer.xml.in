@@ -278,6 +278,7 @@ EOF
 
         <setInstallerVariable name="project.parameter(create_shortcuts).ask" value="0"/>
         <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>
+        <setInstallerVariable name="project.parameter(enable_aclcheck).ask" value="0"/>
         <setInstallerVariable name="project.parameter(superaccount).ask" value="0" />
         <setInstallerVariable name="project.parameter(serviceaccount).ask" value="0" />
         <setInstallerVariable name="project.parameter(servicepassword).ask" value="0" />
@@ -2955,7 +2956,7 @@ EOF
 
                         <runProgram>
                             <program>cscript</program>
-                            <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport} "${reallocale}"</programArguments>
+                            <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport} "${reallocale}" ${enable_aclcheck}</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
@@ -4768,6 +4769,25 @@ REM The script sets environment variables helpful for PostgreSQL
            </ruleList>
         </booleanParameter>
 
+        <!-- Whether to check/edit ACL -->
+        <booleanParameter>
+           <name>enable_aclcheck</name>
+           <description>${msg(acl.check.description)}</description>
+           <explanation/>
+           <value/>
+           <default>0</default>
+           <ask>yes</ask>
+           <cliOptionName>enable_acledit</cliOptionName>
+           <cliOptionShow>1</cliOptionShow>
+           <ruleList>
+               <compareText>
+                   <logic>equals</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+               </compareText>
+               <isFalse value="${extract_mode}"/>
+           </ruleList>
+        </booleanParameter>
 
         <!-- Whether to create shortcut menu -->
         <booleanParameter>
