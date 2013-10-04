@@ -100,3 +100,4 @@ servicename.already.exists.solaris=A service (${servicename}) already exists.\nP
 servicename.already.exists.windows=A service (${servicename}) already exists.\nPlease specify another name.
 servicename.already.exists.osx=A service (com.edb.launchd.${servicename}.plist) already exists in the '/Library/LaunchDaemons' directory.\nPlease specify another name.
 pg.service.description=Provides relational database storage.
+acl.check.description=Check and give the read permissions on the complete data directory path for the service account.
