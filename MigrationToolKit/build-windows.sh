@@ -35,6 +35,7 @@ _prep_MigrationToolKit_windows() {
     cp -R EDB-MTK/* migrationtoolkit.windows || _die "Failed to copy the source code (source/migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT)"
     chmod -R ugo+w migrationtoolkit.windows || _die "Couldn't set the permissions on the source directory"
 
+    cp $WD/tarballs/edb-jdbc14.jar migrationtoolkit.windows/lib/ || _die "Failed to copy the edb-jdbc driver"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/MigrationToolKit/staging/windows ];
