@@ -4368,6 +4368,12 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/linux/share</origin>
                         </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>../resources/3rd_party_licenses.txt</origin>
+                        </distributionFile>
                     </distributionFileList>
                     <ruleList>
                         <compareText>
@@ -4412,6 +4418,12 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/linux-x64/share</origin>
                         </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>../resources/3rd_party_licenses.txt</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
 
@@ -4449,6 +4461,12 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/linux-ppc64/share</origin>
                         </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>../resources/3rd_party_licenses.txt</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
 
@@ -4486,6 +4504,12 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/osx/share</origin>
                         </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>../resources/3rd_party_licenses.txt</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
 	
@@ -4526,6 +4550,12 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/@@WINDIR@@/symbols</origin>
                         </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>../resources/3rd_party_licenses.txt</origin>
+                        </distributionFile>
                     </distributionFileList>
 		</folder>
 
@@ -4563,6 +4593,12 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/solaris-x64/share</origin>
                         </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>../resources/3rd_party_licenses.txt</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
 
@@ -4600,6 +4636,12 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/solaris-sparc/share</origin>
                         </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>../resources/3rd_party_licenses.txt</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
 
